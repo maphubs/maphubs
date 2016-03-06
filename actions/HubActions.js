@@ -1,0 +1,29 @@
+var Reflux = require('reflux');
+
+var actions = Reflux.createActions({
+  'loadHub': {},
+  'loadMembers': {},
+  'loadLayers': {},
+  'createHub': {},
+  'saveHub': {},
+  'setTitle' : {},
+  'setTagline' : {},
+  'setDescription' : {},
+  'setResources' : {},
+  'setAbout' : {},
+  'setHubLogoImage': {},
+  'setHubBannerImage': {},
+  'addMember': {},
+  'removeMember': {},
+  'setMemberAdmin': {},
+  'removeMemberAdmin': {},
+  'setMap': {},
+  'saveMap': {},
+  'deleteHub': {},
+  'publish': {},
+  'moveUp': {},
+  'moveDown': {},
+  'toggleVisibility': {}
+});
+
+module.exports = actions;

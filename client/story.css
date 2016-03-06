@@ -1,0 +1,12 @@
+.story-title {
+  font-family: 'Merriweather', serif;
+}
+
+.story-content {
+  font-family: 'Merriweather', serif;
+}
+
+.story-content p {
+  font-size: 16px;
+  line-height: 1.5;
+}

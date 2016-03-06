@@ -1,0 +1,49 @@
+{
+    "version": 8,
+    "name": "Buildings - OpenStreetMap",
+    "data_type": "polygon",
+    "sources": {
+        "osm": {
+            "type": "vector",
+            "tiles": ["https://vector.mapzen.com/osm/all/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo"]
+        }
+    },
+    "layers": [
+      {
+        "id": "osm-buildings-polygon",
+        "type": "fill",
+        "interactive": true,
+        "source": "osm",
+        "source-layer": "buildings",
+        "filter": ["in", "$type", "Polygon"],
+        "paint": {
+          "fill-color": "red",
+          "fill-outline-color": "#222222",
+          "fill-opacity": 0.5
+        },
+        "paint.selected": {
+          "fill-color": "grey",
+          "fill-outline-color": "red",
+          "fill-opacity": 0.3
+        }
+      },
+      {
+      "id": "osm-buildings-hover-polygon",
+      "type": "fill",
+      "interactive": false,
+      "source": "osm",
+      "source-layer": "buildings",
+      "filter": ["==", "id", ""],
+      "paint": {
+        "fill-color": "yellow",
+        "fill-outline-color": "black",
+        "fill-opacity": 0.7
+      },
+      "paint.selected": {
+        "fill-color": "yellow",
+        "fill-outline-color": "black",
+        "fill-opacity": 0.7
+      }
+    }
+    ]
+}

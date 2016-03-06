@@ -1,0 +1,8 @@
+node_modules
+db-server
+init-docker-dev.sh
+layerdata
+public
+.git
+uploads
+temp

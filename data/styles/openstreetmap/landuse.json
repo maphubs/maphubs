@@ -1,0 +1,179 @@
+{
+  "parks": {
+    "tag": "parks",
+    "name": "Parks",
+    "layer": "landuse",
+    "kinds": ["parks"],
+    "color": "#b6d585",
+    "outlineColor": "#222222"
+  },
+  "wood": {
+    "tag": "wood",
+    "name": "Wood Areas",
+    "layer": "landuse",
+    "kinds": ["wood"],
+    "color": "#76a729",
+    "outlineColor": "#222222"
+  },
+  "meadow": {
+    "tag": "meadow",
+    "name": "Meadows",
+    "layer": "landuse",
+    "kinds": ["meadow"],
+    "color": "#52be4c",
+    "outlineColor": "#222222"
+  },
+  "grass": {
+    "tag": "grass",
+    "name": "Grass Areas",
+    "layer": "landuse",
+    "kinds": ["grass"],
+    "color": "#b3db2b",
+    "outlineColor": "#222222"
+  },
+  "wetland": {
+    "tag": "wetland",
+    "name": "Wetland Areas",
+    "layer": "landuse",
+    "kinds": ["wetland"],
+    "color": "#5b967d",
+    "outlineColor": "#222222"
+  },
+  "protectedareas": {
+    "tag": "protectedareas",
+    "name": "Protected Areas",
+    "layer": "landuse",
+    "kinds": ["protected_area"],
+    "color": "#a5c376",
+    "outlineColor": "#4a7505"
+  },
+  "national_park": {
+    "tag": "national_park",
+    "name": "National Parks",
+    "layer": "landuse",
+    "kinds": ["national_park"],
+    "color": "#90cf2d",
+    "outlineColor": "#2d410d"
+  },
+  "nature_reserve": {
+    "tag": "nature_reserve",
+    "name": "Nature Reserves",
+    "layer": "landuse",
+    "kinds": ["nature_reserve"],
+    "color": "#7ca340",
+    "outlineColor": "#c2e320"
+  },
+  "industrial": {
+    "tag": "industrial",
+    "name": "Industrial Areas",
+    "layer": "landuse",
+    "kinds": ["industrial"],
+    "color": "#e4b4f2",
+    "outlineColor": "#222222"
+  },
+  "commercial": {
+    "tag": "commercial",
+    "name": "Commercial Areas",
+    "layer": "landuse",
+    "kinds": ["commercial"],
+    "color": "#f07b7b",
+    "outlineColor": "#222222"
+  },
+  "retail": {
+    "tag": "retail",
+    "name": "Retail Areas",
+    "layer": "landuse",
+    "kinds": ["retail"],
+    "color": "#f0a411",
+    "outlineColor": "#222222"
+  },
+  "residential": {
+    "tag": "residential",
+    "name": "Residential Areas",
+    "layer": "landuse",
+    "kinds": ["residential"],
+    "color": "#c595e3",
+    "outlineColor": "#222222"
+  },
+  "farms": {
+    "tag": "farms",
+    "name": "Farm Areas",
+    "layer": "landuse",
+    "kinds": [ "farm", "farmland", "farmyard"],
+    "color": "#d2c477",
+    "outlineColor": "#222222"
+  },
+  "pitch": {
+    "tag": "pitch",
+    "name": "Sport Fields/Pitches",
+    "layer": "landuse",
+    "kinds": [ "pitch"],
+    "color": "#00ff49",
+    "outlineColor": "#222222"
+  },
+  "quarry": {
+    "tag": "quarry",
+    "name": "Mining/Quarry Areas",
+    "layer": "landuse",
+    "kinds": [ "quarry"],
+    "color": "#86515f",
+    "outlineColor": "#222222"
+  },
+  "hospital": {
+    "tag": "hospital",
+    "name": "Hospital Areas",
+    "layer": "landuse",
+    "kinds": [ "hospital"],
+    "color": "#ff0043",
+    "outlineColor": "#222222"
+  },
+  "school": {
+    "tag": "school",
+    "name": "School Areas",
+    "layer": "landuse",
+    "kinds": [ "school"],
+    "color": "#f6f41e",
+    "outlineColor": "#222222"
+  },
+  "parking": {
+    "tag": "parking",
+    "name": "Parking Areas",
+    "layer": "parking",
+    "kinds": [ "parking"],
+    "color": "#9e9e94",
+    "outlineColor": "#222222"
+  },
+  "military": {
+    "tag": "military",
+    "name": "Military Areas",
+    "layer": "landuse",
+    "kinds": [ "military"],
+    "color": "#b52f57",
+    "outlineColor": "#222222"
+  },
+  "substation": {
+    "tag": "substation",
+    "name": "Power Substation Areas",
+    "layer": "landuse",
+    "kinds": [ "substation"],
+    "color": "#656554",
+    "outlineColor": "#222222"
+  },
+  "university": {
+    "tag": "university",
+    "name": "University/College Areas",
+    "layer": "landuse",
+    "kinds": [ "university", "college"],
+    "color": "#8650b6",
+    "outlineColor": "#222222"
+  },
+  "glacier": {
+    "tag": "glacier",
+    "name": "Glaciers",
+    "layer": "landuse",
+    "kinds": [ "glacier"],
+    "color": "#1ee3f6",
+    "outlineColor": "#222222"
+  }
+
+}
