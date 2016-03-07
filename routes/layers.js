@@ -452,22 +452,27 @@ app.post('/api/layer/presets/save', function(req, res) {
       if(allowed){
         return Layer.savePresets(data.layer_id, data.presets, user_id, data.create, trx)
         .then(function(){
-          return Layer.getLayerByID(data.layer_id, trx)
-            .then(function(layer){
-              return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-              .then(function(){
-                //Mark layer as updated (tells vector tile service to reload)
-                return trx('omh.layers').update(
-                  {
-                    updated_by_user_id: user_id,
-                    last_updated: knex.raw('now()')
-                  }
-                ).where({layer_id: data.layer_id})
+          if(data.create){
+              res.status(200).send({success: true});
+          }else{
+            //update layer views and timestamp
+            return Layer.getLayerByID(data.layer_id, trx)
+              .then(function(layer){
+                return layerViews.replaceViews(data.layer_id, layer.presets, trx)
                 .then(function(){
-                  res.status(200).send({success: true});
+                  //Mark layer as updated (tells vector tile service to reload)
+                  return trx('omh.layers').update(
+                    {
+                      updated_by_user_id: user_id,
+                      last_updated: knex.raw('now()')
+                    }
+                  ).where({layer_id: data.layer_id})
+                  .then(function(){
+                    res.status(200).send({success: true});
+                  });
                 });
               });
-            });
+            }
           });
       } else {
         notAllowedError(res, 'layer');
