@@ -116,19 +116,17 @@ if(process.env.NODE_ENV !== 'production'){
 
 
 //set sessions (Note: putting this below static files to avoid extra overhead)
-var store = new KnexSessionStore({
+var sessionStore = new KnexSessionStore({
   /*eslint-disable*/
   knex: knex,
   /*eslint-enable*/
-  tablename: 'openmaphubsessions' // optional. Defaults to 'sessions'
+  tablename: 'maphubssessions' // optional. Defaults to 'sessions'
 });
 
 app.use(session({
-  key: 'openmaphub',
-  secret: '8ada4676-0523-4dc0-9319-82bee5a43131',
-  /*eslint-disable*/
-  store: store,
-  /*eslint-enable*/
+  key: 'maphubs',
+  secret: local.SESSION_SECRET,
+  store: sessionStore,
   resave: false,
   proxy: true,
   saveUninitialized: true,

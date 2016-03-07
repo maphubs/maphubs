@@ -14,6 +14,7 @@ module.exports = {
   MAILGUN_API_KEY: process.env.OMH_MAILGUN_API_KEY,
   LOGGLY_API_KEY: process.env.OMH_LOGGLY_API_KEY,
   ENV_TAG:  process.env.OMH_ENV_TAG,
+  SESSION_SECRET:  process.env.OMH_SESSION_SECRET,
   database: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
