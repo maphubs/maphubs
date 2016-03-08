@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var log = require('../services/log.js');
 var _find = require('lodash.find');
 var PresetUtils = require('../services/preset-utils');
-var LayerViews = require('../services/layer-views');
+//var LayerViews = require('../services/layer-views');
 var DataLoadUtils = require('../services/data-load-utils');
 var Group = require('./group');
 var Map = require('./map');
@@ -327,12 +327,11 @@ module.exports = {
     },
 
     saveSettings(layer_id, name, description, group_id, published, user_id) {
+      //Note: not allowing the group_id to changed, at least until we build a more complete layer transfer solution
         return knex('omh.layers')
           .update({
             name, description,
-            owned_by_group_id: group_id,
               published,
-
               updated_by_user_id: user_id,
               last_updated: knex.raw('now()')
           }).where({layer_id});
