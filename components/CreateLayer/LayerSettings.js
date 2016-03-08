@@ -91,7 +91,11 @@ var LayerSettings = React.createClass({
   onSubmit(model) {
     var _this = this;
     if(!model.group && this.state.layer.owned_by_group_id){
+      //editing settings on an existing layer
       model.group = this.state.layer.owned_by_group_id;
+    }else if(!model.group && this.state.groups.length == 1){
+      //creating a new layer when user is only the member of a single group (not showing the group dropdown)
+      model.group = this.state.groups[0].group_id;
     }
     if(this.props.create){
       LayerActions.createLayer(model, function(err){
