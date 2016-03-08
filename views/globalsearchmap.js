@@ -3,9 +3,12 @@ var React = require('react');
 var Map = require('../components/Map/Map');
 var Legend = require('../components/Map/Legend');
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var request = require('superagent');
 var debug = require('../services/debug')('globalsearchmap');
+
+var OnboardingLinks = require('../components/Home/OnboardingLinks');
 
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
@@ -78,12 +81,26 @@ var GlobalMap = React.createClass({
   },
 
 	render() {
-    var cardsPanel = '';
+    var cardsPanel = '', mapPanel = '';
     if(this.state.searchResult){
       cardsPanel = (
       <div style={{margin: '10px'}}>
         <h5>{this.__('Search Results')}</h5>
       </div>
+    );
+
+    mapPanel = (
+      <div className="row no-margin" style={{height: 'calc(75% - 50px)', minHeight: '200px'}}>
+        <Map ref="map" style={{width: '100%', height: '100%'}} data={this.state.searchResult} >
+          <Legend style={{
+              position: 'absolute',
+              bottom: '0px',
+              right: '0px',
+              zIndex: '1',
+              width: '160px'
+            }}/>
+        </Map>
+       </div>
     );
 
     }else {
@@ -98,26 +115,25 @@ var GlobalMap = React.createClass({
       <div>
       <Header />
       <main style={{height: '100%'}}>
-        <div className="container" style={{marginTop: '20px', marginBottom: '20px'}}>
-          <SearchBox label={this.__('Search All Data')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+        <OnboardingLinks />
+         <div className="divider"></div>
+        <div className="container" style={{marginTop: '50px', marginBottom: '50px'}}>
+          <div className="row">
+            <h5 className="center-align" style={{color: '#212121'}}>{this.__('Search MapHubs')}</h5>
+            </div>
+          <div className="row">
+            <SearchBox label={this.__('Search All Data')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+          </div>
+
         </div>
-        <div className="row no-margin" style={{height: 'calc(75% - 50px)', minHeight: '200px'}}>
-          <Map ref="map" style={{width: '100%', height: '100%'}} data={this.state.searchResult} >
-            <Legend style={{
-                position: 'absolute',
-                bottom: '0px',
-                right: '0px',
-                zIndex: '1',
-                width: '160px'
-              }}/>
-          </Map>
-         </div>
-         <hr style={{marginTop:"10px", marginBottom:"10px"}}/>
+         {mapPanel}
+         <div className="divider"></div>
          <div className="row no-margin" style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>
            {cardsPanel}
           </div>
           <Progress id="searching" title={this.__('Searching')} subTitle="" dismissible={false} show={this.state.searching}/>
        </main>
+       <Footer />
 			</div>
 		);
 	}

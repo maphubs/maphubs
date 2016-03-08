@@ -68,6 +68,9 @@ var Header = React.createClass({
             {myMaps}
             {myStories}
             <li>
+              <a className="grey-text text-darken-4" href='/about'>{this.__('About')}</a>
+            </li>
+            <li>
               <LocaleChooser />
             </li>
             <li style={{paddingLeft: '10px'}}>
@@ -77,6 +80,9 @@ var Header = React.createClass({
           <ul className="side-nav" id="side-nav-menu">
             <li>
               <UserMenu id="user-menu-sidenav"/>
+            </li>
+            <li>
+              <LocaleChooser />
             </li>
             <li>
               <a className="grey-text text-darken-4" href='/groups'>{this.__('Groups')}</a>
@@ -92,6 +98,9 @@ var Header = React.createClass({
             </li>
             {myMaps}
             {myStories}
+            <li>
+              <a className="grey-text text-darken-4" href='/about'>{this.__('About')}</a>
+            </li>
 
           </ul>
         </div>
