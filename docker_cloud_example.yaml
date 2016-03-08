@@ -1,0 +1,129 @@
+backup-cron:
+  image: 'quay.io/maphubs/dockercloud-cron:docker-cloud'
+  cpu_shares: 128
+  environment:
+    - 'DOCKUP_CRON_SCHEDULE=0 23 * * *'
+  links:
+    - dockup
+  mem_limit: 64m
+  restart: always
+  roles:
+    - global
+  tags:
+    - prod
+data:
+  image: 'ubuntu:trusty'
+  command: 'true'
+  tags:
+    - prod
+  volumes:
+    - /var/lib/postgresql/data
+    - /etc/letsencrypt
+dockup:
+  image: 'tutum/dockup:latest'
+  environment:
+    - AWS_ACCESS_KEY_ID=ADD_VALUE_HERE
+    - AWS_DEFAULT_REGION=us-east-1
+    - AWS_SECRET_ACCESS_KEY=ADD_VALUE_HERE
+    - BACKUP_NAME=backup
+    - 'PATHS_TO_BACKUP=/var/lib/postgresql/data /etc/letsencrypt'
+    - RESTORE=false
+    - S3_BUCKET_NAME=maphubs-backups
+  tags:
+    - prod
+  volumes_from:
+    - data
+gateway:
+  image: 'quay.io/maphubs/gateway:latest'
+  dns:
+    - 216.69.185.5
+    - 208.109.255.5
+    - 8.8.8.8
+  environment:
+    - DOMAIN=beta.maphubs.com #change this to your domain
+    - EMAIL=myemail@maphubs.com #change this to your domain
+  links:
+    - maphubs
+    - tiles
+  ports:
+    - '80:80'
+    - '443:443'
+  tags:
+    - prod
+  volumes_from:
+    - data
+manet:
+  image: 'quay.io/maphubs/manet:latest'
+  ports:
+    - '8891:8891'
+  restart: always
+  tags:
+    - prod
+maphubs:
+  image: 'quay.io/maphubs/web:release'
+  environment:
+    - DB_DATABASE=maphubs
+    - DB_HOST=maphubs-db
+    - DB_PASS=ADD_VALUE_HERE
+    - DB_PORT=5432
+    - DB_USER=ADD_VALUE_HERE
+    - 'ID_AUTH_URL=https://beta.maphubs.com' #change this to your domain
+    - ID_KEY=ADD_VALUE_HERE
+    - ID_SECRET=ADD_VALUE_HERE
+    - OMH_ENV_TAG=production
+    - OMH_HOST=beta.maphubs.com #change this to your domain
+    - OMH_HTTPS=true
+    - OMH_INTERNAL_PORT=4000
+    - OMH_LOGGLY_API_KEY=ADD_VALUE_HERE
+    - OMH_MAILGUN_API_KEY=ADD_VALUE_HERE
+    - 'OMH_MANET_URL=http://manet:8891'
+    - OMH_MAPBOX_TOKEN=ADD_VALUE_HERE
+    - OMH_PORT=80
+    - OMH_SESSION_SECRET=ADD_VALUE_HERE
+    - 'OMH_TILESERVICE_URL=https://beta.maphubs.com' #change this to your domain
+  expose:
+    - '4000'
+  links:
+    - maphubs-db
+  restart: always
+  tags:
+    - prod
+  target_num_containers: 2
+maphubs-db:
+  image: 'quay.io/maphubs/db:release'
+  environment:
+    - DB_DATABASE=maphubs
+    - DB_PASS=ADD_VALUE_HERE
+    - DB_USER=ADD_VALUE_HERE
+    - 'ID_CALLBACK=http://maphubs.com/edit/land.html' #change this to your domain
+    - ID_KEY=ADD_VALUE_HERE
+    - ID_SECRET=ADD_VALUE_HERE
+    - 'ID_URL=http://maphubs.com/edit' #change this to your domain
+    - POSTGRES_PASSWORD=ADD_VALUE_HERE
+  expose:
+    - '5432'
+  restart: always
+  tags:
+    - prod
+  volumes_from:
+    - data
+tiles:
+  image: 'quay.io/maphubs/tiles:master'
+  environment:
+    - DB_DATABASE=maphubs
+    - DB_HOST=maphubs-db
+    - DB_PASS=ADD_VALUE_HERE
+    - DB_PORT=5432
+    - DB_USER=ADD_VALUE_HERE
+    - OMH_HOST=beta.maphubs.com #change this to your domain
+    - OMH_INTERNAL_PORT=4001
+    - OMH_PORT=4001
+    - USE_HTTPS=1
+  expose:
+    - '4001'
+  links:
+    - maphubs-db
+  restart: always
+  tags:
+    - prod
+  target_num_containers: 2
