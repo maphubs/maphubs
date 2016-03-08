@@ -199,23 +199,35 @@ module.exports = function(app) {
       var actionData = [];
       switch(action){
         case 'createLayer':
-        actionData = [
-          data.name,
-          data.description,
-          data.group_id,
-          data.published
-        ];
-        break;
+          if(!data.name || !data.description || !data.group_id || !data.published){
+            apiDataError(res);
+            return;
+          }
+          actionData = [
+            data.name,
+            data.description,
+            data.group_id,
+            data.published
+          ];
+          break;
         case 'saveSettings':
-        actionData = [
-          data.layer_id,
-          data.name,
-          data.description,
-          data.group_id,
-          data.published
-        ];
+          if(!data.layer_id){
+            apiDataError(res);
+            return;
+          }
+          actionData = [
+            data.layer_id,
+            data.name,
+            data.description,
+            data.group_id,
+            data.published
+          ];
         break;
         case 'saveDataSettings':
+          if(!data.layer_id){
+            apiDataError(res);
+            return;
+          }
           actionData = [
             data.layer_id,
             data.is_external,
@@ -224,13 +236,21 @@ module.exports = function(app) {
           ];
         break;
         case 'saveSource':
-        actionData = [
-          data.layer_id,
-          data.source,
-          data.license
-        ];
-        break;
+          if(!data.layer_id){
+            apiDataError(res);
+            return;
+          }
+          actionData = [
+            data.layer_id,
+            data.source,
+            data.license
+          ];
+          break;
         case 'saveStyle':
+          if(!data.layer_id || !data.style){
+            apiDataError(res);
+            return;
+          }
         actionData = [
         data.layer_id,
         data.style,
@@ -246,21 +266,38 @@ module.exports = function(app) {
         break;
         default:
         res.status(400).send({success:false, error: 'Bad Request: not a valid option'});
+        return;
       }
       actionData.push(user_id);
-
-      Layer[action](...actionData)
-      .then(function(result){
-        if(result){
-          if(action === 'createLayer'){
-            res.send({success:true, action, layer_id: result[0]});
+      if(action === 'createLayer'){
+        //confirm user is allowed to add a layer to this group
+        Group.allowedToModify(data.group_id, user_id)
+        .then(function(allowed){
+          if(allowed){
+            return Layer[action](...actionData)
+            .then(function(result){
+              if(result){
+                res.send({success:true, action, layer_id: result[0]});
+              }else {
+                res.send({success:false, error: "Failed to Create Layer"});
+              }
+            }).catch(apiError(res, 500));
           }else{
-            res.send({success:true, action});
+            notAllowedError(res, 'layer');
           }
-        }else {
-          res.send({success:false, error: "Failed to Update Layer"});
-        }
-      }).catch(apiError(res, 500));
+        }).catch(apiError(res, 500));
+      }else{
+        Layer[action](...actionData)
+        .then(function(result){
+          if(result){
+            res.send({success:true, action});
+          }else {
+            res.send({success:false, error: "Failed to Update Layer"});
+          }
+        }).catch(apiError(res, 500));
+      }
+
+
     }else{
       apiDataError(res);
     }
