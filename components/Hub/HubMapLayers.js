@@ -83,7 +83,7 @@ var HubMapLayers = React.createClass({
             return (
               <li key={layer.layer_id} className="collection-item"
                 style={{height: '70px', paddingRight: '10px', paddingLeft: '10px', backgroundColor}}>
-                  <b className="title truncate grey-text text-darken-4">{layer.name}</b>
+                  <b className="title truncate grey-text text-darken-4" style={{fontSize: '12px'}}>{layer.name}</b>
                 <div className="title col no-padding s6">
                   <GroupTag group={layer.owned_by_group_id} />
                   <p className="truncate no-margin grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
