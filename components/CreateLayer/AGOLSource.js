@@ -6,6 +6,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
 var TextInput = require('../forms/textInput');
+var Radio = require('../forms/radio');
 var classNames = require('classnames');
 var PresetActions = require('../../actions/presetActions');
 var LayerActions = require('../../actions/LayerActions');
@@ -40,7 +41,8 @@ var AGOLSource = React.createClass({
 
   getInitialState() {
     return {
-      canSubmit: false
+      canSubmit: false,
+      selectedOption: 'mapserverquery'
     };
   },
 
@@ -57,14 +59,36 @@ var AGOLSource = React.createClass({
 
   submit (model) {
     var _this = this;
-    LayerActions.saveDataSettings({
-      is_external: true,
-      external_layer_type: 'AGS Feature Service',
-      external_layer_config: {
-        type: 'ags',
-        url: model.featureServiceUrl
-      }
-    },function(err){
+    var dataSettings = null;
+    if(model.mapServiceUrl){
+      dataSettings = {
+        is_external: true,
+        external_layer_type: 'ArcGIS MapServer Query',
+        external_layer_config: {
+          type: 'ags-mapserver-query',
+          url: model.mapServiceUrl
+        }
+      };
+    }else if(model.featureServiceUrl){
+      dataSettings = {
+        is_external: true,
+        external_layer_type: 'ArcGIS FeatureServer Query',
+        external_layer_config: {
+          type: 'ags-featureserver-query',
+          url: model.featureServiceUrl
+        }
+      };
+    }else if(model.tileServiceUrl){
+      dataSettings = {
+        is_external: true,
+        external_layer_type: 'ArcGIS MapServer Tiles',
+        external_layer_config: {
+          type: 'ags-mapserver-tiles',
+          url: model.tileServiceUrl
+        }
+      };
+    }
+    LayerActions.saveDataSettings(dataSettings,function(err){
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -84,16 +108,88 @@ var AGOLSource = React.createClass({
     });
   },
 
+  optionChange(value){
+    this.setState({selectedOption: value});
+  },
+
   onPrev() {
     if(this.props.onPrev) this.props.onPrev();
   },
 
 	render() {
+    var agolOptions = [
+      {value: 'mapserverquery', label: this.__('Link to a MapServer Query Service')},
+      {value: 'featureserverquery', label: this.__("Link to a FeatureServer Query Service")},
+      {value: 'mapservertiles', label: this.__("Link to a MapServer Tile Service")}
+    ];
+
+    var msqOption=false, fsqOption=false, tilesOption=false;
+    switch(this.state.selectedOption){
+      case 'mapserverquery':
+        msqOption = true;
+        break;
+        case 'featureserverquery':
+          fsqOption = true;
+          break;
+      case 'mapservertiles':
+          tilesOption = true;
+          break;
+      default:
+      break;
+    }
 
     //hide if not active
     var className = classNames('row');
     if(!this.props.active) {
       className = classNames('row', 'hidden');
+    }
+
+    var msqForm = '';
+    if(msqOption){
+      msqForm = (
+        <div>
+          <p>{this.__('ArcGIS MapServer Query Source')}</p>
+          <div className="row">
+            <TextInput name="mapServiceUrl" label={this.__('Map Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
+                   maxLength: this.__('Must be 250 characters or less.')
+               }} length={250}
+               dataPosition="top" dataTooltip={this.__('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
+               required/>
+          </div>
+        </div>
+      );
+    }
+
+    var fsqForm = '';
+    if(fsqOption){
+      fsqForm = (
+        <div>
+          <p>{this.__('ArcGIS FeatureService Query Source')}</p>
+          <div className="row">
+            <TextInput name="featureServiceUrl" label={this.__('Feature Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
+                   maxLength: this.__('Must be 250 characters or less.')
+               }} length={250}
+               dataPosition="top" dataTooltip={this.__('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
+               required/>
+          </div>
+        </div>
+      );
+    }
+
+    var tilesForm = '';
+    if(tilesOption){
+      tilesForm = (
+        <div>
+          <p>{this.__('ArcGIS MapServer Tiles')}</p>
+          <div className="row">
+            <TextInput name="tileServiceUrl" label={this.__('MapServer Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
+                   maxLength: this.__('Must be 250 characters or less.')
+               }} length={250}
+               dataPosition="top" dataTooltip={this.__('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
+               required/>
+          </div>
+        </div>
+      );
     }
 
     var prevButton = '';
@@ -107,19 +203,21 @@ var AGOLSource = React.createClass({
 
 		return (
         <div className={className}>
-          <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-
-            <div>
-              <p>{this.__('ArcGIS Feature Service Source')}</p>
-              <div className="row">
-                <TextInput name="featureServiceUrl" label={this.__('Feature Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
-                       maxLength: this.__('Must be 250 characters or less.')
-                   }} length={250}
-                   dataPosition="top" dataTooltip={this.__('Feature Service URL')}
-                   required/>
-              </div>
+          <Formsy.Form>
+            <h5>2) {this.__('Choose an Option')}</h5>
+            <div  className="row">
+              <Radio name="type" label=""
+                  defaultValue={this.state.selectedOption}
+                  options={agolOptions} onChange={this.optionChange}
+                  className="col s10"
+                />
             </div>
-
+            <hr />
+          </Formsy.Form>
+          <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            {msqForm}
+            {fsqForm}
+            {tilesForm}
             {prevButton}
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>

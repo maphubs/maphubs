@@ -166,7 +166,9 @@ var LayerStyle = React.createClass({
     }
 
     var colorChooser = '';
-    if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'raster') {
+    if(this.state.layer.is_external
+      && (this.state.layer.external_layer_config.type == 'raster'
+      || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
       colorChooser = (
         <div>
           <h5>{this.__('Choose Raster Opacity')}</h5>

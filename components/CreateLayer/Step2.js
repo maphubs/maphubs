@@ -72,7 +72,7 @@ var Step2 = React.createClass({
       {value: 'mapbox', label: this.__('Link to a Mapbox Style or Tileset')},
       {value: 'raster', label: this.__('Link to Raster Tile Service')},
 
-      {value: 'ags', label: this.__('Link to an ArcGIS Online Map Service or Feature Service')}
+      {value: 'ags', label: this.__('Link to an ArcGIS Online or ArcGIS Server services')}
     ];
     // osm=false,github = false,
     var local = false, mapbox = false, raster = false, ags = false;

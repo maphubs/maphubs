@@ -286,5 +286,13 @@
 	"Our mission is to help you tell your story using maps and to foster communities (MapHubs) around important topics. MapHubs is a repository for the world's public and open source map data, and provides a simple tool to make shareable maps.": "Our mission is to help you tell your story using maps and to foster communities (MapHubs) around important topics. MapHubs is a repository for the world's public and open source map data, and provides a simple tool to make shareable maps.",
 	"Create a Group and Upload Your Data": "Create a Group and Upload Your Data",
 	"Terms": "Terms",
-	"Privacy": "Privacy"
+	"Privacy": "Privacy",
+	"Link to an ArcGIS Online or ArcGIS Server services": "Link to an ArcGIS Online or ArcGIS Server services",
+	"Link to a MapServer Query Service": "Link to a MapServer Query Service",
+	"Link to a FeatureServer Query Service": "Link to a FeatureServer Query Service",
+	"Link to a MapServer Tile Service": "Link to a MapServer Tile Service",
+	"ArcGIS MapServer Query Source": "ArcGIS MapServer Query Source",
+	"Map Service URL": "Map Service URL",
+	"Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0": "Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0",
+	"Choose Raster Opacity": "Choose Raster Opacity"
 }

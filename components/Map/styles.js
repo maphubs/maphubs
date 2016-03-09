@@ -192,19 +192,26 @@ module.exports = {
             "type": "vector",
              url
           };
-        }else if(source.type === 'ags'){
+        }else if(source.type === 'ags-mapserver-query'
+        || source.type === 'ags-featureserver-query'){
           styles.sources['omh-' + layer_id] = {
-            "type": "ags",
+            "type": source.type,
              url: source.url
           };
+        }else if(source.type === 'ags-mapserver-tiles'){
+          styles.sources['omh-' + layer_id] = {
+            "type": "arcgisraster",
+             url: source.url + '?f=json'
+          };
         }
+
       }
 
       return styles;
     },
 
 
-    rasterStyleWithOpacity(layer_id, sourceUrl, opacity){
+    rasterStyleWithOpacity(layer_id, sourceUrl, opacity, type="raster"){
 
       opacity = opacity / 100;
       var styles = {
@@ -212,7 +219,7 @@ module.exports = {
           layers: [
             {
             "id": "omh-raster-" + layer_id,
-            "type": "raster",
+            type,
             "source": "omh-" + layer_id,
             "minzoom": 0,
             "maxzoom": 18,
@@ -224,15 +231,17 @@ module.exports = {
       };
 
       styles.sources['omh-' + layer_id] = {
-        "type": "raster",
-          url: sourceUrl
+          type,
+          url: sourceUrl,
+          "tileSize": 256
+
       };
 
       return styles;
     },
 
-    defaultRasterStyle(layer_id, sourceUrl){
-      return this.rasterStyleWithOpacity(layer_id, sourceUrl, 100);
+    defaultRasterStyle(layer_id, sourceUrl, type="raster"){
+      return this.rasterStyleWithOpacity(layer_id, sourceUrl, 100, type);
 
     },
 

@@ -76,7 +76,7 @@ var LayerInfo = React.createClass({
     });
   },
 
-  processGeoJSON(geoJSON, presets){
+  processGeoJSON(geoJSON, presets=null){
     var _this = this;
     var originalRows = _map(geoJSON.features, 'properties');
 
@@ -104,21 +104,35 @@ var LayerInfo = React.createClass({
         filterable: true
       }
     );
+    if(presets){
+      Object.keys(presets.fields).forEach(function(fieldsKey){
+        var field = presets.fields[fieldsKey];
 
-    Object.keys(presets.fields).forEach(function(fieldsKey){
-      var field = presets.fields[fieldsKey];
-
-      columns.push(
-        {
-          key: field.key,
-          name: field.label,
-          width : 120,
-          resizable: true,
-          sortable : true,
-          filterable: true
-        }
-      );
-    });
+        columns.push(
+          {
+            key: field.key,
+            name: field.label,
+            width : 120,
+            resizable: true,
+            sortable : true,
+            filterable: true
+          }
+        );
+      });
+    }else{
+      Object.keys(firstRow).forEach(function(key){
+        columns.push(
+          {
+            key,
+            name: key,
+            width : 120,
+            resizable: true,
+            sortable : true,
+            filterable: true
+          }
+        );
+      });
+    }
 
     var rows = originalRows.slice(0);
 
@@ -133,8 +147,14 @@ var LayerInfo = React.createClass({
 
     if(this.props.layer.is_external){
       //retreive geoJSON data for layers
-      if(this.props.layer.external_layer_config.type === 'ags'){
+      if(this.props.layer.external_layer_config.type === 'ags-mapserver-query'){
         TerraformerGL.getArcGISGeoJSON(this.props.layer.external_layer_config.url)
+        .then(function(geoJSON){
+          _this.processGeoJSON(geoJSON);
+        });
+          _this.setState({dataMsg: _this.__('Data Loading')});
+      }else if(this.props.layer.external_layer_config.type === 'ags-featureserver-query'){
+        TerraformerGL.getArcGISFeatureServiceGeoJSON(this.props.layer.external_layer_config.url)
         .then(function(geoJSON){
           _this.processGeoJSON(geoJSON);
         });

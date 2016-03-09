@@ -55,6 +55,8 @@ module.exports = Reflux.createStore({
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json');
     }else if(layer.is_external && layer.external_layer_config.type == 'mapbox-style'){
         layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
+    }else if(layer.is_external && layer.external_layer_config.type == 'ags-mapserver-tiles'){
+        layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url + '?f=json', 'arcgisraster');
     }else{
       layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig());
     }
@@ -63,7 +65,9 @@ module.exports = Reflux.createStore({
 
   resetLegendHTML(){
     var layer = this.state.layer;
-    if(layer.is_external && layer.external_layer_config.type == 'raster'){
+    if(layer.is_external
+      && (layer.external_layer_config.type == 'raster'
+          || layer.external_layer_config.type == 'ags-mapserver-tiles')){
       layer.legend_html = mapStyles.rasterLegend(layer);
     }else if(layer.is_external && layer.external_layer_config.type == 'mapbox-style'){
       layer.legend_html = mapStyles.rasterLegend(layer);

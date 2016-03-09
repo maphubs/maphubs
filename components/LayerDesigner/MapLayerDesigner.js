@@ -67,6 +67,11 @@ var MapLayerDesigner = React.createClass({
   setRasterOpacity(opacity){
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
     var style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
+
+    if(this.state.layer.external_layer_config.type == 'ags-mapserver-tiles'){
+      style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
+    }
+
     var legend = mapStyles.rasterLegend(this.state.layer);
     this.props.onStyleChange(this.state.layer.layer_id, style, legend);
     this.setState({style, legend, rasterOpacity: opacity});

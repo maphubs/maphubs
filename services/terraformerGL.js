@@ -18,7 +18,7 @@ module.exports= {
         var extent = require('turf-extent')(geoJSON);
         debug(extent);
         geoJSON.bbox = extent;
-        return geoJSON
+        return geoJSON;
       });
   },
 
@@ -31,7 +31,24 @@ module.exports= {
     .use(jsonp)
     .type('json').accept('json')
     .then(function(res) {
-      return res.body
+      return res.body;
+    });
+  },
+
+  getArcGISFeatureServiceGeoJSON(url){
+    var queryStr = 'query?where=1%3D1&outSR=4326&f=geojson';
+    if(!url.endsWith('/')){
+      url = url + '/';
+    }
+    return request.get(url + queryStr)
+    .use(jsonp)
+    .type('json').accept('json')
+    .then(function(res) {
+      var geoJSON = res.body;
+      var extent = require('turf-extent')(geoJSON);
+      debug(extent);
+      geoJSON.bbox = extent;
+      return geoJSON;
     });
   },
 
@@ -40,7 +57,7 @@ module.exports= {
     var FeatureCollection = {
       type: "FeatureCollection",
       features: []
-    }
+    };
 
     for (var i = 0; i < data.features.length; i++) {
       var feature = arcgis.parse(data.features[i]);
@@ -52,4 +69,4 @@ module.exports= {
 
 
 
-}
+};

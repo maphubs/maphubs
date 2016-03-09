@@ -274,7 +274,7 @@ var Map = React.createClass({
         );
 
 
-      } else if(type === 'ags'){
+      } else if(type === 'ags-mapserver-query'){
         requests.push(TerraformerGL.getArcGISGeoJSON(url)
         .then(function(geoJSON) {
 
@@ -288,7 +288,21 @@ var Map = React.createClass({
          debug(error);
         })
       );
-    } else {
+    } else if(type === 'ags-featureserver-query'){
+      requests.push(TerraformerGL.getArcGISFeatureServiceGeoJSON(url)
+      .then(function(geoJSON) {
+
+        if(geoJSON.bbox && geoJSON.bbox.length > 0 && !_this.props.fitBounds){
+          _this.zoomToData(geoJSON);
+        }
+
+        var geoJSONSource = new mapboxgl.GeoJSONSource({data: geoJSON});
+        map.addSource(key, geoJSONSource);
+      }, function(error) {
+       debug(error);
+      })
+    );
+  } else {
       //just add the source as-is
         map.addSource(key, glStyle.sources[key]);
     }

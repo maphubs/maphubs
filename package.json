@@ -90,7 +90,7 @@
     "lodash.zipobject": "4.1.2",
     "mailcomposer": "3.4.0",
     "mailgun-js": "0.7.7",
-    "mapbox-gl": "0.14.1",
+    "mapbox-gl": "maphubs/mapbox-gl-js#92b5bc1",
     "mapbox-gl-styles": "1.2.7",
     "materialize-css": "openmaphub/materialize",
     "medium-editor": "openmaphub/medium-editor",
