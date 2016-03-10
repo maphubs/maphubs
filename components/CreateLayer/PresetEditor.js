@@ -56,7 +56,7 @@ var PresetEditor = React.createClass({
 	render() {
     var _this = this;
     var presets = [];
-    if(this.state.presets && this.state.presets.presets){
+    if(this.state.presets && this.state.presets.presets && Array.isArray(this.state.presets.presets)){
       presets = this.state.presets.presets;
     }
 		return (

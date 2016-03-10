@@ -44,12 +44,12 @@ var PresetForm = React.createClass({
     return {
       preset: {
         tag: this.props.tag,
-        prevTag: this.props.tag,
         label: this.props.label,
         type: this.props.type,
         options: this.props.options,
         isRequired: this.props.isRequired
       },
+      prevTag: this.props.tag,
       valid
     };
   },
