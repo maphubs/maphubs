@@ -294,5 +294,12 @@
 	"ArcGIS MapServer Query Source": "ArcGIS MapServer Query Source",
 	"Map Service URL": "Map Service URL",
 	"Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0": "Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0",
-	"Choose Raster Opacity": "Choose Raster Opacity"
+	"Choose Raster Opacity": "Choose Raster Opacity",
+	"Description:": "Description:",
+	"Last Update:": "Last Update:",
+	"Data Source:": "Data Source:",
+	"License:": "License:",
+	"Stats:": "Stats:",
+	"Views": "Views",
+	"Maps": "Maps"
 }

@@ -435,7 +435,6 @@ var LayerInfo = React.createClass({
           <div className="col s12 m6 l6 no-padding" style={{height: '100%'}}>
             <div style={{margin: '10px'}}>
               <h5>{this.props.layer.name}</h5>
-
             </div>
 
 
@@ -448,19 +447,40 @@ var LayerInfo = React.createClass({
 
 
               </ul>
-              <div id="info" className="col s12" style={{marginLeft:'10px', marginRight: '10px', display: tabContentDisplay}}>
-                <p style={{fontSize: '16px'}}><b>Description:</b> {this.props.layer.description}</p>
-                <p style={{fontSize: '16px'}}><b>Last Update: </b>
+              <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
+                <div className="row" style={{height: 'calc(100% - 47px)', marginLeft:'10px', marginRight: '10px'}}>
+                  <div className="right">
+                    <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
+                  </div>
+                <p style={{fontSize: '16px'}}><b>{this.__('Last Update:')} </b>
                   <IntlProvider locale={this.state.locale}>
                     <FormattedRelative value={updatedTime}/>
                   </IntlProvider>
                   </p>
-                <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
-                <p style={{fontSize: '16px'}}><b>Data Source:</b> {this.props.layer.source}</p>
-                <p style={{fontSize: '16px'}}><b>License:</b> {this.props.layer.license}</p>
-                <p style={{fontSize: '16px'}}><b>Stats:</b></p>
-                <p>Layer viewed {this.props.layer.views} times</p>
-                <p>Layer used in {this.props.stats.maps} maps, {this.props.stats.stories} stories, and {this.props.stats.hubs} hubs</p>
+                <p style={{fontSize: '16px'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
+                <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {this.props.layer.license}</p>
+                <p style={{fontSize: '16px'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
+
+                </div>
+
+                <div className="row no-margin" style={{position: 'absolute', bottom: 0, width: '100%'}}>
+                  <div className="col s6 m3 l3 center-align">
+                    <b className="center-align">{this.__('Views')}</b>
+                    <p className="center-align">{this.props.layer.views}</p>
+                  </div>
+                  <div className="col s6 m3 l3 center-align">
+                    <b className="center-align">{this.__('Maps')}</b>
+                    <p className="center-align">{this.props.stats.maps}</p>
+                  </div>
+                  <div className="col s6 m3 l3 center-align">
+                    <b className="center-align">{this.__('Stories')}</b>
+                    <p className="center-align">{this.props.stats.stories}</p>
+                  </div>
+                  <div className="col s6 m3 l3 center-align">
+                    <b className="center-align">{this.__('Hubs')}</b>
+                    <p className="center-align">{this.props.stats.hubs}</p>
+                  </div>
+                </div>
               </div>
               <div id="discuss" className="col s12" style={{display: tabContentDisplay}}>
                 <ReactDisqusThread
