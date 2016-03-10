@@ -18,14 +18,14 @@ module.exports = {
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_config',
-      'owned_by_group_id', 'last_updated', 'views',
+      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html', 'extent_bbox', 'preview_position')
       .table('omh.layers').where('published', true).orderBy('name');
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_config', 'owned_by_group_id',
-      'last_updated', 'views')
+      knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
       .table('omh.layers').where('published', true).orderBy('name');
     }
 
@@ -35,7 +35,7 @@ module.exports = {
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license',
     'is_external', 'external_layer_config',
-     'owned_by_group_id', 'last_updated', 'views')
+     'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .where('published', true)
     .orderBy('last_updated', 'desc')
@@ -46,7 +46,7 @@ module.exports = {
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license',
     'is_external', 'external_layer_config',
-     'owned_by_group_id', 'last_updated', 'views')
+     'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .where({published: true, featured: true})
     .orderBy('name')
@@ -63,14 +63,14 @@ module.exports = {
     return knex('omh.layers')
     .select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license', 'style', 'legend_html',
-    'is_external', 'external_layer_config', 'owned_by_group_id', 'last_updated', 'views')
+    'is_external', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .whereRaw("lower(name) like '%" + input + "%'").orderBy('name');
   },
 
   getGroupLayers(group_id, includePrivate = false) {
     var query = knex.select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license',
-    'is_external', 'external_layer_config', 'owned_by_group_id', 'last_updated', 'views')
+    'is_external', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers').orderBy('name');
 
     if (includePrivate) {
@@ -89,7 +89,13 @@ module.exports = {
     debug('getting layer: ' + layer_id);
     let db = knex;
     if(trx){db = trx;}
-    return db.select().table('omh.layers').where('layer_id', layer_id)
+    return db.select(
+      'layer_id', 'name', 'description', 'data_type',
+      'status', 'published', 'source', 'license', 'presets',
+      'is_external', 'external_layer_config',
+      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
+      'style', 'legend_html', 'extent_bbox', 'preview_position'
+    ).table('omh.layers').where('layer_id', layer_id)
       .then(function(result) {
         if (result && result.length == 1) {
           return result[0];
@@ -116,7 +122,7 @@ module.exports = {
     'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
     'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license',
     'omh.layers.is_external', 'omh.layers.external_layer_config',
-    'omh.layers.owned_by_group_id', 'omh.layers.last_updated', 'omh.layers.views',
+    'omh.layers.owned_by_group_id', knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'), 'omh.layers.views',
     'omh.layers.style', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
      'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.legend_html as map_legend_html')
       .from('omh.hub_layers')

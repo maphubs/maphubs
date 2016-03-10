@@ -249,5 +249,6 @@
 	"Combo Box (Dropdown)": "Combo Box (Dropdown)",
 	"Check Box": "Check Box",
 	"Options(seperate with commas)": "Options(seperate with commas)",
-	"Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green": "Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green"
+	"Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green": "Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green",
+	"This is an external data layer. For exports please see the data source at:": "This is an external data layer. For exports please see the data source at:"
 }

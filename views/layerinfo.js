@@ -17,6 +17,17 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var moment = require('moment-timezone');
+
+import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import es from 'react-intl/locale-data/es';
+import fr from 'react-intl/locale-data/fr';
+
+addLocaleData(en);
+addLocaleData(es);
+addLocaleData(fr);
+
 //var debug = require('../services/debug')('layerinfo');
 
 var request = require('superagent');
@@ -412,7 +423,11 @@ var LayerInfo = React.createClass({
       );
     }
 
+    var guessedTz = moment.tz.guess();
+    var updatedTime = moment.tz(this.props.layer.last_updated, guessedTz).format();
+
 		return (
+
       <div>
         <Header />
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
@@ -435,7 +450,11 @@ var LayerInfo = React.createClass({
               </ul>
               <div id="info" className="col s12" style={{marginLeft:'10px', marginRight: '10px', display: tabContentDisplay}}>
                 <p style={{fontSize: '16px'}}><b>Description:</b> {this.props.layer.description}</p>
-                <p style={{fontSize: '16px'}}><b>Last Update:</b> {this.props.layer.last_updated.toString()}</p>
+                <p style={{fontSize: '16px'}}><b>Last Update: </b>
+                  <IntlProvider locale={this.state.locale}>
+                    <FormattedRelative value={updatedTime}/>
+                  </IntlProvider>
+                  </p>
                 <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
                 <p style={{fontSize: '16px'}}><b>Data Source:</b> {this.props.layer.source}</p>
                 <p style={{fontSize: '16px'}}><b>License:</b> {this.props.layer.license}</p>
@@ -470,6 +489,7 @@ var LayerInfo = React.createClass({
           {editButton}
         </main>
 			</div>
+
 		);
 	}
 });
