@@ -213,9 +213,8 @@ var LayerInfo = React.createClass({
     var position = this.refs.map.getPosition();
     var zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
-    //http://localhost:4000/edit/?way=12440#background=Bing&layer_id=1&map=11.00/23.5005/1.0733
-    //http://localhost:4000/edit/?way=12240#background=Bing&id=w12440&layer_id=1&map=11.00/23.5005/1.0733
-    return '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
+    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
   },
 
   openEditor(){
