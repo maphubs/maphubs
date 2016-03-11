@@ -2,7 +2,8 @@
 host = https://www.transifex.com
 
 [maphubs.maphubs]
-file_filter = locales/.json
 source_file = locales/en.json
 source_lang = en
 type = KEYVALUEJSON
+trans.es = locales/es.json
+trans.fr = locales/fr.json
