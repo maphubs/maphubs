@@ -155,7 +155,7 @@ var Layers = React.createClass({
 
 		return (
       <div>
-        <Header />
+        <Header activePage="layers" />
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className="row" style={{marginBottom: '0px'}}>

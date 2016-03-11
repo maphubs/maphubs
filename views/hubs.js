@@ -57,7 +57,7 @@ var Hubs = React.createClass({
 
 		return (
       <div>
-          <Header />
+          <Header activePage="hubs" />
           <main>
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
               <div className="row">

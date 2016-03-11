@@ -132,7 +132,7 @@ var Groups = React.createClass({
 
 		return (
       <div>
-          <Header />
+          <Header activePage="groups" />
           <main>
             <div style={{marginTop: '20px', marginBottom: '10px'}}>
               <div className="row" style={{marginBottom: '0px'}}>

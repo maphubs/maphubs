@@ -23,7 +23,7 @@ var About = React.createClass({
   render() {
       return (
         <div>
-          <Header />
+          <Header activePage="about"/>
           <main className="container">
             <div className="row">
               <h4>{this.__('About')}</h4>

@@ -48,7 +48,7 @@ var UserStories = React.createClass({
 
 		return (
       <div>
-        <Header active="stories"/>
+        <Header activePage="mystories"/>
         <div className="container">
 
             {this.props.stories.map(function (story) {

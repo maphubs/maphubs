@@ -21,6 +21,10 @@ var Header = React.createClass({
     return Locales.getLocaleString(this.state.locale, text);
   },
 
+  propTypes:  {
+    activePage: React.PropTypes.string
+  },
+
   componentDidMount() {
     $(".button-collapse").sideNav();
   },
@@ -37,21 +41,21 @@ var Header = React.createClass({
         storiesClasses = defaultLinkClasses,
         myStoriesClasses = defaultLinkClasses,
         myMapsClasses = defaultLinkClasses;
-    if(typeof window !== undefined){
-      var pathname = window.location.pathname;
-      if(pathname == '/layers'){
+    if(this.props.activePage){
+      var activePage = this.props.activePage;
+      if(activePage == 'layers'){
         layersClasses = activeLinkClasses;
-      }else if(pathname == '/groups'){
+      }else if(activePage == 'groups'){
         groupsClasses = activeLinkClasses;
-      }else if(pathname == '/hubs'){
+      }else if(activePage == 'hubs'){
         hubsClasses = activeLinkClasses;
-      }else if(pathname == '/about'){
+      }else if(activePage == 'about'){
         aboutClasses = activeLinkClasses;
-      }else if(pathname == '/stories'){
+      }else if(activePage == 'stories'){
         storiesClasses = activeLinkClasses;
-      }else if(pathname.startsWith('/user') && pathname.endsWith('stories')){
+      }else if(activePage == 'mystories'){
         myStoriesClasses = activeLinkClasses;
-      }else if(pathname.startsWith('/user') && pathname.endsWith('maps')){
+      }else if(activePage == 'mymaps'){
         myMapsClasses = activeLinkClasses;
       }
     }

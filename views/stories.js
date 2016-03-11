@@ -24,7 +24,7 @@ var Stories = React.createClass({
 	render() {
 		return (
       <div>
-        <Header active="stories"/>
+        <Header activePage="stories"/>
         <div className="container">
 
             {this.props.stories.map(function (story) {

@@ -86,7 +86,7 @@ var UserMaps = React.createClass({
 
 		return (
       <div>
-        <Header />
+        <Header activePage="mymaps"/>
         <main>
           <div className="container" style={{marginTop: '20px', marginBottom: '20px'}}>
             <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/user/maps/search/suggestions" onSearch={this.handleSearch}/>
