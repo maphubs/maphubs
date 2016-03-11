@@ -12,7 +12,7 @@ VALUES ('MoabiDRC',
 	);
 
 --NOTE: we will change these passwords manually after initial setup
-INSERT INTO users (display_name, email, email_valid, pass_crypt, creation_time) VALUES ('maphubs', 'kris@maphubs.org', TRUE, '$2a$10$P1NMO8jMPQ0gVdKr0JuE0u8WZi4UcxF0qVuDyrh60c6I5cUZqik0a', now());
+INSERT INTO users (display_name, email, email_valid, pass_crypt, creation_time) VALUES ('maphubs', 'kris@maphubs.com', TRUE, '$2a$10$P1NMO8jMPQ0gVdKr0JuE0u8WZi4UcxF0qVuDyrh60c6I5cUZqik0a', now());
 INSERT INTO users (display_name, email, email_valid, pass_crypt, creation_time) VALUES ('moabi', 'kris@moabi.org', TRUE, '$2a$10$P1NMO8jMPQ0gVdKr0JuE0u8WZi4UcxF0qVuDyrh60c6I5cUZqik0a', now());
 
 INSERT INTO omh.group_memberships (group_id, user_id, role)
