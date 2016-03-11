@@ -29,7 +29,7 @@ module.exports = {
         //no subdomain
         return parts[0] + '.' + parts[1];
       }else if(parts.length == 3) {
-        if(parts[0] == 'dev' || parts[0] == 'demo'){
+        if(parts[0] == 'dev' || parts[0] == 'demo' || parts[0] == 'beta'){
           //assume these are special and not hubs
           return parts[0] + '.' + parts[1] + '.' + parts[2];
         }else{
@@ -46,4 +46,4 @@ module.exports = {
 
   }
 
-}
+};
