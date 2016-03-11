@@ -97,7 +97,7 @@ module.exports = Reflux.createStore({
    })
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
-       _this.setState({saving: false});
+       _this.setState({saving: false, unsavedChanges: false});
        cb(null);
      });
    });
