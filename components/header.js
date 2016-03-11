@@ -26,17 +26,47 @@ var Header = React.createClass({
   },
 
   render() {
+
+    var defaultLinkClasses = "grey-text text-darken-4";
+    var activeLinkClasses = "omh-accent-text";
+
+    var layersClasses = defaultLinkClasses,
+        groupsClasses = defaultLinkClasses,
+        hubsClasses = defaultLinkClasses,
+        aboutClasses = defaultLinkClasses,
+        storiesClasses = defaultLinkClasses,
+        myStoriesClasses = defaultLinkClasses,
+        myMapsClasses = defaultLinkClasses;
+    if(typeof window !== undefined){
+      var pathname = window.location.pathname;
+      if(pathname == '/layers'){
+        layersClasses = activeLinkClasses;
+      }else if(pathname == '/groups'){
+        groupsClasses = activeLinkClasses;
+      }else if(pathname == '/hubs'){
+        hubsClasses = activeLinkClasses;
+      }else if(pathname == '/about'){
+        aboutClasses = activeLinkClasses;
+      }else if(pathname == '/stories'){
+        storiesClasses = activeLinkClasses;
+      }else if(pathname.startsWith('/user') && pathname.endsWith('stories')){
+        myStoriesClasses = activeLinkClasses;
+      }else if(pathname.startsWith('/user') && pathname.endsWith('maps')){
+        myMapsClasses = activeLinkClasses;
+      }
+    }
+
     var myMaps = '';
     var myStories = '';
     if(this.state.loggedIn){
       myMaps = (
         <li>
-          <a className="grey-text text-darken-4" href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a>
+          <a className={myMapsClasses} href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a>
         </li>
       );
       myStories = (
         <li>
-          <a className="grey-text text-darken-4" href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a>
+          <a className={myStoriesClasses} href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a>
         </li>
       );
     }
@@ -56,21 +86,21 @@ var Header = React.createClass({
           <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
             <li>
-              <a className="grey-text text-darken-4" href='/groups'>{this.__('Groups')}</a>
+              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/layers'>{this.__('Layers')}</a>
+              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/stories'>{this.__('Stories')}</a>
+              <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/hubs'>{this.__('Hubs')}</a>
+              <a className={hubsClasses} href='/hubs'>{this.__('Hubs')}</a>
             </li>
             {myMaps}
             {myStories}
             <li>
-              <a className="grey-text text-darken-4" href='/about'>{this.__('About')}</a>
+              <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
             <li>
               <LocaleChooser />
@@ -87,21 +117,21 @@ var Header = React.createClass({
               <LocaleChooser />
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/groups'>{this.__('Groups')}</a>
+              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/layers'>{this.__('Layers')}</a>
+              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/stories'>{this.__('Stories')}</a>
+              <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
             </li>
             <li>
-              <a className="grey-text text-darken-4" href='/hubs'>{this.__('Hubs')}</a>
+              <a className={hubsClasses} href='/hubs'>{this.__('Hubs')}</a>
             </li>
             {myMaps}
             {myStories}
             <li>
-              <a className="grey-text text-darken-4" href='/about'>{this.__('About')}</a>
+              <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
 
           </ul>
