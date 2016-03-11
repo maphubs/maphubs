@@ -1,5 +1,6 @@
 /* @flow weak */
 var express = require('express');
+var local = require('../local');
 var Layer = require('../models/layer');
 var Story = require('../models/story');
 var Hub = require('../models/hub');
@@ -12,8 +13,6 @@ var Email = require('../services/email-util');
 var login = require('connect-ensure-login');
 //var log = require('../services/log.js');
 var debug = require('../services/debug')('routes/hubs');
-//var config = require('../clientconfig');
-var passport = require('passport');
 var Promise = require('bluebird');
 var MapUtils = require('../services/map-utils');
 
@@ -373,34 +372,6 @@ module.exports = function(app) {
           }).catch(nextError(next));
       });
     }
-  });
-
-  //Need to duplicate login/login functions under the hub to avoid confusion with different subdomains
-  //The cookie/session is still shared across the entire site, this just handles when you initiate login from the subdomain
-  app.get('/hub/:hub/login', function(req, res) {
-    res.render('login', {
-      title: 'Login - MapHubs',
-      props: {
-        name: 'MapHubs'
-      }
-    });
-  });
-  app.post('/hub/:hub/login', passport.authenticate('local'), function(req, res) {
-
-    //save the user to the session
-    req.session.user = {
-      id: req.user.id,
-      display_name: req.user.display_name
-    };
-
-    //if there is a return page redirect otherwise go to home
-    var url = '/';
-    if (req.session && req.session.returnTo) {
-      url = req.session.returnTo;
-      delete req.session.returnTo;
-    }
-    return res.redirect(url);
-
   });
 
   app.get('/hub/:hub/logout', function(req, res) {
@@ -873,6 +844,15 @@ module.exports = function(app) {
 
 
  //Redirects
+ app.get('/hub/:id/login', function(req, res) {
+   var hub_id = req.params.id;
+   if(req.session){
+     var hubBaseUrl = urlUtil.getHubUrl(hub_id, local.host, local.port);
+     req.session.returnTo = hubBaseUrl;
+   }
+   res.redirect(baseUrl + '/login');
+ });
+
   app.get('/hub/:hubid/group/:id/image', function(req, res) {
     var group_id = req.params.id;
     res.redirect(baseUrl + '/group/' + group_id + '/image');
