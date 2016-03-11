@@ -48,7 +48,9 @@ var Header = React.createClass({
         <div className="nav-wrapper white z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
             <img className="valign" width="148" height="40" style={{margin: '5px'}} src="/assets/maphubs-logo.png" alt={this.__('MapHubs Logo')}/>
+
           </a>
+          <small style={{color: '#222222', position: 'absolute', top: '12px', left: '150px', fontSize: '12px'}}>beta</small>
 
 
           <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
