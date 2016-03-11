@@ -52,7 +52,9 @@ render(){
         </div>
       </div>
       <div className="row">
-      <p className="center center-align">{this.__('Our mission is to help you tell your story using maps and to foster communities (MapHubs) around important topics. MapHubs is a repository for the world\'s public and open source map data, and provides a simple tool to make shareable maps.')}</p>
+      <p className="center center-align">
+        {this.__('MapHubs is a home for the world\'s open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities around topics that matter.')}
+      </p>
       </div>
 
 
