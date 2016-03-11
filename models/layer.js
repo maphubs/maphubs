@@ -17,14 +17,14 @@ module.exports = {
     if(includeMapInfo){
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
-      'is_external', 'external_layer_config',
+      'is_external', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html', 'extent_bbox', 'preview_position')
       .table('omh.layers').where('published', true).orderBy('name');
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
-      'is_external', 'external_layer_config', 'owned_by_group_id',
+      'is_external', 'external_layer_config', 'disable_export', 'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
       .table('omh.layers').where('published', true).orderBy('name');
     }
@@ -92,7 +92,7 @@ module.exports = {
     return db.select(
       'layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
-      'is_external', 'external_layer_config',
+      'is_external', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html', 'extent_bbox', 'preview_position'
     ).table('omh.layers').where('layer_id', layer_id)

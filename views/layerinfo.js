@@ -360,23 +360,30 @@ var LayerInfo = React.createClass({
       var osmURL = '/xml/map/'  + this.props.layer.layer_id + '?bbox=' + bounds;
 
       //http://dev.localhost:4000/xml/map/44?bbox=
-
-      exportTabContent = (
-        <div>
-          <ul className="collection with-header">
-           <li className="collection-header"><h5>{this.__('Export Data')}</h5></li>
-           <li className="collection-item">{this.__('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
-           <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
-           <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
-           <li className="collection-item">{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
-          </ul>
-         <ul className="collection with-header">
-          <li className="collection-header"><h5>{this.__('Services')}</h5></li>
-          <li className="collection-item">{this.__('Feature Service (ArcGIS compatible):')} Coming Soon</li>
-          <li className="collection-item">{this.__('API (OpenStreetMap compatible):')} <a href={osmURL}>{osmURL}/</a></li>
-         </ul>
-        </div>
-      );
+      if(!this.props.layer.disable_export){
+        exportTabContent = (
+          <div>
+            <ul className="collection with-header">
+             <li className="collection-header"><h5>{this.__('Export Data')}</h5></li>
+             <li className="collection-item">{this.__('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
+             <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
+             <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
+             <li className="collection-item">{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
+            </ul>
+           <ul className="collection with-header">
+            <li className="collection-header"><h5>{this.__('Services')}</h5></li>
+            <li className="collection-item">{this.__('Feature Service (ArcGIS compatible):')} Coming Soon</li>
+            <li className="collection-item">{this.__('API (OpenStreetMap compatible):')} <a href={osmURL}>{osmURL}/</a></li>
+           </ul>
+          </div>
+        );
+      }else{
+        exportTabContent = (
+          <div>
+            <p>{this.__('Export is not available for this layer.')}</p>
+          </div>
+        );
+      }
     }
 
     var tabContentDisplay = 'none';
