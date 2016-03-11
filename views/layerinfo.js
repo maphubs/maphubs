@@ -393,6 +393,16 @@ var LayerInfo = React.createClass({
     var editButton = '';
 
     if(this.props.canEdit){
+      var idEditButton = '';
+      if(!this.props.layer.is_external){
+        idEditButton = (
+          <li>
+            <a onClick={this.openEditor} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map')}>
+              <i className="material-icons">mode_edit</i>
+            </a>
+          </li>
+        );
+      }
       editButton = (
         <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large red">
@@ -405,11 +415,7 @@ var LayerInfo = React.createClass({
                 <i className="material-icons">map</i>
               </a>
             </li>
-            <li>
-              <a onClick={this.openEditor} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map')}>
-                <i className="material-icons">mode_edit</i>
-              </a>
-            </li>
+            {idEditButton}
             <li>
               <a className="btn-floating layer-info-tooltip yellow" href={'/layer/admin/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name)}data-delay="50" data-position="left" data-tooltip={this.__('Manage Layer')}>
                 <i className="material-icons">settings</i>
