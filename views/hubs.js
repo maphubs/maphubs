@@ -22,7 +22,9 @@ var Hubs = React.createClass({
   },
 
   propTypes: {
-    hubs: React.PropTypes.array,
+    featuredHubs: React.PropTypes.array,
+    popularHubs: React.PropTypes.array,
+    recentHubs: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -38,11 +40,39 @@ var Hubs = React.createClass({
 
 	render() {
 
-    var cards = [];
+    var featuredCards = [];
+    var recentCards = [];
+    var popularCards = [];
 
-    this.props.hubs.map(function(hub){
+    this.props.featuredHubs.map(function(hub){
       var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-      cards.push({
+      featuredCards.push({
+        id: hub.hub_id,
+        title: hub.name,
+        description: hub.description,
+        image_url: '/hub/' + hub.hub_id + '/images/logo',
+        background_image_url: '/hub/' + hub.hub_id + '/images/banner',
+        link: hubUrl,
+        type: 'hub'
+      });
+    });
+
+    this.props.recentHubs.map(function(hub){
+      var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      recentCards.push({
+        id: hub.hub_id,
+        title: hub.name,
+        description: hub.description,
+        image_url: '/hub/' + hub.hub_id + '/images/logo',
+        background_image_url: '/hub/' + hub.hub_id + '/images/banner',
+        link: hubUrl,
+        type: 'hub'
+      });
+    });
+
+    this.props.popularHubs.map(function(hub){
+      var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      popularCards.push({
         id: hub.hub_id,
         title: hub.name,
         description: hub.description,
@@ -73,14 +103,21 @@ var Hubs = React.createClass({
               <div className="col s12">
                 <h5>{this.__('Featured')}</h5>
                 <div className="divider"></div>
-                <CardCarousel cards={cards} infinite={false}/>
+                <CardCarousel cards={featuredCards} infinite={false}/>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col s12">
+                <h5>{this.__('Popular')}</h5>
+                <div className="divider"></div>
+                <CardCarousel cards={popularCards} infinite={false}/>
               </div>
             </div>
             <div className="row">
               <div className="col s12">
                 <h5>{this.__('Recent')}</h5>
                 <div className="divider"></div>
-                <CardCarousel cards={cards} infinite={false}/>
+                <CardCarousel cards={recentCards} infinite={false}/>
               </div>
             </div>
             <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Hub')}>

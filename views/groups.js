@@ -25,7 +25,9 @@ var Groups = React.createClass({
   },
 
   propTypes: {
-    groups: React.PropTypes.array,
+    featuredGroups: React.PropTypes.array,
+    recentGroups: React.PropTypes.array,
+    popularGroups: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -75,10 +77,36 @@ var Groups = React.createClass({
 
 	render() {
 
-    var cards = [];
+    var featuredCards = [];
+    var popularCards = [];
+    var recentCards = [];
 
-    this.props.groups.map(function(group){
-      cards.push({
+    this.props.featuredGroups.map(function(group){
+      featuredCards.push({
+        id: group.group_id,
+        title: group.name,
+        description: group.description,
+        image_url: '/group/' + group.group_id + '/image',
+        link: '/group/' + group.group_id,
+        group: group.group_id,
+        type: 'group'
+      });
+    });
+
+    this.props.popularGroups.map(function(group){
+      popularCards.push({
+        id: group.group_id,
+        title: group.name,
+        description: group.description,
+        image_url: '/group/' + group.group_id + '/image',
+        link: '/group/' + group.group_id,
+        group: group.group_id,
+        type: 'group'
+      });
+    });
+
+    this.props.recentGroups.map(function(group){
+      recentCards.push({
         id: group.group_id,
         title: group.name,
         description: group.description,
@@ -152,14 +180,21 @@ var Groups = React.createClass({
                 <div className="col s12">
                   <h5>{this.__('Featured')}</h5>
                   <div className="divider"></div>
-                  <CardCarousel cards={cards} infinite={false}/>
+                  <CardCarousel cards={featuredCards} infinite={false}/>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col s12">
+                  <h5>{this.__('Popular')}</h5>
+                  <div className="divider"></div>
+                  <CardCarousel cards={popularCards} infinite={false}/>
                 </div>
               </div>
               <div className="row">
                 <div className="col s12">
                   <h5>{this.__('Recent')}</h5>
                   <div className="divider"></div>
-                  <CardCarousel cards={cards} infinite={false}/>
+                  <CardCarousel cards={recentCards} infinite={false}/>
                 </div>
               </div>
               <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Group')}>

@@ -62,12 +62,19 @@ module.exports = function(app) {
   //Views
   app.get('/hubs', function(req, res, next) {
 
-    Hub.getAllHubs()
-      .then(function(result) {
+    Promise.all([
+      Hub.getFeaturedHubs(),
+      Hub.getPopularHubs(),
+      Hub.getRecentHubs()
+    ])
+      .then(function(results) {
+        var featuredHubs = results[0];
+        var popularHubs = results[1];
+        var recentHubs = results[2];
         res.render('hubs', {
           title: 'Hubs - MapHubs',
           props: {
-            hubs: result
+            featuredHubs, popularHubs, recentHubs
           }, req
         });
       }).catch(nextError(next));

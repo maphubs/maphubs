@@ -36,12 +36,14 @@ module.exports = function(app) {
 
     Promise.all([
       Layer.getFeaturedLayers(),
-      Layer.getRecentLayers()
+      Layer.getRecentLayers(),
+      Layer.getPopularLayers()
     ])
       .then(function(results){
         var featuredLayers = results[0];
         var recentLayers = results[1];
-        res.render('layers', {title: req.__('Layers') + ' - MapHubs', props: {featuredLayers, recentLayers}, req});
+        var popularLayers = results[2];
+        res.render('layers', {title: req.__('Layers') + ' - MapHubs', props: {featuredLayers, recentLayers, popularLayers}, req});
       }).catch(nextError(next));
 
 

@@ -28,6 +28,7 @@ var Layers = React.createClass({
   propTypes: {
     featuredLayers: React.PropTypes.array,
     recentLayers: React.PropTypes.array,
+    popularLayers: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -78,6 +79,7 @@ var Layers = React.createClass({
 
     var featuredCards = [];
     var recentCards = [];
+    var popularCards = [];
 
     this.props.featuredLayers.map(function(layer){
       var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
@@ -98,6 +100,21 @@ var Layers = React.createClass({
       var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
 
       recentCards.push({
+        id: layer.layer_id,
+        title: layer.name,
+        description: layer.description,
+        image_url,
+        source: layer.source,
+        group: layer.owned_by_group_id,
+        type: 'layer',
+        link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+      });
+    });
+
+    this.props.popularLayers.map(function(layer){
+      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+
+      popularCards.push({
         id: layer.layer_id,
         title: layer.name,
         description: layer.description,
@@ -173,6 +190,13 @@ var Layers = React.createClass({
               <h5>{this.__('Featured')}</h5>
               <div className="divider"></div>
               <CardCarousel cards={featuredCards} infinite={false}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col s12">
+              <h5>{this.__('Popular')}</h5>
+              <div className="divider"></div>
+              <CardCarousel cards={popularCards} infinite={false}/>
             </div>
           </div>
           <div className="row">

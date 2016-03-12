@@ -16,13 +16,19 @@ module.exports = function(app) {
 
   //Views
   app.get('/groups', function(req, res, next) {
-
-    Group.getAllGroups()
-      .then(function(result) {
+    Promise.all([
+      Group.getFeaturedGroups(),
+      Group.getRecentGroups(),
+      Group.getPopularGroups()
+    ])
+      .then(function(results) {
+        var featuredGroups = results[0];
+        var recentGroups = results[1];
+        var popularGroups = results[2];
         res.render('groups', {
           title: 'Groups - MapHubs',
           props: {
-            groups: result
+            featuredGroups, recentGroups, popularGroups
           }, req
         });
       }).catch(nextError(next));

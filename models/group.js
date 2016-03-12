@@ -8,6 +8,29 @@ module.exports = {
       return knex.select().table('omh.groups').orderBy('name');
     },
 
+    getPopularGroups(number = 15){
+      return knex.select('omh.groups.*', knex.raw('(select sum(views) from omh.layers where owned_by_group_id=group_id) as layer_views'))
+      .table('omh.groups')
+      .where({published: true})
+      .orderBy('layer_views', 'desc')
+      .limit(number);
+    },
+
+    getRecentGroups(number = 15){
+      return knex.select('omh.groups.*', knex.raw('(select max(last_updated) from omh.layers where owned_by_group_id=group_id) as layers_updated'))
+      .table('omh.groups')
+      .where({published: true})
+      .orderBy('layers_updated', 'desc')
+      .limit(number);
+    },
+
+    getFeaturedGroups(number = 15){
+      return knex.select().table('omh.groups')
+      .where({published: true, featured: true})
+      .orderBy('name')
+      .limit(number);
+    },
+
     getSearchSuggestions(input) {
       input = input.toLowerCase();
       return knex.select('name', 'group_id').table('omh.groups').whereRaw("lower(name) like '%" + input + "%'");

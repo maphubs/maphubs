@@ -150,10 +150,6 @@ module.exports = function(app) {
     }
   });
 
-  app.get('/', function(req, res) {
-    res.render('globalsearchmap', {title: 'Search Data - MapHubs', req});
-  });
-
     //disable global API only support one layer at a time for now
      /*
     app.get('/xml/map', function (req, res, next) {

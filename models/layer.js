@@ -42,6 +42,18 @@ module.exports = {
     .limit(number);
   },
 
+  getPopularLayers(number = 15){
+    return knex.select('layer_id', 'name', 'description', 'data_type',
+    'status', 'published', 'source', 'license',
+    'is_external', 'external_layer_config',
+     'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+    .table('omh.layers')
+    .where('published', true)
+    .whereNotNull('views')
+    .orderBy('views', 'desc')
+    .limit(number);
+  },
+
   getFeaturedLayers(number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license',

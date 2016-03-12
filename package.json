@@ -86,6 +86,7 @@
     "lodash.reject": "4.2.0",
     "lodash.remove": "4.2.0",
     "lodash.result": "4.2.0",
+    "lodash.shuffle": "4.0.0",
     "lodash.uniq": "4.2.0",
     "lodash.zipobject": "4.1.2",
     "mailcomposer": "3.4.0",

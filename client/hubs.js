@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Hubs hubs={data.hubs} locale={data.locale}/>,
+    <Hubs featuredHubs={data.featuredHubs} popularHubs={data.popularHubs} recentHubs={data.recentHubs} locale={data.locale}/>,
     document.querySelector('#app')
   );
 });

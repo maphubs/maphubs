@@ -1,13 +1,18 @@
 var React = require('react');
-
+var ReactDOM = require('react-dom');
 var Map = require('../components/Map/Map');
 var Legend = require('../components/Map/Legend');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
+var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var request = require('superagent');
-var debug = require('../services/debug')('globalsearchmap');
-
+var debug = require('../services/debug')('home');
+var config = require('../clientconfig');
+var urlUtil = require('../services/url-util');
+var slug = require('slug');
+var $ = require('jquery');
+var _shuffle = require('lodash.shuffle');
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
 
 var MessageActions = require('../actions/MessageActions');
@@ -20,7 +25,7 @@ var Locales = require('../services/locales');
 
 import Progress from '../components/Progress';
 
-var GlobalMap = React.createClass({
+var Home = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
 
@@ -29,6 +34,9 @@ var GlobalMap = React.createClass({
   },
 
   propTypes: {
+    featuredLayers: React.PropTypes.array,
+    featuredGroups: React.PropTypes.array,
+    featuredHubs: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -40,6 +48,12 @@ var GlobalMap = React.createClass({
   },
   componentDidUpdate(){
     //window.dispatchEvent(new Event('resize'));
+    if(this.state.searchResult){
+      var scrollTarget = $(ReactDOM.findDOMNode(this.refs.search));
+      $('html,body').animate({
+         scrollTop: scrollTarget.offset().top
+       }, 1000);
+    }
   },
 
   onResetSearch(){
@@ -81,17 +95,70 @@ var GlobalMap = React.createClass({
   },
 
 	render() {
+    var featuredLayerCards = [];
+    var featuredGroupCards = [];
+    var featuredHubCards = [];
+    var searchCards = [];
+
+
+    this.props.featuredLayers.map(function(layer){
+      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+
+      featuredLayerCards.push({
+        id: layer.layer_id,
+        title: layer.name,
+        description: layer.description,
+        image_url,
+        source: layer.source,
+        group: layer.owned_by_group_id,
+        type: 'layer',
+        link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+      });
+    });
+
+    this.props.featuredGroups.map(function(group){
+      featuredGroupCards.push({
+        id: group.group_id,
+        title: group.name,
+        description: group.description,
+        image_url: '/group/' + group.group_id + '/image',
+        link: '/group/' + group.group_id,
+        group: group.group_id,
+        type: 'group'
+      });
+    });
+
+    this.props.featuredHubs.map(function(hub){
+      var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      featuredHubCards.push({
+        id: hub.hub_id,
+        title: hub.name,
+        description: hub.description,
+        image_url: '/hub/' + hub.hub_id + '/images/logo',
+        background_image_url: '/hub/' + hub.hub_id + '/images/banner',
+        link: hubUrl,
+        type: 'hub'
+      });
+    });
+
+    var featuredCards = _shuffle(featuredLayerCards.concat(featuredGroupCards).concat(featuredHubCards));
+
     var cardsPanel = '', mapPanel = '';
     if(this.state.searchResult){
       cardsPanel = (
-      <div style={{margin: '10px'}}>
-        <h5>{this.__('Search Results')}</h5>
-      </div>
+        <div className="row">
+          <div className="col s12">
+            <div className="divider"></div>
+            <CardCarousel cards={searchCards} infinite={false}/>
+          </div>
+        </div>
     );
 
     mapPanel = (
       <div className="row no-margin" style={{height: 'calc(75% - 50px)', minHeight: '200px'}}>
-        <Map ref="map" style={{width: '100%', height: '100%'}} data={this.state.searchResult} >
+        <Map ref="map" style={{width: '100%', height: '100%'}}
+          disableScrollZoom={true}
+          data={this.state.searchResult} >
           <Legend style={{
               position: 'absolute',
               bottom: '0px',
@@ -105,8 +172,11 @@ var GlobalMap = React.createClass({
 
     }else {
       cardsPanel = (
-        <div style={{margin: '10px'}}>
-          <h5>{this.__('Featured Content')}</h5>
+        <div className="row">
+          <div className="col s12">
+            <h5>{this.__('Featured Content')}</h5>
+            <CardCarousel cards={featuredCards} infinite={false}/>
+          </div>
         </div>
       );
     }
@@ -117,7 +187,7 @@ var GlobalMap = React.createClass({
       <main style={{height: '100%'}}>
         <OnboardingLinks />
          <div className="divider"></div>
-        <div className="container" style={{marginTop: '50px', marginBottom: '50px'}}>
+        <div ref="search" className="container" style={{marginTop: '50px', marginBottom: '50px'}}>
           <div className="row">
             <h5 className="center-align" style={{color: '#212121'}}>{this.__('Search MapHubs')}</h5>
             </div>
@@ -139,4 +209,4 @@ var GlobalMap = React.createClass({
 	}
 });
 
-module.exports = GlobalMap;
+module.exports = Home;

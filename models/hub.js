@@ -10,6 +10,28 @@ module.exports = {
       return knex.select().table('omh.hubs').where('published', true);
     },
 
+    getRecentHubs(number = 15){
+      return knex.select().table('omh.hubs')
+      .where('published', true)
+      .orderBy('updated_at', 'desc')
+      .limit(number);
+    },
+
+    getPopularHubs(number = 15){
+      return knex.select().table('omh.hubs')
+      .where('published', true)
+      .whereNotNull('views')
+      .orderBy('views', 'desc')
+      .limit(number);
+    },
+
+    getFeaturedHubs(number = 15){
+      return knex.select().table('omh.hubs')
+      .where({published: true, featured: true})
+      .orderBy('name')
+      .limit(number);
+    },
+
     getHubStories(hub_id, includeDrafts = false) {
       debug('get stories for hub: ' + hub_id);
       var query = knex.select('omh.stories.story_id', 'omh.stories.title',
