@@ -261,7 +261,6 @@
 	"Tell Your Story": "Tell Your Story",
 	"Explore": "Explore",
 	"Search MapHubs": "Search MapHubs",
-	"Make maps, publish map stories, and build websites for free.": "Make maps, publish map stories, and build websites for free.",
 	"Upload spatial files or use map services to get your maps onto Maphubs": "Upload spatial files or use map services to get your maps onto Maphubs",
 	"Read map stories": "Read map stories",
 	"Some Text Here": "Some Text Here",
@@ -276,14 +275,12 @@
 	"Explore hubs": "Explore hubs",
 	"Search for data": "Search for data",
 	"About MapHubs": "About MapHubs",
-	"Make maps, map stories, and websites for free.": "Make maps, map stories, and websites for free.",
 	"Why we are building MapHubs": "Why we are building MapHubs",
 	"MapHubs Features": "MapHubs Features",
 	"MapHubs is a Moabi project": "MapHubs is a Moabi project",
 	"MapHubs is Open Source, the code is available on ": "MapHubs is Open Source, the code is available on ",
 	"Check Box (Yes/No)": "Check Box (Yes/No)",
 	"Mapping for Everyone": "Mapping for Everyone",
-	"Our mission is to help you tell your story using maps and to foster communities (MapHubs) around important topics. MapHubs is a repository for the world's public and open source map data, and provides a simple tool to make shareable maps.": "Our mission is to help you tell your story using maps and to foster communities (MapHubs) around important topics. MapHubs is a repository for the world's public and open source map data, and provides a simple tool to make shareable maps.",
 	"Create a Group and Upload Your Data": "Create a Group and Upload Your Data",
 	"Terms": "Terms",
 	"Privacy": "Privacy",
@@ -308,5 +305,7 @@
 	"MapHubs layers are managed by groups. Create a group for your organization or browse the layers of existing groups.": "MapHubs layers are managed by groups. Create a group for your organization or browse the layers of existing groups.",
 	"MapHubs is a repository of open map layers. Browse layers or create a new layer.": "MapHubs is a repository of open map layers. Browse layers or create a new layer.",
 	"Export is not available for this layer.": "Export is not available for this layer.",
-	"Popular": "Popular"
+	"Popular": "Popular",
+	"Click the button below to create your first story": "Click the button below to create your first story",
+	"Click the button below to create your first map": "Click the button below to create your first map"
 }
