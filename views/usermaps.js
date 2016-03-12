@@ -51,6 +51,9 @@ var UserMaps = React.createClass({
 
 	render() {
     var _this = this;
+
+
+
     var cards = [];
 
     _this.props.maps.map(function(map){
@@ -84,10 +87,33 @@ var UserMaps = React.createClass({
   var searchResults = '';
   var searchCards = [];
 
+  var myMaps = '';
+  if(!this.props.maps || this.props.maps.length == 0){
+    myMaps = (
+      <div className="row" style={{height: 'calc(100% - 100px)'}}>
+        <div className="valign-wrapper" style={{height: '100%'}}>
+          <div className="valign align-center center-align" style={{width: '100%'}}>
+            <h5>{this.__('Click the button below to create your first map')}</h5>
+          </div>
+        </div>
+      </div>
+    );
+  }else{
+    myMaps = (
+      <div className="row">
+        <div className="col s12">
+          <h4>{this.__('My Maps')}</h4>
+          <CardCarousel infinite={false} cards={cards} />
+        </div>
+      </div>
+    );
+  }
+
+
 		return (
       <div>
         <Header activePage="mymaps"/>
-        <main>
+        <main style={{height: 'calc(100% - 70px)'}}>
           <div className="container" style={{marginTop: '20px', marginBottom: '20px'}}>
             <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/user/maps/search/suggestions" onSearch={this.handleSearch}/>
           </div>
@@ -96,12 +122,7 @@ var UserMaps = React.createClass({
               {searchResults}
             </div>
           </div>
-          <div className="row">
-            <div className="col s12">
-              <h4>{this.__('My Maps')}</h4>
-              <CardCarousel infinite={false} cards={cards} />
-            </div>
-          </div>
+          {myMaps}
           {createMaps}
         </main>
       </div>

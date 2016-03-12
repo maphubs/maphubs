@@ -46,11 +46,25 @@ var UserStories = React.createClass({
       );
     }
 
+    var emptyMessage = '';
+    if(!this.props.stories || this.props.stories.length == 0){
+      emptyMessage = (
+        <div className="row" style={{height: 'calc(100% - 100px)'}}>
+          <div className="valign-wrapper" style={{height: '100%'}}>
+            <div className="valign align-center center-align" style={{width: '100%'}}>
+              <h5>{this.__('Click the button below to create your first story')}</h5>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
 		return (
       <div>
         <Header activePage="mystories"/>
-        <div className="container">
-
+        <main style={{height: 'calc(100% - 70px)'}}>
+        <div className="container" style={{height: '100%'}}>
+           {emptyMessage}
             {this.props.stories.map(function (story) {
               return (
                 <div key={story.story_id}>
@@ -62,6 +76,7 @@ var UserStories = React.createClass({
 
         </div>
         {button}
+      </main>
 			</div>
 		);
 	}
