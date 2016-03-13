@@ -1,5 +1,6 @@
 var knex = require('../../connection.js');
 var log = require('../log.js');
+var debug = require('../debug')('oauth-db/users');
 
 
 function translateUserObject(data) {
@@ -15,7 +16,7 @@ function translateUserObject(data) {
 }
 
 exports.find = function(id, done) {
-
+  debug('find by id: ' + id);
   knex.select('*')
     .from('users')
     .where('id', id)
@@ -36,7 +37,7 @@ exports.find = function(id, done) {
 };
 
 exports.findByUsername = function(username, done) {
-
+  debug('find by username: ' + username);
   knex.select('*')
     .from('users')
     .where('display_name', username)
@@ -46,7 +47,7 @@ exports.findByUsername = function(username, done) {
         return done(null, user);
       } else {
         //not found
-        return done('User Not Found', null);
+        return done(null, null);
       }
 
     }).catch(function(err) {
