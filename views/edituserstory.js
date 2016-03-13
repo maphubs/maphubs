@@ -33,7 +33,7 @@ var EditUserStory = React.createClass({
       <div>
         <Header />
         <main>
-          <StoryEditor story={this.props.story}/>
+          <StoryEditor story={this.props.story} storyType="user"/>
         </main>
 
       </div>
