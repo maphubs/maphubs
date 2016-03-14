@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var Password = require('../components/forms/Password');
 
 var Reflux = require('reflux');
@@ -37,6 +38,7 @@ var PasswordReset = React.createClass({
             </div>
           </div>
       </main>
+      <Footer />
       </div>
     );
   }

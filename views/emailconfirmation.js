@@ -1,7 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
-
+var Footer = require('../components/footer');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
@@ -16,31 +16,36 @@ var EmailConfirmation = React.createClass({
   },
 
   propTypes: {
+    valid: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
   },
   render() {
+    var content = '';
+    if(this.props.valid){
+      content = (
+        <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
+          <h4 className="center">{this.__('Email Confirmed')}</h4>
+          <p>{this.__('Thank you for confirming your account! You are now ready to start using MapHubs!')}</p>
+        </div>
+      );
+    }else{
+      content = (
+        <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
+          <h4 className="center">{this.__('Unable to Confirm Email')}</h4>
+          <p>{this.__('This email may have already been confirmed. If you are unable to access your account please contact us at support@maphubs.com')}</p>
+        </div>
+      );
+    }
+
     return (
       <div>
         <Header />
         <main className="container">
           <div className="row valign-wrapper">
-            <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
-              <h4 className="center">{this.__('Email Confirmed')}</h4>
-              <p>{this.__('Thank you for confirming your account! You are now ready to start using MapHubs!')}</p>
-
-              <h5>Create (or Join) a Group</h5>
-
-              <h5>Create or Upload a Map Layer</h5>
-
-              <h5>Make a Map</h5>
-
-              <h5>Post a Story</h5>
-
-              <h5>Create (or Join) a Hub</h5>
-
-            </div>
+            {content}
           </div>
       </main>
+      <Footer />
       </div>
     );
   }

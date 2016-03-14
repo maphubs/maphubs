@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 var UserActions = require('../actions/UserActions');
@@ -67,8 +68,8 @@ var PendingConfirmation = React.createClass({
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
               <h4 className="center">{this.__('Please Confirm Your Email Address')}</h4>
-              <p>{this.__('We sent you an email at')} {this.props.user.email}</p>
-              <p>{this.__('Please click the link in the email to confirm your account')}</p>
+              <p className="center-align">{this.__('We sent you an email at')} {this.props.user.email}</p>
+              <p className="center-align">{this.__('Please click the link in the email to confirm your account')}</p>
               <button
                 onClick={this.onResend}
                 className="waves-effect waves-light btn valign center"
@@ -78,6 +79,7 @@ var PendingConfirmation = React.createClass({
             </div>
           </div>
       </main>
+      <Footer />
       </div>
     );
   }

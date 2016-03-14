@@ -666,14 +666,12 @@ module.exports = function(app) {
                 Email.send({
                   from: 'MapHubs <info@maphubs.com>',
                   to: user.email,
-                  subject: 'Welcome to Hub: ' + data.hub_id + ' - MapHubs',
-                  body: user.display_name + `\n,
-                    You've been added to the hub ` + data.hub_id + ` on MapHubs.\n
-                    `
+                  subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - MapHubs',
+                  text: user.display_name + ',\n' +
+                    req.__('You have been added to the hub') + ' ' + data.hub_id
                   ,
-                  html: user.display_name + `,
-                    <br />You've been added to the hub ` + data.hub_id + ` on MapHubs.\n
-                    `
+                  html: user.display_name + ',<br />' +
+                    req.__('You have been added to the hub') + ' ' + data.hub_id
                   });
                 res.status(200).send({success: true});
               })
@@ -752,14 +750,12 @@ module.exports = function(app) {
                       Email.send({
                         from: 'MapHubs <info@maphubs.com>',
                         to: user.email,
-                        subject: 'Removed from Hub: ' + data.hub_id + ' - MapHubs',
-                        body: user.display_name + `\n,
-                          You've been removed from the hub ` + data.hub_id + ` on MapHubs.\n
-                          `
+                        subject: req.__('Removed from Hub:') + ' ' + data.hub_id + ' - MapHubs',
+                        text: user.display_name + ',\n' +
+                          req.__('You have been removed from the hub') + ' ' + data.hub_id
                         ,
-                        html: user.display_name + `,
-                          <br />You've been removed from the hub ` + data.hub_id + ` on MapHubs.\n
-                          `
+                        html: user.display_name + ',<br />' +
+                          req.__('You have been removed from the hub') + ' ' + data.hub_id
                         });
                       res.status(200).send({success: true});
                     }).catch(apiError(res, 500));

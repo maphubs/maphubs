@@ -38,7 +38,7 @@ module.exports = {
 
   },
 
-  updatePassword(user_id, password, sendEmail){
+  updatePassword(user_id, password, sendEmail, __){
     return User.getUser(user_id, true)
     .then(function(user){
       debug('Updating password for: ' + user.display_name);
@@ -54,13 +54,12 @@ module.exports = {
               return Email.send({
                 from: 'MapHubs<info@maphubs.com>',
                 to: user.email,
-                subject: 'Password Changed - MapHubs',
-                body: user.display_name + `,
-                  Your password on MapHubs was changed.
-                `,
-                html: user.display_name + `,
-                  Your password on MapHubs was changed.
-                `
+                subject: __('Password Changed') + ' - MapHubs',
+                text: user.display_name + ',\n' +
+                  __('Your password on MapHubs was changed.')
+                ,
+                html: user.display_name + ',' + '<br />' +
+                  __('Your password on MapHubs was changed.')
               });
             }else {
               return true;
@@ -75,7 +74,7 @@ module.exports = {
     });
   },
 
-  forgotPassword(email){
+  forgotPassword(email, __){
     return User.getUserByEmail(email, true)
     .then(function(user){
       //generate a unique reset link
@@ -87,12 +86,12 @@ module.exports = {
         Email.send({
           from: 'MapHubs <info@maphubs.com>',
           to: user.email,
-          subject: 'Password Reset - MapHubs',
-          body: user.display_name + `\n,
-            Please go to this URL in your browser to reset your password: ` + url
+          subject: __('Password Reset') + ' - MapHubs',
+          body: user.display_name + ',\n' +
+            __('Please go to this link in your browser to reset your password:') + ' ' + url
           ,
-          html: user.display_name + `,
-            <br />Please <a href="` + url + `">click here </a>to reset your password, or go to this URL in your browser: ` + url
+          html: user.display_name + ',<br />' +
+            __('Please go to this link in your browser to reset your password:') + ' ' + url
         })
         .catch(function(err){
           log.error(err);

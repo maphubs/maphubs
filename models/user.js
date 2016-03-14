@@ -155,7 +155,7 @@ module.exports = {
         });
     },
 
-    sendConfirmationEmail(user_id){
+    sendConfirmationEmail(user_id, __){
       //create confirm link
       debug('sending email confirmation for id: ' + user_id);
       var _this = this;
@@ -166,18 +166,29 @@ module.exports = {
           .then(function(user){
           var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
           var url = baseUrl + '/user/emailconfirmation/' + new_email;
+
+            var text =  user.display_name + ',\n' +
+              __('Welcome to MapHubs!') + '\n\n' +
+              __('Please go to this link in your browser to confirm your email:')  + url + '\n\n' +
+              __('Thank you for registering for MapHubs.') +
+              __('If you need to contact us you are welcome to reply to this email, or use the Feedback button on the MapHubs site.');
+
+
+            var html = user.display_name + ',' +
+              '<br />' + __('Welcome to MapHubs!') +
+              '<br />' +
+              '<br />' + __('Please go to this link in your browser to confirm your email:') + url +
+              '<br />' +
+              '<br />' +
+              __('Thank you for registering for MapHubs.') +
+              __('If you need to contact us you are welcome to reply to this email, or use the Feedback button on the MapHubs site.');
+
             return Email.send({
-              from: 'MapHubs <info@maphubs.com>',
-              to: user.email,
-              subject: 'Email Confirmation - MapHubs',
-              body: user.display_name + `\n,
-                Welcome to MapHubs!\n\n
-                Please go to this URL in your browser to confirm your email: ` + url
-              ,
-              html: user.display_name + `,
-                <br />Welcome to MapHubs!
-                <br />
-                <br />Please <a href="` + url + `">click here </a>to confirm your email, or go to this URL in your browser: ` + url
+                from: 'MapHubs <info@maphubs.com>',
+                to: user.email,
+                subject: __('Email Confirmation') + ' - MapHubs',
+                text,
+                html
               });
             });
         });
@@ -187,9 +198,13 @@ module.exports = {
       debug('checking email confirmation');
       return this.getUserWithConfirmationKey(key)
       .then(function(user){
+        if(user == null) return false;
         //key matches
         log.info("Email Confirmed for user: " + user.display_name);
-        return knex('users').update({new_email: '', email_valid: true}).where({id: user.id});
+        return knex('users').update({new_email: '', email_valid: true}).where({id: user.id})
+        .then(function(){
+          return true;
+        });
       });
     },
 

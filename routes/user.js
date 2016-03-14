@@ -45,7 +45,7 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     User.getUser(user_id)
       .then(function(user){
-        res.render('pendingconfirmation', {title: 'Pending Confirmation - MapHubs', props: {user}, req});
+        res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - MapHubs', props: {user}, req});
       }).catch(nextError(next));
   });
 
@@ -55,8 +55,8 @@ module.exports = function(app) {
     var key = req.params.key;
 
     User.checkEmailConfirmation(key)
-    .then(function(){
-      res.render('emailconfirmation', {title: 'Email Confirmed - MapHubs', props: {}, req});
+    .then(function(valid){
+      res.render('emailconfirmation', {title: req.__('Email Confirmed') + ' - MapHubs', props: {valid}, req});
     }).catch(nextError(next));
   });
 
@@ -71,7 +71,7 @@ module.exports = function(app) {
         res.status(401).send("Unauthorized");
         return;
       }
-      PasswordUtil.updatePassword(data.user_id, data.password, true)
+      PasswordUtil.updatePassword(data.user_id, data.password, true, req.__)
       .then(function(){
         res.status(200).send({success:true});
       }).catch(apiError(res, 500));
@@ -79,7 +79,7 @@ module.exports = function(app) {
       User.getUserWithResetKey(data.pass_reset)
       .then(function(user){
         if(user){
-          PasswordUtil.updatePassword(user.id, data.password, true)
+          PasswordUtil.updatePassword(user.id, data.password, true, req.__)
           .then(function(){
             res.status(200).send({success:true});
           }).catch(apiError(res, 500));
@@ -104,7 +104,7 @@ module.exports = function(app) {
 
   app.post('/api/user/forgotpassword', function(req, res) {
     var data = req.body;
-    PasswordUtil.forgotPassword(data.email)
+    PasswordUtil.forgotPassword(data.email, req.__)
     .then(function(){
       res.status(200).send({success:true});
     }).catch(apiError(res, 200));
@@ -137,9 +137,9 @@ module.exports = function(app) {
     User.createUser(data.email, data.username, ip)
     .then(function(user_id){
     //set password
-      PasswordUtil.updatePassword(user_id, data.password, false)
+      PasswordUtil.updatePassword(user_id, data.password, false, req.__)
       .then(function(){
-        User.sendConfirmationEmail(user_id)
+        User.sendConfirmationEmail(user_id, req.__)
         .then(function(){
             //automatically login the user to their new account
             passport.authenticate('local', function(err, user, info) {

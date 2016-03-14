@@ -21,7 +21,6 @@ html: '<b> Test email text </b>'
 */
 send(data){
   debug('Send email to ' + data.to + ' with subject: ' + data.subject);
-
   return new Promise(function(fulfill, reject) {
       var mail = mailcomposer(data);
       mail.build(function(err, message){
@@ -46,4 +45,4 @@ send(data){
 
 }
 
-}
+};

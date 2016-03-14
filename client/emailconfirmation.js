@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <EmailConfirmation locale={data.locale}/>,
+    <EmailConfirmation valid={data.valid} locale={data.locale}/>,
     document.querySelector('#app')
   );
 });

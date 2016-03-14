@@ -178,7 +178,7 @@ var Signup = React.createClass({
           </div>
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
-              <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/privacy">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>      
+              <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>      
               <button type="submit"
                 className="waves-effect waves-light btn valign center"
                 style={{width: '75%', marginTop: '25px', marginLeft: 'auto', marginRight: 'auto'}}
