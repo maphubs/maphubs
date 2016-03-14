@@ -15,6 +15,9 @@ var HubActions = require('../actions/HubActions');
 
 var NotificationActions = require('../actions/NotificationActions');
 var ConfirmationActions = require('../actions/ConfirmationActions');
+var Notification = require('../components/Notification');
+var Message = require('../components/message');
+var Confirmation = require('../components/confirmation');
 
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
@@ -175,6 +178,9 @@ var HubAdmin = React.createClass({
 
           </div>
         </main>
+        <Notification />
+        <Message />
+        <Confirmation />
 			</div>
 		);
 	}

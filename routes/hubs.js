@@ -723,7 +723,7 @@ module.exports = function(app) {
 
       });
 
-      app.post('/api/removemember', function(req, res) {
+      app.post('/hub/:hubid/api/removemember', function(req, res) {
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           res.status(401).send("Unauthorized, user not logged in");
           return;
