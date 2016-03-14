@@ -172,6 +172,7 @@ save(){
           }else{
             _this.setState({unsavedChanges: false});
           }
+          _this.addMapCloseButtons(); //put back the close buttons
           NotificationActions.showNotification({message: _this.__('Story Saved!'), action: _this.__('View Story'),
             dismissAfter: 10000,
             onDismiss(){
