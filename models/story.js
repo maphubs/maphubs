@@ -30,7 +30,7 @@ module.exports = {
 
     getStoryByID(story_id) {
       return knex.select(
-        'story_id', 'title',
+        'story_id', 'title', 'body',
          'firstline', 'firstimage', 'language',
          'published', 'author', 'created_at',
         knex.raw('timezone(\'UTC\', updated_at) as updated_at')
