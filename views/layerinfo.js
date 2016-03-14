@@ -6,11 +6,14 @@ var slug = require('slug');
 var styles = require('../components/Map/styles');
 var $ = require('jquery');
 var _map = require('lodash.map');
+var _find = require('lodash.find');
 var ReactDisqusThread = require('react-disqus-thread');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var TerraformerGL = require('../services/terraformerGL.js');
 var GroupTag = require('../components/Groups/GroupTag');
+
+var Licenses = require('../components/CreateLayer/licenses');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -438,6 +441,10 @@ var LayerInfo = React.createClass({
     var guessedTz = moment.tz.guess();
     var updatedTime = moment.tz(this.props.layer.last_updated, guessedTz).format();
 
+
+    var licenseOptions = Licenses.getLicenses(this.__);
+    var license = _find(licenseOptions, {value: this.props.layer.license});
+
 		return (
 
       <div>
@@ -470,7 +477,7 @@ var LayerInfo = React.createClass({
                   </IntlProvider>
                   </p>
                 <p style={{fontSize: '16px'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
-                <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {this.props.layer.license}</p>
+                <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
                 <p style={{fontSize: '16px'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
 
                 </div>
