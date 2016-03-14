@@ -307,5 +307,10 @@
 	"Export is not available for this layer.": "Export is not available for this layer.",
 	"Popular": "Popular",
 	"Click the button below to create your first story": "Click the button below to create your first story",
-	"Click the button below to create your first map": "Click the button below to create your first map"
+	"Click the button below to create your first map": "Click the button below to create your first map",
+	"Login Failed: Please try again.": "Login Failed: Please try again.",
+	"Author:": "Author:",
+	"Updated:": "Updated:",
+	"Hub:": "Hub:",
+	"Recent Stories": "Recent Stories"
 }

@@ -26,12 +26,13 @@ var Stories = React.createClass({
       <div>
         <Header activePage="stories"/>
         <div className="container">
-
+          <h4>{this.__('Recent Stories')}</h4>
             {this.props.stories.map(function (story) {
               return (
-                <div key={story.story_id}>
+                <div className="card" key={story.story_id}>
+                  <div className="card-content">
                   <StorySummary story={story} />
-                  <hr />
+                  </div>
                 </div>
               );
             })}

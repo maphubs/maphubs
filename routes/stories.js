@@ -14,6 +14,20 @@ var notAllowedError = require('../services/error-response').notAllowedError;
 
 module.exports = function(app) {
 
+  //Views
+  app.get('/stories', function(req, res, next) {
+
+    Story.getRecentStories()
+      .then(function(result) {
+        res.render('stories', {
+          title: 'Stories - MapHubs',
+          props: {
+            stories: result
+          }, req
+        });
+      }).catch(nextError(next));
+  });
+
   app.get('/user/:username/stories', function(req, res, next) {
 
     var username = req.params.username;

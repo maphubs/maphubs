@@ -5,13 +5,22 @@ var debug = require ('../services/debug')('model/story');
 
 module.exports = {
 
-  getAllStories() {
-      return knex.select('story_id', 'title',
-       'firstline', 'language', 'user_id',
-       'published', 'author', 'created_at', 'updated_at')
+  getRecentStories(number=10) {
+      return knex.select(
+      'omh.stories.story_id', 'omh.stories.title',
+       'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
+       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
+      knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
+      'omh.user_stories.user_id', 'public.users.display_name',
+      'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name')
       .table('omh.stories')
-      .where('published', true)
-      .orderBy('created_at', 'desc');
+      .where('omh.stories.published', true)
+      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
+      .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
+      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
+      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
+      .orderBy('omh.stories.created_at', 'desc')
+      .limit(number);
     },
 
     getSearchSuggestions(input) {
@@ -20,7 +29,12 @@ module.exports = {
     },
 
     getStoryByID(story_id) {
-      return knex.select().table('omh.stories').where('story_id', story_id)
+      return knex.select(
+        'story_id', 'title',
+         'firstline', 'firstimage', 'language',
+         'published', 'author', 'created_at',
+        knex.raw('timezone(\'UTC\', updated_at) as updated_at')
+      ).table('omh.stories').where('story_id', story_id)
         .then(function(result) {
           if (result && result.length == 1) {
             return result[0];
@@ -32,7 +46,13 @@ module.exports = {
 
     getHubStories(hub_id, includeDrafts = false) {
       debug('get stories for hub: ' + hub_id);
-      var query = knex.select('omh.stories.*')
+      var query = knex.select(
+        'omh.stories.story_id', 'omh.stories.title',
+         'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
+         'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
+        knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
+        'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name'
+      )
         .from('omh.stories')
         .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
         .leftJoin('omh.hubs', 'omh.hub_stories.hub_id', 'omh.hubs.hub_id');
@@ -51,7 +71,13 @@ module.exports = {
 
     getUserStories(user_id, includeDrafts = false) {
       debug('get stories for user: ' + user_id);
-      var query = knex.select('omh.stories.*')
+      var query = knex.select(
+        'omh.stories.story_id', 'omh.stories.title',
+         'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
+         'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
+        knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
+        'omh.user_stories.user_id', 'public.users.display_name'
+      )
         .from('omh.stories')
         .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
         .leftJoin('public.users', 'omh.user_stories.user_id', 'public.users.id');

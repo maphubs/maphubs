@@ -80,19 +80,6 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
-  //Views
-  app.get('/stories', function(req, res, next) {
-
-    Story.getAllStories()
-      .then(function(result) {
-        res.render('stories', {
-          title: 'Stories - MapHubs',
-          props: {
-            stories: result
-          }, req
-        });
-      }).catch(nextError(next));
-  });
 
   //Hub subdomains
 
