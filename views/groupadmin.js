@@ -209,8 +209,8 @@ var GroupAdmin = React.createClass({
 
   handleAddMember(user){
     var _this = this;
-    debug(user.value + ' as Admin:' + user.option);
-    GroupActions.addMember(user.value, user.option, function(err){
+    debug(user.value.value + ' as Admin:' + user.option);
+    GroupActions.addMember(user.value.value, user.option, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
