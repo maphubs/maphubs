@@ -46,19 +46,26 @@ module.exports = function(app) {
 
     var group_id = req.params.id;
 
+    var user_id = null;
+    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+      user_id = req.session.user.id;
+    }
+
     Promise.all([
         Group.getGroupByID(group_id),
         Layer.getGroupLayers(group_id),
-        Group.getGroupMembers(group_id)
+        Group.getGroupMembers(group_id),
+        Group.allowedToModify(group_id, user_id)
       ])
       .then(function(result) {
         var group = result[0];
         var layers = result[1];
         var members = result[2];
+        var canEdit = result[3];
         res.render('groupinfo', {
           title: group.name + ' - MapHubs',
           props: {
-            group, layers, members
+            group, layers, members, canEdit
           }, req
         });
       }).catch(nextError(next));

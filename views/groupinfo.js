@@ -20,6 +20,7 @@ var GroupInfo = React.createClass({
     group: React.PropTypes.object,
     layers: React.PropTypes.array,
     members: React.PropTypes.array,
+    canEdit: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -29,7 +30,8 @@ var GroupInfo = React.createClass({
         name: "Unknown"
       },
       layers: [],
-      members: []
+      members: [],
+      canEdit: false
     };
   },
 
@@ -43,6 +45,32 @@ var GroupInfo = React.createClass({
         </div>
       );
     }
+
+    var editButton = '';
+
+    if(this.props.canEdit){
+      editButton = (
+        <div className="fixed-action-btn action-button-bottom-right">
+          <a className="btn-floating btn-large omh-color">
+              <i className="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+              <li>
+                <a className="btn-floating tooltipped green" data-delay="50" data-position="left" data-tooltip={this.__('Add New Layer')}
+                    href="/createlayer">
+                  <i className="material-icons">add</i>
+                </a>
+              </li>
+              <li>
+                <a className="btn-floating tooltipped blue" href={'/group/' + this.props.group.group_id + '/admin'}data-delay="50" data-position="left" data-tooltip={this.__('Manage Group')}>
+                  <i className="material-icons">settings</i>
+                </a>
+              </li>
+            </ul>
+        </div>
+      );
+    }
+
     return (
       <div>
         <Header/>
@@ -109,24 +137,7 @@ var GroupInfo = React.createClass({
               })}
             </ul>
           </div>
-          <div className="fixed-action-btn action-button-bottom-right">
-            <a className="btn-floating btn-large omh-color">
-                <i className="large material-icons">mode_edit</i>
-              </a>
-              <ul>
-                <li>
-                  <a className="btn-floating tooltipped green" data-delay="50" data-position="left" data-tooltip={this.__('Add New Layer')}
-                      href="/createlayer">
-                    <i className="material-icons">add</i>
-                  </a>
-                </li>
-                <li>
-                  <a className="btn-floating tooltipped blue" href={'/group/' + this.props.group.group_id + '/admin'}data-delay="50" data-position="left" data-tooltip={this.__('Manage Group')}>
-                    <i className="material-icons">settings</i>
-                  </a>
-                </li>
-              </ul>
-          </div>
+          {editButton}
         </div>
       </div>
     );

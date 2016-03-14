@@ -101,6 +101,9 @@ module.exports = {
     },
 
     allowedToModify(group_id, user_id){
+      if(!group_id || !user_id){
+        return false;
+      }
       return this.getGroupMembers(group_id)
         .then(function(users){
           if(_find(users, {id: user_id}) !== undefined){
