@@ -70,7 +70,7 @@ var GroupAdmin = React.createClass({
 
     submit (model) {
       var _this = this;
-      GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.public, function(err){
+      GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});
         }else{
@@ -304,7 +304,7 @@ var GroupAdmin = React.createClass({
                     required/>
               </div>
               <div className="row">
-                <TextInput name="name" label={this.__('Location')} icon="navigation" className="col s12" validations="maxLength:100" validationErrors={{
+                <TextInput name="location" label={this.__('Location')} icon="navigation" className="col s12" validations="maxLength:100" validationErrors={{
                        maxLength: this.__('Location must be 100 characters or less.')
                    }} length={100}
                     dataPosition="top" dataTooltip={this.__('Country or City Where the Group is Located')}
@@ -312,7 +312,7 @@ var GroupAdmin = React.createClass({
                     required/>
               </div>
               <div className="row">
-                <Toggle name="public" labelOff={this.__('Draft')} labelOn={this.__('Published')} className="col s12"
+                <Toggle name="published" labelOff={this.__('Draft')} labelOn={this.__('Published')} className="col s12"
                     dataPosition="top" dataTooltip={this.__('Include in Public Group Listings')}
                     defaultChecked={isPublished}
                   />
