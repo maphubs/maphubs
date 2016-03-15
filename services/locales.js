@@ -2,11 +2,11 @@ var i18n = null ;
 if (typeof window === 'undefined') {
    i18n = require("../i18n");
  }
-
+ var en = require('../locales/en.json');
+ var fr = require('../locales/fr.json');
+ var es = require('../locales/es.json');
 module.exports = {
-  "en": require('../locales/en.json'),
-  "fr": require('../locales/fr.json'),
-  "es": require('../locales/es.json'),
+  en, fr, es,
   getLocaleString(locale, text){
     if(i18n){
       //use i18n package when running on the server

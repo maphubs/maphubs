@@ -4,6 +4,7 @@ const ReactDOM = require('react-dom');
 const Stories = require('../views/stories');
 
 require('jquery');
+require('intl');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 require('../css/app.css');

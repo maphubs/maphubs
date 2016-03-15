@@ -59,7 +59,7 @@ module.exports = {
     signup: "./client/signup",
     pendingconfirmation: "./client/pendingconfirmation",
     emailconfirmation: "./client/emailconfirmation",
-    vendor: ["materialize-css/dist/css/materialize.min.css", "./css/app.css", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer"],
+    vendor: ["materialize-css/dist/css/materialize.min.css", "./css/app.css", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl"],
     locales: ["./services/locales"],
     clientconfig: ["./clientconfig"]
     //c: ["./c", "./d"] example of multiple files into one output
