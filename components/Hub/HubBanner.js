@@ -176,10 +176,10 @@ var HubBanner = React.createClass({
         className="responsive-img"
         style={{height, width: '100%', position: 'absolute', top: 0, objectFit: 'cover'}}/>);
     } else if (this.state.hub.hasBannerImage) {
-      bannerImage = (<img src={'/hub/' + this.state.hub.hub_id + '/images/banner'} className="responsive-img" style={{height, width: '100%', position: 'absolute', objectFit: 'cover'}}/>);
+      bannerImage = (<img src={'/hub/' + this.state.hub.hub_id + '/images/banner'} className="responsive-img" style={{height, width: '100%', position: 'absolute', top: 0, objectFit: 'cover'}}/>);
     } else{ //show placeholder
       bannerImage = (
-        <div className="center center-align " style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '250px', position: 'absolute', borderColor:'#bdbdbd',  borderStyle: 'dashed', borderWidth: '3px'}}>
+        <div className="center center-align " style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '250px', position: 'absolute', top: 0, borderColor:'#bdbdbd',  borderStyle: 'dashed', borderWidth: '3px'}}>
           <div className="center center-align valign-wrapper" style={{margin: 'auto', height: '100%', width: '200px'}}>
             <i className="material-icons grey-text valign">add_a_photo</i>
             <p className="valign grey-text">{this.__('Add a Banner Image')}</p>
