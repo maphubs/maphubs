@@ -32,15 +32,15 @@ module.exports = function queryBbox(knex, bbox, layer_id=null) {
     */
     return knex.transaction(function(trx) {
       return trx.raw(`
-        CREATE TEMP TABLE bboxquerytemp AS
+        CREATE TEMP TABLE bboxquerytempnodes AS
           SELECT distinct id FROM current_nodes
           WHERE tile in (`+ tiles.join(',') + `) AND visible=true AND layer_id = `+ layer_id
       ).then(function(){
-        return trx.raw('CREATE UNIQUE INDEX bboxquerytemp_idx ON bboxquerytemp (id)')
+        return trx.raw('CREATE UNIQUE INDEX bboxquerytempnodes_idx ON bboxquerytempnodes (id)')
         .then(function(){
           return queryWays(trx, layer_id)
           .then(function(result){
-            return trx.raw('DROP TABLE bboxquerytemp').then(function(){
+            return trx.raw('DROP TABLE bboxquerytempnodes').then(function(){
               return result;
             });
           });

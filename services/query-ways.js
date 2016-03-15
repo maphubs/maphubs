@@ -1,6 +1,6 @@
 /* @flow weak */
-var _map = require('lodash.map');
-var _uniq = require('lodash.uniq');
+//var _map = require('lodash.map');
+//var _uniq = require('lodash.uniq');
 var Promise = require('bluebird');
 var queryNodes = require('./query-nodes');
 var debug = require('./debug')('query-ways');
@@ -13,12 +13,20 @@ module.exports = function queryWays(knex, layer_id) {
   // #TODO:250 this currently does not query nodes that are part of relations,
   // or other relations that are part of relations.
 
+  return knex.raw(`
+    CREATE TEMP TABLE bboxquerytempways AS
+      SELECT distinct current_ways.id FROM current_ways
+      JOIN current_way_nodes ON current_ways.id=current_way_nodes.way_id
+      JOIN bboxquerytempnodes ON current_way_nodes.node_id = bboxquerytempnodes.id
+  `
+  ).then(function(){
+    return knex.raw('CREATE UNIQUE INDEX bboxquerytempways_idx ON bboxquerytempways (id)')
+    .then(function(){
+
 
   var selectWays =  knex.select('current_ways.*', 'users.display_name as user', 'users.id as uid')
-    .distinct('current_ways.id as uniqueid')
     .from('current_ways')
-    .join('current_way_nodes', 'current_ways.id', 'current_way_nodes.way_id')
-    .join('bboxquerytemp', 'current_way_nodes.node_id', 'bboxquerytemp.id')
+    .join('bboxquerytempways', 'current_ways.id', 'bboxquerytempways.id')
     .leftJoin('changesets', 'current_ways.changeset_id', 'changesets.id')
     .leftJoin('users', 'changesets.user_id', 'users.id');
 
@@ -29,34 +37,33 @@ module.exports = function queryWays(knex, layer_id) {
   var selectWayNodes =  knex('current_way_nodes')
     .distinct('node_id AS id')
     .select('way_id', 'sequence_id')
-    .join('bboxquerytemp', 'current_way_nodes.node_id', 'bboxquerytemp.id')
+    .join('bboxquerytempways', 'current_way_nodes.way_id', 'bboxquerytempways.id')
     .orderBy('way_id', 'asc')
     .orderBy('sequence_id', 'asc');
 
 
  var selectWayTags =  knex('current_way_tags')
    .distinct('current_way_tags.way_id', 'k', 'v')
-   .join('current_way_nodes', 'current_way_tags.way_id', 'current_way_nodes.way_id')
-   .join('bboxquerytemp', 'current_way_nodes.node_id', 'bboxquerytemp.id');
+   .join('bboxquerytempways', 'current_way_tags.way_id', 'bboxquerytempways.id');
 
 
  var selectNodes =  knex('current_nodes')
  .select('current_nodes.*', 'users.display_name as user', 'users.id as uid')
-   .join('bboxquerytemp', 'current_nodes.id', 'bboxquerytemp.id')
+   .join('bboxquerytempnodes', 'current_nodes.id', 'bboxquerytempnodes.id')
    .leftJoin('changesets', 'current_nodes.changeset_id', 'changesets.id')
-   .leftJoin('users', 'changesets.user_id', 'users.id');
+   .leftJoin('users', 'changesets.user_id', 'users.id')
+   .orderBy('current_nodes.id', 'asc');
 
 
 
 var selectNodesTags =  knex('current_node_tags')
-  .join('bboxquerytemp', 'current_node_tags.node_id', 'bboxquerytemp.id');
+  .join('bboxquerytempnodes', 'current_node_tags.node_id', 'bboxquerytempnodes.id');
 
 
  var selectRelationMembers = knex('current_relation_members')
  .distinct('current_relation_members.relation_id AS id', 'member_id', 'current_relation_members.sequence_id', 'member_role')
   .leftJoin('current_ways', 'current_relation_members.member_id', 'current_ways.id')
-  .join('current_way_nodes', 'current_ways.id', 'current_way_nodes.way_id')
-  .join('bboxquerytemp', 'current_way_nodes.node_id', 'bboxquerytemp.id')
+  .join('bboxquerytempways', 'current_ways.id', 'bboxquerytempways.id')
   .orderBy('current_relation_members.relation_id', 'asc')
   .orderBy('current_relation_members.sequence_id', 'asc')
   .where('current_relation_members.member_type', 'Way');
@@ -66,8 +73,7 @@ var selectNodesTags =  knex('current_node_tags')
   .distinct('current_relations.id as uniqueid')
   .select('current_relations.*', 'users.display_name as user', 'users.id as uid')
   .leftJoin('current_relation_members', 'current_relations.id', 'current_relation_members.relation_id')
-   .join('current_way_nodes', 'current_relation_members.member_id', 'current_way_nodes.way_id')
-   .join('bboxquerytemp', 'current_way_nodes.node_id', 'bboxquerytemp.id')
+   .join('bboxquerytempways', 'current_relation_members.member_id', 'bboxquerytempways.id')
    .leftJoin('changesets', 'current_relations.changeset_id', 'changesets.id')
    .leftJoin('users', 'changesets.user_id', 'users.id')
     .where('current_relation_members.member_type', 'Way');
@@ -75,8 +81,7 @@ var selectNodesTags =  knex('current_node_tags')
    var selectRelationTags = knex('current_relation_tags')
    .distinct('current_relation_tags.relation_id', 'k', 'v')
    .leftJoin('current_relation_members', 'current_relation_tags.relation_id', 'current_relation_members.relation_id')
-    .leftJoin('current_way_nodes', 'current_relation_members.member_id', 'current_way_nodes.way_id')
-    .join('bboxquerytemp', 'current_way_nodes.node_id', 'bboxquerytemp.id')
+    .join('bboxquerytempways', 'current_relation_members.member_id', 'bboxquerytempways.id')
      .where('current_relation_members.member_type', 'Way');
 
   return Promise.all([
@@ -121,17 +126,24 @@ var selectNodesTags =  knex('current_node_tags')
     });
 
     if(result.ways.length > 0){
-      debug(result.ways.length + ' Ways Found, returning result');
-      return result;
+      return knex.raw('DROP TABLE bboxquerytempways').then(function(){
+        debug(result.ways.length + ' Ways Found, returning result');
+        return result;
+      });
+
     } else {
       //query nodes
       debug('No Ways Found, running QueryNodes');
       return queryNodes(knex).then(function (nodeResult){
+        return knex.raw('DROP TABLE bboxquerytempways').then(function(){
           debug('QueryNodes result: '+ JSON.stringify(nodeResult));
         return nodeResult;
+        });
       });
     }
 
   });
+});
+});
 
 };
