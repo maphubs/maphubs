@@ -8,6 +8,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var LocaleChooser = require('../LocaleChooser');
 
 var HubHav = React.createClass({
 
@@ -18,7 +19,14 @@ var HubHav = React.createClass({
   },
 
   propTypes: {
-    hubid: React.PropTypes.string.isRequired
+    hubid: React.PropTypes.string.isRequired,
+    canEdit: React.PropTypes.bool
+  },
+
+  getDefaultProps() {
+    return {
+      canEdit: false
+    };
   },
 
   componentDidMount() {
@@ -30,6 +38,13 @@ var HubHav = React.createClass({
     var omhBaseUrl = urlUtil.getBaseUrl(baseHost, config.port);
     //var omhBaseUrl = "maphubs.com";
     var hubBaseUrl = urlUtil.getHubUrl(this.props.hubid, baseHost, config.port) + '/';
+
+    var manageButton = '';
+    if(this.props.canEdit){
+      manageButton = (
+        <li><a href="admin">{this.__('Manage Hub')}</a></li>
+      );
+    }
     return (
         <nav className="white" style={{height: '0px'}}>
           <div className="nav-wrapper">
@@ -38,19 +53,18 @@ var HubHav = React.createClass({
               <i className="material-icons">menu</i>
             </a>
             <ul className="side-nav" id="nav">
+              <li><LocaleChooser /></li>
               <li>
                 <UserMenu id="user-menu-sidenav"/>
-              </li>
+              </li>        
               <li><a href={hubBaseUrl}>{this.__('Home')}</a></li>
               <li><a href={hubBaseUrl + 'map'}>{this.__('Map')}</a></li>
               <li><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
               <li><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
-              <li><a href={hubBaseUrl + 'about'}>{this.__('About')}</a></li>
-              <li><a href={hubBaseUrl + 'contact'}>{this.__('Contact Us')}</a></li>
 
               <hr />
               <li><a href={omhBaseUrl}>{this.__('Back to MapHubs')}</a></li>
-              <li><a href="admin">{this.__('Manage Hub')}</a></li>
+              {manageButton}
             </ul>
           </div>
         </nav>
@@ -59,3 +73,5 @@ var HubHav = React.createClass({
 });
 
 module.exports = HubHav;
+//  <li><a href={hubBaseUrl + 'about'}>{this.__('About')}</a></li>
+//  <li><a href={hubBaseUrl + 'contact'}>{this.__('Contact Us')}</a></li>

@@ -4,6 +4,7 @@ const ReactDOM = require('react-dom');
 const HubInfo = require('../views/hubinfo');
 
 require('jquery');
+require('intl');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 

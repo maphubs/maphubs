@@ -115,7 +115,7 @@ var HubResourcesPage = React.createClass({
 
     return (
       <div>
-        <HubNav hubid={this.props.hub.hub_id}/>
+        <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
         <main style={{marginTop: '0px'}}>
           {publishButton}
           <div className="row">

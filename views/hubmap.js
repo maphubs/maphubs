@@ -115,7 +115,7 @@ var HubMapPage = React.createClass({
 
     return (
       <div>
-        <HubNav hubid={this.props.hub.hub_id}/>
+        <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
         <main style={{height: '100%', marginTop: '0px'}}>
           {publishButton}
           <div className="row no-margin">
