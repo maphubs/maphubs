@@ -30,7 +30,7 @@ var Header = React.createClass({
     $(".button-collapse").sideNav();
     if(this.detectIE()){
       MessageActions.showMessage({
-        title: this.__('Unsupported Brower'),
+        title: this.__('Unsupported Browser'),
         message: this.__('MapHubs is unable to support Internet Explorer. Please use Firefox or Chrome with MapHubs.')
       });
     }
