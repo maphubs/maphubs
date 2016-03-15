@@ -83,7 +83,7 @@ module.exports = function(app) {
         if (result && result.length == 1 && result[0].role == 'Administrator') {
           Promise.all([
               Group.getGroupByID(group_id),
-              Layer.getGroupLayers(group_id),
+              Layer.getGroupLayers(group_id, true),
               Group.getGroupMembers(group_id)
             ])
             .then(function(result) {

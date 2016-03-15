@@ -20,13 +20,13 @@ module.exports = {
       'is_external', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html', 'extent_bbox', 'preview_position')
-      .table('omh.layers').where('published', true).orderBy('name');
+      .table('omh.layers').where({published: true, status: 'published'}).orderBy('name');
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_config', 'disable_export', 'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-      .table('omh.layers').where('published', true).orderBy('name');
+      .table('omh.layers').where({published: true, status: 'published'}).orderBy('name');
     }
 
   },
@@ -37,7 +37,7 @@ module.exports = {
     'is_external', 'external_layer_config',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
-    .where('published', true)
+    .where({published: true, status: 'published'})
     .orderBy('last_updated', 'desc')
     .limit(number);
   },
@@ -48,7 +48,7 @@ module.exports = {
     'is_external', 'external_layer_config',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
-    .where('published', true)
+    .where({published: true, status: 'published'})
     .whereNotNull('views')
     .orderBy('views', 'desc')
     .limit(number);
@@ -60,14 +60,16 @@ module.exports = {
     'is_external', 'external_layer_config',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
-    .where({published: true, featured: true})
+    .where({published: true, status: 'published', featured: true})
     .orderBy('name')
     .limit(number);
   },
 
   getSearchSuggestions(input) {
     input = input.toLowerCase();
-    return knex.select('name', 'layer_id').table('omh.layers').whereRaw("lower(name) like '%" + input + "%'").orderBy('name');
+    return knex.select('name', 'layer_id').table('omh.layers')
+    .where({published: true, status: 'published'})
+    .whereRaw("lower(name) like '%" + input + "%'").orderBy('name');
   },
 
   getSearchResults(input) {
@@ -76,6 +78,7 @@ module.exports = {
     .select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license', 'style', 'legend_html',
     'is_external', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+    .where({published: true, status: 'published'})
     .whereRaw("lower(name) like '%" + input + "%'").orderBy('name');
   },
 
@@ -90,6 +93,7 @@ module.exports = {
     } else {
       query.where({
         'published': true,
+        status: 'published',
         'owned_by_group_id': group_id
       });
     }
@@ -314,6 +318,10 @@ module.exports = {
           });
         });
       });
+    },
+
+    setComplete(layer_id){
+      return knex('omh.layers').update({status: 'published'}).where({layer_id});
     },
 
     delete(layer_id){

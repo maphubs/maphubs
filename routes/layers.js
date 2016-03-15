@@ -261,9 +261,22 @@ module.exports = function(app) {
         ];
         break;
         case 'delete':
+        if(!data.layer_id){
+          apiDataError(res);
+          return;
+        }
         actionData = [
         data.layer_id,
         data.app = app
+        ];
+        break;
+        case 'setComplete':
+        if(!data.layer_id){
+          apiDataError(res);
+          return;
+        }
+        actionData = [
+        data.layer_id
         ];
         break;
         default:

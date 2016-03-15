@@ -206,11 +206,22 @@ module.exports = Reflux.createStore({
   },
 
   setComplete(cb){
+    var _this = this;
     var layer = this.state.layer;
     layer.complete = true;
-    this.setState({layer});
-    this.trigger(this.state);
-    cb();
+    request.post('/api/layer/admin/setComplete')
+    .type('json').accept('json')
+    .send({
+      layer_id: layer.layer_id
+    })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        _this.setState({layer});
+        _this.trigger(this.state);
+        cb();
+      });
+    });
+
   },
 
   saveStyle(data, cb){
