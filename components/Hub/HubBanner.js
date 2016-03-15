@@ -172,7 +172,9 @@ var HubBanner = React.createClass({
       );
     }
     if(this.state.bannerImage){
-      bannerImage = (<img src={this.state.bannerImage} className="responsive-img" style={{height, width: '100%', position: 'absolute', objectFit: 'cover'}}/>);
+      bannerImage = (<img src={this.state.bannerImage}
+        className="responsive-img"
+        style={{height, width: '100%', position: 'absolute', top: 0, objectFit: 'cover'}}/>);
     } else if (this.state.hub.hasBannerImage) {
       bannerImage = (<img src={'/hub/' + this.state.hub.hub_id + '/images/banner'} className="responsive-img" style={{height, width: '100%', position: 'absolute', objectFit: 'cover'}}/>);
     } else{ //show placeholder
