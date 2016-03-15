@@ -188,6 +188,35 @@ module.exports = function(app) {
     }).catch(apiError(res, 500));
   });
 
+  app.get('/api/layer/create/empty/:id', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+
+    var user_id = req.session.user.id;
+    var layer_id = parseInt(req.params.id || '', 10);
+
+    Layer.allowedToModify(layer_id, user_id)
+    .then(function(allowed){
+      if(allowed){
+        return knex.transaction(function(trx) {
+          return Layer.getLayerByID(layer_id, trx)
+            .then(function(layer){
+                return layerViews.createLayerViews(layer_id, layer.presets, trx)
+                .then(function(){
+                    debug('init empty transaction complete');
+                    res.status(200).send({success: true});
+              });
+          });
+        }).catch(apiError(res, 500));
+      }else{
+        notAllowedError(res, 'layer');
+      }
+    }).catch(apiError(res, 500));
+  });
+
   app.post('/api/layer/admin/:action', function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -232,6 +261,8 @@ module.exports = function(app) {
           }
           actionData = [
             data.layer_id,
+            data.is_empty,
+            data.empty_data_type,
             data.is_external,
             data.external_layer_type,
             data.external_layer_config

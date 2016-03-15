@@ -45,11 +45,36 @@ var Step3 = React.createClass({
   },
 
   onSubmit(){
-    if(!this.state.layer.is_external){
+    if(!this.state.layer.is_external && !this.state.layer.is_empty){
       return this.saveDataLoad();
-    }else{
+    }else if(this.state.layer.is_empty){
+      return this.initEmptyLayer();
+    }
+    else{
       return this.saveExternal();
     }
+  },
+
+  initEmptyLayer() {
+    var _this = this;
+  
+    //save presets
+    PresetActions.submitPresets(true, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
+      }else{
+        LayerActions.initEmptyLayer(function(err){
+          if(err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            LayerActions.tileServiceInitialized();
+            if(_this.props.onSubmit){
+              _this.props.onSubmit();
+            }
+          }
+        });
+      }
+    });
   },
 
   saveDataLoad() {

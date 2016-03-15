@@ -48,7 +48,8 @@ var LocalSource = React.createClass({
       canSubmit: false,
       selectedSource: 'local',
       geoJSON: null,
-      selectedOption: 'upload'
+      selectedOption: 'upload',
+      selectedDataType: 'point'
     };
   },
 
@@ -81,11 +82,16 @@ var LocalSource = React.createClass({
 
   onSubmit(){
     var _this = this;
-    LayerActions.saveDataSettings({
+    var data = {
       is_external: false,
       external_layer_type: '',
       external_layer_config: {}
-    },function(err){
+    };
+    if(this.state.selectedOption == 'empty'){
+      data.is_empty = true;
+      data.empty_data_type = this.state.selectedDataType;
+    }
+    LayerActions.saveDataSettings(data,function(err){
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -97,6 +103,10 @@ var LocalSource = React.createClass({
 
   sourceChange(value){
     this.setState({selectedSource: value});
+  },
+
+  dataTypeChange(value){
+    this.setState({selectedDataType: value});
   },
 
   onPrev() {
@@ -135,6 +145,8 @@ var LocalSource = React.createClass({
   optionChange(value){
     this.setState({selectedOption: value});
   },
+
+
 
 	render() {
 
@@ -182,7 +194,7 @@ var LocalSource = React.createClass({
       <div className="row">
         <h5 style={{marginLeft: '0.5rem'}}>3) {this.__('Choose Data Type')}</h5>
         <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton}>
-          <Radio name="type" label="" defaultValue="point" options={typeOptions} className="col s4"
+          <Radio name="emptydatatype" label=""onChange={this.dataTypeChange} defaultValue="point" options={typeOptions} className="col s4"
               dataPosition="right" dataTooltip={this.__('Spatial Data Type')}
             />
         </Formsy.Form>

@@ -108,7 +108,7 @@ module.exports = {
     return db.select(
       'layer_id', 'name', 'description', 'data_type',
       'status', 'published', 'source', 'license', 'presets',
-      'is_external', 'external_layer_config', 'disable_export',
+      'is_external', 'external_layer_config', 'disable_export', 'is_empty',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html', 'extent_bbox', 'preview_position'
     ).table('omh.layers').where('layer_id', layer_id)
@@ -363,7 +363,8 @@ module.exports = {
           }).where({layer_id});
     },
 
-    saveDataSettings(layer_id, is_external, external_layer_type, external_layer_config, user_id){
+    saveDataSettings(layer_id, is_empty, empty_data_type, is_external, external_layer_type, external_layer_config, user_id){
+      if(is_external){
       return knex('omh.layers').where({
           layer_id
         })
@@ -374,6 +375,20 @@ module.exports = {
             updated_by_user_id: user_id,
             last_updated: knex.raw('now()')
         });
+      }else{
+        return knex('omh.layers').where({
+            layer_id
+          })
+          .update({
+            is_empty,
+            data_type: empty_data_type,
+            is_external,
+            external_layer_type,
+            external_layer_config: JSON.stringify(external_layer_config),
+              updated_by_user_id: user_id,
+              last_updated: knex.raw('now()')
+          });
+      }
     },
 
 

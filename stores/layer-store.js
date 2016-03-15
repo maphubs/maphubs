@@ -173,6 +173,8 @@ module.exports = Reflux.createStore({
     .type('json').accept('json')
     .send({
       layer_id: layer.layer_id,
+      is_empty: data.is_empty,
+      empty_data_type: data.empty_data_type,
       is_external: data.is_external,
       external_layer_type: data.external_layer_type,
       external_layer_config: data.external_layer_config
@@ -182,6 +184,10 @@ module.exports = Reflux.createStore({
         layer.is_external = data.is_external;
         layer.external_layer_type = data.external_layer_type;
         layer.external_layer_config = data.external_layer_config;
+        layer.is_empty = data.is_empty;
+        if(data.is_empty){
+          layer.data_type = data.empty_data_type;
+        }      
         _this.setState({layer});
         _this.trigger(_this.state);
         cb();
@@ -251,6 +257,20 @@ module.exports = Reflux.createStore({
     debug("loadData");
     var _this = this;
     request.get('/api/layer/create/savedata/' + _this.state.layer.layer_id)
+    .type('json').accept('json')
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        _this.trigger(_this.state);
+        Actions.dataLoaded();
+        cb();
+      });
+    });
+  },
+
+  initEmptyLayer(cb){
+    debug("initEmptyLayer");
+    var _this = this;
+    request.get('/api/layer/create/empty/' + _this.state.layer.layer_id)
     .type('json').accept('json')
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
