@@ -23,6 +23,7 @@ RUN mkdir -p /home/maphubs/app
 WORKDIR /home/maphubs/app
 
 COPY package.json /home/maphubs/app/package.json
+COPY npm-shrinkwrap.json /home/maphubs/app/npm-shrinkwrap.json
 RUN npm install
 
 #install iD
