@@ -7,7 +7,6 @@ require("materialize-css/dist/css/materialize.min.css");
 var LayerMap = require('../views/layermap');
 
 require('../css/app.css');
-require('../css/feedback-left.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 
 
