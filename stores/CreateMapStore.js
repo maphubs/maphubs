@@ -5,6 +5,7 @@ var request = require('superagent');
 var debug = require('../services/debug')('stores/create-map-store');
 var _findIndex = require('lodash.findindex');
 var _reject = require('lodash.reject');
+var _find = require('lodash.find');
 var _forEachRight = require('lodash.foreachright');
 //var $ = require('jquery');
 var config = require('../clientconfig');
@@ -86,11 +87,18 @@ module.exports = Reflux.createStore({
     });
   },
 
-  addToMap(layer){
-    layer.active = true; //tell the map to make this layer visible
-    var layers = this.state.mapLayers;
-    layers.push(layer);
-    this.updateMap(layers);
+  addToMap(layer, cb){
+    //check if the map already has this layer
+    if(_find(this.state.mapLayers, {layer_id: layer.layer_id})){
+      cb(true);
+    }else{
+      layer.active = true; //tell the map to make this layer visible
+      var layers = this.state.mapLayers;
+      layers.push(layer);
+      this.updateMap(layers);
+      cb();
+    }
+
   },
 
   removeFromMap(layer){

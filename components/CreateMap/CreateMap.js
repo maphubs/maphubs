@@ -403,7 +403,11 @@ var CreateMap = React.createClass({
                           <div className="secondary-content col s4 no-padding">
                             <div className="row no-padding no-margin">
                               <div className="col s4 no-padding right">
-                                <a onClick={function(){Actions.addToMap(layer);}}
+                                <a onClick={function(){Actions.addToMap(layer, function(err){
+                                      if(err){
+                                        NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'bottomleft'});
+                                      }
+                                  });}}
                                   className="create-map-btn"
                                   data-position="top" data-delay="50" data-tooltip={_this.__('Add to Map')}>
                                   <i className="material-icons omh-accent-text">add</i></a>
