@@ -9,12 +9,12 @@ module.exports = function queryNodes(knex) {
 
 var selectNodes = knex.select('current_nodes.*', 'users.display_name as user', 'users.id as uid')
     .from('current_nodes')
-    .join('bboxquerytemp', 'current_nodes.id', 'bboxquerytemp.id')
+    .join('bboxquerytempnodes', 'current_nodes.id', 'bboxquerytempnodes.id')
     .leftJoin('changesets', 'current_nodes.changeset_id', 'changesets.id')
     .leftJoin('users', 'changesets.user_id', 'users.id');
 
     var selectNodeTags = knex('current_node_tags')
-        .join('bboxquerytemp', 'current_node_tags.node_id', 'bboxquerytemp.id');
+        .join('bboxquerytempnodes', 'current_node_tags.node_id', 'bboxquerytempnodes.id');
 
   return Promise.all([
     selectNodes,

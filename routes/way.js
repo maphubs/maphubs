@@ -13,12 +13,12 @@ function serveSingleWay(req, res, next) {
   }
   return knex.transaction(function(trx) {
     return trx.raw(`
-      CREATE TEMP TABLE bboxquerytemp AS
+      CREATE TEMP TABLE bboxquerytempnodes AS
         SELECT distinct id FROM current_nodes
         JOIN current_way_nodes on current_nodes.id = current_way_nodes.node_id
         WHERE way_id = `+ wayId
     ).then(function(){
-      return trx.raw('CREATE UNIQUE INDEX bboxquerytemp_idx ON bboxquerytemp (id)')
+      return trx.raw('CREATE UNIQUE INDEX bboxquerytempnodes_idx ON bboxquerytempnodes (id)')
       .then(function(){
         return queryWays(trx, null)
         .then(function (result) {
@@ -30,7 +30,7 @@ function serveSingleWay(req, res, next) {
                 res.send(xmlDoc.toString());
         })
         .then(function(result){
-          return trx.raw('DROP TABLE bboxquerytemp').then(function(){
+          return trx.raw('DROP TABLE bboxquerytempnodes').then(function(){
             return result;
           });
         });
@@ -54,12 +54,12 @@ function serveWays(req, res, next) {
 
   return knex.transaction(function(trx) {
     return trx.raw(`
-      CREATE TEMP TABLE bboxquerytemp AS
+      CREATE TEMP TABLE bboxquerytempnodes AS
         SELECT distinct id FROM current_nodes
         JOIN current_way_nodes on current_nodes.id = current_way_nodes.node_id
         WHERE way_id in (`+ wayIds.join(',') + `)`
     ).then(function(){
-      return trx.raw('CREATE UNIQUE INDEX bboxquerytemp_idx ON bboxquerytemp (id)')
+      return trx.raw('CREATE UNIQUE INDEX bboxquerytempsnode_idx ON bboxquerytempnodes (id)')
       .then(function(){
         return queryWays(trx, null)
             .then(function (result) {
@@ -71,7 +71,7 @@ function serveWays(req, res, next) {
                 res.send(xmlDoc.toString());
             })
         .then(function(result){
-          return trx.raw('DROP TABLE bboxquerytemp').then(function(){
+          return trx.raw('DROP TABLE bboxquerytempnodes').then(function(){
             return result;
           });
         });
