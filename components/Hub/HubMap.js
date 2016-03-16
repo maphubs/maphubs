@@ -95,7 +95,7 @@ var HubMap = React.createClass({
     return (
       <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border}}>
             <div className="row no-margin" style={{height: '100%'}}>
-              <div className="col no-padding s0 hide-on-small-only m3 l3">
+              <div style={{height: '100%', overflowY: 'auto'}} className="col no-padding s0 hide-on-small-only m3 l3">
                 <HubMapLayers reloadMap={this.reloadMap}/>
               </div>
               <div className="col s12 m9 l9 no-padding" style={{height: '100%'}}>

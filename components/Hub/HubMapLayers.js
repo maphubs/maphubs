@@ -36,7 +36,7 @@ var HubMapLayers = React.createClass({
     //var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
 
     return (
-      <div style={{height: '100%', overflow: 'auto'}}>
+      <div>
         <ul ref="layers" className="collection no-margin">{
           this.state.layers.map(function (layer, i) {
 
