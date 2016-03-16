@@ -29,6 +29,7 @@ var Toggle= React.createClass({
 
 
   changeValue(event) {
+    event.stopPropagation();
      this.setValue(event.currentTarget.checked);
    },
 
