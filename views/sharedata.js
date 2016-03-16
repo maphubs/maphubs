@@ -32,27 +32,23 @@ var ShareData = React.createClass({
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
                 <h5>{this.__('Create or join a group')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/groups' className="btn">Go to Groups</a>
+                <a href='/groups' className="btn">{this.__('Go to Groups')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/create_group.png" />
                 </div>
               </div>
             </div>
             <div className="divider"></div>
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
-                <h5>{this.__('Make a layer')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/createlayer' className="btn">Create a Layer</a>
+                <h5>{this.__('Create a layer')}</h5>
+                <a href='/createlayer' className="btn">{this.__('Create a Layer')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/create_layer.png" />
                 </div>
               </div>
             </div>
@@ -60,27 +56,23 @@ var ShareData = React.createClass({
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
                 <h5>{this.__('Make a map story')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/mystories' className="btn">Go to My Stories</a>
+                <a href='/mystories' className="btn">{this.__('Go to My Stories')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/map_story.png" />
                 </div>
               </div>
             </div>
             <div className="divider"></div>
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
-                <h5>{this.__('Make a hub')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/createhub' className="btn">Create a Hub</a>
+                <h5>{this.__('Create a Hub')}</h5>
+                <a href='/createhub' className="btn">{this.__('Create a Hub')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/create_hub.png" />
                 </div>
               </div>
             </div>

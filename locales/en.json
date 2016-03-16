@@ -346,5 +346,16 @@
 	"You have been removed from the hub": "You have been removed from the hub",
 	"MapHubs Privacy Policy": "MapHubs Privacy Policy",
 	"Unsupported Browser": "Unsupported Browser",
-	"MapHubs is unable to support Internet Explorer. Please use Firefox or Chrome with MapHubs.": "MapHubs is unable to support Internet Explorer. Please use Firefox or Chrome with MapHubs."
+	"MapHubs is unable to support Internet Explorer. Please use Firefox or Chrome with MapHubs.": "MapHubs is unable to support Internet Explorer. Please use Firefox or Chrome with MapHubs.",
+	"Pending Confirmation": "Pending Confirmation",
+	"Go to Groups": "Go to Groups",
+	"Create a layer": "Create a layer",
+	"Create a Layer": "Create a Layer",
+	"Go to My Stories": "Go to My Stories",
+	"Go to My Maps": "Go to My Maps",
+	"Read Map Stories": "Read Map Stories",
+	"View Recent Stories": "View Recent Stories",
+	"Explore Hubs": "Explore Hubs",
+	"View Hubs": "View Hubs",
+	"Search for Data": "Search for Data"
 }

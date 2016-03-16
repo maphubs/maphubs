@@ -31,42 +31,36 @@ var Explore = React.createClass({
             <div className="divider"></div>
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
-                <h5>{this.__('Read map stories')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/stories' className="btn">View Recent Stories</a>
+                <h5>{this.__('Read Map Stories')}</h5>
+                <a href='/stories' className="btn">{this.__('View Recent Stories')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/view_stories.png" />
                 </div>
               </div>
             </div>
             <div className="divider"></div>
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
-                <h5>{this.__('Explore hubs')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/hubs' className="btn">View Hubs</a>
+                <h5>{this.__('Explore Hubs')}</h5>
+                <a href='/hubs' className="btn">{this.__('View Hubs')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/view_hubs.png" />
                 </div>
               </div>
             </div>
             <div className="divider"></div>
             <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
-                <h5>{this.__('Search for data')}</h5>
-                <p>{this.__('Some Text Here')}</p>
-                <p>{this.__('Read the the tutorial linked to the right, or click below to get started.')}</p>
-                <a href='/' className="btn">Search MapHubs</a>
+                <h5>{this.__('Search for Data')}</h5>
+                <a href='/' className="btn">{this.__('Search MapHubs')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">MapHubs Features</a>
+                  <img className="responsive-img" src="/assets/screenshots/search.png" />
                 </div>
               </div>
             </div>
