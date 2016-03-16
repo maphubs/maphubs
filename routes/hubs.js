@@ -962,5 +962,28 @@ module.exports = function(app) {
     res.redirect(baseUrl + '/group/' + groupid);
   });
 
+  app.get('/hub/:id/api/layers/info/:id', function(req, res) {
+    var id = req.params.id;
+    res.redirect(baseUrl + '/api/layers/info/' + id);
+  });
+
+  app.get('/hub/:id/api/map/info/:id', function(req, res) {
+    var id = req.params.id;
+    res.redirect(baseUrl + '/api/map/info/' + id);
+  });
+
+  app.get('/hub/:id/layer/info/:id/:name', function(req, res) {
+    var id = req.params.id;
+    var name = req.params.name;
+    res.redirect(baseUrl + '/layer/info/' + id + '/' + name);
+  });
+
+  app.get('/hub/:id/feature/:layerid/:osmid/:name', function(req, res) {
+    var layerid = req.params.layerid;
+    var osmid = req.params.osmid;
+    var name = req.params.name;
+    res.redirect(baseUrl + '/feature/' + layerid + '/' + osmid + '/' + name);
+  });
+
 
 };
