@@ -68,9 +68,9 @@ var PresetEditor = React.createClass({
           </div>
           <ul className="collection">
             {
-                presets.map(function(preset, i){
+                presets.map(function(preset){
                   return(
-                   <li key={preset.tag +'-' + i} className="collection-item attribute-collection-item">
+                   <li key={preset.id} className="collection-item attribute-collection-item">
                        <PresetForm ref={preset.tag} {...preset}
                          onValid={_this.onValid}
                          onInvalid={_this.onInvalid}

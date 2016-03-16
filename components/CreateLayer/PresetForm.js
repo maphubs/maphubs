@@ -22,6 +22,7 @@ var PresetForm = React.createClass({
   },
 
   propTypes: {
+    id: React.PropTypes.number,
 		tag: React.PropTypes.string,
     label: React.PropTypes.string,
     type: React.PropTypes.string,
@@ -43,38 +44,37 @@ var PresetForm = React.createClass({
     if(this.props.tag) valid = true;
     return {
       preset: {
+        id: this.props.id,
         tag: this.props.tag,
         label: this.props.label,
         type: this.props.type,
         options: this.props.options,
         isRequired: this.props.isRequired
       },
-      prevTag: this.props.tag,
       valid
     };
   },
 
   onFormChange(values){
-    var _this = this;
+    values.id = this.props.id;
     this.setState({preset: values});
-    actions.updatePreset(this.state.prevTag, values);
-    if(this.state.prevTag != this.state.preset.tag){
-      var debounced = _debounce(function(){
-        _this.setState({prevTag: _this.state.preset.tag});
-      }, 2500).bind(this);
-      debounced();
-
-    }
+    actions.updatePreset(this.props.id, values);
   },
 
   onValid(){
     this.setState({valid: true});
-    if(this.props.onValid) this.props.onValid();
+    var debounced = _debounce(function(){
+      if(this.props.onValid) this.props.onValid();
+    }, 2500).bind(this);
+    debounced();
   },
 
   onInvalid(){
     this.setState({valid: false});
-    if(this.props.onInvalid) this.props.onInvalid();
+    var debounced = _debounce(function(){
+      if(this.props.onInvalid) this.props.onInvalid();
+    }, 2500).bind(this);
+    debounced();
   },
 
   isValid(){
@@ -94,7 +94,7 @@ var PresetForm = React.createClass({
         Note: this will hide the field from displays on MapHubs, but will not delete the data.
         The field will still be visible in the edit under "all tags" and will be included in data exports.`),
       onPositiveResponse(){
-        actions.deletePreset(_this.props.tag); //remove using initial tag
+        actions.deletePreset(_this.props.id);
       }
     });
 

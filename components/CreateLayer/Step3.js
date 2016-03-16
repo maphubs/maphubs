@@ -57,8 +57,9 @@ var Step3 = React.createClass({
 
   initEmptyLayer() {
     var _this = this;
-  
+
     //save presets
+    PresetActions.loadDefaultPresets();
     PresetActions.submitPresets(true, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

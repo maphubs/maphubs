@@ -17,6 +17,8 @@ module.exports = Reflux.createStore({
       presets: [],
       pendingChanges: false
     };
+
+    this.idSequence = 1;
     this.listenTo(actions.setImportedTags, this.setImportedTags);
     this.listenTo(actions.submitPresets, this.submitPresets);
     this.listenTo(actions.addPreset, this.addPreset);
@@ -33,6 +35,10 @@ module.exports = Reflux.createStore({
   },
 
   loadPresets(presets){
+    var _this = this;
+    presets.forEach(function(preset){
+      preset.id = _this.idSequence++;
+    });
     this.data.presets = presets;
     this.trigger(this.data);
   },
@@ -40,8 +46,8 @@ module.exports = Reflux.createStore({
   loadDefaultPresets(){
     //called when setting up a new empty layer
     var presets = [
-      {tag: 'name', label: 'Name', type: 'text', isRequired: true},
-      {tag: 'description', label: 'Description', type: 'text', isRequired: false}
+      {tag: 'name', label: 'Name', type: 'text', isRequired: true, id: this.idSequence++},
+      {tag: 'description', label: 'Description', type: 'text', isRequired: false, id: this.idSequence++}
     ];
     this.data.presets = presets;
     this.data.pendingChanges = true;
@@ -59,9 +65,9 @@ module.exports = Reflux.createStore({
     data.forEach(function(tag){
       var preset = {};
       if(tag == 'osm_id'){
-         preset = {tag:'orig_osm_id', label: 'orig_osm_id', type: 'text', isRequired: false, mapTo: tag};
+         preset = {tag:'orig_osm_id', label: 'orig_osm_id', type: 'text', isRequired: false, mapTo: tag, id: _this.idSequence++};
       }else{
-         preset = {tag, label: tag, type: 'text', isRequired: false, mapTo: tag};
+         preset = {tag, label: tag, type: 'text', isRequired: false, mapTo: tag, id: _this.idSequence++};
       }
       _this.data.presets.push(preset);
     });
@@ -89,9 +95,9 @@ module.exports = Reflux.createStore({
     });
   },
 
-  deletePreset(tag){
-    debug("delete preset:"+ tag);
-    _remove(this.data.presets, {tag});
+  deletePreset(id){
+    debug("delete preset:"+ id);
+    _remove(this.data.presets, {id});
     this.data.pendingChanges = true;
     this.trigger(this.data);
     actions.presetsChanged(this.data.presets);
@@ -103,23 +109,24 @@ module.exports = Reflux.createStore({
       tag: '',
       label: '',
       type: 'text',
-      isRequired: false
+      isRequired: false,
+      id: this.idSequence++
     });
     this.data.pendingChanges = true;
     this.trigger(this.data);
     actions.presetsChanged(this.data.presets);
   },
 
- updatePreset(tag, preset){
-   debug("update preset:" + tag);
-   var i = _findIndex(this.data.presets, {tag});
+ updatePreset(id, preset){
+   debug("update preset:" + id);
+   var i = _findIndex(this.data.presets, {id});
    if(i >= 0){
      this.data.presets[i] = preset;
      this.data.pendingChanges = true;
-     this.trigger(this.data);
-     actions.presetsChanged(this.data.presets);
+     //this.trigger(this.data);
+     //actions.presetsChanged(this.data.presets);
    }else{
-     debug("Can't find preset with tag: "+ tag);
+     debug("Can't find preset with id: "+ id);
    }
 
  },
