@@ -113,11 +113,11 @@ save(){
     NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
-  this.setState({saving: true});
 
   //remove the map buttons so they are not saved
   this.removeMapCloseButtons();
-  this.handleBodyChange($('.storybody').html());
+  var body = $('.storybody').html();
+  this.setState({saving: true});
 
   //get first line
   var firstline = this.getFirstLine();
@@ -128,7 +128,7 @@ save(){
   var url = '';
   var story = {
       title: this.state.title,
-      body: this.state.body,
+      body,
       firstline,
       firstimage
   };
@@ -276,6 +276,12 @@ pasteHtmlAtCaret(html) {
 },
 
 onAddMap(map_id){
+  if(this.state.editingMap){
+    //refresh the iframe for this map
+    $( '#map-' + map_id + ' iframe' ).attr( 'src', function ( i, val ) { return val; });
+    this.setState({editingMap: false});
+    return;
+  }
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id;
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
@@ -284,22 +290,23 @@ onAddMap(map_id){
 },
 
 removeMap(map_id){
-  //remove from content
- $('#map-'+map_id).remove();
- this.handleBodyChange($('.storybody').html());
-
-  //TODO: tell the server to remove the map
-  /*
-  request.post('/api/')
-  .type('json').accept('json')
-  .send({
-    story_id,
-    map_id
-  })
-  .end(function(err, res){
-
+  var _this = this;
+  ConfirmationActions.showConfirmation({
+    title: _this.__('Confirm Map Removal'),
+    message: _this.__('Please confirm that you want to remove this map'),
+    onPositiveResponse(){
+      CreateMapActions.deleteMap(map_id, function(err){
+        if(err){
+          MessageActions.showMessage({title: _this.__('Error'), message: err});
+        }else{
+          //remove from content
+           $('#map-'+map_id).remove();
+           _this.handleBodyChange($('.storybody').html());
+        }
+      });
+    }
   });
-  */
+
 },
 
 addMapCloseButtons(){
@@ -309,6 +316,7 @@ addMapCloseButtons(){
     var removeButton = (
       <div>
         <a onClick={function(){_this.removeMap(map_id);}} className="btn-floating waves-effect waves-light omh-btn"><i className="material-icons">close</i></a>
+        <a onClick={function(){_this.editMap(map_id);}} className="btn-floating waves-effect waves-light omh-btn"><i className="material-icons">edit</i></a>
       </div>
     );
     $(map).append( '<div class="map-remove-button" id="remove-button-' + map_id + '" style="position: absolute; top: 0; right: 0;"></div>');
@@ -350,6 +358,16 @@ showCreateMap(){
   }else {
     NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'});
   }
+},
+
+editMap(map_id){
+  var _this = this;
+  this.setState({editingMap: true});
+  CreateMapActions.editMap(map_id, function(err){
+    if(err){
+      MessageActions.showMessage({title: _this.__('Error'), message: err});
+    }
+  });
 },
 
 showImageCrop(){

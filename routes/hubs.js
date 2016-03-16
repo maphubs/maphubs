@@ -559,6 +559,56 @@ module.exports = function(app) {
     }
   });
 
+  app.post('/hub/:hubid/api/map/save', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+
+    var data = req.body;
+    if(data && data.layers && data.style && data.position && data.map_id){
+      Map.allowedToModify(data.map_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Map.updateMap(data.map_id, data.layers, data.style, data.position, data.title, user_id)
+          .then(function(){
+            res.status(200).send({success: true});
+          }).catch(apiError(res, 500));
+        }else{
+          notAllowedError(res, 'map');
+        }
+      }).catch(apiError(res, 500));
+    }else{
+      apiDataError(res);
+    }
+  });
+
+  app.post('/hub/:hubid/api/map/delete', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+
+    var data = req.body;
+    if(data && data.map_id){
+      Map.allowedToModify(data.map_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Map.deleteMap(data.map_id)
+          .then(function(){
+            res.status(200).send({success: true});
+          }).catch(apiError(res, 500));
+        }else{
+          notAllowedError(res, 'map');
+        }
+      }).catch(apiError(res, 500));
+    }else{
+      apiDataError(res);
+    }
+  });
+
   //Hub Management
   app.post('/hub/:hubid/api/save', function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {

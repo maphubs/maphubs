@@ -448,6 +448,7 @@ map.on('mousemove', function(e) {
 
 
           if(this.props.fitBounds) {
+
             if(!isEqual(this.props.fitBounds,prevProps.fitBounds)) {
               //this.map.flyTo({center: [0, 0], zoom: 9});
               var bounds = this.props.fitBounds;
@@ -477,6 +478,12 @@ map.on('mousemove', function(e) {
           this.setState({glStyle: nextProps.glStyle});
       }
 
+    }
+
+    if(nextProps.fitBounds) {
+      var bounds = nextProps.fitBounds;
+        this.map.fitBounds([[bounds[0], bounds[1]],
+                      [bounds[2], bounds[3]]]);
     }
 
 

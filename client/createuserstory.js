@@ -6,6 +6,7 @@ const CreateUserStory = require('../views/createuserstory');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
+require('../node_modules/react-colorpickr/react-colorpickr.css');
 require('../css/app.css');
 require('../css/feedback-right.css');
 require('./story.css');

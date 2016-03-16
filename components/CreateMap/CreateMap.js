@@ -199,20 +199,37 @@ var CreateMap = React.createClass({
       }
 
     }else if(this.props.hubStoryMap || this.props.userStoryMap){
-      Actions.createStoryMap(position, function(err){
-        if(err){
-          //display error to user
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          //hide designer
-          Actions.closeMapDesigner();
-          NotificationActions.showNotification({message: _this.__('Map Saved')});
-          _this.onCreate();
+        if(!this.state.map_id || this.state.map_id == -1){
+          Actions.createStoryMap(position, function(err){
+            if(err){
+              //display error to user
+              MessageActions.showMessage({title: _this.__('Error'), message: err});
+            }else{
+              //hide designer
+              Actions.closeMapDesigner();
+              NotificationActions.showNotification({message: _this.__('Map Saved')});
+              _this.onCreate();
 
-          //reset the store
-          Actions.reset();
-        }
-      });
+              //reset the store
+              Actions.reset();
+            }
+          });
+        }else{
+          Actions.saveMap(position, function(err){
+            if(err){
+              //display error to user
+              MessageActions.showMessage({title: _this.__('Error'), message: err});
+            }else{
+              //hide designer
+              Actions.closeMapDesigner();
+              NotificationActions.showNotification({message: _this.__('Map Saved')});
+              _this.onCreate();
+
+              //reset the store
+              Actions.reset();
+            }
+          });          
+      }
     } else if(this.props.hubMap){
       this.props.onSaveHubMap(this.state.mapLayers, this.state.mapStyle, position);
       Actions.closeMapDesigner();

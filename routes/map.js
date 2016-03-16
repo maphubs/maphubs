@@ -3,7 +3,7 @@ var knex = require('../connection.js');
 var queryBbox = require('../services/query-bbox.js');
 var XML = require('../services/xml.js');
 var Promise = require('bluebird');
-var Node = require('../models/node-model.js');
+//var Node = require('../models/node-model.js');
 var User = require('../models/user');
 var Layer = require('../models/layer');
 var Map = require('../models/map');
@@ -264,7 +264,7 @@ module.exports = function(app) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.position && data.map_id && data.title){
+      if(data && data.layers && data.style && data.position && data.map_id){
         Map.allowedToModify(data.map_id, user_id)
         .then(function(allowed){
           if(allowed){
@@ -306,4 +306,16 @@ module.exports = function(app) {
       }
     });
 
+    app.get('/api/map/info/:id', function(req, res) {
+      var map_id = parseInt(req.params.id || '', 10);
+      Promise.all([
+      Map.getMap(map_id),
+      Map.getMapLayers(map_id)
+      ])
+      .then(function(results){
+        var map = results[0];
+        map.layers = results[1];
+        res.status(200).send({success: true, map});
+      }).catch(apiError(res, 500));
+    });
 };
