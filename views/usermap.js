@@ -77,7 +77,7 @@ var UserMap = React.createClass({
   },
 
   componentDidMount(){
-    
+
   },
 
   componentDidUpdate(){
@@ -199,15 +199,19 @@ var UserMap = React.createClass({
             <i className="material-icons">insert_photo</i>
           </a>
         </li>
-        <li>
-          <a onClick={this.postToMedium} className="btn-floating tooltipped user-map-tooltip purple"
-            data-delay="50" data-position="left" data-tooltip={this.__('Post to Medium.com')}>
-            <i className="material-icons">publish</i>
-          </a>
-        </li>
+
       </ul>
     </div>
   );
+
+  /*
+  <li>
+    <a onClick={this.postToMedium} className="btn-floating tooltipped user-map-tooltip purple"
+      data-delay="50" data-position="left" data-tooltip={this.__('Post to Medium.com')}>
+      <i className="material-icons">publish</i>
+    </a>
+  </li>
+  */
 
     var bbox = this.props.map.position.bbox;
     var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
