@@ -43,7 +43,7 @@ var HubStories = React.createClass({
     return (
       <div>
         {addButton}
-        <ul className="collection with-header" style={{border: 'none'}}>
+        <div>
           {this.props.stories.map(function (story, i) {
             var editButton = '';
             if(_this.props.editing){
@@ -57,14 +57,16 @@ var HubStories = React.createClass({
               return (<div></div>);
             }
             return (
-              <li className="collection-item" key={story.story_id}>
-                {editButton}
-                <StorySummary story={story} />
-              </li>
+                <div className="card" key={story.story_id}>
+                  <div className="card-content">
+                  {editButton}
+                  <StorySummary story={story} />
+                </div>
+              </div>
             );
           })}
 
-        </ul>
+        </div>
       </div>
     );
   }
