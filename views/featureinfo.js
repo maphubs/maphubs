@@ -134,7 +134,7 @@ var FeatureInfo = React.createClass({
               </div>
               <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
                 <ReactDisqusThread
-                      shortname="openmaphub"
+                      shortname="maphubs"
                       identifier={'openmaphub-feature-' + this.props.feature.osm_id}
                       title={featureName}
                       />

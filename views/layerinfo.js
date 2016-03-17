@@ -503,7 +503,7 @@ var LayerInfo = React.createClass({
               </div>
               <div id="discuss" className="col s12" style={{display: tabContentDisplay}}>
                 <ReactDisqusThread
-                      shortname="openmaphub"
+                      shortname="maphubs"
                       identifier={'maphubs-layer-' + this.props.layer.layer_id}
                       title={this.props.layer.name}
                       />

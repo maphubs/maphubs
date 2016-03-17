@@ -69,7 +69,7 @@ var HubStory = React.createClass({
           <hr />
           <div className="addthis_sharing_toolbox"></div>
           <ReactDisqusThread
-                shortname="openmaphub"
+                shortname="maphubs"
                 identifier={'maphubs-story-' + story.story_id}
                 title={story.title}
                 />
