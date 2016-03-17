@@ -135,8 +135,9 @@ var FeatureInfo = React.createClass({
               <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
                 <ReactDisqusThread
                       shortname="maphubs"
-                      identifier={'openmaphub-feature-' + this.props.feature.osm_id}
-                      title={featureName}
+                      identifier={'openmaphub-feature-' + this.props.feature.layer.layer_id + '-' + this.props.feature.osm_id + '-' + featureName}
+                      url={baseUrl + '/feature/' + this.props.feature.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
+                      title={this.props.feature.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
                       />
               </div>
               <div id="notes" className="col s12" style={{position: 'relative', height: 'calc(100% - 48px)'}}>
