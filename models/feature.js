@@ -13,7 +13,7 @@ module.exports = {
     var _this = this;
     return Layer.getLayerByID(layer_id)
     .then(function(layer){
-    return _this.getOSMRecord(osm_id, layer.data_type)
+    return _this.getOSMRecord(osm_id, layer.data_type, layer.layer_id)
       .then(function(feature) {
           feature.layer = layer;
           return _this.getGeoJSON(feature.id, feature.layer_id)
@@ -67,19 +67,19 @@ module.exports = {
     });
   },
 
-  getOSMRecord(osm_id, dataType){
+  getOSMRecord(id, dataType, layer_id){
 
     var commands = [];
     switch(dataType){
       case 'polygon':
-        commands.push(knex('current_ways').where('id', osm_id));
-        commands.push(knex('current_relations').where('id', osm_id));
+        commands.push(knex('current_ways').where({id, layer_id}));
+        commands.push(knex('current_relations').where({id, layer_id}));
         break;
       case 'line':
-        commands.push(knex('current_ways').where('id', osm_id));
+        commands.push(knex('current_ways').where({id, layer_id}));
         break;
       case 'point':
-        commands.push(knex('current_nodes').where('id', osm_id));
+        commands.push(knex('current_nodes').where({id, layer_id}));
         break;
       default:
         break;
@@ -94,11 +94,11 @@ module.exports = {
       var osmRecord = null;
 
       if(combined.length <= 0){
-        log.error("No records found for id:" + osm_id + ' of type:' + dataType);
+        log.error("No records found for id:" + id + ' for layer:' + layer_id);
 
       }else if(combined.length > 1){
         osmRecord = combined[0];
-        log.error("More than one record found for id:" + osm_id + ' of type:' + dataType);
+        log.error("More than one record found for id:" + id + ' for layer:' + layer_id);
       }else {
         //this is only one
         osmRecord = combined[0];
