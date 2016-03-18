@@ -223,7 +223,7 @@ module.exports = Reflux.createStore({
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         _this.setState({layer});
-        _this.trigger(this.state);
+        _this.trigger(_this.state);
         cb();
       });
     });
