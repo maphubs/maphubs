@@ -50,7 +50,9 @@ var HubMap = React.createClass({
 
 
   componentDidUpdate(){
-    window.dispatchEvent(new Event('resize'));
+    var evt = document.createEvent('UIEvents');
+    evt.initUIEvent('resize', true, false, window, 0);
+    window.dispatchEvent(evt);
   },
 
   showMapEdit(){

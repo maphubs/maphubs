@@ -66,7 +66,7 @@ var StorySummary = React.createClass({
       image = (
         <div>
           <a href={linkUrl}>
-          <img className="responsive-img" style={{height: '180px', width: '100%', objectFit: 'cover'}} src={this.props.story.firstimage} />
+          <div style={{height: '180px', width: '100%', backgroundImage: 'url('+this.props.story.firstimage +')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
           </a>
         </div>
       );

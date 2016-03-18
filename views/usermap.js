@@ -83,7 +83,9 @@ var UserMap = React.createClass({
   componentDidUpdate(){
     $('.user-map-tooltip').tooltip();
     debounce(function(){
-      window.dispatchEvent(new Event('resize'));
+      var evt = document.createEvent('UIEvents');
+      evt.initUIEvent('resize', true, false, window, 0);
+      window.dispatchEvent(evt);
     }, 300);
   },
 

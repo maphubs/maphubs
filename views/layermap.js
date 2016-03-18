@@ -60,7 +60,9 @@ var LayerMap = React.createClass({
   },
 
   componentDidUpdate(){
-    window.dispatchEvent(new Event('resize'));
+    var evt = document.createEvent('UIEvents');
+    evt.initUIEvent('resize', true, false, window, 0);
+    window.dispatchEvent(evt);
   },
 
 	render() {
@@ -95,7 +97,7 @@ var LayerMap = React.createClass({
         <div className="row">
         <div className="col s12 no-padding">
           <Map className="map-absolute map-with-header width-full"
-            navPosition="top-right" 
+            navPosition="top-right"
             glStyle={this.props.layer.style} title={this.props.layer.name}>
             {legend}
             <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'9999'}}></div>

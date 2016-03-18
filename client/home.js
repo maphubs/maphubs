@@ -1,6 +1,7 @@
 const React  = require('react');
 const ReactDOM = require('react-dom');
 
+require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");

@@ -95,7 +95,7 @@ module.exports = {
       test: /\.jsx?$/,
       loader: 'babel-loader',
 
-      include: [/views/, /components/, /client/,/react-slick/, /medium-editor/, /reflux-state-mixin/, /react-colorpickr/],
+      include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/,/react-slick/, /medium-editor/, /reflux-state-mixin/, /react-colorpickr/],
       query: {
         presets: [
           "es2015",

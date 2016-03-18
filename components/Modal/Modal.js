@@ -105,7 +105,9 @@ var Modal = React.createClass({
         $('.lean-overlay').attr('z-index', firstIndex-1);
       }
 
-      window.dispatchEvent(new Event('resize'));
+      var evt = document.createEvent('UIEvents');
+      evt.initUIEvent('resize', true, false, window, 0);
+      window.dispatchEvent(evt);
     } else if(prevProps.show && !this.props.show){
       //switch from on to off
       $('#'+this.props.id).closeModal();

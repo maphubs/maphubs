@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 
 const CreateLayer = require('../views/createlayer');
 
+require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");

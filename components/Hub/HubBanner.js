@@ -149,7 +149,6 @@ var HubBanner = React.createClass({
 
       );
     }
-    if(this.state.hub.hasLogoImage)
     var logoImage = '', bannerImage= '';
     if(this.state.logoImage){ //use new image first
       logoImage = (
@@ -172,11 +171,11 @@ var HubBanner = React.createClass({
       );
     }
     if(this.state.bannerImage){
-      bannerImage = (<img src={this.state.bannerImage}
-        className="responsive-img"
-        style={{height, width: '100%', position: 'absolute', top: 0, objectFit: 'cover'}}/>);
+      bannerImage = (<div
+        style={{height, width: '100%', position: 'absolute', top: 0, backgroundImage: 'url('+this.state.bannerImage +')', backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
     } else if (this.state.hub.hasBannerImage) {
-      bannerImage = (<img src={'/hub/' + this.state.hub.hub_id + '/images/banner'} className="responsive-img" style={{height, width: '100%', position: 'absolute', top: 0, objectFit: 'cover'}}/>);
+      bannerImage = (<div
+      style={{height, width: '100%', position: 'absolute', top: 0, backgroundImage: 'url("/hub/' + this.state.hub.hub_id + '/images/banner")', backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
     } else{ //show placeholder
       bannerImage = (
         <div className="center center-align " style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '250px', position: 'absolute', top: 0, borderColor:'#bdbdbd',  borderStyle: 'dashed', borderWidth: '3px'}}>

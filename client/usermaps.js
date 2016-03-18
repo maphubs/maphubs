@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 
 const UserMaps = require('../views/usermaps');
 
+require('babel-polyfill');
 require('jquery');
 require('../node_modules/slick-carousel/slick/slick.css');
 require('../node_modules/slick-carousel/slick/slick-theme.css');
@@ -11,7 +12,6 @@ require('../node_modules/react-colorpickr/react-colorpickr.css');
 require("materialize-css");
 
 require('../css/usermaps.css');
-//require("materialize-css/dist/css/materialize.min.css");
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;

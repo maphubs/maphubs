@@ -1,4 +1,4 @@
-var log = require('./services/log');
+var debug = require('./services/debug')('i18n');
 var i18n = require("i18n");
 i18n.configure({
     locales:['en', 'fr', 'es'],
@@ -6,7 +6,7 @@ i18n.configure({
     defaultLocale: 'en',
     extension: '.json',
     logErrorFn(msg) {
-        log.error(msg);
+        debug(msg);
     }
 });
 

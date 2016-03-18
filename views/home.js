@@ -47,7 +47,6 @@ var Home = React.createClass({
     };
   },
   componentDidUpdate(){
-    //window.dispatchEvent(new Event('resize'));
     if(this.state.searchResult){
       var scrollTarget = $(ReactDOM.findDOMNode(this.refs.search));
       $('html,body').animate({
