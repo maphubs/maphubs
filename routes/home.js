@@ -15,12 +15,14 @@ module.exports = function(app) {
       var featuredLayers = results[0];
       var featuredGroups = results[1];
       var featuredHubs = results[2];
-      res.render('home', {title: 'MapHubs',
-      props: {
-        featuredLayers, featuredGroups, featuredHubs
-      }, req});
+      res.render('home', {
+        title: 'MapHubs',
+        mailchimp: true,
+        props: {
+          featuredLayers, featuredGroups, featuredHubs
+        }, req
+      });
     }).catch(nextError(next));
-
   });
-
+  
 };
