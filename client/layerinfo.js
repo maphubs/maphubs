@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <LayerInfo layer={data.layer} canEdit={data.canEdit} stats={data.stats} locale={data.locale}/>,
+    <LayerInfo layer={data.layer} canEdit={data.canEdit} stats={data.stats} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

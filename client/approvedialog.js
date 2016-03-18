@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Dialog transactionID={data.transactionID} user={data.user} client={data.client} locale={data.locale}/>,
+    <Dialog transactionID={data.transactionID} user={data.user} client={data.client} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

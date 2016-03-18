@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <HubBuilder locale={data.locale}/>,
+    <HubBuilder locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Signup locale={data.locale}/>,
+    <Signup locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <FeatureInfo feature={data.feature} notes={data.notes} canEdit={data.canEdit} locale={data.locale}/>,
+    <FeatureInfo feature={data.feature} notes={data.notes} canEdit={data.canEdit} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

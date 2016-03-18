@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <HubMap hub={data.hub} layers={data.layers} canEdit={data.canEdit} locale={data.locale}/>,
+    <HubMap hub={data.hub} layers={data.layers} canEdit={data.canEdit} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

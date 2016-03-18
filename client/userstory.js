@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <UserStory story={data.story} username={data.username} canEdit={data.canEdit} locale={data.locale}/>,
+    <UserStory story={data.story} username={data.username} canEdit={data.canEdit} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

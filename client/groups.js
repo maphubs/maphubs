@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Groups featuredGroups={data.featuredGroups} recentGroups={data.recentGroups} popularGroups={data.popularGroups} locale={data.locale}/>,
+    <Groups featuredGroups={data.featuredGroups} recentGroups={data.recentGroups} popularGroups={data.popularGroups} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 

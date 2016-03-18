@@ -17,7 +17,8 @@ var About = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    version: React.PropTypes.string
   },
 
   render() {
@@ -37,6 +38,11 @@ var About = React.createClass({
                 <div style={{margin: 'auto', display: 'block'}}>
                   <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">{this.__('MapHubs Features')}</a>
                 </div>
+            </div>
+            <div className="divider"></div>
+            <div className="row">
+              <p>MapHubs Version: {this.props.version}</p>
+              <p>MapHubs is open source and avaliable on GitHub at https://github.com/maphubs/maphubs</p>
             </div>
           </main>
           <Footer />

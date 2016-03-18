@@ -17,6 +17,8 @@ var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
 var log = require('./log');
+var pjson = require('../package.json');
+var version = pjson.version;
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
 };
@@ -68,6 +70,8 @@ function createEngine(engineOptions) {
       }
       options.props.locale = locale;
 
+      //include version number in all pages for debugging
+      options.props.version = version;
 
       var appData = JSON.stringify(options.props, null, 2);
 
@@ -168,6 +172,7 @@ function createEngine(engineOptions) {
           <script type="text/javascript">
               window.doorbellOptions = {
                   appKey: 'tXwVQFgJHc8ttf07IOySRYG2Ybf1jcpajE4aNOEIhnK7Aw1G3ZVgwl8uKT0s5vBc',
+                  tags: 'new,` + version +`',
                   strings: {
                        'feedback-button-text': '` + req.__('Feedback') + `',
 
@@ -188,7 +193,8 @@ function createEngine(engineOptions) {
                        'message-error-message-too-short': '` + req.__('Your message is too short') + `'
                    },
                   properties: {
-                    username: '` + username + `'
+                    username: '` + username + `',
+                    version: '` + version + `'
                   }
               };
               (function(d, t) {
