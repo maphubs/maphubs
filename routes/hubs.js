@@ -460,6 +460,7 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     var data = req.body;
     if (data && data.story_id && data.title && data.body && data.firstline) {
+      data.title = data.title.replace('&nbsp;', '');
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){

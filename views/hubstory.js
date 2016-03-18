@@ -40,13 +40,13 @@ var HubStory = React.createClass({
 
   render() {
     var story = this.props.story;
-
+    var title = story.title.replace('&nbsp;', '');
     var button = '';
     if(this.props.canEdit){
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large red tooltipped"
-            href={'/story/' + this.props.story.story_id + '/edit/' + slug(this.props.story.title)}
+            href={'/story/' + this.props.story.story_id + '/edit/' + slug(title)}
             data-delay="50" data-position="left" data-tooltip={this.__('Edit')}>
             <i className="large material-icons">mode_edit</i>
           </a>
@@ -63,7 +63,7 @@ var HubStory = React.createClass({
           <HubBanner subPage={true}/>
         </div>
         <div className="container">
-          <h3 className="story-title">{story.title}</h3>
+          <h3 className="story-title">{title}</h3>
           <div className="story-content" dangerouslySetInnerHTML={{__html: story.body}}></div>
           <br />
           <hr />
@@ -71,7 +71,7 @@ var HubStory = React.createClass({
           <ReactDisqusThread
                 shortname="maphubs"
                 identifier={'maphubs-story-' + story.story_id}
-                title={story.title}
+                title={title}
                 />
         </div>
         {button}

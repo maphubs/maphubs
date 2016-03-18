@@ -40,7 +40,7 @@ var StorySummary = React.createClass({
 
 
   render(){
-
+    var title = this.props.story.title.replace('&nbsp;', '');
 
 
     var linkUrl = '';
@@ -59,7 +59,7 @@ var StorySummary = React.createClass({
       );
     }
 
-    linkUrl += '/story/' + this.props.story.story_id + '/' + slug(this.props.story.title);
+    linkUrl += '/story/' + this.props.story.story_id + '/' + slug(title);
 
     var image = '';
     if(this.props.story.firstimage){
@@ -83,7 +83,7 @@ var StorySummary = React.createClass({
          </IntlProvider>
        {image}
        <a href={linkUrl}>
-         <h5 className="grey-text text-darken-4 story-title">{this.props.story.title}</h5>
+         <h5 className="grey-text text-darken-4 story-title">{title}</h5>
        </a>
 
        <div className="story-content">

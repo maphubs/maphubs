@@ -49,13 +49,14 @@ var UserStory = React.createClass({
         </div>
       );
     }
+    var title = story.title.replace('&nbsp;', '');
     /*eslint-disable react/no-danger*/
     return (
       <div>
         <Header />
         <main>
           <div className="container">
-            <h3 className="story-title">{story.title}</h3>
+            <h3 className="story-title">{title}</h3>
             <div className="story-content" dangerouslySetInnerHTML={{__html: story.body}}></div>
             <br />
             <hr />
@@ -63,7 +64,7 @@ var UserStory = React.createClass({
             <ReactDisqusThread
                   shortname="maphubs"
                   identifier={'maphubs-story-' + story.story_id}
-                  title={story.title}
+                  title={title}
                   />
           </div>
           {button}
