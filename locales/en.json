@@ -358,5 +358,9 @@
 	"Explore Hubs": "Explore Hubs",
 	"View Hubs": "View Hubs",
 	"Search for Data": "Search for Data",
-	"Map already contains this layer": "Map already contains this layer"
+	"Map already contains this layer": "Map already contains this layer",
+	"Page not found": "Page not found",
+	"The page you request was not found.": "The page you request was not found.",
+	"Unauthorized": "Unauthorized",
+	"You are not authorized to access this page.": "You are not authorized to access this page."
 }
