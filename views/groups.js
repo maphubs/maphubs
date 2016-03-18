@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var debug = require('../services/debug')('views/groups');
@@ -204,6 +205,7 @@ var Groups = React.createClass({
               </div>
             </div>
           </main>
+          <Footer />
       </div>
 		);
 	}

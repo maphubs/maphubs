@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var StorySummary = require('../components/Story/StorySummary');
 
 var Reflux = require('reflux');
@@ -77,6 +78,7 @@ var UserStories = React.createClass({
         </div>
         {button}
       </main>
+      <Footer />
 			</div>
 		);
 	}

@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var slug = require('slug');
@@ -213,14 +214,9 @@ var Layers = React.createClass({
             </a>
           </div>
         </main>
+        <Footer />
       </div>
 		);
 	}
 });
-/*<h4>Agriculture</h4>
-<CardCarousel cards={cards} />
-<h4>Mining</h4>
-<CardCarousel cards={cards} />
-<h4>REDD Projects</h4>
-<CardCarousel cards={cards} />*/
 module.exports = Layers;

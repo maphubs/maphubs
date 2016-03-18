@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var StorySummary = require('../components/Story/StorySummary');
 
 var Reflux = require('reflux');
@@ -25,6 +26,7 @@ var Stories = React.createClass({
 		return (
       <div>
         <Header activePage="stories"/>
+        <main>
         <div className="container">
           <h4>{this.__('Recent Stories')}</h4>
             {this.props.stories.map(function (story) {
@@ -38,6 +40,8 @@ var Stories = React.createClass({
             })}
 
         </div>
+        </main>
+        <Footer />
 			</div>
 		);
 	}

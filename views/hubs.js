@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var debug = require('../services/debug')('views/hubs');
@@ -126,6 +127,7 @@ var Hubs = React.createClass({
               </a>
             </div>
           </main>
+          <Footer />
       </div>
 		);
 	}

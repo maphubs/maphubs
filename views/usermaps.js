@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var CreateMap = require('../components/CreateMap/CreateMap');
@@ -125,6 +126,7 @@ var UserMaps = React.createClass({
           {myMaps}
           {createMaps}
         </main>
+        <Footer />
       </div>
 		);
 	}

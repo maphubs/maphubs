@@ -5,6 +5,7 @@ var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
 var Header = require('../components/header');
+var Footer = require('../components/footer');
 
 var Error = React.createClass({
 
@@ -32,11 +33,14 @@ var Error = React.createClass({
     return (
       <div>
         <Header />
-        <div className="container s12">
-          <h3 className="center-align">{this.props.title}</h3>
-          <p className="flow-text center-align">{this.props.error}</p>
-          <p className="flow-text center-align"><a href={this.props.url} target="_blank">{this.props.url}</a></p>
-        </div>
+        <main>
+          <div className="container s12">
+            <h3 className="center-align">{this.props.title}</h3>
+            <p className="flow-text center-align">{this.props.error}</p>
+            <p className="flow-text center-align"><a href={this.props.url} target="_blank">{this.props.url}</a></p>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
