@@ -42,7 +42,7 @@ var About = React.createClass({
             <div className="divider"></div>
             <div className="row">
               <p>MapHubs Version: {this.props.version}</p>
-              <p>MapHubs is open source and avaliable on GitHub at https://github.com/maphubs/maphubs</p>
+              <p>MapHubs is open source and avaliable on GitHub at <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
             </div>
           </main>
           <Footer />
