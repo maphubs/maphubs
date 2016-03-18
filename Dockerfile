@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y wget git curl libssl-dev openssl nano u
 #install node, npm, pm2
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash
 RUN apt-get install -y nodejs
-RUN npm install -g npm && npm install pm2 -g
+RUN npm install -g npm@3.8.0 && npm install pm2 -g
 
 #create non-root user
 RUN useradd -s /bin/bash -m -d /home/maphubs -c "maphubs" maphubs && chown -R maphubs:maphubs /home/maphubs
