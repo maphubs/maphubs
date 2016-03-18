@@ -465,8 +465,6 @@ var LayerInfo = React.createClass({
                 <li className="tab col s4"><a href="#discuss">{this.__('Discuss')}</a></li>
                 <li className="tab col s4"><a href="#data" onClick={this.onTabSelect}>{this.__('Data')}</a></li>
                 <li className="tab col s4"><a href="#export">{this.__('Export')}</a></li>
-
-
               </ul>
               <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
                 <div className="row" style={{height: 'calc(100% - 47px)', marginLeft:'10px', marginRight: '10px'}}>
@@ -480,7 +478,7 @@ var LayerInfo = React.createClass({
                   </p>
                 <p style={{fontSize: '16px'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
                 <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
-                <p style={{fontSize: '16px'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
+                <p style={{fontSize: '16px', wordWrap: 'break-word'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
 
                 </div>
 
