@@ -5,15 +5,8 @@ require('babel-polyfill');
 var path = require('path');
 var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
 
-var PROD = JSON.parse(process.env.PROD_DEV || "0");
-
-if(PROD) console.log('webpack using PROD');
-
 module.exports = {
   devtool: 'eval',
-  devServer: {
-       devtool: 'eval'
-   },
   entry: {
     login: "./client/login",
     approvedialog: "./client/approvedialog",
@@ -59,7 +52,7 @@ module.exports = {
     signup: "./client/signup",
     pendingconfirmation: "./client/pendingconfirmation",
     emailconfirmation: "./client/emailconfirmation",
-    vendor: ["materialize-css/dist/css/materialize.min.css", "./css/app.css", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl"],
+    vendor: ["materialize-css/dist/css/materialize.min.css", "./css/app.css", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./services/locales"],
     clientconfig: ["./clientconfig"]
     //c: ["./c", "./d"] example of multiple files into one output
@@ -127,9 +120,7 @@ module.exports = {
                        minChunks: Infinity
    }),
    new ExtractTextPlugin("[name].css"),
-   PROD ?  new webpack.optimize.UglifyJsPlugin({minimize: true, compress: true}) : new webpack.optimize.UglifyJsPlugin({minimize: false})
-
-
+   new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly)$/)
   ]
 };
 

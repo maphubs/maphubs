@@ -21,7 +21,7 @@ var OMH_CONFIG = {
 EOF
 
 #rebuild client files
-PROD_DEV=1 node node_modules/webpack/bin/webpack.js
+node node_modules/webpack/bin/webpack.js --config webpack.config.min.js
 
 #run any pending database migrations
 node node_modules/knex/lib/bin/cli.js migrate:latest --env production

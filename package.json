@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "DEBUG=*,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:* node app.js",
-    "build": "PROD_DEV=1 NODE_ENV=production node node_modules/webpack/bin/webpack.js",
+    "build": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "debug": "DEBUG=*,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:* node --debug app.js",
     "prod-test": "NODE_ENV=production node app.js"
   },
