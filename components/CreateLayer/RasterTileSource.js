@@ -43,6 +43,12 @@ var RasterTileSource = React.createClass({
     };
   },
 
+  componentWillMount(){
+    Formsy.addValidationRule('isHttps', function (values, value) {
+        return value.startsWith('https://');
+    });
+  },
+
   enableButton () {
     this.setState({
       canSubmit: true
@@ -116,8 +122,9 @@ var RasterTileSource = React.createClass({
             <div>
               <p>Raster Tile Source</p>
             <div className="row">
-              <TextInput name="rasterTileUrl" label={this.__('Raster Tile URL')} icon="info" className="col s12" validations="maxLength:200" validationErrors={{
-                     maxLength: this.__('Must be 200 characters or less.')
+              <TextInput name="rasterTileUrl" label={this.__('Raster Tile URL')} icon="info" className="col s12" validations="maxLength:200,isHttps" validationErrors={{
+                     maxLength: this.__('Must be 200 characters or less.'),
+                     isHttps:  this.__('MapHubs requires SSL for external links, URLs must start with https://')
                  }} length={200}
                  dataPosition="top" dataTooltip={this.__('Raster URL for example:') +'http://myserver/tiles/{z}/{y}/{x}.png'}
                  required/>

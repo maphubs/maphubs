@@ -46,6 +46,12 @@ var AGOLSource = React.createClass({
     };
   },
 
+  componentWillMount(){
+    Formsy.addValidationRule('isHttps', function (values, value) {
+        return value.startsWith('https://');
+    });
+  },
+
   enableButton () {
       this.setState({
         canSubmit: true
@@ -150,8 +156,9 @@ var AGOLSource = React.createClass({
         <div>
           <p>{this.__('ArcGIS MapServer Query Source')}</p>
           <div className="row">
-            <TextInput name="mapServiceUrl" label={this.__('Map Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
-                   maxLength: this.__('Must be 250 characters or less.')
+            <TextInput name="mapServiceUrl" label={this.__('Map Service URL')} icon="info" className="col s12" validations="maxLength:250,isHttps" validationErrors={{
+                   maxLength: this.__('Must be 250 characters or less.'),
+                   isHttps:  this.__('MapHubs requires SSL for external links, URLs must start with https://')
                }} length={250}
                dataPosition="top" dataTooltip={this.__('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
                required/>
@@ -166,8 +173,9 @@ var AGOLSource = React.createClass({
         <div>
           <p>{this.__('ArcGIS FeatureService Query Source')}</p>
           <div className="row">
-            <TextInput name="featureServiceUrl" label={this.__('Feature Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
-                   maxLength: this.__('Must be 250 characters or less.')
+            <TextInput name="featureServiceUrl" label={this.__('Feature Service URL')} icon="info" className="col s12" validations="maxLength:250,isHttps" validationErrors={{
+                   maxLength: this.__('Must be 250 characters or less.'),
+                   isHttps:  this.__('MapHubs requires SSL for external links, URLs must start with https://')
                }} length={250}
                dataPosition="top" dataTooltip={this.__('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
                required/>
@@ -182,8 +190,9 @@ var AGOLSource = React.createClass({
         <div>
           <p>{this.__('ArcGIS MapServer Tiles')}</p>
           <div className="row">
-            <TextInput name="tileServiceUrl" label={this.__('MapServer Service URL')} icon="info" className="col s12" validations="maxLength:250" validationErrors={{
-                   maxLength: this.__('Must be 250 characters or less.')
+            <TextInput name="tileServiceUrl" label={this.__('MapServer Service URL')} icon="info" className="col s12" validations="maxLength:250,isHttps" validationErrors={{
+                   maxLength: this.__('Must be 250 characters or less.'),
+                   isHttps:  this.__('MapHubs requires SSL for external links, URLs must start with https://')
                }} length={250}
                dataPosition="top" dataTooltip={this.__('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
                required/>
