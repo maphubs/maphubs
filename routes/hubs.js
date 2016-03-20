@@ -130,7 +130,7 @@ module.exports = function(app) {
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
-        recordHubView(req.session, hub, user_id, next);
+        recordHubView(req.session, hub_id, user_id, next);
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           return renderHubPage(hub, false, req, res);
         } else {
