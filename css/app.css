@@ -649,6 +649,22 @@ textarea.materialize-textarea+label:after {
   .addthis_sharing_toolbox {
     display: none;
   }
+
+  #disqus_thread {
+    display: none;
+  }
+
+  #doorbell-button {
+    display: none;
+  }
+
+  .story-title {
+    font-size: 28px;
+  }
+
+  .embed-map-container {
+    page-break-inside: avoid;
+  }
 }
 
 #doorbell-button {
