@@ -12,6 +12,7 @@ module.exports = {
       return knex.select('omh.groups.*', knex.raw('(select sum(views) from omh.layers where owned_by_group_id=group_id) as layer_views'))
       .table('omh.groups')
       .where({published: true})
+      .whereRaw('(select sum(views) from omh.layers where owned_by_group_id=group_id) > 0')
       .orderBy('layer_views', 'desc')
       .limit(number);
     },
