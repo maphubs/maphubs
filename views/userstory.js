@@ -4,6 +4,8 @@ var Header =require('../components/header');
 var ReactDisqusThread = require('react-disqus-thread');
 var slug = require('slug');
 
+var StoryHeader = require('../components/Story/StoryHeader');
+
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
@@ -56,17 +58,24 @@ var UserStory = React.createClass({
         <Header />
         <main>
           <div className="container">
-            <h3 className="story-title">{title}</h3>
-            <div className="story-content" dangerouslySetInnerHTML={{__html: story.body}}></div>
-            <br />
-            <hr />
-            <div className="addthis_sharing_toolbox"></div>
-            <ReactDisqusThread
-                  shortname="maphubs"
-                  identifier={'maphubs-story-' + story.story_id}
-                  title={title}
-                  />
-          </div>
+            <div className="row" style={{marginTop: '20px'}}>
+              <StoryHeader story={story} />
+            </div>
+            <div className="row">
+              <h3 className="story-title">{title}</h3>
+              <div className="story-content" dangerouslySetInnerHTML={{__html: story.body}}></div>
+            </div>
+              <hr />
+              <div className="row">
+                <div className="addthis_sharing_toolbox"></div>
+                <ReactDisqusThread
+                      shortname="maphubs"
+                      identifier={'maphubs-story-' + story.story_id}
+                      title={title}
+                      />
+                </div>
+
+              </div>
           {button}
         </main>
       </div>

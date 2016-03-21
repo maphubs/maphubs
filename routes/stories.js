@@ -6,6 +6,8 @@ var User = require('../models/user');
 var Story = require('../models/story');
 var Stats = require('../models/stats');
 
+var Promise = require('bluebird');
+
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
@@ -16,13 +18,17 @@ module.exports = function(app) {
 
   //Views
   app.get('/stories', function(req, res, next) {
-
-    Story.getRecentStories()
-      .then(function(result) {
+    Promise.all([
+      Story.getRecentStories(),
+      Story.getFeaturedStories(3)
+    ])
+      .then(function(results) {
+        var recentStories = results[0];
+        var featuredStories = results[1];
         res.render('stories', {
           title: 'Stories - MapHubs',
           props: {
-            stories: result
+            recentStories, featuredStories
           }, req
         });
       }).catch(nextError(next));
@@ -210,7 +216,7 @@ module.exports = function(app) {
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Story.updateStory(data.story_id, data.title, data.body, data.firstline, data.firstimage)
+          Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
             .then(function(result) {
               if (result && result == 1) {
                 res.send({

@@ -18,18 +18,18 @@ var Stories = React.createClass({
   },
 
   propTypes: {
-    stories: React.PropTypes.array,
+    recentStories: React.PropTypes.array,
+    featuredStories:  React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
 	render() {
-		return (
-      <div>
-        <Header activePage="stories"/>
-        <main>
-        <div className="container">
-          <h4>{this.__('Recent Stories')}</h4>
-            {this.props.stories.map(function (story) {
+    var featured = '';
+    if(this.props.featuredStories && this.props.featuredStories.length > 0){
+      featured = (
+        <div className="row">
+          <h4>{this.__('Featured Stories')}</h4>
+            {this.props.featuredStories.map(function (story) {
               return (
                 <div className="card" key={story.story_id}>
                   <div className="card-content">
@@ -38,7 +38,28 @@ var Stories = React.createClass({
                 </div>
               );
             })}
+        </div>
+      );
+    }
 
+		return (
+      <div>
+        <Header activePage="stories"/>
+        <main>
+        <div className="container">
+          {featured}
+          <div className="row">
+            <h4>{this.__('Recent Stories')}</h4>
+              {this.props.recentStories.map(function (story) {
+                return (
+                  <div className="card" key={story.story_id}>
+                    <div className="card-content">
+                    <StorySummary story={story} />
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
         </div>
         </main>
         <Footer />

@@ -51,6 +51,7 @@ var StoryEditor = React.createClass({
     return {
       title: this.props.story.title,
       body: this.props.story.body,
+      author: this.props.story.author,
       story_id: this.props.story.story_id,
       unsavedChanges: false,
       saving: false
@@ -91,6 +92,10 @@ var StoryEditor = React.createClass({
   this.setState({title, unsavedChanges: true});
 },
 
+handleAuthorChange(author) {
+ this.setState({author, unsavedChanges: true});
+},
+
 getFirstLine(){
   var first_line = $('.storybody')
     .contents()
@@ -129,6 +134,7 @@ save(){
   var story = {
       title: this.state.title,
       body,
+      author: this.state.author,
       firstline,
       firstimage
   };
@@ -382,11 +388,24 @@ showImageCrop(){
 
   render() {
 
-    var createMap = '';
+    var createMap = '', author='';
     if(this.props.storyType == 'hub'){
       createMap = (
         <CreateMap onCreate={this.onAddMap} storyId={this.state.story_id}
           showTitleEdit={false} titleLabel={this.__('Add Map')} hubStoryMap/>
+      );
+
+      author = (
+        <div className="story-author">
+          <Editor
+         tag="b"
+         text={this.state.author}
+         onChange={this.handleAuthorChange}
+         options={{buttonLabels: 'fontawesome',
+           placeholder: {text: this.__('Enter the Author')},
+           disableReturn: true, buttons: []}}
+         />
+      </div>
       );
     }else if(this.props.storyType == 'user'){
       createMap = (
@@ -394,6 +413,8 @@ showImageCrop(){
           showTitleEdit={false} titleLabel={this.__('Add Map')} userStoryMap/>
       );
     }
+
+
 
     return (
       <div style={{position: 'relative'}}>
@@ -410,7 +431,9 @@ showImageCrop(){
              placeholder: {text: this.__('Enter a Title for Your Story')},
              disableReturn: true, buttons: []}}
          />
+
         </div>
+        {author}
        <div className="story-content">
          <Editor
            className="storybody"

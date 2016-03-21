@@ -471,12 +471,12 @@ module.exports = function(app) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.story_id && data.title && data.body && data.firstline) {
+    if (data && data.story_id && data.title && data.author && data.body && data.firstline) {
       data.title = data.title.replace('&nbsp;', '');
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Story.updateStory(data.story_id, data.title, data.body, data.firstline, data.firstimage)
+          Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
             .then(function(result) {
               if (result && result == 1) {
                 res.send({
@@ -532,11 +532,11 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     var hub_id = req.params.hubid;
     var data = req.body;
-    if (data && data.title && data.body && data.firstline) {
+    if (data && data.title && data.body && data.author && data.firstline) {
       Hub.allowedToModify(hub_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Story.createHubStory(hub_id, data.title, data.body, data.firstline, data.firstimage)
+          Story.createHubStory(hub_id, data.title, data.body, data.author, data.firstline, data.firstimage)
             .then(function(result) {
               if (result && result.length == 1) {
                 res.send({
