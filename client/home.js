@@ -1,9 +1,16 @@
 const React  = require('react');
 const ReactDOM = require('react-dom');
 
+if (!global.Intl) {
+ require('intl');
+ require('intl/locale-data/jsonp/en.js');
+ require('intl/locale-data/jsonp/es.js');
+ require('intl/locale-data/jsonp/fr.js');
+}
+
 require('babel-polyfill');
 require('jquery');
-require('intl');
+
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 var Home = require('../views/home');
@@ -21,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <Home
       featuredLayers={data.featuredLayers} featuredGroups={data.featuredGroups} featuredHubs={data.featuredHubs} featuredMaps={data.featuredMaps} featuredStories={data.featuredStories}
       popularLayers={data.popularLayers} popularGroups={data.popularGroups} popularHubs={data.popularHubs} popularMaps={data.popularMaps} popularStories={data.popularStories}
-      recentLayers={data.recentLayers} recentGroups={data.recentGroups} recentHubs={data.recentHubs} recentMaps={data.recentMaps} recentStories={data.recentStories} 
+      recentLayers={data.recentLayers} recentGroups={data.recentGroups} recentHubs={data.recentHubs} recentMaps={data.recentMaps} recentStories={data.recentStories}
       locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );

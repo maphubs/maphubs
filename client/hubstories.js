@@ -2,9 +2,13 @@ const React  = require('react');
 const ReactDOM = require('react-dom');
 
 const HubStories = require('../views/hubstories');
-
+if (!global.Intl) {
+ require('intl');
+ require('intl/locale-data/jsonp/en.js');
+ require('intl/locale-data/jsonp/es.js');
+ require('intl/locale-data/jsonp/fr.js');
+}
 require('jquery');
-require('intl');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 

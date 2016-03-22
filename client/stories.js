@@ -2,10 +2,14 @@ const React  = require('react');
 const ReactDOM = require('react-dom');
 
 const Stories = require('../views/stories');
-
+if (!global.Intl) {
+ require('intl');
+ require('intl/locale-data/jsonp/en.js');
+ require('intl/locale-data/jsonp/es.js');
+ require('intl/locale-data/jsonp/fr.js');
+}
 require('babel-polyfill');
 require('jquery');
-require('intl');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 require('../css/app.css');
