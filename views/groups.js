@@ -83,11 +83,15 @@ var Groups = React.createClass({
     var recentCards = [];
 
     this.props.featuredGroups.map(function(group){
+      var image_url = null;
+      if(group.hasimage){
+        image_url = '/group/' + group.group_id + '/image';
+      }
       featuredCards.push({
         id: group.group_id,
         title: group.name,
         description: group.description,
-        image_url: '/group/' + group.group_id + '/image',
+        image_url,
         link: '/group/' + group.group_id,
         group: group.group_id,
         type: 'group'
@@ -95,11 +99,15 @@ var Groups = React.createClass({
     });
 
     this.props.popularGroups.map(function(group){
+      var image_url = null;
+      if(group.hasimage){
+        image_url = '/group/' + group.group_id + '/image';
+      }
       popularCards.push({
         id: group.group_id,
         title: group.name,
         description: group.description,
-        image_url: '/group/' + group.group_id + '/image',
+        image_url,
         link: '/group/' + group.group_id,
         group: group.group_id,
         type: 'group'
@@ -107,11 +115,15 @@ var Groups = React.createClass({
     });
 
     this.props.recentGroups.map(function(group){
+      var image_url = null;
+      if(group.hasimage){
+        image_url = '/group/' + group.group_id + '/image';
+      }
       recentCards.push({
         id: group.group_id,
         title: group.name,
         description: group.description,
-        image_url: '/group/' + group.group_id + '/image',
+        image_url,
         link: '/group/' + group.group_id,
         group: group.group_id,
         type: 'group'
@@ -125,11 +137,15 @@ var Groups = React.createClass({
 
 
         this.state.searchResults.map(function(group){
+          var image_url = null;
+          if(group.hasimage){
+            image_url = '/group/' + group.group_id + '/image';
+          }
           searchCards.push({
             id: group.group_id,
             title: group.name,
             description: group.description,
-            image_url: '/group/' + group.group_id + '/image',
+            image_url,
             link: '/group/' + group.group_id,
             group: group.group_id,
             type: 'group'

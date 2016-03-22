@@ -1,5 +1,6 @@
 /* @flow weak */
 var Image = require('../models/image');
+var Story = require('../models/story');
 var debug = require('../services/debug')('routes/images');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
@@ -7,7 +8,15 @@ var nextError = require('../services/error-response').nextError;
 module.exports = function(app) {
 
   var processImage = function(image, req, res){
-    var dataArr = image.image.split(',');
+    if(!image){
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': 0
+      });
+      res.end('');
+      return;
+    }
+    var dataArr = image.split(',');
     var dataInfoArr = dataArr[0].split(':')[1].split(';');
     var dataType = dataInfoArr[0];
     var data = dataArr[1];
@@ -32,7 +41,7 @@ module.exports = function(app) {
     debug('getting image: ' + image_id);
     Image.getImageByID(image_id)
     .then(function(image){
-      var dataArr = image.image.split(',');
+      var dataArr = image.split(',');
       var dataInfoArr = dataArr[0].split(':')[1].split(';');
       var dataType = dataInfoArr[0];
       var data = dataArr[1];
@@ -49,24 +58,32 @@ module.exports = function(app) {
   app.get('/group/:id/image', function(req, res) {
     var group_id = req.params.id;
     Image.getGroupImage(group_id)
-    .then(function(image){
-      processImage(image, req, res);
+    .then(function(result){
+      processImage(result.image, req, res);
     }).catch(apiError(res, 404));
   });
 
   app.get('/hub/:id/images/logo', function(req, res) {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'logo')
-    .then(function(image){
-      processImage(image, req, res);
+    .then(function(result){
+      processImage(result.image, req, res);
     }).catch(apiError(res, 404));
   });
 
   app.get('/hub/:id/images/banner', function(req, res) {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'banner')
-    .then(function(image){
-      processImage(image, req, res);
+    .then(function(result){
+      processImage(result.image, req, res);
+    }).catch(apiError(res, 404));
+  });
+
+  app.get('/images/story/:id/firstimage', function(req, res) {
+    var story_id = req.params.id;
+    Story.getFirstImage(story_id)
+    .then(function(result){
+      processImage(result.firstimage, req, res);
     }).catch(apiError(res, 404));
   });
 

@@ -9,24 +9,35 @@ module.exports = {
     },
 
     getPopularGroups(number = 15){
-      return knex.select('omh.groups.*', knex.raw('(select sum(views) from omh.layers where owned_by_group_id=group_id) as layer_views'))
+      return knex.select('omh.groups.*',
+      knex.raw('(select sum(views) from omh.layers where owned_by_group_id=omh.groups.group_id) as layer_views'),
+      knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
+      )
       .table('omh.groups')
+      .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
       .where({published: true})
-      .whereRaw('(select sum(views) from omh.layers where owned_by_group_id=group_id) > 0')
+      .whereRaw('(select sum(views) from omh.layers where owned_by_group_id=omh.groups.group_id) > 0')
       .orderBy('layer_views', 'desc')
       .limit(number);
     },
 
     getRecentGroups(number = 15){
-      return knex.select('omh.groups.*', knex.raw('(select max(last_updated) from omh.layers where owned_by_group_id=group_id) as layers_updated'))
+      return knex.select('omh.groups.*',
+      knex.raw('(select max(last_updated) from omh.layers where owned_by_group_id=omh.groups.group_id) as layers_updated'),
+      knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
+      )
       .table('omh.groups')
+      .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
       .where({published: true})
       .orderBy('layers_updated', 'desc')
       .limit(number);
     },
 
     getFeaturedGroups(number = 15){
-      return knex.select().table('omh.groups')
+      return knex.select('omh.groups.*',
+        knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
+      ).table('omh.groups')
+      .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
       .where({published: true, featured: true})
       .orderBy('name')
       .limit(number);
@@ -51,7 +62,12 @@ module.exports = {
 
     getSearchResults(input) {
       input = input.toLowerCase();
-      return knex('omh.groups').whereRaw("lower(name) like '%" + input + "%'");
+      return knex.select('omh.groups.*',
+        knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
+      )
+      .table('omh.groups')
+      .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
+      .whereRaw("lower(name) like '%" + input + "%'");
     },
 
     getGroupsForUser(user_id) {

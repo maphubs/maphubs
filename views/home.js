@@ -61,11 +61,15 @@ var Home = React.createClass({
   },
 
   getGroupCard(group){
+    var image_url = null;
+    if(group.hasimage){
+      image_url = '/group/' + group.group_id + '/image';
+    }
     return {
       id: group.group_id,
       title: group.name,
       description: group.description,
-      image_url: '/group/' + group.group_id + '/image',
+      image_url,
       link: '/group/' + group.group_id,
       group: group.group_id,
       type: 'group'
@@ -109,10 +113,15 @@ var Home = React.createClass({
     }
     story_url += '/story/' + story.story_id + '/' + slug(title);
 
+    var image_url = null;
+    if(story.firstimage){
+      image_url = '/images/story/' + story.story_id + '/firstimage';
+    }
+
     return {
       id: story.story_id,
       title,
-      image_url: story.firstimage,
+      image_url,
       link: story_url,
       type: 'story',
       story

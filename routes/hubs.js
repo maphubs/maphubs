@@ -949,6 +949,12 @@ module.exports = function(app) {
     res.redirect(baseUrl + '/hub/' + hub_id + '/images/banner');
   });
 
+  app.get('/hub/:id/images/story/:storyid/firstimage', function(req, res) {
+    var storyid = req.params.storyid;
+
+    res.redirect(baseUrl + '/images/story/' + storyid + '/firstimage');
+  });
+
   app.get('/hub/:id/api/layers/search/suggestions', function(req, res) {
     var query = req.query;
     res.redirect(baseUrl + '/api/layers/search/suggestions?q='+ query.q);

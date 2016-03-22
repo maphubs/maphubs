@@ -20,8 +20,8 @@ module.exports = React.createClass({
   propTypes:  {
     id: React.PropTypes.string.isRequired,
     title: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string.isRequired,
-    image_url: React.PropTypes.string.isRequired,
+    description: React.PropTypes.string,
+    image_url: React.PropTypes.string,
     background_image_url: React.PropTypes.string,
     link: React.PropTypes.string.isRequired,
     group: React.PropTypes.string,
@@ -74,7 +74,7 @@ module.exports = React.createClass({
     }
     */
 
-    var typeIcon = '', iconName = '', toolTipText = '', 
+    var typeIcon = '', iconName = '', toolTipText = '',
     mapCardUserTag= '',
     storyTag = '';
     if(this.props.type){
@@ -122,6 +122,18 @@ module.exports = React.createClass({
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', height: '150px'}}>
             <img className="responsive-img" style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
             <img className="valign" width="100" height="100" style={{position: 'relative',width: '100px', borderRadius: '25px', margin: 'auto'}}  src={this.props.image_url} />
+          </div>
+        );
+      }else if(this.props.type == 'story' && !this.props.image_url){
+        image = (
+          <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
+            <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
+          </div>
+        );
+      }else if(this.props.type == 'group' && !this.props.image_url){
+        image = (
+          <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
+            <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
           </div>
         );
       }else{
