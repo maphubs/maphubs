@@ -34,7 +34,7 @@ module.exports = {
 
     getHubStories(hub_id, includeDrafts = false) {
       debug('get stories for hub: ' + hub_id);
-      var query = knex.select('omh.stories.story_id', 'omh.stories.title',
+      var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
        'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
        'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at', 'omh.stories.updated_at')
         .from('omh.stories')
