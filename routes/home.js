@@ -10,23 +10,23 @@ module.exports = function(app) {
 
   app.get('/', function(req, res, next) {
     Promise.all([
-      Layer.getFeaturedLayers(3),
-      Group.getFeaturedGroups(3),
-      Hub.getFeaturedHubs(3),
-      Map.getFeaturedMaps(3),
-      Story.getFeaturedStories(3),
+      Layer.getFeaturedLayers(2),
+      Group.getFeaturedGroups(2),
+      Hub.getFeaturedHubs(2),
+      Map.getFeaturedMaps(2),
+      Story.getFeaturedStories(2),
 
-      Layer.getPopularLayers(3),
-      Group.getPopularGroups(3),
-      Hub.getPopularHubs(3),
-      Map.getPopularMaps(3),
-      Story.getPopularStories(3),
+      Layer.getPopularLayers(2),
+      Group.getPopularGroups(2),
+      Hub.getPopularHubs(2),
+      Map.getPopularMaps(2),
+      Story.getPopularStories(2),
 
-      Layer.getRecentLayers(3),
-      Group.getRecentGroups(3),
-      Hub.getRecentHubs(3),
-      Map.getRecentMaps(3),
-      Story.getRecentStories(3)
+      Layer.getRecentLayers(2),
+      Group.getRecentGroups(2),
+      Hub.getRecentHubs(2),
+      Map.getRecentMaps(2),
+      Story.getRecentStories(2)
     ]).then(function(results){
       var featuredLayers = results[0];
       var featuredGroups = results[1];
