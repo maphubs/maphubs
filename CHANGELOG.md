@@ -1,7 +1,28 @@
 # Change Log
 
+## [0.1.6](https://github.com/maphubs/maphubs/tree/0.1.6) (2016-03-22)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.5...0.1.6)
+
+**Implemented enhancements:**
+
+- add featured maps and stories [\#62](https://github.com/maphubs/maphubs/issues/62)
+- add maps page and update map card style [\#57](https://github.com/maphubs/maphubs/issues/57)
+- require https for external services [\#53](https://github.com/maphubs/maphubs/issues/53)
+- create separate search page [\#52](https://github.com/maphubs/maphubs/issues/52)
+- improve story print style [\#51](https://github.com/maphubs/maphubs/issues/51)
+- add author/date to hub story lists [\#41](https://github.com/maphubs/maphubs/issues/41)
+
+**Fixed bugs:**
+
+- popular groups lists is sorting lowest first [\#56](https://github.com/maphubs/maphubs/issues/56)
+- error changing opacity on ArcGIS tile layer [\#8](https://github.com/maphubs/maphubs/issues/8)
+
 ## [0.1.5](https://github.com/maphubs/maphubs/tree/0.1.5) (2016-03-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.4...0.1.5)
+
+**Implemented enhancements:**
+
+- add mailing list signup to new maphubs.com [\#45](https://github.com/maphubs/maphubs/issues/45)
 
 **Fixed bugs:**
 
