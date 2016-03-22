@@ -970,6 +970,11 @@ module.exports = function(app) {
     res.redirect(baseUrl + '/api/layers/search?q='+ query.q);
   });
 
+  app.get('/hub/:id/api/user/search/suggestions', function(req, res) {
+    var query = req.query;
+    res.redirect(baseUrl + '/api/user/search/suggestions?q='+ query.q);
+  });
+
   app.get('/hub/:id/api/layers/all', function(req, res) {
     res.redirect(baseUrl + '/api/layers/all');
   });
