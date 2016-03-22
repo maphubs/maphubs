@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 
 const Stories = require('../views/stories');
 
+require('babel-polyfill');
 require('jquery');
 require('intl');
 require("materialize-css");
