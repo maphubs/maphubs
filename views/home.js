@@ -112,7 +112,6 @@ var Home = React.createClass({
     return {
       id: story.story_id,
       title,
-      description: story.firstline,
       image_url: story.firstimage,
       link: story_url,
       type: 'story',
