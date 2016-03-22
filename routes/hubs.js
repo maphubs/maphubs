@@ -728,36 +728,41 @@ module.exports = function(app) {
       if(data && data.hub_id && data.display_name && data.asAdmin !== undefined){
         User.getUserByName(data.display_name)
         .then(function(user){
-          Hub.allowedToModify(data.hub_id, session_user_id)
-          .then(function(allowed){
-            if(allowed){
-              var role = 'Member';
-              if(data.asAdmin){
-                role = 'Administrator';
+          if(user){
+            return Hub.allowedToModify(data.hub_id, session_user_id)
+            .then(function(allowed){
+              if(allowed){
+                var role = 'Member';
+                if(data.asAdmin){
+                  role = 'Administrator';
+                }
+                return Hub.addHubMember(data.hub_id, user.id, role)
+                .then(function(){
+                  debug('Added ' + data.display_name + ' to ' + data.hub_id);
+                  Email.send({
+                    from: 'MapHubs <info@maphubs.com>',
+                    to: user.email,
+                    subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - MapHubs',
+                    text: user.display_name + ',\n' +
+                      req.__('You have been added to the hub') + ' ' + data.hub_id
+                    ,
+                    html: user.display_name + ',<br />' +
+                      req.__('You have been added to the hub') + ' ' + data.hub_id
+                    });
+                  res.status(200).send({success: true});
+                });
+              } else {
+                notAllowedError(res, 'hub');
               }
-              Hub.addHubMember(data.hub_id, user.id, role)
-              .then(function(){
-                debug('Added ' + data.display_name + ' to ' + data.hub_id);
-                Email.send({
-                  from: 'MapHubs <info@maphubs.com>',
-                  to: user.email,
-                  subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - MapHubs',
-                  text: user.display_name + ',\n' +
-                    req.__('You have been added to the hub') + ' ' + data.hub_id
-                  ,
-                  html: user.display_name + ',<br />' +
-                    req.__('You have been added to the hub') + ' ' + data.hub_id
-                  });
-                res.status(200).send({success: true});
-              })
-              .catch(apiError(res, 500));
-            } else {
-              notAllowedError(res, 'hub');
-            }
-          })
-          .catch(apiError(res, 500));
-        })
-        .catch(apiError(res, 500));
+            });
+          }else{
+            res.status(200).send({
+              success: false,
+              error: 'User not found'
+            });
+            return;
+          }
+        }).catch(apiError(res, 500));
       } else {
         apiDataError(res);
       }

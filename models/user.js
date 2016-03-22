@@ -65,7 +65,8 @@ module.exports = {
 
           return user;
         }else {
-          throw new Error("user not found: "+ display_name);
+          log.warn("user not found: "+ display_name);
+          return null;
         }
       });
     },

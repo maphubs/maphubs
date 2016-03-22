@@ -327,38 +327,47 @@ module.exports = function(app) {
     if(data && data.group_id && data.display_name && data.asAdmin !== undefined){
       User.getUserByName(data.display_name)
       .then(function(user){
-        Group.allowedToModify(data.group_id, session_user_id)
-        .then(function(allowed){
-          if(allowed){
-            var role = 'Member';
-            if(data.asAdmin){
-              role = 'Administrator';
+        if(user){
+          return Group.allowedToModify(data.group_id, session_user_id)
+          .then(function(allowed){
+            if(allowed){
+              var role = 'Member';
+              if(data.asAdmin){
+                role = 'Administrator';
+              }
+              return Group.addGroupMember(data.group_id, user.id, role)
+              .then(function(){
+                debug('Added ' + data.display_name + ' to ' + data.group_id);
+                Email.send({
+                  from: 'MapHubs <info@maphub.com>',
+                  to: user.email,
+                  subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - MapHubs',
+                  text: user.display_name + ',\n' +
+                    req.__('You have been added to the group') + ' ' + data.group_id
+                  ,
+                  html: user.display_name + ',<br />' +
+                    req.__('You have been added to the group') + ' ' + data.group_id
+                  });
+                res.status(200).send({success: true});
+              });
+            } else {
+              res.status(401).send();
             }
-            Group.addGroupMember(data.group_id, user.id, role)
-            .then(function(){
-              debug('Added ' + data.display_name + ' to ' + data.group_id);
-              Email.send({
-                from: 'MapHubs <info@maphub.com>',
-                to: user.email,
-                subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - MapHubs',
-                text: user.display_name + ',\n' +
-                  req.__('You have been added to the group') + ' ' + data.group_id
-                ,
-                html: user.display_name + ',<br />' +
-                  req.__('You have been added to the group') + ' ' + data.group_id
-                });
-              res.status(200).send({success: true});
-            }).catch(apiError(res, 500));
-          } else {
-            res.status(401).send();
-          }
-        }).catch(apiError(res, 500));
+          });
+      }else{
+        res.status(200).send({
+          success: false,
+          error: 'User not found'
+        });
+        return;
+      }
       }).catch(apiError(res, 500));
     } else {
       res.status(400).send({
         success: false,
         error: 'Bad Request: required data not found'
       });
+      return;
     }
 
   });
