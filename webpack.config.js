@@ -14,6 +14,7 @@ module.exports = {
     groupinfo: "./client/groupinfo",
     groupadmin: "./client/groupadmin",
     creategroup: "./client/creategroup",
+    maps: "./client/maps",
     layers: "./client/layers",
     layerinfo: "./client/layerinfo",
     layermap: "./client/layermap",

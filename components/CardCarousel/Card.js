@@ -1,5 +1,6 @@
 var React = require('react');
 var GroupTag = require('../Groups/GroupTag');
+var MapCardUserTag = require('./MapCardUserTag');
 var $ = require('jquery');
 
 var Reflux = require('reflux');
@@ -24,6 +25,7 @@ module.exports = React.createClass({
     link: React.PropTypes.string.isRequired,
     group: React.PropTypes.string,
     source: React.PropTypes.string,
+    map: React.PropTypes.object,
     type: React.PropTypes.string
   },
 
@@ -70,7 +72,9 @@ module.exports = React.createClass({
     }
     */
 
-    var typeIcon = '', iconName = '', toolTipText = '';
+    var typeIcon = '', iconName = '', toolTipText = '', 
+    mapCardUserTag= '',
+    storyTag = '';
     if(this.props.type){
       if(this.props.type == 'layer'){
         iconName = 'layers';
@@ -87,6 +91,11 @@ module.exports = React.createClass({
       }else if(this.props.type == 'map'){
         iconName = 'map';
         toolTipText = this.__('Map');
+        mapCardUserTag = (
+          <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
+            <MapCardUserTag map={this.props.map} />
+          </div>
+        );
       }
 
       typeIcon = (
@@ -119,10 +128,12 @@ module.exports = React.createClass({
           {image}
 
         <div className="card-content no-padding" style={{margin: '10px'}}>
+
           <b>{this.props.title}</b> <br />
             {group}
 
           <p className="fade" style={{fontSize: '12px'}}> {this.props.description}</p>
+            {mapCardUserTag}
             {group}
             {typeIcon}
         </div>

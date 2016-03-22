@@ -2,7 +2,6 @@ var React = require('react');
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var CreateMap = require('../components/CreateMap/CreateMap');
 var CreateMapActions = require('../actions/CreateMapActions');
@@ -62,11 +61,12 @@ var UserMaps = React.createClass({
       var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
 
       cards.push({
-        id: map.layer_id,
+        id: map.map_id,
         title: map.title ? map.title : '',
         image_url,
         link: '/user/' + _this.props.user.display_name + '/map/' + map.map_id,
-        type: 'map'
+        type: 'map',
+        map
       });
 
     });
@@ -84,9 +84,6 @@ var UserMaps = React.createClass({
       </div>
     );
   }
-
-  var searchResults = '';
-  var searchCards = [];
 
   var myMaps = '';
   if(!this.props.maps || this.props.maps.length == 0){
@@ -115,14 +112,6 @@ var UserMaps = React.createClass({
       <div>
         <Header activePage="mymaps"/>
         <main style={{height: 'calc(100% - 70px)'}}>
-          <div className="container" style={{marginTop: '20px', marginBottom: '20px'}}>
-            <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/user/maps/search/suggestions" onSearch={this.handleSearch}/>
-          </div>
-          <div className="row">
-            <div className="col s12">
-              {searchResults}
-            </div>
-          </div>
           {myMaps}
           {createMaps}
         </main>

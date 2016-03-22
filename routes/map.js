@@ -35,6 +35,24 @@ module.exports = function(app) {
     session.views = (session.views || 0) + 1;
   };
 
+  app.get('/maps', function(req, res, next) {
+
+
+    Promise.all([
+      Map.getFeaturedMaps(),
+      Map.getRecentMaps(),
+      Map.getPopularMaps()
+    ])
+      .then(function(results){
+        var featuredMaps = results[0];
+        var recentMaps = results[1];
+        var popularMaps = results[2];
+        res.render('maps', {title: req.__('Maps') + ' - MapHubs', props: {featuredMaps, recentMaps, popularMaps}, req});
+      }).catch(nextError(next));
+
+
+  });
+
   app.get('/user/:username/maps', function(req, res, next) {
 
     var username = req.params.username;
@@ -43,18 +61,16 @@ module.exports = function(app) {
     var myMaps = false;
 
     function completeRequest(){
-      Promise.all([
-      User.getUserByName(username),
-      Layer.getAllLayers()
-      ])
-      .then(function(results){
-
-        var user = results[0];
-        var layers = results[1];
-        Map.getUserMaps(user.id)
-        .then(function(maps){
-          res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, layers, myMaps}, req});
-        }).catch(nextError(next));
+      User.getUserByName(username)
+      .then(function(user){
+        if(user){
+          return Map.getUserMaps(user.id)
+          .then(function(maps){
+            res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps}, req});
+          });
+        }else{
+          res.redirect('/notfound?path='+req.path);
+        }
       }).catch(nextError(next));
     }
 
@@ -317,5 +333,32 @@ module.exports = function(app) {
         map.layers = results[1];
         res.status(200).send({success: true, map});
       }).catch(apiError(res, 500));
+    });
+
+    app.get('/api/maps/search/suggestions', function(req, res) {
+      if(!req.query.q){
+        res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+        return;
+      }
+      var q = req.query.q;
+      Map.getSearchSuggestions(q)
+        .then(function(result){
+          var suggestions = [];
+            result.forEach(function(map){
+              suggestions.push({key: map.map_id, value:map.title});
+            });
+            res.send({suggestions});
+        }).catch(apiError(res, 500));
+    });
+
+    app.get('/api/maps/search', function(req, res) {
+      if (!req.query.q) {
+        res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+        return;
+      }
+      Map.getSearchResults(req.query.q)
+        .then(function(result){
+          res.status(200).send({maps: result});
+        }).catch(apiError(res, 500));
     });
 };

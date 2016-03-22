@@ -55,11 +55,82 @@ module.exports = {
       });
     },
 
+    getFeaturedMaps(number=10){
+      return knex.select('omh.maps.map_id', 'omh.maps.title',
+        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
+        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+         'public.users.display_name as username')
+        .from('omh.maps')
+        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .whereNotNull('omh.user_maps.map_id')
+        .where('omh.maps.featured', true)
+        .orderBy('omh.maps.updated_at', 'desc')
+        .limit(number);
+    },
+
+    getPopularMaps(number=10){
+      return knex.select('omh.maps.map_id', 'omh.maps.title',
+        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
+        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        'public.users.display_name as username')
+        .from('omh.maps')
+        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .whereNotNull('omh.user_maps.map_id')
+        .whereNotNull('views')
+        .orderBy('views', 'desc')
+        .limit(number);
+    },
+
+    getRecentMaps(number=10){
+      return knex.select('omh.maps.map_id', 'omh.maps.title',
+        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
+        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        'public.users.display_name as username')
+        .from('omh.maps')
+        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .whereNotNull('omh.user_maps.map_id')
+        .orderBy('omh.maps.updated_at', 'desc')
+        .limit(number);
+    },
+
   getUserMaps(user_id){
-    return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.updated_at')
+    return knex.select('omh.maps.map_id', 'omh.maps.title',
+      'omh.maps.updated_at', 'omh.user_maps.user_id',
+      knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
+      knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+      'public.users.display_name as username')
       .from('omh.maps')
       .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
+      .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
       .where('omh.user_maps.user_id', user_id);
+  },
+
+  getSearchSuggestions(input) {
+    input = input.toLowerCase();
+    return knex.select('title', 'map_id').table('omh.maps')
+    .whereRaw("lower(title) like '%" + input + "%'").orderBy('title');
+  },
+
+  getSearchResults(input) {
+    input = input.toLowerCase();
+    return knex.select('omh.maps.map_id', 'omh.maps.title',
+      'omh.maps.updated_at', 'omh.user_maps.user_id',
+      knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
+      knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+      'public.users.display_name as username')
+      .from('omh.maps')
+      .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
+      .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+      .whereNotNull('omh.user_maps.map_id')
+      .whereRaw("lower(omh.maps.title) like '%" + input + "%'")
+      .orderBy('omh.maps.title')
+      .orderBy('omh.maps.updated_at', 'desc');
   },
 
   getStoryMaps(story_id){

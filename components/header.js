@@ -114,6 +114,7 @@ getCookie(cname) {
     var activeLinkClasses = "omh-accent-text";
 
     var layersClasses = defaultLinkClasses,
+        mapsClasses = defaultLinkClasses,
         groupsClasses = defaultLinkClasses,
         hubsClasses = defaultLinkClasses,
         aboutClasses = defaultLinkClasses,
@@ -124,6 +125,8 @@ getCookie(cname) {
       var activePage = this.props.activePage;
       if(activePage == 'layers'){
         layersClasses = activeLinkClasses;
+      }else if(activePage == 'maps'){
+        mapsClasses = activeLinkClasses;
       }else if(activePage == 'groups'){
         groupsClasses = activeLinkClasses;
       }else if(activePage == 'hubs'){
@@ -175,6 +178,9 @@ getCookie(cname) {
               <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
             </li>
             <li>
+              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
+            </li>
+            <li>
               <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
             </li>
             <li>
@@ -204,6 +210,9 @@ getCookie(cname) {
             </li>
             <li>
               <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
+            </li>
+            <li>
+              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
             </li>
             <li>
               <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
