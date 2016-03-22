@@ -29,7 +29,7 @@ var Explore = React.createClass({
               <h5 className="center center-align">{this.__('Read map stories, explore hubs, and search for data')}</h5>
             </div>
             <div className="divider"></div>
-            <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
+            <div className="row" style={{height: '450px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
                 <h5>{this.__('Read Map Stories')}</h5>
                 <a href='/stories' className="btn">{this.__('View Recent Stories')}</a>
@@ -41,7 +41,7 @@ var Explore = React.createClass({
               </div>
             </div>
             <div className="divider"></div>
-            <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
+            <div className="row" style={{height: '450px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
                 <h5>{this.__('Explore Hubs')}</h5>
                 <a href='/hubs' className="btn">{this.__('View Hubs')}</a>
@@ -53,10 +53,10 @@ var Explore = React.createClass({
               </div>
             </div>
             <div className="divider"></div>
-            <div className="row" style={{height: '300px', marginTop: '35px', marginBottom: '35px'}}>
+            <div className="row" style={{height: '450px', marginTop: '35px', marginBottom: '35px'}}>
               <div className="col s4">
                 <h5>{this.__('Search for Data')}</h5>
-                <a href='/' className="btn">{this.__('Search MapHubs')}</a>
+                <a href='/search' className="btn">{this.__('Search MapHubs')}</a>
               </div>
               <div className="col s8">
                 <div style={{margin: 'auto', display: 'block'}}>

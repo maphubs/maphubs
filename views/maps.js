@@ -76,7 +76,7 @@ var Maps = React.createClass({
   },
 
   onCreateMap(){
-    if(this.state.user){
+    if(this.state.user.display_name){
       window.location= '/user/' + this.state.user.display_name + '/maps';
     }else{
       MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')});

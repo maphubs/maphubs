@@ -3,15 +3,16 @@ var React = require('react');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var StorySummary = require('../components/Story/StorySummary');
-
+var MessageActions = require('../actions/MessageActions');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var UserStore = require('../stores/UserStore');
 
 var Stories = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -21,6 +22,14 @@ var Stories = React.createClass({
     recentStories: React.PropTypes.array,
     featuredStories:  React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
+  },
+
+  onCreateStory(){
+    if(this.state.user.display_name){
+      window.location= '/user/' + this.state.user.display_name + '/stories';
+    }else{
+      MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')});
+    }
   },
 
 	render() {
@@ -60,6 +69,11 @@ var Stories = React.createClass({
                 );
               })}
           </div>
+        </div>
+        <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Story')}>
+          <a onClick={this.onCreateStory} className="btn-floating btn-large red">
+            <i className="large material-icons">add</i>
+          </a>
         </div>
         </main>
         <Footer />
