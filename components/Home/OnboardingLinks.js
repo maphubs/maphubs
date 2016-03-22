@@ -15,9 +15,9 @@ var OnboardingLinks = React.createClass({
 
 render(){
   return (
-    <div className="container" style={{marginBottom: '35px', marginTop: '50px'}}>
-      <div className="row">
-        <h5 className="center-align" style={{color: '#212121'}}>{this.__('Mapping for Everyone')}</h5>
+    <div className="container">
+      <div className="row no-margin">
+        <h5 className="center-align" style={{color: '#212121', marginTop: '20px'}}>{this.__('Mapping for Everyone')}</h5>
       </div>
     <div className="row">
         <div className="col s12 m4 l4" style={{margin: 'auto'}}>

@@ -22,7 +22,7 @@ var SearchBox = React.createClass({
       label: 'Search',
       style: {},
       id: 'search'
-    }
+    };
   },
 
   onChange(input, resolve) {

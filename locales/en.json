@@ -364,5 +364,9 @@
 	"Unauthorized": "Unauthorized",
 	"You are not authorized to access this page.": "You are not authorized to access this page.",
 	"Enter the Author": "Enter the Author",
-	"Featured Stories": "Featured Stories"
+	"Featured Stories": "Featured Stories",
+	"Browse maps or create a new map using MapHubs' respository of open map layers.": "Browse maps or create a new map using MapHubs' respository of open map layers.",
+	"Story": "Story",
+	"Popular Content": "Popular Content",
+	"Recent Content": "Recent Content"
 }

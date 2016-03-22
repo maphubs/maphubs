@@ -1,6 +1,7 @@
 var React = require('react');
 var GroupTag = require('../Groups/GroupTag');
 var MapCardUserTag = require('./MapCardUserTag');
+var StoryHeader = require('../Story/StoryHeader');
 var $ = require('jquery');
 
 var Reflux = require('reflux');
@@ -26,6 +27,7 @@ module.exports = React.createClass({
     group: React.PropTypes.string,
     source: React.PropTypes.string,
     map: React.PropTypes.object,
+    story: React.PropTypes.object,
     type: React.PropTypes.string
   },
 
@@ -88,6 +90,11 @@ module.exports = React.createClass({
       }else if(this.props.type == 'story'){
         iconName = 'library_books';
         toolTipText = this.__('Story');
+        storyTag = (
+          <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
+            <StoryHeader story={this.props.story} />
+          </div>
+        );
       }else if(this.props.type == 'map'){
         iconName = 'map';
         toolTipText = this.__('Map');
@@ -134,6 +141,7 @@ module.exports = React.createClass({
 
           <p className="fade" style={{fontSize: '12px'}}> {this.props.description}</p>
             {mapCardUserTag}
+            {storyTag}
             {group}
             {typeIcon}
         </div>

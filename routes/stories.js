@@ -44,10 +44,14 @@ module.exports = function(app) {
 
       User.getUserByName(username)
       .then(function(user){
-        Story.getUserStories(user.id)
-        .then(function(stories){
-          res.render('userstories', {title: 'Stories - ' + username, props:{user, stories,  myStories, username}, req});
-        }).catch(nextError(next));
+        if(user){
+          return Story.getUserStories(user.id)
+          .then(function(stories){
+            res.render('userstories', {title: 'Stories - ' + username, props:{user, stories,  myStories, username}, req});
+          });
+        }else{
+          res.redirect('/notfound?path='+req.path);
+        }
       }).catch(nextError(next));
     }
 

@@ -36,6 +36,7 @@ module.exports = {
     hubstories: "./client/hubstories",
     hubresources: "./client/hubresources",
     home: "./client/home",
+    search: "./client/search",
     error: "./client/error",
     usermaps: "./client/usermaps",
     userstories: "./client/userstories",

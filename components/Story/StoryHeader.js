@@ -56,12 +56,12 @@ var StoryHeader = React.createClass({
       var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
       linkUrl = baseUrl + '/user/' + this.props.story.display_name;
       author = (
-        <div style={{height: '40px', marginBottom: '10px'}}>
+        <div style={{height: '40px', marginBottom: '10px', width: '100%'}}>
           <div className="valign-wrapper" style={{width: '36px', float: 'left'}}>
             <a className="valign" style={{marginTop: '4px'}} href={linkUrl + '/stories'}>{userImage}</a>
           </div>
-          <div style={{marginLeft: '46px'}}>
-            <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}><a className="valign" style={{marginTop: 0, marginBottom: 0, marginLeft: '5px', fontSize: '14px', lineHeight: '1.4rem'}} href={linkUrl + '/stories'}>{this.props.story.display_name}</a></p>
+          <div style={{marginLeft: '46px', width: 'calc(100% - 46px)'}}>
+            <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}} className="truncate"><a className="valign" style={{marginTop: 0, marginBottom: 0, marginLeft: '5px', fontSize: '14px', lineHeight: '1.4rem'}} href={linkUrl + '/stories'}>{this.props.story.display_name}</a></p>
             <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
               <IntlProvider locale={this.state.locale}>
                 <FormattedRelative value={updatedTime}/>
@@ -88,7 +88,7 @@ var StoryHeader = React.createClass({
               <a className="valign" style={{marginTop: '4px'}} href={linkUrl + '/stories'}>{userImage}</a>
             </div>
             <div style={{marginLeft: '46px'}}>
-              <p  style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>{authorText} <a className="valign" style={{marginTop: 0, marginBottom: 0, marginLeft: '5px', fontSize: '14px', lineHeight: '1.4rem'}} href={linkUrl + '/stories'}>{this.props.story.hub_name}</a></p>
+              <p  style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}} className="truncate">{authorText} <a className="valign" style={{marginTop: 0, marginBottom: 0, marginLeft: '5px', fontSize: '14px', lineHeight: '1.4rem'}} href={linkUrl + '/stories'}>{this.props.story.hub_name}</a></p>
               <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
                 <IntlProvider locale={this.state.locale}>
                   <FormattedRelative value={updatedTime}/>
