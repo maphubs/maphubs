@@ -396,7 +396,7 @@ showImageCrop(){
       );
 
       author = (
-        <div className="story-author">
+        <div className="story-author" style={{height: '30px'}}>
           <Editor
          tag="b"
          text={this.state.author}
