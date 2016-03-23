@@ -147,6 +147,7 @@ var CreateMap = React.createClass({
   },
 
   onSearch(input){
+    $('.layer-card-tooltipped').tooltip('remove');  //prevent stuck tooltips
     Actions.search(input, function(err){
       if(err){
         //display error to user
@@ -228,7 +229,7 @@ var CreateMap = React.createClass({
               //reset the store
               Actions.reset();
             }
-          });          
+          });
       }
     } else if(this.props.hubMap){
       this.props.onSaveHubMap(this.state.mapLayers, this.state.mapStyle, position);
@@ -237,6 +238,7 @@ var CreateMap = React.createClass({
   },
 
   resetSearch(){
+    $('.layer-card-tooltipped').tooltip('remove');  //prevent stuck tooltips
     if(this.props.searchLayers){
       Actions.setSearchLayers(this.props.searchLayers);
     } else if (this.props.userMap || this.props.userStoryMap){
