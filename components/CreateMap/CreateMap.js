@@ -240,11 +240,11 @@ var CreateMap = React.createClass({
     if(this.props.searchLayers){
       Actions.setSearchLayers(this.props.searchLayers);
     } else if (this.props.userMap || this.props.userStoryMap){
-      Actions.reloadSearchLayersUser(function(){});
+      Actions.reloadSearchLayersUser(false, function(){});
     }else if (this.props.hubMap || this.props.hubStoryMap){
-      Actions.reloadSearchLayersHub(this.props.hubId, function(){});
+      Actions.reloadSearchLayersHub(this.props.hubId, false, function(){});
     } else {
-      Actions.reloadSearchLayersAll(function(){});
+      Actions.reloadSearchLayersAll(false, function(){});
     }
   },
 
