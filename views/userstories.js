@@ -63,7 +63,7 @@ var UserStories = React.createClass({
 		return (
       <div>
         <Header activePage="mystories"/>
-        <main style={{height: 'calc(100% - 70px)'}}>
+        <main style={{minHeight: 'calc(100% - 70px)'}}>
         <div className="container" style={{height: '100%'}}>
            {emptyMessage}
             {this.props.stories.map(function (story) {
