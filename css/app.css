@@ -64,7 +64,17 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .hub-section {
+  color: #212121;
+}
 
+.hub-section:hover {
+  color: #29ABE2;
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
 }
 
 .hub-tagline p {
@@ -74,6 +84,34 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 .hub-title p {
   margin: 0;
 }
+
+
+
+.hub-icon-wrapper i {
+  color: #29ABE2;
+}
+
+.hub-icon-wrapper h5 {
+  color: #212121;
+}
+
+
+.hub-icon-wrapper:hover {
+  color: #FFF;
+  background-color: #29ABE2;
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+
+.hub-icon-wrapper:hover i, .hub-icon-wrapper:hover h5 {
+  color: #FFF;
+}
+
+
 
 /*Card Carousel*/
 

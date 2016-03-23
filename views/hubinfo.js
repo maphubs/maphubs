@@ -137,21 +137,30 @@ var HubInfo = React.createClass({
           <div className="container" style={{height: '100%'}}>
               <HubLinkSection />
               <div className="row" style={{height: '70%'}}>
-                <a href="map"><h5 className="hub-section grey-text text-darken-4" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
+                <a href="map"><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
                 <hr />
                 <HubMap editing={this.state.editing} height="calc(100% - 65px)" hub={this.state.hub} border/>
+                <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
+                  <a href='map' className="btn">{this.__('View Larger Map')}</a>
+                </div>
               </div>
               <div className="row">
-                <a href="stories"><h5 className="hub-section grey-text text-darken-3" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
+                <a href="stories"><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
                 <hr />
                 <HubStories hub={this.props.hub}
                   editing={this.state.editing}
                   stories={this.props.stories} limit={3}/>
+                <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
+                  <a href='stories' className="btn">{this.__('View More Stories')}</a>
+                </div>
               </div>
               <div className="row">
-                <a href="resources"><h5 className="hub-section grey-text text-darken-3" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
+                <a href="resources"><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
                 <hr/>
                 <HubResources editing={this.state.editing} />
+                <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
+                  <a href='resources' className="btn">{this.__('View Resources')}</a>
+                </div>
               </div>
             </div>
 
