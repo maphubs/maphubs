@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.1.7](https://github.com/maphubs/maphubs/tree/0.1.7) (2016-03-23)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.6...0.1.7)
+
+**Implemented enhancements:**
+
+- improve hub subpage links add "view more" buttons [\#77](https://github.com/maphubs/maphubs/issues/77)
+
+**Fixed bugs:**
+
+- onboarding links assume user is logged in [\#78](https://github.com/maphubs/maphubs/issues/78)
+- hub add member form returns error [\#75](https://github.com/maphubs/maphubs/issues/75)
+- story headers not showing on hub [\#74](https://github.com/maphubs/maphubs/issues/74)
+- poor home page performance due to embedded story images [\#72](https://github.com/maphubs/maphubs/issues/72)
+- dates not formatting correctly in Safari [\#68](https://github.com/maphubs/maphubs/issues/68)
+- homepage content not completely loading in Safari [\#67](https://github.com/maphubs/maphubs/issues/67)
+
 ## [0.1.6](https://github.com/maphubs/maphubs/tree/0.1.6) (2016-03-22)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.5...0.1.6)
 
