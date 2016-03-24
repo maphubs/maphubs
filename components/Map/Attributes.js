@@ -51,7 +51,7 @@ var Attributes = React.createClass({
     }
 
     return (
-      <div style={{marginTop, width: '100%', overflowY: 'scroll'}}>
+      <div style={{marginTop, width: '100%', overflowY: 'auto'}}>
       {display}
       {spacer}
       {this.props.children}

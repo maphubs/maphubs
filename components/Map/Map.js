@@ -9,7 +9,7 @@ var isEqual = require('lodash.isequal');
 var _debounce = require('lodash.debounce');
 var Promise = require('bluebird');
 var request = require('superagent-bluebird-promise');
-
+var $ = require('jquery');
 var TerraformerGL = require('../../services/terraformerGL.js');
 
 var Reflux = require('reflux');
@@ -19,7 +19,10 @@ var Locales = require('../../services/locales');
 
 
 var mapboxLight = require('../../node_modules/mapbox-gl-styles/styles/light-v8.json');
-//var mapboxSatellite = require('../../node_modules/mapbox-gl-styles/styles/satellite-hybrid-v8.json');
+var mapboxDark = require('../../node_modules/mapbox-gl-styles/styles/dark-v8.json');
+var mapboxStreets = require('../../node_modules/mapbox-gl-styles/styles/streets-v8.json');
+var mapboxOutdoors = require('../../node_modules/mapbox-gl-styles/styles/outdoors-v8.json');
+var mapboxSatellite = require('../../node_modules/mapbox-gl-styles/styles/satellite-hybrid-v8.json');
 
 var mapboxgl ={};
 if (typeof window === 'undefined') {
@@ -59,7 +62,8 @@ var Map = React.createClass({
     fitBounds: React.PropTypes.array,
     disableScrollZoom: React.PropTypes.bool,
     enableRotation: React.PropTypes.bool,
-    navPosition:  React.PropTypes.string
+    navPosition:  React.PropTypes.string,
+    baseMap: React.PropTypes.string
   },
 
   contextTypes: {
@@ -77,7 +81,8 @@ var Map = React.createClass({
       interactive: true,
       showFeatureInfoEditButtons: true,
       showPlayButton: true,
-      navPosition: 'top-left'
+      navPosition: 'top-right',
+      baseMap: 'default'
     };
   },
 
@@ -89,8 +94,8 @@ var Map = React.createClass({
     selected: false,
     interactive: this.props.interactive,
     glStyle: this.props.glStyle ? this.props.glStyle : null,
-    baseMapStyle: mapboxLight,
-    mapLoaded: false
+    mapLoaded: false,
+    baseMap: this.props.baseMap
   };
   },
 
@@ -206,12 +211,17 @@ var Map = React.createClass({
     }
   },
 
-  reload(prevStyle, newStyle){
+  reload(prevStyle, newStyle, baseMap=null){
     //if no style is provided assume we are reloading the active style
     if(!prevStyle) prevStyle = this.props.glStyle;
     if(!newStyle) newStyle = prevStyle;
     this.removeAllLayers(prevStyle);
     this.removeAllSources(prevStyle);
+    if(baseMap){
+      var bounds = this.map.getBounds();
+      this.setState({restoreBounds: bounds});
+      this.map.setStyle(baseMap);
+    }
     this.addMapData(this.map, newStyle, this.props.data, function(){});
   },
 
@@ -220,10 +230,20 @@ var Map = React.createClass({
     mapboxLight.layers.forEach(function(layer){
       layer.interactive = false;
     });
+
+    mapboxStreets.layers.forEach(function(layer){
+      layer.interactive = false;
+    });
+
+    mapboxSatellite.layers.forEach(function(layer){
+      layer.interactive = false;
+    });
   },
 
   componentDidMount() {
     this.createMap();
+
+    $(this.refs.basemapButton).show();
   },
 
   addMapData(map, glStyle, geoJSON, cb){
@@ -241,7 +261,7 @@ var Map = React.createClass({
             tileJSON.type = 'vector';
 
             map.on('source.load', function(e) {
-              if (e.source.id === key && !_this.props.fitBounds) { //don't zoom if we have props telling the map where to display
+              if (e.source.id === key && !_this.props.fitBounds && !_this.state.restoreBounds) { //don't zoom if we have props telling the map where to display
                 map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
                                [tileJSON.bounds[2], tileJSON.bounds[3]]]);
               }
@@ -329,10 +349,11 @@ var Map = React.createClass({
     var _this = this;
     mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
 
+      var baseMap = this.getBaseMapFromName(this.state.baseMap);
 
   var map = new mapboxgl.Map({
     container: this.state.id,
-    style: this.state.baseMapStyle,
+    style: baseMap,
     zoom: 0,
     interactive: this.state.interactive,
     center: [0,0]
@@ -345,16 +366,16 @@ var Map = React.createClass({
       //do stuff that needs to happen after data loads?
     });
 
-
-
     //mapbox-gl 0.11.1 has a bug in the default error handler for tile.error
     map.off('tile.error', map.onError);
     map.on('tile.error', function(e){
       debug(e.type);
     });
 
-    if (_this.props.fitBounds){
-      _this.fitBounds(_this.props.fitBounds, 16);
+    if (_this.state.restoreBounds){
+      map.fitBounds(_this.state.restoreBounds, {animate:false});
+    } else if (_this.props.fitBounds){
+      map.fitBounds(_this.props.fitBounds, {animate:false});
     }
 
     if(_this.state.locale != 'en'){
@@ -383,7 +404,7 @@ map.on('mousemove', function(e) {
                  _this.clearSelection();
              }
       });
-    }, 500).bind(this);
+    }, 200).bind(this);
     debounced();
 
  });
@@ -614,6 +635,50 @@ map.on('mousemove', function(e) {
     this.setState({interactive: true});
   },
 
+  toggleBaseMaps(){
+    if(this.state.showBaseMaps){
+      this.closeBaseMaps();
+    }else{
+      this.setState({showBaseMaps: true});
+    }
+  },
+
+  closeBaseMaps(){
+    this.setState({showBaseMaps: false});
+  },
+
+  getBaseMapFromName(mapName){
+    var baseMap = mapboxLight;
+    if (mapName == 'default') {
+        baseMap = mapboxLight;
+    }
+    else if(mapName == 'dark'){
+      baseMap = mapboxDark;
+    }
+    else if(mapName == 'outdoors'){
+      baseMap = mapboxOutdoors;
+    }
+    else if(mapName == 'streets'){
+      baseMap = mapboxSatellite;
+    }
+    else if(mapName == 'mapbox-satellite'){
+      baseMap = mapboxSatellite;
+    }
+
+    return baseMap;
+  },
+
+  getBaseMapName(){
+    return this.state.baseMap;
+  },
+
+  changeBaseMap(mapName){
+    var baseMap = this.getBaseMapFromName(mapName);
+    this.closeBaseMaps();
+    this.setState({baseMap: mapName});
+    this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+  },
+
   render() {
 
     var className = classNames('mode', 'map', 'active');
@@ -652,10 +717,70 @@ map.on('mousemove', function(e) {
       children = this.props.children;
     }
 
+    var baseMapBox = '';
+    if(this.state.showBaseMaps){
+      var _this = this;
+      baseMapBox = (
+        <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
+            <ul className="collection with-header" style={{margin: 0, width: '100%'}}>
+              <li className="collection-header">
+                <h6>{this.__('Base Maps')}</h6>
+              </li>
+             <li className="collection-item">
+               <a className="btn" onClick={function(){_this.changeBaseMap('default');}}>{this.__('Default')}</a>
+             </li>
+             <li className="collection-item">
+               <a className="btn" onClick={function(){_this.changeBaseMap('dark');}}>{this.__('Dark')}</a>
+             </li>
+             <li className="collection-item">
+               <a className="btn" onClick={function(){_this.changeBaseMap('streets');}}>{this.__('Streets')}</a>
+             </li>
+             <li className="collection-item">
+               <a className="btn" onClick={function(){_this.changeBaseMap('outdoors');}}>{this.__('Outdoors')}</a>
+             </li>
+             <li className="collection-item">
+               <a className="btn" onClick={function(){_this.changeBaseMap('mapbox-satellite');}}>{this.__('Satellite')}</a>
+             </li>
+           </ul>
+
+
+
+        </div>
+      );
+    }
+
 
     return (
       <div  className={this.props.className} style={style}>
         <div id={this.state.id} className={className} style={{width:'100%', height:'100%'}}>
+          <a
+            onClick={this.toggleBaseMaps}
+            style={{position: 'absolute',
+              top: '10px',
+              right: '10px',
+              height:'30px',
+              zIndex: '100',
+              lineHeight: '30px',
+              textAlign: 'center',
+              width: '30px'}}
+            >
+            <i className="material-icons z-depth-1"
+              ref="basemapButton"
+              style={{height:'30px',
+                      lineHeight: '30px',
+                      display: 'none',
+                      width: '30px',
+                      color: '#29ABE2',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      backgroundColor: 'white',
+                      borderColor: '#ddd',
+                      borderStyle: 'solid',
+                      borderWidth: '1px',
+                      fontSize:'25px'}}
+              >layers</i>
+          </a>
+          {baseMapBox}
           {featureBox}
           {interactiveButton}
           {children}

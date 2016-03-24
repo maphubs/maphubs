@@ -388,5 +388,8 @@
 	"The page you requested was not found.": "The page you requested was not found.",
 	"View Larger Map": "View Larger Map",
 	"View More Stories": "View More Stories",
-	"View Resources": "View Resources"
+	"View Resources": "View Resources",
+	"MapHubs requires SSL for external links, URLs must start with https://": "MapHubs requires SSL for external links, URLs must start with https://",
+	"Selected Feature": "Selected Feature",
+	"Selected Features": "Selected Features"
 }

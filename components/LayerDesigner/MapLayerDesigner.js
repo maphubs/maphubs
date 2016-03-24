@@ -22,12 +22,14 @@ var MapLayerDesigner = React.createClass({
     id: React.PropTypes.string,
     layer: React.PropTypes.object,
     onStyleChange: React.PropTypes.func.isRequired,
-    onClose: React.PropTypes.func.isRequired
+    onClose: React.PropTypes.func.isRequired,
+    showAdvanced: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return {
-      id: 'map-layer-designer'
+      id: 'map-layer-designer',
+      showAdvanced: false
     };
   },
 
@@ -112,7 +114,7 @@ var MapLayerDesigner = React.createClass({
        designer = (
         <div>
             <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-              style={this.state.layer.style} onStyleChange={this.setStyle}
+              style={this.state.layer.style} onStyleChange={this.setStyle} showAdvanced={this.props.showAdvanced}
               legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
         </div>
       );

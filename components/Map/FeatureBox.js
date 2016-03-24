@@ -113,8 +113,11 @@ var FeatureBox = React.createClass({
         </a>
       );
 
-      header=(<h6 style={{position: 'absolute', top: 0, left: '5px'}}>{this.__('Selected Feature(s)')}</h6>);
-
+      if(this.state.currentFeatures.length === 1){
+        header=(<h6 style={{position: 'absolute', top: 0, left: '5px'}}>{this.__('Selected Feature')}</h6>);
+      }else if(this.state.currentFeatures.length > 1){
+        header=(<h6 style={{position: 'absolute', top: 0, left: '5px'}}>{this.__('Selected Features')}</h6>);
+      }
       if(this.props.showButtons){
         var osm_id = -1;
         var layer_id = null;
@@ -137,7 +140,7 @@ var FeatureBox = React.createClass({
         if(this.state.layer){
           layerinfo = (
             <div style={{textAlign: 'left'}}>
-              <b><a target="_blank" href={baseUrl + '/lyr/' + this.state.layer.layer_id}>{this.state.layer.name}</a></b>
+              <b><a className="truncate" target="_blank" href={baseUrl + '/lyr/' + this.state.layer.layer_id}>{this.state.layer.name}</a></b>
               <GroupTag className={'left'} group={this.state.layer.owned_by_group_id} size={15} fontSize={8} />
             </div>
           );
@@ -200,7 +203,7 @@ var FeatureBox = React.createClass({
         </div>
       );
       } else {
-        infoPanel = (<b className="center-align" style={{margin: 'auto'}}>{this.__('Click to Select')}</b>);
+        infoPanel = (<h6 className="center-align" style={{margin: 'auto'}}>{this.__('Click to Select')}</h6>);
       }
 
     }

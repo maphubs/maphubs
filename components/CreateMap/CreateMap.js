@@ -304,12 +304,13 @@ var CreateMap = React.createClass({
       sidebarContent = (
         <div className="row s12" style={{height: '100%', padding: 0, margin: 0}}>
           <div style={{height: '40px', width: '100%'}}>
-            <a onClick={this.closeSidebar} className="btn-floating create-map-side-nav-close right">
-              <i className="material-icons"  style={{lineHeight: '40px'}}>close</i></a>
+            <a onClick={this.closeSidebar} className="btn-floating create-map-side-nav-close right"
+              style={{width:'40px', height: '40px', padding: 0}}>
+              <i className="material-icons"  style={{lineHeight: '40px', width:'35px', height: '35px', margin: 'auto'}}>close</i></a>
           </div>
 
-          <div style={{height: '50%', overflow: 'scroll'}}>
-            <ul ref="layers" className="collection no-margin">{
+          <div style={{height: '50%', overflow: 'auto'}}>
+            <ul ref="layers" style={{height: '100%'}} className="collection no-margin">{
               this.state.mapLayers.map(function (layer) {
                   var visibilityButton = '';
                   if(_this.props.showVisibility){
@@ -325,7 +326,7 @@ var CreateMap = React.createClass({
                   }
                   return (
                     <li key={layer.layer_id} className="collection-item"
-                      style={{height: '70px', paddingRight: '5px', paddingLeft: '5px'}}>
+                      style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', border: '1px solid #ddd'}}>
                       <div className="title col s8">
                         <b className="title truncate grey-text text-darken-4 tooltipped layer-card-tooltipped"
                           style={{fontSize: '12px'}}
@@ -364,10 +365,10 @@ var CreateMap = React.createClass({
                                 right: '50%',
                                 width: '215px'
                               }}>
-                               <li className="no-padding" style={{marginRight: '5px'}}><a onClick={function(){Actions.removeFromMap(layer);}} className="btn-floating red" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons" style={{height: '35px', lineHeight: '35px', width: '35px'}}>remove</i></a></li>
-                               <li className="no-padding" style={{marginRight: '5px'}}><a onClick={function(){_this.showLayerDesigner(layer);}} className="btn-floating amber darken-4" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons" style={{height: '35px', lineHeight: '35px', width: '35px'}}>color_lens</i></a></li>
-                               <li className="no-padding" style={{marginRight: '5px'}}><a onClick={function(){Actions.moveUp(layer);}} className="btn-floating omh-color" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons" style={{height: '35px', lineHeight: '35px', width: '35px'}}>keyboard_arrow_up</i></a></li>
-                               <li className="no-padding" style={{marginRight: '5px'}}><a onClick={function(){Actions.moveDown(layer);}} className="btn-floating omh-color" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons" style={{height: '35px', lineHeight: '35px', width: '35px'}}>keyboard_arrow_down</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){Actions.removeFromMap(layer);}} className="btn-floating red" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons">remove</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.showLayerDesigner(layer);}} className="btn-floating amber darken-4" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){Actions.moveUp(layer);}} className="btn-floating omh-color" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons">keyboard_arrow_up</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){Actions.moveDown(layer);}} className="btn-floating omh-color" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons">keyboard_arrow_down</i></a></li>
                              </ul>
                            </div>
                          </div>

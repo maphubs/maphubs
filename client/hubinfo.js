@@ -10,6 +10,7 @@ if (!global.Intl) {
 }
 require('babel-polyfill');
 require('jquery');
+require('../node_modules/react-colorpickr/react-colorpickr.css');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 

@@ -24,14 +24,16 @@ var LayerDesigner = React.createClass({
     onLegendChange: React.PropTypes.func,
     color: React.PropTypes.string,
     style: React.PropTypes.object,
-    legendCode: React.PropTypes.string
+    legendCode: React.PropTypes.string,
+    showAdvanced: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return {
       color: 'red',
       style: null,
-      legendCode: null
+      legendCode: null,
+      showAdvanced: true
     };
   },
 
@@ -88,6 +90,22 @@ var LayerDesigner = React.createClass({
   },
 
   render(){
+    var advanced = '';
+    if(this.props.showAdvanced){
+      advanced = (
+        <li>
+          <div className="collapsible-header">
+            <i className="material-icons">code</i>{this.__('Advanced')}
+            </div>
+          <div className="collapsible-body">
+            <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
+            <br />
+            <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
+          </div>
+        </li>
+      );
+    }
+
     return (
       <div>
       <ul className="collapsible" data-collapsible="accordion">
@@ -123,16 +141,7 @@ var LayerDesigner = React.createClass({
              <ColorPicker onChange={this.onColorPickerChange} value={this.state.color} />
            </div>
          </li>
-         <li>
-           <div className="collapsible-header">
-             <i className="material-icons">code</i>{this.__('Advanced')}
-             </div>
-           <div className="collapsible-body">
-             <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
-             <br />
-             <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
-           </div>
-         </li>
+         {advanced}
 
        </ul>
        <CodeEditor ref="styleEditor" id="layer-style-editor" mode={{name: "javascript", json: true}}

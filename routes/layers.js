@@ -108,7 +108,7 @@ module.exports = function(app) {
 
     Layer.getLayerByID(layer_id)
     .then(function(layer){
-      res.render('layermap', {title: layer.name + ' - MapHubs', props: {layer}, req});
+      res.render('layermap', {title: layer.name + ' - MapHubs', props: {layer}, hideFeedback: true, addthis: true, req});
     }).catch(nextError(next));
   });
 
