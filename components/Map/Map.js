@@ -6,6 +6,7 @@ var styles = require('./styles');
 var debug = require('../../services/debug')('map');
 var config = require('../../clientconfig');
 var isEqual = require('lodash.isequal');
+var _debounce = require('lodash.debounce');
 var Promise = require('bluebird');
 var request = require('superagent-bluebird-promise');
 
@@ -367,6 +368,34 @@ var Map = React.createClass({
 
 map.on('mousemove', function(e) {
     if(_this.state.selected) return;
+    var debounced = _debounce(function(){
+      map.featuresAt(e.point, {
+        radius: 5,
+        includeGeometry: false
+      }, function(err, features) {
+          if (err) throw err;
+          if (!err && features.length) {
+                 _this.setSelectionFilter(features);
+                 _this.setState({selectedFeatures:features});
+                 map.addClass('selected');
+
+             } else if(_this.state.selectedFeatures != null) {
+                 _this.clearSelection();
+             }
+      });
+    }, 500).bind(this);
+    debounced();
+
+ });
+
+ map.on('click', function(e) {
+   if(_this.state.selected){
+     _this.setState({selected: false});
+     _this.clearSelection();
+   }
+   else if(_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
+     _this.setState({selected:true});
+   }else{
      map.featuresAt(e.point, {
        radius: 5,
        includeGeometry: false
@@ -374,20 +403,16 @@ map.on('mousemove', function(e) {
          if (err) throw err;
          if (!err && features.length) {
                 _this.setSelectionFilter(features);
-                _this.setState({selectedFeatures:features});
+                _this.setState({selectedFeatures:features, selected:true});
                 map.addClass('selected');
 
             } else if(_this.state.selectedFeatures != null) {
                 _this.clearSelection();
             }
      });
- });
-
- map.on('click', function() {
-   if(_this.state.selectedFeatures){
-     _this.setState({selected:true});
    }
   });
+
 
   if(this.state.interactive){
     map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));

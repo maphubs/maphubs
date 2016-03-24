@@ -50,8 +50,16 @@ var FeatureBox = React.createClass({
       if(nextProps.selected){
         //put this component into selected mode
         //it will ignore all updates from the parent until closed
-        this.setState({selected: nextProps.selected, selectedFeature: 1});
-        var selectedFeature = this.state.currentFeatures[0];
+        var features = null;
+        if(this.state.currentFeatures && this.state.currentFeatures.length > 0){
+          features = this.state.currentFeatures;
+          this.setState({selected: nextProps.selected, selectedFeature: 1});
+        }else{
+          features = nextProps.features;
+          this.setState({currentFeatures: nextProps.features, selected: nextProps.selected, selectedFeature: 1});
+        }
+
+        var selectedFeature = features[0];
         if(selectedFeature.properties.layer_id){
             this.getLayer(selectedFeature.properties.layer_id, function(){});
         }
