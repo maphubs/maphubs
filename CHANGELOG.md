@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.1.8](https://github.com/maphubs/maphubs/tree/0.1.8) (2016-03-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.7...0.1.8)
+
+**Fixed bugs:**
+
+- error adding second map to the story in the same session [\#90](https://github.com/maphubs/maphubs/issues/90)
+- map designer reloads layer list when clearing search [\#88](https://github.com/maphubs/maphubs/issues/88)
+- my story page footer can overlap with content [\#84](https://github.com/maphubs/maphubs/issues/84)
+- tooltips stuck on hub map editor [\#82](https://github.com/maphubs/maphubs/issues/82)
+- create hub form doesn't redirect to hub [\#70](https://github.com/maphubs/maphubs/issues/70)
+
 ## [0.1.7](https://github.com/maphubs/maphubs/tree/0.1.7) (2016-03-23)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.6...0.1.7)
 
