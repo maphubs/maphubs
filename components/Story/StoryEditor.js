@@ -282,6 +282,7 @@ pasteHtmlAtCaret(html) {
 },
 
 onAddMap(map_id){
+  var _this = this;
   if(this.state.editingMap){
     //refresh the iframe for this map
     $( '#map-' + map_id + ' iframe' ).attr( 'src', function ( i, val ) { return val; });
@@ -292,7 +293,9 @@ onAddMap(map_id){
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
   + '</div>');
-  this.addMapCloseButtons();
+
+   _this.addMapCloseButtons();
+
 },
 
 removeMap(map_id){

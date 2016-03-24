@@ -177,9 +177,6 @@ var CreateMap = React.createClass({
             Actions.closeMapDesigner();
             NotificationActions.showNotification({message: _this.__('Map Saved')});
             _this.onCreate();
-
-            //reset the store
-            Actions.reset();
           }
         });
       }else{
@@ -192,9 +189,6 @@ var CreateMap = React.createClass({
             Actions.closeMapDesigner();
             NotificationActions.showNotification({message: _this.__('Map Saved')});
             _this.onCreate();
-
-            //reset the store
-            Actions.reset();
           }
         });
       }
@@ -208,11 +202,7 @@ var CreateMap = React.createClass({
             }else{
               //hide designer
               Actions.closeMapDesigner();
-              NotificationActions.showNotification({message: _this.__('Map Saved')});
               _this.onCreate();
-
-              //reset the store
-              Actions.reset();
             }
           });
         }else{
@@ -225,9 +215,6 @@ var CreateMap = React.createClass({
               Actions.closeMapDesigner();
               NotificationActions.showNotification({message: _this.__('Map Saved')});
               _this.onCreate();
-
-              //reset the store
-              Actions.reset();
             }
           });
       }

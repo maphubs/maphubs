@@ -32,7 +32,8 @@ module.exports = Reflux.createStore({
   },
 
   reset(){
-    this.setState(this.getInitialState);
+    this.setState(this.getInitialState());
+    this.updateMap(this.state.mapLayers);
   },
 
   storeDidUpdate(){
@@ -83,12 +84,16 @@ module.exports = Reflux.createStore({
         cb(JSON.stringify(err));
       }else{
         var map = res.body.map;
+        var allLayers = _this.state.allLayers;
+    
         _this.setState({
           map_id,
           position: map.position,
           title: map.title,
           mapLayers: map.layers,
-          show: true
+          show: true,
+          allLayers,
+          searchLayers: allLayers
         });
         _this.updateMap(map.layers);
         _this.setState({position:map.position});
@@ -244,7 +249,7 @@ module.exports = Reflux.createStore({
   },
 
   closeMapDesigner(){
-    this.setState({show: false});
+    this.setState({map_id: null, show: false});
   },
 
   //helpers
@@ -338,7 +343,7 @@ module.exports = Reflux.createStore({
    reloadSearchLayersAll(force, cb){
      debug('reload search layers');
      var _this = this;
-     if(force || !this.state.allLayers){       
+     if(force || !this.state.allLayers){
        request.get('/api/layers/all')
        .type('json').accept('json')
        .end(function(err, res){
