@@ -49,7 +49,7 @@ var GroupTag = React.createClass({
           minWidth: '75px',
           border: '0.25pt solid #E4E4E4',
           lineHeight: sizeStr, fontSize: fontSizeStr}}>
-        <a target="_blank"  href={baseUrl + '/group/' + this.props.group} style={{height: 'initial'}}>
+        <a target="_blank" className="no-padding"  href={baseUrl + '/group/' + this.props.group} style={{height: 'initial'}}>
           <div className="valign-wrapper"
             style={{
               height: sizeStr,
@@ -71,8 +71,8 @@ var GroupTag = React.createClass({
           </div>
 
         </a>
-        <a target="_blank" className="omh-accent-text group-tag-tooltip"
-          style={{height: sizeStr, width: 'auto', lineHeight: sizeStr, fontSize: fontSizeStr}}
+        <a target="_blank" className="omh-accent-text group-tag-tooltip no-padding"
+          style={{height: sizeStr, width: 'auto', display: 'inherit', lineHeight: sizeStr, fontSize: fontSizeStr}}
           data-position="bottom" data-delay="50" data-tooltip={this.__('Group') + ' - ' +this.props.group}
           href={baseUrl + '/group/' + this.props.group}>{this.props.group}</a>
       </div>

@@ -21,7 +21,7 @@ var Legend = React.createClass({
     if(this.props.title){
       title = (
         <li className="collection-item no-margin" style={{padding: '0.2rem', fontWeight: '500'}}>
-          <h6 className="center-align">{this.props.title}</h6>
+          <h6 className="center-align black-text">{this.props.title}</h6>
         </li>
       );
     }
@@ -38,9 +38,10 @@ var Legend = React.createClass({
                 })
             }
             <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map - </span>
-              <a style={{fontSize: '8px'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
-              <a style={{fontSize: '8px'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
+              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map -
+              <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
+              <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
+              </span>
             </li>
           </ul>
         </div>

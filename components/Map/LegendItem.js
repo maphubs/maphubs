@@ -44,7 +44,7 @@ var LegendItem = React.createClass({
             </div>
             <div className="row no-margin no-padding right-align" style={{lineHeight: '0.75em'}}>
               <p className="grey-text left left-align" style={{margin: 0, fontSize: '8px', lineHeight: '0.75em'}}>{this.props.layer.source}</p>
-              <small className="right"><a target="_blank" className="grey-text" href={infoURL}>{infoURL}</a></small>
+              <a target="_blank" className="grey-text right no-padding" style={{height: '10px', fontSize: '8px',lineHeight: '0.75em'}} href={infoURL}>{infoURL}</a>
             </div>
           </li>
 

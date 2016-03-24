@@ -94,18 +94,49 @@ var LayerMap = React.createClass({
 		return (
       <div>
       <Header />
+      <main style={{margin: 0}}>
+        <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
+        <a href="#" ref="mapLayersPanel"
+          data-activates="user-map-layers"
+          style={{position: 'absolute',
+            top: '10px',
+            left: '10px',
+            height:'30px',
+
+            lineHeight: '30px',
+            textAlign: 'center',
+            width: '30px'}}
+          className="button-collapse">
+          <i className="material-icons z-depth-1"
+            style={{height:'30px',
+                    lineHeight: '30px',
+                    width: '30px',
+                    color: '#29ABE2',
+                    borderRadius: '4px',
+                    backgroundColor: 'white',
+                    borderColor: '#ddd',
+                    borderStyle: 'solid',
+                    borderWidth: '1px',
+                    fontSize:'25px'}}
+            >info</i>
+        </a>
+        <div className="side-nav" id="user-map-layers">
+          {bottomLegend}
+
+        </div>
+
+      </nav>
         <div className="row">
         <div className="col s12 no-padding">
           <Map className="map-absolute map-with-header width-full"
             navPosition="top-right"
             glStyle={this.props.layer.style} title={this.props.layer.name}>
             {legend}
-            <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'9999'}}></div>
+            <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'1'}}></div>
           </Map>
-          {bottomLegend}
         </div>
        </div>
-
+     </main>
       </div>
 
 		);

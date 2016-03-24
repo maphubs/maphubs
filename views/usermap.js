@@ -230,11 +230,42 @@ var UserMap = React.createClass({
     return (
       <div>
         <Header />
-        <main style={{height: 'calc(100% - 52px)'}}>
+        <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>
           {createMap}
+          <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
+          <a href="#" ref="mapLayersPanel"
+            data-activates="user-map-layers"
+            style={{position: 'absolute',
+              top: '10px',
+              left: '10px',
+              height:'30px',
+
+              lineHeight: '30px',
+              textAlign: 'center',
+              width: '30px'}}
+            className="button-collapse">
+            <i className="material-icons z-depth-1"
+              style={{height:'30px',
+                      lineHeight: '30px',
+                      width: '30px',
+                      color: '#29ABE2',
+                      borderRadius: '4px',
+                      backgroundColor: 'white',
+                      borderColor: '#ddd',
+                      borderStyle: 'solid',
+                      borderWidth: '1px',
+                      fontSize:'25px'}}
+              >info</i>
+          </a>
+          <div className="side-nav" id="user-map-layers">
+            {bottomLegend}
+
+          </div>
+
+        </nav>
           {map}
-          {bottomLegend}
+
         </main>
       </div>
     );
