@@ -163,9 +163,11 @@ var Home = React.createClass({
       <div>
       <Header />
       <main style={{margin: 0}}>
-        <div className="col l3 m4 s12 right">
+        <div className="row" style={{marginTop: '10px', marginBottom: 0, marginRight: '5px'}}>
+        <div className="col l3 m4 s12 offset-l9 offset-m8">
           <SearchBox label={this.__('Search MapHubs')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
         </div>
+      </div>
         <OnboardingLinks />
          <div className="divider"></div>
          <div className="row no-margin" style={{height: '400px'}}>

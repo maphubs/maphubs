@@ -177,10 +177,10 @@ var Layers = React.createClass({
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className="row" style={{marginBottom: '0px'}}>
-              <div className="col l9 m8 s12">
-                <p style={{fontSize: '16px'}}>{this.__('MapHubs is a repository of open map layers. Browse layers or create a new layer.')}</p>
+              <div className="col l8 m7 s12">
+                <p style={{fontSize: '16px', margin: 0}}>{this.__('MapHubs is a repository of open map layers. Browse layers or create a new layer.')}</p>
               </div>
-              <div className="col l3 m4 s12 right">
+              <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
                 <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
               </div>
             </div>

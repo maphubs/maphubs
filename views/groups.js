@@ -181,10 +181,10 @@ var Groups = React.createClass({
           <main>
             <div style={{marginTop: '20px', marginBottom: '10px'}}>
               <div className="row" style={{marginBottom: '0px'}}>
-                <div className="col l9 m8 s12">
-                  <p style={{fontSize: '16px'}}>{this.__('MapHubs layers are managed by groups. Create a group for your organization or browse the layers of existing groups.')}</p>
+                <div className="col l8 m7 s12">
+                  <p style={{fontSize: '16px', margin: 0}}>{this.__('MapHubs layers are managed by groups. Create a group for your organization or browse the layers of existing groups.')}</p>
                 </div>
-                <div className="col l3 m4 s12 right">
+                <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
               <SearchBox label={this.__('Search Groups')} suggestionUrl="/api/groups/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
               </div>
             </div>

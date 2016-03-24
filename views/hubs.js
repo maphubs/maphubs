@@ -92,7 +92,7 @@ var Hubs = React.createClass({
           <main>
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
               <div className="row">
-                <div className="col l3 m4 s12 right">
+                <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
                   <SearchBox label={this.__('Search Hubs')} suggestionUrl="/api/hubs/search/suggestions" onSearch={this.handleSearch}/>
                 </div>
               </div>
