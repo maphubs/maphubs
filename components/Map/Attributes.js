@@ -26,6 +26,9 @@ var Attributes = React.createClass({
              {
                Object.keys(_this.props.attributes).map(function (key) {
                     var val = _this.props.attributes[key];
+                    if(typeof val === 'string' && val.startsWith('http')){
+                      val = (<a target="_blank" href={val}>{val}</a>);
+                    }
                     return (
                        <li key={key} className="collection-item attribute-collection-item">
                          <p style={{wordWrap: 'break-word'}}><b className="left">{key}</b>: &nbsp;
@@ -34,13 +37,13 @@ var Attributes = React.createClass({
 
 
                        </li>
-                     )
+                     );
                 })
              }
 
            </ul>
 
-       )
+       );
     }
     var marginTop = '0px';
     if(this.props.selected){
