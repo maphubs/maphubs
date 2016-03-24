@@ -77,7 +77,7 @@ var HubMap = React.createClass({
       );
       mapEditButton = (
         <a className="btn-floating omh-color white-text" onClick={this.showMapEdit}
-          style={{position: 'absolute', top: '5px', right: '5px'}}>
+          style={{position: 'absolute', top: '5px', left: '5px'}}>
           <i className="material-icons">edit</i>
         </a>
       );
@@ -125,7 +125,7 @@ var HubMap = React.createClass({
 
               </nav>
                 <Map ref="map" id="hub-map" fitBounds={bounds} style={{width: '100%', height: '100%'}} glStyle={this.state.hub.map_style} disableScrollZoom>
-                  {mapEditButton}
+
                   <HubMapLegend style={{
                       position: 'absolute',
                       bottom: '5px',
@@ -134,7 +134,9 @@ var HubMap = React.createClass({
                       zIndex: '1',
                       width: '25%'
                     }} layers={this.state.layers} />
+                    {mapEditButton}
                 </Map>
+
               </div>
             </div>
 
