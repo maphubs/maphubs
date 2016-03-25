@@ -1,0 +1,84 @@
+{
+  "majorroads": {
+    "tag": "majorroads",
+    "name": "Major Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["motorway","trunk", "motorway_link", "trunk_link", "Road"],
+    "color": "#09a643",
+    "width": 10
+  },
+  "primaryroads": {
+    "tag": "primaryroads",
+    "name": "Primary Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["primary", "primary_link"],
+    "color": "#cb3d3d",
+    "width": 8
+  },
+  "secondaryroads": {
+    "tag": "secondaryroads",
+    "name": "Secondary Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["secondary","secondary_link"],
+    "color": "#e05b31",
+    "width": 6
+  },
+  "tertiaryroads": {
+    "tag": "tertiaryroads",
+    "name": "Tertiary Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["tertiary","tertiary_link"],
+    "color": "#cbb43d",
+    "width": 6
+  },
+  "minorroads": {
+    "tag": "minorroads",
+    "name": "Minor Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["minor","unclassified", "road"],
+    "color": "#9d2bd2",
+    "width": 5
+  },
+  "residentialroads": {
+    "tag": "residentialroads",
+    "name": "Residential Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["residential", "living_street"],
+    "color": "#de71d0",
+    "width": 5
+  },
+  "tracks": {
+    "tag": "tracks",
+    "name": "Tracks",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["track"],
+    "color": "#e23905",
+    "width": 4
+  },
+  "paths": {
+    "tag": "paths",
+    "name": "Paths",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["path", "pedestrian", "footpath", "footway", "steps", "cycleway"],
+    "color": "#da2e4d",
+    "width": 4
+  },
+  "serviceroads": {
+    "tag": "paths",
+    "name": "Service Roads",
+    "layer": "roads",
+    "filterTag": "highway",
+    "filterValues": ["service", "alley", "parking_aisle", "drive-through", "driveway"],
+    "color": "#F8B29C",
+    "width": 4
+  }
+
+}
