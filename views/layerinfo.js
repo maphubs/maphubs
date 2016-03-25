@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Map = require('../components/Map/Map');
+var Legend = require('../components/Map/Legend');
 var Header = require('../components/header');
 var slug = require('slug');
 var styles = require('../components/Map/styles');
@@ -341,7 +342,18 @@ var LayerInfo = React.createClass({
 
     if(this.props.layer.is_external){
       mapContent = (
-        <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle} />
+        <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle}>
+          <Legend style={{
+              position: 'absolute',
+              top: '5px',
+              left: '5px',
+              minWidth: '275px',
+              zIndex: '1',
+              width: '25%'
+            }}
+            title={this.props.layer.name}
+              layers={[this.props.layer]}/>
+        </Map>
       );
       exportTabContent = (
         <div>
@@ -350,7 +362,18 @@ var LayerInfo = React.createClass({
       );
     }else {
       mapContent = (
-        <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle} />
+        <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle} >
+          <Legend style={{
+              position: 'absolute',
+              top: '5px',
+              left: '5px',
+              minWidth: '275px',
+              zIndex: '1',
+              width: '25%'
+            }}
+            title={this.props.layer.name}
+              layers={[this.props.layer]}/>
+        </Map>
       );
       var geoJSONURL = '/api/layer/' + this.props.layer.layer_id + '/export/json/' + slug(this.props.layer.name) + '.geojson';
       var shpURL = '/api/layer/' + this.props.layer.layer_id + '/export/shp/' + slug(this.props.layer.name) + '.zip';
