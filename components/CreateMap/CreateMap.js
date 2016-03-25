@@ -309,8 +309,8 @@ var CreateMap = React.createClass({
               <i className="material-icons"  style={{lineHeight: '40px', width:'35px', height: '35px', margin: 'auto'}}>close</i></a>
           </div>
 
-          <div style={{height: '50%', overflow: 'auto'}}>
-            <ul ref="layers" style={{height: '100%'}} className="collection no-margin">{
+          <div style={{height: '50%'}}>
+            <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin">{
               this.state.mapLayers.map(function (layer) {
                   var visibilityButton = '';
                   if(_this.props.showVisibility){
@@ -326,7 +326,7 @@ var CreateMap = React.createClass({
                   }
                   return (
                     <li key={layer.layer_id} className="collection-item"
-                      style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', border: '1px solid #ddd'}}>
+                      style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden', border: '1px solid #ddd'}}>
                       <div className="title col s8">
                         <b className="title truncate grey-text text-darken-4 tooltipped layer-card-tooltipped"
                           style={{fontSize: '12px'}}
@@ -398,7 +398,7 @@ var CreateMap = React.createClass({
                       return (
                         <li key={layer.layer_id}
                           className="collection-item"
-                          style={{height: '70px', paddingRight: '5px', paddingLeft: '5px'}}>
+                          style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden'}}>
                           <div className="title col s8">
                             <b className="title truncate grey-text text-darken-4 tooltipped layer-card-tooltipped"
                               style={{fontSize: '12px'}}
