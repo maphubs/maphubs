@@ -99,7 +99,7 @@ var UserMap = React.createClass({
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {
-            location.reload();
+            window.location = '/maps';
           }
 
         });
