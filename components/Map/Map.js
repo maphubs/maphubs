@@ -287,9 +287,9 @@ var Map = React.createClass({
             tileJSON.type = 'vector';
 
             map.on('source.load', function(e) {
-              if (e.source.id === key && this.state.allowLayersToMoveMap) {
-                map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
-                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
+              if (e.source.id === key && _this.state.allowLayersToMoveMap) {
+                //map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
+                //               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
               }
             });
             map.addSource(key, tileJSON);
@@ -312,7 +312,7 @@ var Map = React.createClass({
               var source = mbstyle.sources[key];
               map.on('source.load', function(e) {
                 if (e.source.id === key && this.state.allowLayersToMoveMap) {
-                  map.flyTo({center: mbstyle.center, zoom:mbstyle.zoom});
+                  //map.flyTo({center: mbstyle.center, zoom:mbstyle.zoom});
                 }
               });
               map.addSource(key, source);
