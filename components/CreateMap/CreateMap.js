@@ -141,6 +141,7 @@ var CreateMap = React.createClass({
   },
 
   onClose(){
+    $('.savebutton-tooltipped').tooltip('remove');
     Actions.closeMapDesigner();
     if(this.props.onClose) this.props.onClose();
   },
@@ -178,6 +179,7 @@ var CreateMap = React.createClass({
   },
 
   onSave(){
+    $('.savebutton-tooltipped').tooltip('remove');
     var _this = this;
 
     if(this.props.showTitleEdit && (!this.state.title || this.state.title == '')){
