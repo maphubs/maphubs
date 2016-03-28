@@ -510,6 +510,7 @@ map.on('mousemove', function(e) {
     if(this.state.interactive && !prevState.interactive){
       this.map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));
       this.map.interaction.enable();
+      $(this.refs.basemapButton).show();
     }
 
       if(this.state.locale && (this.state.locale != prevState.locale) ){
@@ -843,7 +844,7 @@ map.on('mousemove', function(e) {
 
 
     var baseMapButton = '';
-    if(this.props.interactive){
+    if(this.state.interactive){
       baseMapButton = (
         <a
           onClick={this.toggleBaseMaps}
