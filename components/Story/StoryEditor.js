@@ -298,7 +298,9 @@ onAddMap(map_id){
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id;
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
-  + '</div>');
+  + '</div>'
+  + '<p></p>'
+  );
 
    _this.addMapCloseButtons();
 
@@ -385,7 +387,7 @@ removeMapCloseButtons(){
 },
 
 onAddImage(data){
-  this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
+  this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" /><p></p>');
 },
 
 saveSelectionRange(){
