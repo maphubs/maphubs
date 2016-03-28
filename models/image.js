@@ -26,7 +26,7 @@ module.exports = {
         debug('image found: ' + id);
         return _this.getImageByID(parseInt(id));
       }else{
-        throw new Error('No Image Found for Group: '+ group_id);
+        //throw new Error('No Image Found for Group: '+ group_id);
       }
 
     });
