@@ -14,6 +14,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var CreateMapStore = require('../../stores/CreateMapStore');
 var Actions = require('../../actions/CreateMapActions');
+var ConfirmationActions = require('../../actions/ConfirmationActions');
 var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var NotificationActions = require('../../actions/NotificationActions');
@@ -136,11 +137,25 @@ var CreateMap = React.createClass({
 
   componentDidUpdate(){
     $('.layer-card-tooltipped').tooltip();
+    $('.savebutton-tooltipped').tooltip();
   },
 
   onClose(){
     Actions.closeMapDesigner();
     if(this.props.onClose) this.props.onClose();
+  },
+
+  onCancel(){
+    var _this = this;
+    ConfirmationActions.showConfirmation({
+      title: _this.__('Confirm Cancel'),
+      postitiveButtonText: _this.__('Cancel Map'),
+      negativeButtonText: _this.__('Return to Editing Map'),
+      message: _this.__('Your map has not been saved, please confirm that you want to cancel your map.'),
+      onPositiveResponse(){
+        _this.onClose();
+      }
+    });
   },
 
   onCreate(){
@@ -506,9 +521,16 @@ var CreateMap = React.createClass({
             <Legend style={{width: '600px', margin: 'auto', overflow: 'auto'}}
               layers={this.state.mapLayers}/>
 
-            <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Save Map')}>
-              <a onMouseDown={this.onSave} className="btn-floating btn-large blue">
+            <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Save Map')}>
+              <a onClick={this.onSave} className="btn-floating btn-large blue">
                 <i className="large material-icons">save</i>
+              </a>
+            </div>
+            <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped"
+              style={{right: '85px'}}
+              data-position="top" data-delay="50" data-tooltip={_this.__('Cancel Map')}>
+              <a onClick={this.onCancel} className="btn-floating btn-large red">
+                <i className="large material-icons">close</i>
               </a>
             </div>
           </div>
