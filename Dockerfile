@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 MAINTAINER Kristofor Carle - Moabi <kristoforcarle@moabi.org>
 
 #update and install basics
-RUN apt-get update && apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip
+RUN apt-get update && apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick
 
 #install node, npm, pm2
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash

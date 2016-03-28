@@ -34,13 +34,16 @@ var GroupTag = React.createClass({
 
   componentDidMount(){
      $('.group-tag-tooltip').tooltip();
+     $(this.refs.groupimg).error(function(){
+        $(this).attr('src', '/assets/missing_group.png');
+});
   },
 
   render(){
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
     var sizeStr = this.props.size + 'px';
     var fontSizeStr = this.props.fontSize + 'px';
-    var imgWidth = Math.floor(this.props.size * 1.25).toString() + 'px'; //preserve 4:3 ratio of logo image
+    var imgWidth = this.props.size.toString() + 'px';
     var chipWidth = Math.floor(this.props.size * 5).toString() + 'px';
     var className = classNames(['chip', 'truncate', this.props.className]);
     return (
@@ -55,11 +58,11 @@ var GroupTag = React.createClass({
               height: sizeStr,
               width: imgWidth,
               backgroundColor: 'white',
-              marginRight: '5px',
+              marginRight: '0px',
               marginLeft: '-12px',
               float: 'left'
             }}>
-            <img  className="valign" src={baseUrl + '/group/' + this.props.group + '/image'}
+            <img ref="groupimg" className="valign" src={baseUrl + '/group/' + this.props.group + '/thumbnail'}
               style={{
                 height: sizeStr,
                 width: 'auto',

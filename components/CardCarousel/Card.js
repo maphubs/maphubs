@@ -136,6 +136,12 @@ module.exports = React.createClass({
             <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
           </div>
         );
+      }else if(this.props.type == 'group' && this.props.image_url){
+        image = (
+          <div className="card-image" style={{borderBottom: '1px solid #757575'}}>
+            <img  className="responsive-img" style={{height: '150px', width: 'auto', margin: 'auto'}} src={this.props.image_url} />
+          </div>
+        );
       }else{
         image = (
           <div className="card-image">

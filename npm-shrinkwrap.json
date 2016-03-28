@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "dependencies": {
     "@fengyuanchen/tooltip": {
       "version": "0.0.2",
@@ -2157,6 +2157,11 @@
       "version": "2.3.2",
       "from": "easy-extender@>=2.3.1 <3.0.0",
       "resolved": "https://registry.npmjs.org/easy-extender/-/easy-extender-2.3.2.tgz"
+    },
+    "easyimage": {
+      "version": "2.1.0",
+      "from": "easyimage@latest",
+      "resolved": "https://registry.npmjs.org/easyimage/-/easyimage-2.1.0.tgz"
     },
     "eazy-logger": {
       "version": "2.1.2",

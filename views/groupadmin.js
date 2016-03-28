@@ -355,7 +355,7 @@ var GroupAdmin = React.createClass({
           </div>
           <button onClick={this.handleGroupDelete} className="btn red white-text">{this.__('Delete Group')}</button>
         </div>
-        <ImageCrop ref="imagecrop" aspectRatio={4.0/3.0} lockAspect={true} onCrop={this.onCrop} />
+        <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} onCrop={this.onCrop} />
         </main>
 			</div>
 		);

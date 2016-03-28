@@ -59,7 +59,23 @@ module.exports = function(app) {
     var group_id = req.params.id;
     Image.getGroupImage(group_id)
     .then(function(result){
-      processImage(result.image, req, res);
+      if(result && result.image){
+        processImage(result.image, req, res);
+      }else{
+        res.status(404).send();
+      }
+    }).catch(apiError(res, 404));
+  });
+
+  app.get('/group/:id/thumbnail', function(req, res) {
+    var group_id = req.params.id;
+    Image.getGroupThumbnail(group_id)
+    .then(function(result){
+      if(result && result.thumbnail){
+        processImage(result.thumbnail, req, res);
+      }else{
+        res.status(404).send();
+      }
     }).catch(apiError(res, 404));
   });
 
