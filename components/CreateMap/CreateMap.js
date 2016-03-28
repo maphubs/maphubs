@@ -147,6 +147,7 @@ var CreateMap = React.createClass({
   },
 
   onCancel(){
+    $('.savebutton-tooltipped').tooltip('remove');
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Cancel'),
