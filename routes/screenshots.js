@@ -88,7 +88,7 @@ module.exports = function(app) {
 
 
 
-  app.get('/api/screenshot/layer/thumbnail/:layerid.png', function(req, res) {
+  app.get('/api/screenshot/layer/thumbnail/:layerid.jpg', function(req, res) {
     var layer_id = parseInt(req.params.layerid || '', 10);
     ScreenshotUtils.getLayerThumbnail(layer_id)
     .then(function(image){
@@ -127,7 +127,7 @@ module.exports = function(app) {
 
   });
 
-  app.get('/api/screenshot/map/thumbnail/:mapid.png', function(req, res) {
+  app.get('/api/screenshot/map/thumbnail/:mapid.jpg', function(req, res) {
     var map_id = parseInt(req.params.mapid || '', 10);
     ScreenshotUtils.getMapThumbnail(map_id)
     .then(function(image){

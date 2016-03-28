@@ -83,7 +83,7 @@ var Layers = React.createClass({
     var popularCards = [];
 
     this.props.featuredLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
 
       featuredCards.push({
         id: layer.layer_id,
@@ -98,7 +98,7 @@ var Layers = React.createClass({
     });
 
     this.props.recentLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
 
       recentCards.push({
         id: layer.layer_id,
@@ -113,7 +113,7 @@ var Layers = React.createClass({
     });
 
     this.props.popularLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
 
       popularCards.push({
         id: layer.layer_id,
@@ -134,7 +134,7 @@ var Layers = React.createClass({
 
 
         this.state.searchResults.map(function(layer){
-          var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+          var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
           searchCards.push({
             id: layer.layer_id,
             title: layer.name,

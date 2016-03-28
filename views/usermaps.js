@@ -58,7 +58,7 @@ var UserMaps = React.createClass({
 
     _this.props.maps.map(function(map){
 
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
+      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
 
       cards.push({
         id: map.map_id,

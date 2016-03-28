@@ -61,12 +61,12 @@ module.exports = {
     debug('updating image for layer: ' + layer_id);
     //get screenshot from the manet service
     //generate 640x480 and then display at 320x240 for retina
-    var width = 640;
-    var height = 480;
+    var width = 400;
+    var height = 300;
 
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
     var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
-    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=2&quality=1';
+    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
     debug(manetUrl);
     //replace image in database
 
@@ -84,7 +84,7 @@ module.exports = {
       return knex('omh.layers').update({thumbnail: null}).where({layer_id})
       .then(function(){
         var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-        var url = baseUrl + '/api/screenshot/layer/thumbnail/' + layer_id + '.png';
+        var url = baseUrl + '/api/screenshot/layer/thumbnail/' + layer_id + '.jpg';
         //note: not using a promise here on purpose, we don't want to wait for this to finish
         request({url, encoding: null, timeout: 60000}, function (err, res, body) {
           debug('thumbnail request complete');
@@ -134,14 +134,12 @@ module.exports = {
   updateMapThumbnail(map_id){
     debug('updating thumbnail for map: ' + map_id);
     //get screenshot from the manet service
-    //generate 640x480 and then display at 320x240 for retina
-    var width = 640;
-    var height = 480;
+    var width = 400;
+    var height = 300;
 
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/thumbnail';
-    //var maphubsUrl = 'http://map.loggingroads.org';
-    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=2&quality=1';
+    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
     //replace image in database
     debug(manetUrl);
     return this.base64Download(manetUrl)

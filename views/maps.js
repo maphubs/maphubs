@@ -90,7 +90,7 @@ var Maps = React.createClass({
     var popularCards = [];
 
     this.props.featuredMaps.map(function(map){
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
+      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
 
       featuredCards.push({
         id: map.map_id,
@@ -103,7 +103,7 @@ var Maps = React.createClass({
     });
 
     this.props.recentMaps.map(function(map){
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
+      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
 
       recentCards.push({
         id: map.map_id,
@@ -116,7 +116,7 @@ var Maps = React.createClass({
     });
 
     this.props.popularMaps.map(function(map){
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
+      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
 
       popularCards.push({
         id: map.map_id,
@@ -135,7 +135,7 @@ var Maps = React.createClass({
 
 
         this.state.searchResults.map(function(map){
-          var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
+          var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
 
           searchCards.push({
             id: map.map_id,

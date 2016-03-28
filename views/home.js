@@ -47,7 +47,7 @@ var Home = React.createClass({
   },
 
   getLayerCard(layer){
-    var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.png';
+    var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
     return {
       id: layer.layer_id,
       title: layer.name,
@@ -90,7 +90,7 @@ var Home = React.createClass({
   },
 
   getMapCard(map){
-    var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.png';
+    var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
       id: map.map_id,
       title: map.title ? map.title : '',
