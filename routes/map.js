@@ -5,7 +5,7 @@ var XML = require('../services/xml.js');
 var Promise = require('bluebird');
 //var Node = require('../models/node-model.js');
 var User = require('../models/user');
-var Layer = require('../models/layer');
+//var Layer = require('../models/layer');
 var Map = require('../models/map');
 var Story = require('../models/story');
 var Stats = require('../models/stats');
@@ -236,8 +236,8 @@ module.exports = function(app) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.position && data.title){
-          Map.createUserMap(data.layers, data.style, data.position, data.title, user_id)
+      if(data && data.layers && data.style && data.basemap && data.position && data.title){
+          Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id)
           .then(function(result){
             res.status(200).send({success: true, map_id: result[0]});
           }).catch(apiError(res, 500));
@@ -254,11 +254,11 @@ module.exports = function(app) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.position && data.story_id){
+      if(data && data.layers && data.style && data.basemap && data.position && data.story_id){
         Story.allowedToModify(data.story_id, user_id)
         .then(function(allowed){
           if(allowed){
-            Map.createStoryMap(data.layers, data.style, data.position, data.story_id, data.title, user_id)
+            Map.createStoryMap(data.layers, data.style, data.basemap, data.position, data.story_id, data.title, user_id)
             .then(function(result){
               res.status(200).send({success: true, map_id: result[0]});
             }).catch(apiError(res, 500));
@@ -280,11 +280,11 @@ module.exports = function(app) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.position && data.map_id){
+      if(data && data.layers && data.style && data.basemap && data.position && data.map_id){
         Map.allowedToModify(data.map_id, user_id)
         .then(function(allowed){
           if(allowed){
-            Map.updateMap(data.map_id, data.layers, data.style, data.position, data.title, user_id)
+            Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
             .then(function(){
               res.status(200).send({success: true});
             }).catch(apiError(res, 500));

@@ -52,6 +52,7 @@ var CreateMap = React.createClass({
     titleLabel: React.PropTypes.string,
     title: React.PropTypes.string,
     position: React.PropTypes.object,
+    basemap: React.PropTypes.string,
     mapId: React.PropTypes.number
   },
 
@@ -69,7 +70,8 @@ var CreateMap = React.createClass({
       showTitleEdit: true,
       titleLabel: '',
       mapId: null,
-      title: null
+      title: null,
+      basemap: null
     };
   },
 
@@ -92,6 +94,10 @@ var CreateMap = React.createClass({
 
     if(this.props.position){
       Actions.setMapPosition(this.props.position);
+    }
+
+    if(this.props.basemap){
+      Actions.setMapBasemap(this.props.basemap);
     }
 
     if(this.props.mapId){
@@ -129,7 +135,7 @@ var CreateMap = React.createClass({
   },
 
   componentDidUpdate(){
-    $('.layer-card-tooltipped').tooltip({delay: 50});
+    $('.layer-card-tooltipped').tooltip();
   },
 
   onClose(){
@@ -166,9 +172,11 @@ var CreateMap = React.createClass({
 
     var position = this.refs.map.getPosition();
     position.bbox = this.refs.map.getBounds();
+
+    var basemap = this.refs.map.getBaseMap();
     if(this.props.userMap){
       if(!this.state.map_id || this.state.map_id == -1){
-        Actions.createUserMap(position, function(err){
+        Actions.createUserMap(position, basemap, function(err){
           if(err){
             //display error to user
             MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -180,7 +188,7 @@ var CreateMap = React.createClass({
           }
         });
       }else{
-        Actions.saveMap(position, function(err){
+        Actions.saveMap(position, basemap, function(err){
           if(err){
             //display error to user
             MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -195,7 +203,7 @@ var CreateMap = React.createClass({
 
     }else if(this.props.hubStoryMap || this.props.userStoryMap){
         if(!this.state.map_id || this.state.map_id == -1){
-          Actions.createStoryMap(position, function(err){
+          Actions.createStoryMap(position, basemap, function(err){
             if(err){
               //display error to user
               MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -206,7 +214,7 @@ var CreateMap = React.createClass({
             }
           });
         }else{
-          Actions.saveMap(position, function(err){
+          Actions.saveMap(position, basemap, function(err){
             if(err){
               //display error to user
               MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -219,7 +227,7 @@ var CreateMap = React.createClass({
           });
       }
     } else if(this.props.hubMap){
-      this.props.onSaveHubMap(this.state.mapLayers, this.state.mapStyle, position);
+      this.props.onSaveHubMap(this.state.mapLayers, this.state.mapStyle, position, basemap);
       Actions.closeMapDesigner();
     }
   },
@@ -263,6 +271,22 @@ var CreateMap = React.createClass({
 
   closeLayerDesigner(){
     this.setState({showMapLayerDesigner: false});
+  },
+
+  removeFromMap(layer){
+    $('.layer-card-tooltipped').tooltip('remove');
+    Actions.removeFromMap(layer);
+    $('.layer-card-tooltipped').tooltip();
+  },
+  moveUp(layer){
+    $('.layer-card-tooltipped').tooltip('remove');
+    Actions.moveUp(layer);
+    $('.layer-card-tooltipped').tooltip();
+  },
+  moveDown(layer){
+    $('.layer-card-tooltipped').tooltip('remove');
+    Actions.moveDown(layer);
+    $('.layer-card-tooltipped').tooltip();
   },
 
   render(){
@@ -318,8 +342,8 @@ var CreateMap = React.createClass({
                     if(!layer.active) icon = 'visibility_off';
                       visibilityButton = (
                         <a onClick={function(){_this.toggleVisibility(layer.layer_id);}}
-                          className="create-map-btn"
-                          data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
+                          className="create-map-btn layer-card-tooltipped"
+                          data-position="top" data-delay="50" data-tooltip={_this.__('Show/Hide Layer')}>
                           <i className="material-icons omh-accent-text">{icon}</i>
                         </a>
                       );
@@ -328,9 +352,9 @@ var CreateMap = React.createClass({
                     <li key={layer.layer_id} className="collection-item"
                       style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden', border: '1px solid #ddd'}}>
                       <div className="title col s8">
-                        <b className="title truncate grey-text text-darken-4 tooltipped layer-card-tooltipped"
+                        <b className="title truncate grey-text text-darken-4 layer-card-tooltipped"
                           style={{fontSize: '12px'}}
-                          data-position="right" data-tooltip={layer.name}>
+                          data-position="top" data-tooltip={layer.name}>
                           {layer.name}
                         </b>
                         <GroupTag group={layer.owned_by_group_id} />
@@ -340,7 +364,7 @@ var CreateMap = React.createClass({
 
                           <div className="col s4 no-padding">
                             <a href={'/layer/info/'+ layer.layer_id + '/' + slug(layer.name ? layer.name : '')} target="_blank"
-                              className="create-map-btn"
+                              className="create-map-btn layer-card-tooltipped"
                               data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
                               <i className="material-icons omh-accent-text">info</i>
                               </a>
@@ -349,7 +373,7 @@ var CreateMap = React.createClass({
                            {visibilityButton}
                           </div>
                           <div className="col s4 no-padding">
-                          <div className="fixed-action-btn horizontal click-to-toggle"
+                          <div className="fixed-action-btn horizontal"
                             style={{
                               position: 'relative',
                               right: 0,
@@ -365,10 +389,10 @@ var CreateMap = React.createClass({
                                 right: '50%',
                                 width: '215px'
                               }}>
-                               <li className="create-map-popup-btn no-padding"><a onClick={function(){Actions.removeFromMap(layer);}} className="btn-floating red" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons">remove</i></a></li>
-                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.showLayerDesigner(layer);}} className="btn-floating amber darken-4" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
-                               <li className="create-map-popup-btn no-padding"><a onClick={function(){Actions.moveUp(layer);}} className="btn-floating omh-color" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons">keyboard_arrow_up</i></a></li>
-                               <li className="create-map-popup-btn no-padding"><a onClick={function(){Actions.moveDown(layer);}} className="btn-floating omh-color" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons">keyboard_arrow_down</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.removeFromMap(layer);}} className="btn-floating red layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons">remove</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.showLayerDesigner(layer);}} className="btn-floating amber darken-4 layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.moveUp(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons">keyboard_arrow_up</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.moveDown(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons">keyboard_arrow_down</i></a></li>
                              </ul>
                            </div>
                          </div>
@@ -402,7 +426,7 @@ var CreateMap = React.createClass({
                           <div className="title col s8">
                             <b className="title truncate grey-text text-darken-4 tooltipped layer-card-tooltipped"
                               style={{fontSize: '12px'}}
-                              data-position="right" data-tooltip={layer.name}>
+                              data-position="top" data-tooltip={layer.name}>
                               {layer.name}
                             </b>
                               <GroupTag group={layer.owned_by_group_id} />
@@ -412,18 +436,27 @@ var CreateMap = React.createClass({
                           <div className="secondary-content col s4 no-padding">
                             <div className="row no-padding no-margin">
                               <div className="col s4 no-padding right">
-                                <a onClick={function(){Actions.addToMap(layer, function(err){
+                                <a onClick={function(){
+                                      $('.layer-card-tooltipped').tooltip('remove');
+                                      //save map position so adding a layer doesn't reset it
+                                      var position = _this.refs.map.getPosition();
+                                      position.bounds = _this.refs.map.getBounds();
+                                      Actions.setMapPosition(position);
+                                      Actions.addToMap(layer, function(err){
                                       if(err){
                                         NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'bottomleft'});
                                       }
+                                      //reset stuck tooltips...
+
+                                      $('.layer-card-tooltipped').tooltip();
                                   });}}
-                                  className="create-map-btn"
+                                  className="create-map-btn layer-card-tooltipped"
                                   data-position="top" data-delay="50" data-tooltip={_this.__('Add to Map')}>
                                   <i className="material-icons omh-accent-text">add</i></a>
                               </div>
                               <div className="col s4 no-padding right">
                                 <a href={urlUtil.getBaseUrl(config.host, config.port) + '/layer/info/'+ layer.layer_id + '/' + slug(layer.name)} target="_blank"
-                                  className="create-map-btn"
+                                  className="create-map-btn layer-card-tooltipped"
                                   data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
                                   <i className="material-icons omh-accent-text">info</i>
                                 </a>
@@ -466,6 +499,8 @@ var CreateMap = React.createClass({
           <div className="row create-map-content" style={{margin: 0, overflow: 'auto'}}>
             <Map ref="map" id="create-map-map" style={{height: '400px', width: '600px', margin: 'auto'}}
               glStyle={this.state.mapStyle}
+              baseMap={this.state.basemap}
+              onChangeBaseMap={Actions.setMapBasemap}
               fitBounds={mapExtent}
               />
             <Legend style={{width: '600px', margin: 'auto', overflow: 'auto'}}

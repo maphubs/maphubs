@@ -130,7 +130,10 @@ var LayerMap = React.createClass({
         <div className="col s12 no-padding">
           <Map className="map-absolute map-with-header width-full"
             navPosition="top-right"
-            glStyle={this.props.layer.style} title={this.props.layer.name}>
+            glStyle={this.props.layer.style}
+            fitBounds={this.props.layer.preview_position.bbox}
+            title={this.props.layer.name}>
+
             {legend}
             <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'1'}}></div>
           </Map>

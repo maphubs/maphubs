@@ -22,6 +22,7 @@ module.exports = function(app) {
              name: layer.name,
              layers: [layer],
              position: layer.preview_position,
+             basemap: 'default',
              style: layer.style,
              showLegend: false,
              showLogo: false
@@ -49,6 +50,7 @@ module.exports = function(app) {
              name: map.title,
              layers,
              position: map.position,
+             basemap: map.basemap,
              style: map.style
            }, req
          });
@@ -74,6 +76,7 @@ module.exports = function(app) {
              name: map.title,
              layers,
              position: map.position,
+             basemap: map.basemap,
              style: map.style,
              showLegend: false,
              showLogo: false

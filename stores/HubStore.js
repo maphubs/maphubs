@@ -89,6 +89,7 @@ module.exports = Reflux.createStore({
      about: this.state.hub.about,
      published: this.state.hub.published,
      style: this.state.hub.map_style,
+     basemap: this.state.hub.basemap,
      position: this.state.hub.map_position,
      layers:  this.state.layers,
      logoImage: this.state.logoImage,
@@ -117,10 +118,11 @@ module.exports = Reflux.createStore({
    });
  },
 
- setMap(layers, style, position){
+ setMap(layers, style, position, basemap){
    var hub = this.state.hub;
    hub.map_style = style;
    hub.map_position = position;
+   hub.basemap = basemap;
    this.setState({hub, layers, unsavedChanges: true});
    this.trigger(this.state);
  },
@@ -133,6 +135,7 @@ module.exports = Reflux.createStore({
    .type('json').accept('json')
    .send({
      style: this.state.hub.map_style,
+     basemap: this.state.hub.basemap,
      layers:  this.state.layers,
      position: this.state.hub.map_position
    })

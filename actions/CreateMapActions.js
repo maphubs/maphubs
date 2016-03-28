@@ -18,6 +18,7 @@ var actions = Reflux.createActions({
   'updateLayerStyle': {},
   'setMapTitle': {},
   'setMapPosition': {},
+  'setMapBasemap': {},
   'saveMap': {},
   'createUserMap': {},
   'createStoryMap': {},

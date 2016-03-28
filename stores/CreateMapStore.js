@@ -27,7 +27,8 @@ module.exports = Reflux.createStore({
       searchLayers: [],
       show: false,
       mapStyle: null,
-      position: null
+      position: null,
+      basemap: 'default'
     };
   },
 
@@ -74,6 +75,10 @@ module.exports = Reflux.createStore({
     this.setState({position});
   },
 
+  setMapBasemap(basemap){
+    this.setState({basemap});
+  },
+
   editMap(map_id, cb){
     var _this = this;
     debug('editing map: ' + map_id);
@@ -85,10 +90,11 @@ module.exports = Reflux.createStore({
       }else{
         var map = res.body.map;
         var allLayers = _this.state.allLayers;
-    
+
         _this.setState({
           map_id,
           position: map.position,
+          basemap: map.basemap,
           title: map.title,
           mapLayers: map.layers,
           show: true,
@@ -96,7 +102,6 @@ module.exports = Reflux.createStore({
           searchLayers: allLayers
         });
         _this.updateMap(map.layers);
-        _this.setState({position:map.position});
         cb();
       }
     });
@@ -176,7 +181,7 @@ module.exports = Reflux.createStore({
     this.updateMap(layers);
   },
 
-  saveMap(position, cb){
+  saveMap(position, basemap, cb){
     var _this = this;
     //resave an existing map
     request.post('/api/map/save')
@@ -186,17 +191,18 @@ module.exports = Reflux.createStore({
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
         title: this.state.title,
-        position
+        position,
+        basemap
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
-        _this.setState({position});
+        _this.setState({position, basemap});
         cb();
       });
     });
   },
 
-  createUserMap(position, cb){
+  createUserMap(position, basemap, cb){
     var _this = this;
     request.post('/api/map/create/usermap')
     .type('json').accept('json')
@@ -204,18 +210,19 @@ module.exports = Reflux.createStore({
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
         title: this.state.title,
-        position
+        position,
+        basemap
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         var map_id = res.body.map_id;
-        _this.setState({map_id});
+        _this.setState({map_id, position, basemap});
         cb();
       });
     });
   },
 
-  createStoryMap(position, cb){
+  createStoryMap(position, basemap, cb){
     var _this = this;
     if(!this.state.story_id || this.state.story_id === -1){
       var msg = 'Error, story_id not set';
@@ -228,6 +235,7 @@ module.exports = Reflux.createStore({
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
         position,
+        basemap,
         title: this.state.title,
         story_id: this.state.story_id
     })
@@ -237,7 +245,7 @@ module.exports = Reflux.createStore({
           cb(err);
         }else{
           var map_id = res.body.map_id;
-          _this.setState({map_id});
+          _this.setState({map_id, position, basemap});
           cb();
         }
       });

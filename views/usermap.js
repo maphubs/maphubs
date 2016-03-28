@@ -165,6 +165,7 @@ var UserMap = React.createClass({
     if(this.props.canEdit){
       createMap = (
         <CreateMap onCreate={this.onMapChanged} mapLayers={this.props.layers}
+          basemap={this.props.map.basemap}
           mapId={this.props.map.map_id} title={this.props.map.title} position={this.props.map.position} userMap/>
       );
       deleteButton = (
@@ -220,7 +221,9 @@ var UserMap = React.createClass({
     map = (
       <Map ref="map" fitBounds={bounds}
         style={{width: '100%', height: '100%'}}
-        glStyle={this.props.map.style} navPosition="top-right">
+        glStyle={this.props.map.style}
+        baseMap={this.props.map.basemap}
+         navPosition="top-right">
         {legend}
         <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'1'}}></div>
         {button}

@@ -342,7 +342,9 @@ var LayerInfo = React.createClass({
 
     if(this.props.layer.is_external){
       mapContent = (
-        <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle}>
+        <Map ref="map" className="map-absolute map-with-header width-50"
+          fitBounds={this.props.layer.preview_position.bbox}
+          glStyle={glStyle}>
           <Legend style={{
               position: 'absolute',
               top: '5px',
@@ -362,7 +364,9 @@ var LayerInfo = React.createClass({
       );
     }else {
       mapContent = (
-        <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle} >
+        <Map ref="map" className="map-absolute map-with-header width-50"
+          fitBounds={this.props.layer.preview_position.bbox}
+          glStyle={glStyle} >
           <Legend style={{
               position: 'absolute',
               top: '5px',

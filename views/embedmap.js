@@ -137,7 +137,11 @@ var EmbedMap = React.createClass({
       var bbox = this.props.map.position.bbox;
       var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
       map = (
-        <Map ref="map" interactive={false} fitBounds={bounds} style={{width: '100%', height: mapHeight + 'px'}} glStyle={this.props.map.style} navPosition="top-right" disableScrollZoom>
+        <Map ref="map" interactive={false} fitBounds={bounds}
+          style={{width: '100%', height: mapHeight + 'px'}}
+          glStyle={this.props.map.style} 
+          baseMap={this.props.map.basemap}
+          navPosition="top-right" disableScrollZoom>
           {legend}
         </Map>
       );

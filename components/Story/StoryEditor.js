@@ -119,6 +119,12 @@ save(){
     return;
   }
 
+  //if this is a hub story, require an author
+  if(this.props.hub_id && !this.state.author){
+    NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'});
+    return;
+  }
+
   //remove the map buttons so they are not saved
   this.removeMapCloseButtons();
   var body = $('.storybody').html();
@@ -324,16 +330,55 @@ addMapCloseButtons(){
     var map_id = map.id.split('-')[1];
     var removeButton = (
       <div>
-        <a onClick={function(){_this.removeMap(map_id);}} className="btn-floating waves-effect waves-light omh-btn"><i className="material-icons">close</i></a>
-        <a onClick={function(){_this.editMap(map_id);}} className="btn-floating waves-effect waves-light omh-btn"><i className="material-icons">edit</i></a>
+        <a onClick={function(){_this.removeMap(map_id);}}>
+          <i className="material-icons edit-map-tooltips"
+            style={{height:'30px',
+                    lineHeight: '30px',
+                    width: '30px',
+                    color: '#29ABE2',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    backgroundColor: 'white',
+                    borderColor: '#ddd',
+                    borderStyle: 'solid',
+                    borderWidth: '1px',
+                    zIndex: '100',
+                    textAlign: 'center',
+                    marginRight: '5px',
+                    fontSize:'25px'}}
+            data-position="bottom" data-delay="50" data-tooltip={_this.__('Remove Map')}
+            >close</i>
+
+        </a>
+        <a onClick={function(){_this.editMap(map_id);}}>
+          <i className="material-icons edit-map-tooltips"
+            style={{height:'30px',
+                    lineHeight: '30px',
+                    width: '30px',
+                    color: '#29ABE2',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    backgroundColor: 'white',
+                    borderColor: '#ddd',
+                    borderStyle: 'solid',
+                    borderWidth: '1px',
+                    zIndex: '100',
+                    textAlign: 'center',
+                    fontSize:'25px'}}
+              data-position="bottom" data-delay="50" data-tooltip={_this.__('Edit Map')}
+            >edit</i>
+
+        </a>
       </div>
     );
-    $(map).append( '<div class="map-remove-button" id="remove-button-' + map_id + '" style="position: absolute; top: 0; right: 0;"></div>');
+    $(map).append( '<div class="map-remove-button" id="remove-button-' + map_id + '" style="position: absolute; top: 10px; right: 110px;"></div>');
     ReactDOM.render(removeButton, document.getElementById('remove-button-' + map_id));
+    $('.edit-map-tooltips').tooltip();
   });
 },
 
 removeMapCloseButtons(){
+  $('.edit-map-tooltips').tooltip('remove');
   $('.map-remove-button').each(function(i, button){
     $(button).remove();
   });
@@ -370,6 +415,8 @@ showCreateMap(){
 },
 
 editMap(map_id){
+  $('.edit-map-tooltips').tooltip('remove');
+  $('.edit-map-tooltips').tooltip();
   var _this = this;
   this.setState({editingMap: true});
   CreateMapActions.editMap(map_id, function(err){
@@ -380,7 +427,6 @@ editMap(map_id){
 },
 
 showImageCrop(){
-
   if(this.savedSelectionRange){
     this.refs.imagecrop.show();
   }else {

@@ -22,6 +22,7 @@ var StaticMap = React.createClass({
     layers: React.PropTypes.array.isRequired,
     style: React.PropTypes.object.isRequired,
     position: React.PropTypes.object.isRequired,
+    basemap: React.PropTypes.string.isRequired,
     showLegend: React.PropTypes.bool,
     showLogo: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
@@ -111,7 +112,7 @@ var StaticMap = React.createClass({
     map = (
       <Map ref="map" interactive={false} showPlayButton={false} fitBounds={bounds}
         showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}
-        glStyle={this.props.style} navPosition="top-right">
+        glStyle={this.props.style} baseMap={this.props.basemap} navPosition="top-right">
         {legend}
       </Map>
     );

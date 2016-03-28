@@ -10,7 +10,7 @@ module.exports = {
   getMap(map_id){
     return knex('omh.maps')
     .select(knex.raw(
-      `map_id, title, position, style, created_by,
+      `map_id, title, position, style, basemap, created_by,
       created_at, updated_by, updated_at, views,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
@@ -133,19 +133,13 @@ module.exports = {
       .orderBy('omh.maps.updated_at', 'desc');
   },
 
-  getStoryMaps(story_id){
-    return  knex.select('omh.maps.*')
-      .from('omh.maps')
-      .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-      .where('omh.story_maps.story_id', story_id);
-  },
-
-  createMap(layers, style, position, title, user_id){
+  createMap(layers, style, basemap, position, title, user_id){
     return knex.transaction(function(trx) {
     return trx('omh.maps')
       .insert({
           position,
           style,
+          basemap,
           title,
           created_by: user_id,
           created_at: knex.raw('now()'),
@@ -177,10 +171,10 @@ module.exports = {
     });
   },
 
-  updateMap(map_id, layers, style, position, title, user_id){
+  updateMap(map_id, layers, style, basemap, position, title, user_id){
     return knex.transaction(function(trx) {
       return trx('omh.maps')
-        .update({position, style, title,
+        .update({position, style, basemap, title,
             updated_by: user_id,
             updated_at: knex.raw('now()'),
             screenshot: null,
@@ -232,8 +226,8 @@ module.exports = {
     });
   },
 
-  createUserMap(layers, style, position, title, user_id){
-    return this.createMap(layers, style, position, title, user_id)
+  createUserMap(layers, style, basemap, position, title, user_id){
+    return this.createMap(layers, style, basemap, position, title, user_id)
     .then(function(result){
       debug(result);
       var map_id = result;
@@ -242,8 +236,8 @@ module.exports = {
     });
   },
 
-  createStoryMap(layers, style, position, story_id, title, user_id){
-    return this.createMap(layers, style, position, title, user_id)
+  createStoryMap(layers, style, basemap, position, story_id, title, user_id){
+    return this.createMap(layers, style, basemap, position, title, user_id)
     .then(function(result){
       var map_id = result;
       debug('Saving Story Map with ID: ' + map_id);
@@ -251,11 +245,12 @@ module.exports = {
     });
   },
 
-  saveHubMap(layers, style, position, hub_id, user_id){
+  saveHubMap(layers, style, basemap, position, hub_id, user_id){
     return knex.transaction(function(trx) {
       return trx('omh.hubs')
       .update({
         map_style: style,
+        basemap,
         map_position: position,
         updated_by: user_id,
         updated_at: knex.raw('now()')

@@ -73,7 +73,7 @@ var GroupTag = React.createClass({
         </a>
         <a target="_blank" className="omh-accent-text group-tag-tooltip no-padding"
           style={{height: sizeStr, width: 'auto', display: 'inherit', lineHeight: sizeStr, fontSize: fontSizeStr}}
-          data-position="bottom" data-delay="50" data-tooltip={this.__('Group') + ' - ' +this.props.group}
+          data-position="top" data-delay="50" data-tooltip={this.__('Group') + ' - ' +this.props.group}
           href={baseUrl + '/group/' + this.props.group}>{this.props.group}</a>
       </div>
     );

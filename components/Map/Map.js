@@ -58,12 +58,14 @@ var Map = React.createClass({
     data: React.PropTypes.object,
     interactive: React.PropTypes.bool,
     showPlayButton: React.PropTypes.bool,
+    showLogo: React.PropTypes.bool,
     showFeatureInfoEditButtons: React.PropTypes.bool,
     fitBounds: React.PropTypes.array,
     disableScrollZoom: React.PropTypes.bool,
     enableRotation: React.PropTypes.bool,
     navPosition:  React.PropTypes.string,
-    baseMap: React.PropTypes.string
+    baseMap: React.PropTypes.string,
+    onChangeBaseMap: React.PropTypes.func
   },
 
   contextTypes: {
@@ -82,21 +84,35 @@ var Map = React.createClass({
       showFeatureInfoEditButtons: true,
       showPlayButton: true,
       navPosition: 'top-right',
-      baseMap: 'default'
+      baseMap: 'default',
+      showLogo: true
     };
   },
 
   getInitialState() {
+    var restoreBounds = null;
+    if(this.props.fitBounds){
+      if(this.props.fitBounds.length > 2){
+        var sw = new mapboxgl.LngLat(this.props.fitBounds[0], this.props.fitBounds[1]);
+        var ne = new mapboxgl.LngLat(this.props.fitBounds[2], this.props.fitBounds[3]);
+        restoreBounds = new mapboxgl.LngLatBounds(sw, ne);
+      }else{
+        restoreBounds = this.props.fitBounds;
+      }
+
+    }
+
     return {
-    //  id: uniqueId('map')
-    id: this.props.id ? this.props.id : 'map',
-    selectedFeatures: null,
-    selected: false,
-    interactive: this.props.interactive,
-    glStyle: this.props.glStyle ? this.props.glStyle : null,
-    mapLoaded: false,
-    baseMap: this.props.baseMap
-  };
+      id: this.props.id ? this.props.id : 'map',
+      selectedFeatures: null,
+      selected: false,
+      interactive: this.props.interactive,
+      glStyle: this.props.glStyle ? this.props.glStyle : null,
+      mapLoaded: false,
+      baseMap: this.props.baseMap,
+      restoreBounds,
+      allowLayersToMoveMap: restoreBounds ? false : true
+    };
   },
 
   getPosition(){
@@ -218,16 +234,25 @@ var Map = React.createClass({
     this.removeAllLayers(prevStyle);
     this.removeAllSources(prevStyle);
     if(baseMap){
-      var bounds = this.map.getBounds();
-      this.setState({restoreBounds: bounds});
       this.map.setStyle(baseMap);
+      //map data is loaded when style.load handler is called
+    }else {
+      this.addMapData(this.map, newStyle, this.props.data, function(){});
     }
-    this.addMapData(this.map, newStyle, this.props.data, function(){});
+
   },
 
   componentWillMount(){
     //disable interactive layers in the Mapbox basemap
     mapboxLight.layers.forEach(function(layer){
+      layer.interactive = false;
+    });
+
+    mapboxDark.layers.forEach(function(layer){
+      layer.interactive = false;
+    });
+
+    mapboxOutdoors.layers.forEach(function(layer){
       layer.interactive = false;
     });
 
@@ -244,6 +269,7 @@ var Map = React.createClass({
     this.createMap();
 
     $(this.refs.basemapButton).show();
+    $('.base-map-tooltip').tooltip();
   },
 
   addMapData(map, glStyle, geoJSON, cb){
@@ -261,7 +287,7 @@ var Map = React.createClass({
             tileJSON.type = 'vector';
 
             map.on('source.load', function(e) {
-              if (e.source.id === key && !_this.props.fitBounds && !_this.state.restoreBounds) { //don't zoom if we have props telling the map where to display
+              if (e.source.id === key && this.state.allowLayersToMoveMap) {
                 map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
                                [tileJSON.bounds[2], tileJSON.bounds[3]]]);
               }
@@ -285,7 +311,7 @@ var Map = React.createClass({
             Object.keys(mbstyle.sources).forEach(function(key) {
               var source = mbstyle.sources[key];
               map.on('source.load', function(e) {
-                if (e.source.id === key && !_this.props.fitBounds) { //don't zoom if we have props telling the map where to display
+                if (e.source.id === key && this.state.allowLayersToMoveMap) {
                   map.flyTo({center: mbstyle.center, zoom:mbstyle.zoom});
                 }
               });
@@ -299,7 +325,7 @@ var Map = React.createClass({
         requests.push(TerraformerGL.getArcGISGeoJSON(url)
         .then(function(geoJSON) {
 
-          if(geoJSON.bbox && geoJSON.bbox.length > 0 && !_this.props.fitBounds){
+          if(geoJSON.bbox && geoJSON.bbox.length > 0 && this.state.allowLayersToMoveMap){
             _this.zoomToData(geoJSON);
           }
 
@@ -313,7 +339,7 @@ var Map = React.createClass({
       requests.push(TerraformerGL.getArcGISFeatureServiceGeoJSON(url)
       .then(function(geoJSON) {
 
-        if(geoJSON.bbox && geoJSON.bbox.length > 0 && !_this.props.fitBounds){
+        if(geoJSON.bbox && geoJSON.bbox.length > 0 && this.state.allowLayersToMoveMap){
           _this.zoomToData(geoJSON);
         }
 
@@ -374,21 +400,19 @@ var Map = React.createClass({
 
     if (_this.state.restoreBounds){
       map.fitBounds(_this.state.restoreBounds, {animate:false});
-    } else if (_this.props.fitBounds){
-      map.fitBounds(_this.props.fitBounds, {animate:false});
     }
 
     if(_this.state.locale != 'en'){
       _this.changeLocale(_this.state.locale);
     }
 
-    _this.setState({mapLoaded: true});
+    _this.setState({mapLoaded: true, restoreBounds: null});
 
     });
 
 
 map.on('mousemove', function(e) {
-    if(_this.state.selected) return;
+    if(_this.state.selected || _this.state.showBaseMaps) return;
     var debounced = _debounce(function(){
       map.featuresAt(e.point, {
         radius: 5,
@@ -484,7 +508,7 @@ map.on('mousemove', function(e) {
     }
 
     if(this.state.interactive && !prevState.interactive){
-      this.map.addControl(new mapboxgl.Navigation({position: 'top-left'}));
+      this.map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));
       this.map.interaction.enable();
     }
 
@@ -492,7 +516,7 @@ map.on('mousemove', function(e) {
         this.changeLocale(this.state.locale);
       }
 
-
+/*
           if(this.props.fitBounds) {
 
             if(!isEqual(this.props.fitBounds,prevProps.fitBounds)) {
@@ -502,7 +526,9 @@ map.on('mousemove', function(e) {
                               [bounds[2], bounds[3]]]);
             }
           }
+*/
 
+    //$('.base-map-tooltip').tooltip();
   },
 
   componentWillReceiveProps(nextProps){
@@ -518,21 +544,81 @@ map.on('mousemove', function(e) {
       }
     }
 
-    if(nextProps.glStyle) {
-      if(!isEqual(this.state.glStyle,nextProps.glStyle)) {
-          this.reload(this.state.glStyle, nextProps.glStyle);
-          this.setState({glStyle: nextProps.glStyle});
-      }
-
+    var fitBoundsChanging = false;
+    if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds)){
+      fitBoundsChanging = true;
     }
 
-    if(nextProps.fitBounds) {
-      var bounds = nextProps.fitBounds;
+    var bounds = null;
+    var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
+    if(nextProps.fitBounds){
+      allowLayersToMoveMap = false;
+      var sw = new mapboxgl.LngLat(nextProps.fitBounds[0], nextProps.fitBounds[1]);
+      var ne = new mapboxgl.LngLat(nextProps.fitBounds[2], nextProps.fitBounds[3]);
+      bounds = new mapboxgl.LngLatBounds(sw, ne);
+    }
+
+    if(nextProps.glStyle && nextProps.baseMap) {
+      if(!isEqual(this.state.glStyle,nextProps.glStyle)) {
+          //** Style Changing (also reloads basemap) **/
+          if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
+            //if fitBounds isn't changing, restore the current map position
+            allowLayersToMoveMap = false;
+            bounds = this.map.getBounds();
+          }
+          this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+
+          var baseMap = this.getBaseMapFromName(nextProps.baseMap);
+          this.reload(this.state.glStyle, nextProps.glStyle, baseMap);
+
+          this.setState({glStyle: nextProps.glStyle});//wait to change state style until after reloaded
+      }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
+        //** Style Not Changing, but Base Map is Changing **/
+
+        if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
+          //if fitBounds isn't changing, restore the current map position
+          bounds = this.map.getBounds();
+        }
+        this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+
+        baseMap = this.getBaseMapFromName(nextProps.baseMap);
+        this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+      }
+    }else if(nextProps.glStyle
+      && !isEqual(this.state.glStyle,nextProps.glStyle)){
+        //** Style Changing (no basemap provided) **/
+
+        if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
+          //if fitBounds isn't changing, restore the current map position
+          bounds = this.map.getBounds();
+        }
+        this.setState({restoreBounds: bounds});
+
+        this.reload(this.state.glStyle, nextProps.glStyle);
+
+        this.setState({glStyle: nextProps.glStyle, allowLayersToMoveMap}); //wait to change state style until after reloaded
+
+    }else if(nextProps.baseMap
+      && !isEqual(this.state.baseMap,nextProps.baseMap)) {
+        //** Style Not Found, but Base Map is Changing **/
+
+      if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
+        //if fitBounds isn't changing, restore the current map position
+        bounds = this.map.getBounds();
+      }
+      this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+
+      baseMap = this.getBaseMapFromName(nextProps.baseMap);
+      this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+    }else if(fitBoundsChanging) {
+      //** just changing the fit bounds not the style or base map **/
+       bounds = nextProps.fitBounds;
+       //in this case we can call it directly since we are not waiting for the map to reload first
         this.map.fitBounds([[bounds[0], bounds[1]],
                       [bounds[2], bounds[3]]]);
+
+        this.setState({allowLayersToMoveMap});
     }
-
-
   },
 
   initGeoJSON(map, data){
@@ -659,7 +745,7 @@ map.on('mousemove', function(e) {
       baseMap = mapboxOutdoors;
     }
     else if(mapName == 'streets'){
-      baseMap = mapboxSatellite;
+      baseMap = mapboxStreets;
     }
     else if(mapName == 'mapbox-satellite'){
       baseMap = mapboxSatellite;
@@ -668,15 +754,21 @@ map.on('mousemove', function(e) {
     return baseMap;
   },
 
-  getBaseMapName(){
+  getBaseMap(){
     return this.state.baseMap;
   },
 
   changeBaseMap(mapName){
+    $('.base-map-tooltip').tooltip('remove'); //fix stuck tooltips
+    $('.base-map-tooltip').tooltip();
     var baseMap = this.getBaseMapFromName(mapName);
     this.closeBaseMaps();
-    this.setState({baseMap: mapName});
+    var bounds = this.map.getBounds();
+    this.setState({restoreBounds: bounds, baseMap: mapName});
     this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+    if(this.props.onChangeBaseMap){
+      this.props.onChangeBaseMap(mapName);
+    }
   },
 
   render() {
@@ -710,7 +802,7 @@ map.on('mousemove', function(e) {
     }
 
     var logo = '', children = '';
-    if(this.state.mapLoaded){
+    if(this.state.mapLoaded && this.props.showLogo){
       logo = (
         <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width="70" height="19" src="/assets/maphubs-logo-small.png" alt="MapHubs Logo"/>
       );
@@ -722,7 +814,7 @@ map.on('mousemove', function(e) {
       var _this = this;
       baseMapBox = (
         <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
-            <ul className="collection with-header" style={{margin: 0, width: '100%'}}>
+            <ul className="collection with-header" style={{margin: 0, width: '100%', overflow: 'auto'}}>
               <li className="collection-header">
                 <h6>{this.__('Base Maps')}</h6>
               </li>
@@ -750,36 +842,46 @@ map.on('mousemove', function(e) {
     }
 
 
+    var baseMapButton = '';
+    if(this.props.interactive){
+      baseMapButton = (
+        <a
+          onClick={this.toggleBaseMaps}
+          style={{position: 'absolute',
+            top: '10px',
+            right: '10px',
+            height:'30px',
+            zIndex: '100',
+            lineHeight: '30px',
+            textAlign: 'center',
+            width: '30px'}}
+          >
+          <i className="material-icons z-depth-1 base-map-tooltip"
+            ref="basemapButton"
+            style={{height:'30px',
+                    lineHeight: '30px',
+                    display: 'none',
+                    width: '30px',
+                    color: '#29ABE2',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    backgroundColor: 'white',
+                    borderColor: '#ddd',
+                    borderStyle: 'solid',
+                    borderWidth: '1px',
+                    textAlign: 'center',
+                    fontSize:'25px'}}
+            data-position="bottom" data-delay="50" data-tooltip={this.__('Change Base Map')}
+            >layers</i>
+        </a>
+      );
+    }
+
+
     return (
       <div  className={this.props.className} style={style}>
         <div id={this.state.id} className={className} style={{width:'100%', height:'100%'}}>
-          <a
-            onClick={this.toggleBaseMaps}
-            style={{position: 'absolute',
-              top: '10px',
-              right: '10px',
-              height:'30px',
-              zIndex: '100',
-              lineHeight: '30px',
-              textAlign: 'center',
-              width: '30px'}}
-            >
-            <i className="material-icons z-depth-1"
-              ref="basemapButton"
-              style={{height:'30px',
-                      lineHeight: '30px',
-                      display: 'none',
-                      width: '30px',
-                      color: '#29ABE2',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      backgroundColor: 'white',
-                      borderColor: '#ddd',
-                      borderStyle: 'solid',
-                      borderWidth: '1px',
-                      fontSize:'25px'}}
-              >layers</i>
-          </a>
+          {baseMapButton}
           {baseMapBox}
           {featureBox}
           {interactiveButton}

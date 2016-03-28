@@ -567,11 +567,11 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
 
     var data = req.body;
-    if(data && data.layers && data.style && data.position && data.story_id){
+    if(data && data.layers && data.style && data.basemap && data.position && data.story_id){
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){
-            Map.createStoryMap(data.layers, data.style, data.position, data.story_id, data.title, user_id)
+            Map.createStoryMap(data.layers, data.style, data.basemap, data.position, data.story_id, data.title, user_id)
             .then(function(result){
               res.status(200).send({success: true, map_id: result[0]});
             }).catch(apiError(res, 500));
@@ -592,11 +592,11 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
 
     var data = req.body;
-    if(data && data.layers && data.style && data.position && data.map_id){
+    if(data && data.layers && data.style && data.basemap && data.position && data.map_id){
       Map.allowedToModify(data.map_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Map.updateMap(data.map_id, data.layers, data.style, data.position, data.title, user_id)
+          Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
           .then(function(){
             res.status(200).send({success: true});
           }).catch(apiError(res, 500));
@@ -650,8 +650,8 @@ module.exports = function(app) {
             .then(function(result) {
               if (result && result == 1) {
                 var commands = [];
-                if(data.style && data.layers && data.layers.length > 0){
-                  commands.push(Map.saveHubMap(data.layers, data.style, data.position, data.hub_id, session_user_id));
+                if(data.style && data.basemap && data.layers && data.layers.length > 0){
+                  commands.push(Map.saveHubMap(data.layers, data.style, data.basemap, data.position, data.hub_id, session_user_id));
                 }
                 if(data.logoImage){
                     commands.push(Image.setHubImage(data.hub_id, data.logoImage, null, 'logo'));
@@ -870,11 +870,11 @@ module.exports = function(app) {
     var session_user_id = req.session.user.id;
     var data = req.body;
 
-    if(data && data.hub_id && data.layers && data.style && data.position ){
+    if(data && data.hub_id && data.layers && data.style && data.basemap && data.position ){
       Hub.allowedToModify(data.hub_id, session_user_id)
       .then(function(allowed){
         if(allowed){
-            Map.saveHubMap(data.layers, data.style, data.position, data.hub_id, session_user_id)
+            Map.saveHubMap(data.layers, data.style, data.basemap, data.position, data.hub_id, session_user_id)
             .then(function(){
               res.status(200).send({success: true});
             }).catch(apiError(res, 500));

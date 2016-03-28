@@ -59,8 +59,8 @@ var HubMap = React.createClass({
     CreateMapActions.showMapDesigner();
   },
 
-  saveMap(layers, style, position){
-    HubActions.setMap(layers, style, position);
+  saveMap(layers, style, position, basemap){
+    HubActions.setMap(layers, style, position, basemap);
   },
 
   reloadMap(style){
@@ -72,6 +72,7 @@ var HubMap = React.createClass({
     if(this.props.editing){
       createMap = (
         <CreateMap mapLayers={this.state.layers}
+          basemap={this.props.hub.basemap}
           showTitleEdit={false} titleLabel={this.__('Edit Hub Map')}
           onSaveHubMap={this.saveMap} hubId={this.props.hub.hub_id} hubMap/>
       );
@@ -124,7 +125,11 @@ var HubMap = React.createClass({
                 </div>
 
               </nav>
-                <Map ref="map" id="hub-map" fitBounds={bounds} style={{width: '100%', height: '100%'}} glStyle={this.state.hub.map_style} disableScrollZoom>
+                <Map ref="map" id="hub-map" fitBounds={bounds}
+                  style={{width: '100%', height: '100%'}}
+                  glStyle={this.state.hub.map_style}
+                  baseMap={this.state.hub.basemap}
+                  disableScrollZoom>
 
                   <HubMapLegend style={{
                       position: 'absolute',

@@ -391,5 +391,7 @@
 	"View Resources": "View Resources",
 	"MapHubs requires SSL for external links, URLs must start with https://": "MapHubs requires SSL for external links, URLs must start with https://",
 	"Selected Feature": "Selected Feature",
-	"Selected Features": "Selected Features"
+	"Selected Features": "Selected Features",
+	"Change Base Map": "Change Base Map",
+	"Show/Hide Layer": "Show/Hide Layer"
 }
