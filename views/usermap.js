@@ -9,6 +9,8 @@ var MessageActions = require('../actions/MessageActions');
 var CreateMap = require('../components/CreateMap/CreateMap');
 var CreateMapActions = require('../actions/CreateMapActions');
 import Progress from '../components/Progress';
+var config = require('../clientconfig');
+var urlUtil = require('../services/url-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -129,6 +131,14 @@ var UserMap = React.createClass({
 
   },
 
+  showEmbedCode(){
+    var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + this.props.map.map_id;
+    var code = '&lt;iframe src="' + url
+    + '" style="width: 800px; height: 500px;" frameborder="0"&gt;&lt;/iframe&gt;';
+    var message = '<p>' + this.__('Paste the following code into your website to embed a map:') + '</p><pre>' + code + '</pre>';
+    MessageActions.showMessage({title: this.__('Embed Code'), message});
+  },
+
   render() {
     var map = '';
     var title = null;
@@ -170,7 +180,7 @@ var UserMap = React.createClass({
       );
       deleteButton = (
           <li>
-            <a onClick={this.onDelete} className="btn-floating tooltipped user-map-tooltip red"
+            <a onClick={this.onDelete} className="btn-floating user-map-tooltip red"
               data-delay="50" data-position="left" data-tooltip={this.__('Delete Map')}>
               <i className="material-icons">delete</i>
             </a>
@@ -178,7 +188,7 @@ var UserMap = React.createClass({
         );
       editButton = (
           <li>
-            <a onClick={this.onEdit} className="btn-floating tooltipped user-map-tooltip blue"
+            <a onClick={this.onEdit} className="btn-floating user-map-tooltip blue"
               data-delay="50" data-position="left" data-tooltip={this.__('Edit Map')}>
               <i className="material-icons">mode_edit</i>
             </a>
@@ -197,9 +207,15 @@ var UserMap = React.createClass({
         {editButton}
         <li>
           <a onClick={this.download} download={'MapHubs-'+ this.props.map.title + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
-            className="btn-floating tooltipped user-map-tooltip green"
+            className="btn-floating user-map-tooltip green"
             data-delay="50" data-position="left" data-tooltip={this.__('Get Map as a PNG Image')}>
             <i className="material-icons">insert_photo</i>
+          </a>
+        </li>
+        <li>
+          <a onClick={this.showEmbedCode} className="btn-floating user-map-tooltip orange"
+            data-delay="50" data-position="left" data-tooltip={this.__('Embed')}>
+            <i className="material-icons">code</i>
           </a>
         </li>
 
