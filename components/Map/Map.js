@@ -554,9 +554,14 @@ map.on('mousemove', function(e) {
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
     if(nextProps.fitBounds){
       allowLayersToMoveMap = false;
-      var sw = new mapboxgl.LngLat(nextProps.fitBounds[0], nextProps.fitBounds[1]);
-      var ne = new mapboxgl.LngLat(nextProps.fitBounds[2], nextProps.fitBounds[3]);
-      bounds = new mapboxgl.LngLatBounds(sw, ne);
+      if(nextProps.fitBounds.length > 2){
+        var sw = new mapboxgl.LngLat(nextProps.fitBounds[0], nextProps.fitBounds[1]);
+        var ne = new mapboxgl.LngLat(nextProps.fitBounds[2], nextProps.fitBounds[3]);
+        bounds = new mapboxgl.LngLatBounds(sw, ne);
+      }else{
+        bounds = nextProps.fitBounds;
+      }
+      
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
