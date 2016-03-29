@@ -148,7 +148,7 @@ var FeatureInfo = React.createClass({
 
           </div>
             <div className="col s6 no-padding">
-              <Map ref="map" className="map-absolute map-with-header width-50" glStyle={glStyle} fitBounds={this.props.feature.geojson.bbox} data={this.props.feature.geojson} />
+              <Map ref="map" className="map-absolute map-with-header width-50" fitBounds={this.props.feature.geojson.bbox} data={this.props.feature.geojson} />
             </div>
           </div>
 

@@ -398,7 +398,7 @@ var Map = React.createClass({
       debug(e.type);
     });
 
-    if (_this.state.restoreBounds){
+    if (_this.state.restoreBounds && !_this.props.data){
       map.fitBounds(_this.state.restoreBounds, {animate:false});
     }
 
