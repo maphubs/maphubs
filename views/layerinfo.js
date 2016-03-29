@@ -248,6 +248,25 @@ var LayerInfo = React.createClass({
     }
   },
 
+  onViewSelectedFeature(){
+    if(!this.state.rows || this.state.rows.length == 0){
+      return;
+    }
+    var row = this.state.rows[0];
+    var idField = this.state.rowKey;
+    var idVal = row[idField];
+
+    var featureName = 'unknown';
+    var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
+    nameFields.forEach(function(name){
+      if(featureName == 'unknown' && row[name]){
+        featureName = row[name];
+      }
+    });
+    var url = '/feature/' + this.props.layer.layer_id + '/' + idVal + '/' + featureName;
+    window.location = url;
+  },
+
   rowGetter(rowIdx){
     return this.state.rows[rowIdx];
   },
@@ -326,7 +345,14 @@ var LayerInfo = React.createClass({
             onGridSort={this.handleGridSort}
             enableRowSelect="single"
             onRowSelect={this.onRowSelect}
-            toolbar={<Toolbar enableFilter={true} filterButtonText={this.__('Filter Data')} onToggleFilterCallback={_this.onToggleFilter}/>}
+            toolbar={<Toolbar
+              enableFilter={true}
+              filterButtonText={this.__('Filter Data')}
+              onToggleFilterCallback={_this.onToggleFilter}
+              viewFeatureButtonText={this.__('View Selected Feature')}
+              onViewFeatureCallback={_this.onViewSelectedFeature}
+              />
+            }
             onAddFilter={this.handleFilterChange}
             />
        );
