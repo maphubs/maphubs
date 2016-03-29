@@ -25,7 +25,6 @@ html, body {
 }
 
 
-
 .omh-btn:hover{
   background-color: #eceff1;
 }
@@ -759,4 +758,52 @@ textarea.materialize-textarea+label:after {
 
 #doorbell-attach-screenshot-wrapper label {
   font-size: 15px !important;
+}
+
+.custom-scroll-bar::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.custom-scroll-bar::-webkit-scrollbar
+{
+    width: 8px;
+    background-color: #F5F5F5;
+}
+
+.custom-scroll-bar::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #29ABE2;
+}
+
+.react-grid-Canvas::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.react-grid-Canvas::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+.react-grid-Canvas::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #29ABE2;
+}
+.react-grid-Canvas {
+  left: initial !important;
+  right: 2px !important;
+}
+
+.react-grid-Cell--locked {
+  background-color: #fff;
 }

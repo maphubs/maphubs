@@ -351,7 +351,7 @@ var CreateMap = React.createClass({
               <i className="material-icons"  style={{lineHeight: '40px', width:'35px', height: '35px', margin: 'auto'}}>close</i></a>
           </div>
 
-          <div style={{height: '50%'}}>
+          <div className="custom-scroll-bar" style={{height: '50%'}}>
             <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin">{
               this.state.mapLayers.map(function (layer) {
                   var visibilityButton = '';
@@ -425,7 +425,7 @@ var CreateMap = React.createClass({
               <SearchBox label={this.__('Search Layers')} id="create-map-search"
                 style={{width: '80%', marginTop: 0, marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px'}}
                  suggestionUrl="/api/layers/search/suggestions" onSearch={this.onSearch} onReset={this.resetSearch}/>
-                <div style={{height: 'calc(100% - 60px)',overflow: 'scroll'}}>
+               <div className="custom-scroll-bar" style={{height: 'calc(100% - 60px)',overflow: 'scroll'}}>
                   <ul className="collection no-margin">{
                   this.state.searchLayers.map(function (layer, i) {
                     if(!layer || !layer.layer_id){
