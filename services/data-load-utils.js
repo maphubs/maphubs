@@ -15,6 +15,7 @@ var Promise = require('bluebird');
 module.exports = {
 
   removeLayerData(layer_id, trx = null){
+    debug('removeLayerData');
     let db = knex;
     if(trx){db = trx;}
     //remove views
@@ -38,6 +39,7 @@ module.exports = {
   },
 
   storeTempShapeUpload(uploadtmppath, layer_id, trx = null){
+    debug('storeTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
     return db('omh.temp_data').where({layer_id}).del()
@@ -50,6 +52,7 @@ module.exports = {
   },
 
   getTempShapeUpload(layer_id, trx = null){
+    debug('getTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
     return db('omh.temp_data').where({layer_id})
@@ -59,6 +62,7 @@ module.exports = {
   },
 
   storeTempGeoJSON(geoJSON, uploadtmppath, layer_id, update, trx = null){
+    debug('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}
     return new Promise(function(fulfill, reject) {
@@ -143,6 +147,7 @@ module.exports = {
       ];
 
       if(update){
+        debug('Update temp geojson');
         commands.push(
         db('omh.temp_data').update({
           data:JSON.stringify(geoJSON),
@@ -162,7 +167,7 @@ module.exports = {
           unique_props:JSON.stringify(uniqueProps)})
         );
       }
-
+      debug('inserting temp geojson into database');
       //insert into the database
       Promise.all(commands)
         .then(function(dbResult){
@@ -190,6 +195,7 @@ module.exports = {
   },
 
   getTempData(layer_id){
+    debug('getTempData');
     return knex('omh.temp_data').select('data').where({layer_id});
   },
 
