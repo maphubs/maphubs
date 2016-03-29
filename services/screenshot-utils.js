@@ -112,9 +112,8 @@ module.exports = {
   updateMapImage(map_id){
     debug('updating image for map: ' + map_id);
     //get screenshot from the manet service
-    //generate 640x480 and then display at 320x240 for retina
-    var width = 1600;
-    var height = 900;
+    var width = 1200;
+    var height = 630;
 
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';

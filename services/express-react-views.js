@@ -126,9 +126,12 @@ function createEngine(engineOptions) {
 
           markup += `
           <meta property="og:title" content="` + options.twitterCard.title + `" />
+          <meta property="og:description" content="` + options.twitterCard.description + `" />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="http://demo.maphubs.com" />
+          <meta property="og:url" content="http://maphubs.com" />
           <meta property="og:image" content="` + options.twitterCard.image + `" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
           `;
         }
 
