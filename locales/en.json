@@ -393,5 +393,22 @@
 	"Selected Feature": "Selected Feature",
 	"Selected Features": "Selected Features",
 	"Change Base Map": "Change Base Map",
-	"Show/Hide Layer": "Show/Hide Layer"
+	"Show/Hide Layer": "Show/Hide Layer",
+	"Cancel Map": "Cancel Map",
+	"Embed": "Embed",
+	"User generated stories featuring interactive maps and images on a variety of topics.": "User generated stories featuring interactive maps and images on a variety of topics.",
+	"Interactive maps featuring open data.": "Interactive maps featuring open data.",
+	"Collections of stories and maps on a variety of topics.": "Collections of stories and maps on a variety of topics.",
+	"Collections of layers managed by a group or oranization.": "Collections of layers managed by a group or oranization.",
+	"Open map data layers.": "Open map data layers.",
+	"User generated stories featuring interactive maps and images on a variety of topics": "User generated stories featuring interactive maps and images on a variety of topics",
+	"Interactive maps featuring open data": "Interactive maps featuring open data",
+	"Collections of stories and maps on a variety of topics": "Collections of stories and maps on a variety of topics",
+	"Collections of layers managed by a group or oranization": "Collections of layers managed by a group or oranization",
+	"Open map data layers": "Open map data layers",
+	"More Stories": "More Stories",
+	"More Maps": "More Maps",
+	"More Hubs": "More Hubs",
+	"More Groups": "More Groups",
+	"More Layers": "More Layers"
 }

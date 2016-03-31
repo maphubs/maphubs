@@ -110,8 +110,8 @@ getCookie(cname) {
 
   render() {
 
-    var defaultLinkClasses = "grey-text text-darken-4";
-    var activeLinkClasses = "omh-accent-text";
+    var defaultLinkClasses = "";
+    var activeLinkClasses = "active";
 
     var layersClasses = defaultLinkClasses,
         mapsClasses = defaultLinkClasses,
@@ -146,12 +146,12 @@ getCookie(cname) {
     var myStories = '';
     if(this.state.loggedIn){
       myMaps = (
-        <li>
+        <li className="nav-link-wrapper">
           <a className={myMapsClasses} href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a>
         </li>
       );
       myStories = (
-        <li>
+        <li className="nav-link-wrapper">
           <a className={myStoriesClasses} href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a>
         </li>
       );
@@ -171,58 +171,56 @@ getCookie(cname) {
 
           <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
-            <li>
-              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
-            </li>
-            <li>
-              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
-            </li>
-            <li>
-              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
-            </li>
-            <li>
+            <li className="nav-link-wrapper">
               <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
             </li>
-            <li>
+            <li className="nav-link-wrapper">
+              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
+            </li>
+            <li className="nav-link-wrapper">
               <a className={hubsClasses} href='/hubs'>{this.__('Hubs')}</a>
             </li>
+            <li className="nav-link-wrapper">
+              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
+            </li>
+            <li className="nav-link-wrapper">
+              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
+            </li>
+
             {myMaps}
             {myStories}
-            <li>
+            <li className="nav-link-wrapper">
               <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
-            <li>
+            <li style={{marginRight: '10px'}}>
               <LocaleChooser />
             </li>
-            <li style={{paddingLeft: '10px'}}>
               <UserMenu id="user-menu-header"/>
-            </li>
           </ul>
           <ul className="side-nav" id="side-nav-menu">
-            <li>
               <UserMenu id="user-menu-sidenav"/>
-            </li>
-            <li>
+            <li className="nav-link-wrapper">
               <LocaleChooser />
             </li>
-            <li>
-              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
-            </li>
-            <li>
-              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
-            </li>
-            <li>
-              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
-            </li>
-            <li>
+            <li className="nav-link-wrapper">
               <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
             </li>
-            <li>
+            <li className="nav-link-wrapper">
+              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
+            </li>
+            <li className="nav-link-wrapper">
               <a className={hubsClasses} href='/hubs'>{this.__('Hubs')}</a>
             </li>
+            <li className="nav-link-wrapper">
+              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
+            </li>
+            <li className="nav-link-wrapper">
+              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
+            </li>
+
             {myMaps}
             {myStories}
-            <li>
+            <li className="nav-link-wrapper">
               <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
 

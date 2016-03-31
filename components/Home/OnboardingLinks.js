@@ -20,34 +20,28 @@ render(){
         <h5 className="center-align" style={{color: '#212121', marginTop: '20px'}}>{this.__('Mapping for Everyone')}</h5>
       </div>
     <div className="row">
-        <div className="col s12 m4 l4" style={{margin: 'auto'}}>
+        <div className="col s12 m4 l4 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
+          <a href="/get-started/share-data" style={{margin: 'auto'}}>
             <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>
-              <a href="/get-started/share-data" style={{margin: 'auto'}}>
-                <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px'}}>map</i>
-              </a>
+              <i className="material-icons valign center-align" style={{fontSize: '80px', margin: 'auto'}}>map</i>
             </div>
-          <a href="/get-started/share-data">
-            <h5 className="center-align" style={{color: '#212121'}}>{this.__('Share Data')}</h5>
+            <h5 className="center-align">{this.__('Share Data')}</h5>
           </a>
         </div>
-        <div className="col s12 m4 l4" style={{margin: 'auto'}}>
+        <div className="col s12 m4 l4 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
+          <a href="/get-started/tell-your-story" style={{margin: 'auto'}}>
             <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>
-              <a href="/get-started/tell-your-story" style={{margin: 'auto'}}>
-                <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px'}}>chat_bubble</i>
-              </a>
+              <i className="material-icons valign center-align" style={{fontSize: '80px', margin: 'auto'}}>chat_bubble</i>
             </div>
-          <a href="/get-started/tell-your-story">
-            <h5 className="center-align" style={{color: '#212121'}}>{this.__('Tell Your Story')}</h5>
+            <h5 className="center-align">{this.__('Tell Your Story')}</h5>
           </a>
         </div>
-        <div className="col s12 m4 l4" style={{margin: 'auto'}}>
-          <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>
-            <a href="/get-started/explore" style={{margin: 'auto'}}>
-              <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px'}}>explore</i>
-            </a>
-          </div>
-          <a href="/get-started/explore">
-            <h5 className="center-align" style={{color: '#212121'}}>{this.__('Explore')}</h5>
+        <div className="col s12 m4 l4 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
+          <a href="/get-started/explore" style={{margin: 'auto'}}>
+            <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>
+                <i className="material-icons valign center-align" style={{fontSize: '80px', margin: 'auto'}}>explore</i>
+            </div>
+            <h5 className="center-align">{this.__('Explore')}</h5>
           </a>
         </div>
       </div>

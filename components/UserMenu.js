@@ -61,24 +61,26 @@ var UserMenu = React.createClass({
     if(this.state.loggedIn && this.state.user){
 
       user = (
-        <div>
-          <div ref="userButton" className="chip dropdown-button omh-btn" data-activates={this.props.id}>
+        <li>
+          <div ref="userButton" className="chip dropdown-button omh-btn" style={{marginRight:'5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
             <Gravatar email={this.state.user.email} />
             {this.state.user.display_name}
 
           </div>
           <ul id={this.props.id} className='dropdown-content'>
-            <li><a href="/user/settings">{this.__('Settings')}</a></li>
+            <li className="usermenu-wrapper"><a href="/user/settings">{this.__('Settings')}</a></li>
             <li className="divider"></li>
-            <li><a onClick={this.logoutClick}>{this.__('Logout')}</a></li>
+            <li className="usermenu-wrapper"><a onClick={this.logoutClick}>{this.__('Logout')}</a></li>
           </ul>
 
 
-        </div>
+        </li>
       );
     } else {
       user = (
-            <a className="grey-text text-darken-4" href="#" onClick={this.loginClick}>{this.__('Login')}</a>
+        <li className="nav-link-wrapper">
+            <a href="#" onClick={this.loginClick}>{this.__('Login')}</a>
+        </li>
       );
     }
 

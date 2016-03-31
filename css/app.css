@@ -111,6 +111,99 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 
+.home-section {
+  color: #212121;
+}
+
+.home-section:hover {
+  color: #29ABE2;
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+
+
+.home-onboarding-icon-wrapper{
+  border-radius: 25px;
+}
+
+
+.home-onboarding-icon-wrapper i {
+  color: #29ABE2;
+}
+
+.home-onboarding-icon-wrapper h5 {
+  color: #212121;
+}
+
+
+.home-onboarding-icon-wrapper:hover {
+  color: #FFF;
+  background-color: #29ABE2;
+
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+.home-onboarding-icon-wrapper:hover i, .home-onboarding-icon-wrapper:hover h5 {
+  color: #FFF;
+}
+
+
+.nav-link-wrapper a {
+  color: #212121 !important;
+}
+
+.nav-link-wrapper a.active {
+  color:#29ABE2 !important;
+}
+
+
+.nav-link-wrapper:hover {
+  color: #FFF;
+  background-color: #29ABE2 !important;
+
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+.nav-link-wrapper:hover a {
+  color: #FFF !important;
+}
+
+.usermenu-wrapper:hover {
+  color: #FFF !important;
+  background-color: #29ABE2 !important;
+
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+
+.usermenu-wrapper a {
+  color: #212121 !important;
+}
+
+.usermenu-wrapper:hover a {
+  color: #FFF !important;
+}
+
+
+
+
+
 
 /*Card Carousel*/
 
