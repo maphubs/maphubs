@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "dependencies": {
     "@fengyuanchen/tooltip": {
       "version": "0.0.2",
@@ -2474,6 +2474,11 @@
       "from": "evp_bytestokey@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/evp_bytestokey/-/evp_bytestokey-1.0.0.tgz"
     },
+    "exif-js": {
+      "version": "2.1.1",
+      "from": "exif-js@latest",
+      "resolved": "https://registry.npmjs.org/exif-js/-/exif-js-2.1.1.tgz"
+    },
     "exit-hook": {
       "version": "1.1.1",
       "from": "exit-hook@>=1.0.0 <2.0.0",
@@ -4377,6 +4382,11 @@
           "resolved": "https://registry.npmjs.org/through2/-/through2-0.6.5.tgz"
         }
       }
+    },
+    "glur": {
+      "version": "1.1.1",
+      "from": "glur@>=1.1.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/glur/-/glur-1.1.1.tgz"
     },
     "gnode": {
       "version": "0.1.1",
@@ -6549,6 +6559,18 @@
       "version": "0.0.3",
       "from": "pgpass@0.0.3",
       "resolved": "https://registry.npmjs.org/pgpass/-/pgpass-0.0.3.tgz"
+    },
+    "pica": {
+      "version": "2.0.2",
+      "from": "pica@latest",
+      "resolved": "https://registry.npmjs.org/pica/-/pica-2.0.2.tgz",
+      "dependencies": {
+        "webworkify": {
+          "version": "1.0.2",
+          "from": "webworkify@1.0.2",
+          "resolved": "https://registry.npmjs.org/webworkify/-/webworkify-1.0.2.tgz"
+        }
+      }
     },
     "pify": {
       "version": "2.3.0",

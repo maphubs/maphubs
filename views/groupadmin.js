@@ -268,8 +268,15 @@ var GroupAdmin = React.createClass({
 
         <div className="container">
           <div className="row" style={{marginTop: '20px'}}>
-            <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()}/>
-            <button className="waves-effect waves-light btn" onClick={this.showImageCrop}>{this.__('Change Image')}</button>
+            <div className="col s12 m6 l6">
+              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()}/>
+            </div>
+            <div className="col s12 m6 l6">
+              <button className="waves-effect waves-light btn" onClick={this.showImageCrop}>{this.__('Change Image')}</button>
+            </div>
+
+          </div>
+          <div className="row">
             <h4>{this.props.group.name}</h4>
           </div>
           <div className="divider"></div>
@@ -355,7 +362,7 @@ var GroupAdmin = React.createClass({
           </div>
           <button onClick={this.handleGroupDelete} className="btn red white-text">{this.__('Delete Group')}</button>
         </div>
-        <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} onCrop={this.onCrop} />
+        <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_width={600} resize_height={600} onCrop={this.onCrop} />
         </main>
 			</div>
 		);

@@ -34,6 +34,9 @@ var HubBanner = React.createClass({
   getInitialState(){
     return {
       imageCropAspectRatio: 1,
+      imageCropResizeWidth: null,
+      imageCropResizeMaxWidth: null,
+      imageCropResizeHeight: null,
       onCrop(){}
     };
   },
@@ -51,7 +54,11 @@ var HubBanner = React.createClass({
   },
 
   showLogoEdit(){
-    this.setState({imageCropAspectRatio: 1, onCrop: this.onLogoCrop});
+    this.setState({
+      imageCropAspectRatio: 1,
+      imageCropResizeWidth: 300,
+      imageCropResizeHeight: 300,
+      onCrop: this.onLogoCrop});
     this.refs.imagecrop.show();
   },
 
@@ -60,7 +67,11 @@ var HubBanner = React.createClass({
   },
 
   showBannerEdit(){
-    this.setState({imageCropAspectRatio: 16/9, onCrop: this.onBannerCrop});
+    this.setState({
+      imageCropAspectRatio: 4/1,
+      imageCropResizeMaxWidth: 2000,
+      onCrop: this.onBannerCrop
+    });
     this.refs.imagecrop.show();
   },
 
@@ -131,7 +142,12 @@ var HubBanner = React.createClass({
         </a>
       );
       imageCrop = (
-        <ImageCrop ref="imagecrop" aspectRatio={this.state.imageCropAspectRatio} lockAspect={true} onCrop={this.state.onCrop} />
+        <ImageCrop ref="imagecrop"
+          aspectRatio={this.state.imageCropAspectRatio} lockAspect={true}
+          resize_max_width={this.state.imageCropResizeMaxWidth}
+          resize_width={this.state.imageCropResizeWidth}
+          resize_height={this.state.imageCropResizeHeight}
+          onCrop={this.state.onCrop} />
       );
 
     }else{

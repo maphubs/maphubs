@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "MapHubs",
   "main": "app.js",
   "scripts": {
@@ -46,6 +46,7 @@
     "dbgeo": "0.1.0",
     "debug": "2.2.0",
     "easyimage": "^2.1.0",
+    "exif-js": "^2.1.1",
     "express": "4.13.4",
     "express-force-ssl": "0.3.1",
     "express-load": "1.1.15",
@@ -115,6 +116,7 @@
     "passport-oauth2-client-password": "0.1.2",
     "passport-openstreetmap": "0.1.2",
     "pg": "4.5.1",
+    "pica": "^2.0.2",
     "raw-loader": "0.5.1",
     "react": "0.14.7",
     "react-codemirror": "0.2.5",

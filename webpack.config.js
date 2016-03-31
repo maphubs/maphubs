@@ -4,6 +4,7 @@ var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
 var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
+var pathToPica = path.resolve(__dirname, 'node_modules/pica/dist/pica.min.js');
 
 module.exports = {
   devtool: 'eval',
@@ -57,7 +58,6 @@ module.exports = {
     vendor: ["materialize-css/dist/css/materialize.min.css", "./css/app.css", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./services/locales"],
     clientconfig: ["./clientconfig"]
-    //c: ["./c", "./d"] example of multiple files into one output
   },
 
   resolve: {
@@ -75,8 +75,8 @@ module.exports = {
   },
 
   node: {
-  fs: "empty"
-},
+    fs: "empty"
+  },
 
   module: {
     loaders: [
@@ -84,7 +84,7 @@ module.exports = {
         test: /\.json$/,
         loader: 'json'
       },{
-        test: /\.glsl$/,
+        test: /\.(glsl|vert|frag)([\?]?.*)$/,
         loader: 'raw'
       },{
       test: /\.jsx?$/,
@@ -107,7 +107,7 @@ module.exports = {
       {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"}
 
     ],
-    noParse: [pathToMapboxGL]
+    noParse: [pathToMapboxGL, pathToPica]
   },
   plugins: [
     new webpack.ProvidePlugin({
