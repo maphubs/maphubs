@@ -66,7 +66,12 @@ var HubStory = React.createClass({
         </div>
         <div className="container">
           <div className="row" style={{marginTop: '20px'}}>
-            <StoryHeader story={story} />
+            <div className="col s12 m10 l10">
+              <StoryHeader story={story} />
+            </div>
+            <div className="col s12 m2 l2">
+              <div className="addthis_sharing_toolbox right"></div>
+            </div>        
           </div>
           <div className="row">
             <h3 className="story-title">{title}</h3>
@@ -74,7 +79,7 @@ var HubStory = React.createClass({
           </div>
           <hr />
           <div className="row">
-            <div className="addthis_sharing_toolbox"></div>
+
             <ReactDisqusThread
                   shortname="maphubs"
                   identifier={'maphubs-story-' + story.story_id}
