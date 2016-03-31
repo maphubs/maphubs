@@ -58,6 +58,14 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   line-height: 50px;
 }
 
+.hub-banner {
+  height: 250px;
+}
+
+.hub-banner-subpage {
+  height: 200px;
+}
+
 .hub-description {
   font-family: 'Raleway', sans-serif;
 }
@@ -84,7 +92,9 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   margin: 0;
 }
 
-
+.hub-icon-wrapper{
+  border-radius: 25px;
+}
 
 .hub-icon-wrapper i {
   color: #29ABE2;
@@ -178,6 +188,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 .nav-link-wrapper:hover a {
   color: #FFF !important;
+  background-color: transparent !important;
 }
 
 .usermenu-wrapper:hover {
@@ -198,6 +209,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .usermenu-wrapper:hover a {
   color: #FFF !important;
+  background-color: transparent !important;
 }
 
 
@@ -691,6 +703,13 @@ textarea.materialize-textarea+label:after {
 @media only screen and (max-width : 600px) {
  .embed-map-container {
    padding-bottom:75%;
+ }
+
+ .hub-banner {
+   height: 350px;
+ }
+ .hub-banner-subpage {
+   height: 350px;
  }
 }
 

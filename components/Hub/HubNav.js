@@ -42,7 +42,7 @@ var HubHav = React.createClass({
     var manageButton = '';
     if(this.props.canEdit){
       manageButton = (
-        <li><a href="admin">{this.__('Manage Hub')}</a></li>
+        <li className="nav-link-wrapper"><a href="admin">{this.__('Manage Hub')}</a></li>
       );
     }
     return (
@@ -54,16 +54,14 @@ var HubHav = React.createClass({
             </a>
             <ul className="side-nav" id="nav">
               <li><LocaleChooser /></li>
-              <li>
-                <UserMenu id="user-menu-sidenav"/>
-              </li>        
-              <li><a href={hubBaseUrl}>{this.__('Home')}</a></li>
-              <li><a href={hubBaseUrl + 'map'}>{this.__('Map')}</a></li>
-              <li><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
-              <li><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
+              <UserMenu id="user-menu-sidenav"/>
+              <li className="nav-link-wrapper"><a href={hubBaseUrl}>{this.__('Home')}</a></li>
+              <li className="nav-link-wrapper"><a href={hubBaseUrl + 'map'}>{this.__('Map')}</a></li>
+              <li className="nav-link-wrapper"><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
+              <li className="nav-link-wrapper"><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
 
               <hr />
-              <li><a href={omhBaseUrl}>{this.__('Back to MapHubs')}</a></li>
+              <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to MapHubs')}</a></li>
               {manageButton}
             </ul>
           </div>
