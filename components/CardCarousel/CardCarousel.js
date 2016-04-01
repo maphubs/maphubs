@@ -34,7 +34,7 @@ var CardCarousel = React.createClass({
          {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
          {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},
          {breakpoint: 950, settings: {slidesToShow: 3,  slidesToScroll: 3}},
-         {breakpoint: 1100, settings: {slidesToShow: 4,  slidesToScroll: 4}},
+         {breakpoint: 1150, settings: {slidesToShow: 4,  slidesToScroll: 4}},
          {breakpoint: 1400, settings: {slidesToShow: 5,  slidesToScroll: 5}},
          {breakpoint: 1700, settings: {slidesToShow: 6,  slidesToScroll: 6}},
           {breakpoint: 2500, settings: {slidesToShow: 8,  slidesToScroll: 8}},
