@@ -70,12 +70,8 @@ module.exports = {
     var uniqueProps = [];
 
     //confirm that it is a feature collection
-    GJV.isFeatureCollection(geoJSON, function(valid, errs){
-      //Error if it is not a FeatureCollection
-      if(!valid){
-        result.error = errs.toString();
-        reject(result);
-      }
+    if(geoJSON.type === "FeatureCollection"){
+
       //Error if the FeatureCollection is empty
       if(!geoJSON.features || geoJSON.features.length ==0){
         result.error = "Dataset appears to be empty. Zero features found in FeatureCollection";
@@ -106,7 +102,7 @@ module.exports = {
       if(firstFeature.crs && firstFeature.crs.properties && firstFeature.crs.properties.name){
         srid = firstFeature.crs.properties.name.split(':')[1];
       }
-
+      var cleanedFeatures = [];
       //loop through features
       geoJSON.features.forEach(function(feature){
         //confirm feature is expected type/SRID
@@ -128,9 +124,26 @@ module.exports = {
           if(!uniqueProps.includes(key)){
             uniqueProps.push(key);
           }
+          var val = feature.properties[key];
+          if(typeof val === 'string' && val.length > 255){
+            //trim data to 255 chars
+            feature.properties[key] = val.substring(0, 255);
+          }else if(typeof val === 'object'){
+            //stringify nested JSON objects, and limit to 255 chars
+            feature.properties[key] = JSON.stringify(val).substring(0, 255);
+          }
         });
 
+        if(GJV.isFeature(feature) && feature.geometry){
+          cleanedFeatures.push(feature);
+        }else{
+          log.warn('Skipping invalid GeoJSON feature');
+        }
+
       });
+
+      geoJSON.features = cleanedFeatures;
+
       //var extent = [];
       var extent = require('turf-extent')(geoJSON);
       debug(extent);
@@ -190,7 +203,11 @@ module.exports = {
           result.error = err.toString();
           reject(result);
         });
-    });
+
+    }else{
+      result.error = "Data is not a valid GeoJSON FeatureCollection";
+      reject(result);
+    }
   });
   },
 
