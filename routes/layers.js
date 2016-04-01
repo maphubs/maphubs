@@ -412,7 +412,7 @@ module.exports = function(app) {
                DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
                .then(function(result){
                  res.status(200).send(result);
-               }).catch(apiError(res, 500));
+               }).catch(apiError(res, 200)); //don't want browser to intercept the error, so we can show user a better message
            });
          } else {
            debug('Unsupported File Type: '+ req.file.path);

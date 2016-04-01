@@ -128,6 +128,10 @@ var LocalSource = React.createClass({
     }
   },
 
+  onUploadError(err){
+      MessageActions.showMessage({title: this.__('Error'), message: err});
+  },
+
 
   finishUpload(shapefileName){
     var _this = this;
@@ -233,7 +237,7 @@ var LocalSource = React.createClass({
         <div>
           <p>{this.__('Upload File: Shapefile(.shp zipped) or GeoJSON (.geojson)')}</p>
           <div className="row">
-            <FileUpload onUpload={this.onUpload} action={url} />
+            <FileUpload onUpload={this.onUpload} onError={this.onUploadError} action={url} />
           </div>
           <div className="row">
             {map}

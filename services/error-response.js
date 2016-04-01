@@ -4,6 +4,9 @@ module.exports = {
   apiError(res, code){
     return function(err){
       log.error(err);
+      if(typeof err === 'object'){
+        err = JSON.stringify(err);
+      }
       res.status(code).send({success: false,error: err.toString()});
     };
   },
