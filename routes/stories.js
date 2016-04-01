@@ -19,16 +19,16 @@ module.exports = function(app) {
   //Views
   app.get('/stories', function(req, res, next) {
     Promise.all([
-      Story.getRecentStories(),
-      Story.getFeaturedStories(3)
+      Story.getPopularStories(10),
+      Story.getFeaturedStories(10)
     ])
       .then(function(results) {
-        var recentStories = results[0];
+        var popularStories = results[0];
         var featuredStories = results[1];
         res.render('stories', {
           title: 'Stories - MapHubs',
           props: {
-            recentStories, featuredStories
+            popularStories, featuredStories
           }, req
         });
       }).catch(nextError(next));

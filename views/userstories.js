@@ -68,9 +68,10 @@ var UserStories = React.createClass({
            {emptyMessage}
             {this.props.stories.map(function (story) {
               return (
-                <div key={story.story_id}>
+                <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                  <div className="card-content">
                   <StorySummary baseUrl={'/user/' + _this.props.username}  story={story} />
-                  <hr />
+                  </div>
                 </div>
               );
             })}

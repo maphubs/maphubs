@@ -19,7 +19,7 @@ var Stories = React.createClass({
   },
 
   propTypes: {
-    recentStories: React.PropTypes.array,
+    popularStories: React.PropTypes.array,
     featuredStories:  React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
@@ -36,11 +36,11 @@ var Stories = React.createClass({
     var featured = '';
     if(this.props.featuredStories && this.props.featuredStories.length > 0){
       featured = (
-        <div className="row">
+        <div className="col s12 m12 l6">
           <h4>{this.__('Featured Stories')}</h4>
             {this.props.featuredStories.map(function (story) {
               return (
-                <div className="card" key={story.story_id}>
+                <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className="card-content">
                   <StorySummary story={story} />
                   </div>
@@ -55,19 +55,22 @@ var Stories = React.createClass({
       <div>
         <Header activePage="stories"/>
         <main>
-        <div className="container">
-          {featured}
+        <div>
+
           <div className="row">
-            <h4>{this.__('Recent Stories')}</h4>
-              {this.props.recentStories.map(function (story) {
+            {featured}
+            <div className="col s12 m12 l6">
+              <h4>{this.__('Popular Stories')}</h4>
+              {this.props.popularStories.map(function (story) {
                 return (
-                  <div className="card" key={story.story_id}>
+                  <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                     <div className="card-content">
                     <StorySummary story={story} />
                     </div>
                   </div>
                 );
               })}
+            </div>
           </div>
         </div>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Story')}>

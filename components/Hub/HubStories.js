@@ -57,7 +57,7 @@ var HubStories = React.createClass({
               return (<div></div>);
             }
             return (
-                <div className="card" key={story.story_id}>
+                <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className="card-content">
                   {editButton}
                   <StorySummary story={story} />
