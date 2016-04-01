@@ -329,7 +329,13 @@ resizeImage(sourceCanvas){
     //resize the image
     this.resizeImage(canvas).then(function(dataURL){
       _this.setState({show: false});
-      if(_this.props.onCrop) _this.props.onCrop(dataURL, _this.state.exif);
+
+      var info = {
+        width: _this.state.cropWidth,
+        height: _this.state.cropHeight,
+        exif: _this.state.exif
+      };
+      if(_this.props.onCrop) _this.props.onCrop(dataURL, info);
       _this.resetImageCrop();
 
     }).catch(function(err){

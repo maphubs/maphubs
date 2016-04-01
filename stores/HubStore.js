@@ -20,6 +20,8 @@ module.exports = Reflux.createStore({
       layers: [],
       logoImage: null,
       bannerImage: null,
+      logoImageInfo: null,
+      bannerImageInfo: null,
       unsavedChanges: false,
       saving: false
     };
@@ -93,7 +95,9 @@ module.exports = Reflux.createStore({
      position: this.state.hub.map_position,
      layers:  this.state.layers,
      logoImage: this.state.logoImage,
-     bannerImage: this.state.bannerImage
+     logoImageInfo: this.state.logoImageInfo,
+     bannerImage: this.state.bannerImage,
+    bannerImageInfo: this.state.bannerImageInfo
 
    })
    .end(function(err, res){
@@ -150,8 +154,8 @@ module.exports = Reflux.createStore({
    });
  },
 
- setHubLogoImage(data){
-   this.setState({logoImage: data, unsavedChanges: true});
+ setHubLogoImage(data, info){
+   this.setState({logoImage: data, logoImageInfo: info, unsavedChanges: true});
  },
 
  saveHubLogoImage(cb){
@@ -160,7 +164,7 @@ module.exports = Reflux.createStore({
 
    request.post('/api/setphoto')
    .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, image: this.state.logoImage, type: 'logo'})
+   .send({hub_id: this.state.hub.hub_id, image: this.state.logoImage, info: this.state.logoImageInfo, type: 'logo'})
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
        var hub = _this.state.hub;
@@ -172,8 +176,8 @@ module.exports = Reflux.createStore({
    });
  },
 
- setHubBannerImage(data){
-   this.setState({bannerImage: data, unsavedChanges: true});
+ setHubBannerImage(data, info){
+   this.setState({bannerImage: data, bannerImageInfo: info, unsavedChanges: true});
  },
 
  saveHubBannerImage(cb){
@@ -182,7 +186,7 @@ module.exports = Reflux.createStore({
 
    request.post('/api/setphoto')
    .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, image: this.state.bannerImage, type: 'banner'})
+   .send({hub_id: this.state.hub.hub_id, image: this.state.bannerImage, info: this.state.bannerImageInfo, type: 'banner'})
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
        var hub = _this.state.hub;

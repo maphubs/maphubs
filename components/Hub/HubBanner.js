@@ -58,25 +58,28 @@ var HubBanner = React.createClass({
       imageCropAspectRatio: 1,
       imageCropResizeWidth: 300,
       imageCropResizeHeight: 300,
+      imageCropResizeMaxWidth: null,
       onCrop: this.onLogoCrop});
     this.refs.imagecrop.show();
   },
 
-  onLogoCrop(data){
-    HubActions.setHubLogoImage(data);
+  onLogoCrop(data, info){
+    HubActions.setHubLogoImage(data, info);
   },
 
   showBannerEdit(){
     this.setState({
       imageCropAspectRatio: 4/1,
       imageCropResizeMaxWidth: 2000,
+      imageCropResizeWidth: null,
+      imageCropResizeHeight: null,
       onCrop: this.onBannerCrop
     });
     this.refs.imagecrop.show();
   },
 
-  onBannerCrop(data){
-    HubActions.setHubBannerImage(data);
+  onBannerCrop(data, info){
+    HubActions.setHubBannerImage(data, info);
   },
 
   render() {
@@ -90,7 +93,7 @@ var HubBanner = React.createClass({
       title = (
         <div className="white-text text-shadow hub-title">
           <Editor
-           tag="h3"
+           tag="h2"
            text={this.state.hub.name}
            onChange={this.handleTitleChange}
            options={{toolbar: false,

@@ -113,8 +113,8 @@ var Home = React.createClass({
       id: hub.hub_id,
       title: hub.name,
       description: hub.description,
-      image_url: '/hub/' + hub.hub_id + '/images/logo',
-      background_image_url: '/hub/' + hub.hub_id + '/images/banner',
+      image_url: '/hub/' + hub.hub_id + '/images/logo/thumbnail',
+      background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
       link: hubUrl,
       type: 'hub'
     };

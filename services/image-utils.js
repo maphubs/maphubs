@@ -23,8 +23,10 @@ module.exports = {
   return response;
 },
 
-  resizeBase64(dataString, targetWidth, targetHeight){
+  resizeBase64(dataString, targetWidth, targetHeight, crop=false){
     var _this = this;
+    var cmd = null;
+
     return new Promise(function(fulfill, reject){
       //decode base64
       var imageBuffer = _this.decodeBase64Image(dataString);
@@ -40,11 +42,18 @@ module.exports = {
           log.error(err);
           reject(err);
         }
-         easyimg.resize({
-           src:origfilePath, dst:resizedFilePath,
-           width:targetWidth, height:targetHeight
-          })
-          .then(
+        if(crop){
+          cmd = easyimg.crop({
+            src:origfilePath, dst:resizedFilePath,
+            cropwidth:targetWidth, cropheight:targetHeight
+          });
+        }else{
+          cmd = easyimg.resize({
+            src:origfilePath, dst:resizedFilePath,
+            width:targetWidth, height:targetHeight
+          });
+        }
+         cmd.then(
           function(resizedImage) {
              debug('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
              easyimg.convert({
@@ -54,7 +63,7 @@ module.exports = {
               function() {
                 var bitmap = fs.readFileSync(convertedFilePath);
                 var resizedImageBase64String = 'data:image/jpeg;base64,' + new Buffer(bitmap).toString('base64');
-                debug(resizedImageBase64String);
+                //debug(resizedImageBase64String);
                 fulfill(resizedImageBase64String);
                 fs.unlink(origfilePath);
                 fs.unlink(resizedFilePath);

@@ -87,11 +87,35 @@ module.exports = function(app) {
     }).catch(apiError(res, 404));
   });
 
+  app.get('/hub/:id/images/logo/thumbnail', function(req, res) {
+    var hub_id = req.params.id;
+    Image.getHubThumbnail(hub_id, 'logo')
+    .then(function(result){
+      if(result && result.thumbnail){
+        processImage(result.thumbnail, req, res);
+      }else{
+        res.status(404).send();
+      }
+    }).catch(apiError(res, 404));
+  });
+
   app.get('/hub/:id/images/banner', function(req, res) {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'banner')
     .then(function(result){
       processImage(result.image, req, res);
+    }).catch(apiError(res, 404));
+  });
+
+  app.get('/hub/:id/images/banner/thumbnail', function(req, res) {
+    var hub_id = req.params.id;
+    Image.getHubThumbnail(hub_id, 'banner')
+    .then(function(result){
+      if(result && result.thumbnail){
+        processImage(result.thumbnail, req, res);
+      }else{
+        res.status(404).send();
+      }
     }).catch(apiError(res, 404));
   });
 

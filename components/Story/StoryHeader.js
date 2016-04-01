@@ -71,7 +71,7 @@ var StoryHeader = React.createClass({
         </div>
       );
     }else if(this.props.story.hub_id){
-      var hubLogoUrl = '/hub/' + this.props.story.hub_id + '/images/logo';
+      var hubLogoUrl = '/hub/' + this.props.story.hub_id + '/images/logo/thumbnail';
       userImage = (
           <img className="circle valign" height="36" width="36" style={{height: '36px', width: '36px', border: '1px solid #bbbbbb'}} src={hubLogoUrl} alt="Hub Logo"  />
       );

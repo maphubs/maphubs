@@ -654,10 +654,10 @@ module.exports = function(app) {
                   commands.push(Map.saveHubMap(data.layers, data.style, data.basemap, data.position, data.hub_id, session_user_id));
                 }
                 if(data.logoImage){
-                    commands.push(Image.setHubImage(data.hub_id, data.logoImage, null, 'logo'));
+                    commands.push(Image.setHubImage(data.hub_id, data.logoImage, data.logoImageInfo, 'logo'));
                 }
                 if(data.bannerImage){
-                    commands.push(Image.setHubImage(data.hub_id, data.bannerImage, null, 'banner'));
+                    commands.push(Image.setHubImage(data.hub_id, data.bannerImage, data.bannerImageInfo, 'banner'));
                 }
 
                 Promise.all(commands)
