@@ -4,6 +4,7 @@
 var login = require('connect-ensure-login');
 var User = require('../models/user');
 var Story = require('../models/story');
+var Image = require('../models/image');
 var Stats = require('../models/stats');
 
 var Promise = require('bluebird');
@@ -254,7 +255,62 @@ module.exports = function(app) {
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Story.delete(data.story_id)
+          Image.removeAllStoryImages(data.story_id)
+            .then(function() {
+              return Story.delete(data.story_id)
+                .then(function() {
+                  res.send({
+                    success: true
+                  });
+              });
+            }).catch(apiError(res, 500));
+        }else {
+          notAllowedError(res, 'story');
+        }
+      }).catch(apiError(res, 500));
+    } else {
+      apiDataError(res);
+    }
+  });
+
+  app.post('/api/story/addimage', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if (data && data.story_id && data.image) {
+      Story.allowedToModify(data.story_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Image.addStoryImage(data.story_id, data.image, data.info)
+            .then(function(image_id) {
+              res.send({
+                success: true, image_id
+              });
+            }).catch(apiError(res, 500));
+        }else {
+          notAllowedError(res, 'story');
+        }
+      }).catch(apiError(res, 500));
+    } else {
+      apiDataError(res);
+    }
+  });
+
+  app.post('/api/story/removeimage', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if (data && data.story_id && data.image_id) {
+      Story.allowedToModify(data.story_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Image.removeStoryImage(data.story_id, data.image_id)
             .then(function() {
               res.send({
                 success: true

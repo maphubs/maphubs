@@ -509,10 +509,13 @@ module.exports = function(app) {
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Story.delete(data.story_id)
+          Image.removeAllStoryImages(data.story_id)
             .then(function() {
-              res.send({
-                success: true
+              return Story.delete(data.story_id)
+                .then(function() {
+                  res.send({
+                    success: true
+                  });
               });
             }).catch(apiError(res, 500));
         }else {
@@ -552,6 +555,58 @@ module.exports = function(app) {
             }).catch(apiError(res, 500));
         }else {
           notAllowedError(res, 'hub');
+        }
+      }).catch(apiError(res, 500));
+    } else {
+      apiDataError(res);
+    }
+  });
+
+  app.post('/hub/:hubid/api/story/addimage', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if (data && data.story_id && data.image) {
+      Story.allowedToModify(data.story_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Image.addStoryImage(data.story_id, data.image, data.info)
+            .then(function(image_id) {
+              res.send({
+                success: true, image_id
+              });
+            }).catch(apiError(res, 500));
+        }else {
+          notAllowedError(res, 'story');
+        }
+      }).catch(apiError(res, 500));
+    } else {
+      apiDataError(res);
+    }
+  });
+
+  app.post('/hub/:hubid/api/story/removeimage', function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if (data && data.story_id && data.image_id) {
+      Story.allowedToModify(data.story_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Image.removeStoryImage(data.story_id, data.image_id)
+            .then(function() {
+              res.send({
+                success: true
+              });
+            }).catch(apiError(res, 500));
+        }else {
+          notAllowedError(res, 'story');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -938,6 +993,11 @@ module.exports = function(app) {
     res.redirect(baseUrl + '/group/' + group_id + '/image');
   });
 
+  app.get('/hub/:hubid/group/:id/image/thumbnail', function(req, res) {
+    var group_id = req.params.id;
+    res.redirect(baseUrl + '/group/' + group_id + '/image/thumbnail');
+  });
+
   app.get('/hub/:id/hub/:hubid/images/logo', function(req, res) {
     var hub_id = req.params.id;
     res.redirect(baseUrl + '/hub/' + hub_id + '/images/logo');
@@ -949,10 +1009,35 @@ module.exports = function(app) {
     res.redirect(baseUrl + '/hub/' + hub_id + '/images/banner');
   });
 
+  app.get('/hub/:id/hub/:hubid/images/logo/thumbnail', function(req, res) {
+    var hub_id = req.params.id;
+    res.redirect(baseUrl + '/hub/' + hub_id + '/images/logo/thumbnail');
+  });
+
+  app.get('/hub/:id/hub/:hubid/images/banner/thumbnail', function(req, res) {
+    var hub_id = req.params.id;
+
+    res.redirect(baseUrl + '/hub/' + hub_id + '/images/banner/thumbnail');
+  });
+
   app.get('/hub/:id/images/story/:storyid/firstimage', function(req, res) {
     var storyid = req.params.storyid;
 
     res.redirect(baseUrl + '/images/story/' + storyid + '/firstimage');
+  });
+
+  app.get('/hub/:id/images/story/:storyid/image/:imageid.jpg', function(req, res) {
+    var storyid = req.params.storyid;
+    var imageid = req.params.imageid;
+
+    res.redirect(baseUrl + '/images/story/' + storyid + '/image/' + imageid + '.jpg');
+  });
+
+  app.get('/hub/:id/images/story/:storyid/thumbnail/:imageid.jpg', function(req, res) {
+    var storyid = req.params.storyid;
+    var imageid = req.params.imageid;
+
+    res.redirect(baseUrl + '/images/story/' + storyid + '/thumbnail/' + imageid + '.jpg');
   });
 
   app.get('/hub/:id/api/layers/search/suggestions', function(req, res) {
@@ -996,6 +1081,11 @@ module.exports = function(app) {
   app.get('/hub/:id/map/embed/:mapid/static', function(req, res) {
     var mapid = req.params.mapid;
     res.redirect(baseUrl + '/map/embed/' + mapid + '/static');
+  });
+
+  app.get('/hub/:id/api/screenshot/map/:mapid.png', function(req, res) {
+    var mapid = req.params.mapid;
+    res.redirect(baseUrl + '/api/screenshot/map/' + mapid + '.png');
   });
 
   app.get('/hub/:id/group/:groupid', function(req, res) {

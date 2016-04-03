@@ -119,11 +119,29 @@ module.exports = function(app) {
     }).catch(apiError(res, 404));
   });
 
-  app.get('/images/story/:id/firstimage', function(req, res) {
-    var story_id = req.params.id;
-    Story.getFirstImage(story_id)
+  app.get('/images/story/:storyid/image/:imageid.jpg', function(req, res) {
+    var story_id = req.params.storyid;
+    var image_id = req.params.imageid;
+    Image.getStoryImage(story_id, image_id)
     .then(function(result){
-      processImage(result.firstimage, req, res);
+      if(result && result.image){
+        processImage(result.image, req, res);
+      }else{
+        res.status(404).send();
+      }
+    }).catch(apiError(res, 404));
+  });
+
+  app.get('/images/story/:storyid/thumbnail/:imageid.jpg', function(req, res) {
+    var story_id = req.params.storyid;
+    var image_id = req.params.imageid;
+    Image.getStoryThumbnail(story_id, image_id)
+    .then(function(result){
+      if(result && result.thumbnail){
+        processImage(result.thumbnail, req, res);
+      }else{
+        res.status(404).send();
+      }
     }).catch(apiError(res, 404));
   });
 

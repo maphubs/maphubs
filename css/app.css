@@ -700,6 +700,10 @@ textarea.materialize-textarea+label:after {
   height: 100%;
 }
 
+.embed-image-container {
+  position:relative;
+}
+
 @media only screen and (max-width : 600px) {
  .embed-map-container {
    padding-bottom:75%;

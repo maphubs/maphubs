@@ -71,6 +71,7 @@ var StoryEditor = React.createClass({
      debounced();
    });
    this.addMapCloseButtons();
+   this.addImageButtons();
 
    window.onbeforeunload = function(){
      if(_this.state.unsavedChanges){
@@ -127,6 +128,7 @@ save(){
 
   //remove the map buttons so they are not saved
   this.removeMapCloseButtons();
+  this.removeImageButtons();
   var body = $('.storybody').html();
   this.setState({saving: true});
 
@@ -185,6 +187,7 @@ save(){
             _this.setState({unsavedChanges: false});
           }
           _this.addMapCloseButtons(); //put back the close buttons
+          _this.addImageButtons();
           NotificationActions.showNotification({message: _this.__('Story Saved!'), action: _this.__('View Story'),
             dismissAfter: 10000,
             onDismiss(){
@@ -386,8 +389,97 @@ removeMapCloseButtons(){
   });
 },
 
-onAddImage(data){
-  this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" /><p></p>');
+addImageButtons(){
+  var _this = this;
+  $('.embed-image-container').each(function(i, image){
+    var image_id = image.id.split('-')[1];
+    var imageButton = (
+      <div>
+        <a onClick={function(){_this.onRemoveImage(image_id);}}>
+          <i className="material-icons remove-image-tooltips"
+            style={{height:'30px',
+                    lineHeight: '30px',
+                    width: '30px',
+                    color: '#29ABE2',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    backgroundColor: 'white',
+                    borderColor: '#ddd',
+                    borderStyle: 'solid',
+                    borderWidth: '1px',
+                    zIndex: '100',
+                    textAlign: 'center',
+                    marginRight: '5px',
+                    fontSize:'25px'}}
+            data-position="bottom" data-delay="50" data-tooltip={_this.__('Remove Image')}
+            >close</i>
+        </a>
+      </div>
+    );
+    $(image).append( '<div class="image-remove-button" id="image-remove-button-' + image_id + '" style="position: absolute; top: 10px; right: 10px;"></div>');
+    ReactDOM.render(imageButton, document.getElementById('image-remove-button-' + image_id));
+    $('.remove-image-tooltips').tooltip();
+  });
+},
+
+removeImageButtons(){
+  $('.remove-image-tooltips').tooltip('remove');
+  $('.image-remove-button').each(function(i, button){
+    $(button).remove();
+  });
+},
+
+
+onAddImage(data, info){
+  var _this = this;
+  request.post('/api/story/addimage')
+  .type('json').accept('json')
+  .send({story_id: _this.state.story_id, image: data, info})
+  .end(function(err, res){
+    checkClientError(res, err, function(err){
+        if(err || !res.body || !res.body.image_id){
+          MessageActions.showMessage({title: _this.__('Error'), message: err});
+        }else{
+          var image_id = res.body.image_id;
+          var url = '/images/story/' + _this.state.story_id + '/image/' + image_id + '.jpg';
+          //<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"
+          _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + image_id + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><p></p>');
+          NotificationActions.showNotification({message: _this.__('Image Added')});
+          _this.addImageButtons();
+        }
+    },
+    function(cb){
+      cb();
+    });
+  });
+},
+
+onRemoveImage(image_id){
+  var _this = this;
+  ConfirmationActions.showConfirmation({
+    title: _this.__('Confirm Image Removal'),
+    message: _this.__('Please confirm that you want to remove this image'),
+    onPositiveResponse(){
+      request.post('/api/story/removeimage')
+      .type('json').accept('json')
+      .send({story_id: _this.state.story_id, image_id})
+      .end(function(err, res){
+        checkClientError(res, err, function(err){
+            if(err){
+              MessageActions.showMessage({title: _this.__('Error'), message: err});
+            }else{
+              //remove from content
+               $('#image-'+image_id).remove();
+               _this.handleBodyChange($('.storybody').html());
+              NotificationActions.showNotification({message: _this.__('Image Removed')});
+            }
+        },
+        function(cb){
+          cb();
+        });
+      });
+    }
+  });
 },
 
 saveSelectionRange(){
@@ -505,7 +597,7 @@ showImageCrop(){
 
        {createMap}
 
-       <ImageCrop ref="imagecrop" onCrop={this.onAddImage} />
+       <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
 
        <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '115px'}}>
             <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red">

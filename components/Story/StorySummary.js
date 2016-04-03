@@ -45,14 +45,15 @@ var StorySummary = React.createClass({
 
     linkUrl += '/story/' + this.props.story.story_id + '/' + slug(title);
 
-    var imageUrl = '/images/story/' + this.props.story.story_id + '/firstimage';
+
 
     var image = '';
     if(this.props.story.firstimage){
+        var imageUrl = this.props.story.firstimage.replace(/\/image\//i, '/thumbnail/');
       image = (
         <div>
           <a href={linkUrl}>
-          <div style={{height: '180px', width: '100%', backgroundImage: 'url('+imageUrl +')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
+          <div style={{height: '160px', width: '100%', backgroundImage: 'url('+imageUrl +')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
           </a>
         </div>
       );

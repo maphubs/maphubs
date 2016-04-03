@@ -2,6 +2,7 @@
 var knex = require('../connection.js');
 var debug = require('../services/debug')('model/image');
 var ImageUtils = require('../services/image-utils');
+var Promise = require('bluebird');
 
 module.exports = {
 
@@ -214,16 +215,20 @@ module.exports = {
     });
   },
 
-  addStoryImage(story_id, image, info, trx){
-    return ImageUtils.resizeBase64(image, 800, 240, true)
-    .then(function(thumbnail){
-      return trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
-      .then(function(image_id){
-        image_id = parseInt(image_id);
-        return trx('omh.story_images').insert({story_id, image_id});
+  addStoryImage(story_id, image, info){
+    return knex.transaction(function(trx) {
+      return ImageUtils.resizeBase64(image, 800, 240, true)
+      .then(function(thumbnail){
+        return trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
+        .then(function(image_id){
+          image_id = parseInt(image_id);
+          return trx('omh.story_images').insert({story_id, image_id})
+          .then(function(){
+            return image_id;
+          });
+        });
       });
     });
-
   },
 
   removeStoryImage(story_id, image_id){
@@ -231,6 +236,22 @@ module.exports = {
       return trx('omh.story_images').where({story_id, image_id}).del()
       .then(function(){
         return trx('omh.images').where({image_id}).del();
+      });
+    });
+  },
+
+  removeAllStoryImages(story_id){
+    return knex.transaction(function(trx) {
+      return trx('omh.story_images').select('image_id').where({story_id})
+      .then(function(results){
+        var commands = [];
+        results.forEach(function(result){
+          commands.push(trx('omh.images').where({image_id: result.image_id}).del());
+        });
+        return Promise.all(commands)
+        .then(function(){
+          return trx('omh.story_images').select('image_id').where({story_id}).del();
+        });
       });
     });
   }
