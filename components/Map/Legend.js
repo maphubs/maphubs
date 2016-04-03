@@ -1,5 +1,6 @@
 var React = require('react');
 var LegendItem = require('./LegendItem');
+var _isequal = require('lodash.isequal');
 
 var Legend = React.createClass({
   propTypes:  {
@@ -14,6 +15,17 @@ var Legend = React.createClass({
       layers: [],
       style: {}
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   render(){

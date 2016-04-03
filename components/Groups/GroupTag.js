@@ -8,6 +8,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var classNames = require('classnames');
+var _isequal = require('lodash.isequal');
 
 
 var GroupTag = React.createClass({
@@ -37,6 +38,17 @@ var GroupTag = React.createClass({
      $(this.refs.groupimg).error(function(){
         $(this).attr('src', '/assets/missing_group.png');
 });
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   render(){

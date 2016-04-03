@@ -16,6 +16,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var _isequal = require('lodash.isequal');
 
 
 var mapboxLight = require('../../node_modules/mapbox-gl-styles/styles/light-v8.json');
@@ -113,6 +114,23 @@ var Map = React.createClass({
       restoreBounds,
       allowLayersToMoveMap: restoreBounds ? false : true
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+
+    //always update if there is a selection
+    //avoids glitch where feature hover doesn't show
+    if(this.state.selectedFeatures){
+      return true;
+    }
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   getPosition(){
@@ -561,7 +579,7 @@ map.on('mousemove', function(e) {
       }else{
         bounds = nextProps.fitBounds;
       }
-      
+
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
