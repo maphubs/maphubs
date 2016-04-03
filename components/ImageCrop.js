@@ -7,6 +7,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 var MessageActions = require('../actions/MessageActions');
+var _isequal = require('lodash.isequal');
 
 var EXIF = require('exif-js');
 
@@ -44,7 +45,7 @@ var ImageCrop = React.createClass({
         jpeg_quality: 75,
         resize_height: null,
         resize_max_height: null,
-        resize_width: 800,
+        resize_width: null,
         resize_max_width: null
 
     };
@@ -59,6 +60,17 @@ var ImageCrop = React.createClass({
       autoCropArea: this.props.autoCropArea,
       aspectRatio: this.props.aspectRatio
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   componentWillReceiveProps(nextProps) {
