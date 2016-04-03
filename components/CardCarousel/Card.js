@@ -130,6 +130,10 @@ module.exports = React.createClass({
             <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
           </div>
         );
+      }else if(this.props.type == 'story' && this.props.image_url){
+        image = (
+          <div style={{height: '150px', width: '200px', backgroundImage: 'url('+ this.props.image_url +')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
+        );
       }else if(this.props.type == 'group' && !this.props.image_url){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>

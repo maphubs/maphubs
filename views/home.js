@@ -146,7 +146,7 @@ var Home = React.createClass({
 
     var image_url = null;
     if(story.firstimage){
-      image_url = '/images/story/' + story.story_id + '/firstimage';
+      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
     }
 
     return {
