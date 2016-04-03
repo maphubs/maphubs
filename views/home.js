@@ -308,7 +308,7 @@ var Home = React.createClass({
                   </a>
                 </div>
                 <div className="col s12 m6 l7 valign-wrapper" style={{height: '50px'}}>
-                  <span className="valign" style={{fontSize: '14px'}}>{this.__('Collections of layers managed by a group or oranization')}</span>
+                  <span className="valign" style={{fontSize: '14px'}}>{this.__('Collections of layers managed by a group or organization')}</span>
                 </div>
                 <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
                  <CardFilter onChange={function(value){_this.setState({groupMode:value});}} />
