@@ -66,12 +66,12 @@ var HubStory = React.createClass({
         </div>
         <div className="container">
           <div className="row" style={{marginTop: '20px'}}>
-            <div className="col s12 m10 l10">
+            <div className="col s12 m19 l9">
               <StoryHeader story={story} />
             </div>
-            <div className="col s12 m2 l2">
+            <div className="col s12 m3 l3">
               <div className="addthis_sharing_toolbox right"></div>
-            </div>        
+            </div>
           </div>
           <div className="row">
             <h3 className="story-title">{title}</h3>
