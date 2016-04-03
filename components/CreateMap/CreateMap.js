@@ -351,8 +351,8 @@ var CreateMap = React.createClass({
               <i className="material-icons"  style={{lineHeight: '40px', width:'35px', height: '35px', margin: 'auto'}}>close</i></a>
           </div>
 
-          <div className="custom-scroll-bar" style={{height: '50%'}}>
-            <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin">{
+          <div style={{height: '50%'}}>
+            <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{
               this.state.mapLayers.map(function (layer) {
                   var visibilityButton = '';
                   if(_this.props.showVisibility){
