@@ -685,7 +685,7 @@ textarea.materialize-textarea+label:after {
 
 .embed-map-container {
   position:relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 50%;
   padding-top: 30px;
   height: 0 !important;
   overflow: hidden;
@@ -705,8 +705,9 @@ textarea.materialize-textarea+label:after {
 }
 
 @media only screen and (max-width : 600px) {
+
  .embed-map-container {
-   padding-bottom:75%;
+  /* padding-bottom:75%;*/
  }
 
  .hub-banner {

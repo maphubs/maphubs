@@ -33,7 +33,8 @@ var EmbedMap = React.createClass({
     return {
       retina: false,
       width: 1024,
-      height: 600
+      height: 600,
+      interactive: false
     };
   },
 
@@ -79,6 +80,10 @@ var EmbedMap = React.createClass({
 
   },
 
+  startInteractive(){
+    this.setState({interactive: true});
+  },
+
   render() {
     var map = '';
 
@@ -86,33 +91,22 @@ var EmbedMap = React.createClass({
     var mapHeight = this.state.height;
 
     var legend = '', bottomLegend = '';
-    if(this.state.width < 600){
-      mapHeight = mapHeight - legendHeight;
-      bottomLegend = (
-        <Legend style={{
-            width: '100%'
-          }}
-            layers={this.props.layers}/>
-        );
-    } else {
-      if(this.props.isStatic){
-        legend = (
-          <Legend showIcons={false} style={{
-              position: 'absolute',
-              bottom: '15px',
-              right: '25px',
-              minWidth: '275px',
-              zIndex: '9999',
-              width: '25%'
+
+    if(!this.props.isStatic || this.state.interactive){
+      if(this.state.width < 600){
+        mapHeight = mapHeight - legendHeight;
+        bottomLegend = (
+          <Legend style={{
+              width: '100%'
             }}
               layers={this.props.layers}/>
-        );
+          );
       }else{
         legend = (
           <Legend style={{
               position: 'absolute',
-              bottom: '5px',
-              right: '5px',
+              top: '5px',
+              left: '5px',
               minWidth: '275px',
               zIndex: '9999',
               width: '25%'
@@ -120,26 +114,24 @@ var EmbedMap = React.createClass({
               layers={this.props.layers}/>
         );
       }
-
     }
 
-
-
-    if(this.props.isStatic){
+    if(this.props.isStatic && !this.state.interactive){
+      var url = '/api/screenshot/map/' + this.props.map.map_id + '.png';
       map = (
           <div style={{position: 'relative'}}>
-          <img src={this.state.imgURL} alt="Map" width={this.state.width} height={this.state.height} />
-          {legend}
-          <img style={{position:'absolute', left: '5px', bottom: '10px', zIndex: '998'}} width="70" height="19" src="/assets/maphubs-logo.png" alt={this.__('MapHubs Logo')}/>
+            <img src={url} className="responsive-img" alt="MapHubs Map" />
+              <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light omh-btn"
+                style={{position: 'absolute', left: '5px', bottom: '30px',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
           </div>
-    );
+        );
     }else {
       var bbox = this.props.map.position.bbox;
       var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
       map = (
-        <Map ref="map" interactive={false} fitBounds={bounds}
+        <Map ref="map" interactive={this.state.interactive} fitBounds={bounds}
           style={{width: '100%', height: mapHeight + 'px'}}
-          glStyle={this.props.map.style} 
+          glStyle={this.props.map.style}
           baseMap={this.props.map.basemap}
           navPosition="top-right" disableScrollZoom>
           {legend}

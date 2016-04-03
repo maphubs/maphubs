@@ -108,7 +108,15 @@ getFirstLine(){
 },
 
 getFirstImage(){
-  var first_img = $('.storybody').find('img').first().attr('src');
+  //attempt to find the first map image
+  var first_img = null;
+  var firstEmbed = $('.storybody').find('img, iframe').first();
+  if(firstEmbed.is('iframe')){
+    first_img = firstEmbed.contents().find('img').first().attr('src');
+  }else{
+    first_img = firstEmbed.attr('src');
+  }
+
   return first_img;
 },
 
@@ -298,14 +306,18 @@ onAddMap(map_id){
     this.setState({editingMap: false});
     return;
   }
-  var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id;
+  var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
   + '</div>'
   + '<p></p>'
   );
 
-   _this.addMapCloseButtons();
+  this.setState({addingMap: true});
+  setTimeout(function(){
+    _this.setState({addingMap: false});
+    _this.addMapCloseButtons();
+  }, 15000);
 
 },
 
@@ -628,6 +640,7 @@ showImageCrop(){
               <i className="large material-icons">delete</i>
             </a>
           </div>
+          <Progress id="adding-map-progess" title={this.__('Adding Map')} subTitle={''} dismissible={false} show={this.state.addingMap}/>
           <Progress id="saving-story" title={this.__('Saving')} subTitle="" dismissible={false} show={this.state.saving}/>
       </div>
     );

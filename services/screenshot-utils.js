@@ -39,7 +39,6 @@ module.exports = {
           }
         });
     });
-
   },
 
   getLayerThumbnail(layer_id){
@@ -118,7 +117,7 @@ module.exports = {
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
     //var maphubsUrl = 'http://map.loggingroads.org';
-    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=2&quality=1';
+    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=1.25&quality=1';
     //replace image in database
     debug(manetUrl);
     return this.base64Download(manetUrl)
@@ -164,8 +163,6 @@ module.exports = {
       }
     });
   },
-
-
 
   returnImage(image, req, res){
     var img = new Buffer(image, 'base64');
