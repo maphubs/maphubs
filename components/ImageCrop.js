@@ -225,6 +225,8 @@ resizeImage(sourceCanvas){
 
     var file = files [0];
 
+    let ext = file.name.split('.').pop();
+
     //check if file is supported
     let err = this.checkFile(file);
     if (err){
@@ -295,16 +297,8 @@ resizeImage(sourceCanvas){
           }
           tempCanvas.getContext('2d').drawImage(img, 0, 0,  img.width, img.height);
           var data = tempCanvas.toDataURL(file.type, 1);
-          _this.setState({src: data, exif: exifdata, file, img});
+          _this.setState({src: data, exif: exifdata, file, img, ext});
 
-          /*
-             let reader = new FileReader();
-            reader.onload = () => {
-              _this.setState({src: reader.result, exif: exifdata, file, img, origImgWidth, origImgHeight});
-
-            };
-            reader.readAsDataURL(files[0]);
-            */
          });
       };
 
@@ -323,14 +317,12 @@ resizeImage(sourceCanvas){
   },
 
   _crop(e){
-
     this.setState({
       cropWidth: e.width,
       cropHeight: e.height,
       cropScaleX: e.scaleX,
       cropScaleY: e.scaleY
     });
-
  },
 
   onSave(){
