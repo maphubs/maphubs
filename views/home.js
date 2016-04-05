@@ -68,8 +68,8 @@ var Home = React.createClass({
       recentGroupCards: _shuffle(this.props.recentGroups.map(this.getGroupCard)),
 
       featuredLayerCards: _shuffle(this.props.featuredLayers.map(this.getLayerCard)),
-      popularLayerCards: _shuffle(this.props.featuredLayers.map(this.getLayerCard)),
-      recentLayerCards: _shuffle(this.props.featuredLayers.map(this.getLayerCard))
+      popularLayerCards: _shuffle(this.props.popularLayers.map(this.getLayerCard)),
+      recentLayerCards: _shuffle(this.props.recentLayers.map(this.getLayerCard))
     };
   },
 
