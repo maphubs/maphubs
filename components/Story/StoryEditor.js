@@ -112,7 +112,14 @@ getFirstImage(){
   var first_img = null;
   var firstEmbed = $('.storybody').find('img, iframe').first();
   if(firstEmbed.is('iframe')){
-    first_img = firstEmbed.contents().find('img').first().attr('src');
+    if(firstEmbed.attr('src').startsWith('http')){
+      return;//don't look in iframes that aren't using the generic '//' for the protocol
+    }
+    var map = firstEmbed.contents().find('.mapboxgl-map').first();
+    //don't try to find an image if the iframe is running a live map
+    if(!map){
+      first_img = firstEmbed.contents().find('img').first().attr('src');
+    }
   }else{
     first_img = firstEmbed.attr('src');
   }
@@ -269,13 +276,17 @@ getSelectionRange(){
   }
 },
 
-pasteHtmlAtCaret(html) {
+pasteHtmlAtCaret(html, rangeInput=null) {
     var sel, savedRange = this.savedSelectionRange;
     var selection = window.getSelection();
-
-    var range = document.createRange();
-    range.setStart(savedRange.startContainer, savedRange.startOffset);
-    range.setEnd(savedRange.endContainer, savedRange.endOffset);
+    var range = null;
+    if(rangeInput){
+      range = rangeInput;
+    }else{
+      range = document.createRange();
+      range.setStart(savedRange.startContainer, savedRange.startOffset);
+      range.setEnd(savedRange.endContainer, savedRange.endOffset);
+    }
     selection.addRange(range);
     if (selection) {
         range.deleteContents();
@@ -300,23 +311,31 @@ pasteHtmlAtCaret(html) {
 
 onAddMap(map_id){
   var _this = this;
+  var range = null;
+  var prevMap = null;
   if(this.state.editingMap){
     //refresh the iframe for this map
-    $( '#map-' + map_id + ' iframe' ).attr( 'src', function ( i, val ) { return val; });
-    this.setState({editingMap: false});
-    return;
+    prevMap = $('#map-'+map_id);
+    range = document.createRange();
+    range.setStartAfter(prevMap[0]);
+    prevMap.remove();
   }
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
+  url = url.replace(/http:/, '');
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
   + '</div>'
-  + '<p></p>'
+  + '<p></p>',
+  range
   );
+
+  _this.handleBodyChange($('.storybody').html());
 
   this.setState({addingMap: true});
   setTimeout(function(){
     _this.setState({addingMap: false});
     _this.addMapCloseButtons();
+
   }, 15000);
 
 },
