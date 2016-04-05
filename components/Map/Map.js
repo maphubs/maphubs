@@ -394,12 +394,16 @@ var Map = React.createClass({
     mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
 
       var baseMap = this.getBaseMapFromName(this.state.baseMap);
-
+      var dragRotate  = false;
+      if(!this.props.enableRotation){
+        dragRotate = true;
+      }
   var map = new mapboxgl.Map({
     container: this.state.id,
     style: baseMap,
     zoom: 0,
     interactive: this.state.interactive,
+    dragRotate,
     center: [0,0]
   });
 
@@ -743,6 +747,10 @@ map.on('mousemove', function(e) {
 
   startInteractive(){
     this.setState({interactive: true});
+    if(!this.props.enableRotation){
+      this.map.dragRotate.disable();
+      this.map.touchZoomRotate.disableRotation();
+    }
   },
 
   toggleBaseMaps(){
