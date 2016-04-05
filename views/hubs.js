@@ -51,7 +51,7 @@ var Hubs = React.createClass({
         id: hub.hub_id,
         title: hub.name,
         description: hub.description,
-        image_url: '/hub/' + hub.hub_id + '/images/logo/thumbnail',
+        image_url: '/hub/' + hub.hub_id + '/images/logo',
         background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
         link: hubUrl,
         type: 'hub'
@@ -64,7 +64,7 @@ var Hubs = React.createClass({
         id: hub.hub_id,
         title: hub.name,
         description: hub.description,
-        image_url: '/hub/' + hub.hub_id + '/images/logo/thumbnail',
+        image_url: '/hub/' + hub.hub_id + '/images/logo',
         background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
         link: hubUrl,
         type: 'hub'
@@ -77,7 +77,7 @@ var Hubs = React.createClass({
         id: hub.hub_id,
         title: hub.name,
         description: hub.description,
-        image_url: '/hub/' + hub.hub_id + '/images/logo/thumbnail',
+        image_url: '/hub/' + hub.hub_id + '/images/logo',
         background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
         link: hubUrl,
         type: 'hub'
