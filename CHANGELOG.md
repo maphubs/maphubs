@@ -1,5 +1,35 @@
 # Change Log
 
+## [0.2.0](https://github.com/maphubs/maphubs/tree/0.2.0) (2016-04-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.8...0.2.0)
+
+**Implemented enhancements:**
+
+- use image on story map embeds [\#114](https://github.com/maphubs/maphubs/issues/114)
+- home page design updates [\#113](https://github.com/maphubs/maphubs/issues/113)
+- add view selected feature button to layer data grid [\#110](https://github.com/maphubs/maphubs/issues/110)
+- add embed code link to user map options [\#107](https://github.com/maphubs/maphubs/issues/107)
+- improve map/layer image performance [\#104](https://github.com/maphubs/maphubs/issues/104)
+- improve image upload performance [\#103](https://github.com/maphubs/maphubs/issues/103)
+- auto-crop group image icons [\#102](https://github.com/maphubs/maphubs/issues/102)
+- add OSM road layers [\#100](https://github.com/maphubs/maphubs/issues/100)
+- add line below maps/photos in stories [\#99](https://github.com/maphubs/maphubs/issues/99)
+- option to change base maps [\#96](https://github.com/maphubs/maphubs/issues/96)
+- move hub map edit button so it doesn't overlap with the map [\#93](https://github.com/maphubs/maphubs/issues/93)
+- add close button to map designer [\#91](https://github.com/maphubs/maphubs/issues/91)
+- Option of a full screen view for hub maps [\#65](https://github.com/maphubs/maphubs/issues/65)
+- store story photos external to story text for performance [\#49](https://github.com/maphubs/maphubs/issues/49)
+
+**Fixed bugs:**
+
+- tag values limited to 255 chars [\#124](https://github.com/maphubs/maphubs/issues/124)
+- geojson upload fails with missing geometry objects [\#120](https://github.com/maphubs/maphubs/issues/120)
+- no error message displays when data upload fails [\#119](https://github.com/maphubs/maphubs/issues/119)
+- unable to select map features on mobile [\#94](https://github.com/maphubs/maphubs/issues/94)
+- map mouse hover slow with lots of data [\#92](https://github.com/maphubs/maphubs/issues/92)
+- pages doesn't redirect after deleting map [\#89](https://github.com/maphubs/maphubs/issues/89)
+- twitter embed images are cropped incorrectly [\#58](https://github.com/maphubs/maphubs/issues/58)
+
 ## [0.1.8](https://github.com/maphubs/maphubs/tree/0.1.8) (2016-03-24)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.7...0.1.8)
 
