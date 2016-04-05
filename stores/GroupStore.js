@@ -63,7 +63,7 @@ module.exports = Reflux.createStore({
          hasImage: false
        };
        _this.setState({group});
-       _this.trigger(this.state);
+       _this.trigger(_this.state);
        cb();
      });
    });
