@@ -119,7 +119,7 @@ var CreateGroupStep2 = React.createClass({
             </div>
           </div>
          </div>
-         <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} onCrop={this.onCrop} />
+         <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_width={600} resize_height={600} onCrop={this.onCrop} />
       </div>
 		);
 	}
