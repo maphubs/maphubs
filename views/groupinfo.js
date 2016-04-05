@@ -71,6 +71,15 @@ var GroupInfo = React.createClass({
       );
     }
 
+    var unofficial = '';
+    if(this.props.group.unofficial){
+      unofficial = (
+        <div className="row">
+          <p><b>{this.__('Unofficial Group')}</b> - {this.__('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
+        </div>
+      );
+    }
+
     return (
       <div>
         <Header/>
@@ -81,8 +90,12 @@ var GroupInfo = React.createClass({
               <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.props.group.group_id + '/image'}/>
             </div>
             <div className="col s6">
-              <p>{this.props.group.description}</p>
+              <div className="row">
+              <p><b>{this.__('Description: ')}</b>{this.props.group.description}</p>
+              </div>
+              {unofficial}
             </div>
+
           </div>
 
           <div>
