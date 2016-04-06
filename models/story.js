@@ -92,31 +92,6 @@ module.exports = {
 
     },
 
-    getHubStories(hub_id, includeDrafts = false) {
-      debug('get stories for hub: ' + hub_id);
-      var query = knex.select(
-        'omh.stories.story_id', 'omh.stories.title',
-         'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
-         'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-        knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
-        'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name'
-      )
-        .from('omh.stories')
-        .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-        .leftJoin('omh.hubs', 'omh.hub_stories.hub_id', 'omh.hubs.hub_id');
-      if (!includeDrafts) {
-        query.where({
-          'omh.hub_stories.hub_id': hub_id,
-          'omh.stories.published': true
-        });
-      }else{
-        query.where({
-          'omh.hub_stories.hub_id': hub_id
-        });
-      }
-      return query;
-    },
-
     getHubStoryById(story_id) {
       debug('get hub story: ' + story_id);
       var query = knex.select(

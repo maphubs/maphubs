@@ -36,7 +36,8 @@ module.exports = {
       debug('get stories for hub: ' + hub_id);
       var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
        'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
-       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at', 'omh.stories.updated_at')
+       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
+       knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'))
         .from('omh.stories')
         .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
         .leftJoin('omh.hubs', 'omh.hub_stories.hub_id', 'omh.hubs.hub_id');
