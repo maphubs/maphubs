@@ -791,21 +791,35 @@ module.exports = function(app) {
                 if(data.asAdmin){
                   role = 'Administrator';
                 }
-                return Hub.addHubMember(data.hub_id, user.id, role)
-                .then(function(){
-                  debug('Added ' + data.display_name + ' to ' + data.hub_id);
-                  Email.send({
-                    from: 'MapHubs <info@maphubs.com>',
-                    to: user.email,
-                    subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - MapHubs',
-                    text: user.display_name + ',\n' +
-                      req.__('You have been added to the hub') + ' ' + data.hub_id
-                    ,
-                    html: user.display_name + ',<br />' +
-                      req.__('You have been added to the hub') + ' ' + data.hub_id
+                return Hub.getHubMembers(data.hub_id)
+                .then(function(members){
+                  var alreadyInHub = false;
+                  members.forEach(function(member){
+                    if(member.id == user.id){
+                        alreadyInHub = true;
+                    }
+                  });
+                  if(!alreadyInHub){
+                    return Hub.addHubMember(data.hub_id, user.id, role)
+                    .then(function(){
+                      debug('Added ' + data.display_name + ' to ' + data.hub_id);
+                      Email.send({
+                        from: 'MapHubs <info@maphubs.com>',
+                        to: user.email,
+                        subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - MapHubs',
+                        text: user.display_name + ',\n' +
+                          req.__('You have been added to the hub') + ' ' + data.hub_id
+                        ,
+                        html: user.display_name + ',<br />' +
+                          req.__('You have been added to the hub') + ' ' + data.hub_id
+                        });
+                      res.status(200).send({success: true});
                     });
-                  res.status(200).send({success: true});
-                });
+                  }else{
+                      res.status(200).send({success: false, "error": req.__('User is already a member of this hub.')});
+                    return;
+                  }
+                  });
               } else {
                 notAllowedError(res, 'hub');
               }

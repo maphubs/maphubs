@@ -419,5 +419,9 @@
 	"Adding Map": "Adding Map",
 	"View Layer Info": "View Layer Info",
 	"Add Hub Member": "Add Hub Member",
-	"Delete Hub": "Delete Hub"
+	"Delete Hub": "Delete Hub",
+	"Member": "Member",
+	"Administrator": "Administrator",
+	"User is already a member of this group.": "User is already a member of this group.",
+	"User is already a member of this hub.": "User is already a member of this hub."
 }

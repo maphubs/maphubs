@@ -335,20 +335,34 @@ module.exports = function(app) {
               if(data.asAdmin){
                 role = 'Administrator';
               }
-              return Group.addGroupMember(data.group_id, user.id, role)
-              .then(function(){
-                debug('Added ' + data.display_name + ' to ' + data.group_id);
-                Email.send({
-                  from: 'MapHubs <info@maphub.com>',
-                  to: user.email,
-                  subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - MapHubs',
-                  text: user.display_name + ',\n' +
-                    req.__('You have been added to the group') + ' ' + data.group_id
-                  ,
-                  html: user.display_name + ',<br />' +
-                    req.__('You have been added to the group') + ' ' + data.group_id
+              return Group.getGroupMembers(data.group_id)
+              .then(function(members){
+                var alreadyInGroup = false;
+                members.forEach(function(member){
+                  if(member.id == user.id){
+                      alreadyInGroup = true;
+                  }
+                });
+                if(!alreadyInGroup){
+                  return Group.addGroupMember(data.group_id, user.id, role)
+                  .then(function(){
+                    debug('Added ' + data.display_name + ' to ' + data.group_id);
+                    Email.send({
+                      from: 'MapHubs <info@maphub.com>',
+                      to: user.email,
+                      subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - MapHubs',
+                      text: user.display_name + ',\n' +
+                        req.__('You have been added to the group') + ' ' + data.group_id
+                      ,
+                      html: user.display_name + ',<br />' +
+                        req.__('You have been added to the group') + ' ' + data.group_id
+                      });
+                    res.status(200).send({success: true});
                   });
-                res.status(200).send({success: true});
+                }else{
+                  res.status(200).send({success: false, "error": req.__('User is already a member of this group.')});
+                  return;
+                }
               });
             } else {
               res.status(401).send();
