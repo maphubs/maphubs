@@ -416,5 +416,8 @@
 	"Description: ": "Description: ",
 	"Unofficial Group": "Unofficial Group",
 	"This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.": "This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.",
-	"Adding Map": "Adding Map"
+	"Adding Map": "Adding Map",
+	"View Layer Info": "View Layer Info",
+	"Add Hub Member": "Add Hub Member",
+	"Delete Hub": "Delete Hub"
 }

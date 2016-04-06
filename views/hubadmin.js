@@ -26,7 +26,7 @@ var debug = require('../services/debug')('views/HubAdmin');
 
 var HubAdmin = React.createClass({
 
-  mixins:[StateMixin.connect(HubStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -56,6 +56,7 @@ var HubAdmin = React.createClass({
   },
 
   handleMemberDelete(user){
+    var _this = this;
     ConfirmationActions.showConfirmation({
       title: 'Confirm Removal',
       message: 'Please confirm removal of ' + user.label,
@@ -64,7 +65,7 @@ var HubAdmin = React.createClass({
           if(err){
             MessageActions.showMessage({title: 'Error', message: err});
           }else{
-            NotificationActions.showNotification({message: 'Member Removed'});
+            NotificationActions.showNotification({message: _this.__('Member Removed'), dismissAfter: 7000});
           }
         });
       }
@@ -73,18 +74,19 @@ var HubAdmin = React.createClass({
   },
 
   handleMemberMakeAdmin(user){
+    var _this = this;
     if(user.type == 'Administrator'){
       this.handleRemoveMemberAdmin(user);
     }else{
       ConfirmationActions.showConfirmation({
-        title: 'Confirm Administrator',
-        message: 'Please confirm that you want to make ' + user.label + ' an Administrator.',
+        title: this.__('Confirm Administrator'),
+        message: this.__('Please confirm that you want to make this user an Administrator: ') + user.label,
         onPositiveResponse(){
           HubActions.setMemberAdmin(user.key, function(err){
             if(err){
-              MessageActions.showMessage({title: 'Error', message: err});
+              MessageActions.showMessage({title: _this.__('Error'), message: err});
             }else{
-              NotificationActions.showNotification({message: 'Member is now an Administrator'});
+              NotificationActions.showNotification({message: _this.__('Member is now an Administrator'), dismissAfter: 7000});
             }
           });
         }
@@ -94,15 +96,16 @@ var HubAdmin = React.createClass({
   },
 
   handleRemoveMemberAdmin(user){
+    var _this = this;
     ConfirmationActions.showConfirmation({
-      title: 'Confirm Remove Administrator',
-      message: 'Please confirm that you want to remove Administrator permissions for ' + user.label + '.',
+      title: this.__('Confirm Remove Administrator'),
+      message: this.__('Please confirm that you want to remove Administrator permissions for: ') + user.label,
       onPositiveResponse(){
         HubActions.removeMemberAdmin(user.key, function(err){
           if(err){
-            MessageActions.showMessage({title: 'Error', message: err});
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
-            NotificationActions.showNotification({message: 'Member is no longer Administrator'});
+            NotificationActions.showNotification({message: _this.__('Member is no longer Administrator'), dismissAfter: 7000});
           }
         });
       }
@@ -110,12 +113,13 @@ var HubAdmin = React.createClass({
   },
 
   handleAddMember(user){
+    var _this = this;
     debug(user.value.value + ' as Admin:' + user.option);
     HubActions.addMember(user.value.value, user.option, function(err){
       if(err){
         MessageActions.showMessage({title: 'Error', message: err});
       }else{
-        NotificationActions.showNotification({message: 'Member Added'});
+        NotificationActions.showNotification({message: _this.__('Member Added'), dismissAfter: 7000});
       }
     });
   },
@@ -126,7 +130,7 @@ var HubAdmin = React.createClass({
   },
 
 	render() {
-
+    var _this = this;
     var membersList = [];
     this.state.members.forEach(function(user){
       membersList.push({
@@ -136,7 +140,7 @@ var HubAdmin = React.createClass({
         image: user.image,
         icon: 'person',
         actionIcon: 'supervisor_account',
-        actionLabel: 'Add/Remove Administrator Access'
+        actionLabel: _this.__('Add/Remove Administrator Access')
       });
     });
 
@@ -149,7 +153,7 @@ var HubAdmin = React.createClass({
         image: '',
         icon: 'map',
         actionIcon: 'info',
-        actionLabel: 'View Layer Info'
+        actionLabel: _this.__('View Layer Info')
       });
     });
 
@@ -161,19 +165,19 @@ var HubAdmin = React.createClass({
             <HubBanner subPage/>
           </div>
           <div className="container">
-            <h4>Manage Hub</h4>
+            <h4>{this.__('Manage Hub')}</h4>
              <div className="row">
                <EditList title="Members" items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
               </div>
               <div className="row">
-                <h5>Add Hub Member</h5>
-                  <AddItem id="hubaddmember" placeholder="Search for User Name" suggestionUrl='/api/user/search/suggestions'
-                    optionLabel="Add as Administrator" addButtonLabel="Add and Send Invite"
+                <h5>{this.__('Add Hub Member')}</h5>
+                  <AddItem id="hubaddmember" placeholder={this.__('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
+                    optionLabel={this.__('Add as Administrator')} addButtonLabel={this.__('Add and Send Invite')}
                     onAdd={this.handleAddMember} onError={this.onError}/>
             </div>
 
              <div className="row">
-               <button onClick={function(){alert('coming soon');}} className="btn red">Delete Hub</button>
+               <button onClick={function(){alert('coming soon');}} className="btn red">{this.__('Delete Hub')}</button>
              </div>
 
           </div>

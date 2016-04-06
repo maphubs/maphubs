@@ -181,7 +181,7 @@ var GroupAdmin = React.createClass({
             if(err){
               MessageActions.showMessage({title: _this.__('Error'), message: err});
             }else{
-              NotificationActions.showNotification({message: _this.__('Member is now an Administrator')});
+              NotificationActions.showNotification({message: _this.__('Member is now an Administrator'), dismissAfter: 7000});
             }
           });
         }
@@ -200,7 +200,7 @@ var GroupAdmin = React.createClass({
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
-            NotificationActions.showNotification({message: _this.__('Member is no longer Administrator')});
+            NotificationActions.showNotification({message: _this.__('Member is no longer Administrator'), dismissAfter: 7000});
           }
         });
       }
@@ -214,7 +214,7 @@ var GroupAdmin = React.createClass({
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        NotificationActions.showNotification({message: _this.__('Member Added')});
+        NotificationActions.showNotification({message: _this.__('Member Added'), dismissAfter: 7000});
       }
     });
   },

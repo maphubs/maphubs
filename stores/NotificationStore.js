@@ -17,7 +17,7 @@ module.exports = Reflux.createStore({
       backgroundColor: '#29ABE2',
       color: 'white',
       position: 'topright',
-      dismissAfter: 2000,
+      dismissAfter: 3000,
       onDismiss() {
       }
     };
