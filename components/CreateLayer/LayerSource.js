@@ -120,12 +120,12 @@ var LayerSource = React.createClass({
                    required/>
               </div>
               <div  className="row">
-                  <Select name="license" label={this.__('License')} startEmpty={false}
+                  <Select name="license" id="layer-source-select" label={this.__('License')} startEmpty={false}
                     value={this.state.layer.license} defaultValue={defaultLicense} options={licenseOptions}
                     note={this.__('Select a license for more information')}
                     className="col s8"
                     dataPosition="top" dataTooltip={this.__('Layer License')}
-                    required/>
+                    />
                 </div>
 
               {prevButton}

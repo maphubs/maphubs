@@ -152,7 +152,7 @@ var PresetForm = React.createClass({
                        defaultChecked={this.state.preset.isRequired}
                         dataPosition="right" dataTooltip={this.__('Editing/collection tools will require the user to submit this field.')}
                         />
-                      <Select name="type" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"
+                      <Select name="type" id="preset-type-select" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"
                     value={this.state.preset.type} defaultValue={this.state.preset.type} startEmpty={typeStartEmpty}
                    dataPosition="top" dataTooltip={this.__('Determines how the field is displayed in forms.')}
                    required/>

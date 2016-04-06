@@ -155,7 +155,7 @@ var LayerSettings = React.createClass({
       groups = (
         <div>
           <p>{this.__('Since you are in multiple groups, please select the group that should own this layer.')}</p>
-          <Select name="group" label={this.__('Group')} startEmpty={startEmpty}
+          <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
             value={this.state.layer.owned_by_group_id} defaultValue={this.state.layer.owned_by_group_id}
             emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
               dataPosition="right" dataTooltip={this.__('Owned by Group')}

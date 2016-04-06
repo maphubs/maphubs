@@ -5,6 +5,7 @@ var $ = require('jquery');
 var find = require('lodash.find');
 var result = require('lodash.result');
 var classNames = require('classnames');
+var _isequal = require('lodash.isequal');
 
 var Select = React.createClass({
 
@@ -22,6 +23,7 @@ var Select = React.createClass({
     dataPosition: React.PropTypes.string,
     label: React.PropTypes.string,
     successText: React.PropTypes.string,
+    id: React.PropTypes.string,
     note: React.PropTypes.string //optional note that displays below the select, will be updated on selection if option contains a note
   },
 
@@ -30,6 +32,7 @@ var Select = React.createClass({
       startEmpty: true,
       emptyText: 'Choose an Option',
       name: 'select-box',
+      id: 'select-box',
       options: [],
       dataDelay: 100
     };
@@ -69,6 +72,17 @@ var Select = React.createClass({
     }
   },
 
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  },
+
    componentDidUpdate(prevProps) {
      //reload the select if remove the empty option
      if(prevProps.startEmpty !== this.props.startEmpty){
@@ -81,6 +95,19 @@ var Select = React.createClass({
      $('select').material_select();
      $(ReactDOM.findDOMNode(this.refs.selectBox)).on('change',this.handleSelectChange);
    },
+
+   validate() {
+     if(this.isRequired()){
+       if(this.getValue() && this.getValue() !== 'none'){
+         return true;
+       }else{
+         return false;
+       }
+     }else{
+       return true;
+     }
+
+  },
 
   render() {
      var className = classNames('input-field', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
@@ -101,7 +128,7 @@ var Select = React.createClass({
       <div>
           <div  className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
               data-tooltip={this.props.dataTooltip}>
-                <select ref="selectBox" value={value} defaultValue={value} onChange={function(e){e.stopPropagation();}}>
+                <select ref="selectBox" id={this.props.id} value={value} defaultValue={value} onChange={function(e){e.stopPropagation();}}>
                   {emptyOption}
                   {this.props.options.map(function(option){
                     return (<option key={option.value} value={option.value}>{option.label}</option>);
