@@ -1,7 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
-
+var Promise = require('bluebird');
+var Formsy = require('formsy-react');
+var Toggle = require('./forms/toggle');
 var MessageActions = require('../actions/MessageActions');
 import Suggestions from './SearchBar/Suggestions';
 
@@ -11,10 +13,18 @@ const KEY_CODES = {
   ENTER: 13
 };
 
-
+var Reflux = require('reflux');
+var StateMixin = require('reflux-state-mixin')(Reflux);
+var LocaleStore = require('../stores/LocaleStore');
+var Locales = require('../services/locales');
 
 var AddItem = React.createClass({
 
+  mixins:[StateMixin.connect(LocaleStore)],
+
+  __(text){
+    return Locales.getLocaleString(this.state.locale, text);
+  },
 
   getDefaultProps() {
     return {
@@ -25,7 +35,7 @@ var AddItem = React.createClass({
       placeholder: 'Add',
       addButtonLabel: 'Add',
       optionLabel: null
-    }
+    };
   },
 
   propTypes: {
@@ -46,7 +56,7 @@ var AddItem = React.createClass({
       suggestions: [],
       highlightedItem: -1,
       option: false
-    }
+    };
   },
 
 
@@ -74,8 +84,8 @@ var AddItem = React.createClass({
  },
 
 
- handleAddWithOptionChecked(e){
-   this.setState({option: e.target.checked});
+ handleAddWithOptionChecked(option){
+   this.setState({option});
  },
 
 
@@ -188,14 +198,15 @@ var AddItem = React.createClass({
 
               <label htmlFor={this.props.id}><i className="material-icons omh-search-icon">search</i></label>
             </div>
-
-
-            <div className="input-field">
-              <input type="checkbox" id={this.props.id + '-add-option'} value={this.state.option} onChange={this.handleAddWithOptionChecked}/>
-              <label htmlFor={this.props.id + '-add-option'}>{this.props.optionLabel}</label>
-            </div>
-            <a className="btn waves-effect waves-light right" onClick={this.submit}>{this.props.addButtonLabel}</a>
           </form>
+            <Formsy.Form >
+              <Toggle name="admin" onChange={this.handleAddWithOptionChecked} labelOff={this.__('Member')} labelOn={this.__('Administrator')} defaultChecked={this.state.option}
+                dataPosition="top" dataTooltip={this.props.optionLabel}
+                />
+            </Formsy.Form>
+
+            <a className="btn waves-effect waves-light right" onClick={this.submit}>{this.props.addButtonLabel}</a>
+
 
 
       </div>

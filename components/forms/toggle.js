@@ -16,7 +16,8 @@ var Toggle= React.createClass({
     labelOn: React.PropTypes.string.isRequired,
     labelOff: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,
-    style: React.PropTypes.object
+    style: React.PropTypes.object,
+    onChange: React.PropTypes.func
   },
 
 
@@ -31,10 +32,17 @@ var Toggle= React.createClass({
   changeValue(event) {
     event.stopPropagation();
      this.setValue(event.currentTarget.checked);
+     if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}
    },
 
    componentWillMount() {
      this.setValue(this.props.defaultChecked ? this.props.defaultChecked : false);
+   },
+
+   componentWillReceiveProps(nextProps){
+     if(nextProps.defaultChecked != this.props.defaultChecked){
+       this.setValue(nextProps.defaultChecked);
+     }
    },
 
   render() {
