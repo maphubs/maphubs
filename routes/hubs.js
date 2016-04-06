@@ -412,6 +412,7 @@ module.exports = function(app) {
 
   app.get('/hub/:hub/map/embed/:map_id', function(req, res, next) {
     var map_id = req.params.map_id;
+    var hub_id = req.params.hub;
     if(!map_id){
       apiDataError(res, 'Bad Request: MapId not found');
     }
@@ -423,7 +424,7 @@ module.exports = function(app) {
       //get user id
       var user_id = req.session.user.id;
 
-      Map.allowedToModify(map_id, user_id)
+      Hub.allowedToModify(hub_id, user_id)
       .then(function(allowed){
         MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed);
       }).catch(apiError(res, 500));
@@ -645,10 +646,10 @@ module.exports = function(app) {
       return;
     }
     var user_id = req.session.user.id;
-
+    var hub_id = req.params.hubid;
     var data = req.body;
     if(data && data.layers && data.style && data.basemap && data.position && data.map_id){
-      Map.allowedToModify(data.map_id, user_id)
+      Hub.allowedToModify(hub_id, user_id)
       .then(function(allowed){
         if(allowed){
           Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
@@ -670,10 +671,10 @@ module.exports = function(app) {
       return;
     }
     var user_id = req.session.user.id;
-
+    var hub_id = req.params.hubid;
     var data = req.body;
     if(data && data.map_id){
-      Map.allowedToModify(data.map_id, user_id)
+      Hub.allowedToModify(hub_id, user_id)
       .then(function(allowed){
         if(allowed){
           Map.deleteMap(data.map_id)

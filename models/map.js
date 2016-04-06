@@ -37,21 +37,11 @@ module.exports = {
   allowedToModify(map_id, user_id){
     return this.getMap(map_id)
       .then(function(map){
-           if(map.owned_by_group_id){
-             return Group.getGroupMembers(map.owned_by_group_id)
-            .then(function(users){
-              if(find(users, {id: user_id}) !== undefined){
-                return true;
-              }
-              return false;
-            });
-          } else {
-            //FIXME: use the user_maps table instead
-            if(map.created_by === user_id){
-              return true;
-            }
-            return false;
+          //FIXME: use the user_maps table instead
+          if(map.created_by === user_id){
+            return true;
           }
+          return false;
       });
     },
 
