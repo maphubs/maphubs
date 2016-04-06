@@ -412,5 +412,9 @@
 	"More Groups": "More Groups",
 	"More Layers": "More Layers",
 	"Popular Stories": "Popular Stories",
-	"Collections of layers managed by a group or organization": "Collections of layers managed by a group or organization"
+	"Collections of layers managed by a group or organization": "Collections of layers managed by a group or organization",
+	"Description: ": "Description: ",
+	"Unofficial Group": "Unofficial Group",
+	"This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.": "This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.",
+	"Adding Map": "Adding Map"
 }
