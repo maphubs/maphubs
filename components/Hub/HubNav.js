@@ -9,6 +9,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var LocaleChooser = require('../LocaleChooser');
+var _isequal = require('lodash.isequal');
 
 var HubHav = React.createClass({
 
@@ -31,6 +32,17 @@ var HubHav = React.createClass({
 
   componentDidMount() {
     $(this.refs.hubNav).sideNav({edge: 'right'});
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   render(){

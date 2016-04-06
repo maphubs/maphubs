@@ -10,6 +10,8 @@ var HubActions = require('../../actions/HubActions');
 
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var _isequal = require('lodash.isequal');
+
 
 var HubBanner = React.createClass({
 
@@ -39,6 +41,17 @@ var HubBanner = React.createClass({
       imageCropResizeHeight: null,
       onCrop(){}
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   handleTitleChange(title){
@@ -167,7 +180,6 @@ var HubBanner = React.createClass({
             <p className="flow-text hub-description">{this.state.hub.description}</p>
           </div>
         </div>
-
       );
     }
     var logoImage = '', bannerImage= '';
@@ -204,11 +216,9 @@ var HubBanner = React.createClass({
             <i className="material-icons grey-text valign">add_a_photo</i>
             <p className="valign grey-text">{this.__('Add a Banner Image')}</p>
           </div>
-
         </div>
       );
     }
-
 
     if(this.props.subPage){
       description = '';

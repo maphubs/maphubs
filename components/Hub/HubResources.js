@@ -8,6 +8,7 @@ var HubStore = require('../../stores/HubStore');
 var HubActions = require('../../actions/HubActions');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var _isequal = require('lodash.isequal');
 
 var HubResources = React.createClass({
 
@@ -25,6 +26,17 @@ var HubResources = React.createClass({
     return {
       editing: false
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   handleResourcesChange(resources){

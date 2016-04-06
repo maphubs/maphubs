@@ -8,6 +8,7 @@ var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 var MessageActions = require('../actions/MessageActions');
 var _isequal = require('lodash.isequal');
+var $ = require('jquery');
 
 var EXIF = require('exif-js');
 
@@ -298,7 +299,7 @@ resizeImage(sourceCanvas){
           tempCanvas.getContext('2d').drawImage(img, 0, 0,  img.width, img.height);
           var data = tempCanvas.toDataURL(file.type, 1);
           _this.setState({src: data, exif: exifdata, file, img, ext});
-
+          $(tempCanvas).remove();
          });
       };
 
@@ -390,7 +391,18 @@ resizeImage(sourceCanvas){
 
   resetImageCrop(){
     if(this.refs.cropper && this.refs.cropper.reset) this.refs.cropper.reset();
-    this.setState({src: null, selectedFile: null});
+    if(this.refs.cropper && this.refs.cropper.clear) this.refs.cropper.clear();
+    this.setState({
+        img: null,
+        src: null,
+        selectedFile: null,
+        file: null,
+        show: false,
+        preview: null,
+        autoCropArea: this.props.autoCropArea,
+        aspectRatio: this.props.aspectRatio
+      });
+
   },
 
   render(){

@@ -13,6 +13,7 @@ var HubLinkSection = React.createClass({
     return Locales.getLocaleString(this.state.locale, text);
   },
 
+
 render(){
   return (
     <div className="row" style={{marginBottom: '50px'}}>

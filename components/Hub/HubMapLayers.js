@@ -10,6 +10,7 @@ var HubActions = require('../../actions/HubActions');
 var GroupTag = require('../../components/Groups/GroupTag');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var _isequal = require('lodash.isequal');
 
 var HubMapLayers = React.createClass({
 
@@ -21,6 +22,17 @@ var HubMapLayers = React.createClass({
 
   propTypes: {
     reloadMap: React.PropTypes.func.isRequired
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   toggleVisibility(layer_id){

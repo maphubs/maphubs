@@ -20,7 +20,11 @@ module.exports = Reflux.createStore({
 
   getInitialState() {
     this.listenTo(LocaleStore.locale,this.updateLocale);
-    return {
+    return this.getEmptyState();
+  },
+
+  getEmptyState(){
+    return  {
       show: false,
       locale: LocaleStore.state.locale,
       title: this.__('Confirmation'),
@@ -30,6 +34,10 @@ module.exports = Reflux.createStore({
       onPositiveResponse() {},
       onNegativeResponse() {}
     };
+  },
+
+  reset(){
+    this.setState(this.getEmptyState());
   },
 
   updateLocale(locale){

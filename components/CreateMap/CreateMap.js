@@ -9,14 +9,13 @@ var _isEqual = require('lodash.isequal');
 var slug = require('slug');
 var Map = require('../Map/Map');
 var Legend = require('../Map/Legend');
+var LayerSearchResult = require('./LayerSearchResult');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var CreateMapStore = require('../../stores/CreateMapStore');
 var Actions = require('../../actions/CreateMapActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
-var config = require('../../clientconfig');
-var urlUtil = require('../../services/url-util');
 var NotificationActions = require('../../actions/NotificationActions');
 var MessageActions = require('../../actions/MessageActions');
 
@@ -83,7 +82,7 @@ var CreateMap = React.createClass({
   },
 
   componentWillMount(){
-    this.resetSearch();
+
 
     if(this.props.mapLayers){
       Actions.setMapLayers(this.props.mapLayers);
@@ -135,9 +134,15 @@ var CreateMap = React.createClass({
 
   },
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState){
     $('.layer-card-tooltipped').tooltip();
     $('.savebutton-tooltipped').tooltip();
+
+    //if we showing the map designer, load the default search list
+    if(this.state.show && !prevState.show){
+      this.resetSearch();
+    }
+
   },
 
   onClose(){
@@ -307,6 +312,22 @@ var CreateMap = React.createClass({
     $('.layer-card-tooltipped').tooltip();
   },
 
+  addLayer(layer){
+    $('.layer-card-tooltipped').tooltip('remove');
+    //save map position so adding a layer doesn't reset it
+    var position = this.refs.map.getPosition();
+    position.bounds = this.refs.map.getBounds();
+    Actions.setMapPosition(position);
+    Actions.addToMap(layer, function(err){
+      if(err){
+        NotificationActions.showNotification({message: this.__('Map already contains this layer'), dismissAfter: 3000, position: 'bottomleft'});
+      }
+      //reset stuck tooltips...
+
+      $('.layer-card-tooltipped').tooltip();
+    });
+  },
+
   render(){
     var _this = this;
     //var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
@@ -441,53 +462,9 @@ var CreateMap = React.createClass({
                         <li key={layer.layer_id}
                           className="collection-item"
                           style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden'}}>
-                          <div className="title col s8">
-                            <b className="title truncate grey-text text-darken-4 tooltipped layer-card-tooltipped"
-                              style={{fontSize: '12px'}}
-                              data-position="top" data-tooltip={layer.name}>
-                              {layer.name}
-                            </b>
-                              <GroupTag group={layer.owned_by_group_id} />
-                            <p className="truncate no-margin grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
-                          </div>
-
-                          <div className="secondary-content col s4 no-padding">
-                            <div className="row no-padding no-margin">
-                              <div className="col s4 no-padding right">
-                                <a onClick={function(){
-                                      $('.layer-card-tooltipped').tooltip('remove');
-                                      //save map position so adding a layer doesn't reset it
-                                      var position = _this.refs.map.getPosition();
-                                      position.bounds = _this.refs.map.getBounds();
-                                      Actions.setMapPosition(position);
-                                      Actions.addToMap(layer, function(err){
-                                      if(err){
-                                        NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'bottomleft'});
-                                      }
-                                      //reset stuck tooltips...
-
-                                      $('.layer-card-tooltipped').tooltip();
-                                  });}}
-                                  className="create-map-btn layer-card-tooltipped"
-                                  data-position="top" data-delay="50" data-tooltip={_this.__('Add to Map')}>
-                                  <i className="material-icons omh-accent-text">add</i></a>
-                              </div>
-                              <div className="col s4 no-padding right">
-                                <a href={urlUtil.getBaseUrl(config.host, config.port) + '/layer/info/'+ layer.layer_id + '/' + slug(layer.name)} target="_blank"
-                                  className="create-map-btn layer-card-tooltipped"
-                                  data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
-                                  <i className="material-icons omh-accent-text">info</i>
-                                </a>
-                              </div>
-                            </div>
-                            <div className="row no-padding no-margin">
-
-                            </div>
-                          </div>
-
-
-
-                    </li>);
+                            <LayerSearchResult layer={layer} onAdd={_this.addLayer} />
+                        </li>
+                    );
                   })
                 }</ul>
                 </div>

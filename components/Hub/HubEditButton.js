@@ -1,4 +1,5 @@
 var React = require('react');
+var _isequal = require('lodash.isequal');
 
 var HubEditButton = React.createClass({
 
@@ -13,6 +14,17 @@ var HubEditButton = React.createClass({
     return {
       style: {}
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   render(){var button = '';

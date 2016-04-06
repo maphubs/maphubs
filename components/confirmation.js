@@ -5,6 +5,7 @@ import {Modal, ModalContent, ModalFooter} from './Modal/Modal';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var Store = require('../stores/ConfirmationStore');
+var Actions = require('../actions/ConfirmationActions');
 
 
 var Confirmation = React.createClass({
@@ -12,7 +13,7 @@ var Confirmation = React.createClass({
   mixins:[StateMixin.connect(Store)],
 
   hide(){
-   this.setState({show: false});
+    Actions.reset();
   },
 
   onNegativeResponse(){

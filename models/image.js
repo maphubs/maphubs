@@ -114,10 +114,13 @@ module.exports = {
         var id = result[0].image_id;
         debug('image found: ' + id);
         return _this.getImageByID(parseInt(id));
+      }else if(result.length > 1){
+        id = result[0].image_id;
+        debug('multiple images found!');
+        return _this.getImageByID(parseInt(id));
       }else{
         throw new Error('No Image Found for Hub: '+ hub_id);
       }
-
     });
   },
 
