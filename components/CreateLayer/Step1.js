@@ -41,7 +41,7 @@ var Step1 = React.createClass({
   },
 
   submit () {
-    NotificationActions.showNotification({message: this.__('Layer Saved'),onDismiss: this.props.onSubmit});
+    NotificationActions.showNotification({message: this.__('Layer Saved'),dismissAfter: 1000, onDismiss: this.props.onSubmit});
   },
 
   cancelCallback(){

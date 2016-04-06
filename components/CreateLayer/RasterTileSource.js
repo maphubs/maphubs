@@ -76,6 +76,7 @@ var RasterTileSource = React.createClass({
         PresetActions.setLayerId(_this.state.layer.layer_id);
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
+          dismissAfter: 1000,
           onDismiss(){
             //reset style to load correct source
             LayerActions.resetStyle();

@@ -96,7 +96,7 @@ var LocalSource = React.createClass({
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
         PresetActions.setLayerId(_this.state.layer.layer_id);
-        NotificationActions.showNotification({message: _this.__('Layer Saved'),onDismiss: _this.props.onSubmit});
+        NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
       }
     });
   },

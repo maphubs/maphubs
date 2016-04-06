@@ -59,7 +59,7 @@ var LayerAdmin = React.createClass({
   },
 
   save(){
-    NotificationActions.showNotification({message: this.__('Layer Saved'),onDismiss: this.props.onSubmit});
+    NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000, onDismiss: this.props.onSubmit});
   },
 
   savePresets(){
