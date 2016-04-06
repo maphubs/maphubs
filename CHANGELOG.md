@@ -1,5 +1,25 @@
 # Change Log
 
+## [0.2.1](https://github.com/maphubs/maphubs/tree/0.2.1) (2016-04-06)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.0...0.2.1)
+
+**Implemented enhancements:**
+
+- add unofficial notice to groups managed by Maphubs [\#123](https://github.com/maphubs/maphubs/issues/123)
+
+**Fixed bugs:**
+
+- hub stories showing wrong update time [\#130](https://github.com/maphubs/maphubs/issues/130)
+- unable to modify a story map made by another user [\#129](https://github.com/maphubs/maphubs/issues/129)
+- editing story map does not restore position [\#128](https://github.com/maphubs/maphubs/issues/128)
+- slow hub interface after adding banner photo [\#127](https://github.com/maphubs/maphubs/issues/127)
+- hub card logos too low-res [\#125](https://github.com/maphubs/maphubs/issues/125)
+- add member form doesn't display a success message when done [\#122](https://github.com/maphubs/maphubs/issues/122)
+- add member admin checkbox doesn't reset [\#121](https://github.com/maphubs/maphubs/issues/121)
+- create layer group dropdown validation broken [\#118](https://github.com/maphubs/maphubs/issues/118)
+- possible to add user to a group a second time [\#63](https://github.com/maphubs/maphubs/issues/63)
+- group tag display issue on Android [\#1](https://github.com/maphubs/maphubs/issues/1)
+
 ## [0.2.0](https://github.com/maphubs/maphubs/tree/0.2.0) (2016-04-05)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.1.8...0.2.0)
 
