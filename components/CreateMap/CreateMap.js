@@ -115,6 +115,7 @@ var CreateMap = React.createClass({
   },
 
   componentDidMount(){
+    this.resetSearch();
     $(this.refs.sidenav).sideNav({
       menuWidth: 300, // Default is 240
       edge: 'left', // Choose the horizontal origin
@@ -134,21 +135,16 @@ var CreateMap = React.createClass({
 
   },
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(){
     $('.layer-card-tooltipped').tooltip();
     $('.savebutton-tooltipped').tooltip();
-
-    //if we showing the map designer, load the default search list
-    if(this.state.show && !prevState.show){
-      this.resetSearch();
-    }
 
   },
 
   onClose(){
     $('.savebutton-tooltipped').tooltip('remove');
-    Actions.closeMapDesigner();
     if(this.props.onClose) this.props.onClose();
+    Actions.closeMapDesigner();
   },
 
   onCancel(){

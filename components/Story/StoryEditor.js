@@ -13,6 +13,7 @@ var CreateMap = require('../CreateMap/CreateMap');
 var CreateMapActions = require('../../actions/CreateMapActions');
 var ImageCrop = require('../ImageCrop');
 var checkClientError = require('../../services/client-error-response').checkClientError;
+var debug = require('../../services/debug')('story-editor');
 
 var request = require('superagent');
 
@@ -311,6 +312,7 @@ pasteHtmlAtCaret(html, rangeInput=null) {
 
 onAddMap(map_id){
   var _this = this;
+  this.removeMapCloseButtons();
   var range = null;
   var prevMap = null;
   if(this.state.editingMap){
@@ -331,13 +333,19 @@ onAddMap(map_id){
 
   _this.handleBodyChange($('.storybody').html());
 
-  this.setState({addingMap: true});
+  this.setState({addingMap: true, editingMap:false});
   setTimeout(function(){
     _this.setState({addingMap: false});
     _this.addMapCloseButtons();
 
   }, 15000);
 
+},
+
+onMapCancel(){
+  this.setState({addingMap: false, editingMap:false});
+  this.removeMapCloseButtons();
+  this.addMapCloseButtons();
 },
 
 removeMap(map_id){
@@ -386,7 +394,10 @@ addMapCloseButtons(){
             >close</i>
 
         </a>
-        <a onClick={function(){_this.editMap(map_id);}}>
+        <a onClick={function(){
+            _this.editMap(map_id);
+            debug('edit: ' + map_id);
+          }}>
           <i className="material-icons edit-map-tooltips"
             style={{height:'30px',
                     lineHeight: '30px',
@@ -565,7 +576,7 @@ showImageCrop(){
     var createMap = '', author='';
     if(this.props.storyType == 'hub'){
       createMap = (
-        <CreateMap onCreate={this.onAddMap} storyId={this.state.story_id}
+        <CreateMap onCreate={this.onAddMap} onClose={this.onMapCancel} storyId={this.state.story_id}
           showTitleEdit={false} titleLabel={this.__('Add Map')} hubStoryMap/>
       );
 
@@ -583,7 +594,7 @@ showImageCrop(){
       );
     }else if(this.props.storyType == 'user'){
       createMap = (
-        <CreateMap onCreate={this.onAddMap} storyId={this.state.story_id}
+        <CreateMap onCreate={this.onAddMap} onClose={this.onMapCancel}  storyId={this.state.story_id}
           showTitleEdit={false} titleLabel={this.__('Add Map')} userStoryMap/>
       );
     }

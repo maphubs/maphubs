@@ -117,7 +117,6 @@ var Map = React.createClass({
   },
 
   shouldComponentUpdate(nextProps, nextState){
-
     //always update if there is a selection
     //avoids glitch where feature hover doesn't show
     if(this.state.selectedFeatures){
@@ -640,12 +639,19 @@ map.on('mousemove', function(e) {
       this.reload(this.state.glStyle, this.state.glStyle, baseMap);
     }else if(fitBoundsChanging) {
       //** just changing the fit bounds not the style or base map **/
-       bounds = nextProps.fitBounds;
+      if(!bounds){
+        bounds = nextProps.fitBounds;
+      }
        //in this case we can call it directly since we are not waiting for the map to reload first
+      if(bounds._ne && bounds._sw){
+        this.map.fitBounds(bounds);
+      }else if(Array.isArray(bounds) && bounds.length > 2){
         this.map.fitBounds([[bounds[0], bounds[1]],
                       [bounds[2], bounds[3]]]);
-
-        this.setState({allowLayersToMoveMap});
+      }else{
+        this.map.fitBounds(bounds);
+      }
+      this.setState({restoreBounds: bounds, allowLayersToMoveMap});
     }
   },
 
