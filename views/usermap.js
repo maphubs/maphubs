@@ -134,7 +134,7 @@ var UserMap = React.createClass({
   showEmbedCode(){
     var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + this.props.map.map_id;
     var code = '&lt;iframe src="' + url
-    + '" style="width: 800px; height: 500px;" frameborder="0"&gt;&lt;/iframe&gt;';
+    + '" style="width: 600px; height: 330px;" frameborder="0"&gt;&lt;/iframe&gt;';
     var message = '<p>' + this.__('Paste the following code into your website to embed a map:') + '</p><pre>' + code + '</pre>';
     MessageActions.showMessage({title: this.__('Embed Code'), message});
   },

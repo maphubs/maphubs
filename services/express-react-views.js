@@ -18,6 +18,8 @@ var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
 var log = require('./log');
 var pjson = require('../package.json');
+var local = require('../local');
+var urlUtil = require('./url-util');
 var version = pjson.version;
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
@@ -124,12 +126,16 @@ function createEngine(engineOptions) {
           <meta name="twitter:image" content="` + options.twitterCard.image + `">
           `;
 
+          var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+          var url = baseUrl + req.url;
+
           markup += `
           <meta property="og:title" content="` + options.twitterCard.title + `" />
           <meta property="og:description" content="` + options.twitterCard.description + `" />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="http://maphubs.com" />
+          <meta property="og:url" content="` + url + `" />
           <meta property="og:image" content="` + options.twitterCard.image + `" />
+          <meta property="og:image:type" content="image/png" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
           `;
@@ -137,7 +143,6 @@ function createEngine(engineOptions) {
 
         if(materialicons){
           markup += '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">\n';
-
         }
         if(options.fontawesome){
           markup += '<link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">\n';
