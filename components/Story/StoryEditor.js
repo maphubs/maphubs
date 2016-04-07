@@ -324,6 +324,7 @@ onAddMap(map_id){
   }
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
   url = url.replace(/http:/, '');
+  url = url.replace(/https:/, '');
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
   + '</div>'
