@@ -117,6 +117,15 @@ function createEngine(engineOptions) {
         <meta name="msapplication-square310x310logo" content="/assets/mstile-310x310.png" />
         `;
 
+        if(options.oembed){
+          var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+          var url = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
+          markup += `
+          <link rel="alternate" type="application/json+oembed" href="` + url + `&format=json" title="Maphubs Map" />
+          <link rel="alternate" type="text/xml+oembed" href="` + url + `&format=xml" title="Maphubs Map" />
+          `;
+        }
+
         if(options.twitterCard){
           markup += `
           <meta name="twitter:card" content="summary_large_image">

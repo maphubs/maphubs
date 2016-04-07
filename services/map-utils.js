@@ -45,6 +45,7 @@ module.exports = {
            props:{map, layers, canEdit},
            hideFeedback: true,
            addthis: true,
+           oembed: 'map',
            twitterCard: {
              title,
              description: 'View full map on MapHubs.com',
