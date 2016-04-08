@@ -423,5 +423,6 @@
 	"Member": "Member",
 	"Administrator": "Administrator",
 	"User is already a member of this group.": "User is already a member of this group.",
-	"User is already a member of this hub.": "User is already a member of this hub."
+	"User is already a member of this hub.": "User is already a member of this hub.",
+	"Start Interactive Map": "Start Interactive Map"
 }

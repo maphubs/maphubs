@@ -80,8 +80,13 @@ var EmbedMap = React.createClass({
 
   },
 
+  componentDidMount(){
+    $('.embed-tooltips').tooltip();
+  },
+
   startInteractive(){
     this.setState({interactive: true});
+    $('.embed-tooltips').tooltip('remove');
   },
 
   render() {
@@ -121,7 +126,8 @@ var EmbedMap = React.createClass({
       map = (
           <div style={{position: 'relative'}}>
             <img src={url} className="responsive-img" alt="MapHubs Map" />
-              <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light omh-btn"
+              <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light omh-btn embed-tooltips"
+                data-delay="50" data-position="right" data-tooltip={this.__('Start Interactive Map')}
                 style={{position: 'absolute', left: '5px', bottom: '30px',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
           </div>
         );
