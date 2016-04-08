@@ -38,12 +38,12 @@ module.exports = function(app) {
         author_url: '',
         author_id: parseInt(map.created_by),
         title: map.title,
-        height: 730,
-        width: 1000,
-        html: '<iframe src="' + url + '" width="1000" height="730" allowfullscreen frameborder="0"></iframe>',
+        height: 630,
+        width: 1200,
+        html: '<iframe src="' + url + '" width="1200" height="630" allowfullscreen frameborder="0"></iframe>',
         thumbnail: imageUrl,
         thumbnail_height: 600,
-        thumbnail_width: 330,
+        thumbnail_width: 315,
         map_id: map.map_id
       };
 
