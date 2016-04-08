@@ -42,7 +42,7 @@ var EditHubStory = React.createClass({
             <HubBanner editing={false} subPage={true}/>
           </div>
           <div className="row no-margin">
-            <StoryEditor story={this.props.story} storyType="hub"/>
+            <StoryEditor story={this.props.story} storyType="hub" hubid={this.props.hub.hub_id}/>
           </div>
         </main>
         <Notification />

@@ -35,7 +35,7 @@ var StoryEditor = React.createClass({
 
   propTypes: {
     story: React.PropTypes.object,
-    hub_id: React.PropTypes.string,
+    hubid: React.PropTypes.string,
     storyType: React.PropTypes.string,
     username: React.PropTypes.string
   },
@@ -109,22 +109,15 @@ getFirstLine(){
 },
 
 getFirstImage(){
-  //attempt to find the first map image
+  //attempt to find the first map or image
   var first_img = null;
-  var firstEmbed = $('.storybody').find('img, iframe').first();
-  if(firstEmbed.is('iframe')){
-    if(firstEmbed.attr('src').startsWith('http')){
-      return;//don't look in iframes that aren't using the generic '//' for the protocol
-    }
-    var map = firstEmbed.contents().find('.mapboxgl-map').first();
-    //don't try to find an image if the iframe is running a live map
-    if(!map){
-      first_img = firstEmbed.contents().find('img').first().attr('src');
-    }
+  var firstEmbed = $('.storybody').find('img, .embed-map-container').first();
+  if(firstEmbed.is('.embed-map-container')){
+    var mapid = firstEmbed.attr('id').split('-')[1];
+    first_img = urlUtil.getBaseUrl(config.host, config.port) + '/api/screenshot/map/'+ mapid + '.png';
   }else{
     first_img = firstEmbed.attr('src');
   }
-
   return first_img;
 },
 
@@ -137,7 +130,7 @@ save(){
   }
 
   //if this is a hub story, require an author
-  if(this.props.hub_id && !this.state.author){
+  if(this.props.storyType == 'hub' && !this.state.author){
     NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
@@ -322,7 +315,13 @@ onAddMap(map_id){
     range.setStartAfter(prevMap[0]);
     prevMap.remove();
   }
-  var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
+  var url = '';
+  if(this.props.storyType == 'hub' && this.props.hubid){
+    url = urlUtil.getHubUrl(this.props.hubid, config.host, config.port) + '/map/embed/' + map_id + '/static';
+  }else{
+     url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
+  }
+
   url = url.replace(/http:/, '');
   url = url.replace(/https:/, '');
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
