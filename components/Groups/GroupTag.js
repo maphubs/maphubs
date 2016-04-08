@@ -2,6 +2,7 @@ var React = require('react');
 var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var $ = require('jquery');
+var _isequal = require('lodash.isequal');
 
 var classNames = require('classnames');
 
@@ -35,7 +36,14 @@ var GroupTag = React.createClass({
      });
   },
 
-  shouldComponentUpdate(){
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
     return false;
   },
 
