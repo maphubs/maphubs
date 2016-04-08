@@ -45,12 +45,14 @@ module.exports = {
         if(crop){
           cmd = easyimg.crop({
             src:origfilePath, dst:resizedFilePath,
-            cropwidth:targetWidth, cropheight:targetHeight
+            cropwidth:targetWidth, cropheight:targetHeight,
+            background: 'white'
           });
         }else{
           cmd = easyimg.resize({
             src:origfilePath, dst:resizedFilePath,
-            width:targetWidth, height:targetHeight
+            width:targetWidth, height:targetHeight,
+            background: 'white'
           });
         }
          cmd.then(
