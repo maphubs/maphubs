@@ -387,27 +387,29 @@ module.exports = Reflux.createStore({
 
    //reverse the order for the styles, since the map draws them in the order recieved
    forEachRight(layers, function(layer){
-     if(layer.style && layer.style.sources && layer.style.layers){
+     if(!layer.map_style) layer.map_style = layer.style;
+     var style = layer.map_style;
+     if(style && style.sources && style.layers){
        //check for active flag and update visibility in style
        if(layer.active != undefined && layer.active == false){
          //hide style layers for this layer
-         layer.style.layers.forEach(function(styleLayer){
+         style.layers.forEach(function(styleLayer){
            styleLayer['layout'] = {
              "visibility": "none"
            };
          });
        } else {
          //reset all the style layers to visible
-         layer.style.layers.forEach(function(styleLayer){
+         style.layers.forEach(function(styleLayer){
            styleLayer['layout'] = {
              "visibility": "visible"
            };
          });
        }
        //add source
-       $.extend(mapStyle.sources, layer.style.sources);
+       $.extend(mapStyle.sources, style.sources);
        //add layers
-       mapStyle.layers = mapStyle.layers.concat(layer.style.layers);
+       mapStyle.layers = mapStyle.layers.concat(style.layers);
      } else {
        debug('Not added to map, incomplete style for layer: ' + layer.layer_id);
      }

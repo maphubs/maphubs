@@ -1,7 +1,4 @@
 var React = require('react');
-//var debug = require('../../services/debug')('CreateMap');
-//var config = require('../../clientconfig');
-//var urlUtil = require('../../services/url-util');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var HubStore = require('../../stores/HubStore');
@@ -10,7 +7,6 @@ var HubActions = require('../../actions/HubActions');
 var GroupTag = require('../../components/Groups/GroupTag');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
 
 var HubMapLayers = React.createClass({
 
@@ -20,32 +16,12 @@ var HubMapLayers = React.createClass({
     return Locales.getLocaleString(this.state.locale, text);
   },
 
-  propTypes: {
-    reloadMap: React.PropTypes.func.isRequired
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
-  },
-
   toggleVisibility(layer_id){
-    var _this = this;
-    HubActions.toggleVisibility(layer_id, function(){
-      _this.props.reloadMap(_this.state.hub.map_style);
-
-    });
+    HubActions.toggleVisibility(layer_id, function(){});
   },
 
   render() {
     var _this = this;
-    //var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
 
     return (
       <div>

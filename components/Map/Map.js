@@ -29,7 +29,7 @@ var mapboxgl ={};
 if (typeof window === 'undefined') {
    mapboxgl = require("mapbox-gl");
 } else {
-   mapboxgl = require("../../node_modules/mapbox-gl/dist/mapbox-gl");
+   mapboxgl = require("../../node_modules/mapbox-gl/dist/mapbox-gl-dev");
 }
 
 var Map = React.createClass({
@@ -102,13 +102,16 @@ var Map = React.createClass({
       }
 
     }
-
+    var glStyle = null;
+    if(this.props.glStyle){
+       glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
+    }
     return {
       id: this.props.id ? this.props.id : 'map',
       selectedFeatures: null,
       selected: false,
       interactive: this.props.interactive,
-      glStyle: this.props.glStyle ? this.props.glStyle : null,
+      glStyle,
       mapLoaded: false,
       baseMap: this.props.baseMap,
       restoreBounds,
@@ -122,6 +125,7 @@ var Map = React.createClass({
     if(this.state.selectedFeatures){
       return true;
     }
+
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -129,6 +133,7 @@ var Map = React.createClass({
     if(!_isequal(this.state, nextState)){
       return true;
     }
+    //debug('(' + this.state.id + ') ' + ' shouldComponentUpdate: no need to update');
     return false;
   },
 
@@ -165,8 +170,8 @@ var Map = React.createClass({
       }
 
     }catch(err){
-      debug('Failed to add layer: ' + layer.id);
-      debug(err);
+      debug('(' + _this.state.id + ') ' +'Failed to add layer: ' + layer.id);
+      debug('(' + _this.state.id + ') ' +err);
     }
     });
   },
@@ -185,7 +190,7 @@ var Map = React.createClass({
           }
 
         }catch(err){
-          debug('Failed to remove layer: ' + layer.id);
+          debug('(' + _this.state.id + ') ' +'Failed to remove layer: ' + layer.id);
         }
       });
     }
@@ -206,7 +211,7 @@ var Map = React.createClass({
             }
 
           }catch(err){
-            debug('Failed to remove source: ' + key);
+            debug('(' + _this.state.id + ') ' +'Failed to remove source: ' + key);
           }
       });
     }
@@ -232,7 +237,6 @@ var Map = React.createClass({
 
   },
 
-
   clearSelectionFilter(){
     var _this = this;
     if(this.state.glStyle){
@@ -245,16 +249,32 @@ var Map = React.createClass({
   },
 
   reload(prevStyle, newStyle, baseMap=null){
+    var _this = this;
+    debug('(' + _this.state.id + ') ' +'reload: start');
+    //clear selected when reloading
+    try{
+      this.clearSelection();
+    }catch(err){
+      debug(err);
+    }
+
     //if no style is provided assume we are reloading the active style
     if(!prevStyle) prevStyle = this.props.glStyle;
     if(!newStyle) newStyle = prevStyle;
     this.removeAllLayers(prevStyle);
     this.removeAllSources(prevStyle);
     if(baseMap){
+      debug('(' + _this.state.id + ') ' +'reload: base map');
       this.map.setStyle(baseMap);
       //map data is loaded when style.load handler is called
     }else {
-      this.addMapData(this.map, newStyle, this.props.data, function(){});
+      this.addMapData(this.map, newStyle, this.props.data, function(){
+        debug('(' + _this.state.id + ') ' +'reload: finished adding data');
+        if (_this.state.restoreBounds && !_this.props.data){
+          debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
+          _this.map.fitBounds(_this.state.restoreBounds, {animate:false});
+        }
+      });
     }
 
   },
@@ -305,13 +325,14 @@ var Map = React.createClass({
 
             map.on('source.load', function(e) {
               if (e.source.id === key && _this.state.allowLayersToMoveMap) {
-                //map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
-                //               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
+                debug('Zooming map extent of source: ' + e.source.id);
+                map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
+                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
               }
             });
             map.addSource(key, tileJSON);
           }, function(error) {
-           debug(error);
+           debug('(' + _this.state.id + ') ' +error);
           })
         );
       } else if(type === 'mapbox-style'){
@@ -349,7 +370,7 @@ var Map = React.createClass({
           var geoJSONSource = new mapboxgl.GeoJSONSource({data: geoJSON});
           map.addSource(key, geoJSONSource);
         }, function(error) {
-         debug(error);
+         debug('(' + _this.state.id + ') ' +error);
         })
       );
     } else if(type === 'ags-featureserver-query'){
@@ -363,7 +384,7 @@ var Map = React.createClass({
         var geoJSONSource = new mapboxgl.GeoJSONSource({data: geoJSON});
         map.addSource(key, geoJSONSource);
       }, function(error) {
-       debug(error);
+       debug('(' + _this.state.id + ') ' +error);
       })
     );
   } else {
@@ -377,7 +398,7 @@ var Map = React.createClass({
         _this.addLayers(map, glStyle);
         cb();
       }).catch(function(err){
-        debug(err);
+        debug('(' + _this.state.id + ') ' +err);
         //try to load the map anyway
         _this.addLayers(map, glStyle);
         cb();
@@ -390,6 +411,7 @@ var Map = React.createClass({
 
   createMap() {
     var _this = this;
+    debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
 
       var baseMap = this.getBaseMapFromName(this.state.baseMap);
@@ -407,34 +429,47 @@ var Map = React.createClass({
   });
 
   map.on('style.load', function() {
-
+    debug('(' + _this.state.id + ') ' +'style.load');
    //add the omh data
     _this.addMapData(map, _this.state.glStyle, _this.props.data, function(){
-      //do stuff that needs to happen after data loads?
+      //do stuff that needs to happen after data loads
+      debug('(' + _this.state.id + ') ' +'finished adding map data');
+      if(!_this.props.data){
+        if (_this.state.restoreBounds){
+          debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
+          map.fitBounds(_this.state.restoreBounds, {animate:false});
+        }else{
+          debug('(' + _this.state.id + ') ' +'No restoreBounds found');
+        }
+      }else{
+        debug('(' + _this.state.id + ') ' +'Not restoring bounds for GeoJSON data');
+      }
+
+
+      if(_this.state.locale != 'en'){
+        _this.changeLocale(_this.state.locale);
+      }
+      debug('(' + _this.state.id + ') ' +'MAP LOADED');
+      _this.setState({mapLoaded: true});
     });
 
     //mapbox-gl 0.11.1 has a bug in the default error handler for tile.error
     map.off('tile.error', map.onError);
     map.on('tile.error', function(e){
-      debug(e.type);
+      debug('(' + _this.state.id + ') ' +e.type);
     });
 
-    if (_this.state.restoreBounds && !_this.props.data){
-      map.fitBounds(_this.state.restoreBounds, {animate:false});
-    }
-
-    if(_this.state.locale != 'en'){
-      _this.changeLocale(_this.state.locale);
-    }
-
-    _this.setState({mapLoaded: true, restoreBounds: null});
-
-    });
+  });//end style.load
 
 
 map.on('mousemove', function(e) {
     if(_this.state.selected || _this.state.showBaseMaps) return;
     var debounced = _debounce(function(){
+      if(_this.state.mapLoaded && _this.state.restoreBounds){
+        debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
+        _this.setState({restoreBounds:null});
+        //stop restoring map possition after user has moved the map
+      }
       map.featuresAt(e.point, {
         radius: 5,
         includeGeometry: false
@@ -522,9 +557,11 @@ map.on('mousemove', function(e) {
     var center = this.props.center;
     var zoom = this.props.zoom;
     if (center && this.shouldUpdateCenter(center, prevProps.center)) {
+      debug('(' + this.state.id + ') ' +'updating map center to: ' + center);
       this.map.setView(center, zoom, {animate: false});
     }
     else if (zoom && zoom !== prevProps.zoom) {
+      debug('(' + this.state.id + ') ' +'updating map zoom to: ' + zoom);
       this.map.setZoom(zoom);
     }
 
@@ -537,43 +574,31 @@ map.on('mousemove', function(e) {
       if(this.state.locale && (this.state.locale != prevState.locale) ){
         this.changeLocale(this.state.locale);
       }
-
-/*
-          if(this.props.fitBounds) {
-
-            if(!isEqual(this.props.fitBounds,prevProps.fitBounds)) {
-              //this.map.flyTo({center: [0, 0], zoom: 9});
-              var bounds = this.props.fitBounds;
-                this.map.fitBounds([[bounds[0], bounds[1]],
-                              [bounds[2], bounds[3]]]);
-            }
-          }
-*/
-
-    //$('.base-map-tooltip').tooltip();
   },
 
   componentWillReceiveProps(nextProps){
+    //debug('(' + this.state.id + ') ' +'componentWillReceiveProps');
     if(nextProps.data){
       if(this.state.geoJSONData){
+        debug('(' + this.state.id + ') ' +'update geoJSON data');
         //update existing data
         this.state.geoJSONData.setData(nextProps.data);
         this.zoomToData(nextProps.data);
       }else if(this.state.geoJSONData === undefined && this.props.data){
         //do nothing, still updating from the last prop change...
       }else {
+        debug('(' + this.state.id + ') ' +'init geoJSON data');
         this.initGeoJSON(this.map, nextProps.data);
       }
     }
 
     var fitBoundsChanging = false;
-    if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds)){
-      fitBoundsChanging = true;
-    }
-
     var bounds = null;
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
-    if(nextProps.fitBounds){
+
+    if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds)){
+      debug('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
+      fitBoundsChanging = true;
       allowLayersToMoveMap = false;
       if(nextProps.fitBounds.length > 2){
         var sw = new mapboxgl.LngLat(nextProps.fitBounds[0], nextProps.fitBounds[1]);
@@ -582,91 +607,162 @@ map.on('mousemove', function(e) {
       }else{
         bounds = nextProps.fitBounds;
       }
-
+      debug('(' + this.state.id + ') ' +'bounds: ' + bounds);
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
       if(!isEqual(this.state.glStyle,nextProps.glStyle)) {
+          debug('(' + this.state.id + ') ' +'glstyle changing from props');
           //** Style Changing (also reloads basemap) **/
           if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
             //if fitBounds isn't changing, restore the current map position
+            debug('(' + this.state.id + ') ' +"restoring current map position");
             allowLayersToMoveMap = false;
             bounds = this.map.getBounds();
+          }else if(!this.state.mapLoaded){
+            if(this.state.restoreBounds){
+              //restore bounds was set on a previous interation but map hasn't finished loading yet
+              bounds = this.state.restoreBounds;
+            }else if(nextProps.fitBounds){
+              bounds = nextProps.fitBounds;
+            }
           }
+          if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
           this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
 
           var baseMap = this.getBaseMapFromName(nextProps.baseMap);
-          this.reload(this.state.glStyle, nextProps.glStyle, baseMap);
 
-          this.setState({glStyle: nextProps.glStyle});//wait to change state style until after reloaded
+          //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
+          let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
+          this.reload(this.state.glStyle, styleCopy, baseMap);
+
+          this.setState({glStyle: styleCopy});//wait to change state style until after reloaded
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
-
+        debug('(' + this.state.id + ') ' +"basemap changing from props");
         if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
           //if fitBounds isn't changing, restore the current map position
+          debug('(' + this.state.id + ') ' +"restoring current map position");
           bounds = this.map.getBounds();
+        }else if(!this.state.mapLoaded){
+          if(this.state.restoreBounds){
+            //restore bounds was set on a previous interation but map hasn't finished loading yet
+            bounds = this.state.restoreBounds;
+          }else if(nextProps.fitBounds){
+            bounds = nextProps.fitBounds;
+          }
         }
+        if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
         this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
 
         baseMap = this.getBaseMapFromName(nextProps.baseMap);
         this.reload(this.state.glStyle, this.state.glStyle, baseMap);
-      }
+      }else if(fitBoundsChanging) {
+        //** just changing the fit bounds
+        //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
+        if(bounds){
+          debug('(' + this.state.id + ') ' +'only bounds changing, bounds: ' + bounds);
+          if(bounds._ne && bounds._sw){
+            debug('(' + this.state.id + ') ' +'calling map fitBounds');
+            this.map.fitBounds(bounds, {animate:false});
+           }else if(Array.isArray(bounds) && bounds.length > 2){
+             debug('(' + this.state.id + ') ' +'calling map fitBounds');
+             this.map.fitBounds([[bounds[0], bounds[1]],
+                           [bounds[2], bounds[3]]], {animate:false});
+           }else{
+             debug('(' + this.state.id + ') ' +'calling map fitBounds');
+             this.map.fitBounds(bounds, {animate:false});
+           }
+           this.setState({restoreBounds: bounds, allowLayersToMoveMap});
+        }else{
+          debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
+        }
+
+     }else{
+       debug('(' + this.state.id + ') ' +'No changes needed in props update');
+     }
+
     }else if(nextProps.glStyle
       && !isEqual(this.state.glStyle,nextProps.glStyle)){
         //** Style Changing (no basemap provided) **/
+        debug('(' + this.state.id + ') ' +'glstyle changing from props (default basemap)');
 
         if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
           //if fitBounds isn't changing, restore the current map position
+          debug('(' + this.state.id + ') ' +"restoring current map position");
           bounds = this.map.getBounds();
+        }else if(!this.state.mapLoaded){
+          if(this.state.restoreBounds){
+            //restore bounds was set on a previous interation but map hasn't finished loading yet
+            bounds = this.state.restoreBounds;
+          }else if(nextProps.fitBounds){
+            bounds = nextProps.fitBounds;
+          }
         }
+        if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
         this.setState({restoreBounds: bounds});
 
-        this.reload(this.state.glStyle, nextProps.glStyle);
+        //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
+        let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
+        this.reload(this.state.glStyle, styleCopy);
 
-        this.setState({glStyle: nextProps.glStyle, allowLayersToMoveMap}); //wait to change state style until after reloaded
+        this.setState({glStyle: styleCopy, allowLayersToMoveMap}); //wait to change state style until after reloaded
 
     }else if(nextProps.baseMap
       && !isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Found, but Base Map is Changing **/
+        debug('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
 
       if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
         //if fitBounds isn't changing, restore the current map position
         bounds = this.map.getBounds();
+      }else if(!this.state.mapLoaded){
+        if(this.state.restoreBounds){
+          //restore bounds was set on a previous interation but map hasn't finished loading yet
+          bounds = this.state.restoreBounds;
+        }else if(nextProps.fitBounds){
+          bounds = nextProps.fitBounds;
+        }
       }
       this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
 
       baseMap = this.getBaseMapFromName(nextProps.baseMap);
       this.reload(this.state.glStyle, this.state.glStyle, baseMap);
     }else if(fitBoundsChanging) {
-      //** just changing the fit bounds not the style or base map **/
-      if(!bounds){
-        bounds = nextProps.fitBounds;
-      }
-       //in this case we can call it directly since we are not waiting for the map to reload first
-      if(bounds._ne && bounds._sw){
-        this.map.fitBounds(bounds);
-      }else if(Array.isArray(bounds) && bounds.length > 2){
-        this.map.fitBounds([[bounds[0], bounds[1]],
-                      [bounds[2], bounds[3]]]);
+      //** just changing the fit bounds on a map that does not have styles or basemap settings **/
+      //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
+      if(bounds){
+        debug('(' + this.state.id + ') ' +'only bounds changing');
+        if(bounds._ne && bounds._sw){
+         this.map.fitBounds(bounds, {animate:false});
+         }else if(Array.isArray(bounds) && bounds.length > 2){
+           this.map.fitBounds([[bounds[0], bounds[1]],
+                         [bounds[2], bounds[3]]], {animate:false});
+         }else{
+           this.map.fitBounds(bounds, {animate:false});
+         }
+         this.setState({restoreBounds: bounds, allowLayersToMoveMap});
       }else{
-        this.map.fitBounds(bounds);
+        debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
       }
-      this.setState({restoreBounds: bounds, allowLayersToMoveMap});
-    }
+
+   }else{
+     debug('(' + this.state.id + ') ' +'No changes needed in props update');
+   }
   },
 
   initGeoJSON(map, data){
     if(data && data.features && data.features.length > 0){
       var geoJSONData = new mapboxgl.GeoJSONSource({data});
       map.addSource("omh-geojson", geoJSONData);
-      var glStyle = styles.defaultStyle('geojson');
+      var glStyle = styles.defaultStyle('geojson', null, null);
       delete glStyle.sources; //ignore the tilejson source
       this.addLayers(map, glStyle);
       this.setState({geoJSONData});
       this.zoomToData(data);
     } else {
       //empty data
-      debug('Empty/Missing GeoJSON Data');
+      debug('(' + this.state.id + ') ' +'Empty/Missing GeoJSON Data');
     }
   },
 
@@ -682,7 +778,7 @@ map.on('mousemove', function(e) {
 
   changeLocale(locale){
     var map = this.map;
-    debug('changing map language to: ' + locale);
+    debug('(' + this.state.id + ') ' +'changing map language to: ' + locale);
     map.setLayoutProperty('country-label-lg', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('country-label-md', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('country-label-sm', 'text-field', '{name_' + locale + '}');
@@ -742,6 +838,7 @@ map.on('mousemove', function(e) {
   },
 
   updatePosition() {
+    debug('(' + this.state.id + ') ' +'UPDATE POSITION');
     var map = this.map;
     map.setView(this.state.map.position.center, this.state.map.position.zoom, {animate: false});
   },
@@ -797,6 +894,7 @@ map.on('mousemove', function(e) {
   },
 
   changeBaseMap(mapName){
+    debug('changing basemap to: ' + mapName);
     $('.base-map-tooltip').tooltip('remove'); //fix stuck tooltips
     $('.base-map-tooltip').tooltip();
     var baseMap = this.getBaseMapFromName(mapName);

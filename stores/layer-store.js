@@ -57,8 +57,11 @@ module.exports = Reflux.createStore({
         layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
     }else if(layer.is_external && layer.external_layer_config.type == 'ags-mapserver-tiles'){
         layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url + '?f=json', 'arcgisraster');
+    }else if(layer.style.sources.osm){
+      alert('Unable to reset OSM layers');
+      return;
     }else{
-      layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig());
+      layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);
     }
     this.setState({layer});
   },
@@ -103,14 +106,8 @@ module.exports = Reflux.createStore({
           layer.description = data.description;
           layer.owned_by_group_id = data.group;
           layer.published = data.published;
-          layer.style = mapStyles.defaultStyle(layer.layer_id, _this.getSourceConfig()),
-          layer.legend_html = mapStyles.defaultLegend(_this.state.layer),
-          layer.preview_position = {
-            zoom: 1,
-            lat: 0,
-            lng: 0,
-            bbox: [[-180,-180],[180,180]]
-          };
+
+
         _this.setState({layer});
         _this.trigger(_this.state);
         cb();
@@ -187,7 +184,7 @@ module.exports = Reflux.createStore({
         layer.is_empty = data.is_empty;
         if(data.is_empty){
           layer.data_type = data.empty_data_type;
-        }      
+        }
         _this.setState({layer});
         _this.trigger(_this.state);
         cb();
@@ -195,18 +192,26 @@ module.exports = Reflux.createStore({
     });
   },
 
-  setStyle(style, legend_html, preview_position){
+  setStyle(style, legend_html, preview_position, cb){
     var layer = this.state.layer;
     layer.style = style;
     layer.legend_html = legend_html;
     layer.preview_position = preview_position;
     this.setState({layer});
-    this.trigger(this.state);
+    cb();
   },
 
   setDataType(data_type){
     var layer = this.state.layer;
     layer.data_type = data_type;
+    layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type),
+    layer.legend_html = mapStyles.defaultLegend(layer),
+    layer.preview_position = {
+      zoom: 1,
+      lat: 0,
+      lng: 0,
+      bbox: null
+    };
     this.setState({layer});
     this.trigger(this.state);
   },

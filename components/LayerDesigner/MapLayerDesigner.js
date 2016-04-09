@@ -48,9 +48,9 @@ var MapLayerDesigner = React.createClass({
   },
 
   setColor(color){
-    var sourceConfig = this.getSourceConfig();
+    //var sourceConfig = this.getSourceConfig();
 
-    var style = mapStyles.styleWithColor(this.state.layer.layer_id, sourceConfig, color);
+    var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
     this.props.onStyleChange(this.state.layer.layer_id, style, legend);
     this.setState({style, legend, mapColor: color});
@@ -97,9 +97,13 @@ var MapLayerDesigner = React.createClass({
 
     var designer = '';
     if(this.state.layer){
-      if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'raster') {
+      if(this.state.layer.is_external
+        && (
+          this.state.layer.external_layer_config.type == 'raster'
+        || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
         designer = (
-          <div>
+          <div style={{padding:'5px'}}>
+            <b>{this.__('Choose Raster Opacity')}</b>
             <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} />
           </div>
         );
@@ -135,7 +139,7 @@ var MapLayerDesigner = React.createClass({
         {designer}
       </div>
       <div>
-        <div className="center">
+        <div className="center" style={{margin: '10px'}}>
           <a className="waves-effect waves-light btn" style={{float: 'none'}} onClick={this.close}>{this.__('Close')}</a>
         </div>
       </div>

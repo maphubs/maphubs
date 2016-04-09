@@ -98,6 +98,7 @@ var LayerStyle = React.createClass({
     if(this.props.onPrev) this.props.onPrev();
   },
 
+  /*
   getSourceConfig(){
     var sourceConfig = {
       type: 'vector'
@@ -108,14 +109,16 @@ var LayerStyle = React.createClass({
 
     return sourceConfig;
   },
+  */
 
   setColor(color){
-    var sourceConfig = this.getSourceConfig();
-
-    var style = mapStyles.styleWithColor(this.state.layer.layer_id, sourceConfig, color);
+    var _this = this;
+    var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
-    LayerActions.setStyle(style, legend);
-    this.setState({mapColor: color});
+    LayerActions.setStyle(style, legend, null, function(){
+      _this.setState({mapColor: color});
+    });
+
   },
 
   setRasterOpacity(opacity){
@@ -147,6 +150,12 @@ var LayerStyle = React.createClass({
 
 	render() {
 
+    var mapExtent = null;
+    if(this.state.layer.preview_position && this.state.layer.preview_position.bbox){
+      var bbox = this.state.layer.preview_position.bbox;
+      mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];
+    }
+
     var map = '';
     if(this.state.layer.layer_id !== undefined
       && this.state.layer.layer_id !== -1
@@ -155,6 +164,7 @@ var LayerStyle = React.createClass({
           <div>
             <Map ref="map" id="layer-style-map" className="z-depth-2" style={{height: '300px', width: '400px', margin: 'auto'}}
               glStyle={this.state.layer.style}
+              fitBounds={mapExtent}
               />
             <Legend className="z-depth-2" style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
                 layers={[this.state.layer]}/>

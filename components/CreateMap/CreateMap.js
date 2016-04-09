@@ -271,14 +271,18 @@ var CreateMap = React.createClass({
   },
 
   toggleVisibility(layer_id){
-    var _this = this;
+    //var _this = this;
+    $('.layer-card-tooltipped').tooltip('remove');
     Actions.toggleVisibility(layer_id, function(){
-      _this.refs.map.reload(null, _this.state.mapStyle);
+      //_this.refs.map.reload(null, _this.state.mapStyle);
     });
+    $('.layer-card-tooltipped').tooltip();
   },
 
   showLayerDesigner(layer){
+    $('.layer-card-tooltipped').tooltip('remove');
     this.setState({showMapLayerDesigner: true, layerDesignerLayer: layer});
+    $('.layer-card-tooltipped').tooltip();
   },
 
   onLayerStyleChange(layer_id, style, legend){

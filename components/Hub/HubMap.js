@@ -63,16 +63,13 @@ var HubMap = React.createClass({
     HubActions.setMap(layers, style, position, basemap);
   },
 
-  reloadMap(style){
-    this.refs.map.reload(null, style);
-  },
-
   render() {
     var mapEditButton = '', createMap = '';
     if(this.props.editing){
       createMap = (
         <CreateMap mapLayers={this.state.layers}
           basemap={this.props.hub.basemap}
+          position={this.props.hub.map_position}
           showTitleEdit={false} titleLabel={this.__('Edit Hub Map')}
           onSaveHubMap={this.saveMap} hubId={this.props.hub.hub_id} hubMap/>
       );
@@ -99,7 +96,7 @@ var HubMap = React.createClass({
       <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border}}>
             <div className="row no-margin" style={{height: '100%'}}>
               <div style={{height: '100%', overflowY: 'auto'}} className="col no-padding s0 hide-on-small-only m3 l3">
-                <HubMapLayers reloadMap={this.reloadMap}/>
+                <HubMapLayers />
               </div>
               <div className="col s12 m9 l9 no-padding" style={{height: '100%'}}>
                 <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
@@ -120,7 +117,7 @@ var HubMap = React.createClass({
                     >layers</i>
                 </a>
                 <div className="side-nav" id="map-layers">
-                  <HubMapLayers reloadMap={this.reloadMap}/>
+                  <HubMapLayers />
 
                 </div>
 
