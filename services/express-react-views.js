@@ -17,10 +17,9 @@ var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
 var log = require('./log');
-var pjson = require('../package.json');
+var version = require('../version.json').version;
 var local = require('../local');
 var urlUtil = require('./url-util');
-var version = pjson.version;
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
 };
