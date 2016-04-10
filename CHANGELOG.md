@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.2.2](https://github.com/maphubs/maphubs/tree/0.2.2) (2016-04-10)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.1...0.2.2)
+
+**Implemented enhancements:**
+
+- add oembed api for maps [\#131](https://github.com/maphubs/maphubs/issues/131)
+- notify admins on new user signups [\#106](https://github.com/maphubs/maphubs/issues/106)
+
+**Fixed bugs:**
+
+- layer with feature notes will not delete [\#132](https://github.com/maphubs/maphubs/issues/132)
+- error when changing color of OSM layers [\#9](https://github.com/maphubs/maphubs/issues/9)
+
 ## [0.2.1](https://github.com/maphubs/maphubs/tree/0.2.1) (2016-04-06)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.0...0.2.1)
 
