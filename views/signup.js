@@ -96,7 +96,7 @@ var Signup = React.createClass({
 
   onSave(model){
     var _this = this;
-    UserActions.signup(model.username, model.email, model.password, function(err){
+    UserActions.signup(model.username, model.name, model.email, model.password, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err.error});
       }else {
@@ -147,6 +147,13 @@ var Signup = React.createClass({
              required/>
            </div>
            <div className="row valign-wrapper">
+              <TextInput name="name" label={this.__('Full Name')} icon="info"
+                className="col s12 m8 l8 valign" style={{margin: 'auto'}}
+                length={100}
+                dataPosition="top" dataTooltip={this.__('Please enter your name to show in your profile and help other users find you.')}
+              required/>
+          </div>
+           <div className="row valign-wrapper">
               <TextInput name="email" label={this.__('Email')} icon="email"
                 className="col s12 m8 l8 valign" style={{margin: 'auto'}}
                 validations={{isEmail:true}} validationErrors={{
@@ -178,7 +185,7 @@ var Signup = React.createClass({
           </div>
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
-              <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>      
+              <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>
               <button type="submit"
                 className="waves-effect waves-light btn valign center"
                 style={{width: '75%', marginTop: '25px', marginLeft: 'auto', marginRight: 'auto'}}

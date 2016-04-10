@@ -32,7 +32,7 @@ var UserSettings = React.createClass({
       <div>
         <Header />
         <main className="container">
-          <h3>{this.__('User Settings')}</h3>
+          <h5>{this.__('User Settings')}</h5>
             <div className="row">
              <div className="col s12">
                <ul className="tabs">
@@ -41,7 +41,9 @@ var UserSettings = React.createClass({
                </ul>
              </div>
              <div id="profile" className="col s12">
-               <span><b>{this.__('User Name')}: </b>{this.props.user.display_name}</span>
+               <p><b>{this.__('User Name')}: </b>{this.props.user.display_name}</p>
+               <p><b>{this.__('Full Name')}: </b>{this.props.user.name}</p>
+               <p><b>{this.__('Email')}: </b>{this.props.user.email}</p>
                <div>
                  <Gravatar email={this.props.user.email} size={200} />
                  <p>{this.__('Please update your photo on')} <a href="http://gravatar.com" target="_blank">gravatar.com</a></p>

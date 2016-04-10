@@ -134,29 +134,33 @@ module.exports = function(app) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     //create user
-    User.createUser(data.email, data.username, ip)
+    User.createUser(data.email, data.name, data.username, ip)
     .then(function(user_id){
     //set password
       PasswordUtil.updatePassword(user_id, data.password, false, req.__)
       .then(function(){
-        User.sendConfirmationEmail(user_id, req.__)
-        .then(function(){
-            //automatically login the user to their new account
-            passport.authenticate('local', function(err, user, info) {
-              debug(info);
-              if (err) { return next(err); }
-              if (!user) { return res.redirect('/login'); }
-              req.logIn(user, function(err) {
-                if (err) { return next(err); }
-                //save the user to the session
-                req.session.user = {
-                  id: req.user.id,
-                  display_name: req.user.display_name
-                };
-                res.status(200).send({success:true});
-              });
-            })(req, res, next);
 
+        User.sendConfirmationEmail(user_id, req.__)
+          .then(function(){
+            User.sendNewUserAdminEmail(user_id)
+            .then(function(){
+              //automatically login the user to their new account
+              passport.authenticate('local', function(err, user, info) {
+                debug(info);
+                if (err) { return next(err); }
+                if (!user) { return res.redirect('/login'); }
+                req.logIn(user, function(err) {
+                  if (err) { return next(err); }
+                  //save the user to the session
+                  req.session.user = {
+                    id: req.user.id,
+                    display_name: req.user.display_name
+                  };
+                  res.status(200).send({success:true});
+                });
+              })(req, res, next);
+
+          }).catch(apiError(res, 500));
         }).catch(apiError(res, 500));
       }).catch(apiError(res, 500));
     }).catch(apiError(res, 500));

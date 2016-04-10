@@ -143,16 +143,38 @@ module.exports = {
         });
     },
 
-    createUser(email, display_name, creation_ip){
+    createUser(email, name, display_name, creation_ip){
       return knex('users').returning('id')
         .insert({
             email,
             display_name,
+            name,
             pass_crypt: '1234',
             creation_ip,
             creation_time: knex.raw('now()')
         }).then(function(user_id){
           return parseInt(user_id);
+        });
+    },
+
+    sendNewUserAdminEmail(user_id){
+      return this.getUser(user_id)
+      .then(function(user){
+
+        var text = 'New User: ' + user.display_name
+        + ' \n Name: ' + user.name
+        + ' \n Email: ' + user.email;
+        var html = '<b>New User:</b> ' + user.display_name
+        + '<br /> <b>Name:</b> ' + user.name
+        + '<br /> <b>Email:</b> ' + user.email;
+
+        return Email.send({
+            from: 'MapHubs <info@maphubs.com>',
+            to: 'MapHubs <info@maphubs.com>',
+            subject: '[NEW USER SIGNUP] ' + user.display_name,
+            text,
+            html
+          });
         });
     },
 
@@ -168,14 +190,14 @@ module.exports = {
           var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
           var url = baseUrl + '/user/emailconfirmation/' + new_email;
 
-            var text =  user.display_name + ',\n' +
+            var text =  user.name + ',\n' +
               __('Welcome to MapHubs!') + '\n\n' +
               __('Please go to this link in your browser to confirm your email:')  + url + '\n\n' +
               __('Thank you for registering for MapHubs.') +
               __('If you need to contact us you are welcome to reply to this email, or use the Feedback button on the MapHubs site.');
 
 
-            var html = user.display_name + ',' +
+            var html = user.name + ',' +
               '<br />' + __('Welcome to MapHubs!') +
               '<br />' +
               '<br />' + __('Please go to this link in your browser to confirm your email:') + url +
