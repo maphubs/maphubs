@@ -105,7 +105,7 @@ var HubAdmin = React.createClass({
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
-            NotificationActions.showNotification({message: _this.__('Member is no longer Administrator'), dismissAfter: 7000});
+            NotificationActions.showNotification({message: _this.__('Member is no longer an Administrator'), dismissAfter: 7000});
           }
         });
       }

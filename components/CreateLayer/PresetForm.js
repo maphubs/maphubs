@@ -89,10 +89,9 @@ var PresetForm = React.createClass({
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Removal'),
-      message: _this.__(
-        `Are you sure you want to remove this field?
-        Note: this will hide the field from displays on MapHubs, but will not delete the data.
-        The field will still be visible in the edit under "all tags" and will be included in data exports.`),
+      message: _this.__('Are you sure you want to remove this field?') + ' '
+        + _this.__('Note: this will hide the field from displays on MapHubs, but will not delete the data.') + ' '
+        + _this.__('The field will still be visible in the edit under "all tags" and will be included in data exports.'),
       onPositiveResponse(){
         actions.deletePreset(_this.props.id);
       }

@@ -86,7 +86,9 @@ var LayerAdmin = React.createClass({
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
-      message: _this.__('Please confirm removal of ') + this.props.layer.name,
+      message: _this.__('Please confirm removal of') + ' '
+      + this.props.layer.name + '. '
+      + _this.__('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
       onPositiveResponse(){
         LayerActions.deleteLayer(function(err){
           if(err){

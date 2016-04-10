@@ -197,7 +197,7 @@ save(){
           }
           _this.addMapCloseButtons(); //put back the close buttons
           _this.addImageButtons();
-          NotificationActions.showNotification({message: _this.__('Story Saved!'), action: _this.__('View Story'),
+          NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('View Story'),
             dismissAfter: 10000,
             onDismiss(){
 
@@ -236,7 +236,7 @@ delete(){
             }else{
 
               NotificationActions.showNotification({
-                message: _this.__('Story Deleted!'),
+                message: _this.__('Story Deleted'),
                 onDismiss(){
                   window.location = '/';
                 }
@@ -539,7 +539,7 @@ saveSelectionRange(){
 
 showCreateMap(){
   if(!this.state.story_id || this.state.story_id == -1){
-    NotificationActions.showNotification({message: this.__('Please Save Story Before Adding a Map'), dismissAfter: 5000, position: 'bottomleft'});
+    NotificationActions.showNotification({message: this.__('Please Save the Story Before Adding a Map'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
 
