@@ -68,22 +68,23 @@ var UserMap = React.createClass({
     });
 
     $(window).resize(function(){
+      debounce(function(){
       var size = getSize();
-      _this.setState({
-        width: size.width,
-        height: size.height
-      });
+        _this.setState({
+          width: size.width,
+          height: size.height
+        });
+      }, 300);
     });
 
 
   },
 
-  componentDidMount(){
-
+  onMouseEnterMenu(){
+    $('.user-map-tooltip').tooltip();
   },
 
   componentDidUpdate(){
-    $('.user-map-tooltip').tooltip();
     debounce(function(){
       var evt = document.createEvent('UIEvents');
       evt.initUIEvent('resize', true, false, window, 0);
@@ -198,7 +199,9 @@ var UserMap = React.createClass({
     }
 
     button = (
-    <div id="user-map-button" className="fixed-action-btn">
+    <div id="user-map-button" className="fixed-action-btn"
+      onMouseEnter={this.onMouseEnterMenu}
+      >
       <a className="btn-floating btn-large">
         <i className="large material-icons">more_vert</i>
       </a>
