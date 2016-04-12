@@ -118,22 +118,21 @@ module.exports = function(app) {
     var layer_id = parseInt(req.params.id || '', 10);
 
     //confirm that this user is allowed to administer this layeradmin
-    Promise.all([
-      Layer.getLayerByID(layer_id),
-      Group.getGroupsForUser(user_id)
-    ])
-      .then(function(results){
-        var layer = results[0];
-         var group_id = layer.owned_by_group_id;
-         var groups = results[1];
-          Group.getGroupRole(user_id, group_id)
-            .then(function(result){
-              if(result && result.length == 1 && result[0].role == 'Administrator'){
-                res.render('layeradmin', {title: layer.name + ' - MapHubs', props: {layer, groups}, req});
-              }else{
-                res.redirect('/unauthorized');
-              }
-            }).catch(nextError(next));
+    Layer.allowedToModify(layer_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          Promise.all([
+          Layer.getLayerByID(layer_id),
+          Group.getGroupsForUser(user_id)
+        ])
+        .then(function(results){
+          var layer = results[0];
+          var groups = results[1];
+          res.render('layeradmin', {title: layer.name + ' - MapHubs', props: {layer, groups}, req});
+          });
+        }else{
+          res.redirect('/unauthorized');
+        }
       }).catch(nextError(next));
   });
 
