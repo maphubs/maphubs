@@ -107,7 +107,7 @@ var HubResourcesPage = React.createClass({
       if(!this.state.hub.published){
         publishButton = (
           <div className="center center-align" style={{margin: 'auto', position: 'fixed', top: '15px', right: 'calc(50% - 60px)'}}>
-            <button className="waves-effect waves-light btn" onClick={this.publish}>this.__('Publish')}</button>
+            <button className="waves-effect waves-light btn" onClick={this.publish}>{this.__('Publish')}</button>
           </div>
         );
       }
