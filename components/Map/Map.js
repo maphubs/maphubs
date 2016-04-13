@@ -407,6 +407,9 @@ var Map = React.createClass({
     else if(geoJSON){
       _this.initGeoJSON(map, geoJSON);
     }
+    else{
+      _this.setState({mapLoaded: true});
+    }
   },
 
   createMap() {
@@ -938,15 +941,10 @@ map.on('mousemove', function(e) {
     }
 
     var logo = '', children = '';
-    if(this.state.mapLoaded){
-      if(this.props.showLogo){
-        logo = (
-          <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width="70" height="19" src="/assets/maphubs-logo-small.png" alt="MapHubs Logo"/>
-        );
-      }
-      children = this.props.children;
-    }else if(!this.props.data || !this.props.glStyle){
-      //allow children to load on empty hub maps
+    if(this.state.mapLoaded && this.props.showLogo){
+      logo = (
+        <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width="70" height="19" src="/assets/maphubs-logo-small.png" alt="MapHubs Logo"/>
+      );
       children = this.props.children;
     }
 
