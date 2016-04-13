@@ -1,5 +1,24 @@
 # Change Log
 
+## [0.2.3](https://github.com/maphubs/maphubs/tree/0.2.3) (2016-04-13)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.2...0.2.3)
+
+**Implemented enhancements:**
+
+- increase layer description char length [\#151](https://github.com/maphubs/maphubs/issues/151)
+- increase source text limits [\#138](https://github.com/maphubs/maphubs/issues/138)
+- add text justification option to story editor [\#126](https://github.com/maphubs/maphubs/issues/126)
+
+**Fixed bugs:**
+
+- bad text on publish button [\#153](https://github.com/maphubs/maphubs/issues/153)
+- error when adding AGS mapserver layer [\#152](https://github.com/maphubs/maphubs/issues/152)
+- edit button not showing in hub map [\#150](https://github.com/maphubs/maphubs/issues/150)
+- unpublished hubs show in search results [\#148](https://github.com/maphubs/maphubs/issues/148)
+- single quotes inside layer name break layer search [\#146](https://github.com/maphubs/maphubs/issues/146)
+- error creating empty layer [\#140](https://github.com/maphubs/maphubs/issues/140)
+- group members unable to edit map layers [\#137](https://github.com/maphubs/maphubs/issues/137)
+
 ## [0.2.2](https://github.com/maphubs/maphubs/tree/0.2.2) (2016-04-10)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.1...0.2.2)
 
