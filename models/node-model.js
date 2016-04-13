@@ -128,7 +128,7 @@ var Node = {
           k,
           v: t.attr('v').value()
         };
-        debug(JSON.stringify(tag));
+        //debug(JSON.stringify(tag));
         tags.push(tag);
       }
     }
