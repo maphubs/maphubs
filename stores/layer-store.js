@@ -106,7 +106,14 @@ module.exports = Reflux.createStore({
           layer.description = data.description;
           layer.owned_by_group_id = data.group;
           layer.published = data.published;
-
+          layer.style = mapStyles.defaultStyle(layer.layer_id, _this.getSourceConfig(), layer.data_type),
+          layer.legend_html = mapStyles.defaultLegend(layer),
+          layer.preview_position = {
+            zoom: 1,
+            lat: 0,
+            lng: 0,
+            bbox: null
+          };
 
         _this.setState({layer});
         _this.trigger(_this.state);
@@ -204,14 +211,7 @@ module.exports = Reflux.createStore({
   setDataType(data_type){
     var layer = this.state.layer;
     layer.data_type = data_type;
-    layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type),
-    layer.legend_html = mapStyles.defaultLegend(layer),
-    layer.preview_position = {
-      zoom: 1,
-      lat: 0,
-      lng: 0,
-      bbox: null
-    };
+
     this.setState({layer});
     this.trigger(this.state);
   },

@@ -363,7 +363,7 @@ var Map = React.createClass({
         requests.push(TerraformerGL.getArcGISGeoJSON(url)
         .then(function(geoJSON) {
 
-          if(geoJSON.bbox && geoJSON.bbox.length > 0 && this.state.allowLayersToMoveMap){
+          if(geoJSON.bbox && geoJSON.bbox.length > 0 && _this.state.allowLayersToMoveMap){
             _this.zoomToData(geoJSON);
           }
 
