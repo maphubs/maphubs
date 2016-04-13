@@ -213,14 +213,18 @@ module.exports = {
                 reject(error);
               }
               //convert tags to properties
-              result.features.forEach(function(feature) {
-                var tags = JSON.parse(feature.properties.tags);
-                Object.keys(tags).map(function(key) {
-                  var val = tags[key];
-                  feature.properties[key] = val;
+              if(result.features){
+                result.features.forEach(function(feature) {
+                  var tags = JSON.parse(feature.properties.tags);
+                  if(tags){
+                    Object.keys(tags).map(function(key) {
+                      var val = tags[key];
+                      feature.properties[key] = val;
+                    });
+                    delete feature.properties.tags;
+                  }
                 });
-                delete feature.properties.tags;
-              });
+              }
 
               result.bbox = JSON.parse(bbox.rows[0].bbox);
               fulfill(result);
