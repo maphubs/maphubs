@@ -56,7 +56,7 @@ var HubResources = React.createClass({
                  buttonLabels: 'fontawesome',
                  delay: 100,
                  placeholder: {text: this.__('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
-                 buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'quote','orderedlist','unorderedlist', 'pre','removeFormat']
+                 buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'justifyLeft', 'justifyCenter', 'justifyRight', 'quote','orderedlist','unorderedlist', 'pre','removeFormat']
                }}
              />
           </div>

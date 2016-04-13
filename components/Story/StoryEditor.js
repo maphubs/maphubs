@@ -627,7 +627,7 @@ showImageCrop(){
            options={{buttonLabels: 'fontawesome',
              delay: 100,
              placeholder: {text: this.__('Type your Story Here')},
-             buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'quote','orderedlist','unorderedlist', 'pre','removeFormat']}}
+             buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'justifyLeft', 'justifyCenter', 'justifyRight', 'quote','orderedlist','unorderedlist', 'pre','removeFormat']}}
          />
        </div>
      </div>
