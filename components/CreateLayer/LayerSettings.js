@@ -205,15 +205,15 @@ var LayerSettings = React.createClass({
               <div className="row">
                 <TextArea name="description" label={this.__('Description')} icon="description" className="col s12"
                     value={this.state.layer.description}
-                    validations="maxLength:500" validationErrors={{
-                       maxLength: this.__('Description must be 500 characters or less.')
-                     }} length={500}
+                    validations="maxLength:1000" validationErrors={{
+                       maxLength: this.__('Description must be 1000 characters or less.')
+                     }} length={1000}
                     dataPosition="top" dataTooltip={this.__('Brief Description of the Layer')}
                     required/>
               </div>
               <div className="row">
                 <Toggle name="published" labelOff={this.__('Draft')} labelOn={this.__('Published')} defaultChecked={this.state.layer.published} className="col s4"
-                    dataPosition="right" dataTooltip={this.__('Include in Public Listings')}
+                    dataPosition="right" dataTooltip={this.__('Indicate Layer is a Draft')}
                   />
               </div>
             <div  className="row">

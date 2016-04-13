@@ -529,9 +529,9 @@ var LayerInfo = React.createClass({
                     <FormattedRelative value={updatedTime}/>
                   </IntlProvider>
                   </p>
-                <p style={{fontSize: '16px'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
+                <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
                 <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
-                <p style={{fontSize: '16px', wordWrap: 'break-word'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
+                <p style={{fontSize: '16px', wordWrap: 'break-word', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
 
                 </div>
 

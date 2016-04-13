@@ -113,9 +113,9 @@ var LayerSource = React.createClass({
               <div className="row">
                 <TextInput name="source" label={this.__('Source Description')} icon="explore" className="col s12"
                   value={this.state.layer.source}
-                  validations="maxLength:100" validationErrors={{
-                       maxLength: this.__('Name must be 100 characters or less.')
-                   }} length={100}
+                  validations="maxLength:300" validationErrors={{
+                       maxLength: this.__('Name must be 300 characters or less.')
+                   }} length={300}
                    dataPosition="top" dataTooltip={this.__('Short Description of the Layer Source')}
                    required/>
               </div>
