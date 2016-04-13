@@ -7,7 +7,13 @@ module.exports = {
       if(typeof err === 'object'){
         err = JSON.stringify(err);
       }
-      res.status(code).send({success: false,error: err.toString()});
+      var message = '';
+      if(process.env.NODE_ENV === 'production'){
+        message = res.__('Server Error');
+      }else {
+        message = err.toString();
+      }
+      res.status(code).send({success: false,error: message});
     };
   },
 
