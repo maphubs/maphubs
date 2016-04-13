@@ -13,6 +13,11 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var MessageActions = require('../actions/MessageActions');
+var NotificationActions = require('../actions/NotificationActions');
+var request = require('superagent');
+var checkClientError = require('../services/client-error-response').checkClientError;
+
 
 var Hubs = React.createClass({
 
@@ -36,7 +41,33 @@ var Hubs = React.createClass({
   },
 
   handleSearch(input) {
-    debug(`Searching for hubs "${input}"`);
+    var _this = this;
+    debug('searching for: ' + input);
+    request.get(urlUtil.getBaseUrl(config.host, config.port) + '/api/hubs/search?q=' + input)
+    .type('json').accept('json')
+    .end(function(err, res){
+      checkClientError(res, err, function(err){
+        if(err){
+          MessageActions.showMessage({title: 'Error', message: err});
+        }else{
+          if(res.body.hubs && res.body.hubs.length > 0){
+            _this.setState({searchActive: true, searchResults: res.body.hubs});
+            NotificationActions.showNotification({message: res.body.hubs.length + ' ' + _this.__('Results'), position: 'bottomleft'});
+          }else{
+            //show error message
+            NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'});
+          }
+        }
+      },
+      function(cb){
+        cb();
+      }
+      );
+    });
+  },
+
+  resetSearch(){
+    this.setState({searchActive: false, searchResults: []});
   },
 
 	render() {
@@ -85,6 +116,46 @@ var Hubs = React.createClass({
     });
 
     var searchResults = '';
+    var searchCards = [];
+    if(this.state.searchActive){
+      if(this.state.searchResults.length > 0){
+
+
+        this.state.searchResults.map(function(hub){
+          var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+          searchCards.push({
+            id: hub.hub_id,
+            title: hub.name,
+            description: hub.description,
+            image_url: '/hub/' + hub.hub_id + '/images/logo',
+            background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
+            link: hubUrl,
+            type: 'hub'
+          });
+        });
+        searchResults = (
+          <div className="row">
+            <div className="col s12">
+            <h5>{this.__('Search Results')}</h5>
+            <div className="divider"></div>
+            <CardCarousel infinite={false} cards={searchCards}/>
+          </div>
+          </div>
+        );
+      }
+      else {
+        searchResults = (
+          <div className="row">
+            <div className="col s12">
+            <h5>{this.__('Search Results')}</h5>
+            <div className="divider"></div>
+            <p><b>{this.__('No Results Found')}</b></p>
+          </div>
+          </div>
+        );
+      }
+
+    }
 
 		return (
       <div>
@@ -93,7 +164,7 @@ var Hubs = React.createClass({
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
               <div className="row">
                 <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                  <SearchBox label={this.__('Search Hubs')} suggestionUrl="/api/hubs/search/suggestions" onSearch={this.handleSearch}/>
+                  <SearchBox label={this.__('Search Hubs')} suggestionUrl="/api/hubs/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
                 </div>
               </div>
             </div>

@@ -49,6 +49,16 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
+  app.get('/api/hubs/search', function(req, res) {
+    if (!req.query.q) {
+      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+    }
+    Hub.getSearchResults(req.query.q)
+      .then(function(result){
+        res.status(200).send({hubs: result});
+      }).catch(apiError(res, 500));
+  });
+
   app.post('/api/hub/create', function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");

@@ -69,7 +69,8 @@ module.exports = {
 
     getSearchSuggestions(input) {
       input = input.toLowerCase();
-      return knex.select('title').table('omh.stories').whereRaw("lower(title) like '%" + input + "%'");
+      return knex.select('title').table('omh.stories')
+      .where(knex.raw('lower(title)'), 'like', '%' + input + '%');
     },
 
     getStoryByID(story_id) {

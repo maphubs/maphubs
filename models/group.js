@@ -45,7 +45,8 @@ module.exports = {
 
     getSearchSuggestions(input) {
       input = input.toLowerCase();
-      return knex.select('name', 'group_id').table('omh.groups').whereRaw("lower(name) like '%" + input + "%'");
+      return knex.select('name', 'group_id').table('omh.groups')
+      .where(knex.raw('lower(name)'), 'like', '%' + input + '%');
     },
 
     getGroupByID(group_id) {
@@ -67,7 +68,7 @@ module.exports = {
       )
       .table('omh.groups')
       .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
-      .whereRaw("lower(name) like '%" + input + "%'");
+      .where(knex.raw('lower(name)'), 'like', '%' + input + '%');
     },
 
     getGroupsForUser(user_id) {

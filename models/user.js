@@ -245,7 +245,8 @@ module.exports = {
 
     getSearchSuggestions(input) {
       input = input.toLowerCase();
-      return knex.select('display_name', 'id').table('users').whereRaw("lower(display_name) like '%" + input + "%'");
+      return knex.select('display_name', 'id').table('users')
+      .where(knex.raw('lower(display_name)'), 'like', '%' + input + '%');
     }
 
 };

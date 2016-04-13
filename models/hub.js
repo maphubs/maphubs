@@ -56,7 +56,18 @@ module.exports = {
 
     getSearchSuggestions(input) {
       input = input.toLowerCase();
-      return knex.select('name').table('omh.hubs').whereRaw("lower(name) like '%" + input + "%'");
+      return knex.select('name')
+      .table('omh.hubs')
+      .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
+      .orderBy('name');
+    },
+
+    getSearchResults(input) {
+      input = input.toLowerCase();
+      return knex.select().table('omh.hubs')
+      .where('published', true)
+      .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
+      .orderBy('name');
     },
 
     getHubByID(hub_id) {
