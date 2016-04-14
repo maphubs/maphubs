@@ -133,7 +133,7 @@ module.exports = React.createClass({
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', height: '150px'}}>
             <img className="responsive-img" style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
-            <img className="valign" width="100" height="100" style={{position: 'relative',width: '100px', borderRadius: '25px', margin: 'auto'}}  src={this.props.image_url} />
+            <img className="valign" width="75" height="75" style={{position: 'relative',width: '75px', borderRadius: '15px', margin: 'auto'}}  src={this.props.image_url} />
           </div>
         );
       }else if(this.props.type == 'story' && !this.props.image_url){
