@@ -860,6 +860,7 @@ map.on('mousemove', function(e) {
   },
 
   toggleBaseMaps(){
+
     if(this.state.showBaseMaps){
       this.closeBaseMaps();
     }else{
@@ -953,7 +954,7 @@ map.on('mousemove', function(e) {
       var _this = this;
       baseMapBox = (
         <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
-            <ul className="collection with-header" style={{margin: 0, width: '100%', overflow: 'auto'}}>
+            <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
               <li className="collection-header">
                 <h6>{this.__('Base Maps')}</h6>
               </li>

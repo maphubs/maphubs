@@ -255,14 +255,13 @@ var UserMap = React.createClass({
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>
           {createMap}
-          <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
+          <nav className="hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
           <a href="#" ref="mapLayersPanel"
             data-activates="user-map-layers"
             style={{position: 'absolute',
               top: '10px',
               left: '10px',
               height:'30px',
-
               lineHeight: '30px',
               textAlign: 'center',
               width: '30px'}}
@@ -280,7 +279,10 @@ var UserMap = React.createClass({
                       fontSize:'25px'}}
               >info</i>
           </a>
-          <div className="side-nav" id="user-map-layers">
+          <div className="side-nav" id="user-map-layers"
+            style={{backgroundColor: 'rgba(0,0,0,0)',
+              height: 'auto', padding: 0, marginTop: '100px',
+              border: 'none', boxShadow: 'none'}}>
             {bottomLegend}
 
           </div>

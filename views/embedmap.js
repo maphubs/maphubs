@@ -76,30 +76,35 @@ var EmbedMap = React.createClass({
         height: size.height
       });
     });
-
-
   },
 
   componentDidMount(){
     $('.embed-tooltips').tooltip();
   },
 
+  componentDidUpdate(prevState){
+    if(this.state.interactive && !prevState.interactive){
+      $(".button-collapse").sideNav();
+    }
+  },
+
   startInteractive(){
     this.setState({interactive: true});
     $('.embed-tooltips').tooltip('remove');
+
   },
 
   render() {
     var map = '';
 
-    var legendHeight = 14 + (this.props.layers.length * 36);
+    //var legendHeight = 14 + (this.props.layers.length * 36);
     var mapHeight = this.state.height;
 
     var legend = '', bottomLegend = '';
 
     if(!this.props.isStatic || this.state.interactive){
       if(this.state.width < 600){
-        mapHeight = mapHeight - legendHeight;
+        //mapHeight = mapHeight - legendHeight;
         bottomLegend = (
           <Legend style={{
               width: '100%'
@@ -135,19 +140,56 @@ var EmbedMap = React.createClass({
       var bbox = this.props.map.position.bbox;
       var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
       map = (
-        <Map ref="map" interactive={this.state.interactive} fitBounds={bounds}
-          style={{width: '100%', height: mapHeight + 'px'}}
-          glStyle={this.props.map.style}
-          baseMap={this.props.map.basemap}
-          navPosition="top-right" disableScrollZoom>
-          {legend}
-        </Map>
+        <div>
+          <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative', backgroundColor: 'rgba(0,0,0,0)'}}>
+          <a href="#" ref="mapLayersPanel"
+            data-activates="user-map-layers"
+            style={{position: 'absolute',
+              top: '10px',
+              left: '10px',
+              height:'30px',
+
+              lineHeight: '30px',
+              textAlign: 'center',
+              width: '30px'}}
+            className="button-collapse">
+            <i className="material-icons z-depth-1"
+              style={{height:'30px',
+                      lineHeight: '30px',
+                      width: '30px',
+                      color: '#29ABE2',
+                      borderRadius: '4px',
+                      backgroundColor: 'white',
+                      borderColor: '#ddd',
+                      borderStyle: 'solid',
+                      borderWidth: '1px',
+                      fontSize:'25px'}}
+              >info</i>
+          </a>
+          <div className="side-nav" id="user-map-layers"
+            style={{backgroundColor: 'rgba(0,0,0,0)',
+              height: 'auto', padding: 0,
+              border: 'none', boxShadow: 'none'}}>
+            {bottomLegend}
+
+          </div>
+
+        </nav>
+          <Map ref="map" interactive={this.state.interactive} fitBounds={bounds}
+            style={{width: '100%', height: mapHeight + 'px'}}
+            glStyle={this.props.map.style}
+            baseMap={this.props.map.basemap}
+            navPosition="top-right" disableScrollZoom>
+            {legend}
+          </Map>
+        </div>
+
       );
     }
     return (
       <div className="embed-map">
+
         {map}
-        {bottomLegend}
       </div>
     );
   }
