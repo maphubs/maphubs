@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.2.4](https://github.com/maphubs/maphubs/tree/0.2.4) (2016-04-14)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.3...0.2.4)
+
+**Fixed bugs:**
+
+- story map layout on mobile [\#158](https://github.com/maphubs/maphubs/issues/158)
+- legends load before map have wrong positioning [\#157](https://github.com/maphubs/maphubs/issues/157)
+- unable to export data without tags [\#155](https://github.com/maphubs/maphubs/issues/155)
+
 ## [0.2.3](https://github.com/maphubs/maphubs/tree/0.2.3) (2016-04-13)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.2...0.2.3)
 
