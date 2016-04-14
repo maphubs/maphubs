@@ -255,7 +255,7 @@ var UserMap = React.createClass({
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>
           {createMap}
-          <nav className="hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
+          <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative'}}>
           <a href="#" ref="mapLayersPanel"
             data-activates="user-map-layers"
             style={{position: 'absolute',
