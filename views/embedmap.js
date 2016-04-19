@@ -102,6 +102,11 @@ var EmbedMap = React.createClass({
 
     var legend = '', bottomLegend = '';
 
+    var title = null;
+    if(this.props.map.title){
+      title = this.props.map.title;
+    }
+
     if(!this.props.isStatic || this.state.interactive){
       if(this.state.width < 600){
         //mapHeight = mapHeight - legendHeight;
@@ -109,6 +114,7 @@ var EmbedMap = React.createClass({
           <Legend style={{
               width: '100%'
             }}
+              title={title}
               layers={this.props.layers}/>
           );
       }else{
@@ -121,6 +127,7 @@ var EmbedMap = React.createClass({
               zIndex: '9999',
               width: '25%'
             }}
+              title={title}
               layers={this.props.layers}/>
         );
       }
