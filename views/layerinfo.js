@@ -246,13 +246,14 @@ var LayerInfo = React.createClass({
         }
       });
     }
+    this.setState({selectedRows: rows});
   },
 
   onViewSelectedFeature(){
-    if(!this.state.rows || this.state.rows.length == 0){
+    if(!this.state.selectedRows || this.state.selectedRows.length == 0){
       return;
     }
-    var row = this.state.rows[0];
+    var row = this.state.selectedRows[0];
     var idField = this.state.rowKey;
     var idVal = row[idField];
 
