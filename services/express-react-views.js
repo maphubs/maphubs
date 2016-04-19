@@ -188,29 +188,36 @@ function createEngine(engineOptions) {
           if(req.session && req.session.user){
             username = req.session.user.display_name;
           }
+
+          var t = function(value){
+            var translation = req.__(value);
+            translation = translation.replace(/'/g ,'&#39;');
+            return translation;
+          };
+          
           markup += `
           <script type="text/javascript">
               window.doorbellOptions = {
                   appKey: 'tXwVQFgJHc8ttf07IOySRYG2Ybf1jcpajE4aNOEIhnK7Aw1G3ZVgwl8uKT0s5vBc',
                   tags: 'new,` + version +`',
                   strings: {
-                       'feedback-button-text': '` + req.__('Feedback') + `',
+                       'feedback-button-text': '` + t('Feedback') + `',
 
-                       'title': '` + req.__('Feedback') + `',
+                       'title': '` + t('Feedback') + `',
                        'intro-text': '', // Empty by default
-                       'feedback-textarea-placeholder': '` + req.__('Send us your comments or suggestions...') + `',
+                       'feedback-textarea-placeholder': '` + t('Send us your comments or suggestions...') + `',
                        'feedback-label': '',
-                       'email-input-placeholder': '` + req.__('Your email address') + `',
+                       'email-input-placeholder': '` + t('Your email address') + `',
                        'email-label': '',
-                       'attach-a-screenshot': '` + req.__('Attach a screenshot') + `',
-                       'submit-button-text': '` + req.__('Send') + `',
+                       'attach-a-screenshot': '` + t('Attach a screenshot') + `',
+                       'submit-button-text': '` + t('Send') + `',
                        'add-attachments-label': '',
 
-                       'message-success' : '` + req.__('Feedback sent!') + `',
-                       'message-error-missing-email': '` + req.__('Your email address is required') + `',
-                       'message-error-invalid-email': '` + req.__('Invalid email address') + `',
-                       'message-error-missing-message': '` + req.__('Your message is required') + `',
-                       'message-error-message-too-short': '` + req.__('Your message is too short') + `'
+                       'message-success' : '` + t('Feedback sent!') + `',
+                       'message-error-missing-email': '` + t('Your email address is required') + `',
+                       'message-error-invalid-email': '` + t('Invalid email address') + `',
+                       'message-error-missing-message': '` + t('Your message is required') + `',
+                       'message-error-message-too-short': '` + t('Your message is too short') + `'
                    },
                   properties: {
                     username: '` + username + `',
