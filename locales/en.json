@@ -482,5 +482,8 @@
 	"Please enter your name to show in your profile and help other users find you.": "Please enter your name to show in your profile and help other users find you.",
 	"Description must be 1000 characters or less.": "Description must be 1000 characters or less.",
 	"Indicate Layer is a Draft": "Indicate Layer is a Draft",
-	"Name must be 300 characters or less.": "Name must be 300 characters or less."
+	"Name must be 300 characters or less.": "Name must be 300 characters or less.",
+	"Photo": "Photo",
+	"Settings": "Settings",
+	"Logout": "Logout"
 }
