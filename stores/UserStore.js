@@ -100,14 +100,15 @@ module.exports = Reflux.createStore({
     });
   },
 
-  signup(username, name, email, password, cb){
+  signup(username, name, email, password, joinmailinglist, cb){
     request.post('/api/user/signup')
     .type('json').accept('json')
     .send({
       username,
       name,
       email,
-      password
+      password,
+      joinmailinglist
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){

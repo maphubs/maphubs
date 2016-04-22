@@ -4,6 +4,7 @@ var Header = require('../components/header');
 
 var Formsy = require('formsy-react');
 var TextInput = require('../components/forms/textInput');
+var Toggle = require('../components/forms/toggle');
 
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
@@ -96,7 +97,7 @@ var Signup = React.createClass({
 
   onSave(model){
     var _this = this;
-    UserActions.signup(model.username, model.name, model.email, model.password, function(err){
+    UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err.error});
       }else {
@@ -182,6 +183,17 @@ var Signup = React.createClass({
                successText={this.__('Passwords Match')}
                type="password"
              required/>
+          </div>
+          <div className="row valign-wrapper" style={{marginTop: '5px'}}>
+            <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
+              <Toggle name="joinmailinglist"
+                labelOff={this.__('Decline')}
+                labelOn={this.__('Join the Maphubs Mailing List')}
+                  dataPosition="top" dataTooltip={this.__('Join the Maphubs Mailing List')}
+                  defaultChecked={true}
+                />
+            </div>
+
           </div>
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>

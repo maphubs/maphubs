@@ -93,6 +93,7 @@
     "lodash.shuffle": "4.0.0",
     "lodash.uniq": "4.2.0",
     "lodash.zipobject": "4.1.2",
+    "mailchimp-api-v3": "^1.0.0",
     "mailcomposer": "3.6.3",
     "mailgun-js": "0.7.7",
     "mapbox-gl": "maphubs/mapbox-gl-js#77b1772",

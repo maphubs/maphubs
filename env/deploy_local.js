@@ -13,6 +13,8 @@ module.exports = {
   MAPBOX_ACCESS_TOKEN: process.env.OMH_MAPBOX_TOKEN,
   MAILGUN_API_KEY: process.env.OMH_MAILGUN_API_KEY,
   LOGGLY_API_KEY: process.env.OMH_LOGGLY_API_KEY,
+  MAILCHIMP_LIST_ID: process.env.OMH_MAILCHIMP_LIST_ID,
+  MAILCHIMP_API_KEY: process.env.OMH_MAILCHIMP_API_KEY,
   ENV_TAG:  process.env.OMH_ENV_TAG,
   SESSION_SECRET:  process.env.OMH_SESSION_SECRET,
   database: {

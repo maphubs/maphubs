@@ -8,6 +8,11 @@ var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 var forceSSL = require('../services/force-ssl');
 var PasswordUtil = require('../services/password-util');
+var request = require('superagent-bluebird-promise');
+var local = require('../local');
+
+var Mailchimp = require('mailchimp-api-v3');
+var mailchimp = new Mailchimp(local.MAILCHIMP_API_KEY);
 
 module.exports = function(app) {
 
@@ -140,6 +145,7 @@ module.exports = function(app) {
       PasswordUtil.updatePassword(user_id, data.password, false, req.__)
       .then(function(){
 
+
         User.sendConfirmationEmail(user_id, req.__)
           .then(function(){
             User.sendNewUserAdminEmail(user_id)
@@ -156,7 +162,40 @@ module.exports = function(app) {
                     id: req.user.id,
                     display_name: req.user.display_name
                   };
-                  res.status(200).send({success:true});
+
+                  if(data.joinmailinglist){
+                    var firstName = '', lastName = '';
+                    if(data.name){
+                      var nameParts = data.name.split(' ');
+                      if (nameParts.length === 2){
+                        firstName = nameParts[0];
+                        lastName = nameParts[1];
+                      }else if(nameParts.length === 1){
+                        firstName = nameParts[0];
+                      }
+                    }
+
+                    mailchimp.post({
+                        path: '/lists/' + local.MAILCHIMP_LIST_ID + '/members',
+                        body: {
+                          "email_address": data.email,
+                          "status": "subscribed",
+                          "merge_fields": {
+                              "FNAME": firstName,
+                              "LNAME": lastName
+                          }
+                        }
+                      }, function (err) {
+                        if(err){
+                          log.error(err);
+                        }
+                        res.status(200).send({success:true});
+                      });
+
+                  }else{
+                    res.status(200).send({success:true});
+                  }
+
                 });
               })(req, res, next);
 

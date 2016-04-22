@@ -485,5 +485,9 @@
 	"Name must be 300 characters or less.": "Name must be 300 characters or less.",
 	"Photo": "Photo",
 	"Settings": "Settings",
-	"Logout": "Logout"
+	"Logout": "Logout",
+	"Decline": "Decline",
+	"Join Maphubs Mailing List": "Join Maphubs Mailing List",
+	"Join the Maphubs Mailing List": "Join the Maphubs Mailing List",
+	"Join": "Join"
 }

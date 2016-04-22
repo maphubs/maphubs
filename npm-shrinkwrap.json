@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "@fengyuanchen/tooltip": {
       "version": "0.0.2",
@@ -5709,6 +5709,11 @@
       "version": "2.7.3",
       "from": "lru-cache@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.7.3.tgz"
+    },
+    "mailchimp-api-v3": {
+      "version": "1.0.0",
+      "from": "mailchimp-api-v3@latest",
+      "resolved": "https://registry.npmjs.org/mailchimp-api-v3/-/mailchimp-api-v3-1.0.0.tgz"
     },
     "mailcomposer": {
       "version": "3.6.3",
