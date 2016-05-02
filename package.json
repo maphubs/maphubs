@@ -137,6 +137,7 @@
     "request": "2.69.0",
     "shapefile-fairy": "openmaphub/shapefile-fairy",
     "shp2json": "openmaphub/shp2json",
+    "sitemap": "^1.6.0",
     "slick-carousel": "1.5.9",
     "slug": "0.9.1",
     "sphericalmercator": "1.0.4",

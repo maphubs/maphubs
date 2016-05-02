@@ -7,7 +7,10 @@ var debug = require ('../services/debug')('model/hub');
 module.exports = {
 
   getAllHubs() {
-      return knex.select().table('omh.hubs').where('published', true);
+      return knex.select(
+        'omh.hubs.*',
+         knex.raw('timezone(\'UTC\', omh.hubs.updated_at) as updated_at_withTZ')
+    ).table('omh.hubs').where('published', true);
     },
 
   getRecentHubs(number = 15){

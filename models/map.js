@@ -45,6 +45,19 @@ module.exports = {
       });
     },
 
+    getAllMaps(){
+      return knex.select('omh.maps.map_id', 'omh.maps.title',
+        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
+        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        'public.users.display_name as username')
+        .from('omh.maps')
+        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .whereNotNull('omh.user_maps.map_id')
+        .orderBy('omh.maps.updated_at', 'desc');
+    },
+
     getFeaturedMaps(number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
