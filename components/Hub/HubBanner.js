@@ -102,12 +102,19 @@ var HubBanner = React.createClass({
     }
     var description = '', title = '', tagline = '',
     logoEditButton = '', bannerEditButton = '', imageCrop = '';
+
+    var nameVal = null;
+    if(this.state.hub.name) nameVal = this.state.hub.name.replace('&nbsp;', '');
+    var taglineVal = null;
+    if(this.state.hub.tagline) taglineVal = this.state.hub.tagline.replace('&nbsp;', '');
+    var descriptionVal = null;
+    if (this.state.hub.description) descriptionVal = this.state.hub.description.replace('&nbsp;', '');
     if(this.props.editing){
       title = (
         <div className="white-text text-shadow hub-title">
           <Editor
            tag="h2"
-           text={this.state.hub.name}
+           text={nameVal}
            onChange={this.handleTitleChange}
            options={{toolbar: false,
              placeholder: {text: this.__('Enter a Title for Your Hub')},
@@ -119,7 +126,7 @@ var HubBanner = React.createClass({
         <div className="white-text text-shadow hub-tagline">
           <Editor
            tag="p"
-           text={this.state.hub.tagline}
+           text={taglineVal}
            onChange={this.handleTaglineChange}
            options={{toolbar: false,
              placeholder: {text: this.__('Enter a Tagline or Subheading for Your Hub')},
@@ -133,7 +140,7 @@ var HubBanner = React.createClass({
             <div className="flow-text">
               <Editor
                tag="p"
-               text={this.state.hub.description}
+               text={descriptionVal}
                onChange={this.handleDescriptionChange}
                options={{toolbar: false,
                  placeholder: {text: this.__('Enter a Description or Intro for Your Hub')},
@@ -168,16 +175,16 @@ var HubBanner = React.createClass({
 
     }else{
       title = (
-        <h2 className="white-text text-shadow no-margin">{this.state.hub.name}</h2>
+        <h2 className="white-text text-shadow no-margin">{nameVal}</h2>
       );
 
       tagline = (
-        <p className="white-text text-shadow no-margin">{this.state.hub.tagline}</p>
+        <p className="white-text text-shadow no-margin">{taglineVal}</p>
       );
       description = (
         <div className="container">
           <div className="row">
-            <p className="flow-text hub-description">{this.state.hub.description}</p>
+            <p className="flow-text hub-description">{descriptionVal}</p>
           </div>
         </div>
       );

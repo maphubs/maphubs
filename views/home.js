@@ -108,10 +108,11 @@ var Home = React.createClass({
   },
 
   getHubCard(hub){
+    var title = hub.name.replace('&nbsp;', '');
     var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
     return {
       id: hub.hub_id,
-      title: hub.name,
+      title,
       description: hub.description,
       image_url: '/hub/' + hub.hub_id + '/images/logo',
       background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',

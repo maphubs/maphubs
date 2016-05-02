@@ -702,6 +702,10 @@ module.exports = function(app) {
       Hub.allowedToModify(data.hub_id, session_user_id)
       .then(function(allowed){
         if(allowed){
+          if(data.name) data.name = data.name.replace('&nbsp;', '');
+          if(data.tagline) data.tagline = data.tagline.replace('&nbsp;', '');
+          if(data.description) data.description = data.description.replace('&nbsp;', '');
+
           Hub.updateHub(data.hub_id, data.name, data.description, data.tagline, data.published, data.resources, data.about, session_user_id)
             .then(function(result) {
               if (result && result == 1) {
