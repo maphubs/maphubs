@@ -80,7 +80,7 @@ var Home = React.createClass({
   getLayerCard(layer){
     var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
     return {
-      id: layer.layer_id,
+      id: layer.layer_id.toString(),
       title: layer.name,
       description: layer.description,
       image_url,
@@ -123,7 +123,7 @@ var Home = React.createClass({
   getMapCard(map){
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
-      id: map.map_id,
+      id: map.map_id.toString(),
       title: map.title ? map.title : '',
       image_url,
       link: '/user/' + map.username + '/map/' + map.map_id,
@@ -150,7 +150,7 @@ var Home = React.createClass({
     }
 
     return {
-      id: story.story_id,
+      id: story.story_id.toString(),
       title,
       image_url,
       link: story_url,
