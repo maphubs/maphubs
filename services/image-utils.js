@@ -8,6 +8,33 @@ var easyimg = require('easyimage');
 
 module.exports = {
 
+  processImage(image, req, res){
+    if(!image){
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': 0
+      });
+      res.end('');
+      return;
+    }
+    var dataArr = image.split(',');
+    var dataInfoArr = dataArr[0].split(':')[1].split(';');
+    var dataType = dataInfoArr[0];
+    var data = dataArr[1];
+    var img = new Buffer(data, 'base64');
+    var hash = require('crypto').createHash('md5').update(img).digest("hex");
+    var match = req.get('If-None-Match');
+    if(hash == match){
+      res.status(304).send();
+    }else{
+      res.writeHead(200, {
+        'Content-Type': dataType,
+        'Content-Length': img.length,
+        'ETag': hash
+      });
+      res.end(img);
+    }
+  },
 
   decodeBase64Image(dataString) {
   var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
