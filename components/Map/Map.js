@@ -29,7 +29,7 @@ var mapboxgl ={};
 if (typeof window === 'undefined') {
    mapboxgl = require("mapbox-gl");
 } else {
-   mapboxgl = require("../../node_modules/mapbox-gl/dist/mapbox-gl-dev");
+   mapboxgl = require("../../node_modules/mapbox-gl/dist/mapbox-gl");
 }
 
 var Map = React.createClass({
