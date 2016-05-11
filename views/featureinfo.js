@@ -98,8 +98,12 @@ var FeatureInfo = React.createClass({
           {
             message: _this.__('Image Saved'),
             position: 'bottomright',
-            dismissAfter: 3000
+            dismissAfter: 3000,
+            onDismiss(){
+              location.reload();
+            }
         });
+
       }
     });
 

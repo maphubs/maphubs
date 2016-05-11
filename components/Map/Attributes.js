@@ -10,8 +10,8 @@ var Attributes = React.createClass({
 
 
   render() {
-
     var _this = this;
+
 
     var spacer = (<div style={{height: '50px'}}></div>);
     if (this.props.multipleSelected){
@@ -20,9 +20,16 @@ var Attributes = React.createClass({
 
     var display = '';
     var photo = '';
+    var photoUrl = null;
     if(_this.props.attributes.photo_url){
+      photoUrl = _this.props.attributes.photo_url;
+    }else if(_this.props.attributes['Photo URL']){
+      photoUrl = _this.props.attributes['Photo URL'];
+    }
+
+    if(photoUrl){
       photo = (
-        <img src={_this.props.attributes.photo_url} style={{width: '180px', height: 'auto'}} alt="feature photo"/>
+        <img src={photoUrl} style={{width: '180px', height: 'auto'}} alt="feature photo"/>
       );
     }
 
