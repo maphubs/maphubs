@@ -20,6 +20,7 @@ module.exports = {
     layerinfo: "./client/layerinfo",
     layermap: "./client/layermap",
     layeradmin: "./client/layeradmin",
+    addphotopoint: "./client/addphotopoint",
     createlayer: "./client/createlayer",
     featureinfo: "./client/featureinfo",
     stories: "./client/stories",

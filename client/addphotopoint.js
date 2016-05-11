@@ -1,23 +1,27 @@
 const React  = require('react');
 const ReactDOM = require('react-dom');
-
+if (!global.Intl) {
+ require('intl');
+ require('intl/locale-data/jsonp/en.js');
+ require('intl/locale-data/jsonp/es.js');
+ require('intl/locale-data/jsonp/fr.js');
+}
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
-var FeatureInfo = require('../views/featureinfo');
+var AddPhotoPoint = require('../views/addphotopoint');
 
 require('../css/app.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
-require('medium-editor/dist/css/medium-editor.css');
-require('medium-editor/dist/css/themes/flat.css');
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <FeatureInfo feature={data.feature} notes={data.notes} photo={data.photo} canEdit={data.canEdit} locale={data.locale} version={data.version}/>,
+    <AddPhotoPoint layer={data.layer} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
 });

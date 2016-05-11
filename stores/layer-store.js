@@ -326,5 +326,27 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
+  },
+
+  addPhotoPoint(data, info, cb){
+    debug('add layer photo point');
+    var _this = this;
+
+    request.post('/api/layer/addPhotoPoint')
+    .type('json').accept('json')
+    .send({
+      layer_id: _this.state.layer.layer_id,
+      image: data,
+      info
+    })
+    .end(function(err, res){
+       checkClientError(res, err, cb, function(cb){
+          var feature = _this.state.feature;
+          feature.hasImage = true;
+          _this.setState({feature});
+          _this.trigger(_this.state);
+          cb();
+      });
+    });
   }
 });

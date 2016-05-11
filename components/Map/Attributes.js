@@ -19,10 +19,17 @@ var Attributes = React.createClass({
     }
 
     var display = '';
+    var photo = '';
+    if(_this.props.attributes.photo_url){
+      photo = (
+        <img src={_this.props.attributes.photo_url} style={{width: '180px', height: 'auto'}} alt="feature photo"/>
+      );
+    }
 
     if(_this.props.attributes && Object.keys(_this.props.attributes).length > 0){
        display = (
            <ul className="collection">
+             {photo}
              {
                Object.keys(_this.props.attributes).map(function (key) {
                     var val = _this.props.attributes[key];

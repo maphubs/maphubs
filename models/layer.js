@@ -370,6 +370,14 @@ module.exports = {
           }).where({layer_id});
     },
 
+    setUpdated(layer_id, user_id) {
+        return knex('omh.layers')
+          .update({
+              updated_by_user_id: user_id,
+              last_updated: knex.raw('now()')
+          }).where({layer_id});
+    },
+
     saveDataSettings(layer_id, is_empty, empty_data_type, is_external, external_layer_type, external_layer_config, user_id){
       if(is_external){
       return knex('omh.layers').where({
