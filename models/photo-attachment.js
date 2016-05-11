@@ -103,25 +103,38 @@ module.exports = {
 
   addPhotoUrlPreset(layer, user_id, trx){
     var presets = layer.presets;
+
+
     var maxId = 0;
+    var alreadyPresent = false;
     presets.forEach(function(preset){
+      if(preset.tag === 'photo_url'){
+        alreadyPresent = true;
+      }
       if(preset.id){
         if(preset.id > maxId){
           maxId = preset.id;
         }
       }
     });
-    presets.push({
-      tag: 'photo_url',
-      label: 'Photo URL',
-      isRequired: false,
-      type: 'text',
-      id: maxId + 1
-    });
-    return Layer.savePresets(layer.layer_id, presets, user_id, false, trx)
-    .then(function(){
-      return presets;
-    });
+
+    if(alreadyPresent){
+      return new Promise(function(fulfill) {
+        fulfill(presets);
+      });
+    }else{
+      presets.push({
+        tag: 'photo_url',
+        label: 'Photo URL',
+        isRequired: false,
+        type: 'text',
+        id: maxId + 1
+      });
+      return Layer.savePresets(layer.layer_id, presets, user_id, false, trx)
+      .then(function(){
+        return presets;
+      });
+    }
   }
 
 };
