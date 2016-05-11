@@ -10,6 +10,9 @@ module.exports = function(app) {
   //User login and account endpoints
 
   app.get('/login', forceSSL, function(req, res) {
+    if(req.query.returnTo) {
+      req.session.returnTo = req.query.returnTo;
+    }
     res.render('login', {
       title: 'Login - MapHubs',
       props: {
