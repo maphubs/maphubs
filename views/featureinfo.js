@@ -246,7 +246,7 @@ var FeatureInfo = React.createClass({
               <Map ref="map" className="map-absolute map-with-header width-50" fitBounds={this.props.feature.geojson.bbox} data={this.props.feature.geojson} />
             </div>
           </div>
-          <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={false} resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
+          <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
         </main>
 			</div>
 		);
