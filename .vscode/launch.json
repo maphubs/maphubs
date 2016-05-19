@@ -21,7 +21,7 @@
 			// Optional arguments passed to the runtime executable.
 			"runtimeArgs": [],
 			// Environment variables passed to the program.
-			"env": { "DEBUG": "*,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:*" },
+			"env": { "NODE_ENV": "development", "DEBUG": "*,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:*" },
 			// Use JavaScript source maps (if they exist).
 			"sourceMaps": true
 		},
