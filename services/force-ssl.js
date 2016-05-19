@@ -6,5 +6,5 @@ if(process.env.NODE_ENV == 'production'){
   //return an empty middleware call
   module.exports = function(req, res, next){
     next();
-  }
+  };
 }

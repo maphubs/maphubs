@@ -18,7 +18,7 @@ var CardCarousel = React.createClass({
   getDefaultProps() {
     return {
       cards: []
-    }
+    };
   },
 
   render() {
@@ -49,7 +49,7 @@ var CardCarousel = React.createClass({
                <div key={card.id}>
                  <Card {...card} />
               </div>
-              )
+            );
            })}
          </Slider>
       </div>
