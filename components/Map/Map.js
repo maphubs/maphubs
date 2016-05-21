@@ -66,14 +66,13 @@ var Map = React.createClass({
     enableRotation: React.PropTypes.bool,
     navPosition:  React.PropTypes.string,
     baseMap: React.PropTypes.string,
-    onChangeBaseMap: React.PropTypes.func
+    onChangeBaseMap: React.PropTypes.func,
+    insetMap: React.PropTypes.bool
   },
 
   contextTypes: {
     router: React.PropTypes.func
   },
-
-
 
   getDefaultProps() {
     return {
@@ -86,7 +85,8 @@ var Map = React.createClass({
       showPlayButton: true,
       navPosition: 'top-right',
       baseMap: 'default',
-      showLogo: true
+      showLogo: true,
+      insetMap: true
     };
   },
 
@@ -279,6 +279,14 @@ var Map = React.createClass({
 
   },
 
+  reloadInset(mapName){
+    debug("reloading inset map with basemap: " + mapName);
+    var baseMap = this.getBaseMapFromName(mapName);
+    if(this.props.insetMap && this.insetMap){
+      this.insetMap.setStyle(baseMap);
+    }
+  },
+
   componentWillMount(){
     //disable interactive layers in the Mapbox basemap
     mapboxLight.layers.forEach(function(layer){
@@ -307,6 +315,41 @@ var Map = React.createClass({
 
     $(this.refs.basemapButton).show();
     $('.base-map-tooltip').tooltip();
+  },
+
+
+  getGeoJSONFromBounds(bounds){
+    var v1 = bounds.getNorthWest().toArray();
+    var v2 = bounds.getNorthEast().toArray();
+    var v3 = bounds.getSouthEast().toArray();
+    var v4 = bounds.getSouthWest().toArray();
+    var v5 = v1;
+    return {
+      type: 'FeatureCollection',
+      features: [{
+          type: 'Feature',
+          properties: {name: 'bounds'},
+          geometry: {
+              type: "Polygon",
+              coordinates: [
+                [ v1,v2,v3,v4,v5 ]
+              ]
+            }
+      }]
+    };
+  },
+
+  updateInsetGeomFromBounds(bounds){
+    var insetGeoJSONData = this.state.insetGeoJSONData;
+    if(insetGeoJSONData){
+      try{
+        insetGeoJSONData.setData(this.getGeoJSONFromBounds(bounds));
+        this.setState({insetGeoJSONData});
+        this.insetMap.fitBounds(bounds, {maxZoom: 1.5, padding: 10});
+      }catch(err){
+          debug(err);
+      }
+    }
   },
 
   addMapData(map, glStyle, geoJSON, cb){
@@ -422,14 +465,18 @@ var Map = React.createClass({
       if(!this.props.enableRotation){
         dragRotate = true;
       }
-  var map = new mapboxgl.Map({
-    container: this.state.id,
-    style: baseMap,
-    zoom: 0,
-    interactive: this.state.interactive,
-    dragRotate,
-    center: [0,0]
-  });
+
+      if (!mapboxgl.supported()) {
+      alert('Your browser does not support Mapbox GL');
+      }
+    var map = new mapboxgl.Map({
+      container: this.state.id,
+      style: baseMap,
+      zoom: 0,
+      interactive: this.state.interactive,
+      dragRotate,
+      center: [0,0]
+    });
 
   map.on('style.load', function() {
     debug('(' + _this.state.id + ') ' +'style.load');
@@ -462,6 +509,44 @@ var Map = React.createClass({
       debug('(' + _this.state.id + ') ' +e.type);
     });
 
+    if(_this.props.insetMap && !_this.insetMap){
+      var center = map.getCenter();
+      var insetMap =  new mapboxgl.Map({
+        container: _this.state.id + '_inset',
+        style: baseMap,
+        zoom: 0,
+        interactive: false,
+        center
+      });
+
+      insetMap.on('style.load', function() {
+        var bounds = map.getBounds();
+        //create geojson from bounds
+        var geoJSON = _this.getGeoJSONFromBounds(bounds);
+        var insetGeoJSONData = new mapboxgl.GeoJSONSource({data: geoJSON});
+        insetMap.addSource("inset-bounds", insetGeoJSONData);
+        insetMap.addLayer({
+            'id': 'bounds',
+            'type': 'fill',
+            'source': 'inset-bounds',
+            'layout': {},
+            'paint': {
+                'fill-color': 'rgb(244, 118, 144)',
+                'fill-opacity': 0.5
+            }
+        });
+        _this.setState({insetGeoJSONData});
+        insetMap.fitBounds(bounds, {maxZoom: 1.5, padding: 10});
+      });
+      _this.insetMap = insetMap;
+
+      map.on('moveend', function(){
+        if(_this.props.insetMap){
+          _this.updateInsetGeomFromBounds(map.getBounds());
+        }
+      });
+    }
+
   });//end style.load
 
 
@@ -487,10 +572,14 @@ map.on('mousemove', function(e) {
                  _this.clearSelection();
              }
       });
+
+
     }, 200).bind(this);
     debounced();
 
  });
+
+
 
  map.on('click', function(e) {
    if(_this.state.selected){
@@ -906,6 +995,7 @@ map.on('mousemove', function(e) {
     var bounds = this.map.getBounds();
     this.setState({restoreBounds: bounds, baseMap: mapName});
     this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+    this.reloadInset(mapName);
     if(this.props.onChangeBaseMap){
       this.props.onChangeBaseMap(mapName);
     }
@@ -1017,10 +1107,23 @@ map.on('mousemove', function(e) {
       );
     }
 
+    var inset = '';
+    if(this.props.insetMap){
+      inset = (
+        <div id={this.state.id + '_inset'} className="map z-depth-1"
+          style={{
+            position: 'absolute', bottom: '30px', left: '5px',
+            minHeight: '50px', maxHeight: '150px', minWidth: '50px', maxWidth: '150px',
+            height: '30vw', width: '30vw',
+            border: '0.5px solid rgba(222,222,222,50)', zIndex: 9999}}></div>
+      );
+    }
+
 
     return (
       <div  className={this.props.className} style={style}>
         <div id={this.state.id} className={className} style={{width:'100%', height:'100%'}}>
+          {inset}
           {baseMapButton}
           {baseMapBox}
           {featureBox}
