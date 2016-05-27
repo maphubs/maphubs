@@ -314,6 +314,9 @@ var Map = React.createClass({
     this.createMap();
 
     $(this.refs.basemapButton).show();
+    if(this.refs.insetMap){
+      $(this.refs.insetMap).show();
+    }
     $('.base-map-tooltip').tooltip();
   },
 
@@ -1110,12 +1113,12 @@ map.on('mousemove', function(e) {
     var inset = '';
     if(this.props.insetMap){
       inset = (
-        <div id={this.state.id + '_inset'} className="map z-depth-1"
+        <div id={this.state.id + '_inset'} ref="insetMap" className="map z-depth-1"
           style={{
             position: 'absolute', bottom: '30px', left: '5px',
             minHeight: '50px', maxHeight: '150px', minWidth: '50px', maxWidth: '150px',
-            height: '30vw', width: '30vw',
-            border: '0.5px solid rgba(222,222,222,50)', zIndex: 9999}}></div>
+            height: '30vw', width: '30vw', display: 'none',
+            border: '0.5px solid rgba(222,222,222,50)', zIndex: 1}}></div>
       );
     }
 
