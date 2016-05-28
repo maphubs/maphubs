@@ -1,3 +1,4 @@
+require('newrelic');
 var express = require('express'),
   load = require('express-load'),
   passport = require('passport'),
