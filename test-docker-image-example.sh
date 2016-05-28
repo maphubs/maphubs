@@ -25,6 +25,7 @@ docker run --name maphubs-web -p 4000:4000 -d \
 -e OMH_NEWRELIC_APP_NAME=maphubs-dev-example \
 -e OMH_NEWRELIC_LICENSE=1234 \
 -e OMH_NEWRELIC_LOG_LEVEL=info \
+-e NODE_MEM_SIZE=1024 \
 -e ENV_TAG=local \
 -e OMH_WRITEDEBUGDATA=false \
 -e ID_AUTH_URL=http://192.168.59.100:4000 \

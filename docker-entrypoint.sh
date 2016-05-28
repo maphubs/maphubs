@@ -27,4 +27,4 @@ node node_modules/webpack/bin/webpack.js --config webpack.config.min.js
 node node_modules/knex/lib/bin/cli.js migrate:latest --env production
 
 #start server
-pm2 start app.js --name maphubs --no-daemon
+pm2 start app.js --name maphubs --node-args="--max-old-space-size=$NODE_MEM_SIZE" --no-daemon
