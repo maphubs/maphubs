@@ -25,13 +25,15 @@ var StaticMap = React.createClass({
     basemap: React.PropTypes.string.isRequired,
     showLegend: React.PropTypes.bool,
     showLogo: React.PropTypes.bool,
+    insetMap:  React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
   },
 
   getDefaultProps() {
     return {
       showLegend: true,
-      showLogo: true
+      showLogo: true,
+      insetMap: true
     };
   },
 
@@ -110,7 +112,7 @@ var StaticMap = React.createClass({
     var bbox = this.props.position.bbox;
     var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
     map = (
-      <Map ref="map" interactive={false} showPlayButton={false} fitBounds={bounds}
+      <Map ref="map" interactive={false} showPlayButton={false} fitBounds={bounds} insetMap={this.props.insetMap}
         showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}
         glStyle={this.props.style} baseMap={this.props.basemap} navPosition="top-right">
         {legend}

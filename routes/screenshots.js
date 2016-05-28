@@ -25,6 +25,7 @@ module.exports = function(app) {
              basemap: 'default',
              style: layer.style,
              showLegend: false,
+             insetMap: false,
              showLogo: false
            }, req
          });
@@ -79,6 +80,7 @@ module.exports = function(app) {
              basemap: map.basemap,
              style: map.style,
              showLegend: false,
+             insetMap: false,
              showLogo: false
            }, req
          });
