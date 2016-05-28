@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <StaticMap name={data.name} layers={data.layers}
+    <StaticMap name={data.name} layers={data.layers} insetMap={data.insetMap}
       style={data.style} position={data.position} basemap={data.basemap}
       showLegend={data.showLegend} showLogo={data.showLogo} locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
