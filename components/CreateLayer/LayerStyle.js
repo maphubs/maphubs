@@ -162,7 +162,7 @@ var LayerStyle = React.createClass({
       && this.state.showMap){
         map = (
           <div>
-            <Map ref="map" id="layer-style-map" className="z-depth-2" style={{height: '300px', width: '400px', margin: 'auto'}}
+            <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
               glStyle={this.state.layer.style}
               fitBounds={mapExtent}
               />
