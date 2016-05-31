@@ -1,5 +1,25 @@
 # Change Log
 
+## [0.2.5](https://github.com/maphubs/maphubs/tree/0.2.5) (2016-05-28)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.4...0.2.5)
+
+**Implemented enhancements:**
+
+- add inset map to show global position [\#177](https://github.com/maphubs/maphubs/issues/177)
+- add sitemap.xml/robots.txt [\#166](https://github.com/maphubs/maphubs/issues/166)
+- reduce size of hub card logo image [\#159](https://github.com/maphubs/maphubs/issues/159)
+- auto signup for mailing list on user signup [\#145](https://github.com/maphubs/maphubs/issues/145)
+
+**Fixed bugs:**
+
+- inset map shows on top of dialog popups [\#178](https://github.com/maphubs/maphubs/issues/178)
+- login doesn't redirect to previous page [\#168](https://github.com/maphubs/maphubs/issues/168)
+- embed maps not showing map title [\#163](https://github.com/maphubs/maphubs/issues/163)
+- feedback button not displaying when viewing site in french [\#162](https://github.com/maphubs/maphubs/issues/162)
+- layer view selected feature always going to first feature [\#161](https://github.com/maphubs/maphubs/issues/161)
+- hub map edit button doesn't show [\#144](https://github.com/maphubs/maphubs/issues/144)
+- html encoded trailing spaces in hub content [\#79](https://github.com/maphubs/maphubs/issues/79)
+
 ## [0.2.4](https://github.com/maphubs/maphubs/tree/0.2.4) (2016-04-14)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.3...0.2.4)
 
