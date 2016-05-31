@@ -37,7 +37,7 @@ module.exports = {
   setWayTag(way_id, k, v, trx=null){
     let db = knex;
     if(trx){db = trx;}
-    return this.getWayTag(way_id, trx)
+    return this.getWayTag(way_id, k,trx)
     .then(function(previousTag){
       if(previousTag && previousTag.length > 0){
         return db('current_way_tags').update({v}).where({way_id, k});
