@@ -3,15 +3,15 @@ FROM ubuntu:trusty
 ENV DEBIAN_FRONTEND noninteractive
 
 #MapHubs Web Server
-MAINTAINER Kristofor Carle - Moabi <kristoforcarle@moabi.org>
+MAINTAINER Kristofor Carle - MapHubs <kris@maphubs.com>
 
 #update and install basics
-RUN apt-get update && apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick
+RUN apt-get update && apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick libpq-dev
 
 #install node, npm, pm2
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash
 RUN apt-get install -y nodejs
-RUN npm install -g npm@3.8.0 && npm install pm2 -g
+RUN npm install -g npm@3.9.2 && npm install pm2 -g
 
 #create non-root user
 RUN useradd -s /bin/bash -m -d /home/maphubs -c "maphubs" maphubs && chown -R maphubs:maphubs /home/maphubs
