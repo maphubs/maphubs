@@ -61,6 +61,7 @@ module.exports = {
       input = input.toLowerCase();
       return knex.select('name')
       .table('omh.hubs')
+      .where('published', true)
       .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
       .orderBy('name');
     },
