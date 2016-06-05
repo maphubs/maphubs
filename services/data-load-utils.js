@@ -117,6 +117,7 @@ module.exports = {
         Object.keys(feature.properties).map(function (key) {
           //remove chars that can't be in database fields (used in PostGIS views)
           key = key.replace("-", "_");
+          key = key.replace("'", "''");
           //rename osm_id so it doesn't conflict
           key = key.replace("osm_id", "osm_id_orig");
 
