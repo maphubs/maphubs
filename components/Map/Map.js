@@ -105,13 +105,7 @@ var Map = React.createClass({
     var glStyle = null;
     if(this.props.glStyle){
        glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
-       var interactiveLayers = [];
-
-       glStyle.layers.forEach(function(layer){
-         if(layer.interactive && layer.id.startsWith('omh')){
-           interactiveLayers.push(layer.id);
-         }
-       });
+       var interactiveLayers = this.getInteractiveLayers(glStyle);
     }
     return {
       id: this.props.id ? this.props.id : 'map',
@@ -295,6 +289,21 @@ var Map = React.createClass({
     }
   },
 
+  getInteractiveLayers(glStyle){
+    var interactiveLayers = [];
+    if(glStyle){
+      glStyle.layers.forEach(function(layer){
+        if(layer.interactive &&
+          (layer.id.startsWith('omh')
+          || layer.id.startsWith('osm'))
+        ){
+          interactiveLayers.push(layer.id);
+        }
+      });
+    }
+    return interactiveLayers;
+  },
+
   componentWillMount(){
     //disable interactive layers in the Mapbox basemap
     mapboxLight.layers.forEach(function(layer){
@@ -318,13 +327,7 @@ var Map = React.createClass({
     });
 
     if(this.state.glStyle){
-      var interactiveLayers = [];
-      this.state.glStyle.layers.forEach(function(layer){
-        if(layer.interactive && layer.id.startsWith('omh')){
-          interactiveLayers.push(layer.id);
-        }
-      });
-
+      var interactiveLayers = this.getInteractiveLayers(this.state.glStyle);
       this.setState({interactiveLayers});
     }
   },
@@ -607,20 +610,17 @@ map.on('mousemove', function(e) {
    else if(_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
      _this.setState({selected:true});
    }else{
-     map.featuresAt(e.point, {
-       radius: 5,
-       includeGeometry: false
-     }, function(err, features) {
-         if (err) throw err;
-         if (!err && features.length) {
-                _this.setSelectionFilter(features);
-                _this.setState({selectedFeatures:features, selected:true});
-                map.addClass('selected');
 
-            } else if(_this.state.selectedFeatures != null) {
-                _this.clearSelection();
-            }
-     });
+     var features = map.queryRenderedFeatures(e.point, {layers: _this.state.interactiveLayers});
+
+     if (features.length) {
+      _this.setSelectionFilter(features);
+      _this.setState({selectedFeatures:features, selected:true});
+      map.addClass('selected');
+      } else if(_this.state.selectedFeatures != null) {
+          _this.clearSelection();
+      }
+
    }
   });
 
@@ -746,13 +746,7 @@ map.on('mousemove', function(e) {
           let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
           this.reload(this.state.glStyle, styleCopy, baseMap);
 
-          var interactiveLayers = [];
-
-          styleCopy.layers.forEach(function(layer){
-            if(layer.interactive && layer.id.startsWith('omh')){
-              interactiveLayers.push(layer.id);
-            }
-          });
+          var interactiveLayers = this.getInteractiveLayers(styleCopy);
 
           this.setState({glStyle: styleCopy, interactiveLayers});//wait to change state style until after reloaded
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
@@ -824,13 +818,7 @@ map.on('mousemove', function(e) {
         let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
         this.reload(this.state.glStyle, styleCopy);
 
-        interactiveLayers = [];
-
-        styleCopy.layers.forEach(function(layer){
-          if(layer.interactive && layer.id.startsWith('omh')){
-            interactiveLayers.push(layer.id);
-          }
-        });
+        interactiveLayers = this.getInteractiveLayers(styleCopy);
 
         this.setState({glStyle: styleCopy, allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
 
@@ -885,13 +873,8 @@ map.on('mousemove', function(e) {
       delete glStyle.sources; //ignore the tilejson source
       this.addLayers(map, glStyle);
 
-      var interactiveLayers = [];
+      var interactiveLayers = this.getInteractiveLayers(glStyle);
 
-      glStyle.layers.forEach(function(layer){
-        if(layer.interactive && layer.id.startsWith('omh')){
-          interactiveLayers.push(layer.id);
-        }
-      });
       this.setState({geoJSONData, interactiveLayers});
       this.zoomToData(data);
     } else {
