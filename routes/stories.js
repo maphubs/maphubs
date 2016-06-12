@@ -150,12 +150,22 @@ module.exports = function(app) {
     if (!user_id) {
           Story.getStoryByID(story_id)
           .then(function(story) {
+             var imageUrl = '';
+            if(story.firstimage){
+              imageUrl = story.firstimage;
+            }
             res.render('userstory', {
               title: story.title,
               addthis: true,
               props: {
                 story, username, canEdit: false
-              }, req
+              },
+              twitterCard: {
+                title: story.title,
+                description: story.firstline,
+                image: imageUrl
+              },
+              req
             });
           }).catch(nextError(next));
     } else {
@@ -167,11 +177,20 @@ module.exports = function(app) {
         }
         Story.getStoryByID(story_id)
         .then(function(story) {
+           var imageUrl = '';
+            if(story.firstimage){
+              imageUrl = story.firstimage;
+            }
           res.render('userstory', {
             title: story.title,
             addthis: true,
             props: {
               story, username, canEdit
+            },
+            twitterCard: {
+                title: story.title,
+                description: story.firstline,
+                image: imageUrl
             }, req
           });
         }).catch(nextError(next));

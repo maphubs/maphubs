@@ -116,7 +116,8 @@ module.exports = {
       debug('get hub story: ' + story_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
-         'omh.stories.body', 'omh.stories.language',
+         'omh.stories.body', 'omh.stories.language', 
+         'omh.stories.firstline',  'omh.stories.firstimage',
          'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
         knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
         'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name'
@@ -162,6 +163,7 @@ module.exports = {
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.body', 'omh.stories.language',
+         'omh.stories.firstline',  'omh.stories.firstimage',
          'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
         knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),

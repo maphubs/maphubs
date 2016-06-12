@@ -358,12 +358,22 @@ module.exports = function(app) {
           .then(function(results) {
             var story = results[0];
             var hub = results[1];
+             var imageUrl = '';
+            if(story.firstimage){
+              imageUrl = story.firstimage;
+            }
             res.render('hubstory', {
               title: story.title,
               addthis: true,
               props: {
                 story, hub, canEdit: false
-              }, req
+              }, 
+              twitterCard: {
+                title: story.title,
+                description: story.firstline,
+                image: imageUrl
+              },
+              req
             });
           }).catch(nextError(next));
     }else{
@@ -380,12 +390,22 @@ module.exports = function(app) {
           .then(function(results) {
             var story = results[0];
             var hub = results[1];
+             var imageUrl = '';
+            if(story.firstimage){
+              imageUrl = story.firstimage;
+            }
             res.render('hubstory', {
               title: story.title,
               addthis: true,
               props: {
                 story, hub, canEdit
-              }, req
+              },
+              twitterCard: {
+                title: story.title,
+                description: story.firstline,
+                image: imageUrl
+              },
+               req
             });
           }).catch(nextError(next));
       });
