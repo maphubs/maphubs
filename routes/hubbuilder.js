@@ -12,7 +12,7 @@ module.exports = function(app) {
   //Views
   app.get('/createhub', login.ensureLoggedIn(), function(req, res) {
     res.render('hubbuilder', {
-      title: 'Hub Builder - MapHubs',
+      title: 'Create Hub - MapHubs',
       props: {}, req
     });
   });

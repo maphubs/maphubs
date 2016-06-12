@@ -22,6 +22,8 @@ module.exports = Reflux.createStore({
       bannerImage: null,
       logoImageInfo: null,
       bannerImageInfo: null,
+      hasLogoImage: false,
+      hasBannerImage: false,
       unsavedChanges: false,
       saving: false
     };
@@ -146,7 +148,6 @@ module.exports = Reflux.createStore({
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
        var hub = _this.state.hub;
-       hub.hasImage = true;
        _this.setState({hub, saving: false});
        _this.trigger(_this.state);
        cb(null);
@@ -155,7 +156,9 @@ module.exports = Reflux.createStore({
  },
 
  setHubLogoImage(data, info){
-   this.setState({logoImage: data, logoImageInfo: info, unsavedChanges: true});
+    var hub = this.state.hub;
+    hub.hasLogoImage = true;
+   this.setState({logoImage: data, logoImageInfo: info, unsavedChanges: true, hub});
  },
 
  saveHubLogoImage(cb){
@@ -168,7 +171,7 @@ module.exports = Reflux.createStore({
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
        var hub = _this.state.hub;
-       hub.hasImage = true;
+       hub.hasLogoImage = true;
        _this.setState({hub});
        _this.trigger(_this.state);
        cb(null);
@@ -177,7 +180,9 @@ module.exports = Reflux.createStore({
  },
 
  setHubBannerImage(data, info){
-   this.setState({bannerImage: data, bannerImageInfo: info, unsavedChanges: true});
+   var hub = this.state.hub;
+    hub.hasBannerImage = true;
+   this.setState({bannerImage: data, bannerImageInfo: info, unsavedChanges: true, hub});
  },
 
  saveHubBannerImage(cb){
@@ -190,7 +195,7 @@ module.exports = Reflux.createStore({
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
        var hub = _this.state.hub;
-       hub.hasImage = true;
+       hub.hasBannerImage = true;
        _this.setState({hub});
        _this.trigger(_this.state);
        cb(null);
