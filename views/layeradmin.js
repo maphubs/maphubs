@@ -1,6 +1,6 @@
 var React = require('react');
 var $ = require('jquery');
-
+var slug = require('slug');
 
 var Header = require('../components/header');
 var LayerSettings = require('../components/CreateLayer/LayerSettings');
@@ -110,6 +110,8 @@ var LayerAdmin = React.createClass({
       tabContentDisplay = 'inherit';
     }
 
+    var layerInfoUrl = '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
+
 		return (
       <div>
         <Header />
@@ -118,6 +120,7 @@ var LayerAdmin = React.createClass({
 
           <div className="row">
            <div className="col s12">
+             <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
              <ul className="tabs">
                <li className="tab col s3"><a className="active" href="#info">{this.__('Info/Settings')}</a></li>
                <li className="tab col s3"><a href="#source">{this.__('Source/License')}</a></li>
