@@ -16,11 +16,14 @@ module.exports = {
       var map = results[0];
       var layers = results[1];
       var title = 'Map';
-      if(map.name){
-        title = map.name;
+      if(map.title){
+        title = map.title;
       }
       title += ' - MapHubs';
-        res.render('embedmap', {title, props:{map, layers, canEdit, isStatic}, hideFeedback: true, req});
+        res.render('embedmap', {
+          title, 
+          props:{map, layers, canEdit, isStatic}, 
+          hideFeedback: true, req});
     }).catch(nextError(next));
   },
 
