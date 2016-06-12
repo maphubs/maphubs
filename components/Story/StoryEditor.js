@@ -4,6 +4,7 @@ var slug = require('slug');
 var Editor = require('react-medium-editor');
 var $ = require('jquery');
 var debounce = require('lodash.debounce');
+var _isequal = require('lodash.isequal');
 var MessageActions = require('../../actions/MessageActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
@@ -81,8 +82,24 @@ var StoryEditor = React.createClass({
    };
  },
 
+ shouldComponentUpdate(nextProps, nextState) {
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      if(this.body && _isequal(this.body, nextState.body)){
+        this.body = null;
+        return false;
+      }
+      return true;
+    }
+    return false;
+ },
+
   handleBodyChange(body) {
     var _this = this;
+    this.body = body;
     _this.setState({body, unsavedChanges: true});
     var debounced = debounce(function(){
       _this.saveSelectionRange();
