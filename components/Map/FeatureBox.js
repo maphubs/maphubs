@@ -32,15 +32,16 @@ var FeatureBox = React.createClass({
 
   getDefaultProps() {
     return {
-      showButtons: true
+      showButtons: true,
+      selected: false
     };
   },
 
   getInitialState() {
     return {
     selectedFeature: 1,
-    selected: false,
-    currentFeatures: []
+    selected: this.props.selected,
+    currentFeatures: this.props.features ? this.props.features : []
   };
   },
 

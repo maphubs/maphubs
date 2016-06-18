@@ -1,5 +1,5 @@
 var React = require('react');
-
+var ReactDOM = require('react-dom');
 var classNames = require('classnames');
 var FeatureBox = require('./FeatureBox');
 var styles = require('./styles');
@@ -67,7 +67,9 @@ var Map = React.createClass({
     navPosition:  React.PropTypes.string,
     baseMap: React.PropTypes.string,
     onChangeBaseMap: React.PropTypes.func,
-    insetMap: React.PropTypes.bool
+    insetMap: React.PropTypes.bool,
+    hoverInteraction: React.PropTypes.bool,
+    interactionBufferSize: React.PropTypes.number
   },
 
   contextTypes: {
@@ -86,7 +88,9 @@ var Map = React.createClass({
       navPosition: 'top-right',
       baseMap: 'default',
       showLogo: true,
-      insetMap: true
+      insetMap: true,
+      hoverInteraction: false,
+      interactionBufferSize: 10
     };
   },
 
@@ -124,7 +128,8 @@ var Map = React.createClass({
   shouldComponentUpdate(nextProps, nextState){
     //always update if there is a selection
     //avoids glitch where feature hover doesn't show
-    if(this.state.selectedFeatures){
+    if(this.state.selected || nextState.selected 
+    || this.state.selectedFeatures || nextState.selectedFeatures){
       return true;
     }
 
@@ -576,7 +581,8 @@ var Map = React.createClass({
 
 
 map.on('mousemove', function(e) {
-    if(_this.state.selected || _this.state.showBaseMaps) return;
+    if(_this.state.showBaseMaps) return;
+    
     var debounced = _debounce(function(){
       if(_this.state.mapLoaded && _this.state.restoreBounds){
         debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
@@ -584,18 +590,32 @@ map.on('mousemove', function(e) {
         //stop restoring map possition after user has moved the map
       }
 
-      var features = map.queryRenderedFeatures(e.point, {layers: _this.state.interactiveLayers});
+      var features = map.queryRenderedFeatures(
+        [
+          [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
+          [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
+        ], 
+      {layers: _this.state.interactiveLayers});
 
-      if (features.length) {
+      if (features.length) {     
+        if(_this.state.selected){
+          $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+        } else if(_this.props.hoverInteraction){
+          $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
            _this.setSelectionFilter(features);
            _this.setState({selectedFeatures:features});
            map.addClass('selected');
-
-       } else if(_this.state.selectedFeatures != null) {
+        }else{
+           $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
+        }
+       } else if(!_this.state.selected && _this.state.selectedFeatures != null) {
            _this.clearSelection();
+           $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', '');
+       } else {
+         $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', '');
        }
 
-    }, 600).bind(this);
+    }, 200).bind(this);
     debounced();
 
  });
@@ -603,22 +623,28 @@ map.on('mousemove', function(e) {
 
 
  map.on('click', function(e) {
-   if(_this.state.selected){
-     _this.setState({selected: false});
-     _this.clearSelection();
-   }
-   else if(_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
+    if(!_this.state.selected &&_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
      _this.setState({selected:true});
    }else{
-
-     var features = map.queryRenderedFeatures(e.point, {layers: _this.state.interactiveLayers});
+     $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+        
+     var features = map.queryRenderedFeatures(
+       [
+        [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
+        [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
+      ], {layers: _this.state.interactiveLayers});
 
      if (features.length) {
+       if(_this.state.selected){
+        _this.clearSelection();
+      }
       _this.setSelectionFilter(features);
       _this.setState({selectedFeatures:features, selected:true});
-      map.addClass('selected');
+       map.addClass('selected');
       } else if(_this.state.selectedFeatures != null) {
           _this.clearSelection();
+          _this.setState({selected: false});
+          $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', '');
       }
 
    }
@@ -1146,8 +1172,8 @@ map.on('mousemove', function(e) {
 
 
     return (
-      <div  className={this.props.className} style={style}>
-        <div id={this.state.id} className={className} style={{width:'100%', height:'100%'}}>
+      <div ref="mapcontainer" className={this.props.className} style={style}>
+        <div id={this.state.id} ref="map" className={className} style={{width:'100%', height:'100%'}}>
           {inset}
           {baseMapButton}
           {baseMapBox}
