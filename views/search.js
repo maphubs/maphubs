@@ -133,7 +133,7 @@ var Search = React.createClass({
         </div>
         <div className="row no-margin" style={{height: 'calc(100% - 150px)', minHeight: '200px'}}>
           <Map ref="map" style={{width: '100%', height: '100%'}}
-            disableScrollZoom={true}
+            disableScrollZoom={true} hoverInteraction={true}
             data={this.state.searchResult} >
             <Legend style={{
                 position: 'absolute',
