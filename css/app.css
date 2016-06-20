@@ -704,6 +704,23 @@ textarea.materialize-textarea+label:after {
   position:relative;
 }
 
+.locale-chooser  {
+  width: 100px;
+}
+
+.locale-chooser input {
+  text-align: center;
+  border-bottom: none !important;
+  height: 50px !important;
+  margin: 0  !important;
+  padding-right: 5px;
+  line-height: 50px !important;
+}
+
+.locale-chooser span.caret  {
+  top: 3px;
+}
+
 @media only screen and (max-width : 600px) {
 
  .embed-map-container {

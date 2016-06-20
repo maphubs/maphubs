@@ -1,5 +1,7 @@
 var React = require('react');
 var Reflux = require('reflux');
+var Formsy = require('formsy-react');
+var Select = require('./forms/select');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var UserStore = require('../stores/UserStore');
 var LocaleActions = require('../actions/LocaleActions');
@@ -14,12 +16,14 @@ var LocaleChooser = React.createClass({
     return Locales.getLocaleString(this.state.locale, text);
   },
 
-  onClick(locale){
-    LocaleActions.changeLocale(locale);
+  onChange(model){
+    LocaleActions.changeLocale(model.locale);
   },
 
   render() {
-    var _this = this;
+   //var _this = this;
+
+    /*
     var enColor = '#000';
     var frColor = '#000';
     var esColor = '#000';
@@ -29,12 +33,23 @@ var LocaleChooser = React.createClass({
       frColor = '#29ABE2';
     }else if(this.state.locale == 'es'){
       esColor = '#29ABE2';
-    }
+    }*/
+
+    var options = [
+      {value: 'en', label: 'English'},
+      {value: 'fr', label: 'Français'},
+      {value: 'es', label: 'Español'},
+      {value: 'it', label: 'Italiano'}
+    ];
+
     return (
-      <div style={{color: '#000'}}>
-        <span style={{color: enColor, cursor: 'pointer'}} onClick={function(){_this.onClick('en');}}>EN</span>|
-        <span style={{color: frColor, cursor: 'pointer'}} onClick={function(){_this.onClick('fr');}}>FR</span>|
-        <span style={{color: esColor, cursor: 'pointer'}} onClick={function(){_this.onClick('es');}}>ES</span>
+      <div>
+          <Formsy.Form ref="form" onChange={this.onChange}> 
+              <Select name="locale" id="locale-select" options={options} className="locale-chooser omh-accent-text"
+                    value={this.state.locale} defaultValue={this.state.locale} startEmpty={false}
+                   dataPosition="left" dataTooltip={this.__('Change Language')}
+                   required/>
+          </Formsy.Form>
       </div>
     );
 

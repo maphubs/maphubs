@@ -493,5 +493,10 @@
 	"Add Photo": "Add Photo",
 	"Replace Photo": "Replace Photo",
 	"Remove Photo": "Remove Photo",
-	"Back to Layer": "Back to Layer"
+	"Back to Layer": "Back to Layer",
+	"Labels": "Labels",
+	"Enable Labels for this Layer": "Enable Labels for this Layer",
+	"Label Field": "Label Field",
+	"Data field to use in map labels.": "Data field to use in map labels.",
+	"Change Language": "Change Language"
 }

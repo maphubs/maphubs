@@ -10,6 +10,7 @@ var _debounce = require('lodash.debounce');
 var Promise = require('bluebird');
 var request = require('superagent-bluebird-promise');
 var $ = require('jquery');
+var _includes = require('lodash.includes');
 var TerraformerGL = require('../../services/terraformerGL.js');
 
 var Reflux = require('reflux');
@@ -527,7 +528,11 @@ var Map = React.createClass({
 
 
       if(_this.state.locale != 'en'){
-        _this.changeLocale(_this.state.locale);
+        _this.changeLocale(_this.state.locale, _this.map);
+        if(_this.insetMap){
+           _this.changeLocale(_this.state.locale, _this.insetMap);
+        }
+       
       }
       debug('(' + _this.state.id + ') ' +'MAP LOADED');
       _this.setState({mapLoaded: true});
@@ -708,7 +713,10 @@ map.on('mousemove', function(e) {
     }
 
       if(this.state.locale && (this.state.locale != prevState.locale) ){
-        this.changeLocale(this.state.locale);
+        this.changeLocale(this.state.locale, this.map);
+        if(this.insetMap){
+           this.changeLocale(this.state.locale, this.insetMap);
+        }
       }
   },
 
@@ -919,8 +927,13 @@ map.on('mousemove', function(e) {
     this.map.flyTo({center: [0,0], zoom:0});
   },
 
-  changeLocale(locale){
-    var map = this.map;
+  changeLocale(locale, map){
+    var supportedLangauges = ['en', 'fr', 'es', 'de', 'de', 'ru', 'zh'];
+    var foundLocale = _includes(supportedLangauges, locale);
+    if(!foundLocale){
+      //Mapbox vector tiles currently only have en,es,fr,de,ru,zh
+      locale = 'en';
+    }
     debug('(' + this.state.id + ') ' +'changing map language to: ' + locale);
     map.setLayoutProperty('country-label-lg', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('country-label-md', 'text-field', '{name_' + locale + '}');

@@ -7,3 +7,4 @@ source_lang = en
 type = KEYVALUEJSON
 trans.es = locales/es.json
 trans.fr = locales/fr.json
+trans.it = locales/it.json

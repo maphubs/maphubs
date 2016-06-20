@@ -485,5 +485,17 @@
     "Name must be 300 characters or less.": "Nom doit être de 300 caractères ou moins.",
     "Photo": "Photo",
     "Settings": "Paramètres",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "Decline": "Decline",
+    "Join Maphubs Mailing List": "Join Maphubs Mailing List",
+    "Join the Maphubs Mailing List": "Join the Maphubs Mailing List",
+    "Join": "Join",
+    "Add Photo": "Add Photo",
+    "Replace Photo": "Replace Photo",
+    "Remove Photo": "Remove Photo",
+    "Back to Layer": "Back to Layer",
+    "Labels": "Labels",
+    "Enable Labels for this Layer": "Enable Labels for this Layer",
+    "Label Field": "Label Field",
+    "Data field to use in map labels.": "Data field to use in map labels."
 }
