@@ -286,6 +286,7 @@ module.exports = function(app) {
         actionData = [
         data.layer_id,
         data.style,
+        data.labels,
         data.legend_html,
         data.preview_position
         ];

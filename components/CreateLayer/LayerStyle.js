@@ -81,6 +81,7 @@ var LayerStyle = React.createClass({
     LayerActions.saveStyle({
       layer_id: this.state.layer.layer_id,
       style: this.state.layer.style,
+      labels: this.state.layer.labels,
       legend_html: this.state.layer.legend_html,
       preview_position
     },
@@ -98,24 +99,11 @@ var LayerStyle = React.createClass({
     if(this.props.onPrev) this.props.onPrev();
   },
 
-  /*
-  getSourceConfig(){
-    var sourceConfig = {
-      type: 'vector'
-    };
-    if(this.state.layer.is_external){
-      sourceConfig = this.state.layer.external_layer_config;
-    }
-
-    return sourceConfig;
-  },
-  */
-
   setColor(color){
     var _this = this;
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
-    LayerActions.setStyle(style, legend, null, function(){
+    LayerActions.setStyle(style,  this.state.layer.labels, legend, null, function(){
       _this.setState({mapColor: color});
     });
 
@@ -132,16 +120,20 @@ var LayerStyle = React.createClass({
     }
 
     var legend = mapStyles.rasterLegend(this.state.layer);
-    LayerActions.setStyle(style, legend);
+    LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.preview_position);
     this.setState({rasterOpacity: opacity});
   },
 
   setStyle(style){
-    LayerActions.setStyle(style, this.state.layer.legend_html);
+    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.preview_position);
+  },
+
+  setLabels(style, labels){
+    LayerActions.setStyle(style, labels, this.state.layer.legend_html, this.state.layer.preview_position);
   },
 
   setLegend(legend_html){
-    LayerActions.setStyle(this.state.layer.style, legend_html);
+    LayerActions.setStyle(this.state.layer.style, this.state.layer.labels, legend_html, this.state.layer.preview_position);
   },
 
   reloadMap(){
@@ -209,7 +201,9 @@ var LayerStyle = React.createClass({
       <div>
         <h5>{this.__('Choose Color')}</h5>
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-            style={this.state.layer.style} onStyleChange={this.setStyle}
+            style={this.state.layer.style} onStyleChange={this.setStyle} 
+            labels={this.state.layer.labels} onLabelsChange={this.setLabels}
+            layer={this.state.layer}
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
       </div>
     );

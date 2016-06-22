@@ -1,5 +1,6 @@
 var config = require('../../clientconfig');
 var debug = require('../../services/debug')('map-styles');
+var _remove = require('lodash.remove');
 
 module.exports = {
 
@@ -55,6 +56,71 @@ module.exports = {
           }
         }
 
+      });
+    }
+    return style;
+  },
+
+   removeStyleLabels(style){
+    if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+      _remove(style.layers, function(layer) {
+        return layer.id.startsWith('omh-label');
+      });
+    }
+    return style;
+  },
+
+  addStyleLabels(style, field, layer_id, data_type){
+    style = this.removeStyleLabels(style);
+    if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+
+      var sourceLayer = "data";
+      var filter = ["in","$type","Point"];
+      var placement = "point";
+      var translate =  [0,0];
+
+      if(data_type == 'point'){
+        translate = [0, -14];
+      }else if(data_type == 'line'){
+        placement = "line";
+        filter = ["in", "$type", "LineString"];
+      }else if(data_type == 'polygon'){
+        sourceLayer = "data-centroids";
+      }
+      style.layers.push({
+        "id": "omh-label-" + layer_id,
+        "type": "symbol",
+        "interactive": false,
+        "source": "omh-" + layer_id,
+        "source-layer": sourceLayer,
+        "filter": filter,
+        "layout": {
+          "text-font": [
+            "Arial Unicode MS Regular"
+          ],
+          "visibility": "visible",
+          "symbol-placement": placement,
+          "text-field": "{" + field + "}",
+          "text-size": {
+            "base": 14,
+            "stops": [
+              [
+                13,
+                14
+              ],
+              [
+                18,
+                14
+              ]
+            ]
+          }
+        },
+        "paint": {
+          "text-color": "#000",
+          "text-halo-color": "#FFF",
+          "text-halo-width": 2,
+          "text-translate": translate
+        }
       });
     }
     return style;

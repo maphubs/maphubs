@@ -173,10 +173,11 @@ module.exports = Reflux.createStore({
     this.updateMap(layers);
   },
 
-  updateLayerStyle(layer_id, style, legend){
+  updateLayerStyle(layer_id, style, labels, legend){
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
     layers[index].map_style = style;
+    layers[index].map_labels = labels;
     layers[index].map_legend_html = legend;
     this.updateMap(layers);
   },
@@ -280,6 +281,7 @@ module.exports = Reflux.createStore({
      //reverse the order for the styles, since the map draws them in the order recieved
      _forEachRight(layers, function(layer){
        if(!layer.map_style) layer.map_style = layer.style;
+       if(!layer.map_labels) layer.map_labels = layer.labels;
        var style = layer.map_style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style

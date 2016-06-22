@@ -285,9 +285,9 @@ var CreateMap = React.createClass({
     $('.layer-card-tooltipped').tooltip();
   },
 
-  onLayerStyleChange(layer_id, style, legend){
+  onLayerStyleChange(layer_id, style, labels, legend){
     var _this = this;
-    Actions.updateLayerStyle(layer_id, style, legend, function(){
+    Actions.updateLayerStyle(layer_id, style, labels, legend, function(){
       _this.refs.map.reload(null, _this.state.mapStyle);
     });
   },

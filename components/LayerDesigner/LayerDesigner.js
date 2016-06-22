@@ -2,7 +2,8 @@ var React = require('react');
 var $ = require('jquery');
 var ColorPicker = require('react-colorpickr');
 var ColorSwatch = require('./ColorSwatch');
-var CodeEditor = require('../LayerDesigner/CodeEditor');
+var CodeEditor = require('./CodeEditor');
+var LabelSettings = require('./LabelSettings');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -21,10 +22,13 @@ var LayerDesigner = React.createClass({
   propTypes: {
     onColorChange: React.PropTypes.func,
     onStyleChange: React.PropTypes.func,
+    onLabelsChange: React.PropTypes.func,
     onLegendChange: React.PropTypes.func,
     color: React.PropTypes.string,
     style: React.PropTypes.object,
+    labels: React.PropTypes.object,
     legendCode: React.PropTypes.string,
+    layer: React.PropTypes.object,
     showAdvanced: React.PropTypes.bool
   },
 
@@ -32,7 +36,9 @@ var LayerDesigner = React.createClass({
     return {
       color: 'red',
       style: null,
+      labels: null,
       legendCode: null,
+      layer: null,
       showAdvanced: true
     };
   },
@@ -41,6 +47,7 @@ var LayerDesigner = React.createClass({
     return {
       color: this.props.color,
       style:this.props.style,
+      labels:this.props.labels,
       legendCode: this.props.legendCode
     };
   },
@@ -48,6 +55,7 @@ var LayerDesigner = React.createClass({
   componentWillReceiveProps(nextProps){
     this.setState({
       style: nextProps.style,
+      labels: nextProps.labels,
       legendCode: nextProps.legendCode
     });
   },
@@ -74,6 +82,11 @@ var LayerDesigner = React.createClass({
     style = JSON.parse(style);
     this.setState({style});
     this.props.onStyleChange(style);
+  },
+
+  onLabelsChange(style, labels){
+    this.setState({style, labels});
+    this.props.onLabelsChange(style, labels);
   },
 
   onLegendChange(legendCode){
@@ -139,6 +152,14 @@ var LayerDesigner = React.createClass({
              </div>
            <div className="collapsible-body">
              <ColorPicker onChange={this.onColorPickerChange} value={this.state.color} />
+           </div>
+         </li>
+         <li>
+           <div className="collapsible-header">
+             <i className="material-icons">expand_more</i>{this.__('Labels')}
+             </div>
+           <div className="collapsible-body">
+             <LabelSettings onChange={this.onLabelsChange} style={this.state.style} labels={this.state.labels} layer={this.props.layer} />
            </div>
          </li>
          {advanced}

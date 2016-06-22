@@ -75,17 +75,21 @@ var MapLayerDesigner = React.createClass({
     }
 
     var legend = mapStyles.rasterLegend(this.state.layer);
-    this.props.onStyleChange(this.state.layer.layer_id, style, legend);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, legend);
     this.setState({style, legend, rasterOpacity: opacity});
   },
 
   setStyle(style){
-    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.legend_html);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.legend_html);
     this.setState({style});
   },
 
+  setLabels(style, labels){
+   this.props.onStyleChange(this.state.layer.layer_id, style, labels, this.state.layer.legend_html);
+  },
+
   setLegend(legend_html){
-    this.props.onStyleChange(this.state.layer.layer_id, this.state.layer.style, legend_html);
+    this.props.onStyleChange(this.state.layer.layer_id, this.state.layer.style, this.state.layer.labels, legend_html);
     this.setState({legend: legend_html});
   },
 
@@ -118,7 +122,10 @@ var MapLayerDesigner = React.createClass({
        designer = (
         <div>
             <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-              style={this.state.layer.style} onStyleChange={this.setStyle} showAdvanced={this.props.showAdvanced}
+              style={this.state.layer.style} onStyleChange={this.setStyle} 
+              labels={this.state.layer.labels} onLabelsChange={this.setLabels}
+              layer={this.state.layer}
+              showAdvanced={this.props.showAdvanced}
               legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
         </div>
       );

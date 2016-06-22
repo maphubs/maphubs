@@ -199,13 +199,14 @@ module.exports = Reflux.createStore({
     });
   },
 
-  setStyle(style, legend_html, preview_position, cb){
+  setStyle(style, labels, legend_html, preview_position, cb){
     var layer = this.state.layer;
     layer.style = style;
+    layer.labels = labels;
     layer.legend_html = legend_html;
     layer.preview_position = preview_position;
     this.setState({layer});
-    cb();
+    if(cb) cb();
   },
 
   setDataType(data_type){
@@ -243,6 +244,7 @@ module.exports = Reflux.createStore({
     .send({
       layer_id: layer.layer_id,
       style: data.style,
+      labels: data.labels,
       legend_html: data.legend_html,
       preview_position: data.preview_position
     })

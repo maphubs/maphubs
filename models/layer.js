@@ -19,7 +19,7 @@ module.exports = {
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
-      'style', 'legend_html', 'extent_bbox', 'preview_position')
+      'style', 'legend_html','labels','extent_bbox', 'preview_position')
       .table('omh.layers').where({published: true, status: 'published'}).orderBy('name');
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
@@ -112,7 +112,7 @@ module.exports = {
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_config', 'disable_export', 'is_empty',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
-      'style', 'legend_html', 'extent_bbox', 'preview_position'
+      'style','labels', 'legend_html', 'extent_bbox', 'preview_position'
     ).table('omh.layers').where('layer_id', layer_id)
       .then(function(result) {
         if (result && result.length == 1) {
@@ -141,8 +141,8 @@ module.exports = {
     'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license',
     'omh.layers.is_external', 'omh.layers.external_layer_config',
     'omh.layers.owned_by_group_id', knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'), 'omh.layers.views',
-    'omh.layers.style', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
-     'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.legend_html as map_legend_html')
+    'omh.layers.style', 'omh.layers.labels', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
+     'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.style as map_labels', 'omh.hub_layers.legend_html as map_legend_html')
       .from('omh.hub_layers')
       .leftJoin('omh.layers', 'omh.hub_layers.layer_id', 'omh.layers.layer_id').orderBy('position');
 
@@ -419,12 +419,13 @@ module.exports = {
         });
     },
 
-    saveStyle(layer_id, style, legend_html, preview_position, user_id) {
+    saveStyle(layer_id, style, labels, legend_html, preview_position, user_id) {
       return knex('omh.layers').where({
           layer_id
         })
         .update({
           style: JSON.stringify(style),
+          labels: JSON.stringify(labels),
           legend_html,
           preview_position,
           updated_by_user_id: user_id,
