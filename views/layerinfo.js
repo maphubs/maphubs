@@ -325,6 +325,10 @@ var LayerInfo = React.createClass({
     });
   },
 
+  handleNewComment(){
+
+  },
+
 	render() {
     var _this = this;
     var glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.layer.data_type];
@@ -560,6 +564,7 @@ var LayerInfo = React.createClass({
                       shortname="maphubs"
                       identifier={'maphubs-layer-' + this.props.layer.layer_id}
                       title={this.props.layer.name}
+                      onNewComment={this.handleNewComment}
                       />
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
