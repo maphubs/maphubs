@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.2.7](https://github.com/maphubs/maphubs/tree/0.2.7) (2016-06-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.6...0.2.7)
+
+**Fixed bugs:**
+
+- error uploading photo to polygon feature [\#179](https://github.com/maphubs/maphubs/issues/179)
+- unpublished hubs show in search recommendations [\#175](https://github.com/maphubs/maphubs/issues/175)
+
+## [0.2.6](https://github.com/maphubs/maphubs/tree/0.2.6) (2016-05-31)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.5...0.2.6)
+
 ## [0.2.5](https://github.com/maphubs/maphubs/tree/0.2.5) (2016-05-28)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/0.2.4...0.2.5)
 
