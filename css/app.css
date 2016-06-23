@@ -572,10 +572,9 @@ textarea.materialize-textarea+label:after {
 }
 
 .create-map-modal{
-  width: 90% !important;
+  width: 100% !important;
   height: 85% !important;
   max-height: 85% !important;
-  max-width: 915px !important;
 }
 
 .create-map-btn {
@@ -610,36 +609,12 @@ textarea.materialize-textarea+label:after {
   font-size: 25px !important;
 }
 
-.create-map-content {
-   padding-left: 300px;
-   height: calc(100% - 60px);
-   width: 100%;
- }
-
-.create-map-side-nav {
-    color: black;
-},
-
 .create-map-side-nav.fixed a {
   height: 37px;
   line-height: 37px;
   padding: 0px;
   margin: 0px;
 }
-
-.create-map-side-nav-close{
-  display:none !important;
-}
-
- @media only screen and (max-width : 992px) {
-  .create-map-content{
-     padding-left: 0;
-   }
-
-   .create-map-side-nav-close{
-     display:block !important;
-   }
- }
 
 .omh-legend {
   padding: 0px;
@@ -719,6 +694,15 @@ textarea.materialize-textarea+label:after {
 
 .locale-chooser span.caret  {
   top: 3px;
+}
+
+.label-field input {
+ text-align: center;
+  border-bottom: none !important;
+  height: 50px !important;
+  margin: 0  !important;
+  padding-right: 5px;
+  line-height: 50px !important;
 }
 
 @media only screen and (max-width : 600px) {

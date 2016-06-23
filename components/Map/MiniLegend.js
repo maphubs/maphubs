@@ -1,27 +1,30 @@
 var React = require('react');
 
-var HubMapLegend = React.createClass({
+var MiniLegend = React.createClass({
   propTypes:  {
     layers: React.PropTypes.array,
+    hideInactive: React.PropTypes.bool,
     style: React.PropTypes.object
   },
 
   getDefaultProps() {
     return {
       layers: [],
+      hideInactive: true,
       style: {}
     };
   },
 
   render(){
+    var _this = this;
     return (
       <div style={this.props.style}>
         <div style={{textAlign: 'left'}}>
 
             <ul className="collection with-header no-margin z-depth-2">
-            {
+            {       
               this.props.layers.map(function (layer, i) {
-                if(!layer.active){
+                if(_this.props.hideInactive && !layer.active){
                   return (<div key={i}></div>);
                 }
                 var legendHtml = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
@@ -48,4 +51,4 @@ var HubMapLegend = React.createClass({
 
 });
 
-module.exports = HubMapLegend;
+module.exports = MiniLegend;

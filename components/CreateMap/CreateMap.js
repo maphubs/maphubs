@@ -8,7 +8,8 @@ var _isEmpty = require('lodash.isempty');
 var _isEqual = require('lodash.isequal');
 var slug = require('slug');
 var Map = require('../Map/Map');
-var Legend = require('../Map/Legend');
+//var Legend = require('../Map/Legend');
+var MiniLegend = require('../Map/MiniLegend');
 var LayerSearchResult = require('./LayerSearchResult');
 
 var Reflux = require('reflux');
@@ -365,12 +366,7 @@ var CreateMap = React.createClass({
       );
     }else{
       sidebarContent = (
-        <div className="row s12" style={{height: '100%', padding: 0, margin: 0}}>
-          <div style={{height: '40px', width: '100%'}}>
-            <a onClick={this.closeSidebar} className="btn-floating create-map-side-nav-close right"
-              style={{width:'40px', height: '40px', padding: 0}}>
-              <i className="material-icons"  style={{lineHeight: '40px', width:'35px', height: '35px', margin: 'auto'}}>close</i></a>
-          </div>
+        <div style={{height: '100%', padding: 0, margin: 0}}>
 
           <div style={{height: '50%'}}>
             <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{
@@ -482,36 +478,44 @@ var CreateMap = React.createClass({
 
     return (
       <Modal show={this.state.show} id="create-map-modal" className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
-        <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
-          <nav className="white" style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
-            {title}
-            <div id="slide-out" className="side-nav fixed create-map-side-nav" style={{color: 'black'}}>
-                {sidebarContent}
-            </div>
-            <a href="#" ref="sidenav" data-activates="slide-out" className="button-collapse show-on-large omh-btn"><i className="mdi-navigation-menu"></i></a>
-          </nav>
+        <ModalContent className="row no-margin" style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
+          <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>         
+            {sidebarContent}
+          </div>
+          <div className="col s6 m10 l9 no-padding" style={{height: '100%'}}>   
+            <div className="row no-margin">{title}</div>
+            <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
+              
+              <div className="row" style={{height: '100%', width: '100%', margin: 0, overflow: 'auto', position: 'relative'}}>
+                <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
+                  glStyle={this.state.mapStyle}
+                  baseMap={this.state.basemap}
+                  onChangeBaseMap={Actions.setMapBasemap}
+                  fitBounds={mapExtent}
+                  />
+    
+                  <MiniLegend style={{
+                        position: 'absolute',
+                        top: '5px',
+                        left: '5px',
+                        minWidth: '200px',
+                        zIndex: '1',
+                        width: '25%'
+                      }} layers={this.state.mapLayers} hideInactive={false} />
 
-          <div className="row create-map-content" style={{margin: 0, overflow: 'auto'}}>
-            <Map ref="map" id="create-map-map" style={{height: '400px', width: '600px', margin: 'auto'}}
-              glStyle={this.state.mapStyle}
-              baseMap={this.state.basemap}
-              onChangeBaseMap={Actions.setMapBasemap}
-              fitBounds={mapExtent}
-              />
-            <Legend style={{width: '600px', margin: 'auto', overflow: 'auto'}}
-              layers={this.state.mapLayers}/>
-
-            <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Save Map')}>
-              <a onClick={this.onSave} className="btn-floating btn-large blue">
-                <i className="large material-icons">save</i>
-              </a>
-            </div>
-            <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped"
-              style={{right: '85px'}}
-              data-position="top" data-delay="50" data-tooltip={_this.__('Cancel Map')}>
-              <a onClick={this.onCancel} className="btn-floating btn-large red">
-                <i className="large material-icons">close</i>
-              </a>
+                <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Save Map')}>
+                  <a onClick={this.onSave} className="btn-floating btn-large blue">
+                    <i className="large material-icons">save</i>
+                  </a>
+                </div>
+                <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped"
+                  style={{right: '85px'}}
+                  data-position="top" data-delay="50" data-tooltip={_this.__('Cancel Map')}>
+                  <a onClick={this.onCancel} className="btn-floating btn-large red">
+                    <i className="large material-icons">close</i>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </ModalContent>

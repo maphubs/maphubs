@@ -9,7 +9,7 @@ var HubStore = require('../../stores/HubStore');
 var HubActions = require('../../actions/HubActions');
 
 var HubMapLayers = require('./HubMapLayers');
-var HubMapLegend = require('./HubMapLegend');
+var MiniLegend = require('../Map/MiniLegend');
 
 var CreateMap = require('../CreateMap/CreateMap');
 var CreateMapActions = require('../../actions/CreateMapActions');
@@ -128,7 +128,7 @@ var HubMap = React.createClass({
                   baseMap={this.state.hub.basemap}
                   disableScrollZoom>
 
-                  <HubMapLegend style={{
+                  <MiniLegend style={{
                       position: 'absolute',
                       bottom: '5px',
                       right: '5px',
