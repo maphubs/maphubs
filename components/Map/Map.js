@@ -18,7 +18,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
-
+var _centroid = require('turf-centroid');
 
 var mapboxLight = require('../../node_modules/mapbox-gl-styles/styles/light-v8.json');
 var mapboxDark = require('../../node_modules/mapbox-gl-styles/styles/dark-v8.json');
@@ -370,13 +370,38 @@ var Map = React.createClass({
     };
   },
 
+  //give the bounds, determine if the inset location is too small and should be a point instead of the polygon
+  showInsetAsPoint(){    
+    var zoom = this.map.getZoom();
+    debug("Zoom: " + zoom);
+    if(zoom > 9){
+      return true;
+    }
+    return false;
+  },
+
   updateInsetGeomFromBounds(bounds){
     var insetGeoJSONData = this.state.insetGeoJSONData;
+     var insetGeoJSONCentroidData = this.state.insetGeoJSONCentroidData;
     if(insetGeoJSONData){
       try{
-        insetGeoJSONData.setData(this.getGeoJSONFromBounds(bounds));
-        this.setState({insetGeoJSONData});
-        this.insetMap.fitBounds(bounds, {maxZoom: 1.5, padding: 10});
+        var geoJSONBounds = this.getGeoJSONFromBounds(bounds);
+        geoJSONBounds.features[0].properties = {'v': 1};
+        insetGeoJSONData.setData(geoJSONBounds);
+        var geoJSONCentroid = _centroid(geoJSONBounds);
+        geoJSONCentroid.properties = {'v': 1};
+        insetGeoJSONCentroidData.setData(geoJSONCentroid);
+        this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
+
+        if(this.showInsetAsPoint()){
+          this.insetMap.setFilter('center', ['==', 'v', 1]);
+          this.insetMap.setFilter('bounds', ['==', 'v', 2]);
+        } else {
+          this.insetMap.setFilter('center', ['==', 'v', 2]);
+          this.insetMap.setFilter('bounds', ['==', 'v', 1]);
+        }
+        
+        this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
       }catch(err){
           debug(err);
       }
@@ -558,20 +583,46 @@ var Map = React.createClass({
         var bounds = map.getBounds();
         //create geojson from bounds
         var geoJSON = _this.getGeoJSONFromBounds(bounds);
+        geoJSON.features[0].properties = {'v': 1};
+        var geoJSONCentroid = _centroid(geoJSON);
+        geoJSONCentroid.properties = {'v': 1};
         var insetGeoJSONData = new mapboxgl.GeoJSONSource({data: geoJSON});
+        var insetGeoJSONCentroidData = new mapboxgl.GeoJSONSource({data: geoJSONCentroid});
         insetMap.addSource("inset-bounds", insetGeoJSONData);
+        insetMap.addSource("inset-centroid", insetGeoJSONCentroidData);
         insetMap.addLayer({
             'id': 'bounds',
-            'type': 'fill',
+            'type': 'line',
             'source': 'inset-bounds',
-            'layout': {},
             'paint': {
-                'fill-color': 'rgb(244, 118, 144)',
-                'fill-opacity': 0.5
+                'line-color': 'rgb(244, 118, 144)',
+                'line-opacity': 0.75,
+                'line-width': 5
             }
         });
-        _this.setState({insetGeoJSONData});
-        insetMap.fitBounds(bounds, {maxZoom: 1.5, padding: 10});
+
+        insetMap.addLayer({
+            'id': 'center',
+            'type': 'circle',
+            'source': 'inset-centroid',
+            'paint': {
+                'circle-color': 'rgb(244, 118, 144)',
+                'circle-opacity': 0.75
+            }
+        });
+
+        _this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
+
+        if(_this.showInsetAsPoint()){
+          insetMap.setFilter('center', ['==', 'v', 1]);
+          insetMap.setFilter('bounds', ['==', 'v', 2]);
+        } else {
+          insetMap.setFilter('center', ['==', 'v', 2]);
+          insetMap.setFilter('bounds', ['==', 'v', 1]);
+        }
+        
+
+        insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
       });
       _this.insetMap = insetMap;
 
