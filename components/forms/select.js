@@ -86,13 +86,13 @@ var Select = React.createClass({
    componentDidUpdate(prevProps) {
      //reload the select if remove the empty option
      if(prevProps.startEmpty !== this.props.startEmpty){
-       $('select').material_select();
+       $(ReactDOM.findDOMNode(this.refs.selectBox)).material_select();
      }
 
    },
 
    componentDidMount() {
-     $('select').material_select();
+     $(ReactDOM.findDOMNode(this.refs.selectBox)).material_select();
      $(ReactDOM.findDOMNode(this.refs.selectBox)).on('change',this.handleSelectChange);
    },
 
