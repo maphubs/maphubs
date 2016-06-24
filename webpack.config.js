@@ -3,7 +3,6 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
-var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
 var pathToPica = path.resolve(__dirname, 'node_modules/pica/dist/pica.min.js');
 
 module.exports = {
@@ -64,7 +63,7 @@ module.exports = {
   resolve: {
     modulesDirectories: ['node_modules'],
     alias: {
-      'mapbox-gl': pathToMapboxGL
+      'webworkify': 'webworkify-webpack'
     },
     extensions: ['', '.js', '.jsx', '.json']
   },
@@ -76,7 +75,10 @@ module.exports = {
   },
 
   node: {
-    fs: "empty"
+    fs: "empty",
+    i18n: 'empty',
+    net: "empty",
+    tls: "empty"
   },
 
   module: {
@@ -105,10 +107,24 @@ module.exports = {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract("style-loader", "css-loader")
       },
-      {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"}
+      {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"},
+      {
+        test: /\.js$/,
+        include: path.resolve('node_modules/mapbox-gl-shaders/index.js'),
+        loader: 'transform/cacheable?brfs'
+      }
+
 
     ],
-    noParse: [pathToMapboxGL, pathToPica]
+    postLoaders: [{
+          include: /node_modules\/mapbox-gl-shaders/,
+          loader: 'transform',
+          query: 'brfs'
+      }],
+    noParse: [
+      pathToPica,
+      '/node_modules\/json-schema\/lib\/validate\.js/' //https://github.com/request/request/issues/1920
+    ] 
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -116,14 +132,20 @@ module.exports = {
        jQuery: "jquery",
        "window.jQuery": "jquery",
        Materialize: "materialize-css",
-       "window.Materialize": "materialize-css"
+       "window.Materialize": "materialize-css",
+       "mapboxgl": "mapbox-gl"
     }),
     new webpack.optimize.CommonsChunkPlugin({
            names: ["clientconfig", "locales", "vendor"],
                        minChunks: Infinity
    }),
    new ExtractTextPlugin("[name].css"),
-   new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly)$/)
+   new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly)$/),
+   new webpack.DefinePlugin({
+    'process.env': {
+        APP_ENV: JSON.stringify('browser')
+    }
+})
   ]
 };
 

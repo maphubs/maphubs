@@ -26,12 +26,7 @@ var mapboxStreets = require('../../node_modules/mapbox-gl-styles/styles/streets-
 var mapboxOutdoors = require('../../node_modules/mapbox-gl-styles/styles/outdoors-v8.json');
 var mapboxSatellite = require('../../node_modules/mapbox-gl-styles/styles/satellite-hybrid-v8.json');
 
-var mapboxgl ={};
-if (typeof window === 'undefined') {
-   mapboxgl = require("mapbox-gl");
-} else {
-   mapboxgl = require("../../node_modules/mapbox-gl/dist/mapbox-gl");
-}
+var mapboxgl = require("mapbox-gl");
 
 var Map = React.createClass({
 
@@ -129,7 +124,7 @@ var Map = React.createClass({
   shouldComponentUpdate(nextProps, nextState){
     //always update if there is a selection
     //avoids glitch where feature hover doesn't show
-    if(this.state.selected || nextState.selected 
+    if(this.state.selected || nextState.selected
     || this.state.selectedFeatures || nextState.selectedFeatures){
       return true;
     }
@@ -371,11 +366,12 @@ var Map = React.createClass({
   },
 
   //give the bounds, determine if the inset location is too small and should be a point instead of the polygon
-  showInsetAsPoint(){    
-    var zoom = this.map.getZoom();
-    debug("Zoom: " + zoom);
-    if(zoom > 9){
-      return true;
+  showInsetAsPoint(){
+    if(this.map){
+      var zoom = this.map.getZoom();
+      if(zoom > 9){
+        return true;
+      }
     }
     return false;
   },
@@ -400,7 +396,7 @@ var Map = React.createClass({
           this.insetMap.setFilter('center', ['==', 'v', 2]);
           this.insetMap.setFilter('bounds', ['==', 'v', 1]);
         }
-        
+
         this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
       }catch(err){
           debug(err);
@@ -557,7 +553,7 @@ var Map = React.createClass({
         if(_this.insetMap){
            _this.changeLocale(_this.state.locale, _this.insetMap);
         }
-       
+
       }
       debug('(' + _this.state.id + ') ' +'MAP LOADED');
       _this.setState({mapLoaded: true});
@@ -620,7 +616,7 @@ var Map = React.createClass({
           insetMap.setFilter('center', ['==', 'v', 2]);
           insetMap.setFilter('bounds', ['==', 'v', 1]);
         }
-        
+
 
         insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
       });
@@ -638,7 +634,7 @@ var Map = React.createClass({
 
 map.on('mousemove', function(e) {
     if(_this.state.showBaseMaps) return;
-    
+
     var debounced = _debounce(function(){
       if(_this.state.mapLoaded && _this.state.restoreBounds){
         debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
@@ -650,10 +646,10 @@ map.on('mousemove', function(e) {
         [
           [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
           [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
-        ], 
+        ],
       {layers: _this.state.interactiveLayers});
 
-      if (features.length) {     
+      if (features.length) {
         if(_this.state.selected){
           $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
         } else if(_this.props.hoverInteraction){
@@ -683,7 +679,7 @@ map.on('mousemove', function(e) {
      _this.setState({selected:true});
    }else{
      $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-        
+
      var features = map.queryRenderedFeatures(
        [
         [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
@@ -720,7 +716,8 @@ map.on('mousemove', function(e) {
     map.touchZoomRotate.disableRotation();
   }
 
-
+  //var Geocoder = require('mapbox-gl-geocoder');
+  //map.addControl(new Geocoder({position: 'top-right'}));
 
   this.map = map;
 
@@ -986,6 +983,7 @@ map.on('mousemove', function(e) {
       locale = 'en';
     }
     debug('(' + this.state.id + ') ' +'changing map language to: ' + locale);
+    try{
     map.setLayoutProperty('country-label-lg', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('country-label-md', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('country-label-sm', 'text-field', '{name_' + locale + '}');
@@ -1014,7 +1012,9 @@ map.on('mousemove', function(e) {
     map.setLayoutProperty('poi-scalerank1', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('waterway-label', 'text-field', '{name_' + locale + '}');
     map.setLayoutProperty('water-label', 'text-field', '{name_' + locale + '}');
-
+    }catch(err){
+      debug(err);
+    }
 
 
   },

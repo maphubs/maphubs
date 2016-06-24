@@ -4006,6 +4006,11 @@
       "from": "function-bind@>=1.0.2 <2.0.0",
       "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.0.tgz"
     },
+    "fuzzy": {
+      "version": "0.1.1",
+      "from": "fuzzy@>=0.1.1 <0.2.0",
+      "resolved": "https://registry.npmjs.org/fuzzy/-/fuzzy-0.1.1.tgz"
+    },
     "gauge": {
       "version": "1.2.7",
       "from": "gauge@>=1.2.5 <1.3.0",
@@ -6354,6 +6359,18 @@
       "from": "mapbox-gl-function@>=1.2.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/mapbox-gl-function/-/mapbox-gl-function-1.2.1.tgz"
     },
+    "mapbox-gl-geocoder": {
+      "version": "1.1.0",
+      "from": "mapbox-gl-geocoder@latest",
+      "resolved": "https://registry.npmjs.org/mapbox-gl-geocoder/-/mapbox-gl-geocoder-1.1.0.tgz",
+      "dependencies": {
+        "lodash.debounce": {
+          "version": "3.1.1",
+          "from": "lodash.debounce@>=3.1.1 <4.0.0",
+          "resolved": "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-3.1.1.tgz"
+        }
+      }
+    },
     "mapbox-gl-js-supported": {
       "version": "1.1.0",
       "from": "mapbox-gl-js-supported@>=1.1.0 <2.0.0",
@@ -8674,6 +8691,11 @@
       "from": "subarg@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/subarg/-/subarg-1.0.0.tgz"
     },
+    "suggestions": {
+      "version": "1.3.0",
+      "from": "suggestions@>=1.3.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/suggestions/-/suggestions-1.3.0.tgz"
+    },
     "superagent": {
       "version": "1.8.1",
       "from": "superagent@1.8.1",
@@ -8916,6 +8938,11 @@
       "version": "0.1.1",
       "from": "transform-filter@>=0.1.1 <0.2.0",
       "resolved": "https://registry.npmjs.org/transform-filter/-/transform-filter-0.1.1.tgz"
+    },
+    "transform-loader": {
+      "version": "0.2.3",
+      "from": "transform-loader@latest",
+      "resolved": "https://registry.npmjs.org/transform-loader/-/transform-loader-0.2.3.tgz"
     },
     "traverse": {
       "version": "0.3.9",
@@ -9390,6 +9417,11 @@
       "version": "1.2.1",
       "from": "webworkify@>=1.0.2 <2.0.0",
       "resolved": "https://registry.npmjs.org/webworkify/-/webworkify-1.2.1.tgz"
+    },
+    "webworkify-webpack": {
+      "version": "1.1.1",
+      "from": "webworkify-webpack@latest",
+      "resolved": "https://registry.npmjs.org/webworkify-webpack/-/webworkify-webpack-1.1.1.tgz"
     },
     "weinre": {
       "version": "2.0.0-pre-I0Z7U9OV",
