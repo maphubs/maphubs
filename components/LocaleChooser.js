@@ -20,6 +20,13 @@ var LocaleChooser = React.createClass({
     LocaleActions.changeLocale(model.locale);
   },
 
+  shouldComponentUpdate(nextProps, nextState){
+    if(this.state.locale != nextState.locale){
+      return true;
+    }
+    return false;
+  },
+
   render() {
    //var _this = this;
 
@@ -44,7 +51,7 @@ var LocaleChooser = React.createClass({
 
     return (
       <div>
-          <Formsy.Form ref="form" onChange={this.onChange}> 
+          <Formsy.Form ref="form" onChange={this.onChange}>
               <Select name="locale" id="locale-select" options={options} className="locale-chooser omh-accent-text"
                     value={this.state.locale} defaultValue={this.state.locale} startEmpty={false}
                    dataPosition="left" dataTooltip={this.__('Change Language')}
