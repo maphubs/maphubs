@@ -115,9 +115,9 @@ var FeatureBox = React.createClass({
       );
 
       if(this.state.currentFeatures.length === 1){
-        header=(<h6 style={{position: 'absolute', top: 0, left: '5px'}}>{this.__('Selected Feature')}</h6>);
+        header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Feature')}</h6>);
       }else if(this.state.currentFeatures.length > 1){
-        header=(<h6 style={{position: 'absolute', top: 0, left: '5px'}}>{this.__('Selected Features')}</h6>);
+        header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Features')}</h6>);
       }
       if(this.props.showButtons){
         var osm_id = -1;
