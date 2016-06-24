@@ -116,12 +116,10 @@ handleAuthorChange(author) {
 },
 
 getFirstLine(){
-  var first_line = $('.storybody')
-    .contents()
-     .filter(function() {
-         return !!$.trim(this.innerHTML||this.data);
-     })
-      .first().text();
+  var first_line = $('.storybody').find('p')
+    .filter( function(){
+       return ($.trim($(this).text()).length);
+     }).first().text();
   return  first_line;
 },
 

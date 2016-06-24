@@ -208,7 +208,7 @@ module.exports = function(app) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.title && data.body && data.firstline) {
+    if (data && data.title && data.body) {
           Story.createUserStory(user_id, data.title, data.body, data.firstline, data.firstimage)
             .then(function(result) {
               if (result && result.length == 1) {
@@ -235,7 +235,7 @@ module.exports = function(app) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.story_id && data.title && data.body && data.firstline) {
+    if (data && data.story_id && data.title && data.body) {
       data.title = data.title.replace('&nbsp;', '');
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){

@@ -367,7 +367,7 @@ module.exports = function(app) {
               addthis: true,
               props: {
                 story, hub, canEdit: false
-              }, 
+              },
               twitterCard: {
                 title: story.title,
                 description: story.firstline,
@@ -492,7 +492,7 @@ module.exports = function(app) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.story_id && data.title && data.author && data.body && data.firstline) {
+    if (data && data.story_id && data.title && data.author && data.body) {
       data.title = data.title.replace('&nbsp;', '');
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
@@ -556,7 +556,7 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     var hub_id = req.params.hubid;
     var data = req.body;
-    if (data && data.title && data.body && data.author && data.firstline) {
+    if (data && data.title && data.body && data.author) {
       Hub.allowedToModify(hub_id, user_id)
       .then(function(allowed){
         if(allowed){
