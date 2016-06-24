@@ -925,3 +925,8 @@ textarea.materialize-textarea+label:after {
 .react-grid-Cell--locked {
   background-color: #fff;
 }
+
+.color-picker {
+  width: 100%;
+  max-width: 350px;
+}
