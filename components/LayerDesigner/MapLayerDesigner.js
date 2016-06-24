@@ -107,8 +107,10 @@ var MapLayerDesigner = React.createClass({
         || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
         designer = (
           <div style={{padding:'5px'}}>
-            <b>{this.__('Choose Raster Opacity')}</b>
-            <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} />
+             <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} 
+            style={this.state.layer.style} onStyleChange={this.setStyle} 
+            layer={this.state.layer}
+            legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
           </div>
         );
       }else if(this.state.layer.is_external

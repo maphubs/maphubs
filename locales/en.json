@@ -498,5 +498,6 @@
 	"Enable Labels for this Layer": "Enable Labels for this Layer",
 	"Label Field": "Label Field",
 	"Data field to use in map labels.": "Data field to use in map labels.",
-	"Change Language": "Change Language"
+	"Change Language": "Change Language",
+	"Opacity": "Opacity"
 }

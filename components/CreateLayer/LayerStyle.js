@@ -180,8 +180,11 @@ var LayerStyle = React.createClass({
       || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
       colorChooser = (
         <div>
-          <h5>{this.__('Choose Raster Opacity')}</h5>
-          <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} />
+          <h5>{this.__('Choose Style')}</h5>
+          <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} 
+            style={this.state.layer.style} onStyleChange={this.setStyle} 
+            layer={this.state.layer}
+            legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend} showAdvanced/>
         </div>
       );
     }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'mapbox-style') {
@@ -199,7 +202,7 @@ var LayerStyle = React.createClass({
     }else {
      colorChooser = (
       <div>
-        <h5>{this.__('Choose Color')}</h5>
+        <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
             style={this.state.layer.style} onStyleChange={this.setStyle} 
             labels={this.state.layer.labels} onLabelsChange={this.setLabels}

@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var ColorPicker = require('react-colorpickr');
 var ColorSwatch = require('./ColorSwatch');
@@ -61,7 +62,7 @@ var LayerDesigner = React.createClass({
   },
 
   componentDidMount() {
-    $('.collapsible').collapsible({
+    $(ReactDOM.findDOMNode(this.refs.collapsible)).collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
   },
@@ -121,7 +122,7 @@ var LayerDesigner = React.createClass({
 
     return (
       <div>
-      <ul className="collapsible" data-collapsible="accordion">
+      <ul ref="collapsible" className="collapsible" data-collapsible="accordion">
          <li>
            <div className="collapsible-header active">
                <i className="material-icons">color_lens</i>{this.__('Colors')}
@@ -156,7 +157,7 @@ var LayerDesigner = React.createClass({
          </li>
          <li>
            <div className="collapsible-header">
-             <i className="material-icons">expand_more</i>{this.__('Labels')}
+             <i className="material-icons">label</i>{this.__('Labels')}
              </div>
            <div className="collapsible-body">
              <LabelSettings onChange={this.onLabelsChange} style={this.state.style} labels={this.state.labels} layer={this.props.layer} />
