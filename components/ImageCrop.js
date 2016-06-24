@@ -38,8 +38,8 @@ var ImageCrop = React.createClass({
   getDefaultProps(){
     return {
         lockAspect: false,
-        aspectRatio: NaN,
-        autoCropArea: 0.95,
+        aspectRatio: null,
+        autoCropArea: 1,
         allowedExtensions: ['jpg', 'jpeg', 'png'],
         max_size: 5242880, //5MB
         skip_size: 10000, //10kb
@@ -63,17 +63,6 @@ var ImageCrop = React.createClass({
     };
   },
 
-  shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
-  },
-
   componentWillReceiveProps(nextProps) {
     var updateProps = {};
     if(nextProps.aspectRatio) {
@@ -91,7 +80,6 @@ var ImageCrop = React.createClass({
   show(){
     this.setState({show: true});
   },
-
 
 
     checkFile(file) {
@@ -365,7 +353,7 @@ resizeImage(sourceCanvas){
 
    cropOriginal(){
     this.resetCropPosition();
-    this.setState({autoCropArea: 1, aspectRatio: NaN});
+    this.setState({autoCropArea: 1, aspectRatio: null});
   },
 
   aspect16by9(){
@@ -465,6 +453,7 @@ resizeImage(sourceCanvas){
         </div>
       );
     }
+
     return (
       <Modal show={this.state.show} id="image-crop-modal" className="image-crop-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
