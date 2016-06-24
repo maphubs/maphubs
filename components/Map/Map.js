@@ -540,6 +540,10 @@ var Map = React.createClass({
         if (_this.state.restoreBounds){
           debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
           map.fitBounds(_this.state.restoreBounds, {animate:false});
+          if(_this.insetMap){
+            _this.insetMap.fitBounds(_this.state.restoreBounds, {maxZoom: 1.8, padding: 10, animate:false});
+          }
+
         }else{
           debug('(' + _this.state.id + ') ' +'No restoreBounds found');
         }
@@ -576,7 +580,9 @@ var Map = React.createClass({
       });
 
       insetMap.on('style.load', function() {
+
         var bounds = map.getBounds();
+        insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
         //create geojson from bounds
         var geoJSON = _this.getGeoJSONFromBounds(bounds);
         geoJSON.features[0].properties = {'v': 1};
@@ -618,7 +624,7 @@ var Map = React.createClass({
         }
 
 
-        insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
+
       });
       _this.insetMap = insetMap;
 
@@ -859,13 +865,22 @@ map.on('mousemove', function(e) {
           if(bounds._ne && bounds._sw){
             debug('(' + this.state.id + ') ' +'calling map fitBounds');
             this.map.fitBounds(bounds, {animate:false});
+            if(this.insetMap){
+              this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
+            }
            }else if(Array.isArray(bounds) && bounds.length > 2){
              debug('(' + this.state.id + ') ' +'calling map fitBounds');
              this.map.fitBounds([[bounds[0], bounds[1]],
                            [bounds[2], bounds[3]]], {animate:false});
+             if(this.insetMap){
+               this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
+             }
            }else{
              debug('(' + this.state.id + ') ' +'calling map fitBounds');
              this.map.fitBounds(bounds, {animate:false});
+             if(this.insetMap){
+               this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
+             }
            }
            this.setState({restoreBounds: bounds, allowLayersToMoveMap});
         }else{
