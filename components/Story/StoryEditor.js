@@ -1,5 +1,4 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var slug = require('slug');
 var Editor = require('react-medium-editor');
 var $ = require('jquery');
@@ -387,54 +386,24 @@ addMapCloseButtons(){
   var _this = this;
   $('.embed-map-container').each(function(i, map){
     var map_id = map.id.split('-')[1];
-    var removeButton = (
-      <div>
-        <a onClick={function(){_this.removeMap(map_id);}}>
-          <i className="material-icons edit-map-tooltips"
-            style={{height:'30px',
-                    lineHeight: '30px',
-                    width: '30px',
-                    color: '#29ABE2',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white',
-                    borderColor: '#ddd',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    zIndex: '100',
-                    textAlign: 'center',
-                    marginRight: '5px',
-                    fontSize:'25px'}}
-            data-position="bottom" data-delay="50" data-tooltip={_this.__('Remove Map')}
-            >close</i>
 
-        </a>
-        <a onClick={function(){
-            _this.editMap(map_id);
-            debug('edit: ' + map_id);
-          }}>
-          <i className="material-icons edit-map-tooltips"
-            style={{height:'30px',
-                    lineHeight: '30px',
-                    width: '30px',
-                    color: '#29ABE2',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white',
-                    borderColor: '#ddd',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    zIndex: '100',
-                    textAlign: 'center',
-                    fontSize:'25px'}}
-              data-position="bottom" data-delay="50" data-tooltip={_this.__('Edit Map')}
-            >edit</i>
+    $(map).append(`<div class="map-remove-button" style="position: absolute; top: 10px; right: 110px;">
+    <i class="material-icons edit-map-tooltips story-media-edit-button"
+      data-position="bottom" data-delay="50" data-tooltip="` +_this.__('Remove Map') + `"
+      >close</i>
+    <i class="material-icons edit-map-tooltips story-media-edit-button"
+        data-position="bottom" data-delay="50" data-tooltip="` + _this.__('Edit Map') + `"
+      >edit</i>
 
-        </a>
-      </div>
-    );
-    $(map).append( '<div class="map-remove-button" id="remove-button-' + map_id + '" style="position: absolute; top: 10px; right: 110px;"></div>');
-    ReactDOM.render(removeButton, document.getElementById('remove-button-' + map_id));
+    </div>`);
+
+    $(map).find('i').first().click(function(){
+      _this.removeMap(map_id);
+    });
+    $(map).find('i').last().click(function(){
+      _this.editMap(map_id);
+      debug('edit: ' + map_id);
+    });
     $('.edit-map-tooltips').tooltip();
   });
 },
@@ -450,31 +419,14 @@ addImageButtons(){
   var _this = this;
   $('.embed-image-container').each(function(i, image){
     var image_id = image.id.split('-')[1];
-    var imageButton = (
-      <div>
-        <a onClick={function(){_this.onRemoveImage(image_id);}}>
-          <i className="material-icons remove-image-tooltips"
-            style={{height:'30px',
-                    lineHeight: '30px',
-                    width: '30px',
-                    color: '#29ABE2',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white',
-                    borderColor: '#ddd',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    zIndex: '100',
-                    textAlign: 'center',
-                    marginRight: '5px',
-                    fontSize:'25px'}}
-            data-position="bottom" data-delay="50" data-tooltip={_this.__('Remove Image')}
-            >close</i>
-        </a>
-      </div>
-    );
-    $(image).append( '<div class="image-remove-button" id="image-remove-button-' + image_id + '" style="position: absolute; top: 10px; right: 10px;"></div>');
-    ReactDOM.render(imageButton, document.getElementById('image-remove-button-' + image_id));
+    $(image).append( `<div class="image-remove-button" style="position: absolute; top: 10px; right: 10px;">
+    <i class="material-icons remove-image-tooltips story-media-edit-button"
+      data-position="bottom" data-delay="50" data-tooltip="`+ _this.__('Remove Image')+ `"
+      >close</i>
+    </div>`);
+    $(image).find('i').click(function(){
+      _this.onRemoveImage(image_id);
+    });
     $('.remove-image-tooltips').tooltip();
   });
 },

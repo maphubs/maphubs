@@ -930,3 +930,20 @@ textarea.materialize-textarea+label:after {
   width: 100%;
   max-width: 350px;
 }
+
+.story-media-edit-button {
+  height:30px;
+  line-height: 30px;
+  width: 30px;
+  color: #29ABE2;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+  border-color: #ddd;
+  border-style: solid;
+  border-width: 1px;
+  z-index: 100;
+  text-align: center;
+  margin-right: 5px;
+  font-size: 25px;
+}
