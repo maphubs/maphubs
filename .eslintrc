@@ -16,6 +16,7 @@
     "babel/arrow-parens": 1,
     "flow-vars/define-flow-type": 1,
     "flow-vars/use-flow-type": 1,
+    "react/wrap-multilines": 1,
     semi: [2, "always"]
   },
 
@@ -34,7 +35,8 @@
   ],
   "settings": {
     "react": {
-      "pragma": "React" // Pragma to use, default to "React"
+      "pragma": "React",
+      "version": "14.0"
     }
   }
 }
