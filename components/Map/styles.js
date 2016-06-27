@@ -127,13 +127,13 @@ module.exports = {
   },
 
   getPointLayers(layer_id, color, hoverColor){
-    return [
+
+    var layers = [
       {
         "id": "omh-data-point-" + layer_id,
         "type": "circle",
         "interactive": true,
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["in", "$type", "Point"],
         "paint": {
           "circle-color": color,
@@ -145,7 +145,6 @@ module.exports = {
         "type": "circle",
         "interactive": false,
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["==", "osm_id", ""],
         "paint": {
           "circle-radius": 15,
@@ -159,16 +158,23 @@ module.exports = {
         }
       }
     ];
+
+    if(layer_id !== 'geojson'){
+      layers.forEach(function(layer){
+        layer["source-layer"] = "data";
+      });
+    }
+    return layers;
   },
 
   getLineLayers(layer_id, color, hoverColor){
-    return [
+
+    var layers = [
       {
         "id": "omh-data-line-" + layer_id,
         "type": "line",
         "interactive": true,
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["in", "$type", "LineString"],
         "paint": {
           "line-color": color,
@@ -181,7 +187,6 @@ module.exports = {
         "type": "line",
         "interactive": false,
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["==", "osm_id", ""],
         "paint": {
           "line-color": hoverColor,
@@ -195,16 +200,23 @@ module.exports = {
         }
       }
     ];
+
+    if(layer_id !== 'geojson'){
+      layers.forEach(function(layer){
+        layer["source-layer"] = "data";
+      });
+    }
+    return layers;
   },
 
   getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor){
-    return [
+
+    var layers = [
       {
         "id": "omh-data-polygon-" + layer_id,
         "type": "fill",
         "interactive": true,
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["in", "$type", "Polygon"],
         "paint": {
           "fill-color": color,
@@ -215,7 +227,6 @@ module.exports = {
         "id": "omh-data-doublestroke-polygon-" + layer_id,
         "type": "line",
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["in", "$type", "Polygon"],
         "paint": {
           "line-color": color,
@@ -247,7 +258,6 @@ module.exports = {
         "id": "omh-data-outline-polygon-" + layer_id,
         "type": "line",
         "source": "omh-" + layer_id,
-        "source-layer": "data",
         "filter": ["in", "$type", "Polygon"],
         "paint": {
           "line-color": "#222222",
@@ -272,7 +282,6 @@ module.exports = {
       "type": "fill",
       "interactive": false,
       "source": "omh-" + layer_id,
-      "source-layer": "data",
       "filter": ["==", "osm_id", ""],
       "paint": {
         "fill-color": hoverColor,
@@ -286,6 +295,13 @@ module.exports = {
       }
     }
     ];
+
+    if(layer_id !== 'geojson'){
+      layers.forEach(function(layer){
+        layer["source-layer"] = "data";
+      });
+    }
+    return layers;
   },
 
   styleWithColor(layer_id, source, color, selectedColors, dataType=null) {
