@@ -103,9 +103,10 @@ var Map = React.createClass({
 
     }
     var glStyle = null;
+    var interactiveLayers = [];
     if(this.props.glStyle){
        glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
-       var interactiveLayers = this.getInteractiveLayers(glStyle);
+      interactiveLayers = this.getInteractiveLayers(glStyle);
     }
     return {
       id: this.props.id ? this.props.id : 'map',
