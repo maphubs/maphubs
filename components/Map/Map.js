@@ -972,7 +972,7 @@ map.on('mousemove', function(e) {
 
       var interactiveLayers = this.getInteractiveLayers(glStyle);
 
-      this.setState({geoJSONData, interactiveLayers});
+      this.setState({geoJSONData, interactiveLayers, glStyle});
       this.zoomToData(data);
     } else {
       //empty data
