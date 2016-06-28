@@ -28,19 +28,6 @@ var LocaleChooser = React.createClass({
   },
 
   render() {
-   //var _this = this;
-
-    /*
-    var enColor = '#000';
-    var frColor = '#000';
-    var esColor = '#000';
-    if(this.state.locale == 'en'){
-      enColor = '#29ABE2';
-    }else if(this.state.locale == 'fr'){
-      frColor = '#29ABE2';
-    }else if(this.state.locale == 'es'){
-      esColor = '#29ABE2';
-    }*/
 
     var options = [
       {value: 'en', label: 'English'},
@@ -54,7 +41,6 @@ var LocaleChooser = React.createClass({
           <Formsy.Form ref="form" onChange={this.onChange}>
               <Select name="locale" id="locale-select" options={options} className="locale-chooser omh-accent-text"
                     value={this.state.locale} defaultValue={this.state.locale} startEmpty={false}
-                   dataPosition="left" dataTooltip={this.__('Change Language')}
                    required/>
           </Formsy.Form>
       </div>
