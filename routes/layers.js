@@ -4,9 +4,12 @@ var Layer = require('../models/layer');
 var Group = require('../models/group');
 var Stats = require('../models/stats');
 var multer  = require('multer');
+var log = require('../services/log');
 var shp2json = require('shp2json');
+var ogr2ogr = require('ogr2ogr');
 var shapefileFairy = require('shapefile-fairy');
 var fs = require('fs');
+var unzip = require('unzip2');
 var Promise = require('bluebird');
 var login = require('connect-ensure-login');
 var DataLoadUtils = require('../services/data-load-utils');
@@ -365,42 +368,44 @@ module.exports = function(app) {
          debug('Mimetype: ' +req.file.mimetype);
          if(_endsWith(req.file.originalname, '.zip')){
            debug('Zip File Detected');
-           //validate
-           shapefileFairy(req.file.path, function(result){
-             debug('ShapefileFairy Result: ' + JSON.stringify(result));
-             result.success = result.valid;
-             if(result.valid){
-               debug('Shapefile Validation Successful');
-               //we can finish converting to geojson
-               var fileStream = fs.createReadStream(req.file.path);
-               var stream = shp2json(fileStream); //note: shp2json automatically transforms to EPSG:4326
+           fs.createReadStream(req.file.path).pipe(unzip.Extract({ path: req.file.path + '_zip' }))
+           .on('close', function(err){
+              if (err) throw err;
+             //validate
+             shapefileFairy(req.file.path, function(result){
+               debug('ShapefileFairy Result: ' + JSON.stringify(result));
+               result.success = result.valid;
 
-               var data = '';
-                 stream.on('data', function(chunk) {
-                   data+=chunk;
-                 });
-
-               stream.on('end', function() {
-                 let geoJSON = JSON.parse(data);
-                 DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
-                 .then(function(result){
+               if(result.valid){
+                 debug('Shapefile Validation Successful');
+                 var shpFilePath = req.file.path + '_zip/' + result.value.shp;
+                 debug("shapefile: " + shpFilePath);
+                  var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
+                  ogr.exec(function (er, geoJSON) {
+                    if (er){
+                      log.error(er);
+                      res.status(200).send({success: false, error: er.toString()});
+                    }else{
+                      DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                      .then(function(result){
+                        //tell the client if we were successful
+                        res.status(200).send(result);
+                      }).catch(apiError(res, 500));
+                    }
+                  });
+               }else{
+                 debug('Shapefile Validation Error: ' + result.error);
+                 DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
+                 .then(function(){
+                   debug('Finished storing temp path');
                    //tell the client if we were successful
                    res.status(200).send(result);
                  }).catch(apiError(res, 500));
-               });
-             }else{
-               debug('Shapefile Validation Error: ' + result.error);
-               DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
-               .then(function(){
-                 debug('Finished storing temp path');
-                 //tell the client if we were successful
-                 res.status(200).send(result);
-               }).catch(apiError(res, 500));
-             }
-           },
-           {extract: false});
+               }
+             },
+             {extract: false});
 
-
+          });
 
 
          } else if(_endsWith(req.file.originalname, '.geojson')
@@ -448,6 +453,7 @@ app.post('/api/layer/finishupload', function(req, res) {
           result.success = result.valid;
           result.error = result.msg;
           if(result.valid){
+
             var fileStream = fs.createReadStream(path);
             var stream = shp2json(fileStream, {shapefileName: req.body.requestedShapefile}); //note: shp2json automatically transforms to EPSG:4326
 

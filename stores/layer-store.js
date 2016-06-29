@@ -264,7 +264,7 @@ module.exports = Reflux.createStore({
     debug("loadData");
     var _this = this;
     request.get('/api/layer/create/savedata/' + _this.state.layer.layer_id)
-    .type('json').accept('json')
+    .type('json').accept('json').timeout(1200000)
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         _this.trigger(_this.state);

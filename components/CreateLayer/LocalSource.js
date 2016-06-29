@@ -49,7 +49,8 @@ var LocalSource = React.createClass({
       selectedSource: 'local',
       geoJSON: null,
       selectedOption: 'upload',
-      selectedDataType: 'point'
+      selectedDataType: 'point',
+      largeData: false
     };
   },
 
@@ -116,7 +117,7 @@ var LocalSource = React.createClass({
   onUpload(result){
     var _this = this;
     if(result.success){
-      this.setState({geoJSON: result.geoJSON, canSubmit: true});
+      this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});
       PresetActions.setImportedTags(result.uniqueProps);
       LayerActions.setDataType(result.data_type);
     }else{
@@ -210,7 +211,12 @@ var LocalSource = React.createClass({
     var fileUpload ='';
     if(uploadOption){
       var url = "/api/layer/" + this.state.layer.layer_id + "/upload";
-
+      var largeDataMessage = '';
+      if(this.state.largeData){
+        largeDataMessage = (
+        <p>{this.__('Data Uploaded Successfully. Large dataset detected, you will be able to preview the data in Step 5 after it is loaded.')}</p>
+        );
+      }
       var map = '';
       if(this.state.geoJSON){
         map = (
@@ -240,6 +246,7 @@ var LocalSource = React.createClass({
             <FileUpload onUpload={this.onUpload} onError={this.onUploadError} action={url} />
           </div>
           <div className="row">
+            {largeDataMessage}
             {map}
           </div>
           {multipleShapefiles}

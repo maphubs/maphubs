@@ -4,12 +4,15 @@ var GJV = require("geojson-validation");
 var log = require('./log');
 var local = require('../local');
 var debug = require('./debug')('data-load-utils');
-var geojson2osm = require('osm-and-geojson').geojson2osm;
+var geojson2osm = require('./geojson_to_macrocosm');
 var Changeset = require('./changeset');
 var fs = require('fs');
-var XML = require('./xml');
+//var XML = require('./xml');
 var LayerViews = require('./layer-views');
 var Promise = require('bluebird');
+var sizeof = require('object-sizeof');
+
+var LARGE_DATA_THRESHOLD = 20000000;
 //var GlobalViews = require('./global-views.js');
 
 module.exports = {
@@ -69,6 +72,10 @@ module.exports = {
     var result = {success: false, error: 'Unknown Error'};
     var uniqueProps = [];
 
+    if(!geoJSON){
+      result.error = "Error dataset missing.";
+      reject(result);
+    }
     //confirm that it is a feature collection
     if(geoJSON.type === "FeatureCollection"){
 
@@ -150,6 +157,11 @@ module.exports = {
       debug(extent);
       geoJSON.bbox = extent;
 
+      fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), function(err){
+        if(err) log.error(err);
+        debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
+      });
+
       var commands = [
         db('omh.layers').where({
             layer_id
@@ -164,7 +176,7 @@ module.exports = {
         debug('Update temp geojson');
         commands.push(
         db('omh.temp_data').update({
-          data:JSON.stringify(geoJSON),
+          //data:JSON.stringify(geoJSON),
           srid,
           unique_props:JSON.stringify(uniqueProps)})
           .where({layer_id})
@@ -175,7 +187,7 @@ module.exports = {
         );
         commands.push(
         db('omh.temp_data').insert({layer_id,
-          data:JSON.stringify(geoJSON),
+          //data:JSON.stringify(geoJSON),
           uploadtmppath,
           srid,
           unique_props:JSON.stringify(uniqueProps)})
@@ -186,9 +198,15 @@ module.exports = {
       Promise.all(commands)
         .then(function(dbResult){
           if(dbResult){
+            var largeData = false;
+            if(sizeof(geoJSON) > LARGE_DATA_THRESHOLD){
+              largeData = true;
+              geoJSON = null;
+            }
             result = {
               success: true,
               error: null,
+              largeData,
               geoJSON,
               uniqueProps,
               data_type: geomType
@@ -214,38 +232,68 @@ module.exports = {
 
   getTempData(layer_id){
     debug('getTempData');
-    return knex('omh.temp_data').select('data').where({layer_id});
+    return knex('omh.temp_data').select('uploadtmppath').where({layer_id})
+    .then(function(result){
+      return new Promise(function (resolve, reject) {
+      fs.readFile(result[0].uploadtmppath + '.geojson', 'utf8', function (err, data) {
+        if (err) reject(err);
+          var geoJSON = JSON.parse(data);
+          resolve(geoJSON);
+        });
+      });
+    });
   },
 
   loadTempDataToOSM(layer_id, uid, trx){
     //get GeoJSON from temp table
     debug('loading temp data to OSM');
-      return trx('omh.temp_data').select('data').where({layer_id})
-      .then(function(dbResult){
-
+      return this.getTempData(layer_id)
+      .then(function(geoJSONData){
         //create a new changeset
         return Changeset.createChangeset(uid, trx)
         .then(function(changeSetResult){
           var changeset_id = changeSetResult[0];
           debug('created changeset: ' + changeset_id);
-          //convert to OSM XML changeset
-          var osmXML = geojson2osm(dbResult[0].data, changeset_id, true);
-          if(local.writeDebugData){
-            fs.writeFile('osm.xml', osmXML, function(err){
-              if(err) log.error(err);
-              debug('wrote OSM XML to osm.xml');
-            });
+          var numFeatures = geoJSONData.features.length;
+          //by default we only need one interation
+          var chunks = 1;
+          var chunkSize = numFeatures;
+
+          var dataSize = sizeof(geoJSONData);
+          log.info("Data Size: " + dataSize);
+          if(dataSize > LARGE_DATA_THRESHOLD){
+            chunks = Math.ceil(dataSize / LARGE_DATA_THRESHOLD);
+            chunkSize = Math.ceil(numFeatures / chunks);
+            log.info('Large Data - chunking data load into ' + chunks + ' chunks of ' + chunkSize + ' features');
           }
-          var changeset = XML.read(osmXML);
-          if(local.writeDebugData){
-            fs.writeFile('osm.json', JSON.stringify(changeset), function(err){
-              if(err) log.error(err);
-              debug('wrote OSM JOSN to osm.json');
-            });
+
+
+          var chunksArr = [];
+          for(var i = chunks; i >= 0; i--){
+            chunksArr.push(i);
           }
-          //store data
-          return Changeset.processChangeset(changeset_id, uid, layer_id, changeset, trx)
-          .then(function(processChangeSetResult){
+
+          //loop through chunks
+          return Promise.map(chunksArr, function(i){
+            var start = chunkSize * i;
+            var progress = Math.floor(((i-1)/chunks)*100);
+            debug(progress + '% chunk: ' + i + '/' + chunks + ' features: ' + start + ' through ' + (start + chunkSize));
+            let osmJSON = geojson2osm(geoJSONData, changeset_id, true, start, chunkSize);
+
+            if(local.writeDebugData){
+              fs.writeFile(local.tempFilePath + 'osm-' + i + '.json', JSON.stringify(osmJSON), function(err){
+                if(err) {
+                  log.error(err);
+                  throw err;
+                }
+                debug('wrote OSM JSON to osm.json');
+              });
+            }
+            return Changeset.processChangeset(changeset_id, uid, layer_id, osmJSON, trx);
+
+          }, {concurrency: 1})
+          .then(function(results){
+            var processChangeSetResult = results[results.length-1];
             return Changeset.closeChangeset(changeset_id, trx)
             .then(function(){
               return processChangeSetResult;

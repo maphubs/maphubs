@@ -79,12 +79,17 @@ var Node = {
     model.version = parseInt(entity.version, 10) || 1;
     model.timestamp = new Date();
     model.layer_id = layerID;
-    if (entity.lat && entity.lon) {
+    if (entity.lat !== undefined && entity.lon !== undefined) {
       entity.lat = parseFloat(entity.lat);
       entity.lon = parseFloat(entity.lon);
       model.latitude = entity.lat * ratio | 0;
       model.longitude = entity.lon * ratio | 0;
       model.tile = QuadTile.xy2tile(QuadTile.lon2x(entity.lon), QuadTile.lat2y(entity.lat));
+      if(entity.lat === undefined || entity.lon === undefined){
+        throw new Error("Error parsing lat/lon: " + JSON.stringify(entity));
+      }
+    }else{
+      throw new Error("Node missing lat/lon: " + JSON.stringify(entity));
     }
 
     // Parse int on entity.id, so we can see if it's a negative id.
@@ -264,7 +269,7 @@ var Node = {
     log.info("inserting nodes");
     return Promise.map(chunk(models, 1000), function(models) {
       return q.transaction(Node.tableName).insert(models).returning('id');
-    }, {concurrency: 1})
+    }, {concurrency: 4})
     .then(remap)
     .then(saveTags)
     .catch(function(err) {
