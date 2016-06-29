@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -6,48 +6,39 @@ ENV DEBIAN_FRONTEND noninteractive
 MAINTAINER Kristofor Carle - MapHubs <kris@maphubs.com>
 
 #update and install basics
-RUN apt-get update && apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick libpq-dev
+RUN apt-get update && \
+apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick libpq-dev && \
+apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #install node, npm, pm2
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash
-RUN apt-get install -y nodejs
-RUN npm install -g npm@3.9.2 && npm install pm2 -g
+RUN apt-get install -y nodejs && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN npm install -g npm@3.10.2 && npm install pm2 -g
 
-#create non-root user
-RUN useradd -s /bin/bash -m -d /home/maphubs -c "maphubs" maphubs && chown -R maphubs:maphubs /home/maphubs
+RUN mkdir -p /app
+WORKDIR /app
 
-#switch over and do everything else as the non-priledged user
-USER maphubs
-
-RUN mkdir -p /home/maphubs/app
-WORKDIR /home/maphubs/app
-
-COPY package.json /home/maphubs/app/package.json
-COPY npm-shrinkwrap.json /home/maphubs/app/npm-shrinkwrap.json
+COPY package.json /app/package.json
+COPY npm-shrinkwrap.json /app/npm-shrinkwrap.json
 RUN npm install
 
 #install iD
-RUN cd /home/maphubs/ && git clone -b maphubs-dev --single-branch https://github.com/openmaphub/iD.git
+RUN git clone -b maphubs-dev --single-branch https://github.com/openmaphub/iD.git
 
-user root
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-COPY . /home/maphubs/app
-RUN chown -R maphubs:maphubs /home/maphubs/app
-RUN chmod +x /home/maphubs/app/docker-entrypoint.sh
+COPY . /app
+RUN chmod +x /app/docker-entrypoint.sh
 
 #copy environment specific config file
-COPY env/deploy_local.js  /home/maphubs/app/local.js
-RUN chown maphubs:maphubs /home/maphubs/app/local.js
-
-#VOLUME ["/var/log/maphubs"]
-#RUN chown -R maphubs:maphubs /var/log/maphubs
+COPY env/deploy_local.js  /app/local.js
 
 #create temp folders
-USER maphubs
-RUN mkdir -p public && mkdir -p temp/uploads
+RUN mkdir -p public && mkdir -p temp/uploads  && mkdir -p temp/logs
+
+VOLUME ["/app/temp/uploads"]
+VOLUME ["/app/temp/logs"]
 
 EXPOSE 4000
 ENV NODE_ENV production
 
 ENV DEBUG *,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:*,-pm2:*
-CMD /home/maphubs/app/docker-entrypoint.sh
+CMD /app/docker-entrypoint.sh
