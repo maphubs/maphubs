@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #overwrite the client-config with live values
-cat <<EOF >/home/maphubs/app/clientconfig.js
+cat <<EOF >/app/clientconfig.js
 module.exports = {
   host: "${OMH_HOST}",
   port: ${OMH_PORT},
@@ -12,7 +12,7 @@ module.exports = {
 EOF
 
 #write iD config
-cat <<EOF >/home/maphubs/iD/js/config.js
+cat <<EOF >/app/iD/js/config.js
 var OMH_CONFIG = {
   AUTH_URL: "${ID_AUTH_URL}",
   OAUTH_CONSUMER_KEY: "${ID_KEY}",
