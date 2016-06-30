@@ -93,7 +93,7 @@ app.use('/docs', express.static('doc'));
 app.use('/assets', express.static('assets'));
 
 //serve iD
-app.use('/edit', express.static('../iD'));
+app.use('/edit', express.static('./iD'));
 
 //use webpack middleware in local dev environment
 if(process.env.NODE_ENV !== 'production'){
