@@ -288,16 +288,18 @@ module.exports = Reflux.createStore({
          if(layer.active != undefined && layer.active == false){
            //hide style layers for this layer
            style.layers.forEach(function(styleLayer){
-             styleLayer['layout'] = {
-               "visibility": "none"
-             };
+             if(!styleLayer['layout']){
+               styleLayer['layout'] = {};
+             }
+             styleLayer['layout']['visibility'] = 'none';
            });
          } else {
            //reset all the style layers to visible
            style.layers.forEach(function(styleLayer){
-             styleLayer['layout'] = {
-               "visibility": "visible"
-             };
+             if(!styleLayer['layout']){
+               styleLayer['layout'] = {};
+             }
+             styleLayer['layout']['visibility'] = 'visible';
            });
          }
          //add source

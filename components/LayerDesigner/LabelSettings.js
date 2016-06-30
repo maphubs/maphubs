@@ -21,7 +21,7 @@ var LabelSettings = React.createClass({
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
     layer: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object.isRequired,
+    style: React.PropTypes.object,
     labels: React.PropTypes.object
   },
 
@@ -55,7 +55,7 @@ var LabelSettings = React.createClass({
       this.setState({style, enabled: true, field: values.field});
       this.props.onChange(style, values);
     } else if(values.enabled && !values.field){
-      this.setState({enabled: true});    
+      this.setState({enabled: true});
     } else{
       //remove labels from style
       style = styles.removeStyleLabels(this.state.style);
@@ -75,7 +75,7 @@ var LabelSettings = React.createClass({
           label: preset.label
           });
       });
-      
+
     }
 
     var invalidMessage = '';
@@ -89,7 +89,7 @@ var LabelSettings = React.createClass({
       <div>
         <div className="row">
           <Formsy.Form ref="form" onChange={this.onFormChange}>
-             <Toggle name="enabled" labelOff="Off" labelOn="On" className="col l6 m6 s12"                    
+             <Toggle name="enabled" labelOff="Off" labelOn="On" className="col l6 m6 s12"
                        defaultChecked={this.state.enabled}
                         dataPosition="right" dataTooltip={this.__('Enable Labels for this Layer')}
                         />
