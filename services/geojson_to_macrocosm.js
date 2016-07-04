@@ -268,10 +268,9 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
             nodes = nodes.concat(coords.nodes);
             way.nd = coords.nds;
             way.tag = propertiesToTagsJSON(properties);
+            
+            way.tag.push({k: "area", v: "true"}); //flag this area as a polygon
 
-            if(!multipolygon){
-              way.tag.push({k: "area", v: "true"}); //flag this area as a polygon
-            }
             ways.push(way);
         }
         if(relation){
@@ -298,6 +297,9 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
                   value = value.replace(/&(?!amp;)/g, "\&amp;");
                   value = value.replace(/</g,"\&lt;");
                   value = value.replace(/>/g,"\&gt;");
+                }
+                if(tag.toLowerCase() === 'area'){
+                  tag = tag + '_import';
                 }
                 tags.push({k: tag, v: value});
             }

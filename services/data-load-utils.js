@@ -269,15 +269,14 @@ module.exports = {
 
 
           var chunksArr = [];
-          for(var i = chunks; i >= 0; i--){
+          for(var i = chunks-1; i >= 0; i--){
             chunksArr.push(i);
           }
 
           //loop through chunks
           return Promise.map(chunksArr, function(i){
             var start = chunkSize * i;
-            var progress = Math.floor(((i-1)/chunks)*100);
-            debug(progress + '% chunk: ' + i + '/' + chunks + ' features: ' + start + ' through ' + (start + chunkSize));
+            debug('chunk: ' + (i+1) + '/' + chunks + ' features: ' + start + ' through ' + (start + chunkSize));
             let osmJSON = geojson2osm(geoJSONData, changeset_id, true, start, chunkSize);
 
             if(local.writeDebugData){
@@ -286,7 +285,6 @@ module.exports = {
                   log.error(err);
                   throw err;
                 }
-                debug('wrote OSM JSON to osm.json');
               });
             }
             return Changeset.processChangeset(changeset_id, uid, layer_id, osmJSON, trx);
