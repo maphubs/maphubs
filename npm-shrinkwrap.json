@@ -1087,9 +1087,9 @@
       "resolved": "https://registry.npmjs.org/buffertools/-/buffertools-2.1.4.tgz"
     },
     "buildmail": {
-      "version": "3.7.0",
-      "from": "buildmail@3.7.0",
-      "resolved": "https://registry.npmjs.org/buildmail/-/buildmail-3.7.0.tgz"
+      "version": "3.8.0",
+      "from": "buildmail@3.8.0",
+      "resolved": "https://registry.npmjs.org/buildmail/-/buildmail-3.8.0.tgz"
     },
     "builtin-modules": {
       "version": "1.1.1",
@@ -3096,9 +3096,9 @@
       "resolved": "https://registry.npmjs.org/generate-object-property/-/generate-object-property-1.2.0.tgz"
     },
     "generic-pool": {
-      "version": "2.1.1",
-      "from": "generic-pool@2.1.1",
-      "resolved": "https://registry.npmjs.org/generic-pool/-/generic-pool-2.1.1.tgz"
+      "version": "2.4.2",
+      "from": "generic-pool@2.4.2",
+      "resolved": "https://registry.npmjs.org/generic-pool/-/generic-pool-2.4.2.tgz"
     },
     "geo-xform": {
       "version": "1.2.4",
@@ -4665,9 +4665,9 @@
       }
     },
     "mailcomposer": {
-      "version": "3.9.0",
-      "from": "mailcomposer@3.9.0",
-      "resolved": "https://registry.npmjs.org/mailcomposer/-/mailcomposer-3.9.0.tgz"
+      "version": "3.10.0",
+      "from": "mailcomposer@3.10.0",
+      "resolved": "https://registry.npmjs.org/mailcomposer/-/mailcomposer-3.10.0.tgz"
     },
     "mailgun-js": {
       "version": "0.7.11",
@@ -5657,14 +5657,14 @@
       "resolved": "https://registry.npmjs.org/pbkdf2-compat/-/pbkdf2-compat-2.0.1.tgz"
     },
     "pg": {
-      "version": "4.5.5",
-      "from": "pg@4.5.5",
-      "resolved": "https://registry.npmjs.org/pg/-/pg-4.5.5.tgz",
+      "version": "6.0.2",
+      "from": "pg@6.0.2",
+      "resolved": "https://registry.npmjs.org/pg/-/pg-6.0.2.tgz",
       "dependencies": {
         "semver": {
-          "version": "4.3.6",
-          "from": "semver@>=4.1.0 <5.0.0",
-          "resolved": "https://registry.npmjs.org/semver/-/semver-4.3.6.tgz"
+          "version": "4.3.2",
+          "from": "semver@4.3.2",
+          "resolved": "https://registry.npmjs.org/semver/-/semver-4.3.2.tgz"
         }
       }
     },
@@ -5695,15 +5695,20 @@
         }
       }
     },
+    "pg-pool": {
+      "version": "1.3.1",
+      "from": "pg-pool@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/pg-pool/-/pg-pool-1.3.1.tgz"
+    },
     "pg-types": {
       "version": "1.11.0",
       "from": "pg-types@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/pg-types/-/pg-types-1.11.0.tgz"
     },
     "pgpass": {
-      "version": "0.0.3",
-      "from": "pgpass@0.0.3",
-      "resolved": "https://registry.npmjs.org/pgpass/-/pgpass-0.0.3.tgz"
+      "version": "0.0.6",
+      "from": "pgpass@0.0.6",
+      "resolved": "https://registry.npmjs.org/pgpass/-/pgpass-0.0.6.tgz"
     },
     "pica": {
       "version": "2.0.4",
@@ -6365,9 +6370,9 @@
       "resolved": "https://registry.npmjs.org/redux/-/redux-3.5.2.tgz"
     },
     "reflux": {
-      "version": "0.3.0",
-      "from": "reflux@0.3.0",
-      "resolved": "https://registry.npmjs.org/reflux/-/reflux-0.3.0.tgz"
+      "version": "0.4.1",
+      "from": "reflux@0.4.1",
+      "resolved": "https://registry.npmjs.org/reflux/-/reflux-0.4.1.tgz"
     },
     "reflux-core": {
       "version": "0.3.0",
@@ -6377,7 +6382,7 @@
     "reflux-state-mixin": {
       "version": "0.6.3",
       "from": "openmaphub/Super-Simple-Flux",
-      "resolved": "git://github.com/openmaphub/Super-Simple-Flux.git#e3c4d1977bca2ae9a33f0e086ecc5ca12b9e8707"
+      "resolved": "git://github.com/openmaphub/Super-Simple-Flux.git#388278e536d9e35491ca250daee0b3b19e969f0f"
     },
     "regenerate": {
       "version": "1.3.1",
@@ -6727,9 +6732,9 @@
       "resolved": "https://registry.npmjs.org/simple-mime/-/simple-mime-0.1.0.tgz"
     },
     "sitemap": {
-      "version": "1.7.0",
-      "from": "sitemap@>=1.6.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/sitemap/-/sitemap-1.7.0.tgz"
+      "version": "1.8.0",
+      "from": "sitemap@1.8.0",
+      "resolved": "https://registry.npmjs.org/sitemap/-/sitemap-1.8.0.tgz"
     },
     "slash": {
       "version": "1.0.0",
@@ -6963,9 +6968,9 @@
       "resolved": "https://registry.npmjs.org/sphericalmercator/-/sphericalmercator-1.0.5.tgz"
     },
     "split": {
-      "version": "0.3.3",
-      "from": "split@>=0.3.0 <0.4.0",
-      "resolved": "https://registry.npmjs.org/split/-/split-0.3.3.tgz"
+      "version": "1.0.0",
+      "from": "split@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/split/-/split-1.0.0.tgz"
     },
     "sprintf-js": {
       "version": "1.0.3",
