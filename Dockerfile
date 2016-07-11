@@ -11,9 +11,12 @@ apt-get install -y wget git curl libssl-dev openssl nano unzip python build-esse
 apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #install node, npm, pm2
-RUN curl -sL https://deb.nodesource.com/setup_4.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash
 RUN apt-get install -y nodejs && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN npm install -g npm@3.10.2 && npm install pm2 -g
+
+#don't upgrade npm until this is resolved https://github.com/npm/npm/issues/9863
+#RUN npm install -g npm@3.10.5 && npm install pm2 -g
+RUN npm install pm2 -g
 
 RUN mkdir -p /app
 WORKDIR /app

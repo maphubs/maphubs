@@ -124,7 +124,7 @@ module.exports = {
     noParse: [
       pathToPica,
       '/node_modules\/json-schema\/lib\/validate\.js/' //https://github.com/request/request/issues/1920
-    ] 
+    ]
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -146,7 +146,11 @@ module.exports = {
         APP_ENV: JSON.stringify('browser')
     }
 })
-  ]
+  ],
+
+  externals: {
+    'unicode/category/So': '{}'
+}
 };
 
 //
