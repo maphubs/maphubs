@@ -123,10 +123,10 @@ var RasterTileSource = React.createClass({
             <div>
               <p>Raster Tile Source</p>
             <div className="row">
-              <TextInput name="rasterTileUrl" label={this.__('Raster Tile URL')} icon="info" className="col s12" validations="maxLength:200,isHttps" validationErrors={{
-                     maxLength: this.__('Must be 200 characters or less.'),
+              <TextInput name="rasterTileUrl" label={this.__('Raster Tile URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
+                     maxLength: this.__('Must be 500 characters or less.'),
                      isHttps:  this.__('MapHubs requires SSL for external links, URLs must start with https://')
-                 }} length={200}
+                 }} length={500}
                  dataPosition="top" dataTooltip={this.__('Raster URL for example:') +'http://myserver/tiles/{z}/{y}/{x}.png'}
                  required/>
             </div>

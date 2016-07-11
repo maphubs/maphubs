@@ -500,5 +500,6 @@
 	"Data field to use in map labels.": "Data field to use in map labels.",
 	"Change Language": "Change Language",
 	"Opacity": "Opacity",
-	"Choose Style": "Choose Style"
+	"Choose Style": "Choose Style",
+	"Must be 500 characters or less.": "Must be 500 characters or less."
 }
