@@ -5,7 +5,6 @@ var Group = require('../models/group');
 var Stats = require('../models/stats');
 var multer  = require('multer');
 var log = require('../services/log');
-var shp2json = require('shp2json');
 var ogr2ogr = require('ogr2ogr');
 var shapefileFairy = require('shapefile-fairy');
 var fs = require('fs');
@@ -453,21 +452,19 @@ app.post('/api/layer/finishupload', function(req, res) {
           result.success = result.valid;
           result.error = result.msg;
           if(result.valid){
-
-            var fileStream = fs.createReadStream(path);
-            var stream = shp2json(fileStream, {shapefileName: req.body.requestedShapefile}); //note: shp2json automatically transforms to EPSG:4326
-
-            var data = '';
-              stream.on('data', function(chunk) {
-                data+=chunk;
-              });
-
-            stream.on('end', function() {
-              let geoJSON = JSON.parse(data);
-              DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, true)
-              .then(function(result){
-                res.status(200).send(result);
-              }).catch(apiError(res, 500));
+            var shpFilePath = path + '/' + req.body.requestedShapefile;
+            var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
+            ogr.exec(function (er, geoJSON) {
+              if (er){
+                log.error(er);
+                res.status(200).send({success: false, error: er.toString()});
+              }else{
+                DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, true)
+                .then(function(result){
+                  //tell the client if we were successful
+                  res.status(200).send(result);
+                }).catch(apiError(res, 500));
+              }
             });
           }
         }, {shapefileName: req.body.requestedShapefile});
