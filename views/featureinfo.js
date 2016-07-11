@@ -212,11 +212,11 @@ var FeatureInfo = React.createClass({
             </div>
 
             <div className="row no-margin" style={{height: 'calc(100% - 108px)'}}>
-              <ul className="tabs">
-                <li className="tab col s4"><a className="active" href="#data">{this.__('Data')}</a></li>
-                <li className="tab col s4"><a href="#photo">{this.__('Photo')}</a></li>
-                <li className="tab col s4"><a href="#discussion">{this.__('Discussion')}</a></li>
-                <li className="tab col s4"><a href="#notes">{this.__('Notes')}</a></li>
+              <ul className="tabs" style={{overflowX: 'hidden'}}>
+                <li className="tab"><a className="active" href="#data">{this.__('Data')}</a></li>
+                <li className="tab"><a href="#photo">{this.__('Photo')}</a></li>
+                <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>
+                <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
               </ul>
               <div id="data" className="col s12" style={{height: 'calc(100% - 48px)'}}>
                 <Griddle results={data} showFilter={true} showSettings={false} resultsPerPage={10}

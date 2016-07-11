@@ -518,11 +518,11 @@ var LayerInfo = React.createClass({
 
 
             <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
-              <ul className="tabs">
-                <li className="tab col s4"><a className="active" href="#info">{this.__('Info')}</a></li>
-                <li className="tab col s4"><a href="#discuss">{this.__('Discuss')}</a></li>
-                <li className="tab col s4"><a href="#data" onClick={this.onTabSelect}>{this.__('Data')}</a></li>
-                <li className="tab col s4"><a href="#export">{this.__('Export')}</a></li>
+              <ul className="tabs" style={{overflowX: 'hidden'}}>
+                <li className="tab"><a className="active" href="#info">{this.__('Info')}</a></li>
+                <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>
+                <li className="tab"><a href="#data" onClick={this.onTabSelect}>{this.__('Data')}</a></li>
+                <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
               <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
                 <div className="row" style={{height: 'calc(100% - 47px)', marginLeft:'10px', marginRight: '10px'}}>

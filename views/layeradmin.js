@@ -121,11 +121,11 @@ var LayerAdmin = React.createClass({
           <div className="row">
            <div className="col s12">
              <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
-             <ul className="tabs">
-               <li className="tab col s3"><a className="active" href="#info">{this.__('Info/Settings')}</a></li>
-               <li className="tab col s3"><a href="#source">{this.__('Source/License')}</a></li>
-               <li className="tab col s3"><a href="#fields">{this.__('Fields')}</a></li>
-               <li className="tab col s3"><a href="#style">{this.__('Style/Display')}</a></li>
+             <ul className="tabs" style={{overflowX: 'hidden'}}>
+               <li className="tab"><a className="active" href="#info">{this.__('Info/Settings')}</a></li>
+               <li className="tab"><a href="#source">{this.__('Source/License')}</a></li>
+               <li className="tab"><a href="#fields">{this.__('Fields')}</a></li>
+               <li className="tab"><a href="#style">{this.__('Style/Display')}</a></li>
              </ul>
            </div>
            <div id="info" className="col s12">
