@@ -336,7 +336,8 @@ var LayerInfo = React.createClass({
 
     var dataTabContent = '';
     if(this.state.originalRows && typeof window !== 'undefined'){
-      var ReactDataGrid = require('react-data-grid/addons');
+      var ReactDataGrid = require('react-data-grid');
+      var ReactDataGridAddons = require('react-data-grid/addons');
       var Toolbar = require('../components/DataGrid/Toolbar');
 
        dataTabContent = (

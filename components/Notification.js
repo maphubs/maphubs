@@ -1,11 +1,11 @@
 var React = require('react');
-var ReactNotification = require('react-notification');
+import {Notification} from 'react-notification';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var NotificationStore = require('../stores/NotificationStore');
 var NotificationActions = require('../actions/NotificationActions');
 
-var Notification = React.createClass({
+var MapHubsNotification = React.createClass({
 
   mixins:[StateMixin.connect(NotificationStore)],
 
@@ -33,23 +33,25 @@ var Notification = React.createClass({
     }
 
     return (
-      <ReactNotification
-        id="omh-notification"
-        isActive={this.state.isActive}
-        message={this.state.message}
-        action={this.state.action}
-        onClick={this.state.onClick}
-        dismissAfter={this.state.dismissAfter}
-        onDismiss={this.onDismiss}
-        style={{
-          bar: {background: this.state.backgroundColor},
-          action: {color: this.state.color},
-          active: position
-        }}
+      <Notification
+      id="omh-notification"
+      isActive={this.state.isActive}
+      message={this.state.message}
+      action={this.state.action}
+      onClick={this.state.onClick}
+      dismissAfter={this.state.dismissAfter}
+      onDismiss={this.onDismiss}
+      barStyle={{background:this.state.backgroundColor}}
+      activeBarStyle={position}
+      actionStyle={{color: this.state.color}}
       />
     );
 
   }
 });
+/*
 
-module.exports = Notification;
+
+*/
+
+module.exports = MapHubsNotification;

@@ -10,6 +10,8 @@ var MessageActions = require('../actions/MessageActions');
 var _isequal = require('lodash.isequal');
 var $ = require('jquery');
 
+import Cropper from 'react-cropper';
+
 var EXIF = require('exif-js');
 
 var ImageCrop = React.createClass({
@@ -397,7 +399,7 @@ resizeImage(sourceCanvas){
 
     var cropper = '';
     if (typeof window !== 'undefined') {
-      var Cropper = require('react-cropper');
+      //var Cropper = require('react-cropper');
       if(this.state.src){
         cropper = (
           <Cropper

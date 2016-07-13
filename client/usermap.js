@@ -5,7 +5,8 @@ require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
-require('../node_modules/react-colorpickr/react-colorpickr.css');
+require('../node_modules/react-colorpickr/dist/colorpickr.css');
+require('medium-editor/dist/css/medium-editor.css');
 var UserMap = require('../views/usermap');
 
 require('../css/app.css');

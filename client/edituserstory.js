@@ -6,13 +6,15 @@ const EditUserStory = require('../views/edituserstory');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
-require('../node_modules/react-colorpickr/react-colorpickr.css');
+require('../node_modules/react-colorpickr/dist/colorpickr.css');
+require('medium-editor/dist/css/medium-editor.css');
+require('medium-editor/dist/css/themes/flat.css');
 require('../css/app.css');
 require('../css/feedback-right.css');
 require('./story.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
-require('medium-editor/dist/css/medium-editor.css');
-require('medium-editor/dist/css/themes/flat.css');
+
+require("cropperjs/dist/cropper.css");
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;

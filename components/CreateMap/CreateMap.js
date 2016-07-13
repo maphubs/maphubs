@@ -22,7 +22,7 @@ var MessageActions = require('../../actions/MessageActions');
 
 var MapLayerDesigner = require('../LayerDesigner/MapLayerDesigner');
 
-var Editor = require('react-medium-editor');
+import Editor from 'react-medium-editor';
 
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
@@ -339,15 +339,24 @@ var CreateMap = React.createClass({
       if(_isEmpty(this.state.title)){
         placeholder = {text: this.__('Enter a Map Title')};
       }
+      var classNames = "create-map-title right grey-text text-darken-4";
+      if(this.state.title && this.state.title != ''){
+        classNames = classNames + " hide-placeholder";
+      }
       title = (
-        <div className="create-map-title right grey-text text-darken-4" style={{marginRight: '20px', minWidth: '200px', textAlign: 'right'}}>
+        <div className={classNames} style={{marginRight: '20px', minWidth: '200px', textAlign: 'right'}}>
           <Editor
          tag="h5"
          text={this.state.title}
          onChange={this.handleTitleChange}
-         options={{buttonLabels: 'fontawesome',
+         options={{
+           buttonLabels: 'false',
            placeholder,
-           disableReturn: true, buttons: []}}
+           disableReturn: true,
+           toolbar: {
+             buttons: []
+           }
+         }}
        />
       </div>
       );
@@ -479,13 +488,13 @@ var CreateMap = React.createClass({
     return (
       <Modal show={this.state.show} id="create-map-modal" className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
         <ModalContent className="row no-margin" style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
-          <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>         
+          <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>
             {sidebarContent}
           </div>
-          <div className="col s6 m10 l9 no-padding" style={{height: '100%'}}>   
+          <div className="col s6 m10 l9 no-padding" style={{height: '100%'}}>
             <div className="row no-margin">{title}</div>
             <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
-              
+
               <div className="row" style={{height: '100%', width: '100%', margin: 0, overflow: 'auto', position: 'relative'}}>
                 <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
                   glStyle={this.state.mapStyle}
@@ -493,7 +502,7 @@ var CreateMap = React.createClass({
                   onChangeBaseMap={Actions.setMapBasemap}
                   fitBounds={mapExtent}
                   />
-    
+
                   <MiniLegend style={{
                         position: 'absolute',
                         top: '5px',

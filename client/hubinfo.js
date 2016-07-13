@@ -10,7 +10,7 @@ if (!global.Intl) {
 }
 require('babel-polyfill');
 require('jquery');
-require('../node_modules/react-colorpickr/react-colorpickr.css');
+require('../node_modules/react-colorpickr/dist/colorpickr.css');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
 
@@ -19,6 +19,7 @@ require('./story.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');
+require("cropperjs/dist/cropper.css");
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;

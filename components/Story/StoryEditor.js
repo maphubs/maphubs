@@ -1,6 +1,5 @@
 var React = require('react');
 var slug = require('slug');
-var Editor = require('react-medium-editor');
 var $ = require('jquery');
 var debounce = require('lodash.debounce');
 var _isequal = require('lodash.isequal');
@@ -23,7 +22,7 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
 import Progress from '../Progress';
-
+import Editor from 'react-medium-editor';
 
 var StoryEditor = React.createClass({
 
@@ -553,9 +552,11 @@ showImageCrop(){
          tag="b"
          text={this.state.author}
          onChange={this.handleAuthorChange}
-         options={{buttonLabels: 'fontawesome',
+         options={{buttonLabels: false,
            placeholder: {text: this.__('Enter the Author')},
-           disableReturn: true, buttons: []}}
+           disableReturn: true,
+           imageDragging: false,
+           toolbar: {buttons: []}}}
          />
       </div>
       );
@@ -579,9 +580,12 @@ showImageCrop(){
            tag="h3"
            text={this.state.title}
            onChange={this.handleTitleChange}
-           options={{buttonLabels: 'fontawesome',
+           options={{buttonLabels: false,
              placeholder: {text: this.__('Enter a Title for Your Story')},
-             disableReturn: true, buttons: []}}
+             disableReturn: true,
+             imageDragging: false,
+             toolbar: {buttons: []}
+           }}
          />
 
         </div>
@@ -591,10 +595,19 @@ showImageCrop(){
            className="storybody"
            text={this.state.body}
            onChange={this.handleBodyChange}
-           options={{buttonLabels: 'fontawesome',
+           options={{
+             buttonLabels: 'fontawesome',
              delay: 100,
              placeholder: {text: this.__('Type your Story Here')},
-             buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'justifyLeft', 'justifyCenter', 'justifyRight', 'quote','orderedlist','unorderedlist', 'pre','removeFormat']}}
+             toolbar: {
+               buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'justifyLeft', 'justifyCenter', 'justifyRight', 'quote','orderedlist','unorderedlist', 'pre','removeFormat']
+             },
+             paste: {
+               forcePlainText: false,
+               cleanPastedHTML: true
+             },
+              imageDragging: false
+           }}
          />
        </div>
      </div>

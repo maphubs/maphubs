@@ -31,7 +31,7 @@ Promise.config({
 
 
   require('babel-core/register')({
-    ignore: /node_modules\/(?!(react-slick|medium-editor|reflux-state-mixin|react-colorpickr)).*/
+    ignore: /node_modules\/(?!(react-slick|react-disqus-thread|medium-editor|reflux-state-mixin|react-colorpickr)).*/
   });
   require('babel-polyfill');
 

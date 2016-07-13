@@ -456,14 +456,30 @@ textarea.materialize-textarea+label:after {
   display: block;
 }
 
-
-
 .editor-container div {
   outline: none;
 }
 
 .editor-container h1 {
   outline: none;
+}
+
+.editor-container div ::selection {
+  background: #29ABE2; /* WebKit/Blink Browsers */
+  color: white;
+}
+.editor-container div ::-moz-selection {
+  background: #29ABE2; /* Gecko Browsers */
+  color: white;
+}
+
+.editor-container h1 ::selection {
+  background: #29ABE2; /* WebKit/Blink Browsers */
+  color: white;
+}
+.editor-container h1 ::-moz-selection {
+  background: #29ABE2; /* Gecko Browsers */
+  color: white;
 }
 
 .medium-toolbar-arrow-under:after {
@@ -498,6 +514,7 @@ textarea.materialize-textarea+label:after {
 
 .medium-editor-toolbar-form .medium-editor-toolbar-input {
   height: 60px;
+  display: inherit !important;
   background: #29ABE2 !important;
   color: #fff; }
   .medium-editor-toolbar-form .medium-editor-toolbar-input::-webkit-input-placeholder {
@@ -537,25 +554,9 @@ textarea.materialize-textarea+label:after {
     white-space: pre; }
 
 
-
-.editor-container div ::selection {
-  background: #29ABE2; /* WebKit/Blink Browsers */
-  color: white;
-}
-.editor-container div ::-moz-selection {
-  background: #29ABE2; /* Gecko Browsers */
-  color: white;
-}
-
-.editor-container h1 ::selection {
-  background: #29ABE2; /* WebKit/Blink Browsers */
-  color: white;
-}
-.editor-container h1 ::-moz-selection {
-  background: #29ABE2; /* Gecko Browsers */
-  color: white;
-}
-
+    .hide-placeholder .medium-editor-placeholder:after {
+        display: none;
+    }
 
 
 .color-swatch {

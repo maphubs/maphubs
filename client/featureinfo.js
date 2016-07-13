@@ -5,6 +5,7 @@ require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
+require("cropperjs/dist/cropper.css");
 var FeatureInfo = require('../views/featureinfo');
 
 require('../css/app.css');
