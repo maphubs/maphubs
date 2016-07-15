@@ -6,9 +6,15 @@ var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
-var request = require('superagent');
+var Promise = require('bluebird');
+var request = require('superagent-bluebird-promise');
 var debug = require('../services/debug')('home');
 var $ = require('jquery');
+
+var config = require('../clientconfig');
+var urlUtil = require('../services/url-util');
+var slug = require('slug');
+var _shuffle = require('lodash.shuffle');
 
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
@@ -35,6 +41,7 @@ var Search = React.createClass({
   getInitialState() {
     return {
       searchResult: null,
+      searchCards: [],
       searching: false
     };
   },
@@ -68,51 +75,206 @@ var Search = React.createClass({
 
   onResetSearch(){
     this.refs.map.resetGeoJSON();
-    this.setState({searchResult: null});
+    this.setState({searchResult: null, searchCards: []});
   },
 
   handleSearch(input){
     var _this = this;
     this.setState({searching: true});
-    request.get('/api/global/search' + '?q=' + input)
-    .type('json').accept('json')
-    .end(function(err, res){
+    var requests = [
+      request.get('/api/global/search' + '?q=' + input).type('json').accept('json').promise(),
+      request.get('/api/layers/search' + '?q=' + input).type('json').accept('json').promise(),
+      request.get('/api/groups/search' + '?q=' + input).type('json').accept('json').promise(),
+      request.get('/api/hubs/search' + '?q=' + input).type('json').accept('json').promise(),
+      request.get('/api/maps/search' + '?q=' + input).type('json').accept('json').promise()
+    ];
+
+    Promise.all(requests).then(function(results){
       _this.setState({searching: false});
-      if (err) {
-        debug(err);
-        MessageActions.showMessage({title: 'Error', message: err.toString()});
-      }else{
-        if(res.body && res.body.features && res.body.features.length > 0){
-          NotificationActions.showNotification(
-            {
-              message: res.body.features.length + ' ' + _this.__('Results Found'),
-              position: 'bottomright',
-              dismissAfter: 3000
-          });
-          _this.setState({searchResult: res.body});
-        }else{
-          //clear Map
-          //tell user no results found
-          NotificationActions.showNotification(
-            {
-              message: _this.__('No Results Found'),
-              position: 'bottomright',
-              dismissAfter: 3000
-          });
-        }
+
+      var totalResults = 0;
+
+      var featureRes = results[0];
+      var layerRes = results[1];
+      var groupRes = results[2];
+      var hubRes = results[3];
+      var mapRes = results[4];
+
+      var layerResults =[];
+      var groupResults = [];
+      var hubResults = [];
+      var mapResults = [];
+      var storyResults = [];
+
+      //layers
+      if(layerRes.body && layerRes.body.layers && layerRes.body.layers.length > 0){
+        totalResults += layerRes.body.layers.length;
+        layerResults = layerRes.body.layers;
       }
+
+      //groups
+      if(groupRes.body && groupRes.body.groups && groupRes.body.groups.length > 0){
+        totalResults += groupRes.body.groups.length;
+        groupResults = groupRes.body.groups;
+      }
+
+      //hubs
+      if(hubRes.body && hubRes.body.hubs && hubRes.body.hubs.length > 0){
+        totalResults += hubRes.body.hubs.length;
+        hubResults = hubRes.body.hubs;
+      }
+
+      //map
+      if(mapRes.body && mapRes.body.maps && mapRes.body.maps.length > 0){
+        totalResults += mapRes.body.maps.length;
+        mapResults = mapRes.body.maps;
+      }
+
+      var searchCards = _this.getMixedCardSet(layerResults, groupResults, hubResults, mapResults, storyResults);
+
+      //features
+      if(featureRes.body && featureRes.body.features && featureRes.body.features.length > 0){
+        _this.setState({
+          searchResult: featureRes.body,
+          searchCards
+        });
+        totalResults += featureRes.body.features.length;
+      }else{
+        _this.setState({
+          searchCards
+        });
+      }
+
+      if(totalResults > 0){
+        NotificationActions.showNotification(
+          {
+            message: totalResults
+             + ' ' + _this.__('Results Found'),
+            position: 'bottomright',
+            dismissAfter: 3000
+        });
+
+      }else{
+        //clear Map
+        //tell user no results found
+        NotificationActions.showNotification(
+          {
+            message: _this.__('No Results Found'),
+            position: 'bottomright',
+            dismissAfter: 3000
+        });
+      }
+
+
+
+    }).catch(function(err){
+      _this.setState({searching: false});
+      debug(err);
+      MessageActions.showMessage({title: 'Error', message: err.toString()});
+
     });
   },
 
+  getLayerCard(layer){
+    var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
+    return {
+      id: layer.layer_id.toString(),
+      title: layer.name,
+      description: layer.description,
+      image_url,
+      source: layer.source,
+      group: layer.owned_by_group_id,
+      type: 'layer',
+      link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+    };
+  },
+
+  getGroupCard(group){
+    var image_url = null;
+    if(group.hasimage){
+      image_url = '/group/' + group.group_id + '/image';
+    }
+    return {
+      id: group.group_id,
+      title: group.name,
+      description: group.description,
+      image_url,
+      link: '/group/' + group.group_id,
+      group: group.group_id,
+      type: 'group'
+    };
+  },
+
+  getHubCard(hub){
+    var title = hub.name.replace('&nbsp;', '');
+    var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+    return {
+      id: hub.hub_id,
+      title,
+      description: hub.description,
+      image_url: '/hub/' + hub.hub_id + '/images/logo',
+      background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
+      link: hubUrl,
+      type: 'hub'
+    };
+  },
+
+  getMapCard(map){
+    var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
+    return {
+      id: map.map_id.toString(),
+      title: map.title ? map.title : '',
+      image_url,
+      link: '/user/' + map.username + '/map/' + map.map_id,
+      type: 'map',
+      map
+    };
+  },
+
+  getStoryCard(story){
+    var title = story.title.replace('&nbsp;', '');
+    var story_url = '';
+    if(story.display_name){
+      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      story_url = baseUrl + '/user/' + story.display_name;
+    }else if(story.hub_id){
+      var hubUrl = urlUtil.getHubUrl(story.hub_id, config.host, config.port);
+      story_url = hubUrl;
+    }
+    story_url += '/story/' + story.story_id + '/' + slug(title);
+
+    var image_url = null;
+    if(story.firstimage){
+      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
+    }
+
+    return {
+      id: story.story_id.toString(),
+      title,
+      image_url,
+      link: story_url,
+      type: 'story',
+      story
+    };
+  },
+
+  getMixedCardSet(layers, groups, hubs, maps, stories){
+    return _shuffle(layers.map(this.getLayerCard)
+      .concat(groups.map(this.getGroupCard))
+      .concat(hubs.map(this.getHubCard))
+      .concat(maps.map(this.getMapCard))
+      .concat(stories.map(this.getStoryCard))
+    );
+  },
+
 	render() {
-    var searchCards = [];
     var cardsPanel = '';
-    if(this.state.searchResult){
+    if(this.state.searchCards && this.state.searchCards.length > 0){
       cardsPanel = (
         <div className="row">
           <div className="col s12">
             <div className="divider"></div>
-            <CardCarousel cards={searchCards} infinite={false}/>
+            <CardCarousel cards={this.state.searchCards} infinite={false}/>
           </div>
         </div>
       );
@@ -131,7 +293,7 @@ var Search = React.createClass({
             <SearchBox label={this.__('Search All Data')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
           </div>
         </div>
-        <div className="row no-margin" style={{height: 'calc(100% - 150px)', minHeight: '200px'}}>
+        <div className="row no-margin" style={{height: 'calc(75% - 150px)', minHeight: '200px'}}>
           <Map ref="map" style={{width: '100%', height: '100%'}}
             disableScrollZoom={true} hoverInteraction={true}
             data={this.state.searchResult} >
