@@ -113,28 +113,19 @@ getCookie(cname) {
     var defaultLinkClasses = "";
     var activeLinkClasses = "active";
 
-    var layersClasses = defaultLinkClasses,
-        mapsClasses = defaultLinkClasses,
-        groupsClasses = defaultLinkClasses,
-        hubsClasses = defaultLinkClasses,
+    var exploreClasses = defaultLinkClasses,
+        servicesClasses = defaultLinkClasses,
         aboutClasses = defaultLinkClasses,
-        storiesClasses = defaultLinkClasses,
         myStoriesClasses = defaultLinkClasses,
         myMapsClasses = defaultLinkClasses;
     if(this.props.activePage){
       var activePage = this.props.activePage;
-      if(activePage == 'layers'){
-        layersClasses = activeLinkClasses;
-      }else if(activePage == 'maps'){
-        mapsClasses = activeLinkClasses;
-      }else if(activePage == 'groups'){
-        groupsClasses = activeLinkClasses;
-      }else if(activePage == 'hubs'){
-        hubsClasses = activeLinkClasses;
+      if(activePage == 'explore'){
+        exploreClasses = activeLinkClasses;
+      }else if(activePage == 'services'){
+        servicesClasses = activeLinkClasses;
       }else if(activePage == 'about'){
         aboutClasses = activeLinkClasses;
-      }else if(activePage == 'stories'){
-        storiesClasses = activeLinkClasses;
       }else if(activePage == 'mystories'){
         myStoriesClasses = activeLinkClasses;
       }else if(activePage == 'mymaps'){
@@ -160,7 +151,7 @@ getCookie(cname) {
 
     return (
       <header>
-      <nav className="white" style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)', paddingRight: '0.75rem'}}>
+      <nav className="white" style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
         <div className="nav-wrapper white z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
             <img className="valign" width="148" height="40" style={{margin: '5px'}} src="/assets/maphubs-logo.png" alt={this.__('MapHubs Logo')}/>
@@ -172,30 +163,28 @@ getCookie(cname) {
           <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
             <li className="nav-link-wrapper">
-              <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
+              <a className={exploreClasses} href='/explore'>{this.__('Explore')}</a>
             </li>
             <li className="nav-link-wrapper">
-              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
+              <a className={servicesClasses} href='/services'>{this.__('Services')}</a>
             </li>
-            <li className="nav-link-wrapper">
-              <a className={hubsClasses} href='/hubs'>{this.__('Hubs')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
-            </li>
+
 
             {myMaps}
             {myStories}
             <li className="nav-link-wrapper">
               <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
+
             <li style={{marginRight: '10px'}}>
               <LocaleChooser />
             </li>
-              <UserMenu id="user-menu-header"/>
+            <UserMenu id="user-menu-header"/>
+            <li className="nav-link-wrapper">
+              <a href='/search'>
+                <i className="material-icons">search</i>
+              </a>
+            </li>
           </ul>
           <ul className="side-nav" id="side-nav-menu">
               <UserMenu id="user-menu-sidenav"/>
@@ -203,19 +192,10 @@ getCookie(cname) {
               <LocaleChooser />
             </li>
             <li className="nav-link-wrapper">
-              <a className={storiesClasses} href='/stories'>{this.__('Stories')}</a>
+              <a className={exploreClasses} href='/stories'>{this.__('Explore')}</a>
             </li>
             <li className="nav-link-wrapper">
-              <a className={mapsClasses} href='/maps'>{this.__('Maps')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a className={hubsClasses} href='/hubs'>{this.__('Hubs')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a className={groupsClasses} href='/groups'>{this.__('Groups')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a className={layersClasses} href='/layers'>{this.__('Layers')}</a>
+              <a className={servicesClasses} href='/maps'>{this.__('Services')}</a>
             </li>
 
             {myMaps}
@@ -223,8 +203,13 @@ getCookie(cname) {
             <li className="nav-link-wrapper">
               <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
-
+            <li className="nav-link-wrapper">
+              <a href='/search'>
+                <i className="material-icons">search</i>{this.__('Search')}
+              </a>
+            </li>
           </ul>
+
         </div>
       </nav>
       <Notification />

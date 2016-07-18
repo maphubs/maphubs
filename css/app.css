@@ -17,15 +17,15 @@ html, body {
 }
 
 .btn, .omh-btn{
-  background-color: #FFF !important;
-  color: #29ABE2 !important;
-  border-color: RGBA(41, 171, 226, 0.7) !important;
-  border-style: solid !important;
-  border-width: 1px !important;
+  background-color: #FFF;
+  color: #29ABE2;
+  border-color: RGBA(41, 171, 226, 0.7);
+  border-style: solid;
+  border-width: 1px;
 }
 
 
-.omh-btn:hover{
+.btn:hover, .omh-btn:hover{
   background-color: #eceff1;
 }
 
@@ -312,6 +312,52 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .slick-slider {
     height: 100%;
+}
+
+.slider, .slider-frame, .slider-list, .slider-slide {
+    height: 100% !important;
+}
+
+.slide-decorator-2 ul li button{
+  color: #FFF !important;
+}
+
+.slide-text {
+  position: absolute;
+  display: block;
+  margin-left: 5%;
+  max-width: 80%;
+  padding: 0;
+  top: 50%;
+  bottom: auto;
+  width: auto;
+  background: none;
+  -webkit-transform: translate(0, -50%);
+  transform: translate(0, -50%);
+}
+
+.slide-text h2 {
+  background: rgba(0,0,0,0.55);
+    font-size: 61px;
+    padding: 10px 5px 5px;
+    color: rgba(255,255,255,0.85);
+    border: none;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.slide-text h3 {
+  display: inline-block;
+  float: left;
+  clear: both;
+  background: rgba(0,0,0,0.55);
+  font-size: 31px;
+  padding: 5px;
+  overflow: hidden;
+  color: rgba(255,255,255,0.85);
+  border: none;
+  text-transform: uppercase;
+  font-weight: 300;
 }
 
 /*Action Button*/
@@ -947,4 +993,12 @@ textarea.materialize-textarea+label:after {
   text-align: center;
   margin-right: 5px;
   font-size: 25px;
+}
+
+.mapmaker-tab {
+  /*border: 1px solid #29ABE2;*/
+}
+
+.mapmaker-tab .active {
+
 }

@@ -1,15 +1,16 @@
 var React = require('react');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 
+var Carousel = require('nuka-carousel');
+import SliderDecorators from '../components/home/SliderDecorators';
+
+var OnboardingLinks = require('../components/home/OnboardingLinks');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
 var _shuffle = require('lodash.shuffle');
-var OnboardingLinks = require('../components/Home/OnboardingLinks');
-var CardFilter = require('../components/Home/CardFilter');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -25,51 +26,21 @@ var Home = React.createClass({
   },
 
   propTypes: {
-    featuredLayers: React.PropTypes.array,
-    featuredGroups: React.PropTypes.array,
-    featuredHubs: React.PropTypes.array,
-    featuredMaps: React.PropTypes.array,
-    featuredStories: React.PropTypes.array,
-    popularLayers: React.PropTypes.array,
-    popularGroups: React.PropTypes.array,
-    popularHubs: React.PropTypes.array,
-    popularMaps: React.PropTypes.array,
-    popularStories: React.PropTypes.array,
-    recentLayers: React.PropTypes.array,
-    recentGroups: React.PropTypes.array,
-    recentHubs: React.PropTypes.array,
-    recentMaps: React.PropTypes.array,
-    recentStories: React.PropTypes.array,
+    trendingLayers: React.PropTypes.array,
+    trendingGroups: React.PropTypes.array,
+    trendingHubs: React.PropTypes.array,
+    trendingMaps: React.PropTypes.array,
+    trendingStories: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
   getInitialState(){
     return {
-      storyMode: 'featured',
-      mapMode: 'featured',
-      hubMode: 'featured',
-      groupMode: 'featured',
-      layerMode: 'featured',
-
-      featuredStoryCards: _shuffle(this.props.featuredStories.map(this.getStoryCard)),
-      popularStoryCards: _shuffle(this.props.popularStories.map(this.getStoryCard)),
-      recentStoryCards: _shuffle(this.props.recentStories.map(this.getStoryCard)),
-
-      featuredMapCards: _shuffle(this.props.featuredMaps.map(this.getMapCard)),
-      popularMapCards: _shuffle(this.props.popularMaps.map(this.getMapCard)),
-      recentMapCards: _shuffle(this.props.recentMaps.map(this.getMapCard)),
-
-      featuredHubCards: _shuffle(this.props.featuredHubs.map(this.getHubCard)),
-      popularHubCards: _shuffle(this.props.popularHubs.map(this.getHubCard)),
-      recentHubCards: _shuffle(this.props.recentHubs.map(this.getHubCard)),
-
-      featuredGroupCards: _shuffle(this.props.featuredGroups.map(this.getGroupCard)),
-      popularGroupCards: _shuffle(this.props.popularGroups.map(this.getGroupCard)),
-      recentGroupCards: _shuffle(this.props.recentGroups.map(this.getGroupCard)),
-
-      featuredLayerCards: _shuffle(this.props.featuredLayers.map(this.getLayerCard)),
-      popularLayerCards: _shuffle(this.props.popularLayers.map(this.getLayerCard)),
-      recentLayerCards: _shuffle(this.props.recentLayers.map(this.getLayerCard))
+      trendingStoryCards: _shuffle(this.props.trendingStories.map(this.getStoryCard)),
+      trendingMapCards: _shuffle(this.props.trendingMaps.map(this.getMapCard)),
+      trendingHubCards: _shuffle(this.props.trendingHubs.map(this.getHubCard)),
+      trendingGroupCards: _shuffle(this.props.trendingGroups.map(this.getGroupCard)),
+      trendingLayerCards: _shuffle(this.props.trendingLayers.map(this.getLayerCard))
     };
   },
 
@@ -161,195 +132,105 @@ var Home = React.createClass({
   },
 
   getMixedCardSet(layers, groups, hubs, maps, stories){
-    return _shuffle(layers.map(this.getLayerCard)
-      .concat(groups.map(this.getGroupCard))
-      .concat(hubs.map(this.getHubCard))
-      .concat(maps.map(this.getMapCard))
-      .concat(stories.map(this.getStoryCard))
-    );
+    return layers
+      .concat(groups)
+      .concat(hubs)
+      .concat(maps)
+      .concat(stories);
   },
 
 	render() {
-    var _this = this;
-    var storyCards = [];
-    if(this.state.storyMode === 'featured'){
-      storyCards = this.state.featuredStoryCards;
-    }else if(this.state.storyMode === 'popular'){
-      storyCards = this.state.popularStoryCards;
-    }else if(this.state.storyMode === 'recent'){
-      storyCards = this.state.recentStoryCards;
-    }
+    var trendingCards = this.getMixedCardSet(
+      this.state.trendingLayerCards,
+      this.state.trendingGroupCards,
+      this.state.trendingHubCards,
+      this.state.trendingMapCards,
+      this.state.trendingStoryCards
+    );
 
-    var mapCards = [];
-    if(this.state.mapMode === 'featured'){
-      mapCards =  this.state.featuredMapCards;
-    }else if(this.state.mapMode === 'popular'){
-      mapCards =  this.state.popularMapCards;
-    }else if(this.state.mapMode === 'recent'){
-      mapCards =  this.state.recentMapCards;
-    }
-
-    var hubCards = [];
-    if(this.state.hubMode === 'featured'){
-      hubCards =  this.state.featuredHubCards;
-    }else if(this.state.hubMode === 'popular'){
-      hubCards =  this.state.popularHubCards;
-    }else if(this.state.hubMode === 'recent'){
-      hubCards =  this.state.recentHubCards;
-    }
-
-    var groupCards = [];
-    if(this.state.groupMode === 'featured'){
-      groupCards = this.state.featuredGroupCards;
-    }else if(this.state.groupMode === 'popular'){
-      groupCards =  this.state.popularGroupCards;
-    }else if(this.state.groupMode === 'recent'){
-      groupCards =  this.state.recentGroupCards;
-    }
-
-    var layerCards = [];
-    if(this.state.layerMode === 'featured'){
-      layerCards =  this.state.featuredLayerCards;
-    }else if(this.state.layerMode === 'popular'){
-      layerCards =  this.state.popularLayerCards;
-    }else if(this.state.layerMode === 'recent'){
-      layerCards =  this.state.recentLayerCards;
-    }
-
-
+     var slides = [
+       {
+         title: this.__('Mapping for Everyone'),
+         text: this.__('MapHubs is a home for the world\'s open map data and an easy tool for making maps'),
+         buttonText: this.__('Learn More'),
+         link: '/about',
+         img: '/assets/home/Moabi-Aerial.jpg'
+       },
+       {
+         title: this.__('Maps for Environmental Journalism'),
+         text: this.__('Tell Your Story with Maps'),
+         buttonText: this.__('Learn More'),
+         link: '/journalists',
+         img: '/assets/home/Moabi-Canoe.jpg'
+       },
+       {
+         title: this.__('Explore Maps'),
+         text: this.__('MapHubs has map layers for environment, natural resources, and development'),
+         buttonText: this.__('Explore Maps'),
+         link: '/explore',
+         img: '/assets/home/MapHubs-Map.png'
+       },
+       {
+         title: this.__('MapHubs Services'),
+         text: this.__(' MapHubs currently offers a range of service to help you get mapping'),
+         buttonText: this.__('Learn More'),
+         link: '/services',
+         img: '/assets/home/Moabi-Forest.jpg'
+       }
+     ];
 
 		return (
-      <div>
+      <div style={{margin: 0, height: '100%'}}>
       <Header />
-      <main style={{margin: 0}}>
-        <div className="row" style={{marginTop: '10px', marginBottom: 0, marginRight: '5px'}}>
-        <div className="col l3 m4 s12 offset-l9 offset-m8">
-          <SearchBox label={this.__('Search MapHubs')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+      <main style={{margin: 0, height: '100%'}}>
+
+        <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
+          <Carousel autoplay={false} autoplayInterval={3000} wrapAround={true}
+            decorators={SliderDecorators}>
+            {slides.map(function(slide){
+              return (
+                <div className="homepage-slide responsive-img valign-wrapper"
+                  style={{
+                    height: '100%',
+                    backgroundSize: 'cover',
+                    backgroundImage: 'url('+ slide.img + ')'
+                  }}>
+                  <div className="slide-text">
+                    <h2 className="no-margin">{slide.title}</h2>
+                    <h3 className="no-margin">{slide.text}</h3>
+
+                  </div>
+                  <div className="center"
+                    style={{position: 'absolute', bottom: '75px', width: '100%', margin: 'auto'}}>
+                    <a className="btn waves-effect z-depth-3" style={{backgroundColor: '#29ABE2', color: 'white', borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
+                  </div>
+
+               </div>
+             );
+            })}
+          </Carousel>
         </div>
-      </div>
-        <OnboardingLinks />
-         <div className="divider"></div>
-         <div className="row no-margin">
+         <div className="row">
+          <OnboardingLinks />
+        </div>
+         <div className="row" style={{marginBottom: '50px'}}>
            <div className="row no-margin" style={{height: '50px'}}>
-             <div className="col s12 m2 l1">
-               <a href="/stories">
-                 <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>{this.__('Stories')}</h5>
-               </a>
-             </div>
-             <div className="col s12 m6 l7 valign-wrapper" style={{height: '50px'}}>
-               <span className="valign" style={{fontSize: '14px'}}>{this.__('User generated stories featuring interactive maps and images on a variety of topics')}</span>
-             </div>
-             <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-              <CardFilter onChange={function(value){_this.setState({storyMode:value});}} />
+             <div>
+                <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>
+                  {this.__('Trending')}
+                  <i className="material-icons" style={{fontWeight: 'bold'}}>trending_up</i>
+                </h5>
              </div>
            </div>
            <div className="row">
              <div className="col s12">
-               <CardCarousel cards={storyCards} infinite={false}/>
+               <CardCarousel cards={trendingCards} infinite={false}/>
              </div>
-           </div>
-           <div className="row center-align" style={{marginTop: '35px', marginBottom:'10px'}}>
-             <a href='/stories' className="btn">{this.__('More Stories')}</a>
            </div>
           </div>
-          <div className="divider"></div>
-          <div className="row no-margin">
-            <div className="row no-margin" style={{height: '50px'}}>
-              <div className="col s12 m2 l1">
-                <a href="/maps">
-                  <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>{this.__('Maps')}</h5>
-                </a>
-              </div>
-              <div className="col s12 m6 l7 valign-wrapper" style={{height: '50px'}}>
-                <span className="valign" style={{fontSize: '14px'}}>{this.__('Interactive maps featuring open data')}</span>
-              </div>
-              <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-               <CardFilter onChange={function(value){_this.setState({mapMode:value});}} />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col s12">
-                <CardCarousel cards={mapCards} infinite={false}/>
-              </div>
-            </div>
-            <div className="row center-align" style={{marginTop: '35px', marginBottom:'10px'}}>
-              <a href='/maps' className="btn">{this.__('More Maps')}</a>
-            </div>
-           </div>
-           <div className="divider"></div>
-           <div className="row no-margin">
-             <div className="row no-margin" style={{height: '50px'}}>
-               <div className="col s12 m2 l1">
-                 <a href="/hubs">
-                   <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>{this.__('Hubs')}</h5>
-                 </a>
-               </div>
-               <div className="col s12 m6 l7 valign-wrapper" style={{height: '50px'}}>
-                 <span className="valign" style={{fontSize: '14px'}}>{this.__('Collections of stories and maps on a variety of topics')}</span>
-               </div>
-               <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-                <CardFilter onChange={function(value){_this.setState({hubMode:value});}} />
-               </div>
-             </div>
-             <div className="row">
-               <div className="col s12">
-                 <CardCarousel cards={hubCards} infinite={false}/>
-               </div>
-             </div>
-             <div className="row center-align" style={{marginTop: '35px', marginBottom:'10px'}}>
-               <a href='/hubs' className="btn">{this.__('More Hubs')}</a>
-             </div>
-            </div>
-            <div className="divider"></div>
-            <div className="row no-margin">
-              <div className="row no-margin" style={{height: '50px'}}>
-                <div className="col s12 m2 l1">
-                  <a href="/groups">
-                    <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>{this.__('Groups')}</h5>
-                  </a>
-                </div>
-                <div className="col s12 m6 l7 valign-wrapper" style={{height: '50px'}}>
-                  <span className="valign" style={{fontSize: '14px'}}>{this.__('Collections of layers managed by a group or organization')}</span>
-                </div>
-                <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-                 <CardFilter onChange={function(value){_this.setState({groupMode:value});}} />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col s12">
-                  <CardCarousel cards={groupCards} infinite={false}/>
-                </div>
-              </div>
-              <div className="row center-align" style={{marginTop: '35px', marginBottom:'10px'}}>
-                <a href='/groups' className="btn">{this.__('More Groups')}</a>
-              </div>
-             </div>
-             <div className="divider"></div>
-             <div className="row no-margin">
-               <div className="row no-margin" style={{height: '50px'}}>
-                 <div className="col s12 m2 l1">
-                   <a href="/layers">
-                     <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
-                   </a>
-                 </div>
-                 <div className="col s12 m6 l7 valign-wrapper" style={{height: '50px'}}>
-                   <span className="valign" style={{fontSize: '14px'}}>{this.__('Open map data layers')}</span>
-                 </div>
-                 <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-                  <CardFilter onChange={function(value){_this.setState({layerMode:value});}} />
-                 </div>
-               </div>
-               <div className="row">
-                 <div className="col s12">
-                   <CardCarousel cards={layerCards} infinite={false}/>
-                 </div>
-               </div>
-               <div className="row center-align" style={{marginTop: '35px', marginBottom:'10px'}}>
-                 <a href='/layers' className="btn">{this.__('More Layers')}</a>
-               </div>
-              </div>
+          <Footer />
        </main>
-       <Footer />
+
 			</div>
 		);
 	}

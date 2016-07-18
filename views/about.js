@@ -8,6 +8,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var SubPageBanner = require('../components/home/SubPageBanner');
+
 var About = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -25,24 +27,83 @@ var About = React.createClass({
       return (
         <div>
           <Header activePage="about"/>
+            <SubPageBanner locale={this.props.locale}
+              img="/assets/home/Moabi-Aerial.jpg"
+               title={this.__('About')} subTitle={this.__(`
+                  MapHubs is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.
+                  `)} />
           <main className="container">
+
             <div className="row">
-              <h4>{this.__('About')}</h4>
-            </div>
-            <div className="row">
-                <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/why-we-are-building-maphubs-336f6c12a746">{this.__('Why we are building MapHubs')}</a>
+
+                <h4 lang="en">Our challenge</h4>
+                <div className="row no-margin">
+                <div className="col s12 m5">
+                  <p lang="en" style={{fontSize: '18px'}}>
+                    Maps are critical to fighting climate change, eradicating poverty, and protecting imperiled biologically rich forests. They provide context to complex issues, illuminate risks, and evidence of impacts. While satellites give us a window in the state of the world’s rainforests, the fragmentation of tiger landscapes and the vulnerability of river deltas to climate change, they don’t the whole story. They don’t tell us who is causing the deforestation, where a river is going to be dammed, or who owns a farm.
+                  </p>
+
                 </div>
-            </div>
-            <div className="row">
-                <div style={{margin: 'auto', display: 'block'}}>
-                  <script async src="https://static.medium.com/embed.js"></script><a className="m-story" data-collapsed="true" data-width="100%" href="https://medium.com/@maphubs/maphubs-features-271396947d6e">{this.__('MapHubs Features')}</a>
+                <div className="col s12 m7">
+                  <div  className="video-container">
+                    <iframe src="https://maphubs.com/map/embed/164/static" frameBorder="0"></iframe>
+                  </div >
                 </div>
+              </div>
+              <p lang="en" style={{fontSize: '18px'}}>
+                This vital data is locked up in a variety of data formats, at different scales, and increasingly fragmented, making it inaccessible to those who want to use it. A major reason for this is data producers (governments, companies, etc.) often don’t have a relationship those who use their data. This makes sharing their data a black box; they don’t know who downloads or uses it. This makes map data difficult to find and use in meaningful ways. Even if data is available, making maps is needlessly complicated and expensive, which disenfranchises many who simply want to make maps.
+              </p>
+
+                <h4 lang="en">Our approach</h4>
+                <div className="row no-margin">
+                    <div className="col s12 m6">
+                      <img clasName="responsive-img" src="/assets/about/community.jpg" style={{width: '100%'}}></img>
+                    </div>
+                    <div className="col s12 m6">
+                      <p lang="en" style={{fontSize: '18px'}}>
+                        MapHubs helps environmental and development practitioners and journalists access global map data and make maps. It helps establish connections between data producers and communities that use the data and tracks how their data is used. MapHubs already hosts hundreds of map layers from oil palm plantations in Indonesia, planned hydroelectric dams in Myanmar, to indigenous territories in Colombia. It also has simple, easy to use tools to turn data into fast, beautiful interactive maps for publishing in reports, social media, and websites.
+                      </p>
+                    </div>
+                </div>
+                <h4 lang="en">Our impact</h4>
+                  <div className="col s12 m5">
+                    <p lang="en" style={{fontSize: '18px'}}>
+                      The technology is already improving transparency and strengthening decision making in some of the most remote, biologically rich, and impoverished parts of the world. Tried and tested in the Democratic Republic of the Congo, MapHubs is supporting health researchers mapping villages in DRC for sleeping sickness vaccination campaigns, monitoring the encroachment of industrial agricultural in to orangutan habitat in Indonesia, and spotting illegal logging in the Peruvian Amazon.
+                    </p>
+                  </div>
+                  <div className="row no-margin">
+                    <div className="col s12 m7">
+                      <div  className="video-container">
+                        <iframe src="https://maphubs.com/map/embed/158/static" frameBorder="0"></iframe>
+                      </div>
+                    </div>
+                </div>
+                <h4 lang="en">Our vision</h4>
+                  <div className="row no-margin">
+                      <div className="col s12 m6">
+                        <img clasName="responsive-img" src="/assets/home/Moabi-Leaves.jpg" style={{width: '100%'}}></img>
+                      </div>
+                      <div className="col s12 m6">
+                        <p lang="en" style={{fontSize: '18px'}}>
+                          MapHubs’ goal is to build a global community to make map data available to all and provide cost effective map making technology to anyone, anywhere who wants to make a map. Immediate goals are expanding the database, integrating mobile applications for field mapping, and building premium features for custom map making.
+                        </p>
+                      </div>
+                  </div>
+                <h4 lang="en">Who we are</h4>
+                <h5 lang="en">Leo Bottrill – Founder and CEO</h5>
+                <p lang="en" style={{fontSize: '18px'}}>
+                  Leo is the founder and CEO of MapHubs, a Washington DC-based company, dedicated to making maps more accessible to everyone. Leo has 15 years of experience in the environment and development sector including over 4 years working in field conservation in Vietnam and Indonesia. Prior to founding MapHubs, Leo started the awarding winning Moabi DRC initiative (rdc.moabi.org) in the Democratic Republic of the Congo. Moabi DRC is the most comprehensive public database on land use in DRC. It is implemented by Observatoire Satellital des Forêts d'Afrique Centrale, a regional forest monitoring organization, and supported by a consortium of nonprofits, government agencies, research organizations, and companies.
+                </p>
+                <h5 lang="en">Kristofor Carle – Chief Technology Officer</h5>
+                <p lang="en" style={{fontSize: '18px'}}>
+                  Kris is a geospatial software engineer focusing on spatial databases, web mapping applications, data analytics, and mobile applications. Before joining MapHubs, Kris led a large geospatial data warehouse project and a mobile mapping application as a contractor for U.S. Army. He is very passionate about open-source technologies and has made over 1 million contributions to OpenStreetMap!
+                </p>
             </div>
+
             <div className="divider"></div>
             <div className="row">
-              <p>MapHubs Version: {this.props.version}</p>
-              <p>MapHubs is open source and avaliable on GitHub at <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
+              <p lang={this.props.locale}>{this.__('MapHubs Version:')} {this.props.version}</p>
+              <p lang={this.props.locale}>{this.__('MapHubs is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
             </div>
           </main>
           <Footer />

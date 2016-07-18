@@ -6,6 +6,7 @@ if (!global.Intl) {
  require('intl/locale-data/jsonp/en.js');
  require('intl/locale-data/jsonp/es.js');
  require('intl/locale-data/jsonp/fr.js');
+ require('intl/locale-data/jsonp/it.js');
 }
 
 require('babel-polyfill');
@@ -26,9 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   ReactDOM.render(
     <Home
-      featuredLayers={data.featuredLayers} featuredGroups={data.featuredGroups} featuredHubs={data.featuredHubs} featuredMaps={data.featuredMaps} featuredStories={data.featuredStories}
-      popularLayers={data.popularLayers} popularGroups={data.popularGroups} popularHubs={data.popularHubs} popularMaps={data.popularMaps} popularStories={data.popularStories}
-      recentLayers={data.recentLayers} recentGroups={data.recentGroups} recentHubs={data.recentHubs} recentMaps={data.recentMaps} recentStories={data.recentStories}
+      trendingLayers={data.trendingLayers}
+      trendingGroups={data.trendingGroups}
+      trendingHubs={data.trendingHubs}
+      trendingMaps={data.trendingMaps}
+      trendingStories={data.trendingStories}
       locale={data.locale} version={data.version}/>,
     document.querySelector('#app')
   );
