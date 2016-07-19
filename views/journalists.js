@@ -29,15 +29,17 @@ var Journalists = React.createClass({
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/MapHubs-Map.jpg"
                title={this.__('MapHubs for Journalists')} subTitle={this.__(`
-                   Maps are incredibly powerful tools for journalism. One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.
+                   Maps are incredibly powerful tools for journalism.
+                   One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.
                   `)} />
             <main className="container">
             <div className="row" style={{marginTop: '30px'}}>
               <h4 lang="en">But why aren’t more journalists using maps?</h4>
-              <div className="row no-margin">
+              <div className="row" style={{marginTop: '25px'}}>
                 <div className="col s12 m12 l5">
                   <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
-                    The short answer is maps are too difficult, time consuming, and expensive to make. With today’s shrinking media budgets, most journalists don’t have the technical or financial resources to produce accurate interactive maps. Even large media organizations, with in house cartography departments and expensive mapping and graphics packages, find map making a costly and lengthy process, particularly when the data is not at hand.
+                    Maps are difficult, time consuming, and expensive to make. With today’s shrinking media budgets, most journalists don’t have the technical or financial resources to produce accurate interactive maps.
+                    Even large media organizations, with in house cartography departments and expensive mapping and graphics packages, find <span style={{fontWeight: 'bold'}}>map making a costly and lengthy process, particularly when the data is not at hand.</span>
                   </p>
                 </div>
                 <div className="col s12 m12 l7">
@@ -48,7 +50,7 @@ var Journalists = React.createClass({
               </div>
               <div className="divider" />
               <h4 lang="en">In house map making for journalists</h4>
-              <div className="row no-margin">
+              <div className="row" style={{marginTop: '25px'}}>
                   <div className="col s12 m12 l7">
                     <div  className="video-container">
                       <iframe src="https://maphubs.com/map/embed/112/static" frameBorder="0"></iframe>
@@ -56,16 +58,18 @@ var Journalists = React.createClass({
                   </div>
                   <div className="col s12 m12 l5">
                     <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
-                    MapHubs is a journalist’s own in house map making system. The platform brings together a rich and growing database of environmentally relevant maps along with easy to use tools to upload and make your own map layers and make fast beautiful custom map in minutes. And the best thing is no GIS, web development, or cartographic training is required.
+                    MapHubs is a journalist’s own in-house map making system.
+                    The platform brings together a rich and growing database of environmentally relevant maps along with easy to use tools to turn map layers into fast beautiful custom maps.
+                    And the best thing is no GIS, web development, or cartographic training is required. <span style={{fontWeight: 'bold'}}>Anyone can make a professional looking map in minutes.</span>
                     </p>
                   </div>
               </div>
               <div className="divider" />
               <h4 lang="en">Ready to use data</h4>
-              <div className="row no-margin">
+              <div className="row" style={{marginTop: '25px'}}>
                 <div className="col s12 m12 l5">
                   <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
-                    Maphubs makes finding data - often the most time consuming part of map making - easy and fast. MapHubs has a rapidly growing database of open map layers from some of the most respected government, research, and nonprofit organizations. Journalists can search for map layers they need and use them to make their own map.
+                    Maphubs makes finding data - often the most time consuming part of map making - easy and fast. MapHubs has a rapidly growing database of open map layers from some of the most respected government, research, and nonprofit organizations. <span style={{fontWeight: 'bold'}}>Journalists can search for map layers they need and use them to make their own map.</span>
                   </p>
                 </div>
                 <div className="col s12 m12 l7">
