@@ -3,6 +3,7 @@ var React = require('react');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SubPageBanner = require('../components/Home/SubPageBanner');
+var IconRow = require('../components/Home/IconRow');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -25,20 +26,83 @@ var Journalists = React.createClass({
       return (
         <div>
           <Header />
-          <main style={{margin: 0}}>
             <SubPageBanner locale={this.props.locale}
-              img="/assets/home/Moabi-Forest.jpg"
-               title={this.__('Mapping for Environmental Journalists')} subTitle={this.__(`
-                   Add maps to your stories. We have the data.
+              img="/assets/home/MapHubs-Map.jpg"
+               title={this.__('MapHubs for Journalists')} subTitle={this.__(`
+                   Maps are incredibly powerful tools for journalism. One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.
                   `)} />
-            <div className="container">
-              <h4 lang="en">Data Support</h4>
-              <h5 lang="en">Data Loading/Processing</h5>
-              <p lang="en" style={{fontSize: '16px'}}>
-                Not sure how to load your data into MapHubs?  We can help you get started. We’ll show you the ropes of how to load your data onto the platform, using existing data, and making a map or map story.
-              </p>
+            <main className="container">
+            <div className="row" style={{marginTop: '30px'}}>
+              <h4 lang="en">But why aren’t more journalists using maps?</h4>
+              <div className="row no-margin">
+                <div className="col s12 m12 l5">
+                  <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
+                    The short answer is maps are too difficult, time consuming, and expensive to make. With today’s shrinking media budgets, most journalists don’t have the technical or financial resources to produce accurate interactive maps. Even large media organizations, with in house cartography departments and expensive mapping and graphics packages, find map making a costly and lengthy process, particularly when the data is not at hand.
+                  </p>
+                </div>
+                <div className="col s12 m12 l7">
+                  <div className="video-container">
+                    <iframe src="https://maphubs.com/map/embed/158/static" frameBorder="0"></iframe>
+                  </div>
+                </div>
+              </div>
+              <div className="divider" />
+              <h4 lang="en">In house map making for journalists</h4>
+              <div className="row no-margin">
+                  <div className="col s12 m12 l7">
+                    <div  className="video-container">
+                      <iframe src="https://maphubs.com/map/embed/112/static" frameBorder="0"></iframe>
+                    </div>
+                  </div>
+                  <div className="col s12 m12 l5">
+                    <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
+                    MapHubs is a journalist’s own in house map making system. The platform brings together a rich and growing database of environmentally relevant maps along with easy to use tools to upload and make your own map layers and make fast beautiful custom map in minutes. And the best thing is no GIS, web development, or cartographic training is required.
+                    </p>
+                  </div>
+              </div>
+              <div className="divider" />
+              <h4 lang="en">Ready to use data</h4>
+              <div className="row no-margin">
+                <div className="col s12 m12 l5">
+                  <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
+                    Maphubs makes finding data - often the most time consuming part of map making - easy and fast. MapHubs has a rapidly growing database of open map layers from some of the most respected government, research, and nonprofit organizations. Journalists can search for map layers they need and use them to make their own map.
+                  </p>
+                </div>
+                <div className="col s12 m12 l7">
+                  <div  className="video-container">
+                    <iframe src="https://maphubs.com/map/embed/163/static" frameBorder="0"></iframe>
+                  </div>
+                </div>
+              </div>
+              <div className="divider" />
+              <h4 lang="en">How to make a map</h4>
+                <IconRow icon="cloud_upload">
+                  <h5 lang="en">Upload or make your map layer</h5>
+                  <p lang="en" style={{fontSize: '20px'}}>
+                    If you have data, you can upload it into Maphubs and combine it with map layers in our database. You can also make a make your own map layer directly in Maphubs.
+                  </p>
+                </IconRow>
+                <IconRow icon="color_lens">
+                  <h5 lang="en">Style your map</h5>
+                  <p lang="en" style={{fontSize: '20px'}}>
+                    Once you have your map layers, you can choose a color for your map layers, whether titles, the order they appear, and which basemap you want to use.
+                  </p>
+                </IconRow>
+                <IconRow icon="print">
+                  <h5 lang="en">Embed, print, and share your map</h5>
+                  <p lang="en" style={{fontSize: '20px'}}>
+                    When you map is ready, simply save it and then you can either embed your map in your website, share it on social media, or download a PNG version and publish it in print.
+                  </p>
+                </IconRow>
+
+                <div className="row center center-align">
+                  <a className="btn waves-effect z-depth-3" style={{backgroundColor: '#29ABE2', color: 'white', borderRadius: '25px'}} lang="en" href="/maps">Make a Map</a>
+                </div>
+                <div className="container center center-align">
+                  <p lang="en" style={{fontSize: '20px'}}>For more detailed instructions on how to make a map, read our tutorials at: <a href="http://help.maphubs.com/category/5-make-a-map">help.maphubs.com</a></p>
+                </div>
             </div>
-          </main>
+            </main>
           <Footer />
         </div>
       );

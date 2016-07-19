@@ -360,6 +360,13 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   font-weight: 300;
 }
 
+.slide-button {
+  position: absolute;
+  width: 100%;
+  margin: auto;
+  bottom: 75px;
+}
+
 /*Action Button*/
 .action-button-bottom-right {
 bottom: 45px;
@@ -866,6 +873,22 @@ textarea.materialize-textarea+label:after {
   height: auto !important;
 }
 
+@media only screen and (max-width : 480px) {
+  .slide-text h2 {
+    font-size: 40px;
+  }
+
+  .slide-text h3 {
+    font-size: 20px;
+  }
+
+  .slide-button {
+    bottom: 23px;
+    left: 5%;
+    width: auto;
+  }
+}
+
 
 @media print {
   nav {
@@ -1001,4 +1024,9 @@ textarea.materialize-textarea+label:after {
 
 .mapmaker-tab .active {
 
+}
+
+.action-button-bottom-right {
+    bottom: 85px;
+    right: 30px;
 }

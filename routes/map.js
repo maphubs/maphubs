@@ -35,6 +35,11 @@ module.exports = function(app) {
     session.views = (session.views || 0) + 1;
   };
 
+
+  app.get('/map/new', function(req, res, next) {
+    res.render('map', {title: 'New Map ', props:{}, req});
+  });
+
   app.get('/maps', function(req, res, next) {
 
 
@@ -90,6 +95,31 @@ module.exports = function(app) {
         }
         completeRequest();
       }).catch(nextError(next));
+    }
+  });
+
+  app.get('/map/:map_id/*', function(req, res, next) {
+    var map_id = req.params.map_id;
+    if(!map_id){
+      apiDataError(res);
+    }
+
+    var user_id = null;
+    if(req.session.user){
+      user_id = req.session.user.id;
+    }
+    recordMapView(req.session, map_id, user_id, next);
+
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+        MapUtils.completeUserMapRequest(req, res, next, map_id, false);
+    } else {
+      //get user id
+      Map.allowedToModify(map_id, user_id)
+      .then(function(allowed){
+        MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
+      });
     }
   });
 

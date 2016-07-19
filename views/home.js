@@ -157,7 +157,7 @@ var Home = React.createClass({
          img: '/assets/home/Moabi-Aerial.jpg'
        },
        {
-         title: this.__('Maps for Environmental Journalism'),
+         title: this.__('Maps for Journalists'),
          text: this.__('Tell Your Story with Maps'),
          buttonText: this.__('Learn More'),
          link: '/journalists',
@@ -168,7 +168,7 @@ var Home = React.createClass({
          text: this.__('MapHubs has map layers for environment, natural resources, and development'),
          buttonText: this.__('Explore Maps'),
          link: '/explore',
-         img: '/assets/home/MapHubs-Map.png'
+         img: '/assets/home/MapHubs-Map.jpg'
        },
        {
          title: this.__('MapHubs Services'),
@@ -185,11 +185,11 @@ var Home = React.createClass({
       <main style={{margin: 0, height: '100%'}}>
 
         <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
-          <Carousel autoplay={false} autoplayInterval={3000} wrapAround={true}
+          <Carousel autoplay={true} autoplayInterval={5000} wrapAround={true}
             decorators={SliderDecorators}>
-            {slides.map(function(slide){
+            {slides.map(function(slide, i){
               return (
-                <div className="homepage-slide responsive-img valign-wrapper"
+                <div key={i} className="homepage-slide responsive-img valign-wrapper"
                   style={{
                     height: '100%',
                     backgroundSize: 'cover',
@@ -198,13 +198,10 @@ var Home = React.createClass({
                   <div className="slide-text">
                     <h2 className="no-margin">{slide.title}</h2>
                     <h3 className="no-margin">{slide.text}</h3>
-
                   </div>
-                  <div className="center"
-                    style={{position: 'absolute', bottom: '75px', width: '100%', margin: 'auto'}}>
+                  <div className="slide-button center">
                     <a className="btn waves-effect z-depth-3" style={{backgroundColor: '#29ABE2', color: 'white', borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
                   </div>
-
                </div>
              );
             })}
@@ -213,12 +210,13 @@ var Home = React.createClass({
          <div className="row">
           <OnboardingLinks />
         </div>
+        <div className="divider" />
          <div className="row" style={{marginBottom: '50px'}}>
            <div className="row no-margin" style={{height: '50px'}}>
              <div>
-                <h5 className="home-section no-margin" style={{lineHeight: '50px'}}>
+                <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
                   {this.__('Trending')}
-                  <i className="material-icons" style={{fontWeight: 'bold'}}>trending_up</i>
+                  <i className="material-icons" style={{fontWeight: 'bold', color: '#29ABE2', fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
                 </h5>
              </div>
            </div>

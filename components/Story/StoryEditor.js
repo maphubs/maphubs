@@ -621,7 +621,7 @@ showImageCrop(){
 
        <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
 
-       <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '115px'}}>
+       <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '147px'}}>
             <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red">
               <i className="large material-icons">add</i>
             </a>

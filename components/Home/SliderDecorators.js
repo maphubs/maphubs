@@ -12,7 +12,7 @@ const SliderDecorators = [
       render() {
         return (
           <button
-          className="valign-wrapper"
+          className="valign-wrapper hide-on-small-only"
             style={this.getButtonStyles(this.props.currentSlide === 0 && !this.props.wrapAround)}
             onClick={this.handleClick}><i className="material-icons valign" style={{fontSize: '32px', fontWeight: 'bold'}}>arrow_back</i></button>
         );
@@ -47,7 +47,7 @@ const SliderDecorators = [
       render() {
         return (
           <button
-            className="valign-wrapper"
+            className="valign-wrapper hide-on-small-only"
             style={this.getButtonStyles(this.props.currentSlide + this.props.slidesToScroll >= this.props.slideCount && !this.props.wrapAround)}
             onClick={this.handleClick}><i className="material-icons valign" style={{fontSize: '32px', fontWeight: 'bold'}}>arrow_forward</i></button>
         );

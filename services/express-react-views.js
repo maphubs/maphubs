@@ -194,42 +194,44 @@ function createEngine(engineOptions) {
             translation = translation.replace(/'/g ,'&#39;');
             return translation;
           };
-          
+
+          var beaconTranslation = {
+            searchLabel: t('What can we help you with?'),
+            searchErrorLabel: t('Your search timed out. Please double-check your internet connection and try again.'),
+            noResultsLabel: t('No results found for'),
+            contactLabel: t('Send a Message'),
+            attachFileLabel: t('Attach a file'),
+            attachFileError: t('The maximum file size is 10mb'),
+            nameLabel: t('Your Name'),
+            nameError: t('Please enter your name'),
+            emailLabel: t('Email address'),
+            emailError: t('Please enter a valid email address'),
+            topicLabel: t('Select a topic'),
+            topicError: t('Please select a topic from the list'),
+            subjectLabel: t('Subject'),
+            subjectError: t('Please enter a subject'),
+            messageLabel: t('How can we help you?'),
+            messageError: t('Please enter a message'),
+            sendLabel: t('Send'),
+            contactSuccessLabel: t('Message sent!'),
+            contactSuccessDescription: t('Thanks for reaching out! Someone from our team will get back to you soon.')
+          };
+
+          var beaconTranslationText = JSON.stringify(beaconTranslation);
+
           markup += `
-          <script type="text/javascript">
-              window.doorbellOptions = {
-                  appKey: 'tXwVQFgJHc8ttf07IOySRYG2Ybf1jcpajE4aNOEIhnK7Aw1G3ZVgwl8uKT0s5vBc',
-                  tags: 'new,` + version +`',
-                  strings: {
-                       'feedback-button-text': '` + t('Feedback') + `',
-
-                       'title': '` + t('Feedback') + `',
-                       'intro-text': '', // Empty by default
-                       'feedback-textarea-placeholder': '` + t('Send us your comments or suggestions...') + `',
-                       'feedback-label': '',
-                       'email-input-placeholder': '` + t('Your email address') + `',
-                       'email-label': '',
-                       'attach-a-screenshot': '` + t('Attach a screenshot') + `',
-                       'submit-button-text': '` + t('Send') + `',
-                       'add-attachments-label': '',
-
-                       'message-success' : '` + t('Feedback sent!') + `',
-                       'message-error-missing-email': '` + t('Your email address is required') + `',
-                       'message-error-invalid-email': '` + t('Invalid email address') + `',
-                       'message-error-missing-message': '` + t('Your message is required') + `',
-                       'message-error-message-too-short': '` + t('Your message is too short') + `'
-                   },
-                  properties: {
-                    username: '` + username + `',
-                    version: '` + version + `'
-                  }
-              };
-              (function(d, t) {
-                  var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/2854?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g);
-              }(document, 'script'));
-          </script>
-
-          `;
+            <script>!function(e,o,n){
+                window.HSCW=o,window.HS=n,n.beacon=n.beacon||{};
+                var t=n.beacon;
+                t.userConfig={icon: 'question', color: '#29ABE2', topArticles: true,
+                  topics: [{val: 'question', label: '` + t('Question') + `'},{val: 'suggestion', label: '` + t('Suggestion') + `'},{val: 'problem', label: '` + t('Report a Problem') + `'}],
+                  translation: ` + beaconTranslationText +`,
+                },
+                t.readyQueue=[],t.config=function(e){this.userConfig=e},t.ready=function(e){this.readyQueue.push(e)},o.config={docs:{enabled:!0,baseUrl:"//maphubs.helpscoutdocs.com/"},contact:{enabled:!0,formId:"59df584f-4d3b-11e6-aae8-0a7d6919297d"}};
+                var r=e.getElementsByTagName("script")[0],c=e.createElement("script");
+                c.type="text/javascript",c.async=!0,c.src="https://djtflbt20bdde.cloudfront.net/",r.parentNode.insertBefore(c,r)}(document,window.HSCW||{},window.HS||{});</script>
+            `;
+          
         }
       if(process.env.NODE_ENV == 'production'){
         markup += `

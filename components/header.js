@@ -175,6 +175,9 @@ getCookie(cname) {
             <li className="nav-link-wrapper">
               <a className={aboutClasses} href='/about'>{this.__('About')}</a>
             </li>
+            <li className="nav-link-wrapper">
+              <a href='http://help.maphubs.com'>{this.__('Help')}</a>
+            </li>
 
             <li style={{marginRight: '10px'}}>
               <LocaleChooser />
@@ -192,16 +195,19 @@ getCookie(cname) {
               <LocaleChooser />
             </li>
             <li className="nav-link-wrapper">
-              <a className={exploreClasses} href='/stories'>{this.__('Explore')}</a>
+              <a className={exploreClasses} href='/explore'>{this.__('Explore')}</a>
             </li>
             <li className="nav-link-wrapper">
-              <a className={servicesClasses} href='/maps'>{this.__('Services')}</a>
+              <a className={servicesClasses} href='/services'>{this.__('Services')}</a>
             </li>
 
             {myMaps}
             {myStories}
             <li className="nav-link-wrapper">
               <a className={aboutClasses} href='/about'>{this.__('About')}</a>
+            </li>
+            <li className="nav-link-wrapper">
+              <a href='http://help.maphubs.com'>{this.__('Help')}</a>
             </li>
             <li className="nav-link-wrapper">
               <a href='/search'>
