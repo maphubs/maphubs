@@ -4,9 +4,9 @@ var Footer = require('../components/footer');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 
 var Carousel = require('nuka-carousel');
-import SliderDecorators from '../components/home/SliderDecorators';
+import SliderDecorators from '..../components/Home/SliderDecorators';
 
-var OnboardingLinks = require('../components/home/OnboardingLinks');
+var OnboardingLinks = require('..../components/Home/OnboardingLinks');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
