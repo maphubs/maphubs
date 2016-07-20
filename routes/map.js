@@ -98,7 +98,7 @@ module.exports = function(app) {
     }
   });
 
-  app.get('/map/:map_id/*', function(req, res, next) {
+  app.get('/map/view/:map_id/*', function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
