@@ -6334,8 +6334,8 @@
     },
     "react-colorpickr": {
       "version": "4.2.0",
-      "from": "openmaphub/react-colorpickr",
-      "resolved": "git://github.com/openmaphub/react-colorpickr.git#a4884686290e204a76a662324bfd74cdfe058e59"
+      "from": "openmaphub/react-colorpickr#29c5725cdfd0fba529fe211b930b0c23dffe0649",
+      "resolved": "git://github.com/openmaphub/react-colorpickr.git#29c5725cdfd0fba529fe211b930b0c23dffe0649"
     },
     "react-contextmenu": {
       "version": "1.6.2",
