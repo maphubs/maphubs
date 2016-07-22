@@ -185,7 +185,7 @@ var Home = React.createClass({
       <main style={{margin: 0, height: '100%'}}>
 
         <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
-          <Carousel autoplay={true} autoplayInterval={5000} wrapAround={true}
+          <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
             decorators={SliderDecorators}>
             {slides.map(function(slide, i){
               return (

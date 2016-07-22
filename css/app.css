@@ -316,6 +316,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .slider, .slider-frame, .slider-list, .slider-slide {
     height: 100% !important;
+    width: 100% !important;
 }
 
 .slide-decorator-2 ul li button{
@@ -1031,8 +1032,6 @@ textarea.materialize-textarea+label:after {
     right: 30px;
 }
 
-
-
 .rms-wrapper {
   position: relative;
   cursor: pointer;
@@ -1155,6 +1154,7 @@ textarea.materialize-textarea+label:after {
   height: inherit !important;
   line-height: inherit !important;
   border-bottom: none !important;
+  margin: 0 !important;
 }
 
 #locale-select .rms-wrapper .rms-text span {
