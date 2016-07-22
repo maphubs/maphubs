@@ -177,7 +177,7 @@ var LayerSettings = React.createClass({
     if(this.props.showCancel){
       cancel = (
         <div className="left">
-            <a className="waves-effect waves-light red redirect btn" onClick={this.onCancel}><i className="material-icons left">delete</i>{this.props.cancelText}</a>
+            <a className="waves-effect waves-light white omh-accent-text redirect btn" onClick={this.onCancel}><i className="material-icons left">delete</i>{this.props.cancelText}</a>
         </div>
       );
       submitIcon = (
