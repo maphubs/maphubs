@@ -24,10 +24,10 @@ var Toggle= React.createClass({
   getDefaultProps() {
     return {
       style: {},
+      defaultChecked: false,
       dataDelay: 100
     };
   },
-
 
   changeValue(event) {
     event.stopPropagation();
@@ -56,7 +56,7 @@ var Toggle= React.createClass({
               data-tooltip={this.props.dataTooltip}>
             <label>
               {this.props.labelOff}
-              <input type="checkbox" id={this.props.name} checked={this.getValue()} defaultChecked={defaultChecked} onChange={this.changeValue}/>
+              <input type="checkbox" id={this.props.name} defaultChecked={defaultChecked} onChange={this.changeValue}/>
               <span className="lever"></span>
               {this.props.labelOn}
             </label>
