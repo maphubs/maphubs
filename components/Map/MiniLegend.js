@@ -22,7 +22,7 @@ var MiniLegend = React.createClass({
         <div style={{textAlign: 'left'}}>
 
             <ul className="collection with-header no-margin z-depth-2">
-            {       
+            {
               this.props.layers.map(function (layer, i) {
                 if(_this.props.hideInactive && !layer.active){
                   return (<div key={i}></div>);
@@ -30,8 +30,8 @@ var MiniLegend = React.createClass({
                 var legendHtml = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
                 /*eslint-disable react/no-danger*/
                 return (
-                  <li key={i} className="collection-item no-margin no-padding" style={{height: '20px'}}>
-                    <div className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: legendHtml}}></div>
+                  <li key={i} className="collection-item no-margin no-padding">
+                    <div className="no-margin valign" style={{padding: '2px'}} dangerouslySetInnerHTML={{__html: legendHtml}}></div>
                   </li>
                 );
                 /*eslint-enable react/no-danger*/
