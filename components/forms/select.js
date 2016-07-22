@@ -1,18 +1,17 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Formsy = require('formsy-react');
-var $ = require('jquery');
 var find = require('lodash.find');
 var result = require('lodash.result');
 var classNames = require('classnames');
 var _isequal = require('lodash.isequal');
+
+import ReactMaterialSelect from 'react-material-select';
 
 var Select = React.createClass({
 
   mixins: [Formsy.Mixin],
 
   propTypes:  {
-    startEmpty: React.PropTypes.bool,
     emptyText: React.PropTypes.string,
     defaultValue: React.PropTypes.string,
     name: React.PropTypes.string,
@@ -51,18 +50,16 @@ var Select = React.createClass({
     }
   },
 
-  handleSelectChange(event) {
-     var val = event.target.value;
+  handleSelectChange(selected) {
+     var val = selected.value;
      this.setValue(val);
      this.setNote(val);
 
    },
 
    componentWillMount() {
-    if(!this.props.startEmpty) {
       this.setValue(this.props.defaultValue);
       this.setNote(this.props.defaultValue);
-    }
   },
 
   componentWillReceiveProps(nextProps){
@@ -74,6 +71,7 @@ var Select = React.createClass({
 
   shouldComponentUpdate(nextProps, nextState){
     //only update if something changes
+
     if(!_isequal(this.props, nextProps)){
       return true;
     }
@@ -83,22 +81,9 @@ var Select = React.createClass({
     return false;
   },
 
-   componentDidUpdate(prevProps) {
-     //reload the select if remove the empty option
-     if(prevProps.startEmpty !== this.props.startEmpty){
-       $(ReactDOM.findDOMNode(this.refs.selectBox)).material_select();
-     }
-
-   },
-
-   componentDidMount() {
-     $(ReactDOM.findDOMNode(this.refs.selectBox)).material_select();
-     $(ReactDOM.findDOMNode(this.refs.selectBox)).on('change',this.handleSelectChange);
-   },
-
    validate() {
      if(this.isRequired()){
-       if(this.getValue() && this.getValue() !== 'none'){
+       if(this.getValue() && this.getValue() !== ''){
          return true;
        }else{
          return false;
@@ -113,10 +98,6 @@ var Select = React.createClass({
      var className = classNames('input-field', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
      var value = this.getValue();
 
-     var emptyOption = '';
-     if(this.props.startEmpty){
-      emptyOption = (<option key="empty" disabled="">{this.props.emptyText}</option>);
-     }
      var note = '';
      if(this.state.note){
        /*eslint-disable react/no-danger*/
@@ -126,21 +107,35 @@ var Select = React.createClass({
 
     return (
       <div>
-          <div  className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
+          <div  className={className} id={this.props.id} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
               data-tooltip={this.props.dataTooltip}>
-                <select ref="selectBox" id={this.props.id} value={value} defaultValue={value} onChange={function(e){e.stopPropagation();}}>
-                  {emptyOption}
-                  {this.props.options.map(function(option){
-                    return (<option key={option.value} value={option.value}>{option.label}</option>);
-                  })}
-                </select>
-                <label htmlFor={this.props.name}  data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
-            </div>
+              <ReactMaterialSelect label={this.props.emptyText}
+                resetLabel={this.props.emptyText} defaultValue={value}
+                 onChange={this.handleSelectChange}>
+                {this.props.options.map(function(option, i){
+                  return (<option key={i} dataValue={option.value}>{option.label}</option>);
+                })}
+              </ReactMaterialSelect>
+              <label htmlFor={this.props.name}  data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+
+          </div>
             {note}
         </div>
     );
 
   }
 });
+
+/*
+
+<select ref="selectBox" id={this.props.id} value={value} defaultValue={value} onChange={function(e){e.stopPropagation();}}>
+  {emptyOption}
+  {this.props.options.map(function(option){
+    return (<option key={option.value} value={option.value}>{option.label}</option>);
+  })}
+</select>
+<label htmlFor={this.props.name}  data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+
+*/
 
 module.exports = Select;

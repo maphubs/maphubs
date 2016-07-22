@@ -41,6 +41,7 @@ var LocaleChooser = React.createClass({
           <Formsy.Form ref="form" onChange={this.onChange}>
               <Select name="locale" id="locale-select" options={options} className="locale-chooser omh-accent-text"
                     value={this.state.locale} defaultValue={this.state.locale} startEmpty={false}
+                    emptyText={this.__('Language')}
                    required/>
           </Formsy.Form>
       </div>

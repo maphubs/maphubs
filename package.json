@@ -135,6 +135,7 @@
     "react-dom": "15.0.1",
     "react-fileupload-progress": "openmaphub/react-fileupload-progress",
     "react-intl": "2.1.3",
+    "react-material-select": "^1.0.11",
     "react-medium-editor": "^1.8.0",
     "react-notification": "5.0.7",
     "react-responsive-mixin": "0.3.5",
