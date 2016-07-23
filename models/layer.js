@@ -103,6 +103,25 @@ module.exports = {
     return query;
   },
 
+  getUserLayers(user_id, number, includePrivate = false) {
+
+    var subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
+
+    var query = knex.select('layer_id', 'name', 'description', 'data_type',
+    'status', 'published', 'source', 'license',
+    'is_external', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+    .table('omh.layers')
+    .whereIn('owned_by_group_id', subquery)
+    .orderBy('last_updated', 'desc')
+    .limit(number);
+
+    if (!includePrivate) {
+      query.where({published: true, status: 'published'});
+    }
+
+    return query;
+  },
+
   getLayerByID(layer_id, trx = null) {
     debug('getting layer: ' + layer_id);
     let db = knex;

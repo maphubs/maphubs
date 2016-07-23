@@ -1,12 +1,14 @@
 var React = require('react');
 
-var GroupTag = require('../Groups/GroupTag');
+var MapLayer = require('./MapLayer');
 
 var $ = require('jquery');
-var _isEmpty = require('lodash.isempty');
+//var _isEmpty = require('lodash.isempty');
 var _isEqual = require('lodash.isequal');
-var slug = require('slug');
 var Map = require('../Map/Map');
+
+var Formsy = require('formsy-react');
+var TextInput = require('../forms/textInput');
 
 var MiniLegend = require('../Map/MiniLegend');
 
@@ -15,6 +17,8 @@ var AddLayerPanel = require('./AddLayerPanel');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var MapMakerStore = require('../../stores/MapMakerStore');
+var UserStore = require('../../stores/UserStore');
+var UserActions = require('../../actions/UserActions');
 var Actions = require('../../actions/MapMakerActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var NotificationActions = require('../../actions/NotificationActions');
@@ -22,15 +26,13 @@ var MessageActions = require('../../actions/MessageActions');
 
 var MapLayerDesigner = require('../LayerDesigner/MapLayerDesigner');
 
-import Editor from 'react-medium-editor';
-
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
 
 var MapMaker = React.createClass({
 
-  mixins:[StateMixin.connect(MapMakerStore), StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(MapMakerStore), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -63,7 +65,8 @@ var MapMaker = React.createClass({
 
   getInitialState(){
     return {
-      showMapLayerDesigner: false
+      showMapLayerDesigner: false,
+      canSave: false
     };
   },
 
@@ -173,12 +176,12 @@ var MapMaker = React.createClass({
   },
 
   onCreate(){
-    if(this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.title);
+    if(this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.user.display_name);
   },
 
 
-  onSave(){
-    $('.savebutton-tooltipped').tooltip('remove');
+  onSave(model){
+    this.handleTitleChange(model.title);
     var _this = this;
 
     if(!this.state.title || this.state.title == ''){
@@ -219,6 +222,14 @@ var MapMaker = React.createClass({
 
   handleTitleChange(title){
     Actions.setMapTitle(title);
+  },
+
+  recheckLogin(){
+    UserActions.getUser(function(err){
+      if(err){
+        NotificationActions.showNotification({message: this.__('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'bottomleft'});
+      }
+    });
   },
 
   toggleVisibility(layer_id){
@@ -262,6 +273,7 @@ var MapMaker = React.createClass({
   },
 
   addLayer(layer){
+    var _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
     //save map position so adding a layer doesn't reset it
     var position = this.refs.map.getPosition();
@@ -273,11 +285,26 @@ var MapMaker = React.createClass({
       }
       //reset stuck tooltips...
       $('.layer-card-tooltipped').tooltip();
+
+      //switch to map tab
+      _this.toggleMapTab();
     });
   },
 
-  toggleAddLayer(){
+  toggleMapTab(){
+    $(this.refs.tabs).tabs('select_tab', 'maptab');
+  },
 
+  enableSaveButton() {
+    this.setState({
+      canSave: true
+    });
+  },
+
+  disableSaveButton() {
+    this.setState({
+      canSave: false
+    });
   },
 
   render(){
@@ -288,33 +315,33 @@ var MapMaker = React.createClass({
       tabContentDisplay = 'inherit';
     }
 
-    var title = '';
-    var placeholder = null;
-    if(_isEmpty(this.state.title)){
-      placeholder = {text: this.__('Enter a Map Title')};
-    }
-    var classNames = "create-map-title right grey-text text-darken-4";
-    if(this.state.title && this.state.title != ''){
-      classNames = classNames + " hide-placeholder";
-    }
-    title = (
-      <div className={classNames} style={{marginRight: '20px', textAlign: 'right'}}>
-        <Editor
-       tag="p"
-       text={this.state.title}
-       onChange={this.handleTitleChange}
-       options={{
-         buttonLabels: 'false',
-         placeholder,
-         disableReturn: true,
-         toolbar: {
-           buttons: []
-         }
-       }}
-     />
-    </div>
-    );
+    var settings = '';
 
+    if(this.state.loggedIn){
+      settings = (
+        <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
+          <div className="row" style={{margin: '25px'}}>
+            <TextInput name="title" defaultValue={this.state.title} label={this.__('Map Title')} icon="info"
+              className="col s12" length={200}
+               required/>
+          </div>
+          <div className="row">
+            <div className="col s12 valign-wrapper">
+                  <button type="submit" className="valign waves-effect waves-light btn" style={{margin: 'auto'}} disabled={!this.state.canSave}>{this.__('Save Map')}</button>
+            </div>
+          </div>
+
+        </Formsy.Form>
+      );
+    }else{
+      settings = (
+        <div>
+          <p>{this.__('You must login or sign up before saving a map.')}</p>
+          <a className="btn" href="/login" target="_blank">{this.__('Login')}</a>
+          <a className="btn" onClick={this.recheckLogin}>{this.__('Retry')}</a>
+        </div>
+      );
+    }
 
     var sidebarContent = '';
     if(this.state.showMapLayerDesigner){
@@ -324,8 +351,7 @@ var MapMaker = React.createClass({
     }else if (!this.state.mapLayers || this.state.mapLayers.length == 0) {
       sidebarContent = (
         <div style={{height: '100%', padding: 0, margin: 0}}>
-          <p>{this.__('No Layers in Map')}</p>
-          <button className="btn" onClick={this.toggleAddLayer()}>{this.__('Add a Layer')}</button>
+          <p>{this.__('No layers in map, use the tab to the right to add a layer.')}</p>
         </div>
       );
     }else{
@@ -333,68 +359,16 @@ var MapMaker = React.createClass({
         <div style={{height: '100%', padding: 0, margin: 0}}>
           <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{
             this.state.mapLayers.map(function (layer) {
-                var visibilityButton = '';
-                if(_this.props.showVisibility){
-                  var icon = 'visibility';
-                  if(!layer.active) icon = 'visibility_off';
-                    visibilityButton = (
-                      <a onClick={function(){_this.toggleVisibility(layer.layer_id);}}
-                        className="create-map-btn layer-card-tooltipped"
-                        data-position="top" data-delay="50" data-tooltip={_this.__('Show/Hide Layer')}>
-                        <i className="material-icons omh-accent-text">{icon}</i>
-                      </a>
-                    );
-                }
                 return (
-                  <li key={layer.layer_id} className="collection-item"
-                    style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden', border: '1px solid #ddd'}}>
-                    <div className="title col s8">
-                      <b className="title truncate grey-text text-darken-4 layer-card-tooltipped"
-                        style={{fontSize: '12px'}}
-                        data-position="top" data-tooltip={layer.name}>
-                        {layer.name}
-                      </b>
-                      <GroupTag group={layer.owned_by_group_id} />
-                      <p className="truncate no-margin grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
-                    </div>
-                      <div className="secondary-content col s4 no-padding">
-
-                        <div className="col s4 no-padding">
-                          <a href={'/layer/info/'+ layer.layer_id + '/' + slug(layer.name ? layer.name : '')} target="_blank"
-                            className="create-map-btn layer-card-tooltipped"
-                            data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
-                            <i className="material-icons omh-accent-text">info</i>
-                            </a>
-                        </div>
-                        <div className="col s4 no-padding">
-                         {visibilityButton}
-                        </div>
-                        <div className="col s4 no-padding">
-                        <div className="fixed-action-btn horizontal"
-                          style={{
-                            position: 'relative',
-                            right: 0,
-                            paddingLeft: '5px',
-                            bottom: 0,
-                            height: '70px'}}>
-                           <a className="create-map-btn">
-                             <i className="material-icons omh-accent-text">more_horiz</i>
-                           </a>
-                           <ul style={{
-                               height: '40px',
-                               bottom: '0px',
-                              right: '50%',
-                              width: '215px'
-                            }}>
-                             <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.removeFromMap(layer);}} className="btn-floating red layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons">remove</i></a></li>
-                             <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.showLayerDesigner(layer);}} className="btn-floating amber darken-4 layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
-                             <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.moveUp(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons">keyboard_arrow_up</i></a></li>
-                             <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.moveDown(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons">keyboard_arrow_down</i></a></li>
-                           </ul>
-                         </div>
-                       </div>
-                      </div>
-                  </li>);
+                  <MapLayer showVisibility={_this.props.showVisibility}
+                    toggleVisibility={_this.toggleVisibility}
+                    removeFromMap={_this.removeFromMap}
+                    showLayerDesigner={_this.showLayerDesigner}
+                    moveUp={_this.moveUp}
+                    moveDown={_this.moveDown}
+                    layer={layer}
+                  />
+              );
             })
           }</ul>
         </div>
@@ -414,7 +388,7 @@ var MapMaker = React.createClass({
         <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>
           <ul className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>
             <li>
-              <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Step 1: Map Layers')}</div>
+              <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Map Layers')}</div>
               <div className="collapsible-body" >
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
                   {sidebarContent}
@@ -423,18 +397,24 @@ var MapMaker = React.createClass({
               </div>
             </li>
             <li>
-              <div className="collapsible-header"><i className="material-icons">share</i>{this.__('Step 2: Save & Share')}</div>
+              <div className="collapsible-header"><i className="material-icons">save</i>{this.__('Save')}</div>
               <div className="collapsible-body">
-                  {title}
+                {settings}
               </div>
             </li>
         </ul>
         </div>
         <div className="col s6 m10 l9 no-padding" style={{height: '100%'}}>
-          <ul className="tabs" style={{overflowX: 'hidden'}}>
-            <li className="tab mapmaker-tab"><a href="#maptab">{this.__('View Map')}</a></li>
+          <ul className="tabs" ref="tabs" style={{overflowX: 'hidden'}}>
             <li className="tab mapmaker-tab"><a className="active" href="#addlayer">{this.__('Add a Layer')}</a></li>
+            <li className="tab mapmaker-tab"><a href="#maptab">{this.__('View Map')}</a></li>
           </ul>
+
+            <div id="addlayer" style={{height: 'calc(100% - 50px)', overflow: 'scroll', display: tabContentDisplay}}>
+              <AddLayerPanel myLayers={this.props.myLayers}
+                popularLayers={this.props.popularLayers}
+                onAdd={this.addLayer} />
+            </div>
             <div id="maptab" className="row no-margin" style={{height: 'calc(100% - 50px)', display: tabContentDisplay}}>
               <div className="row" style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
                 <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
@@ -454,23 +434,6 @@ var MapMaker = React.createClass({
                       }} layers={this.state.mapLayers} hideInactive={false} />
               </div>
             </div>
-            <div id="addlayer" style={{height: '100%', display: tabContentDisplay}}>
-              <AddLayerPanel myLayers={this.props.myLayers}
-                popularLayers={this.props.popularLayers}
-                onAdd={this.addLayer} />
-            </div>
-        <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Save Map')}>
-          <a onClick={this.onSave} className="btn-floating btn-large blue">
-            <i className="large material-icons">save</i>
-          </a>
-        </div>
-        <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped"
-          style={{right: '85px'}}
-          data-position="top" data-delay="50" data-tooltip={_this.__('Cancel Map')}>
-          <a onClick={this.onCancel} className="btn-floating btn-large red">
-            <i className="large material-icons">close</i>
-          </a>
-        </div>
         </div>
       </div>
     );

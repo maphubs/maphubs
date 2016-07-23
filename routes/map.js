@@ -7,6 +7,7 @@ var Promise = require('bluebird');
 var User = require('../models/user');
 //var Layer = require('../models/layer');
 var Map = require('../models/map');
+var Layer = require('../models/layer');
 var Story = require('../models/story');
 var Stats = require('../models/stats');
 var BoundingBox = require('../services/bounding-box.js');
@@ -37,7 +38,28 @@ module.exports = function(app) {
 
 
   app.get('/map/new', function(req, res, next) {
-    res.render('map', {title: 'New Map ', props:{}, req});
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+            Layer.getPopularLayers()
+            .then(function(popularLayers){
+              res.render('map', {title: 'New Map ', props:{popularLayers}, req});
+            }).catch(nextError(next));
+    } else {
+      //get user id
+      var user_id = req.session.user.id;
+
+      Promise.all([
+        Layer.getPopularLayers(),
+        Layer.getUserLayers(user_id, 15)
+      ])
+        .then(function(results){
+          var popularLayers = results[0];
+          var myLayers = results[1];
+          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers}, req});
+        }).catch(nextError(next));
+    }
+
   });
 
   app.get('/maps', function(req, res, next) {

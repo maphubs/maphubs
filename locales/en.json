@@ -575,5 +575,12 @@
 	"Suggestion": "Suggestion",
 	"Report a Problem": "Report a Problem",
 	"\n                   Maps are incredibly powerful tools for journalism.\n                   One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.\n                  ": "\n                   Maps are incredibly powerful tools for journalism.\n                   One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.\n                  ",
-	"Language": "Language"
+	"Language": "Language",
+	"You must login or sign up before saving a map.": "You must login or sign up before saving a map.",
+	"Retry": "Retry",
+	"No layers in map, use the tab to the right to add a layer.": "No layers in map, use the tab to the right to add a layer.",
+	"Step 1: Map Layers": "Step 1: Map Layers",
+	"Step 2: Save & Share": "Step 2: Save & Share",
+	"My Layers": "My Layers",
+	"Map Layers": "Map Layers"
 }

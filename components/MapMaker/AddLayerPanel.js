@@ -1,8 +1,7 @@
 var React = require('react');
 
 var SearchBox = require('../SearchBox');
-var CardCarousel = require('../CardCarousel/CardCarousel');
-var slug = require('slug');
+var MapMakerCardCarousel = require('./MapMakerCardCarousel.js');
 var debug = require('../../services/debug')('mapmaker/addlayerpanel');
 
 var config = require('../../clientconfig');
@@ -65,23 +64,15 @@ var AddLayerPanel = React.createClass({
   },
 
   render(){
-
+    var _this = this;
     var myCards = [];
     var popularCards = [];
     var myLayers = '';
     if(this.props.myLayers){
       this.props.myLayers.map(function(layer){
-        var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-
         myCards.push({
-          id: layer.layer_id,
-          title: layer.name,
-          description: layer.description,
-          image_url,
-          source: layer.source,
-          group: layer.owned_by_group_id,
-          type: 'layer',
-          link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+          layer,
+          onClick: _this.props.onAdd
         });
       });
       myLayers = (
@@ -89,24 +80,16 @@ var AddLayerPanel = React.createClass({
           <div className="col s12">
             <h5>{this.__('My Layers')}</h5>
             <div className="divider"></div>
-            <CardCarousel cards={myCards} infinite={false}/>
+            <MapMakerCardCarousel cards={myCards} infinite={false}/>
           </div>
         </div>
       );
     }
 
     this.props.popularLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-
       popularCards.push({
-        id: layer.layer_id,
-        title: layer.name,
-        description: layer.description,
-        image_url,
-        source: layer.source,
-        group: layer.owned_by_group_id,
-        type: 'layer',
-        link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+        layer,
+        onClick: _this.props.onAdd
       });
     });
 
@@ -117,16 +100,9 @@ var AddLayerPanel = React.createClass({
 
 
         this.state.searchResults.map(function(layer){
-          var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
           searchCards.push({
-            id: layer.layer_id,
-            title: layer.name,
-            description: layer.description,
-            image_url,
-            source: layer.source,
-            group: layer.owned_by_group_id,
-            type: 'layer',
-            link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+            layer,
+            onClick: _this.props.onAdd
           });
         });
         searchResults = (
@@ -134,7 +110,7 @@ var AddLayerPanel = React.createClass({
             <div className="col s12">
             <h5>{this.__('Search Results')}</h5>
             <div className="divider"></div>
-            <CardCarousel infinite={false} cards={searchCards}/>
+            <MapMakerCardCarousel infinite={false} cards={searchCards}/>
           </div>
           </div>
         );
@@ -164,7 +140,7 @@ var AddLayerPanel = React.createClass({
               <div className="col s12">
                 <h5>{this.__('Popular')}</h5>
                 <div className="divider"></div>
-                <CardCarousel cards={popularCards} infinite={false}/>
+                <MapMakerCardCarousel cards={popularCards} infinite={false}/>
               </div>
             </div>
           </div>
