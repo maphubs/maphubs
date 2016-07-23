@@ -292,6 +292,18 @@ var MapMaker = React.createClass({
 
   toggleMapTab(){
     $(this.refs.tabs).tabs('select_tab', 'maptab');
+    var evt = document.createEvent('UIEvents');
+    evt.initUIEvent('resize', true, false, window, 0);
+    window.dispatchEvent(evt);
+
+  },
+
+  toggleAddLayerTab(){
+    $(this.refs.tabs).tabs('select_tab', 'addlayer');
+    var evt = document.createEvent('UIEvents');
+    evt.initUIEvent('resize', true, false, window, 0);
+    window.dispatchEvent(evt);
+
   },
 
   enableSaveButton() {
@@ -365,7 +377,7 @@ var MapMaker = React.createClass({
           <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{
             this.state.mapLayers.map(function (layer) {
                 return (
-                  <MapLayer showVisibility={_this.props.showVisibility}
+                  <MapLayer key={layer.layer_id} showVisibility={_this.props.showVisibility}
                     toggleVisibility={_this.toggleVisibility}
                     removeFromMap={_this.removeFromMap}
                     showLayerDesigner={_this.showLayerDesigner}
@@ -411,8 +423,8 @@ var MapMaker = React.createClass({
         </div>
         <div className="col s6 m9 l9 no-padding" style={{height: '100%'}}>
           <ul className="tabs" ref="tabs" style={{overflowX: 'hidden'}}>
-            <li className="tab mapmaker-tab"><a className="active" href="#addlayer">{this.__('Add a Layer')}</a></li>
-            <li className="tab mapmaker-tab"><a href="#maptab">{this.__('View Map')}</a></li>
+            <li className="tab mapmaker-tab"><a className="active" href="#addlayer" onClick={this.toggleAddLayerTab}>{this.__('Add a Layer')}</a></li>
+            <li className="tab mapmaker-tab"><a href="#maptab" onClick={this.toggleMapTab}>{this.__('View Map')}</a></li>
           </ul>
 
             <div id="addlayer" style={{height: 'calc(100% - 42px)', overflow: 'scroll', display: tabContentDisplay}}>

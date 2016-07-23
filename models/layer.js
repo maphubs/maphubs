@@ -46,6 +46,7 @@ module.exports = {
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license',
     'is_external', 'external_layer_config',
+    'style', 'legend_html','labels','extent_bbox', 'preview_position',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .where({published: true, status: 'published'})
@@ -77,7 +78,7 @@ module.exports = {
     input = input.toLowerCase();
     return knex('omh.layers')
     .select('layer_id', 'name', 'description', 'data_type',
-    'status', 'published', 'source', 'license', 'style', 'legend_html',
+    'status', 'published', 'source', 'license', 'style', 'legend_html', 'labels',
     'is_external', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .where({published: true, status: 'published'})
     .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
@@ -109,6 +110,7 @@ module.exports = {
 
     var query = knex.select('layer_id', 'name', 'description', 'data_type',
     'status', 'published', 'source', 'license',
+    'style', 'legend_html','labels','extent_bbox', 'preview_position',
     'is_external', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .whereIn('owned_by_group_id', subquery)
