@@ -114,13 +114,16 @@ getCookie(cname) {
     var activeLinkClasses = "active";
 
     var exploreClasses = defaultLinkClasses,
+        mapClasses = defaultLinkClasses,
         servicesClasses = defaultLinkClasses,
         aboutClasses = defaultLinkClasses,
         myStoriesClasses = defaultLinkClasses,
         myMapsClasses = defaultLinkClasses;
     if(this.props.activePage){
       var activePage = this.props.activePage;
-      if(activePage == 'explore'){
+      if(activePage == 'map'){
+        mapClasses = activeLinkClasses;
+      }else if(activePage == 'explore'){
         exploreClasses = activeLinkClasses;
       }else if(activePage == 'services'){
         servicesClasses = activeLinkClasses;
@@ -163,6 +166,9 @@ getCookie(cname) {
           <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
             <li className="nav-link-wrapper">
+              <a className={mapClasses} href='/map/new'>{this.__('Map')}</a>
+            </li>
+            <li className="nav-link-wrapper">
               <a className={exploreClasses} href='/explore'>{this.__('Explore')}</a>
             </li>
             <li className="nav-link-wrapper">
@@ -193,6 +199,9 @@ getCookie(cname) {
               <UserMenu id="user-menu-sidenav"/>
             <li className="nav-link-wrapper">
               <LocaleChooser />
+            </li>
+            <li className="nav-link-wrapper">
+              <a className={mapClasses} href='/map/new'>{this.__('Map')}</a>
             </li>
             <li className="nav-link-wrapper">
               <a className={exploreClasses} href='/explore'>{this.__('Explore')}</a>

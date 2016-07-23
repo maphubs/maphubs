@@ -17,7 +17,7 @@ render(){
   return (
     <div className="row no-margin">
         <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
-          <a href="/maps" style={{margin: 'auto'}}>
+          <a href="/map/new" style={{margin: 'auto'}}>
             <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className="material-icons valign center-align" style={{fontSize: '80px', margin: 'auto'}}>map</i>
             </div>

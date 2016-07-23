@@ -221,7 +221,7 @@ var Home = React.createClass({
 
 		return (
       <div>
-      <Header />
+      <Header activePage="explore" />
       <main style={{margin: 0}}>
         <SubPageBanner locale={this.props.locale}
           img="/assets/home/Moabi-Canoe.jpg" backgroundPosition="50% 15%"

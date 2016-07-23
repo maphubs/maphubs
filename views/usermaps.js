@@ -6,7 +6,6 @@ var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var CreateMap = require('../components/CreateMap/CreateMap');
 var CreateMapActions = require('../actions/CreateMapActions');
 var debug = require('../services/debug')('usermaps');
-//var slug = require('slug');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -52,8 +51,6 @@ var UserMaps = React.createClass({
 	render() {
     var _this = this;
 
-
-
     var cards = [];
 
     _this.props.maps.map(function(map){
@@ -77,7 +74,7 @@ var UserMaps = React.createClass({
       <div>
         <CreateMap onCreate={this.mapCreated} userMap/>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Map')}>
-          <a onClick={this.showCreateMap} className="btn-floating btn-large red">
+          <a href="/map/new" className="btn-floating btn-large red">
             <i className="large material-icons">add</i>
           </a>
         </div>
@@ -106,7 +103,6 @@ var UserMaps = React.createClass({
       </div>
     );
   }
-
 
 		return (
       <div>

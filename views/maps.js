@@ -15,12 +15,11 @@ var NotificationActions = require('../actions/NotificationActions');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
-var UserStore = require('../stores/UserStore');
 var Locales = require('../services/locales');
 
 var Maps = React.createClass({
 
-  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -73,14 +72,6 @@ var Maps = React.createClass({
 
   resetSearch(){
     this.setState({searchActive: false, searchResults: []});
-  },
-
-  onCreateMap(){
-    if(this.state.user.display_name){
-      window.location= '/user/' + this.state.user.display_name + '/maps';
-    }else{
-      MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')});
-    }
   },
 
 	render() {
@@ -210,7 +201,7 @@ var Maps = React.createClass({
 
           <div>
             <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Map')}>
-              <a onClick={this.onCreateMap} className="btn-floating btn-large red">
+              <a href="/map/new" className="btn-floating btn-large red">
                 <i className="large material-icons">add</i>
               </a>
             </div>
