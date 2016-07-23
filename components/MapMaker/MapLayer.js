@@ -54,52 +54,53 @@ var MapLayer = React.createClass({
     }
     return (
       <li key={layer.layer_id} className="collection-item"
-        style={{height: '70px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden', border: '1px solid #ddd'}}>
-        <div className="title col s8">
+        style={{height: '90px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden', border: '1px solid #ddd'}}>
+        <div className="title row no-margin">
           <b className="title truncate grey-text text-darken-4 layer-card-tooltipped"
             style={{fontSize: '12px'}}
             data-position="top" data-tooltip={layer.name}>
             {layer.name}
           </b>
           <GroupTag group={layer.owned_by_group_id} />
-          <p className="truncate no-margin grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
+          <p className="truncate no-margin no-padding grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
         </div>
-          <div className="secondary-content col s4 no-padding">
-
-            <div className="col s4 no-padding">
+          <div className="row">
+            <div className="col s2 no-padding">
               <a href={'/layer/info/'+ layer.layer_id + '/' + slug(layer.name ? layer.name : '')} target="_blank"
                 className="create-map-btn layer-card-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
                 <i className="material-icons omh-accent-text">info</i>
                 </a>
             </div>
-            <div className="col s4 no-padding">
+            <div className="col s2 no-padding">
              {visibilityButton}
             </div>
-            <div className="col s4 no-padding">
-            <div className="fixed-action-btn horizontal"
-              style={{
-                position: 'relative',
-                right: 0,
-                paddingLeft: '5px',
-                bottom: 0,
-                height: '70px'}}>
-               <a className="create-map-btn">
-                 <i className="material-icons omh-accent-text">more_horiz</i>
-               </a>
-               <ul style={{
-                   height: '40px',
-                   bottom: '0px',
-                  right: '50%',
-                  width: '215px'
-                }}>
-                 <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.props.removeFromMap(layer);}} className="btn-floating red layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons">remove</i></a></li>
-                 <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.props.showLayerDesigner(layer);}} className="btn-floating amber darken-4 layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
-                 <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.props.moveUp(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons">keyboard_arrow_up</i></a></li>
-                 <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.props.moveDown(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons">keyboard_arrow_down</i></a></li>
-               </ul>
-             </div>
-           </div>
+            <div className="col s2 no-padding">
+              <a onClick={function(){_this.props.removeFromMap(layer);}}
+                className="create-map-btn layer-card-tooltipped"
+                data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}>
+                <i className="material-icons omh-accent-text">delete</i></a>
+            </div>
+            <div className="col s2 no-padding">
+              <a onClick={function(){_this.props.showLayerDesigner(layer);}}
+                className="create-map-btn layer-card-tooltipped"
+                data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}>
+                <i className="material-icons omh-accent-text">color_lens</i></a>
+            </div>
+            <div className="col s2 no-padding">
+              <a onClick={function(){_this.props.moveUp(layer);}}
+                className="create-map-btn layer-card-tooltipped"
+                data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}>
+                <i className="material-icons omh-accent-text">keyboard_arrow_up</i>
+              </a>
+            </div>
+            <div className="col s2 no-padding">
+              <a onClick={function(){_this.props.moveDown(layer);}}
+                className="create-map-btn layer-card-tooltipped"
+                data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}>
+                <i className="material-icons omh-accent-text">keyboard_arrow_down</i>
+              </a>
+            </div>
           </div>
       </li>);
   }

@@ -133,7 +133,6 @@ var MapMaker = React.createClass({
   componentDidMount(){
     $('ul.tabs').tabs();
     $('.collapsible').collapsible();
-    this.resetSearch();
     $(this.refs.sidenav).sideNav({
       menuWidth: 300, // Default is 240
       edge: 'left', // Choose the horizontal origin
@@ -184,8 +183,8 @@ var MapMaker = React.createClass({
     this.handleTitleChange(model.title);
     var _this = this;
 
-    if(!this.state.title || this.state.title == ''){
-      NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
+    if(!model.title || model.title == ''){
+      NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'});
       return;
     }
 
@@ -227,7 +226,7 @@ var MapMaker = React.createClass({
   recheckLogin(){
     UserActions.getUser(function(err){
       if(err){
-        NotificationActions.showNotification({message: this.__('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'bottomleft'});
+        NotificationActions.showNotification({message: this.__('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'topright'});
       }
     });
   },
@@ -281,7 +280,7 @@ var MapMaker = React.createClass({
     Actions.setMapPosition(position);
     Actions.addToMap(layer, function(err){
       if(err){
-        NotificationActions.showNotification({message: this.__('Map already contains this layer'), dismissAfter: 3000, position: 'bottomleft'});
+        NotificationActions.showNotification({message: this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'});
       }
       //reset stuck tooltips...
       $('.layer-card-tooltipped').tooltip();
@@ -321,7 +320,7 @@ var MapMaker = React.createClass({
       settings = (
         <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row" style={{margin: '25px'}}>
-            <TextInput name="title" defaultValue={this.state.title} label={this.__('Map Title')} icon="info"
+            <TextInput name="title" defaultValue={this.state.title} label={this.__('Map Title')}
               className="col s12" length={200}
                required/>
           </div>
@@ -336,9 +335,15 @@ var MapMaker = React.createClass({
     }else{
       settings = (
         <div>
-          <p>{this.__('You must login or sign up before saving a map.')}</p>
-          <a className="btn" href="/login" target="_blank">{this.__('Login')}</a>
-          <a className="btn" onClick={this.recheckLogin}>{this.__('Retry')}</a>
+          <div className="row center-align">
+            <p>{this.__('You must login or sign up before saving a map.')}</p>
+          </div>
+          <div className="row center-align">
+            <a className="btn" href="/login" target="_blank">{this.__('Login')}</a>
+          </div>
+          <div className="row center-align">
+            <a className="btn" onClick={this.recheckLogin}>{this.__('Retry')}</a>
+          </div>
         </div>
       );
     }
@@ -420,6 +425,7 @@ var MapMaker = React.createClass({
                 <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
                   glStyle={this.state.mapStyle}
                   baseMap={this.state.basemap}
+                  insetMap={false}
                   onChangeBaseMap={Actions.setMapBasemap}
                   fitBounds={mapExtent}
                   />

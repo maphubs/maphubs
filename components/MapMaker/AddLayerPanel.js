@@ -49,10 +49,10 @@ var AddLayerPanel = React.createClass({
         }else{
           if(res.body.layers && res.body.layers.length > 0){
             _this.setState({searchActive: true, searchResults: res.body.layers});
-            NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'bottomleft'});
+            NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'topright'});
           }else{
             //show error message
-            NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'});
+            NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'topright'});
           }
         }
       },
@@ -61,6 +61,10 @@ var AddLayerPanel = React.createClass({
       }
       );
     });
+  },
+
+  resetSearch(){
+    this.setState({searchActive: false, searchResults: []});
   },
 
   render(){
@@ -78,7 +82,7 @@ var AddLayerPanel = React.createClass({
       myLayers = (
         <div className="row">
           <div className="col s12">
-            <h5>{this.__('My Layers')}</h5>
+            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Layers')}</h5>
             <div className="divider"></div>
             <MapMakerCardCarousel cards={myCards} infinite={false}/>
           </div>
@@ -108,7 +112,7 @@ var AddLayerPanel = React.createClass({
         searchResults = (
           <div className="row">
             <div className="col s12">
-            <h5>{this.__('Search Results')}</h5>
+            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
             <div className="divider"></div>
             <MapMakerCardCarousel infinite={false} cards={searchCards}/>
           </div>
@@ -119,7 +123,7 @@ var AddLayerPanel = React.createClass({
         searchResults = (
           <div className="row">
             <div className="col s12">
-            <h5>{this.__('Search Results')}</h5>
+            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
             <div className="divider"></div>
             <p><b>{this.__('No Results Found')}</b></p>
           </div>
@@ -130,7 +134,7 @@ var AddLayerPanel = React.createClass({
 
     return (
       <div style={{padding: '10px'}}>
-        <div className="container">
+        <div style={{paddingLeft: '25%', paddingRight: '25%'}}>
           <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
         </div>
         <div style={{overflow: 'auto'}}>
@@ -138,7 +142,7 @@ var AddLayerPanel = React.createClass({
             {myLayers}
             <div className="row">
               <div className="col s12">
-                <h5>{this.__('Popular')}</h5>
+                <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Layers')}</h5>
                 <div className="divider"></div>
                 <MapMakerCardCarousel cards={popularCards} infinite={false}/>
               </div>

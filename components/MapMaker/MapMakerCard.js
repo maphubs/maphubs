@@ -19,16 +19,6 @@ module.exports = React.createClass({
 
   propTypes:  {
     layer: React.PropTypes.object.isRequired,
-    id: React.PropTypes.string.isRequired,
-    title: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string,
-    image_url: React.PropTypes.string,
-    background_image_url: React.PropTypes.string,
-    link: React.PropTypes.string.isRequired,
-    group: React.PropTypes.string,
-    source: React.PropTypes.string,
-    map: React.PropTypes.object,
-    story: React.PropTypes.object,
     onClick: React.PropTypes.func.isRequired
   },
 
