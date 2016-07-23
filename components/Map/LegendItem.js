@@ -27,6 +27,12 @@ var LegendItem = React.createClass({
     //check if this layer contains a map legend style (included if this legend is showing as part of a composite map)
     var legendHtml = this.props.layer.map_legend_html ? this.props.layer.map_legend_html : this.props.layer.legend_html;
 
+    if(!this.props.layer || ! this.props.layer.layer_id){
+      return (
+        <div></div>
+      );
+    }
+
     /*eslint-disable react/no-danger*/
     return (
           <li key={this.props.layer.layer_id} style={this.props.style} className="collection-item row">

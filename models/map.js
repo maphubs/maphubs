@@ -155,19 +155,21 @@ module.exports = {
         debug('Created Map with ID: ' + map_id);
         //insert layers
         var mapLayers = [];
-        layers.forEach(function(layer, i){
-          var mapStyle = layer.map_style ? layer.map_style : layer.style;
-          var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
-          var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
-          mapLayers.push({
-            map_id,
-            layer_id: layer.layer_id,
-            style: mapStyle,
-            labels: mapLabels,
-            legend_html: mapLegend,
-            position: i
+        if(layers && Array.isArray(layers) && layers.length > 0){
+          layers.forEach(function(layer, i){
+            var mapStyle = layer.map_style ? layer.map_style : layer.style;
+            var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
+            var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
+            mapLayers.push({
+              map_id,
+              layer_id: layer.layer_id,
+              style: mapStyle,
+              labels: mapLabels,
+              legend_html: mapLegend,
+              position: i
+            });
           });
-        });
+        }
         return trx('omh.map_layers')
         .insert(mapLayers)
         .then(function(){

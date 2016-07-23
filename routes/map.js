@@ -288,7 +288,7 @@ module.exports = function(app) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.basemap && data.position && data.title){
+      if(data && data.basemap && data.position && data.title){
           Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id)
           .then(function(result){
             res.status(200).send({success: true, map_id: result[0]});
