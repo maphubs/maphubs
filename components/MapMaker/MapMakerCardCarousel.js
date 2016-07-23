@@ -31,14 +31,13 @@ var CardCarousel = React.createClass({
        slidesToShow: this.props.slidesToShow ? this.props.slidesToShow : 3,
        slidesToScroll: this.props.slidesToScroll ? this.props.slidesToScroll : 3,
        responsive: [
-         {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
-         {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},
-         {breakpoint: 950, settings: {slidesToShow: 3,  slidesToScroll: 3}},
-         {breakpoint: 1150, settings: {slidesToShow: 4,  slidesToScroll: 4}},
-         {breakpoint: 1400, settings: {slidesToShow: 5,  slidesToScroll: 5}},
-         {breakpoint: 1700, settings: {slidesToShow: 6,  slidesToScroll: 6}},
-          {breakpoint: 2500, settings: {slidesToShow: 8,  slidesToScroll: 8}},
-          {breakpoint: 4000, settings: {slidesToShow: 10,  slidesToScroll: 10}}
+         {breakpoint: 600, settings: {slidesToShow: 1,  slidesToScroll: 1}},
+         {breakpoint: 950, settings: {slidesToShow: 2,  slidesToScroll: 2}},
+         {breakpoint: 1150, settings: {slidesToShow: 3,  slidesToScroll: 3}},
+         {breakpoint: 1400, settings: {slidesToShow: 4,  slidesToScroll: 4}},
+         {breakpoint: 1700, settings: {slidesToShow: 5,  slidesToScroll: 5}},
+          {breakpoint: 2500, settings: {slidesToShow: 6,  slidesToScroll: 6}},
+          {breakpoint: 4000, settings: {slidesToShow: 8,  slidesToScroll: 8}}
       ]
      };
      return (
@@ -46,7 +45,7 @@ var CardCarousel = React.createClass({
          <Slider ref="slider" {...settings}>
            {this.props.cards.map(function(card){
              return (
-               <div key={card.id}>
+               <div key={card.layer.layer_id}>
                  <MapMakerCard {...card} />
               </div>
             );

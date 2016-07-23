@@ -133,11 +133,11 @@ var AddLayerPanel = React.createClass({
     }
 
     return (
-      <div style={{padding: '10px'}}>
+      <div style={{paddingTop: '10px'}}>
         <div style={{paddingLeft: '25%', paddingRight: '25%'}}>
           <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
         </div>
-        <div style={{overflow: 'auto'}}>
+        <div>
             {searchResults}
             {myLayers}
             <div className="row">

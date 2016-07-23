@@ -314,6 +314,25 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     height: 100%;
 }
 
+.slick-dots {
+  overflow: hidden !important;
+  height: 35px !important;
+}
+
+.slick-dots li {
+  margin-right: 3px !important;
+  margin-left: 3px !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.slick-dots li button {
+  padding: 0 !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+
 .slider, .slider-frame, .slider-list, .slider-slide {
     height: 100% !important;
     width: 100% !important;

@@ -390,7 +390,7 @@ var MapMaker = React.createClass({
 
     return (
       <div className="row no-margin" style={{width: '100%', height: '100%'}}>
-        <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>
+        <div className="create-map-side-nav col s6 m3 l3 no-padding" style={{height: '100%'}}>
           <ul className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>
             <li>
               <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Map Layers')}</div>
@@ -409,13 +409,13 @@ var MapMaker = React.createClass({
             </li>
         </ul>
         </div>
-        <div className="col s6 m10 l9 no-padding" style={{height: '100%'}}>
+        <div className="col s6 m9 l9 no-padding" style={{height: '100%'}}>
           <ul className="tabs" ref="tabs" style={{overflowX: 'hidden'}}>
             <li className="tab mapmaker-tab"><a className="active" href="#addlayer">{this.__('Add a Layer')}</a></li>
             <li className="tab mapmaker-tab"><a href="#maptab">{this.__('View Map')}</a></li>
           </ul>
 
-            <div id="addlayer" style={{height: 'calc(100% - 50px)', overflow: 'scroll', display: tabContentDisplay}}>
+            <div id="addlayer" style={{height: 'calc(100% - 42px)', overflow: 'scroll', display: tabContentDisplay}}>
               <AddLayerPanel myLayers={this.props.myLayers}
                 popularLayers={this.props.popularLayers}
                 onAdd={this.addLayer} />
