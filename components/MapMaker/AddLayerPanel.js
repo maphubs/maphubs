@@ -72,7 +72,7 @@ var AddLayerPanel = React.createClass({
     var myCards = [];
     var popularCards = [];
     var myLayers = '';
-    if(this.props.myLayers){
+    if(this.props.myLayers && this.props.myLayers.length > 0){
       this.props.myLayers.map(function(layer){
         myCards.push({
           layer,
