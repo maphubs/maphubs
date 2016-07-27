@@ -52,7 +52,7 @@ var MapLayerDesigner = React.createClass({
 
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
-    this.props.onStyleChange(this.state.layer.layer_id, style, legend);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, legend);
     this.setState({style, legend, mapColor: color});
   },
 
@@ -107,8 +107,8 @@ var MapLayerDesigner = React.createClass({
         || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
         designer = (
           <div style={{padding:'5px'}}>
-             <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} 
-            style={this.state.layer.style} onStyleChange={this.setStyle} 
+             <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
+            style={this.state.layer.style} onStyleChange={this.setStyle}
             layer={this.state.layer}
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
           </div>
@@ -124,7 +124,7 @@ var MapLayerDesigner = React.createClass({
        designer = (
         <div>
             <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-              style={this.state.layer.style} onStyleChange={this.setStyle} 
+              style={this.state.layer.style} onStyleChange={this.setStyle}
               labels={this.state.layer.labels} onLabelsChange={this.setLabels}
               layer={this.state.layer}
               showAdvanced={this.props.showAdvanced}
