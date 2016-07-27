@@ -40,6 +40,7 @@ module.exports = {
     search: "./client/search",
     error: "./client/error",
     map: "./client/map",
+    mapedit: "./client/mapedit",
     usermaps: "./client/usermaps",
     userstories: "./client/userstories",
     embedmap: "./client/embedmap",

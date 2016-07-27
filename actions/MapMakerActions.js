@@ -3,9 +3,6 @@ var Reflux = require('reflux');
 var actions = Reflux.createActions({
   'setSearchLayers': {},
   'setMapLayers': {},
-  'reloadSearchLayersAll': {},
-  'reloadSearchLayersUser': {},
-  'reloadSearchLayersHub': {},
   'setMapId': {},
   'setStoryId': {},
   'setHubId': {},
@@ -22,8 +19,6 @@ var actions = Reflux.createActions({
   'saveMap': {},
   'createUserMap': {},
   'createStoryMap': {},
-  'showMapDesigner': {},
-  'closeMapDesigner': {},
   'toggleVisibility': {},
   'reset': {},
   'deleteMap': {}

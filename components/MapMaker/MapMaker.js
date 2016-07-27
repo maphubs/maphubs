@@ -39,6 +39,7 @@ var MapMaker = React.createClass({
   },
 
   propTypes:  {
+    edit: React.PropTypes.bool,
     mapLayers: React.PropTypes.array,
     showVisibility: React.PropTypes.bool,
     onCreate: React.PropTypes.func,
@@ -53,6 +54,7 @@ var MapMaker = React.createClass({
 
   getDefaultProps() {
     return {
+      edit: false,
       popularLayers: [],
       showVisibility: true,
       mapLayers: null,
@@ -139,6 +141,9 @@ var MapMaker = React.createClass({
       closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
     }
     );
+    if(this.props.edit){
+      this.toggleMapTab();
+    }
   },
 
   componentWillReceiveProps(nextProps){
@@ -199,7 +204,6 @@ var MapMaker = React.createClass({
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
           //hide designer
-          Actions.closeMapDesigner();
           NotificationActions.showNotification({message: _this.__('Map Saved')});
           _this.onCreate();
         }
@@ -211,7 +215,6 @@ var MapMaker = React.createClass({
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
           //hide designer
-          Actions.closeMapDesigner();
           NotificationActions.showNotification({message: _this.__('Map Saved')});
           _this.onCreate();
         }
@@ -332,7 +335,9 @@ var MapMaker = React.createClass({
       settings = (
         <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row" style={{margin: '25px'}}>
-            <TextInput name="title" defaultValue={this.state.title} label={this.__('Map Title')}
+            <TextInput name="title"
+              defaultValue={this.state.title} value={this.state.title}
+              label={this.__('Map Title')}
               className="col s12" length={200}
                required/>
           </div>

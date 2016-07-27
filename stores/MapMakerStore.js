@@ -21,7 +21,6 @@ module.exports = Reflux.createStore({
       map_id: -1,
       title: null,
       mapLayers: [],
-      show: false,
       mapStyle: null,
       position: null,
       basemap: 'default'
@@ -181,15 +180,6 @@ module.exports = Reflux.createStore({
       });
     });
   },
-
-  showMapDesigner(){
-    this.setState({show: true});
-  },
-
-  closeMapDesigner(){
-    this.setState({map_id: null, show: false});
-  },
-
   //helpers
   updateMap(mapLayers){
     var mapStyle = this.buildMapStyle(mapLayers);

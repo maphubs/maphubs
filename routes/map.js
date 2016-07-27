@@ -170,6 +170,58 @@ module.exports = function(app) {
     }
   });
 
+  app.get('/map/edit/:map_id', function(req, res, next) {
+    var map_id = req.params.map_id;
+    if(!map_id){
+      apiDataError(res);
+    }
+
+    var user_id = null;
+    if(req.session.user){
+      user_id = req.session.user.id;
+    }
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+        //need to be logged in
+        res.redirect('/unauthorized');
+    } else {
+      //get user id
+      Map.allowedToModify(map_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          return Promise.all([
+          Map.getMap(map_id),
+          Map.getMapLayers(map_id),
+          Layer.getPopularLayers(),
+          Layer.getUserLayers(user_id, 15)
+          ])
+          .then(function(results){
+            var map = results[0];
+            var layers = results[1];
+            var popularLayers = results[2];
+            var myLayers = results[3];
+            var title = 'Map';
+            if(map.title){
+              title = map.title;
+            }
+            title += ' - MapHubs';
+              res.render('mapedit',
+               {
+                 title,
+                 props:{map, layers, popularLayers, myLayers},
+                 hideFeedback: true,
+                 req
+               }
+             );
+          }).catch(nextError(next));
+        }else{
+          res.redirect('/unauthorized');
+        }
+      });
+    }
+  });
+
   app.get('/map/embed/:map_id', function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){

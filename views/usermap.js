@@ -6,8 +6,7 @@ var Header = require('../components/header');
 //var NotificationActions = require('../actions/NotificationActions');
 var ConfirmationActions = require('../actions/ConfirmationActions');
 var MessageActions = require('../actions/MessageActions');
-var CreateMap = require('../components/CreateMap/CreateMap');
-var CreateMapActions = require('../actions/CreateMapActions');
+var MapMakerActions = require('../actions/MapMakerActions');
 import Progress from '../components/Progress';
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
@@ -98,7 +97,7 @@ var UserMap = React.createClass({
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of ') + this.props.map.title,
       onPositiveResponse(){
-        CreateMapActions.deleteMap(_this.props.map.map_id, function(err){
+        MapMakerActions.deleteMap(_this.props.map.map_id, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {
@@ -111,7 +110,8 @@ var UserMap = React.createClass({
   },
 
   onEdit(){
-    CreateMapActions.showMapDesigner();
+    window.location = '/map/edit/' + this.props.map.map_id;
+    //CreateMapActions.showMapDesigner();
   },
 
   onMapChanged(){
@@ -172,13 +172,8 @@ var UserMap = React.createClass({
       );
     }
 
-    var button = '',  deleteButton = '', editButton ='', createMap='';
+    var button = '',  deleteButton = '', editButton ='';
     if(this.props.canEdit){
-      createMap = (
-        <CreateMap onCreate={this.onMapChanged} mapLayers={this.props.layers}
-          basemap={this.props.map.basemap}
-          mapId={this.props.map.map_id} title={this.props.map.title} position={this.props.map.position} userMap/>
-      );
       deleteButton = (
           <li>
             <a onClick={this.onDelete} className="btn-floating user-map-tooltip red"
@@ -254,7 +249,6 @@ var UserMap = React.createClass({
         <Header />
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>
-          {createMap}
           <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative'}}>
           <a href="#" ref="mapLayersPanel"
             data-activates="user-map-layers"
