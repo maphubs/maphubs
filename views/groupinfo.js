@@ -51,7 +51,7 @@ var GroupInfo = React.createClass({
     if(this.props.canEdit){
       editButton = (
         <div className="fixed-action-btn action-button-bottom-right">
-          <a className="btn-floating btn-large omh-color">
+          <a className="btn-floating btn-large red">
               <i className="large material-icons">more_vert</i>
             </a>
             <ul>
@@ -80,6 +80,15 @@ var GroupInfo = React.createClass({
       );
     }
 
+    var descriptionWithLinks = '';
+
+    if(this.props.group.description){
+      // regex for detecting links
+      var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
+      descriptionWithLinks = this.props.group.description.replace(regex, "<a href='$1' target='_blank'>$1</a>");
+    }
+
+
     return (
       <div>
         <Header/>
@@ -91,7 +100,7 @@ var GroupInfo = React.createClass({
             </div>
             <div className="col s6">
               <div className="row">
-              <p><b>{this.__('Description: ')}</b>{this.props.group.description}</p>
+              <p><b>{this.__('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>
               </div>
               {unofficial}
             </div>

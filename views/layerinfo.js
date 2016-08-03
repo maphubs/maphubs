@@ -506,6 +506,16 @@ var LayerInfo = React.createClass({
     var licenseOptions = Licenses.getLicenses(this.__);
     var license = _find(licenseOptions, {value: this.props.layer.license});
 
+    var descriptionWithLinks = '';
+
+    if(this.props.layer.description){
+      // regex for detecting links
+      var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
+      descriptionWithLinks = this.props.layer.description.replace(regex, "<a href='$1' target='_blank'>$1</a>");
+    }
+
+
+
 		return (
 
       <div>
@@ -537,7 +547,7 @@ var LayerInfo = React.createClass({
                   </p>
                 <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
                 <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
-                <p style={{fontSize: '16px', wordWrap: 'break-word', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b> {this.props.layer.description}</p>
+                <p style={{fontSize: '16px', wordWrap: 'break-word', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>
 
                 </div>
 
