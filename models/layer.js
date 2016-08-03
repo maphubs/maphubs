@@ -496,7 +496,44 @@ module.exports = {
           });
       }
 
+    },
+
+    getLayerNotes(layer_id){
+      return knex('omh.layer_notes').select('notes')
+      .where({layer_id})
+      .then(function(result){
+        if(result && result.length == 1){
+          return result[0];
+        }
+        return null;
+      });
+    },
+
+    saveLayerNote(layer_id, user_id, notes){
+      return knex('omh.layer_notes').select('layer_id').where({layer_id})
+      .then(function(result){
+        if(result && result.length == 1){
+          return knex('omh.layer_notes')
+          .update({
+            notes,
+            updated_by: user_id,
+            updated_at: knex.raw('now()')
+          })
+          .where({layer_id});
+        }else{
+          return knex('omh.layer_notes')
+          .insert({
+            layer_id,
+            notes,
+            created_by: user_id,
+            created_at: knex.raw('now()'),
+            updated_by: user_id,
+            updated_at: knex.raw('now()')
+          });
+        }
+      });
     }
+
 
 
 

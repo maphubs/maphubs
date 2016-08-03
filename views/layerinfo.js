@@ -21,6 +21,13 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var MessageActions = require('../actions/MessageActions');
+var NotificationActions = require('../actions/NotificationActions');
+var LayerNotes = require('../components/CreateLayer/LayerNotes');
+var HubEditButton = require('../components/Hub/HubEditButton');
+var LayerNotesActions = require('../actions/LayerNotesActions');
+var LayerNotesStore = require('../stores/LayerNotesStore');
+
 var moment = require('moment-timezone');
 
 import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl';
@@ -39,7 +46,10 @@ var checkClientError = require('../services/client-error-response').checkClientE
 
 var LayerInfo = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[
+    StateMixin.connect(LocaleStore, {initWithProps: ['locale']}),
+    StateMixin.connect(LayerNotesStore, {initWithProps: ['notes']})
+  ],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -47,6 +57,7 @@ var LayerInfo = React.createClass({
 
   propTypes: {
 		layer: React.PropTypes.object.isRequired,
+    notes: React.PropTypes.string,
     stats: React.PropTypes.object,
     canEdit: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
@@ -65,7 +76,8 @@ var LayerInfo = React.createClass({
       dataMsg: '',
       gridHeight: 100,
       gridWidth: 100,
-      gridHeightOffset: 48
+      gridHeightOffset: 48,
+      editingNotes: false
     };
   },
 
@@ -182,6 +194,12 @@ var LayerInfo = React.createClass({
       this.getGeoJSON(function(){});
       _this.setState({dataMsg: _this.__('Data Loading')});
     }
+
+    window.onbeforeunload = function(){
+      if(_this.state.editingNotes){
+        return _this.__('You have not saved your edits, your changes will be lost.');
+      }
+    };
   },
 
   componentDidUpdate(){
@@ -329,6 +347,24 @@ var LayerInfo = React.createClass({
 
   },
 
+  startEditingNotes(){
+    this.setState({editingNotes: true});
+  },
+
+  stopEditingNotes(){
+    var _this = this;
+
+    LayerNotesActions.saveNotes(this.props.layer.layer_id, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+      }else{
+        NotificationActions.showNotification({message: _this.__('Notes Saved')});
+        _this.setState({editingNotes: false});
+      }
+    });
+
+  },
+
 	render() {
     var _this = this;
     var glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.layer.data_type];
@@ -454,9 +490,15 @@ var LayerInfo = React.createClass({
       tabContentDisplay = 'inherit';
     }
 
-    var editButton = '';
+    var editButton = '', notesEditButton;
 
     if(this.props.canEdit){
+      notesEditButton = (
+        <HubEditButton editing={this.state.editingNotes}
+          style={{position: 'absolute'}}
+          startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
+      );
+
       var idEditButton = '';
       if(!this.props.layer.is_external){
         idEditButton = (
@@ -520,7 +562,7 @@ var LayerInfo = React.createClass({
 
       <div>
         <Header />
-        <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
+        <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
         <div className="row" style={{height: '100%', margin: 0}}>
           <div className="col s12 m6 l6 no-padding" style={{height: '100%'}}>
             <div style={{margin: '10px'}}>
@@ -531,6 +573,7 @@ var LayerInfo = React.createClass({
             <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
               <ul className="tabs" style={{overflowX: 'hidden'}}>
                 <li className="tab"><a className="active" href="#info">{this.__('Info')}</a></li>
+                <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
                 <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>
                 <li className="tab"><a href="#data" onClick={this.onTabSelect}>{this.__('Data')}</a></li>
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
@@ -569,6 +612,10 @@ var LayerInfo = React.createClass({
                     <p className="center-align">{this.props.stats.hubs}</p>
                   </div>
                 </div>
+              </div>
+              <div id="notes" className="col s12" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
+                <LayerNotes editing={this.state.editingNotes}/>
+                {notesEditButton}
               </div>
               <div id="discuss" className="col s12" style={{display: tabContentDisplay}}>
                 <ReactDisqusThread

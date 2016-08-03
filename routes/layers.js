@@ -87,13 +87,20 @@ module.exports = function(app) {
       Promise.all([
         Layer.getLayerByID(layer_id),
         Stats.getLayerStats(layer_id),
-        Layer.allowedToModify(layer_id, user_id)
+        Layer.allowedToModify(layer_id, user_id),
+        Layer.getLayerNotes(layer_id)
       ])
       .then(function(results){
         var layer = results[0];
         var stats = results[1];
         var canEdit = results[2];
-        res.render('layerinfo', {title: layer.name + ' - MapHubs', props: {layer, stats, canEdit}, req});
+        var notesObj = results[3];
+
+        var notes = null;
+        if(notesObj && notesObj.notes){
+          notes = notesObj.notes;
+        }
+        res.render('layerinfo', {title: layer.name + ' - MapHubs', props: {layer, notes, stats, canEdit}, fontawesome: true, req});
 
       }).catch(nextError(next));
   });
@@ -659,6 +666,30 @@ app.get('/api/layer/presets/:id', function(req, res) {
   .then(function(preset){
     res.status(200).send(preset);
   }).catch(apiError(res, 500));
+});
+
+app.post('/api/layer/notes/save', function(req, res) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    res.status(401).send("Unauthorized, user not logged in");
+    return;
+  }
+  var user_id = req.session.user.id;
+  var data = req.body;
+  if (data && data.layer_id && data.notes) {
+    Layer.allowedToModify(data.layer_id, user_id)
+    .then(function(allowed){
+      if(allowed){
+        Layer.saveLayerNote(data.layer_id, user_id, data.notes)
+          .then(function() {
+            res.send({success: true});
+          }).catch(apiError(res, 500));
+      }else {
+        notAllowedError(res, 'layer');
+      }
+    }).catch(apiError(res, 500));
+  } else {
+    apiDataError(res);
+  }
 });
 
 };
