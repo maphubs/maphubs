@@ -419,8 +419,13 @@ var LayerInfo = React.createClass({
               left: '5px',
               minWidth: '275px',
               zIndex: '1',
-              width: '25%'
+              width: '25%',
+              maxWidth: '325px',
+              maxHeight: 'calc(100% - 200px)',
+              display: 'flex',
+              flexDirection: 'column'
             }}
+            collapsible={false}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
         </Map>
@@ -441,8 +446,13 @@ var LayerInfo = React.createClass({
               left: '5px',
               minWidth: '275px',
               zIndex: '1',
-              width: '25%'
+              width: '25%',
+              maxWidth: '325px',
+              maxHeight: 'calc(100% - 200px)',
+              display: 'flex',
+              flexDirection: 'column'
             }}
+            collapsible={false}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
         </Map>

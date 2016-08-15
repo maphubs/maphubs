@@ -125,7 +125,11 @@ var EmbedMap = React.createClass({
               left: '5px',
               minWidth: '275px',
               zIndex: '9999',
-              width: '25%'
+              width: '25%',
+              maxWidth: '325px',   
+              maxHeight: 'calc(100% - 200px)',
+              display: 'flex',
+              flexDirection: 'column'
             }}
               title={title}
               layers={this.props.layers}/>

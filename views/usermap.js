@@ -152,8 +152,12 @@ var UserMap = React.createClass({
     if(this.state.width < 600){
       bottomLegend = (
         <Legend style={{
-            width: '100%'
+            width: '100%',
+            maxHeight: 'calc(100% - 140px)',
+            display: 'flex',
+            flexDirection: 'column'
           }}
+          collapsible={false}
             title={title}
             layers={this.props.layers}/>
         );
@@ -165,7 +169,11 @@ var UserMap = React.createClass({
             left: '5px',
             minWidth: '275px',
             zIndex: '1',
-            width: '25%'
+            width: '25%',
+            maxWidth: '325px',
+            maxHeight: 'calc(100% - 200px)',
+            display: 'flex',
+            flexDirection: 'column'
           }}
           title={title}
             layers={this.props.layers}/>
@@ -275,7 +283,7 @@ var UserMap = React.createClass({
           </a>
           <div className="side-nav" id="user-map-layers"
             style={{backgroundColor: 'rgba(0,0,0,0)',
-              height: 'auto', padding: 0, marginTop: '100px',
+              height: 'calc(100% - 100px)', padding: 0, marginTop: '100px',
               border: 'none', boxShadow: 'none'}}>
             {bottomLegend}
 
