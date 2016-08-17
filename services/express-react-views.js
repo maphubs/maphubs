@@ -92,6 +92,13 @@ function createEngine(engineOptions) {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>` + title +`</title>
         `;
+
+        if(options.description){
+          markup += `
+            <meta name="description" content="` + options.description + `"/>
+          `;
+        }
+
         //icons
         markup += `
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/assets/apple-touch-icon-57x57.png" />
@@ -231,7 +238,7 @@ function createEngine(engineOptions) {
                 var r=e.getElementsByTagName("script")[0],c=e.createElement("script");
                 c.type="text/javascript",c.async=!0,c.src="https://djtflbt20bdde.cloudfront.net/",r.parentNode.insertBefore(c,r)}(document,window.HSCW||{},window.HS||{});</script>
             `;
-          
+
         }
       if(process.env.NODE_ENV == 'production'){
         markup += `
