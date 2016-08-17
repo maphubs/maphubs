@@ -165,8 +165,16 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   color: #FFF;
 }
 
+.nav-hover-menu-item {
+  color: #212121 !important;
+}
 
-.nav-link-wrapper a {
+.nav-hover-menu-item:hover {
+  color: #FFF !important;
+  background-color: #29ABE2;
+}
+
+.nav-link-wrapper a{
   color: #212121 !important;
 }
 
@@ -174,10 +182,18 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   color:#29ABE2 !important;
 }
 
+.locale-dropdown-button {
+    color:#29ABE2 !important;
+}
+
+.nav-link-item:hover {
+  color: #FFF !important;
+  background-color: transparent !important;
+}
 
 .nav-link-wrapper:hover {
   color: #FFF;
-  background-color: #29ABE2 !important;
+  background-color: #29ABE2;
 
   -o-transition:.5s;
   -ms-transition:.5s;
@@ -186,10 +202,9 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   /* ...and now for the proper property */
   transition:.5s;
 }
-.nav-link-wrapper:hover a {
-  color: #FFF !important;
-  background-color: transparent !important;
-}
+
+
+
 
 .usermenu-wrapper:hover {
   color: #FFF !important;
@@ -202,6 +217,8 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   /* ...and now for the proper property */
   transition:.5s;
 }
+
+
 
 .usermenu-wrapper a {
   color: #212121 !important;

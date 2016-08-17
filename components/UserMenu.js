@@ -79,7 +79,7 @@ var UserMenu = React.createClass({
     } else {
       user = (
         <li className="nav-link-wrapper">
-            <a href="#" onClick={this.loginClick}>{this.__('Login')}</a>
+            <a className="nav-link-item" href="#" onClick={this.loginClick}>{this.__('Login')}</a>
         </li>
       );
     }
