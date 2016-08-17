@@ -425,7 +425,7 @@ var LayerInfo = React.createClass({
               display: 'flex',
               flexDirection: 'column'
             }}
-            collapsible={false}
+            collapsible={true}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
         </Map>
@@ -452,7 +452,7 @@ var LayerInfo = React.createClass({
               display: 'flex',
               flexDirection: 'column'
             }}
-            collapsible={false}
+            collapsible={true}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
         </Map>

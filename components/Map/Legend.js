@@ -69,6 +69,11 @@ var Legend = React.createClass({
       );
     }
 
+    var allowScroll = true;
+    if(this.state.collapsed || this.props.layers.length==1){
+      allowScroll = false;
+    }
+
     return (
       <div className={this.props.className} style={this.props.style}>
         <ul ref="legend" className="collapsible" data-collapsible="accordion" style={{textAlign: 'left', display: 'flex', flexDirection: 'column'}}>
@@ -76,8 +81,8 @@ var Legend = React.createClass({
           <div className="collapsible-header active no-padding" onClick={this.toggleCollapsed}>
             {title}
           </div>
-          <div className="collapsible-body" style={{overflow: 'auto', display: 'flex', flexDirection: 'column'}}>
-            <ul className="collection no-margin z-depth-2"  style={{overflow: 'auto'}}>
+          <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column'}}>
+            <ul className="collection no-margin z-depth-2"  style={{overflowY: allowScroll ? 'auto': 'hidden'}}>
               {
                 this.props.layers.map(function (layer) {
                   return (<LegendItem key={layer.layer_id} layer={layer} style={{padding: '2px', width: '100%', margin: 'auto'}}/>);
