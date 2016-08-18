@@ -1,6 +1,7 @@
 var React = require('react');
 
-var Editor = require('react-medium-editor');
+import Editor from 'react-medium-editor';
+
 var ImageCrop = require('../ImageCrop');
 
 var Reflux = require('reflux');
@@ -128,7 +129,7 @@ var HubBanner = React.createClass({
            tag="p"
            text={taglineVal}
            onChange={this.handleTaglineChange}
-           options={{toolbar: false,
+           options={{toolbar: false, buttonLabels: false,
              placeholder: {text: this.__('Enter a Tagline or Subheading for Your Hub')},
              disableReturn: true, buttons: []}}
          />
@@ -142,7 +143,7 @@ var HubBanner = React.createClass({
                tag="p"
                text={descriptionVal}
                onChange={this.handleDescriptionChange}
-               options={{toolbar: false,
+               options={{toolbar: false, buttonLabels: false,
                  placeholder: {text: this.__('Enter a Description or Intro for Your Hub')},
                  disableReturn: true, buttons: []}}
              />

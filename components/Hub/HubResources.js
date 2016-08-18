@@ -1,6 +1,6 @@
 var React = require('react');
 
-var Editor = require('react-medium-editor');
+import Editor from 'react-medium-editor';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
