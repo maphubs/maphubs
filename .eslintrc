@@ -14,8 +14,8 @@
     "babel/object-curly-spacing": 1,
     "babel/object-shorthand": 1,
     "babel/arrow-parens": 1,
-    "flow-vars/define-flow-type": 1,
-    "flow-vars/use-flow-type": 1,
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1,
     "react/wrap-multilines": 1,
     semi: [2, "always"]
   },
@@ -31,7 +31,7 @@
   "plugins": [
     "babel",
     "react",
-    "flow-vars"
+    "flowtype"
   ],
   "settings": {
     "react": {
