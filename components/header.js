@@ -155,15 +155,7 @@ getCookie(cname) {
 
     return (
       <header>
-        <ul id="explore-dropdown" className="dropdown-content">
-          <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
-          <li className="divider"></li>
-          <li><a href="/maps" className="nav-hover-menu-item">{this.__('Maps')}</a></li>
-          <li><a href="/stories" className="nav-hover-menu-item">{this.__('Stories')}</a></li>
-          <li><a href="/layers" className="nav-hover-menu-item">{this.__('Layers')}</a></li>
-          <li><a href="/hubs" className="nav-hover-menu-item">{this.__('Hubs')}</a></li>
-          <li><a href="/groups" className="nav-hover-menu-item">{this.__('Groups')}</a></li>
-        </ul>
+
       <nav className="white" style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
         <div className="nav-wrapper white z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
@@ -180,6 +172,15 @@ getCookie(cname) {
             </li>
             <li className="nav-link-wrapper">
               <a className={exploreClasses} href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
+                <ul id="explore-dropdown" className="dropdown-content">
+                  <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
+                  <li className="divider"></li>
+                  <li><a href="/maps" className="nav-hover-menu-item">{this.__('Maps')}</a></li>
+                  <li><a href="/stories" className="nav-hover-menu-item">{this.__('Stories')}</a></li>
+                  <li><a href="/layers" className="nav-hover-menu-item">{this.__('Layers')}</a></li>
+                  <li><a href="/hubs" className="nav-hover-menu-item">{this.__('Hubs')}</a></li>
+                  <li><a href="/groups" className="nav-hover-menu-item">{this.__('Groups')}</a></li>
+                </ul>
             </li>
             <li className="nav-link-wrapper">
               <a className={servicesClasses} href='/services'>{this.__('Services')}</a>
