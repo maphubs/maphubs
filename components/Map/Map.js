@@ -338,6 +338,7 @@ var Map = React.createClass({
     this.createMap();
 
     $(this.refs.basemapButton).show();
+    $(this.refs.editBaseMapButton).show();
     if(this.refs.insetMap){
       $(this.refs.insetMap).show();
     }
@@ -528,7 +529,8 @@ var Map = React.createClass({
       zoom: 0,
       interactive: this.state.interactive,
       dragRotate,
-      center: [0,0]
+      center: [0,0],
+      hash: true
     });
 
   map.on('style.load', function() {
@@ -765,6 +767,7 @@ map.on('mousemove', function(e) {
       this.map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));
       this.map.interaction.enable();
       $(this.refs.basemapButton).show();
+      $(this.refs.editBaseMapButton).show();
     }
 
       if(this.state.locale && (this.state.locale != prevState.locale) ){
@@ -1080,7 +1083,9 @@ map.on('mousemove', function(e) {
   },
 
   toggleBaseMaps(){
-
+    if(this.state.showEditBaseMap){
+      this.closeEditBaseMap();
+    }
     if(this.state.showBaseMaps){
       this.closeBaseMaps();
     }else{
@@ -1090,6 +1095,21 @@ map.on('mousemove', function(e) {
 
   closeBaseMaps(){
     this.setState({showBaseMaps: false});
+  },
+
+  toggleEditBaseMap(){
+    if(this.state.showBaseMaps){
+      this.closeBaseMaps();
+    }
+    if(this.state.showEditBaseMap){
+      this.closeEditBaseMap();
+    }else{
+      this.setState({showEditBaseMap: true});
+    }
+  },
+
+  closeEditBaseMap(){
+    this.setState({showEditBaseMap: false});
   },
 
   getBaseMapFromName(mapName){
@@ -1202,8 +1222,32 @@ map.on('mousemove', function(e) {
       );
     }
 
+    var editBaseMapBox = '';
+    if(this.state.showEditBaseMap){
+      _this = this;
+      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + window.location.hash.replace('#', '');
+      var loggingRoadsEditLink = 'https://id.loggingroads.org/#map=' + window.location.hash.replace('#', '');
+      editBaseMapBox = (
+        <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
+            <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
+              <li className="collection-header">
+                <h6>{this.__('Edit Base Map Data')}</h6>
+              </li>
+             <li className="collection-item">
+               <a className="btn" target="_blank" href={osmEditLink} onClick={this.toggleEditBaseMap}>{this.__('OpenStreetMap')}</a>
+             </li>
+             <li className="collection-item">
+               <a className="btn" target="_blank" href={loggingRoadsEditLink} onClick={this.toggleEditBaseMap}>{this.__('LoggingRoads')}</a>
+             </li>
+           </ul>
 
-    var baseMapButton = '';
+
+
+        </div>
+      );
+    }
+
+    var baseMapButton = '', editBaseMapButton = '';
     if(this.state.interactive){
       baseMapButton = (
         <a
@@ -1236,6 +1280,39 @@ map.on('mousemove', function(e) {
             >layers</i>
         </a>
       );
+
+      editBaseMapButton = (
+        <a
+          onClick={this.toggleEditBaseMap}
+          style={{position: 'absolute',
+            top: '10px',
+            right: '45px',
+            height:'30px',
+            zIndex: '100',
+            lineHeight: '30px',
+            textAlign: 'center',
+            width: '30px'}}
+          >
+          <i className="material-icons z-depth-1 base-map-tooltip"
+            ref="editBaseMapButton"
+            style={{height:'30px',
+                    lineHeight: '30px',
+                    display: 'none',
+                    width: '30px',
+                    color: '#29ABE2',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    backgroundColor: 'white',
+                    borderColor: '#ddd',
+                    borderStyle: 'solid',
+                    borderWidth: '1px',
+                    textAlign: 'center',
+                    fontSize:'25px'}}
+            data-position="bottom" data-delay="50" data-tooltip={this.__('Edit Base Map')}
+            >edit</i>
+        </a>
+      );
+
     }
 
     var inset = '';
@@ -1255,8 +1332,10 @@ map.on('mousemove', function(e) {
       <div ref="mapcontainer" className={this.props.className} style={style}>
         <div id={this.state.id} ref="map" className={className} style={{width:'100%', height:'100%'}}>
           {inset}
+          {editBaseMapButton}
           {baseMapButton}
           {baseMapBox}
+          {editBaseMapBox}
           {featureBox}
           {interactiveButton}
           {children}
