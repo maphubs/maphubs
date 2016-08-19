@@ -249,12 +249,14 @@ module.exports = {
       .then(function(results){
         var commands = [];
         results.forEach(function(result){
-          commands.push(trx('omh.images').where({image_id: result.image_id}).del());
+          commands.push(
+            trx('omh.story_images').where({story_id, image_id: result.image_id}).del()
+            .then(function(){
+              return trx('omh.images').where({image_id: result.image_id}).del();
+            })
+          );
         });
-        return Promise.all(commands)
-        .then(function(){
-          return trx('omh.story_images').select('image_id').where({story_id}).del();
-        });
+        return Promise.all(commands);
       });
     });
   }
