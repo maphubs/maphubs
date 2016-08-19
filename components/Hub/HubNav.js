@@ -53,13 +53,12 @@ var HubHav = React.createClass({
               <i className="material-icons">menu</i>
             </a>
             <ul className="side-nav" id="nav">
-              <LocaleChooser />
               <UserMenu id="user-menu-sidenav"/>
               <li className="nav-link-wrapper"><a href={hubBaseUrl}>{this.__('Home')}</a></li>
               <li className="nav-link-wrapper"><a href={hubBaseUrl + 'map'}>{this.__('Map')}</a></li>
               <li className="nav-link-wrapper"><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
               <li className="nav-link-wrapper"><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
-
+              <LocaleChooser />
               <hr />
               <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to MapHubs')}</a></li>
               {manageButton}
