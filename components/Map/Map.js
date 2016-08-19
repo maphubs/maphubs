@@ -1225,8 +1225,11 @@ map.on('mousemove', function(e) {
     var editBaseMapBox = '';
     if(this.state.showEditBaseMap){
       _this = this;
-      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + window.location.hash.replace('#', '');
-      var loggingRoadsEditLink = 'https://id.loggingroads.org/#map=' + window.location.hash.replace('#', '');
+      var origHash = window.location.hash.replace('#', '');
+      var hashParts = origHash.split('/');
+      var reorderedHash = hashParts[0] + '/' + hashParts[2] + '/' + hashParts[1];
+      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + origHash;
+      var loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + reorderedHash;
       editBaseMapBox = (
         <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
             <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
