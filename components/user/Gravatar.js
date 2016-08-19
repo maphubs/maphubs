@@ -29,7 +29,9 @@ var Gravatar = React.createClass({
     var gravatarUrl = 'https://www.gravatar.com/avatar/' + hash;
 
     if(this.props.size){
-      gravatarUrl += '?s=' + this.props.size * 2;
+      gravatarUrl += '?s=' + this.props.size * 2 + '&d=mm';
+    }else{
+      gravatarUrl +='?d=mm';
     }
 
     return (<img className="circle" height={this.props.size} width={this.props.size} style={{height: this.props.size + 'px', width: this.props.size + 'px', border: '1px solid #bbbbbb'}} src={gravatarUrl} alt="User Profile Photo" />);
