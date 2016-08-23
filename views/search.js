@@ -1,7 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Map = require('../components/Map/Map');
-var Legend = require('../components/Map/Legend');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
@@ -297,13 +296,18 @@ var Search = React.createClass({
           <Map ref="map" style={{width: '100%', height: '100%'}}
             disableScrollZoom={true} hoverInteraction={true}
             data={this.state.searchResult} >
-            <Legend style={{
+            <div style={{
                 position: 'absolute',
                 bottom: '0px',
                 right: '0px',
                 zIndex: '1',
                 width: '160px'
-              }}/>
+              }} >
+              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map -
+              <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
+              <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
+              </span>
+            </div>
           </Map>
          </div>
          <div className="divider"></div>

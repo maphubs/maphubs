@@ -2,8 +2,19 @@ var React = require('react');
 var $ = require('jquery');
 var LegendItem = require('./LegendItem');
 
+var Reflux = require('reflux');
+var StateMixin = require('reflux-state-mixin')(Reflux);
+var LocaleStore = require('../../stores/LocaleStore');
+var Locales = require('../../services/locales');
 
 var Legend = React.createClass({
+
+  mixins:[StateMixin.connect(LocaleStore)],
+
+  __(text){
+    return Locales.getLocaleString(this.state.locale, text);
+  },
+
   propTypes:  {
     layers: React.PropTypes.array,
     className: React.PropTypes.string,
