@@ -404,11 +404,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   bottom: 75px;
 }
 
-/*Action Button*/
-.action-button-bottom-right {
-bottom: 45px;
-right: 24px;
-}
 
 
 .map-absolute {
@@ -796,6 +791,22 @@ textarea.materialize-textarea+label:after {
   line-height: 50px !important;
 }
 
+
+.action-button-bottom-right {
+    bottom: 85px;
+    right: 30px;
+}
+
+
+@media only screen and (max-width : 768px) {
+
+  .action-button-bottom-right {
+  bottom: 75px;
+  right: 11px;
+  }
+
+}
+
 @media only screen and (max-width : 600px) {
 
  .embed-map-container {
@@ -1063,10 +1074,6 @@ textarea.materialize-textarea+label:after {
 
 }
 
-.action-button-bottom-right {
-    bottom: 85px;
-    right: 30px;
-}
 
 .rms-wrapper {
   position: relative;
