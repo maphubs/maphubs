@@ -1227,9 +1227,11 @@ map.on('mousemove', function(e) {
       _this = this;
       var origHash = window.location.hash.replace('#', '');
       var hashParts = origHash.split('/');
-      var reorderedHash = hashParts[0] + '/' + hashParts[2] + '/' + hashParts[1];
-      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + origHash;
-      var loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + reorderedHash;
+      var zoom =  Math.round(hashParts[0]);
+      var lon = hashParts[1];
+      var lat = hashParts[2];
+      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat;
+      var loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + zoom + '/' + lat + '/' + lon;
       editBaseMapBox = (
         <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
             <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
