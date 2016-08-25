@@ -581,7 +581,7 @@ var LayerInfo = React.createClass({
 
 
             <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
-              <ul className="tabs" style={{overflowX: 'hidden'}}>
+              <ul className="tabs" style={{overflowX: 'auto'}}>
                 <li className="tab"><a className="active" href="#info">{this.__('Info')}</a></li>
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
                 <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>
