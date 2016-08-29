@@ -5,11 +5,13 @@ if (!global.Intl) {
  require('intl/locale-data/jsonp/en.js');
  require('intl/locale-data/jsonp/es.js');
  require('intl/locale-data/jsonp/fr.js');
+ require('intl/locale-data/jsonp/it.js');
 }
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("materialize-css/dist/css/materialize.min.css");
+require("cropperjs/dist/cropper.css");
 var AddPhotoPoint = require('../views/addphotopoint');
 
 require('../css/app.css');

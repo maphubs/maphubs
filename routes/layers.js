@@ -22,6 +22,12 @@ var local = require('../local');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
+
+var geojson2osm = require('../services/geojson_to_macrocosm');
+var Changeset = require('../services/changeset');
+var PhotoAttachment = require('../models/photo-attachment');
+var Tag = require('../models/tag');
+
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
@@ -119,6 +125,28 @@ module.exports = function(app) {
     .then(function(layer){
       res.render('layermap', {title: layer.name + ' - MapHubs', props: {layer}, hideFeedback: true, addthis: true, req});
     }).catch(nextError(next));
+  });
+
+  app.get('/layer/adddata/:id', login.ensureLoggedIn(), function(req, res, next) {
+
+    var layer_id = parseInt(req.params.id || '', 10);
+    var user_id = req.session.user.id;
+
+    Layer.allowedToModify(layer_id, user_id)
+      .then(function(allowed){
+          return Layer.getLayerByID(layer_id)
+          .then(function(layer){
+            if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
+              if(layer.data_type == 'point' && !layer.is_external){
+                res.render('addphotopoint', {title: layer.name + ' - MapHubs', props: {layer}, req});
+              }else{
+                res.status(400).send('Bad Request: Feature not support for this layer');
+              }
+            }else{
+              res.redirect('/unauthorized');
+            }
+          }).catch(nextError(next));
+        }).catch(nextError(next));
   });
 
   app.get('/layer/admin/:id/*', login.ensureLoggedIn(), function(req, res, next) {
@@ -683,6 +711,65 @@ app.post('/api/layer/notes/save', function(req, res) {
           .then(function() {
             res.send({success: true});
           }).catch(apiError(res, 500));
+      }else {
+        notAllowedError(res, 'layer');
+      }
+    }).catch(apiError(res, 500));
+  } else {
+    apiDataError(res);
+  }
+});
+
+app.post('/api/layer/addphotopoint', function(req, res) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    res.status(401).send("Unauthorized, user not logged in");
+    return;
+  }
+  var user_id = req.session.user.id;
+  var data = req.body;
+  if (data && data.layer_id && data.geoJSON && data.image && data.imageInfo) {
+    Layer.allowedToModify(data.layer_id, user_id)
+    .then(function(allowed){
+      if(allowed){
+        return knex.transaction(function(trx) {
+          return Changeset.createChangeset(user_id, trx)
+          .then(function(changeSetResult){
+            var changeset_id = changeSetResult[0];
+            debug('created changeset: ' + changeset_id);
+
+            let osmJSON = geojson2osm(data.geoJSON, changeset_id, true, 0, 1);
+
+            return Changeset.processChangeset(changeset_id, user_id, data.layer_id, osmJSON, trx)
+            .then(function(processChangeSetResult){
+              return Changeset.closeChangeset(changeset_id, trx)
+              .then(function(){
+                //get the osm_id for the feature
+                debug(processChangeSetResult);
+                var osm_id = processChangeSetResult.created.node['-1'];
+                debug('osm_id:' + osm_id);
+                return PhotoAttachment.setPhotoAttachment(data.layer_id, osm_id, data.image, data.imageInfo, user_id, trx)
+                  .then(function(photo_id) {
+                    return Layer.getLayerByID(data.layer_id, trx)
+                    .then(function(layer){
+                      var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+                      var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
+                      //add a tag to the feature
+                      return Tag.setNodeTag(osm_id, 'photo_url', photo_url, trx)
+                      .then(function(){
+                        return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
+                        .then(function(presets){
+                            return layerViews.replaceViews(data.layer_id, presets, trx)
+                          .then(function(){
+                            res.send({success: true, photo_id, photo_url, osm_id});
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+        }).catch(apiError(res, 500));
       }else {
         notAllowedError(res, 'layer');
       }

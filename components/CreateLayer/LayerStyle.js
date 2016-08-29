@@ -182,8 +182,8 @@ var LayerStyle = React.createClass({
       colorChooser = (
         <div>
           <h5>{this.__('Choose Style')}</h5>
-          <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity} 
-            style={this.state.layer.style} onStyleChange={this.setStyle} 
+          <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
+            style={this.state.layer.style} onStyleChange={this.setStyle}
             layer={this.state.layer}
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend} showAdvanced/>
         </div>
@@ -205,7 +205,7 @@ var LayerStyle = React.createClass({
       <div>
         <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-            style={this.state.layer.style} onStyleChange={this.setStyle} 
+            style={this.state.layer.style} onStyleChange={this.setStyle}
             labels={this.state.layer.labels} onLabelsChange={this.setLabels}
             layer={this.state.layer}
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
