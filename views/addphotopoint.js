@@ -17,6 +17,8 @@ var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 var ConfirmationActions = require('../actions/ConfirmationActions');
 
+import Progress from '../components/Progress';
+
 
 var AddPhotoPoint = React.createClass({
 
@@ -29,6 +31,12 @@ var AddPhotoPoint = React.createClass({
   propTypes: {
 		layer: React.PropTypes.object.isRequired,
     locale: React.PropTypes.string.isRequired
+  },
+
+  getInitialState(){
+    return {
+      saving: false
+    };
   },
 
   componentDidMount(){
@@ -65,7 +73,9 @@ var AddPhotoPoint = React.createClass({
 
   onSubmit(model){
     var _this = this;
+    this.setState({saving: true});
     Actions.submit(model, function(err){
+      _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -147,6 +157,7 @@ var AddPhotoPoint = React.createClass({
             </div>
           </div>
           <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
+          <Progress id="saving" title={this.__('Saving')} subTitle="" dismissible={false} show={this.state.saving}/>
         </main>
       </div>
     );

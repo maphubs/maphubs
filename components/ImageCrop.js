@@ -11,6 +11,7 @@ var _isequal = require('lodash.isequal');
 var $ = require('jquery');
 
 import Cropper from 'react-cropper';
+import Progress from './Progress';
 
 var EXIF = require('exif-js');
 
@@ -61,7 +62,8 @@ var ImageCrop = React.createClass({
       show: false,
       preview: null,
       autoCropArea: this.props.autoCropArea,
-      aspectRatio: this.props.aspectRatio
+      aspectRatio: this.props.aspectRatio,
+      loading: false
     };
   },
 
@@ -207,6 +209,7 @@ resizeImage(sourceCanvas){
 
   _onChange(e){
     var _this = this;
+    _this.setState({loading: true});
     let files;
     if (e.dataTransfer) {
       files = e.dataTransfer.files;
@@ -288,7 +291,7 @@ resizeImage(sourceCanvas){
           }
           tempCanvas.getContext('2d').drawImage(img, 0, 0,  img.width, img.height);
           var data = tempCanvas.toDataURL(file.type, 1);
-          _this.setState({src: data, exif: exifdata, file, img, ext});
+          _this.setState({src: data, exif: exifdata, file, img, ext, loading: false});
           $(tempCanvas).remove();
          });
       };
@@ -486,7 +489,7 @@ resizeImage(sourceCanvas){
         <br style={{clear: 'both'}}/>
           {saveButton}
       </div>
-
+        <Progress id="imagecrop-loading" title={this.__('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
         </ModalContent>
       </Modal>
       );
