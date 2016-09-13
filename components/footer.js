@@ -3,6 +3,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var config = require('../clientconfig');
 
 var Footer = React.createClass({
 
@@ -24,25 +25,25 @@ var Footer = React.createClass({
                 <a href="http://moabi.org">
                   <img width="50" height="50" className="responsive-img" style={{marginLeft: '-10px'}} src="/assets/moabi-logo.png" alt="Moabi.org" /></a>
                   <br />
-                  <small>{this.__('MapHubs is a Moabi project')}</small>
+                  <small>{config.productName + this.__(' is a Moabi project')}</small>
                   <br />
-                  <small>{this.__('MapHubs is Open Source, the code is available on ')}<a href="https://github.com/maphubs">GitHub</a></small>
+                  <small>{config.productName + this.__(' is Open Source, the code is available on ')}<a href="https://github.com/maphubs">GitHub</a></small>
 
               </div>
               <div className="col l4 offset-l2 s12">
                 <ul>
-                  <li><a className="text-darken-3 center" href="/about">About MapHubs</a></li>
-                  <li>Contact Us: <a className="text-darken-3 center" href="mailto:info@maphubs.com">info@maphubs.com</a></li>
-                  <li>Twitter: <a className="text-darken-3 center" href="http://twitter.com/maphubs">@maphubs</a></li>
-                  <li><a className="text-darken-3 center" href="/terms">Terms</a></li>
-                  <li><a className="text-darken-3 center" href="/privacy">Privacy</a></li>
+                  <li><a className="text-darken-3 center" href="/about">{this.__('About') + ' ' + config.productName}</a></li>
+                  <li>{this.__('Contact Us:')} <a className="text-darken-3 center" href="mailto:info@maphubs.com">{config.contactEmail}</a></li>
+                  <li>Twitter: <a className="text-darken-3 center" href={'http://twitter.com/' + config.twitter}>@{config.twitter}</a></li>
+                  <li><a className="text-darken-3 center" href="/terms">{this.__('Terms')}</a></li>
+                  <li><a className="text-darken-3 center" href="/privacy">{this.__('Privacy')}</a></li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="footer-copyright white">
             <div className="grey-text container center">
-              <small>&copy; 2016 MapHubs</small>
+              <small>&copy; 2016 {config.productName}</small>
             </div>
           </div>
 

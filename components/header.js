@@ -8,6 +8,7 @@ var Notification = require('../components/Notification');
 var Message = require('../components/message');
 var MessageActions = require('../actions/MessageActions');
 var Confirmation = require('../components/confirmation');
+var config = require('../clientconfig');
 
 //var debug = require('../services/debug')('header');
 var LocaleStore = require('../stores/LocaleStore');
@@ -156,11 +157,11 @@ getCookie(cname) {
     return (
       <header>
 
-      <nav className="white" style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
-        <div className="nav-wrapper white z-depth-0">
+      <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)', backgroundColor: config.bannerColor}}>
+        <div className="nav-wrapper z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
-            <img className="valign" width="148" height="40" style={{margin: '5px'}} src="/assets/maphubs-logo.png" alt={this.__('MapHubs Logo')}/>
-              <small style={{color: '#222222', position: 'absolute', top: '12px', left: '150px', fontSize: '12px'}}>beta</small>
+            <img className="valign" width="148" height="40" style={{margin: '5px'}} src={config.logo} alt={this.__(config.productName + ' Logo')}/>
+              <small style={{color: '#222222', position: 'absolute', top: '12px', left: '150px', fontSize: '12px'}}>{config.betaText}</small>
 
           </a>
 

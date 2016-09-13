@@ -157,13 +157,17 @@ function createEngine(engineOptions) {
         }
 
         if(materialicons){
-          markup += '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">\n';
+          //https://fonts.googleapis.com/icon?family=Material+Icons
+          markup += '<link href="/assets/css/material-icons.css" rel="stylesheet">\n';
         }
         if(options.fontawesome){
-          markup += '<link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">\n';
+          //https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css
+          markup += '<link href="/assets/css/font-awesome.css" rel="stylesheet">\n';
         }
-        markup += '<link href="https://fonts.googleapis.com/css?family=Raleway|Merriweather:400,700,400italic" rel="stylesheet" type="text/css">\n';
-                markup += '<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">\n';
+        //https://fonts.googleapis.com/css?family=Raleway|Merriweather:400,700,400italic
+        markup += '<link href="/assets/css/raleway.css" rel="stylesheet" type="text/css">\n';
+        //https://fonts.googleapis.com/css?family=Open+Sans
+        markup += '<link href="/assets/css/opensans.css" rel="stylesheet" type="text/css">\n';
         markup +=
         '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
         '<link rel="stylesheet" type="text/css" href="/public/' + clientFileName + '.css">' +
@@ -178,15 +182,15 @@ function createEngine(engineOptions) {
 
         if(options.rangy){
           markup +=
-          '<script src="https://cdn.lukej.me/rangy/1.2.3/rangy-core.js"></script>\n' +
-          '<script src="https://cdn.lukej.me/rangy/1.2.3/rangy-cssclassapplier.js"></script>\n';
+          '<script src="/assets/js/rangy-core.js"></script>\n' +
+          '<script src="/assets/js/rangy-cssclassapplier.js"></script>\n';
         }
 
-        if(options.addthis){
+        if(options.addthis  && !local.disableTracking){
           markup += '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55d2323271adc34b" async="async"></script>\n';
         }
 
-        if(options.mailchimp){
+        if(options.mailchimp && !local.disableTracking){
           markup += '<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/signup-forms/popup/embed.js" data-dojo-config="usePlainJson: true, isDebug: false"></script><script type="text/javascript">require(["mojo/signup-forms/Loader"], function(L) { L.start({"baseUrl":"mc.us12.list-manage.com","uuid":"d2eac39a023dd41d2dd00b58e","lid":"0cbfb0b04d"}) })</script>';
         }
 
@@ -240,7 +244,7 @@ function createEngine(engineOptions) {
             `;
 
         }
-      if(process.env.NODE_ENV == 'production'){
+      if(process.env.NODE_ENV == 'production' && !local.disableTracking){
         markup += `
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

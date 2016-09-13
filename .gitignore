@@ -142,3 +142,4 @@ image.tar
 clientconfig.js
 run-docker.sh
 prod_docker_cloud.yaml
+maphubs.log.*

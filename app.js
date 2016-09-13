@@ -1,11 +1,12 @@
-require('newrelic');
+var local = require('./local');
+if(!local.disableTracking) require('newrelic');
+
 var express = require('express'),
   load = require('express-load'),
   passport = require('passport'),
   //util = require('util'),
   path = require('path'),
   logger = require('morgan'),
-  local = require('./local'),
   cors = require('cors'),
   bodyParser = require('body-parser'),
   xmlparser = require('express-xml-bodyparser'),
@@ -241,7 +242,6 @@ app.use(function(err, req, res, next) {
 });
 
 
-//app.listen(local.internal_port);
 var http = require('http');
 var server = http.createServer(app);
 server.setTimeout(10*60*1000); // 10 * 60 seconds * 1000 msecs
