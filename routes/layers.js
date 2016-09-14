@@ -688,6 +688,14 @@ app.get('/api/layer/info/:id', function(req, res) {
   }).catch(apiError(res, 500));
 });
 
+app.get('/api/layer/metadata/:id', function(req, res) {
+  var layer_id = parseInt(req.params.id || '', 10);
+  Layer.getLayerByID(layer_id)
+  .then(function(layer){
+    res.status(200).send({success: true, layer});
+  }).catch(apiError(res, 500));
+});
+
 app.get('/api/layer/presets/:id', function(req, res) {
   var layer_id = parseInt(req.params.id || '', 10);
   Presets.getIdEditorPresets(layer_id)
