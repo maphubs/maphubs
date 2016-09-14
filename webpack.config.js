@@ -4,6 +4,7 @@ var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
 var pathToPica = path.resolve(__dirname, 'node_modules/pica/dist/pica.min.js');
+var pathToMediumEditor = path.resolve(__dirname, 'node_modules/medium-editor/dist/js/medium-editor.js');
 
 module.exports = {
   devtool: 'eval',
@@ -57,7 +58,7 @@ module.exports = {
     signup: "./client/signup",
     pendingconfirmation: "./client/pendingconfirmation",
     emailconfirmation: "./client/emailconfirmation",
-    vendor: ["materialize-css/dist/css/materialize.min.css", "./css/app.css", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
+    vendor: ["./materialize.config.scss", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "mapbox-gl-styles", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./services/locales"],
     clientconfig: ["./clientconfig"]
   },
@@ -95,7 +96,7 @@ module.exports = {
       test: /\.jsx?$/,
       loader: 'babel-loader',
 
-      include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/,/react-slick/, /react-disqus-thread/, /medium-editor/, /reflux-state-mixin/, /react-colorpickr/],
+      include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-slick/, /react-disqus-thread/, /reflux-state-mixin/, /react-colorpickr/],
       query: {
         presets: [
           "es2015",
@@ -105,10 +106,9 @@ module.exports = {
         plugins: ['transform-flow-strip-types']
       }
     },
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
-      },
+
+      {test: /\.(scss|css)$/, loader: ExtractTextPlugin.extract('style-loader', "css!resolve-url!sass")},
+
       {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"},
       {
         test: /\.js$/,
@@ -125,6 +125,7 @@ module.exports = {
       }],
     noParse: [
       pathToPica,
+      pathToMediumEditor,
       '/node_modules\/json-schema\/lib\/validate\.js/' //https://github.com/request/request/issues/1920
     ]
   },

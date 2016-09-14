@@ -209,7 +209,7 @@ var Layers = React.createClass({
           </div>
 
           <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Layer')}>
-            <a href="/createlayer" className="btn-floating btn-large red">
+            <a href="/createlayer" className="btn-floating btn-large red red-text">
               <i className="large material-icons">add</i>
             </a>
           </div>

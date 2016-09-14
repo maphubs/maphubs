@@ -532,7 +532,7 @@ var CreateMap = React.createClass({
                 <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped"
                   style={{right: '85px'}}
                   data-position="top" data-delay="50" data-tooltip={_this.__('Cancel Map')}>
-                  <a onClick={this.onCancel} className="btn-floating btn-large red">
+                  <a onClick={this.onCancel} className="btn-floating btn-large red red-text">
                     <i className="large material-icons">close</i>
                   </a>
                 </div>

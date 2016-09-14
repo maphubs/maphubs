@@ -10,10 +10,8 @@ if (!global.Intl) {
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 var LayerInfo = require('../views/layerinfo');
 
-require('../css/app.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require("../css/react-data-grid.css");
 require('medium-editor/dist/css/medium-editor.css');

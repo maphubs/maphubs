@@ -622,7 +622,7 @@ showImageCrop(){
        <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
 
        <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '147px'}}>
-            <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red">
+            <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red red-text">
               <i className="large material-icons">add</i>
             </a>
             <ul>
@@ -646,7 +646,7 @@ showImageCrop(){
             </a>
           </div>
           <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
-            <a className="btn-floating btn-large red tooltipped" onClick={this.delete} data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
+            <a className="btn-floating btn-large red red-text tooltipped" onClick={this.delete} data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
               <i className="large material-icons">delete</i>
             </a>
           </div>

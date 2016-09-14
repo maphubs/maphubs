@@ -1,7 +1,0 @@
-#doorbell-button {
-  bottom: 25% !important;
-  right: -31px !important;
-  -ms-transform: rotate(-90deg) !important; /* IE 9 */
-  -webkit-transform: rotate(-90deg) !important; /* Chrome, Safari, Opera */
-  transform: rotate(-90deg) !important;
-}

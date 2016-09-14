@@ -215,7 +215,7 @@ var Groups = React.createClass({
                 </div>
               </div>
               <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Group')}>
-                <a className="btn-floating btn-large red" href="/creategroup">
+                <a className="btn-floating btn-large red red-text" href="/creategroup">
                   <i className="large material-icons">add</i>
                 </a>
               </div>

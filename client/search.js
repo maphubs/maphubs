@@ -4,10 +4,8 @@ const ReactDOM = require('react-dom');
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 var Search = require('../views/search');
 
-require('../css/app.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('../node_modules/slick-carousel/slick/slick.css');
 require('../node_modules/slick-carousel/slick/slick-theme.css');

@@ -193,7 +193,7 @@ var Hubs = React.createClass({
               </div>
             </div>
             <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Hub')}>
-              <a className="btn-floating btn-large red" href="/createhub">
+              <a className="btn-floating btn-large red red-text" href="/createhub">
                 <i className="large material-icons">add</i>
               </a>
             </div>

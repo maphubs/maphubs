@@ -163,7 +163,7 @@ var LayerAdmin = React.createClass({
         </div>
       </div>
       <div className="fixed-action-btn action-button-bottom-right">
-        <a className="btn-floating btn-large red">
+        <a className="btn-floating btn-large red red-text">
           <i className="large material-icons">settings</i>
         </a>
         <ul>

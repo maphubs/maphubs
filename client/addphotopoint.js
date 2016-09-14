@@ -10,11 +10,9 @@ if (!global.Intl) {
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 require("cropperjs/dist/cropper.css");
 var AddPhotoPoint = require('../views/addphotopoint');
 
-require('../css/app.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 
 

@@ -4,11 +4,8 @@ const ReactDOM = require('react-dom');
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 var StaticMap = require('../views/staticmap');
 
-require('../css/app.css');
-require('../css/feedback-left.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -4,11 +4,9 @@ const ReactDOM = require('react-dom');
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 require("cropperjs/dist/cropper.css");
 var FeatureInfo = require('../views/featureinfo');
 
-require('../css/app.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');

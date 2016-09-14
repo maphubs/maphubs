@@ -12,9 +12,7 @@ require('babel-polyfill');
 require('jquery');
 require('../node_modules/react-colorpickr/dist/colorpickr.css');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 
-require('../css/app.css');
 require('./story.css');
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');

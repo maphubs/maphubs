@@ -74,7 +74,7 @@ var Stories = React.createClass({
           </div>
         </div>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Story')}>
-          <a onClick={this.onCreateStory} className="btn-floating btn-large red">
+          <a onClick={this.onCreateStory} className="btn-floating btn-large red red-text">
             <i className="large material-icons">add</i>
           </a>
         </div>

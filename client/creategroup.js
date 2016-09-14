@@ -5,10 +5,8 @@ const CreateGroup= require('../views/creategroup');
 
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 
-require('../css/app.css');
-require('../css/feedback-right.css');
+
 require("cropperjs/dist/cropper.css");
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -93,13 +93,13 @@ var Login = React.createClass({
               <div className="collapsible-body">
                 <form action="/login" id="loginform" method="post">
                   <div className="row" style={{margin: '25px'}}>
-                    <div className="input-field">
+                    <div className="input-field col s12">
                       <input id="username" name="username" type="text"/>
                       <label htmlFor="username">{this.__('Username')}</label>
                     </div>
                   </div>
                   <div className="row" style={{margin: '25px'}}>
-                    <div className="input-field">
+                    <div className="input-field col s12">
                       <input id="password" name="password" type="password"/>
                       <label htmlFor="password">{this.__('Password')}</label>
                     </div>

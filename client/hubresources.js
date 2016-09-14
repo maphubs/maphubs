@@ -5,10 +5,8 @@ const HubResources = require('../views/hubresources');
 
 require('jquery');
 require("materialize-css");
-require("materialize-css/dist/css/materialize.min.css");
 
-require('../css/app.css');
-require('../css/feedback-right.css');
+
 require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');

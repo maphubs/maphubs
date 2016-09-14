@@ -42,7 +42,7 @@ var UserStory = React.createClass({
     if(this.props.canEdit){
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
-          <a className="btn-floating btn-large red tooltipped"
+          <a className="btn-floating btn-large red red-text tooltipped"
             href={'/user/'+ this.props.username + '/story/' + this.props.story.story_id + '/edit/' + slug(this.props.story.title)}
             data-delay="50" data-position="left" data-tooltip={this.__('Edit')}>
             <i className="large material-icons">mode_edit</i>
