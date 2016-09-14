@@ -7,6 +7,7 @@ var Carousel = require('nuka-carousel');
 import SliderDecorators from '../components/Home/SliderDecorators';
 
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
+var MapHubsProLinks = require('../components/Home/MapHubsProLinks');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
@@ -179,37 +180,51 @@ var Home = React.createClass({
        }
      ];
 
+     var homePageCarousel = '', proLinks = '';
+     if(config.mapHubsPro){
+       proLinks = (
+         <div className="row">
+          <MapHubsProLinks />
+        </div>
+       );
+     }else {
+       homePageCarousel = (
+         <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
+           <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
+             decorators={SliderDecorators}>
+             {slides.map(function(slide, i){
+               return (
+                 <div key={i} className="homepage-slide responsive-img valign-wrapper"
+                   style={{
+                     height: '100%',
+                     backgroundSize: 'cover',
+                     backgroundImage: 'url('+ slide.img + ')'
+                   }}>
+                   <div className="slide-text">
+                     <h2 className="no-margin">{slide.title}</h2>
+                     <h3 className="no-margin">{slide.text}</h3>
+                   </div>
+                   <div className="slide-button center">
+                     <a className="btn waves-effect z-depth-3" style={{backgroundColor: '#29ABE2', color: 'white', borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
+                   </div>
+                </div>
+              );
+             })}
+           </Carousel>
+         </div>
+       );
+     }
+
 		return (
       <div style={{margin: 0, height: '100%'}}>
       <Header />
       <main style={{margin: 0, height: '100%'}}>
+        {homePageCarousel}
 
-        <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
-          <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
-            decorators={SliderDecorators}>
-            {slides.map(function(slide, i){
-              return (
-                <div key={i} className="homepage-slide responsive-img valign-wrapper"
-                  style={{
-                    height: '100%',
-                    backgroundSize: 'cover',
-                    backgroundImage: 'url('+ slide.img + ')'
-                  }}>
-                  <div className="slide-text">
-                    <h2 className="no-margin">{slide.title}</h2>
-                    <h3 className="no-margin">{slide.text}</h3>
-                  </div>
-                  <div className="slide-button center">
-                    <a className="btn waves-effect z-depth-3" style={{backgroundColor: '#29ABE2', color: 'white', borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
-                  </div>
-               </div>
-             );
-            })}
-          </Carousel>
-        </div>
          <div className="row">
           <OnboardingLinks />
         </div>
+        {proLinks}
         <div className="divider" />
          <div className="row" style={{marginBottom: '50px'}}>
            <div className="row no-margin" style={{height: '50px'}}>
