@@ -81,6 +81,12 @@ maphubs:
     - OMH_PORT=80
     - OMH_SESSION_SECRET=ADD_VALUE_HERE
     - 'OMH_TILESERVICE_URL=https://beta.maphubs.com' #change this to your domain
+    - OMH_PRODUCT_NAME=MapHubs
+    - OMH_LOGO=/assets/maphubs-logo.png
+    - OMH_BETA_TEXT=beta
+    - OMH_TWITTER=maphubs
+    - OMH_CONTACT_EMAIL=info@maphubs.com
+    - OMH_MAPHUBS_PRO=false
   expose:
     - '4000'
   links:

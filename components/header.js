@@ -157,7 +157,7 @@ getCookie(cname) {
     return (
       <header>
 
-      <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)', backgroundColor: config.bannerColor}}>
+      <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
         <div className="nav-wrapper z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
             <img className="valign" width="148" height="40" style={{margin: '5px'}} src={config.logo} alt={this.__(config.productName + ' Logo')}/>

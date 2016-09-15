@@ -31,4 +31,10 @@ docker run --name maphubs-web -p 4000:4000 -d \
 -e ID_AUTH_URL=http://192.168.59.100:4000 \
 -e ID_KEY=abc123 \
 -e ID_SECRET=ssh-secret \
+-e OMH_PRODUCT_NAME=MapHubs  \
+-e OMH_LOGO=/assets/maphubs-logo.png  \
+-e OMH_BETA_TEXT=beta  \
+-e OMH_TWITTER=maphubs  \
+-e OMH_CONTACT_EMAIL=info@maphubs.com  \
+-e OMH_MAPHUBS_PRO=false  \
 maphubs-web

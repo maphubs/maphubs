@@ -2,28 +2,11 @@
 
 // import materialize
 $roboto-font-path: "./node_modules/materialize-css/fonts/roboto/";
-
+//get default colors
 @import "./node_modules/materialize-css/sass/components/_color.scss";
-
-$maphubs-accent-color: #29ABE2;
-
-$primary-color: $maphubs-accent-color;
-$primary-color-light: lighten($primary-color, 15%);
-$primary-color-dark: darken($primary-color, 15%);
-
-$secondary-color: $maphubs-accent-color;
-
-$navbar-height: 50px;
-$navbar-height-mobile: 50px;
-
-$button-raised-color: #FFF;
-$button-raised-background: $maphubs-accent-color;
-$button-raised-background-hover: #eceff1;
-
-$button-floating-color: #FFF;
-$button-floating-background: $maphubs-accent-color;
-$button-floating-background-hover: #eceff1;
-
+//override with our theme colors
+@import "./theme.scss";
+//load the rest of materialize-css
 @import "./node_modules/materialize-css/sass/materialize.scss";
-
+//load our application-wide css
 @import "./css/app.scss";

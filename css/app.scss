@@ -49,6 +49,9 @@ main {
   margin-top: 2px;
 }
 
+nav {
+  background-color: $nav-background-color;
+}
 
 nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   height: 50px;
