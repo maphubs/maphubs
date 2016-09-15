@@ -87,6 +87,7 @@ maphubs:
     - OMH_TWITTER=maphubs
     - OMH_CONTACT_EMAIL=info@maphubs.com
     - OMH_MAPHUBS_PRO=false
+    - OMH_THEME=maphubs
   expose:
     - '4000'
   links:
