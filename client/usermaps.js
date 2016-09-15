@@ -12,7 +12,6 @@ require('../node_modules/react-colorpickr/dist/colorpickr.css');
 require('medium-editor/dist/css/medium-editor.css');
 require("materialize-css");
 
-require('../css/usermaps.css');
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
