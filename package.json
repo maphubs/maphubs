@@ -132,7 +132,7 @@
     "react": "15.3.1",
     "react-codemirror": "0.2.6",
     "react-colorpickr": "openmaphub/react-colorpickr#29c5725cdfd0fba529fe211b930b0c23dffe0649",
-    "react-cropper": "^0.9.4",
+    "react-cropper": "^0.8.0",
     "react-data-grid": "maphubs/react-data-grid#34cda5225ce224b2803eb550fb433914cb8dd3e1",
     "react-disqus-thread": "maphubs/react-disqus-thread#4114ce406af88bd15b65cc4b7bb0744985a3dd48",
     "react-dom": "15.3.1",

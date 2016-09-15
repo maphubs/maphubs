@@ -1793,9 +1793,9 @@
       "resolved": "https://registry.npmjs.org/create-hmac/-/create-hmac-1.1.4.tgz"
     },
     "cropperjs": {
-      "version": "0.8.1",
-      "from": "cropperjs@>=0.8.0 <0.9.0",
-      "resolved": "https://registry.npmjs.org/cropperjs/-/cropperjs-0.8.1.tgz"
+      "version": "0.5.6",
+      "from": "cropperjs@>=0.5.0 <0.6.0",
+      "resolved": "https://registry.npmjs.org/cropperjs/-/cropperjs-0.5.6.tgz"
     },
     "cross-spawn": {
       "version": "3.0.1",
@@ -6638,9 +6638,9 @@
       "resolved": "https://registry.npmjs.org/react-contextmenu/-/react-contextmenu-1.6.2.tgz"
     },
     "react-cropper": {
-      "version": "0.9.4",
-      "from": "react-cropper@0.9.4",
-      "resolved": "https://registry.npmjs.org/react-cropper/-/react-cropper-0.9.4.tgz"
+      "version": "0.8.0",
+      "from": "react-cropper@0.8.0",
+      "resolved": "https://registry.npmjs.org/react-cropper/-/react-cropper-0.8.0.tgz"
     },
     "react-data-grid": {
       "version": "1.0.6",
