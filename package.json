@@ -100,7 +100,7 @@
     "mailgun-js": "0.7.12",
     "mapbox-gl": "maphubs/mapbox-gl-js#f4b2399",
     "mapbox-gl-geocoder": "maphubs/mapbox-gl-geocoder#7dd0561",
-    "mapbox-gl-styles": "maphubs/mapbox-gl-styles#1ac5e78",
+    "mapbox-gl-styles": "maphubs/mapbox-gl-styles#6cdf7ece34a2558a2aacedcbde820d0fab906ff1",
     "materialize-css": "0.97.7",
     "medium-editor": "5.22.0",
     "moment": "^2.14.1",

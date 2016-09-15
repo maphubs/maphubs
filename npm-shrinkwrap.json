@@ -5141,8 +5141,8 @@
     },
     "mapbox-gl-styles": {
       "version": "1.2.10",
-      "from": "maphubs/mapbox-gl-styles#1ac5e78",
-      "resolved": "git://github.com/maphubs/mapbox-gl-styles.git#1ac5e784907e50c2284c7cc59169ac64ce4e885c"
+      "from": "maphubs/mapbox-gl-styles#6cdf7ece34a2558a2aacedcbde820d0fab906ff1",
+      "resolved": "git://github.com/maphubs/mapbox-gl-styles.git#6cdf7ece34a2558a2aacedcbde820d0fab906ff1"
     },
     "match-stream": {
       "version": "0.0.2",
