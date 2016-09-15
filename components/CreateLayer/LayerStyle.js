@@ -158,7 +158,7 @@ var LayerStyle = React.createClass({
               glStyle={this.state.layer.style}
               fitBounds={mapExtent}
               />
-            <Legend className="z-depth-2" style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
+            <Legend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
                 collapsible={false}
                 layers={[this.state.layer]}/>
           </div>

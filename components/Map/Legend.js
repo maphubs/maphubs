@@ -87,7 +87,7 @@ var Legend = React.createClass({
 
     return (
       <div className={this.props.className} style={this.props.style}>
-        <ul ref="legend" className="collapsible" data-collapsible="accordion" style={{textAlign: 'left', display: 'flex', flexDirection: 'column'}}>
+        <ul ref="legend" className="collapsible" data-collapsible="accordion" style={{textAlign: 'left', display: 'flex', flexDirection: 'column', marginTop: 0}}>
         <li style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FFF'}}>
           <div className="collapsible-header active no-padding" onClick={this.toggleCollapsed}>
             {title}
