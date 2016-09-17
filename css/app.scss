@@ -501,7 +501,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     width:200px;
     overflow:hidden;
     font-size: 12px;
-    max-height: 80%;
+    max-height: calc(100% - 200px);
     background:rgba(255, 255, 255, 0.8);
     display: flex !important;
     border-radius: 4px;
