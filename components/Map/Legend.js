@@ -68,7 +68,7 @@ var Legend = React.createClass({
             <h6 className="black-text valign" style={{padding: '0.2rem', marginLeft: '2px', fontWeight: '500'}}>{titleText}</h6>
           </div>
           <div className="col s2 no-padding valign">
-            <i ref="titleIcon" className="material-icons icon-fade-in" style={{float: 'right'}}>{iconName}</i>
+            <i ref="titleIcon" className="material-icons icon-fade-in" style={{float: 'right', marginRight: 0}}>{iconName}</i>
           </div>
         </div>
       );
