@@ -22,6 +22,7 @@ module.exports = {
     layeradmin: "./client/layeradmin",
     addphotopoint: "./client/addphotopoint",
     createlayer: "./client/createlayer",
+    createremotelayer: "./client/createremotelayer",
     featureinfo: "./client/featureinfo",
     stories: "./client/stories",
     userstory: "./client/userstory",

@@ -21,7 +21,7 @@ var _endsWith = require('lodash.endswith');
 var local = require('../local');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
-var slug = require('slug');
+
 
 var geojson2osm = require('../services/geojson_to_macrocosm');
 var Changeset = require('../services/changeset');
@@ -615,45 +615,6 @@ app.get('/api/layers/search', function(req, res) {
       res.status(200).send({layers: result});
     }).catch(apiError(res, 500));
 });
-
-app.get('/api/layer/:id/tile.json', function(req, res) {
-
-    var layer_id = parseInt(req.params.id || '', 10);
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-
-    Layer.getLayerByID(layer_id)
-    .then(function(layer){
-      if(layer.is_external && layer.external_layer_config.type == 'raster'){
-        var bounds = [-180, -180, 180, 180];
-        if(layer.extent_bbox) bounds = layer.extent_bbox;
-        var tileJSON = {
-          attribution: layer.source,
-          autoscale: true,
-          bounds,
-          center: [0, 0, 3],
-          created: layer.last_updated,
-          description: layer.description,
-          filesize: 0,
-          format: "png8:m=h:c=64",
-          id: 'omh-' + layer.layer_id,
-          maxzoom: 19,
-          minzoom: 0,
-          name: layer.name,
-          private: false,
-          scheme: "xyz",
-          source: "",
-          tilejson: "2.0.0",
-          tiles: layer.external_layer_config.tiles,
-          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-        };
-        res.status(200).send(tileJSON);
-      }else {
-        res.status(404).send("TileJSON not supported for this layer");
-      }
-    }).catch(apiError(res, 500));
-
-});
-
 
 app.get('/api/layers/all', function(req, res) {
   Layer.getAllLayers(true)

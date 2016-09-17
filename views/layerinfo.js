@@ -83,13 +83,23 @@ var LayerInfo = React.createClass({
 
   getGeoJSON(cb){
     var _this = this;
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-    request.get(baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson')
+      var baseUrl, dataUrl, presetUrl;
+    if(this.props.layer.remote){
+      baseUrl = 'https://' + this.props.layer.remote_host;
+      dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/json/data.geojson';
+      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.remote_layer_id;
+    }else{
+      baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson';
+      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.layer_id;
+    }
+
+    request.get(dataUrl)
     .type('json').accept('json')
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         var geoJSON = res.body;
-        request.get(baseUrl + '/api/layer/presets/' + _this.props.layer.layer_id)
+        request.get(presetUrl)
         .type('json').accept('json')
         .end(function(err, res){
           checkClientError(res, err, cb, function(cb){
@@ -576,7 +586,30 @@ var LayerInfo = React.createClass({
       descriptionWithLinks = this.props.layer.description.replace(regex, "<a href='$1' target='_blank'>$1</a>");
     }
 
+    var remote = '';
+    if(this.props.layer.remote){
+      var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slug(this.props.layer.name);
+      remote = (
+        <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
+          <a href={remoteURL} target="_blank">{remoteURL}</a>
+        </p>
+      );
+    }
 
+    var external = '';
+    if(this.props.layer.is_external){
+      var externalUrl = + this.props.layer.external_layer_config.url;
+      external = (
+        <div>
+          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ') + this.props.layer.external_layer_type} </b>
+            <a href={remoteURL} target="_blank">{remoteURL}</a>
+          </p>
+          <p style={{fontSize: '16px'}}><b>{this.__('External Layer Source: ')} </b>
+            <a href={externalUrl} target="_blank">{externalUrl}</a>
+          </p>
+        </div>
+      );
+    }
 
 		return (
 
@@ -603,6 +636,8 @@ var LayerInfo = React.createClass({
                   <div className="right">
                     <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
                   </div>
+                  {remote}
+                  {external}
                 <p style={{fontSize: '16px'}}><b>{this.__('Last Update:')} </b>
                   <IntlProvider locale={this.state.locale}>
                     <FormattedRelative value={updatedTime}/>

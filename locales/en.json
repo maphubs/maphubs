@@ -597,5 +597,17 @@
 	"Contact Us:": "Contact Us:",
 	"Upload Data": "Upload Data",
 	"Link Remote Layer": "Link Remote Layer",
-	"Create a Group": "Create a Group"
+	"Create a Group": "Create a Group",
+	"Remote Layer": "Remote Layer",
+	"Link to a Remote Layer": "Link to a Remote Layer",
+	"Please copy and paste a link to a remote MapHubs layer": "Please copy and paste a link to a remote MapHubs layer",
+	"Remote MapHubs URL": "Remote MapHubs URL",
+	"MapHubs requires encryption for external links, URLs must start with https://": "MapHubs requires encryption for external links, URLs must start with https://",
+	"Not a valid MapHubs Layer URL": "Not a valid MapHubs Layer URL",
+	"MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer": "MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer",
+	"Load Remote Layer": "Load Remote Layer",
+	"Remote Layer from: ": "Remote Layer from: ",
+	"Unable to modify remote layers. You can remote this layer using the button in the bottom right.": "Unable to modify remote layers. You can remote this layer using the button in the bottom right.",
+	"Unable to modify remote layers.": "Unable to modify remote layers.",
+	"You can remove this layer using the button in the bottom right.": "You can remove this layer using the button in the bottom right."
 }

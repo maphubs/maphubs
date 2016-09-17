@@ -112,6 +112,34 @@ var LayerAdmin = React.createClass({
 
     var layerInfoUrl = '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
 
+    if(this.props.layer.remote){
+      return (
+        <div>
+          <Header />
+          <main>
+            <div className="container">
+              <div className="row">
+                 <div className="col s12">
+                   <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
+                 </div>
+               </div>
+               <div className="row center-align">
+                 <h5>{this.__('Unable to modify remote layers.')}</h5>
+                  <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
+              </div>
+              <div className="fixed-action-btn action-button-bottom-right">
+                <a className="btn-floating btn-large tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
+                    onClick={this.deleteLayer}>
+                  <i className="material-icons">delete</i>
+                </a>
+              </div>
+            </div>
+          </main>
+        </div>
+      );
+
+    }else{
+
 		return (
       <div>
         <Header />
@@ -179,6 +207,7 @@ var LayerAdmin = React.createClass({
 		</div>
 		);
 	}
+}
 });
 
 module.exports = LayerAdmin;
