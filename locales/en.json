@@ -609,5 +609,8 @@
 	"Remote Layer from: ": "Remote Layer from: ",
 	"Unable to modify remote layers. You can remote this layer using the button in the bottom right.": "Unable to modify remote layers. You can remote this layer using the button in the bottom right.",
 	"Unable to modify remote layers.": "Unable to modify remote layers.",
-	"You can remove this layer using the button in the bottom right.": "You can remove this layer using the button in the bottom right."
+	"You can remove this layer using the button in the bottom right.": "You can remove this layer using the button in the bottom right.",
+	"Not Found": "Not Found",
+	"The page you request was not found": "The page you request was not found",
+	"404: Page not found": "404: Page not found"
 }

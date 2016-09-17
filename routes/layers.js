@@ -106,8 +106,20 @@ module.exports = function(app) {
         if(notesObj && notesObj.notes){
           notes = notesObj.notes;
         }
-        res.render('layerinfo', {title: layer.name + ' - MapHubs', props: {layer, notes, stats, canEdit}, fontawesome: true, req});
 
+        if(layer){
+        res.render('layerinfo', {title: layer.name + ' - MapHubs', props: {layer, notes, stats, canEdit}, fontawesome: true, req});
+      }else{
+        res.render('error', {
+          title: req.__('Not Found'),
+          props: {
+            title: req.__('Not Found'),
+            error: req.__('The page you request was not found'),
+            url: req.url
+          },
+          req
+        });
+      }
       }).catch(nextError(next));
   });
 

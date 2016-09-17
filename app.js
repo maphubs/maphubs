@@ -164,10 +164,10 @@ app.use(function(req, res, next) {
 
     if (req.accepts('html')) {
       res.render('error', {
-        title: '404: Page not found',
+        title: req.__('404: Page not found'),
         props: {
-          title: '404: Page not found',
-          error: '404: Page not found',
+          title: req.__('404: Page not found'),
+          error: req.__('404: Page not found'),
           url: req.url
         },
         /*eslint-disable*/
@@ -179,8 +179,8 @@ app.use(function(req, res, next) {
 
     if (req.accepts('json')) {
       res.send({
-        title: '404: Page not found',
-        error: '404: Page not found',
+        title: req.__('404: Page not found'),
+        error: req.__('404: Page not found'),
         url: req.url
       });
     }

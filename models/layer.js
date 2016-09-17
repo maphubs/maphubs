@@ -195,13 +195,17 @@ module.exports = {
     }
     return this.getLayerByID(layer_id, trx)
       .then(function(layer){
-           return Group.getGroupMembers(layer.owned_by_group_id)
-          .then(function(users){
-            if(_find(users, {id: user_id}) !== undefined){
-              return true;
-            }
+            if(layer){    
+             return Group.getGroupMembers(layer.owned_by_group_id)
+            .then(function(users){
+              if(_find(users, {id: user_id}) !== undefined){
+                return true;
+              }
+              return false;
+            });
+          }else{
             return false;
-          });
+          }
       });
     },
 
