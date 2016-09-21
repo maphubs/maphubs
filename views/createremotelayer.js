@@ -120,7 +120,7 @@ var CreateRemoteLayer = React.createClass({
     .end(function(err, res){
       checkClientError(res, err, function(){}, function(cb){
         var layer_id = res.body.layer_id;
-        this.setState({complete: true});
+        _this.setState({complete: true});
         window.location = '/layer/info/' + layer_id + '/' + slug(_this.state.layer.name);
         cb();
       });

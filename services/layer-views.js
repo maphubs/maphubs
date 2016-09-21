@@ -64,7 +64,7 @@ module.exports = {
     var tagColumns = '';
     if(presets){
       presets.forEach(function(preset){
-        tagColumns += `(tags->'` + preset.tag + `') as "` + preset.label + `",`;
+        tagColumns += `(tags->'` + preset.tag + `') as "` + preset.tag + `",`;
       });
     }
 

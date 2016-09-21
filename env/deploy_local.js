@@ -20,6 +20,7 @@ module.exports = {
   NEWRELIC_LOG_LEVEL: process.env.OMH_NEWRELIC_LOG_LEVEL,
   ENV_TAG:  process.env.OMH_ENV_TAG,
   SESSION_SECRET:  process.env.OMH_SESSION_SECRET,
+  disableTracking:  process.env.OMH_DISABLE_TRACKING,
   database: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,

@@ -45,6 +45,15 @@ var FeatureBox = React.createClass({
   };
   },
 
+  componentDidMount(){
+    if(this.props.selected && this.props.features){
+      var selectedFeature = this.props.features[0];
+      if(selectedFeature.properties.layer_id){
+          this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
+      }
+    }
+  },
+
   componentWillReceiveProps(nextProps) {
     //only take updates if we are not selected, otherwise data will update when user moves the mouse
     if((!this.state.selected) ){
@@ -62,7 +71,7 @@ var FeatureBox = React.createClass({
 
         var selectedFeature = features[0];
         if(selectedFeature.properties.layer_id){
-            this.getLayer(selectedFeature.properties.layer_id, function(){});
+            this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
         }
 
       } else {
@@ -72,13 +81,18 @@ var FeatureBox = React.createClass({
     }
   },
 
-  getLayer(layer_id, cb){
+  getLayer(layer_id, host){
     var _this = this;
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl;
+    if(host && host !== 'dev.docker' && host !== window.location.hostname){
+      baseUrl = 'https://' + host;
+    }else{
+      baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    }
     request.get(baseUrl + '/api/layer/info/' + layer_id)
     .type('json').accept('json')
     .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+      checkClientError(res, err, function(){}, function(cb){
         var layer = res.body.layer;
         _this.setState({layer});
         cb();
@@ -94,7 +108,7 @@ var FeatureBox = React.createClass({
   handleChangeSelectedFeature(selectedFeature){
     this.setState({selectedFeature});
     if(selectedFeature.properties.layer_id){
-        this.getLayer(selectedFeature.properties.layer_id, function(){});
+        this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
     }
   },
 
@@ -122,12 +136,14 @@ var FeatureBox = React.createClass({
       if(this.props.showButtons){
         var osm_id = -1;
         var layer_id = null;
+        var host = null;
         var featureName = 'unknown';
         if(this.state.currentFeatures.length > 0){
           var currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
           if(currentFeature && currentFeature.properties){
             osm_id = currentFeature.properties.osm_id;
             layer_id = currentFeature.properties.layer_id;
+            host = currentFeature.properties.maphubs_host;
             var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
             nameFields.forEach(function(name){
               if(featureName == 'unknown' && currentFeature.properties[name]){
@@ -147,13 +163,18 @@ var FeatureBox = React.createClass({
           );
         }
 
-
+        var featureLink;
+        if(host !== window.location.hostname && host !== 'dev.docker'){
+          featureLink = '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
+        }else{
+          featureLink = 'https://' + host + '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
+        }
       infoPanel = (<div className="row">
         <div className="col s6 center">
         {layerinfo}
         </div>
         <div className="col s6 center">
-          <a href={'/feature/' + layer_id + '/' + osm_id + '/' + featureName}
+          <a href={featureLink}
               className="btn-floating waves-effect waves-light tooltipped" data-delay="50" data-position="bottom" data-tooltip={this.__('Layer Info')}>
             <i className="material-icons">info</i>
           </a>
@@ -222,11 +243,16 @@ var FeatureBox = React.createClass({
       if(currentFeature && currentFeature.properties){
         properties = currentFeature.properties;
       }
+      var presets;
+      if(this.state.layer){
+        presets = this.state.layer.presets;
+      }
       attributes = (
         <Attributes
             attributes={properties}
             selected={this.state.selected}
-            multipleSelected={multipleSelected}>
+            multipleSelected={multipleSelected}
+            presets={presets}>
           <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: 'rgba(238, 238, 238, 0.75)', paddingTop: '10px'}}>
             {infoPanel}
             {pager}

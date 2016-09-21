@@ -155,7 +155,7 @@ module.exports = {
 
   getLayerInfo(layer_id){
     return knex('omh.layers')
-    .select('layer_id', 'name', 'description', 'owned_by_group_id')
+    .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
     .where('layer_id', layer_id)
     .then(function(result){
       if (result && result.length == 1) {
@@ -195,7 +195,7 @@ module.exports = {
     }
     return this.getLayerByID(layer_id, trx)
       .then(function(layer){
-            if(layer){    
+            if(layer){
              return Group.getGroupMembers(layer.owned_by_group_id)
             .then(function(users){
               if(_find(users, {id: user_id}) !== undefined){
@@ -306,6 +306,29 @@ module.exports = {
 
       return knex('omh.layers').returning('layer_id')
         .insert(layer);
+    },
+
+    updateRemoteLayer(layer_id, group_id, layer, host, user_id){
+
+      layer.remote = true;
+      layer.remote_host = host;
+      layer.remote_layer_id = layer.layer_id;
+      delete layer.layer_id;
+      layer.owned_by_group_id = group_id;
+      layer.created_by_user_id = user_id,
+      layer.updated_by_user_id = user_id;
+      layer.last_updated = knex.raw('now()');
+
+      //stringify objects before inserting
+      layer.presets = JSON.stringify(layer.presets);
+      layer.style = JSON.stringify(layer.style);
+      layer.external_layer_config = JSON.stringify(layer.external_layer_config);
+      layer.labels = JSON.stringify(layer.labels);
+      layer.extent_bbox = JSON.stringify(layer.extent_bbox);
+      layer.preview_position = JSON.stringify(layer.preview_position);
+
+      return knex('omh.layers').where({layer_id})
+        .update(layer);
     },
 
     /*

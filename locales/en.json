@@ -612,5 +612,7 @@
 	"You can remove this layer using the button in the bottom right.": "You can remove this layer using the button in the bottom right.",
 	"Not Found": "Not Found",
 	"The page you request was not found": "The page you request was not found",
-	"404: Page not found": "404: Page not found"
+	"404: Page not found": "404: Page not found",
+	"Legend": "Legend",
+	"Refresh Layer": "Refresh Layer"
 }

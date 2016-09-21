@@ -11,6 +11,10 @@ var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 var ConfirmationActions = require('../actions/ConfirmationActions');
 
+var request = require('superagent');
+var checkClientError = require('../services/client-error-response').checkClientError;
+
+
 
 var LayerActions = require('../actions/LayerActions');
 var PresetActions = require('../actions/presetActions');
@@ -103,6 +107,25 @@ var LayerAdmin = React.createClass({
 
   },
 
+  refreshRemoteLayer(){
+    var _this = this;
+    request.post('/api/layer/refresh/remote')
+    .type('json').accept('json')
+    .send({
+      layer_id: this.props.layer.layer_id
+    })
+    .end(function(err, res){
+      checkClientError(res, err, function(){}, function(cb){
+        if(err){
+          MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+        } else {
+          NotificationActions.showNotification({message: _this.__('Layer Updated'), dismissAfter: 2000});
+        }
+        cb();
+      });
+    });
+  },
+
 	render() {
 
     var tabContentDisplay = 'none';
@@ -125,6 +148,10 @@ var LayerAdmin = React.createClass({
                </div>
                <div className="row center-align">
                  <h5>{this.__('Unable to modify remote layers.')}</h5>
+                  <div className="center-align center">
+                    <button className="btn" style={{marginTop: '20px'}}
+                      onClick={this.refreshRemoteLayer}>{this.__('Refresh Remote Layer')}</button>
+                  </div>
                   <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
               </div>
               <div className="fixed-action-btn action-button-bottom-right">

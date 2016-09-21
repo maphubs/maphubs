@@ -7,6 +7,7 @@ var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
 var notAllowedError = require('../services/error-response').notAllowedError;
 
+var request = require('superagent-bluebird-promise');
 
 module.exports = function(app) {
 
@@ -43,6 +44,56 @@ module.exports = function(app) {
               res.send({success:false, error: "Failed to Create Layer"});
             }
           });
+        }else{
+          notAllowedError(res, 'layer');
+        }
+      }).catch(apiError(res, 500));
+    }else{
+      apiDataError(res);
+    }
+
+  });
+
+  app.post('/api/layer/refresh/remote', function(req, res) {
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+
+    var user_id = req.session.user.id;
+    if(req.body.layer_id){
+      Layer.allowedToModify(req.body.layer_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          return Layer.getLayerByID(req.body.layer_id)
+          .then(function(layer){
+            if(layer.remote){
+              var url;
+              if(layer.remote_host == 'dev.localhost' || layer.remote_host == 'dev.openmaphub.org'){
+               url = 'http://';
+             }else{
+                url = 'https://';
+             }
+               url = url + layer.remote_host + '/api/layer/metadata/' + layer.remote_layer_id;
+              return request.get(url)
+              .then(function(response) {
+                return Layer.updateRemoteLayer(layer.layer_id, layer.owned_by_group_id, response.body.layer, layer.remote_host, user_id)
+                .then(function(result){
+                  if(result){
+                    res.send({success:true});
+                  }else {
+                    res.send({success:false, error: "Failed to Update Layer"});
+                  }
+                });
+              }).catch(apiError(res, 500));
+            }else{
+              res.send({success:false, error: "Failed to Update Layer"});
+            }
+
+        });
+
         }else{
           notAllowedError(res, 'layer');
         }

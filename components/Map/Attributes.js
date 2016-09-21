@@ -5,7 +5,8 @@ var Attributes = React.createClass({
   propTypes: {
 		attributes: React.PropTypes.object.isRequired,
     selected: React.PropTypes.bool.isRequired,
-    multipleSelected: React.PropTypes.bool.isRequired
+    multipleSelected: React.PropTypes.bool.isRequired,
+    presets:  React.PropTypes.array
   },
 
 
@@ -34,30 +35,66 @@ var Attributes = React.createClass({
     }
 
     if(_this.props.attributes && Object.keys(_this.props.attributes).length > 0){
-       display = (
-           <ul className="collection">
-             {photo}
-             {
-               Object.keys(_this.props.attributes).map(function (key) {
-                    var val = _this.props.attributes[key];
-                    if(typeof val === 'string' && val.startsWith('http')){
-                      val = (<a target="_blank" href={val}>{val}</a>);
-                    }
-                    return (
-                       <li key={key} className="collection-item attribute-collection-item">
-                         <p style={{wordWrap: 'break-word'}}><b className="left">{key}</b>: &nbsp;
-                           {val}
-                         </p>
+      if(this.props.presets){
+        var presets = this.props.presets;
+        //only display presets
+        display = (
+            <ul className="collection">
+              {photo}
+              {
+                presets.map(function(preset){
+                  var val = _this.props.attributes[preset.tag];
+                  if(typeof val === 'string' && val.startsWith('http')){
+                    val = (<a target="_blank" href={val}>{val}</a>);
+                  }
+                  return (
+                     <li key={preset.tag} className="collection-item attribute-collection-item">
+                       <p style={{wordWrap: 'break-word'}}><b className="left">{preset.label}</b>: &nbsp;
+                         {val}
+                       </p>
 
 
-                       </li>
-                     );
+                     </li>
+                   );
+
                 })
-             }
+              }
+            </ul>
 
-           </ul>
+        );
+      }else {
 
-       );
+        display = (
+            <ul className="collection">
+              {photo}
+              {
+                Object.keys(_this.props.attributes).map(function (key) {
+                    if(key !== 'osm_id' || key !== 'layer_id'
+                    || key !== 'maphubs_host'){
+                     var val = _this.props.attributes[key];
+                     if(typeof val === 'string' && val.startsWith('http')){
+                       val = (<a target="_blank" href={val}>{val}</a>);
+                     }
+                     return (
+                        <li key={key} className="collection-item attribute-collection-item">
+                          <p style={{wordWrap: 'break-word'}}><b className="left">{key}</b>: &nbsp;
+                            {val}
+                          </p>
+
+
+                        </li>
+                      );
+                    }
+                 })
+              }
+
+            </ul>
+
+        );
+
+      }
+
+
     }
     var marginTop = '0px';
     if(this.props.selected){
