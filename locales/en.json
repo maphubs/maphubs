@@ -614,5 +614,7 @@
 	"The page you request was not found": "The page you request was not found",
 	"404: Page not found": "404: Page not found",
 	"Legend": "Legend",
-	"Refresh Layer": "Refresh Layer"
+	"Refresh Layer": "Refresh Layer",
+	"Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons.": "Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons.",
+	"Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.": "Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration."
 }

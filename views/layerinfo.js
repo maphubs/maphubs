@@ -611,6 +611,25 @@ var LayerInfo = React.createClass({
       );
     }
 
+    var disqus = '';
+    if(!config.mapHubsPro){
+      disqus = (
+        <ReactDisqusThread
+              shortname="maphubs"
+              identifier={'maphubs-layer-' + this.props.layer.layer_id}
+              title={this.props.layer.name}
+              onNewComment={this.handleNewComment}
+              />
+          );
+    }else{
+      disqus = (
+        <div>
+          <h5>Disabled</h5>
+          <p>{this.__('Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.')}</p>
+        </div>
+      );
+    }
+
 		return (
 
       <div>
@@ -673,12 +692,7 @@ var LayerInfo = React.createClass({
                 {notesEditButton}
               </div>
               <div id="discuss" className="col s12" style={{display: tabContentDisplay}}>
-                <ReactDisqusThread
-                      shortname="maphubs"
-                      identifier={'maphubs-layer-' + this.props.layer.layer_id}
-                      title={this.props.layer.name}
-                      onNewComment={this.handleNewComment}
-                      />
+                {disqus}
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
                 <div className="row no-margin">
