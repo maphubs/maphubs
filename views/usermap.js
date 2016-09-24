@@ -14,12 +14,13 @@ var urlUtil = require('../services/url-util');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
+var MapMakerStore = require('../stores/MapMakerStore');
 var Locales = require('../services/locales');
 var debounce = require('lodash.debounce');
 
 var UserMap = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(MapMakerStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
