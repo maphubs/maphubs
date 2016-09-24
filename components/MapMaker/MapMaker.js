@@ -133,6 +133,7 @@ var MapMaker = React.createClass({
   },
 
   componentDidMount(){
+    var _this = this;
     $('ul.tabs').tabs();
     $('.collapsible').collapsible();
     $(this.refs.sidenav).sideNav({
@@ -144,6 +145,12 @@ var MapMaker = React.createClass({
     if(this.props.edit){
       this.toggleMapTab();
     }
+
+    window.onbeforeunload = function(){
+      if(!_this.state.saved && _this.state.mapLayers.length > 0){
+        return _this.__('Please save your map to avoid losing your work!');
+      }
+    };
   },
 
   componentWillReceiveProps(nextProps){
@@ -180,6 +187,7 @@ var MapMaker = React.createClass({
   },
 
   onCreate(){
+    this.setState({saved: true});
     if(this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.user.display_name);
   },
 
