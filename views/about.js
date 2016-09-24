@@ -10,6 +10,8 @@ var Locales = require('../services/locales');
 
 var SubPageBanner = require('../components/Home/SubPageBanner');
 
+var config = require('../clientconfig');
+
 var About = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -24,6 +26,15 @@ var About = React.createClass({
   },
 
   render() {
+
+    var pro = '';
+
+    if(config.mapHubsPro){
+      pro = (
+        <p>MapHubs Pro</p>
+      );
+    }
+
       return (
         <div>
           <Header activePage="about"/>
@@ -126,6 +137,7 @@ var About = React.createClass({
 
             <div className="divider"></div>
             <div className="row">
+              {pro}
               <p lang={this.props.locale}>{this.__('MapHubs Version:')} {this.props.version}</p>
               <p lang={this.props.locale}>{this.__('MapHubs is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
             </div>
