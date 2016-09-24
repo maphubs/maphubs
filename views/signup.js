@@ -15,6 +15,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig.js');
+
 var debug = require('../services/debug')('views/signup');
 var $ = require('jquery');
 
@@ -126,6 +128,23 @@ var Signup = React.createClass({
   },
 
   render() {
+    var joinList = '';
+    if(!config.mapHubsPro){
+      joinList = (
+        <div className="row valign-wrapper" style={{marginTop: '5px'}}>
+          <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
+            <Toggle name="joinmailinglist"
+              labelOff={this.__('Decline')}
+              labelOn={this.__('Join the Maphubs Mailing List')}
+                dataPosition="top" dataTooltip={this.__('Join the Maphubs Mailing List')}
+                defaultChecked={true}
+              />
+          </div>
+
+        </div>
+      );
+    }
+
     return (
       <div>
       <Header />
@@ -184,17 +203,7 @@ var Signup = React.createClass({
                type="password"
              required/>
           </div>
-          <div className="row valign-wrapper" style={{marginTop: '5px'}}>
-            <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
-              <Toggle name="joinmailinglist"
-                labelOff={this.__('Decline')}
-                labelOn={this.__('Join the Maphubs Mailing List')}
-                  dataPosition="top" dataTooltip={this.__('Join the Maphubs Mailing List')}
-                  defaultChecked={true}
-                />
-            </div>
-
-          </div>
+          {joinList}
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
               <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>

@@ -8,11 +8,15 @@ var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 var forceSSL = require('../services/force-ssl');
 var PasswordUtil = require('../services/password-util');
-var request = require('superagent-bluebird-promise');
+//var request = require('superagent-bluebird-promise');
 var local = require('../local');
 
-var Mailchimp = require('mailchimp-api-v3');
-var mailchimp = new Mailchimp(local.MAILCHIMP_API_KEY);
+var mailchimp;
+if(!local.disableTracking){
+  var Mailchimp = require('mailchimp-api-v3');
+  mailchimp = new Mailchimp(local.MAILCHIMP_API_KEY);
+}
+
 
 module.exports = function(app) {
 
@@ -163,7 +167,7 @@ module.exports = function(app) {
                     display_name: req.user.display_name
                   };
 
-                  if(data.joinmailinglist){
+                  if(mailchimp && data.joinmailinglist){
                     var firstName = '', lastName = '';
                     if(data.name){
                       var nameParts = data.name.split(' ');
