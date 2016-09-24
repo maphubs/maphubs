@@ -38,7 +38,7 @@ COPY env/deploy_local.js  /app/local.js
 RUN mkdir -p public && mkdir -p temp/uploads  && mkdir -p temp/logs
 
 VOLUME ["/app/temp/uploads"]
-VOLUME ["/app/temp/logs"]
+VOLUME ["/app/logs"]
 
 EXPOSE 4000
 ENV NODE_ENV production
