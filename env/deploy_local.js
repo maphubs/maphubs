@@ -21,6 +21,7 @@ module.exports = {
   ENV_TAG:  process.env.OMH_ENV_TAG,
   SESSION_SECRET:  process.env.OMH_SESSION_SECRET,
   disableTracking:  process.env.OMH_DISABLE_TRACKING,
+  mapHubsPro: process.env.OMH_MAPHUBS_PRO,
   database: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,

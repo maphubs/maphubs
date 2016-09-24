@@ -12,7 +12,7 @@ var PasswordUtil = require('../services/password-util');
 var local = require('../local');
 
 var mailchimp;
-if(!local.disableTracking){
+if(!local.mapHubsPro){
   var Mailchimp = require('mailchimp-api-v3');
   mailchimp = new Mailchimp(local.MAILCHIMP_API_KEY);
 }
