@@ -617,5 +617,7 @@
 	"Refresh Layer": "Refresh Layer",
 	"Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons.": "Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons.",
 	"Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.": "Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.",
-	"Refresh Remote Layer": "Refresh Remote Layer"
+	"Refresh Remote Layer": "Refresh Remote Layer",
+	"External Layer: ": "External Layer: ",
+	"External Layer Source: ": "External Layer Source: "
 }

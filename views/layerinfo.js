@@ -599,9 +599,19 @@ var LayerInfo = React.createClass({
     var external = '';
     if(this.props.layer.is_external){
       var externalUrl = + this.props.layer.external_layer_config.url;
+      var type = '';
+      if(this.props.layer.external_layer_type == 'openstreetmap'){
+        type = 'OpenStreetMap';
+        externalUrl = 'http://openstreetmap.org';
+      }else if((!this.props.layer.external_layer_type || this.props.layer.external_layer_type == '')
+              && this.props.layer.external_layer_config.type){
+        type = this.props.layer.external_layer_config.type;
+      }else{
+        type = this.props.layer.external_layer_type;
+      }
       external = (
         <div>
-          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ') + this.props.layer.external_layer_type} </b>
+          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ') + type} </b>
             <a href={remoteURL} target="_blank">{remoteURL}</a>
           </p>
           <p style={{fontSize: '16px'}}><b>{this.__('External Layer Source: ')} </b>
