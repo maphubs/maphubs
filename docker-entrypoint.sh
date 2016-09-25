@@ -5,13 +5,13 @@ cat <<EOF >/app/clientconfig.js
 module.exports = {
   host: "${OMH_HOST}",
   port: ${OMH_PORT},
-  https: ${OMH_HTTPS},
+  https: "${OMH_HTTPS}" == "true",
   productName: "${OMH_PRODUCT_NAME}",
   logo: "${OMH_LOGO}",
   betaText: "${OMH_BETA_TEXT}",
   twitter: "${OMH_TWITTER}",
   contactEmail: "${OMH_CONTACT_EMAIL}",
-  mapHubsPro: "${OMH_MAPHUBS_PRO}",
+  mapHubsPro: "${OMH_MAPHUBS_PRO}" == "true",
   tileServiceUrl: "${OMH_TILESERVICE_URL}",
   MAPBOX_ACCESS_TOKEN: "${OMH_MAPBOX_TOKEN}"
 };
