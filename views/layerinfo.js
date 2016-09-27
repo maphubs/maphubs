@@ -597,12 +597,15 @@ var LayerInfo = React.createClass({
     }
 
     var external = '';
-    if(this.props.layer.is_external){
+    if(this.props.layer.is_external && !this.props.layer.remote){
       var externalUrl = + this.props.layer.external_layer_config.url;
       var type = '';
       if(this.props.layer.external_layer_type == 'openstreetmap'){
         type = 'OpenStreetMap';
         externalUrl = 'http://openstreetmap.org';
+      }else if(this.props.layer.external_layer_config.type == 'raster'){
+        type = 'Raster';
+        externalUrl = this.props.layer.external_layer_config.tiles[0];
       }else if((!this.props.layer.external_layer_type || this.props.layer.external_layer_type == '')
               && this.props.layer.external_layer_config.type){
         type = this.props.layer.external_layer_config.type;
@@ -611,9 +614,7 @@ var LayerInfo = React.createClass({
       }
       external = (
         <div>
-          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ') + type} </b>
-            <a href={remoteURL} target="_blank">{remoteURL}</a>
-          </p>
+          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}</p>
           <p style={{fontSize: '16px'}}><b>{this.__('External Layer Source: ')} </b>
             <a href={externalUrl} target="_blank">{externalUrl}</a>
           </p>
