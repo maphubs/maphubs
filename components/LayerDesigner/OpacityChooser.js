@@ -45,7 +45,7 @@ var OpacityChooser = React.createClass({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
   },
-  
+
   componentWillReceiveProps(nextProps){
     this.setState({
       style: nextProps.style,
@@ -98,7 +98,7 @@ var OpacityChooser = React.createClass({
     }
     return (
       <div>
-      <ul ref="collapsible" cclassName="collapsible" data-collapsible="accordion">
+      <ul ref="collapsible" className="collapsible" data-collapsible="accordion">
       <li>
            <div className="collapsible-header active">
                <i className="material-icons">opacity</i>{this.__('Opacity')}
