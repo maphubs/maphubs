@@ -619,5 +619,10 @@
 	"Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.": "Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.",
 	"Refresh Remote Layer": "Refresh Remote Layer",
 	"External Layer: ": "External Layer: ",
-	"External Layer Source: ": "External Layer Source: "
+	"External Layer Source: ": "External Layer Source: ",
+	"Link to Planet Labs": "Link to Planet Labs",
+	"Link to a Planet Labs Scene": "Link to a Planet Labs Scene",
+	"Link to a Planet Labs Mosaic": "Link to a Planet Labs Mosaic",
+	"Planet Labs Scene: ": "Planet Labs Scene: ",
+	"Planet Labs Scene ID": "Planet Labs Scene ID"
 }

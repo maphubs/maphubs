@@ -9,11 +9,14 @@ var RasterTileSource = require('./RasterTileSource');
 //var GithubSource = require('./GithubSource');
 var AGOLSource = require('./AGOLSource');
 //var OSMSource = require('./OSMSource');
+var PlanetLabsSource = require('./PlanetLabsSource');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+
+var config = require('../../clientconfig');
 
 require('../../stores/preset-store'); //needed to init the store used by the source options
 
@@ -74,8 +77,12 @@ var Step2 = React.createClass({
 
       {value: 'ags', label: this.__('Link to an ArcGIS Online or ArcGIS Server services')}
     ];
+
+    if(config.mapHubsPro){
+      sourceOptions.push({value: 'planet', label: this.__('Link to Planet Labs')});
+    }
     // osm=false,github = false,
-    var local = false, mapbox = false, raster = false, ags = false;
+    var local = false, mapbox = false, raster = false, ags = false, planet = false;
     switch(this.state.selectedSource){
       case 'local':
         local = true;
@@ -94,6 +101,9 @@ var Step2 = React.createClass({
       //  break;
       case 'ags':
         ags = true;
+        break;
+      case 'planet':
+        planet = true;
         break;
       default:
       break;
@@ -118,6 +128,7 @@ var Step2 = React.createClass({
           <LocalSource active={local} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
           <MapboxSource active={mapbox} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
           <RasterTileSource active={raster} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
+          <PlanetLabsSource active={planet} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
           <AGOLSource active={ags} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
 
 

@@ -13,7 +13,8 @@ module.exports = {
   contactEmail: "${OMH_CONTACT_EMAIL}",
   mapHubsPro: ${OMH_MAPHUBS_PRO},
   tileServiceUrl: "${OMH_TILESERVICE_URL}",
-  MAPBOX_ACCESS_TOKEN: "${OMH_MAPBOX_TOKEN}"
+  MAPBOX_ACCESS_TOKEN: "${OMH_MAPBOX_TOKEN}",
+  PLANET_LABS_API_KEY: "${PLANET_LABS_API_KEY}"
 };
 EOF
 
