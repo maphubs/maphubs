@@ -33,7 +33,7 @@ EOF
 node node_modules/webpack/bin/webpack.js --config webpack.config.min.js
 
 #run any pending database migrations
-node node_modules/knex/lib/bin/cli.js migrate:latest --env production
+node node_modules/knex/bin/cli.js migrate:latest --env production
 
 #start server
 pm2 start app.js --name maphubs --node-args="--max-old-space-size=$NODE_MEM_SIZE" --no-daemon
