@@ -10,6 +10,7 @@ module.exports = {
   tempFilePath: '/app/temp/',
   manetUrl: process.env.OMH_MANET_URL,
   tileServiceUrl: process.env.OMH_TILESERVICE_URL,
+  tileServiceInternalUrl: process.env.OMH_TILESERVICE_INTERNAL_URL,
   MAPBOX_ACCESS_TOKEN: process.env.OMH_MAPBOX_TOKEN,
   MAILGUN_API_KEY: process.env.OMH_MAILGUN_API_KEY,
   LOGGLY_API_KEY: process.env.OMH_LOGGLY_API_KEY,
