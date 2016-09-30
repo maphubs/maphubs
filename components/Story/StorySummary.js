@@ -34,12 +34,16 @@ var StorySummary = React.createClass({
   render(){
     var title = this.props.story.title.replace('&nbsp;', '');
     var linkUrl = '';
-
-    if(this.props.story.display_name){
-      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    if(this.props.story.display_name){  
       linkUrl = baseUrl + '/user/' + this.props.story.display_name;
     }else if(this.props.story.hub_id){
-      var hubUrl = urlUtil.getHubUrl(this.props.story.hub_id, config.host, config.port);
+      var hubUrl;
+      if(config.mapHubsPro){
+        hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
+      }else{
+        hubUrl = urlUtil.getHubUrl(this.props.story.hub_id, config.host, config.port);
+      }
       linkUrl = hubUrl;
     }
 

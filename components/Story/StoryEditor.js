@@ -171,14 +171,19 @@ save(){
 
 
   if(this.props.storyType == 'hub'){
+    var baseUrl = '';
+    if(config.mapHubsPro){
+      baseUrl = '/hub/' + this.props.hubid;
+    }
     if(this.state.story_id && this.state.story_id > 0){
       //saving an existing hub story
       story.story_id = this.state.story_id;
-      url = '/api/hub/story/save';
+      url = baseUrl + '/api/hub/story/save';
 
     }else{
+      
       //creating a new hub story
-      url = '/api/hub/story/create';
+      url = baseUrl + '/api/hub/story/create';
     }
 
   }else if(this.props.storyType == 'user'){
@@ -219,7 +224,11 @@ save(){
               if(_this.props.storyType == 'user'){
                 window.location = '/user/' + _this.props.username + '/story/' + story_id + '/' + slug(story.title);
               }else{
-                window.location = '/story/' + story_id + '/' + slug(story.title);
+                var baseUrl = '';
+                if(config.mapHubsPro){
+                  baseUrl = '/hub/' + _this.props.hubid;
+                }
+                window.location = baseUrl + '/story/' + story_id + '/' + slug(story.title);
               }
 
             }

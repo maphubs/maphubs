@@ -8,6 +8,8 @@ var findIndex = require('lodash.findindex');
 var forEachRight = require('lodash.foreachright');
 var $ = require('jquery');
 
+var config = require('../clientconfig');
+
 module.exports = Reflux.createStore({
   mixins: [StateMixin],
   listenables: Actions,
@@ -81,8 +83,14 @@ module.exports = Reflux.createStore({
  saveHub(cb){
    debug('save hub');
    var _this = this;
+
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+
    this.setState({saving: true});
-   request.post('/api/save')
+   request.post(baseUrl + '/api/save')
    .type('json').accept('json')
    .send({
      hub_id: this.state.hub.hub_id,
@@ -112,7 +120,11 @@ module.exports = Reflux.createStore({
  deleteHub(cb){
    var _this = this;
    debug('delete hub');
-   request.post('/api/delete')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/delete')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id})
    .end(function(err, res){
@@ -137,7 +149,11 @@ module.exports = Reflux.createStore({
    debug('save hub map');
    var _this = this;
    this.setState({saving: true});
-   request.post('/api/savemap')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/savemap')
    .type('json').accept('json')
    .send({
      style: this.state.hub.map_style,
@@ -164,8 +180,11 @@ module.exports = Reflux.createStore({
  saveHubLogoImage(cb){
    debug('save hub logo image');
    var _this = this;
-
-   request.post('/api/setphoto')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/setphoto')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, image: this.state.logoImage, info: this.state.logoImageInfo, type: 'logo'})
    .end(function(err, res){
@@ -188,8 +207,11 @@ module.exports = Reflux.createStore({
  saveHubBannerImage(cb){
    debug('set hub banner image');
    var _this = this;
-
-   request.post('/api/setphoto')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/setphoto')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, image: this.state.bannerImage, info: this.state.bannerImageInfo, type: 'banner'})
    .end(function(err, res){
@@ -245,7 +267,11 @@ module.exports = Reflux.createStore({
  addMember(display_name, asAdmin, cb){
    debug('add member');
    var _this = this;
-   request.post('/api/addmember')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/addmember')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, display_name, asAdmin})
    .end(function(err, res){
@@ -257,7 +283,11 @@ module.exports = Reflux.createStore({
  removeMember(user_id, cb){
    debug('remove member');
    var _this = this;
-   request.post('/api/removemember')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/removemember')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, user_id})
    .end(function(err, res){
@@ -269,7 +299,11 @@ module.exports = Reflux.createStore({
  setMemberAdmin(user_id, cb){
    debug('set member admin');
    var _this = this;
-   request.post('/api/updatememberrole')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/updatememberrole')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, user_id, role: 'Administrator'})
    .end(function(err, res){
@@ -281,7 +315,11 @@ module.exports = Reflux.createStore({
  removeMemberAdmin(user_id, cb){
    debug('remove member admin');
    var _this = this;
-   request.post('/api/updatememberrole')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/updatememberrole')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, user_id, role: 'Member'})
    .end(function(err, res){
@@ -294,7 +332,11 @@ module.exports = Reflux.createStore({
  reloadMembers(cb){
    debug('reload members');
    var _this = this;
-   request.get('/api/members')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.get(baseUrl + '/api/members')
    .type('json').accept('json')
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
@@ -307,7 +349,11 @@ module.exports = Reflux.createStore({
  addLayer(layer_id, active, cb){
    debug('add layer');
    var _this = this;
-   request.post('/api/addlayer')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/addlayer')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, layer_id, active})
    .end(function(err, res){
@@ -319,7 +365,11 @@ module.exports = Reflux.createStore({
  removeLayer(layer_id, cb){
    debug('remove member');
    var _this = this;
-   request.post('/api/removelayer')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.post(baseUrl + '/api/removelayer')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, layer_id})
    .end(function(err, res){
@@ -331,7 +381,11 @@ module.exports = Reflux.createStore({
  reloadLayers(cb){
    debug('reload layers');
    var _this = this;
-   request.get('/api/hub/' + this.state.hub.hub_id + '/layers')
+   var baseUrl = '';
+   if(config.mapHubsPro){
+     baseUrl = '/hub/' + this.state.hub.hub_id;
+   }
+   request.get(baseUrl + '/api/hub/' + this.state.hub.hub_id + '/layers')
    .type('json').accept('json')
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){

@@ -14,6 +14,8 @@ var slug = require('slug');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 var HubStory = React.createClass({
 
   mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -44,11 +46,15 @@ var HubStory = React.createClass({
     var story = this.props.story;
     var title = story.title.replace('&nbsp;', '');
     var button = '';
+    var baseUrl = '';
+    if(config.mapHubsPro){
+      baseUrl = '/hub/' + this.props.hub.hub_id;
+    }
     if(this.props.canEdit){
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large red red-text tooltipped"
-            href={'/story/' + this.props.story.story_id + '/edit/' + slug(title)}
+            href={baseUrl + '/story/' + this.props.story.story_id + '/edit/' + slug(title)}
             data-delay="50" data-position="left" data-tooltip={this.__('Edit')}>
             <i className="large material-icons">mode_edit</i>
           </a>

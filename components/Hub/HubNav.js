@@ -36,8 +36,13 @@ var HubHav = React.createClass({
   render(){
     var baseHost = urlUtil.getHostFromHub(config.host);
     var omhBaseUrl = urlUtil.getBaseUrl(baseHost, config.port);
-    //var omhBaseUrl = "maphubs.com";
-    var hubBaseUrl = urlUtil.getHubUrl(this.props.hubid, baseHost, config.port) + '/';
+
+    var hubBaseUrl;
+    if(config.mapHubsPro){
+      hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
+    }else{
+      hubBaseUrl = urlUtil.getHubUrl(this.props.hubid, baseHost, config.port) + '/';
+    }
 
     var manageButton = '';
     if(this.props.canEdit){
@@ -60,7 +65,7 @@ var HubHav = React.createClass({
               <li className="nav-link-wrapper"><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
               <LocaleChooser />
               <hr />
-              <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to MapHubs')}</a></li>
+              <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to ') + config.productName}</a></li>
               {manageButton}
             </ul>
           </div>

@@ -23,6 +23,8 @@ var Confirmation = require('../components/confirmation');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 import Progress from '../components/Progress';
 
 var HubInfo = React.createClass({
@@ -126,6 +128,11 @@ var HubInfo = React.createClass({
       }
     }
 
+    var linkBaseUrl = '';
+    if(config.mapHubsPro){
+      linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
+    }
+
     return (
       <div>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
@@ -137,29 +144,29 @@ var HubInfo = React.createClass({
           <div className="container" style={{height: '100%'}}>
               <HubLinkSection />
               <div className="row" style={{height: '70%'}}>
-                <a href="map"><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
+                <a href={linkBaseUrl + 'map'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
                 <hr />
                 <HubMap editing={this.state.editing} height="calc(100% - 65px)" hub={this.state.hub} border/>
                 <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
-                  <a href='map' className="btn">{this.__('View Larger Map')}</a>
+                  <a href={linkBaseUrl + 'map'} className="btn">{this.__('View Larger Map')}</a>
                 </div>
               </div>
               <div className="row">
-                <a href="stories"><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
+                <a href={linkBaseUrl + 'stories'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
                 <hr />
                 <HubStories hub={this.props.hub}
                   editing={this.state.editing}
                   stories={this.props.stories} limit={3}/>
                 <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
-                  <a href='stories' className="btn">{this.__('View More Stories')}</a>
+                  <a href={linkBaseUrl + 'stories'} className="btn">{this.__('View More Stories')}</a>
                 </div>
               </div>
               <div className="row">
-                <a href="resources"><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
+                <a href={linkBaseUrl + 'resources'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
                 <hr/>
                 <HubResources editing={this.state.editing} />
                 <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
-                  <a href='resources' className="btn">{this.__('View Resources')}</a>
+                  <a href={linkBaseUrl + 'resources'} className="btn">{this.__('View Resources')}</a>
                 </div>
               </div>
             </div>

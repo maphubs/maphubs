@@ -149,7 +149,13 @@ var HubBuilder = React.createClass({
 
 
   onComplete (hub_id) {
-    var url = urlUtil.getHubUrl(hub_id, config.host, config.port, false);
+    var url = '';
+    if(config.mapHubsPro){
+      url = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub_id;
+    }else{
+      url = urlUtil.getHubUrl(hub_id, config.host, config.port);
+    }
+
     window.location = url;
   },
 

@@ -8,6 +8,8 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
 
+var config = require('../../clientconfig');
+
 var HubStories = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
@@ -44,10 +46,14 @@ var HubStories = React.createClass({
   render() {
     var _this = this;
     var addButton = '';
+    var baseUrl = '';
+    if(config.mapHubsPro){
+      baseUrl = '/hub/' + this.props.hub.hub_id;
+    }
     if(_this.props.editing){
       addButton = (
         <div>
-          <a href="/story/create" target="_blank" className="btn center-align center"><i className="material-icons left">add</i>{this.__('Add Story')}</a>
+          <a href={baseUrl + '/story/create'} target="_blank" className="btn center-align center"><i className="material-icons left">add</i>{this.__('Add Story')}</a>
         </div>
 
       );
@@ -60,7 +66,7 @@ var HubStories = React.createClass({
             var editButton = '';
             if(_this.props.editing){
               editButton = (
-                <a className="secondary-content" href={'/story/' + story.story_id + '/edit/' + slug(story.title)}>
+                <a className="secondary-content" href={baseUrl + '/story/' + story.story_id + '/edit/' + slug(story.title)}>
                   <i className="material-icons">edit</i>
                 </a>
               );
@@ -72,7 +78,7 @@ var HubStories = React.createClass({
                 <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className="card-content">
                   {editButton}
-                  <StorySummary story={story} />
+                  <StorySummary story={story} baseUrl={baseUrl} />
                 </div>
               </div>
             );
