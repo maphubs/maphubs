@@ -170,6 +170,19 @@ var Layers = React.createClass({
 
     }
 
+    var featured = '';
+    if(featuredCards.length > 0){
+      featured= (
+        <div className="row">
+          <div className="col s12">
+            <h5>{this.__('Featured')}</h5>
+            <div className="divider"></div>
+            <CardCarousel cards={featuredCards} infinite={false}/>
+          </div>
+        </div>
+      );
+    }
+
 
 		return (
       <div>
@@ -186,13 +199,7 @@ var Layers = React.createClass({
             </div>
           </div>
           {searchResults}
-          <div className="row">
-            <div className="col s12">
-              <h5>{this.__('Featured')}</h5>
-              <div className="divider"></div>
-              <CardCarousel cards={featuredCards} infinite={false}/>
-            </div>
-          </div>
+          {featured}
           <div className="row">
             <div className="col s12">
               <h5>{this.__('Popular')}</h5>

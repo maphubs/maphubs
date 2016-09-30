@@ -46,11 +46,11 @@ var Home = React.createClass({
 
   getInitialState(){
     return {
-      storyMode: 'featured',
-      mapMode: 'featured',
-      hubMode: 'featured',
-      groupMode: 'featured',
-      layerMode: 'featured',
+      storyMode: config.mapHubsPro ? 'popular' : 'featured',
+      mapMode: config.mapHubsPro ? 'popular' : 'featured',
+      hubMode: config.mapHubsPro ? 'popular' : 'featured',
+      groupMode: config.mapHubsPro ? 'popular' : 'featured',
+      layerMode: config.mapHubsPro ? 'popular' : 'featured',
 
       featuredStoryCards: _shuffle(this.props.featuredStories.map(this.getStoryCard)),
       popularStoryCards: _shuffle(this.props.popularStories.map(this.getStoryCard)),
@@ -230,7 +230,7 @@ var Home = React.createClass({
               `)} />
             <div className="row" style={{marginTop: '20px', marginBottom: 0, marginRight: '5px'}}>
           <div className="col s12" style={{paddingLeft: '25%', paddingRight: '25%'}}>
-            <SearchBox label={this.__('Search MapHubs')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+            <SearchBox label={this.__('Search') + ' ' + config.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
           </div>
         </div>
          <div className="row no-margin">
@@ -244,7 +244,7 @@ var Home = React.createClass({
                <span className="valign" style={{fontSize: '14px'}}>{this.__('User generated stories featuring interactive maps and images on a variety of topics')}</span>
              </div>
              <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-              <CardFilter onChange={function(value){_this.setState({storyMode:value});}} />
+              <CardFilter defaultValue={this.state.storyMode} onChange={function(value){_this.setState({storyMode:value});}} />
              </div>
            </div>
            <div className="row">
@@ -268,7 +268,7 @@ var Home = React.createClass({
                 <span className="valign" style={{fontSize: '14px'}}>{this.__('Interactive maps featuring open data')}</span>
               </div>
               <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-               <CardFilter onChange={function(value){_this.setState({mapMode:value});}} />
+               <CardFilter defaultValue={this.state.mapMode} onChange={function(value){_this.setState({mapMode:value});}} />
               </div>
             </div>
             <div className="row">
@@ -292,7 +292,7 @@ var Home = React.createClass({
                  <span className="valign" style={{fontSize: '14px'}}>{this.__('Collections of stories and maps on a variety of topics')}</span>
                </div>
                <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-                <CardFilter onChange={function(value){_this.setState({hubMode:value});}} />
+                <CardFilter defaultValue={this.state.hubMode} onChange={function(value){_this.setState({hubMode:value});}} />
                </div>
              </div>
              <div className="row">
@@ -316,7 +316,7 @@ var Home = React.createClass({
                   <span className="valign" style={{fontSize: '14px'}}>{this.__('Collections of layers managed by a group or organization')}</span>
                 </div>
                 <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-                 <CardFilter onChange={function(value){_this.setState({groupMode:value});}} />
+                 <CardFilter defaultValue={this.state.groupMode} onChange={function(value){_this.setState({groupMode:value});}} />
                 </div>
               </div>
               <div className="row">
@@ -340,7 +340,7 @@ var Home = React.createClass({
                    <span className="valign" style={{fontSize: '14px'}}>{this.__('Open map data layers')}</span>
                  </div>
                  <div className="col s12 m4 l4 valign-wrapper" style={{height: '100%'}}>
-                  <CardFilter onChange={function(value){_this.setState({layerMode:value});}} />
+                  <CardFilter defaultValue={this.state.layerMode} onChange={function(value){_this.setState({layerMode:value});}} />
                  </div>
                </div>
                <div className="row">

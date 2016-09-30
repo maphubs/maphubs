@@ -157,6 +157,19 @@ var Hubs = React.createClass({
 
     }
 
+    var featured = '';
+    if(featuredCards.length > 0){
+      featured = (
+        <div className="row">
+          <div className="col s12">
+            <h5>{this.__('Featured')}</h5>
+            <div className="divider"></div>
+            <CardCarousel cards={featuredCards} infinite={false}/>
+          </div>
+        </div>
+      );
+    }
+
 		return (
       <div>
           <Header activePage="hubs" />
@@ -170,14 +183,8 @@ var Hubs = React.createClass({
             </div>
 
               {searchResults}
+              {featured}
 
-            <div className="row">
-              <div className="col s12">
-                <h5>{this.__('Featured')}</h5>
-                <div className="divider"></div>
-                <CardCarousel cards={featuredCards} infinite={false}/>
-              </div>
-            </div>
             <div className="row">
               <div className="col s12">
                 <h5>{this.__('Popular')}</h5>
