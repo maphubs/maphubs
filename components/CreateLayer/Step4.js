@@ -134,7 +134,7 @@ var Step4 = React.createClass({
     }
 		return (
         <div className={className}>
-          <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Your data is being loaded into MapHubs. This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving}/>
+          <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving}/>
             {presetEditor}
             {prevButton}
             <div className="right">

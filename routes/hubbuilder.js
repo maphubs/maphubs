@@ -5,6 +5,7 @@ var login = require('connect-ensure-login');
 //var debug = require('../services/debug')('routes/hubs');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
+var config = require('../clientconfig');
 
 module.exports = function(app) {
 
@@ -12,7 +13,7 @@ module.exports = function(app) {
   //Views
   app.get('/createhub', login.ensureLoggedIn(), function(req, res) {
     res.render('hubbuilder', {
-      title: 'Create Hub - MapHubs',
+      title: req.__('Create Hub') + ' - ' + config.productName,
       props: {}, req
     });
   });

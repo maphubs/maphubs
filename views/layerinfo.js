@@ -636,7 +636,7 @@ var LayerInfo = React.createClass({
       disqus = (
         <div>
           <h5>Disabled</h5>
-          <p>{this.__('Since MapHubs uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.')}</p>
+          <p>{config.productName + this.__(' uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.')}</p>
         </div>
       );
     }

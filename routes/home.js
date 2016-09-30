@@ -5,6 +5,7 @@ var Map = require('../models/map');
 var Story = require('../models/story');
 var Promise = require('bluebird');
 var nextError = require('../services/error-response').nextError;
+var config = require('../clientconfig');
 
 module.exports = function(app) {
 
@@ -23,8 +24,8 @@ module.exports = function(app) {
       var trendingStories = results[4];
 
       res.render('home', {
-        title: 'MapHubs | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
-        descripion: req.__('MapHubs is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
+        title: config.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
+        descripion: config.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
         props: {
           trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories
@@ -71,7 +72,7 @@ module.exports = function(app) {
       var recentMaps = results[13];
       var recentStories = results[14];
       res.render('explore', {
-        title: 'MapHubs - ' + req.__('Explore'),
+        title: req.__('Explore') + ' - ' + config.productName,
         props: {
           featuredLayers, featuredGroups, featuredHubs, featuredMaps, featuredStories,
           popularLayers, popularGroups, popularHubs, popularMaps, popularStories,
@@ -83,14 +84,14 @@ module.exports = function(app) {
 
   app.get('/services', function(req, res) {
     res.render('services', {
-      title: 'MapHubs - ' + req.__('Services'),
+      title: req.__('Services') + ' - ' + config.productName,
       req
     });
   });
 
   app.get('/journalists', function(req, res) {
     res.render('journalists', {
-      title: 'MapHubs - ' + req.__('Maps for Journalists'),
+      title: req.__('Maps for Journalists') + ' - ' + config.productName,
       req
     });
   });

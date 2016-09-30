@@ -3,7 +3,7 @@ var passport = require('passport');
 var oauth = require('../services/oauth');
 var oauth2 = require('../services/oauth2');
 var forceSSL = require('../services/force-ssl');
-
+var config = require('../clientconfig');
 
 module.exports = function(app) {
 
@@ -14,9 +14,9 @@ module.exports = function(app) {
       req.session.returnTo = req.query.returnTo;
     }
     res.render('login', {
-      title: 'Login - MapHubs',
+      title: req.__('Login') + ' - ' + config.productName,
       props: {
-        name: 'MapHubs'
+        name: config.productName
       },
       req
     });
@@ -24,9 +24,9 @@ module.exports = function(app) {
 
   app.get('/login/failed', forceSSL, function(req, res) {
     res.render('login', {
-      title: 'Login - MapHubs',
+      title: req.__('Login') + ' - ' + config.productName,
       props: {
-        name: 'MapHubs',
+        name: config.productName,
         failed: true
       }, req
     });

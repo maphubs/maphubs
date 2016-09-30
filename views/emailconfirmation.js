@@ -7,6 +7,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 var EmailConfirmation = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -25,14 +27,14 @@ var EmailConfirmation = React.createClass({
       content = (
         <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
           <h4 className="center">{this.__('Email Confirmed')}</h4>
-          <p>{this.__('Thank you for confirming your account! You are now ready to start using MapHubs!')}</p>
+          <p>{this.__('Thank you for confirming your account!')}</p>
         </div>
       );
     }else{
       content = (
         <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
           <h4 className="center">{this.__('Unable to Confirm Email')}</h4>
-          <p>{this.__('This email may have already been confirmed. If you are unable to access your account please contact us at support@maphubs.com')}</p>
+          <p>{this.__('This email may have already been confirmed. If you are unable to access your account please contact us at ') + config.contactEmail}</p>
         </div>
       );
     }

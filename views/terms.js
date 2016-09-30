@@ -8,6 +8,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 var Terms = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -26,7 +28,7 @@ var Terms = React.createClass({
           <Header />
           <main className="container">
             <div className="row">
-              <h4>{this.__('MapHubs Terms of Service')}</h4>
+              <h4>{config.productName + ' ' + this.__('Terms of Service')}</h4>
             </div>
 
 <p>

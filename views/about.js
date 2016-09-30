@@ -27,22 +27,13 @@ var About = React.createClass({
 
   render() {
 
-    var pro = '';
-
-    if(config.mapHubsPro){
-      pro = (
-        <p>MapHubs Pro</p>
-      );
-    }
-
       return (
         <div>
           <Header activePage="about"/>
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/Moabi-Aerial.jpg"
-               title={this.__('About')} subTitle={this.__(`
-                  MapHubs is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.
-                  `)} />
+               title={this.__('About')}
+               subTitle={config.productName + ' ' +this.__(`is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.`)} />
           <main className="container">
 
             <div className="row" style={{marginTop: '30px'}}>
@@ -72,7 +63,7 @@ var About = React.createClass({
                     </div>
                     <div className="col s12 m12 l6">
                       <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                        MapHubs helps environmental and development practitioners and journalists access global map data and make maps. It helps establish connections between data producers and communities that use the data and tracks how their data is used. MapHubs already hosts hundreds of map layers from oil palm plantations in Indonesia, planned hydroelectric dams in Myanmar, to indigenous territories in Colombia. It also has simple, easy to use tools to turn data into fast, beautiful interactive maps for publishing in reports, social media, and websites.
+                        {config.productName} helps environmental and development practitioners and journalists access global map data and make maps. It helps establish connections between data producers and communities that use the data and tracks how their data is used. {config.productName} already hosts hundreds of map layers from oil palm plantations in Indonesia, planned hydroelectric dams in Myanmar, to indigenous territories in Colombia. It also has simple, easy to use tools to turn data into fast, beautiful interactive maps for publishing in reports, social media, and websites.
                       </p>
                     </div>
                 </div>
@@ -80,7 +71,7 @@ var About = React.createClass({
                 <h4 lang="en">Our impact</h4>
                   <div className="col s12 m12 l5">
                     <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                      The technology is already improving transparency and strengthening decision making in some of the most remote, biologically rich, and impoverished parts of the world. Tried and tested in the Democratic Republic of the Congo, MapHubs is supporting health researchers mapping villages in DRC for sleeping sickness vaccination campaigns, monitoring the encroachment of industrial agricultural in to orangutan habitat in Indonesia, and spotting illegal logging in the Peruvian Amazon.
+                      The technology is already improving transparency and strengthening decision making in some of the most remote, biologically rich, and impoverished parts of the world. Tried and tested in the Democratic Republic of the Congo, {config.productName} is supporting health researchers mapping villages in DRC for sleeping sickness vaccination campaigns, monitoring the encroachment of industrial agricultural in to orangutan habitat in Indonesia, and spotting illegal logging in the Peruvian Amazon.
                     </p>
                   </div>
                   <div className="row no-margin">
@@ -98,7 +89,7 @@ var About = React.createClass({
                       </div>
                       <div className="col s12 m12 l6">
                         <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                          MapHubs’ goal is to build a global community to make map data available to all and provide cost effective map making technology to anyone, anywhere who wants to make a map. Immediate goals are expanding the database, integrating mobile applications for field mapping, and building premium features for custom map making.
+                          {config.productName}’s goal is to build a global community to make map data available to all and provide cost effective map making technology to anyone, anywhere who wants to make a map. Immediate goals are expanding the database, integrating mobile applications for field mapping, and building premium features for custom map making.
                         </p>
                       </div>
                   </div>
@@ -114,10 +105,10 @@ var About = React.createClass({
                       }} />
                     <h5 lang="en">Leo Bottrill – Founder and CEO</h5>
                     <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                      Leo is the founder and CEO of MapHubs, a Washington DC-based company, dedicated to making maps more accessible to everyone. Leo has 15 years of experience in the environment and development sector including over 4 years working in field conservation in Vietnam and Indonesia.
+                      Leo is the founder and CEO of CrowdCover LLC, a Washington DC-based company, dedicated to making maps more accessible to everyone. Leo has 15 years of experience in the environment and development sector including over 4 years working in field conservation in Vietnam and Indonesia.
                     </p>
                     <p lang="en" style={{fontSize: '18px'}}>
-                      Prior to founding MapHubs, Leo started the awarding winning Moabi DRC initiative (rdc.moabi.org) in the Democratic Republic of the Congo. Moabi DRC is the most comprehensive public database on land use in DRC. It is implemented by Observatoire Satellital des Forêts d'Afrique Centrale, a regional forest monitoring organization, and supported by a consortium of nonprofits, government agencies, research organizations, and companies.
+                      Prior to founding CrowdCover, Leo started the awarding winning Moabi DRC initiative (rdc.moabi.org) in the Democratic Republic of the Congo. Moabi DRC is the most comprehensive public database on land use in DRC. It is implemented by Observatoire Satellital des Forêts d'Afrique Centrale, a regional forest monitoring organization, and supported by a consortium of nonprofits, government agencies, research organizations, and companies.
                     </p>
                   </div>
                   <div className="col s12 m12 l6">
@@ -129,7 +120,7 @@ var About = React.createClass({
                       }} />
                     <h5 lang="en">Kristofor Carle – Chief Technology Officer</h5>
                     <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                      Kris is a geospatial software engineer focusing on spatial databases, web mapping applications, data analytics, and mobile applications. Before joining MapHubs, Kris led a large geospatial data warehouse project and a mobile mapping application as a contractor for U.S. Army. He is very passionate about open-source technologies and has made over 1 million contributions to OpenStreetMap!
+                      Kris is a geospatial software engineer focusing on spatial databases, web mapping applications, data analytics, and mobile applications. Before joining CrowdCover, Kris led a large geospatial data warehouse project and a mobile mapping application as a contractor for U.S. Army. He is very passionate about open-source technologies and has made over 1 million contributions to OpenStreetMap!
                     </p>
                   </div>
                 </div>
@@ -137,9 +128,8 @@ var About = React.createClass({
 
             <div className="divider"></div>
             <div className="row">
-              {pro}
-              <p lang={this.props.locale}>{this.__('MapHubs Version:')} {this.props.version}</p>
-              <p lang={this.props.locale}>{this.__('MapHubs is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
+              <p lang={this.props.locale}>{config.productName + ' ' + this.__('Version:')} {this.props.version}</p>
+              <p lang={this.props.locale}>{config.productName + ' ' + this.__('is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
             </div>
           </main>
           <Footer />

@@ -120,7 +120,7 @@ var Step3 = React.createClass({
 
 		return (
       <div className={className}>
-        <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Your data is being loaded into MapHubs. This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving}/>
+        <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving}/>
         <LayerSource
             showCancel={true} cancelText={this.__('Previous')} onCancel={this.onCancel}
             submitText={this.__('Save and Continue')} onSubmit={this.onSubmit}

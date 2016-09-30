@@ -18,6 +18,8 @@ var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
 var notAllowedError = require('../services/error-response').notAllowedError;
 
+var config = require('../clientconfig');
+
 module.exports = function(app) {
 
 
@@ -61,7 +63,7 @@ module.exports = function(app) {
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           res.render('featureinfo',
           {
-            title: featureName + ' - MapHubs',
+            title: featureName + ' - ' + config.productName,
             fontawesome: true,
             props: {feature, notes, photo, canEdit: false},
              req
@@ -72,7 +74,7 @@ module.exports = function(app) {
             if(allowed){
               res.render('featureinfo',
               {
-                title: featureName + ' - MapHubs',
+                title: featureName + ' - ' + config.productName,
                 fontawesome: true,
                 props: {feature, notes, photo, canEdit: true}, req
               });
@@ -80,7 +82,7 @@ module.exports = function(app) {
             else{
               res.render('featureinfo',
               {
-                title: featureName + ' - MapHubs',
+                title: featureName + ' - ' + config.productName,
                 fontawesome: true,
                 props: {feature, notes, canEdit: false},
                  req

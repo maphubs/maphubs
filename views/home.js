@@ -152,7 +152,7 @@ var Home = React.createClass({
      var slides = [
        {
          title: this.__('Mapping for Everyone'),
-         text: this.__('MapHubs is a home for the world\'s open map data and an easy tool for making maps'),
+         text: config.productName + ' ' + this.__('is a home for the world\'s open map data and an easy tool for making maps'),
          buttonText: this.__('Learn More'),
          link: '/about',
          img: '/assets/home/Moabi-Aerial.jpg'
@@ -166,14 +166,14 @@ var Home = React.createClass({
        },
        {
          title: this.__('Explore Maps'),
-         text: this.__('MapHubs has map layers for environment, natural resources, and development'),
+         text: config.productName + ' ' + this.__('has map layers for environment, natural resources, and development'),
          buttonText: this.__('Explore Maps'),
          link: '/explore',
          img: '/assets/home/MapHubs-Map.jpg'
        },
        {
-         title: this.__('MapHubs Services'),
-         text: this.__(' MapHubs currently offers a range of service to help you get mapping'),
+         title: config.productName + ' ' + this.__('Services'),
+         text: config.productName + ' ' + this.__('currently offers a range of service to help you get mapping'),
          buttonText: this.__('Learn More'),
          link: '/services',
          img: '/assets/home/Moabi-Forest.jpg'

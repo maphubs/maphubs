@@ -157,7 +157,7 @@ var LocalSource = React.createClass({
 
     var uploadOptions = [
       {value: 'upload', label: this.__('Upload File Shapefile/GeoJSON')},
-      {value: 'empty', label: this.__("Empty (You will create new data through MapHubs' editing tools or API)")}
+      {value: 'empty', label: this.__("Empty (You will create new data through the editing tools or API)")}
 
     ];
 

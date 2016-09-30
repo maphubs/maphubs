@@ -125,7 +125,7 @@ var RasterTileSource = React.createClass({
             <div className="row">
               <TextInput name="rasterTileUrl" label={this.__('Raster Tile URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
                      maxLength: this.__('Must be 500 characters or less.'),
-                     isHttps:  this.__('MapHubs requires SSL for external links, URLs must start with https://')
+                     isHttps:  this.__('SSL required for external links, URLs must start with https://')
                  }} length={500}
                  dataPosition="top" dataTooltip={this.__('Raster URL for example:') +'http://myserver/tiles/{z}/{y}/{x}.png'}
                  required/>

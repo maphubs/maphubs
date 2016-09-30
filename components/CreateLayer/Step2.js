@@ -71,7 +71,7 @@ var Step2 = React.createClass({
     //{value: 'osm', label: 'Import from OpenStreetMap (read-only)'},
     //{value: 'github', label: 'Github GeoJSON File'},
     var sourceOptions = [
-      {value: 'local', label: this.__('Load Data into MapHubs (recommended)')},
+      {value: 'local', label: this.__('Upload Data')},
       {value: 'mapbox', label: this.__('Link to a Mapbox Style or Tileset')},
       {value: 'raster', label: this.__('Link to Raster Tile Service')},
 

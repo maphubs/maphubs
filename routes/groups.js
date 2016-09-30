@@ -11,6 +11,8 @@ var debug = require('../services/debug')('routes/groups');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 
+var config = require('../clientconfig');
+
 module.exports = function(app) {
 
 
@@ -26,7 +28,7 @@ module.exports = function(app) {
         var recentGroups = results[1];
         var popularGroups = results[2];
         res.render('groups', {
-          title: 'Groups - MapHubs',
+          title: req.__('Groups') + ' - ' + config.productName,
           props: {
             featuredGroups, recentGroups, popularGroups
           }, req
@@ -36,7 +38,7 @@ module.exports = function(app) {
 
   app.get('/creategroup', login.ensureLoggedIn(), function(req, res) {
     res.render('creategroup', {
-      title: 'Create Group - MapHubs',
+      title: req.__('Create Group') + ' - ' + config.productName,
       props: {}, req
     });
   });
@@ -63,7 +65,7 @@ module.exports = function(app) {
         var members = result[2];
         var canEdit = result[3];
         res.render('groupinfo', {
-          title: group.name + ' - MapHubs',
+          title: group.name + ' - ' + config.productName,
           props: {
             group, layers, members, canEdit
           }, req
@@ -91,7 +93,7 @@ module.exports = function(app) {
               var layers = result[1];
               var members = result[2];
               res.render('groupadmin', {
-                title: group.name + ' Settings - MapHubs',
+                title: group.name + ' ' + req.__('Settings') + ' - ' + config.productName,
                 props: {
                   group, layers, members
                 }, req
@@ -110,7 +112,7 @@ module.exports = function(app) {
     Group.getGroupsForUser(uid)
       .then(function(result) {
         res.render('groups', {
-          title: 'My Groups - MapHubs',
+          title: req.__('My Groups') + ' - ' + config.productName,
           props: {
             groups: result
           }, req
@@ -348,9 +350,9 @@ module.exports = function(app) {
                   .then(function(){
                     debug('Added ' + data.display_name + ' to ' + data.group_id);
                     Email.send({
-                      from: 'MapHubs <info@maphub.com>',
+                      from: config.productName + ' <info@maphub.com>',
                       to: user.email,
-                      subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - MapHubs',
+                      subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - ' + config.productName,
                       text: user.display_name + ',\n' +
                         req.__('You have been added to the group') + ' ' + data.group_id
                       ,
@@ -449,9 +451,9 @@ module.exports = function(app) {
                   .then(function(){
                     debug('Removed ' + data.display_name + ' from ' + data.group_id);
                     Email.send({
-                      from: 'MapHubs <info@maphubs.com>',
+                      from: config.productName + ' <info@maphubs.com>',
                       to: user.email,
-                      subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - MapHubs',
+                      subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - ' + config.productName,
                       text: user.display_name + ',\n' +
                         req.__('You have been removed from the group') + ' ' + data.group_id + '\n'
                       ,

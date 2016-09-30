@@ -33,7 +33,7 @@ var Header = React.createClass({
     if(this.detectIE()){
       MessageActions.showMessage({
         title: this.__('Unsupported Browser'),
-        message: this.__('MapHubs is unable to support Internet Explorer. Please use Firefox or Chrome with MapHubs.')
+        message: this.__('Unable to support Internet Explorer. Please use Firefox or Chrome.')
       });
     }
   },
