@@ -150,7 +150,7 @@ var Signup = React.createClass({
       <Header />
       <main>
       <div className="container">
-        <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for MapHubs')}</h4>
+        <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for') + ' ' + config.productName}</h4>
         <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div className="row valign-wrapper" style={{paddingTop: '25px'}}>
             <TextInput name="username" label={this.__('User Name')} icon="perm_identity"

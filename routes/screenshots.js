@@ -4,7 +4,7 @@ var Stats = require('../models/stats');
 var Promise = require('bluebird');
 var ScreenshotUtils = require('../services/screenshot-utils');
 
-
+var config = require('../clientconfig');
 //var debug = require('../services/debug')('routes/screenshots');
 
 var apiError = require('../services/error-response').apiError;
@@ -16,7 +16,7 @@ module.exports = function(app) {
   app.get('/api/layer/:layerid/static/render/', function(req, res, next) {
     var layer_id = parseInt(req.params.layerid || '', 10);
     Layer.getLayerByID(layer_id).then(function(layer){
-      var title = layer.name + ' - MapHubs';
+      var title = layer.name + ' - ' + config.productName;
         res.render('staticmap', {title, hideFeedback: true,
            props:{
              name: layer.name,
@@ -45,7 +45,7 @@ module.exports = function(app) {
         if(map.title){
           title = map.title;
         }
-        title += ' - MapHubs';
+        title += ' - ' + config.productName;
         res.render('staticmap', {title, hideFeedback: true,
            props:{
              name: map.title,
@@ -71,7 +71,7 @@ module.exports = function(app) {
         if(map.title){
           title = map.title;
         }
-        title += ' - MapHubs';
+        title += ' - ' + config.productName;
         res.render('staticmap', {title, hideFeedback: true,
            props:{
              name: map.title,

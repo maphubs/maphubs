@@ -11,6 +11,8 @@ var PasswordUtil = require('../services/password-util');
 //var request = require('superagent-bluebird-promise');
 var local = require('../local');
 
+var config = require('../clientconfig');
+
 var mailchimp;
 if(!local.mapHubsPro){
   var Mailchimp = require('mailchimp-api-v3');
@@ -29,20 +31,20 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     User.getUser(user_id)
       .then(function(user){
-        res.render('usersettings', {title: 'User Settings - MapHubs', props: {user}, req});
+        res.render('usersettings', {title: req.__('User Settings') + ' - ' + config.productName, props: {user}, req});
       }).catch(nextError(next));
   });
 
   app.get('/user/passwordreset/:key', function(req, res) {
 
     var passreset = req.params.key;
-    res.render('passwordreset', {title: 'Password Reset - MapHubs', props: {passreset}, req});
+    res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + config.productName, props: {passreset}, req});
 
   });
 
   app.get('/signup', forceSSL, function(req, res) {
 
-    res.render('signup', {title: 'Sign Up - MapHubs', props: {}, req});
+    res.render('signup', {title: req.__('Sign Up') + ' - ' + config.productName, props: {}, req});
 
   });
 
@@ -54,7 +56,7 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     User.getUser(user_id)
       .then(function(user){
-        res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - MapHubs', props: {user}, req});
+        res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - ' + config.productName, props: {user}, req});
       }).catch(nextError(next));
   });
 
@@ -65,7 +67,7 @@ module.exports = function(app) {
 
     User.checkEmailConfirmation(key)
     .then(function(valid){
-      res.render('emailconfirmation', {title: req.__('Email Confirmed') + ' - MapHubs', props: {valid}, req});
+      res.render('emailconfirmation', {title: req.__('Email Confirmed') + ' - ' + config.productName, props: {valid}, req});
     }).catch(nextError(next));
   });
 
@@ -269,7 +271,7 @@ module.exports = function(app) {
         var doc = new libxml.Document();
         doc.node('osm').attr({
             version: 6,
-            generator: 'MapHubs'
+            generator: config.productName
           })
           .node('user').attr({
             display_name: user.display_name,
@@ -357,7 +359,7 @@ module.exports = function(app) {
         var doc = new libxml.Document();
         doc.node('osm').attr({
             version: 6,
-            generator: 'MapHubs'
+            generator: config.productName
           })
           .node('user').attr({
             id: user.id,

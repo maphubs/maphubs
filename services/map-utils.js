@@ -19,10 +19,10 @@ module.exports = {
       if(map.title){
         title = map.title;
       }
-      title += ' - MapHubs';
+      title += ' - ' + config.productName;
         res.render('embedmap', {
-          title, 
-          props:{map, layers, canEdit, isStatic}, 
+          title,
+          props:{map, layers, canEdit, isStatic},
           hideFeedback: true, req});
     }).catch(nextError(next));
   },
@@ -40,7 +40,7 @@ module.exports = {
       if(map.title){
         title = map.title;
       }
-      title += ' - MapHubs';
+      title += ' - ' + config.productName;
       var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
         res.render('usermap',
          {
@@ -51,7 +51,7 @@ module.exports = {
            oembed: 'map',
            twitterCard: {
              title,
-             description: 'View full map on MapHubs.com',
+             //description: '',
              image: baseUrl + '/api/screenshot/map/' + map.map_id + '.png'
            },
            req

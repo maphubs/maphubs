@@ -51,7 +51,7 @@ module.exports = function(app) {
         var featuredLayers = results[0];
         var recentLayers = results[1];
         var popularLayers = results[2];
-        res.render('layers', {title: req.__('Layers') + ' - MapHubs', props: {featuredLayers, recentLayers, popularLayers}, req});
+        res.render('layers', {title: req.__('Layers') + ' - ' + config.productName, props: {featuredLayers, recentLayers, popularLayers}, req});
       }).catch(nextError(next));
 
 
@@ -63,7 +63,7 @@ module.exports = function(app) {
 
     Group.getGroupsForUser(user_id)
     .then(function(result){
-      res.render('createlayer', {title: req.__('Create Layer') + ' - MapHubs', props: {groups: result}, req});
+      res.render('createlayer', {title: req.__('Create Layer') + ' - ' + config.productName, props: {groups: result}, req});
     }).catch(nextError(next));
 
   });
@@ -108,7 +108,7 @@ module.exports = function(app) {
         }
 
         if(layer){
-        res.render('layerinfo', {title: layer.name + ' - MapHubs', props: {layer, notes, stats, canEdit}, fontawesome: true, req});
+        res.render('layerinfo', {title: layer.name + ' - ' + config.productName, props: {layer, notes, stats, canEdit}, fontawesome: true, req});
       }else{
         res.render('error', {
           title: req.__('Not Found'),
@@ -135,7 +135,7 @@ module.exports = function(app) {
 
     Layer.getLayerByID(layer_id)
     .then(function(layer){
-      res.render('layermap', {title: layer.name + ' - MapHubs', props: {layer}, hideFeedback: true, addthis: true, req});
+      res.render('layermap', {title: layer.name + ' - ' + config.productName, props: {layer}, hideFeedback: true, addthis: true, req});
     }).catch(nextError(next));
   });
 
@@ -150,7 +150,7 @@ module.exports = function(app) {
           .then(function(layer){
             if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
               if(layer.data_type == 'point' && !layer.is_external){
-                res.render('addphotopoint', {title: layer.name + ' - MapHubs', props: {layer}, req});
+                res.render('addphotopoint', {title: layer.name + ' - ' + config.productName, props: {layer}, req});
               }else{
                 res.status(400).send('Bad Request: Feature not support for this layer');
               }
@@ -177,7 +177,7 @@ module.exports = function(app) {
         .then(function(results){
           var layer = results[0];
           var groups = results[1];
-          res.render('layeradmin', {title: layer.name + ' - MapHubs', props: {layer, groups}, req});
+          res.render('layeradmin', {title: layer.name + ' - ' + config.productName, props: {layer, groups}, req});
           });
         }else{
           res.redirect('/unauthorized');

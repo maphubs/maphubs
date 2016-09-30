@@ -52,14 +52,14 @@ module.exports = {
             debug('database updated');
             if(sendEmail){
               return Email.send({
-                from: 'MapHubs<info@maphubs.com>',
+                from: config.productName + ' <info@maphubs.com>',
                 to: user.email,
-                subject: __('Password Changed') + ' - MapHubs',
+                subject: __('Password Changed') + ' - ' + config.productName,
                 text: user.display_name + ',\n' +
-                  __('Your password on MapHubs was changed.')
+                  __('Your password was changed.')
                 ,
                 html: user.display_name + ',' + '<br />' +
-                  __('Your password on MapHubs was changed.')
+                  __('Your password was changed.')
               });
             }else {
               return true;
@@ -84,9 +84,9 @@ module.exports = {
         var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
         var url = baseUrl + '/user/passwordreset/' + pass_reset;
         Email.send({
-          from: 'MapHubs <info@maphubs.com>',
+          from: config.productName + ' <info@maphubs.com>',
           to: user.email,
-          subject: __('Password Reset') + ' - MapHubs',
+          subject: __('Password Reset') + ' - ' + config.productName,
           body: user.display_name + ',\n' +
             __('Please go to this link in your browser to reset your password:') + ' ' + url
           ,

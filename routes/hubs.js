@@ -72,7 +72,7 @@ module.exports = function(app) {
         var popularHubs = results[1];
         var recentHubs = results[2];
         res.render('hubs', {
-          title: 'Hubs - MapHubs',
+          title: req.__('Hubs') + ' - ' + config.productName,
           props: {
             featuredHubs, popularHubs, recentHubs
           }, req
@@ -108,7 +108,7 @@ module.exports = function(app) {
         var layers = result[0];
         var stories = result[1];
         res.render('hubinfo', {
-          title: hub.name + ' - MapHubs',
+          title: hub.name + ' - ' + config.productName,
           hideFeedback: true,
           fontawesome: true,
           props: {
@@ -153,7 +153,7 @@ module.exports = function(app) {
       .then(function(results) {
         var layers = results[0];
         res.render('hubmap', {
-          title: hub.name + ' - Map - MapHubs',
+          title: hub.name + '|' + req.__('Map') + ' - ' + config.productName,
           hideFeedback: true,
           props: {
             hub, layers, canEdit
@@ -196,7 +196,7 @@ module.exports = function(app) {
       return Hub.getHubStories(hub.hub_id, canEdit)
       .then(function(stories) {
         res.render('hubstories', {
-          title: hub.name + ' - Stories - MapHubs',
+          title: hub.name + '|' + req.__('Stories') + ' - ' + config.productName,
           hideFeedback: true,
           props: {
             hub, stories, canEdit
@@ -236,7 +236,7 @@ module.exports = function(app) {
 
   var renderHubResourcesPage = function(hub, canEdit, req, res){
       res.render('hubresources', {
-        title: hub.name + ' - Resources - MapHubs',
+        title: hub.name + '|' + req.__('Resources') + ' - ' + config.productName,
         hideFeedback: true,
         fontawesome: true,
         rangy: true,
@@ -470,7 +470,7 @@ module.exports = function(app) {
                 var layers = result[1];
                 var members = result[2];
                 res.render('hubadmin', {
-                  title: hub.name + ' Settings - MapHubs',
+                  title: hub.name + '|' + req.__('Settings') + ' - ' + config.productName,
                   props: {
                     hub, layers, members
                   }
@@ -829,9 +829,9 @@ module.exports = function(app) {
                     .then(function(){
                       debug('Added ' + data.display_name + ' to ' + data.hub_id);
                       Email.send({
-                        from: 'MapHubs <info@maphubs.com>',
+                        from: config.productName + ' <info@maphubs.com>',
                         to: user.email,
-                        subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - MapHubs',
+                        subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - ' + config.productName,
                         text: user.display_name + ',\n' +
                           req.__('You have been added to the hub') + ' ' + data.hub_id
                         ,
@@ -922,9 +922,9 @@ module.exports = function(app) {
                     .then(function(){
                       debug('Removed ' + data.display_name + ' from ' + data.hub_id);
                       Email.send({
-                        from: 'MapHubs <info@maphubs.com>',
+                        from: config.productName + ' <info@maphubs.com>',
                         to: user.email,
-                        subject: req.__('Removed from Hub:') + ' ' + data.hub_id + ' - MapHubs',
+                        subject: req.__('Removed from Hub:') + ' ' + data.hub_id + ' - ' + config.productName,
                         text: user.display_name + ',\n' +
                           req.__('You have been removed from the hub') + ' ' + data.hub_id
                         ,

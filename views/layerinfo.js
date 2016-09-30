@@ -134,7 +134,7 @@ var LayerInfo = React.createClass({
     columns.push(
       {
         key: rowKey,
-        name: 'MapHubs ID',
+        name: 'ID',
         width : 120,
         resizable: true,
         sortable : true,

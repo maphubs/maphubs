@@ -169,8 +169,8 @@ module.exports = {
         + '<br /> <b>Email:</b> ' + user.email;
 
         return Email.send({
-            from: 'MapHubs <info@maphubs.com>',
-            to: 'MapHubs <info@maphubs.com>',
+            from: config.productName + ' <info@maphubs.com>',
+            to: config.productName + ' <info@maphubs.com>',
             subject: '[NEW USER SIGNUP] ' + user.display_name,
             text,
             html
@@ -191,25 +191,25 @@ module.exports = {
           var url = baseUrl + '/user/emailconfirmation/' + new_email;
 
             var text =  user.name + ',\n' +
-              __('Welcome to MapHubs!') + '\n\n' +
+              __('Welcome to') + ' ' + config.productName + '!\n\n' +
               __('Please go to this link in your browser to confirm your email:')  + url + '\n\n' +
-              __('Thank you for registering for MapHubs.') +
-              __('If you need to contact us you are welcome to reply to this email, or use the Feedback button on the MapHubs site.');
+              __('Thank you for registering.') +
+              __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
 
             var html = user.name + ',' +
-              '<br />' + __('Welcome to MapHubs!') +
+              '<br />' + __('Welcome to') + ' ' + config.productName + '!' +
               '<br />' +
               '<br />' + __('Please go to this link in your browser to confirm your email:') + url +
               '<br />' +
               '<br />' +
-              __('Thank you for registering for MapHubs.') +
-              __('If you need to contact us you are welcome to reply to this email, or use the Feedback button on the MapHubs site.');
+              __('Thank you for registering.') +
+              __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
             return Email.send({
-                from: 'MapHubs <info@maphubs.com>',
+                from: config.productName + ' <info@maphubs.com>',
                 to: user.email,
-                subject: __('Email Confirmation') + ' - MapHubs',
+                subject: __('Email Confirmation') + ' - ' + config.productName,
                 text,
                 html
               });

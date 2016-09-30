@@ -8,6 +8,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 var EmbedMap = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -141,7 +143,7 @@ var EmbedMap = React.createClass({
       var url = '/api/screenshot/map/' + this.props.map.map_id + '.png';
       map = (
           <div style={{position: 'relative'}}>
-            <img src={url} className="responsive-img" alt="MapHubs Map" />
+            <img src={url} className="responsive-img" alt={config.productName + ' Map'} />
               <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light embed-tooltips"
                 data-delay="50" data-position="right" data-tooltip={this.__('Start Interactive Map')}
                 style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>

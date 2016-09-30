@@ -9,6 +9,8 @@ var notAllowedError = require('../services/error-response').notAllowedError;
 
 var request = require('superagent-bluebird-promise');
 
+var config = require('../clientconfig');
+
 module.exports = function(app) {
 
 
@@ -18,7 +20,7 @@ module.exports = function(app) {
 
     Group.getGroupsForUser(user_id)
     .then(function(result){
-      res.render('createremotelayer', {title: req.__('Remote Layer') + ' - MapHubs', props: {groups: result}, req});
+      res.render('createremotelayer', {title: req.__('Remote Layer') + ' - ' + config.productName, props: {groups: result}, req});
     }).catch(nextError(next));
 
   });

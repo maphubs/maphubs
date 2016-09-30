@@ -213,7 +213,7 @@ var UserMap = React.createClass({
         {deleteButton}
         {editButton}
         <li>
-          <a onClick={this.download} download={'MapHubs-'+ this.props.map.title + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
+          <a onClick={this.download} download={this.props.map.title + ' - ' + config.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
             className="btn-floating user-map-tooltip green"
             data-delay="50" data-position="left" data-tooltip={this.__('Get Map as a PNG Image')}>
             <i className="material-icons">insert_photo</i>
