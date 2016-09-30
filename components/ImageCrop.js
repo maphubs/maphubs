@@ -428,25 +428,25 @@ resizeImage(sourceCanvas){
     if(this.state.src){
       if(!this.props.lockAspect){
         cropOriginalBtn = (
-          <a className="btn-floating btn waves-effect waves-light" onClick={this.cropOriginal}><i className="material-icons omh-accent-text">crop_original</i></a>
+          <a className="btn-floating btn waves-effect waves-light" onClick={this.cropOriginal}><i className="material-icons">crop_original</i></a>
         );
         crop16by9Btn = (
-          <a className="btn-floating btn waves-effect waves-light" onClick={this.aspect16by9}><i className="material-icons omh-accent-text">crop_16_9</i></a>
+          <a className="btn-floating btn waves-effect waves-light" onClick={this.aspect16by9}><i className="material-icons">crop_16_9</i></a>
         );
         crop3by2Btn = (
-          <a className="btn-floating btn waves-effect waves-light" onClick={this.aspect3by2}><i className="material-icons omh-accent-text">crop_3_2</i></a>
+          <a className="btn-floating btn waves-effect waves-light" onClick={this.aspect3by2}><i className="material-icons">crop_3_2</i></a>
         );
         cropSquareBtn = (
-          <a className="btn-floating btn waves-effect waves-light" onClick={this.aspectSquare}><i className="material-icons omh-accent-text">crop_square</i></a>
+          <a className="btn-floating btn waves-effect waves-light" onClick={this.aspectSquare}><i className="material-icons">crop_square</i></a>
         );
       }
 
       toolButtons = (
         <div className='col s12'>
-            <a className="btn-floating btn waves-effect waves-light" onClick={this.zoomIn}><i className="material-icons omh-accent-text">zoom_in</i></a>
-            <a className="btn-floating btn waves-effect waves-light" onClick={this.zoomOut}><i className="material-icons omh-accent-text">zoom_out</i></a>
+            <a className="btn-floating btn waves-effect waves-light" onClick={this.zoomIn}><i className="material-icons">zoom_in</i></a>
+            <a className="btn-floating btn waves-effect waves-light" onClick={this.zoomOut}><i className="material-icons">zoom_out</i></a>
             {cropOriginalBtn}{crop16by9Btn}{crop3by2Btn}{cropSquareBtn}
-            <a className="btn-floating btn waves-effect waves-light" onClick={this.reset}><i className="material-icons omh-accent-text">restore</i></a>
+            <a className="btn-floating btn waves-effect waves-light" onClick={this.reset}><i className="material-icons">restore</i></a>
         </div>
       );
 
