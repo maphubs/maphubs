@@ -21,7 +21,7 @@ render(){
             <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className="material-icons valign center-align" style={{fontSize: '80px', margin: 'auto'}}>file_upload</i>
             </div>
-            <h5 className="center-align">{this.__('Upload Data')}</h5>
+            <h5 className="center-align">{this.__('Create a Layer')}</h5>
           </a>
         </div>
         <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
