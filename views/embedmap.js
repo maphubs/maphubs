@@ -126,7 +126,7 @@ var EmbedMap = React.createClass({
               minWidth: '275px',
               zIndex: '9999',
               width: '25%',
-              maxWidth: '325px',   
+              maxWidth: '325px',
               maxHeight: 'calc(100% - 200px)',
               display: 'flex',
               flexDirection: 'column'
@@ -142,9 +142,9 @@ var EmbedMap = React.createClass({
       map = (
           <div style={{position: 'relative'}}>
             <img src={url} className="responsive-img" alt="MapHubs Map" />
-              <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light omh-btn embed-tooltips"
+              <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light embed-tooltips"
                 data-delay="50" data-position="right" data-tooltip={this.__('Start Interactive Map')}
-                style={{position: 'absolute', left: '5px', bottom: '30px',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
+                style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
           </div>
         );
     }else {
