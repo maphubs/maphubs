@@ -1185,7 +1185,7 @@ map.on('mousemove', function(e) {
     var logo = '', children = '';
     if(this.state.mapLoaded && this.props.showLogo){
       logo = (
-        <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width="70" height="19" src="/assets/maphubs-logo-small.png" alt="MapHubs Logo"/>
+        <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width="70" height="19" src={config.logoSmall} alt="Logo"/>
       );
       children = this.props.children;
     }

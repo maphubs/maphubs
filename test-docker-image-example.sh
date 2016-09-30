@@ -33,6 +33,7 @@ docker run --name maphubs-web -p 4000:4000 -d \
 -e ID_SECRET=ssh-secret \
 -e OMH_PRODUCT_NAME=MapHubs  \
 -e OMH_LOGO=/assets/maphubs-logo.png  \
+-e OMH_LOGO_SMALL=/assets/maphubs-logo-small.png  \
 -e OMH_BETA_TEXT=beta  \
 -e OMH_TWITTER=maphubs  \
 -e OMH_CONTACT_EMAIL=info@maphubs.com  \

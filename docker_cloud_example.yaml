@@ -83,6 +83,7 @@ maphubs:
     - 'OMH_TILESERVICE_URL=https://beta.maphubs.com' #change this to your domain
     - OMH_PRODUCT_NAME=MapHubs
     - OMH_LOGO=/assets/maphubs-logo.png
+    - OMH_LOGO_SMALL=/assets/maphubs-logo-small.png
     - OMH_BETA_TEXT=beta
     - OMH_TWITTER=maphubs
     - OMH_CONTACT_EMAIL=info@maphubs.com

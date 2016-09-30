@@ -8,6 +8,7 @@ module.exports = {
   https: ${OMH_HTTPS},
   productName: "${OMH_PRODUCT_NAME}",
   logo: "${OMH_LOGO}",
+  logoSmall: "${OMH_LOGO_SMALL}",
   betaText: "${OMH_BETA_TEXT}",
   twitter: "${OMH_TWITTER}",
   contactEmail: "${OMH_CONTACT_EMAIL}",
