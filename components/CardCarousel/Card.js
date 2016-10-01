@@ -69,7 +69,7 @@ module.exports = React.createClass({
     var group = '';
     if(this.props.group){
       group = (
-        <div style={{position: 'absolute', bottom:1, left: 1}}>
+        <div className="valign-wrapper" style={{position: 'absolute', bottom:1, left: 1}}>
           <GroupTag group={this.props.group} />
         </div>
 
@@ -171,7 +171,6 @@ module.exports = React.createClass({
         <div className="card-content no-padding" style={{margin: '10px'}}>
 
           <b>{this.props.title}</b> <br />
-            {group}
 
           <p className="fade" style={{fontSize: '12px'}}> {this.props.description}</p>
             {mapCardUserTag}

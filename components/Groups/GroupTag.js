@@ -62,6 +62,7 @@ var GroupTag = React.createClass({
       <div className={className}
         style={{height: sizeStr, width: chipWidth,
           minWidth: '75px',
+          marginBottom: '2px',
           border: '0.25pt solid #E4E4E4',
           lineHeight: sizeStr, fontSize: fontSizeStr}}>
         <a target="_blank" className="no-padding"  href={baseUrl + '/group/' + this.props.group} style={{height: 'initial'}}>
