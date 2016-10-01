@@ -12,6 +12,7 @@ var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 
 var config = require('../clientconfig');
+var local = require('../local');
 
 module.exports = function(app) {
 
@@ -451,7 +452,7 @@ module.exports = function(app) {
                   .then(function(){
                     debug('Removed ' + data.display_name + ' from ' + data.group_id);
                     Email.send({
-                      from: config.productName + ' <info@maphubs.com>',
+                      from: config.productName + ' <' + local.fromEmail + '>',
                       to: user.email,
                       subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - ' + config.productName,
                       text: user.display_name + ',\n' +

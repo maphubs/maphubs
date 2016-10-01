@@ -7,6 +7,7 @@ var Email = require('../services/email-util.js');
 var uuid = require('node-uuid');
 var urlUtil = require('../services/url-util');
 var config = require('../clientconfig');
+var local = require('../local');
 
 
 module.exports = {
@@ -158,6 +159,7 @@ module.exports = {
     },
 
     sendNewUserAdminEmail(user_id){
+
       return this.getUser(user_id)
       .then(function(user){
 
@@ -169,8 +171,8 @@ module.exports = {
         + '<br /> <b>Email:</b> ' + user.email;
 
         return Email.send({
-            from: config.productName + ' <info@maphubs.com>',
-            to: config.productName + ' <info@maphubs.com>',
+            from: config.productName + ' <' + local.fromEmail + '>',
+            to: config.productName + ' <' + local.adminEmail + '>',
             subject: '[NEW USER SIGNUP] ' + user.display_name,
             text,
             html
@@ -207,7 +209,7 @@ module.exports = {
               __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
             return Email.send({
-                from: config.productName + ' <info@maphubs.com>',
+                from: config.productName + ' <' + local.fromEmail + '>',
                 to: user.email,
                 subject: __('Email Confirmation') + ' - ' + config.productName,
                 text,

@@ -12,6 +12,7 @@ var User = require('../models/user');
 
 var urlUtil = require('./url-util');
 var config = require('../clientconfig');
+var local = require('../local');
 
 module.exports = {
 
@@ -52,7 +53,7 @@ module.exports = {
             debug('database updated');
             if(sendEmail){
               return Email.send({
-                from: config.productName + ' <info@maphubs.com>',
+                from: config.productName + ' <' + local.fromEmail + '>',
                 to: user.email,
                 subject: __('Password Changed') + ' - ' + config.productName,
                 text: user.display_name + ',\n' +
@@ -84,7 +85,7 @@ module.exports = {
         var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
         var url = baseUrl + '/user/passwordreset/' + pass_reset;
         Email.send({
-          from: config.productName + ' <info@maphubs.com>',
+          from: config.productName + ' <' + local.fromEmail + '>',
           to: user.email,
           subject: __('Password Reset') + ' - ' + config.productName,
           body: user.display_name + ',\n' +

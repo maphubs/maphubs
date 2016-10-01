@@ -23,6 +23,8 @@ module.exports = {
   SESSION_SECRET:  process.env.OMH_SESSION_SECRET,
   disableTracking:  process.env.OMH_DISABLE_TRACKING,
   mapHubsPro: process.env.OMH_MAPHUBS_PRO,
+  fromEmail: process.env.OMH_FROM_EMAIL,
+  adminEmail: process.env.OMH_ADMIN_EMAIL,
   database: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,

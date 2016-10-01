@@ -829,7 +829,7 @@ module.exports = function(app) {
                     .then(function(){
                       debug('Added ' + data.display_name + ' to ' + data.hub_id);
                       Email.send({
-                        from: config.productName + ' <info@maphubs.com>',
+                        from: config.productName + ' <' + local.fromEmail + '>',
                         to: user.email,
                         subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - ' + config.productName,
                         text: user.display_name + ',\n' +
@@ -922,7 +922,7 @@ module.exports = function(app) {
                     .then(function(){
                       debug('Removed ' + data.display_name + ' from ' + data.hub_id);
                       Email.send({
-                        from: config.productName + ' <info@maphubs.com>',
+                        from: config.productName + ' <' + local.fromEmail + '>',
                         to: user.email,
                         subject: req.__('Removed from Hub:') + ' ' + data.hub_id + ' - ' + config.productName,
                         text: user.display_name + ',\n' +

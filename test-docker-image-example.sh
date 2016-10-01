@@ -38,4 +38,7 @@ docker run --name maphubs-web -p 4000:4000 -d \
 -e OMH_TWITTER=maphubs  \
 -e OMH_CONTACT_EMAIL=info@maphubs.com  \
 -e OMH_MAPHUBS_PRO=false  \
+-e OMH_FROM_EMAIL=info@maphubs.com \
+-e OMH_ADMIN_EMAIL=kris@maphubs.com \
+-e OMH_THEME=maphubs \
 maphubs-web
