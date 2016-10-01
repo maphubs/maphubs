@@ -33,7 +33,7 @@ var Footer = React.createClass({
               <div className="col l4 offset-l2 s12">
                 <ul>
                   <li><a className="text-darken-3 center" href="/about">{this.__('About') + ' ' + config.productName}</a></li>
-                  <li>{this.__('Contact Us:')} <a className="text-darken-3 center" href="mailto:info@maphubs.com">{config.contactEmail}</a></li>
+                  <li>{this.__('Contact Us:')} <a className="text-darken-3 center" href="#" onClick={function(){HS.beacon.open();}}>{config.contactEmail}</a></li>
                   <li>Twitter: <a className="text-darken-3 center" href={'http://twitter.com/' + config.twitter}>@{config.twitter}</a></li>
                   <li><a className="text-darken-3 center" href="/terms">{this.__('Terms')}</a></li>
                   <li><a className="text-darken-3 center" href="/privacy">{this.__('Privacy')}</a></li>

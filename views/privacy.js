@@ -7,6 +7,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var config = require('../clientconfig');
 
 var Privacy = React.createClass({
 
@@ -24,17 +25,17 @@ var Privacy = React.createClass({
       return (
         <div>
           <Header />
-          <main className="container">
+          <main className="container" lang="en">
             <div className="row">
-              <h4>{this.__('MapHubs Privacy Policy')}</h4>
+              <h4>{config.ProductName + ' ' + this.__('Privacy Policy')}</h4>
   <p>
   We respect your privacy and will not share your information other than in the circumstances outlined below.
   </p>
 
-  <h5>MapHubs Public Beta</h5>
+  <h5>{config.productName} Public Beta</h5>
 
   <p>
-  MapHubs is currently offered as public beta software. We do not guarantee that the application is 100% free of bugs or issues that may impact privacy.  You use the MapHubs service at your own risk. Please see our Terms of Service for more information.
+  {config.productName} is currently offered as public beta software. We do not guarantee that the application is 100% free of bugs or issues that may impact privacy.  You use the {config.productName} service at your own risk. Please see our Terms of Service for more information.
   </p>
   <h5>General Information</h5>
   <p>
@@ -48,66 +49,66 @@ var Privacy = React.createClass({
   It is necessary to share information in order to investigate, prevent, or take action regarding illegal activities, suspected fraud, situations involving potential threats to the physical safety of any person, violations of Terms of Service, or as otherwise required by law.
   </li>
   <li>
-  We transfer information about you if MapHubs is acquired by or merged with another company. In this event, MapHubs will notify you before information about you is transferred and becomes subject to a different privacy policy.
+  We transfer information about you if {config.productName} is acquired by or merged with another company. In this event, {config.productName} will notify you before information about you is transferred and becomes subject to a different privacy policy.
   </li>
   </ol>
   <h5>Information Gathering and Usage</h5>
   <p>
-  When you register for MapHubs we ask for information such as your name, and email address. MapHubs uses collected information for the following general purposes: products and services provision, identification and authentication, services improvement, contact, and research.
+  When you register for {config.productName} we ask for information such as your name, and email address. {config.productName} uses collected information for the following general purposes: products and services provision, identification and authentication, services improvement, contact, and research.
 </p>
   <p>
   In order to better understand our users, we have implemented Google Analytics features based on Display Advertising  (Google Analytics Demographics and Interest Reporting). You can opt-out of Google Analytics for Display Advertising and customize Google Display Network ads using the Ads Settings. In addition, you can use the Google Analytics Opt-Out Browser Add-on to disable tracking by Google Analytics.
 </p>
   <h5>Cookies</h5>
   <p>
-  Cookies are required to use the MapHubs service. A cookie is a small amount of data, which often includes an anonymous unique identifier, that is sent to your browser from a web site's computers and stored on your computer's hard drive.
+  Cookies are required to use the {config.productName} service. A cookie is a small amount of data, which often includes an anonymous unique identifier, that is sent to your browser from a web site's computers and stored on your computer's hard drive.
 </p>
   <p>
-  We use cookies to record current session information, but do not use permanent cookies. You are required to re-login to your MapHubs account after a certain period of time has elapsed to protect you against others accidentally accessing your account contents.
+  We use cookies to record current session information, but do not use permanent cookies. You are required to re-login to your {config.productName} account after a certain period of time has elapsed to protect you against others accidentally accessing your account contents.
 </p>
   <p>
-  Some third-party services that we use, such as Google Analytics, may place their own cookies in your browser. This Privacy Policy covers use of cookies by MapHubs only and not the use of cookies by third parties.
+  Some third-party services that we use, such as Google Analytics, may place their own cookies in your browser. This Privacy Policy covers use of cookies by {config.productName} only and not the use of cookies by third parties.
 </p>
   <h5>Third Party Services</h5>
   <p>
-  Comment and discussion areas of MapHubs are provided by Disqus https://disqus.com/. Use of these areas is a transaction with Disqus and is not covered by this Privacy Policy. More information on Disqus policies is available at https://help.disqus.com/customer/en/portal/topics/215159-terms-and-policies/articles
+  Comment and discussion areas of {config.productName} are provided by Disqus https://disqus.com/. Use of these areas is a transaction with Disqus and is not covered by this Privacy Policy. More information on Disqus policies is available at https://help.disqus.com/customer/en/portal/topics/215159-terms-and-policies/articles
 </p>
   <p>
-  The feedback form is provided by Doorbell https://doorbell.io/ Use of the feedback form is a transaction with Doorbell and is not covered by this Privacy Policy. More information on Doorbell policies is available at https://doorbell.io/privacy
+  The help form (Send a Message button) is provided by HelpScout. Use of the help form is also a transaction with HelpScout. More information on HelpScout's policy is available at https://www.helpscout.net/company/privacy/
 </p>
   <p>
-  MapHubs layers may link to external map services services hosted by other organizations. This Privacy Policy does not cover usage information collected by map services external to MapHubs.
+  {config.productName} layers may link to external map services services hosted by other organizations. This Privacy Policy does not cover usage information collected by map services external to {config.productName}.
 </p>
   <h5>Data Storage</h5>
   <p>
-  MapHubs uses third-party vendors and cloud hosting services to provide the necessary hardware, software, networking, storage, and related technology required to run MapHubs. While MapHubs controls these systems, you retain all rights to your data. MapHubs owns the Maphubs brand, the copyright to the code, the databases, and the MapHubs instance running maphubs.com. The MapHubs source code is open source, and the MapHubs can be on private networks or self hosted using on-premise servers. MapHubs offers consulting and support services, please contact us for assistance running your own instance of the MapHubs application.
+  {config.productName} uses third-party vendors and cloud hosting services to provide the necessary hardware, software, networking, storage, and related technology required to run {config.productName}. While {config.productName} controls these systems, you retain all rights to your data. {config.productName} uses the open-source software, MapHubs. CrowdCover LLC owns the MapHubs brand, and the copyright to the code. The MapHubs source code is open source, and can be on private networks or self hosted using on-premise servers. CrowdCover LLC offers consulting and support services, please contact us for assistance running your own instance of the MapHubs application.
   </p>
   <h5>Data security</h5>
   <p>
-  We offer encryption (HTTPS/TLS) to protect data transmitted to and from our site, and require it for login and passwords. However, no data transmission over the Internet is 100% secure, so we can’t guarantee security. You use MapHubs at your own risk, and you’re responsible for taking reasonable measures to secure your account (like using a strong password).
+  We offer encryption (HTTPS/TLS) to protect data transmitted to and from our site, and require it for login and passwords. However, no data transmission over the Internet is 100% secure, so we can’t guarantee security. You use {config.productName} at your own risk, and you’re responsible for taking reasonable measures to secure your account (like using a strong password).
   </p>
   <h5>Disclosure</h5>
   <p>
-  MapHubs may disclose personally identifiable information under special circumstances, such as to comply with subpoenas or when your actions violate the Terms of Service.
+  {config.productName} may disclose personally identifiable information under special circumstances, such as to comply with subpoenas or when your actions violate the Terms of Service.
   </p>
   <h5>EU and Swiss Residents</h5>
   <p>
-  If you choose to provide MapHubs with your information, you consent to the transfer and storage of that information on our servers located in the United States.
+  If you choose to provide {config.productName} with your information, you consent to the transfer and storage of that information on our servers located in the United States.
   </p>
   <p>
-  For European Union and Swiss residents, any questions or concerns regarding the use or disclosure of your information should be directed to MapHubs by sending an email to privacy@maphubs.com. We will investigate and attempt to resolve complaints and disputes regarding use and disclosure of your information in accordance with this Privacy Policy. For complaints that cannot be resolved, we have committed to cooperate with data protection authorities located within Switzerland or the European Union (or their authorized representatives).
+  For European Union and Swiss residents, any questions or concerns regarding the use or disclosure of your information should be directed to {config.productName} by sending an email to {config.contactEmail}. We will investigate and attempt to resolve complaints and disputes regarding use and disclosure of your information in accordance with this Privacy Policy. For complaints that cannot be resolved, we have committed to cooperate with data protection authorities located within Switzerland or the European Union (or their authorized representatives).
   </p>
   <h5>Emails</h5>
   <p>
-  MapHubs will occasionally send administrative emails about account or service changes, or new policies.
+  {config.productName} will occasionally send administrative emails about account or service changes, or new policies.
   </p>
   <h5>Changes</h5>
   <p>
-  MapHubs may periodically update this policy. We will notify you about significant changes in the way we treat personal information by sending a notice to the primary email address specified in your MapHubs account or by placing a prominent notice on our site.
+  {config.productName} may periodically update this policy. We will notify you about significant changes in the way we treat personal information by sending a notice to the primary email address specified in your {config.productName} account or by placing a prominent notice on our site.
   </p>
   <h5>Questions</h5>
   <p>
-  Any questions about this Privacy Policy should be addressed to support@maphubs.com.
+  Any questions about this Privacy Policy should be addressed to {config.contactEmail}.
   </p>
 
             </div>

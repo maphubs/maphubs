@@ -9,6 +9,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var config = require('../clientconfig');
 
 var Services = React.createClass({
 
@@ -29,19 +30,19 @@ var Services = React.createClass({
           <main style={{margin: 0}}>
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/Moabi-Leaves.jpg"
-               title={this.__('Services')} subTitle={this.__(`
-                   MapHubs currently offers a range of service to help you get mapping.
+               title={this.__('Services')} subTitle={config.productName + this.__(`
+                    currently offers a range of service to help you get mapping.
                   `)} />
             <div className="container">
               <p lang="en" style={{fontSize: '18px', textAlign: 'center'}}>
-                Contact us at: <a href="mailto:support@maphubs.com">support@maphubs.com</a>
+                Contact us at: <a href="#" onClick={function(){HS.beacon.open();}}>{config.contactEmail}</a>
               </p>
               <h4 lang="en">Data Support</h4>
 
               <h5 lang="en">Data Loading, Processing, and Analysis</h5>
               <IconRow icon="cloud_upload">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  Not sure how to load your data into MapHubs?  We can help you get started. We’ll show you the ropes of how to load your data onto the platform, using existing data, and making a map or map story.
+                  Not sure how to load your data into {config.productName}?  We can help you get started. We’ll show you the ropes of how to load your data onto the platform, using existing data, and making a map or map story.
                 </p>
               </IconRow>
               <IconRow icon="person_pin_circle">
@@ -72,7 +73,7 @@ var Services = React.createClass({
               <h4 lang="en">Training</h4>
               <IconRow icon="school">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  Need help getting started with MapHubs? We can support training sessions ranging from a 1-hour online call to on-site classroom training. We can train all abilities from experienced GIS specialists and web developers to novices who have never made an interactive map before. Through our partners at OSFAC (osfac.net), we can also offer on site training programs anywhere in the Central and West Africa in French.
+                  Need help getting started with {config.productName}? We can support training sessions ranging from a 1-hour online call to on-site classroom training. We can train all abilities from experienced GIS specialists and web developers to novices who have never made an interactive map before. Through our partners at OSFAC (osfac.net), we can also offer on site training programs anywhere in the Central and West Africa in French.
                 </p>
               </IconRow>
 
@@ -111,7 +112,7 @@ var Services = React.createClass({
               </IconRow>
 
               <p lang="en" style={{fontSize: '18px', textAlign: 'center'}}>
-                Contact us at: <a href="mailto:support@maphubs.com">support@maphubs.com</a>
+                Contact us at: <a href="#" onClick={function(){HS.beacon.open();}}>{config.contactEmail}</a>
               </p>
             </div>
           </main>

@@ -6,6 +6,8 @@ var Formsy = require('formsy-react');
 var TextInput = require('../components/forms/textInput');
 var Toggle = require('../components/forms/toggle');
 
+import Progress from '../components/Progress';
+
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 var UserActions = require('../actions/UserActions');
@@ -39,7 +41,8 @@ var Signup = React.createClass({
 
   getInitialState() {
     return {
-      canSubmit: false
+      canSubmit: false,
+      saving: false
     };
   },
 
@@ -99,7 +102,9 @@ var Signup = React.createClass({
 
   onSave(model){
     var _this = this;
+    this.setState({saving: true});
     UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, function(err){
+      this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err.error});
       }else {
@@ -135,8 +140,8 @@ var Signup = React.createClass({
           <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
             <Toggle name="joinmailinglist"
               labelOff={this.__('Decline')}
-              labelOn={this.__('Join the Maphubs Mailing List')}
-                dataPosition="top" dataTooltip={this.__('Join the Maphubs Mailing List')}
+              labelOn={this.__('Join the Mailing List')}
+                dataPosition="top" dataTooltip={this.__('Join the Mailing List')}
                 defaultChecked={true}
               />
           </div>
@@ -215,6 +220,7 @@ var Signup = React.createClass({
           </div>
         </Formsy.Form>
       </div>
+      <Progress id="load-data-progess" title={this.__('Submitting')} subTitle={this.__('Sending your information')} dismissible={false} show={this.state.saving}/>
       </main>
       </div>
     );

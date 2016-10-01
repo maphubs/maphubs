@@ -26,7 +26,8 @@
   },
 
   "globals": {
-    "L": true
+    "L": true,
+    "HS": true
   },
   "plugins": [
     "babel",
