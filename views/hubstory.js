@@ -62,6 +62,24 @@ var HubStory = React.createClass({
         </div>
       );
     }
+
+    var discuss = '', addthis = '';
+    if(!config.mapHubsPro){
+      addthis = (
+        <div className="addthis_sharing_toolbox right"></div>
+      );
+      discuss = (
+        <div className="row">
+
+          <ReactDisqusThread
+                shortname="maphubs"
+                identifier={'maphubs-story-' + story.story_id}
+                title={title}
+                />
+        </div>
+      );
+    }
+
     /*eslint-disable react/no-danger*/
     return (
       <div>
@@ -76,7 +94,7 @@ var HubStory = React.createClass({
               <StoryHeader story={story} />
             </div>
             <div className="col s12 m3 l3">
-              <div className="addthis_sharing_toolbox right"></div>
+              {addthis}
             </div>
           </div>
           <div className="row">
@@ -84,14 +102,7 @@ var HubStory = React.createClass({
             <div className="story-content" dangerouslySetInnerHTML={{__html: story.body}}></div>
           </div>
           <hr />
-          <div className="row">
-
-            <ReactDisqusThread
-                  shortname="maphubs"
-                  identifier={'maphubs-story-' + story.story_id}
-                  title={title}
-                  />
-          </div>
+          {discuss}
         </div>
         {button}
         </main>

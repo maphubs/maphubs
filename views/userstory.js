@@ -11,6 +11,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 
 var UserStory = React.createClass({
 
@@ -52,6 +54,21 @@ var UserStory = React.createClass({
       );
     }
     var title = story.title.replace('&nbsp;', '');
+
+    var shareAndDiscuss = '';
+    if(!config.mapHubsPro){
+      shareAndDiscuss = (
+        <div className="row">
+          <div className="addthis_sharing_toolbox"></div>
+          <ReactDisqusThread
+                shortname="maphubs"
+                identifier={'maphubs-story-' + story.story_id}
+                title={title}
+                />
+        </div>
+      );
+    }
+
     /*eslint-disable react/no-danger*/
     return (
       <div>
@@ -71,14 +88,7 @@ var UserStory = React.createClass({
               <div className="story-content" dangerouslySetInnerHTML={{__html: story.body}}></div>
             </div>
               <hr />
-              <div className="row">
-                <div className="addthis_sharing_toolbox"></div>
-                <ReactDisqusThread
-                      shortname="maphubs"
-                      identifier={'maphubs-story-' + story.story_id}
-                      title={title}
-                      />
-                </div>
+              {shareAndDiscuss}
 
               </div>
           {button}
