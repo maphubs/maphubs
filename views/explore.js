@@ -110,7 +110,12 @@ var Home = React.createClass({
 
   getHubCard(hub){
     var title = hub.name.replace('&nbsp;', '');
-    var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+    var hubUrl = '';
+    if(config.mapHubsPro){
+      hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
+    }else{
+      hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+    }
     return {
       id: hub.hub_id,
       title,

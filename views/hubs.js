@@ -77,7 +77,12 @@ var Hubs = React.createClass({
     var popularCards = [];
 
     this.props.featuredHubs.map(function(hub){
-      var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      var hubUrl = '';
+      if(config.mapHubsPro){
+        hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
+      }else{
+        hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      }
       featuredCards.push({
         id: hub.hub_id,
         title: hub.name,
@@ -90,7 +95,12 @@ var Hubs = React.createClass({
     });
 
     this.props.recentHubs.map(function(hub){
-      var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      var hubUrl = '';
+      if(config.mapHubsPro){
+        hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
+      }else{
+        hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      }
       recentCards.push({
         id: hub.hub_id,
         title: hub.name,
@@ -103,7 +113,12 @@ var Hubs = React.createClass({
     });
 
     this.props.popularHubs.map(function(hub){
-      var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      var hubUrl = '';
+      if(config.mapHubsPro){
+        hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
+      }else{
+        hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+      }
       popularCards.push({
         id: hub.hub_id,
         title: hub.name,
@@ -122,7 +137,12 @@ var Hubs = React.createClass({
 
 
         this.state.searchResults.map(function(hub){
-          var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+          var hubUrl = '';
+          if(config.mapHubsPro){
+            hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
+          }else{
+            hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
+          }
           searchCards.push({
             id: hub.hub_id,
             title: hub.name,
