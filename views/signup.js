@@ -104,7 +104,7 @@ var Signup = React.createClass({
     var _this = this;
     this.setState({saving: true});
     UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, function(err){
-      this.setState({saving: false});
+      _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err.error});
       }else {
