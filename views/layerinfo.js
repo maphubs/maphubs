@@ -662,7 +662,7 @@ var LayerInfo = React.createClass({
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
               <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
-                <div className="row" style={{height: 'calc(100% - 47px)', marginLeft:'10px', marginRight: '10px'}}>
+                <div className="row" style={{height: 'calc(100% - 75px)', marginLeft:'10px', marginRight: '10px', overflow: 'auto'}}>
                   <div className="right">
                     <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
                   </div>
@@ -679,7 +679,7 @@ var LayerInfo = React.createClass({
 
                 </div>
 
-                <div className="row no-margin" style={{position: 'absolute', bottom: 0, width: '100%'}}>
+                <div className="row no-margin" style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
                   <div className="col s6 m3 l3 center-align">
                     <b className="center-align">{this.__('Views')}</b>
                     <p className="center-align">{this.props.layer.views}</p>
