@@ -195,7 +195,10 @@ module.exports = {
             var text =  user.name + ',\n' +
               __('Welcome to') + ' ' + config.productName + '!\n\n' +
               __('Please go to this link in your browser to confirm your email:')  + url + '\n\n' +
-              __('Thank you for registering.') +
+              __('Thank you for registering.') + '\n\n' +
+              __('UserName: ') + user.display_name  + '\n' +
+              __('Name: ') + user.name  + '\n' +
+              __('Email: ') + user.email  + '\n\n' +
               __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
 
@@ -206,6 +209,10 @@ module.exports = {
               '<br />' +
               '<br />' +
               __('Thank you for registering.') +
+              '<br />' +
+              __('UserName: ') + user.display_name  + '<br />' +
+              __('Name: ') + user.name  + '<br />' +
+              __('Email: ') + user.email  + '<br /><br />' +
               __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
             return Email.send({
