@@ -47,19 +47,19 @@ var Services = React.createClass({
               </IconRow>
               <IconRow icon="person_pin_circle">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  Don’t have an in-house GIS data team? We can help you clean/convert/process, and analyze spatial data and load it into MapHubs.
+                  Don’t have an in-house GIS data team? We can help you clean/convert/process, and analyze spatial data and load it into {config.productName}.
                 </p>
               </IconRow>
 
               <h5 lang="en">Raster Data Services</h5>
               <IconRow icon="image">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  While MapHubs does not support uploading of raster data directly, we can setup and host raster services for an upfront fee plus small monthly hosting cost.  We can also help with processing raster data for display.
+                  While {config.productName} does not support uploading of raster data directly, we can setup and host raster services for an upfront fee plus small monthly hosting cost.  We can also help with processing raster data for display.
                 </p>
               </IconRow>
               <IconRow icon="link">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  MapHubs can also link to raster services hosted on ArcGIS Online, MapBox, Carto, GeoServer, etc. If you have an existing hosting platform, we can add it as MapHubs layers.
+                  {config.productName} can also link to raster services hosted on ArcGIS Online, MapBox, Carto, GeoServer, etc. If you have an existing hosting platform, we can add it as {config.productName} layers.
                 </p>
               </IconRow>
 
@@ -77,26 +77,25 @@ var Services = React.createClass({
                 </p>
               </IconRow>
 
-              <h4 lang="en">MapHubs On-Premise</h4>
+              <h4 lang="en">{config.productName} On-Premise</h4>
               <IconRow icon="security">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  Concerned about security or network bandwidth? MapHubs can be installed inside your organization’s firewall to host your data on your servers. Your MapHubs server will also give you direct access to all data hosted on the MapHubs.com
+                  Concerned about security or network bandwidth? {config.productName} can be installed inside your organization’s firewall to host your data on your servers. Your {config.productName} server will also give you direct access to all data hosted on {config.productName}.
                 </p>
               </IconRow>
 
               <h4 lang="en">Development Support</h4>
-              <h5 lang="en">MapHubs Maps in Your Site</h5>
+              <h5 lang="en">{config.productName} Maps in Your Site</h5>
               <IconRow icon="extension">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  MapHubs maps can be embedded in your website replacing the need for building and maintaining your own mapping system. We can help add maps to your site.
-                  Note: During the MapHubs beta, maps can be embedded for free without a monthly fee. In the future, embedding may require a premium account for a small monthly fee. Contact us about discounts for early-adopters :)
+                  {config.productName} maps can be embedded in your website replacing the need for building and maintaining your own mapping system. We can help add maps to your site.
                 </p>
               </IconRow>
 
               <h5 lang="en">New Features / Improvements</h5>
               <IconRow icon="build">
                 <p lang="en" style={{fontSize: '18px'}}>
-                  We can build new features or make improvements to meet your needs. The MapHubs software is open-source and all custom development is shared with the open-source community.
+                  We can build new features or make improvements to meet your needs. The {config.productName} software is open-source and all custom development is shared with the open-source community.
                 </p>
               </IconRow>
               <IconRow icon="lightbulb_outline">

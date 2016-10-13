@@ -151,6 +151,13 @@ var Home = React.createClass({
 
      var slides = [
        {
+         title: this.__('MapHubs is now Map for Environment'),
+         text: this.__('We have merged MapHubs with Map for Environment'),
+         buttonText: this.__('Learn More'),
+         link: '/about',
+         img: '/assets/home/Moabi–Chameleon.jpg'
+       },
+       {
          title: this.__('Mapping for Everyone'),
          text: config.productName + ' ' + this.__('is a home for the world\'s open map data and an easy tool for making maps'),
          buttonText: this.__('Learn More'),
@@ -163,6 +170,13 @@ var Home = React.createClass({
          buttonText: this.__('Learn More'),
          link: '/journalists',
          img: '/assets/home/Moabi-Canoe.jpg'
+       },
+       {
+         title: this.__('OpenStreetMap'),
+         text: this.__('Help us make mapes to monitor the world’s natural resources.'),
+         buttonText: this.__('Learn More'),
+         link: 'https://osm.mapforenvironment.org',
+         img: '/assets/home/m4e_osm_banner.jpg'
        },
        {
          title: this.__('Explore Maps'),

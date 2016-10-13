@@ -584,5 +584,10 @@
 	" is a home for the world's open map data and an easy tool for making and sharing maps.": " is a home for the world's open map data and an easy tool for making and sharing maps.",
 	" uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.": " uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.",
 	"\n               Browse Stories, Maps, Groups, Hubs, and Layers\n              ": "\n               Browse Stories, Maps, Groups, Hubs, and Layers\n              ",
-	"Data Loading: This may take a few minutes for larger datasets.": "Data Loading: This may take a few minutes for larger datasets."
+	"Data Loading: This may take a few minutes for larger datasets.": "Data Loading: This may take a few minutes for larger datasets.",
+	"MapHubs is now Map for Environment": "MapHubs is now Map for Environment",
+	"We have merged MapHubs with Map for Environment": "We have merged MapHubs with Map for Environment",
+	"OpenStreetMap": "OpenStreetMap",
+	"Help us make mapes to monitor the world’s natural resources.": "Help us make mapes to monitor the world’s natural resources.",
+	"\n                    currently offers a range of service to help you get mapping.\n                  ": "\n                    currently offers a range of service to help you get mapping.\n                  "
 }
