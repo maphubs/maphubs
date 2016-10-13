@@ -7,6 +7,8 @@ var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 var $ = require('jquery');
 
+var config = require('../clientconfig');
+
 var LocaleChooser = React.createClass({
 
   mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
@@ -56,7 +58,7 @@ var LocaleChooser = React.createClass({
     return (
       <li className="nav-link-wrapper">
         <a ref="dropdownButton" className="locale-dropdown-button"
-          href="#!" data-activates={this.props.id} style={{paddingRight: 0, color: '#29ABE2 !important'}}>{options[this.state.locale].label}
+          href="#!" data-activates={this.props.id} style={{paddingRight: 0, color: config.primaryColor + ' !important'}}>{options[this.state.locale].label}
           <i className="material-icons right" style={{marginLeft: 0, color: '#212121 !important'}}>arrow_drop_down</i></a>
           <ul ref="dropdownMenu" id={this.props.id} className="dropdown-content">
             <li><a href="#!" onClick={function(){_this.onChange('en');}} className="nav-hover-menu-item">English</a></li>

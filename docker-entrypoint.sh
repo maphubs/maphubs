@@ -9,13 +9,19 @@ module.exports = {
   productName: "${OMH_PRODUCT_NAME}",
   logo: "${OMH_LOGO}",
   logoSmall: "${OMH_LOGO_SMALL}",
+  logoWidth: ${OMH_LOGO_WIDTH},
+  logoHeight: ${OMH_LOGO_HEIGHT},
+  logoSmallWidth: ${OMH_LOGO_WIDTH_SMALL},
+  logoSmallHeight: ${OMH_LOGO_HEIGHT_SMALL},
+  primaryColor: "${OMH_PRIMARY_COLOR}",
   betaText: "${OMH_BETA_TEXT}",
   twitter: "${OMH_TWITTER}",
   contactEmail: "${OMH_CONTACT_EMAIL}",
   mapHubsPro: ${OMH_MAPHUBS_PRO},
   tileServiceUrl: "${OMH_TILESERVICE_URL}",
   MAPBOX_ACCESS_TOKEN: "${OMH_MAPBOX_TOKEN}",
-  PLANET_LABS_API_KEY: "${PLANET_LABS_API_KEY}"
+  PLANET_LABS_API_KEY: "${PLANET_LABS_API_KEY}",
+  theme: "${OMH_THEME}"
 };
 EOF
 

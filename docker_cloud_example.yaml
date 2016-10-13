@@ -81,6 +81,7 @@ maphubs:
     - OMH_PORT=80
     - OMH_SESSION_SECRET=ADD_VALUE_HERE
     - 'OMH_TILESERVICE_URL=https://maphubs.com' #change this to your domain
+    - OMH_TILESERVICE_INTERNAL_URL=http://tiles:4001
     - OMH_PRODUCT_NAME=MapHubs
     - OMH_LOGO=/assets/maphubs-logo.png
     - OMH_LOGO_SMALL=/assets/maphubs-logo-small.png

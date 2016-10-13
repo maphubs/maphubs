@@ -160,7 +160,7 @@ getCookie(cname) {
       <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
         <div className="nav-wrapper z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
-            <img className="valign" width="148" height="40" style={{margin: '5px'}} src={config.logo} alt={config.productName + ' ' + this.__('Logo')}/>
+            <img className="valign" width={config.logoWidth} height={config.logoHeight} style={{margin: '5px'}} src={config.logo} alt={config.productName + ' ' + this.__('Logo')}/>
               <small style={{color: '#222222', position: 'absolute', top: '12px', left: '150px', fontSize: '12px'}}>{config.betaText}</small>
 
           </a>

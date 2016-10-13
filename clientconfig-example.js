@@ -9,5 +9,6 @@ module.exports = {
   contactEmail: 'info@maphubs.com',
   mapHubsPro: false,
   tileServiceUrl: 'http://localhost:4001',
-  MAPBOX_ACCESS_TOKEN: "12345"
+  MAPBOX_ACCESS_TOKEN: "12345",
+  theme: 'maphubs'
 };

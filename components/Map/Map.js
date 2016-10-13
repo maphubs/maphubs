@@ -1185,7 +1185,7 @@ map.on('mousemove', function(e) {
     var logo = '', children = '';
     if(this.state.mapLoaded && this.props.showLogo){
       logo = (
-        <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width="70" height="19" src={config.logoSmall} alt="Logo"/>
+        <img style={{position:'absolute', left: '5px', bottom: '0px', zIndex: '1'}} width={config.logoSmallWidth} height={config.logoSmallHeight} src={config.logoSmall} alt="Logo"/>
       );
       children = this.props.children;
     }
@@ -1272,7 +1272,7 @@ map.on('mousemove', function(e) {
                     lineHeight: '30px',
                     display: 'none',
                     width: '30px',
-                    color: '#29ABE2',
+                    color: config.primaryColor,
                     borderRadius: '4px',
                     cursor: 'pointer',
                     backgroundColor: 'white',
@@ -1304,7 +1304,7 @@ map.on('mousemove', function(e) {
                     lineHeight: '30px',
                     display: 'none',
                     width: '30px',
-                    color: '#29ABE2',
+                    color: config.primaryColor,
                     borderRadius: '4px',
                     cursor: 'pointer',
                     backgroundColor: 'white',

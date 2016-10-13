@@ -38,7 +38,7 @@ By using this web site ("Service"), or any services of {config.productName}, you
 Please note that if you are accessing any {config.productName} service in your capacity as a government entity, amended Terms of Service may be required. Please contact us at {config.contactEmail}
 </p>
 <p>
-If {config.productName} makes material changes to these Terms, we will notify you by email or by posting a notice on our site before the changes are effective. Any new features that augment or enhance the current Service, including the release of new tools and resources, shall be subject to the Terms of Service. Continued use of the Service after any such changes shall constitute your consent to such changes. You can review the most current version of the Terms of Service at any time at:https://maphubs.com/terms
+If {config.productName} makes material changes to these Terms, we will notify you by email or by posting a notice on our site before the changes are effective. Any new features that augment or enhance the current Service, including the release of new tools and resources, shall be subject to the Terms of Service. Continued use of the Service after any such changes shall constitute your consent to such changes. You can review the most current version of the Terms of Service at any time at: https://{config.host}/terms
 </p>
 <p>
 Violation of any of the terms below will result in the termination of your Account. While {config.productName} prohibits such conduct and Content on the Service, you understand and agree that {config.productName} cannot be responsible for the Content posted on the Service and you nonetheless may be exposed to such materials. You agree to use the Service at your own risk.

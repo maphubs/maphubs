@@ -170,7 +170,7 @@ var EmbedMap = React.createClass({
               style={{height:'30px',
                       lineHeight: '30px',
                       width: '30px',
-                      color: '#29ABE2',
+                      color: config.primaryColor,
                       borderRadius: '4px',
                       backgroundColor: 'white',
                       borderColor: '#ddd',

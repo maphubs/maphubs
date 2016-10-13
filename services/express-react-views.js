@@ -19,6 +19,7 @@ var assign = require('object-assign');
 var log = require('./log');
 var version = require('../version.json').version;
 var local = require('../local');
+var config = require('../clientconfig');
 var urlUtil = require('./url-util');
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
@@ -101,26 +102,26 @@ function createEngine(engineOptions) {
 
         //icons
         markup += `
-        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/assets/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/assets/apple-touch-icon-60x60.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/assets/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon-152x152.png" />
-        <link rel="icon" type="image/png" href="/assets/favicon-196x196.png" sizes="196x196" />
-        <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/png" href="/assets/favicon-32x32.png" sizes="32x32" />
-        <link rel="icon" type="image/png" href="/assets/favicon-16x16.png" sizes="16x16" />
-        <link rel="icon" type="image/png" href="/assets/favicon-128.png" sizes="128x128" />
-        <meta name="application-name" content="&nbsp;"/>
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/assets/themes/`+ config.theme +`/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/themes/`+ config.theme +`/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/themes/`+ config.theme +`/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/themes/`+ config.theme +`/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/assets/themes/`+ config.theme +`/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/assets/themes/`+ config.theme +`/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/themes/`+ config.theme +`/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/themes/`+ config.theme +`/apple-touch-icon-152x152.png" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-196x196.png" sizes="196x196" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-16x16.png" sizes="16x16" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-128.png" sizes="128x128" />
+        <meta name="application-name" content="` + config.productName +`"/>
         <meta name="msapplication-TileColor" content="#FFFFFF" />
-        <meta name="msapplication-TileImage" content="/assets/mstile-144x144.png" />
-        <meta name="msapplication-square70x70logo" content="/assets/mstile-70x70.png" />
-        <meta name="msapplication-square150x150logo" content="/assets/mstile-150x150.png" />
-        <meta name="msapplication-wide310x150logo" content="/assets/mstile-310x150.png" />
-        <meta name="msapplication-square310x310logo" content="/assets/mstile-310x310.png" />
+        <meta name="msapplication-TileImage" content="/assets/themes/`+ config.theme +`/mstile-144x144.png" />
+        <meta name="msapplication-square70x70logo" content="/assets/themes/`+ config.theme +`/mstile-70x70.png" />
+        <meta name="msapplication-square150x150logo" content="/assets/themes/`+ config.theme +`/mstile-150x150.png" />
+        <meta name="msapplication-wide310x150logo" content="/assets/themes/`+ config.theme +`/mstile-310x150.png" />
+        <meta name="msapplication-square310x310logo" content="/assets/themes/`+ config.theme +`/mstile-310x310.png" />
         `;
 
         if(options.oembed){
@@ -135,7 +136,7 @@ function createEngine(engineOptions) {
         if(options.twitterCard){
           markup += `
           <meta name="twitter:card" content="summary_large_image">
-          <meta name="twitter:site" content="@maphubs">
+          <meta name="twitter:site" content="@` + config.twitter + `">
           <meta name="twitter:title" content="` + options.twitterCard.title + `">
           <meta name="twitter:description" content="` + options.twitterCard.description + `">
           <meta name="twitter:image" content="` + options.twitterCard.image + `">
@@ -234,7 +235,7 @@ function createEngine(engineOptions) {
             <script>!function(e,o,n){
                 window.HSCW=o,window.HS=n,n.beacon=n.beacon||{};
                 var t=n.beacon;
-                t.userConfig={icon: 'question', color: '#29ABE2', topArticles: true,
+                t.userConfig={icon: 'question', color: '` + config.primaryColor + `', topArticles: true,
                   topics: [{val: 'question', label: '` + t('Question') + `'},{val: 'suggestion', label: '` + t('Suggestion') + `'},{val: 'problem', label: '` + t('Report a Problem') + `'}],
                   translation: ` + beaconTranslationText +`,
                 },

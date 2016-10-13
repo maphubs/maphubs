@@ -205,7 +205,7 @@ var Home = React.createClass({
                      <h3 className="no-margin">{slide.text}</h3>
                    </div>
                    <div className="slide-button center">
-                     <a className="btn waves-effect z-depth-3" style={{backgroundColor: '#29ABE2', color: 'white', borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
+                     <a className="btn waves-effect z-depth-3" style={{borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
                    </div>
                 </div>
               );
@@ -231,7 +231,7 @@ var Home = React.createClass({
              <div>
                 <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
                   {this.__('Trending')}
-                  <i className="material-icons" style={{fontWeight: 'bold', color: '#29ABE2', fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
+                  <i className="material-icons" style={{fontWeight: 'bold', color: config.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
                 </h5>
              </div>
            </div>

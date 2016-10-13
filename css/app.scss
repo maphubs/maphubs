@@ -9,22 +9,22 @@ html, body {
 }
 
 .omh-color {
-  background-color: $maphubs-accent-color !important;
+  background-color: $primary-color !important;
 }
 
 .omh-accent-text {
-  color: $maphubs-accent-color !important;
+  color: $primary-color !important;
 }
 
 .omh-btn{
-  border-color: RGBA(41, 171, 226, 0.7);
+  border-color: $primary-color;
   border-style: solid;
   border-width: 1px;
 }
 
 .omh-btn i{
   background-color: rgba(0, 0, 0, 0);
-  color: $maphubs-accent-color;
+  color: $primary-color;
 }
 
 /* Margins */
@@ -75,7 +75,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .hub-section:hover {
-  color: #29ABE2;
+  color: $primary-color;
   -o-transition:.5s;
   -ms-transition:.5s;
   -moz-transition:.5s;
@@ -97,7 +97,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .hub-icon-wrapper i {
-  color: #29ABE2;
+  color: $primary-color;
 }
 
 .hub-icon-wrapper h5 {
@@ -107,7 +107,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .hub-icon-wrapper:hover {
   color: #FFF;
-  background-color: #29ABE2;
+  background-color: $primary-color;
   -o-transition:.5s;
   -ms-transition:.5s;
   -moz-transition:.5s;
@@ -126,7 +126,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .home-section:hover {
-  color: #29ABE2;
+  color: $primary-color;
   -o-transition:.5s;
   -ms-transition:.5s;
   -moz-transition:.5s;
@@ -142,7 +142,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 
 .home-onboarding-icon-wrapper i {
-  color: #29ABE2;
+  color: $primary-color;
 }
 
 .home-onboarding-icon-wrapper h5 {
@@ -152,7 +152,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .home-onboarding-icon-wrapper:hover {
   color: #FFF;
-  background-color: #29ABE2;
+  background-color: $primary-color;
 
   -o-transition:.5s;
   -ms-transition:.5s;
@@ -171,7 +171,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .nav-hover-menu-item:hover {
   color: #FFF !important;
-  background-color: #29ABE2;
+  background-color: $primary-color;
 }
 
 .nav-link-wrapper a{
@@ -179,11 +179,11 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .nav-link-wrapper a.active {
-  color:#29ABE2 !important;
+  color:$primary-color !important;
 }
 
 .locale-dropdown-button {
-    color:#29ABE2 !important;
+    color:$primary-color !important;
 }
 
 .nav-link-item:hover {
@@ -193,7 +193,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .nav-link-wrapper:hover {
   color: #FFF;
-  background-color: #29ABE2;
+  background-color: $primary-color;
 
   -o-transition:.5s;
   -ms-transition:.5s;
@@ -208,7 +208,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .usermenu-wrapper:hover {
   color: #FFF !important;
-  background-color: #29ABE2 !important;
+  background-color: $primary-color !important;
 
   -o-transition:.5s;
   -ms-transition:.5s;
@@ -517,7 +517,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   float: right;
   z-index: 999;
   color: #FFF;
-  background-color: #29ABE2;
+  background-color: $primary-color;
 }
 
 /*MaterializeCSS has a bug where the invalid labels don't resize with the dynamically resizing text area */
@@ -552,33 +552,33 @@ textarea.materialize-textarea+label:after {
 }
 
 .editor-container div ::selection {
-  background: #29ABE2; /* WebKit/Blink Browsers */
+  background: $primary-color; /* WebKit/Blink Browsers */
   color: white;
 }
 .editor-container div ::-moz-selection {
-  background: #29ABE2; /* Gecko Browsers */
+  background: $primary-color; /* Gecko Browsers */
   color: white;
 }
 
 .editor-container h1 ::selection {
-  background: #29ABE2; /* WebKit/Blink Browsers */
+  background: $primary-color; /* WebKit/Blink Browsers */
   color: white;
 }
 .editor-container h1 ::-moz-selection {
-  background: #29ABE2; /* Gecko Browsers */
+  background: $primary-color; /* Gecko Browsers */
   color: white;
 }
 
 .medium-toolbar-arrow-under:after {
   top: 60px;
-  border-color: #29ABE2 transparent transparent transparent !important; }
+  border-color: $primary-color transparent transparent transparent !important; }
 
 .medium-toolbar-arrow-over:before {
   top: -8px;
-  border-color: transparent transparent #29ABE2 transparent !important; }
+  border-color: transparent transparent $primary-color transparent !important; }
 
 .medium-editor-toolbar {
-  background-color: #29ABE2 !important; }
+  background-color: $primary-color !important; }
   .medium-editor-toolbar li {
     padding: 0; }
     .medium-editor-toolbar li button {
@@ -591,10 +591,10 @@ textarea.materialize-textarea+label:after {
       -webkit-transition: background-color 0.2s ease-in, color 0.2s ease-in;
               transition: background-color 0.2s ease-in, color 0.2s ease-in; }
       .medium-editor-toolbar li button:hover {
-        background-color: #0277bd !important;
+        background-color: $primary-color !important;
         color: #fff; }
     .medium-editor-toolbar li .medium-editor-button-active {
-      background-color: #01579b !important;
+      background-color: $primary-color-dark !important;
       color: #fff; }
     .medium-editor-toolbar li .medium-editor-button-last {
       border-right: none; }
@@ -602,7 +602,7 @@ textarea.materialize-textarea+label:after {
 .medium-editor-toolbar-form .medium-editor-toolbar-input {
   height: 60px;
   display: inherit !important;
-  background: #29ABE2 !important;
+  background: $primary-color !important;
   color: #fff; }
   .medium-editor-toolbar-form .medium-editor-toolbar-input::-webkit-input-placeholder {
     color: #fff;
@@ -623,7 +623,7 @@ textarea.materialize-textarea+label:after {
   color: #fff; }
 
 .medium-editor-toolbar-anchor-preview {
-  background: #29ABE2 !important;
+  background: $primary-color !important;
   color: #fff; }
 
 .medium-editor-placeholder:after {
@@ -981,8 +981,8 @@ textarea.materialize-textarea+label:after {
 
 #doorbell-button {
   background-color: #FFF !important;
-  color: #29ABE2 !important;
-  border-color: RGBA(41, 171, 226, 0.7) !important;
+  color: $primary-color !important;
+  border-color: $primary-color !important;
   border-style: solid !important;
   border-width: 1px !important;
 }
@@ -1015,7 +1015,7 @@ textarea.materialize-textarea+label:after {
 {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #29ABE2;
+    background-color: $primary-color;
 }
 
 .react-grid-Canvas::-webkit-scrollbar-track
@@ -1035,7 +1035,7 @@ textarea.materialize-textarea+label:after {
 {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #29ABE2;
+    background-color: $primary-color;
 }
 .react-grid-Canvas {
   left: initial !important;
@@ -1055,7 +1055,7 @@ textarea.materialize-textarea+label:after {
   height:30px;
   line-height: 30px;
   width: 30px;
-  color: #29ABE2;
+  color: $primary-color;
   border-radius: 4px;
   cursor: pointer;
   background-color: white;
@@ -1069,7 +1069,7 @@ textarea.materialize-textarea+label:after {
 }
 
 .mapmaker-tab {
-  /*border: 1px solid #29ABE2;*/
+  /*border: 1px solid $primary-color;*/
 }
 
 .mapmaker-tab .active {

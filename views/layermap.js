@@ -9,6 +9,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+var config = require('../clientconfig');
+
 var LayerMap = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -111,7 +113,7 @@ var LayerMap = React.createClass({
             style={{height:'30px',
                     lineHeight: '30px',
                     width: '30px',
-                    color: '#29ABE2',
+                    color: config.primaryColor,
                     borderRadius: '4px',
                     backgroundColor: 'white',
                     borderColor: '#ddd',
