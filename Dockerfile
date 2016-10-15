@@ -23,7 +23,7 @@ WORKDIR /app
 
 COPY package.json /app/package.json
 COPY npm-shrinkwrap.json /app/npm-shrinkwrap.json
-RUN npm install
+RUN npm install --no-optional
 
 #install iD
 RUN git clone -b maphubs-dev --single-branch https://github.com/openmaphub/iD.git
