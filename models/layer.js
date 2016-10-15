@@ -420,7 +420,7 @@ module.exports = {
           trx('omh.layer_views').where({layer_id}).del(),
           _this.removeLayerFromMaps(layer_id, trx),
           _this.removeLayerFromHubs(layer_id, trx),
-          trx('omh.feature_notes').where({layer_id}).del(),
+          trx('omh.layer_notes').where({layer_id}).del(),
           trx('omh.layers').where({layer_id}).del()
         ];
 
