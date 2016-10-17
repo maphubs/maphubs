@@ -65,6 +65,10 @@ process.on('uncaughtException', function(err) {
   log.error('Caught exception: ' + err.stack);
 });
 
+if (app.get('env') !== 'production') {
+  require("nodejs-dashboard");
+}
+
 //use compression
 app.use(compression());
 
