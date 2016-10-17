@@ -88,12 +88,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
 
-//serve API docs
-app.use('/docs', express.static('doc'));
-
+//static files
 app.use('/assets', express.static('assets'));
-
-//serve iD
 app.use('/edit', express.static('./iD'));
 
 //use webpack middleware in local dev environment
