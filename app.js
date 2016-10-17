@@ -141,9 +141,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.use( require('express-subdomain-handler')({baseUrl: local.host, prefix: 'hub', logger: true}) );
-
 //load passport auth config
 require('./services/auth');
 

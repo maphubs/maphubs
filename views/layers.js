@@ -4,7 +4,6 @@ var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
-var slug = require('slug');
 var debug = require('../services/debug')('views/layers');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
@@ -12,6 +11,7 @@ var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
+var cardUtil = require('../services/card-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -78,74 +78,16 @@ var Layers = React.createClass({
 
 	render() {
 
-    var featuredCards = [];
-    var recentCards = [];
-    var popularCards = [];
-
-    this.props.featuredLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-
-      featuredCards.push({
-        id: layer.layer_id,
-        title: layer.name,
-        description: layer.description,
-        image_url,
-        source: layer.source,
-        group: layer.owned_by_group_id,
-        type: 'layer',
-        link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-      });
-    });
-
-    this.props.recentLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-
-      recentCards.push({
-        id: layer.layer_id,
-        title: layer.name,
-        description: layer.description,
-        image_url,
-        source: layer.source,
-        group: layer.owned_by_group_id,
-        type: 'layer',
-        link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-      });
-    });
-
-    this.props.popularLayers.map(function(layer){
-      var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-
-      popularCards.push({
-        id: layer.layer_id,
-        title: layer.name,
-        description: layer.description,
-        image_url,
-        source: layer.source,
-        group: layer.owned_by_group_id,
-        type: 'layer',
-        link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-      });
-    });
+    var featuredCards = this.props.featuredLayers.map(cardUtil.getLayerCard);
+    var recentCards = this.props.recentLayers.map(cardUtil.getLayerCard);
+    var popularCards = this.props.popularLayers.map(cardUtil.getLayerCard);
 
     var searchResults = '';
-    var searchCards = [];
+
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
-
-        this.state.searchResults.map(function(layer){
-          var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-          searchCards.push({
-            id: layer.layer_id,
-            title: layer.name,
-            description: layer.description,
-            image_url,
-            source: layer.source,
-            group: layer.owned_by_group_id,
-            type: 'layer',
-            link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-          });
-        });
+        var searchCards = this.state.searchResults.map(cardUtil.getLayerCard);
         searchResults = (
           <div className="row">
             <div className="col s12">

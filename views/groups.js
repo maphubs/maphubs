@@ -11,6 +11,7 @@ var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
+var cardUtil = require('../services/card-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -78,79 +79,17 @@ var Groups = React.createClass({
 
 	render() {
 
-    var featuredCards = [];
-    var popularCards = [];
-    var recentCards = [];
+    var featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard);
+    var popularCards = this.props.popularGroups.map(cardUtil.getGroupCard);
+    var recentCards = this.props.recentGroups.map(cardUtil.getGroupCard);
 
-    this.props.featuredGroups.map(function(group){
-      var image_url = null;
-      if(group.hasimage){
-        image_url = '/group/' + group.group_id + '/image';
-      }
-      featuredCards.push({
-        id: group.group_id,
-        title: group.name,
-        description: group.description,
-        image_url,
-        link: '/group/' + group.group_id,
-        group: group.group_id,
-        type: 'group'
-      });
-    });
-
-    this.props.popularGroups.map(function(group){
-      var image_url = null;
-      if(group.hasimage){
-        image_url = '/group/' + group.group_id + '/image';
-      }
-      popularCards.push({
-        id: group.group_id,
-        title: group.name,
-        description: group.description,
-        image_url,
-        link: '/group/' + group.group_id,
-        group: group.group_id,
-        type: 'group'
-      });
-    });
-
-    this.props.recentGroups.map(function(group){
-      var image_url = null;
-      if(group.hasimage){
-        image_url = '/group/' + group.group_id + '/image';
-      }
-      recentCards.push({
-        id: group.group_id,
-        title: group.name,
-        description: group.description,
-        image_url,
-        link: '/group/' + group.group_id,
-        group: group.group_id,
-        type: 'group'
-      });
-    });
 
     var searchResults = '';
-    var searchCards = [];
+
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
-
-        this.state.searchResults.map(function(group){
-          var image_url = null;
-          if(group.hasimage){
-            image_url = '/group/' + group.group_id + '/image';
-          }
-          searchCards.push({
-            id: group.group_id,
-            title: group.name,
-            description: group.description,
-            image_url,
-            link: '/group/' + group.group_id,
-            group: group.group_id,
-            type: 'group'
-          });
-        });
+        var searchCards = this.state.searchResults.map(cardUtil.getGroupCard);
         searchResults = (
           <div className="row">
             <div className="col s12">

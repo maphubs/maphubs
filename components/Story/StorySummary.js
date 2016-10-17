@@ -35,15 +35,10 @@ var StorySummary = React.createClass({
     var title = this.props.story.title.replace('&nbsp;', '');
     var linkUrl = '';
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-    if(this.props.story.display_name){  
+    if(this.props.story.display_name){
       linkUrl = baseUrl + '/user/' + this.props.story.display_name;
     }else if(this.props.story.hub_id){
-      var hubUrl;
-      if(config.mapHubsPro){
-        hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
-      }else{
-        hubUrl = urlUtil.getHubUrl(this.props.story.hub_id, config.host, config.port);
-      }
+      var hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
       linkUrl = hubUrl;
     }
 

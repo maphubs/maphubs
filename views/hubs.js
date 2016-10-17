@@ -7,6 +7,7 @@ var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var debug = require('../services/debug')('views/hubs');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
+var cardUtil = require('../services/card-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -72,87 +73,16 @@ var Hubs = React.createClass({
 
 	render() {
 
-    var featuredCards = [];
-    var recentCards = [];
-    var popularCards = [];
-
-    this.props.featuredHubs.map(function(hub){
-      var hubUrl = '';
-      if(config.mapHubsPro){
-        hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
-      }else{
-        hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-      }
-      featuredCards.push({
-        id: hub.hub_id,
-        title: hub.name,
-        description: hub.description,
-        image_url: '/hub/' + hub.hub_id + '/images/logo',
-        background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
-        link: hubUrl,
-        type: 'hub'
-      });
-    });
-
-    this.props.recentHubs.map(function(hub){
-      var hubUrl = '';
-      if(config.mapHubsPro){
-        hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
-      }else{
-        hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-      }
-      recentCards.push({
-        id: hub.hub_id,
-        title: hub.name,
-        description: hub.description,
-        image_url: '/hub/' + hub.hub_id + '/images/logo',
-        background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
-        link: hubUrl,
-        type: 'hub'
-      });
-    });
-
-    this.props.popularHubs.map(function(hub){
-      var hubUrl = '';
-      if(config.mapHubsPro){
-        hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
-      }else{
-        hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-      }
-      popularCards.push({
-        id: hub.hub_id,
-        title: hub.name,
-        description: hub.description,
-        image_url: '/hub/' + hub.hub_id + '/images/logo',
-        background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
-        link: hubUrl,
-        type: 'hub'
-      });
-    });
+    var featuredCards = this.props.featuredHubs.map(cardUtil.getHubCard);
+    var recentCards = this.props.recentHubs.map(cardUtil.getHubCard);
+    var popularCards = this.props.popularHubs.map(cardUtil.getHubCard);
 
     var searchResults = '';
-    var searchCards = [];
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
+        var searchCards = this.state.searchResults.map(cardUtil.getHubCard);
 
-        this.state.searchResults.map(function(hub){
-          var hubUrl = '';
-          if(config.mapHubsPro){
-            hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
-          }else{
-            hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-          }
-          searchCards.push({
-            id: hub.hub_id,
-            title: hub.name,
-            description: hub.description,
-            image_url: '/hub/' + hub.hub_id + '/images/logo',
-            background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
-            link: hubUrl,
-            type: 'hub'
-          });
-        });
         searchResults = (
           <div className="row">
             <div className="col s12">

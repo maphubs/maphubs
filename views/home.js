@@ -9,9 +9,8 @@ import SliderDecorators from '../components/Home/SliderDecorators';
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
 var MapHubsProLinks = require('../components/Home/MapHubsProLinks');
 var config = require('../clientconfig');
-var urlUtil = require('../services/url-util');
-var slug = require('slug');
 var _shuffle = require('lodash.shuffle');
+var cardUtil = require('../services/card-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -37,11 +36,11 @@ var Home = React.createClass({
 
   getInitialState(){
     return {
-      trendingStoryCards: _shuffle(this.props.trendingStories.map(this.getStoryCard)),
-      trendingMapCards: _shuffle(this.props.trendingMaps.map(this.getMapCard)),
-      trendingHubCards: _shuffle(this.props.trendingHubs.map(this.getHubCard)),
-      trendingGroupCards: _shuffle(this.props.trendingGroups.map(this.getGroupCard)),
-      trendingLayerCards: _shuffle(this.props.trendingLayers.map(this.getLayerCard))
+      trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
+      trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
+      trendingHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
+      trendingGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
+      trendingLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
     };
   },
 
@@ -49,110 +48,14 @@ var Home = React.createClass({
     window.location = '/search?q=' + input;
   },
 
-  getLayerCard(layer){
-    var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-    return {
-      id: layer.layer_id.toString(),
-      title: layer.name,
-      description: layer.description,
-      image_url,
-      source: layer.source,
-      group: layer.owned_by_group_id,
-      type: 'layer',
-      link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-    };
-  },
-
-  getGroupCard(group){
-    var image_url = null;
-    if(group.hasimage){
-      image_url = '/group/' + group.group_id + '/image';
-    }
-    return {
-      id: group.group_id,
-      title: group.name,
-      description: group.description,
-      image_url,
-      link: '/group/' + group.group_id,
-      group: group.group_id,
-      type: 'group'
-    };
-  },
-
-  getHubCard(hub){
-    var title = hub.name.replace('&nbsp;', '');
-    var hubUrl = '';
-    if(config.mapHubsPro){
-      hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
-    }else{
-      hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-    }
-    return {
-      id: hub.hub_id,
-      title,
-      description: hub.description,
-      image_url: '/hub/' + hub.hub_id + '/images/logo',
-      background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
-      link: hubUrl,
-      type: 'hub'
-    };
-  },
-
-  getMapCard(map){
-    var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-    return {
-      id: map.map_id.toString(),
-      title: map.title ? map.title : '',
-      image_url,
-      link: '/user/' + map.username + '/map/' + map.map_id,
-      type: 'map',
-      map
-    };
-  },
-
-  getStoryCard(story){
-    var title = story.title.replace('&nbsp;', '');
-    var story_url = '';
-    if(story.display_name){
-      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-      story_url = baseUrl + '/user/' + story.display_name;
-    }else if(story.hub_id){
-      var hubUrl = urlUtil.getHubUrl(story.hub_id, config.host, config.port);
-      story_url = hubUrl;
-    }
-    story_url += '/story/' + story.story_id + '/' + slug(title);
-
-    var image_url = null;
-    if(story.firstimage){
-      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
-    }
-
-    return {
-      id: story.story_id.toString(),
-      title,
-      image_url,
-      link: story_url,
-      type: 'story',
-      story
-    };
-  },
-
-  getMixedCardSet(layers, groups, hubs, maps, stories){
-    return layers
-      .concat(groups)
-      .concat(hubs)
-      .concat(maps)
-      .concat(stories);
-  },
-
 	render() {
-    var trendingCards = this.getMixedCardSet(
-      this.state.trendingLayerCards,
-      this.state.trendingGroupCards,
-      this.state.trendingHubCards,
-      this.state.trendingMapCards,
-      this.state.trendingStoryCards
-    );
+
+    var trendingCards = cardUtil.combineCards([this.state.trendingLayerCards,
+    this.state.trendingGroupCards,
+    this.state.trendingHubCards,
+    this.state.trendingMapCards,
+    this.state.trendingStoryCards]);
+
 
      var slides = [
        {

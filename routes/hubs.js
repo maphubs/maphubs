@@ -1019,11 +1019,6 @@ module.exports = function(app) {
 
  //Redirects
  app.get('/hub/:id/login', function(req, res) {
-   var hub_id = req.params.id;
-   if(req.session){
-     var hubBaseUrl = urlUtil.getHubUrl(hub_id, local.host, local.port);
-     req.session.returnTo = hubBaseUrl;
-   }
    res.redirect(baseUrl + '/login');
  });
 

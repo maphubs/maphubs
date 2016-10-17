@@ -34,15 +34,9 @@ var HubHav = React.createClass({
   },
 
   render(){
-    var baseHost = urlUtil.getHostFromHub(config.host);
-    var omhBaseUrl = urlUtil.getBaseUrl(baseHost, config.port);
+    var omhBaseUrl = urlUtil.getBaseUrl(config.host, config.port);
 
-    var hubBaseUrl;
-    if(config.mapHubsPro){
-      hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
-    }else{
-      hubBaseUrl = urlUtil.getHubUrl(this.props.hubid, baseHost, config.port) + '/';
-    }
+    var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
 
     var manageButton = '';
     if(this.props.canEdit){

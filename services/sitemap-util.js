@@ -37,8 +37,7 @@ module.exports = {
           var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
           story_url = baseUrl + '/user/' + story.display_name;
         }else if(story.hub_id){
-          var hubUrl = urlUtil.getHubUrl(story.hub_id, local.host, local.port);
-          story_url = hubUrl;
+          story_url ='/hub/' + story.hub_id;
         }
         story_url += '/story/' + story.story_id + '/' + slug(title);
         var lastmodISO = null;
@@ -57,7 +56,8 @@ module.exports = {
     return Hub.getAllHubs()
     .then(function(hubs){
       hubs.forEach(function(hub){
-        var hubUrl = urlUtil.getHubUrl(hub.hub_id, local.host, local.port);
+        var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+        var hubUrl = baseUrl + '/hub/' + hub.hub_id;
         var lastmodISO = null;
         if(hub.updated_at_withTZ) lastmodISO = hub.updated_at_withTZ.toISOString();
         sm.add({

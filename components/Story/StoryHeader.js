@@ -80,7 +80,7 @@ var StoryHeader = React.createClass({
         authorText = this.props.story.author + ' - ';
       }
 
-      var hubUrl = urlUtil.getHubUrl(this.props.story.hub_id, config.host, config.port);
+      var hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
       linkUrl = hubUrl;
       author = (
           <div style={{height: '40px', marginBottom: '10px'}}>

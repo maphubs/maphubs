@@ -181,7 +181,7 @@ save(){
       url = baseUrl + '/api/hub/story/save';
 
     }else{
-      
+
       //creating a new hub story
       url = baseUrl + '/api/hub/story/create';
     }
@@ -337,12 +337,8 @@ onAddMap(map_id){
     range.setStartAfter(prevMap[0]);
     prevMap.remove();
   }
-  var url = '';
-  if(this.props.storyType == 'hub' && this.props.hubid){
-    url = urlUtil.getHubUrl(this.props.hubid, config.host, config.port) + '/map/embed/' + map_id + '/static';
-  }else{
-     url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
-  }
+  var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
+  
 
   url = url.replace(/http:/, '');
   url = url.replace(/https:/, '');
