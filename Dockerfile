@@ -43,5 +43,5 @@ VOLUME ["/app/logs"]
 EXPOSE 4000
 ENV NODE_ENV production
 
-ENV DEBUG *,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:*,-pm2:*
+ENV DEBUG maphubs:*
 CMD /app/docker-entrypoint.sh
