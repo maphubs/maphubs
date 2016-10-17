@@ -248,7 +248,7 @@ var UserMap = React.createClass({
         baseMap={this.props.map.basemap}
          navPosition="top-right">
         {legend}
-        <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'1'}}></div>
+        <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
         {button}
       </Map>
     );
