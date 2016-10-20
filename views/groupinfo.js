@@ -1,7 +1,8 @@
 var React = require('react');
 
 var Header = require('../components/header');
-var slug = require('slug');
+var CardCarousel = require('../components/CardCarousel/CardCarousel');
+var cardUtil = require('../services/card-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -35,9 +36,15 @@ var GroupInfo = React.createClass({
     };
   },
 
+  getInitialState(){
+    return {
+      layerCards: this.props.layers.map(cardUtil.getLayerCard)
+    };
+  },
+
   render() {
     var _this = this;
-  
+
     var editButton = '';
 
     if(this.props.canEdit){
@@ -84,7 +91,7 @@ var GroupInfo = React.createClass({
     return (
       <div>
         <Header/>
-        <div className="container">
+        <div style={{marginLeft: '10px', marginRight: '10px'}}>
           <h4>{this.props.group.name}</h4>
           <div className="row">
             <div className="col s6">
@@ -97,32 +104,21 @@ var GroupInfo = React.createClass({
               {unofficial}
             </div>
 
+
           </div>
-
-          <div>
-            <ul className="collection with-header">
-              <li className="collection-header">
-                <h5>{this.__('Layers')}</h5>
-              </li>
-
-              {this.props.layers.map(function (layer, i) {
-                return (<li className="collection-item" key={layer.layer_id}>
-                    <div>{layer.name}
-                      <a className="secondary-content" href={'/layer/map/' + layer.layer_id + '/' + slug(layer.name)}>
-                        <i className="material-icons">map</i>
-                      </a>
-                      <a className="secondary-content" href={'/layer/info/' + layer.layer_id + '/' + slug(layer.name)}>
-                        <i className="material-icons">info</i>
-                      </a>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-            <div className="valign-wrapper">
-              <a className="btn valign" style={{margin: 'auto'}} href="/createlayer">{this.__('Add a Layer')}</a>
+          <div className="divider" />
+            <div className="row">
+              <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
+              <div className="row">
+                <CardCarousel cards={this.state.layerCards} infinite={false}/>
+              </div>
+              <div className="valign-wrapper">
+                <a className="btn valign" style={{margin: 'auto'}} href={'/createlayer?group_id=' + this.props.group.group_id}>{this.__('Add a Layer')}</a>
+              </div>
             </div>
-          </div>
+            </div>
+            <div className="divider" />
+          <div className="container">
           <div>
             <ul className="collection with-header">
               <li className="collection-header">
