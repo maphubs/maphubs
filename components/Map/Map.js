@@ -12,6 +12,7 @@ var request = require('superagent-bluebird-promise');
 var $ = require('jquery');
 var _includes = require('lodash.includes');
 var TerraformerGL = require('../../services/terraformerGL.js');
+var urlUtil = require('../../services/url-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -411,10 +412,12 @@ var Map = React.createClass({
     if(glStyle && glStyle.sources){
       var requests = [];
       Object.keys(glStyle.sources).forEach(function(key) {
-        var type = glStyle.sources[key].type;
-        var url = glStyle.sources[key].url;
+        var source = glStyle.sources[key];
+        var type = source.type;
+        var url = source.url;
         if(key != 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
           //load as tilejson
+          url = url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl(config.host, config.port));
           requests.push(request.get(url)
           .then(function(res) {
             var tileJSON = res.body;
@@ -433,7 +436,7 @@ var Map = React.createClass({
           })
         );
       } else if(type === 'mapbox-style'){
-        var mapboxid = glStyle.sources[key].mapboxid;
+        var mapboxid = source.mapboxid;
         url = 'https://api.mapbox.com/styles/v1/' + mapboxid + '?access_token=' + config.MAPBOX_ACCESS_TOKEN;
         requests.push(request.get(url)
           .then(function(res) {
@@ -486,7 +489,7 @@ var Map = React.createClass({
     );
   } else {
       //just add the source as-is
-        map.addSource(key, glStyle.sources[key]);
+      map.addSource(key, source);
     }
 
       });

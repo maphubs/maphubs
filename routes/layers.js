@@ -665,6 +665,11 @@ app.get('/api/layer/metadata/:id', function(req, res) {
   var layer_id = parseInt(req.params.id || '', 10);
   Layer.getLayerByID(layer_id)
   .then(function(layer){
+    //inject this site's URL into the style source, to support remote layers
+    Object.keys(layer.style.sources).forEach(function(key) {
+      var source = layer.style.sources[key];
+      source.url = source.url.replace('{MAPHUBS_DOMAIN}', config.tileServiceUrl);
+    });
     res.status(200).send({success: true, layer});
   }).catch(apiError(res, 500));
 });
