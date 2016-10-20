@@ -27,7 +27,7 @@ var Footer = React.createClass({
                   <br />
                   <small>{config.productName + this.__(' is a Moabi project')}</small>
                   <br />
-                  <small>{config.productName + this.__(' is Open Source, the code is available on ')}<a href="https://github.com/maphubs">GitHub</a></small>
+                  <small>{this.__('View the open source code on ')}<a href="https://github.com/maphubs">GitHub</a></small>
 
               </div>
               <div className="col l5 s12">
