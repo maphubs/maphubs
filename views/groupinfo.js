@@ -37,15 +37,7 @@ var GroupInfo = React.createClass({
 
   render() {
     var _this = this;
-    var addLayerButton = '';
-    if(this.props.layers.length == 0){
-      addLayerButton = (
-        <div className="valign-wrapper">
-          <a className="btn valign" style={{margin: 'auto'}} href="/createlayer">{this.__('Add a Layer')}</a>
-        </div>
-      );
-    }
-
+  
     var editButton = '';
 
     if(this.props.canEdit){
@@ -112,7 +104,7 @@ var GroupInfo = React.createClass({
               <li className="collection-header">
                 <h5>{this.__('Layers')}</h5>
               </li>
-              {addLayerButton}
+
               {this.props.layers.map(function (layer, i) {
                 return (<li className="collection-item" key={layer.layer_id}>
                     <div>{layer.name}
@@ -127,6 +119,9 @@ var GroupInfo = React.createClass({
                 );
               })}
             </ul>
+            <div className="valign-wrapper">
+              <a className="btn valign" style={{margin: 'auto'}} href="/createlayer">{this.__('Add a Layer')}</a>
+            </div>
           </div>
           <div>
             <ul className="collection with-header">
