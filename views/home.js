@@ -81,7 +81,7 @@ var Home = React.createClass({
        },
        {
          title: this.__('OpenStreetMap'),
-         text: this.__('Help us make mapes to monitor the world’s natural resources.'),
+         text: this.__('Help us make maps to monitor the world’s natural resources.'),
          buttonText: this.__('Learn More'),
          link: 'https://osm.mapforenvironment.org',
          img: '/assets/home/m4e_osm_banner.jpg'
