@@ -261,12 +261,19 @@ var GroupAdmin = React.createClass({
       isPublished = true;
     }
 
+    var  groupUrl = '/group/' + this.props.group.group_id;
+
 		return (
       <div>
         <Header />
         <main>
 
         <div className="container">
+          <div className="row">
+             <div className="col s12">
+               <p>&larr; <a href={groupUrl}>{this.__('Back to Group')}</a></p>
+             </div>
+           </div>
           <div className="row" style={{marginTop: '20px'}}>
             <div className="col s12 m6 l6">
               <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()}/>
