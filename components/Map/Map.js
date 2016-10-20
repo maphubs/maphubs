@@ -12,7 +12,6 @@ var request = require('superagent-bluebird-promise');
 var $ = require('jquery');
 var _includes = require('lodash.includes');
 var TerraformerGL = require('../../services/terraformerGL.js');
-var urlUtil = require('../../services/url-util');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -20,12 +19,6 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
 var _centroid = require('turf-centroid');
-
-var mapboxLight = require('../../node_modules/mapbox-gl-styles/styles/light-v8.json');
-var mapboxDark = require('../../node_modules/mapbox-gl-styles/styles/dark-v8.json');
-var mapboxStreets = require('../../node_modules/mapbox-gl-styles/styles/streets-v8.json');
-var mapboxOutdoors = require('../../node_modules/mapbox-gl-styles/styles/outdoors-v8.json');
-var mapboxSatellite = require('../../node_modules/mapbox-gl-styles/styles/satellite-hybrid-v8.json');
 
 var mapboxgl = require("mapbox-gl");
 
@@ -286,10 +279,13 @@ var Map = React.createClass({
 
   reloadInset(mapName){
     debug("reloading inset map with basemap: " + mapName);
-    var baseMap = this.getBaseMapFromName(mapName);
-    if(this.props.insetMap && this.insetMap){
-      this.insetMap.setStyle(baseMap);
-    }
+    var _this = this;
+    this.getBaseMapFromName(mapName, function(baseMap){
+      if(_this.props.insetMap && _this.insetMap){
+        _this.insetMap.setStyle(baseMap);
+      }
+    });
+
   },
 
   getInteractiveLayers(glStyle){
@@ -308,27 +304,6 @@ var Map = React.createClass({
   },
 
   componentWillMount(){
-    //disable interactive layers in the Mapbox basemap
-    mapboxLight.layers.forEach(function(layer){
-      layer.interactive = false;
-    });
-
-    mapboxDark.layers.forEach(function(layer){
-      layer.interactive = false;
-    });
-
-    mapboxOutdoors.layers.forEach(function(layer){
-      layer.interactive = false;
-    });
-
-    mapboxStreets.layers.forEach(function(layer){
-      layer.interactive = false;
-    });
-
-    mapboxSatellite.layers.forEach(function(layer){
-      layer.interactive = false;
-    });
-
     if(this.state.glStyle){
       var interactiveLayers = this.getInteractiveLayers(this.state.glStyle);
       this.setState({interactiveLayers});
@@ -417,7 +392,7 @@ var Map = React.createClass({
         var url = source.url;
         if(key != 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
           //load as tilejson
-          url = url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl(config.host, config.port));
+          url = url.replace('{MAPHUBS_DOMAIN}', config.tileServiceUrl);
           requests.push(request.get(url)
           .then(function(res) {
             var tileJSON = res.body;
@@ -516,25 +491,26 @@ var Map = React.createClass({
     var _this = this;
     debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
+      this.getBaseMapFromName(this.state.baseMap, function(baseMap){
+        var dragRotate  = false;
+        if(!_this.props.enableRotation){
+          dragRotate = true;
+        }
 
-      var baseMap = this.getBaseMapFromName(this.state.baseMap);
-      var dragRotate  = false;
-      if(!this.props.enableRotation){
-        dragRotate = true;
-      }
+        if (!mapboxgl.supported()) {
+        alert('Your browser does not support Mapbox GL');
+        }
+      var map = new mapboxgl.Map({
+        container: _this.state.id,
+        style: baseMap,
+        zoom: 0,
+        interactive: _this.state.interactive,
+        dragRotate,
+        center: [0,0],
+        hash: true
+      });
 
-      if (!mapboxgl.supported()) {
-      alert('Your browser does not support Mapbox GL');
-      }
-    var map = new mapboxgl.Map({
-      container: this.state.id,
-      style: baseMap,
-      zoom: 0,
-      interactive: this.state.interactive,
-      dragRotate,
-      center: [0,0],
-      hash: true
-    });
+
 
   map.on('style.load', function() {
     debug('(' + _this.state.id + ') ' +'style.load');
@@ -641,6 +617,7 @@ var Map = React.createClass({
       });
     }
 
+
   });//end style.load
 
 
@@ -715,15 +692,15 @@ map.on('mousemove', function(e) {
   });
 
 
-  if(this.state.interactive){
-    map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));
+  if(_this.state.interactive){
+    map.addControl(new mapboxgl.Navigation({position: _this.props.navPosition}));
   }
 
-  if(this.props.disableScrollZoom){
+  if(_this.props.disableScrollZoom){
     map.scrollZoom.disable();
   }
 
-  if(!this.props.enableRotation){
+  if(!_this.props.enableRotation){
     map.dragRotate.disable();
     map.touchZoomRotate.disableRotation();
   }
@@ -731,7 +708,8 @@ map.on('mousemove', function(e) {
   //var Geocoder = require('mapbox-gl-geocoder');
   //map.addControl(new Geocoder({position: 'top-right'}));
 
-  this.map = map;
+  _this.map = map;
+  });
 
   },
 
@@ -834,16 +812,18 @@ map.on('mousemove', function(e) {
           }
           if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
           this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+          var _this = this;
+          this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
+            //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
+            let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
+            _this.reload(_this.state.glStyle, styleCopy, baseMap);
 
-          var baseMap = this.getBaseMapFromName(nextProps.baseMap);
+            var interactiveLayers = _this.getInteractiveLayers(styleCopy);
 
-          //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
-          let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
-          this.reload(this.state.glStyle, styleCopy, baseMap);
+            _this.setState({glStyle: styleCopy, interactiveLayers});//wait to change state style until after reloaded
+          });
 
-          var interactiveLayers = this.getInteractiveLayers(styleCopy);
 
-          this.setState({glStyle: styleCopy, interactiveLayers});//wait to change state style until after reloaded
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
         debug('(' + this.state.id + ') ' +"basemap changing from props");
@@ -861,9 +841,10 @@ map.on('mousemove', function(e) {
         }
         if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
         this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+        this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
+          _this.reload(_this.state.glStyle, _this.state.glStyle, baseMap);
+        });
 
-        baseMap = this.getBaseMapFromName(nextProps.baseMap);
-        this.reload(this.state.glStyle, this.state.glStyle, baseMap);
       }else if(fitBoundsChanging) {
         //** just changing the fit bounds
         //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
@@ -943,9 +924,10 @@ map.on('mousemove', function(e) {
         }
       }
       this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+      this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
+        _this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+      });
 
-      baseMap = this.getBaseMapFromName(nextProps.baseMap);
-      this.reload(this.state.glStyle, this.state.glStyle, baseMap);
     }else if(fitBoundsChanging) {
       //** just changing the fit bounds on a map that does not have styles or basemap settings **/
       //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
@@ -1115,25 +1097,46 @@ map.on('mousemove', function(e) {
     this.setState({showEditBaseMap: false});
   },
 
-  getBaseMapFromName(mapName){
-    var baseMap = mapboxLight;
+  getBaseMapFromName(mapName, cb){
+    var mapboxName = 'light-v9';
+    var optimize = true;
+
     if (mapName == 'default') {
-        baseMap = mapboxLight;
+        mapboxName = 'light-v9';
+        optimize = true;
     }
     else if(mapName == 'dark'){
-      baseMap = mapboxDark;
+      mapboxName = 'dark-v9';
+      optimize = true;
     }
     else if(mapName == 'outdoors'){
-      baseMap = mapboxOutdoors;
+      mapboxName = 'outdoors-v9';
+      optimize = true;
     }
     else if(mapName == 'streets'){
-      baseMap = mapboxStreets;
+      mapboxName = 'streets-v9';
+      optimize = true;
     }
     else if(mapName == 'mapbox-satellite'){
-      baseMap = mapboxSatellite;
+      mapboxName = 'satellite-streets-v9';
+      optimize = true;
     }
-
-    return baseMap;
+    var url = 'mapbox://styles/mapbox/' + mapboxName;
+    if(optimize){
+      //url += '?optimize=true'; //requires mapbox-gl-js 0.24.0+
+    }
+    cb(url);
+    /*
+    var url = 'https://api.mapbox.com/styles/v1/mapbox/' + mapboxName + '?';
+    if(optimize){
+      //url += 'optimize=true&';
+    }
+    url += 'access_token=' + config.MAPBOX_ACCESS_TOKEN;
+    request.get(url)
+    .then(function(res) {
+      cb(res.body);
+    });
+    */
   },
 
   getBaseMap(){
@@ -1144,15 +1147,18 @@ map.on('mousemove', function(e) {
     debug('changing basemap to: ' + mapName);
     $('.base-map-tooltip').tooltip('remove'); //fix stuck tooltips
     $('.base-map-tooltip').tooltip();
-    var baseMap = this.getBaseMapFromName(mapName);
-    this.closeBaseMaps();
-    var bounds = this.map.getBounds();
-    this.setState({restoreBounds: bounds, baseMap: mapName});
-    this.reload(this.state.glStyle, this.state.glStyle, baseMap);
-    this.reloadInset(mapName);
-    if(this.props.onChangeBaseMap){
-      this.props.onChangeBaseMap(mapName);
-    }
+    var _this = this;
+    this.getBaseMapFromName(mapName, function(baseMap){
+      _this.closeBaseMaps();
+      var bounds = _this.map.getBounds();
+      _this.setState({restoreBounds: bounds, baseMap: mapName});
+      _this.reload(_this.state.glStyle, _this.state.glStyle, baseMap);
+      _this.reloadInset(mapName);
+      if(_this.props.onChangeBaseMap){
+        _this.props.onChangeBaseMap(mapName);
+      }
+    });
+
   },
 
   render() {

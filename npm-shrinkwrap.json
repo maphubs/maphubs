@@ -5370,11 +5370,6 @@
         }
       }
     },
-    "mapbox-gl-styles": {
-      "version": "1.2.10",
-      "from": "maphubs/mapbox-gl-styles#08e5fdd6d0d7ac144cbf2043145b7460b07ea692",
-      "resolved": "git://github.com/maphubs/mapbox-gl-styles.git#08e5fdd6d0d7ac144cbf2043145b7460b07ea692"
-    },
     "marked": {
       "version": "0.3.6",
       "from": "marked@>=0.3.3 <0.4.0",
