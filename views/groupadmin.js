@@ -53,6 +53,10 @@ var GroupAdmin = React.createClass({
     };
   },
 
+  componentDidMount(){
+    $('.groupadmin-tooltips').tooltip();
+  },
+
   enableButton () {
       this.setState({
         canSubmit: true
@@ -367,7 +371,15 @@ var GroupAdmin = React.createClass({
               })}
             </ul>
           </div>
-          <button onClick={this.handleGroupDelete} className="btn red white-text">{this.__('Delete Group')}</button>
+          <div className="fixed-action-btn action-button-bottom-right">
+            <a className="btn-floating btn-large red groupadmin-tooltips"
+              onClick={this.handleGroupDelete}
+              data-delay="50" data-position="left" data-tooltip={this.__('Delete Group')}
+              >
+              <i className="large material-icons">delete</i>
+            </a>
+          </div>
+
         </div>
         <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_width={600} resize_height={600} onCrop={this.onCrop} />
         </main>

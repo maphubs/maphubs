@@ -56,6 +56,7 @@ var LayerAdmin = React.createClass({
 
   componentDidMount(){
     $('ul.tabs').tabs();
+    $('.layeradmin-tooltips').tooltip();
   },
 
   componentWillMount(){
@@ -218,17 +219,10 @@ var LayerAdmin = React.createClass({
         </div>
       </div>
       <div className="fixed-action-btn action-button-bottom-right">
-        <a className="btn-floating btn-large red red-text">
-          <i className="large material-icons">settings</i>
-        </a>
-        <ul>
-          <li>
-            <a className="btn-floating tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
-                onClick={this.deleteLayer}>
-              <i className="material-icons">delete</i>
-            </a>
-          </li>
-        </ul>
+          <a className="btn-floating btn-large layeradmin-tooltips red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
+              onClick={this.deleteLayer}>
+            <i className="material-icons">delete</i>
+          </a>
       </div>
     </main>
 		</div>
