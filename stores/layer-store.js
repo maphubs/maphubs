@@ -1,6 +1,7 @@
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var Actions = require('../actions/LayerActions');
+var PresetActions = require('../actions/presetActions');
 var request = require('superagent');
 var mapStyles = require('../components/Map/styles');
 var config = require('../clientconfig');
@@ -16,10 +17,12 @@ module.exports = Reflux.createStore({
 
 
   getInitialState() {
+    this.listenTo(PresetActions.presetsChanged, this.presetsChanged);
     return {
       layer: emptyLayer,
       groups: []
     };
+
   },
 
   getSourceConfig(){
@@ -206,12 +209,21 @@ module.exports = Reflux.createStore({
     layer.legend_html = legend_html;
     layer.preview_position = preview_position;
     this.setState({layer});
+    this.trigger(this.state);
     if(cb) cb();
   },
 
   setDataType(data_type){
     var layer = this.state.layer;
     layer.data_type = data_type;
+
+    this.setState({layer});
+    this.trigger(this.state);
+  },
+
+  presetsChanged(presets){
+    var layer = this.state.layer;
+    layer.presets = presets;
 
     this.setState({layer});
     this.trigger(this.state);

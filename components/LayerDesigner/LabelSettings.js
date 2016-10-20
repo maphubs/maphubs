@@ -48,6 +48,10 @@ var LabelSettings = React.createClass({
     };
   },
 
+  componentWillReceiveProps(nextProps){
+    this.setState({style: nextProps.style});
+  },
+
    onFormChange(values){
     if(values.enabled && values.field){
       //add labels to style
@@ -59,7 +63,7 @@ var LabelSettings = React.createClass({
     } else{
       //remove labels from style
       style = styles.removeStyleLabels(this.state.style);
-      this.setState({style, enabled: false, field: null});
+      this.setState({style, enabled: false});
       this.props.onChange(style, values);
     }
   },
