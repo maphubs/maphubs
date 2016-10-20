@@ -101,7 +101,7 @@
     "mapbox-gl": "maphubs/mapbox-gl-js#f4b2399",
     "mapbox-gl-geocoder": "maphubs/mapbox-gl-geocoder#7dd0561",
     "mapbox-gl-styles": "maphubs/mapbox-gl-styles#08e5fdd6d0d7ac144cbf2043145b7460b07ea692",
-    "materialize-css": "0.97.7",
+    "materialize-css": "Dogfalo/materialize#2b32ca42e677e07249da4819be233769b34287c3",
     "medium-editor": "5.22.1",
     "moment": "^2.14.1",
     "moment-timezone": "0.5.6",

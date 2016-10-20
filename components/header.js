@@ -29,7 +29,17 @@ var Header = React.createClass({
 
   componentDidMount() {
     $(".button-collapse").sideNav();
-    $(".dropdown-button").dropdown({hover: true});
+     $('.nav-tooltip').tooltip();
+    $(this.refs.explore).dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: true, // Does not change width of dropdown to that of the activator
+      hover: false, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    });
+
     if(this.detectIE()){
       MessageActions.showMessage({
         title: this.__('Unsupported Browser'),
@@ -115,44 +125,28 @@ getCookie(cname) {
     var defaultLinkClasses = "nav-link-item";
     var activeLinkClasses = "nav-link-item active";
 
-    var exploreClasses = 'dropdown-button',
-        mapClasses = defaultLinkClasses,
-        servicesClasses = defaultLinkClasses,
-        aboutClasses = defaultLinkClasses,
-        myStoriesClasses = defaultLinkClasses,
-        myMapsClasses = defaultLinkClasses;
+    var exploreClasses = 'explore-dropdown-button nav-dropdown-button',
+        mapClasses = defaultLinkClasses;
     if(this.props.activePage){
       var activePage = this.props.activePage;
       if(activePage == 'map'){
         mapClasses = activeLinkClasses;
       }else if(activePage == 'explore'){
-        exploreClasses = activeLinkClasses + ' dropdown-button';
-      }else if(activePage == 'services'){
-        servicesClasses = activeLinkClasses;
-      }else if(activePage == 'about'){
-        aboutClasses = activeLinkClasses;
-      }else if(activePage == 'mystories'){
-        myStoriesClasses = activeLinkClasses;
-      }else if(activePage == 'mymaps'){
-        myMapsClasses = activeLinkClasses;
+        exploreClasses = activeLinkClasses + ' explore-dropdown-button nav-dropdown-button';
       }
     }
 
-    var myMaps = '';
-    var myStories = '';
-    if(this.state.loggedIn){
-      myMaps = (
-        <li className="nav-link-wrapper">
-          <a className={myMapsClasses} href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a>
+    var osm = '';
+    if(!config.mapHubsPro){
+      osm = (
+        <li className="nav-link-wrapper nav-tooltip"
+          data-position="bottom" data-delay="50" data-tooltip={this.__('Help us map in OpenStreetMap')}
+          >
+          <a className={mapClasses} href='https://osm.mapforenvironment.org'>{this.__('OpenStreetMap')}</a>
         </li>
       );
-      myStories = (
-        <li className="nav-link-wrapper">
-          <a className={myStoriesClasses} href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a>
-        </li>
-      );
+
     }
-//  <LocaleChooser />
 
     return (
       <header>
@@ -165,14 +159,13 @@ getCookie(cname) {
 
           </a>
 
-
           <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
             <li className="nav-link-wrapper">
-              <a className={mapClasses} href='/map/new'>{this.__('Map')}</a>
+              <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
             </li>
-            <li className="nav-link-wrapper">
-              <a className={exploreClasses} href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
+            <li className="nav-dropdown-link-wrapper nav-link-wrapper">
+              <a className={exploreClasses} ref="explore" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
                 <ul id="explore-dropdown" className="dropdown-content">
                   <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
                   <li className="divider"></li>
@@ -183,24 +176,15 @@ getCookie(cname) {
                   <li><a href="/groups" className="nav-hover-menu-item">{this.__('Groups')}</a></li>
                 </ul>
             </li>
-            <li className="nav-link-wrapper">
-              <a className={servicesClasses} href='/services'>{this.__('Services')}</a>
-            </li>
 
 
-            {myMaps}
-            {myStories}
-            <li className="nav-link-wrapper">
-              <a className={aboutClasses} href='/about'>{this.__('About')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a  className="nav-link-item" href='http://help.maphubs.com'>{this.__('Help')}</a>
-            </li>
+            {osm}
 
             <LocaleChooser/>
 
             <UserMenu id="user-menu-header"/>
-            <li className="nav-link-wrapper">
+            <li className="nav-link-wrapper nav-tooltip"
+              data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
               <a  className="nav-link-item" href='/search'>
                 <i className="material-icons">search</i>
               </a>
@@ -212,23 +196,13 @@ getCookie(cname) {
               <LocaleChooser id="locale-sidenav"/>
 
             <li className="nav-link-wrapper">
-              <a className={mapClasses} href='/map/new'>{this.__('Map')}</a>
+              <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
             </li>
             <li className="nav-link-wrapper">
               <a className={exploreClasses} href='/explore'>{this.__('Explore')}</a>
             </li>
-            <li className="nav-link-wrapper">
-              <a className={servicesClasses} href='/services'>{this.__('Services')}</a>
-            </li>
+            {osm}
 
-            {myMaps}
-            {myStories}
-            <li className="nav-link-wrapper">
-              <a className={aboutClasses} href='/about'>{this.__('About')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a  className="nav-link-item" href='http://help.maphubs.com'>{this.__('Help')}</a>
-            </li>
             <li className="nav-link-wrapper">
               <a href='/search' className="nav-link-item">
                 <i className="material-icons">search</i>{this.__('Search')}

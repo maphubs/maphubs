@@ -29,7 +29,16 @@ var LocaleChooser = React.createClass({
 
 
   componentDidMount() {
-    $(this.refs.dropdownButton).dropdown({hover: true});
+     $('.locale-tooltip').tooltip();
+    $(this.refs.dropdownButton).dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: false, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    });
   },
 
   shouldComponentUpdate(nextProps, nextState){
@@ -49,16 +58,17 @@ var LocaleChooser = React.createClass({
     var _this = this;
 
     var options = {
-      'en':  {label: 'English'},
-      'fr': {label: 'Français'},
-      'es': {label: 'Español'},
-      'it': {label: 'Italiano'}
+      'en':  {label: 'EN'},
+      'fr': {label: 'FR'},
+      'es': {label: 'ES'},
+      'it': {label: 'IT'}
     };
 
     return (
-      <li className="nav-link-wrapper">
-        <a ref="dropdownButton" className="locale-dropdown-button"
-          href="#!" data-activates={this.props.id} style={{paddingRight: 0, color: config.primaryColor + ' !important'}}>{options[this.state.locale].label}
+      <li className="nav-link-wrapper nav-dropdown-link-wrapper locale-tooltip"
+        data-position="bottom" data-delay="50" data-tooltip={this.__('Change Language')}>
+        <a ref="dropdownButton" className="locale-dropdown-button nav-dropdown-button"
+          href="#!" data-activates={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
           <i className="material-icons right" style={{marginLeft: 0, color: '#212121 !important'}}>arrow_drop_down</i></a>
           <ul ref="dropdownMenu" id={this.props.id} className="dropdown-content">
             <li><a href="#!" onClick={function(){_this.onChange('en');}} className="nav-hover-menu-item">English</a></li>

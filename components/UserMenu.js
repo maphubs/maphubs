@@ -1,5 +1,4 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -36,11 +35,11 @@ var UserMenu = React.createClass({
 
   componentDidUpdate(prevState){
     if(this.state.loggedIn && !prevState.loggedIn){
-      $(ReactDOM.findDOMNode(this.refs.userButton)).dropdown({
+      $(this.refs.userButton).dropdown({
         inDuration: 300,
         outDuration: 225,
         constrain_width: true, // Does not change width of dropdown to that of the activator
-        hover: true, // Activate on hover
+        hover: false, // Activate on hover
         gutter: 0, // Spacing from edge
         belowOrigin: true, // Displays dropdown below the button
         alignment: 'right' // Displays dropdown with edge aligned to the left of button
@@ -62,12 +61,16 @@ var UserMenu = React.createClass({
 
       user = (
         <li>
-          <div ref="userButton" className="chip dropdown-button omh-btn" style={{marginRight:'5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
+          <div ref="userButton" className="chip user-dropdown-button omh-btn" style={{marginRight:'5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
             <Gravatar email={this.state.user.email} />
             {this.state.user.display_name}
 
           </div>
-          <ul id={this.props.id} className='dropdown-content'>
+          <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
+            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a></li>
+            <li className="divider"></li>
+              <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a></li>
+              <li className="divider"></li>
             <li className="usermenu-wrapper"><a href="/user/settings">{this.__('Settings')}</a></li>
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a onClick={this.logoutClick}>{this.__('Logout')}</a></li>

@@ -166,66 +166,66 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .nav-hover-menu-item {
-  color: #212121 !important;
+  color: $navbar-font-color !important;
 }
 
 .nav-hover-menu-item:hover {
-  color: #FFF !important;
-  background-color: $primary-color;
-}
-
-.nav-link-wrapper a{
-  color: #212121 !important;
+  color: $navbar-hover-font-color !important;
+  background-color: $primary-color !important;
 }
 
 .nav-link-wrapper a.active {
-  color:$primary-color !important;
+  color:$primary-color;
 }
 
-.locale-dropdown-button {
-    color:$primary-color !important;
+.nav-dropdown-link-wrapper {
+  color:$primary-color !important;
+  background-color: transparent !important;
+}
+
+.nav-dropdown-button:hover {
+  color:$navbar-hover-font-color !important;
+  background-color: $primary-color !important;
+}
+
+.dropdown-content li:hover{
+  color: $navbar-hover-font-color;
+  background-color: $primary-color;
 }
 
 .nav-link-item:hover {
-  color: #FFF !important;
+  color: $navbar-hover-font-color !important;
   background-color: transparent !important;
 }
 
 .nav-link-wrapper:hover {
-  color: #FFF;
+  color: $navbar-hover-font-color;
   background-color: $primary-color;
 
   -o-transition:.5s;
   -ms-transition:.5s;
   -moz-transition:.5s;
   -webkit-transition:.5s;
-  /* ...and now for the proper property */
   transition:.5s;
 }
 
-
-
-
 .usermenu-wrapper:hover {
-  color: #FFF !important;
+  color: $navbar-hover-font-color !important;
   background-color: $primary-color !important;
 
   -o-transition:.5s;
   -ms-transition:.5s;
   -moz-transition:.5s;
   -webkit-transition:.5s;
-  /* ...and now for the proper property */
   transition:.5s;
 }
-
-
 
 .usermenu-wrapper a {
   color: #212121 !important;
 }
 
 .usermenu-wrapper:hover a {
-  color: #FFF !important;
+  color: $navbar-hover-font-color !important;
   background-color: transparent !important;
 }
 
