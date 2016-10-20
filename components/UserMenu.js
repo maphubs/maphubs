@@ -64,7 +64,7 @@ var UserMenu = React.createClass({
           <div ref="userButton" className="chip user-dropdown-button omh-btn" style={{marginRight:'5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
             <Gravatar email={this.state.user.email} />
             {this.state.user.display_name}
-
+            <i className="material-icons right" style={{marginLeft: 0, color: '#212121', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
           </div>
           <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
             <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a></li>
