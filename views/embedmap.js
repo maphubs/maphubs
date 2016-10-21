@@ -36,7 +36,7 @@ var EmbedMap = React.createClass({
       retina: false,
       width: 1024,
       height: 600,
-      interactive: false
+      interactive: true
     };
   },
 
