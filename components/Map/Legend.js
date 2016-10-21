@@ -100,7 +100,7 @@ var Legend = React.createClass({
                 })
               }
               <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-                <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map -
+                <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map&nbsp;-&nbsp;
                 <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
                 <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
                 </span>
