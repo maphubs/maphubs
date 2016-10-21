@@ -101,7 +101,7 @@ var CreateLayer = React.createClass({
             <h5>{this.__('Please Join a Group')}</h5>
             <p>{this.__('Please create or join a group before creating a layer.')}</p>
           </div>
-        </div>        
+        </div>
         </main>
         </div>
       );
@@ -141,21 +141,23 @@ var CreateLayer = React.createClass({
       <div>
           <Header />
         <main>
+          <div style={{marginLeft: '10px', marginRight: '10px'}}>
+            <h4>{this.__('Create Layer')}</h4>
+            <div className="row center">
 
-          <h4>{this.__('Create Layer')}</h4>
-          <div className="row center">
+              <b>{stepText}</b>
 
-            <b>{stepText}</b>
+                <div className="progress">
+                    <div className={progressClassName}></div>
+                </div>
+            </div>
 
-              <div className="progress">
-                  <div className={progressClassName}></div>
-              </div>
+            <Step1 groups={this.props.groups} active={step1} onSubmit={this.nextStep}/>
+            <Step2 active={step2} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
+            <Step3 active={step3} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
+            <Step5 active={step4} showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} />
           </div>
-          <Step1 groups={this.props.groups} active={step1} onSubmit={this.nextStep}/>
-          <Step2 active={step2} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
-          <Step3 active={step3} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
-          <Step5 active={step4} showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} />
-			</main>
+        </main>
 
       </div>
 		);
