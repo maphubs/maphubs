@@ -1,6 +1,7 @@
 var React = require('react');
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
+var _isequal = require('lodash.isequal');
 
 var TextInput= React.createClass({
 
@@ -52,6 +53,17 @@ var TextInput= React.createClass({
         charCount
       });
     }
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   changeValue(event){
