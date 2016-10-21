@@ -285,9 +285,14 @@ var MapMaker = React.createClass({
   addLayer(layer){
     var _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
-    //save map position so adding a layer doesn't reset it
+
+    if(this.state.mapLayers.length == 0){
+      _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false);
+    }
+
     var position = this.refs.map.getPosition();
     position.bounds = this.refs.map.getBounds();
+
     Actions.setMapPosition(position);
     Actions.addToMap(layer, function(err){
       if(err){
@@ -453,6 +458,7 @@ var MapMaker = React.createClass({
                   insetMap={false}
                   onChangeBaseMap={Actions.setMapBasemap}
                   fitBounds={mapExtent}
+                  hash={true}
                   />
 
                   <MiniLegend style={{

@@ -59,7 +59,8 @@ var Map = React.createClass({
     onChangeBaseMap: React.PropTypes.func,
     insetMap: React.PropTypes.bool,
     hoverInteraction: React.PropTypes.bool,
-    interactionBufferSize: React.PropTypes.number
+    interactionBufferSize: React.PropTypes.number,
+    hash: React.PropTypes.bool
   },
 
   contextTypes: {
@@ -80,19 +81,20 @@ var Map = React.createClass({
       showLogo: true,
       insetMap: true,
       hoverInteraction: false,
-      interactionBufferSize: 10
+      interactionBufferSize: 10,
+      hash: true
     };
   },
 
   getInitialState() {
-    var restoreBounds = null;
+    var restoreBounds2 = null;
     if(this.props.fitBounds){
       if(this.props.fitBounds.length > 2){
         var sw = new mapboxgl.LngLat(this.props.fitBounds[0], this.props.fitBounds[1]);
         var ne = new mapboxgl.LngLat(this.props.fitBounds[2], this.props.fitBounds[3]);
-        restoreBounds = new mapboxgl.LngLatBounds(sw, ne);
+        restoreBounds2 = new mapboxgl.LngLatBounds(sw, ne);
       }else{
-        restoreBounds = this.props.fitBounds;
+        restoreBounds2 = this.props.fitBounds;
       }
 
     }
@@ -111,8 +113,8 @@ var Map = React.createClass({
       interactiveLayers,
       mapLoaded: false,
       baseMap: this.props.baseMap,
-      restoreBounds,
-      allowLayersToMoveMap: restoreBounds ? false : true
+      restoreBounds2,
+      allowLayersToMoveMap: restoreBounds2 ? false : true
     };
   },
 
@@ -268,10 +270,6 @@ var Map = React.createClass({
     }else {
       this.addMapData(this.map, newStyle, this.props.data, function(){
         debug('(' + _this.state.id + ') ' +'reload: finished adding data');
-        if (_this.state.restoreBounds && !_this.props.data){
-          debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
-          _this.map.fitBounds(_this.state.restoreBounds, {animate:false});
-        }
       });
     }
 
@@ -507,7 +505,7 @@ var Map = React.createClass({
         interactive: _this.state.interactive,
         dragRotate,
         center: [0,0],
-        hash: true
+        hash: _this.props.hash
       });
 
 
@@ -519,16 +517,18 @@ var Map = React.createClass({
       //do stuff that needs to happen after data loads
       debug('(' + _this.state.id + ') ' +'finished adding map data');
       if(!_this.props.data){
-        if (_this.state.restoreBounds){
+
+        if (_this.state.restoreBounds2){
           debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
-          map.fitBounds(_this.state.restoreBounds, {animate:false});
+          map.fitBounds(_this.state.restoreBounds2, {animate:false});
           if(_this.insetMap){
-            _this.insetMap.fitBounds(_this.state.restoreBounds, {maxZoom: 1.8, padding: 10, animate:false});
+            _this.insetMap.fitBounds(_this.state.restoreBounds2, {maxZoom: 1.8, padding: 10, animate:false});
           }
 
         }else{
           debug('(' + _this.state.id + ') ' +'No restoreBounds found');
         }
+
       }else{
         debug('(' + _this.state.id + ') ' +'Not restoring bounds for GeoJSON data');
       }
@@ -625,9 +625,9 @@ map.on('mousemove', function(e) {
     if(_this.state.showBaseMaps) return;
 
     var debounced = _debounce(function(){
-      if(_this.state.mapLoaded && _this.state.restoreBounds){
+      if(_this.state.mapLoaded && _this.state.restoreBounds2){
         debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
-        _this.setState({restoreBounds:null});
+        _this.setState({restoreBounds2:null});
         //stop restoring map possition after user has moved the map
       }
 
@@ -746,7 +746,8 @@ map.on('mousemove', function(e) {
 
     if(this.state.interactive && !prevState.interactive){
       this.map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));
-      this.map.interaction.enable();
+      var interaction = this.map.interaction;
+      interaction.enable();
       $(this.refs.basemapButton).show();
       $(this.refs.editBaseMapButton).show();
     }
@@ -797,21 +798,15 @@ map.on('mousemove', function(e) {
       if(!isEqual(this.state.glStyle,nextProps.glStyle)) {
           debug('(' + this.state.id + ') ' +'glstyle changing from props');
           //** Style Changing (also reloads basemap) **/
-          if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
+          if(this.state.mapLoaded && !fitBoundsChanging) {
             //if fitBounds isn't changing, restore the current map position
-            debug('(' + this.state.id + ') ' +"restoring current map position");
-            allowLayersToMoveMap = false;
-            bounds = this.map.getBounds();
-          }else if(!this.state.mapLoaded){
-            if(this.state.restoreBounds){
-              //restore bounds was set on a previous interation but map hasn't finished loading yet
-              bounds = this.state.restoreBounds;
-            }else if(nextProps.fitBounds){
-              bounds = nextProps.fitBounds;
+            if(this.state.glStyle != null){
+              debug('(' + this.state.id + ') ' +"restoring current map position");
+              allowLayersToMoveMap = false;
             }
+
           }
-          if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
-          this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+          this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
           var _this = this;
           this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
             //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
@@ -827,20 +822,8 @@ map.on('mousemove', function(e) {
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
         debug('(' + this.state.id + ') ' +"basemap changing from props");
-        if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
-          //if fitBounds isn't changing, restore the current map position
-          debug('(' + this.state.id + ') ' +"restoring current map position");
-          bounds = this.map.getBounds();
-        }else if(!this.state.mapLoaded){
-          if(this.state.restoreBounds){
-            //restore bounds was set on a previous interation but map hasn't finished loading yet
-            bounds = this.state.restoreBounds;
-          }else if(nextProps.fitBounds){
-            bounds = nextProps.fitBounds;
-          }
-        }
-        if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
-        this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+        allowLayersToMoveMap = false;
+        this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
         this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
           _this.reload(_this.state.glStyle, _this.state.glStyle, baseMap);
         });
@@ -870,13 +853,13 @@ map.on('mousemove', function(e) {
                this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
              }
            }
-           this.setState({restoreBounds: bounds, allowLayersToMoveMap});
+           this.setState({allowLayersToMoveMap});
         }else{
           debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
         }
 
      }else{
-       debug('(' + this.state.id + ') ' +'No changes needed in props update');
+       //debug('(' + this.state.id + ') ' +'No changes needed in props update');
      }
 
     }else if(nextProps.glStyle
@@ -884,26 +867,11 @@ map.on('mousemove', function(e) {
         //** Style Changing (no basemap provided) **/
         debug('(' + this.state.id + ') ' +'glstyle changing from props (default basemap)');
 
-        if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
-          //if fitBounds isn't changing, restore the current map position
-          debug('(' + this.state.id + ') ' +"restoring current map position");
-          bounds = this.map.getBounds();
-        }else if(!this.state.mapLoaded){
-          if(this.state.restoreBounds){
-            //restore bounds was set on a previous interation but map hasn't finished loading yet
-            bounds = this.state.restoreBounds;
-          }else if(nextProps.fitBounds){
-            bounds = nextProps.fitBounds;
-          }
-        }
-        if(!bounds){debug('(' + this.state.id + ') ' +'warning: setting empty restoreBounds before style reload');}
-        this.setState({restoreBounds: bounds});
-
         //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
         let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
         this.reload(this.state.glStyle, styleCopy);
 
-        interactiveLayers = this.getInteractiveLayers(styleCopy);
+        var interactiveLayers = this.getInteractiveLayers(styleCopy);
 
         this.setState({glStyle: styleCopy, allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
 
@@ -912,18 +880,7 @@ map.on('mousemove', function(e) {
         //** Style Not Found, but Base Map is Changing **/
         debug('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
 
-      if(this.state.mapLoaded && !this.state.restoreBounds && !fitBoundsChanging) {
-        //if fitBounds isn't changing, restore the current map position
-        bounds = this.map.getBounds();
-      }else if(!this.state.mapLoaded){
-        if(this.state.restoreBounds){
-          //restore bounds was set on a previous interation but map hasn't finished loading yet
-          bounds = this.state.restoreBounds;
-        }else if(nextProps.fitBounds){
-          bounds = nextProps.fitBounds;
-        }
-      }
-      this.setState({restoreBounds: bounds, baseMap: nextProps.baseMap, allowLayersToMoveMap});
+      this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
       this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
         _this.reload(this.state.glStyle, this.state.glStyle, baseMap);
       });
@@ -941,7 +898,7 @@ map.on('mousemove', function(e) {
          }else{
            this.map.fitBounds(bounds, {animate:false});
          }
-         this.setState({restoreBounds: bounds, allowLayersToMoveMap});
+         this.setState({allowLayersToMoveMap});
       }else{
         debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
       }
@@ -1037,11 +994,17 @@ map.on('mousemove', function(e) {
     this.map.flyTo({center, zoom});
   },
 
-  fitBounds(bbox, maxZoom, padding = 0){
+  getBoundsObject(bbox){
+    var sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
+    var ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
+    return new mapboxgl.LngLatBounds(sw, ne);
+  },
+
+  fitBounds(bbox, maxZoom, padding = 0, animate = true){
     var sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
     var ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
     var llb = new mapboxgl.LngLatBounds(sw, ne);
-    this.map.fitBounds(llb, {padding, curve: 1, speed:0.6, maxZoom});
+    this.map.fitBounds(llb, {padding, curve: 1, speed:0.6, maxZoom, animate});
   },
 
   componentWillUnmount() {
@@ -1150,8 +1113,7 @@ map.on('mousemove', function(e) {
     var _this = this;
     this.getBaseMapFromName(mapName, function(baseMap){
       _this.closeBaseMaps();
-      var bounds = _this.map.getBounds();
-      _this.setState({restoreBounds: bounds, baseMap: mapName});
+      _this.setState({baseMap: mapName, allowLayersToMoveMap: false});
       _this.reload(_this.state.glStyle, _this.state.glStyle, baseMap);
       _this.reloadInset(mapName);
       if(_this.props.onChangeBaseMap){
@@ -1186,8 +1148,8 @@ map.on('mousemove', function(e) {
     var interactiveButton = '';
     if(!this.state.interactive && this.props.showPlayButton){
       interactiveButton = (
-        <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light omh-btn"
-          style={{position: 'absolute', left: '5px', bottom: '30px',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
+        <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light"
+          style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
       );
     }
 
