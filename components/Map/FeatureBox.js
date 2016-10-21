@@ -14,11 +14,9 @@ var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var GroupTag = require('../../components/Groups/GroupTag');
 
-var ResponsiveMixin = require('react-responsive-mixin');
-
 var FeatureBox = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore), ResponsiveMixin],
+  mixins:[StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -55,14 +53,6 @@ var FeatureBox = React.createClass({
           this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
       }
     }
-
-    this.media({minHeight: 250}, function () {
-      this.setState({maxHeight: 'calc(100% - 50px)'});
-    }.bind(this));
-
-    this.media({minHeight: 500}, function () {
-      this.setState({maxHeight: 'calc(100% - 200px)'});
-    }.bind(this));
   },
 
   componentWillReceiveProps(nextProps) {
