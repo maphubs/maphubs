@@ -165,7 +165,7 @@ var FeatureBox = React.createClass({
         }
 
         var featureLink;
-        if(host !== window.location.hostname && host !== 'dev.docker'){
+        if(host === window.location.hostname || host === 'dev.docker'){
           featureLink = '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
         }else{
           featureLink = 'https://' + host + '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
