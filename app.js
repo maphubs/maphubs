@@ -94,7 +94,12 @@ app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
 
 //static files
 app.use('/assets', express.static('assets'));
-app.use('/edit', express.static('./iD'));
+
+if (app.get('env') !== 'production') {
+  app.use('/edit', express.static('../iD'));
+}else{
+  app.use('/edit', express.static('./iD'));
+}
 
 //use webpack middleware in local dev environment
 if(process.env.NODE_ENV !== 'production'){
