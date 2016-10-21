@@ -14,9 +14,11 @@ var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var GroupTag = require('../../components/Groups/GroupTag');
 
+var ResponsiveMixin = require('react-responsive-mixin');
+
 var FeatureBox = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(LocaleStore), ResponsiveMixin],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -41,7 +43,8 @@ var FeatureBox = React.createClass({
     return {
     selectedFeature: 1,
     selected: this.props.selected,
-    currentFeatures: this.props.features ? this.props.features : []
+    currentFeatures: this.props.features ? this.props.features : [],
+    maxHeight: 'calc(100% - 200px)'
   };
   },
 
@@ -52,6 +55,14 @@ var FeatureBox = React.createClass({
           this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
       }
     }
+
+    this.media({minHeight: 250}, function () {
+      this.setState({maxHeight: 'calc(100% - 50px)'});
+    }.bind(this));
+
+    this.media({minHeight: 500}, function () {
+      this.setState({maxHeight: 'calc(100% - 200px)'});
+    }.bind(this));
   },
 
   componentWillReceiveProps(nextProps) {
@@ -266,7 +277,7 @@ var FeatureBox = React.createClass({
     var className = classNames('features', 'card', this.props.className);
 
     return (
-        <div className={className} style={{display}}>
+        <div className={className} style={{display, maxHeight: this.state.maxHeight}}>
           <div className="features-container">
             {closeButton}
             {header}
