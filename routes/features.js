@@ -36,12 +36,14 @@ module.exports = function(app) {
     if(osm_id && layer_id){
       Promise.all([
         Feature.getFeatureByID(osm_id, layer_id),
-        PhotoAttachment.getPhotoIdsForFeature(layer_id, osm_id)
+        PhotoAttachment.getPhotoIdsForFeature(layer_id, osm_id),
+        Layer.getLayerByID(layer_id)
       ])
       .then(function(results){
         var feature = results[0].feature;
         //only supporting one photo per feature for now...
         var photos = results[1];
+        var layer =  results[2];
         var photo = null;
         if(photos && Array.isArray(photos)){
           photo = photos[0];
@@ -76,7 +78,7 @@ module.exports = function(app) {
               {
                 title: featureName + ' - ' + config.productName,
                 fontawesome: true,
-                props: {feature, notes, photo, canEdit: true}, req
+                props: {feature, notes, photo, layer, canEdit: true}, req
               });
             }
             else{
@@ -84,7 +86,7 @@ module.exports = function(app) {
               {
                 title: featureName + ' - ' + config.productName,
                 fontawesome: true,
-                props: {feature, notes, canEdit: false},
+                props: {feature, notes, photo, layer, canEdit: false},
                  req
                });
             }

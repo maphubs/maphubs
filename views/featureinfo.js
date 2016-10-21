@@ -44,6 +44,7 @@ var FeatureInfo = React.createClass({
     feature: React.PropTypes.object.isRequired,
     notes: React.PropTypes.string,
     photo: React.PropTypes.object,
+    layer: React.PropTypes.object,
     canEdit: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
   },
@@ -131,6 +132,21 @@ var FeatureInfo = React.createClass({
     });
   },
 
+  //Build iD edit link
+  getEditLink(){
+    //get map position
+    var position = this.refs.map.getPosition();
+    var zoom = Math.ceil(position.zoom);
+    if(zoom < 10) zoom = 10;
+    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
+  },
+
+  openEditor(){
+    var editLink = this.getEditLink();
+    window.location = editLink;
+  },
+
 
 	render() {
 
@@ -198,6 +214,30 @@ var FeatureInfo = React.createClass({
         );
     }
 
+    var editButton = '';
+    if(this.props.canEdit){
+      var idEditButton = '';
+      if(!this.props.layer.is_external){
+        idEditButton = (
+          <li>
+            <a onClick={this.openEditor} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map Data')}>
+              <i className="material-icons">mode_edit</i>
+            </a>
+          </li>
+        );
+      }
+      editButton = (
+        <div className="fixed-action-btn action-button-bottom-right">
+          <a className="btn-floating btn-large red red-text">
+            <i className="large material-icons">more_vert</i>
+          </a>
+          <ul>
+            {idEditButton}
+          </ul>
+        </div>
+      );
+    }
+
 
     var layerUrl = baseUrl + '/layer/info/' + this.props.feature.layer.layer_id + '/' + slug(this.props.feature.layer.name);
 		return (
@@ -246,6 +286,7 @@ var FeatureInfo = React.createClass({
               <Map ref="map" className="map-absolute map-with-header width-50" fitBounds={this.props.feature.geojson.bbox} data={this.props.feature.geojson} />
             </div>
           </div>
+          {editButton}
           <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
         </main>
 			</div>
