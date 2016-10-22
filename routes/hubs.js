@@ -109,7 +109,7 @@ module.exports = function(app) {
         var stories = result[1];
         res.render('hubinfo', {
           title: hub.name + ' - ' + config.productName,
-          hideFeedback: true,
+          hideFeedback: !config.mapHubsPro,
           fontawesome: true,
           props: {
             hub, layers, stories, canEdit
@@ -154,7 +154,7 @@ module.exports = function(app) {
         var layers = results[0];
         res.render('hubmap', {
           title: hub.name + '|' + req.__('Map') + ' - ' + config.productName,
-          hideFeedback: true,
+          hideFeedback: !config.mapHubsPro,
           props: {
             hub, layers, canEdit
           }, req
@@ -197,7 +197,7 @@ module.exports = function(app) {
       .then(function(stories) {
         res.render('hubstories', {
           title: hub.name + '|' + req.__('Stories') + ' - ' + config.productName,
-          hideFeedback: true,
+          hideFeedback: !config.mapHubsPro,
           props: {
             hub, stories, canEdit
           }, req
@@ -237,7 +237,7 @@ module.exports = function(app) {
   var renderHubResourcesPage = function(hub, canEdit, req, res){
       res.render('hubresources', {
         title: hub.name + '|' + req.__('Resources') + ' - ' + config.productName,
-        hideFeedback: true,
+        hideFeedback: !config.mapHubsPro,
         fontawesome: true,
         rangy: true,
         props: {
