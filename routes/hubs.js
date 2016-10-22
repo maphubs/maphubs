@@ -83,18 +83,6 @@ module.exports = function(app) {
 
   //Hub subdomains
 
-  //redirect beta.maphub.com links
-  app.get('/hub/:id/*', function(req, res, next) {
-
-    var id = req.params.id;
-    if(id == 'beta'){
-      res.redirect(baseUrl + req.path.replace("/hub/"+id, ""));
-    }else{
-      next();
-    }
-
-  });
-
   app.use('/hub/:hubid/assets/', express.static('assets'));
 
 
@@ -1018,6 +1006,7 @@ module.exports = function(app) {
 
 
  //Redirects
+ /*
  app.get('/hub/:id/login', function(req, res) {
    res.redirect(baseUrl + '/login');
  });
@@ -1149,6 +1138,5 @@ module.exports = function(app) {
     var name = req.params.name;
     res.redirect(baseUrl + '/feature/' + layerid + '/' + osmid + '/' + name);
   });
-
-
+*/
 };
