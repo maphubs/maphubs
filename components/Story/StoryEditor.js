@@ -338,7 +338,7 @@ onAddMap(map_id){
     prevMap.remove();
   }
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
-  
+
 
   url = url.replace(/http:/, '');
   url = url.replace(/https:/, '');
@@ -572,6 +572,17 @@ showImageCrop(){
       );
     }
 
+    var deleteButton = '';
+    if(this.state.story_id){
+      deleteButton = (
+        <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
+          <a className="btn-floating btn-large red red-text tooltipped" onClick={this.delete} data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
+            <i className="large material-icons">delete</i>
+          </a>
+        </div>
+      );
+    }
+
 
 
     return (
@@ -650,11 +661,8 @@ showImageCrop(){
               <i className="large material-icons">save</i>
             </a>
           </div>
-          <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
-            <a className="btn-floating btn-large red red-text tooltipped" onClick={this.delete} data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
-              <i className="large material-icons">delete</i>
-            </a>
-          </div>
+          {deleteButton}
+
           <Progress id="adding-map-progess" title={this.__('Adding Map')} subTitle={''} dismissible={false} show={this.state.addingMap}/>
           <Progress id="saving-story" title={this.__('Saving')} subTitle="" dismissible={false} show={this.state.saving}/>
       </div>
