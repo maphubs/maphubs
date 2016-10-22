@@ -123,7 +123,7 @@ var HubBuilder = React.createClass({
              NotificationActions.showNotification(
                {
                  message: _this.__('Hub Saved'),
-                 position: 'bottomright',
+                 position: 'topright',
                  dismissAfter: 3000,
                  onDismiss: _this.props.onSubmit
              });
