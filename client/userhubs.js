@@ -1,7 +1,7 @@
 const React  = require('react');
 const ReactDOM = require('react-dom');
 
-const UserMaps = require('../views/usermaps');
+const UserHubs = require('../views/userhubs');
 
 require('babel-polyfill');
 require('jquery');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <UserMaps {...data}/>,
+    <UserHubs {...data}/>,
     document.querySelector('#app')
   );
 });

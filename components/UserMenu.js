@@ -69,8 +69,12 @@ var UserMenu = React.createClass({
           <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
             <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a></li>
             <li className="divider"></li>
-              <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a></li>
-              <li className="divider"></li>
+            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a></li>
+            <li className="divider"></li>
+            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/groups'}>{this.__('My Groups')}</a></li>
+            <li className="divider"></li>
+            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/hubs'}>{this.__('My Hubs')}</a></li>
+            <li className="divider"></li>
             <li className="usermenu-wrapper"><a href="/user/settings">{this.__('Settings')}</a></li>
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a onClick={this.logoutClick}>{this.__('Logout')}</a></li>

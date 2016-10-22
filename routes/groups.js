@@ -106,19 +106,45 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
-  app.get('/my-groups', login.ensureLoggedIn(), function(req, res, next) {
 
-    var uid = req.session.user.id;
+  app.get('/user/:username/groups', function(req, res, next) {
 
-    Group.getGroupsForUser(uid)
-      .then(function(result) {
-        res.render('groups', {
-          title: req.__('My Groups') + ' - ' + config.productName,
-          props: {
-            groups: result
-          }, req
-        });
+    var username = req.params.username;
+    debug(username);
+    if(!username){nextError(next);}
+    var canEdit = false;
+
+    function completeRequest(userCanEdit){
+      User.getUserByName(username)
+      .then(function(user){
+        if(user){
+            Group.getGroupsForUser(user.id)
+          .then(function(groups){
+            res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit}, req});
+          });
+        }else{
+          res.redirect('/notfound?path='+req.path);
+        }
       }).catch(nextError(next));
+    }
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+          completeRequest();
+    } else {
+      //get user id
+      var user_id = req.session.user.id;
+
+      //get user for logged in user
+      User.getUser(user_id)
+      .then(function(user){
+        //flag if requested user is logged in user
+        if(user.display_name === username){
+          canEdit = true;
+        }
+        completeRequest(canEdit);
+      }).catch(nextError(next));
+    }
   });
 
   //API Endpoints

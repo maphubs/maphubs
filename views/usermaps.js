@@ -3,9 +3,9 @@ var React = require('react');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
-var CreateMap = require('../components/CreateMap/CreateMap');
-var CreateMapActions = require('../actions/CreateMapActions');
-var debug = require('../services/debug')('usermaps');
+var cardUtil = require('../services/card-util');
+
+//var debug = require('../services/debug')('usermaps');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -35,44 +35,14 @@ var UserMaps = React.createClass({
     };
   },
 
-  handleSearch(input) {
-    debug(input);
-  },
-
-  showCreateMap(){
-      CreateMapActions.showMapDesigner();
-  },
-
-  mapCreated(map_id){
-    window.location = '/user/' + this.props.user.display_name + '/map/'+map_id;
-  },
-
-
 	render() {
-    var _this = this;
 
-    var cards = [];
-
-    _this.props.maps.map(function(map){
-
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-
-      cards.push({
-        id: map.map_id,
-        title: map.title ? map.title : '',
-        image_url,
-        link: '/user/' + _this.props.user.display_name + '/map/' + map.map_id,
-        type: 'map',
-        map
-      });
-
-    });
+  var cards = this.props.maps.map(cardUtil.getMapCard);
 
   var createMaps = '';
   if(this.props.myMaps){
     createMaps=(
       <div>
-        <CreateMap onCreate={this.mapCreated} userMap/>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Map')}>
           <a href="/map/new" className="btn-floating btn-large red red-text">
             <i className="large material-icons">add</i>
@@ -106,7 +76,7 @@ var UserMaps = React.createClass({
 
 		return (
       <div>
-        <Header activePage="mymaps"/>
+        <Header/>
         <main style={{height: 'calc(100% - 70px)'}}>
           {myMaps}
           {createMaps}

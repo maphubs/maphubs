@@ -115,6 +115,27 @@ module.exports = {
         .where('omh.hub_memberships.user_id', user_id);
     },
 
+    getPublishedHubsForUser(user_id) {
+      debug('get hubs for user: ' + user_id);
+      return knex.select('omh.hubs.*').from('omh.hub_memberships')
+        .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
+        .where({
+          'omh.hub_memberships.user_id': user_id,
+          'omh.hubs.published': true
+        });
+    },
+
+    getDraftHubsForUser(user_id) {
+      debug('get hubs for user: ' + user_id);
+      return knex.select('omh.hubs.*').from('omh.hub_memberships')
+        .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
+        .where({
+          'omh.hub_memberships.user_id': user_id,
+          'omh.hubs.published': false
+        });
+    },
+
+
     getHubRole(user_id, hub_id) {
       return knex.select('omh.hub_memberships.role').from('omh.hub_memberships')
       .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id]);

@@ -81,8 +81,53 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
+  app.get('/user/:username/hubs', function(req, res, next) {
 
-  //Hub subdomains
+    var username = req.params.username;
+    debug(username);
+    if(!username){nextError(next);}
+    var canEdit = false;
+
+    function completeRequest(userCanEdit){
+      User.getUserByName(username)
+      .then(function(user){
+        if(user){
+            return Promise.all([
+              Hub.getPublishedHubsForUser(user.id),
+              Hub.getDraftHubsForUser(user.id)
+            ])
+          .then(function(results){
+            var publishedHubs = results[0];
+            var draftHubs = [];
+            if(userCanEdit){
+              draftHubs = results[1];
+            }
+            res.render('userhubs', {title: 'Hubs - ' + username, props:{user, publishedHubs, draftHubs, canEdit: userCanEdit}, req});
+          });
+        }else{
+          res.redirect('/notfound?path='+req.path);
+        }
+      }).catch(nextError(next));
+    }
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+          completeRequest();
+    } else {
+      //get user id
+      var user_id = req.session.user.id;
+
+      //get user for logged in user
+      User.getUser(user_id)
+      .then(function(user){
+        //flag if requested user is logged in user
+        if(user.display_name === username){
+          canEdit = true;
+        }
+        completeRequest(canEdit);
+      }).catch(nextError(next));
+    }
+  });
 
   app.use('/hub/:hubid/assets/', express.static('assets'));
 

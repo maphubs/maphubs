@@ -599,5 +599,12 @@
 	"Back to Group": "Back to Group",
 	" by ": " by ",
 	"Created:": "Created:",
-	"by": "by"
+	"by": "by",
+	"My Hubs": "My Hubs",
+	"Draft Hubs": "Draft Hubs",
+	"MyHubs": "MyHubs",
+	"Published Hubs": "Published Hubs",
+	"Hubs: maphubs": "Hubs: maphubs",
+	"Hubs for user: maphubs": "Hubs for user: maphubs",
+	"My Groups": "My Groups"
 }
