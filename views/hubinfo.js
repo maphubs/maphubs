@@ -142,7 +142,7 @@ var HubInfo = React.createClass({
             <HubBanner editing={this.state.editing}/>
           </div>
           <div className="container" style={{height: '100%'}}>
-              <HubLinkSection />
+              <HubLinkSection hubid={this.props.hub.hub_id} />
               <div className="row" style={{height: '70%'}}>
                 <a href={linkBaseUrl + 'map'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
                 <hr />
