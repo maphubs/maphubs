@@ -68,10 +68,10 @@ var PlanetLabsSource = React.createClass({
     var url = "https://tiles.planet.com";
 
     if(this.state.selectedOption == 'scene'){
-      url += '/v0/scenes/' + this.state.selectedSceneOption + '/' + model.scene;
+      url += '/v0/scenes/' + this.state.selectedSceneOption + '/' + model.planetScene;
 
     }else if(this.state.selectedOption == 'mosaic'){
-      url += '/v0/mosaics/' + model.mosaic;
+      url += '/v0/mosaics/' + model.planetMosaic;
     }
     url += '/{z}/{x}/{y}.png?api_key=' + config.PLANET_LABS_API_KEY;
 
@@ -144,7 +144,12 @@ var PlanetLabsSource = React.createClass({
                 />
             </div>
           <div className="row">
-            <TextInput name="scene" label={this.__('Planet Labs Scene ID')}
+            <TextInput name="planetScene" label={this.__('Planet Labs Scene ID')}
+              validations="maxLength:250" validationErrors={{
+                     maxLength: this.__('Must be 250 characters or less.')
+                 }} length={250}
+               dataPosition="top" dataTooltip={this.__('Copy and Paste from the Planet Scene Browser')}
+
               icon="info" className="col s12"required/>
           </div>
         </div>
@@ -154,8 +159,13 @@ var PlanetLabsSource = React.createClass({
         <div>
           <p>{this.__('Planet Labs Mosaic: ')}<a href="https://www.planet.com/docs/referencev0/scenes/" target="_blank">https://www.planet.com/docs/referencev0/scenes/</a></p>
           <div className="row">
-            <TextInput name="mosaic" label={this.__('Planet Labs Mosaic ID (from browser URL in Mosaic Browser)')}
-              icon="info" className="col s12"required/>
+            <TextInput name="planetMosaic"
+              label={this.__('Planet Labs Mosaic ID')}
+              validations="maxLength:250" validationErrors={{
+                     maxLength: this.__('Must be 250 characters or less.')
+                 }} length={250}
+               dataPosition="top" dataTooltip={this.__('Extract from browser URL in Mosaic Browser')}
+              icon="info" className="col s12" required/>
           </div>
         </div>
       );
