@@ -41,7 +41,7 @@ var HubHav = React.createClass({
     var manageButton = '';
     if(this.props.canEdit){
       manageButton = (
-        <li className="nav-link-wrapper"><a href="admin">{this.__('Manage Hub')}</a></li>
+        <li className="nav-link-wrapper"><a href={hubBaseUrl + 'admin'}>{this.__('Manage Hub')}</a></li>
       );
     }
     return (
@@ -69,5 +69,3 @@ var HubHav = React.createClass({
 });
 
 module.exports = HubHav;
-//  <li><a href={hubBaseUrl + 'about'}>{this.__('About')}</a></li>
-//  <li><a href={hubBaseUrl + 'contact'}>{this.__('Contact Us')}</a></li>
