@@ -119,7 +119,7 @@ var HubMapPage = React.createClass({
         <main style={{height: '100%', marginTop: '0px'}}>
           {publishButton}
           <div className="row no-margin">
-            <HubBanner editing={false} subPage/>
+            <HubBanner editing={false} hubid={this.props.hub.hub_id} subPage/>
           </div>
           <div className="row no-margin" style={{height: 'calc(100% - 200px)'}}>
             <HubMap editing={this.state.editing} height="100%" hub={this.state.hub}/>

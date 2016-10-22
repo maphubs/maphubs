@@ -139,7 +139,7 @@ var HubInfo = React.createClass({
         <main  style={{height: '100%', marginTop: '0px'}}>
           {publishButton}
           <div className="row no-margin">
-            <HubBanner editing={this.state.editing}/>
+            <HubBanner editing={this.state.editing} hubid={this.props.hub.hub_id}/>
           </div>
           <div className="container" style={{height: '100%'}}>
               <HubLinkSection hubid={this.props.hub.hub_id} />

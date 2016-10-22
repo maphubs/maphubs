@@ -12,6 +12,8 @@ var HubActions = require('../../actions/HubActions');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
+var config = require('../../clientconfig');
+var urlUtil = require('../../services/url-util');
 
 
 var HubBanner = React.createClass({
@@ -23,6 +25,7 @@ var HubBanner = React.createClass({
   },
 
   propTypes: {
+    hubid: React.PropTypes.string.isRequired,
     editing: React.PropTypes.bool,
     subPage: React.PropTypes.bool
   },
@@ -97,6 +100,9 @@ var HubBanner = React.createClass({
   },
 
   render() {
+    var omhBaseUrl = urlUtil.getBaseUrl(config.host, config.port);
+
+    var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid;
     var bannerClass='hub-banner';
     if(this.props.subPage) {
       bannerClass='hub-banner-subpage';
@@ -193,13 +199,13 @@ var HubBanner = React.createClass({
     var logoImage = '', bannerImage= '';
     if(this.state.logoImage){ //use new image first
       logoImage = (
-        <a href="/">
+        <a href={hubBaseUrl}>
           <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={this.state.logoImage} />
         </a>
       );
     } else if (this.state.hub.hasLogoImage) { //otherwise if there is an image from the server use that
       logoImage = (
-        <a href="/">
+        <a href={hubBaseUrl}>
           <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={'/hub/' + this.state.hub.hub_id + '/images/logo'} />
         </a>
       );

@@ -109,7 +109,7 @@ var HubStoriesPage = React.createClass({
         <main style={{marginTop: '0px'}}>
           {publishButton}
           <div className="row">
-            <HubBanner editing={false} subPage/>
+            <HubBanner editing={false} hubid={this.props.hub.hub_id} subPage/>
           </div>
           <div className="container">
             <div className="row">

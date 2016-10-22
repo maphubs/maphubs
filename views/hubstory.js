@@ -86,7 +86,7 @@ var HubStory = React.createClass({
       <HubNav hubid={this.props.hub.hub_id}/>
       <main>
         <div className="row">
-          <HubBanner subPage={true}/>
+          <HubBanner hubid={this.props.hub.hub_id} subPage/>
         </div>
         <div className="container">
           <div className="row" style={{marginTop: '20px'}}>

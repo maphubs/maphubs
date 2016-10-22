@@ -46,7 +46,7 @@ var CreateHubStory = React.createClass({
         <HubNav hubid={this.props.hub.hub_id}/>
         <main>
           <div className="row no-margin">
-            <HubBanner editing={false} subPage={true}/>
+            <HubBanner editing={false} subPage={true} hubid={this.props.hub.hub_id}/>
           </div>
           <div className="row no-margin">
             <StoryEditor storyType="hub" hubid={this.props.hub.hub_id}/>
