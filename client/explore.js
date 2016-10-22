@@ -24,11 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Explore
-      featuredLayers={data.featuredLayers} featuredGroups={data.featuredGroups} featuredHubs={data.featuredHubs} featuredMaps={data.featuredMaps} featuredStories={data.featuredStories}
-      popularLayers={data.popularLayers} popularGroups={data.popularGroups} popularHubs={data.popularHubs} popularMaps={data.popularMaps} popularStories={data.popularStories}
-      recentLayers={data.recentLayers} recentGroups={data.recentGroups} recentHubs={data.recentHubs} recentMaps={data.recentMaps} recentStories={data.recentStories}
-      locale={data.locale} version={data.version}/>,
+    <Explore {...data}/>,
     document.querySelector('#app')
   );
 });

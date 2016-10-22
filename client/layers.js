@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Layers featuredLayers={data.featuredLayers} recentLayers={data.recentLayers} popularLayers={data.popularLayers} locale={data.locale} version={data.version}/>,
+    <Layers {...data}/>,
     document.querySelector('#app')
   );
 });

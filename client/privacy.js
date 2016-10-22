@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Privacy locale={data.locale} version={data.version}/>,
+    <Privacy {...data}/>,
     document.querySelector('#app')
   );
 

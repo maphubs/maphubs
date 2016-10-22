@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Stories popularStories={data.popularStories} featuredStories={data.featuredStories} locale={data.locale} version={data.version}/>,
+    <Stories {...data}/>,
     document.querySelector('#app')
   );
 });

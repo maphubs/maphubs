@@ -22,13 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Home
-      trendingLayers={data.trendingLayers}
-      trendingGroups={data.trendingGroups}
-      trendingHubs={data.trendingHubs}
-      trendingMaps={data.trendingMaps}
-      trendingStories={data.trendingStories}
-      locale={data.locale} version={data.version}/>,
+    <Home {...data}/>,
     document.querySelector('#app')
   );
 });

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <MapEdit map={data.map} layers={data.layers} popularLayers={data.popularLayers} myLayers={data.myLayers} locale={data.locale} version={data.version}/>,
+    <MapEdit {...data}/>,
     document.querySelector('#app')
   );
 });

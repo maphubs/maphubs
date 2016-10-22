@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <AddPhotoPoint layer={data.layer} locale={data.locale} version={data.version}/>,
+    <AddPhotoPoint {...data}/>,
     document.querySelector('#app')
   );
 });

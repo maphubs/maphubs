@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Maps featuredMaps={data.featuredMaps} recentMaps={data.recentMaps} popularMaps={data.popularMaps} locale={data.locale} version={data.version}/>,
+    <Maps {...data}/>,
     document.querySelector('#app')
   );
 });

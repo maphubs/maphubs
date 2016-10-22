@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Search locale={data.locale} version={data.version}/>,
+    <Search {...data}/>,
     document.querySelector('#app')
   );
 });

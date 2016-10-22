@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <EmbedMap map={data.map} layers={data.layers} canEdit={data.canEdit} isStatic={data.isStatic} locale={data.locale} version={data.version}/>,
+    <EmbedMap {...data}/>,
     document.querySelector('#app')
   );
 });

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <GroupAdmin group={data.group} layers={data.layers} members={data.members} locale={data.locale} version={data.version}/>,
+    <GroupAdmin {...data}/>,
     document.querySelector('#app')
   );
 });

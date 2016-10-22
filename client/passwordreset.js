@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <PasswordReset passreset={data.passreset} locale={data.locale} version={data.version}/>,
+    <PasswordReset {...data}/>,
     document.querySelector('#app')
   );
 });

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Services locale={data.locale} version={data.version}/>,
+    <Services {...data}/>,
     document.querySelector('#app')
   );
 

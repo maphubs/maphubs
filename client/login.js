@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <Login name={data.name} failed={data.failed} locale={data.locale} version={data.version}/>,
+    <Login {...data}/>,
     document.querySelector('#app')
   );
 });

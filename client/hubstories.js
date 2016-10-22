@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
   ReactDOM.render(
-    <HubStories hub={data.hub} stories={data.stories} canEdit={data.canEdit} locale={data.locale} version={data.version}/>,
+    <HubStories {...data}/>,
     document.querySelector('#app')
   );
 });
