@@ -1,6 +1,7 @@
 var React = require('react');
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
+var $ = require('jquery');
 
 var TextArea = React.createClass({
 
@@ -30,6 +31,12 @@ var TextArea = React.createClass({
     return {
       value: this.props.value,
       charCount: this.props.value ? this.props.value.length: 0
+    };
+  },
+
+  componentDidMount(){
+    if(this.props.dataTooltip){
+      $(this.refs.inputWrapper).tooltip();
     }
   },
 
@@ -54,7 +61,7 @@ var TextArea = React.createClass({
    },
 
   render() {
-     var className = classNames('input-field', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+     var className = classNames('input-field', this.props.className);
      var textAreaClassName = classNames(
        'materialize-textarea',
        {
@@ -66,7 +73,7 @@ var TextArea = React.createClass({
 
    var icon = '';
    if(this.props.icon){
-      icon = (<i className="material-icons prefix">{this.props.icon}</i>)
+      icon = (<i className="material-icons prefix">{this.props.icon}</i>);
    }
    var countColor = 'black';
    if(this.state.charCount > this.props.length) countColor = 'red';
@@ -77,9 +84,9 @@ var TextArea = React.createClass({
    }
 
     return (
-      <div className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
+      <div ref="inputWrapper" className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
         {icon}
-        <textarea ref="textarea" id={this.props.name} className={textAreaClassName} length={this.props.length} value={this.state.value} onChange={this.changeValue}/>
+        <textarea ref="textarea" id={this.props.name} className={textAreaClassName} value={this.state.value} onChange={this.changeValue}/>
         <label htmlFor={this.props.name}  className={labelClassName} data-error={this.getErrorMessage()} data-success="">{this.props.label}</label>
         <span className="character-counter"
             style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>

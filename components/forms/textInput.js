@@ -2,6 +2,7 @@ var React = require('react');
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var _isequal = require('lodash.isequal');
+var $ = require('jquery');
 
 var TextInput= React.createClass({
 
@@ -19,6 +20,7 @@ var TextInput= React.createClass({
     dataPosition: React.PropTypes.string,
     name: React.PropTypes.string,
     label: React.PropTypes.string,
+    placeholder: React.PropTypes.string,
     id: React.PropTypes.string,
     type: React.PropTypes.string,
     style: React.PropTypes.object
@@ -55,6 +57,12 @@ var TextInput= React.createClass({
     }
   },
 
+  componentDidMount(){
+    if(this.props.dataTooltip){
+      $(this.refs.inputWrapper).tooltip();
+    }
+  },
+
   shouldComponentUpdate(nextProps, nextState){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
@@ -76,7 +84,7 @@ var TextInput= React.createClass({
    },
 
   render() {
-     var className = classNames('input-field', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+     var className = classNames('input-field', this.props.className);
      var inputClassName = classNames(
        {
        required: this.showRequired(),
@@ -105,9 +113,9 @@ var TextInput= React.createClass({
    }
 
     return (
-      <div className={className} style={this.props.style} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
+      <div ref="inputWrapper" className={className} style={this.props.style} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
           {icon}
-          <input ref="input" id={id} type={this.props.type} className={inputClassName} length={this.props.length} value={this.state.value} disabled={this.props.disabled} onChange={this.changeValue}/>
+          <input ref="input" id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={this.state.value} disabled={this.props.disabled} onChange={this.changeValue}/>
           <label htmlFor={id} className={labelClassName} data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
             <span className="character-counter"
                 style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
