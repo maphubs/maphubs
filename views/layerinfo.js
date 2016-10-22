@@ -30,7 +30,7 @@ var LayerNotesStore = require('../stores/LayerNotesStore');
 
 var moment = require('moment-timezone');
 
-import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl';
+import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import es from 'react-intl/locale-data/es';
 import fr from 'react-intl/locale-data/fr';
@@ -60,6 +60,8 @@ var LayerInfo = React.createClass({
     notes: React.PropTypes.string,
     stats: React.PropTypes.object,
     canEdit: React.PropTypes.bool,
+    createdByUser: React.PropTypes.object.isRequired,
+    updatedByUser: React.PropTypes.object.isRequired,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -572,7 +574,30 @@ var LayerInfo = React.createClass({
     }
 
     var guessedTz = moment.tz.guess();
-    var updatedTime = moment.tz(this.props.layer.last_updated, guessedTz).format();
+    var creationTimeObj = moment.tz(this.props.layer.creation_time, guessedTz);
+    var creationTime = creationTimeObj.format();
+    var updatedTimeObj = moment.tz(this.props.layer.last_updated, guessedTz);
+    var updatedTimeStr = updatedTimeObj.format();
+    var updatedTime = '';
+    if(updatedTimeObj > creationTimeObj){
+      updatedTime = (
+        <p style={{fontSize: '16px'}}><b>{this.__('Last Update:')} </b>
+          <IntlProvider locale={this.state.locale}>
+            <FormattedDate value={updatedTimeStr}/>
+          </IntlProvider>&nbsp;
+          <IntlProvider locale={this.state.locale}>
+            <FormattedTime value={updatedTimeStr}/>
+          </IntlProvider>&nbsp;
+          (<IntlProvider locale={this.state.locale}>
+            <FormattedRelative value={updatedTimeStr}/>
+          </IntlProvider>)&nbsp;
+            {this.__('by') + ' ' + this.props.updatedByUser.display_name}
+          </p>
+      );
+    }
+
+
+
 
 
     var licenseOptions = Licenses.getLicenses(this.__);
@@ -668,11 +693,19 @@ var LayerInfo = React.createClass({
                   </div>
                   {remote}
                   {external}
-                <p style={{fontSize: '16px'}}><b>{this.__('Last Update:')} </b>
+                  <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
                   <IntlProvider locale={this.state.locale}>
-                    <FormattedRelative value={updatedTime}/>
-                  </IntlProvider>
-                  </p>
+                    <FormattedDate value={creationTime}/>
+                  </IntlProvider>&nbsp;
+                  <IntlProvider locale={this.state.locale}>
+                    <FormattedTime value={creationTime}/>
+                  </IntlProvider>&nbsp;
+                  (<IntlProvider locale={this.state.locale}>
+                    <FormattedRelative value={creationTime}/>
+                  </IntlProvider>)&nbsp;
+                    {this.__('by') + ' ' + this.props.updatedByUser.display_name}
+                    </p>
+                {updatedTime}
                 <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
                 <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
                 <p style={{fontSize: '16px', wordWrap: 'break-word', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>

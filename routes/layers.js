@@ -2,6 +2,7 @@
 var knex = require('../connection.js');
 var Layer = require('../models/layer');
 var Group = require('../models/group');
+var User = require('../models/user');
 var Stats = require('../models/stats');
 var multer  = require('multer');
 var log = require('../services/log');
@@ -102,24 +103,34 @@ module.exports = function(app) {
         var canEdit = results[2];
         var notesObj = results[3];
 
-        var notes = null;
-        if(notesObj && notesObj.notes){
-          notes = notesObj.notes;
-        }
+        return Promise.all([
+          User.getUser(layer.created_by_user_id),
+          User.getUser(layer.updated_by_user_id)
+        ])
+        .then(function(userResults){
+          var createdByUser = userResults[0];
+          var updatedByUser = userResults[1];
+          var notes = null;
+          if(notesObj && notesObj.notes){
+            notes = notesObj.notes;
+          }
 
-        if(layer){
-        res.render('layerinfo', {title: layer.name + ' - ' + config.productName, props: {layer, notes, stats, canEdit}, fontawesome: true, req});
-      }else{
-        res.render('error', {
-          title: req.__('Not Found'),
-          props: {
+          if(layer){
+          res.render('layerinfo', {title: layer.name + ' - ' + config.productName,
+          props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
+          fontawesome: true, req});
+        }else{
+          res.render('error', {
             title: req.__('Not Found'),
-            error: req.__('The page you request was not found'),
-            url: req.url
-          },
-          req
-        });
-      }
+            props: {
+              title: req.__('Not Found'),
+              error: req.__('The page you request was not found'),
+              url: req.url
+            },
+            req
+          });
+        }
+      });
       }).catch(nextError(next));
   });
 
@@ -414,7 +425,7 @@ module.exports = function(app) {
          debug('Mimetype: ' +req.file.mimetype);
          if(_endsWith(req.file.originalname, '.zip')){
            debug('Zip File Detected');
-           fs.createReadStream(req.file.path).pipe(unzip.Extract({ path: req.file.path + '_zip' }))
+           fs.createReadStream(req.file.path).pipe(unzip.Extract({path: req.file.path + '_zip'}))
            .on('close', function(err){
               if (err) throw err;
              //validate
@@ -499,7 +510,7 @@ app.post('/api/layer/finishupload', function(req, res) {
           result.success = result.valid;
           result.error = result.msg;
           if(result.valid){
-            var shpFilePath = path + '/' + req.body.requestedShapefile;
+            var shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile;
             var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
             ogr.exec(function (er, geoJSON) {
               if (er){

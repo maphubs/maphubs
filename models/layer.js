@@ -141,8 +141,11 @@ module.exports = {
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
-      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
-      'style','labels', 'legend_html', 'extent_bbox', 'preview_position'
+      'owned_by_group_id',
+      knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
+      knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
+      'views',
+      'style','labels', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
     ).table('omh.layers').where('layer_id', layer_id)
       .then(function(result) {
         if (result && result.length == 1) {
