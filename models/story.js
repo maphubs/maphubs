@@ -116,7 +116,7 @@ module.exports = {
       debug('get hub story: ' + story_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
-         'omh.stories.body', 'omh.stories.language', 
+         'omh.stories.body', 'omh.stories.language',
          'omh.stories.firstline',  'omh.stories.firstimage',
          'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
         knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
@@ -189,18 +189,16 @@ module.exports = {
         });
     },
 
-    delete(story_id){
-      return knex.transaction(function(trx) {
-        return trx('omh.story_views').where({story_id}).del()
+    delete(story_id, trx){
+      return trx('omh.story_views').where({story_id}).del()
+      .then(function(){
+        return trx('omh.story_maps').where({story_id}).del()
         .then(function(){
-          return trx('omh.story_maps').where({story_id}).del()
+          return trx('omh.hub_stories').where({story_id}).del()
           .then(function(){
-            return trx('omh.hub_stories').where({story_id}).del()
+            return trx('omh.user_stories').where({story_id}).del()
             .then(function(){
-              return trx('omh.user_stories').where({story_id}).del()
-              .then(function(){
-                  return trx('omh.stories').where({story_id}).del();
-              });
+                return trx('omh.stories').where({story_id}).del();
             });
           });
         });

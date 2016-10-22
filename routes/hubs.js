@@ -15,6 +15,7 @@ var login = require('connect-ensure-login');
 var debug = require('../services/debug')('routes/hubs');
 var Promise = require('bluebird');
 var MapUtils = require('../services/map-utils');
+var knex = require('../connection.js');
 
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
@@ -518,13 +519,15 @@ module.exports = function(app) {
       Story.allowedToModify(data.story_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Image.removeAllStoryImages(data.story_id)
-            .then(function() {
-              return Story.delete(data.story_id)
-                .then(function() {
-                  res.send({
-                    success: true
-                  });
+          return knex.transaction(function(trx) {
+            return Image.removeAllStoryImages(data.story_id, trx)
+              .then(function() {
+                return Story.delete(data.story_id, trx)
+                  .then(function() {
+                    res.send({
+                      success: true
+                    });
+                });
               });
             }).catch(apiError(res, 500));
         }else {
@@ -981,7 +984,7 @@ module.exports = function(app) {
         Hub.allowedToModify(data.hub_id, user_id)
         .then(function(allowed){
           if(allowed){
-            Hub.deleteHub(data.hub_id)
+            return Hub.deleteHub(data.hub_id)
               .then(function() {
                 res.send({success: true});
               }).catch(apiError(res, 500));

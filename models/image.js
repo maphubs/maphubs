@@ -243,8 +243,7 @@ module.exports = {
     });
   },
 
-  removeAllStoryImages(story_id){
-    return knex.transaction(function(trx) {
+  removeAllStoryImages(story_id, trx){
       return trx('omh.story_images').select('image_id').where({story_id})
       .then(function(results){
         var commands = [];
@@ -258,7 +257,6 @@ module.exports = {
         });
         return Promise.all(commands);
       });
-    });
   }
 
 };

@@ -3,6 +3,8 @@ var Promise = require('bluebird');
 var _map = require('lodash.map');
 var _find = require('lodash.find');
 var debug = require ('../services/debug')('model/hub');
+var Story = require('../models/story');
+var Image = require('../models/image');
 
 module.exports = {
 
@@ -239,20 +241,36 @@ module.exports = {
 
     deleteHub(hub_id) {
       return knex.transaction(function(trx) {
-        trx('omh.hub_images').select('image_id').where({hub_id})
-        .then(function(imageIdResult){
-          var commands = [];
-          if(imageIdResult.length > 0){
-            var imageIds = _map(imageIdResult, 'image_id');
-            commands.push(trx('omh.hub_images').where('hub_id', hub_id).delete());
-            commands.push(trx('omh.images').whereIn('image_id', imageIds).delete());
-          }
-          commands.push(trx('omh.hub_views').where('hub_id', hub_id).delete());
-          commands.push(trx('omh.hub_memberships').where('hub_id', hub_id).delete());
-          commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
+        return Promise.all([
+            trx('omh.hub_images').select('image_id').where({hub_id}),
+            trx('omh.hub_stories').select('story_id').where({hub_id})
+        ])
 
-          return Promise.each(commands, function(command){
-            return command;
+        .then(function(results){
+          var imageIdResult = results[0];
+          var storyIds = results[1];
+          return Promise.each(storyIds, function(storyResult){
+            var story_id = storyResult.story_id;
+            debug('Deleting Hub Story: '+ story_id);
+            return Image.removeAllStoryImages(story_id, trx)
+              .then(function() {
+                return Story.delete(story_id, trx);
+                });
+              }).then(function(){
+            var commands = [];
+            if(imageIdResult.length > 0){
+              var imageIds = _map(imageIdResult, 'image_id');
+              commands.push(trx('omh.hub_images').where('hub_id', hub_id).delete());
+              commands.push(trx('omh.images').whereIn('image_id', imageIds).delete());
+            }
+            commands.push(trx('omh.hub_views').where('hub_id', hub_id).delete());
+            commands.push(trx('omh.hub_layers').where('hub_id', hub_id).delete());
+            commands.push(trx('omh.hub_memberships').where('hub_id', hub_id).delete());
+            commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
+
+            return Promise.each(commands, function(command){
+              return command;
+            });
           });
         });
       });

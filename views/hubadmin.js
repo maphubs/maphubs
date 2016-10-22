@@ -124,6 +124,29 @@ var HubAdmin = React.createClass({
     });
   },
 
+  deleteHub(){
+    var _this = this;
+    ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Hub Deletion'),
+      message: this.__('Please confirm that you want to delete this hub and all of its stories.'),
+      onPositiveResponse(){
+        HubActions.deleteHub(function(err){
+          if(err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            NotificationActions.showNotification({
+              message: _this.__('Hub Deleted'),
+              dismissAfter: 7000,
+              onDismiss(){
+                window.location = '/hubs';
+              }
+            });
+          }
+        });
+      }
+    });
+  },
+
 
   handleViewLayer(layer){
     window.location = "/layer/info/" + layer.layer_id + '/' + slug(layer.name);
@@ -177,7 +200,7 @@ var HubAdmin = React.createClass({
             </div>
 
              <div className="row">
-               <button onClick={function(){alert('coming soon');}} className="btn red">{this.__('Delete Hub')}</button>
+               <button onClick={this.deleteHub} className="btn red">{this.__('Delete Hub')}</button>
              </div>
 
           </div>
