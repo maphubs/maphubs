@@ -606,5 +606,7 @@
 	"Published Hubs": "Published Hubs",
 	"Hubs: maphubs": "Hubs: maphubs",
 	"Hubs for user: maphubs": "Hubs for user: maphubs",
-	"My Groups": "My Groups"
+	"My Groups": "My Groups",
+	"Copy and Paste from the Planet Scene Browser": "Copy and Paste from the Planet Scene Browser",
+	"Can only contain letters, numbers, or dashes.": "Can only contain letters, numbers, or dashes."
 }

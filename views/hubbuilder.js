@@ -137,7 +137,7 @@ var HubBuilder = React.createClass({
              NotificationActions.showNotification(
                {
                  message: _this.__('Hub Created'),
-                 position: 'bottomright',
+                 position: 'topright',
                  dismissAfter: 3000,
                  onDismiss() {_this.onComplete(model.hub_id);}
              });
@@ -164,11 +164,11 @@ var HubBuilder = React.createClass({
             <div className="row">
               <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className="row">
-                  <TextInput name="hub_id" label={this.__('Hub ID')} icon="group_work" className="col s4"
+                  <TextInput name="hub_id" label={this.__('Hub ID')} icon="group_work" className="col s6"
                         disabled={this.state.hub.created}
-                        validations={{isAlpha:true, maxLength:25, isAvailable:true}} validationErrors={{
+                        validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength:25, isAvailable:true}} validationErrors={{
                          maxLength: this.__('ID must be 25 characters or less.'),
-                         isAlpha: this.__('Can only be upper or lowercase letters. No numbers, spaces, or special characters.'),
+                         matchRegexp: this.__('Can only contain letters, numbers, or dashes.'),
                          isAvailable: this.__('ID already taken, please try another.')
                      }} length={25}
                      successText={this.__('ID is Available')}
