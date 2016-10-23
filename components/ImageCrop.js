@@ -462,10 +462,10 @@ resizeImage(sourceCanvas){
     return (
       <Modal show={this.state.show} id="image-crop-modal" className="image-crop-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
-          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}}>
-            <i className="material-icons selected-feature-close" onClick={this.handleCloseSelected}>close</i>
+          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.handleCloseSelected}>
+            <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>
           </a>
-          <div className='row no-margin no-padding' style={{height: '80px'}}>
+          <div className='row no-padding' style={{height: '80px', marginRight: '35px', marginLeft: '0px', marginBottom: '0px'}}>
             <div className='col s12'>
               <div className="file-field input-field">
                 <div className="btn">
