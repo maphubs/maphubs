@@ -10,7 +10,7 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
 
-module.exports = React.createClass({
+var Card = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
 
@@ -24,18 +24,23 @@ module.exports = React.createClass({
     description: React.PropTypes.string,
     image_url: React.PropTypes.string,
     background_image_url: React.PropTypes.string,
-    link: React.PropTypes.string.isRequired,
+    link: React.PropTypes.string,
     group: React.PropTypes.string,
     source: React.PropTypes.string,
-    map: React.PropTypes.object,
-    story: React.PropTypes.object,
-    type: React.PropTypes.string
+    data: React.PropTypes.object,
+    type: React.PropTypes.string,
+    onClick: React.PropTypes.func
   },
 
   onClick(){
-    if (typeof window !== 'undefined') {
-      window.location = this.props.link;
+    if(this.props.onClick){
+      this.props.onClick(this.props.data);
+    }else if(this.props.link){
+      if (typeof window !== 'undefined') {
+        window.location = this.props.link;
+      }
     }
+
   },
 
   getInitialState() {
@@ -104,7 +109,7 @@ module.exports = React.createClass({
         toolTipText = this.__('Story');
         storyTag = (
           <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
-            <StoryHeader story={this.props.story} />
+            <StoryHeader story={this.props.data} />
           </div>
         );
       }else if(this.props.type == 'map'){
@@ -112,7 +117,7 @@ module.exports = React.createClass({
         toolTipText = this.__('Map');
         mapCardUserTag = (
           <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
-            <MapCardUserTag map={this.props.map} />
+            <MapCardUserTag map={this.props.data} />
           </div>
         );
       }
@@ -187,3 +192,5 @@ module.exports = React.createClass({
      );
   }
 });
+
+module.exports = Card;

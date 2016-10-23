@@ -13,7 +13,7 @@ module.exports = {
     return output;
   },
 
-  getLayerCard(layer){
+  getLayerCard(layer, onClick=null){
     var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
     return {
       id: layer.layer_id.toString(),
@@ -23,11 +23,13 @@ module.exports = {
       source: layer.source,
       group: layer.owned_by_group_id,
       type: 'layer',
-      link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+      link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name),
+      data: layer,
+      onClick
     };
   },
 
-  getHubCard(hub){
+  getHubCard(hub, onClick=null){
     var title = hub.name.replace('&nbsp;', '');
     var hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
     return {
@@ -37,11 +39,13 @@ module.exports = {
       image_url: '/hub/' + hub.hub_id + '/images/logo',
       background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
       link: hubUrl,
-      type: 'hub'
+      type: 'hub',
+      data: hub,
+      onClick
     };
   },
 
-  getMapCard(map){
+  getMapCard(map, onClick=null){
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
       id: map.map_id.toString(),
@@ -49,11 +53,12 @@ module.exports = {
       image_url,
       link: '/user/' + map.username + '/map/' + map.map_id,
       type: 'map',
-      map
+      data: map,
+      onClick
     };
   },
 
-  getGroupCard(group){
+  getGroupCard(group, onClick=null){
     var image_url = null;
     if(group.hasimage){
       image_url = '/group/' + group.group_id + '/image';
@@ -65,12 +70,14 @@ module.exports = {
       image_url,
       link: '/group/' + group.group_id,
       group: group.group_id,
-      type: 'group'
+      type: 'group',
+      data: group,
+      onClick
     };
   },
 
 
-  getStoryCard(story){
+  getStoryCard(story, onClick=null){
     var title = story.title.replace('&nbsp;', '');
     var story_url = '';
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
@@ -93,7 +100,8 @@ module.exports = {
       image_url,
       link: story_url,
       type: 'story',
-      story
+      data: story,
+      onClick
     };
   }
 

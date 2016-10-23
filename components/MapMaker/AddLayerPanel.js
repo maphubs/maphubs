@@ -1,7 +1,8 @@
 var React = require('react');
 
 var SearchBox = require('../SearchBox');
-var MapMakerCardCarousel = require('./MapMakerCardCarousel.js');
+var CardCarousel = require('../CardCarousel/CardCarousel');
+var cardUtil = require('../../services/card-util');
 var debug = require('../../services/debug')('mapmaker/addlayerpanel');
 
 var config = require('../../clientconfig');
@@ -72,29 +73,34 @@ var AddLayerPanel = React.createClass({
     var myCards = [];
     var popularCards = [];
     var myLayers = '';
+
+    var cardCarouselStops = [
+      {breakpoint: 600, settings: {slidesToShow: 1,  slidesToScroll: 1}},
+      {breakpoint: 950, settings: {slidesToShow: 2,  slidesToScroll: 2}},
+      {breakpoint: 1150, settings: {slidesToShow: 3,  slidesToScroll: 3}},
+      {breakpoint: 1400, settings: {slidesToShow: 4,  slidesToScroll: 4}},
+      {breakpoint: 1700, settings: {slidesToShow: 5,  slidesToScroll: 5}},
+       {breakpoint: 2500, settings: {slidesToShow: 6,  slidesToScroll: 6}},
+       {breakpoint: 4000, settings: {slidesToShow: 8,  slidesToScroll: 8}}
+   ];
+
     if(this.props.myLayers && this.props.myLayers.length > 0){
-      this.props.myLayers.map(function(layer){
-        myCards.push({
-          layer,
-          onClick: _this.props.onAdd
-        });
+      myCards = this.props.myLayers.map(function(layer){
+        return cardUtil.getLayerCard(layer, _this.props.onAdd);
       });
       myLayers = (
         <div className="row">
           <div className="col s12">
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Layers')}</h5>
             <div className="divider"></div>
-            <MapMakerCardCarousel cards={myCards} infinite={false}/>
+            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops}/>
           </div>
         </div>
       );
     }
 
-    this.props.popularLayers.map(function(layer){
-      popularCards.push({
-        layer,
-        onClick: _this.props.onAdd
-      });
+    popularCards = this.props.popularLayers.map(function(layer){
+      return cardUtil.getLayerCard(layer, _this.props.onAdd);
     });
 
     var searchResults = '';
@@ -103,18 +109,15 @@ var AddLayerPanel = React.createClass({
       if(this.state.searchResults.length > 0){
 
 
-        this.state.searchResults.map(function(layer){
-          searchCards.push({
-            layer,
-            onClick: _this.props.onAdd
-          });
+        searchCards = this.state.searchResults.map(function(layer){
+          return cardUtil.getLayerCard(layer, _this.props.onAdd);
         });
         searchResults = (
           <div className="row">
             <div className="col s12">
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
             <div className="divider"></div>
-            <MapMakerCardCarousel infinite={false} cards={searchCards}/>
+            <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops}/>
           </div>
           </div>
         );
@@ -144,7 +147,7 @@ var AddLayerPanel = React.createClass({
               <div className="col s12">
                 <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Layers')}</h5>
                 <div className="divider"></div>
-                <MapMakerCardCarousel cards={popularCards} infinite={false}/>
+                <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops}/>
               </div>
             </div>
           </div>
