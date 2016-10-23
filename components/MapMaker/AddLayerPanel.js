@@ -85,8 +85,8 @@ var AddLayerPanel = React.createClass({
    ];
 
     if(this.props.myLayers && this.props.myLayers.length > 0){
-      myCards = this.props.myLayers.map(function(layer){
-        return cardUtil.getLayerCard(layer, _this.props.onAdd);
+      myCards = this.props.myLayers.map(function(layer, i){
+        return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
       });
       myLayers = (
         <div className="row">
@@ -99,8 +99,8 @@ var AddLayerPanel = React.createClass({
       );
     }
 
-    popularCards = this.props.popularLayers.map(function(layer){
-      return cardUtil.getLayerCard(layer, _this.props.onAdd);
+    popularCards = this.props.popularLayers.map(function(layer, i){
+      return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
     });
 
     var searchResults = '';
@@ -109,8 +109,8 @@ var AddLayerPanel = React.createClass({
       if(this.state.searchResults.length > 0){
 
 
-        searchCards = this.state.searchResults.map(function(layer){
-          return cardUtil.getLayerCard(layer, _this.props.onAdd);
+        searchCards = this.state.searchResults.map(function(layer, i){
+          return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
         });
         searchResults = (
           <div className="row">

@@ -24,6 +24,8 @@ var CreateHubStory = React.createClass({
 
   propTypes: {
     hub: React.PropTypes.object.isRequired,
+    myMaps: React.PropTypes.array,
+    popularMaps: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -49,7 +51,10 @@ var CreateHubStory = React.createClass({
             <HubBanner editing={false} subPage={true} hubid={this.props.hub.hub_id}/>
           </div>
           <div className="row no-margin">
-            <StoryEditor storyType="hub" hubid={this.props.hub.hub_id}/>
+            <StoryEditor storyType="hub"
+              myMaps={this.props.myMaps}
+              popularMaps={this.props.popularMaps}
+              hubid={this.props.hub.hub_id}/>
           </div>
         </main>
         <Notification />

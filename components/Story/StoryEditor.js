@@ -8,8 +8,9 @@ var NotificationActions = require('../../actions/NotificationActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
-var CreateMap = require('../CreateMap/CreateMap');
-var CreateMapActions = require('../../actions/CreateMapActions');
+//var CreateMap = require('../CreateMap/CreateMap');
+//var AddMapActions = require('../../actions/AddMapActions');
+var AddMapModal = require('./AddMapModal');
 var ImageCrop = require('../ImageCrop');
 var checkClientError = require('../../services/client-error-response').checkClientError;
 var debug = require('../../services/debug')('story-editor');
@@ -36,7 +37,9 @@ var StoryEditor = React.createClass({
     story: React.PropTypes.object,
     hubid: React.PropTypes.string,
     storyType: React.PropTypes.string,
-    username: React.PropTypes.string
+    username: React.PropTypes.string,
+    myMaps: React.PropTypes.array,
+    popularMaps: React.PropTypes.array
   },
 
   getDefaultProps() {
@@ -78,6 +81,8 @@ var StoryEditor = React.createClass({
        return _this.__('You have not saved the edits for your story, your changes will be lost.');
      }
    };
+
+   $('.storyeditor-tooltips').tooltip();
  },
 
  shouldComponentUpdate(nextProps, nextState) {
@@ -93,6 +98,10 @@ var StoryEditor = React.createClass({
       return true;
     }
     return false;
+ },
+
+ componentDidUpdate(){
+
  },
 
   handleBodyChange(body) {
@@ -325,18 +334,13 @@ pasteHtmlAtCaret(html, rangeInput=null) {
     this.handleBodyChange($('.storybody').html());
 },
 
-onAddMap(map_id){
+onAddMap(map){
   var _this = this;
+  var map_id = map.map_id;
   this.removeMapCloseButtons();
   var range = null;
   var prevMap = null;
-  if(this.state.editingMap){
-    //refresh the iframe for this map
-    prevMap = $('#map-'+map_id);
-    range = document.createRange();
-    range.setStartAfter(prevMap[0]);
-    prevMap.remove();
-  }
+
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
 
 
@@ -351,7 +355,7 @@ onAddMap(map_id){
 
   _this.handleBodyChange($('.storybody').html());
 
-  this.setState({addingMap: true, editingMap:false});
+  this.setState({addingMap: true});
   setTimeout(function(){
     _this.setState({addingMap: false});
     _this.addMapCloseButtons();
@@ -361,7 +365,7 @@ onAddMap(map_id){
 },
 
 onMapCancel(){
-  this.setState({addingMap: false, editingMap:false});
+  this.setState({addingMap: false});
   this.removeMapCloseButtons();
   this.addMapCloseButtons();
 },
@@ -372,15 +376,8 @@ removeMap(map_id){
     title: _this.__('Confirm Map Removal'),
     message: _this.__('Please confirm that you want to remove this map'),
     onPositiveResponse(){
-      CreateMapActions.deleteMap(map_id, function(err){
-        if(err){
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          //remove from content
-           $('#map-'+map_id).remove();
-           _this.handleBodyChange($('.storybody').html());
-        }
-      });
+      $('#map-'+map_id).remove();
+      _this.handleBodyChange($('.storybody').html());
     }
   });
 
@@ -391,13 +388,10 @@ addMapCloseButtons(){
   $('.embed-map-container').each(function(i, map){
     var map_id = map.id.split('-')[1];
 
-    $(map).append(`<div class="map-remove-button" style="position: absolute; top: 10px; right: 110px;">
+    $(map).append(`<div class="map-remove-button" style="position: absolute; top: 10px; right: 80px;">
     <i class="material-icons edit-map-tooltips story-media-edit-button"
       data-position="bottom" data-delay="50" data-tooltip="` +_this.__('Remove Map') + `"
       >close</i>
-    <i class="material-icons edit-map-tooltips story-media-edit-button"
-        data-position="bottom" data-delay="50" data-tooltip="` + _this.__('Edit Map') + `"
-      >edit</i>
 
     </div>`);
 
@@ -508,29 +502,12 @@ saveSelectionRange(){
   }
 },
 
-showCreateMap(){
-  if(!this.state.story_id || this.state.story_id == -1){
-    NotificationActions.showNotification({message: this.__('Please Save the Story Before Adding a Map'), dismissAfter: 5000, position: 'bottomleft'});
-    return;
-  }
-
+showAddMap(){
   if(this.savedSelectionRange){
-      CreateMapActions.showMapDesigner();
+      this.refs.addmap.show();
   }else {
     NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'});
   }
-},
-
-editMap(map_id){
-  $('.edit-map-tooltips').tooltip('remove');
-  $('.edit-map-tooltips').tooltip();
-  var _this = this;
-  this.setState({editingMap: true});
-  CreateMapActions.editMap(map_id, function(err){
-    if(err){
-      MessageActions.showMessage({title: _this.__('Error'), message: err});
-    }
-  });
 },
 
 showImageCrop(){
@@ -543,14 +520,8 @@ showImageCrop(){
 },
 
   render() {
-
-    var createMap = '', author='';
+    var author='';
     if(this.props.storyType == 'hub'){
-      createMap = (
-        <CreateMap onCreate={this.onAddMap} onClose={this.onMapCancel} storyId={this.state.story_id}
-          showTitleEdit={false} titleLabel={this.__('Add Map')} hubStoryMap/>
-      );
-
       author = (
         <div className="story-author" style={{height: '30px'}}>
           <Editor
@@ -565,25 +536,19 @@ showImageCrop(){
          />
       </div>
       );
-    }else if(this.props.storyType == 'user'){
-      createMap = (
-        <CreateMap onCreate={this.onAddMap} onClose={this.onMapCancel}  storyId={this.state.story_id}
-          showTitleEdit={false} titleLabel={this.__('Add Map')} userStoryMap/>
-      );
     }
 
     var deleteButton = '';
     if(this.state.story_id){
       deleteButton = (
         <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
-          <a className="btn-floating btn-large red red-text tooltipped" onClick={this.delete} data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
+          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete} 
+            data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
             <i className="large material-icons">delete</i>
           </a>
         </div>
       );
     }
-
-
 
     return (
       <div style={{position: 'relative'}}>
@@ -633,7 +598,9 @@ showImageCrop(){
          </div>
        </div>
 
-       {createMap}
+       <AddMapModal ref="addmap"
+         onAdd={this.onAddMap} onClose={this.onMapCancel}
+         myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
 
        <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
 
@@ -644,12 +611,12 @@ showImageCrop(){
             <ul>
 
               <li>
-                <a  onMouseDown={this.showCreateMap} className="btn-floating tooltipped green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
+                <a  onMouseDown={this.showAddMap} className="btn-floating storyeditor-tooltips green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
                   <i className="material-icons">map</i>
                 </a>
               </li>
               <li>
-                <a onMouseDown={this.showImageCrop} className="btn-floating tooltipped yellow" data-delay="50" data-position="left" data-tooltip={this.__('Insert Image')}>
+                <a onMouseDown={this.showImageCrop} className="btn-floating storyeditor-tooltips yellow" data-delay="50" data-position="left" data-tooltip={this.__('Insert Image')}>
                   <i className="material-icons">insert_photo</i>
                 </a>
               </li>
@@ -657,7 +624,7 @@ showImageCrop(){
             </ul>
           </div>
           <div className="fixed-action-btn action-button-bottom-right">
-            <a className="btn-floating btn-large blue tooltipped" onClick={this.save} data-delay="50" data-position="left" data-tooltip={this.__('Save')}>
+            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save} data-delay="50" data-position="left" data-tooltip={this.__('Save')}>
               <i className="large material-icons">save</i>
             </a>
           </div>

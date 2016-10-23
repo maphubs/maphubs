@@ -319,14 +319,20 @@ module.exports = function(app) {
     Hub.allowedToModify(hub_id, user_id)
     .then(function(allowed){
       if(allowed){
-        Hub.getHubByID(hub_id)
-        .then(function(hub){
+        Promise.all([
+          Hub.getHubByID(hub_id),
+          Map.getUserMaps(req.session.user.id),
+          Map.getPopularMaps()
+        ]).then(function(results) {
+          var hub = results[0];
+          var myMaps = results[1];
+          var popularMaps = results[2];
           res.render('createhubstory', {
             title: 'Create Story',
             fontawesome: true,
             rangy: true,
             props: {
-              hub
+              hub, myMaps, popularMaps
             }, req
           });
         }).catch(nextError(next));
@@ -347,24 +353,26 @@ module.exports = function(app) {
     Hub.allowedToModify(hub_id, user_id)
     .then(function(allowed){
       if(allowed){
-        Hub.getHubByID(hub_id)
-        .then(function(hub){
-          Promise.all([
-            Story.getStoryByID(story_id)
-          ])
-            .then(function(results) {
-              var story = results[0];
-              res.render('edithubstory', {
-                title: 'Editing: ' + story.title,
-                fontawesome: true,
-                rangy: true,
-                props: {
-                  story,
-                  hub
-                }, req
-              });
-            }).catch(nextError(next));
-        }).catch(nextError(next));
+        Promise.all([
+          Hub.getHubByID(hub_id),
+          Story.getStoryByID(story_id),
+          Map.getUserMaps(req.session.user.id),
+          Map.getPopularMaps()
+        ]).then(function(results) {
+          var hub = results[0];
+          var story = results[1];
+          var myMaps = results[2];
+          var popularMaps = results[3];
+            res.render('edithubstory', {
+              title: 'Editing: ' + story.title,
+              fontawesome: true,
+              rangy: true,
+              props: {
+                story,
+                hub, myMaps, popularMaps
+              }, req
+            });
+          }).catch(nextError(next));
       }else{
         res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }

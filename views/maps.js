@@ -4,6 +4,7 @@ var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
+var cardUtil = require('../services/card-util');
 var debug = require('../services/debug')('views/maps');
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
@@ -76,67 +77,17 @@ var Maps = React.createClass({
 
 	render() {
 
-    var featuredCards = [];
-    var recentCards = [];
-    var popularCards = [];
+    var featuredCards = this.props.featuredMaps.map(cardUtil.getMapCard);
+    var recentCards = this.props.recentMaps.map(cardUtil.getMapCard);
+    var popularCards = this.props.popularMaps.map(cardUtil.getMapCard);
 
-    this.props.featuredMaps.map(function(map){
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-
-      featuredCards.push({
-        id: map.map_id,
-        title: map.title ? map.title : '',
-        image_url,
-        link: '/user/' + map.username + '/map/' + map.map_id,
-        type: 'map',
-        map
-      });
-    });
-
-    this.props.recentMaps.map(function(map){
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-
-      recentCards.push({
-        id: map.map_id,
-        title: map.title ? map.title : '',
-        image_url,
-        link: '/user/' + map.username + '/map/' + map.map_id,
-        type: 'map',
-        map
-      });
-    });
-
-    this.props.popularMaps.map(function(map){
-      var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-
-      popularCards.push({
-        id: map.map_id,
-        title: map.title ? map.title : '',
-        image_url,
-        link: '/user/' + map.username + '/map/' + map.map_id,
-        type: 'map',
-        map
-      });
-    });
 
     var searchResults = '';
-    var searchCards = [];
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
+        var searchCards =   this.state.searchResults.map(cardUtil.getMapCard);
 
-        this.state.searchResults.map(function(map){
-          var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-
-          searchCards.push({
-            id: map.map_id,
-            title: map.title ? map.title : '',
-            image_url,
-            link: '/user/' + map.username + '/map/' + map.map_id,
-            type: 'map',
-            map
-          });
-        });
         searchResults = (
           <div className="row">
             <div className="col s12">
@@ -158,7 +109,6 @@ var Maps = React.createClass({
           </div>
         );
       }
-
     }
 
     var featured = '';

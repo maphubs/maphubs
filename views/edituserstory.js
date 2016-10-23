@@ -18,6 +18,8 @@ var EditUserStory = React.createClass({
 
   propTypes: {
     story: React.PropTypes.object.isRequired,
+    myMaps: React.PropTypes.array,
+    popularMaps: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -33,7 +35,11 @@ var EditUserStory = React.createClass({
       <div>
         <Header />
         <main>
-          <StoryEditor story={this.props.story} storyType="user"/>
+          <StoryEditor
+            story={this.props.story}
+            myMaps={this.props.myMaps}
+            popularMaps={this.props.popularMaps}
+            storyType="user"/>
         </main>
 
       </div>

@@ -12,6 +12,8 @@ require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');
 require("cropperjs/dist/cropper.css");
+require('../node_modules/slick-carousel/slick/slick.css');
+require('../node_modules/slick-carousel/slick/slick-theme.css');
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;

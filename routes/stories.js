@@ -6,6 +6,7 @@ var User = require('../models/user');
 var Story = require('../models/story');
 var Image = require('../models/image');
 var Stats = require('../models/stats');
+var Map = require('../models/map');
 
 var Promise = require('bluebird');
 
@@ -77,21 +78,28 @@ module.exports = function(app) {
     }
   });
 
-  app.get('/user/createstory', login.ensureLoggedIn(), function(req, res) {
+  app.get('/user/createstory', login.ensureLoggedIn(), function(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect('/unauthorized');
     }
 
     var username = req.session.user.display_name;
+    Promise.all([
+      Map.getUserMaps(req.session.user.id),
+      Map.getPopularMaps()
+    ]).then(function(results){
+      var myMaps = results[0];
+      var popularMaps = results[1];
 
-    res.render('createuserstory', {
-      title: 'Create Story',
-      fontawesome: true,
-      rangy: true,
-      props: {
-        username
-      }, req
-    });
+      res.render('createuserstory', {
+        title: 'Create Story',
+        fontawesome: true,
+        rangy: true,
+        props: {
+          username, myMaps, popularMaps
+        }, req
+      });
+    }).catch(nextError(next));
 
   });
 
@@ -105,14 +113,20 @@ module.exports = function(app) {
     Story.allowedToModify(story_id, user_id)
     .then(function(allowed){
       if(allowed){
-          Story.getStoryByID(story_id)
-          .then(function(story) {
+          Promise.all([
+            Story.getStoryByID(story_id),
+            Map.getUserMaps(req.session.user.id),
+            Map.getPopularMaps()
+          ]).then(function(results) {
+            var story = results[0];
+            var myMaps = results[1];
+            var popularMaps = results[2];
             res.render('edituserstory', {
               title: 'Editing: ' + story.title,
               fontawesome: true,
               rangy: true,
               props: {
-                story
+                story, myMaps, popularMaps
               }, req
             });
           }).catch(nextError(next));

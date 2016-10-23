@@ -141,7 +141,7 @@
     "react-medium-editor": "^1.8.0",
     "react-notification": "6.2.1",
     "react-responsive-mixin": "0.3.5",
-    "react-slick": "openmaphub/react-slick",
+    "react-slick": "0.14.5",
     "reflux": "0.4.1",
     "reflux-state-mixin": "openmaphub/Super-Simple-Flux",
     "request": "2.75.0",

@@ -13,7 +13,7 @@ module.exports = {
     return output;
   },
 
-  getLayerCard(layer, onClick=null){
+  getLayerCard(layer, id, arr, onClick=null){
     var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
     return {
       id: layer.layer_id.toString(),
@@ -29,7 +29,7 @@ module.exports = {
     };
   },
 
-  getHubCard(hub, onClick=null){
+  getHubCard(hub, id, arr, onClick=null){
     var title = hub.name.replace('&nbsp;', '');
     var hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
     return {
@@ -45,7 +45,7 @@ module.exports = {
     };
   },
 
-  getMapCard(map, onClick=null){
+  getMapCard(map, id, arr, onClick=null){
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
       id: map.map_id.toString(),
@@ -58,7 +58,7 @@ module.exports = {
     };
   },
 
-  getGroupCard(group, onClick=null){
+  getGroupCard(group, id, arr, onClick=null){
     var image_url = null;
     if(group.hasimage){
       image_url = '/group/' + group.group_id + '/image';
@@ -77,7 +77,7 @@ module.exports = {
   },
 
 
-  getStoryCard(story, onClick=null){
+  getStoryCard(story, id, arr, onClick=null){
     var title = story.title.replace('&nbsp;', '');
     var story_url = '';
     var baseUrl = urlUtil.getBaseUrl(config.host, config.port);

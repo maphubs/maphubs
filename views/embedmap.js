@@ -31,12 +31,13 @@ var EmbedMap = React.createClass({
     };
   },
 
+
   getInitialState(){
     return {
       retina: false,
       width: 1024,
       height: 600,
-      interactive: true
+      interactive: false
     };
   },
 

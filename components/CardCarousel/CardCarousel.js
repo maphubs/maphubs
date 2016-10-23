@@ -1,5 +1,5 @@
 var React = require('react');
-var Slider = require('../../node_modules/react-slick/src');
+var Slider = require('react-slick');
 var Card = require('./Card');
 
 var CardCarousel = React.createClass({
@@ -41,7 +41,8 @@ var CardCarousel = React.createClass({
        speed: this.props.speed ? this.props.speed : 500,
        slidesToShow: this.props.slidesToShow ? this.props.slidesToShow : 3,
        slidesToScroll: this.props.slidesToScroll ? this.props.slidesToScroll : 3,
-       responsive: this.props.responsive
+       responsive: this.props.responsive,
+       lazyLoad: true
      };
      return (
        <div className="card-carousel">

@@ -17,6 +17,8 @@ var CreateUserStory = React.createClass({
 
   propTypes: {
     username: React.PropTypes.string.isRequired,
+    myMaps: React.PropTypes.array,
+    popularMaps: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -25,7 +27,10 @@ var CreateUserStory = React.createClass({
       <div>
         <Header />
         <main>
-          <StoryEditor storyType="user" username={this.props.username}/>
+          <StoryEditor storyType="user"
+            myMaps={this.props.myMaps}
+            popularMaps={this.props.popularMaps}
+            username={this.props.username}/>
         </main>
 
       </div>
