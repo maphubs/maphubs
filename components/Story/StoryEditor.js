@@ -511,6 +511,12 @@ showAddMap(){
 },
 
 showImageCrop(){
+
+  if(!this.state.story_id || this.state.story_id == -1){
+    NotificationActions.showNotification({message: this.__('Please Save the Story Before Adding in Image'), dismissAfter: 5000, position: 'bottomleft'});
+    return;
+  }
+
   if(this.savedSelectionRange){
     this.refs.imagecrop.show();
   }else {
@@ -542,7 +548,7 @@ showImageCrop(){
     if(this.state.story_id){
       deleteButton = (
         <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
-          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete} 
+          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete}
             data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
             <i className="large material-icons">delete</i>
           </a>
