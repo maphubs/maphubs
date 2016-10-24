@@ -179,6 +179,19 @@ module.exports = {
     });
   },
 
+  copyMap(map_id, to_user_id){
+    var _this = this;
+    return Promise.all([
+      this.getMap(map_id),
+      this.getMapLayers(map_id)
+    ]).then(function(results){
+      var map = results[0];
+      var layers = results[1];
+      var title = map.title + ' - Copy';
+      return _this.createUserMap(layers, map.style, map.basemap, map.position, title, to_user_id);
+    });
+  },
+
   updateMap(map_id, layers, style, basemap, position, title, user_id){
     return knex.transaction(function(trx) {
       return trx('omh.maps')

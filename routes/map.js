@@ -377,6 +377,24 @@ module.exports = function(app) {
       }
     });
 
+    app.post('/api/map/copy', function(req, res) {
+      if (!req.isAuthenticated || !req.isAuthenticated()) {
+        res.status(401).send("Unauthorized, user not logged in");
+        return;
+      }
+      var user_id = req.session.user.id;
+
+      var data = req.body;
+      if(data && data.map_id){
+          Map.copyMap(data.map_id, user_id)
+          .then(function(map_id){
+            res.status(200).send({success: true, map_id});
+          }).catch(apiError(res, 500));
+      }else{
+        apiDataError(res);
+      }
+    });
+
 
     app.post('/api/map/save', function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {

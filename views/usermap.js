@@ -5,11 +5,16 @@ var Map = require('../components/Map/Map');
 var Header = require('../components/header');
 //var NotificationActions = require('../actions/NotificationActions');
 var ConfirmationActions = require('../actions/ConfirmationActions');
+var NotificationActions = require('../actions/NotificationActions');
 var MessageActions = require('../actions/MessageActions');
 var MapMakerActions = require('../actions/MapMakerActions');
 import Progress from '../components/Progress';
 var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
+var UserStore = require('../stores/UserStore');
+
+var request = require('superagent');
+var checkClientError = require('../services/client-error-response').checkClientError;
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -20,7 +25,7 @@ var debounce = require('lodash.debounce');
 
 var UserMap = React.createClass({
 
-  mixins:[StateMixin.connect(MapMakerStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(UserStore), StateMixin.connect(MapMakerStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -141,6 +146,33 @@ var UserMap = React.createClass({
     MessageActions.showMessage({title: this.__('Embed Code'), message});
   },
 
+  onCopyMap(){
+    var _this = this;
+    request.post('/api/map/copy')
+    .type('json').accept('json')
+    .send({map_id: this.props.map.map_id})
+    .end(function(err, res){
+      checkClientError(res, err, function(err){
+          if(err || !res.body || !res.body.map_id){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            var map_id = res.body.map_id;
+            var url = '/map/edit/' + map_id;
+            NotificationActions.showNotification({
+              message: _this.__('Map Copied'),
+              dismissAfter: 2000,
+              onDismiss(){
+                window.location = url;
+              }
+            });
+          }
+      },
+      function(cb){
+        cb();
+      });
+    });
+  },
+
   render() {
     var map = '';
     var title = null;
@@ -202,6 +234,18 @@ var UserMap = React.createClass({
 
     }
 
+    var copyButton = '';
+    if(this.state.loggedIn && this.state.user){
+      copyButton = (
+        <li>
+          <a onClick={this.onCopyMap} className="btn-floating user-map-tooltip purple"
+            data-delay="50" data-position="left" data-tooltip={this.__('Copy Map')}>
+            <i className="material-icons">queue</i>
+          </a>
+        </li>
+      );
+    }
+
     button = (
     <div id="user-map-button" className="fixed-action-btn"
       onMouseEnter={this.onMouseEnterMenu}
@@ -212,6 +256,7 @@ var UserMap = React.createClass({
       <ul>
         {deleteButton}
         {editButton}
+        {copyButton}
         <li>
           <a onClick={this.download} download={this.props.map.title + ' - ' + config.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
             className="btn-floating user-map-tooltip green"
