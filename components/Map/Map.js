@@ -762,6 +762,7 @@ map.on('mousemove', function(e) {
 
   componentWillReceiveProps(nextProps){
     //debug('(' + this.state.id + ') ' +'componentWillReceiveProps');
+    var _this = this;
     if(nextProps.data){
       if(this.state.geoJSONData){
         debug('(' + this.state.id + ') ' +'update geoJSON data');
@@ -807,11 +808,10 @@ map.on('mousemove', function(e) {
 
           }
           this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
-          var _this = this;
-          this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
+          this.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
             //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
             let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
-            _this.reload(_this.state.glStyle, styleCopy, baseMap);
+            _this.reload(_this.state.glStyle, styleCopy, baseMapUrl);
 
             var interactiveLayers = _this.getInteractiveLayers(styleCopy);
 
@@ -824,8 +824,8 @@ map.on('mousemove', function(e) {
         debug('(' + this.state.id + ') ' +"basemap changing from props");
         allowLayersToMoveMap = false;
         this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
-        this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
-          _this.reload(_this.state.glStyle, _this.state.glStyle, baseMap);
+        this.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+          _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
         });
 
       }else if(fitBoundsChanging) {
@@ -881,8 +881,8 @@ map.on('mousemove', function(e) {
         debug('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
 
       this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
-      this.getBaseMapFromName(nextProps.baseMap, function(baseMap){
-        _this.reload(this.state.glStyle, this.state.glStyle, baseMap);
+      this.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+        _this.reload(this.state.glStyle, this.state.glStyle, baseMapUrl);
       });
 
     }else if(fitBoundsChanging) {
@@ -1111,10 +1111,10 @@ map.on('mousemove', function(e) {
     $('.base-map-tooltip').tooltip('remove'); //fix stuck tooltips
     $('.base-map-tooltip').tooltip();
     var _this = this;
-    this.getBaseMapFromName(mapName, function(baseMap){
+    this.getBaseMapFromName(mapName, function(baseMapUrl){
       _this.closeBaseMaps();
       _this.setState({baseMap: mapName, allowLayersToMoveMap: false});
-      _this.reload(_this.state.glStyle, _this.state.glStyle, baseMap);
+      _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
       _this.reloadInset(mapName);
       if(_this.props.onChangeBaseMap){
         _this.props.onChangeBaseMap(mapName);
