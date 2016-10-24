@@ -8,12 +8,10 @@ var NotificationActions = require('../../actions/NotificationActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
-//var CreateMap = require('../CreateMap/CreateMap');
-//var AddMapActions = require('../../actions/AddMapActions');
 var AddMapModal = require('./AddMapModal');
 var ImageCrop = require('../ImageCrop');
 var checkClientError = require('../../services/client-error-response').checkClientError;
-var debug = require('../../services/debug')('story-editor');
+//var debug = require('../../services/debug')('story-editor');
 
 var request = require('superagent');
 
@@ -57,7 +55,8 @@ var StoryEditor = React.createClass({
       author: this.props.story.author,
       story_id: this.props.story.story_id,
       unsavedChanges: false,
-      saving: false
+      saving: false,
+      addingMap: false
     };
   },
  componentDidMount(){
@@ -86,6 +85,7 @@ var StoryEditor = React.createClass({
  },
 
  shouldComponentUpdate(nextProps, nextState) {
+   if(nextState.addingMap) return true;
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -100,9 +100,6 @@ var StoryEditor = React.createClass({
     return false;
  },
 
- componentDidUpdate(){
-
- },
 
   handleBodyChange(body) {
     var _this = this;
@@ -337,9 +334,9 @@ pasteHtmlAtCaret(html, rangeInput=null) {
 onAddMap(map){
   var _this = this;
   var map_id = map.map_id;
+  //this.setState({addingMap: true});
   this.removeMapCloseButtons();
   var range = null;
-  var prevMap = null;
 
   var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
 
@@ -355,12 +352,13 @@ onAddMap(map){
 
   _this.handleBodyChange($('.storybody').html());
 
-  this.setState({addingMap: true});
+  /*
   setTimeout(function(){
     _this.setState({addingMap: false});
     _this.addMapCloseButtons();
 
   }, 15000);
+  */
 
 },
 
@@ -398,10 +396,7 @@ addMapCloseButtons(){
     $(map).find('i').first().click(function(){
       _this.removeMap(map_id);
     });
-    $(map).find('i').last().click(function(){
-      _this.editMap(map_id);
-      debug('edit: ' + map_id);
-    });
+
     $('.edit-map-tooltips').tooltip();
   });
 },
