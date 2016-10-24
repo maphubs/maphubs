@@ -425,7 +425,7 @@ module.exports = function(app) {
         if(allowed){
           canEdit = true;
         }
-        Promise.all([
+        return Promise.all([
           Story.getStoryByID(story_id),
           Hub.getHubByID(hub_id)
         ])
@@ -449,8 +449,8 @@ module.exports = function(app) {
               },
                req
             });
-          }).catch(nextError(next));
-      });
+          });
+      }).catch(nextError(next));
     }
   });
 
