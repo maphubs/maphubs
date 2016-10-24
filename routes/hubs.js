@@ -627,31 +627,6 @@ module.exports = function(app) {
     }
   });
 
-  app.post('/hub/:hubid/api/story/addimage', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var data = req.body;
-    if (data && data.story_id && data.image) {
-      Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          Image.addStoryImage(data.story_id, data.image, data.info)
-            .then(function(image_id) {
-              res.send({
-                success: true, image_id
-              });
-            }).catch(apiError(res, 500));
-        }else {
-          notAllowedError(res, 'story');
-        }
-      }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-  });
 
   app.post('/hub/:hubid/api/story/removeimage', function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
