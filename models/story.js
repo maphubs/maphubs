@@ -1,6 +1,6 @@
 var knex = require('../connection.js');
 var Promise = require('bluebird');
-var Hub = require('./hub');
+var _find = require('lodash.find');
 var debug = require ('../services/debug')('model/story');
 
 module.exports = {
@@ -237,7 +237,9 @@ module.exports = {
       });
     },
 
+
     allowedToModify(story_id, user_id) {
+      var _this = this;
       //look in both hub stories and user Stories
       return Promise.all([
         knex('omh.hub_stories').where({story_id}),
@@ -249,7 +251,7 @@ module.exports = {
           //check if user is allow to modify the hub
           var hub_id = hubStories[0].hub_id;
           debug('found a hub story in hub: '+ hub_id);
-          return Hub.allowedToModify(hub_id, user_id);
+          return _this.allowedToModifyHub(hub_id, user_id);
         }else if(userStories && userStories.length > 0){
           debug('found a user story');
           // the story must belong to the requesting user
@@ -264,5 +266,24 @@ module.exports = {
           throw new Error('Story not found: '+ story_id);
         }
       });
+    },
+
+  allowedToModifyHub(hub_id, user_id){
+    debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
+    return this.getHubMembers(hub_id)
+      .then(function(users){
+        if(_find(users, {id: user_id}) !== undefined){
+          debug('user found');
+          return true;
+        }
+        debug('user not allowed: ' + user_id);
+        return false;
+      });
+    },
+
+    getHubMembers(hub_id) {
+      return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
+        .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
+        .whereRaw('lower(omh.hub_memberships.hub_id) = ?', hub_id.toLowerCase());
     }
 };
