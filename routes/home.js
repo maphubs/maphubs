@@ -25,7 +25,7 @@ module.exports = function(app) {
 
       res.render('home', {
         title: config.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
-        descripion: config.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
+        description: config.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
         props: {
           trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories
