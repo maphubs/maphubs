@@ -35,6 +35,9 @@ render(){
           <div className="container valign">
             <h4 lang={this.props.locale} style={{color: 'rgba(255,255,255,0.9)'}}>{this.props.title}</h4>
             <p lang={this.props.locale} className="flow-text" style={{color: 'rgba(255,255,255,0.9)'}}>{this.props.subTitle}</p>
+              <div className="row center center-align">
+                <a className="btn waves-effect" style={{borderRadius: '25px'}} lang="en" onClick={function(){HS.beacon.open();}} href="#">Contact Us</a>
+              </div>
           </div>
 
         </div>
