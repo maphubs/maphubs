@@ -112,7 +112,7 @@ var Maps = React.createClass({
     }
 
     var featured = '';
-    if(!config.mapHubsPro){
+    if(!config.mapHubsPro && featuredCards && featuredCards.length > 0){
       featured = (
         <div className="row">
           <div className="col s12">
