@@ -34,9 +34,7 @@ var Services = React.createClass({
                     currently offers a range of service to help you get mapping.
                   `)} />
             <div className="container">
-              <p lang="en" style={{fontSize: '18px', textAlign: 'center'}}>
-                Contact us at: <a href="#" onClick={function(){HS.beacon.open();}}>{config.contactEmail}</a>
-              </p>
+
               <h4 lang="en">Data Support</h4>
 
               <h5 lang="en">Data Loading, Processing, and Analysis</h5>
