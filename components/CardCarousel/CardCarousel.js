@@ -44,8 +44,10 @@ var CardCarousel = React.createClass({
        responsive: this.props.responsive,
        lazyLoad: true
      };
-     return (
-       <div className="card-carousel">
+
+     var slider = '';
+     if(this.props.cards && this.props.cards.length > 0){
+       slider = (
          <Slider ref="slider" {...settings}>
            {this.props.cards.map(function(card){
              return (
@@ -55,6 +57,12 @@ var CardCarousel = React.createClass({
             );
            })}
          </Slider>
+       );
+     }
+
+     return (
+       <div className="card-carousel">
+        {slider}
       </div>
      );
   }
