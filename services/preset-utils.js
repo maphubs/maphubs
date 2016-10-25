@@ -46,7 +46,7 @@ module.exports = {
 
         if((preset.type == 'radio' || preset.type == 'combo') && preset.options){
           var optionsArr = preset.options.split(',');
-          optionsArr.forEach(function(option){
+          optionsArr.map(function(option){
             option = option.trim();
           });
           presetObject.options = optionsArr;
