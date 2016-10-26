@@ -85,6 +85,7 @@ module.exports = {
     .select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets', 'style', 'legend_html', 'labels',
+    'extent_bbox',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .where({published: true, status: 'published'})
     .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
@@ -283,6 +284,7 @@ module.exports = {
             created_by_user_id: user_id,
             creation_time: knex.raw('now()'),
             updated_by_user_id: user_id,
+            extent: '[-175,-85,175,85]', //needs to be slightly less than global otherwise mapbox gl gets confused
             last_updated: knex.raw('now()')
         });
     },
