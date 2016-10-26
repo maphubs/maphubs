@@ -284,7 +284,7 @@ module.exports = {
             created_by_user_id: user_id,
             creation_time: knex.raw('now()'),
             updated_by_user_id: user_id,
-            extent: '[-175,-85,175,85]', //needs to be slightly less than global otherwise mapbox gl gets confused
+            extent_bbox: '[-175,-85,175,85]', //needs to be slightly less than global otherwise mapbox gl gets confused
             last_updated: knex.raw('now()')
         });
     },
