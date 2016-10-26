@@ -1,18 +1,16 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Map = require('../components/Map/Map');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
+var cardUtil = require('../services/card-util');
 var Promise = require('bluebird');
 var request = require('superagent-bluebird-promise');
 var debug = require('../services/debug')('home');
 var $ = require('jquery');
 
 var config = require('../clientconfig');
-var urlUtil = require('../services/url-util');
-var slug = require('slug');
 var _shuffle = require('lodash.shuffle');
 
 var MessageActions = require('../actions/MessageActions');
@@ -65,7 +63,7 @@ var Search = React.createClass({
 
   componentDidUpdate(){
     if(this.state.searchResult){
-      var scrollTarget = $(ReactDOM.findDOMNode(this.refs.search));
+      var scrollTarget = $(this.refs.search);
       $('html,body').animate({
          scrollTop: scrollTarget.offset().top
        }, 1000);
@@ -174,95 +172,12 @@ var Search = React.createClass({
     });
   },
 
-  getLayerCard(layer){
-    var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
-    return {
-      id: layer.layer_id.toString(),
-      title: layer.name,
-      description: layer.description,
-      image_url,
-      source: layer.source,
-      group: layer.owned_by_group_id,
-      type: 'layer',
-      link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
-    };
-  },
-
-  getGroupCard(group){
-    var image_url = null;
-    if(group.hasimage){
-      image_url = '/group/' + group.group_id + '/image';
-    }
-    return {
-      id: group.group_id,
-      title: group.name,
-      description: group.description,
-      image_url,
-      link: '/group/' + group.group_id,
-      group: group.group_id,
-      type: 'group'
-    };
-  },
-
-  getHubCard(hub){
-    var title = hub.name.replace('&nbsp;', '');
-    var hubUrl = urlUtil.getHubUrl(hub.hub_id, config.host, config.port);
-    return {
-      id: hub.hub_id,
-      title,
-      description: hub.description,
-      image_url: '/hub/' + hub.hub_id + '/images/logo',
-      background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
-      link: hubUrl,
-      type: 'hub'
-    };
-  },
-
-  getMapCard(map){
-    var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
-    return {
-      id: map.map_id.toString(),
-      title: map.title ? map.title : '',
-      image_url,
-      link: '/user/' + map.username + '/map/' + map.map_id,
-      type: 'map',
-      map
-    };
-  },
-
-  getStoryCard(story){
-    var title = story.title.replace('&nbsp;', '');
-    var story_url = '';
-    if(story.display_name){
-      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-      story_url = baseUrl + '/user/' + story.display_name;
-    }else if(story.hub_id){
-      var hubUrl = urlUtil.getHubUrl(story.hub_id, config.host, config.port);
-      story_url = hubUrl;
-    }
-    story_url += '/story/' + story.story_id + '/' + slug(title);
-
-    var image_url = null;
-    if(story.firstimage){
-      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
-    }
-
-    return {
-      id: story.story_id.toString(),
-      title,
-      image_url,
-      link: story_url,
-      type: 'story',
-      story
-    };
-  },
-
   getMixedCardSet(layers, groups, hubs, maps, stories){
-    return _shuffle(layers.map(this.getLayerCard)
-      .concat(groups.map(this.getGroupCard))
-      .concat(hubs.map(this.getHubCard))
-      .concat(maps.map(this.getMapCard))
-      .concat(stories.map(this.getStoryCard))
+    return _shuffle(layers.map(cardUtil.getLayerCard)
+      .concat(groups.map(cardUtil.getGroupCard))
+      .concat(hubs.map(cardUtil.getHubCard))
+      .concat(maps.map(cardUtil.getMapCard))
+      .concat(stories.map(cardUtil.getStoryCard))
     );
   },
 
