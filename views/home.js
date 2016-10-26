@@ -62,7 +62,7 @@ var Home = React.createClass({
          title: this.__('MapHubs is now Map for Environment'),
          text: this.__('We have merged MapHubs with Map for Environment'),
          buttonText: this.__('Learn More'),
-         link: '/about',
+         link: 'https://mapforenvironment.org/user/map4env/story/61/MapHubs-is-now-Map-for-Environment',
          img: '/assets/home/Moabi–Chameleon.jpg'
        },
        {
