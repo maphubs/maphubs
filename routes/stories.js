@@ -1,5 +1,5 @@
 /* @flow weak */
-//var knex = require('../connection.js');
+var knex = require('../connection.js');
 //var debug = require('../services/debug')('routes/stories');
 var login = require('connect-ensure-login');
 var User = require('../models/user');
