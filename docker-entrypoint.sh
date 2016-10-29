@@ -44,4 +44,4 @@ EOF
 node node_modules/knex/bin/cli.js migrate:latest --env production
 
 #start server
-pm2 start app.js --name maphubs --node-args="--max-old-space-size=$NODE_MEM_SIZE" --no-daemon
+node --max-old-space-size=$NODE_MEM_SIZE app.js
