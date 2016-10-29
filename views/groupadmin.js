@@ -359,10 +359,10 @@ var GroupAdmin = React.createClass({
                 return (
                   <li className="collection-item" key={layer.layer_id}>
                     <div>{layer.name}
-                      <a className="secondary-content" href={'/layer/' + layer.layer_id + '/map' + '/' + slug(layer.name)}>
+                      <a className="secondary-content" href={'/layer/map/' + layer.layer_id + '/' + slug(layer.name)}>
                         <i className="material-icons">map</i>
                       </a>
-                      <a className="secondary-content" href={'/layer/' + layer.layer_id + '/' + slug(layer.name)}>
+                      <a className="secondary-content" href={'/layer/info/' + layer.layer_id + '/' + slug(layer.name)}>
                         <i className="material-icons">info</i>
                       </a>
                     </div>
