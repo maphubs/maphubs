@@ -44,7 +44,7 @@ var Footer = React.createClass({
                   <li>{this.__('Learn More')}</li>
                   <li><a href="/about">{this.__('About')}</a></li>
                   <li><a href="/services">{this.__('Services')}</a></li>
-                  <li><a href="/help">{this.__('Help')}</a></li>
+                  <li><a href="http://help.maphubs.com" target="_blank">{this.__('Help')}</a></li>
                   <li><a href="/journalists">{this.__('Journalists')}</a></li>
                   <li><a href="/terms">{this.__('Terms')}</a></li>
                   <li><a href="/privacy">{this.__('Privacy')}</a></li>
