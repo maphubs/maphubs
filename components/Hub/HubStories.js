@@ -53,7 +53,7 @@ var HubStories = React.createClass({
     if(_this.props.editing){
       addButton = (
         <div>
-          <a href={baseUrl + '/story/create'} target="_blank" className="btn center-align center"><i className="material-icons left">add</i>{this.__('Add Story')}</a>
+          <a href={baseUrl + '/story/create'} className="btn center-align center"><i className="material-icons left">add</i>{this.__('Add Story')}</a>
         </div>
 
       );
