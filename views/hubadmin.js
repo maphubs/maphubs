@@ -185,7 +185,7 @@ var HubAdmin = React.createClass({
         <HubNav hubid={this.props.hub.hub_id}/>
         <main>
           <div className="row no-margin">
-            <HubBanner subPage/>
+            <HubBanner hubid={this.props.hub.hub_id} subPage/>
           </div>
           <div className="container">
             <h4>{this.__('Manage Hub')}</h4>
