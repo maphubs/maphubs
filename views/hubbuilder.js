@@ -8,6 +8,7 @@ var TextInput = require('../components/forms/textInput');
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 
+import Progress from '../components/Progress';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -115,8 +116,10 @@ var HubBuilder = React.createClass({
 
      saveHub(model){
        var _this = this;
+       this.setState({canSubmit: false, saving:true}); //disable submit button
        if(this.state.hub.created){
          HubActions.updateHub(model.hub_id, model.name, model.description, model.location, model.published, function(err){
+            this.setState({saving:false});
            if(err){
              MessageActions.showMessage({title: _this.__('Server Error'), message: err});
            }else{
@@ -162,6 +165,7 @@ var HubBuilder = React.createClass({
         <div className="container">
           <h4>{this.__('Create a Hub')}</h4>
             <div className="row">
+              <Progress id="create-hub-progess" title={this.__('Creating Hub')} dismissible={false} show={this.state.saving}/>
               <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className="row">
                   <TextInput name="hub_id" label={this.__('Hub ID')} icon="group_work" className="col s6"
@@ -187,7 +191,6 @@ var HubBuilder = React.createClass({
                 </div>
 
               </Formsy.Form>
-
            </div>
         </div>
       </div>
