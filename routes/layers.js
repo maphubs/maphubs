@@ -181,7 +181,7 @@ module.exports = function(app) {
     Layer.allowedToModify(layer_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Promise.all([
+          return Promise.all([
           Layer.getLayerByID(layer_id),
           Group.getGroupsForUser(user_id)
         ])

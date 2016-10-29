@@ -118,7 +118,7 @@ module.exports = function(app) {
       User.getUserByName(username)
       .then(function(user){
         if(user){
-            Group.getGroupsForUser(user.id)
+          return Group.getGroupsForUser(user.id)
           .then(function(groups){
             res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit}, req});
           });

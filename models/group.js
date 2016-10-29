@@ -72,8 +72,11 @@ module.exports = {
     },
 
     getGroupsForUser(user_id) {
-      return knex.select('omh.groups.*').from('omh.group_memberships')
+      return knex.select('omh.groups.*',
+      knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'))
+      .from('omh.group_memberships')
         .leftJoin('omh.groups', 'omh.group_memberships.group_id', 'omh.groups.group_id')
+        .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
         .where('omh.group_memberships.user_id', user_id);
     },
 
