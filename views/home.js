@@ -8,7 +8,6 @@ import SliderDecorators from '../components/Home/SliderDecorators';
 
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
 var MapHubsProLinks = require('../components/Home/MapHubsProLinks');
-var config = require('../clientconfig');
 var _shuffle = require('lodash.shuffle');
 var cardUtil = require('../services/card-util');
 
@@ -67,7 +66,7 @@ var Home = React.createClass({
        },
        {
          title: this.__('Mapping for Everyone'),
-         text: config.productName + ' ' + this.__('is a home for the world\'s open map data and an easy tool for making maps'),
+         text: MAPHUBS_CONFIG.productName + ' ' + this.__('is a home for the world\'s open map data and an easy tool for making maps'),
          buttonText: this.__('Learn More'),
          link: '/about',
          img: '/assets/home/Moabi-Aerial.jpg'
@@ -88,14 +87,14 @@ var Home = React.createClass({
        },
        {
          title: this.__('Explore Maps'),
-         text: config.productName + ' ' + this.__('has map layers for environment, natural resources, and development'),
+         text: MAPHUBS_CONFIG.productName + ' ' + this.__('has map layers for environment, natural resources, and development'),
          buttonText: this.__('Explore Maps'),
          link: '/explore',
          img: '/assets/home/MapHubs-Map.jpg'
        },
        {
-         title: config.productName + ' ' + this.__('Services'),
-         text: config.productName + ' ' + this.__('currently offers a range of service to help you get mapping'),
+         title: MAPHUBS_CONFIG.productName + ' ' + this.__('Services'),
+         text: MAPHUBS_CONFIG.productName + ' ' + this.__('currently offers a range of service to help you get mapping'),
          buttonText: this.__('Learn More'),
          link: '/services',
          img: '/assets/home/Moabi-Forest.jpg'
@@ -103,7 +102,7 @@ var Home = React.createClass({
      ];
 
      var homePageCarousel = '', proLinks = '';
-     if(config.mapHubsPro){
+     if(MAPHUBS_CONFIG.mapHubsPro){
        proLinks = (
          <div className="row">
           <MapHubsProLinks />
@@ -153,7 +152,7 @@ var Home = React.createClass({
              <div>
                 <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
                   {this.__('Trending')}
-                  <i className="material-icons" style={{fontWeight: 'bold', color: config.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
+                  <i className="material-icons" style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
                 </h5>
              </div>
            </div>

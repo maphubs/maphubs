@@ -5,13 +5,12 @@ var Promise = require('bluebird');
 var log = require('../services/log.js');
 var debug = require('../services/debug')('routes/search');
 var extent = require('turf-extent');
-var config = require('../clientconfig');
 
 module.exports = function(app) {
 
   app.get('/search', function(req, res) {
       res.render('search', {
-        title: req.__('Search') + ' - ' + config.productName,
+        title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {}, req
       });
   });

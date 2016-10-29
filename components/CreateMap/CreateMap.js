@@ -343,8 +343,7 @@ var CreateMap = React.createClass({
 
   render(){
     var _this = this;
-    //var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
-
+  
     var title = '';
     if(this.props.showTitleEdit){
       var placeholder = null;

@@ -4,7 +4,6 @@ var Actions = require('../actions/LayerActions');
 var PresetActions = require('../actions/presetActions');
 var request = require('superagent');
 var mapStyles = require('../components/Map/styles');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var debug = require('../services/debug')('layer-store');
@@ -51,7 +50,7 @@ module.exports = Reflux.createStore({
 
   resetStyleGL(){
     var layer = this.state.layer;
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     if(layer.is_external && layer.external_layer_type == 'mapbox-map'){
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url);
     }else if(layer.is_external && layer.external_layer_config.type == 'raster'){

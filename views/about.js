@@ -10,8 +10,6 @@ var Locales = require('../services/locales');
 
 var SubPageBanner = require('../components/Home/SubPageBanner');
 
-var config = require('../clientconfig');
-
 var About = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -33,7 +31,7 @@ var About = React.createClass({
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/Moabi-Aerial.jpg"
                title={this.__('About')}
-               subTitle={config.productName + ' ' +this.__(`is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.`)} />
+               subTitle={MAPHUBS_CONFIG.productName + ' ' +this.__(`is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.`)} />
           <main className="container">
 
             <div className="row" style={{marginTop: '30px'}}>
@@ -63,7 +61,7 @@ var About = React.createClass({
                     </div>
                     <div className="col s12 m12 l6">
                       <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                        {config.productName} helps environmental and development practitioners and journalists access global map data and make maps. It helps establish connections between data producers and communities that use the data and tracks how their data is used. {config.productName} already hosts hundreds of map layers from oil palm plantations in Indonesia, planned hydroelectric dams in Myanmar, to indigenous territories in Colombia. It also has simple, easy to use tools to turn data into fast, beautiful interactive maps for publishing in reports, social media, and websites.
+                        {MAPHUBS_CONFIG.productName} helps environmental and development practitioners and journalists access global map data and make maps. It helps establish connections between data producers and communities that use the data and tracks how their data is used. {MAPHUBS_CONFIG.productName} already hosts hundreds of map layers from oil palm plantations in Indonesia, planned hydroelectric dams in Myanmar, to indigenous territories in Colombia. It also has simple, easy to use tools to turn data into fast, beautiful interactive maps for publishing in reports, social media, and websites.
                       </p>
                     </div>
                 </div>
@@ -71,7 +69,7 @@ var About = React.createClass({
                 <h4 lang="en">Our impact</h4>
                   <div className="col s12 m12 l5">
                     <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                      The technology is already improving transparency and strengthening decision making in some of the most remote, biologically rich, and impoverished parts of the world. Tried and tested in the Democratic Republic of the Congo, {config.productName} is supporting health researchers mapping villages in DRC for sleeping sickness vaccination campaigns, monitoring the encroachment of industrial agricultural in to orangutan habitat in Indonesia, and spotting illegal logging in the Peruvian Amazon.
+                      The technology is already improving transparency and strengthening decision making in some of the most remote, biologically rich, and impoverished parts of the world. Tried and tested in the Democratic Republic of the Congo, {MAPHUBS_CONFIG.productName} is supporting health researchers mapping villages in DRC for sleeping sickness vaccination campaigns, monitoring the encroachment of industrial agricultural in to orangutan habitat in Indonesia, and spotting illegal logging in the Peruvian Amazon.
                     </p>
                   </div>
                   <div className="row no-margin">
@@ -89,7 +87,7 @@ var About = React.createClass({
                       </div>
                       <div className="col s12 m12 l6">
                         <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
-                          {config.productName}’s goal is to build a global community to make map data available to all and provide cost effective map making technology to anyone, anywhere who wants to make a map. Immediate goals are expanding the database, integrating mobile applications for field mapping, and building premium features for custom map making.
+                          {MAPHUBS_CONFIG.productName}’s goal is to build a global community to make map data available to all and provide cost effective map making technology to anyone, anywhere who wants to make a map. Immediate goals are expanding the database, integrating mobile applications for field mapping, and building premium features for custom map making.
                         </p>
                       </div>
                   </div>
@@ -128,8 +126,8 @@ var About = React.createClass({
 
             <div className="divider"></div>
             <div className="row">
-              <p lang={this.props.locale}>{config.productName + ' ' + this.__('Version:')} {this.props.version}</p>
-              <p lang={this.props.locale}>{config.productName + ' ' + this.__('is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
+              <p lang={this.props.locale}>{MAPHUBS_CONFIG.productName + ' ' + this.__('Version:')} {this.props.version}</p>
+              <p lang={this.props.locale}>{MAPHUBS_CONFIG.productName + ' ' + this.__('is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
             </div>
           </main>
           <Footer />

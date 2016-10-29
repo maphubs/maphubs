@@ -1,6 +1,5 @@
 var Layer = require('../models/layer');
 var urlUtil = require('../services/url-util');
-var config = require('../clientconfig');
 var slug = require('slug');
 var apiError = require('../services/error-response').apiError;
 
@@ -9,7 +8,7 @@ module.exports = function(app) {
 app.get('/api/layer/:id/tile.json', function(req, res) {
 
     var layer_id = parseInt(req.params.id || '', 10);
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
 
     Layer.getLayerByID(layer_id)
     .then(function(layer){

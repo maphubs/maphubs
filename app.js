@@ -22,7 +22,6 @@ var KnexSessionStore = require('connect-session-knex')(session);
 var knex = require('./connection.js');
 var log = require('./services/log.js');
 
-
 var Promise = require('bluebird');
 //promise config needs to be here so it runs before anything else uses bluebird.
 Promise.config({
@@ -94,6 +93,8 @@ app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
 
 //static files
 app.use('/assets', express.static('assets'));
+
+app.use('/clientconfig.js', express.static('clientconfig.js'));
 
 if (app.get('env') !== 'production') {
   app.use('/edit', express.static('../iD'));

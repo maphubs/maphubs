@@ -5,7 +5,6 @@ var CardCarousel = require('../CardCarousel/CardCarousel');
 var cardUtil = require('../../services/card-util');
 var debug = require('../../services/debug')('mapmaker/addlayerpanel');
 
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var request = require('superagent');
 var checkClientError = require('../../services/client-error-response').checkClientError;
@@ -41,7 +40,7 @@ var AddLayerPanel = React.createClass({
   handleSearch(input) {
     var _this = this;
     debug('searching for: ' + input);
-    request.get(urlUtil.getBaseUrl(config.host, config.port) + '/api/layers/search?q=' + input)
+    request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
     .end(function(err, res){
       checkClientError(res, err, function(err){

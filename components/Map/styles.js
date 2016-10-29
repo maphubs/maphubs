@@ -1,4 +1,3 @@
-var config = require('../../clientconfig');
 var debug = require('../../services/debug')('map-styles');
 var _remove = require('lodash.remove');
 
@@ -333,7 +332,7 @@ module.exports = {
 
       if(source){
         if(source.type === 'vector'){
-          var url = config.tileServiceUrl + '/tiles/layer/' + layer_id + '/index.json';
+          var url = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/layer/' + layer_id + '/index.json';
 
           styles.sources['omh-' + layer_id] = {
             "type": "vector",

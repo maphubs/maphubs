@@ -3,7 +3,6 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
-var config = require('../clientconfig');
 
 var Footer = React.createClass({
 
@@ -25,7 +24,7 @@ var Footer = React.createClass({
                 <a href="http://moabi.org">
                   <img width="50" height="50" className="responsive-img" style={{marginLeft: '-10px'}} src="/assets/moabi-logo.png" alt="Moabi.org" /></a>
                   <br />
-                  <small>{config.productName + this.__(' is a Moabi project')}</small>
+                  <small>{MAPHUBS_CONFIG.productName + this.__(' is a Moabi project')}</small>
                   <br />
                   <small>{this.__('View the open source code on ')}<a href="https://github.com/maphubs">GitHub</a></small>
 
@@ -34,8 +33,8 @@ var Footer = React.createClass({
 
                 <ul>
                   <li>{this.__('Contact Us')}</li>
-                  <li><a className="text-darken-3 center" href="#" onClick={function(){HS.beacon.open();}}>{config.contactEmail}</a></li>
-                  <li><a className="text-darken-3 center" href={'http://twitter.com/' + config.twitter}>@{config.twitter}</a></li>
+                  <li><a className="text-darken-3 center" href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></li>
+                  <li><a className="text-darken-3 center" href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}>@{MAPHUBS_CONFIG.twitter}</a></li>
 
                 </ul>
               </div>
@@ -54,7 +53,7 @@ var Footer = React.createClass({
           </div>
           <div className="footer-copyright white">
             <div className="grey-text container center">
-              <small>&copy; 2016 {config.productName}</small>
+              <small>&copy; 2016 {MAPHUBS_CONFIG.productName}</small>
             </div>
           </div>
 

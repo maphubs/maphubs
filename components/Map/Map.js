@@ -4,7 +4,6 @@ var classNames = require('classnames');
 var FeatureBox = require('./FeatureBox');
 var styles = require('./styles');
 var debug = require('../../services/debug')('map');
-var config = require('../../clientconfig');
 var isEqual = require('lodash.isequal');
 var _debounce = require('lodash.debounce');
 var Promise = require('bluebird');
@@ -390,7 +389,7 @@ var Map = React.createClass({
         var url = source.url;
         if(key != 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
           //load as tilejson
-          url = url.replace('{MAPHUBS_DOMAIN}', config.tileServiceUrl);
+          url = url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
           requests.push(request.get(url)
           .then(function(res) {
             var tileJSON = res.body;
@@ -410,7 +409,7 @@ var Map = React.createClass({
         );
       } else if(type === 'mapbox-style'){
         var mapboxid = source.mapboxid;
-        url = 'https://api.mapbox.com/styles/v1/' + mapboxid + '?access_token=' + config.MAPBOX_ACCESS_TOKEN;
+        url = 'https://api.mapbox.com/styles/v1/' + mapboxid + '?access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
         requests.push(request.get(url)
           .then(function(res) {
             var mbstyle = res.body;
@@ -488,7 +487,7 @@ var Map = React.createClass({
   createMap() {
     var _this = this;
     debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
-    mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
+    mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
       this.getBaseMapFromName(this.state.baseMap, function(baseMap){
         var dragRotate  = false;
         if(!_this.props.enableRotation){
@@ -1094,7 +1093,7 @@ map.on('mousemove', function(e) {
     if(optimize){
       //url += 'optimize=true&';
     }
-    url += 'access_token=' + config.MAPBOX_ACCESS_TOKEN;
+    url += 'access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
     request.get(url)
     .then(function(res) {
       cb(res.body);
@@ -1156,7 +1155,7 @@ map.on('mousemove', function(e) {
     var logo = '', children = '';
     if(this.state.mapLoaded && this.props.showLogo){
       logo = (
-        <img style={{position:'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={config.logoSmallWidth} height={config.logoSmallHeight} src={config.logoSmall} alt="Logo"/>
+        <img style={{position:'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt="Logo"/>
       );
       children = this.props.children;
     }
@@ -1243,7 +1242,7 @@ map.on('mousemove', function(e) {
                     lineHeight: '30px',
                     display: 'none',
                     width: '30px',
-                    color: config.primaryColor,
+                    color: MAPHUBS_CONFIG.primaryColor,
                     borderRadius: '4px',
                     cursor: 'pointer',
                     backgroundColor: 'white',
@@ -1275,7 +1274,7 @@ map.on('mousemove', function(e) {
                     lineHeight: '30px',
                     display: 'none',
                     width: '30px',
-                    color: config.primaryColor,
+                    color: MAPHUBS_CONFIG.primaryColor,
                     borderRadius: '4px',
                     cursor: 'pointer',
                     backgroundColor: 'white',

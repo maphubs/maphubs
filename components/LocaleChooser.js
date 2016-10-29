@@ -7,8 +7,6 @@ var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 var $ = require('jquery');
 
-var config = require('../clientconfig');
-
 var LocaleChooser = React.createClass({
 
   mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],

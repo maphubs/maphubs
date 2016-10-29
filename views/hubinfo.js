@@ -23,7 +23,6 @@ var Confirmation = require('../components/confirmation');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
-var config = require('../clientconfig');
 
 import Progress from '../components/Progress';
 
@@ -129,7 +128,7 @@ var HubInfo = React.createClass({
     }
 
     var linkBaseUrl = '';
-    if(config.mapHubsPro){
+    if(MAPHUBS_CONFIG.mapHubsPro){
       linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
     }
 

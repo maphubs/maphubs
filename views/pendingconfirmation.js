@@ -10,7 +10,6 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
-var config = require('../clientconfig');
 
 var PendingConfirmation = React.createClass({
 
@@ -77,7 +76,7 @@ var PendingConfirmation = React.createClass({
                 style={{marginTop: '25px', marginLeft: 'auto', marginRight: 'auto'}}>
                 {this.__('Resend Email')}
               </button>
-              <p className="center-align">{this.__('If you are unable to access your account please contact us at ')}<a href="#" onClick={function(){HS.beacon.open();}}>{config.contactEmail}</a></p>
+              <p className="center-align">{this.__('If you are unable to access your account please contact us at ')}<a href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></p>
             </div>
           </div>
       </main>

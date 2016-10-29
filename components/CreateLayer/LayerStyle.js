@@ -15,7 +15,6 @@ var MessageActions = require('../../actions/MessageActions');
 //var NotificationActions = require('../../actions/NotificationActions');
 import Progress from '../Progress';
 
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 
 var OpacityChooser = require('../LayerDesigner/OpacityChooser');
@@ -115,7 +114,7 @@ var LayerStyle = React.createClass({
     if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'ags-mapserver-tiles'){
       style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
     }else{
-      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      var baseUrl = urlUtil.getBaseUrl();
       style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
     }
 

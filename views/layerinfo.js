@@ -9,7 +9,6 @@ var $ = require('jquery');
 var _map = require('lodash.map');
 var _find = require('lodash.find');
 var ReactDisqusThread = require('react-disqus-thread');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var TerraformerGL = require('../services/terraformerGL.js');
 var GroupTag = require('../components/Groups/GroupTag');
@@ -91,7 +90,7 @@ var LayerInfo = React.createClass({
       dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/json/data.geojson';
       presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.remote_layer_id;
     }else{
-      baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      baseUrl = urlUtil.getBaseUrl();
       dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson';
       presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.layer_id;
     }
@@ -249,7 +248,7 @@ var LayerInfo = React.createClass({
     var position = this.refs.map.getPosition();
     var zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
   },
 
@@ -380,7 +379,6 @@ var LayerInfo = React.createClass({
 	render() {
     var _this = this;
     var glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.layer.data_type];
-    //var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
 
     var dataTabContent = '';
     if(this.state.originalRows && typeof window !== 'undefined'){
@@ -648,7 +646,7 @@ var LayerInfo = React.createClass({
     }
 
     var disqus = '';
-    if(!config.mapHubsPro){
+    if(!MAPHUBS_CONFIG.mapHubsPro){
       disqus = (
         <ReactDisqusThread
               shortname="maphubs"
@@ -661,7 +659,7 @@ var LayerInfo = React.createClass({
       disqus = (
         <div>
           <h5>Disabled</h5>
-          <p>{config.productName + this.__(' uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.')}</p>
+          <p>{MAPHUBS_CONFIG.productName + this.__(' uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.')}</p>
         </div>
       );
     }

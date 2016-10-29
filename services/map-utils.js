@@ -2,7 +2,6 @@
 var Promise = require('bluebird');
 var Map = require('../models/map');
 var nextError = require('./error-response').nextError;
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var debug = require('./debug')('map-utils');
 
@@ -19,7 +18,7 @@ module.exports = {
       if(map.title){
         title = map.title;
       }
-      title += ' - ' + config.productName;
+      title += ' - ' + MAPHUBS_CONFIG.productName;
         res.render('embedmap', {
           title,
           props:{map, layers, canEdit, isStatic},
@@ -40,8 +39,8 @@ module.exports = {
       if(map.title){
         title = map.title;
       }
-      title += ' - ' + config.productName;
-      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      title += ' - ' + MAPHUBS_CONFIG.productName;
+      var baseUrl = urlUtil.getBaseUrl();
         res.render('usermap',
          {
            title,

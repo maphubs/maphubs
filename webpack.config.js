@@ -62,8 +62,7 @@ module.exports = {
     pendingconfirmation: "./client/pendingconfirmation",
     emailconfirmation: "./client/emailconfirmation",
     vendor: ["./materialize.config.scss", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
-    locales: ["./services/locales"],
-    clientconfig: ["./clientconfig"]
+    locales: ["./services/locales"]
   },
 
   resolve: {
@@ -142,14 +141,15 @@ module.exports = {
        "mapboxgl": "mapbox-gl"
     }),
     new webpack.optimize.CommonsChunkPlugin({
-           names: ["clientconfig", "locales", "vendor"],
+           names: ["locales", "vendor"],
                        minChunks: Infinity
    }),
    new ExtractTextPlugin("[name].css"),
-   new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly)$/),
+   new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly|clientconfig)$/),
    new webpack.DefinePlugin({
     'process.env': {
-        APP_ENV: JSON.stringify('browser')
+        APP_ENV: JSON.stringify('browser'),
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }
 })
   ],

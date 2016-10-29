@@ -17,8 +17,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
-var config = require('../clientconfig.js');
-
 var debug = require('../services/debug')('views/signup');
 var $ = require('jquery');
 
@@ -134,7 +132,7 @@ var Signup = React.createClass({
 
   render() {
     var joinList = '';
-    if(!config.mapHubsPro){
+    if(!MAPHUBS_CONFIG.mapHubsPro){
       joinList = (
         <div className="row valign-wrapper" style={{marginTop: '5px'}}>
           <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
@@ -155,7 +153,7 @@ var Signup = React.createClass({
       <Header />
       <main>
       <div className="container">
-        <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for') + ' ' + config.productName}</h4>
+        <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for') + ' ' + MAPHUBS_CONFIG.productName}</h4>
         <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div className="row valign-wrapper" style={{paddingTop: '25px'}}>
             <TextInput name="username" label={this.__('User Name')} icon="perm_identity"

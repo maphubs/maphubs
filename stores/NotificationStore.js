@@ -3,7 +3,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var Actions = require('../actions/NotificationActions');
 var debug = require('../services/debug')('stores/notification-store');
 var $ = require('jquery');
-var config = require('../clientconfig');
 
 module.exports = Reflux.createStore({
   mixins: [StateMixin],
@@ -15,7 +14,7 @@ module.exports = Reflux.createStore({
       message: '',
       action: null,
       onClick() {},
-      backgroundColor: config.primaryColor,
+      backgroundColor: MAPHUBS_CONFIG.primaryColor,
       color: 'white',
       position: 'topright',
       dismissAfter: 3000,

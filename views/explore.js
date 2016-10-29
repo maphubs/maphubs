@@ -4,7 +4,6 @@ var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 
-var config = require('../clientconfig');
 var _shuffle = require('lodash.shuffle');
 var CardFilter = require('../components/Home/CardFilter');
 var cardUtil = require('../services/card-util');
@@ -45,11 +44,11 @@ var Home = React.createClass({
 
   getInitialState(){
     return {
-      storyMode: config.mapHubsPro ? 'popular' : 'featured',
-      mapMode: config.mapHubsPro ? 'popular' : 'featured',
-      hubMode: config.mapHubsPro ? 'popular' : 'featured',
-      groupMode: config.mapHubsPro ? 'popular' : 'featured',
-      layerMode: config.mapHubsPro ? 'popular' : 'featured',
+      storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
+      mapMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
+      hubMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
+      groupMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
+      layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
 
       featuredStoryCards: _shuffle(this.props.featuredStories.map(cardUtil.getStoryCard)),
       popularStoryCards: _shuffle(this.props.popularStories.map(cardUtil.getStoryCard)),
@@ -137,7 +136,7 @@ var Home = React.createClass({
               `)} />
             <div className="row" style={{marginTop: '20px', marginBottom: 0, marginRight: '5px'}}>
           <div className="col s12" style={{paddingLeft: '25%', paddingRight: '25%'}}>
-            <SearchBox label={this.__('Search') + ' ' + config.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
           </div>
         </div>
          <div className="row no-margin">

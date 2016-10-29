@@ -8,8 +8,6 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
 
-var config = require('../../clientconfig');
-
 var HubStories = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
@@ -47,7 +45,7 @@ var HubStories = React.createClass({
     var _this = this;
     var addButton = '';
     var baseUrl = '';
-    if(config.mapHubsPro){
+    if(MAPHUBS_CONFIG.mapHubsPro){
       baseUrl = '/hub/' + this.props.hub.hub_id;
     }
     if(_this.props.editing){

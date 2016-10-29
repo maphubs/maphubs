@@ -15,9 +15,6 @@ var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
 var notAllowedError = require('../services/error-response').notAllowedError;
 
-var config = require('../clientconfig');
-
-
 module.exports = function(app) {
 
   //Views
@@ -30,7 +27,7 @@ module.exports = function(app) {
         var popularStories = results[0];
         var featuredStories = results[1];
         res.render('stories', {
-          title: req.__('Stories') + ' - ' + config.productName,
+          title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             popularStories, featuredStories
           }, req

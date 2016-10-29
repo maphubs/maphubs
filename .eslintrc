@@ -27,7 +27,8 @@
 
   "globals": {
     "L": true,
-    "HS": true
+    "HS": true,
+    "MAPHUBS_CONFIG": true
   },
   "plugins": [
     "babel",

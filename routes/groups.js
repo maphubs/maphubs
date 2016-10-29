@@ -11,7 +11,6 @@ var debug = require('../services/debug')('routes/groups');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 
-var config = require('../clientconfig');
 var local = require('../local');
 
 module.exports = function(app) {
@@ -29,7 +28,7 @@ module.exports = function(app) {
         var recentGroups = results[1];
         var popularGroups = results[2];
         res.render('groups', {
-          title: req.__('Groups') + ' - ' + config.productName,
+          title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             featuredGroups, recentGroups, popularGroups
           }, req
@@ -39,7 +38,7 @@ module.exports = function(app) {
 
   app.get('/creategroup', login.ensureLoggedIn(), function(req, res) {
     res.render('creategroup', {
-      title: req.__('Create Group') + ' - ' + config.productName,
+      title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {}, req
     });
   });
@@ -66,7 +65,7 @@ module.exports = function(app) {
         var members = result[2];
         var canEdit = result[3];
         res.render('groupinfo', {
-          title: group.name + ' - ' + config.productName,
+          title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             group, layers, members, canEdit
           }, req
@@ -94,7 +93,7 @@ module.exports = function(app) {
               var layers = result[1];
               var members = result[2];
               res.render('groupadmin', {
-                title: group.name + ' ' + req.__('Settings') + ' - ' + config.productName,
+                title: group.name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
                 props: {
                   group, layers, members
                 }, req
@@ -377,9 +376,9 @@ module.exports = function(app) {
                   .then(function(){
                     debug('Added ' + data.display_name + ' to ' + data.group_id);
                     Email.send({
-                      from: config.productName + ' <info@maphub.com>',
+                      from: MAPHUBS_CONFIG.productName + ' <info@maphub.com>',
                       to: user.email,
-                      subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - ' + config.productName,
+                      subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - ' + MAPHUBS_CONFIG.productName,
                       text: user.display_name + ',\n' +
                         req.__('You have been added to the group') + ' ' + data.group_id
                       ,
@@ -478,9 +477,9 @@ module.exports = function(app) {
                   .then(function(){
                     debug('Removed ' + data.display_name + ' from ' + data.group_id);
                     Email.send({
-                      from: config.productName + ' <' + local.fromEmail + '>',
+                      from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
                       to: user.email,
-                      subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - ' + config.productName,
+                      subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - ' + MAPHUBS_CONFIG.productName,
                       text: user.display_name + ',\n' +
                         req.__('You have been removed from the group') + ' ' + data.group_id + '\n'
                       ,

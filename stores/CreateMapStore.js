@@ -8,7 +8,6 @@ var _reject = require('lodash.reject');
 var _find = require('lodash.find');
 var _forEachRight = require('lodash.foreachright');
 //var $ = require('jquery');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
@@ -82,7 +81,7 @@ module.exports = Reflux.createStore({
   editMap(map_id, cb){
     var _this = this;
     debug('editing map: ' + map_id);
-    request.get(urlUtil.getBaseUrl(config.host, config.port) + '/api/map/info/' + map_id)
+    request.get(urlUtil.getBaseUrl() + '/api/map/info/' + map_id)
     .type('json').accept('json')
     .end(function(err, res){
       if (err) {
@@ -110,7 +109,7 @@ module.exports = Reflux.createStore({
   search(input, cb){
     var _this = this;
     debug('searching for: ' + input);
-    request.get(urlUtil.getBaseUrl(config.host, config.port) + '/api/layers/search?q=' + input)
+    request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
     .end(function(err, res){
       if (err) {

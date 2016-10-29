@@ -4,7 +4,6 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 
 var HubLinkSection = React.createClass({
@@ -21,7 +20,7 @@ var HubLinkSection = React.createClass({
 
 
 render(){
-  var omhBaseUrl = urlUtil.getBaseUrl(config.host, config.port);
+  var omhBaseUrl = urlUtil.getBaseUrl();
 
   var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid;
   return (

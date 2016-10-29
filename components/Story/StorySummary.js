@@ -1,7 +1,6 @@
 var React = require('react');
 var slug = require('slug');
 
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 
 var Reflux = require('reflux');
@@ -34,7 +33,7 @@ var StorySummary = React.createClass({
   render(){
     var title = this.props.story.title.replace('&nbsp;', '');
     var linkUrl = '';
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     if(this.props.story.display_name){
       linkUrl = baseUrl + '/user/' + this.props.story.display_name;
     }else if(this.props.story.hub_id){

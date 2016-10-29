@@ -19,7 +19,6 @@ var assign = require('object-assign');
 var log = require('./log');
 var version = require('../version.json').version;
 var local = require('../local');
-var config = require('../clientconfig');
 var urlUtil = require('./url-util');
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
@@ -102,26 +101,26 @@ function createEngine(engineOptions) {
 
         //icons
         markup += `
-        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/assets/themes/`+ config.theme +`/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/themes/`+ config.theme +`/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/themes/`+ config.theme +`/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/themes/`+ config.theme +`/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/assets/themes/`+ config.theme +`/apple-touch-icon-60x60.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/assets/themes/`+ config.theme +`/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/themes/`+ config.theme +`/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/themes/`+ config.theme +`/apple-touch-icon-152x152.png" />
-        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-196x196.png" sizes="196x196" />
-        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-32x32.png" sizes="32x32" />
-        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-16x16.png" sizes="16x16" />
-        <link rel="icon" type="image/png" href="/assets/themes/`+ config.theme +`/favicon-128.png" sizes="128x128" />
-        <meta name="application-name" content="` + config.productName +`"/>
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/apple-touch-icon-152x152.png" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/favicon-196x196.png" sizes="196x196" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/favicon-16x16.png" sizes="16x16" />
+        <link rel="icon" type="image/png" href="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/favicon-128.png" sizes="128x128" />
+        <meta name="application-name" content="` + MAPHUBS_CONFIG.productName +`"/>
         <meta name="msapplication-TileColor" content="#FFFFFF" />
-        <meta name="msapplication-TileImage" content="/assets/themes/`+ config.theme +`/mstile-144x144.png" />
-        <meta name="msapplication-square70x70logo" content="/assets/themes/`+ config.theme +`/mstile-70x70.png" />
-        <meta name="msapplication-square150x150logo" content="/assets/themes/`+ config.theme +`/mstile-150x150.png" />
-        <meta name="msapplication-wide310x150logo" content="/assets/themes/`+ config.theme +`/mstile-310x150.png" />
-        <meta name="msapplication-square310x310logo" content="/assets/themes/`+ config.theme +`/mstile-310x310.png" />
+        <meta name="msapplication-TileImage" content="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/mstile-144x144.png" />
+        <meta name="msapplication-square70x70logo" content="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/mstile-70x70.png" />
+        <meta name="msapplication-square150x150logo" content="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/mstile-150x150.png" />
+        <meta name="msapplication-wide310x150logo" content="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/mstile-310x150.png" />
+        <meta name="msapplication-square310x310logo" content="/assets/themes/`+ MAPHUBS_CONFIG.theme +`/mstile-310x310.png" />
         `;
 
         if(options.oembed){
@@ -136,14 +135,14 @@ function createEngine(engineOptions) {
         if(options.twitterCard){
           markup += `
           <meta name="twitter:card" content="summary_large_image">
-          <meta name="twitter:site" content="@` + config.twitter + `">
+          <meta name="twitter:site" content="@` + MAPHUBS_CONFIG.twitter + `">
           <meta name="twitter:title" content="` + options.twitterCard.title + `">
           <meta name="twitter:description" content="` + options.twitterCard.description + `">
           <meta name="twitter:image" content="` + options.twitterCard.image + `">
           `;
 
-          var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
-          var url = baseUrl + req.url;
+          //var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+          //var url = baseUrl + req.url;
 
           markup += `
           <meta property="og:title" content="` + options.twitterCard.title + `" />
@@ -175,10 +174,11 @@ function createEngine(engineOptions) {
         '</head>\n'+
         '<body>\n' +
          ' <div id="app">' + reactMarkup + '</div>\n' +
+
           '<script>window.__appData = ' + appData + '; </script>\n' +
           '<script type="text/javascript" src="/public/vendor.js"></script>\n' +
           '<script type="text/javascript" src="/public/locales.js"></script>\n' +
-          '<script type="text/javascript" src="/public/clientconfig.js"></script>\n' +
+          '<script type="text/javascript" src="/clientconfig.js"></script>\n' +
           '<script type="text/javascript" src="/public/' + clientFileName + '.js"></script>\n';
 
         if(options.rangy){
@@ -196,9 +196,9 @@ function createEngine(engineOptions) {
         }
 
         if(!options.hideFeedback && req){
-          var username = null;
+        //  var username = null;
           if(req.session && req.session.user){
-            username = req.session.user.display_name;
+          //  username = req.session.user.display_name;
           }
 
           var t = function(value){
@@ -235,7 +235,7 @@ function createEngine(engineOptions) {
             <script>!function(e,o,n){
                 window.HSCW=o,window.HS=n,n.beacon=n.beacon||{};
                 var t=n.beacon;
-                t.userConfig={icon: 'question', color: '` + config.primaryColor + `', topArticles: true,
+                t.userConfig={icon: 'question', color: '` + MAPHUBS_CONFIG.primaryColor + `', topArticles: true,
                   topics: [{val: 'question', label: '` + t('Question') + `'},{val: 'suggestion', label: '` + t('Suggestion') + `'},{val: 'problem', label: '` + t('Report a Problem') + `'}],
                   translation: ` + beaconTranslationText +`,
                 },

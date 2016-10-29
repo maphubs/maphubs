@@ -1,6 +1,5 @@
 var React = require('react');
 var $ = require('jquery');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var UserMenu = require('../UserMenu');
 
@@ -34,7 +33,7 @@ var HubHav = React.createClass({
   },
 
   render(){
-    var omhBaseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var omhBaseUrl = urlUtil.getBaseUrl();
 
     var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
 
@@ -59,7 +58,7 @@ var HubHav = React.createClass({
               <li className="nav-link-wrapper"><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
               <LocaleChooser />
               <hr />
-              <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to ') + config.productName}</a></li>
+              <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to ') + MAPHUBS_CONFIG.productName}</a></li>
               {manageButton}
             </ul>
           </div>

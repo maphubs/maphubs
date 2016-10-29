@@ -10,9 +10,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
-var config = require('../clientconfig');
-
-
 var Journalists = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -31,7 +28,7 @@ var Journalists = React.createClass({
           <Header />
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/MapHubs-Map.jpg"
-               title={config.productName + ' ' + this.__('for Journalists')} subTitle={this.__(`
+               title={MAPHUBS_CONFIG.productName + ' ' + this.__('for Journalists')} subTitle={this.__(`
                    Maps are incredibly powerful tools for journalism.
                    One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.
                   `)} />
@@ -56,12 +53,12 @@ var Journalists = React.createClass({
               <div className="row" style={{marginTop: '25px'}}>
                   <div className="col s12 m12 l7">
                     <div  className="video-container">
-                      <iframe src="https://maphubs.com/map/embed/112/static" frameBorder="0"></iframe>
+                      <iframe src="https://mapforenvironment.org/map/embed/112/static" frameBorder="0"></iframe>
                     </div>
                   </div>
                   <div className="col s12 m12 l5">
                     <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
-                    {config.productName} is a journalist’s own in-house map making system.
+                    {MAPHUBS_CONFIG.productName} is a journalist’s own in-house map making system.
                     The platform brings together a rich and growing database of environmentally relevant maps along with easy to use tools to turn map layers into fast beautiful custom maps.
                     And the best thing is no GIS, web development, or cartographic training is required. <span style={{fontWeight: 'bold'}}>Anyone can make a professional looking map in minutes.</span>
                     </p>
@@ -72,12 +69,12 @@ var Journalists = React.createClass({
               <div className="row" style={{marginTop: '25px'}}>
                 <div className="col s12 m12 l5">
                   <p lang="en" style={{fontSize: '20px', marginTop: 0}}>
-                    {config.productName} makes finding data - often the most time consuming part of map making - easy and fast. {config.productName} has a rapidly growing database of open map layers from some of the most respected government, research, and nonprofit organizations. <span style={{fontWeight: 'bold'}}>Journalists can search for map layers they need and use them to make their own map.</span>
+                    {MAPHUBS_CONFIG.productName} makes finding data - often the most time consuming part of map making - easy and fast. {MAPHUBS_CONFIG.productName} has a rapidly growing database of open map layers from some of the most respected government, research, and nonprofit organizations. <span style={{fontWeight: 'bold'}}>Journalists can search for map layers they need and use them to make their own map.</span>
                   </p>
                 </div>
                 <div className="col s12 m12 l7">
                   <div  className="video-container">
-                    <iframe src="https://maphubs.com/map/embed/163/static" frameBorder="0"></iframe>
+                    <iframe src="https://mapforenvironment.org/map/embed/163/static" frameBorder="0"></iframe>
                   </div>
                 </div>
               </div>

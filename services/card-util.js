@@ -1,4 +1,3 @@
-var config = require('../clientconfig');
 var urlUtil = require('./url-util');
 var slug = require('slug');
 
@@ -31,7 +30,7 @@ module.exports = {
 
   getHubCard(hub, id, arr, onClick=null){
     var title = hub.name.replace('&nbsp;', '');
-    var hubUrl = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub.hub_id;
+    var hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
     return {
       id: hub.hub_id,
       title,
@@ -80,7 +79,7 @@ module.exports = {
   getStoryCard(story, id, arr, onClick=null){
     var title = story.title.replace('&nbsp;', '');
     var story_url = '';
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     if(story.display_name){
       story_url = baseUrl + '/user/' + story.display_name;
     }else if(story.hub_id){

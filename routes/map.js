@@ -18,8 +18,6 @@ var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
 var notAllowedError = require('../services/error-response').notAllowedError;
 
-var config = require('../clientconfig');
-
 module.exports = function(app) {
 
   var recordMapView = function(session, map_id, user_id,  next){
@@ -76,7 +74,7 @@ module.exports = function(app) {
         var featuredMaps = results[0];
         var recentMaps = results[1];
         var popularMaps = results[2];
-        res.render('maps', {title: req.__('Maps') + ' - ' + config.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
+        res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
       }).catch(nextError(next));
 
 
@@ -207,7 +205,7 @@ module.exports = function(app) {
             if(map.title){
               title = map.title;
             }
-            title += ' - ' + config.productName;
+            title += ' - ' + MAPHUBS_CONFIG.productName;
               res.render('mapedit',
                {
                  title,

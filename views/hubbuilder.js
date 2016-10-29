@@ -16,7 +16,6 @@ var HubStore = require('../stores/HubStore');
 var HubActions = require('../actions/HubActions');
 
 var urlUtil = require('../services/url-util');
-var config = require('../clientconfig');
 
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
@@ -152,7 +151,7 @@ var HubBuilder = React.createClass({
 
 
   onComplete (hub_id) {
-    var url = urlUtil.getBaseUrl(config.host, config.port) + '/hub/' + hub_id;
+    var url = urlUtil.getBaseUrl() + '/hub/' + hub_id;
     window.location = url;
   },
 

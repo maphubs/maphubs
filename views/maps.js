@@ -6,7 +6,6 @@ var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var cardUtil = require('../services/card-util');
 var debug = require('../services/debug')('views/maps');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
@@ -48,7 +47,7 @@ var Maps = React.createClass({
   handleSearch(input) {
     var _this = this;
     debug('searching for: ' + input);
-    request.get(urlUtil.getBaseUrl(config.host, config.port) + '/api/maps/search?q=' + input)
+    request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
     .type('json').accept('json')
     .end(function(err, res){
       checkClientError(res, err, function(err){
@@ -112,7 +111,7 @@ var Maps = React.createClass({
     }
 
     var featured = '';
-    if(!config.mapHubsPro && featuredCards && featuredCards.length > 0){
+    if(!MAPHUBS_CONFIG.mapHubsPro && featuredCards && featuredCards.length > 0){
       featured = (
         <div className="row">
           <div className="col s12">

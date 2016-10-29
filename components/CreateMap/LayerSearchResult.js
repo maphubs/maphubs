@@ -4,7 +4,6 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var slug = require('slug');
 var GroupTag = require('../Groups/GroupTag');
@@ -53,7 +52,7 @@ var LayerSearchResult = React.createClass({
               <i className="material-icons omh-accent-text">add</i></a>
           </div>
           <div className="col s4 no-padding right">
-            <a href={urlUtil.getBaseUrl(config.host, config.port) + '/layer/info/'+ this.props.layer.layer_id + '/' + slug(this.props.layer.name)} target="_blank"
+            <a href={urlUtil.getBaseUrl() + '/layer/info/'+ this.props.layer.layer_id + '/' + slug(this.props.layer.name)} target="_blank"
               className="create-map-btn layer-card-tooltipped"
               data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
               <i className="material-icons omh-accent-text">info</i>

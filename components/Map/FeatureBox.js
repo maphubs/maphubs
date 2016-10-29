@@ -10,7 +10,6 @@ var Locales = require('../../services/locales');
 
 var request = require('superagent');
 var checkClientError = require('../../services/client-error-response').checkClientError;
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var GroupTag = require('../../components/Groups/GroupTag');
 
@@ -88,7 +87,7 @@ var FeatureBox = React.createClass({
     if(host && host !== 'dev.docker' && host !== window.location.hostname){
       baseUrl = 'https://' + host;
     }else{
-      baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      baseUrl = urlUtil.getBaseUrl();
     }
     request.get(baseUrl + '/api/layer/info/' + layer_id)
     .type('json').accept('json')
@@ -120,7 +119,7 @@ var FeatureBox = React.createClass({
     var infoPanel = '';
     var pager = '';
 
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
 
     if(this.state.selected){
       closeButton = (

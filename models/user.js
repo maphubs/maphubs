@@ -2,13 +2,10 @@ var knex = require('../connection');
 var Promise = require('bluebird');
 var log = require('../services/log');
 var debug = require('../services/debug')('models/user');
-
 var Email = require('../services/email-util.js');
 var uuid = require('node-uuid');
 var urlUtil = require('../services/url-util');
-var config = require('../clientconfig');
 var local = require('../local');
-
 
 module.exports = {
 
@@ -171,8 +168,8 @@ module.exports = {
         + '<br /> <b>Email:</b> ' + user.email;
 
         return Email.send({
-            from: config.productName + ' <' + local.fromEmail + '>',
-            to: config.productName + ' <' + local.adminEmail + '>',
+            from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
+            to: MAPHUBS_CONFIG.productName + ' <' + local.adminEmail + '>',
             subject: '[NEW USER SIGNUP] ' + user.display_name,
             text,
             html
@@ -189,11 +186,11 @@ module.exports = {
       .then(function(){
         _this.getUser(user_id)
           .then(function(user){
-          var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+          var baseUrl = urlUtil.getBaseUrl();
           var url = baseUrl + '/user/emailconfirmation/' + new_email;
 
             var text =  user.name + ',\n' +
-              __('Welcome to') + ' ' + config.productName + '!\n\n' +
+              __('Welcome to') + ' ' + MAPHUBS_CONFIG.productName + '!\n\n' +
               __('Please go to this link in your browser to confirm your email:')  + url + '\n\n' +
               __('Thank you for registering.') + '\n\n' +
               __('UserName: ') + user.display_name  + '\n' +
@@ -203,7 +200,7 @@ module.exports = {
 
 
             var html = user.name + ',' +
-              '<br />' + __('Welcome to') + ' ' + config.productName + '!' +
+              '<br />' + __('Welcome to') + ' ' + MAPHUBS_CONFIG.productName + '!' +
               '<br />' +
               '<br />' + __('Please go to this link in your browser to confirm your email:') + url +
               '<br />' +
@@ -216,9 +213,9 @@ module.exports = {
               __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
             return Email.send({
-                from: config.productName + ' <' + local.fromEmail + '>',
+                from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
                 to: user.email,
-                subject: __('Email Confirmation') + ' - ' + config.productName,
+                subject: __('Email Confirmation') + ' - ' + MAPHUBS_CONFIG.productName,
                 text,
                 html
               });

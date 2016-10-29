@@ -1,7 +1,6 @@
 var React = require('react');
 
 var urlUtil = require('../services/url-util');
-var config = require('../clientconfig');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -32,7 +31,7 @@ var OAuthDialog = React.createClass({
   },
 
   render() {
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     var callbackUrl = baseUrl + '/edit/land.html';
     return (
       <div className="container">

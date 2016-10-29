@@ -20,7 +20,6 @@ var layerViews = require('../services/layer-views');
 //var globalViews = require('../services/global-views');
 var _endsWith = require('lodash.endswith');
 var local = require('../local');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 
 
@@ -52,7 +51,7 @@ module.exports = function(app) {
         var featuredLayers = results[0];
         var recentLayers = results[1];
         var popularLayers = results[2];
-        res.render('layers', {title: req.__('Layers') + ' - ' + config.productName, props: {featuredLayers, recentLayers, popularLayers}, req});
+        res.render('layers', {title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredLayers, recentLayers, popularLayers}, req});
       }).catch(nextError(next));
 
 
@@ -64,7 +63,7 @@ module.exports = function(app) {
 
     Group.getGroupsForUser(user_id)
     .then(function(result){
-      res.render('createlayer', {title: req.__('Create Layer') + ' - ' + config.productName, props: {groups: result}, req});
+      res.render('createlayer', {title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName, props: {groups: result}, req});
     }).catch(nextError(next));
 
   });
@@ -116,7 +115,7 @@ module.exports = function(app) {
           }
 
           if(layer){
-          res.render('layerinfo', {title: layer.name + ' - ' + config.productName,
+          res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
           fontawesome: true, req});
         }else{
@@ -136,7 +135,7 @@ module.exports = function(app) {
 
   app.get('/lyr/:layerid', function(req, res) {
     var layerid = req.params.layerid;
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     res.redirect(baseUrl + '/layer/info/' + layerid + '/');
   });
 
@@ -146,7 +145,7 @@ module.exports = function(app) {
 
     Layer.getLayerByID(layer_id)
     .then(function(layer){
-      res.render('layermap', {title: layer.name + ' - ' + config.productName, props: {layer}, hideFeedback: true, addthis: true, req});
+      res.render('layermap', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName, props: {layer}, hideFeedback: true, addthis: true, req});
     }).catch(nextError(next));
   });
 
@@ -161,7 +160,7 @@ module.exports = function(app) {
           .then(function(layer){
             if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
               if(layer.data_type == 'point' && !layer.is_external){
-                res.render('addphotopoint', {title: layer.name + ' - ' + config.productName, props: {layer}, req});
+                res.render('addphotopoint', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName, props: {layer}, req});
               }else{
                 res.status(400).send('Bad Request: Feature not support for this layer');
               }
@@ -188,7 +187,7 @@ module.exports = function(app) {
         .then(function(results){
           var layer = results[0];
           var groups = results[1];
-          res.render('layeradmin', {title: layer.name + ' - ' + config.productName, props: {layer, groups}, req});
+          res.render('layeradmin', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName, props: {layer, groups}, req});
           });
         }else{
           res.redirect('/unauthorized');
@@ -679,7 +678,7 @@ app.get('/api/layer/metadata/:id', function(req, res) {
     //inject this site's URL into the style source, to support remote layers
     Object.keys(layer.style.sources).forEach(function(key) {
       var source = layer.style.sources[key];
-      source.url = source.url.replace('{MAPHUBS_DOMAIN}', config.tileServiceUrl);
+      source.url = source.url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
     });
     res.status(200).send({success: true, layer});
   }).catch(apiError(res, 500));

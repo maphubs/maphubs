@@ -1,5 +1,4 @@
 var React = require('react');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var $ = require('jquery');
 var _isequal = require('lodash.isequal');
@@ -48,7 +47,7 @@ var GroupTag = React.createClass({
   },
 
   render(){
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     var sizeStr = this.props.size + 'px';
     var fontSizeStr = this.props.fontSize + 'px';
     var imgWidth = this.props.size.toString() + 'px';

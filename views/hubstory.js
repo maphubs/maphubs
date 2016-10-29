@@ -14,8 +14,6 @@ var slug = require('slug');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
-var config = require('../clientconfig');
-
 var HubStory = React.createClass({
 
   mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -47,7 +45,7 @@ var HubStory = React.createClass({
     var title = story.title.replace('&nbsp;', '');
     var button = '';
     var baseUrl = '';
-    if(config.mapHubsPro){
+    if(MAPHUBS_CONFIG.mapHubsPro){
       baseUrl = '/hub/' + this.props.hub.hub_id;
     }
     if(this.props.canEdit){
@@ -64,7 +62,7 @@ var HubStory = React.createClass({
     }
 
     var discuss = '', addthis = '';
-    if(!config.mapHubsPro){
+    if(!MAPHUBS_CONFIG.mapHubsPro){
       addthis = (
         <div className="addthis_sharing_toolbox right"></div>
       );

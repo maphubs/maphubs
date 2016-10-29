@@ -16,8 +16,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
-var config = require('../../clientconfig');
-
 require('../../stores/preset-store'); //needed to init the store used by the source options
 
 var Step2 = React.createClass({
@@ -78,7 +76,7 @@ var Step2 = React.createClass({
       {value: 'ags', label: this.__('Link to an ArcGIS Online or ArcGIS Server services')}
     ];
 
-    if(config.mapHubsPro){
+    if(MAPHUBS_CONFIG.mapHubsPro){
       sourceOptions.push({value: 'planet', label: this.__('Link to Planet Labs')});
     }
     // osm=false,github = false,

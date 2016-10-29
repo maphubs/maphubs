@@ -14,8 +14,6 @@ var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
-var config = require('../../clientconfig.js');
-
 var classNames = require('classnames');
 
 var PlanetLabsSource = React.createClass({
@@ -73,7 +71,7 @@ var PlanetLabsSource = React.createClass({
     }else if(this.state.selectedOption == 'mosaic'){
       url += '/v0/mosaics/' + model.planetMosaic;
     }
-    url += '/{z}/{x}/{y}.png?api_key=' + config.PLANET_LABS_API_KEY;
+    url += '/{z}/{x}/{y}.png?api_key=' + MAPHUBS_CONFIG.PLANET_LABS_API_KEY;
 
     LayerActions.saveDataSettings({
       is_external: true,

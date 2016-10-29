@@ -1,6 +1,4 @@
 var React = require('react');
-var config = require('../../clientconfig');
-//var slug = require('slug');
 var urlUtil = require('../../services/url-util');
 var GroupTag = require('../Groups/GroupTag');
 
@@ -19,7 +17,7 @@ var LegendItem = React.createClass({
   render(){
 
     if(this.props.layer == undefined) return (<div></div>);
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     var infoURL = baseUrl + '/lyr/' + this.props.layer.layer_id;
     //var icon = 'visibility_off';
     //if(this.props.layer.visibility === false) icon = 'visibility';

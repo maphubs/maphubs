@@ -2,7 +2,6 @@ var React = require('react');
 var LayerDesigner = require('./LayerDesigner');
 var OpacityChooser = require('./OpacityChooser');
 var mapStyles = require('../Map/styles');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 
 var Reflux = require('reflux');
@@ -67,7 +66,7 @@ var MapLayerDesigner = React.createClass({
   },
 
   setRasterOpacity(opacity){
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     var style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
 
     if(this.state.layer.external_layer_config.type == 'ags-mapserver-tiles'){

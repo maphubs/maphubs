@@ -2,7 +2,7 @@
 
 #overwrite the client-config with live values
 cat <<EOF >/app/clientconfig.js
-module.exports = {
+var MAPHUBS_CONFIG = {
   host: "${OMH_HOST}",
   port: ${OMH_PORT},
   https: ${OMH_HTTPS},
@@ -23,6 +23,10 @@ module.exports = {
   PLANET_LABS_API_KEY: "${PLANET_LABS_API_KEY}",
   theme: "${OMH_THEME}"
 };
+if(typeof module !== 'undefined'){
+  module.exports = MAPHUBS_CONFIG;
+}
+
 EOF
 
 cp /app/css/${OMH_THEME}.scss /app/theme.scss
@@ -35,9 +39,6 @@ var OMH_CONFIG = {
   OAUTH_SECRET: "${ID_SECRET}"
 };
 EOF
-
-#rebuild client files
-node node_modules/webpack/bin/webpack.js --config webpack.config.min.js
 
 #run any pending database migrations
 node node_modules/knex/bin/cli.js migrate:latest --env production

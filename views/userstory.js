@@ -11,9 +11,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
-var config = require('../clientconfig');
-
-
 var UserStory = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
@@ -56,7 +53,7 @@ var UserStory = React.createClass({
     var title = story.title.replace('&nbsp;', '');
 
     var shareAndDiscuss = '';
-    if(!config.mapHubsPro){
+    if(!MAPHUBS_CONFIG.mapHubsPro){
       shareAndDiscuss = (
         <div className="row">
           <div className="addthis_sharing_toolbox"></div>

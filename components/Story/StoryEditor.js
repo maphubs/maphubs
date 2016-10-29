@@ -6,7 +6,6 @@ var _isequal = require('lodash.isequal');
 var MessageActions = require('../../actions/MessageActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 var AddMapModal = require('./AddMapModal');
 var ImageCrop = require('../ImageCrop');
@@ -133,7 +132,7 @@ getFirstImage(){
   var firstEmbed = $('.storybody').find('img, .embed-map-container').first();
   if(firstEmbed.is('.embed-map-container')){
     var mapid = firstEmbed.attr('id').split('-')[1];
-    first_img = urlUtil.getBaseUrl(config.host, config.port) + '/api/screenshot/map/'+ mapid + '.png';
+    first_img = urlUtil.getBaseUrl() + '/api/screenshot/map/'+ mapid + '.png';
   }else{
     first_img = firstEmbed.attr('src');
   }
@@ -178,7 +177,7 @@ save(){
 
   if(this.props.storyType == 'hub'){
     var baseUrl = '';
-    if(config.mapHubsPro){
+    if(MAPHUBS_CONFIG.mapHubsPro){
       baseUrl = '/hub/' + this.props.hubid;
     }
     if(this.state.story_id && this.state.story_id > 0){
@@ -231,7 +230,7 @@ save(){
                 window.location = '/user/' + _this.props.username + '/story/' + story_id + '/' + slug(story.title);
               }else{
                 var baseUrl = '';
-                if(config.mapHubsPro){
+                if(MAPHUBS_CONFIG.mapHubsPro){
                   baseUrl = '/hub/' + _this.props.hubid;
                 }
                 window.location = baseUrl + '/story/' + story_id + '/' + slug(story.title);
@@ -338,7 +337,7 @@ onAddMap(map){
   this.removeMapCloseButtons();
   var range = null;
 
-  var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + map_id + '/static';
+  var url = urlUtil.getBaseUrl() + '/map/embed/' + map_id + '/static';
 
 
   url = url.replace(/http:/, '');

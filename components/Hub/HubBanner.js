@@ -12,7 +12,6 @@ var HubActions = require('../../actions/HubActions');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 
 
@@ -100,7 +99,7 @@ var HubBanner = React.createClass({
   },
 
   render() {
-    var omhBaseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var omhBaseUrl = urlUtil.getBaseUrl();
 
     var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid;
     var bannerClass='hub-banner';

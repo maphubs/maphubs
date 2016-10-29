@@ -9,7 +9,6 @@ var NotificationActions = require('../actions/NotificationActions');
 var MessageActions = require('../actions/MessageActions');
 var MapMakerActions = require('../actions/MapMakerActions');
 import Progress from '../components/Progress';
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var UserStore = require('../stores/UserStore');
 
@@ -139,7 +138,7 @@ var UserMap = React.createClass({
   },
 
   showEmbedCode(){
-    var url = urlUtil.getBaseUrl(config.host, config.port) + '/map/embed/' + this.props.map.map_id + '/static';
+    var url = urlUtil.getBaseUrl() + '/map/embed/' + this.props.map.map_id + '/static';
     var code = '&lt;iframe src="' + url
     + '" style="width: 600px; height: 330px;" frameborder="0"&gt;&lt;/iframe&gt;';
     var message = '<p>' + this.__('Paste the following code into your website to embed a map:') + '</p><pre>' + code + '</pre>';
@@ -258,7 +257,7 @@ var UserMap = React.createClass({
         {editButton}
         {copyButton}
         <li>
-          <a onClick={this.download} download={this.props.map.title + ' - ' + config.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
+          <a onClick={this.download} download={this.props.map.title + ' - ' + MAPHUBS_CONFIG.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
             className="btn-floating user-map-tooltip green"
             data-delay="50" data-position="left" data-tooltip={this.__('Get Map as a PNG Image')}>
             <i className="material-icons">insert_photo</i>
@@ -318,7 +317,7 @@ var UserMap = React.createClass({
               style={{height:'30px',
                       lineHeight: '30px',
                       width: '30px',
-                      color: config.primaryColor,
+                      color: MAPHUBS_CONFIG.primaryColor,
                       borderRadius: '4px',
                       backgroundColor: 'white',
                       borderColor: '#ddd',

@@ -3,9 +3,8 @@ var React = require('react');
 var Map = require('../components/Map/Map');
 var Header = require('../components/header');
 var slug = require('slug');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
-var styles = require('../components/Map/styles');
+//var styles = require('../components/Map/styles');
 var $ = require('jquery');
 var ReactDisqusThread = require('react-disqus-thread');
 var Griddle = require('griddle-react');
@@ -138,7 +137,7 @@ var FeatureInfo = React.createClass({
     var position = this.refs.map.getPosition();
     var zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
   },
 
@@ -198,7 +197,7 @@ var FeatureInfo = React.createClass({
       }
     }
 
-    var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+    var baseUrl = urlUtil.getBaseUrl();
     var photo = '';
 
     if(this.state.photo && this.state.photo.photo_id){

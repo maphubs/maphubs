@@ -37,6 +37,9 @@ COPY env/deploy_local.js  /app/local.js
 #create temp folders
 RUN mkdir -p public && mkdir -p temp/uploads  && mkdir -p temp/logs
 
+#rebuild client files
+RUN node node_modules/webpack/bin/webpack.js --config webpack.config.min.js
+
 VOLUME ["/app/temp/uploads"]
 VOLUME ["/app/logs"]
 

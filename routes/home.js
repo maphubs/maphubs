@@ -5,7 +5,6 @@ var Map = require('../models/map');
 var Story = require('../models/story');
 var Promise = require('bluebird');
 var nextError = require('../services/error-response').nextError;
-var config = require('../clientconfig');
 
 module.exports = function(app) {
 
@@ -24,8 +23,8 @@ module.exports = function(app) {
       var trendingStories = results[4];
 
       res.render('home', {
-        title: config.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
-        description: config.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
+        title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
+        description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
         props: {
           trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories
@@ -72,7 +71,7 @@ module.exports = function(app) {
       var recentMaps = results[13];
       var recentStories = results[14];
       res.render('explore', {
-        title: req.__('Explore') + ' - ' + config.productName,
+        title: req.__('Explore') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           featuredLayers, featuredGroups, featuredHubs, featuredMaps, featuredStories,
           popularLayers, popularGroups, popularHubs, popularMaps, popularStories,
@@ -84,14 +83,14 @@ module.exports = function(app) {
 
   app.get('/services', function(req, res) {
     res.render('services', {
-      title: req.__('Services') + ' - ' + config.productName,
+      title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
       req
     });
   });
 
   app.get('/journalists', function(req, res) {
     res.render('journalists', {
-      title: req.__('Maps for Journalists') + ' - ' + config.productName,
+      title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
       req
     });
   });

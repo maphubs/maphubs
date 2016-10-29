@@ -8,12 +8,9 @@ var findIndex = require('lodash.findindex');
 var forEachRight = require('lodash.foreachright');
 var $ = require('jquery');
 
-var config = require('../clientconfig');
-
 module.exports = Reflux.createStore({
   mixins: [StateMixin],
   listenables: Actions,
-
 
   getInitialState() {
     return  {
@@ -357,7 +354,7 @@ module.exports = Reflux.createStore({
    debug('reload layers');
    var _this = this;
    var baseUrl = '/hub/' + this.state.hub.hub_id;
-   
+
    request.get(baseUrl + '/api/hub/' + this.state.hub.hub_id + '/layers')
    .type('json').accept('json')
    .end(function(err, res){

@@ -17,9 +17,8 @@ var Promise = require('bluebird');
 var MapUtils = require('../services/map-utils');
 var knex = require('../connection.js');
 
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
-var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+var baseUrl = urlUtil.getBaseUrl();
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
 var apiDataError = require('../services/error-response').apiDataError;
@@ -73,7 +72,7 @@ module.exports = function(app) {
         var popularHubs = results[1];
         var recentHubs = results[2];
         res.render('hubs', {
-          title: req.__('Hubs') + ' - ' + config.productName,
+          title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             featuredHubs, popularHubs, recentHubs
           }, req
@@ -142,8 +141,8 @@ module.exports = function(app) {
         var layers = result[0];
         var stories = result[1];
         res.render('hubinfo', {
-          title: hub.name + ' - ' + config.productName,
-          hideFeedback: !config.mapHubsPro,
+          title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
+          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           fontawesome: true,
           props: {
             hub, layers, stories, canEdit
@@ -187,8 +186,8 @@ module.exports = function(app) {
       .then(function(results) {
         var layers = results[0];
         res.render('hubmap', {
-          title: hub.name + '|' + req.__('Map') + ' - ' + config.productName,
-          hideFeedback: !config.mapHubsPro,
+          title: hub.name + '|' + req.__('Map') + ' - ' + MAPHUBS_CONFIG.productName,
+          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           props: {
             hub, layers, canEdit
           }, req
@@ -230,8 +229,8 @@ module.exports = function(app) {
       return Hub.getHubStories(hub.hub_id, canEdit)
       .then(function(stories) {
         res.render('hubstories', {
-          title: hub.name + '|' + req.__('Stories') + ' - ' + config.productName,
-          hideFeedback: !config.mapHubsPro,
+          title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           props: {
             hub, stories, canEdit
           }, req
@@ -270,8 +269,8 @@ module.exports = function(app) {
 
   var renderHubResourcesPage = function(hub, canEdit, req, res){
       res.render('hubresources', {
-        title: hub.name + '|' + req.__('Resources') + ' - ' + config.productName,
-        hideFeedback: !config.mapHubsPro,
+        title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
+        hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
         fontawesome: true,
         rangy: true,
         props: {
@@ -512,7 +511,7 @@ module.exports = function(app) {
                 var layers = result[1];
                 var members = result[2];
                 res.render('hubadmin', {
-                  title: hub.name + '|' + req.__('Settings') + ' - ' + config.productName,
+                  title: hub.name + '|' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
                   props: {
                     hub, layers, members
                   }
@@ -848,9 +847,9 @@ module.exports = function(app) {
                     .then(function(){
                       debug('Added ' + data.display_name + ' to ' + data.hub_id);
                       Email.send({
-                        from: config.productName + ' <' + local.fromEmail + '>',
+                        from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
                         to: user.email,
-                        subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - ' + config.productName,
+                        subject: req.__('Welcome to Hub:') + ' ' + data.hub_id + ' - ' + MAPHUBS_CONFIG.productName,
                         text: user.display_name + ',\n' +
                           req.__('You have been added to the hub') + ' ' + data.hub_id
                         ,
@@ -941,9 +940,9 @@ module.exports = function(app) {
                     .then(function(){
                       debug('Removed ' + data.display_name + ' from ' + data.hub_id);
                       Email.send({
-                        from: config.productName + ' <' + local.fromEmail + '>',
+                        from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
                         to: user.email,
-                        subject: req.__('Removed from Hub:') + ' ' + data.hub_id + ' - ' + config.productName,
+                        subject: req.__('Removed from Hub:') + ' ' + data.hub_id + ' - ' + MAPHUBS_CONFIG.productName,
                         text: user.display_name + ',\n' +
                           req.__('You have been removed from the hub') + ' ' + data.hub_id
                         ,

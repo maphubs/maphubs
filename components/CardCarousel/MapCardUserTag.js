@@ -1,6 +1,5 @@
 var React = require('react');
 
-var config = require('../../clientconfig');
 var urlUtil = require('../../services/url-util');
 
 var Reflux = require('reflux');
@@ -51,7 +50,7 @@ var MapCardUserTag = React.createClass({
 
         );
 
-      var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+      var baseUrl = urlUtil.getBaseUrl();
       linkUrl = baseUrl + '/user/' + this.props.map.username;
       author = (
         <div style={{height: '40px', marginBottom: '10px'}}>

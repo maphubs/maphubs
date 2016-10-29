@@ -5,7 +5,6 @@ var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var debug = require('../services/debug')('views/groups');
-var config = require('../clientconfig');
 var urlUtil = require('../services/url-util');
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
@@ -49,7 +48,7 @@ var Groups = React.createClass({
   handleSearch(input) {
     var _this = this;
     debug('searching for: ' + input);
-    request.get(urlUtil.getBaseUrl(config.host, config.port) + '/api/groups/search?q=' + input)
+    request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
     .type('json').accept('json')
     .end(function(err, res){
       checkClientError(res, err, function(err){

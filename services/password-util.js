@@ -11,7 +11,6 @@ var Email = require('./email-util.js');
 var User = require('../models/user');
 
 var urlUtil = require('./url-util');
-var config = require('../clientconfig');
 var local = require('../local');
 
 module.exports = {
@@ -53,9 +52,9 @@ module.exports = {
             debug('database updated');
             if(sendEmail){
               return Email.send({
-                from: config.productName + ' <' + local.fromEmail + '>',
+                from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
                 to: user.email,
-                subject: __('Password Changed') + ' - ' + config.productName,
+                subject: __('Password Changed') + ' - ' + MAPHUBS_CONFIG.productName,
                 text: user.display_name + ',\n' +
                   __('Your password was changed.')
                 ,
@@ -82,12 +81,12 @@ module.exports = {
       var pass_reset = uuid.v4();
       knex('users').update({pass_reset}).where({id: user.id})
       .then(function(){
-        var baseUrl = urlUtil.getBaseUrl(config.host, config.port);
+        var baseUrl = urlUtil.getBaseUrl();
         var url = baseUrl + '/user/passwordreset/' + pass_reset;
         Email.send({
-          from: config.productName + ' <' + local.fromEmail + '>',
+          from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
           to: user.email,
-          subject: __('Password Reset') + ' - ' + config.productName,
+          subject: __('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName,
           body: user.display_name + ',\n' +
             __('Please go to this link in your browser to reset your password:') + ' ' + url
           ,

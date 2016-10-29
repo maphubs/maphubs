@@ -10,7 +10,6 @@ var request = require('superagent-bluebird-promise');
 var debug = require('../services/debug')('home');
 var $ = require('jquery');
 
-var config = require('../clientconfig');
 var _shuffle = require('lodash.shuffle');
 
 var MessageActions = require('../actions/MessageActions');
@@ -201,7 +200,7 @@ var Search = React.createClass({
          <div className="divider"></div>
         <div ref="search" className="container" style={{height: '100px', paddingTop:'10px'}}>
           <div className="row" style={{marginBottom: '10px'}}>
-            <h5 className="center-align" style={{color: '#212121', marginTop: '0px'}}>{this.__('Search') + ' ' + config.productName}</h5>
+            <h5 className="center-align" style={{color: '#212121', marginTop: '0px'}}>{this.__('Search') + ' ' + MAPHUBS_CONFIG.productName}</h5>
             </div>
           <div className="row">
             <SearchBox label={this.__('Search All Data')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
