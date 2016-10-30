@@ -1,4 +1,5 @@
 var local = require('./local');
+require('./services/inject-maphubs-config');
 if(!local.disableTracking) require('newrelic');
 
 var express = require('express'),

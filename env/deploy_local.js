@@ -1,4 +1,3 @@
-require('./services/inject-maphubs-config');
 
 module.exports = {
   connection: {
