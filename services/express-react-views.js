@@ -175,11 +175,18 @@ function createEngine(engineOptions) {
         '<body>\n' +
          ' <div id="app">' + reactMarkup + '</div>\n' +
 
-          '<script>window.__appData = ' + appData + '; </script>\n' +
+          '<script>window.__appData = ' + appData + '; </script>\n';
+
+
+        markup +=
           '<script type="text/javascript" src="/public/vendor.js"></script>\n' +
           '<script type="text/javascript" src="/public/locales.js"></script>\n' +
           '<script type="text/javascript" src="/clientconfig.js"></script>\n' +
           '<script type="text/javascript" src="/public/' + clientFileName + '.js"></script>\n';
+
+          if(options.mapboxgl){
+            markup += '<script type="text/javascript" src="/public/mapboxgl.js"></script>\n';
+          }
 
         if(options.rangy){
           markup +=

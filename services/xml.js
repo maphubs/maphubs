@@ -1,6 +1,5 @@
 /* @flow weak */
 var libxml = require('libxmljs');
-var isArray = require('lodash.isarray');
 var RATIO = require('./ratio');
 
 //var log = require('../services/log.js');
@@ -125,7 +124,7 @@ var xml = {
 
       // attach tags
       var tags = node.tags;
-      if (tags && isArray(tags) && tags.length) {
+      if (tags && Array.isArray(tags) && tags.length) {
         for (var m = 0, mm = tags.length; m < mm; ++m) {
           var tag = tags[m];
           nodeEl.node('tag').attr({k: tag.k, v: tag.v});
@@ -155,7 +154,7 @@ var xml = {
 
       // Attach way tags
       var tags = way.tags;
-      if (tags && isArray(tags) && tags.length) {
+      if (tags && Array.isArray(tags) && tags.length) {
         for (var m = 0, mm = tags.length; m < mm; ++m) {
           var tag = tags[m];
           wayEl.node('tag').attr({k: tag.k, v: tag.v});
@@ -187,7 +186,7 @@ var xml = {
 
       // Attach relation tags.
       var tags = relation.tags;
-      if (tags && isArray(tags) && tags.length) {
+      if (tags && Array.isArray(tags) && tags.length) {
         for (var m = 0, mm = tags.length; m < mm; ++m) {
           var tag = tags[m];
           relationEl.node('tag').attr({k: tag.k, v: tag.v});

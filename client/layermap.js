@@ -6,7 +6,7 @@ require('jquery');
 require("materialize-css");
 var LayerMap = require('../views/layermap');
 
-require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
+require('../assets/js/mapbox-gl/mapbox-gl.css');
 
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,5 +1,4 @@
 /* @flow weak */
-var _isArray = require('lodash.isarray');
 var _flatten = require('lodash.flatten');
 var _assignIn = require('lodash.assignin');
 
@@ -142,7 +141,7 @@ module.exports = {
     },
 
     toArray(val) {
-      if (_isArray(val)) {
+      if (Array.isArray(val)) {
         return val;
       }
       return [val];
@@ -166,7 +165,7 @@ module.exports = {
                 numChanges += raw.length;
               }
             }
-         
+
         });
       });
 

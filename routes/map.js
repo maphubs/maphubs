@@ -43,7 +43,7 @@ module.exports = function(app) {
         || !req.session || !req.session.user) {
             Layer.getPopularLayers()
             .then(function(popularLayers){
-              res.render('map', {title: 'New Map ', props:{popularLayers}, req});
+              res.render('map', {title: 'New Map ', props:{popularLayers}, mapboxgl:true, req});
             }).catch(nextError(next));
     } else {
       //get user id
@@ -56,7 +56,7 @@ module.exports = function(app) {
         .then(function(results){
           var popularLayers = results[0];
           var myLayers = results[1];
-          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers}, req});
+          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers}, mapboxgl:true, req});
         }).catch(nextError(next));
     }
 
@@ -211,6 +211,7 @@ module.exports = function(app) {
                  title,
                  props:{map, layers, popularLayers, myLayers},
                  hideFeedback: true,
+                 mapboxgl:true,
                  req
                }
              );

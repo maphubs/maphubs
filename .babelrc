@@ -4,5 +4,8 @@
     "react",
     "stage-0"
   ],
-  "plugins": ["transform-flow-strip-types"]
+  "plugins": ["transform-flow-strip-types"],
+  "ignore": [
+    "mapbox-gl.js", "mapbox-gl-dev.js"
+  ]
 }

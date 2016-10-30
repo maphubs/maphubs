@@ -3,6 +3,9 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
+//var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
+var pathToMapboxGL = path.resolve(__dirname, 'assets/js/mapbox-gl/mapbox-gl.js');
+
 var pathToPica = path.resolve(__dirname, 'node_modules/pica/dist/pica.min.js');
 var pathToMediumEditor = path.resolve(__dirname, 'node_modules/medium-editor/dist/js/medium-editor.js');
 
@@ -61,14 +64,13 @@ module.exports = {
     signup: "./client/signup",
     pendingconfirmation: "./client/pendingconfirmation",
     emailconfirmation: "./client/emailconfirmation",
-    vendor: ["./materialize.config.scss", "jquery", "slug", "react", "react-dom", "materialize-css", "mapbox-gl", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
-    locales: ["./services/locales"]
+    vendor: ["./materialize.config.scss", "jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
+    locales: ["./services/locales"],
+    mapboxgl: ["./assets/js/mapbox-gl/mapbox-gl.js"]
   },
-
   resolve: {
     modulesDirectories: ['node_modules'],
     alias: {
-      'webworkify': 'webworkify-webpack'
     },
     extensions: ['', '.js', '.jsx', '.json']
   },
@@ -98,7 +100,7 @@ module.exports = {
       test: /\.jsx?$/,
       loader: 'babel-loader',
 
-      include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-disqus-thread/, /reflux-state-mixin/, /react-colorpickr/],
+      include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /reflux-state-mixin/, /react-colorpickr/],
       query: {
         presets: [
           "es2015",
@@ -110,23 +112,11 @@ module.exports = {
     },
 
       {test: /\.(scss|css)$/, loader: ExtractTextPlugin.extract('style-loader', "css!resolve-url!sass")},
-
-      {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"},
-      {
-        test: /\.js$/,
-        include: path.resolve('node_modules/mapbox-gl-shaders/index.js'),
-        loader: 'transform/cacheable?brfs'
-      }
-
-
+      {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"}
     ],
-    postLoaders: [{
-          include: /node_modules\/mapbox-gl-shaders/,
-          loader: 'transform',
-          query: 'brfs'
-      }],
     noParse: [
       pathToPica,
+      pathToMapboxGL,
       pathToMediumEditor,
       '/node_modules\/json-schema\/lib\/validate\.js/' //https://github.com/request/request/issues/1920
     ]
@@ -137,8 +127,7 @@ module.exports = {
        jQuery: "jquery",
        "window.jQuery": "jquery",
        Materialize: "materialize-css",
-       "window.Materialize": "materialize-css",
-       "mapboxgl": "mapbox-gl"
+       "window.Materialize": "materialize-css"
     }),
     new webpack.optimize.CommonsChunkPlugin({
            names: ["locales", "vendor"],

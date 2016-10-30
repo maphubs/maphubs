@@ -66,6 +66,7 @@ module.exports = function(app) {
           {
             title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
             fontawesome: true,
+            mapboxgl:true,
             props: {feature, notes, photo, canEdit: false},
              req
            });
@@ -77,6 +78,7 @@ module.exports = function(app) {
               {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
+                mapboxgl:true,
                 props: {feature, notes, photo, layer, canEdit: true}, req
               });
             }
@@ -85,6 +87,7 @@ module.exports = function(app) {
               {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
+                mapboxgl:true,
                 props: {feature, notes, photo, layer, canEdit: false},
                  req
                });

@@ -143,6 +143,7 @@ module.exports = function(app) {
         res.render('hubinfo', {
           title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+          mapboxgl:true,
           fontawesome: true,
           props: {
             hub, layers, stories, canEdit
@@ -188,6 +189,7 @@ module.exports = function(app) {
         res.render('hubmap', {
           title: hub.name + '|' + req.__('Map') + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+          mapboxgl:true,
           props: {
             hub, layers, canEdit
           }, req

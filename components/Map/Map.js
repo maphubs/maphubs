@@ -1,5 +1,4 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var classNames = require('classnames');
 var FeatureBox = require('./FeatureBox');
 var styles = require('./styles');
@@ -19,7 +18,14 @@ var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
 var _centroid = require('turf-centroid');
 
-var mapboxgl = require("mapbox-gl");
+
+
+var mapboxgl = {};
+
+if (typeof window !== 'undefined') {
+    mapboxgl = require("../../assets/js/mapbox-gl/mapbox-gl.js");
+}
+
 
 var Map = React.createClass({
 
@@ -352,8 +358,8 @@ var Map = React.createClass({
   },
 
   updateInsetGeomFromBounds(bounds){
-    var insetGeoJSONData = this.state.insetGeoJSONData;
-     var insetGeoJSONCentroidData = this.state.insetGeoJSONCentroidData;
+    var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
+    var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");
     if(insetGeoJSONData){
       try{
         var geoJSONBounds = this.getGeoJSONFromBounds(bounds);
@@ -372,7 +378,7 @@ var Map = React.createClass({
           this.insetMap.setFilter('bounds', ['==', 'v', 1]);
         }
 
-        this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
+        this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate: false});
       }catch(err){
           debug(err);
       }
@@ -544,8 +550,10 @@ var Map = React.createClass({
       _this.setState({mapLoaded: true});
     });
 
-    //mapbox-gl 0.11.1 has a bug in the default error handler for tile.error
-    map.off('tile.error', map.onError);
+    map.on('error', function(e){
+      debug('(' + _this.state.id + ') ' +e.type);
+    });
+
     map.on('tile.error', function(e){
       debug('(' + _this.state.id + ') ' +e.type);
     });
@@ -569,10 +577,8 @@ var Map = React.createClass({
         geoJSON.features[0].properties = {'v': 1};
         var geoJSONCentroid = _centroid(geoJSON);
         geoJSONCentroid.properties = {'v': 1};
-        var insetGeoJSONData = new mapboxgl.GeoJSONSource({data: geoJSON});
-        var insetGeoJSONCentroidData = new mapboxgl.GeoJSONSource({data: geoJSONCentroid});
-        insetMap.addSource("inset-bounds", insetGeoJSONData);
-        insetMap.addSource("inset-centroid", insetGeoJSONCentroidData);
+        insetMap.addSource("inset-bounds", {"type": "geojson", data:geoJSON});
+        insetMap.addSource("inset-centroid", {"type": "geojson", data:geoJSONCentroid});
         insetMap.addLayer({
             'id': 'bounds',
             'type': 'line',
@@ -594,8 +600,6 @@ var Map = React.createClass({
             }
         });
 
-        _this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
-
         if(_this.showInsetAsPoint()){
           insetMap.setFilter('center', ['==', 'v', 1]);
           insetMap.setFilter('bounds', ['==', 'v', 2]);
@@ -603,8 +607,6 @@ var Map = React.createClass({
           insetMap.setFilter('center', ['==', 'v', 2]);
           insetMap.setFilter('bounds', ['==', 'v', 1]);
         }
-
-
 
       });
       _this.insetMap = insetMap;
@@ -639,20 +641,20 @@ map.on('mousemove', function(e) {
 
       if (features.length) {
         if(_this.state.selected){
-          $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
         } else if(_this.props.hoverInteraction){
-          $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
            _this.setSelectionFilter(features);
            _this.setState({selectedFeatures:features});
            map.addClass('selected');
         }else{
-           $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
+           $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
         }
        } else if(!_this.state.selected && _this.state.selectedFeatures != null) {
            _this.clearSelection();
-           $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', '');
+           $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
        } else {
-         $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', '');
+         $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
        }
 
     }, 200).bind(this);
@@ -666,7 +668,7 @@ map.on('mousemove', function(e) {
     if(!_this.state.selected &&_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
      _this.setState({selected:true});
    }else{
-     $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+     $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
 
      var features = map.queryRenderedFeatures(
        [
@@ -684,7 +686,7 @@ map.on('mousemove', function(e) {
       } else if(_this.state.selectedFeatures != null) {
           _this.clearSelection();
           _this.setState({selected: false});
-          $(ReactDOM.findDOMNode(_this.refs.map)).find('.mapboxgl-canvas-container').css('cursor', '');
+          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
       }
 
    }
@@ -692,7 +694,7 @@ map.on('mousemove', function(e) {
 
 
   if(_this.state.interactive){
-    map.addControl(new mapboxgl.Navigation({position: _this.props.navPosition}));
+    map.addControl(new mapboxgl.NavigationControl({position: _this.props.navPosition}));
   }
 
   if(_this.props.disableScrollZoom){
@@ -763,12 +765,13 @@ map.on('mousemove', function(e) {
     //debug('(' + this.state.id + ') ' +'componentWillReceiveProps');
     var _this = this;
     if(nextProps.data){
-      if(this.state.geoJSONData){
+      var geoJSONData = this.map.getSource("omh-geojson");
+      if(geoJSONData){
         debug('(' + this.state.id + ') ' +'update geoJSON data');
         //update existing data
-        this.state.geoJSONData.setData(nextProps.data);
+        geoJSONData.setData(nextProps.data);
         this.zoomToData(nextProps.data);
-      }else if(this.state.geoJSONData === undefined && this.props.data){
+      }else if(geoJSONData === undefined && this.props.data){
         //do nothing, still updating from the last prop change...
       }else {
         debug('(' + this.state.id + ') ' +'init geoJSON data');
@@ -909,15 +912,14 @@ map.on('mousemove', function(e) {
 
   initGeoJSON(map, data){
     if(data && data.features && data.features.length > 0){
-      var geoJSONData = new mapboxgl.GeoJSONSource({data});
-      map.addSource("omh-geojson", geoJSONData);
+      map.addSource("omh-geojson", {"type": "geojson", data});
       var glStyle = styles.defaultStyle('geojson', null, null);
       delete glStyle.sources; //ignore the tilejson source
       this.addLayers(map, glStyle);
 
       var interactiveLayers = this.getInteractiveLayers(glStyle);
 
-      this.setState({geoJSONData, interactiveLayers, glStyle});
+      this.setState({interactiveLayers, glStyle});
       this.zoomToData(data);
     } else {
       //empty data
@@ -926,12 +928,11 @@ map.on('mousemove', function(e) {
   },
 
   resetGeoJSON(){
-    var geoJSONData = this.state.geoJSONData;
-    this.state.geoJSONData.setData({
+    var geoJSONData = this.map.getSource("omh-geojson");
+    geoJSONData.setData({
       type: 'FeatureCollection',
       features: []
     });
-    this.setState({geoJSONData});
     this.map.flyTo({center: [0,0], zoom:0});
   },
 

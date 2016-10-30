@@ -63,7 +63,7 @@ module.exports = function(app) {
 
     Group.getGroupsForUser(user_id)
     .then(function(result){
-      res.render('createlayer', {title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName, props: {groups: result}, req});
+      res.render('createlayer', {title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName, mapboxgl:true, props: {groups: result}, req});
     }).catch(nextError(next));
 
   });
@@ -117,6 +117,7 @@ module.exports = function(app) {
           if(layer){
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
+          mapboxgl:true,
           fontawesome: true, req});
         }else{
           res.render('error', {
@@ -145,7 +146,9 @@ module.exports = function(app) {
 
     Layer.getLayerByID(layer_id)
     .then(function(layer){
-      res.render('layermap', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName, props: {layer}, hideFeedback: true, addthis: true, req});
+      res.render('layermap', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
+      mapboxgl:true,
+      props: {layer}, hideFeedback: true, addthis: true, req});
     }).catch(nextError(next));
   });
 
@@ -160,7 +163,9 @@ module.exports = function(app) {
           .then(function(layer){
             if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
               if(layer.data_type == 'point' && !layer.is_external){
-                res.render('addphotopoint', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName, props: {layer}, req});
+                res.render('addphotopoint', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
+                mapboxgl:true,
+                props: {layer}, req});
               }else{
                 res.status(400).send('Bad Request: Feature not support for this layer');
               }
@@ -187,7 +192,9 @@ module.exports = function(app) {
         .then(function(results){
           var layer = results[0];
           var groups = results[1];
-          res.render('layeradmin', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName, props: {layer, groups}, req});
+          res.render('layeradmin', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
+          mapboxgl:true,
+          props: {layer, groups}, req});
           });
         }else{
           res.redirect('/unauthorized');

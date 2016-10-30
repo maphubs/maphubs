@@ -22,6 +22,7 @@ module.exports = {
         res.render('embedmap', {
           title,
           props:{map, layers, canEdit, isStatic},
+          mapboxgl:true,
           hideFeedback: true, req});
     }).catch(nextError(next));
   },
@@ -46,6 +47,7 @@ module.exports = {
            title,
            props:{map, layers, canEdit},
            hideFeedback: true,
+           mapboxgl:true,
            addthis: true,
            oembed: 'map',
            twitterCard: {

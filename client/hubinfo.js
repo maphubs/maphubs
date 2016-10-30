@@ -15,7 +15,7 @@ require('../node_modules/react-colorpickr/dist/colorpickr.css');
 require("materialize-css");
 
 require('./story.css');
-require('../node_modules/mapbox-gl/dist/mapbox-gl.css');
+require('../assets/js/mapbox-gl/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');
 require("cropperjs/dist/cropper.css");
