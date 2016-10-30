@@ -1086,7 +1086,7 @@ map.on('mousemove', function(e) {
     }
     var url = 'mapbox://styles/mapbox/' + mapboxName;
     if(optimize){
-      //url += '?optimize=true'; //requires mapbox-gl-js 0.24.0+
+      url += '?optimize=true'; //requires mapbox-gl-js 0.24.0+
     }
     cb(url);
     /*
