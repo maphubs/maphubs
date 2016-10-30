@@ -14,14 +14,14 @@ apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash
 RUN apt-get install -y nodejs && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN npm install -g yarnpkg/yarn#6e6b613cb592d861e28fd07744252bc780536080
+RUN npm install -g yarn
 
 RUN mkdir -p /app
 WORKDIR /app
 
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
-RUN yarn install
+RUN yarn install --production
 
 #install iD
 RUN git clone -b maphubs-dev --single-branch https://github.com/openmaphub/iD.git
