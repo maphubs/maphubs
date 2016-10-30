@@ -14,7 +14,7 @@ apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash
 RUN apt-get install -y nodejs && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN npm install -g yarn
+RUN npm install -g yarnpkg/yarn#6e6b613cb592d861e28fd07744252bc780536080
 
 RUN mkdir -p /app
 WORKDIR /app
