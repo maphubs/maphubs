@@ -1300,12 +1300,23 @@ map.on('mousemove', function(e) {
     var inset = '';
     if(this.props.insetMap){
       inset = (
-        <div id={this.state.id + '_inset'} ref="insetMap" className="map z-depth-1"
-          style={{
-            position: 'absolute', bottom: '30px', left: '5px',
-            minHeight: '50px', maxHeight: '150px', minWidth: '50px', maxWidth: '150px',
-            height: '30vw', width: '30vw', display: 'none',
-            border: '0.5px solid rgba(222,222,222,50)', zIndex: 1}}></div>
+        <div style={{
+          position: 'absolute', bottom: '30px', left: '5px',
+          minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
+          height: '25vw', width: '25vw'
+          }}>
+          <div id={this.state.id + '_inset'} ref="insetMap" className="map z-depth-1"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              display: 'none',
+              border: '0.5px solid rgba(222,222,222,50)', zIndex: 1
+            }}></div>
+        </div>
+
       );
     }
 
