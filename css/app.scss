@@ -794,7 +794,7 @@ textarea.materialize-textarea+label:after {
 
 
 .action-button-bottom-right {
-    bottom: 85px;
+    bottom: 95px;
     right: 30px;
 }
 
@@ -1211,4 +1211,8 @@ textarea.materialize-textarea+label:after {
        -ms-animation: fadein 2s; /* Internet Explorer */
         -o-animation: fadein 2s; /* Opera < 12.1 */
            animation: fadein 2s;
+}
+
+#hs-beacon iframe {
+  bottom: 25px !important;
 }

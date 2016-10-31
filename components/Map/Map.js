@@ -697,6 +697,12 @@ map.on('mousemove', function(e) {
     map.addControl(new mapboxgl.NavigationControl({position: _this.props.navPosition}));
   }
 
+  map.addControl(new mapboxgl.ScaleControl({
+      position: 'bottom-right',
+      maxWidth: 120,
+      unit: 'metric' //TODO: let scalebar unit be a user preference
+  }));
+
   if(_this.props.disableScrollZoom){
     map.scrollZoom.disable();
   }

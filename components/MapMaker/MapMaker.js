@@ -450,7 +450,7 @@ var MapMaker = React.createClass({
                 popularLayers={this.props.popularLayers}
                 onAdd={this.addLayer} />
             </div>
-            <div id="maptab" className="row no-margin" style={{height: 'calc(100% - 50px)', display: tabContentDisplay}}>
+            <div id="maptab" className="row no-margin" style={{height: 'calc(100% - 30px)', display: tabContentDisplay}}>
               <div className="row" style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
                 <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
                   glStyle={this.state.mapStyle}
