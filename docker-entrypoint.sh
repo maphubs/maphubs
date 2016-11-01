@@ -29,7 +29,8 @@ if(typeof module !== 'undefined'){
 
 EOF
 
-cp /app/css/${OMH_THEME}.scss /app/theme.scss
+cp /app/sass/${OMH_THEME}.scss /app/theme.scss
+mkdir /app/css
 
 #write iD config
 cat <<EOF >/app/iD/js/config.js

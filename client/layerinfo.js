@@ -13,7 +13,7 @@ require("materialize-css");
 var LayerInfo = require('../views/layerinfo');
 
 require('../assets/js/mapbox-gl/mapbox-gl.css');
-require("../css/react-data-grid.css");
+require("../assets/css/react-data-grid.css");
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');
 

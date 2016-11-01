@@ -4951,7 +4951,14 @@ node-pre-gyp@^0.6.29, node-pre-gyp@~0.6.30:
     tar "~2.2.1"
     tar-pack "~3.3.0"
 
-node-sass@^3.10.0:
+node-sass-middleware:
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/node-sass-middleware/-/node-sass-middleware-0.9.8.tgz#2985e542fac40040616e86b597ec9e4f6d421099"
+  dependencies:
+    mkdirp "^0.5.1"
+    node-sass "^3.4.2"
+
+node-sass@^3.10.0, node-sass@^3.4.2:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-3.10.1.tgz#c535b2e1a5439240591e06d7308cb663820d616c"
   dependencies:

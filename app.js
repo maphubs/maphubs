@@ -22,6 +22,7 @@ var session = require('express-session');
 var KnexSessionStore = require('connect-session-knex')(session);
 var knex = require('./connection.js');
 var log = require('./services/log.js');
+var sassMiddleware = require('node-sass-middleware');
 
 var Promise = require('bluebird');
 //promise config needs to be here so it runs before anything else uses bluebird.
@@ -92,8 +93,19 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
 
+//compile scss dynamically
+app.use(sassMiddleware({
+    /* Options */
+    src: __dirname,
+    dest: path.join(__dirname, 'css'),
+    debug: true,
+    outputStyle: 'compressed',
+    prefix:  '/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+}));
+
 //static files
 app.use('/assets', express.static('assets'));
+app.use('/css', express.static('css'));
 
 app.use('/clientconfig.js', express.static('clientconfig.js'));
 

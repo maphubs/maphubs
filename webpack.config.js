@@ -64,7 +64,7 @@ module.exports = {
     signup: "./client/signup",
     pendingconfirmation: "./client/pendingconfirmation",
     emailconfirmation: "./client/emailconfirmation",
-    vendor: ["./materialize.config.scss", "jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
+    vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "turf-extent", "turf-meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./services/locales"],
     mapboxgl: ["./assets/js/mapbox-gl/mapbox-gl.js"]
   },

@@ -107,6 +107,7 @@
     "newrelic": "^1.28.2",
     "node-libs-browser": "1.0.0",
     "node-sass": "^3.10.0",
+    "node-sass-middleware": "^0.9.8",
     "node-uuid": "1.4.7",
     "nuka-carousel": "^2.0.2",
     "oauth2orize": "^1.5.1",
