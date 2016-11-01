@@ -48,7 +48,10 @@ module.exports = {
 
       debug('getting user with name: ' + display_name);
 
-      return knex('users').where({display_name})
+      display_name = display_name.toLowerCase();
+
+      return knex('users')
+      .where(knex.raw('lower(display_name)'), '=', display_name)
       .then(function(result){
         if(result && result.length === 1){
           var user = result[0];
@@ -73,7 +76,10 @@ module.exports = {
 
       debug('getting user with email: ' + email);
 
-      return knex('users').where({email})
+      email = email.toLowerCase();
+
+      return knex('users')
+      .where(knex.raw('lower(email)'), '=', email)
       .then(function(result){
         if(result && result.length === 1){
           var user = result[0];
@@ -142,12 +148,16 @@ module.exports = {
     },
 
     createUser(email, name, display_name, creation_ip){
+
+      email = email.toLowerCase();
+      display_name = display_name.toLowerCase();
+
       return knex('users').returning('id')
         .insert({
             email,
             display_name,
             name,
-            pass_crypt: '1234',
+            pass_crypt: '1234', //note, this is immediately replaced, value here is just due to not null constraint
             creation_ip,
             creation_time: knex.raw('now()')
         }).then(function(user_id){

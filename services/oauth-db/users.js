@@ -17,7 +17,7 @@ function translateUserObject(data) {
 
 exports.find = function(id, done) {
   debug('find by id: ' + id);
-  knex.select('*')
+  return knex.select('*')
     .from('users')
     .where('id', id)
     .then(function(data) {
@@ -38,9 +38,12 @@ exports.find = function(id, done) {
 
 exports.findByUsername = function(username, done) {
   debug('find by username: ' + username);
-  knex.select('*')
+
+  username = username.toLowerCase();
+
+  return knex.select('*')
     .from('users')
-    .where('display_name', username)
+    .where(knex.raw('lower(display_name)'), '=', username)
     .then(function(data) {
       if (data.length == 1) {
         var user = translateUserObject(data[0]);
