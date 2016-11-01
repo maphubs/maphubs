@@ -92,16 +92,9 @@ var Map = React.createClass({
   },
 
   getInitialState() {
-    var restoreBounds2 = null;
+    var restoreBounds = null;
     if(this.props.fitBounds){
-      if(this.props.fitBounds.length > 2){
-        var sw = new mapboxgl.LngLat(this.props.fitBounds[0], this.props.fitBounds[1]);
-        var ne = new mapboxgl.LngLat(this.props.fitBounds[2], this.props.fitBounds[3]);
-        restoreBounds2 = new mapboxgl.LngLatBounds(sw, ne);
-      }else{
-        restoreBounds2 = this.props.fitBounds;
-      }
-
+      restoreBounds = this.props.fitBounds;
     }
     var glStyle = null;
     var interactiveLayers = [];
@@ -118,8 +111,8 @@ var Map = React.createClass({
       interactiveLayers,
       mapLoaded: false,
       baseMap: this.props.baseMap,
-      restoreBounds2,
-      allowLayersToMoveMap: restoreBounds2 ? false : true
+      restoreBounds,
+      allowLayersToMoveMap: restoreBounds ? false : true
     };
   },
 
@@ -523,11 +516,17 @@ var Map = React.createClass({
       debug('(' + _this.state.id + ') ' +'finished adding map data');
       if(!_this.props.data){
 
-        if (_this.state.restoreBounds2){
+        if (_this.state.restoreBounds){
+          var fitBounds = _this.state.restoreBounds;
+          if(fitBounds.length > 2){
+            var sw = new mapboxgl.LngLat(fitBounds[0], fitBounds[1]);
+            var ne = new mapboxgl.LngLat(fitBounds[2], fitBounds[3]);
+            fitBounds = new mapboxgl.LngLatBounds(sw, ne);
+          }
           debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
-          map.fitBounds(_this.state.restoreBounds2, {animate:false});
+          map.fitBounds(fitBounds, {animate:false});
           if(_this.insetMap){
-            _this.insetMap.fitBounds(_this.state.restoreBounds2, {maxZoom: 1.8, padding: 10, animate:false});
+            _this.insetMap.fitBounds(fitBounds, {maxZoom: 1.8, padding: 10, animate:false});
           }
 
         }else{
@@ -626,9 +625,9 @@ map.on('mousemove', function(e) {
     if(_this.state.showBaseMaps) return;
 
     var debounced = _debounce(function(){
-      if(_this.state.mapLoaded && _this.state.restoreBounds2){
+      if(_this.state.mapLoaded && _this.state.restoreBounds){
         debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
-        _this.setState({restoreBounds2:null});
+        _this.setState({restoreBounds:null});
         //stop restoring map possition after user has moved the map
       }
 
