@@ -41,7 +41,7 @@ var FeatureBox = React.createClass({
     selectedFeature: 1,
     selected: this.props.selected,
     currentFeatures: this.props.features ? this.props.features : [],
-    maxHeight: 'calc(100% - 200px)'
+    maxHeight: 'calc(100% - 50px)'
   };
   },
 
@@ -123,7 +123,7 @@ var FeatureBox = React.createClass({
 
     if(this.state.selected){
       closeButton = (
-        <a className="omh-btn" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}}>
+        <a style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}}>
           <i className="material-icons selected-feature-close" onClick={this.handleCloseSelected}>close</i>
         </a>
       );
@@ -169,7 +169,7 @@ var FeatureBox = React.createClass({
         }else{
           featureLink = 'https://' + host + '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
         }
-      infoPanel = (<div className="row">
+      infoPanel = (<div className="row" style={{marginTop: '10px', marginBottom: '10px'}}>
         <div className="col s6 center">
         {layerinfo}
         </div>
@@ -253,7 +253,7 @@ var FeatureBox = React.createClass({
             selected={this.state.selected}
             multipleSelected={multipleSelected}
             presets={presets}>
-          <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: 'rgba(238, 238, 238, 0.75)', paddingTop: '10px'}}>
+          <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
             {infoPanel}
             {pager}
           </div>

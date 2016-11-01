@@ -39,7 +39,7 @@ var Attributes = React.createClass({
         var presets = this.props.presets;
         //only display presets
         display = (
-            <ul className="collection">
+            <ul className="collection" style={{marginTop: 0}}>
               {photo}
               {
                 presets.map(function(preset){
@@ -65,7 +65,7 @@ var Attributes = React.createClass({
       }else {
 
         display = (
-            <ul className="collection">
+            <ul className="collection" style={{marginTop: 0}}>
               {photo}
               {
                 Object.keys(_this.props.attributes).map(function (key) {
@@ -98,11 +98,11 @@ var Attributes = React.createClass({
     }
     var marginTop = '0px';
     if(this.props.selected){
-       marginTop = '20px';
+       marginTop = '25px';
     }
 
     return (
-      <div style={{marginTop, width: '100%', overflowY: 'auto'}}>
+      <div style={{marginTop, width: '100%', overflowY: 'auto', height: 'calc(100% - 85px)', borderTop: '1px solid #DDD'}}>
       {display}
       {spacer}
       {this.props.children}
