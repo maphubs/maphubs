@@ -100,7 +100,7 @@ var Journalists = React.createClass({
                 </IconRow>
 
                 <div className="row center center-align">
-                  <a className="btn waves-effect z-depth-3" style={{borderRadius: '25px'}} lang="en" href="/maps">Make a Map</a>
+                  <a className="btn waves-effect z-depth-3" style={{borderRadius: '25px'}} lang="en" href="/map/new">Make a Map</a>
                 </div>
                 <div className="container center center-align">
                   <p lang="en" style={{fontSize: '20px'}}>For more detailed instructions on how to make a map, read our tutorials at: <a href="http://help.maphubs.com/category/5-make-a-map">help.maphubs.com</a></p>
