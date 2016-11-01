@@ -193,6 +193,11 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   background-color: $primary-color;
 }
 
+.dropdown-content li>a:hover{
+  color: $navbar-hover-font-color;
+  background-color: $primary-color;
+}
+
 .nav-link-item:hover {
   color: $navbar-hover-font-color !important;
   background-color: transparent !important;
