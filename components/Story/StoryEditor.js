@@ -345,6 +345,7 @@ onAddMap(map){
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
   + '" style="" frameborder="0"></iframe>'
   + '</div>'
+  + '<br />'
   + '<p></p>',
   range
   );
@@ -444,7 +445,7 @@ onAddImage(data, info){
           var image_id = res.body.image_id;
           var url = '/images/story/' + _this.state.story_id + '/image/' + image_id + '.jpg';
           //<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"
-          _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + image_id + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><p></p>');
+          _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + image_id + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><br /><p></p>');
           NotificationActions.showNotification({message: _this.__('Image Added')});
           _this.addImageButtons();
         }
@@ -486,11 +487,16 @@ onRemoveImage(image_id){
 saveSelectionRange(){
   var sel = window.getSelection();
 
-  if(sel.anchorNode && sel.anchorNode.parentNode
-    && $.contains($('.storybody')[0], $(sel.anchorNode)[0])){
-
-    var range = this.getSelectionRange();
-    this.savedSelectionRange = {"startContainer": range.startContainer, "startOffset":range.startOffset,"endContainer":range.endContainer, "endOffset":range.endOffset};
+  if(sel.anchorNode && sel.anchorNode.parentNode){
+    var storyBody = $('.storybody')[0];
+    var anchorNode = $(sel.anchorNode)[0];
+  
+    if($.contains(storyBody, anchorNode) || $(sel.anchorNode).hasClass('storybody')){
+      var range = this.getSelectionRange();
+      this.savedSelectionRange = {"startContainer": range.startContainer, "startOffset":range.startOffset,"endContainer":range.endContainer, "endOffset":range.endOffset};
+    }else {
+      this.savedSelectionRange = null;
+    }
   }else {
     this.savedSelectionRange = null;
   }
@@ -604,7 +610,7 @@ showImageCrop(){
 
        <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
 
-       <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '147px'}}>
+       <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '155px'}}>
             <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red red-text">
               <i className="large material-icons">add</i>
             </a>
