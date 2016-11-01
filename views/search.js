@@ -196,30 +196,26 @@ var Search = React.createClass({
 		return (
       <div>
       <Header />
-      <main style={{height: '100%', margin: 0}}>
-         <div className="divider"></div>
-        <div ref="search" className="container" style={{height: '100px', paddingTop:'10px'}}>
-          <div className="row" style={{marginBottom: '10px'}}>
-            <h5 className="center-align" style={{color: '#212121', marginTop: '0px'}}>{this.__('Search') + ' ' + MAPHUBS_CONFIG.productName}</h5>
-            </div>
-          <div className="row">
-            <SearchBox label={this.__('Search All Data')} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+      <main style={{margin: 0}}>
+        <div ref="search" className="container" style={{height: '55px', paddingTop:'10px'}}>
+          <div className="row no-margin">
+            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
           </div>
         </div>
-        <div className="row no-margin" style={{height: 'calc(75% - 150px)', minHeight: '200px'}}>
+        <div className="row no-margin" style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
           <Map ref="map" style={{width: '100%', height: '100%'}}
-            disableScrollZoom={true} hoverInteraction={true}
+            disableScrollZoom={true} hoverInteraction={false}
             data={this.state.searchResult} >
             <div style={{
                 position: 'absolute',
-                bottom: '0px',
-                right: '0px',
+                top: '0px',
+                left: '0px',
                 zIndex: '1',
                 width: '160px'
               }} >
-              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map -
-              <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
-              <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
+              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map - &nbsp;
+              <a className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
+              <a className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
               </span>
             </div>
           </Map>
