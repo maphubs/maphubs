@@ -6,6 +6,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var _debounce = require('lodash.debounce');
 
 //A reponsive full window map used to render screenshots
 
@@ -65,11 +66,14 @@ var StaticMap = React.createClass({
     });
 
     $(window).resize(function(){
-      var size = getSize();
-      _this.setState({
-        width: size.width,
-        height: size.height
-      });
+      var debounced = _debounce(function(){
+        var size = getSize();
+        _this.setState({
+          width: size.width,
+          height: size.height
+        });
+      }, 2500).bind(this);
+      debounced();
     });
 
 

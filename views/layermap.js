@@ -3,7 +3,7 @@ var $ = require('jquery');
 var Header = require('../components/header');
 var Map = require('../components/Map/Map');
 var Legend = require('../components/Map/Legend');
-
+var _debounce = require('lodash.debounce');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
@@ -49,11 +49,14 @@ var LayerMap = React.createClass({
     });
 
     $(window).resize(function(){
-      var size = getSize();
-      _this.setState({
-        width: size.width,
-        height: size.height
-      });
+      var debounced = _debounce(function(){
+        var size = getSize();
+        _this.setState({
+          width: size.width,
+          height: size.height
+        });
+      }, 2500).bind(this);
+      debounced();
     });
 
 
@@ -135,7 +138,7 @@ var LayerMap = React.createClass({
             title={this.props.layer.name}>
 
             {legend}
-            <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '100px', zIndex:'1'}}></div>
+            <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
           </Map>
         </div>
        </div>

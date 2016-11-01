@@ -5,6 +5,7 @@ var MapLayer = require('./MapLayer');
 var $ = require('jquery');
 //var _isEmpty = require('lodash.isempty');
 var _isEqual = require('lodash.isequal');
+var _debounce = require('lodash.debounce');
 var Map = require('../Map/Map');
 
 var Formsy = require('formsy-react');
@@ -123,11 +124,14 @@ var MapMaker = React.createClass({
     });
 
     $(window).resize(function(){
-      var size = getSize();
-      _this.setState({
-        width: size.width,
-        height: size.height
-      });
+      var debounced = _debounce(function(){
+        var size = getSize();
+        _this.setState({
+          width: size.width,
+          height: size.height
+        });
+      }, 2500).bind(this);
+      debounced();
     });
 
   },

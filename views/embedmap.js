@@ -2,6 +2,7 @@ var React = require('react');
 var $ = require('jquery');
 var Legend = require('../components/Map/Legend');
 var Map = require('../components/Map/Map');
+var _debounce = require('lodash.debounce');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -71,11 +72,14 @@ var EmbedMap = React.createClass({
     });
 
     $(window).resize(function(){
-      var size = getSize();
-      _this.setState({
-        width: size.width,
-        height: size.height
-      });
+      var debounced = _debounce(function(){
+        var size = getSize();
+        _this.setState({
+          width: size.width,
+          height: size.height
+        });
+      }, 2500).bind(this);
+      debounced();
     });
   },
 
