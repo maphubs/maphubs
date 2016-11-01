@@ -28,9 +28,7 @@ var UserMenu = React.createClass({
   },
 
   componentDidMount() {
-    UserActions.getUser(function(err){
-
-    });
+    UserActions.getUser(function(){});
   },
 
   componentDidUpdate(prevState){
@@ -77,7 +75,7 @@ var UserMenu = React.createClass({
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a href="/user/settings">{this.__('Settings')}</a></li>
             <li className="divider"></li>
-            <li className="usermenu-wrapper"><a onClick={this.logoutClick}>{this.__('Logout')}</a></li>
+            <li className="usermenu-wrapper"><a href={'/logout'}>{this.__('Logout')}</a></li>
           </ul>
 
 

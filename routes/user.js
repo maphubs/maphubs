@@ -6,7 +6,6 @@ var log = require('../services/log');
 var debug = require('../services/debug')('routes/user');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
-var forceSSL = require('../services/force-ssl');
 var PasswordUtil = require('../services/password-util');
 //var request = require('superagent-bluebird-promise');
 var local = require('../local');
@@ -21,7 +20,7 @@ if(!local.mapHubsPro){
 module.exports = function(app) {
 
 
-  app.get('/user/settings', forceSSL, function(req, res, next) {
+  app.get('/user/settings', function(req, res, next) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect('/login');
@@ -40,7 +39,7 @@ module.exports = function(app) {
 
   });
 
-  app.get('/signup', forceSSL, function(req, res) {
+  app.get('/signup', function(req, res) {
 
     res.render('signup', {title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName, props: {}, req});
 

@@ -2,13 +2,12 @@
 var passport = require('passport');
 var oauth = require('../services/oauth');
 var oauth2 = require('../services/oauth2');
-var forceSSL = require('../services/force-ssl');
 
 module.exports = function(app) {
 
   //User login and account endpoints
 
-  app.get('/login', forceSSL, function(req, res) {
+  app.get('/login', function(req, res) {
     if(req.query.returnTo) {
       req.session.returnTo = req.query.returnTo;
     }
@@ -21,7 +20,7 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/login/failed', forceSSL, function(req, res) {
+  app.get('/login/failed', function(req, res) {
     res.render('login', {
       title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {
@@ -30,7 +29,7 @@ module.exports = function(app) {
       }, req
     });
   });
-  app.post('/login', forceSSL, passport.authenticate('local', {failureRedirect: '/login/failed'}), function(req, res) {
+  app.post('/login', passport.authenticate('local', {failureRedirect: '/login/failed'}), function(req, res) {
 
     //save the user to the session
     req.session.user = {
@@ -50,7 +49,7 @@ module.exports = function(app) {
 
   });
 
-  app.get('/logout', forceSSL, function(req, res) {
+  app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
   });
@@ -79,16 +78,15 @@ module.exports = function(app) {
     })
   );
 
-  app.get('/oauth2/authorize', forceSSL, oauth2.authorization);
-  app.post('/oauth2/dialog/authorize/decision', forceSSL, oauth2.decision);
+  app.get('/oauth2/authorize', oauth2.authorization);
+  app.post('/oauth2/dialog/authorize/decision', oauth2.decision);
 
-  app.get('/oauth/authorize', forceSSL, oauth.userAuthorization);
-  app.post('/dialog/authorize/decision', forceSSL, oauth.userDecision);
+  app.get('/oauth/authorize', oauth.userAuthorization);
+  app.post('/dialog/authorize/decision', oauth.userDecision);
 
+  app.post('/oauth2/token', oauth2.token);
 
-  app.post('/oauth2/token', forceSSL, oauth2.token);
-
-  app.post('/oauth/request_token', forceSSL, oauth.requestToken);
-  app.post('/oauth/access_token', forceSSL, oauth.accessToken);
+  app.post('/oauth/request_token', oauth.requestToken);
+  app.post('/oauth/access_token', oauth.accessToken);
 
 };
