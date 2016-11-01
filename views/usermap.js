@@ -246,7 +246,7 @@ var UserMap = React.createClass({
     }
 
     button = (
-    <div id="user-map-button" className="fixed-action-btn"
+    <div id="user-map-button" className="fixed-action-btn" style={{bottom: '40px'}}
       onMouseEnter={this.onMouseEnterMenu}
       >
       <a className="btn-floating btn-large">
