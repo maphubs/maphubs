@@ -162,30 +162,39 @@ module.exports = function(app) {
                     .then(function(presets){
                         return layerViews.replaceViews(data.layer_id, presets, trx)
                       .then(function(){
-                        res.send({success: true, photo_id, photo_url});
+                        Layer.setUpdated(data.layer_id, user_id)
+                        .then(function(){
+                          res.send({success: true, photo_id, photo_url});
+                        });
                       });
                     });
                   });
                 }else if(layer.data_type === 'way'){
                   return Tag.setWayTag(data.osm_id, 'photo_url', photo_url, trx)
                   .then(function(){
-                    return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                    .then(function(){
-                      Layer.setUpdated(data.layer_id, user_id)
+                    return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
+                    .then(function(presets){
+                      return layerViews.replaceViews(data.layer_id, presets, trx)
                       .then(function(){
-                        res.send({success: true, photo_id, photo_url});
+                        Layer.setUpdated(data.layer_id, user_id)
+                        .then(function(){
+                          res.send({success: true, photo_id, photo_url});
+                        });
                       });
                     });
                   });
                 }else if(layer.data_type === 'polygon'){
                   return Tag.setPolygonTag(data.layer_id, data.osm_id, 'photo_url', photo_url, trx)
                   .then(function(){
-                    return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                    .then(function(){
-                      Layer.setUpdated(data.layer_id, user_id)
-                      .then(function(){
-                        res.send({success: true, photo_id, photo_url});
-                      });
+                    return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
+                      .then(function(presets){
+                        return layerViews.replaceViews(data.layer_id, presets, trx)
+                        .then(function(){
+                          Layer.setUpdated(data.layer_id, user_id)
+                          .then(function(){
+                            res.send({success: true, photo_id, photo_url});
+                          });
+                        });
                     });
                   });
                 }
