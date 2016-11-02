@@ -44,10 +44,8 @@ var HubStories = React.createClass({
   render() {
     var _this = this;
     var addButton = '';
-    var baseUrl = '';
-    if(MAPHUBS_CONFIG.mapHubsPro){
-      baseUrl = '/hub/' + this.props.hub.hub_id;
-    }
+    var baseUrl = '/hub/' + this.props.hub.hub_id;
+    
     if(_this.props.editing){
       addButton = (
         <div>

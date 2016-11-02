@@ -127,10 +127,7 @@ var HubInfo = React.createClass({
       }
     }
 
-    var linkBaseUrl = '';
-    if(MAPHUBS_CONFIG.mapHubsPro){
-      linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
-    }
+    var linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
 
     return (
       <div>
