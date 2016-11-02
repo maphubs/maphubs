@@ -115,8 +115,7 @@ module.exports = function(app) {
           });
           debug('results: ' + data.length);
 
-        dbgeo.parse({
-          data,
+        dbgeo.parse(data,{        
           "outputFormat": "geojson",
           "geometryColumn": "geom",
           "geometryType": "wkt"

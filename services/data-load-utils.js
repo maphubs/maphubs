@@ -73,16 +73,16 @@ module.exports = {
     var uniqueProps = [];
 
     if(!geoJSON){
-      result.error = "Error dataset missing.";
-      reject(result);
+      reject(new Error("Error dataset missing."));
+      return;
     }
     //confirm that it is a feature collection
     if(geoJSON.type === "FeatureCollection"){
 
       //Error if the FeatureCollection is empty
       if(!geoJSON.features || geoJSON.features.length ==0){
-        result.error = "Dataset appears to be empty. Zero features found in FeatureCollection";
-        reject(result);
+        reject(new Error("Dataset appears to be empty. Zero features found in FeatureCollection"));
+        return;
       }
 
       let firstFeature = geoJSON.features[0];
@@ -116,8 +116,8 @@ module.exports = {
         if(feature.crs && feature.crs.properties && feature.crs.properties.name){
           let featureSRID = feature.crs.properties.name.split(':')[1];
           if(srid != featureSRID){
-            result.error = 'SRID mis-match found in geoJSON';
-            reject(result);
+            reject(new Error('SRID mis-match found in geoJSON'));
+            return;
           }
         }
         //get unique list of properties
@@ -135,9 +135,11 @@ module.exports = {
           var val = feature.properties[key];
           if(typeof val === 'string' && val.length > 255){
             //trim data to 255 chars
+            debug('trimming attribute to 255 chars: ' + key);
             feature.properties[key] = val.substring(0, 255);
           }else if(typeof val === 'object'){
             //stringify nested JSON objects, and limit to 255 chars
+            debug('trimming attribute to 255 chars: ' + key);
             feature.properties[key] = JSON.stringify(val).substring(0, 255);
           }
         });
@@ -213,19 +215,19 @@ module.exports = {
             };
             fulfill(result);
           }else{
-            result.error = "Failed to Insert Data into Database";
-            reject(result);
+            reject(new Error("Failed to Insert Data into Database"));
+            return;
           }
         })
         .catch(function (err) {
           log.error(err);
-          result.error = err.toString();
-          reject(result);
+          reject(err);
+          return;
         });
 
     }else{
-      result.error = "Data is not a valid GeoJSON FeatureCollection";
-      reject(result);
+      reject(new Error('Data is not a valid GeoJSON FeatureCollection'));
+      return;
     }
   });
   },

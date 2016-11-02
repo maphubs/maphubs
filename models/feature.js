@@ -142,8 +142,7 @@ module.exports = {
           var bbox = results[1];
           return new Promise(function(fulfill, reject) {
 
-            dbgeo.parse({
-              "data": data.rows,
+            dbgeo.parse(data.rows,{              
               "outputFormat": "geojson",
               "geometryColumn": "geom",
               "geometryType": "wkt"
