@@ -482,7 +482,75 @@ module.exports = function(app) {
                  res.status(200).send(result);
                }).catch(apiError(res, 200)); //don't want browser to intercept the error, so we can show user a better message
            });
-         } else {
+         } else if(_endsWith(req.file.originalname, '.gpx')){
+           debug('GPX File Detected');
+           ogr2ogr(fs.createReadStream(req.file.path), 'GPX')
+           .format('GeoJSON').skipfailures()
+           .options(['-t_srs', 'EPSG:4326','-sql','SELECT * FROM tracks'])
+           .timeout(60000)
+           .exec(function (er, geoJSON) {
+             if(geoJSON.features && geoJSON.features.length == 0){
+               debug('No tracks found, loading waypoints');
+               ogr2ogr(fs.createReadStream(req.file.path), 'GPX')
+               .format('GeoJSON').skipfailures()
+               .options(['-t_srs', 'EPSG:4326','-sql','SELECT * FROM waypoints'])
+               .timeout(60000)
+               .exec(function (er, geoJSON) {
+                 if (er){
+                   log.error(er);
+                   res.status(200).send({success: false, error: er.toString()});
+                 }else{
+                   DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                   .then(function(result){
+                     //tell the client if we were successful
+                     res.status(200).send(result);
+                   }).catch(apiError(res, 500));
+                 }
+               });
+             }else{
+               if(local.writeDebugData){
+                 fs.writeFile(local.tempFilePath + 'gpx-upload-layer-' + layer_id + '.geojson', JSON.stringify(geoJSON), function(err){
+                   if(err) {
+                     log.error(err);
+                     throw err;
+                   }
+                 });
+               }
+
+               if (er){
+                 log.error(er);
+                 res.status(200).send({success: false, error: er.toString()});
+               }else{
+                 DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                 .then(function(result){
+                   //tell the client if we were successful
+                   res.status(200).send(result);
+                 }).catch(apiError(res, 500));
+               }
+             }
+
+
+           });
+
+         } else if(_endsWith(req.file.originalname, '.kml')){
+           debug('KML File Detected');
+           ogr2ogr(fs.createReadStream(req.file.path), 'KML')
+           .format('GeoJSON').skipfailures().
+           options(['-t_srs', 'EPSG:4326']).timeout(60000)
+           .exec(function (er, geoJSON) {
+             if (er){
+               log.error(er);
+               res.status(200).send({success: false, error: er.toString()});
+             }else{
+               DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+               .then(function(result){
+                 //tell the client if we were successful
+                 res.status(200).send(result);
+               }).catch(apiError(res, 500));
+             }
+           });
+
+         }else {
            debug('Unsupported File Type: '+ req.file.path);
            res.status(200).send({success: false, valid: false, error: "Unsupported File Type"});
          }
