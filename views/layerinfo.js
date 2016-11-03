@@ -471,6 +471,7 @@ var LayerInfo = React.createClass({
       var shpURL = '/api/layer/' + this.props.layer.layer_id + '/export/shp/' + slug(this.props.layer.name) + '.zip';
       var kmlURL = '/api/layer/' + this.props.layer.layer_id + '/export/kml/' + slug(this.props.layer.name) + '.kml';
       var csvURL = '/api/layer/' + this.props.layer.layer_id + '/export/csv/' + slug(this.props.layer.name) + '.csv';
+      var gpxURL = '/api/layer/' + this.props.layer.layer_id + '/export/gpx/' + slug(this.props.layer.name) + '.gpx';
 
       var bounds = '';
       if(this.props.layer.extent_bbox){
@@ -480,6 +481,12 @@ var LayerInfo = React.createClass({
 
       //http://dev.localhost:4000/xml/map/44?bbox=
       if(!this.props.layer.disable_export){
+        var gpxExport = '';
+        if(this.props.layer.data_type !== 'polygon'){
+          gpxExport = (
+            <li className="collection-item">{this.__('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>
+          );
+        }
         exportTabContent = (
           <div>
             <ul className="collection with-header">
@@ -488,6 +495,7 @@ var LayerInfo = React.createClass({
              <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
              <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
              <li className="collection-item">{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
+             {gpxExport}
             </ul>
            <ul className="collection with-header">
             <li className="collection-header"><h5>{this.__('Services')}</h5></li>

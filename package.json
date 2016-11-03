@@ -7,7 +7,7 @@
     "start": "DEBUG=maphubs:* node --max-old-space-size=2048 app.js",
     "dev": "DEBUG=maphubs:* nodejs-dashboard -- node --max-old-space-size=4096 app.js",
     "build": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "debug": "DEBUG=*,-express:*,-babel,-oauth2orize,-morgan,-express-session,-tessera,-body-parser:*,-compression,-pool2,-knex:* node --debug app.js",
+    "debug": "NODE_ENV=production DEBUG=maphubs:* node --debug app.js",
     "prod-test": "NODE_ENV=production node app.js",
     "changelog": "github_changelog_generator"
   },
@@ -154,6 +154,7 @@
     "superagent-bluebird-promise": "^4.1.0",
     "superagent-jsonp": "0.1.1",
     "terraformer-arcgis-parser": "1.0.5",
+    "tokml": "^0.4.0",
     "turf-centroid": "3.0.12",
     "turf-extent": "1.0.4",
     "turf-inside": "3.0.12",

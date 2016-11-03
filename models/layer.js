@@ -233,7 +233,7 @@ module.exports = {
         }
 
       return Promise.all([
-          knex.raw("select osm_id, ST_AsText(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags from " + layerView),
+          knex.raw("select osm_id, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags from " + layerView),
           knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(geom) as bbox from (select ST_Transform(geom, 4326) as geom from " + layerView + ") a) b")
         ])
         .then(function(results) {
@@ -241,10 +241,10 @@ module.exports = {
           var bbox = results[1];
           return new Promise(function(fulfill, reject) {
 
-            dbgeo.parse(data.rows,{        
+            dbgeo.parse(data.rows,{
               "outputFormat": "geojson",
               "geometryColumn": "geom",
-              "geometryType": "wkt"
+              "geometryType": "geojson"
             }, function(error, result) {
               if (error) {
                 log.error(error);
