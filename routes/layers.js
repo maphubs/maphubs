@@ -116,6 +116,7 @@ module.exports = function(app) {
 
           if(layer){
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
+          description: layer.description,
           props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
           mapboxgl:true,
           fontawesome: true, req});
