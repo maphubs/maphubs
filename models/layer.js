@@ -253,7 +253,9 @@ module.exports = {
               //convert tags to properties
               if(result.features){
                 result.features.forEach(function(feature) {
-                  var tags = JSON.parse(feature.properties.tags);
+                  var tags = feature.properties.tags;
+                  tags = tags.replace(/\r?\n/g, ' ');
+                  tags = JSON.parse(tags);
                   if(tags){
                     Object.keys(tags).map(function(key) {
                       var val = tags[key];

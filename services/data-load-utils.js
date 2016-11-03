@@ -133,17 +133,21 @@ module.exports = {
             uniqueProps.push(key);
           }
           var val = feature.properties[key];
+          if(typeof val === 'string'){
+            val = val.replace(/\r?\n/g, ' ');
+          }
           if(typeof val === 'string' && val.length > 255){
             //trim data to 255 chars
             log.info('trimming string attribute to 255 chars: ' + key);
             //first replace html
             val = val.replace(/<(?:.|\n)*?>/gm, '');
-            feature.properties[key] = val.substring(0, 254);
+            val = val.substring(0, 254);
           }else if(typeof val === 'object'){
             //stringify nested JSON objects, and limit to 255 chars
             log.info('trimming attribute to 255 chars: ' + key);
-            feature.properties[key] = JSON.stringify(val).substring(0, 254);
+            val = JSON.stringify(val).substring(0, 254);
           }
+          feature.properties[key] = val;
         });
 
         if(GJV.isFeature(feature) && feature.geometry){
