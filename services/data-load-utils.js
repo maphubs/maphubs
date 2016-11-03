@@ -135,12 +135,14 @@ module.exports = {
           var val = feature.properties[key];
           if(typeof val === 'string' && val.length > 255){
             //trim data to 255 chars
-            debug('trimming attribute to 255 chars: ' + key);
-            feature.properties[key] = val.substring(0, 255);
+            log.info('trimming string attribute to 255 chars: ' + key);
+            //first replace html
+            val = val.replace(/<(?:.|\n)*?>/gm, '');
+            feature.properties[key] = val.substring(0, 254);
           }else if(typeof val === 'object'){
             //stringify nested JSON objects, and limit to 255 chars
-            debug('trimming attribute to 255 chars: ' + key);
-            feature.properties[key] = JSON.stringify(val).substring(0, 255);
+            log.info('trimming attribute to 255 chars: ' + key);
+            feature.properties[key] = JSON.stringify(val).substring(0, 254);
           }
         });
 
