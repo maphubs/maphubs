@@ -28,6 +28,10 @@ var LayerNotesActions = require('../actions/LayerNotesActions');
 var LayerNotesStore = require('../stores/LayerNotesStore');
 
 var moment = require('moment-timezone');
+var clipboard;
+if(process.env.APP_ENV === 'browser'){
+ clipboard = require('clipboard-js');
+}
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -376,6 +380,10 @@ var LayerInfo = React.createClass({
 
   },
 
+  copyToClipboard(val){
+    clipboard.copy(val);
+  },
+
 	render() {
     var _this = this;
     var glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.layer.data_type];
@@ -648,6 +656,7 @@ var LayerInfo = React.createClass({
           <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}</p>
           <p style={{fontSize: '16px'}}><b>{this.__('External Layer Source: ')} </b>
             <a href={externalUrl} target="_blank">{externalUrl}</a>
+            <i className="material-icons layer-info-tooltip omh-accent-text" style={{cursor: 'pointer'}} data-delay="50" onClick={function(){_this.copyToClipboard(externalUrl);}} data-position="left" data-tooltip={this.__('Copy to Clipboard')}>launch</i>
           </p>
         </div>
       );
