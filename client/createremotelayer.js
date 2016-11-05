@@ -7,7 +7,6 @@ require('babel-polyfill');
 
 require('../assets/js/mapbox-gl/mapbox-gl.css');
 require('../node_modules/react-colorpickr/dist/colorpickr.css');
-require('../node_modules/codemirror/lib/codemirror.css');
 
 document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
