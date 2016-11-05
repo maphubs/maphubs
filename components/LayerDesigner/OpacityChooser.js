@@ -121,9 +121,9 @@ var OpacityChooser = React.createClass({
          {advanced}
 
        </ul>
-        <CodeEditor ref="styleEditor" id="raster-style-editor" mode={{name: "javascript", json: true}}
+        <CodeEditor ref="styleEditor" id="raster-style-editor" mode="json"
          code={JSON.stringify(this.state.style, undefined, 2)} title="Edit Layer Style" onSave={this.onStyleChange} />
-       <CodeEditor ref="legendEditor" id="raster-legend-editor" mode={{name: "xml", htmlMode: true}}
+       <CodeEditor ref="legendEditor" id="raster-legend-editor" mode="html"
            code={this.state.legendCode} title="Edit Layer Legend" onSave={this.onLegendChange} />
       </div>
     );
