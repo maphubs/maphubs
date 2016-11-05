@@ -624,5 +624,7 @@
 	" is a non-profit initiative of the Moabi organization": " is a non-profit initiative of the Moabi organization",
 	"Powered by MapHubs": "Powered by MapHubs",
 	"Upload File - Shapefile(Zip), GeoJSON, KML, or GPX (tracks or waypoints)": "Upload File - Shapefile(Zip), GeoJSON, KML, or GPX (tracks or waypoints)",
-	"Copy to Clipboard": "Copy to Clipboard"
+	"Copy to Clipboard": "Copy to Clipboard",
+	"Editing Layer Style": "Editing Layer Style",
+	"Edit Layer Legend": "Edit Layer Legend"
 }

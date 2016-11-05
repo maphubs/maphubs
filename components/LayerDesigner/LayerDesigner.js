@@ -166,10 +166,10 @@ var LayerDesigner = React.createClass({
          {advanced}
 
        </ul>
-       <CodeEditor ref="styleEditor" id="layer-style-editor" mode={{name: "javascript", json: true}}
-         code={JSON.stringify(this.state.style, undefined, 2)} title="Edit Layer Style" onSave={this.onStyleChange} />
-       <CodeEditor ref="legendEditor" id="layer-legend-editor" mode={{name: "xml", htmlMode: true}}
-           code={this.state.legendCode} title="Edit Layer Legend" onSave={this.onLegendChange} />
+       <CodeEditor ref="styleEditor" id="layer-style-editor" mode="json"
+         code={JSON.stringify(this.state.style, undefined, 2)} title={this.__('Editing Layer Style')} onSave={this.onStyleChange} />
+       <CodeEditor ref="legendEditor" id="layer-legend-editor" mode="html"
+           code={this.state.legendCode} title={this.__('Edit Layer Legend')} onSave={this.onLegendChange} />
        </div>
     );
   }

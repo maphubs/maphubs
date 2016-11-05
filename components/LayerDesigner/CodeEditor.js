@@ -7,6 +7,14 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
+var AceEditor;
+if(process.env.APP_ENV === 'browser'){
+  require('brace');
+   AceEditor = require('react-ace').default;
+   require('brace/mode/json');
+   require('brace/mode/html');
+   require('brace/theme/monokai');
+}
 
 var CodeEditor = React.createClass({
 
@@ -21,24 +29,46 @@ var CodeEditor = React.createClass({
     onSave: React.PropTypes.func.isRequired,
     title: React.PropTypes.string.isRequired,
     code: React.PropTypes.string,
-    mode: React.PropTypes.object
+    mode: React.PropTypes.string,
+    theme: React.PropTypes.string
   },
 
   getDefaultProps() {
     return {
       id: 'code-editor',
-      mode: 'html'
+      mode: 'json',
+      theme: 'monokai'
     };
   },
 
   getInitialState(){
     return {
-      code: this.props.code
+      code: this.props.code,
+      canSave: true
     };
   },
 
   componentWillReceiveProps(nextProps){
     this.setState({code: nextProps.code});
+  },
+
+  componentDidUpdate(){
+    var _this = this;
+    if(this.refs.ace){
+      this.editor = this.refs.ace.editor;
+      this.editor.getSession().on("changeAnnotation", function(){
+        var annotations = _this.editor.getSession().getAnnotations();
+        var canSave = true;
+        if(annotations && annotations.length > 0){
+          annotations.forEach(function(anno){
+            if(anno.type === 'error'){
+              canSave = false;
+            }
+          });
+        }
+        _this.setState({canSave});
+      });
+    }
   },
 
   show(){
@@ -58,42 +88,48 @@ var CodeEditor = React.createClass({
   },
 
   onSave(){
-    this.hide();
-    this.props.onSave(this.state.code);
+    if(this.state.canSave){
+      this.hide();
+      this.props.onSave(this.state.code);
+    }
+
   },
 
   render(){
     var editor = '';
     if(this.state.show){
-      var Codemirror = require('react-codemirror');
-      require('codemirror/mode/javascript/javascript');
-      require('codemirror/mode/xml/xml');
-        var options = {
-          lineNumbers: false,
-          readOnly: false,
-          mode: this.props.mode
-        };
+
       editor = (
-        <Codemirror
-          value={this.state.code}
+        <AceEditor
+          ref="ace"
+          mode={this.props.mode}
+          theme={this.props.theme}
           onChange={this.onChange}
-          options={options}
+          name={this.props.id}
+          width="100%"
+          height="100%"
+          highlightActiveLine={true}
+          enableBasicAutocompletion={true}
+          value={this.state.code}
+          editorProps={{$blockScrolling: true}}
         />
     );
     }
     return (
-      <Modal id={this.props.id} show={this.state.show} fixedFooter={true} dismissible={false}>
-        <ModalContent style={{padding: '5px'}}>
-          <h5>{this.props.title}</h5>
-          <div className="left-align" style={{height: 'calc(100% - 56px)'}}>
+      <Modal id={this.props.id} show={this.state.show} className="code-edit-modal" fixedFooter={true} dismissible={false}>
+        <ModalContent style={{padding: '0px'}}>
+
+          <div className="left-align" style={{height: '100%'}}>
             {editor}
           </div>
 
         </ModalContent>
         <ModalFooter>
+
+          <p className="left">{this.props.title}</p>
           <div className="right">
             <a className="waves-effect waves-light btn" style={{float: 'none', marginRight: '15px'}} onClick={this.onCancel}>{this.__('Cancel')}</a>
-            <a className="waves-effect waves-light btn" style={{float: 'none'}} onClick={this.onSave}>{this.__('Save')}</a>
+            <a className="waves-effect waves-light btn" style={{float: 'none'}} disabled={!this.state.canSave} onClick={this.onSave}>{this.__('Save')}</a>
           </div>
 
           </ModalFooter>

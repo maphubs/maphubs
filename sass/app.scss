@@ -669,6 +669,14 @@ textarea.materialize-textarea+label:after {
   max-height: 85% !important;
 }
 
+.code-edit-modal{
+  width: 95vw !important;
+  max-width: 800px !important;
+  height: 95vh !important;
+  max-height: 95vh !important;
+  top: 2% !important;
+}
+
 .create-map-btn {
   height: 25px;
   width: 25px;
@@ -921,10 +929,6 @@ textarea.materialize-textarea+label:after {
 .text-shadow {
   text-shadow: #000 0px 0px 1px;
   -webkit-font-smoothing: antialiased;
-}
-
-.ReactCodeMirror, .CodeMirror {
-  height: auto !important;
 }
 
 @media only screen and (max-width : 480px) {
