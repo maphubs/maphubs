@@ -365,7 +365,7 @@ module.exports = {
           layers: [
             {
             "id": "omh-raster-" + layer_id,
-            type,
+            "type": "raster",
             "source": "omh-" + layer_id,
             "minzoom": 0,
             "maxzoom": 18,
