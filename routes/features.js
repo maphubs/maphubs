@@ -9,6 +9,7 @@ var urlUtil = require('../services/url-util');
 var imageUtils = require('../services/image-utils');
 var Promise = require('bluebird');
 var layerViews = require('../services/layer-views');
+var debug = require('../services/debug')('routes/features');
 
 //var log = require('../services/log.js');
 //var debug = require('../services/debug')('routes/features');
@@ -24,7 +25,7 @@ module.exports = function(app) {
 
   app.get('/feature/:layer_id/:osm_id/*', function(req, res, next) {
 
-    var osm_id = parseInt(req.params.osm_id || '', 10);
+    var osm_id = req.params.osm_id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
 
     var user_id = null;
@@ -33,16 +34,17 @@ module.exports = function(app) {
     }
 
     if(osm_id && layer_id){
-      Promise.all([
-        Feature.getFeatureByID(osm_id, layer_id),
-        PhotoAttachment.getPhotoIdsForFeature(layer_id, osm_id),
         Layer.getLayerByID(layer_id)
+        .then(function(layer){
+
+      return Promise.all([
+        Feature.getFeatureByID(osm_id, layer),
+        PhotoAttachment.getPhotoIdsForFeature(layer_id, osm_id),
       ])
       .then(function(results){
         var feature = results[0].feature;
         //only supporting one photo per feature for now...
         var photos = results[1];
-        var layer =  results[2];
         var photo = null;
         if(photos && Array.isArray(photos)){
           photo = photos[0];
@@ -67,7 +69,7 @@ module.exports = function(app) {
             title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
             fontawesome: true,
             mapboxgl:true,
-            props: {feature, notes, photo, canEdit: false},
+            props: {feature, notes, photo, layer, canEdit: false},
              req
            });
         }else{
@@ -94,6 +96,7 @@ module.exports = function(app) {
             }
         });
       }
+      });
       }).catch(nextError(next));
     }else{
       next(new Error('Missing Required Data'));
@@ -143,6 +146,7 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     var data = req.body;
     if (data && data.layer_id && data.osm_id && data.image && data.info) {
+      var raw_osm_id = data.osm_id.substring(1);
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
@@ -155,49 +159,38 @@ module.exports = function(app) {
                 var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
                 var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                 //add a tag to the feature
-                if(layer.data_type === 'point'){
-                  return Tag.setNodeTag(data.osm_id, 'photo_url', photo_url, trx)
-                  .then(function(){
-                    return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                    .then(function(presets){
-                        return layerViews.replaceViews(data.layer_id, presets, trx)
-                      .then(function(){
-                        Layer.setUpdated(data.layer_id, user_id)
-                        .then(function(){
-                          res.send({success: true, photo_id, photo_url});
-                        });
-                      });
-                    });
-                  });
-                }else if(layer.data_type === 'way'){
-                  return Tag.setWayTag(data.osm_id, 'photo_url', photo_url, trx)
-                  .then(function(){
-                    return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                    .then(function(presets){
-                      return layerViews.replaceViews(data.layer_id, presets, trx)
-                      .then(function(){
-                        Layer.setUpdated(data.layer_id, user_id)
-                        .then(function(){
-                          res.send({success: true, photo_id, photo_url});
-                        });
-                      });
-                    });
-                  });
-                }else if(layer.data_type === 'polygon'){
-                  return Tag.setPolygonTag(data.layer_id, data.osm_id, 'photo_url', photo_url, trx)
-                  .then(function(){
-                    return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                      .then(function(presets){
-                        return layerViews.replaceViews(data.layer_id, presets, trx)
-                        .then(function(){
-                          Layer.setUpdated(data.layer_id, user_id)
-                          .then(function(){
-                            res.send({success: true, photo_id, photo_url});
-                          });
-                        });
-                    });
-                  });
+                var command = new Promise(function(cb){cb();});
+                if(data.osm_id.startsWith('n')){
+                  debug('set node tag');
+                  command = Tag.setNodeTag(raw_osm_id, 'photo_url', photo_url, trx);
+                }else if(data.osm_id.startsWith('w')){
+                  debug('set way tag');
+                  command = Tag.setWayTag(raw_osm_id, 'photo_url', photo_url, trx);
+                }else if(data.osm_id.startsWith('p')){
+                  debug('set polygon tag');
+                  command = Tag.setPolygonTag(data.layer_id, raw_osm_id, 'photo_url', photo_url, trx);
+                }else if(data.osm_id.startsWith('m')){
+                  debug('set multipolygon tag');
+                  command = Tag.setMultiPolygonTag(data.layer_id, raw_osm_id, 'photo_url', photo_url, trx);
+                }else{
+                  throw new Error('old osm_id found: ' + data.osm_id);
                 }
+
+                return command.then(function(){
+                  debug('addPhotoUrlPreset');
+                  return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
+                  .then(function(presets){
+                    debug('replaceViews');
+                      return layerViews.replaceViews(data.layer_id, presets, trx)
+                    .then(function(){
+                      debug('Layer.setUpdated');
+                      return Layer.setUpdated(data.layer_id, user_id)
+                      .then(function(){
+                        res.send({success: true, photo_id, photo_url});
+                      });
+                    });
+                  });
+                });
               });
             });
           }).catch(apiError(res, 500));
@@ -218,6 +211,7 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     var data = req.body;
     if (data && data.layer_id && data.osm_id && data.photo_id) {
+      var raw_osm_id = data.osm_id.substring(1); //without the type prefix
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
@@ -228,40 +222,28 @@ module.exports = function(app) {
               return Layer.getLayerByID(data.layer_id, trx)
               .then(function(layer){
                 //remove tag from feature
-                if(layer.data_type === 'point'){
-                  return Tag.removeNodeTag(data.osm_id, 'photo_url', trx)
-                  .then(function(){
-                    return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                    .then(function(){
-                      Layer.setUpdated(data.layer_id, user_id)
-                      .then(function(){
-                        res.send({success: true});
-                      });
-                    });
-                  });
-                }else if(layer.data_type === 'way'){
-                  return Tag.removeWayTag(data.osm_id, 'photo_url', trx)
-                  .then(function(){
-                    return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                    .then(function(){
-                      Layer.setUpdated(data.layer_id, user_id)
-                      .then(function(){
-                        res.send({success: true});
-                      });
-                    });
-                  });
-                }else if(layer.data_type === 'polygon'){
-                  return Tag.removePolygonTag(data.layer_id, data.osm_id, 'photo_url', trx)
-                  .then(function(){
-                    return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                    .then(function(){
-                      Layer.setUpdated(data.layer_id, user_id)
-                      .then(function(){
-                        res.send({success: true});
-                      });
-                    });
-                  });
+                var command;
+                if(data.osm_id.startsWith('n')){
+                  command = Tag.removeNodeTag(raw_osm_id, 'photo_url', trx);
+                }else if(data.osm_id.startsWith('w')){
+                  command = Tag.removeWayTag(raw_osm_id, 'photo_url', trx);
+                }else if(data.osm_id.startsWith('p')){
+                  command = Tag.removePolygonTag(data.layer_id, raw_osm_id, 'photo_url', trx);
+                }else if(data.osm_id.startsWith('m')){
+                  command = Tag.removeMultiPolygonTag(data.layer_id, raw_osm_id, 'photo_url', trx);
+                }else{
+                  throw new Error('old osm_id found: ' + data.osm_id);
                 }
+
+                return command.then(function(){
+                  return layerViews.replaceViews(data.layer_id, layer.presets, trx)
+                  .then(function(){
+                    return Layer.setUpdated(data.layer_id, user_id)
+                    .then(function(){
+                      res.send({success: true});
+                    });
+                  });
+                });
               });
             });
           }).catch(apiError(res, 500));

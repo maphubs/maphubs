@@ -5,28 +5,25 @@ var log = require('../services/log.js');
 var debug = require('../services/debug')('model/features');
 var Layer = require('./layer');
 var LayerViews = require('../services/layer-views');
+var geojsonUtils = require('../services/geojson-utils');
 
 module.exports = {
 
 
-  getFeatureByID(osm_id, layer_id) {
+  getFeatureByID(osm_id, layer) {
     var _this = this;
-    return Layer.getLayerByID(layer_id)
-    .then(function(layer){
-    return _this.getOSMRecord(osm_id, layer.data_type, layer.layer_id)
-      .then(function(feature) {
-          feature.layer = layer;
-          return _this.getGeoJSON(feature.id, feature.layer_id)
-          .then(function(geojson){
-            feature.geojson = geojson;
-            return _this.getFeatureNotes(osm_id, layer_id)
-            .then(function(notes){
-              var result = {feature, notes};
-              return result;
-            });
+    return _this.getOSMRecord(osm_id, layer.layer_id)
+      .then(function(featureResults) {
+        var feature = featureResults[0];
+        return _this.getGeoJSON(osm_id, layer.layer_id)
+        .then(function(geojson){
+          feature.geojson = geojson;
+          return _this.getFeatureNotes(osm_id, layer.layer_id)
+          .then(function(notes){
+            var result = {feature, notes};
+            return result;
           });
         });
-
       });
   },
 
@@ -67,45 +64,19 @@ module.exports = {
     });
   },
 
-  getOSMRecord(id, dataType, layer_id){
-
-    var commands = [];
-    switch(dataType){
-      case 'polygon':
-        commands.push(knex('current_ways').where({id, layer_id}));
-        commands.push(knex('current_relations').where({id, layer_id}));
-        break;
-      case 'line':
-        commands.push(knex('current_ways').where({id, layer_id}));
-        break;
-      case 'point':
-        commands.push(knex('current_nodes').where({id, layer_id}));
-        break;
-      default:
-        break;
+  getOSMRecord(id, layer_id){
+    var osm_id = id.substring(1);
+    debug('getting osm record for: ' + id + ' - '+ osm_id);
+    if(id.startsWith('n')){
+      return knex('current_nodes').where({id:osm_id, layer_id});
+    }else if(id.startsWith('w') || id.startsWith('p')){
+      return knex('current_ways').where({id:osm_id, layer_id});
+    }else if(id.startsWith('m')){
+      return knex('current_relations').where({id:osm_id, layer_id});
+    }else{
+      log.error('old osm_id found: ' + id);
+      throw new Error('old osm_id found: ' + id);
     }
-
-    return Promise.all(commands)
-    .then(function(resultsArr) {
-      var combined = [];
-      resultsArr.forEach(function(result){
-        combined = combined.concat(result);
-      });
-      var osmRecord = null;
-
-      if(combined.length <= 0){
-        log.error("No records found for id:" + id + ' for layer:' + layer_id);
-
-      }else if(combined.length > 1){
-        osmRecord = combined[0];
-        log.error("More than one record found for id:" + id + ' for layer:' + layer_id);
-      }else {
-        //this is only one
-        osmRecord = combined[0];
-      }
-
-      return osmRecord;
-    });
   },
 
 
@@ -134,8 +105,8 @@ module.exports = {
             `select osm_id,
             ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom,
             '{' || replace(tags::text, '=>', ':') || '}' as tags
-            from ` + layerView + ` where osm_id=` + osm_id),
-          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(geom) as bbox from (select ST_Transform(geom, 4326) as geom from " + layerView + " where osm_id=" + osm_id + ") a) b")
+            from ` + layerView + ` where osm_id='` + osm_id + "'"),
+          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(geom) as bbox from (select ST_Transform(geom, 4326) as geom from " + layerView + " where osm_id='" + osm_id + "') a) b")
         ])
         .then(function(results) {
           var data = results[0];
@@ -152,15 +123,7 @@ module.exports = {
                 reject(error);
               }
               //convert tags to properties
-              result.features.forEach(function(feature) {
-                var tags = JSON.parse(feature.properties.tags);
-                Object.keys(tags).map(function(key) {
-                  var val = tags[key];
-                  feature.properties[key] = val;
-                });
-                delete feature.properties.tags;
-              });
-
+              result.features = geojsonUtils.convertTagsToProps(result.features);
               result.bbox = JSON.parse(bbox.rows[0].bbox);
               fulfill(result);
             });
@@ -170,6 +133,7 @@ module.exports = {
       });
     },
 
+    //not used?
     updateFeature(osm_id, tags){
 
       return this.getOSMRecord(osm_id)

@@ -223,7 +223,7 @@ module.exports = {
       `CREATE INDEX polygon_geom_` + layer_id + `_geom_idx ON layers.polygon_geom_` + layer_id + ` USING GIST (geom);`,
 
       `CREATE or replace VIEW layers.polygons_` + layer_id + ` AS
-      SELECT a.osm_id,
+      SELECT 'p' || a.osm_id as osm_id, osm_source,
       ` + layer_id + ` as layer_id,
       a.geom::geometry(MULTIPOLYGON,900913),`
       + tagColumns +
@@ -232,7 +232,7 @@ module.exports = {
       LEFT JOIN layers.ways_` + layer_id + ` b on a.osm_id = b.id
       WHERE osm_source = 'way'
       UNION
-      SELECT a.osm_id,
+      SELECT 'm'|| a.osm_id as osm_id, osm_source,
       ` + layer_id + ` as layer_id,
       a.geom::geometry(MULTIPOLYGON,900913),`
       + tagColumns +
@@ -244,7 +244,7 @@ module.exports = {
 
       `CREATE OR REPLACE VIEW layers.lines_` + layer_id + ` AS
       SELECT
-      id as osm_id,
+      'w'|| id as osm_id,
       ` + layer_id + ` as layer_id,
       geom::geometry(LINESTRING,900913),`
       + tagColumns +
@@ -252,7 +252,7 @@ module.exports = {
       FROM layers.ways_` + layer_id + `
       WHERE ((tags->'area') NOT IN ('yes', 'true') OR (tags->'area') IS NULL)
       	AND id NOT IN (
-          SELECT DISTINCT current_relations.id FROM current_relation_tags
+          SELECT DISTINCT current_relation_members.member_id FROM current_relation_tags
           LEFT JOIN current_relations ON current_relation_tags.relation_id = current_relations.id
           LEFT JOIN current_relation_members  ON current_relation_members.relation_id = current_relations.id
           WHERE k = 'type' AND v = 'multipolygon' AND member_type = 'Way' AND layer_id = ` + layer_id + `
@@ -261,7 +261,7 @@ module.exports = {
 
       `CREATE OR REPLACE VIEW layers.points_` + layer_id + ` AS
       SELECT
-      a.id AS osm_id,
+      'n'|| a.id AS osm_id,
       ` + layer_id + ` as layer_id,
       c.geom::geometry(POINT,900913),`
       + tagColumns +

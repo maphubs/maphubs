@@ -72,7 +72,7 @@ var FeatureInfo = React.createClass({
     var _this = this;
     var geoJSONProps = this.props.feature.geojson.features[0].properties;
 
-    FeatureNotesActions.saveNotes(this.props.feature.layer.layer_id, geoJSONProps.osm_id, function(err){
+    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.osm_id, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -151,8 +151,8 @@ var FeatureInfo = React.createClass({
 
     //var glStyle = null;
 
-    if(this.props.feature && this.props.feature.layer && this.props.feature.geojson){
-      //glStyle = this.props.feature.layer.style ? this.props.feature.layer.style : styles[this.props.feature.layer.data_type];
+    if(this.props.feature && this.props.layer && this.props.feature.geojson){
+      //glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
       var featureName = "Feature";
       if(this.props.feature.geojson.features && this.props.feature.geojson.features.length > 0){
@@ -238,7 +238,7 @@ var FeatureInfo = React.createClass({
     }
 
 
-    var layerUrl = baseUrl + '/layer/info/' + this.props.feature.layer.layer_id + '/' + slug(this.props.feature.layer.name);
+    var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
 		return (
       <div>
         <Header />
@@ -247,7 +247,7 @@ var FeatureInfo = React.createClass({
           <div className="col s6 no-padding" style={{height: '100%'}}>
             <div style={{margin: '10px'}}>
               <h4>{featureName}</h4>
-              <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.feature.layer.name}</a></p>
+              <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.layer.name}</a></p>
             </div>
 
             <div className="row no-margin" style={{height: 'calc(100% - 108px)'}}>
@@ -269,9 +269,9 @@ var FeatureInfo = React.createClass({
               <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
                 <ReactDisqusThread
                       shortname="maphubs"
-                      identifier={'maphubs-feature-' + this.props.feature.layer.layer_id + '-' + this.props.feature.osm_id + '-' + featureName}
-                      url={baseUrl + '/feature/' + this.props.feature.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
-                      title={this.props.feature.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
+                      identifier={'maphubs-feature-' + this.props.layer.layer_id + '-' + this.props.feature.osm_id + '-' + featureName}
+                      url={baseUrl + '/feature/' + this.props.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
+                      title={this.props.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
                       />
               </div>
               <div id="notes" className="col s12" style={{position: 'relative', height: 'calc(100% - 48px)'}}>

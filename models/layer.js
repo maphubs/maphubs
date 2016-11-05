@@ -10,6 +10,7 @@ var Group = require('./group');
 var Map = require('./map');
 var debug = require('../services/debug')('model/layers');
 var ScreenshotUtils = require('../services/screenshot-utils');
+var geojsonUtils = require('../services/geojson-utils');
 
 module.exports = {
 
@@ -252,18 +253,7 @@ module.exports = {
               }
               //convert tags to properties
               if(result.features){
-                result.features.forEach(function(feature) {
-                  var tags = feature.properties.tags;
-                  tags = tags.replace(/\r?\n/g, ' ');
-                  tags = JSON.parse(tags);
-                  if(tags){
-                    Object.keys(tags).map(function(key) {
-                      var val = tags[key];
-                      feature.properties[key] = val;
-                    });
-                    delete feature.properties.tags;
-                  }
-                });
+                result.features = geojsonUtils.convertTagsToProps(result.features);
               }
 
               result.bbox = JSON.parse(bbox.rows[0].bbox);
@@ -458,11 +448,13 @@ module.exports = {
           }).where({layer_id});
     },
 
-    setUpdated(layer_id, user_id) {
-        return knex('omh.layers')
+    setUpdated(layer_id, user_id, trx=null) {
+      let db = knex;
+      if(trx){db = trx;}
+        return db('omh.layers')
           .update({
               updated_by_user_id: user_id,
-              last_updated: knex.raw('now()')
+              last_updated: db.raw('now()')
           }).where({layer_id});
     },
 
