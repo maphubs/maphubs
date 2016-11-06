@@ -161,9 +161,9 @@ module.exports = {
       geoJSON.features = cleanedFeatures;
 
       //var extent = [];
-      var extent = require('turf-extent')(geoJSON);
-      debug(extent);
-      geoJSON.bbox = extent;
+      var bbox = require('@turf/bbox')(geoJSON);
+      debug(bbox);
+      geoJSON.bbox = bbox;
 
       fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), function(err){
         if(err) log.error(err);

@@ -1,7 +1,7 @@
 /* @flow weak */
-var linestring = require('turf-linestring');
-var point = require('turf-point');
-var inside = require('turf-inside');
+var linestring = require('@turf/helpers').lineString;
+var point = require('@turf/helpers').point;
+var inside = require('@turf/inside');
 
 // clip the given LineString features to the given polygon.
 // returns a new list of LineStrings, possibly longer than the original

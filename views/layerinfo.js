@@ -273,8 +273,8 @@ var LayerInfo = React.createClass({
     if(this.state.geoJSON){
       this.state.geoJSON.features.forEach(function(feature){
         if(idVal === feature.properties[idField]){
-          var extent = require('turf-extent')(feature);
-          _this.refs.map.fitBounds(extent, 16, 25);
+          var bbox = require('@turf/bbox')(feature);
+          _this.refs.map.fitBounds(bbox, 16, 25);
           return;
         }
       });

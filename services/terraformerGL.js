@@ -15,9 +15,9 @@ module.exports= {
     return _this.getArcGISJSON(url)
       .then(function(data){
         var geoJSON = _this.convertAGSData(data);
-        var extent = require('turf-extent')(geoJSON);
-        debug(extent);
-        geoJSON.bbox = extent;
+        var bbox = require('@turf/bbox')(geoJSON);
+        debug(bbox);
+        geoJSON.bbox = bbox;
         return geoJSON;
       });
   },
@@ -45,9 +45,9 @@ module.exports= {
     .type('json').accept('json')
     .then(function(res) {
       var geoJSON = res.body;
-      var extent = require('turf-extent')(geoJSON);
-      debug(extent);
-      geoJSON.bbox = extent;
+      var bbox = require('@turf/bbox')(geoJSON);
+      debug(bbox);
+      geoJSON.bbox = bbox;
       return geoJSON;
     });
   },

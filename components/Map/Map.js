@@ -16,7 +16,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
-var _centroid = require('turf-centroid');
+var _centroid = require('@turf/centroid');
 
 
 

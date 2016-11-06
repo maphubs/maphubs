@@ -54,9 +54,9 @@ module.exports = Reflux.createStore({
       ]
     };
 
-    var extent = require('turf-extent')(geoJSON);
-    debug(extent);
-    geoJSON.bbox = extent;
+    var bbox = require('@turf/bbox')(geoJSON);
+    debug(bbox);
+    geoJSON.bbox = bbox;
 
     var properties = {};
 

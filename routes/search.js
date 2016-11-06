@@ -4,7 +4,7 @@ var dbgeo = require('dbgeo');
 var Promise = require('bluebird');
 var log = require('../services/log.js');
 var debug = require('../services/debug')('routes/search');
-var extent = require('turf-extent');
+var turf_bbox = require('@turf/bbox');
 var geojsonUtils = require('../services/geojson-utils');
 
 module.exports = function(app) {
@@ -134,7 +134,7 @@ module.exports = function(app) {
           }
           //convert tags to properties
           result.features = geojsonUtils.convertTagsToProps(result.features);
-          var bbox = extent(result);
+          var bbox = turf_bbox(result);
           result.bbox = bbox;
 
           res.send(result);
