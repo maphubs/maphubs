@@ -637,7 +637,7 @@ var LayerInfo = React.createClass({
 
     var external = '';
     if(this.props.layer.is_external && !this.props.layer.remote){
-      var externalUrl = + this.props.layer.external_layer_config.url;
+      var externalUrl = this.props.layer.external_layer_config.url;
       var type = '';
       if(this.props.layer.external_layer_type == 'openstreetmap'){
         type = 'OpenStreetMap';
@@ -653,8 +653,8 @@ var LayerInfo = React.createClass({
       }
       external = (
         <div>
-          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}</p>
-          <p style={{fontSize: '16px'}}><b>{this.__('External Layer Source: ')} </b>
+          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}
+            &nbsp;-&nbsp;
             <a href={externalUrl} target="_blank">{externalUrl}</a>
             <i className="material-icons layer-info-tooltip omh-accent-text" style={{cursor: 'pointer'}} data-delay="50" onClick={function(){_this.copyToClipboard(externalUrl);}} data-position="left" data-tooltip={this.__('Copy to Clipboard')}>launch</i>
           </p>
@@ -702,7 +702,7 @@ var LayerInfo = React.createClass({
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
               <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
-                <div className="row" style={{height: 'calc(100% - 75px)', marginLeft:'10px', marginRight: '10px', overflow: 'auto'}}>
+                <div className="row" style={{height: 'calc(100% - 75px)', marginLeft:'10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden', wordWrap: 'break-word'}}>
                   <div className="right">
                     <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
                   </div>
