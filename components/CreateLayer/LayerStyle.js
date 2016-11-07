@@ -99,6 +99,7 @@ var LayerStyle = React.createClass({
     if(this.props.onPrev) this.props.onPrev();
   },
 
+  //Color must now be a rgba() formatted string
   setColor(color){
     var _this = this;
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
@@ -170,6 +171,7 @@ var LayerStyle = React.createClass({
           <div>
             <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
               glStyle={this.state.layer.style}
+              showLogo={false}
               fitBounds={mapExtent}
               />
             <Legend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}

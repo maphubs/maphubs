@@ -26,6 +26,7 @@ module.exports = {
           if(style.type == 'fill'){
             style.paint['fill-color'] = newColor;
             style.paint['fill-outline-color'] = newColor;
+            style.paint['fill-opacity'] = 1;
           }else{
             debug('unable to update polygon layer type: ' + style.type);
           }

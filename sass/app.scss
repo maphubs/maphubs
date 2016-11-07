@@ -444,6 +444,18 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     background-color: rgba(255, 255, 255, 0.55);
   }
 
+  .colorpickr {
+    width: auto !important;
+  }
+
+  .cp-fill-tile .thumb {
+    display:none !important;
+  }
+
+  .cp-colormode-slider .thumb {
+    display:none !important;
+  }
+
   .width-full {
     width: 100%;
   }
