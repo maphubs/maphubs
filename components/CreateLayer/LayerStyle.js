@@ -12,6 +12,7 @@ var Legend = require('../Map/Legend');
 var LayerStore = require('../../stores/layer-store');
 var LayerActions = require('../../actions/LayerActions');
 var MessageActions = require('../../actions/MessageActions');
+var ConfirmationActions = require('../../actions/ConfirmationActions');
 //var NotificationActions = require('../../actions/NotificationActions');
 import Progress from '../Progress';
 
@@ -139,6 +140,20 @@ var LayerStyle = React.createClass({
     this.refs.map.reload();
   },
 
+  resetStyle(){
+
+    ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Reset'),
+      postitiveButtonText: this.__('Reset'),
+      negativeButtonText: this.__('Cancel'),
+      message: this.__('Warning! This will permanently delete all custom style settings from this layer.'),
+      onPositiveResponse(){
+        LayerActions.resetStyle();
+      }
+    });
+
+  },
+
 	render() {
 
     var mapExtent = null;
@@ -226,7 +241,7 @@ var LayerStyle = React.createClass({
                  <div className="col s12 m6 l6" style={{width: '425px'}}>
                    {colorChooser}
                    <div className="right">
-                     <button onClick={LayerActions.resetStyle} style={{marginRight: '10px'}} className="waves-effect waves-light btn">{this.__('Reset')}</button>
+                     <button onClick={this.resetStyle} style={{marginRight: '10px'}} className="waves-effect waves-light btn">{this.__('Reset')}</button>
                      <button onClick={this.onSubmit} className="waves-effect waves-light btn">{this.__('Save')}</button>
                    </div>
                 </div>
