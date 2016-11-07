@@ -37,10 +37,12 @@ import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, Formatted
 import en from 'react-intl/locale-data/en';
 import es from 'react-intl/locale-data/es';
 import fr from 'react-intl/locale-data/fr';
+import it from 'react-intl/locale-data/it';
 
 addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
+addLocaleData(it);
 
 //var debug = require('../services/debug')('layerinfo');
 

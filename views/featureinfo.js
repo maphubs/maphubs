@@ -25,6 +25,18 @@ var FeatureNotesActions = require('../actions/FeatureNotesActions');
 var FeatureNotesStore = require('../stores/FeatureNotesStore');
 var FeaturePhotoStore = require('../stores/FeaturePhotoStore');
 var Locales = require('../services/locales');
+var turf_area = require('@turf/area');
+
+import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import es from 'react-intl/locale-data/es';
+import fr from 'react-intl/locale-data/fr';
+import it from 'react-intl/locale-data/it';
+
+addLocaleData(en);
+addLocaleData(es);
+addLocaleData(fr);
+addLocaleData(it);
 
 
 var FeatureInfo = React.createClass({
@@ -150,16 +162,96 @@ var FeatureInfo = React.createClass({
 	render() {
 
     //var glStyle = null;
-
+    var locationDisplay = '', featureAreaDisplay = '';
     if(this.props.feature && this.props.layer && this.props.feature.geojson){
       //glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
       var featureName = "Feature";
+      var featureAreaM2, featureAreaKM2, featureAreaHA, areaDisplay;
       if(this.props.feature.geojson.features && this.props.feature.geojson.features.length > 0){
         var geoJSONProps = this.props.feature.geojson.features[0].properties;
         if(geoJSONProps.name) {
           featureName = geoJSONProps.name;
         }
+        featureAreaM2 = turf_area(this.props.feature.geojson);
+        if(featureAreaM2 && featureAreaM2 > 0){
+          featureAreaKM2 = featureAreaM2 / 1000.00;
+          featureAreaHA =featureAreaM2 / 10000.00;
+
+          var hectaresDisplay = (
+            <span>
+              <IntlProvider locale={this.state.locale}>
+                <FormattedNumber value={featureAreaHA}/>
+              </IntlProvider>&nbsp;
+             ha</span>
+          );
+
+          if(featureAreaKM2 < 1){
+            areaDisplay = (
+              <span>
+                <IntlProvider locale={this.state.locale}>
+                  <FormattedNumber value={featureAreaM2}/>
+                </IntlProvider>&nbsp;
+               m²</span>
+            );
+          }else{
+            areaDisplay = (
+                <span>
+                  <IntlProvider locale={this.state.locale}>
+                  <FormattedNumber value={featureAreaKM2}/>
+                </IntlProvider>&nbsp;km²
+              </span>
+            );
+          }
+
+          featureAreaDisplay = (
+          <div className="row">
+              <h5>{this.__('Area')}</h5>
+              {areaDisplay}
+              <br/>
+              {hectaresDisplay}
+            </div>
+          );
+        }
+
+        var centroid = require('@turf/centroid')(this.props.feature.geojson);
+
+        var utm = require('wgs84-util').LLtoUTM(centroid.geometry);
+
+        var lon = centroid.geometry.coordinates[0];
+        var lat = centroid.geometry.coordinates[1];
+        locationDisplay = (
+          <div className="row">
+            <h5>{this.__('Location')}</h5>
+            <div className="row no-margin">
+              <span>
+                <b>{this.__('Latitude:')}</b>&nbsp;
+                <IntlProvider locale={this.state.locale}>
+                  <FormattedNumber value={lat}/>
+                </IntlProvider>&nbsp;
+              </span>
+              <span>
+                <b>{this.__('Longitude:')}</b>&nbsp;
+                <IntlProvider locale={this.state.locale}>
+                  <FormattedNumber value={lon}/>
+                </IntlProvider>&nbsp;
+              </span>
+            </div>
+            <div className="row no-margin">
+              <span>
+                <b>{this.__('UTM:')}</b>&nbsp;
+                {utm.properties.zoneNumber}{utm.properties.zoneLetter}&nbsp;
+                <IntlProvider locale={this.state.locale}>
+                  <FormattedNumber value={utm.geometry.coordinates[0]}/>
+                </IntlProvider>m E&nbsp;
+                <IntlProvider locale={this.state.locale}>
+                  <FormattedNumber value={utm.geometry.coordinates[1]}/>
+                </IntlProvider>m N
+                </span>
+            </div>
+          </div>
+        );
+
       }
 
       var data = [];
@@ -237,9 +329,10 @@ var FeatureInfo = React.createClass({
       );
     }
 
-
     var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
-		return (
+
+
+    return (
       <div>
         <Header />
         <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
@@ -247,17 +340,29 @@ var FeatureInfo = React.createClass({
           <div className="col s6 no-padding" style={{height: '100%'}}>
             <div style={{margin: '10px'}}>
               <h4>{featureName}</h4>
-              <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.layer.name}</a></p>
+
             </div>
 
-            <div className="row no-margin" style={{height: 'calc(100% - 108px)'}}>
+            <div className="row no-margin" style={{height: 'calc(100% - 67px)'}}>
               <ul className="tabs" style={{overflowX: 'hidden'}}>
                 <li className="tab"><a className="active" href="#data">{this.__('Data')}</a></li>
                 <li className="tab"><a href="#photo">{this.__('Photo')}</a></li>
                 <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
               </ul>
-              <div id="data" className="col s12" style={{height: 'calc(100% - 48px)'}}>
+              <div id="data" className="col s12" style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
+                <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.layer.name}</a></p>
+                <div className="row no-margin">
+                  <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
+                    {featureAreaDisplay}
+                  </div>
+                  <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
+                    {locationDisplay}
+                  </div>
+                </div>
+
+
+                <h5>{this.__('Attributes')}</h5>
                 <Griddle results={data} showFilter={true} showSettings={false} resultsPerPage={10}
                   useFixedLayout={false} tableClassName="responsive-table highlight striped bordered"
                   useGriddleStyles={false} />
