@@ -10,6 +10,8 @@ var request = require('superagent-bluebird-promise');
 var $ = require('jquery');
 var _includes = require('lodash.includes');
 var TerraformerGL = require('../../services/terraformerGL.js');
+var Radio = require('../forms/radio');
+var Formsy = require('formsy-react');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -1169,39 +1171,28 @@ map.on('mousemove', function(e) {
 
     var baseMapBox = '';
     if(this.state.showBaseMaps){
-      var _this = this;
+      var baseMapOptions = [
+        {value: 'default', label: this.__('Default')},
+        {value: 'dark', label: this.__('Dark')},
+        {value: 'streets', label: this.__('Streets')},
+        {value: 'outdoors', label: this.__('Outdoors')},
+        {value: 'mapbox-satellite', label: this.__('Satellite')}
+      ];
       baseMapBox = (
-        <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
-            <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
-              <li className="collection-header">
-                <h6>{this.__('Base Maps')}</h6>
-              </li>
-             <li className="collection-item">
-               <a className="btn" onClick={function(){_this.changeBaseMap('default');}}>{this.__('Default')}</a>
-             </li>
-             <li className="collection-item">
-               <a className="btn" onClick={function(){_this.changeBaseMap('dark');}}>{this.__('Dark')}</a>
-             </li>
-             <li className="collection-item">
-               <a className="btn" onClick={function(){_this.changeBaseMap('streets');}}>{this.__('Streets')}</a>
-             </li>
-             <li className="collection-item">
-               <a className="btn" onClick={function(){_this.changeBaseMap('outdoors');}}>{this.__('Outdoors')}</a>
-             </li>
-             <li className="collection-item">
-               <a className="btn" onClick={function(){_this.changeBaseMap('mapbox-satellite');}}>{this.__('Satellite')}</a>
-             </li>
-           </ul>
-
-
-
+        <div className="features z-depth-1" style={{width: '140px', marginRight: '10px', backgroundColor: 'white', textAlign: 'center'}}>
+          <Formsy.Form>
+          <h6>{this.__('Base Maps')}</h6>
+          <Radio name="baseMap" label=""
+              defaultValue={this.state.baseMap}
+              options={baseMapOptions} onChange={this.changeBaseMap}
+            />
+          </Formsy.Form>
         </div>
       );
     }
 
     var editBaseMapBox = '';
     if(this.state.showEditBaseMap){
-      _this = this;
       var origHash = window.location.hash.replace('#', '');
       var hashParts = origHash.split('/');
       var zoom =  Math.round(hashParts[0]);
