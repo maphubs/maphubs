@@ -6,6 +6,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var _isequal = require('lodash.isequal');
 
 var AceEditor;
 if(process.env.APP_ENV === 'browser'){
@@ -44,12 +45,24 @@ var CodeEditor = React.createClass({
   getInitialState(){
     return {
       code: this.props.code,
-      canSave: true
+      canSave: true,
+      show: false
     };
   },
 
   componentWillReceiveProps(nextProps){
     this.setState({code: nextProps.code});
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   componentDidUpdate(){
