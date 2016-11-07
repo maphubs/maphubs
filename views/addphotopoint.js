@@ -117,7 +117,7 @@ var AddPhotoPoint = React.createClass({
           </div>
           <div className="col m6 s12">
             <div style={{width: '400px'}}>
-              <Map ref="map" style={{width: '100%', height: '400px'}} showFeatureInfoEditButtons={false} data={this.state.geoJSON} />
+              <Map ref="map" style={{width: '100%', height: '400px'}} showFeatureInfoEditButtons={false} showLogo={false} data={this.state.geoJSON} />
             </div>
           </div>
           <div className="row no-margin">
