@@ -156,7 +156,7 @@ var LocalSource = React.createClass({
 	render() {
 
     var uploadOptions = [
-      {value: 'upload', label: this.__('Upload File - Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat./Lon. fields)')},
+      {value: 'upload', label: this.__('Upload File')},
       {value: 'empty', label: this.__("Empty (You will create new data through the editing tools or API)")}
 
     ];
@@ -241,7 +241,7 @@ var LocalSource = React.createClass({
 
       fileUpload=(
         <div>
-          <p>{this.__('Upload File: Shapefile(.shp zipped) or GeoJSON (.geojson)')}</p>
+          <p>{this.__('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
           <div className="row">
             <FileUpload onUpload={this.onUpload} onError={this.onUploadError} action={url} />
           </div>
