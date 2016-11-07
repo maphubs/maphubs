@@ -11,9 +11,9 @@ var fs = require('fs');
 var LayerViews = require('./layer-views');
 var Promise = require('bluebird');
 var sizeof = require('object-sizeof');
+var styles = require('../components/Map/styles');
 
 var LARGE_DATA_THRESHOLD = 20000000;
-//var GlobalViews = require('./global-views.js');
 
 module.exports = {
 
@@ -160,7 +160,6 @@ module.exports = {
 
       geoJSON.features = cleanedFeatures;
 
-      //var extent = [];
       var bbox = require('@turf/bbox')(geoJSON);
       debug(bbox);
       geoJSON.bbox = bbox;
@@ -170,13 +169,17 @@ module.exports = {
         debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
       });
 
+      //now that we know the data type, update the style to clear uneeded default styles
+      var style = styles.defaultStyle(layer_id, 'vector', geomType);
+
       var commands = [
         db('omh.layers').where({
             layer_id
           })
           .update({
               data_type: geomType,
-              extent_bbox: JSON.stringify(extent)
+              style,
+              extent_bbox: JSON.stringify(bbox)
           })
       ];
 
@@ -184,7 +187,6 @@ module.exports = {
         debug('Update temp geojson');
         commands.push(
         db('omh.temp_data').update({
-          //data:JSON.stringify(geoJSON),
           srid,
           unique_props:JSON.stringify(uniqueProps)})
           .where({layer_id})
@@ -195,7 +197,6 @@ module.exports = {
         );
         commands.push(
         db('omh.temp_data').insert({layer_id,
-          //data:JSON.stringify(geoJSON),
           uploadtmppath,
           srid,
           unique_props:JSON.stringify(uniqueProps)})

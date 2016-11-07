@@ -305,15 +305,12 @@ module.exports = {
     return layers;
   },
 
-  styleWithColor(layer_id, source, color, selectedColors, dataType=null) {
+  styleWithColor(layer_id, source, color, dataType=null) {
 
       //TODO: make default selected colors better match user color
       var hoverColor = "yellow";
       var hoverOutlineColor = "black";
-      if (selectedColors) {
-        hoverColor = selectedColors.hover;
-        hoverOutlineColor = selectedColors.hoverOutline;
-      }
+
       var layers = [];
       if(dataType === 'point'){
         layers = this.getPointLayers(layer_id, color, hoverColor);
