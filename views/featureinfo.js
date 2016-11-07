@@ -175,15 +175,14 @@ var FeatureInfo = React.createClass({
         }
         featureAreaM2 = turf_area(this.props.feature.geojson);
         if(featureAreaM2 && featureAreaM2 > 0){
-          featureAreaKM2 = featureAreaM2 / 1000.00;
+          featureAreaKM2 = featureAreaM2 * 0.000001;
           featureAreaHA =featureAreaM2 / 10000.00;
 
           var hectaresDisplay = (
             <span>
               <IntlProvider locale={this.state.locale}>
                 <FormattedNumber value={featureAreaHA}/>
-              </IntlProvider>&nbsp;
-             ha</span>
+              </IntlProvider>&nbsp;ha</span>
           );
 
           if(featureAreaKM2 < 1){
@@ -191,8 +190,7 @@ var FeatureInfo = React.createClass({
               <span>
                 <IntlProvider locale={this.state.locale}>
                   <FormattedNumber value={featureAreaM2}/>
-                </IntlProvider>&nbsp;
-               m²</span>
+                </IntlProvider>&nbsp;m²</span>
             );
           }else{
             areaDisplay = (
