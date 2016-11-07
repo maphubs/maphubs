@@ -8,12 +8,14 @@ var multer  = require('multer');
 var log = require('../services/log');
 var ogr2ogr = require('ogr2ogr');
 var shapefileFairy = require('shapefile-fairy');
+var csv2geojson = require('csv2geojson');
 var fs = require('fs');
 var unzip = require('unzip2');
 var Promise = require('bluebird');
 var login = require('connect-ensure-login');
 var DataLoadUtils = require('../services/data-load-utils');
 var Presets = require('../services/preset-utils');
+var fileEncodingUtils = require('../services/file-encoding-utils');
 //var log = require('../services/log.js');
 var debug = require('../services/debug')('routes/layers');
 var layerViews = require('../services/layer-views');
@@ -454,7 +456,7 @@ module.exports = function(app) {
                       .then(function(result){
                         //tell the client if we were successful
                         res.status(200).send(result);
-                      }).catch(apiError(res, 500));
+                      }).catch(apiError(res, 200));
                     }
                   });
                }else{
@@ -464,7 +466,7 @@ module.exports = function(app) {
                    debug('Finished storing temp path');
                    //tell the client if we were successful
                    res.status(200).send(result);
-                 }).catch(apiError(res, 500));
+                 }).catch(apiError(res, 200));
                }
              },
              {extract: false});
@@ -475,14 +477,40 @@ module.exports = function(app) {
          } else if(_endsWith(req.file.originalname, '.geojson')
          || _endsWith(req.file.originalname, '.json')){
            debug('JSON File Detected');
-           fs.readFile(req.file.path, 'utf8', function (err, data) {
-             if (err) throw err;
-               var geoJSON = JSON.parse(data);
+           let data = fileEncodingUtils.getDecodedFileWithBestGuess(req.file.path);
+               let geoJSON = JSON.parse(data);
                DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
                .then(function(result){
                  res.status(200).send(result);
                }).catch(apiError(res, 200)); //don't want browser to intercept the error, so we can show user a better message
-           });
+
+         } else if(_endsWith(req.file.originalname, '.csv')){
+           debug('CSV File Detected');
+            let data = fileEncodingUtils.getDecodedFileWithBestGuess(req.file.path);
+
+             csv2geojson.csv2geojson(data, function(err, geoJSON) {
+
+                if (err && !geoJSON) {
+                  log.error(err);
+                  res.status(200).send({success: false, error: JSON.stringify(err)});
+                  return;
+                } else if (err) {
+                    log.error(err);
+                }
+
+                if(geoJSON){
+                  DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                  .then(function(result){
+                    res.status(200).send(result);
+                  }).catch(apiError(res, 200));
+                }else{
+                  log.error("Failed to parse CSV");
+                  res.status(200).send({success: false, error: "Error Reading CSV"});
+                  return;
+                }
+
+            });
+
          } else if(_endsWith(req.file.originalname, '.gpx')){
            debug('GPX File Detected');
            ogr2ogr(fs.createReadStream(req.file.path), 'GPX')
@@ -505,7 +533,7 @@ module.exports = function(app) {
                    .then(function(result){
                      //tell the client if we were successful
                      res.status(200).send(result);
-                   }).catch(apiError(res, 500));
+                   }).catch(apiError(res, 200));
                  }
                });
              }else{

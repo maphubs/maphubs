@@ -12,6 +12,7 @@ var LayerViews = require('./layer-views');
 var Promise = require('bluebird');
 var sizeof = require('object-sizeof');
 var styles = require('../components/Map/styles');
+var fileEncodingUtils = require('./file-encoding-utils');
 
 var LARGE_DATA_THRESHOLD = 20000000;
 
@@ -244,13 +245,15 @@ module.exports = {
     return knex('omh.temp_data').select('uploadtmppath').where({layer_id})
     .then(function(result){
       return new Promise(function (resolve, reject) {
-      fs.readFile(result[0].uploadtmppath + '.geojson', 'utf8', function (err, data) {
-        if (err) reject(err);
+        let data = fileEncodingUtils.getDecodedFileWithBestGuess(result[0].uploadtmppath + '.geojson');
+        if(data){
           var geoJSON = JSON.parse(data);
           resolve(geoJSON);
+        }else{
+          reject(new Error('Error loading temp geoJSON file'));
+        }
         });
       });
-    });
   },
 
   loadTempDataToOSM(layer_id, uid, trx){
