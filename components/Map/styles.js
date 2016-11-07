@@ -89,7 +89,6 @@ module.exports = {
       style.layers.push({
         "id": "omh-label-" + layer_id,
         "type": "symbol",
-        "interactive": false,
         "source": "omh-" + layer_id,
         "source-layer": sourceLayer,
         "filter": filter,
@@ -131,7 +130,9 @@ module.exports = {
       {
         "id": "omh-data-point-" + layer_id,
         "type": "circle",
-        "interactive": true,
+        "metadata":{
+          "maphubs:interactive": true
+        },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "Point"],
         "paint": {
@@ -142,7 +143,6 @@ module.exports = {
       {
         "id": "omh-hover-point-" + layer_id,
         "type": "circle",
-        "interactive": false,
         "source": "omh-" + layer_id,
         "filter": ["==", "osm_id", ""],
         "paint": {
@@ -172,7 +172,9 @@ module.exports = {
       {
         "id": "omh-data-line-" + layer_id,
         "type": "line",
-        "interactive": true,
+        "metadata":{
+          "maphubs:interactive": true
+        },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "LineString"],
         "paint": {
@@ -184,7 +186,6 @@ module.exports = {
       {
         "id": "omh-hover-line-" + layer_id,
         "type": "line",
-        "interactive": false,
         "source": "omh-" + layer_id,
         "filter": ["==", "osm_id", ""],
         "paint": {
@@ -214,7 +215,9 @@ module.exports = {
       {
         "id": "omh-data-polygon-" + layer_id,
         "type": "fill",
-        "interactive": true,
+        "metadata":{
+          "maphubs:interactive": true
+        },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "Polygon"],
         "paint": {
@@ -279,7 +282,6 @@ module.exports = {
       {
       "id": "omh-hover-polygon-" + layer_id,
       "type": "fill",
-      "interactive": false,
       "source": "omh-" + layer_id,
       "filter": ["==", "osm_id", ""],
       "paint": {

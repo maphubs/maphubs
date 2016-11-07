@@ -288,7 +288,7 @@ var Map = React.createClass({
     var interactiveLayers = [];
     if(glStyle){
       glStyle.layers.forEach(function(layer){
-        if(layer.interactive &&
+        if(layer.metadata && layer.metadata['maphubs:interactive'] &&
           (layer.id.startsWith('omh')
           || layer.id.startsWith('osm'))
         ){
@@ -549,6 +549,7 @@ var Map = React.createClass({
       _this.setState({mapLoaded: true});
     });
 
+/*
     map.on('error', function(e){
       debug('(' + _this.state.id + ') ' +e.type);
     });
@@ -556,7 +557,7 @@ var Map = React.createClass({
     map.on('tile.error', function(e){
       debug('(' + _this.state.id + ') ' +e.type);
     });
-
+*/
     if(_this.props.insetMap && !_this.insetMap){
       var center = map.getCenter();
       var insetMap =  new mapboxgl.Map({
