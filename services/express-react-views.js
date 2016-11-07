@@ -169,7 +169,7 @@ function createEngine(engineOptions) {
         //https://fonts.googleapis.com/css?family=Open+Sans
         markup += '<link href="/assets/css/opensans.css" rel="stylesheet" type="text/css">\n';
         markup +=
-        '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
+      //  '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
         '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">' +
         '<link rel="stylesheet" type="text/css" href="/public/' + clientFileName + '.css">' +
         '</head>\n'+

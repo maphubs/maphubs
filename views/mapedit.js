@@ -9,7 +9,7 @@ var MapEdit = React.createClass({
 
   propTypes: {
     map: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.object.isRequired,
+    layers: React.PropTypes.array.isRequired,
     popularLayers: React.PropTypes.array.isRequired,
     myLayers: React.PropTypes.array.isRequired
   },
