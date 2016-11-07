@@ -139,7 +139,7 @@ var CodeEditor = React.createClass({
         </ModalContent>
         <ModalFooter>
 
-          <p className="left">{this.props.title}</p>
+          <p className="left no-padding">{this.props.title}</p>
           <div className="right">
             <a className="waves-effect waves-light btn" style={{float: 'none', marginRight: '15px'}} onClick={this.onCancel}>{this.__('Cancel')}</a>
             <a className="waves-effect waves-light btn" style={{float: 'none'}} disabled={!this.state.canSave} onClick={this.onSave}>{this.__('Save')}</a>

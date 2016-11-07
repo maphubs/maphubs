@@ -28,7 +28,7 @@ var MapLayerDesigner = React.createClass({
   getDefaultProps(){
     return {
       id: 'map-layer-designer',
-      showAdvanced: false
+      showAdvanced: true
     };
   },
 
