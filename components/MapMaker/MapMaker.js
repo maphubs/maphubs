@@ -197,7 +197,7 @@ var MapMaker = React.createClass({
 
 
   onSave(model){
-    this.handleTitleChange(model.title);
+    this.handleTitleChange(model.title.trim());
     var _this = this;
 
     if(!model.title || model.title == ''){
