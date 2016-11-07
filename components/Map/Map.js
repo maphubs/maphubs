@@ -701,7 +701,7 @@ map.on('mousemove', function(e) {
 
   map.addControl(new mapboxgl.ScaleControl({
       position: 'bottom-right',
-      maxWidth: 120,
+      maxWidth: 175,
       unit: 'metric' //TODO: let scalebar unit be a user preference
   }));
 

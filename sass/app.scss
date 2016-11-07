@@ -435,6 +435,15 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     margin-right: 70px !important;
   }
 
+  .mapboxgl-ctrl-scale {
+    height: 12px;
+    font-size: 10px;
+    line-height: 10px;
+    text-align: center;
+    box-shadow: none !important;
+    background-color: rgba(255, 255, 255, 0.55);
+  }
+
   .width-full {
     width: 100%;
   }
@@ -807,7 +816,7 @@ textarea.materialize-textarea+label:after {
 
 
 .action-button-bottom-right {
-    bottom: 95px;
+    bottom: 85px;
     right: 30px;
 }
 
@@ -1223,5 +1232,5 @@ textarea.materialize-textarea+label:after {
 }
 
 #hs-beacon iframe {
-  bottom: 25px !important;
+  bottom: 15px !important;
 }
