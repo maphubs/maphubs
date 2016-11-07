@@ -162,7 +162,14 @@ var FeatureInfo = React.createClass({
 	render() {
 
     //var glStyle = null;
-    var locationDisplay = '', featureAreaDisplay = '';
+    var locationDisplay = '';
+
+    var featureAreaDisplay = (
+    <div className="row">
+        <h5>{this.__('Area')}</h5>
+        {this.__('Not available for this feature')}
+      </div>
+    );
     if(this.props.feature && this.props.layer && this.props.feature.geojson){
       //glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
@@ -352,10 +359,10 @@ var FeatureInfo = React.createClass({
                 <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.layer.name}</a></p>
                 <div className="row no-margin">
                   <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
-                    {featureAreaDisplay}
+                    {locationDisplay}
                   </div>
                   <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
-                    {locationDisplay}
+                    {featureAreaDisplay}
                   </div>
                 </div>
 

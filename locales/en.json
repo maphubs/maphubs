@@ -633,5 +633,6 @@
 	"Attributes": "Attributes",
 	"Latitude:": "Latitude:",
 	"Longitude:": "Longitude:",
-	"UTM:": "UTM:"
+	"UTM:": "UTM:",
+	"Not available for this feature": "Not available for this feature"
 }
