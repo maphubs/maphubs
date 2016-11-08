@@ -76,7 +76,10 @@ module.exports = {
     input = input.toLowerCase();
     return knex.select('name', 'layer_id').table('omh.layers')
     .where({published: true, status: 'published'})
-    .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
+    .where(knex.raw(`to_tsvector('english', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
     .orderBy('name');
   },
 
@@ -89,7 +92,10 @@ module.exports = {
     'extent_bbox',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .where({published: true, status: 'published'})
-    .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
+    .where(knex.raw(`to_tsvector('english', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
     .orderBy('name');
   },
 

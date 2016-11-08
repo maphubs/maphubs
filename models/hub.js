@@ -64,7 +64,11 @@ module.exports = {
       return knex.select('name')
       .table('omh.hubs')
       .where('published', true)
-      .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
+      .where(knex.raw(`to_tsvector('english', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
       .orderBy('name');
     },
 
@@ -72,7 +76,11 @@ module.exports = {
       input = input.toLowerCase();
       return knex.select().table('omh.hubs')
       .where('published', true)
-      .where(knex.raw('lower(name)'), 'like', '%' + input + '%')
+      .where(knex.raw(`to_tsvector('english', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
       .orderBy('name');
     },
 

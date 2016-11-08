@@ -117,7 +117,7 @@ module.exports = {
   getSearchSuggestions(input) {
     input = input.toLowerCase();
     return knex.select('title', 'map_id').table('omh.maps')
-    .where(knex.raw('lower(title)'), 'like', '%' + input + '%')
+    .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
     .orderBy('title');
   },
 
@@ -132,7 +132,7 @@ module.exports = {
       .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
       .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
       .whereNotNull('omh.user_maps.map_id')
-      .where(knex.raw('lower(omh.maps.title)'), 'like', '%' + input + '%')
+      .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
       .orderBy('omh.maps.title')
       .orderBy('omh.maps.updated_at', 'desc');
   },

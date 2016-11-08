@@ -26,7 +26,9 @@ module.exports = function(app) {
       //points
       knex.raw(`
         SELECT layer_id, array_agg('n'|| id) AS ids FROM current_nodes
-        WHERE id IN(SELECT node_id FROM current_node_tags WHERE lower(v) LIKE '%` + q +`%') GROUP BY layer_id;
+        WHERE id IN(SELECT node_id FROM current_node_tags
+          WHERE lower(v) LIKE '%` + q +`%')
+          GROUP BY layer_id;
       `),
       //lines
       knex.raw(`
