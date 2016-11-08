@@ -636,5 +636,11 @@
 	"UTM:": "UTM:",
 	"Not available for this feature": "Not available for this feature",
 	"Upload File": "Upload File",
-	"Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)": "Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)"
+	"Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)": "Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)",
+	"Interactive": "Interactive",
+	"Off": "Off",
+	"On": "On",
+	"Allow users to interact with this layer by clicking the map": "Allow users to interact with this layer by clicking the map",
+	"Show Below Base Map Labels": "Show Below Base Map Labels",
+	"Allow base map labels to display on top of this layer": "Allow base map labels to display on top of this layer"
 }
