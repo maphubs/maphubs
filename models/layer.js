@@ -21,7 +21,7 @@ module.exports = {
       'status', 'published', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
-      'style', 'legend_html','labels','extent_bbox', 'preview_position')
+      'style', 'legend_html','labels', 'settings', 'extent_bbox', 'preview_position')
       .table('omh.layers').where({published: true, status: 'published'}).orderBy('name');
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
@@ -51,7 +51,7 @@ module.exports = {
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
-    'style', 'legend_html','labels','extent_bbox', 'preview_position',
+    'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .where({published: true, status: 'published'})
@@ -85,7 +85,7 @@ module.exports = {
     return knex('omh.layers')
     .select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets', 'style', 'legend_html', 'labels',
+    'status', 'published', 'source', 'license', 'presets', 'style', 'legend_html', 'labels', 'settings',
     'extent_bbox',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .where({published: true, status: 'published'})
@@ -120,7 +120,7 @@ module.exports = {
     var query = knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets',
-    'style', 'legend_html','labels','extent_bbox', 'preview_position',
+    'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .whereIn('owned_by_group_id', subquery)
@@ -147,7 +147,7 @@ module.exports = {
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
       'views',
-      'style','labels', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
+      'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
     ).table('omh.layers').where('layer_id', layer_id)
       .then(function(result) {
         if (result && result.length == 1) {
@@ -177,8 +177,8 @@ module.exports = {
     'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
     'omh.layers.is_external', 'omh.layers.external_layer_type', 'omh.layers.external_layer_config',
     'omh.layers.owned_by_group_id', knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'), 'omh.layers.views',
-    'omh.layers.style', 'omh.layers.labels', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
-     'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.style as map_labels', 'omh.hub_layers.legend_html as map_legend_html')
+    'omh.layers.style', 'omh.layers.labels', 'omh.layers.settings', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
+     'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.labels as map_labels', 'omh.hub_layers.settings as map_settings', 'omh.hub_layers.legend_html as map_legend_html')
       .from('omh.hub_layers')
       .leftJoin('omh.layers', 'omh.hub_layers.layer_id', 'omh.layers.layer_id').orderBy('position');
 
@@ -297,6 +297,9 @@ module.exports = {
       layer.style = JSON.stringify(layer.style);
       layer.external_layer_config = JSON.stringify(layer.external_layer_config);
       layer.labels = JSON.stringify(layer.labels);
+      if(layer.settings){
+        layer.settings = JSON.stringify(layer.settings);
+      }
       layer.extent_bbox = JSON.stringify(layer.extent_bbox);
       layer.preview_position = JSON.stringify(layer.preview_position);
 
@@ -320,6 +323,9 @@ module.exports = {
       layer.style = JSON.stringify(layer.style);
       layer.external_layer_config = JSON.stringify(layer.external_layer_config);
       layer.labels = JSON.stringify(layer.labels);
+      if(layer.settings){
+        layer.settings = JSON.stringify(layer.settings);
+      }
       layer.extent_bbox = JSON.stringify(layer.extent_bbox);
       layer.preview_position = JSON.stringify(layer.preview_position);
 
@@ -499,13 +505,14 @@ module.exports = {
         });
     },
 
-    saveStyle(layer_id, style, labels, legend_html, preview_position, user_id) {
+    saveStyle(layer_id, style, labels, legend_html, settings, preview_position, user_id) {
       return knex('omh.layers').where({
           layer_id
         })
         .update({
           style: JSON.stringify(style),
           labels: JSON.stringify(labels),
+          settings: JSON.stringify(settings),
           legend_html,
           preview_position,
           updated_by_user_id: user_id,

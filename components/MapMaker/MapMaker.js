@@ -259,9 +259,9 @@ var MapMaker = React.createClass({
     $('.layer-card-tooltipped').tooltip();
   },
 
-  onLayerStyleChange(layer_id, style, labels, legend){
+  onLayerStyleChange(layer_id, style, labels, legend, settings){
     var _this = this;
-    Actions.updateLayerStyle(layer_id, style, labels, legend, function(){
+    Actions.updateLayerStyle(layer_id, style, labels, legend, settings, function(){
       _this.refs.map.reload(null, _this.state.mapStyle);
     });
   },
@@ -385,7 +385,10 @@ var MapMaker = React.createClass({
     var sidebarContent = '';
     if(this.state.showMapLayerDesigner){
       sidebarContent = (
-        <MapLayerDesigner ref="LayerDesigner" layer={this.state.layerDesignerLayer} onStyleChange={this.onLayerStyleChange} onClose={this.closeLayerDesigner} />
+        <MapLayerDesigner ref="LayerDesigner"
+          layer={this.state.layerDesignerLayer}
+          onStyleChange={this.onLayerStyleChange}
+          onClose={this.closeLayerDesigner} />
       );
     }else if (!this.state.mapLayers || this.state.mapLayers.length == 0) {
       sidebarContent = (

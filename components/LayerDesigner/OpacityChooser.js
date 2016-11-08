@@ -1,11 +1,11 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var CodeEditor = require('./CodeEditor');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var AdvancedLayerSettings = require('./AdvancedLayerSettings');
 
 var OpacityChooser = React.createClass({
 
@@ -20,15 +20,18 @@ var OpacityChooser = React.createClass({
     value: React.PropTypes.number,
     onStyleChange: React.PropTypes.func,
     onLegendChange: React.PropTypes.func,
+    onSettingsChange: React.PropTypes.func,
     style: React.PropTypes.object,
     legendCode: React.PropTypes.string,
     layer: React.PropTypes.object,
+    settings: React.PropTypes.object,
     showAdvanced: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return {
-      value: 100
+      value: 100,
+      settings: {}
     };
   },
 
@@ -36,12 +39,13 @@ var OpacityChooser = React.createClass({
     return {
       opacity: this.props.value,
       style:this.props.style,
-      legendCode: this.props.legendCode
+      legendCode: this.props.legendCode,
+      settings: this.props.settings
     };
   },
 
   componentDidMount() {
-    $(ReactDOM.findDOMNode(this.refs.collapsible)).collapsible({
+    $(this.refs.collapsible).collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
   },
@@ -49,7 +53,8 @@ var OpacityChooser = React.createClass({
   componentWillReceiveProps(nextProps){
     this.setState({
       style: nextProps.style,
-      legendCode: nextProps.legendCode
+      legendCode: nextProps.legendCode,
+      settings: nextProps.settings
     });
   },
 
@@ -60,10 +65,14 @@ var OpacityChooser = React.createClass({
   },
 
   onStyleChange(style){
-    //TODO: verify JSON for syntax, check for valid style components
     style = JSON.parse(style);
     this.setState({style});
     this.props.onStyleChange(style);
+  },
+
+  onSettingsChange(style, settings){
+    this.setState({style, settings});
+    this.props.onSettingsChange(style, settings);
   },
 
   onLegendChange(legendCode){
@@ -92,6 +101,7 @@ var OpacityChooser = React.createClass({
             <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
             <br />
             <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
+              <AdvancedLayerSettings layer={this.props.layer} style={this.state.style} settings={this.state.settings} onChange={this.onSettingsChange}/>
           </div>
         </li>
       );

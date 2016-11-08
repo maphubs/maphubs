@@ -357,6 +357,7 @@ module.exports = function(app) {
         data.style,
         data.labels,
         data.legend_html,
+        data.settings,
         data.preview_position
         ];
         break;

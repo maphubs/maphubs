@@ -130,12 +130,13 @@ module.exports = Reflux.createStore({
     this.updateMap(layers);
   },
 
-  updateLayerStyle(layer_id, style, labels, legend){
+  updateLayerStyle(layer_id, style, labels, legend, settings){
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
     layers[index].map_style = style;
     layers[index].map_labels = labels;
     layers[index].map_legend_html = legend;
+    layers[index].map_settings = settings;
     this.updateMap(layers);
   },
 
@@ -200,6 +201,7 @@ module.exports = Reflux.createStore({
      _forEachRight(layers, function(layer){
        if(!layer.map_style) layer.map_style = layer.style;
        if(!layer.map_labels) layer.map_labels = layer.labels;
+       if(!layer.map_settings) layer.map_settings = layer.settings;
        var style = layer.map_style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style

@@ -165,6 +165,8 @@ var Map = React.createClass({
             map.addLayer(mbStyleLayer);
           }
         });
+      }else if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
+        map.addLayer(layer, 'water');
       }else{
         map.addLayer(layer);
       }

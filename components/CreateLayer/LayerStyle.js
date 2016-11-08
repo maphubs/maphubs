@@ -82,6 +82,7 @@ var LayerStyle = React.createClass({
       layer_id: this.state.layer.layer_id,
       style: this.state.layer.style,
       labels: this.state.layer.labels,
+      settings: this.state.layer.settings,
       legend_html: this.state.layer.legend_html,
       preview_position
     },
@@ -104,7 +105,7 @@ var LayerStyle = React.createClass({
     var _this = this;
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
-    LayerActions.setStyle(style,  this.state.layer.labels, legend, null, function(){
+    LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.settings, null, function(){
       _this.setState({mapColor: color});
     });
 
@@ -121,20 +122,24 @@ var LayerStyle = React.createClass({
     }
 
     var legend = mapStyles.rasterLegend(this.state.layer);
-    LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.preview_position);
+    LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.settings, this.state.layer.preview_position);
     this.setState({rasterOpacity: opacity});
   },
 
   setStyle(style){
-    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.preview_position);
+    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
   },
 
   setLabels(style, labels){
-    LayerActions.setStyle(style, labels, this.state.layer.legend_html, this.state.layer.preview_position);
+    LayerActions.setStyle(style, labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
+  },
+
+  setSettings(style, settings){
+    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, settings, this.state.layer.preview_position);
   },
 
   setLegend(legend_html){
-    LayerActions.setStyle(this.state.layer.style, this.state.layer.labels, legend_html, this.state.layer.preview_position);
+    LayerActions.setStyle(this.state.layer.style, this.state.layer.labels, legend_html, this.state.layer.settings, this.state.layer.preview_position);
   },
 
   reloadMap(){
@@ -223,6 +228,7 @@ var LayerStyle = React.createClass({
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
             style={this.state.layer.style} onStyleChange={this.setStyle}
             labels={this.state.layer.labels} onLabelsChange={this.setLabels}
+            settings={this.state.layer.settings} onSettingsChange={this.setSettings}
             layer={this.state.layer}
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
       </div>

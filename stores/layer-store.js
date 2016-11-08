@@ -110,6 +110,7 @@ module.exports = Reflux.createStore({
           layer.published = data.published;
           layer.style = mapStyles.defaultStyle(layer.layer_id, _this.getSourceConfig(), layer.data_type),
           layer.legend_html = mapStyles.defaultLegend(layer),
+          layer.settings = mapStyles.defaultSettings();
           layer.preview_position = {
             zoom: 1,
             lat: 0,
@@ -201,12 +202,13 @@ module.exports = Reflux.createStore({
     });
   },
 
-  setStyle(style, labels, legend_html, preview_position, cb){
+  setStyle(style, labels, legend_html, settings, preview_position, cb){
     var layer = this.state.layer;
     layer.style = style;
     layer.labels = labels;
     layer.legend_html = legend_html;
     layer.preview_position = preview_position;
+    layer.settings = settings;
     this.setState({layer});
     this.trigger(this.state);
     if(cb) cb();

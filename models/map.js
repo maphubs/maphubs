@@ -27,7 +27,7 @@ module.exports = {
   getMapLayers(map_id, trx){
     let db = knex;
     if(trx){db = trx;}
-    return db.select('omh.layers.*','omh.map_layers.style as map_style', 'omh.map_layers.labels as map_labels', 'omh.map_layers.position as position', 'omh.map_layers.legend_html as map_legend_html', 'omh.map_layers.map_id as map_id')
+    return db.select('omh.layers.*','omh.map_layers.style as map_style', 'omh.map_layers.labels as map_labels',  'omh.map_layers.settings as map_settings', 'omh.map_layers.position as position', 'omh.map_layers.legend_html as map_legend_html', 'omh.map_layers.map_id as map_id')
       .from('omh.maps')
       .leftJoin('omh.map_layers', 'omh.maps.map_id', 'omh.map_layers.map_id')
       .leftJoin('omh.layers', 'omh.map_layers.layer_id', 'omh.layers.layer_id')
@@ -160,12 +160,14 @@ module.exports = {
             var mapStyle = layer.map_style ? layer.map_style : layer.style;
             var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
             var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
+            var mapSettings = layer.map_settings ? layer.map_settings : layer.settings;
             mapLayers.push({
               map_id,
               layer_id: layer.layer_id,
               style: mapStyle,
               labels: mapLabels,
               legend_html: mapLegend,
+              settings: mapSettings,
               position: i
             });
           });
@@ -212,12 +214,14 @@ module.exports = {
               var mapStyle = layer.map_style ? layer.map_style : layer.style;
               var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
               var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
+              var mapSettings = layer.map_settings ? layer.map_settings : layer.settings;
               mapLayers.push({
                 map_id,
                 layer_id: layer.layer_id,
                 style: mapStyle,
                 labels: mapLabels,
                 legend_html: mapLegend,
+                settings: mapSettings,
                 position: i
               });
             });
@@ -286,8 +290,9 @@ module.exports = {
             var mapStyle = layer.map_style ? layer.map_style : layer.style;
             var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
             var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
+            var mapSettings = layer.map_settings ? layer.map_settings : layer.settings;
             commands.push(trx('omh.hub_layers')
-            .insert({hub_id, layer_id: layer.layer_id, style: mapStyle, labels: mapLabels, legend_html: mapLegend, active: layer.active, position: i}));
+            .insert({hub_id, layer_id: layer.layer_id, style: mapStyle, labels: mapLabels, legend_html: mapLegend, settings: mapSettings, active: layer.active, position: i}));
           });
           return Promise.all(commands);
         });

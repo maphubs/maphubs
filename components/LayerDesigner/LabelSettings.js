@@ -7,6 +7,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var $ = require('jquery');
 
 var styles = require('../Map/styles');
 
@@ -46,6 +47,10 @@ var LabelSettings = React.createClass({
       enabled,
       field
     };
+  },
+
+  componentDidMount(){
+    $('.tooltip-label-settings').tooltip();
   },
 
   componentWillReceiveProps(nextProps){
@@ -93,11 +98,11 @@ var LabelSettings = React.createClass({
       <div>
         <div className="row">
           <Formsy.Form ref="form" onChange={this.onFormChange}>
-             <Toggle name="enabled" labelOff="Off" labelOn="On" className="col l6 m6 s12"
+             <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="col l6 m6 s12 tooltip-label-settings"
                        defaultChecked={this.state.enabled}
                         dataPosition="right" dataTooltip={this.__('Enable Labels for this Layer')}
                         />
-              <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} className="col l6 m6 s12 label-field"
+              <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} className="col l6 m6 s12 label-field tooltip-label-settings"
                     value={this.state.field} defaultValue={this.state.field} startEmpty={this.state.field ? false : true}
                    dataPosition="top" dataTooltip={this.__('Data field to use in map labels.')}
                    required/>

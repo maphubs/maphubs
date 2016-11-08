@@ -281,6 +281,7 @@ module.exports = Reflux.createStore({
      _forEachRight(layers, function(layer){
        if(!layer.map_style) layer.map_style = layer.style;
        if(!layer.map_labels) layer.map_labels = layer.labels;
+       if(!layer.map_settings) layer.map_settings = layer.settings;
        var style = layer.map_style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style

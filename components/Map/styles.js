@@ -1,5 +1,6 @@
 var debug = require('../../services/debug')('map-styles');
 var _remove = require('lodash.remove');
+var _findIndex = require('lodash.findindex');
 
 module.exports = {
 
@@ -125,14 +126,15 @@ module.exports = {
     return style;
   },
 
-  getPointLayers(layer_id, color, hoverColor){
+  getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels){
 
     var layers = [
       {
         "id": "omh-data-point-" + layer_id,
         "type": "circle",
         "metadata":{
-          "maphubs:interactive": true
+          "maphubs:interactive": interactive,
+          "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "Point"],
@@ -167,14 +169,15 @@ module.exports = {
     return layers;
   },
 
-  getLineLayers(layer_id, color, hoverColor){
+  getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels){
 
     var layers = [
       {
         "id": "omh-data-line-" + layer_id,
         "type": "line",
         "metadata":{
-          "maphubs:interactive": true
+          "maphubs:interactive": interactive,
+          "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "LineString"],
@@ -210,14 +213,15 @@ module.exports = {
     return layers;
   },
 
-  getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor){
+  getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels){
 
     var layers = [
       {
         "id": "omh-data-polygon-" + layer_id,
         "type": "fill",
         "metadata":{
-          "maphubs:interactive": true
+          "maphubs:interactive": interactive,
+          "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "Polygon"],
@@ -306,7 +310,7 @@ module.exports = {
     return layers;
   },
 
-  styleWithColor(layer_id, source, color, dataType=null) {
+  styleWithColor(layer_id, source, color, dataType, interactive, showBehindBaseMapLabels) {
 
       //TODO: make default selected colors better match user color
       var hoverColor = "yellow";
@@ -314,15 +318,15 @@ module.exports = {
 
       var layers = [];
       if(dataType === 'point'){
-        layers = this.getPointLayers(layer_id, color, hoverColor);
+        layers = this.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
       }else if(dataType === 'point'){
-        layers = this.getLineLayers(layer_id, color, hoverColor);
+        layers = this.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
       }else if(dataType === 'polygon'){
-        layers = this.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor);
+        layers = this.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels);
       }else{
-        layers = this.getPointLayers(layer_id, color, hoverColor)
-        .concat(this.getLineLayers(layer_id, color, hoverColor))
-        .concat(this.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor));
+        layers = this.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels)
+        .concat(this.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels))
+        .concat(this.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels));
       }
 
       var styles = {
@@ -430,14 +434,48 @@ module.exports = {
       return this.legendWithColor(layer, "red");
     },
 
+    defaultSettings(){
+      return {
+        interactive: true,
+        showBehindBaseMapLabels: false
+      };
+    },
+
     rasterLegend(layer) {
       var html = `<div class="omh-legend">\n<h3>` + layer.name + `</h3>\n</div>`;
       return html;
     },
 
     defaultStyle(layer_id, source, dataType) {
-      return this.styleWithColor(layer_id, source, "red", dataType);
+      var settings = this.defaultSettings();
+      return this.styleWithColor(layer_id, source, "red", dataType, settings.interactive, settings.showBehindBaseMapLabels);
     },
+
+    toggleInteractive(interactive, style, layer_id, data_type){
+      var id = `omh-data-${data_type}-${layer_id}`;
+      var index = _findIndex(style.layers, {id});
+      var layer = style.layers[index];
+      if(!layer.metadata){
+        layer.metadata = {};
+      }
+      layer.metadata["maphubs:interactive"] = interactive;
+
+      return style;
+    },
+
+    toggleShowBehindBaseMapLabels(showBehindBaseMapLabels, style){
+      //add flag to all layers
+      style.layers.map(function(layer){
+        if(!layer.metadata){
+          layer.metadata = {};
+        }
+        layer.metadata["maphubs:showBehindBaseMapLabels"] = showBehindBaseMapLabels;
+      });
+
+      return style;
+    },
+
+
 
     getMapboxStyle(mapboxid){
 

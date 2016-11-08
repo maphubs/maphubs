@@ -4,6 +4,7 @@ var ColorPicker = require('react-colorpickr');
 var ColorSwatch = require('./ColorSwatch');
 var CodeEditor = require('./CodeEditor');
 var LabelSettings = require('./LabelSettings');
+var AdvancedLayerSettings = require('./AdvancedLayerSettings');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -24,12 +25,14 @@ var LayerDesigner = React.createClass({
     onStyleChange: React.PropTypes.func,
     onLabelsChange: React.PropTypes.func,
     onLegendChange: React.PropTypes.func,
+    onSettingsChange: React.PropTypes.func,
     color: React.PropTypes.string,
     style: React.PropTypes.object,
     labels: React.PropTypes.object,
     legendCode: React.PropTypes.string,
     layer: React.PropTypes.object,
-    showAdvanced: React.PropTypes.bool
+    showAdvanced: React.PropTypes.bool,
+    settings: React.PropTypes.object,
   },
 
   getDefaultProps(){
@@ -40,6 +43,7 @@ var LayerDesigner = React.createClass({
       labels: null,
       legendCode: null,
       layer: null,
+      settings: {},
       showAdvanced: true
     };
   },
@@ -49,7 +53,8 @@ var LayerDesigner = React.createClass({
       color: this.props.color,
       style:this.props.style,
       labels:this.props.labels,
-      legendCode: this.props.legendCode
+      legendCode: this.props.legendCode,
+      settings: this.props.settings
     };
   },
 
@@ -58,7 +63,8 @@ var LayerDesigner = React.createClass({
       color: nextProps.color,
       style: nextProps.style,
       labels: nextProps.labels,
-      legendCode: nextProps.legendCode
+      legendCode: nextProps.legendCode,
+      settings: nextProps.settings ? nextProps.settings : this.state.settings
     });
   },
 
@@ -91,6 +97,11 @@ var LayerDesigner = React.createClass({
     this.props.onLabelsChange(style, labels);
   },
 
+  onSettingsChange(style, settings){
+    this.setState({style, settings});
+    this.props.onSettingsChange(style, settings);
+  },
+
   onLegendChange(legendCode){
     this.setState({legendCode});
     this.props.onLegendChange(legendCode);
@@ -116,6 +127,7 @@ var LayerDesigner = React.createClass({
             <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
             <br />
             <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
+            <AdvancedLayerSettings layer={this.props.layer} style={this.state.style} settings={this.state.settings} onChange={this.onSettingsChange}/>
           </div>
         </li>
       );
