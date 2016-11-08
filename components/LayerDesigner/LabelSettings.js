@@ -71,6 +71,8 @@ var LabelSettings = React.createClass({
       this.setState({style, enabled: false});
       this.props.onChange(style, values);
     }
+    $('.tooltip-label-settings').tooltip('remove');
+    $('.tooltip-label-settings').tooltip();
   },
 
   render(){

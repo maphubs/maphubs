@@ -34,7 +34,7 @@ var MapLayerDesigner = React.createClass({
 
   getInitialState() {
     return {
-      mapColor: '#FF0000',
+      mapColor: this.props.layer.settings.color ? this.props.layer.settings.color : '#FF0000',
       rasterOpacity: 100,
       layer: this.props.layer ? this.props.layer : null
     };
@@ -46,12 +46,12 @@ var MapLayerDesigner = React.createClass({
     }
   },
 
-  setColor(color){
+  setColor(color, settings){
     //var sourceConfig = this.getSourceConfig();
 
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
-    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, legend);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, legend, settings);
     this.setState({style, legend, mapColor: color});
   },
 
@@ -79,16 +79,16 @@ var MapLayerDesigner = React.createClass({
   },
 
   setStyle(style){
-    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, this.state.layer.settings);
     this.setState({style});
   },
 
   setLabels(style, labels){
-   this.props.onStyleChange(this.state.layer.layer_id, style, labels, this.state.layer.legend_html, this.state.layer.settings);
+   this.props.onStyleChange(this.state.layer.layer_id, style, labels, this.state.layer.map_legend_html, this.state.layer.settings);
   },
 
   setSettings(style, settings){
-     this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.legend_html, settings);
+     this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, settings);
   },
 
   setLegend(legend_html){
@@ -114,7 +114,7 @@ var MapLayerDesigner = React.createClass({
             style={this.state.layer.style} onStyleChange={this.setStyle}
             layer={this.state.layer}
             settings={this.state.layer.settings} onSettingsChange={this.setSettings}
-            legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend} showAdvanced/>
+            legendCode={this.state.layer.map_legend_html} onLegendChange={this.setLegend} showAdvanced/>
           </div>
         );
       }else if(this.state.layer.is_external
@@ -133,7 +133,7 @@ var MapLayerDesigner = React.createClass({
               settings={this.state.layer.map_settings} onSettingsChange={this.setSettings}
               layer={this.state.layer}
               showAdvanced={this.props.showAdvanced}
-              legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
+              legendCode={this.state.layer.map_legend_html} onLegendChange={this.setLegend}/>
         </div>
       );
     }

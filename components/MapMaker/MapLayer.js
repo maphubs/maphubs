@@ -7,6 +7,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var $ = require('jquery');
 
 var MapLayer = React.createClass({
 
@@ -37,6 +38,15 @@ var MapLayer = React.createClass({
     };
   },
 
+  componentDidMount(){
+    $('.map-layer-tooltipped').tooltip();
+  },
+
+  resetTooltips(){
+    $('.map-layer-tooltipped').tooltip('remove');
+    $('.map-layer-tooltipped').tooltip();
+  },
+
   render(){
     var _this = this;
     var layer = _this.props.layer;
@@ -46,7 +56,7 @@ var MapLayer = React.createClass({
       if(!layer.active) icon = 'visibility_off';
         visibilityButton = (
           <a onClick={function(){_this.props.toggleVisibility(layer.layer_id);}}
-            className="create-map-btn layer-card-tooltipped"
+            className="create-map-btn map-layer-tooltipped"
             data-position="top" data-delay="50" data-tooltip={_this.__('Show/Hide Layer')}>
             <i className="material-icons omh-accent-text">{icon}</i>
           </a>
@@ -56,7 +66,7 @@ var MapLayer = React.createClass({
       <li key={layer.layer_id} className="collection-item"
         style={{height: '90px', paddingRight: '5px', paddingLeft: '5px', paddingTop: '0px', paddingBottom: '0px', overflow: 'hidden', border: '1px solid #ddd'}}>
         <div className="title row no-margin">
-          <b className="title truncate grey-text text-darken-4 layer-card-tooltipped"
+          <b className="title truncate grey-text text-darken-4 map-layer-tooltipped"
             style={{fontSize: '12px'}}
             data-position="top" data-tooltip={layer.name}>
             {layer.name}
@@ -67,7 +77,7 @@ var MapLayer = React.createClass({
           <div className="row">
             <div className="col s2 no-padding">
               <a href={'/layer/info/'+ layer.layer_id + '/' + slug(layer.name ? layer.name : '')} target="_blank"
-                className="create-map-btn layer-card-tooltipped"
+                className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
                 <i className="material-icons omh-accent-text">info</i>
                 </a>
@@ -77,26 +87,26 @@ var MapLayer = React.createClass({
             </div>
             <div className="col s2 no-padding">
               <a onClick={function(){_this.props.removeFromMap(layer);}}
-                className="create-map-btn layer-card-tooltipped"
+                className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}>
                 <i className="material-icons omh-accent-text">delete</i></a>
             </div>
             <div className="col s2 no-padding">
-              <a onClick={function(){_this.props.showLayerDesigner(layer);}}
-                className="create-map-btn layer-card-tooltipped"
+              <a onClick={function(){_this.props.showLayerDesigner(layer); _this.resetTooltips();}}
+                className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}>
                 <i className="material-icons omh-accent-text">color_lens</i></a>
             </div>
             <div className="col s2 no-padding">
               <a onClick={function(){_this.props.moveUp(layer);}}
-                className="create-map-btn layer-card-tooltipped"
+                className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}>
                 <i className="material-icons omh-accent-text">keyboard_arrow_up</i>
               </a>
             </div>
             <div className="col s2 no-padding">
               <a onClick={function(){_this.props.moveDown(layer);}}
-                className="create-map-btn layer-card-tooltipped"
+                className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}>
                 <i className="material-icons omh-accent-text">keyboard_arrow_down</i>
               </a>

@@ -75,8 +75,10 @@ var LayerDesigner = React.createClass({
   },
 
   onColorChange(color){
-    this.setState({color});
-    this.props.onColorChange(color);
+    var settings = this.state.settings;
+    settings.color = color;
+    this.setState({color, settings});
+    this.props.onColorChange(color, settings);
   },
 
   onColorPickerChange(colorValue){

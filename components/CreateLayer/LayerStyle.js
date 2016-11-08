@@ -23,6 +23,8 @@ var LayerDesigner = require('../LayerDesigner/LayerDesigner');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
+var _isequal = require('lodash.isequal');
+
 
 var LayerStyle = React.createClass({
 
@@ -54,8 +56,7 @@ var LayerStyle = React.createClass({
   },
 
   getInitialState() {
-    return {
-      mapColor: '#FF0000',
+    return {      
       rasterOpacity: 100,
       saving: false,
       showMap: !this.props.waitForTileInit
@@ -101,13 +102,11 @@ var LayerStyle = React.createClass({
   },
 
   //Color must now be a rgba() formatted string
-  setColor(color){
-    var _this = this;
+  setColor(color, settings){
+
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
-    LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.settings, null, function(){
-      _this.setState({mapColor: color});
-    });
+    LayerActions.setStyle(style, this.state.layer.labels, legend, settings, null);
 
   },
 

@@ -19,6 +19,7 @@ module.exports = Reflux.createStore({
     this.listenTo(PresetActions.presetsChanged, this.presetsChanged);
     return {
       layer: emptyLayer,
+      mapColor: '#FF0000',
       groups: []
     };
 
@@ -35,7 +36,11 @@ module.exports = Reflux.createStore({
   },
 
   loadLayer(layer){
-    this.setState({layer});
+    var mapColor = this.state.mapColor;
+    if(layer.settings && layer.settings.color){
+      mapColor = layer.settings.color;
+    }
+    this.setState({layer, mapColor});
 
     if(!this.state.layer.style){
       this.resetStyleGL();
@@ -209,7 +214,13 @@ module.exports = Reflux.createStore({
     layer.legend_html = legend_html;
     layer.preview_position = preview_position;
     layer.settings = settings;
-    this.setState({layer});
+
+    var mapColor = this.state.mapColor;
+    if(settings && settings.color){
+      mapColor = settings.color;
+    }
+
+    this.setState({layer, mapColor});
     this.trigger(this.state);
     if(cb) cb();
   },
