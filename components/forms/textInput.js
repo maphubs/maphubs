@@ -23,7 +23,8 @@ var TextInput= React.createClass({
     placeholder: React.PropTypes.string,
     id: React.PropTypes.string,
     type: React.PropTypes.string,
-    style: React.PropTypes.object
+    style: React.PropTypes.object,
+    showCharCount: React.PropTypes.bool
   },
 
   getDefaultProps() {
@@ -35,7 +36,8 @@ var TextInput= React.createClass({
       value: '',
       dataDelay: 100,
       type: 'text',
-      style: {}
+      style: {},
+      showCharCount: true
     };
   },
 
@@ -111,16 +113,22 @@ var TextInput= React.createClass({
    }else {
      id = this.props.name;
    }
+   var charCount = '';
+   if(this.props.showCharCount){
+     charCount = (
+       <span className="character-counter"
+           style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
+         {this.state.charCount} / {this.props.length}
+       </span>
+     );
+   }
 
     return (
       <div ref="inputWrapper" className={className} style={this.props.style} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
           {icon}
           <input ref="input" id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={this.state.value} disabled={this.props.disabled} onChange={this.changeValue}/>
           <label htmlFor={id} className={labelClassName} data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
-            <span className="character-counter"
-                style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
-              {this.state.charCount} / {this.props.length}
-            </span>
+            {charCount}
       </div>
     );
 
