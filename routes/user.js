@@ -6,6 +6,7 @@ var log = require('../services/log');
 var debug = require('../services/debug')('routes/user');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
+var apiDataError = require('../services/error-response').apiDataError;
 var PasswordUtil = require('../services/password-util');
 //var request = require('superagent-bluebird-promise');
 var local = require('../local');
@@ -131,7 +132,7 @@ module.exports = function(app) {
           });
         }).catch(apiError(res, 200));
     } else {
-      res.status(400).send('Bad Request: required data not found');
+      apiDataError(res);
     }
   });
 
@@ -411,7 +412,7 @@ module.exports = function(app) {
 
   app.get('/api/user/search/suggestions', function(req, res) {
     if (!req.query.q) {
-      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+      apiDataError(res);
       return;
     }
     var q = req.query.q;

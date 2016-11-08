@@ -10,6 +10,7 @@ var login = require('connect-ensure-login');
 var debug = require('../services/debug')('routes/groups');
 var apiError = require('../services/error-response').apiError;
 var nextError = require('../services/error-response').nextError;
+var apiDataError = require('../services/error-response').apiDataError;
 
 var local = require('../local');
 
@@ -157,13 +158,13 @@ module.exports = function(app) {
           });
         }).catch(apiError(res, 500));
     } else {
-      res.status(400).send('Bad Request: required data not found');
+      apiDataError(res);
     }
   });
 
   app.get('/api/groups/search/suggestions', function(req, res) {
     if (!req.query.q) {
-      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+      apiDataError(res);
     }
     var q = req.query.q;
     Group.getSearchSuggestions(q)
@@ -180,7 +181,7 @@ module.exports = function(app) {
 
   app.get('/api/groups/search', function(req, res) {
     if (!req.query.q) {
-      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+      apiDataError(res);
     }
     Group.getSearchResults(req.query.q)
       .then(function(result){
@@ -210,10 +211,7 @@ module.exports = function(app) {
           }
         }).catch(apiError(res, 500));
     } else {
-      res.status(400).send({
-        success: false,
-        error: 'Bad Request: required data not found'
-      });
+      apiDataError(res);
     }
   });
 
@@ -246,10 +244,7 @@ module.exports = function(app) {
         }
       });
     } else {
-      res.status(400).send({
-        success: false,
-        error: 'Bad Request: required data not found'
-      });
+      apiDataError(res);
     }
   });
 
@@ -294,10 +289,7 @@ module.exports = function(app) {
           }
       });
     } else {
-      res.status(400).send({
-        success: false,
-        error: 'Bad Request: required data not found'
-      });
+      apiDataError(res);
     }
   });
 
@@ -326,10 +318,7 @@ module.exports = function(app) {
 
       }).catch(apiError(res, 500));
     } else {
-      res.status(400).send({
-        success: false,
-        error: 'Bad Request: required data not found'
-      });
+      apiDataError(res);
     }
 
   });
@@ -405,10 +394,7 @@ module.exports = function(app) {
       }
       }).catch(apiError(res, 500));
     } else {
-      res.status(400).send({
-        success: false,
-        error: 'Bad Request: required data not found'
-      });
+      apiDataError(res);
       return;
     }
 
@@ -441,10 +427,7 @@ module.exports = function(app) {
         }).catch(apiError(res, 500));
       }).catch(apiError(res, 500));
     } else {
-      res.status(400).send({
-        success: false,
-        error: 'Bad Request: required data not found'
-      });
+      apiDataError(res);
     }
 
   });
@@ -497,10 +480,7 @@ module.exports = function(app) {
           }).catch(apiError(res, 500));
       }).catch(apiError(res, 500));
       } else {
-        res.status(400).send({
-          success: false,
-          error: 'Bad Request: required data not found'
-        });
+        apiDataError(res);
       }
 
   });
