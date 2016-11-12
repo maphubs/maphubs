@@ -16,7 +16,7 @@ var Locales = require('../services/locales');
 
 var HubStory = React.createClass({
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
   propTypes: {
     story: React.PropTypes.object.isRequired,
     hub: React.PropTypes.object.isRequired,

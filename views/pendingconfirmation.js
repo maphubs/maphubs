@@ -13,7 +13,7 @@ var Locales = require('../services/locales');
 
 var PendingConfirmation = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -31,7 +31,7 @@ var PendingConfirmation = React.createClass({
   },
 
   onResend(){
-    UserActions.resendConfirmation(function(err){
+    UserActions.resendConfirmation(this.state._csrf, function(err){
       if(err){
           MessageActions.showMessage({title: 'Error', message: err.error});
       }else {

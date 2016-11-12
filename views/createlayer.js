@@ -20,7 +20,7 @@ var Locales = require('../services/locales');
 
 var CreateLayer = React.createClass({
 
-  mixins:[StateMixin.connect(LayerStore, {initWithProps: ['groups', 'layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LayerStore, {initWithProps: ['groups', 'layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);

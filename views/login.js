@@ -13,10 +13,9 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
-
 var Login = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -25,13 +24,15 @@ var Login = React.createClass({
   propTypes: {
     name: React.PropTypes.string,
     failed: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    showSignup: React.PropTypes.bool
   },
 
   getDefaultProps() {
     return {
       name: 'No name',
-      failed: false
+      failed: false,
+      showSignup: true
     };
   },
 
@@ -55,7 +56,7 @@ var Login = React.createClass({
 
   onSubmitReset(model){
     var _this = this;
-    UserActions.forgotPassword(model.email, function(err){
+    UserActions.forgotPassword(model.email, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Failed to Submit Password Reset'), message: err.error});
       }else {
@@ -82,6 +83,27 @@ var Login = React.createClass({
       );
     }
 
+    var signup = '';
+
+    if(this.props.showSignup){
+      signup = (
+        <li>
+          <div className="collapsible-header"><i className="material-icons">send</i>{this.__('Sign Up')}</div>
+          <div className="collapsible-body">
+            <div className="row" style={{paddingTop: '25px'}}>
+              <div className="col s12 valign-wrapper">
+                    <button onClick={function(){window.location="/signup";}}className="valign waves-effect waves-light btn" style={{margin: 'auto'}} >{this.__('Signup with Email')}</button>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col s12">
+              </div>
+            </div>
+          </div>
+        </li>
+      );
+    }
+
     return (
       <div className="container" style={{maxWidth: '400px'}}>
         <h5 className="grey-text text-darken-4 center">{this.__('Welcome to')} {this.props.name}</h5>
@@ -92,6 +114,7 @@ var Login = React.createClass({
               <div className="collapsible-header active"><i className="material-icons">account_circle</i>{this.__('Login')}</div>
               <div className="collapsible-body">
                 <form action="/login" id="loginform" method="post">
+                  <input type="hidden" name="_csrf" value={this.state._csrf} />
                   <div className="row" style={{margin: '25px'}}>
                     <div className="input-field col s12">
                       <input id="username" name="username" type="text"/>
@@ -113,25 +136,11 @@ var Login = React.createClass({
                 </div>
               </div>
             </li>
-            <li>
-              <div className="collapsible-header"><i className="material-icons">send</i>{this.__('Sign Up')}</div>
-              <div className="collapsible-body">
-                <div className="row" style={{paddingTop: '25px'}}>
-                  <div className="col s12 valign-wrapper">
-                        <button onClick={function(){window.location="/signup";}}className="valign waves-effect waves-light btn" style={{margin: 'auto'}} >{this.__('Signup with Email')}</button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col s12">
-                    <p className="center">{this.__('Facebook and Twitter Signup Coming Soon!')}</p>
-                  </div>
-                </div>
-              </div>
-            </li>
+            {signup}
             <li>
               <div className="collapsible-header"><i className="material-icons">report</i>{this.__('Forgot Password')}</div>
               <div className="collapsible-body">
-                <Formsy.Form onValidSubmit={this.onSubmitReset.bind(this)} onValid={this.enableResetButton.bind(this)} onInvalid={this.disableResetButton.bind(this)}>
+                <Formsy.Form onValidSubmit={this.onSubmitReset} onValid={this.enableResetButton} onInvalid={this.disableResetButton}>
                   <div className="row" style={{margin: '25px'}}>
                     <TextInput name="email" label={this.__('Account Email')} icon="email" className="col s12"
                           validations={{isEmail:true}} validationErrors={{

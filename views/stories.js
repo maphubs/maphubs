@@ -12,7 +12,7 @@ var UserStore = require('../stores/UserStore');
 
 var Stories = React.createClass({
 
-  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);

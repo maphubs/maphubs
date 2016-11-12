@@ -59,7 +59,7 @@ module.exports = Reflux.createStore({
 
  },
 
-  updatePassword(user_id, password, pass_reset, cb){
+  updatePassword(user_id, password, pass_reset, _csrf, cb){
     if(this.state.loggedIn && this.state.user.id !== user_id){
       debug('User ID mismatch, will not send request');
       cb('User session error, please clear browser sessions/cache and try again.');
@@ -74,7 +74,8 @@ module.exports = Reflux.createStore({
       .send({
         user_id, //user_id to update, must match the active user session
         password, //new password
-        pass_reset //if the user isn't logged in, the one-time code from the password reset email must be provided
+        pass_reset, //if the user isn't logged in, the one-time code from the password reset email must be provided
+        _csrf
       })
       .end(function(err, res){
         checkClientError(res, err, cb, function(cb){
@@ -86,7 +87,7 @@ module.exports = Reflux.createStore({
 
   },
 
-  forgotPassword(email, cb){
+  forgotPassword(email, _csrf, cb){
     request.post('/api/user/forgotpassword')
     .type('json').accept('json')
     .send({
@@ -99,7 +100,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  signup(username, name, email, password, joinmailinglist, cb){
+  signup(username, name, email, password, joinmailinglist, inviteKey, _csrf, cb){
     request.post('/api/user/signup')
     .type('json').accept('json')
     .send({
@@ -107,7 +108,8 @@ module.exports = Reflux.createStore({
       name,
       email,
       password,
-      joinmailinglist
+      joinmailinglist,
+      inviteKey
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -127,7 +129,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  resendConfirmation(cb){
+  resendConfirmation(_csrf, cb){
     request.post('/api/user/resendconfirmation')
     .type('json').accept('json')
     .end(function(err, res){

@@ -22,18 +22,22 @@ var $ = require('jquery');
 
 var Signup = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    email:  React.PropTypes.string,
+    lockEmail:  React.PropTypes.bool,
+    inviteKey: React.PropTypes.string
   },
 
   getDefaultProps() {
     return {
+      lockEmail: false
     };
   },
 
@@ -101,7 +105,7 @@ var Signup = React.createClass({
   onSave(model){
     var _this = this;
     this.setState({saving: true});
-    UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, function(err){
+    UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, this.props.inviteKey, this.state._csrf, function(err){
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err.error});
@@ -179,6 +183,8 @@ var Signup = React.createClass({
            <div className="row valign-wrapper">
               <TextInput name="email" label={this.__('Email')} icon="email"
                 className="col s12 m8 l8 valign" style={{margin: 'auto'}}
+                disabled={this.props.lockEmail}
+                defaultValue={this.props.email}
                 validations={{isEmail:true}} validationErrors={{
                   isEmail: this.__('Not a valid email address.')
                 }} length={50}

@@ -30,7 +30,7 @@ var HubInfo = React.createClass({
 
   mixins:[
     StateMixin.connect(HubStore, {initWithProps: ['hub', 'layers', 'members', 'stories', 'canEdit']}),
-    StateMixin.connect(LocaleStore, {initWithProps: ['locale']})
+    StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})
   ],
 
   __(text){

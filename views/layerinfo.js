@@ -52,7 +52,7 @@ var checkClientError = require('../services/client-error-response').checkClientE
 var LayerInfo = React.createClass({
 
   mixins:[
-    StateMixin.connect(LocaleStore, {initWithProps: ['locale']}),
+    StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']}),
     StateMixin.connect(LayerNotesStore, {initWithProps: ['notes']})
   ],
 

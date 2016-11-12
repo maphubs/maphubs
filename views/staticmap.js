@@ -12,7 +12,7 @@ var _debounce = require('lodash.debounce');
 
 var StaticMap = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);

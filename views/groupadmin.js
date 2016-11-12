@@ -27,7 +27,7 @@ var debug = require('../services/debug')('views/GroupAdmin');
 
 var GroupAdmin = React.createClass({
 
-  mixins:[StateMixin.connect(GroupStore, {initWithProps: ['group', 'layers', 'members']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(GroupStore, {initWithProps: ['group', 'layers', 'members']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);

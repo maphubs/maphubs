@@ -12,7 +12,7 @@ var Locales = require('../services/locales');
 
 var UserSettings = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -52,7 +52,7 @@ var UserSettings = React.createClass({
              </div>
              <div id="password" style={{margin: 'auto', float: 'none'}} className="col s12 m8 l8">
                <div style={{paddingTop: '25px'}}>
-                 <Password userid={this.props.user.id} />
+                 <Password userid={this.props.user.id} csrf={this.state._csrf} />
                </div>
 
              </div>

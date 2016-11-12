@@ -21,7 +21,7 @@ var Locales = require('../services/locales');
 
 var HubMapPage = React.createClass({
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub','layers']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub','layers']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
   propTypes: {
     hub: React.PropTypes.object,
     layers: React.PropTypes.array,

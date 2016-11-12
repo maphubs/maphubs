@@ -23,7 +23,7 @@ var Locales = require('../services/locales');
 
 var HubResourcesPage = React.createClass({
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
   propTypes: {
     hub: React.PropTypes.object,
     canEdit: React.PropTypes.bool,

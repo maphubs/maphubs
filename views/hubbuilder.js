@@ -23,7 +23,7 @@ var Locales = require('../services/locales');
 
 var HubBuilder = React.createClass({
 
-  mixins:[StateMixin.connect(HubStore, 'hub'), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(HubStore, 'hub'), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);

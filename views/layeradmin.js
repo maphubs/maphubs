@@ -27,7 +27,7 @@ var Locales = require('../services/locales');
 
 var LayerAdmin = React.createClass({
 
-  mixins:[StateMixin.connect(LayerStore, {initWithProps: ['layer', 'groups']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LayerStore, {initWithProps: ['layer', 'groups']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);

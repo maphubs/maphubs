@@ -32,5 +32,7 @@ module.exports = {
     password: process.env.DB_PASS,
     port: process.env.DB_PORT
   },
-  writeDebugData: process.env.OMH_WRITEDEBUGDATA
+  writeDebugData: process.env.OMH_WRITEDEBUGDATA,
+  requireLogin: process.env.OMH_REQUIRE_LOGIN,
+  requireInvite: process.env.OMH_REQUIRE_INVITE
 };

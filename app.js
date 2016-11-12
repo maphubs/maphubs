@@ -163,9 +163,26 @@ app.use(passport.session());
 //load passport auth config
 require('./services/auth');
 
-//load all route files using express-load
-load('./routes').into(app);
+//load public routes - routes that should always be public, for example login or signup
+load('./routes/public').into(app);
 
+//load oauth secured api
+load('./routes/secure-oauth').into(app);
+
+//option to require require login for everything after this point
+var checkLogin;
+if(local.requireLogin){
+   checkLogin = require('connect-ensure-login').ensureLoggedIn();
+}else{
+  checkLogin = function(req, res, next){
+    next();
+  };
+}
+app.use(checkLogin);
+//Public API endpoints, these will be secured if login required
+load('./routes/public-api').into(app);
+//load secure routes
+load('./routes/secure').into(app);
 
 //error handling
 

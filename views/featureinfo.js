@@ -42,7 +42,7 @@ addLocaleData(it);
 var FeatureInfo = React.createClass({
 
   mixins:[
-      StateMixin.connect(LocaleStore, {initWithProps: ['locale']}),
+      StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']}),
       StateMixin.connect(FeatureNotesStore, {initWithProps: ['notes']}),
       StateMixin.connect(FeaturePhotoStore, {initWithProps: ['feature', 'photo']})
     ],

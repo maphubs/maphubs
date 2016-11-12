@@ -22,7 +22,8 @@ var Password = React.createClass({
   propTypes: {
     onSave: React.PropTypes.func,
     userid: React.PropTypes.number,
-    passreset:  React.PropTypes.string
+    passreset:  React.PropTypes.string,
+    csrf:  React.PropTypes.string.required
 
   },
 
@@ -46,7 +47,7 @@ var Password = React.createClass({
 
   onSave(model){
     var _this = this;
-    UserActions.updatePassword(this.props.userid, model.password, this.props.passreset, function(err){
+    UserActions.updatePassword(this.props.userid, model.password, this.props.passreset, this.props.csrf, function(err){
       if(err){
         MessageActions.showMessage({
           title: _this.__('Failed to Update Password'),

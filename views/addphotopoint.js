@@ -22,7 +22,7 @@ import Progress from '../components/Progress';
 
 var AddPhotoPoint = React.createClass({
 
-  mixins:[StateMixin.connect(AddPhotoPointStore, {initWithProps: ['layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(AddPhotoPointStore, {initWithProps: ['layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
