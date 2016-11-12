@@ -12,7 +12,8 @@ module.exports = Reflux.createStore({
 
   getInitialState() {
     return  {
-      locale: 'en'
+      locale: 'en',
+      _csrf: null
     };
   },
 

@@ -24,7 +24,9 @@ var TextInput= React.createClass({
     id: React.PropTypes.string,
     type: React.PropTypes.string,
     style: React.PropTypes.object,
-    showCharCount: React.PropTypes.bool
+    showCharCount: React.PropTypes.bool,
+    useMaterialize: React.PropTypes.bool,
+    onClick: React.PropTypes.func
   },
 
   getDefaultProps() {
@@ -37,7 +39,9 @@ var TextInput= React.createClass({
       dataDelay: 100,
       type: 'text',
       style: {},
-      showCharCount: true
+      showCharCount: true,
+      useMaterialize: true,
+      onClick(){}
     };
   },
 
@@ -86,14 +90,21 @@ var TextInput= React.createClass({
    },
 
   render() {
-     var className = classNames('input-field', this.props.className);
-     var inputClassName = classNames(
-       {
-       required: this.showRequired(),
-       valid: this.isValid(),
-       invalid:  this.showError()
-      }
-   );
+    var className, inputClassName = '';
+    if(this.props.useMaterialize){
+      className = classNames('input-field', this.props.className);
+      inputClassName = classNames(
+        {
+        required: this.showRequired(),
+        valid: this.isValid(),
+        invalid:  this.showError()
+       }
+    );
+    }else{
+      className = classNames(this.props.className);
+    }
+
+
 
    var icon = '';
    if(this.props.icon){
@@ -126,7 +137,10 @@ var TextInput= React.createClass({
     return (
       <div ref="inputWrapper" className={className} style={this.props.style} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
           {icon}
-          <input ref="input" id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={this.state.value} disabled={this.props.disabled} onChange={this.changeValue}/>
+          <input ref="input" id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={this.state.value}
+            disabled={this.props.disabled}
+            onClick={this.props.onClick}
+            onChange={this.changeValue}/>
           <label htmlFor={id} className={labelClassName} data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
             {charCount}
       </div>

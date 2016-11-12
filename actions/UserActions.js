@@ -9,7 +9,8 @@ var actions = Reflux.createActions({
   'forgotPassword': {},
   'checkUserNameAvailable': {},
   'signup': {},
-  'resendConfirmation': {}
+  'resendConfirmation': {},
+  'joinMailingList': {}
 });
 
 module.exports = actions;

@@ -8,6 +8,7 @@ import SliderDecorators from '../components/Home/SliderDecorators';
 
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
 var MapHubsProLinks = require('../components/Home/MapHubsProLinks');
+var MailingList = require('../components/Home/MailingList');
 var _shuffle = require('lodash.shuffle');
 var cardUtil = require('../services/card-util');
 
@@ -18,7 +19,7 @@ var Locales = require('../services/locales');
 
 var Home = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale']})],
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -101,7 +102,7 @@ var Home = React.createClass({
        }
      ];
 
-     var homePageCarousel = '', proLinks = '';
+     var homePageCarousel = '', proLinks = '', mailingList = '';
      if(MAPHUBS_CONFIG.mapHubsPro){
        proLinks = (
          <div className="row">
@@ -132,8 +133,12 @@ var Home = React.createClass({
               );
              })}
            </Carousel>
+
          </div>
        );
+      mailingList = (
+         <MailingList />
+       )
      }
 
 		return (
@@ -141,7 +146,7 @@ var Home = React.createClass({
       <Header />
       <main style={{margin: 0, height: '100%'}}>
         {homePageCarousel}
-
+        {mailingList}
          <div className="row">
           <OnboardingLinks />
         </div>

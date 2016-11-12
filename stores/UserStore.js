@@ -9,7 +9,6 @@ module.exports = Reflux.createStore({
   mixins: [StateMixin],
   listenables: Actions,
 
-
   getInitialState() {
     return  {
       user: {},
@@ -110,6 +109,17 @@ module.exports = Reflux.createStore({
       password,
       joinmailinglist
     })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+          cb(err);
+      });
+    });
+  },
+
+  joinMailingList(email, _csrf, cb){
+    request.post('/api/user/mailinglistsignup')
+    .type('json').accept('json')
+    .send({email, _csrf})
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
           cb(err);
