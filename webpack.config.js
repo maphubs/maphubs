@@ -14,6 +14,7 @@ module.exports = {
   entry: {
     login: "./client/login",
     approvedialog: "./client/approvedialog",
+    adminuserinvite: "./client/adminuserinvite",
     groups: "./client/groups",
     groupinfo: "./client/groupinfo",
     groupadmin: "./client/groupadmin",

@@ -8,7 +8,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 var NotificationActions = require('../actions/NotificationActions');
-import Progress from '../Progress';
+import Progress from '../components/Progress';
 var MessageActions = require('../actions/MessageActions');
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
@@ -59,13 +59,16 @@ var PasswordReset = React.createClass({
           NotificationActions.showNotification(
             {
               message: _this.__('Invite Sent'),
-              position: 'bottomright',
+              position: 'topright',
               dismissAfter: 3000,
               onDismiss() {
                 window.location='/';
               }
           });
         }
+      },
+      function(cb){
+        cb();
       });
     });
   },

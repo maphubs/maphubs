@@ -164,7 +164,7 @@ app.use(passport.session());
 require('./services/auth');
 
 //load public routes - routes that should always be public, for example login or signup
-load('./routes/public').into(app);
+load('./routes/public-routes').into(app);
 
 //load oauth secured api
 load('./routes/secure-oauth').into(app);

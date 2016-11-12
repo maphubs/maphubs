@@ -35,13 +35,14 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 
+var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app) {
 
 
 
   //Views
-  app.get('/layers', function(req, res, next) {
+  app.get('/layers', csrfProtection, function(req, res, next) {
 
 
     Promise.all([
@@ -59,7 +60,7 @@ module.exports = function(app) {
 
   });
 
-  app.get('/createlayer', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
     var user_id = req.session.user.id;
 
@@ -70,7 +71,7 @@ module.exports = function(app) {
 
   });
 
-  app.get('/layer/info/:id/*', function(req, res, next) {
+  app.get('/layer/info/:id/*', csrfProtection, function(req, res, next) {
 
     var layer_id = parseInt(req.params.id || '', 10);
 
@@ -137,13 +138,13 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
-  app.get('/lyr/:layerid', function(req, res) {
+  app.get('/lyr/:layerid', csrfProtection, function(req, res) {
     var layerid = req.params.layerid;
     var baseUrl = urlUtil.getBaseUrl();
     res.redirect(baseUrl + '/layer/info/' + layerid + '/');
   });
 
-  app.get('/layer/map/:id/*', function(req, res, next) {
+  app.get('/layer/map/:id/*', csrfProtection, function(req, res, next) {
 
     var layer_id = parseInt(req.params.id || '', 10);
 
@@ -155,7 +156,7 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.get('/layer/adddata/:id', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/layer/adddata/:id', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
     var layer_id = parseInt(req.params.id || '', 10);
     var user_id = req.session.user.id;
@@ -179,7 +180,7 @@ module.exports = function(app) {
         }).catch(nextError(next));
   });
 
-  app.get('/layer/admin/:id/*', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/layer/admin/:id/*', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
     var user_id = req.session.user.id;
     var layer_id = parseInt(req.params.id || '', 10);

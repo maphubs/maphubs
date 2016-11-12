@@ -15,10 +15,17 @@ module.exports = function(app) {
 
   app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
-    res.send("User-agent: *");
+    if(local.requireLogin){
+      res.send('User-agent: *');
+    }else{
+      res.send('User-agent: *\nDisallow: /');
+    }
 });
 
   app.get('/sitemap.xml', function(req, res, next){
+      if(local.requireLogin){
+        return res.status(404).send();
+      }
       var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
       //clear sitemap
       sm.urls = [

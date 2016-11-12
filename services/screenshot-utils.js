@@ -64,7 +64,12 @@ module.exports = {
 
     var baseUrl = urlUtil.getBaseUrl();
     var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
-    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
+    var manetUrl = local.manetUrl
+      + '/?url='+ maphubsUrl
+      + '&width='+ width
+      + '&height=' + height
+      + '&headers=manet-api-key%3D' + local.manetAPIKey
+      + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
     debug(manetUrl);
     //replace image in database
 
@@ -116,7 +121,12 @@ module.exports = {
     var baseUrl = urlUtil.getBaseUrl();
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
     //var maphubsUrl = 'http://map.loggingroads.org';
-    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=1.25&quality=1';
+    var manetUrl = local.manetUrl
+      + '/?url='+ maphubsUrl
+      + '&width='+ width
+      + '&height=' + height
+      + '&headers=manet-api-key%3D' + local.manetAPIKey
+      + '&force=true&delay=15000&zoom=1.25&quality=1';
     //replace image in database
     debug(manetUrl);
     return this.base64Download(manetUrl)
@@ -136,7 +146,12 @@ module.exports = {
 
     var baseUrl = urlUtil.getBaseUrl();
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/thumbnail';
-    var manetUrl = local.manetUrl + '/?url='+ maphubsUrl + '&width='+ width + '&height=' + height + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
+    var manetUrl = local.manetUrl 
+      + '/?url='+ maphubsUrl
+      + '&width='+ width
+      + '&height=' + height
+      + '&headers=manet-api-key%3D' + local.manetAPIKey
+      + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
     //replace image in database
     debug(manetUrl);
     return this.base64Download(manetUrl)

@@ -66,6 +66,10 @@ function createEngine(engineOptions) {
           //use local from i18n parsing of http accept-language
           locale = req.locale;
         }
+        if(options.req.csrfToken){
+          options.props._csrf = req.csrfToken();
+        }
+
       }else{
         log.error('req object not found when rendering view: ' + filename);
       }

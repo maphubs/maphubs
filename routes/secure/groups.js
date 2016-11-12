@@ -14,11 +14,13 @@ var apiDataError = require('../../services/error-response').apiDataError;
 
 var local = require('../../local');
 
+var csrfProtection = require('csurf')({cookie: false});
+
 module.exports = function(app) {
 
 
   //Views
-  app.get('/groups', function(req, res, next) {
+  app.get('/groups', csrfProtection, function(req, res, next) {
     Promise.all([
       Group.getFeaturedGroups(),
       Group.getRecentGroups(),
@@ -37,7 +39,7 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
-  app.get('/creategroup', login.ensureLoggedIn(), function(req, res) {
+  app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), function(req, res) {
     res.render('creategroup', {
       title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {}, req
@@ -45,7 +47,7 @@ module.exports = function(app) {
   });
 
 
-  app.get('/group/:id', function(req, res, next) {
+  app.get('/group/:id', csrfProtection, function(req, res, next) {
 
     var group_id = req.params.id;
 
@@ -75,7 +77,7 @@ module.exports = function(app) {
   });
 
 
-  app.get('/group/:id/admin', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
     var user_id = req.session.user.id;
     var group_id = req.params.id;
@@ -107,7 +109,7 @@ module.exports = function(app) {
   });
 
 
-  app.get('/user/:username/groups', function(req, res, next) {
+  app.get('/user/:username/groups', csrfProtection, function(req, res, next) {
 
     var username = req.params.username;
     debug(username);

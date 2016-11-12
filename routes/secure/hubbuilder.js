@@ -5,12 +5,12 @@ var login = require('connect-ensure-login');
 //var debug = require('../../services/debug')('routes/hubs');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
+var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app) {
 
-
   //Views
-  app.get('/createhub', login.ensureLoggedIn(), function(req, res) {
+  app.get('/createhub', csrfProtection, login.ensureLoggedIn(), function(req, res) {
     res.render('hubbuilder', {
       title: req.__('Create Hub') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {}, req

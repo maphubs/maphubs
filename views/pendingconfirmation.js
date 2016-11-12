@@ -20,7 +20,7 @@ var PendingConfirmation = React.createClass({
   },
 
   propTypes: {
-    user: React.PropTypes.string.isRequired,
+    user: React.PropTypes.object.isRequired,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -31,13 +31,14 @@ var PendingConfirmation = React.createClass({
   },
 
   onResend(){
+    var _this = this;
     UserActions.resendConfirmation(this.state._csrf, function(err){
       if(err){
           MessageActions.showMessage({title: 'Error', message: err.error});
       }else {
         NotificationActions.showNotification(
           {
-            message: this.__('Confirmation email sent. Please check your email.'),
+            message: _this.__('Confirmation email sent. Please check your email.'),
             position: 'bottomright'
         });
       }

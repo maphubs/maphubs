@@ -83,14 +83,14 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.get('/services', function(req, res) {
+  app.get('/services', csrfProtection, function(req, res) {
     res.render('services', {
       title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
       req
     });
   });
 
-  app.get('/journalists', function(req, res) {
+  app.get('/journalists', csrfProtection, function(req, res) {
     res.render('journalists', {
       title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
       req

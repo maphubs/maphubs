@@ -24,6 +24,8 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 
+var csrfProtection = require('csurf')({cookie: false});
+
 module.exports = function(app) {
 
 
@@ -60,7 +62,7 @@ module.exports = function(app) {
  };
 
   //Views
-  app.get('/hubs', function(req, res, next) {
+  app.get('/hubs', csrfProtection, function(req, res, next) {
 
     Promise.all([
       Hub.getFeaturedHubs(),
@@ -80,7 +82,7 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
-  app.get('/user/:username/hubs', function(req, res, next) {
+  app.get('/user/:username/hubs', csrfProtection, function(req, res, next) {
 
     var username = req.params.username;
     debug(username);
@@ -152,7 +154,7 @@ module.exports = function(app) {
       });
   };
 
-  app.get('/hub/:hubid', function(req, res, next) {
+  app.get('/hub/:hubid', csrfProtection, function(req, res, next) {
     var hub_id = req.params.hubid;
     var user_id = null;
     if(req.session.user){
@@ -197,7 +199,7 @@ module.exports = function(app) {
       });
   };
 
-  app.get('/hub/:hubid/map', function(req, res, next) {
+  app.get('/hub/:hubid/map', csrfProtection, function(req, res, next) {
 
     var hub_id = req.params.hubid;
     var user_id = null;
@@ -240,7 +242,7 @@ module.exports = function(app) {
       });
   };
 
-  app.get('/hub/:hubid/stories', function(req, res, next) {
+  app.get('/hub/:hubid/stories', csrfProtection, function(req, res, next) {
 
     var hub_id = req.params.hubid;
     var user_id = null;
@@ -281,7 +283,7 @@ module.exports = function(app) {
       });
   };
 
-  app.get('/hub/:hubid/resources', function(req, res, next) {
+  app.get('/hub/:hubid/resources', csrfProtection, function(req, res, next) {
 
     var hub_id = req.params.hubid;
     var user_id = null;
@@ -343,7 +345,7 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.get('/hub/:hubid/story/:story_id/edit/*', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/hub/:hubid/story/:story_id/edit/*', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -383,7 +385,7 @@ module.exports = function(app) {
   });
 
 
-  app.get('/hub/:hubid/story/:story_id/*', function(req, res, next) {
+  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, function(req, res, next) {
 
     var hub_id = req.params.hubid;
     var story_id = parseInt(req.params.story_id || '', 10);
@@ -494,7 +496,7 @@ module.exports = function(app) {
     }
   });
 
-    app.get('/hub/:id/admin', login.ensureLoggedIn(), function(req, res, next) {
+    app.get('/hub/:id/admin', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
       var user_id = req.session.user.id;
       var hub_id = req.params.id;

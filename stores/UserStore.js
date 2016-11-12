@@ -83,15 +83,14 @@ module.exports = Reflux.createStore({
         });
       });
     }
-
-
   },
 
   forgotPassword(email, _csrf, cb){
     request.post('/api/user/forgotpassword')
     .type('json').accept('json')
     .send({
-      email //user_id to reset
+      email, //user_id to reset
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -109,7 +108,8 @@ module.exports = Reflux.createStore({
       email,
       password,
       joinmailinglist,
-      inviteKey
+      inviteKey,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -132,6 +132,7 @@ module.exports = Reflux.createStore({
   resendConfirmation(_csrf, cb){
     request.post('/api/user/resendconfirmation')
     .type('json').accept('json')
+    .send({_csrf})
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
           cb(err);
@@ -139,14 +140,15 @@ module.exports = Reflux.createStore({
     });
   },
 
-  checkUserNameAvailable(username){
+  checkUserNameAvailable(username, _csrf){
 
     //not used yet since react-formsy can't support async on validation functions...
     /*
     request.post('/api/user/checkusernameavailable')
     .type('json').accept('json')
     .send({
-      username //user_id to reset
+      username, //user_id to reset
+      _csrf
     })
     .end(function(err, res){
       if (err) {

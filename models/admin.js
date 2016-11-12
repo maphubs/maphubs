@@ -1,6 +1,4 @@
 var knex = require('../connection');
-var Promise = require('bluebird');
-var log = require('../services/log');
 var debug = require('../services/debug')('models/user');
 var Email = require('../services/email-util.js');
 var uuid = require('node-uuid');
@@ -40,7 +38,7 @@ module.exports = {
           return Email.send({
               from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
               to: email,
-              subject: __('Acccount Invite') + ' - ' + MAPHUBS_CONFIG.productName,
+              subject: __('Account Invite') + ' - ' + MAPHUBS_CONFIG.productName,
               text,
               html
             });
@@ -60,7 +58,7 @@ module.exports = {
   },
 
   useInvite(key){
-    debug('using invite ky');
+    debug('using invite key');
     return knex('omh.account_invites').update({used:true}).where({key})
     .then(function(){
       return knex('omh.account_invites').select('email').where({key})
@@ -73,6 +71,17 @@ module.exports = {
       });
     });
   },
+
+  checkAdmin(user_id){
+    return knex('omh.admins').where({user_id})
+    .then(function(result){
+      if(result && result.length === 1){
+        return true;
+      }else{
+        return false;
+      }
+    });
+  }
 
 
 };

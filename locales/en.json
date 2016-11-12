@@ -644,5 +644,17 @@
 	"Show Below Base Map Labels": "Show Below Base Map Labels",
 	"Allow base map labels to display on top of this layer": "Allow base map labels to display on top of this layer",
 	"Sign up for our mailing list": "Sign up for our mailing list",
-	"Sign up": "Sign up"
+	"Sign up": "Sign up",
+	"Invite User": "Invite User",
+	"Email to Invite": "Email to Invite",
+	"Send Invite": "Send Invite",
+	"Sending": "Sending",
+	"You have been invited to": "You have been invited to",
+	"Please go to this link in your browser to sign up:": "Please go to this link in your browser to sign up:",
+	"This invite is only valid for the email address:": "This invite is only valid for the email address:",
+	"Acccount Invite": "Acccount Invite",
+	"Account Invite": "Account Invite",
+	"Invalid Key": "Invalid Key",
+	"Invite Key Invalid": "Invite Key Invalid",
+	"The key used was invalid or has already been used. Please contact an administrator.": "The key used was invalid or has already been used. Please contact an administrator."
 }

@@ -6,10 +6,11 @@ var log = require('../../services/log.js');
 var debug = require('../../services/debug')('routes/search');
 var turf_bbox = require('@turf/bbox');
 var geojsonUtils = require('../../services/geojson-utils');
+var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app) {
 
-  app.get('/search', function(req, res) {
+  app.get('/search', csrfProtection, function(req, res) {
       res.render('search', {
         title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
         mapboxgl:true,

@@ -46,7 +46,7 @@ module.exports = function(app) {
     }
     var uid = req.user.id;
 
-    User.sendConfirmationEmail(uid)
+    User.sendConfirmationEmail(uid, req.__)
     .then(function(){
         res.status(200).send({success:true});
     }).catch(apiError(res, 500));

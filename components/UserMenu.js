@@ -57,6 +57,13 @@ var UserMenu = React.createClass({
     var user = (<div></div>);
     if(this.state.loggedIn && this.state.user){
 
+      var adminInvites = '';
+      if(this.state.user.admin){
+        adminInvites = (
+          <li className="usermenu-wrapper"><a href="/admin/invite">{this.__('Invite Users')}</a></li>
+        );
+      }
+
       user = (
         <li>
           <div ref="userButton" className="chip user-dropdown-button omh-btn" style={{marginRight:'5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
@@ -74,6 +81,7 @@ var UserMenu = React.createClass({
             <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/hubs'}>{this.__('My Hubs')}</a></li>
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a href="/user/settings">{this.__('Settings')}</a></li>
+            {adminInvites}
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a href={'/logout'}>{this.__('Logout')}</a></li>
           </ul>

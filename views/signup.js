@@ -44,7 +44,8 @@ var Signup = React.createClass({
   getInitialState() {
     return {
       canSubmit: false,
-      saving: false
+      saving: false,
+      email: this.props.email
     };
   },
 
@@ -68,12 +69,13 @@ var Signup = React.createClass({
       var _this = this;
       var result = false;
       if (username && typeof window !== 'undefined') {
+
           $.ajax({
            type: "POST",
            url: '/api/user/checkusernameavailable',
            contentType : 'application/json;charset=UTF-8',
            dataType: 'json',
-           data: JSON.stringify({username}),
+           data: JSON.stringify({username, _csrf: _this.state._csrf}),
             async: false,
             success(msg){
               if(msg.success && msg.available){
@@ -97,6 +99,7 @@ var Signup = React.createClass({
             complete(){
             }
         });
+
       }
 
       return result;
@@ -184,7 +187,7 @@ var Signup = React.createClass({
               <TextInput name="email" label={this.__('Email')} icon="email"
                 className="col s12 m8 l8 valign" style={{margin: 'auto'}}
                 disabled={this.props.lockEmail}
-                defaultValue={this.props.email}
+                value={this.state.email}
                 validations={{isEmail:true}} validationErrors={{
                   isEmail: this.__('Not a valid email address.')
                 }} length={50}
