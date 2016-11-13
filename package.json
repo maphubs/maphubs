@@ -2,13 +2,13 @@
   "name": "maphubs",
   "version": "0.2.9",
   "description": "MapHubs",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "DEBUG=maphubs:* node --max-old-space-size=2048 app.js",
-    "dev": "DEBUG=maphubs:* nodejs-dashboard -- node --max-old-space-size=4096 app.js",
+    "start": "DEBUG=maphubs:* node --max-old-space-size=2048 src/app.js",
+    "dev": "DEBUG=maphubs:* nodejs-dashboard -- node --max-old-space-size=4096 src/app.js",
     "build": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "debug": "NODE_ENV=production DEBUG=maphubs:* node --debug app.js",
-    "prod-test": "DEBUG=maphubs:* NODE_ENV=production node app.js",
+    "debug": "NODE_ENV=production DEBUG=maphubs:* node --debug src/app.js",
+    "prod-test": "DEBUG=maphubs:* NODE_ENV=production node src/app.js",
     "changelog": "github_changelog_generator"
   },
   "repository": {
