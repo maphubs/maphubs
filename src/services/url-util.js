@@ -1,7 +1,12 @@
 /* @flow weak */
 module.exports = {
-  getBaseUrl(){
-    var host = MAPHUBS_CONFIG.host;
+  getBaseUrl(internal){
+    var host;
+    if(internal){
+       host = MAPHUBS_CONFIG.host_internal;
+    }else{
+       host = MAPHUBS_CONFIG.host;
+    }
     var port = MAPHUBS_CONFIG.port;
     var proto = 'http://';
     if(MAPHUBS_CONFIG.https) proto = 'https://';

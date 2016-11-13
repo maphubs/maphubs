@@ -489,7 +489,6 @@ var LayerInfo = React.createClass({
       }
       var osmURL = '/xml/map/'  + this.props.layer.layer_id + '?bbox=' + bounds;
 
-      //http://dev.localhost:4000/xml/map/44?bbox=
       if(!this.props.layer.disable_export){
         var gpxExport = '';
         if(this.props.layer.data_type !== 'polygon'){

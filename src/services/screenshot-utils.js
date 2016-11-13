@@ -62,7 +62,7 @@ module.exports = {
     var width = 400;
     var height = 300;
 
-    var baseUrl = urlUtil.getBaseUrl();
+    var baseUrl = urlUtil.getBaseUrl(true); //use internal route
     var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
     var manetUrl = local.manetUrl
       + '/?url='+ maphubsUrl
@@ -118,7 +118,7 @@ module.exports = {
     var width = 1200;
     var height = 630;
 
-    var baseUrl = urlUtil.getBaseUrl();
+    var baseUrl = urlUtil.getBaseUrl(true);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
     //var maphubsUrl = 'http://map.loggingroads.org';
     var manetUrl = local.manetUrl
@@ -144,9 +144,9 @@ module.exports = {
     var width = 400;
     var height = 300;
 
-    var baseUrl = urlUtil.getBaseUrl();
+    var baseUrl = urlUtil.getBaseUrl(true);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/thumbnail';
-    var manetUrl = local.manetUrl 
+    var manetUrl = local.manetUrl
       + '/?url='+ maphubsUrl
       + '&width='+ width
       + '&height=' + height

@@ -1,0 +1,62 @@
+version: '2'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ./env/dev/db.env
+      - ./env/dev/web.env
+      - ./env/dev/host.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/secret/web-secret.env
+      - ./env/dev/id-config.env
+      - ./env/dev/secret/id-secret.env
+    depends_on:
+        - db
+        - manet
+        - tiles
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./src:/app/src
+      - ./assets:/app/assets
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ../iD:/app/iD
+  db:
+    build:
+      context: ./db-server
+    env_file:
+      - ./env/dev/db.env
+      - ./env/dev/id-config.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/secret/db-server-pass.env
+      - ./env/dev/secret/id-secret.env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+  tiles:
+    build:
+      context: ../maphubs-tileserver
+    env_file:
+      - ./env/dev/host.env
+      - ./env/dev/db.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/tiles.env
+      - ./env/dev/secret/web-secret.env
+    ports:
+      - '4001:4001'
+    restart: always
+    depends_on:
+      - db
+  manet:
+    image: 'quay.io/maphubs/manet:latest'
+    ports:
+      - '8891:8891'
+    restart: always
+volumes:
+  db-data:
+    external:
+      name: maphubs-db-data

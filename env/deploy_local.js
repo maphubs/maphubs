@@ -3,7 +3,8 @@ module.exports = {
   connection: {
     url: 'postgres://' + process.env.DB_USER + ':'+ process.env.DB_PASS +'@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_DATABASE
   },
-  host: process.env.OMH_HOST ? process.env.OMH_HOST : process.env.TUTUM_SERVICE_FQDN,
+  host: process.env.OMH_HOST,
+  host_internal:  process.env.OMH_HOST_INTERNAL,
   port: process.env.OMH_PORT,
   internal_port: process.env.OMH_INTERNAL_PORT,
   publicFilePath: '/app/public/',

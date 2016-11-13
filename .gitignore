@@ -145,3 +145,7 @@ prod_docker_cloud.yaml
 maphubs.log.*
 theme.scss
 css
+db-server-pass.env
+id-secret.env
+web-secret.env
+db-pass.env

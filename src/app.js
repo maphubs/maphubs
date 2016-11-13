@@ -97,7 +97,7 @@ app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
 app.use(sassMiddleware({
     /* Options */
     src: __dirname,
-    dest: path.join(__dirname, 'css'),
+    dest: path.join(__dirname, '../css'),
     debug: true,
     outputStyle: 'compressed',
     prefix:  '/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
