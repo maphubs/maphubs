@@ -12,10 +12,10 @@ RUN apt-get update && \
     npm install -g yarn && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     mkdir -p /app
-    
+
 WORKDIR /app
 
-COPY package.json yarn.lock /app/
+COPY deploy/package.json deploy/yarn.lock /app/
 RUN yarn install --production --pure-lockfile
 
 #install iD

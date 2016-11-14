@@ -4,6 +4,7 @@
 cat <<EOF >/app/src/clientconfig.js
 var MAPHUBS_CONFIG = {
   host: "${OMH_HOST}",
+  host_internal: "${OMH_HOST_INTERNAL}",
   port: ${OMH_PORT},
   https: ${OMH_HTTPS},
   productName: "${OMH_PRODUCT_NAME}",
@@ -30,7 +31,7 @@ if(typeof module !== 'undefined'){
 EOF
 
 cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
-mkdir /app/css
+
 
 #write iD config
 cat <<EOF >/app/iD/js/config.js
@@ -40,5 +41,9 @@ var OMH_CONFIG = {
   OAUTH_SECRET: "${ID_SECRET}"
 };
 EOF
+
+#grab a copy of the yarn lock so we can use it in prod
+cp yarn.lock deploy/yarn.lock
+cp package.json deploy/package.json
 
 node --max-old-space-size=$NODE_MEM_SIZE src/app.js

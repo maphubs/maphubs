@@ -24,6 +24,7 @@ services:
       - ./temp:/app/temp
       - ./logs:/app/logs
       - ../iD:/app/iD
+      - ./deploy:/app/deploy
   db:
     build:
       context: ./db-server
@@ -37,6 +38,7 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    restart: always
   tiles:
     build:
       context: ../maphubs-tileserver

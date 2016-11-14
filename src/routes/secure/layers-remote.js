@@ -71,7 +71,7 @@ module.exports = function(app) {
           .then(function(layer){
             if(layer.remote){
               var url;
-              if(layer.remote_host == 'dev.localhost' || layer.remote_host == 'dev.openmaphub.org'){
+              if(layer.remote_host == 'localhost'){
                url = 'http://';
              }else{
                 url = 'https://';

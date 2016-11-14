@@ -4,6 +4,7 @@
 cat <<EOF >/app/src/clientconfig.js
 var MAPHUBS_CONFIG = {
   host: "${OMH_HOST}",
+  host_internal: "${OMH_HOST_INTERNAL}",
   port: ${OMH_PORT},
   https: ${OMH_HTTPS},
   productName: "${OMH_PRODUCT_NAME}",

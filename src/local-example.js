@@ -8,7 +8,7 @@ module.exports = {
   publicFilePath: '/Users/maphubs/dev/maphubs/public/',
   tempFilePath: '/Users/maphubs/dev/maphubs/temp/',
   manetUrl: 'http://localhost:8891',
-  tileServiceUrl: 'http://localhost:4001',
+  tileServiceUrl: 'http://tiles:4001', //add 'tiles 127.0.0.1' to your hosts file for local development
   MAPBOX_ACCESS_TOKEN: '1234',
   MAILGUN_API_KEY: '1234',
   LOGGLY_API_KEY: '1234',

@@ -1,5 +1,5 @@
 module.exports = {
-  host: 'localhost', //Maphubs needs to run from a subdomain if using localhost
+  host: 'localhost',
   port: 4000,
   https: false,
   productName: 'MapHubs-Local',

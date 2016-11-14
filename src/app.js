@@ -153,7 +153,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
         path: '/',
-        domain: '.' + local.host
+        domain: local.host
     }
 }));
 
