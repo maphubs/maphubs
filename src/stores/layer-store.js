@@ -270,7 +270,8 @@ module.exports = Reflux.createStore({
       style: data.style,
       labels: data.labels,
       legend_html: data.legend_html,
-      preview_position: data.preview_position
+      preview_position: data.preview_position,
+      settings: data.settings
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
