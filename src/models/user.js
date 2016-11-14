@@ -194,7 +194,7 @@ module.exports = {
       var new_email = uuid.v4();
       return knex('users').update({new_email}).where({id: user_id})
       .then(function(){
-        _this.getUser(user_id)
+        return _this.getUser(user_id)
           .then(function(user){
           var baseUrl = urlUtil.getBaseUrl();
           var url = baseUrl + '/user/emailconfirmation/' + new_email;

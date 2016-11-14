@@ -45,6 +45,7 @@ module.exports = {
       }else{
         //throw new Error('No Image Found for Group: '+ group_id);
       }
+      return null;
 
     });
   },
@@ -62,6 +63,7 @@ module.exports = {
       }else{
         //throw new Error('No Image Found for Group: '+ group_id);
       }
+      return null;
 
     });
   },

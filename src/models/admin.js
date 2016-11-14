@@ -51,9 +51,8 @@ module.exports = {
     .then(function(result){
       if(result && result.length === 1){
         return true;
-      }else{
-        return false;
       }
+      return null;
     });
   },
 
@@ -73,13 +72,12 @@ module.exports = {
   },
 
   checkAdmin(user_id){
-    return knex('omh.admins').where({user_id})
+    return knex('omh.admins').select('user_id').where({user_id})
     .then(function(result){
       if(result && result.length === 1){
         return true;
-      }else{
-        return false;
       }
+      return null;
     });
   }
 
