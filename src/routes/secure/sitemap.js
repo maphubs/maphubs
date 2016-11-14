@@ -7,7 +7,7 @@ var nextError = require('../../services/error-response').nextError;
 
 var sitemap = require('sitemap'),
   sm = sitemap.createSitemap({
-      hostname : urlUtil.getBaseUrl(local.host, local.port),
+      hostname : urlUtil.getBaseUrl(),
       sitemapName: 'Maphubs'
     });
 
@@ -26,7 +26,7 @@ module.exports = function(app) {
       if(local.requireLogin){
         return res.status(404).send();
       }
-      var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+      var baseUrl = urlUtil.getBaseUrl();
       //clear sitemap
       sm.urls = [
         {url: baseUrl + '/layers', changefreq: 'daily'},

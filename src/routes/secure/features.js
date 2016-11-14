@@ -156,7 +156,7 @@ module.exports = function(app) {
             .then(function(photo_id) {
               return Layer.getLayerByID(data.layer_id, trx)
               .then(function(layer){
-                var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+                var baseUrl = urlUtil.getBaseUrl();
                 var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                 //add a tag to the feature
                 var command = new Promise(function(cb){cb();});

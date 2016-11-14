@@ -11,7 +11,7 @@ var urlUtil = require('./url-util');
 module.exports = {
 
   addLayersToSiteMap(sm){
-    var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+    var baseUrl = urlUtil.getBaseUrl();
     return Layer.getAllLayers()
     .then(function(layers){
       layers.forEach(function(layer){
@@ -34,7 +34,7 @@ module.exports = {
         var title = story.title.replace('&nbsp;', '');
         var story_url = '';
         if(story.display_name){
-          var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+          var baseUrl = urlUtil.getBaseUrl();
           story_url = baseUrl + '/user/' + story.display_name;
         }else if(story.hub_id){
           story_url ='/hub/' + story.hub_id;
@@ -56,7 +56,7 @@ module.exports = {
     return Hub.getAllHubs()
     .then(function(hubs){
       hubs.forEach(function(hub){
-        var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+        var baseUrl = urlUtil.getBaseUrl();
         var hubUrl = baseUrl + '/hub/' + hub.hub_id;
         var lastmodISO = null;
         if(hub.updated_at_withTZ) lastmodISO = hub.updated_at_withTZ.toISOString();
@@ -74,7 +74,7 @@ module.exports = {
     return Map.getAllMaps()
     .then(function(maps){
       maps.forEach(function(map){
-        var mapUrl =  urlUtil.getBaseUrl(local.host, local.port) + '/user/' + map.username + '/map/' + map.map_id;
+        var mapUrl =  urlUtil.getBaseUrl() + '/user/' + map.username + '/map/' + map.map_id;
         var lastmodISO = null;
         if(map.updated_at) lastmodISO = map.updated_at.toISOString();
         sm.add({
@@ -91,7 +91,7 @@ module.exports = {
     return Group.getAllGroups()
     .then(function(groups){
       groups.forEach(function(group){
-        var groupUrl =  urlUtil.getBaseUrl(local.host, local.port) + '/group/' + group.group_id;
+        var groupUrl =  urlUtil.getBaseUrl() + '/group/' + group.group_id;
         sm.add({
           url: groupUrl,
           changefreq: 'daily'

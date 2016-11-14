@@ -128,7 +128,7 @@ function createEngine(engineOptions) {
         `;
 
         if(options.oembed){
-          var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
+          var baseUrl = urlUtil.getBaseUrl();
           var url = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
           markup += `
           <link rel="alternate" type="application/json+oembed" href="` + url + `&format=json" title="Maphubs Map" />
@@ -145,8 +145,6 @@ function createEngine(engineOptions) {
           <meta name="twitter:image" content="` + options.twitterCard.image + `">
           `;
 
-          //var baseUrl = urlUtil.getBaseUrl(local.host, local.port);
-          //var url = baseUrl + req.url;
 
           markup += `
           <meta property="og:title" content="` + options.twitterCard.title + `" />

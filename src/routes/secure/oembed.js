@@ -21,11 +21,11 @@ module.exports = function(app) {
 
     Map.getMap(map_id).then(function(map){
 
-      var url = urlUtil.getBaseUrl(local.host, local.port) + '/map/embed/' + map.map_id + '/static';
+      var url = urlUtil.getBaseUrl() + '/map/embed/' + map.map_id + '/static';
       //url = url.replace(/http:/, '');
       //url = url.replace(/https:/, '');
 
-      var imageUrl = urlUtil.getBaseUrl(local.host, local.port) + '/api/screenshot/map/' + map.map_id + '.png';
+      var imageUrl = urlUtil.getBaseUrl() + '/api/screenshot/map/' + map.map_id + '.png';
       //imageUrl = imageUrl.replace(/http:/, '');
       //imageUrl = imageUrl.replace(/https:/, '');
 
