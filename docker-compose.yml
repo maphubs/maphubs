@@ -1,5 +1,20 @@
 version: '2'
 services:
+  gateway:
+    image: nginx:alpine
+    volumes:
+      - ./env/maphubsnginx.template:/etc/nginx/nginx.conf
+    env_file:
+     - ./env/dev/host.env
+    command: "/bin/sh -c \"until nc -z web 4000; do sleep 10; done; nginx -g 'daemon off;'\""
+    dns:
+      - 8.8.8.8
+    restart: always
+    depends_on:
+      - web
+      - tiles
+    ports:
+      - '8888:8888'
   web:
     build:
       context: .
@@ -14,10 +29,8 @@ services:
       - ./env/dev/secret/id-secret.env
     depends_on:
         - db
-        - manet
-        - tiles
-    ports:
-      - '4000:4000'
+    expose:
+      - '80'
     volumes:
       - ./src:/app/src
       - ./assets:/app/assets
@@ -48,8 +61,8 @@ services:
       - ./env/dev/secret/db-pass.env
       - ./env/dev/tiles.env
       - ./env/dev/secret/web-secret.env
-    ports:
-      - '4001:4001'
+    expose:
+      - '4001'
     restart: always
     depends_on:
       - db
