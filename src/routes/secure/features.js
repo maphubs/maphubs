@@ -184,9 +184,9 @@ module.exports = function(app) {
                       return layerViews.replaceViews(data.layer_id, presets, trx)
                     .then(function(){
                       debug('Layer.setUpdated');
-                      return Layer.setUpdated(data.layer_id, user_id)
+                      return Layer.setUpdated(data.layer_id, user_id, trx)
                       .then(function(){
-                        res.send({success: true, photo_id, photo_url});
+                        return res.send({success: true, photo_id, photo_url});
                       });
                     });
                   });
@@ -238,7 +238,7 @@ module.exports = function(app) {
                 return command.then(function(){
                   return layerViews.replaceViews(data.layer_id, layer.presets, trx)
                   .then(function(){
-                    return Layer.setUpdated(data.layer_id, user_id)
+                    return Layer.setUpdated(data.layer_id, user_id, trx)
                     .then(function(){
                       res.send({success: true});
                     });
