@@ -4,6 +4,7 @@ var debug = require('../../services/debug')('routes/images');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var imageUtils = require('../../services/image-utils');
+var log = require('../../services/log');
 
 module.exports = function(app) {
 
@@ -46,9 +47,12 @@ module.exports = function(app) {
       if(result && result.thumbnail){
         imageUtils.processImage(result.thumbnail, req, res);
       }else{
-        res.status(404).send();
+        return res.redirect('/assets/missing_group.png');
       }
-    }).catch(apiError(res, 404));
+    }).catch(function(err){
+      log.error(err);
+      return res.redirect('/assets/missing_group.png');
+    });
   });
 
   app.get('/hub/:id/images/logo', function(req, res) {
