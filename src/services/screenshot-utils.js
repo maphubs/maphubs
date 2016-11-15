@@ -27,7 +27,7 @@ module.exports = {
 
   base64Download(url){
     return new Promise(function(fulfill, reject){
-        request({url, encoding: null, timeout: 30000}, function (err, res, body) {
+        request({url, encoding: null, timeout: 60000}, function (err, res, body) {
           if (err) { reject(err); }
 
           if (body && res.statusCode === 200) {

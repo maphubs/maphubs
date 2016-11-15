@@ -6,6 +6,7 @@ var MAPHUBS_CONFIG = {
   host: "${OMH_HOST}",
   host_internal: "${OMH_HOST_INTERNAL}",
   port: ${OMH_PORT},
+  internal_port: ${OMH_INTERNAL_PORT},
   https: ${OMH_HTTPS},
   productName: "${OMH_PRODUCT_NAME}",
   logo: "${OMH_LOGO}",

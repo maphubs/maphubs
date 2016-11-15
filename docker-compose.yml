@@ -30,7 +30,7 @@ services:
     depends_on:
         - db
     expose:
-      - '80'
+      - '4000'
     volumes:
       - ./src:/app/src
       - ./assets:/app/assets
@@ -68,6 +68,8 @@ services:
       - db
   manet:
     image: 'quay.io/maphubs/manet:latest'
+    links:
+      - gateway:maphubs.dev
     ports:
       - '8891:8891'
     restart: always

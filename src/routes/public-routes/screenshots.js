@@ -10,32 +10,31 @@ var local = require('../../local');
 var manetCheck = function(req, res, next){
   if(local.requireLogin && (!req.isAuthenticated || !req.isAuthenticated())){
     //determine if this is the manet screenshot service
-    let fail = false;
+    var fail = false;
     if(req.headers['x-forwarded-for']){
       //valid requests won't come through a proxy!
       log.error('Unauthenticated screenshot request from a proxy');
       fail = true;
     }
     var ip = req.connection.remoteAddress;
+  if (ip.length >= 15) ip = ip.slice(7); //strip IPv6 prefix since it it is just remapped ipv4
     var manetUrl = local.manetUrl;
     var manetHost = require('url').parse(manetUrl).hostname;
     require('dns').lookup(manetHost, (err, addresses) => {
       debug('valid manet addresses:', addresses);
       if(!addresses.includes(ip)){
-        log.error('Unauthenticated screenshot request, manet IP does not match');
+        log.error('Unauthenticated screenshot request, manet IP does not match: ' + ip);
         fail = true;
       }
       if(req.headers['manet-api-key'] !== local.manetAPIKey){
-        log.error('Unauthenticated screenshot request, manet API key does not match');
+        log.error('Unauthenticated screenshot request, manet API key does not match: ' + req.headers['manet-api-key'] + ' - ' + local.manetAPIKey);
         fail = true;
       }
-    });
-    if(fail){
-      return res.status(401).send("Unauthorized");
-    }else{
+      if(fail){
+        return res.status(401).send("Unauthorized");
+      }    
       next();
-    }
-
+    });
   }else{
     next();
   }
