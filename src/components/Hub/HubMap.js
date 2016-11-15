@@ -128,9 +128,10 @@ var HubMap = React.createClass({
                   baseMap={this.state.hub.basemap}
                   disableScrollZoom>
 
+
                   <MiniLegend style={{
                       position: 'absolute',
-                      bottom: '5px',
+                      bottom: '30px',
                       right: '5px',
                       minWidth: '200px',
                       zIndex: '1',
