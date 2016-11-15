@@ -4,7 +4,7 @@
   "description": "MapHubs",
   "main": "src/app.js",
   "scripts": {
-    "start": "DEBUG=maphubs:* node --max-old-space-size=2048 src/app.js",
+    "start": "/bin/sh run-dev.sh",
     "dev": "DEBUG=maphubs:* nodejs-dashboard -- node --max-old-space-size=4096 src/app.js",
     "build": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "debug": "NODE_ENV=production DEBUG=maphubs:* node --debug src/app.js",

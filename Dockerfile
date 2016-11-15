@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick libpq-dev && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash && \
     apt-get install -y nodejs && \
-    npm install -g yarn && \
+    npm install -g yarn@0.16.1 && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     mkdir -p /app
 
@@ -26,9 +26,6 @@ COPY ./assets /app/assets
 COPY .babelrc /app/.babelrc
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
-
-#copy environment specific config file
-COPY env/deploy_local.js  /app/src/local.js
 
 #create temp folders
 RUN mkdir -p public && mkdir -p css && mkdir -p /app/temp/uploads
