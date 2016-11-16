@@ -1,42 +1,19 @@
-var fs = require('fs');
-var request = require('request');
+var request = require('superagent-bluebird-promise');
 var debug = require('../services/debug')('screenshot-utils');
 var local = require('../local');
 var log = require('../services/log.js');
-var Promise = require('bluebird');
 var knex = require('../connection.js');
 var urlUtil = require('../services/url-util');
 
 module.exports = {
-  download(uri, filename){
-    return new Promise(function(fulfill, reject){
-    request.head(uri, function(err, res){
-      if(err){
-        log.error(err);
-        reject(err);
-      }
-      //TODO: confirm content type is png and content-length > 0, if not try again
-      debug('content-type:' + res.headers['content-type']);
-      debug('content-length:' + res.headers['content-length']);
 
-      var r = request(uri).pipe(fs.createWriteStream(filename));
-      r.on('close', fulfill);
-    });
-  });
-  },
-
-  base64Download(url){
-    return new Promise(function(fulfill, reject){
-        request({url, encoding: null, timeout: 60000}, function (err, res, body) {
-          if (err) { reject(err); }
-
-          if (body && res.statusCode === 200) {
-            var image = body.toString('base64');
-            fulfill(image);
-          }else{
-            reject(body);
-          }
-        });
+  base64Download(url, data){
+    request.post(url)
+    .type('json')
+    .send(data)
+    .timeout(60000)
+    .then(function(res) {
+      return res.body.toString('base64');
     });
   },
 
@@ -64,16 +41,27 @@ module.exports = {
 
     var baseUrl = urlUtil.getBaseUrl(true); //use internal route
     var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
-    var manetUrl = local.manetUrl
-      + '/?url='+ maphubsUrl
-      + '&width='+ width
-      + '&height=' + height
-      + '&headers=manet-api-key%3D' + local.manetAPIKey
-      + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
-    debug(manetUrl);
+    var manetUrl = local.manetUrl;
+    var manetData = {
+      url: maphubsUrl,
+      width,
+      height,
+      force: true,
+      delay: 15000,
+      zoom: 1,
+      format: 'jpg',
+      quality: 0.8,
+      cookies: {
+        name: 'manet',
+        value: local.manetAPIKey,
+        domain: local.host
+      }
+    };
+
+    debug(JSON.stringify(manetData));
     //replace image in database
 
-    return this.base64Download(manetUrl)
+    return this.base64Download(manetUrl, manetData)
     .then(function(image){
       return knex('omh.layers').update({thumbnail: image}).where({layer_id})
       .then(function(){
@@ -88,8 +76,8 @@ module.exports = {
       .then(function(){
         var baseUrl = urlUtil.getBaseUrl();
         var url = baseUrl + '/api/screenshot/layer/thumbnail/' + layer_id + '.jpg';
-        //note: not using a promise here on purpose, we don't want to wait for this to finish
-        request({url, encoding: null, timeout: 60000}, function (err, res, body) {
+        //note: returning the promise here on purpose, we don't want to wait for this to finish
+        request.get(url).timeout(60000).catch(function(err){
           debug('thumbnail request complete');
           if(err){log.error(err);}
         });
@@ -121,15 +109,29 @@ module.exports = {
     var baseUrl = urlUtil.getBaseUrl(true);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
     //var maphubsUrl = 'http://map.loggingroads.org';
-    var manetUrl = local.manetUrl
-      + '/?url='+ maphubsUrl
-      + '&width='+ width
-      + '&height=' + height
-      + '&headers=manet-api-key%3D' + local.manetAPIKey
-      + '&force=true&delay=15000&zoom=1.25&quality=1';
+
+
+    var manetUrl = local.manetUrl;
+
+    var manetData = {
+      url: maphubsUrl,
+      width,
+      height,
+      force: true,
+      delay: 15000,
+      zoom: 1.25,
+      format: 'png',
+      quality: 1,
+      cookies: {
+        name: 'manet',
+        value: local.manetAPIKey,
+        domain: local.host
+      }
+    };
+
+    debug(JSON.stringify(manetData));
     //replace image in database
-    debug(manetUrl);
-    return this.base64Download(manetUrl)
+    return this.base64Download(manetUrl, manetData)
     .then(function(image){
       return knex('omh.maps').update({screenshot: image}).where({map_id})
       .then(function(){
@@ -146,12 +148,26 @@ module.exports = {
 
     var baseUrl = urlUtil.getBaseUrl(true);
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/thumbnail';
-    var manetUrl = local.manetUrl
-      + '/?url='+ maphubsUrl
-      + '&width='+ width
-      + '&height=' + height
-      + '&headers=manet-api-key%3D' + local.manetAPIKey
-      + '&force=true&delay=15000&zoom=1&format=jpg&quality=0.8';
+    var manetUrl = local.manetUrl;
+
+    var manetData = {
+      url: maphubsUrl,
+      width,
+      height,
+      force: true,
+      delay: 15000,
+      zoom: 1,
+      format: 'jpg',
+      quality: 0.8,
+      cookies: {
+        name: 'manet',
+        value: local.manetAPIKey,
+        domain: local.host
+      }
+    };
+
+    debug(JSON.stringify(manetData));
+
     //replace image in database
     debug(manetUrl);
     return this.base64Download(manetUrl)
