@@ -10,7 +10,7 @@ module.exports = {
         port = MAPHUBS_CONFIG.port;
     }
     var proto = 'http://';
-    if(MAPHUBS_CONFIG.https) proto = 'https://';
+    if(MAPHUBS_CONFIG.https && !internal) proto = 'https://';
     var url = proto +  host;
     if(port != 80){
       url += ':' + port;
