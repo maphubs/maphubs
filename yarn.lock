@@ -1943,6 +1943,13 @@ convert-source-map@^1.1.0, convert-source-map@^1.1.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.3.0.tgz#e9f3e9c6e2728efc2676696a70eb382f73106a67"
 
+cookie-parser:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/cookie-parser/-/cookie-parser-1.4.3.tgz#0fe31fa19d000b95f4aadf1f53fdc2b8a203baa5"
+  dependencies:
+    cookie "0.3.1"
+    cookie-signature "1.0.6"
+
 cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
@@ -2254,7 +2261,7 @@ dbgeo:
     topojson "~1.6.26"
     wkx "~0.2.0"
 
-debug@*, debug@^2.1.1, debug@^2.1.3, debug@^2.2.0, debug@~2.2.0, debug@2, debug@2.2.0, debug@2.x.x:
+debug@*, debug@^2.1.1, debug@^2.1.3, debug@^2.2.0, debug@~2.2.0, debug@2, debug@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
@@ -5219,14 +5226,6 @@ oauth@0.9.x:
   version "0.9.14"
   resolved "https://registry.yarnpkg.com/oauth/-/oauth-0.9.14.tgz#c5748883a40b53de30ade9cabf2100414b8a0971"
 
-oauth2orize:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/oauth2orize/-/oauth2orize-1.5.1.tgz#bea40a5a7c65cce321c54f6c8e87544473070229"
-  dependencies:
-    debug "2.x.x"
-    uid2 "0.0.x"
-    utils-merge "1.x.x"
-
 oauthorize@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/oauthorize/-/oauthorize-0.1.0.tgz#41d5078e65801c20b4a621efbe274363d2c581d3"
@@ -5475,12 +5474,6 @@ parseurl@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.1.tgz#c8ab8c9223ba34888aa64a297b28853bec18da56"
 
-passport-http-bearer@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/passport-http-bearer/-/passport-http-bearer-1.0.1.tgz#147469ea3669e2a84c6167ef99dbb77e1f0098a8"
-  dependencies:
-    passport-strategy "1.x.x"
-
 passport-http-oauth@0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/passport-http-oauth/-/passport-http-oauth-0.1.3.tgz#54510c93560e2c7138aab4b199f2c61fd489dcb2"
@@ -5507,12 +5500,6 @@ passport-oauth@0.1.x:
     oauth "0.9.x"
     passport "~0.1.1"
     pkginfo "0.2.x"
-
-passport-oauth2-client-password@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/passport-oauth2-client-password/-/passport-oauth2-client-password-0.1.2.tgz#4f378b678b92d16dbbd233a6c706520093e561ba"
-  dependencies:
-    passport-strategy "1.x.x"
 
 passport-openstreetmap@0.1.2:
   version "0.1.2"
@@ -7718,10 +7705,6 @@ uid-safe@2.1.1:
     base64-url "1.2.2"
     random-bytes "~1.0.0"
 
-uid2@0.0.x:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/uid2/-/uid2-0.0.3.tgz#483126e11774df2f71b8b639dcd799c376162b82"
-
 ultron@1.0.x:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
@@ -7811,7 +7794,7 @@ util-deprecate@~1.0.1:
   dependencies:
     inherits "2.0.1"
 
-utils-merge@1.0.0, utils-merge@1.x.x:
+utils-merge@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
 

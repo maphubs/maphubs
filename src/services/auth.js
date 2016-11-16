@@ -4,19 +4,19 @@
 
 /* @flow weak */
 var passport = require('passport'),
-  OpenStreetMapStrategy = require('passport-openstreetmap').Strategy,
+  //OpenStreetMapStrategy = require('passport-openstreetmap').Strategy,
   LocalStrategy = require('passport-local').Strategy,
-  BasicStrategy = require('passport-http').BasicStrategy,
+  //BasicStrategy = require('passport-http').BasicStrategy,
   ConsumerStrategy = require('passport-http-oauth').ConsumerStrategy,
   TokenStrategy = require('passport-http-oauth').TokenStrategy,
-  ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy,
-  BearerStrategy = require('passport-http-bearer').Strategy,
+  //ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy,
+  //BearerStrategy = require('passport-http-bearer').Strategy,
   db = require('./oauth-db'),
   PasswordUtil = require('./password-util');
 
 
-var OPENSTREETMAP_CONSUMER_KEY = "CdrJjtCvDvys90a3jYdhlLUY8s5N50JkDBai4xDI";
-var OPENSTREETMAP_CONSUMER_SECRET = "uaB6OoPQnXAc80239Zr3ZuZPQ1kBNLhUYR1MRzPN";
+//var OPENSTREETMAP_CONSUMER_KEY = "CdrJjtCvDvys90a3jYdhlLUY8s5N50JkDBai4xDI";
+//var OPENSTREETMAP_CONSUMER_SECRET = "uaB6OoPQnXAc80239Zr3ZuZPQ1kBNLhUYR1MRzPN";
 
 
 /**
@@ -93,7 +93,7 @@ passport.use('consumer', new ConsumerStrategy(
   // replay attacks.  In this example, no checking is done and everything is
   // accepted.
   function(timestamp, nonce, done) {
-    done(null, true)
+    done(null, true);
   }
 ));
 
@@ -170,7 +170,7 @@ passport.use('token', new TokenStrategy(
   // replay attacks.  In this example, no checking is done and everything is
   // accepted.
   function(timestamp, nonce, done) {
-    done(null, true)
+    done(null, true);
   }
 ));
 
@@ -203,6 +203,7 @@ passport.use(new LocalStrategy(
   }
 ));
 
+/*
 passport.use(new OpenStreetMapStrategy({
     consumerKey: OPENSTREETMAP_CONSUMER_KEY,
     consumerSecret: OPENSTREETMAP_CONSUMER_SECRET,
@@ -224,6 +225,7 @@ passport.use(new OpenStreetMapStrategy({
     });
   }
 ));
+*/
 
 
 passport.serializeUser(function(user, done) {
@@ -236,85 +238,3 @@ passport.deserializeUser(function(user, done) {
     done(err, user);
   });
 });
-
-
-/**
- * BasicStrategy & ClientPasswordStrategy
- *
- * These strategies are used to authenticate registered OAuth clients.  They are
- * employed to protect the `token` endpoint, which consumers use to obtain
- * access tokens.  The OAuth 2.0 specification suggests that clients use the
- * HTTP Basic scheme to authenticate.  Use of the client password strategy
- * allows clients to send the same credentials in the request body (as opposed
- * to the `Authorization` header).  While this approach is not recommended by
- * the specification, in practice it is quite common.
- */
-passport.use(new BasicStrategy(
-  function(username, password, done) {
-    db.clients.findByConsumerKey(username, function(err, client) {
-      if (err) {
-        return done(err);
-      }
-      if (!client) {
-        return done(null, false);
-      }
-      if (client.clientSecret != password) {
-        return done(null, false);
-      }
-      return done(null, client);
-    });
-  }
-));
-
-passport.use(new ClientPasswordStrategy(
-  function(clientId, clientSecret, done) {
-    db.clients.findByConsumerKey(clientId, function(err, client) {
-      if (err) {
-        return done(err);
-      }
-      if (!client) {
-        return done(null, false);
-      }
-      if (client.clientSecret != clientSecret) {
-        return done(null, false);
-      }
-      return done(null, client);
-    });
-  }
-));
-
-/**
- * BearerStrategy
- *
- * This strategy is used to authenticate users based on an access token (aka a
- * bearer token).  The user must have previously authorized a client
- * application, which is issued an access token to make requests on behalf of
- * the authorizing user.
- */
-passport.use(new BearerStrategy(
-  function(accessToken, done) {
-    db.accessTokens.find(accessToken, function(err, token) {
-      if (err) {
-        return done(err);
-      }
-      if (!token) {
-        return done(null, false);
-      }
-
-      db.users.find(token.userID, function(err, user) {
-        if (err) {
-          return done(err);
-        }
-        if (!user) {
-          return done(null, false);
-        }
-        // to keep this example simple, restricted scopes are not implemented,
-        // and this is just for illustrative purposes
-        var info = {
-          scope: '*'
-        };
-        done(null, user, info);
-      });
-    });
-  }
-));

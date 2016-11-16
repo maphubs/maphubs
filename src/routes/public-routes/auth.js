@@ -1,7 +1,6 @@
 /* @flow weak */
 var passport = require('passport');
 var oauth = require('../../services/oauth');
-var oauth2 = require('../../services/oauth2');
 var local = require('../../local');
 var csrfProtection = require('csurf')({cookie: false});
 var log = require('../../services/log');
@@ -56,6 +55,7 @@ module.exports = function(app) {
 
   });
 
+/*
   // GET /auth/openstreetmap
   //   Use passport.authenticate() as route middleware to authenticate the
   //   request.  The first step in OpenStreetMap authentication will involve redirecting
@@ -82,11 +82,13 @@ module.exports = function(app) {
 
   app.get('/oauth2/authorize', oauth2.authorization);
   app.post('/oauth2/dialog/authorize/decision', oauth2.decision);
+app.post('/oauth2/token', oauth2.token);
 
+*/
   app.get('/oauth/authorize', oauth.userAuthorization);
   app.post('/dialog/authorize/decision', oauth.userDecision);
 
-  app.post('/oauth2/token', oauth2.token);
+
 
   app.post('/oauth/request_token', oauth.requestToken);
   app.post('/oauth/access_token', oauth.accessToken);

@@ -31,30 +31,10 @@ Promise.config({
     cancellation: true
 });
 
-
-  require('babel-core/register')({
-    ignore: /assets.*|node_modules\/(?!(react-data-grid|react-disqus-thread|medium-editor|reflux-state-mixin|react-colorpickr)).*/
-  });
-  require('babel-polyfill');
-
-/*
-// Use the OpenStreetMapStrategy within Passport.
-
-passport.use(new OpenStreetMapStrategy({
-        consumerKey: OPENSTREETMAP_CONSUMER_KEY,
-        consumerSecret: OPENSTREETMAP_CONSUMER_SECRET,
-        callbackURL: "http://localhost:4000/auth/openstreetmap/callback"
-    },
-    function(token, tokenSecret, profile, done) {
-        // asynchronous verification, for effect...
-        process.nextTick(function () {
-
-            return done(null, profile);
-        });
-    }
-));
-*/
-
+require('babel-core/register')({
+  ignore: /assets.*|node_modules\/(?!(react-data-grid|react-disqus-thread|medium-editor|reflux-state-mixin|react-colorpickr)).*/
+});
+require('babel-polyfill');
 
 var app = express();
 //settings flags
