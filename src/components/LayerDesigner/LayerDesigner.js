@@ -79,7 +79,7 @@ var LayerDesigner = React.createClass({
     if(this.state.settings){
       settings = this.state.settings;
     }
-    
+
     settings.color = color;
     this.setState({color, settings});
     this.props.onColorChange(color, settings);
@@ -146,8 +146,8 @@ var LayerDesigner = React.createClass({
            <div className="collapsible-header active">
                <i className="material-icons">color_lens</i>{this.__('Colors')}
            </div>
-           <div className="collapsible-body">
-             <div className="row no-margin" style={{height: '250px', overflowY: 'auto', backgroundColor: 'rgba(240,240,239,1)'}}>
+           <div className="collapsible-body"> 
+             <div className="row no-margin" style={{height: '170px', overflowY: 'auto', backgroundColor: 'rgba(240,240,239,1)'}}>
              <div className="row no-margin">
                <ColorSwatch onClick={this.onColorChange} color="rgba(255, 255, 204, 0.65)"/>
                <ColorSwatch onClick={this.onColorChange} color="rgba(254, 217, 118, 0.65)"/>
