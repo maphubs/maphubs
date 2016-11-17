@@ -1,16 +1,16 @@
 var Layer = require('../../models/layer');
 var Map = require('../../models/map');
 var Promise = require('bluebird');
-var log = require('../../services/log');
-var debug = require('../../services/debug')('routes/screenshots-public');
-var cookieParser = require('cookie-parser');
+//var log = require('../../services/log');
+//var debug = require('../../services/debug')('routes/screenshots-public');
+
 var nextError = require('../../services/error-response').nextError;
 
-var manetCheck = require('../../services/manet-check');
+var manetCheck = require('../../services/manet-check')(false,true);
 
 module.exports = function(app) {
   //create a map view that we will use to screenshot the layer
-  app.get('/api/layer/:layerid/static/render/', cookieParser, manetCheck(), function(req, res, next) {
+  app.get('/api/layer/:layerid/static/render/', manetCheck, function(req, res, next) {
 
     //TODO: [Privacy] check that user is authorized to view this layer
 
@@ -32,7 +32,7 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.get('/api/map/:mapid/static/render/', cookieParser, manetCheck(), function(req, res, next) {
+  app.get('/api/map/:mapid/static/render/', manetCheck, function(req, res, next) {
     var map_id = parseInt(req.params.mapid || '', 10);
     Promise.all([
       Map.getMap(map_id),
@@ -58,7 +58,7 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
-  app.get('/api/map/:mapid/static/render/thumbnail', cookieParser, manetCheck(), function(req, res, next) {
+  app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, function(req, res, next) {
     var map_id = parseInt(req.params.mapid || '', 10);
     Promise.all([
       Map.getMap(map_id),

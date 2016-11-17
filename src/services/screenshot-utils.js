@@ -8,7 +8,7 @@ var urlUtil = require('../services/url-util');
 module.exports = {
 
   base64Download(url, data){
-    request.post(url)
+    return request.post(url)
     .type('json')
     .send(data)
     .timeout(60000)
@@ -39,7 +39,7 @@ module.exports = {
     var width = 400;
     var height = 300;
 
-    var baseUrl = urlUtil.getBaseUrl(true); //use internal route
+    var baseUrl = urlUtil.getBaseUrl(); //use internal route
     var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
     var manetUrl = local.manetUrl;
     var manetData = {
@@ -51,11 +51,12 @@ module.exports = {
       zoom: 1,
       format: 'jpg',
       quality: 0.8,
-      cookies: {
+      cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
-        domain: local.host
-      }
+        domain: local.host,
+        path: "/"
+      }]
     };
 
     debug(JSON.stringify(manetData));
@@ -106,7 +107,7 @@ module.exports = {
     var width = 1200;
     var height = 630;
 
-    var baseUrl = urlUtil.getBaseUrl(true);
+    var baseUrl = urlUtil.getBaseUrl();
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
     //var maphubsUrl = 'http://map.loggingroads.org';
 
@@ -122,11 +123,12 @@ module.exports = {
       zoom: 1.25,
       format: 'png',
       quality: 1,
-      cookies: {
+      cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
-        domain: local.host
-      }
+        domain: local.host,
+        path: "/"
+      }]
     };
 
     debug(JSON.stringify(manetData));
@@ -146,7 +148,7 @@ module.exports = {
     var width = 400;
     var height = 300;
 
-    var baseUrl = urlUtil.getBaseUrl(true);
+    var baseUrl = urlUtil.getBaseUrl();
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/thumbnail';
     var manetUrl = local.manetUrl;
 
@@ -159,18 +161,19 @@ module.exports = {
       zoom: 1,
       format: 'jpg',
       quality: 0.8,
-      cookies: {
+      cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
-        domain: local.host
-      }
+        domain: local.host,
+        path: "/"
+      }]
     };
 
     debug(JSON.stringify(manetData));
 
     //replace image in database
     debug(manetUrl);
-    return this.base64Download(manetUrl)
+    return this.base64Download(manetUrl, manetData)
     .then(function(image){
       return knex('omh.maps').update({thumbnail: image}).where({map_id})
       .then(function(){

@@ -1,8 +1,8 @@
 var log = require('./log');
 var local = require('../local');
+var debug = require('../services/debug')('manet-check');
 
-
-module.exports = function(setCors=false, allowForwardedIP=false){
+module.exports = function(setCors, allowForwardedIP){
 
 return function(req, res, next){
 
@@ -27,6 +27,7 @@ return function(req, res, next){
     //determine if this is the manet screenshot service
 
     //first check the cookie
+    if(req.cookies) debug(JSON.stringify(req.cookies));
     if(!req.cookies || !req.cookies.manet || req.cookies.manet !== local.manetAPIKey){
       log.error('Manet Cookie Not Found');
       return failure();
@@ -35,8 +36,8 @@ return function(req, res, next){
     //then check the IP
     var ip = req.connection.remoteAddress;
     var forwardedIP = req.headers['x-forwarded-for'];
-    log.error('RemoteAddress:' + ip);
-    log.error('x-forwarded-for:' + forwardedIP);
+    log.info('RemoteAddress:' + ip);
+    log.info('x-forwarded-for:' + forwardedIP);
     var manetUrl = local.manetUrl;
     if(process.env.OMH_MANET_IP) {
        if(process.env.OMH_MANET_IP !== ip){
@@ -63,7 +64,7 @@ return function(req, res, next){
         if(err){
           log.error(err);
           return failure();
-        }else if(!Array.isArray(addresses)){
+        }else if(!addresses){
           log.error("Failed to lookup manet addresses");
           return failure();
         }else{

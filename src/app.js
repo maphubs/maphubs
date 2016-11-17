@@ -10,6 +10,7 @@ var express = require('express'),
   logger = require('morgan'),
   cors = require('cors'),
   bodyParser = require('body-parser'),
+  cookieParser = require('cookie-parser'),
   xmlparser = require('express-xml-bodyparser'),
    i18n = require("./i18n"),
   compression = require('compression');
@@ -66,6 +67,7 @@ app.engine('js', require('./services/express-react-views').createEngine());
 
 
 app.use(logger('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({
   limit: '50mb',
