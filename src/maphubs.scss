@@ -8,5 +8,8 @@ $roboto-font-path: "./node_modules/materialize-css/fonts/roboto/";
 @import "./theme.scss";
 //load the rest of materialize-css
 @import "./node_modules/materialize-css/sass/materialize.scss";
+
+@import "./node_modules/react-material-select/lib/css/reactMaterialSelect";
+
 //load our application-wide css
 @import "./sass/app.scss";

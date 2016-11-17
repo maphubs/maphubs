@@ -4670,6 +4670,13 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
+maphubs/react-material-select#0a35e572d57392bb040c7883331d38365add1db1:
+  name react-material-select
+  version "1.1.0"
+  resolved "https://codeload.github.com/maphubs/react-material-select/tar.gz/0a35e572d57392bb040c7883331d38365add1db1"
+  dependencies:
+    classnames "^2.2.5"
+
 marked-terminal@^1.5.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/marked-terminal/-/marked-terminal-1.7.0.tgz#c8c460881c772c7604b64367007ee5f77f125904"
@@ -6222,12 +6229,6 @@ react-intl@2.1.5:
     intl-messageformat "^1.3.0"
     intl-relativeformat "^1.3.0"
     invariant "^2.1.1"
-
-react-material-select:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-material-select/-/react-material-select-1.1.0.tgz#144597cc6addc45a172b8a4dc1d9da1871d050ee"
-  dependencies:
-    classnames "^2.2.5"
 
 react-medium-editor@^1.8.0:
   version "1.8.1"
