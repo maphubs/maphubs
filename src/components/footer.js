@@ -14,6 +14,21 @@ var Footer = React.createClass({
 
   render() {
 
+    var m4eFooter = '';
+    if(!MAPHUBS_CONFIG.mapHubsPro){
+      m4eFooter = (
+        <ul style={{marginTop: '0px'}}>
+          <li className="valign-wrapper">
+            <a href="http://moabi.org" className="valign" style={{float: 'left', paddingRight: '5px'}}>
+              <img width="75" height="75" style={{marginLeft: '-10px'}} src="/assets/moabi-logo.png" alt="Moabi.org" />
+            </a>
+            <span className="valign">{MAPHUBS_CONFIG.productName + this.__(' is a non-profit initiative of the Moabi organization')}</span>
+
+          </li>
+        </ul>
+      );
+    }
+
     return (
         <footer className="page-footer white">
           <div className="divider"></div>
@@ -21,15 +36,7 @@ var Footer = React.createClass({
 
             <div className="row">
               <div className="col l4 s12" style={{marginTop: '15px'}}>
-                <ul style={{marginTop: '0px'}}>
-                  <li className="valign-wrapper">
-                    <a href="http://moabi.org" className="valign" style={{float: 'left', paddingRight: '5px'}}>
-                      <img width="75" height="75" style={{marginLeft: '-10px'}} src="/assets/moabi-logo.png" alt="Moabi.org" />
-                    </a>
-                    <span className="valign">{MAPHUBS_CONFIG.productName + this.__(' is a non-profit initiative of the Moabi organization')}</span>
-
-                  </li>
-                </ul>
+                {m4eFooter}
                 <ul>
                   <li className="valign-wrapper">
                     <a href="http://maphubs.com" className="valign" style={{float: 'left', paddingRight: '5px'}}>
