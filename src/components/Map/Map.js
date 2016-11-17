@@ -698,14 +698,13 @@ map.on('mousemove', function(e) {
 
 
   if(_this.state.interactive){
-    map.addControl(new mapboxgl.NavigationControl({position: _this.props.navPosition}));
+    map.addControl(new mapboxgl.NavigationControl(), _this.props.navPosition);
   }
 
   map.addControl(new mapboxgl.ScaleControl({
-      position: 'bottom-right',
       maxWidth: 175,
       unit: 'metric' //TODO: let scalebar unit be a user preference
-  }));
+  }), 'bottom-right');
 
   if(_this.props.disableScrollZoom){
     map.scrollZoom.disable();
@@ -756,7 +755,7 @@ map.on('mousemove', function(e) {
     }
 
     if(this.state.interactive && !prevState.interactive){
-      this.map.addControl(new mapboxgl.Navigation({position: this.props.navPosition}));
+      this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
       var interaction = this.map.interaction;
       interaction.enable();
       $(this.refs.basemapButton).show();
