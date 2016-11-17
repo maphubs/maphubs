@@ -656,5 +656,9 @@
 	"Account Invite": "Account Invite",
 	"Invalid Key": "Invalid Key",
 	"Invite Key Invalid": "Invite Key Invalid",
-	"The key used was invalid or has already been used. Please contact an administrator.": "The key used was invalid or has already been used. Please contact an administrator."
+	"The key used was invalid or has already been used. Please contact an administrator.": "The key used was invalid or has already been used. Please contact an administrator.",
+	"Custom": "Custom",
+	"Custom License - see layer documentation": "Custom License - see layer documentation",
+	"Custom- Non-Commerical": "Custom- Non-Commerical",
+	"Custom Non-Commerical License - see layer documentation": "Custom Non-Commerical License - see layer documentation"
 }

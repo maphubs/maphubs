@@ -6,6 +6,14 @@ module.exports = {
         value: 'none',
         label: __('No License Provided'),
         note: '<p>' + __('License is not known or is not provided') + '</p>'
+      },{
+          value: 'custom',
+          label: __('Custom'),
+          note: '<p>' + __('Custom License - see layer documentation') + '</p>'
+      },{
+          value: 'custom-nc',
+          label: __('Custom- Non-Commerical'),
+          note: '<p>' + __('Custom Non-Commerical License - see layer documentation') + '</p>'
       }, {
         value: 'odc-by',
         label: 'Open Data Commons Attribution License',
