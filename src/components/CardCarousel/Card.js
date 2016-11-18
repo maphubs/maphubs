@@ -109,7 +109,7 @@ var Card = React.createClass({
         toolTipText = this.__('Story');
         storyTag = (
           <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
-            <StoryHeader story={this.props.data} />
+            <StoryHeader story={this.props.data} short/>
           </div>
         );
       }else if(this.props.type == 'map'){

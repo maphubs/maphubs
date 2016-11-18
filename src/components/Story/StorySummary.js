@@ -67,7 +67,7 @@ var StorySummary = React.createClass({
        </a>
 
        <div className="story-content">
-         <p>
+         <p className="fade">
            {this.props.story.firstline}
          </p>
        </div>
