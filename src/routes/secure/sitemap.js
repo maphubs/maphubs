@@ -16,9 +16,11 @@ module.exports = function(app) {
   app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
     if(local.requireLogin){
-      res.send('User-agent: *');
-    }else{
+      //disallow everything
       res.send('User-agent: *\nDisallow: /');
+    }else{
+      //don't crawl exports
+      res.send('User-agent: *\nDisallow: /*.kml$\nDisallow: /*.zip$\nDisallow: /*.geojson$\nDisallow: /*.csv$');
     }
 });
 
