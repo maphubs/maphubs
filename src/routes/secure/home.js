@@ -15,27 +15,29 @@ module.exports = function(app) {
       Group.getPopularGroups(5),
       Hub.getPopularHubs(5),
       Map.getPopularMaps(5),
-      Story.getPopularStories(5)
+      Story.getPopularStories(5),
+      Story.getFeaturedStories(5)
     ]).then(function(results){
       var trendingLayers = results[0];
       var trendingGroups = results[1];
       var trendingHubs = results[2];
       var trendingMaps = results[3];
       var trendingStories = results[4];
+      var featuredStories = results[5];
 
       res.render('home', {
         title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
         description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
         props: {
-          trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories,
+          trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories, featuredStories,
           _csrf: req.csrfToken()
         }, req
       });
     }).catch(nextError(next));
   });
 
-  app.get('/explore', function(req, res, next) {
+  app.get('/explore', csrfProtection, function(req, res, next) {
     Promise.all([
       Layer.getFeaturedLayers(10),
       Group.getFeaturedGroups(10),

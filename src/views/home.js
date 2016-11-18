@@ -2,6 +2,7 @@ var React = require('react');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
+var StorySummary = require('../components/Story/StorySummary');
 
 var Carousel = require('nuka-carousel');
 import SliderDecorators from '../components/Home/SliderDecorators';
@@ -31,6 +32,7 @@ var Home = React.createClass({
     trendingHubs: React.PropTypes.array,
     trendingMaps: React.PropTypes.array,
     trendingStories: React.PropTypes.array,
+    featuredStories:  React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -138,7 +140,28 @@ var Home = React.createClass({
        );
       mailingList = (
          <MailingList />
-       )
+       );
+     }
+
+     var featured = '';
+     if(this.props.featuredStories && this.props.featuredStories.length > 0){
+       featured = (
+         <div>
+           <div className="divider" />
+           <div className="row">
+             <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>{this.__('Featured Stories')}</h5>
+               {this.props.featuredStories.map(function (story) {
+                 return (
+                   <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                     <div className="card-content">
+                     <StorySummary story={story} />
+                     </div>
+                   </div>
+                 );
+               })}
+           </div>
+         </div>
+       );
      }
 
 		return (
@@ -167,6 +190,7 @@ var Home = React.createClass({
              </div>
            </div>
           </div>
+            {featured}
           <Footer />
        </main>
 
