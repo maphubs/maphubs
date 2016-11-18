@@ -22,6 +22,7 @@ var Message = require('../components/message');
 var Confirmation = require('../components/confirmation');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var Footer = require('../components/footer');
 
 
 import Progress from '../components/Progress';
@@ -132,21 +133,22 @@ var HubInfo = React.createClass({
     return (
       <div>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
-        <main  style={{height: '100%', marginTop: '0px'}}>
+        <main  style={{marginTop: '0px'}}>
           {publishButton}
           <div className="row no-margin">
             <HubBanner editing={this.state.editing} hubid={this.props.hub.hub_id}/>
           </div>
-          <div className="container" style={{height: '100%'}}>
+          <div className="container">
               <HubLinkSection hubid={this.props.hub.hub_id} />
-              <div className="row" style={{height: '70%'}}>
-                <a href={linkBaseUrl + 'map'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
-                <hr />
-                <HubMap editing={this.state.editing} height="calc(100% - 65px)" hub={this.state.hub} border/>
-                <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
-                  <a href={linkBaseUrl + 'map'} className="btn">{this.__('View Larger Map')}</a>
-                </div>
-              </div>
+
+          <div className="row" style={{height: '100vh', maxHeight: '500px'}}>
+            <a href={linkBaseUrl + 'map'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
+            <hr />
+            <HubMap editing={this.state.editing} height="calc(100% - 65px)" hub={this.state.hub} border/>
+            <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
+              <a href={linkBaseUrl + 'map'} className="btn">{this.__('View Larger Map')}</a>
+            </div>
+          </div>
               <div className="row">
                 <a href={linkBaseUrl + 'stories'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
                 <hr />
@@ -157,7 +159,7 @@ var HubInfo = React.createClass({
                   <a href={linkBaseUrl + 'stories'} className="btn">{this.__('View More Stories')}</a>
                 </div>
               </div>
-              <div className="row">
+              <div className="row" style={{minHeight: '200px'}}>
                 <a href={linkBaseUrl + 'resources'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
                 <hr/>
                 <HubResources editing={this.state.editing} />
@@ -167,9 +169,11 @@ var HubInfo = React.createClass({
               </div>
             </div>
 
-          {editButton}
 
+          {editButton}
+          <Footer />
         </main>
+
         <Notification />
         <Message />
         <Confirmation />

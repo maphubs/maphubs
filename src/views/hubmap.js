@@ -18,6 +18,7 @@ var Message = require('../components/message');
 var Confirmation = require('../components/confirmation');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var Footer = require('../components/footer');
 
 var HubMapPage = React.createClass({
 
@@ -116,15 +117,16 @@ var HubMapPage = React.createClass({
     return (
       <div>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
-        <main style={{height: '100%', marginTop: '0px'}}>
+        <main style={{marginTop: '0px'}}>
           {publishButton}
           <div className="row no-margin">
             <HubBanner editing={false} hubid={this.props.hub.hub_id} subPage/>
           </div>
-          <div className="row no-margin" style={{height: 'calc(100% - 200px)'}}>
+          <div className="row no-margin" style={{height: 'calc(100vh - 200px)'}}>
             <HubMap editing={this.state.editing} height="100%" hub={this.state.hub}/>
           </div>
           {editButton}
+          <Footer />
         </main>
         <Notification />
         <Message />

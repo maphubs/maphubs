@@ -20,6 +20,7 @@ var Message = require('../components/message');
 var Confirmation = require('../components/confirmation');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var Footer = require('../components/footer');
 
 var HubResourcesPage = React.createClass({
 
@@ -125,6 +126,7 @@ var HubResourcesPage = React.createClass({
             <HubResources editing={this.state.editing} />
           </div>
           {editButton}
+          <Footer />
         </main>
         <Notification />
         <Message />
