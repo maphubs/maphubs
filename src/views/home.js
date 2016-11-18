@@ -149,7 +149,9 @@ var Home = React.createClass({
          <div>
            <div className="divider" />
            <div className="row">
-             <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>{this.__('Featured Stories')}</h5>
+             <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
+               {this.__('Featured Stories')}
+             </h5>
                {this.props.featuredStories.map(function (story) {
                  return (
                    <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>

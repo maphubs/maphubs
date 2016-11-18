@@ -147,6 +147,7 @@ module.exports = function(app) {
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           mapboxgl:true,
           fontawesome: true,
+          addthis: true,
           props: {
             hub, layers, stories, canEdit
           }, req
@@ -235,6 +236,7 @@ module.exports = function(app) {
         res.render('hubstories', {
           title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+          addthis: true,
           props: {
             hub, stories, canEdit
           }, req

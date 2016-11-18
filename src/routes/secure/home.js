@@ -29,6 +29,7 @@ module.exports = function(app) {
         title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
         description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
+        addthis: true,
         props: {
           trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories, featuredStories,
           _csrf: req.csrfToken()

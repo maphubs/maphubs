@@ -28,6 +28,7 @@ module.exports = function(app) {
         var featuredStories = results[1];
         res.render('stories', {
           title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+          addthis: true,
           props: {
             popularStories, featuredStories
           }, req
@@ -48,7 +49,9 @@ module.exports = function(app) {
         if(user){
           return Story.getUserStories(user.id)
           .then(function(stories){
-            res.render('userstories', {title: 'Stories - ' + username, props:{user, stories,  myStories, username}, req});
+            res.render('userstories', {title: 'Stories - ' + username,
+            addthis: true,
+            props:{user, stories,  myStories, username}, req});
           });
         }else{
           res.redirect('/notfound?path='+req.path);

@@ -71,6 +71,10 @@ var StorySummary = React.createClass({
            {this.props.story.firstline}
          </p>
        </div>
+       <a href={linkUrl} style={{fontSize: '12px', color:'rgba(0, 0, 0, 0.45)'}}>
+         {this.__('Read more...')}
+       </a>
+       <div className="addthis_sharing_toolbox right"  data-url={linkUrl} data-title={this.props.story.title}></div>
      </div>
    );
   }
