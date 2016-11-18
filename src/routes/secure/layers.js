@@ -421,7 +421,7 @@ module.exports = function(app) {
   });
 
 
-  app.post('/api/layer/:id/upload', multer({dest: local.tempFilePath + 'uploads/'}).single('file'),
+  app.post('/api/layer/:id/upload', multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
    function (req, res) {
      if (!req.isAuthenticated || !req.isAuthenticated()
          || !req.session || !req.session.user) {
@@ -540,7 +540,7 @@ module.exports = function(app) {
                });
              }else{
                if(local.writeDebugData){
-                 fs.writeFile(local.tempFilePath + 'gpx-upload-layer-' + layer_id + '.geojson', JSON.stringify(geoJSON), function(err){
+                 fs.writeFile(local.tempFilePath + '/gpx-upload-layer-' + layer_id + '.geojson', JSON.stringify(geoJSON), function(err){
                    if(err) {
                      log.error(err);
                      throw err;

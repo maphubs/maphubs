@@ -292,7 +292,7 @@ module.exports = {
             let osmJSON = geojson2osm(geoJSONData, changeset_id, true, start, chunkSize);
 
             if(local.writeDebugData){
-              fs.writeFile(local.tempFilePath + 'osm-' + i + '.json', JSON.stringify(osmJSON), function(err){
+              fs.writeFile(local.tempFilePath + '/osm-' + i + '.json', JSON.stringify(osmJSON), function(err){
                 if(err) {
                   log.error(err);
                   throw err;
