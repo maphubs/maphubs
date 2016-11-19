@@ -1,41 +1,43 @@
+var path = require('path');
+var getenv = require('getenv');
+getenv.disableErrors();
 
-var  path = require('path');
 module.exports = {
   connection: {
-    url: 'postgres://' + process.env.DB_USER + ':'+ process.env.DB_PASS +'@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_DATABASE
+    url: 'postgres://' + getenv('DB_USER') + ':'+ getenv('DB_PASS') +'@' + getenv('DB_HOST') + ':' + getenv('DB_PORT') + '/' + getenv('DB_DATABASE')
   },
-  host: process.env.OMH_HOST,
-  host_internal:  process.env.OMH_HOST_INTERNAL,
-  port: process.env.OMH_PORT,
-  internal_port: process.env.OMH_INTERNAL_PORT,
+  host: getenv('OMH_HOST'),
+  host_internal:  getenv('OMH_HOST_INTERNAL'),
+  port: getenv.int('OMH_PORT'),
+  internal_port: getenv.int('OMH_INTERNAL_PORT'),
   publicFilePath: path.join(__dirname, '../public'),
   tempFilePath: path.join(__dirname, '../temp'),
-  manetUrl: process.env.OMH_MANET_URL,
-  tileServiceUrl: process.env.OMH_TILESERVICE_URL,
-  tileServiceInternalUrl: process.env.OMH_TILESERVICE_INTERNAL_URL,
-  MAPBOX_ACCESS_TOKEN: process.env.OMH_MAPBOX_TOKEN,
-  MAILGUN_API_KEY: process.env.OMH_MAILGUN_API_KEY,
-  LOGGLY_API_KEY: process.env.OMH_LOGGLY_API_KEY,
-  MAILCHIMP_LIST_ID: process.env.OMH_MAILCHIMP_LIST_ID,
-  MAILCHIMP_API_KEY: process.env.OMH_MAILCHIMP_API_KEY,
-  NEWRELIC_APP_NAME: process.env.OMH_NEWRELIC_APP_NAME,
-  NEWRELIC_LICENSE: process.env.OMH_NEWRELIC_LICENSE,
-  NEWRELIC_LOG_LEVEL: process.env.OMH_NEWRELIC_LOG_LEVEL,
-  ENV_TAG:  process.env.OMH_ENV_TAG,
-  SESSION_SECRET:  process.env.OMH_SESSION_SECRET,
-  disableTracking:  process.env.OMH_DISABLE_TRACKING,
-  mapHubsPro: process.env.OMH_MAPHUBS_PRO,
-  fromEmail: process.env.OMH_FROM_EMAIL,
-  adminEmail: process.env.OMH_ADMIN_EMAIL,
+  manetUrl: getenv('OMH_MANET_URL'),
+  tileServiceUrl: getenv('OMH_TILESERVICE_URL'),
+  tileServiceInternalUrl: getenv('OMH_TILESERVICE_INTERNAL_URL'),
+  MAPBOX_ACCESS_TOKEN: getenv('OMH_MAPBOX_TOKEN'),
+  MAILGUN_API_KEY: getenv('OMH_MAILGUN_API_KEY'),
+  LOGGLY_API_KEY: getenv('OMH_LOGGLY_API_KEY'),
+  MAILCHIMP_LIST_ID: getenv('OMH_MAILCHIMP_LIST_ID'),
+  MAILCHIMP_API_KEY: getenv('OMH_MAILCHIMP_API_KEY'),
+  NEWRELIC_APP_NAME: getenv('OMH_NEWRELIC_APP_NAME'),
+  NEWRELIC_LICENSE: getenv('OMH_NEWRELIC_LICENSE'),
+  NEWRELIC_LOG_LEVEL: getenv('OMH_NEWRELIC_LOG_LEVEL'),
+  ENV_TAG:  getenv('OMH_ENV_TAG'),
+  SESSION_SECRET:  getenv('OMH_SESSION_SECRET'),
+  disableTracking:  getenv.bool('OMH_DISABLE_TRACKING', false),
+  mapHubsPro: getenv.bool('OMH_MAPHUBS_PRO', false),
+  fromEmail: getenv('OMH_FROM_EMAIL'),
+  adminEmail: getenv('OMH_ADMIN_EMAIL'),
   database: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASS,
-    port: process.env.DB_PORT
+    host:getenv('DB_HOST'),
+    user: getenv('DB_USER'),
+    database: getenv('DB_DATABASE'),
+    password: getenv('DB_PASS'),
+    port: getenv('DB_PORT')
   },
-  writeDebugData: process.env.OMH_WRITEDEBUGDATA,
-  requireLogin: process.env.OMH_REQUIRE_LOGIN,
-  requireInvite: process.env.OMH_REQUIRE_INVITE,
-  manetAPIKey: process.env.OMH_MANET_API_KEY,
+  writeDebugData: getenv.bool('OMH_WRITEDEBUGDATA', false),
+  requireLogin: getenv.bool('OMH_REQUIRE_LOGIN', false),
+  requireInvite: getenv.bool('OMH_REQUIRE_INVITE', false),
+  manetAPIKey: getenv('OMH_MANET_API_KEY')
 };
