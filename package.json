@@ -28,6 +28,7 @@
   "dependencies": {
     "@turf/area": "^3.5.2",
     "@turf/bbox": "^3.5.2",
+    "@turf/buffer": "^3.6.1",
     "@turf/centroid": "^3.5.2",
     "@turf/helpers": "^3.5.2",
     "@turf/inside": "^3.5.2",

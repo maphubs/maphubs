@@ -161,7 +161,16 @@ module.exports = {
 
       geoJSON.features = cleanedFeatures;
 
-      var bbox = require('@turf/bbox')(geoJSON);
+      var bbox;
+      if(geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point'){
+        //buffer the Point
+        var buffered = require('@turf/buffer')(geoJSON.features[0], 500, 'meters');
+        bbox = require('@turf/bbox')(buffered);
+      }else{
+        bbox = require('@turf/bbox')(geoJSON);
+      }
+
+
       debug(bbox);
       geoJSON.bbox = bbox;
 

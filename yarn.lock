@@ -12,6 +12,15 @@
   dependencies:
     "@turf/meta" "^3.5.2"
 
+"@turf/buffer":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-3.6.1.tgz#0fc8ac34e9a3d49fdd58102d55245a3d3908f1cc"
+  dependencies:
+    "@turf/combine" "^3.6.1"
+    "@turf/helpers" "^3.6.1"
+    geojson-normalize "0.0.0"
+    jsts "1.2.0"
+
 "@turf/centroid":
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@turf/centroid/-/centroid-3.5.2.tgz#108f9be7be10cbc404855531c6dc34be06131355"
@@ -19,9 +28,19 @@
     "@turf/helpers" "^3.5.2"
     "@turf/meta" "^3.5.2"
 
+"@turf/combine@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@turf/combine/-/combine-3.6.1.tgz#6ae8c18e65363689d5798bb34ffa21b11b71b754"
+  dependencies:
+    "@turf/meta" "^3.6.1"
+
 "@turf/helpers", "@turf/helpers@^3.5.2":
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-3.5.2.tgz#2b528aea0a222b6dc01ff97c76c31cd816501631"
+
+"@turf/helpers@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-3.6.1.tgz#378342aa28ec0c20d9988891eec03a1b797b4760"
 
 "@turf/inside":
   version "3.5.2"
@@ -36,6 +55,10 @@
 "@turf/meta@^3.5.2":
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-3.5.2.tgz#61b74308c8cbbcc9bc27a37647d3c87ec427cb66"
+
+"@turf/meta@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-3.6.1.tgz#e2e76519e8e536f83e397d0f8c2dde53c3dcfdc4"
 
 abab@^1.0.0:
   version "1.0.3"
@@ -3343,6 +3366,10 @@ geojson-area@^0.2.1:
   dependencies:
     wgs84 "0.0.0"
 
+geojson-normalize@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/geojson-normalize/-/geojson-normalize-0.0.0.tgz#2dbc3678cd1b31b8179e876bda70cd120dde35c0"
+
 geojson-precision@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/geojson-precision/-/geojson-precision-0.4.0.tgz#d8efa4df16a4a68e43f2d1ebf4dadffff10c89dc"
@@ -4163,6 +4190,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
+jsts@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/jsts/-/jsts-1.2.0.tgz#ee0c342e6615d46f55ff3efdb24c2aaae793bc54"
+
 jsx-ast-utils@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-1.3.3.tgz#ccfdbe0320ba03f7a1fc4e67ceaf7e2cc0169721"
@@ -4669,13 +4700,6 @@ map-canvas@>=0.1.5:
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
-
-maphubs/react-material-select#0a35e572d57392bb040c7883331d38365add1db1:
-  name react-material-select
-  version "1.1.0"
-  resolved "https://codeload.github.com/maphubs/react-material-select/tar.gz/0a35e572d57392bb040c7883331d38365add1db1"
-  dependencies:
-    classnames "^2.2.5"
 
 marked-terminal@^1.5.0:
   version "1.7.0"
@@ -6229,6 +6253,12 @@ react-intl@2.1.5:
     intl-messageformat "^1.3.0"
     intl-relativeformat "^1.3.0"
     invariant "^2.1.1"
+
+react-material-select@maphubs/react-material-select#0a35e572d57392bb040c7883331d38365add1db1:
+  version "1.1.0"
+  resolved "https://codeload.github.com/maphubs/react-material-select/tar.gz/0a35e572d57392bb040c7883331d38365add1db1"
+  dependencies:
+    classnames "^2.2.5"
 
 react-medium-editor@^1.8.0:
   version "1.8.1"
