@@ -25,7 +25,7 @@ var _centroid = require('@turf/centroid');
 var mapboxgl = {};
 
 if (typeof window !== 'undefined') {
-    mapboxgl = require("../../../assets/js/mapbox-gl/mapbox-gl.js");
+    mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl.js");
 }
 
 

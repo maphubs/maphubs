@@ -15,7 +15,7 @@ require('jquery');
 require("materialize-css");
 var Explore = require('../views/explore');
 
-require('../../assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
 require('../../node_modules/slick-carousel/slick/slick.css');
 require('../../node_modules/slick-carousel/slick/slick-theme.css');
 

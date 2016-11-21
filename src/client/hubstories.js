@@ -13,7 +13,7 @@ require("materialize-css");
 
 require('./story.css');
 
-require('../../assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');
 
