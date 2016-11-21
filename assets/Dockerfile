@@ -14,5 +14,3 @@ COPY ./assets /data/assets
 COPY ./public /data/public
 
 COPY ./maphubsnginx_assets.template /etc/nginx/nginx.conf
-
-CMD  ["nginx", "-g", "'daemon off;'"]
