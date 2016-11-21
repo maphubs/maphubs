@@ -91,13 +91,16 @@ module.exports = {
   removeAllLayerAttachments(layer_id, trx=null){
     var _this = this;
     let db = knex;
-    if(trx){db = trx;}
-    var commands = [];
-    db('omh.feature_photo_attachments').where({layer_id})
-    .then(function(featurePhotoAttachment){
-      commands.push(
-        _this.deletePhotoAttachment(featurePhotoAttachment.layer_id, featurePhotoAttachment.osm_id, featurePhotoAttachment.photo_id)
+    if(trx){db = trx;}  
+    return db('omh.feature_photo_attachments').where({layer_id})
+    .then(function(featurePhotoAttachments){
+       var commands = [];
+      featurePhotoAttachments.forEach(function(fpa){
+        commands.push(
+        _this.deletePhotoAttachment(layer_id, fpa.osm_id, fpa.photo_id)
       );
+      return Promise.all(commands);
+      });    
     });
   },
 

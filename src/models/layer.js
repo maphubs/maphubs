@@ -11,6 +11,7 @@ var Map = require('./map');
 var debug = require('../services/debug')('model/layers');
 var ScreenshotUtils = require('../services/screenshot-utils');
 var geojsonUtils = require('../services/geojson-utils');
+var PhotoAttachment = require('./photo-attachment');
 
 module.exports = {
 
@@ -453,6 +454,7 @@ module.exports = {
           _this.removeLayerFromMaps(layer_id, trx),
           _this.removeLayerFromHubs(layer_id, trx),
           trx('omh.layer_notes').where({layer_id}).del(),
+          PhotoAttachment.removeAllLayerAttachments(layer_id, trx),
           trx('omh.layers').where({layer_id}).del()
         ];
 
