@@ -80,6 +80,18 @@ module.exports = {
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       `))
+      .orWhere(knex.raw(`to_tsvector('spanish', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
+      .orWhere(knex.raw(`to_tsvector('french', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
+      .orWhere(knex.raw(`to_tsvector('italian', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
     .orderBy('name');
   },
 
@@ -93,6 +105,18 @@ module.exports = {
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .where({published: true, status: 'published'})
     .where(knex.raw(`to_tsvector('english', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
+      .orWhere(knex.raw(`to_tsvector('spanish', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
+      .orWhere(knex.raw(`to_tsvector('french', name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      `))
+      .orWhere(knex.raw(`to_tsvector('italian', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       `))

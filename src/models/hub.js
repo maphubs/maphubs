@@ -69,6 +69,21 @@ module.exports = {
         || ' ' || COALESCE(description, '')
         || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
         `))
+        .orWhere(knex.raw(`to_tsvector('spanish', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
+        .orWhere(knex.raw(`to_tsvector('french', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
+        .orWhere(knex.raw(`to_tsvector('italian', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
       .orderBy('name');
     },
 
@@ -77,6 +92,21 @@ module.exports = {
       return knex.select().table('omh.hubs')
       .where('published', true)
       .where(knex.raw(`to_tsvector('english', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
+        .orWhere(knex.raw(`to_tsvector('spanish', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
+        .orWhere(knex.raw(`to_tsvector('french', hub_id
+        || ' ' || name
+        || ' ' || COALESCE(description, '')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        `))
+        .orWhere(knex.raw(`to_tsvector('italian', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
         || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')

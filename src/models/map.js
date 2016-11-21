@@ -118,6 +118,9 @@ module.exports = {
     input = input.toLowerCase();
     return knex.select('title', 'map_id').table('omh.maps')
     .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
+    .orWhere(knex.raw(`to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')`))
+    .orWhere(knex.raw(`to_tsvector('french', title) @@ plainto_tsquery('` + input + `')`))
+    .orWhere(knex.raw(`to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')`))
     .orderBy('title');
   },
 
@@ -133,6 +136,9 @@ module.exports = {
       .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
       .whereNotNull('omh.user_maps.map_id')
       .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
+      .orWhere(knex.raw(`to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')`))
+      .orWhere(knex.raw(`to_tsvector('french', title) @@ plainto_tsquery('` + input + `')`))
+      .orWhere(knex.raw(`to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')`))
       .orderBy('omh.maps.title')
       .orderBy('omh.maps.updated_at', 'desc');
   },
