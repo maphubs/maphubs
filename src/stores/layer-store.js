@@ -348,6 +348,20 @@ module.exports = Reflux.createStore({
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
+        cb();
+      });
+    });
+  },
+  
+  cancelLayer(cb){
+    var _this = this;
+    request.post('/api/layer/admin/delete')
+    .type('json').accept('json')
+    .send({
+      layer_id: _this.state.layer.layer_id
+    })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
         _this.setState({layer: emptyLayer});
         _this.trigger(_this.state);
         cb();

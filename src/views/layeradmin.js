@@ -99,9 +99,13 @@ var LayerAdmin = React.createClass({
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {
-            window.location = '/layers';
+            NotificationActions.showNotification({
+                message: _this.__('Layer Deleted'),
+                onDismiss(){
+                  window.location = '/';
+                }
+              });
           }
-
         });
       }
     });

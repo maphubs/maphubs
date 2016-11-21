@@ -36,15 +36,18 @@ var Step1 = React.createClass({
 
   getInitialState() {
     return {
-      created: false
+      created: false,
+      warnIfUnsaved: true
     };
   },
 
   submit () {
+    this.setState({created: true});
     NotificationActions.showNotification({message: this.__('Layer Saved'),dismissAfter: 1000, onDismiss: this.props.onSubmit});
   },
 
   cancelCallback(){
+    this.setState({warnIfUnsaved: false});
     NotificationActions.showNotification({
       message: this.__('Layer Cancelled'),
       onDismiss(){
@@ -57,7 +60,7 @@ var Step1 = React.createClass({
     var _this = this;
     if(_this.state.created){
       //delete the layer
-      LayerActions.deleteLayer(function(err){
+      LayerActions.cancelLayer(function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
@@ -81,9 +84,10 @@ var Step1 = React.createClass({
 		return (
         <div className={className}>
             <p>{this.__('Provide Information About the Data Layer')}</p>
-            <LayerSettings groups={this.props.groups} create={true}
+            <LayerSettings groups={this.props.groups} create={!this.state.created}
                 showCancel={true} cancelText={this.__('Cancel')} onCancel={this.handleCancel}
                 submitText={this.__('Save and Continue')} onSubmit={this.submit}
+                warnIfUnsaved={this.state.warnIfUnsaved}
                 />
       </div>
 		);

@@ -10,6 +10,7 @@ var actions = Reflux.createActions({
   'initEmptyLayer': {},
   'deleteData': {},
   'deleteLayer': {},
+  'cancelLayer': {},
   'createLayer': {},
   'setStyle': {},
   'dataLoaded': {},
