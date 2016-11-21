@@ -6,7 +6,8 @@
   "scripts": {
     "start": "/bin/sh run-dev.sh",
     "dev": "DEBUG=maphubs:* nodejs-dashboard -- node --max-old-space-size=4096 src/app.js",
-    "build": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
+    "webpack": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --config src/webpack.config.min.js",
+    "webpack-stats":  "NODE_ENV=production node node_modules/webpack/bin/webpack.js --profile --json --config src/webpack.config.min.js > stats.json",
     "debug": "NODE_ENV=production DEBUG=maphubs:* node --debug src/app.js",
     "prod-test": "DEBUG=maphubs:* NODE_ENV=production node src/app.js",
     "changelog": "github_changelog_generator"

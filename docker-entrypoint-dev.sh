@@ -43,8 +43,4 @@ var OMH_CONFIG = {
 };
 EOF
 
-#grab a copy of the yarn lock so we can use it in prod
-cp yarn.lock deploy/yarn.lock
-cp package.json deploy/package.json
-
 node --max-old-space-size=$NODE_MEM_SIZE src/app.js

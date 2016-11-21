@@ -1,5 +1,16 @@
 version: '2'
 services:
+  assets:
+    image: nginx:alpine      
+    command: "nginx -g 'daemon off;'"
+    restart: always
+    ports:
+      - '8080:80'
+    volumes:
+      - ./env/maphubsnginx_assets.template:/etc/nginx/nginx.conf
+      - ./assets:/data/assets
+      - ./public:/data/public
+      - ../iD:/data/iD
   gateway:
     image: nginx:alpine
     volumes:
@@ -13,6 +24,7 @@ services:
     depends_on:
       - web
       - tiles
+      - assets
     ports:
       - '8888:8888'
   web:

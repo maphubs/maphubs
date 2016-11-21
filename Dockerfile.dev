@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY package.json /app/
+COPY package.json yarn.lock /app/
 RUN yarn install
 
 COPY .babelrc /app/.babelrc

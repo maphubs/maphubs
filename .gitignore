@@ -16,7 +16,6 @@ nbproject
 temp
 tmp
 .vagrant
-public
 uploads
 connect-session-knex.sqlite
 layerdata

@@ -15,23 +15,16 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY deploy/package.json deploy/yarn.lock /app/
+COPY package.json yarn.lock /app/
 RUN yarn install --production --pure-lockfile
 
-#install iD
-RUN git clone -b maphubs-dev --single-branch https://github.com/openmaphub/iD.git
-
 COPY ./src /app/src
-COPY ./assets /app/assets
 COPY .babelrc /app/.babelrc
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
 #create temp folders
-RUN mkdir -p public && mkdir -p css && mkdir -p /app/temp/uploads
-
-#rebuild client files
-RUN node /app/node_modules/webpack/bin/webpack.js --config /app/src/webpack.config.min.js
+RUN mkdir -p css && mkdir -p /app/temp/uploads
 
 VOLUME ["/app/temp/uploads"]
 VOLUME ["/app/logs"]

@@ -31,6 +31,10 @@ http {
     server tiles:4001;
   }
 
+  upstream assets {
+    server assets:80;
+  }
+
   server {
     listen 8888;
     server_name maphubs.dev;
@@ -60,6 +64,18 @@ http {
       proxy_connect_timeout 600s;
       keepalive_timeout 600s;
 
+    }
+
+    location /assets {
+      proxy_pass http://assets;
+    }
+
+    location /public {
+      proxy_pass http://assets;
+    }
+
+    location /iD {
+      proxy_pass http://assets;
     }
   }
 }
