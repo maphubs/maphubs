@@ -86,7 +86,10 @@ app.use(sassMiddleware({
 }));
 
 //static files
-app.use('/assets', express.static('assets'));
+if(process.env.NODE_ENV !== 'production'){
+  app.use('/assets', express.static('./assets/assets'));
+}
+
 app.use('/css', express.static('css'));
 
 app.use('/clientconfig.js', express.static('./src/clientconfig.js'));
@@ -111,11 +114,7 @@ if(process.env.NODE_ENV !== 'production'){
         children: false
       }
   }));
-} else {
-  //serve static and client JS
-  log.info('Prod: using static public ');
-  app.use('/public', express.static(local.publicFilePath));
-}
+} 
 
 
 //set sessions (Note: putting this below static files to avoid extra overhead)

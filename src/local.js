@@ -10,7 +10,7 @@ module.exports = {
   host_internal:  getenv('OMH_HOST_INTERNAL'),
   port: getenv('OMH_PORT'),
   internal_port: getenv('OMH_INTERNAL_PORT'),
-  publicFilePath: path.join(__dirname, '../public'),
+  publicFilePath: path.join(__dirname, '../assets/public'),
   tempFilePath: path.join(__dirname, '../temp'),
   manetUrl: getenv('OMH_MANET_URL'),
   tileServiceUrl: getenv('OMH_TILESERVICE_URL'),

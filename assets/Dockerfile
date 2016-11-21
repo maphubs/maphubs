@@ -13,6 +13,6 @@ RUN git clone -b maphubs-dev --single-branch https://github.com/openmaphub/iD.gi
 COPY ./assets /data/assets
 COPY ./public /data/public
 
-COPY ./env/maphubsnginx_assets.template /etc/nginx/nginx.conf
+COPY ./maphubsnginx_assets.template /etc/nginx/nginx.conf
 
 CMD  ["nginx", "-g", "'daemon off;'"]

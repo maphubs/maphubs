@@ -7,9 +7,9 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - ./env/maphubsnginx_assets.template:/etc/nginx/nginx.conf
-      - ./assets:/data/assets
-      - ./public:/data/public
+      - ./assets/maphubsnginx_assets.template:/etc/nginx/nginx.conf
+      - ./assets/assets:/data/assets
+      - ./assets/public:/data/public
       - ../iD:/data/iD
   gateway:
     image: nginx:alpine

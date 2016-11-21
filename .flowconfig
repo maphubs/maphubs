@@ -1,9 +1,7 @@
 [ignore]
 .*/node_modules/fbjs/.*
-.*/public/.*
 .*/assets/.*
 .*/temp/.*
-.*/docker-webserver/.*
 .*/db-server/.*
 [include]
 ../node_modules/
