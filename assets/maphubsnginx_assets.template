@@ -18,21 +18,18 @@ http {
 
     root /data;
     
-    add_header Pragma public;
-    add_header Cache-Control "public";
-
     location /public/ {
-      expires 7d;
       access_log off;
     } 
 
     location /assets/ {
-      expires 365d;
+      expires 7d;
       access_log off;
+      add_header Pragma public;
+      add_header Cache-Control "public";
     } 
 
     location /iD/ {
-      expires 7d;
       access_log off;
     } 
   }
