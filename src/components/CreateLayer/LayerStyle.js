@@ -236,7 +236,7 @@ var LayerStyle = React.createClass({
 
 		return (
       <div>
-          <Progress id="save-style-progess" title="Saving map" subTitle="" dismissible={false} show={this.state.saving}/>
+          <Progress id="save-style-progess" title={this.__('Saving map')} subTitle="" dismissible={false} show={this.state.saving}/>
         <div className="row">
 
                <div className="row center">

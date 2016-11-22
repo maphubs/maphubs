@@ -12,9 +12,12 @@ var LayerViews = require('./layer-views');
 var Promise = require('bluebird');
 var sizeof = require('object-sizeof');
 var styles = require('../components/Map/styles');
-var fileEncodingUtils = require('./file-encoding-utils');
+//var fileEncodingUtils = require('./file-encoding-utils');
+var ogr2ogr = require('ogr2ogr');
+var dbgeo = require('dbgeo');
 
-var LARGE_DATA_THRESHOLD = 20000000;
+const LARGE_DATA_THRESHOLD = 20000000;
+const FEATURE_CHUNK_SIZE = 1000; 
 
 module.exports = {
 
@@ -174,10 +177,13 @@ module.exports = {
       debug(bbox);
       geoJSON.bbox = bbox;
 
+/*
       fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), function(err){
         if(err) log.error(err);
         debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
       });
+*/
+    
 
       //now that we know the data type, update the style to clear uneeded default styles
       var style = styles.defaultStyle(layer_id, 'vector', geomType);
@@ -212,6 +218,19 @@ module.exports = {
           unique_props:JSON.stringify(uniqueProps)})
         );
       }
+
+        var ogr = ogr2ogr(geoJSON).format('PostgreSQL')
+      .skipfailures()
+      .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
+      .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
+      .timeout(1200000);
+      ogr.exec(function (er) {
+        if (er){
+          log.error(er);
+          reject(new Error("Failed to Insert Data into Temp POSTGIS Table"));
+        }else{
+          
+      
       debug('inserting temp geojson into database');
       //insert into the database
       Promise.all(commands)
@@ -232,7 +251,7 @@ module.exports = {
             };
             fulfill(result);
           }else{
-            reject(new Error("Failed to Insert Data into Database"));
+            reject(new Error("Failed to Insert Metadata Database"));
             return;
           }
         })
@@ -242,13 +261,16 @@ module.exports = {
           return;
         });
 
+          }
+      });
+
     }else{
       reject(new Error('Data is not a valid GeoJSON FeatureCollection'));
       return;
     }
   });
   },
-
+/*
   getTempData(layer_id){
     debug('getTempData');
     return knex('omh.temp_data').select('uploadtmppath').where({layer_id})
@@ -264,26 +286,37 @@ module.exports = {
         });
       });
   },
+  */
 
   loadTempDataToOSM(layer_id, uid, trx){
     //get GeoJSON from temp table
     debug('loading temp data to OSM');
-      return this.getTempData(layer_id)
-      .then(function(geoJSONData){
         //create a new changeset
+        return trx('omh.temp_data').select('unique_props').where({layer_id})
+        .then(function(propsResult){
+          var props = propsResult[0]['unique_props'];
+          var selectedProps = [];
+          props.forEach(function(prop){
+            selectedProps.push(trx.raw(`${prop.toLowerCase()} as "${prop}"`));
+          });
+          selectedProps.push(trx.raw('ST_AsGeoJSON(wkb_geometry) as geom'));
+          
+        
         return Changeset.createChangeset(uid, trx)
         .then(function(changeSetResult){
           var changeset_id = changeSetResult[0];
           debug('created changeset: ' + changeset_id);
-          var numFeatures = geoJSONData.features.length;
+
+          return trx(`layers.temp_${layer_id}`).count('ogc_fid as count')
+          .then(function(countResult){
+          var numFeatures = countResult[0].count;
+         
           //by default we only need one interation
           var chunks = 1;
           var chunkSize = numFeatures;
 
-          var dataSize = sizeof(geoJSONData);
-          log.info("Data Size: " + dataSize);
-          if(dataSize > LARGE_DATA_THRESHOLD){
-            chunks = Math.ceil(dataSize / LARGE_DATA_THRESHOLD);
+          if(numFeatures > FEATURE_CHUNK_SIZE){
+            chunks = Math.ceil(numFeatures / FEATURE_CHUNK_SIZE);
             chunkSize = Math.ceil(numFeatures / chunks);
             log.info('Large Data - chunking data load into ' + chunks + ' chunks of ' + chunkSize + ' features');
           }
@@ -298,18 +331,49 @@ module.exports = {
           return Promise.map(chunksArr, function(i){
             var start = chunkSize * i;
             debug('chunk: ' + (i+1) + '/' + chunks + ' features: ' + start + ' through ' + (start + chunkSize));
-            let osmJSON = geojson2osm(geoJSONData, changeset_id, true, start, chunkSize);
+            
+            return trx(`layers.temp_${layer_id}`)
+            .select(selectedProps)
+            .limit(FEATURE_CHUNK_SIZE)
+            .offset(start)
+            .then(function(data){
+              return new Promise(function(fulfill, reject) {
+                dbgeo.parse(data,{
+                      "outputFormat": "geojson",
+                      "geometryColumn": "geom",
+                      "geometryType": "geojson"
+                    }, function(error, result) {
+                      if (error) {
+                        log.error('DBGEO: ' + error);
+                        reject(error);
+                      }
 
-            if(local.writeDebugData){
-              fs.writeFile(local.tempFilePath + '/osm-' + i + '.json', JSON.stringify(osmJSON), function(err){
-                if(err) {
-                  log.error(err);
-                  throw err;
-                }
+                      if(local.writeDebugData){
+                        fs.writeFile(local.tempFilePath + '/osm-' + layer_id + '-' + i + '.geojson', JSON.stringify(result), function(err){
+                          if(err) {
+                            log.error(err);
+                            reject(error);
+                          }
+                        });
+                      }   
+
+                      let osmJSON = geojson2osm(result, changeset_id, true, 0, FEATURE_CHUNK_SIZE);
+
+                      if(local.writeDebugData){
+                        fs.writeFile(local.tempFilePath + '/osm-' + layer_id + '-' + i + '.json', JSON.stringify(osmJSON), function(err){
+                          if(err) {
+                            log.error(err);
+                            reject(error);
+                          }
+                        });
+                      }   
+                      fulfill(osmJSON);                  
+                  });      
+              }).then(function(osmJSON){
+                return Changeset.processChangeset(changeset_id, uid, layer_id, osmJSON, trx);  
               });
-            }
-            return Changeset.processChangeset(changeset_id, uid, layer_id, osmJSON, trx);
-
+            });
+        
           }, {concurrency: 1})
           .then(function(results){
             var processChangeSetResult = results[results.length-1];
@@ -319,7 +383,8 @@ module.exports = {
             });
           });
         });
-      })
+        });
+        })
       .catch(function (err) {
         log.error(err);
         throw err;

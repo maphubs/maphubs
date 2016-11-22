@@ -20,6 +20,7 @@ var File = React.createClass({
     action: React.PropTypes.string,
     onUpload: React.PropTypes.func,
     onChange: React.PropTypes.func,
+    onFinishTx: React.PropTypes.func,
     onAbort: React.PropTypes.func,
     onError: React.PropTypes.func,
     inputStyle: React.PropTypes.object,
@@ -41,6 +42,11 @@ var File = React.createClass({
 
   onProgress(e, request, progress){
     debug("upload progress: " + progress);
+    if (progress === 100){
+      if(this.props.onFinishTx){
+        this.props.onFinishTx();
+      }
+    }
   },
 
   onLoad(e){
@@ -67,6 +73,13 @@ var File = React.createClass({
   },
 
   customFormRenderer(onSubmit, onFileClick){
+    var _this = this;
+    var onSubmitWrapper = function(val){
+      if(_this.props.onChange){
+        _this.props.onChange();
+      }
+      onSubmit(val);
+    };
     return (
       <div className="col s12 m4 l3" onClick={onFileClick} style={this.props.style}>
       <form id='customForm' ref="form" method="post" style={{marginBottom: '15px'}}>
@@ -75,7 +88,7 @@ var File = React.createClass({
 
             <div className="btn">
               <span>{this.__('Choose File')}</span>
-              <input type="file" name="file" style={this.props.inputStyle} ref='input' onChange={onSubmit} />
+              <input type="file" name="file" style={this.props.inputStyle} ref='input' onChange={onSubmitWrapper} />
             </div>
           </div>
         </div>
@@ -126,7 +139,7 @@ var File = React.createClass({
               onAbort={this.onAbort}
               formGetter={this.formGetter}
               formRenderer={this.customFormRenderer}
-              progressRnederer={this.customProgressRenderer}
+              progressRenderer={this.customProgressRenderer}
       />
       );
     }

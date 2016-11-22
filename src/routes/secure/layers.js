@@ -448,11 +448,11 @@ module.exports = function(app) {
                  debug('Shapefile Validation Successful');
                  var shpFilePath = req.file.path + '_zip/' + result.value.shp;
                  debug("shapefile: " + shpFilePath);
-                  var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
+                  var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(120000);
                   ogr.exec(function (er, geoJSON) {
                     if (er){
                       log.error(er);
-                      res.status(200).send({success: false, error: er.toString()});
+                      res.status(200).send({success: false, error: er});
                     }else{
                       DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
                       .then(function(result){

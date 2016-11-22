@@ -218,8 +218,7 @@ var Node = {
     // Map each node creation to a model with proper attributes.
     var models = raw.map(function(entity) { return Node.fromEntity(entity, q.meta, q.layerID); });
 
-    function remap(_ids) {
-      var ids = [].concat.apply([], _ids);
+    function remap(ids) {
       log.info('Remapping', ids.length, 'node IDs');
       var tags = [];
       raw.forEach(function(entity, i) {
@@ -267,9 +266,8 @@ var Node = {
       return [];
     }
     log.info("inserting nodes");
-    return Promise.map(chunk(models, 1000), function(models) {
-      return q.transaction(Node.tableName).insert(models).returning('id');
-    }, {concurrency: 4})
+    return knex.batchInsert(Node.tableName, models, 1000).returning('id')
+    .transacting(q.transaction)
     .then(remap)
     .then(saveTags)
     .catch(function(err) {

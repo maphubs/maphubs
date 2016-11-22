@@ -20,6 +20,8 @@ var RadioModal = require('../RadioModal');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
+import Progress from '../Progress';
+
 var LocalSource = React.createClass({
 
   mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
@@ -50,7 +52,8 @@ var LocalSource = React.createClass({
       geoJSON: null,
       selectedOption: 'upload',
       selectedDataType: 'point',
-      largeData: false
+      largeData: false,
+      processing: false
     };
   },
 
@@ -116,6 +119,7 @@ var LocalSource = React.createClass({
 
   onUpload(result){
     var _this = this;
+    
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});
       PresetActions.setImportedTags(result.uniqueProps);
@@ -127,6 +131,7 @@ var LocalSource = React.createClass({
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});
       }
     }
+    this.setState({processing: false});
   },
 
   onUploadError(err){
@@ -149,6 +154,10 @@ var LocalSource = React.createClass({
 
   optionChange(value){
     this.setState({selectedOption: value});
+  },
+
+  onProcessingStart(){
+    this.setState({processing: true});
   },
 
 
@@ -243,7 +252,7 @@ var LocalSource = React.createClass({
         <div>
           <p>{this.__('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
           <div className="row">
-            <FileUpload onUpload={this.onUpload} onError={this.onUploadError} action={url} />
+            <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
           </div>
           <div className="row">
             {largeDataMessage}
@@ -256,6 +265,7 @@ var LocalSource = React.createClass({
 
 		return (
         <div className={className}>
+        <Progress id="upload-process-progess" title={this.__('Processing Data')} subTitle="" dismissible={false} show={this.state.processing}/>       
           <Formsy.Form>
             <h5>2) {this.__('Choose an Option')}</h5>
             <div  className="row">
