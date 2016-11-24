@@ -176,10 +176,8 @@ save(){
 
 
   if(this.props.storyType == 'hub'){
-    var baseUrl = '';
-    if(MAPHUBS_CONFIG.mapHubsPro){
-      baseUrl = '/hub/' + this.props.hubid;
-    }
+    var baseUrl = '/hub/' + this.props.hubid;
+    
     if(this.state.story_id && this.state.story_id > 0){
       //saving an existing hub story
       story.story_id = this.state.story_id;
