@@ -36,11 +36,11 @@ module.exports = {
         knex.raw('md5(lower(trim(public.users.email))) as emailhash')
         )
       .table('omh.stories')
-      .where('omh.stories.published', true)
       .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
       .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
       .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
+      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')    
+      .whereRaw('omh.stories.published=true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
       .orderBy('omh.stories.created_at', 'desc')
       .limit(number);
     },
@@ -60,8 +60,7 @@ module.exports = {
         .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
         .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
         .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
-        .where('omh.stories.published', true)
-        .whereNotNull('omh.stories.views')
+        .whereRaw('omh.stories.published=true AND omh.stories.views IS NOT NULL AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
         .orderBy('omh.stories.views', 'desc')
         .limit(number);
       },
@@ -76,12 +75,12 @@ module.exports = {
           'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
           knex.raw('md5(lower(trim(public.users.email))) as emailhash')
           )
-        .table('omh.stories')
-        .where({'omh.stories.published': true, 'omh.stories.featured': true})
+        .table('omh.stories')     
         .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
         .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
         .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
         .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
+        .whereRaw('omh.stories.published=true AND omh.stories.featured=true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
         .orderBy('omh.stories.created_at', 'desc')
         .limit(number);
       },
