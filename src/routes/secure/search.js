@@ -95,34 +95,49 @@ module.exports = function(app) {
         layerNodes.forEach(function(layerNode){
           dataCommands.push(knex('layers.points_'+layerNode.layer_id)
           .select(knex.raw("osm_id, " + layerNode.layer_id + "as layer_id, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags"))
-          .whereIn('osm_id', layerNode.ids));
+          .whereIn('osm_id', layerNode.ids)
+          .catch(function(err){
+            log.error(err);
+          }));
         });
 
         layerWays.forEach(function(layerWay){
           dataCommands.push(knex('layers.lines_'+layerWay.layer_id)
           .select(knex.raw("osm_id, " + layerWay.layer_id + "as layer_id, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags"))
-          .whereIn('osm_id', layerWay.ids));
+          .whereIn('osm_id', layerWay.ids)
+          .catch(function(err){
+            log.error(err);
+          }));
+          
         });
 
         layerPolys.forEach(function(layerPoly){
           dataCommands.push(knex('layers.polygons_'+layerPoly.layer_id)
           .select(knex.raw("osm_id, " + layerPoly.layer_id + "as layer_id, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags"))
           .where('osm_source', 'way')
-          .whereIn('osm_id', layerPoly.ids));
+          .whereIn('osm_id', layerPoly.ids)
+          .catch(function(err){
+            log.error(err);
+          }));
         });
 
         layerMultiPolys.forEach(function(layerMultiPoly){
           dataCommands.push(knex('layers.polygons_'+layerMultiPoly.layer_id)
           .select(knex.raw("'m'|| osm_id, " + layerMultiPoly.layer_id + "as layer_id, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags"))
           .where('osm_source', 'rel')
-          .whereIn('osm_id', layerMultiPoly.ids));
+          .whereIn('osm_id', layerMultiPoly.ids)
+          .catch(function(err){
+            log.error(err);
+          }));
         });
 
         Promise.all(dataCommands)
           .then(function(results) {
           var data = [];
           results.forEach(function(result){
-            data = data.concat(result);
+            if(result && Array.isArray(result)){
+               data = data.concat(result);
+            }         
           });
           debug('results: ' + data.length);
 
