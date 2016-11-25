@@ -86,6 +86,10 @@ var GroupInfo = React.createClass({
       var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
       descriptionWithLinks = this.props.group.description.replace(regex, "<a href='$1' target='_blank'>$1</a>");
     }
+    var status = this.__('DRAFT');
+    if(this.props.group.published){
+      status = this.__('Published');
+    }
 
 
     return (
@@ -100,6 +104,12 @@ var GroupInfo = React.createClass({
             <div className="col s6">
               <div className="row">
               <p><b>{this.__('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>
+              </div>
+               <div className="row">
+              <p><b>{this.__('Status: ')}</b>{status}</p>
+              </div>
+              <div className="row">
+              <p><b>{this.__('Location: ')}</b>{this.props.group.location}</p>
               </div>
               {unofficial}
             </div>
