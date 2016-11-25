@@ -96,7 +96,7 @@ var AddPhotoPoint = React.createClass({
                 featureName = _this.state.geoJSON.features[0].properties[name];
               }
             });
-            var featurePageUrl = '/feature/' + _this.state.layer.layer_id + '/p' + _this.state.osm_id + '/' + featureName;
+            var featurePageUrl = '/feature/' + _this.state.layer.layer_id + '/n' + _this.state.osm_id + '/' + featureName;
             window.location = featurePageUrl;
           }
         });
