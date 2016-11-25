@@ -90,7 +90,7 @@ module.exports = function(app) {
       PasswordUtil.updatePassword(data.user_id, data.password, true, req.__)
       .then(function(){
         res.status(200).send({success:true});
-      }).catch(apiError(res, 500));
+      }).catch(apiError(res, 200));
     }else {
       User.getUserWithResetKey(data.pass_reset)
       .then(function(user){
@@ -98,12 +98,12 @@ module.exports = function(app) {
           PasswordUtil.updatePassword(user.id, data.password, true, req.__)
           .then(function(){
             res.status(200).send({success:true});
-          }).catch(apiError(res, 500));
+          }).catch(apiError(res, 200));
         } else {
           log.error('Missing or Invalid Reset Key: ' + data.pass_reset);
           res.status(200).send({success:false, error: 'The reset link has expired or may have already been used. Please go to Forgot Password and request another reset.'});
         }
-      }).catch(apiError(res, 500));
+      }).catch(apiError(res, 200));
     }
   });
 
@@ -153,8 +153,14 @@ module.exports = function(app) {
       log.warn(`Unauthorized signup attempt from IP: ${ip} Email: ${data.email}`);
       return res.status(401).send(req.__('Unauthorized'));
     }
+    if(data.email && data.name && data.username && data.password){
     //create user
-    User.createUser(data.email, data.name, data.username, ip)
+    User.getUserByEmail(data.email).then(function(user){
+      if(user){
+        res.status(200).send({success:false, error: req.__('Email address already exists')});
+        return;       
+      }else{     
+    return User.createUser(data.email, data.name, data.username, ip)
     .then(function(user_id){
     //set password
       return PasswordUtil.updatePassword(user_id, data.password, false, req.__)
@@ -201,7 +207,12 @@ module.exports = function(app) {
           });
         });
       });
-    }).catch(apiError(res, 500));
+      });
+      }
+    }).catch(apiError(res, 200));
+    }else{
+      apiDataError(res);
+    }
 
   });
 
@@ -246,7 +257,7 @@ module.exports = function(app) {
             user.admin = admin;
             res.status(200).send({loggedIn: true, user});
         });
-        }).catch(apiError(res, 500));
+        }).catch(apiError(res, 200));
     }
   });
 

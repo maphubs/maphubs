@@ -111,7 +111,7 @@ var Signup = React.createClass({
     UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, this.props.inviteKey, this.state._csrf, function(err){
       _this.setState({saving: false});
       if(err){
-        MessageActions.showMessage({title: _this.__('Error'), message: err.error});
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else {
         NotificationActions.showNotification(
           {

@@ -1,7 +1,7 @@
 var log = require('./log');
 module.exports = {
 
-  apiError(res, code){
+  apiError(res, code, userMessage){
     return function(err){
       log.error(err);
       if(typeof err === 'object'){
@@ -9,7 +9,11 @@ module.exports = {
       }
       var message = '';
       if(process.env.NODE_ENV === 'production'){
-        message = res.__('Server Error');
+        if(userMessage){
+          message = userMessage;
+        }else{
+          message = res.__('Server Error');
+        }      
       }else {
         message = err.toString();
       }

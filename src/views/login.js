@@ -58,7 +58,7 @@ var Login = React.createClass({
     var _this = this;
     UserActions.forgotPassword(model.email, this.state._csrf, function(err){
       if(err){
-        MessageActions.showMessage({title: _this.__('Failed to Submit Password Reset'), message: err.error});
+        MessageActions.showMessage({title: _this.__('Failed to Submit Password Reset'), message: err});
       }else {
         NotificationActions.showNotification(
           {

@@ -51,7 +51,7 @@ var Password = React.createClass({
       if(err){
         MessageActions.showMessage({
           title: _this.__('Failed to Update Password'),
-          message: err.error
+          message: err
         });
       }else {
         NotificationActions.showNotification(

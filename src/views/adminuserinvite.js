@@ -54,7 +54,7 @@ var PasswordReset = React.createClass({
       checkClientError(res, err, function(err){
         _this.setState({saving: false});
         if(err){
-          MessageActions.showMessage({title: _this.__('Failed to Send Invite'), message: err.error});
+          MessageActions.showMessage({title: _this.__('Failed to Send Invite'), message: err});
         }else {
           NotificationActions.showNotification(
             {

@@ -34,7 +34,7 @@ var PendingConfirmation = React.createClass({
     var _this = this;
     UserActions.resendConfirmation(this.state._csrf, function(err){
       if(err){
-          MessageActions.showMessage({title: 'Error', message: err.error});
+          MessageActions.showMessage({title: 'Error', message: err});
       }else {
         NotificationActions.showNotification(
           {
