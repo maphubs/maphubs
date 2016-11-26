@@ -336,7 +336,10 @@ var FeatureInfo = React.createClass({
 
     var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
 
-
+    var gpxLink; 
+    if(this.props.layer.data_type === 'polygon'){
+      gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.osm_id + '/feature.gpx';
+    }
     return (
       <div>
         <Header />
@@ -392,7 +395,11 @@ var FeatureInfo = React.createClass({
 
           </div>
             <div className="col s6 no-padding">
-              <Map ref="map" className="map-absolute map-with-header width-50" fitBounds={this.props.feature.geojson.bbox} data={this.props.feature.geojson} />
+              <Map ref="map" className="map-absolute map-with-header width-50" 
+              fitBounds={this.props.feature.geojson.bbox} 
+              data={this.props.feature.geojson} 
+              gpxLink={gpxLink}
+              />
             </div>
           </div>
           {editButton}

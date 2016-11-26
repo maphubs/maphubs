@@ -10,6 +10,8 @@ var imageUtils = require('../../services/image-utils');
 var Promise = require('bluebird');
 var layerViews = require('../../services/layer-views');
 var debug = require('../../services/debug')('routes/features');
+var ogr2ogr = require('ogr2ogr');
+var log = require('../../services/log');
 
 //var log = require('../../services/log.js');
 //var debug = require('../../services/debug')('routes/features');
@@ -98,6 +100,62 @@ module.exports = function(app) {
       }
       });
       }).catch(nextError(next));
+    }else{
+      next(new Error('Missing Required Data'));
+    }
+  });
+
+  app.get('/api/feature/gpx/:layer_id/:osm_id/*', function(req, res, next) {
+
+    var osm_id = req.params.osm_id;
+    var layer_id = parseInt(req.params.layer_id || '', 10);
+
+    if(osm_id && layer_id){
+        Layer.getLayerByID(layer_id)
+        .then(function(layer){
+          return Feature.getFeatureByID(osm_id, layer)
+          .then(function(result){
+            var feature = result.feature;        
+            var geoJSON = feature.geojson;
+            geoJSON.features[0].geometry.type = "LineString";
+            var coordinates = geoJSON.features[0].geometry.coordinates[0][0];
+            log.info(coordinates)
+            var resultStr = JSON.stringify(geoJSON);
+            log.info(resultStr);
+            var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+            var match = req.get('If-None-Match');
+            if(hash == match){
+              res.status(304).send();
+            }else{
+              res.writeHead(200, {
+                'Content-Type': 'application/gpx+xml',
+                'ETag': hash
+              });
+
+              var gpx = `
+              <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="MapHubs">
+                <metadata>
+                  <link href="https://maphubs.com">
+                    <text>MapHubs</text>
+                  </link>
+                </metadata>
+                <trk>
+                  <name>Feature</name>
+                  <trkseg>
+                  `;
+                  coordinates.forEach(function(coord){
+                     gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`;
+                  });
+                    
+                 gpx += `
+                  </trkseg>
+                </trk>
+                </gpx>`;
+
+              res.end(gpx);         
+            }
+          });
+          }).catch(nextError(next));
     }else{
       next(new Error('Missing Required Data'));
     }

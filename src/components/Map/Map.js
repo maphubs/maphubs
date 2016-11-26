@@ -67,7 +67,8 @@ var Map = React.createClass({
     insetMap: React.PropTypes.bool,
     hoverInteraction: React.PropTypes.bool,
     interactionBufferSize: React.PropTypes.number,
-    hash: React.PropTypes.bool
+    hash: React.PropTypes.bool,
+    gpxLink: React.PropTypes.string
   },
 
   contextTypes: {
@@ -1201,6 +1202,10 @@ map.on('mousemove', function(e) {
       var lat = hashParts[2];
       var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat;
       var loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + zoom + '/' + lat + '/' + lon;
+      if(this.props.gpxLink){
+        osmEditLink += '&gpx=' + this.props.gpxLink;
+        loggingRoadsEditLink +=  '&gpx=' + this.props.gpxLink;
+      }
       editBaseMapBox = (
         <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
             <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
