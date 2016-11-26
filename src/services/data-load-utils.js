@@ -125,18 +125,22 @@ module.exports = {
           }
         }
         //get unique list of properties
+        var cleanedFeatureProps = {};
         Object.keys(feature.properties).map(function (key) {
-          //remove chars that can't be in database fields (used in PostGIS views)
+          //remove chars that can't be in database fields (used in PostGIS views)         
+          var val = feature.properties[key];
+          
           key = key.replace("-", "_");
           key = key.replace("'", "''");
           //rename osm_id so it doesn't conflict
-          key = key.replace("osm_id", "osm_id_orig");
-
-
+          key = key.replace(/^osm_id$/, "osm_id_orig");
+          key = key.replace(/^area_import$/, "area_import2");
+          key = key.replace(/^area$/, "area_import");
+          
           if(!uniqueProps.includes(key)){
             uniqueProps.push(key);
           }
-          var val = feature.properties[key];
+          
           if(typeof val === 'string'){
             val = val.replace(/\r?\n/g, ' ');
           }
@@ -151,8 +155,11 @@ module.exports = {
             log.info('trimming attribute to 255 chars: ' + key);
             val = JSON.stringify(val).substring(0, 254);
           }
-          feature.properties[key] = val;
+          
+          cleanedFeatureProps[key] = val;
         });
+
+        feature.properties = cleanedFeatureProps;
 
         if(GJV.isFeature(feature) && feature.geometry){
           cleanedFeatures.push(feature);
@@ -177,12 +184,7 @@ module.exports = {
       debug(bbox);
       geoJSON.bbox = bbox;
 
-/*
-      fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), function(err){
-        if(err) log.error(err);
-        debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
-      });
-*/
+
     
 
       //now that we know the data type, update the style to clear uneeded default styles
@@ -219,6 +221,13 @@ module.exports = {
         );
       }
 
+      if(local.writeDebugData){
+        fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), function(err){
+          if(err) log.error(err);
+          debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
+        });
+        }
+           
         var ogr = ogr2ogr(geoJSON).format('PostgreSQL')
       .skipfailures()
       .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
@@ -229,7 +238,8 @@ module.exports = {
           log.error(er);
           reject(new Error("Failed to Insert Data into Temp POSTGIS Table"));
         }else{
-          
+
+      log.info('uniqueProps: ' + JSON.stringify(uniqueProps));    
       
       debug('inserting temp geojson into database');
       //insert into the database
