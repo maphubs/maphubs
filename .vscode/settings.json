@@ -4,6 +4,14 @@
 		"**/.git": true,
 		"**/node_modules": true,
 		"**/.DS_Store": true
-	}
+	},
+
+	 "editor.tabSize": 2,
+
+    "editor.insertSpaces": true,
+
+    "editor.detectIndentation": false,
+
+    "javascript.validate.enable": false
 	
 }

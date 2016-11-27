@@ -1,3 +1,4 @@
+// @flow
 /*
  *  Copyright (c) 2014, Facebook, Inc.
  *  All rights reserved.
@@ -12,7 +13,6 @@
  1) Assumes there is a client js file with the same name as the view in for examples client/login.js
  2) Assumes that the client will load its data out of window.__appData and use the query selector id="app"
  */
- /* @flow weak */
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
@@ -30,7 +30,7 @@ function createEngine(engineOptions) {
 
   engineOptions = assign({}, DEFAULT_OPTIONS, engineOptions || {});
 
-  function renderFile(filename, options, cb) {
+  function renderFile(filename: string, options: Object, cb: Function) {
 
     var materialicons = options.materialicons ? options.materialicons : true;
     // Defer babel registration until the first request so we can grab the view path.
@@ -209,7 +209,7 @@ function createEngine(engineOptions) {
           //markup += '<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/signup-forms/popup/embed.js" data-dojo-config="usePlainJson: true, isDebug: false"></script><script type="text/javascript">require(["mojo/signup-forms/Loader"], function(L) { L.start({"baseUrl":"mc.us12.list-manage.com","uuid":"d2eac39a023dd41d2dd00b58e","lid":"0cbfb0b04d"}) })</script>';
         }
 
-        if(!options.hideFeedback && req){
+        if(!options.hideFeedback && req && req.__){
         //  var username = null;
           if(req.session && req.session.user){
           //  username = req.session.user.display_name;

@@ -4,7 +4,7 @@
 .*/temp/.*
 .*/db-server/.*
 [include]
-../node_modules/
 [libs]
-
+flow-typed/
 [options]
+module.ignore_non_literal_requires=true

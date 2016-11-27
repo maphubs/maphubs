@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 /**
  * Module dependencies.
  */
@@ -64,8 +64,8 @@ server.deserializeClient(function(id, done) {
 exports.requestToken = [
     passport.authenticate('consumer', {session: false}),
     server.requestToken(function(client, callbackURL, done) {
-        var token = utils.uid(8)
-            , secret = utils.uid(32);
+        const token: string = utils.uid(8);
+        const secret: string = utils.uid(32);
 
         //callbackURL from the OAuth system is ignored because we use the one saved with the client info
         //in order to be on the same page with OSM regarding OAuth 1.0 vs 1.0a
@@ -75,10 +75,10 @@ exports.requestToken = [
             return done(null, token, secret);
         });
     }),
-    server.errorHandler(function(err) {
-        console(err);
+    server.errorHandler(function(err: any) {
+        log.error(err);
     })
-]
+];
 
 // Access token endpoint
 //
@@ -124,7 +124,7 @@ exports.accessToken = [
         }
     ),
     server.errorHandler()
-]
+];
 
 
 /**

@@ -5,11 +5,10 @@ var User = require('../../models/user');
 var Story = require('../../models/story');
 var Stats = require('../../models/stats');
 var Map = require('../../models/map');
-
 var Promise = require('bluebird');
-
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
+var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app) {
 
@@ -74,7 +73,7 @@ module.exports = function(app) {
     }
   });
 
-  app.get('/user/createstory', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect('/unauthorized');
     }
@@ -99,7 +98,7 @@ module.exports = function(app) {
 
   });
 
-  app.get('/user/:userid/story/:story_id/edit/*', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/user/:userid/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -180,11 +179,7 @@ module.exports = function(app) {
           }).catch(nextError(next));
     } else {
       Story.allowedToModify(story_id, user_id)
-      .then(function(allowed){
-        var canEdit = false;
-        if(allowed){
-          canEdit = true;
-        }
+      .then(function(canEdit){       
         Story.getStoryByID(story_id)
         .then(function(story) {
            var imageUrl = '';
