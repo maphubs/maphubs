@@ -269,15 +269,6 @@ module.exports = {
     });
   },
 
-  createStoryMap(layers, style, basemap, position, story_id, title, user_id){
-    return this.createMap(layers, style, basemap, position, title, user_id)
-    .then(function(result){
-      var map_id = result;
-      debug('Saving Story Map with ID: ' + map_id);
-      return knex('omh.story_maps').insert({story_id, map_id}).returning('map_id');
-    });
-  },
-
   saveHubMap(layers, style, basemap, position, hub_id, user_id){
     return knex.transaction(function(trx) {
       return trx('omh.hubs')

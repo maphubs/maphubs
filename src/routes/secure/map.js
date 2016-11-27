@@ -342,31 +342,6 @@ module.exports = function(app) {
       }
     });
 
-    app.post('/api/map/create/storymap', function(req, res) {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.id;
-
-      var data = req.body;
-      if(data && data.layers && data.style && data.basemap && data.position && data.story_id){
-        Story.allowedToModify(data.story_id, user_id)
-        .then(function(allowed){
-          if(allowed){
-            Map.createStoryMap(data.layers, data.style, data.basemap, data.position, data.story_id, data.title, user_id)
-            .then(function(result){
-              res.status(200).send({success: true, map_id: result[0]});
-            }).catch(apiError(res, 500));
-          }else {
-            notAllowedError(res, 'map');
-          }
-        }).catch(apiError(res, 500));
-      }else{
-        apiDataError(res);
-      }
-    });
-
     app.post('/api/map/copy', function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");

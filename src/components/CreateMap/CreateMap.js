@@ -22,6 +22,8 @@ var MessageActions = require('../../actions/MessageActions');
 
 var MapLayerDesigner = require('../LayerDesigner/MapLayerDesigner');
 
+var debug = require('../../services/debug')('create-map-old');
+
 import Editor from 'react-medium-editor';
 
 var LocaleStore = require('../../stores/LocaleStore');
@@ -207,57 +209,9 @@ var CreateMap = React.createClass({
 
     var basemap = this.refs.map.getBaseMap();
     if(this.props.userMap){
-      if(!this.state.map_id || this.state.map_id == -1){
-        Actions.createUserMap(position, basemap, function(err){
-          if(err){
-            //display error to user
-            MessageActions.showMessage({title: _this.__('Error'), message: err});
-          }else{
-            //hide designer
-            Actions.closeMapDesigner();
-            NotificationActions.showNotification({message: _this.__('Map Saved')});
-            _this.onCreate();
-          }
-        });
-      }else{
-        Actions.saveMap(position, basemap, function(err){
-          if(err){
-            //display error to user
-            MessageActions.showMessage({title: _this.__('Error'), message: err});
-          }else{
-            //hide designer
-            Actions.closeMapDesigner();
-            NotificationActions.showNotification({message: _this.__('Map Saved')});
-            _this.onCreate();
-          }
-        });
-      }
-
+      debug('Deprecated');
     }else if(this.props.hubStoryMap || this.props.userStoryMap){
-        if(!this.state.map_id || this.state.map_id == -1){
-          Actions.createStoryMap(position, basemap, function(err){
-            if(err){
-              //display error to user
-              MessageActions.showMessage({title: _this.__('Error'), message: err});
-            }else{
-              //hide designer
-              Actions.closeMapDesigner();
-              _this.onCreate();
-            }
-          });
-        }else{
-          Actions.saveMap(position, basemap, function(err){
-            if(err){
-              //display error to user
-              MessageActions.showMessage({title: _this.__('Error'), message: err});
-            }else{
-              //hide designer
-              Actions.closeMapDesigner();
-              NotificationActions.showNotification({message: _this.__('Map Saved')});
-              _this.onCreate();
-            }
-          });
-      }
+      debug('Deprecated');
     } else if(this.props.hubMap){
       this.props.onSaveHubMap(this.state.mapLayers, this.state.mapStyle, position, basemap);
       Actions.closeMapDesigner();

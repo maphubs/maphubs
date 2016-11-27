@@ -222,36 +222,6 @@ module.exports = Reflux.createStore({
     });
   },
 
-  createStoryMap(position, basemap, cb){
-    var _this = this;
-    if(!this.state.story_id || this.state.story_id === -1){
-      var msg = 'Error, story_id not set';
-      debug(msg);
-      cb(msg);
-    }
-    request.post('/api/map/create/storymap')
-    .type('json').accept('json')
-    .send({
-        layers: this.state.mapLayers,
-        style: this.state.mapStyle,
-        position,
-        basemap,
-        title: this.state.title,
-        story_id: this.state.story_id
-    })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
-        if (err) {
-          cb(err);
-        }else{
-          var map_id = res.body.map_id;
-          _this.setState({map_id, position, basemap});
-          cb();
-        }
-      });
-    });
-  },
-
   showMapDesigner(){
     this.setState({show: true});
   },
