@@ -307,7 +307,7 @@ module.exports = {
           var props = propsResult[0]['unique_props'];
           var selectedProps = [];
           props.forEach(function(prop){
-            selectedProps.push(trx.raw(`${prop.toLowerCase()} as "${prop}"`));
+            selectedProps.push(trx.raw(`"${prop.toLowerCase()}" as "${prop}"`));
           });
           selectedProps.push(trx.raw('ST_AsGeoJSON(wkb_geometry) as geom'));
           
