@@ -1,7 +1,6 @@
+// @flow
 var React = require('react');
-
 var urlUtil = require('../services/url-util');
-
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
@@ -11,7 +10,7 @@ var OAuthDialog = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 

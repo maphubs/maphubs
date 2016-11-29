@@ -1,4 +1,4 @@
-'use strict';
+// @flow
 /**
  * Nodes.js
  *
@@ -72,7 +72,7 @@ var Node = {
     }
   },
 
-  fromEntity(entity, meta, layerID) {
+  fromEntity(entity: Object, meta: Object, layerID: number) {
     var ratio = RATIO;
     var model = {};
     model.visible = (entity.visible !== 'false' && entity.visible !== false);
@@ -107,7 +107,7 @@ var Node = {
   },
 
   // Return an entity from a JSON node.
-  fromOSM(xml) {
+  fromOSM(xml: any) {
 
     // Transfer all attributes.
     var model = {};
@@ -141,7 +141,7 @@ var Node = {
     return model;
   },
 
-  canBeDeleted(nodeId) {
+  canBeDeleted(nodeId: number) {
     // No need to call parseInt on node_id, as that's already handled upstream.
     return knex(WayNode.tableName)
     .where('node_id', nodeId)
@@ -169,7 +169,7 @@ var Node = {
 
   // Attach a list of tags to a list of entities
   // by creating a mapping of entities by their id.
-  withTags(entities, tags, accessor) {
+  withTags(entities: Array<Object>, tags: Array<Object>, accessor: string) {
     if (!tags.length) {
       return entities;
     }
@@ -190,7 +190,7 @@ var Node = {
     }
     return entities;
   },
-  save(q) {
+  save(q: any) {
       debug('nodel model saving');
     var actions = [];
     var model = this;
@@ -208,7 +208,7 @@ var Node = {
     });
   },
 
-  create(q) {
+  create(q: any) {
 
     var raw = q.changeset.create.node;
     if(!Array.isArray(raw)){
@@ -246,7 +246,7 @@ var Node = {
       return tags;
     }
 
-    function saveTags (tags) {
+    function saveTags (tags: any) {
       // Only save tags if there are any.
       if(!Array.isArray(tags)){
           tags = [tags];
@@ -276,7 +276,7 @@ var Node = {
     });
   },
 
-  modify(q) {
+  modify(q: any) {
     var raw = q.changeset.modify.node;
     if(!Array.isArray(raw)){
         raw = [raw];
@@ -322,7 +322,7 @@ var Node = {
     });
   },
 
-  'delete'(q) {
+  'delete'(q: any) {
     var raw = q.changeset['delete'].node;
     if(!Array.isArray(raw)){
         raw = [raw];

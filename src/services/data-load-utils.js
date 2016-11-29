@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var knex = require('../connection.js');
 var GJV = require("geojson-validation");
 var log = require('./log');
@@ -21,7 +21,7 @@ const FEATURE_CHUNK_SIZE = 1000;
 
 module.exports = {
 
-  removeLayerData(layer_id, trx = null){
+  removeLayerData(layer_id: number, trx: any = null){
     debug('removeLayerData');
     let db = knex;
     if(trx){db = trx;}
@@ -45,7 +45,7 @@ module.exports = {
 
   },
 
-  storeTempShapeUpload(uploadtmppath, layer_id, trx = null){
+  storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
     debug('storeTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
@@ -58,7 +58,7 @@ module.exports = {
     });
   },
 
-  getTempShapeUpload(layer_id, trx = null){
+  getTempShapeUpload(layer_id: number, trx: any = null){
     debug('getTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
@@ -68,7 +68,7 @@ module.exports = {
     });
   },
 
-  storeTempGeoJSON(geoJSON, uploadtmppath, layer_id, update, trx = null){
+  storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, update: boolean, trx: any = null){
     debug('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}
@@ -298,7 +298,7 @@ module.exports = {
   },
   */
 
-  loadTempDataToOSM(layer_id, uid, trx){
+  loadTempDataToOSM(layer_id: number, uid: number, trx: any){
     //get GeoJSON from temp table
     debug('loading temp data to OSM');
         //create a new changeset

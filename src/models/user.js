@@ -1,9 +1,10 @@
+// @flow
 var knex = require('../connection');
 var Promise = require('bluebird');
 var log = require('../services/log');
 var debug = require('../services/debug')('models/user');
 var Email = require('../services/email-util.js');
-var uuid = require('node-uuid');
+var uuid = require('uuid').v4;
 var urlUtil = require('../services/url-util');
 var local = require('../local');
 
@@ -14,7 +15,7 @@ module.exports = {
    * @param id
    * @returns {Promise.<T>}
    */
-  getUser(id, secure=false) {
+  getUser(id: number, secure: boolean=false) {
     debug('getting for id: ' + id);
       var user = {};
 
@@ -44,7 +45,7 @@ module.exports = {
         });
     },
 
-    getUserByName(display_name, secure=false) {
+    getUserByName(display_name: string, secure: boolean=false) {
 
       debug('getting user with name: ' + display_name);
 
@@ -72,7 +73,7 @@ module.exports = {
       });
     },
 
-    getUserByEmail(email, secure=false){
+    getUserByEmail(email: string, secure: boolean=false){
 
       debug('getting user with email: ' + email);
 
@@ -105,7 +106,7 @@ module.exports = {
       });
     },
 
-    getUserWithResetKey(key) {
+    getUserWithResetKey(key: string) {
 
       debug('getting user with password reset key');
 
@@ -126,7 +127,7 @@ module.exports = {
         });
     },
 
-    getUserWithConfirmationKey(key) {
+    getUserWithConfirmationKey(key: string) {
 
       debug('getting user with email confirmation key');
 
@@ -147,7 +148,7 @@ module.exports = {
         });
     },
 
-    createUser(email, name, display_name, creation_ip){
+    createUser(email: string, name: string, display_name: string, creation_ip: string){
 
       email = email.toLowerCase();
       display_name = display_name.toLowerCase();
@@ -165,7 +166,7 @@ module.exports = {
         });
     },
 
-    sendNewUserAdminEmail(user_id){
+    sendNewUserAdminEmail(user_id: number){
 
       return this.getUser(user_id)
       .then(function(user){
@@ -187,11 +188,11 @@ module.exports = {
         });
     },
 
-    sendConfirmationEmail(user_id, __){
+    sendConfirmationEmail(user_id: number, __: Function){
       //create confirm link
       debug('sending email confirmation for id: ' + user_id);
       var _this = this;
-      var new_email = uuid.v4();
+      var new_email = uuid();
       return knex('users').update({new_email}).where({id: user_id})
       .then(function(){
         return _this.getUser(user_id)
@@ -233,7 +234,7 @@ module.exports = {
         });
     },
 
-    checkEmailConfirmation(key){
+    checkEmailConfirmation(key: string){
       debug('checking email confirmation');
       return this.getUserWithConfirmationKey(key)
       .then(function(user){
@@ -247,7 +248,7 @@ module.exports = {
       });
     },
 
-    checkUserNameAvailable(username) {
+    checkUserNameAvailable(username: string) {
       return this.getUserByName(username)
         .then(function(result) {
           if (result == null) return true;
@@ -258,8 +259,7 @@ module.exports = {
         });
     },
 
-
-    getSearchSuggestions(input) {
+    getSearchSuggestions(input: string) {
       input = input.toLowerCase();
       return knex.select('display_name', 'id').table('users')
       .where(knex.raw('lower(display_name)'), 'like', '%' + input + '%');

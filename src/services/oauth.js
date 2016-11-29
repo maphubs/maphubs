@@ -114,8 +114,8 @@ exports.accessToken = [
             if (!info.approved) { return done(null, false); }
             if (client.id !== info.clientID) { return done(null, false); }
 
-            var token = utils.uid(16)
-                , secret = utils.uid(64)
+            const token: string = utils.uid(16);
+            const secret: string = utils.uid(64);
 
             db.accessTokens.save(token, secret, info.userID, info.clientID, function(err) {
                 if (err) { return done(err); }
@@ -162,10 +162,10 @@ exports.userAuthorization = [
             });
         });
     }),
-    function(req, res){
+    function(req: any, res: any){
         res.render('approvedialog', {title: 'Approve Access', props: {transactionID: req.oauth.transactionID, user: req.user.display_name, client: req.oauth.client.name}, req});
     }
-]
+];
 
 // user decision endpoint
 //

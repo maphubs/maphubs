@@ -1,16 +1,16 @@
+// @flow
 var knex = require('../connection.js');
-
 var debug = require('../services/debug')('models/tag');
 
 module.exports = {
 
-  getNodeTag(node_id, k, trx=null){
+  getNodeTag(node_id: number, k: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('current_node_tags').where({node_id, k});
   },
 
-  setNodeTag(node_id, k, v, trx=null){
+  setNodeTag(node_id: number, k: string, v: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return this.getNodeTag(node_id, k, trx)
@@ -23,20 +23,20 @@ module.exports = {
     });
   },
 
-  removeNodeTag(node_id, k, trx=null){
+  removeNodeTag(node_id: number, k: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('current_node_tags').del().where({node_id, k});
   },
 
-  getWayTag(way_id, k, trx=null){
+  getWayTag(way_id: number, k: string, trx: any=null){
     debug('getWayTag');
     let db = knex;
     if(trx){db = trx;}
     return db('current_way_tags').where({way_id, k});
   },
 
-  setWayTag(way_id, k, v, trx=null){
+  setWayTag(way_id: number, k: string, v: string, trx: any=null){
     debug('setWayTag');
     let db = knex;
     if(trx){db = trx;}
@@ -52,21 +52,21 @@ module.exports = {
     });
   },
 
-  removeWayTag(way_id, k, trx=null){
+  removeWayTag(way_id: number, k: string, trx: any=null){
     debug('removeWayTag');
     let db = knex;
     if(trx){db = trx;}
     return db('current_way_tags').del().where({way_id, k});
   },
 
-  getRelationTag(relation_id, k, trx=null){
+  getRelationTag(relation_id: number, k: string, trx: any=null){
     debug('getRelationTag');
     let db = knex;
     if(trx){db = trx;}
     return db('current_relation_tags').where({relation_id, k});
   },
 
-  setRelationTag(relation_id, k, v, trx=null){
+  setRelationTag(relation_id: number, k: string, v: string, trx: any=null){
     debug('setRelationTag');
     let db = knex;
     if(trx){db = trx;}
@@ -82,14 +82,14 @@ module.exports = {
     });
   },
 
-  removeRelationTag(relation_id, k, trx=null){
+  removeRelationTag(relation_id: number, k: string, trx: any=null){
     debug('removeRelationTag');
     let db = knex;
     if(trx){db = trx;}
     return db('current_relation_tags').del().where({relation_id, k});
   },
 
-  getPolygonTag(layer_id, osm_id, k, trx=null){
+  getPolygonTag(layer_id: number, osm_id: number, k: string, trx: any=null){
     debug('getPolygonTag');
     let db = knex;
     if(trx){db = trx;}
@@ -106,7 +106,7 @@ module.exports = {
     });
   },
 
-  getMultiPolygonTag(layer_id, osm_id, k, trx=null){
+  getMultiPolygonTag(layer_id: number, osm_id: number, k: string, trx: any=null){
     debug('getMultiPolygonTag');
     let db = knex;
     if(trx){db = trx;}
@@ -123,7 +123,7 @@ module.exports = {
     });
   },
 
-  setPolygonTag(layer_id, osm_id, k, v, trx=null){
+  setPolygonTag(layer_id: number, osm_id: number, k: string, v: string, trx: any=null){
     debug('setPolygonTag');
     let db = knex;
     if(trx){db = trx;}
@@ -139,7 +139,7 @@ module.exports = {
     });
   },
 
-  removePolygonTag(layer_id, osm_id, k, trx=null){
+  removePolygonTag(layer_id: number, osm_id: number, k: string, trx: any=null){
     debug('removePolygonTag');
     let db = knex;
     if(trx){db = trx;}
@@ -155,7 +155,7 @@ module.exports = {
     });
   },
 
-  setMultiPolygonTag(layer_id, osm_id, k, v, trx=null){
+  setMultiPolygonTag(layer_id: number, osm_id: number, k: string, v: string, trx: any=null){
     debug('setMultiPolygonTag');
     let db = knex;
     if(trx){db = trx;}
@@ -171,7 +171,7 @@ module.exports = {
     });
   },
 
-  removeMultiPolygonTag(layer_id, osm_id, k, trx=null){
+  removeMultiPolygonTag(layer_id: number, osm_id: number, k: string, trx: any=null){
     debug('removeMultiPolygonTag');
     let db = knex;
     if(trx){db = trx;}

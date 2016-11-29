@@ -1,4 +1,4 @@
-'use strict';
+// @flow
 /*
  * Model for Relations
  *
@@ -51,7 +51,7 @@ var Relation = {
   },
 
 
-  fromEntity(entity, meta, layerID) {
+  fromEntity(entity: any, meta: any, layerID: number) {
     var model = {};
     model.visible = (entity.visible !== 'false' && entity.visible !== false);
     model.version = parseInt(entity.version, 10) || 1;
@@ -71,7 +71,7 @@ var Relation = {
     return model;
   },
 
-  fromOSM(xml) {
+  fromOSM(xml: any) {
     // Transfer all attributes.
     var model = {};
     var attributes = xml.attrs();
@@ -112,7 +112,7 @@ var Relation = {
     return model;
   },
 
-  createDependents(raw, ids, map, transaction) {
+  createDependents(raw: Array<Object>, ids: Array<number>, map: any, transaction: any) {
     var tags = [];
     var members = [];
     raw.forEach(function(entity, i) {
@@ -164,7 +164,7 @@ var Relation = {
     });
   },
 
-  destroyDependents(ids, transaction) {
+  destroyDependents(ids, transaction: any) {
     return Promise.all([
       transaction(Member.tableName).whereIn('relation_id', ids).del(),
       transaction(RelationTag.tableName).whereIn('relation_id', ids).del()
@@ -173,7 +173,7 @@ var Relation = {
     });
   },
 
-  save(q) {
+  save(q: any) {
     var actions = [];
     var model = this;
     ['create', 'modify', 'delete'].forEach(function(action) {
@@ -190,7 +190,7 @@ var Relation = {
     });
   },
 
-  create(q) {
+  create(q: any) {
     var raw = q.changeset.create.relation;
     if(!Array.isArray(raw)){
         raw = [raw];
@@ -217,7 +217,7 @@ var Relation = {
     });
   },
 
-  modify(q) {
+  modify(q: any) {
     var raw = q.changeset.modify.relation;
     if(!Array.isArray(raw)){
         raw = [raw];
@@ -242,7 +242,7 @@ var Relation = {
 
   // TODO this destroy function does not implement a check
   // to see if any relation is a part of any other relation.
-  'delete'(q) {
+  'delete'(q: any) {
     var raw = q.changeset['delete'].relation;
     if(!Array.isArray(raw)){
         raw = [raw];

@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var local = require('../local');
 var mailgun = require('mailgun-js')({apiKey: local.MAILGUN_API_KEY, domain: 'maphubs.com'});
 var mailcomposer = require('mailcomposer');
@@ -19,7 +19,7 @@ html: '<b> Test email text </b>'
 }
 
 */
-send(data){
+send(data: any){
   debug('Send email to ' + data.to + ' with subject: ' + data.subject);
   return new Promise(function(fulfill, reject) {
       var mail = mailcomposer(data);

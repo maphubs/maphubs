@@ -1,11 +1,11 @@
-/* @flow weak */
+// @flow
 var passport = require('passport');
 var oauth = require('../../services/oauth');
 var local = require('../../local');
 var csrfProtection = require('csurf')({cookie: false});
 var log = require('../../services/log');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   //User login and account endpoints
 

@@ -1,10 +1,11 @@
+// @flow
 var urlUtil = require('./url-util');
 var slug = require('slug');
 
 module.exports = {
 
 
-  combineCards(cardDataArray){
+  combineCards(cardDataArray: Array<Object>): Array<Object>{
     var output = [];
     cardDataArray.forEach(function(cardArr){
       output = output.concat(cardArr);
@@ -12,7 +13,7 @@ module.exports = {
     return output;
   },
 
-  getLayerCard(layer, id, arr, onClick=null){
+  getLayerCard(layer: Object, id: number, arr: Array<Object>, onClick?: Function){
     var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
     return {
       id: layer.layer_id.toString(),
@@ -28,7 +29,7 @@ module.exports = {
     };
   },
 
-  getHubCard(hub, id, arr, onClick=null){
+  getHubCard(hub: Object, id: number, arr: Array<Object>, onClick?: Function){
     var title = hub.name.replace('&nbsp;', '');
     var hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
     return {
@@ -44,7 +45,7 @@ module.exports = {
     };
   },
 
-  getMapCard(map, id, arr, onClick=null){
+  getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function){
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
       id: map.map_id.toString(),
@@ -57,7 +58,7 @@ module.exports = {
     };
   },
 
-  getGroupCard(group, id, arr, onClick=null){
+  getGroupCard(group: Object, id: number, arr: Array<Object>, onClick?: Function){
     var image_url = null;
     if(group.hasimage){
       image_url = '/group/' + group.group_id + '/image';
@@ -76,7 +77,7 @@ module.exports = {
   },
 
 
-  getStoryCard(story, id, arr, onClick=null){
+  getStoryCard(story: Object, id: number, arr: Array<Object>, onClick?: Function){
     var title = story.title.replace('&nbsp;', '');
     var story_url = '';
     var baseUrl = urlUtil.getBaseUrl();

@@ -1,3 +1,4 @@
+// @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var _map = require('lodash.map');
@@ -15,14 +16,14 @@ module.exports = {
     ).table('omh.hubs').where('published', true);
     },
 
-  getRecentHubs(number = 15){
+  getRecentHubs(number: number = 15){
     return knex.select().table('omh.hubs')
     .where('published', true)
     .orderBy('updated_at', 'desc')
     .limit(number);
   },
 
-  getPopularHubs(number = 15){
+  getPopularHubs(number: number = 15){
     return knex.select().table('omh.hubs')
     .where('published', true)
     .whereNotNull('views')
@@ -30,14 +31,14 @@ module.exports = {
     .limit(number);
   },
 
-  getFeaturedHubs(number = 15){
+  getFeaturedHubs(number: number = 15){
     return knex.select().table('omh.hubs')
     .where({published: true, featured: true})
     .orderBy('name')
     .limit(number);
   },
 
-    getHubStories(hub_id, includeDrafts = false) {
+    getHubStories(hub_id: string, includeDrafts: boolean = false) {
       debug('get stories for hub: ' + hub_id);
       var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
        'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
@@ -59,7 +60,7 @@ module.exports = {
       return query;
     },
 
-    getSearchSuggestions(input) {
+    getSearchSuggestions(input: string) {
       input = input.toLowerCase();
       return knex.select('name')
       .table('omh.hubs')
@@ -87,7 +88,7 @@ module.exports = {
       .orderBy('name');
     },
 
-    getSearchResults(input) {
+    getSearchResults(input: string) {
       input = input.toLowerCase();
       return knex.select().table('omh.hubs')
       .where('published', true)
@@ -114,7 +115,7 @@ module.exports = {
       .orderBy('name');
     },
 
-    getHubByID(hub_id) {
+    getHubByID(hub_id: string) {
       debug('get hub: ' + hub_id);
       return knex('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
@@ -146,14 +147,14 @@ module.exports = {
         });
     },
 
-    getHubsForUser(user_id) {
+    getHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
       return knex.select('omh.hubs.*').from('omh.hub_memberships')
         .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
         .where('omh.hub_memberships.user_id', user_id);
     },
 
-    getPublishedHubsForUser(user_id) {
+    getPublishedHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
       return knex.select('omh.hubs.*').from('omh.hub_memberships')
         .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
@@ -163,7 +164,7 @@ module.exports = {
         });
     },
 
-    getDraftHubsForUser(user_id) {
+    getDraftHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
       return knex.select('omh.hubs.*').from('omh.hub_memberships')
         .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
@@ -174,24 +175,24 @@ module.exports = {
     },
 
 
-    getHubRole(user_id, hub_id) {
+    getHubRole(user_id: number, hub_id: string) {
       return knex.select('omh.hub_memberships.role').from('omh.hub_memberships')
       .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id]);
     },
 
-    getHubMembers(hub_id) {
+    getHubMembers(hub_id: string) {
       return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
         .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
         .whereRaw('lower(omh.hub_memberships.hub_id) = ?', hub_id.toLowerCase());
     },
 
-    getHubMembersByRole(hub_id, role) {
+    getHubMembersByRole(hub_id: string, role: string) {
       return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
         .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
         .where({'omh.hub_memberships.hub_id': hub_id, 'omh.hub_memberships.role': role});
     },
 
-    addHubMember(hub_id, user_id, role) {
+    addHubMember(hub_id: string, user_id: number, role: string) {
       hub_id = hub_id.toLowerCase();
       return knex('omh.hub_memberships')
       .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id])
@@ -207,7 +208,7 @@ module.exports = {
 
     },
 
-    updateHubMemberRole(hub_id, user_id, role) {
+    updateHubMemberRole(hub_id: string, user_id: number, role: string) {
       return knex('omh.hub_memberships')
         .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id])
         .update({
@@ -215,28 +216,13 @@ module.exports = {
         });
     },
 
-    removeHubMember(hub_id, user_id) {
+    removeHubMember(hub_id: string, user_id: number) {
       return knex('omh.hub_memberships')
         .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id])
         .del();
     },
 
-    /*
-    addHubLayer(hub_id, layer_id, active) {
-      hub_id = hub_id.toLowerCase();
-      return knex('omh.hub_layers').insert({
-        hub_id, layer_id, active
-      })
-    },
-
-    removeHubLayer(hub_id, layer_id) {
-      return knex('omh.hub_layers')
-        .whereRaw('lower(hub_id) = ? AND layer_id= ?', [hub_id.toLowerCase(), layer_id])
-        .del()
-    },
-    */
-
-    allowedToModify(hub_id, user_id){
+    allowedToModify(hub_id: string, user_id: number){
       debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
       return this.getHubMembers(hub_id)
         .then(function(users){
@@ -249,7 +235,7 @@ module.exports = {
         });
       },
 
-    checkHubIdAvailable(hub_id) {
+    checkHubIdAvailable(hub_id: string) {
       return this.getHubByID(hub_id)
         .then(function(result) {
           if (result == null) return true;
@@ -257,7 +243,7 @@ module.exports = {
         });
     },
 
-    createHub(hub_id, name, published, user_id) {
+    createHub(hub_id: string, name: string, published: boolean, user_id: number) {
       var role = 'Administrator';
       hub_id = hub_id.toLowerCase();
       return knex.transaction(function(trx) {
@@ -277,7 +263,7 @@ module.exports = {
     });
     },
 
-    updateHub(hub_id, name, description, tagline, published, resources, about, user_id) {
+    updateHub(hub_id: string, name: string, description: string, tagline: string, published: boolean, resources: string, about: string, user_id: number) {
       //#TODO add option to change hub_id
       return knex('omh.hubs')
         .where('hub_id', hub_id)
@@ -288,7 +274,7 @@ module.exports = {
         });
     },
 
-    publishHub(hub_id, user_id) {
+    publishHub(hub_id: string, user_id: number) {
       return knex('omh.hubs')
         .where('hub_id', hub_id)
         .update({
@@ -298,7 +284,7 @@ module.exports = {
         });
     },
 
-    deleteHub(hub_id) {
+    deleteHub(hub_id: string) {
       return knex.transaction(function(trx) {
         return Promise.all([
             trx('omh.hub_images').select('image_id').where({hub_id}),

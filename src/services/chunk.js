@@ -3,8 +3,7 @@ var log = require('./log.js');
 
 // Module to split an array into nested arrays,
 // each containing n items of the original array where n = interval.
-module.exports = function(array: Array<number>, interval: number) {
-  interval = interval || 5000;
+module.exports = function(array: Array<number>, interval: number=5000) {
   var count: number = array.length;
   if (count === 0) {
     return [];

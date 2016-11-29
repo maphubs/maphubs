@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var _forEach = require('lodash.foreach');
 var knex = require('../../connection.js');
 var queryWays = require('../../services/query-ways.js');
@@ -84,7 +84,7 @@ function serveWays(req, res, next) {
 }
 
 
-module.exports = function(app) {
+module.exports = function(app: any) {
     app.get('/api/0.6/way/:wayId/full', serveSingleWay);
     app.get('/api/0.6/way/:wayId', serveSingleWay);
     app.get('/api/0.6/ways/:wayIds', serveWays);

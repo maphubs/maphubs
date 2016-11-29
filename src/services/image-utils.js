@@ -1,6 +1,7 @@
+// @flow
 var fs = require('fs');
 var Promise = require('bluebird');
-var uuid = require('node-uuid');
+var uuid = require('uuid').v4;
 var local = require('../local');
 var log = require('./log');
 var debug = require('./debug')('image-utils');
@@ -8,7 +9,7 @@ var easyimg = require('easyimage');
 
 module.exports = {
 
-  processImage(image, req, res){
+  processImage(image: string, req: any, res: any){
     if(!image){
       res.writeHead(200, {
         'Content-Type': 'image/png',
@@ -36,8 +37,8 @@ module.exports = {
     }
   },
 
-  decodeBase64Image(dataString) {
-  var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+  decodeBase64Image(dataString: string) {
+  var matches: Array<string> = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
     response = {};
 
   if (matches.length !== 3) {
@@ -50,7 +51,7 @@ module.exports = {
   return response;
 },
 
-  resizeBase64(dataString, targetWidth, targetHeight, crop=false){
+  resizeBase64(dataString: string, targetWidth: number, targetHeight: number, crop: boolean=false){
     var _this = this;
     var cmd = null;
 
@@ -58,9 +59,9 @@ module.exports = {
       //decode base64
       var imageBuffer = _this.decodeBase64Image(dataString);
       //save it to a file
-      var origFile = uuid.v4() + '.png';
-      var resizedFile = uuid.v4() + '.png';
-      var convertedFile = uuid.v4() + '.jpg';
+      var origFile = uuid() + '.png';
+      var resizedFile = uuid() + '.png';
+      var convertedFile = uuid() + '.jpg';
       var origfilePath = local.tempFilePath + '/' + origFile;
       var resizedFilePath = local.tempFilePath + '/' + resizedFile;
       var convertedFilePath = local.tempFilePath + '/' + convertedFile;

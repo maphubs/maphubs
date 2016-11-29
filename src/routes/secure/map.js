@@ -1,14 +1,11 @@
-/* @flow weak */
+// @flow
 var knex = require('../../connection.js');
 var queryBbox = require('../../services/query-bbox.js');
 var XML = require('../../services/xml.js');
 var Promise = require('bluebird');
-//var Node = require('../../models/node-model.js');
 var User = require('../../models/user');
-//var Layer = require('../../models/layer');
 var Map = require('../../models/map');
 var Layer = require('../../models/layer');
-var Story = require('../../models/story');
 var Stats = require('../../models/stats');
 var BoundingBox = require('../../services/bounding-box.js');
 var debug = require('../../services/debug')('routes/map');
@@ -18,9 +15,9 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
-  var recordMapView = function(session, map_id, user_id,  next){
+  var recordMapView = function(session: Object, map_id: number, user_id: number,  next: any){
     if(!session.mapviews){
       session.mapviews = {};
     }
@@ -126,7 +123,7 @@ module.exports = function(app) {
       apiDataError(res);
     }
 
-    var user_id = null;
+    var user_id = -1;
     if(req.session.user){
       user_id = req.session.user.id;
     }
@@ -151,7 +148,7 @@ module.exports = function(app) {
       apiDataError(res);
     }
 
-    var user_id = null;
+    var user_id = -1;
     if(req.session.user){
       user_id = req.session.user.id;
     }
@@ -176,7 +173,7 @@ module.exports = function(app) {
       apiDataError(res);
     }
 
-    var user_id = null;
+    var user_id = -1;
     if(req.session.user){
       user_id = req.session.user.id;
     }
@@ -229,7 +226,7 @@ module.exports = function(app) {
       apiDataError(res);
     }
 
-    var user_id = null;
+    var user_id = -1;
     if(req.session.user){
       user_id = req.session.user.id;
     }
@@ -254,7 +251,7 @@ module.exports = function(app) {
       apiDataError(res);
     }
 
-    var user_id = null;
+    var user_id = -1;
     if(req.session.user){
       user_id = req.session.user.id;
     }

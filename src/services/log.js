@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var winston = require('winston');
 var local = require('../local');
 require('winston-loggly');

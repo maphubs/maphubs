@@ -1,6 +1,7 @@
+// @flow
 var log = require('./log');
 
-module.exports = function(geo, changeset, osmChange, start, limit) {
+module.exports = function(geo: any, changeset: any, osmChange: any, start: number, limit: number) {
 
   function append(obj, result) {
       result.node = result.node.concat(obj.node);
@@ -28,7 +29,8 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
                 id: count,
                 lat: coord[0][1],
                 lon:  coord[0][0],
-                changeset
+                changeset,
+                tag: []
               };
               node.tag = propertiesToTagsJSON(properties);
               result.node.push(node);
@@ -56,7 +58,8 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
               var relation = {
                 id: count,
                 changeset,
-                member: []
+                member: [],
+                tag: []
               };
 
               properties.type = 'multipolygon';
@@ -66,7 +69,7 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
 
                   var poly = multipolygon({
                       'coordinates': geo.coordinates[i]
-                  });
+                  }, {});
 
                   result.node = result.node.concat(poly.node);
                   result.way = result.way.concat(poly.way);
@@ -92,7 +95,9 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
         var coords = [];
         var way = {
           id: count,
-          changeset
+          changeset,
+          nd: [],
+          tag: []
         };
         count--;
         for (var i = 0; i < geo.coordinates.length; i++) {
@@ -113,7 +118,9 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
         var coords = [];
         var way = {
           id: count,
-          changeset
+          changeset,
+          nd: [],
+          tag: []
         };
         count--;
         for (var i = 0; i < geo.coordinates[0].length; i++) {
@@ -130,7 +137,7 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
     }
 
     //for multipolygons, we just collect all the ways as members
-    function multipolygon(geo, properties) {
+    function multipolygon(geo: any, properties: Object) {
         var nodes = [],
             ways = [],
             members = [],
@@ -173,7 +180,8 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
             // polygon -> way
              way = {
               id: count,
-              changeset
+              changeset,
+              nd: []
             };
 
              member = {
@@ -216,7 +224,8 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
             relation = {
               id: count,
               changeset,
-              member: []
+              member: [],
+              tag: []
             };
             properties.type = 'multipolygon';
             count--;
@@ -254,7 +263,9 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
             // polygon -> way
              way = {
               id: count,
-              changeset
+              changeset,
+              nd: [],
+              tag: []
             };
 
             count--;
@@ -287,8 +298,8 @@ module.exports = function(geo, changeset, osmChange, start, limit) {
         }
     }
 
-    function propertiesToTagsJSON(properties) {
-        var tags = [];
+    function propertiesToTagsJSON(properties: Object): Array<Object> {
+        var tags: Array<Object> = [];
         for (var tag in properties) {
             if (properties[tag] !== null) {
                 var value = properties[tag];

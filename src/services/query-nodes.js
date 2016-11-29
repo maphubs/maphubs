@@ -1,8 +1,8 @@
-/* @flow weak */
+// @flow
 var Promise = require('bluebird');
 var debug = require('./debug')('query-nodes');
 
-module.exports = function queryNodes(knex) {
+module.exports = function queryNodes(knex: any) {
 
   debug('Query Nodes');
 

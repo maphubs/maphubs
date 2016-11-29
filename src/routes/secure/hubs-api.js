@@ -1,186 +1,22 @@
-/* @flow weak */
-var express = require('express');
+// @flow
 var local = require('../../local');
 var Layer = require('../../models/layer');
-var Story = require('../../models/story');
 var Hub = require('../../models/hub');
 var User = require('../../models/user');
 var Map = require('../../models/map');
 var Image = require('../../models/image');
-var Stats = require('../../models/stats');
 var Email = require('../../services/email-util');
-//var path = require('path');
-var login = require('connect-ensure-login');
 //var log = require('../../services/log.js');
 var debug = require('../../services/debug')('routes/hubs');
 var Promise = require('bluebird');
-var MapUtils = require('../../services/map-utils');
-var knex = require('../../connection.js');
-
-var urlUtil = require('../../services/url-util');
-var baseUrl = urlUtil.getBaseUrl();
 var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
-
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
-  //API Endpoints
-  app.post('/hub/:hubid/api/hub/story/save', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var data = req.body;
-    if (data && data.story_id && data.title && data.author && data.body) {
-      data.title = data.title.replace('&nbsp;', '');
-      Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
-            .then(function(result) {
-              if (result && result == 1) {
-                res.send({
-                  success: true
-                });
-              } else {
-                res.send({
-                  success: false,
-                  error: "Failed to Save Story"
-                });
-              }
-            }).catch(apiError(res, 500));
-        }else {
-          notAllowedError(res, 'story');
-        }
-      }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-  });
-
-  app.post('/hub/:hubid/api/story/delete', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var data = req.body;
-    if (data && data.story_id) {
-      Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          return knex.transaction(function(trx) {
-            return Image.removeAllStoryImages(data.story_id, trx)
-              .then(function() {
-                return Story.delete(data.story_id, trx)
-                  .then(function() {
-                    res.send({
-                      success: true
-                    });
-                });
-              });
-            }).catch(apiError(res, 500));
-        }else {
-          notAllowedError(res, 'story');
-        }
-      }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-  });
-
-  app.post('/hub/:hubid/api/hub/story/create', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var hub_id = req.params.hubid;
-    var data = req.body;
-    if (data && data.title && data.body && data.author) {
-      Hub.allowedToModify(hub_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          Story.createHubStory(hub_id, data.title, data.body, data.author, data.firstline, data.firstimage)
-            .then(function(result) {
-              if (result && result.length == 1) {
-                res.send({
-                  success: true,
-                  story_id: result[0]
-                });
-              } else {
-                res.send({
-                  success: false,
-                  error: "Failed to Create Story"
-                });
-              }
-            }).catch(apiError(res, 500));
-        }else {
-          notAllowedError(res, 'hub');
-        }
-      }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-  });
-
-
-  app.post('/hub/:hubid/api/story/removeimage', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var data = req.body;
-    if (data && data.story_id && data.image_id) {
-      Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          Image.removeStoryImage(data.story_id, data.image_id)
-            .then(function() {
-              res.send({
-                success: true
-              });
-            }).catch(apiError(res, 500));
-        }else {
-          notAllowedError(res, 'story');
-        }
-      }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-  });
-
-  app.post('/hub/:hubid/api/map/create/storymap', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-
-    var data = req.body;
-    if(data && data.layers && data.style && data.basemap && data.position && data.story_id){
-      Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-            Map.createStoryMap(data.layers, data.style, data.basemap, data.position, data.story_id, data.title, user_id)
-            .then(function(result){
-              res.status(200).send({success: true, map_id: result[0]});
-            }).catch(apiError(res, 500));
-      }else {
-        notAllowedError(res, 'story');
-      }
-    }).catch(apiError(res, 500));
-    }else{
-      apiDataError(res);
-    }
-  });
-
+ 
   app.post('/hub/:hubid/api/map/save', function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");

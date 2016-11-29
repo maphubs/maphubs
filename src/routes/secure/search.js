@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var knex = require('../../connection.js');
 var dbgeo = require('dbgeo');
 var Promise = require('bluebird');
@@ -8,7 +8,7 @@ var turf_bbox = require('@turf/bbox');
 var geojsonUtils = require('../../services/geojson-utils');
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/search', csrfProtection, function(req, res) {
       res.render('search', {

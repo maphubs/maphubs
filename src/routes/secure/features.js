@@ -1,16 +1,14 @@
-/* @flow weak */
+// @flow
 var Feature = require('../../models/feature');
 var Layer = require('../../models/layer');
 var PhotoAttachment = require('../../models/photo-attachment');
 var knex = require('../../connection.js');
 var Tag = require('../../models/tag');
-var local = require('../../local');
 var urlUtil = require('../../services/url-util');
 var imageUtils = require('../../services/image-utils');
 var Promise = require('bluebird');
 var layerViews = require('../../services/layer-views');
 var debug = require('../../services/debug')('routes/features');
-var ogr2ogr = require('ogr2ogr');
 var log = require('../../services/log');
 
 //var log = require('../../services/log.js');
@@ -22,7 +20,7 @@ var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
 
   app.get('/feature/:layer_id/:osm_id/*', function(req, res, next) {

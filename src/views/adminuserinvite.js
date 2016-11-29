@@ -1,3 +1,4 @@
+// @flow
 var React = require('react');
 var Formsy = require('formsy-react');
 var TextInput = require('../components/forms/textInput');
@@ -17,7 +18,7 @@ var PasswordReset = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
@@ -25,7 +26,7 @@ var PasswordReset = React.createClass({
     locale: React.PropTypes.string.isRequired
   },
 
-  getInitialState(){
+  getInitialState(): Object{
     return {
       canSubmit: false,
       saving: false
@@ -44,7 +45,7 @@ var PasswordReset = React.createClass({
     });
   },
 
-  onSubmit(model){
+  onSubmit(model: Object){
     var _this = this;
     this.setState({saving: true});
     request.post('/admin/invite/send')

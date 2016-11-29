@@ -1,3 +1,4 @@
+// @flow
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var Actions = require('../actions/UserActions');
@@ -59,7 +60,7 @@ module.exports = Reflux.createStore({
 
  },
 
-  updatePassword(user_id, password, pass_reset, _csrf, cb){
+  updatePassword(user_id: number, password: string, pass_reset, _csrf, cb){
     if(this.state.loggedIn && this.state.user.id !== user_id){
       debug('User ID mismatch, will not send request');
       cb('User session error, please clear browser sessions/cache and try again.');

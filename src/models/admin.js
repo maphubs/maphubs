@@ -1,17 +1,18 @@
+// @flow
 var knex = require('../connection');
 var debug = require('../services/debug')('models/user');
 var Email = require('../services/email-util.js');
-var uuid = require('node-uuid');
+var uuid = require('uuid').v4;
 var urlUtil = require('../services/url-util');
 var local = require('../local');
 
 
 module.exports = {
 
-  sendInviteEmail(email, __){
+  sendInviteEmail(email: string, __: Function){
     //create confirm link
     debug('sending email invite to: ' + email);
-    var key = uuid.v4();
+    var key = uuid();
     return knex('omh.account_invites').insert({email, key})
     .then(function(){
         var baseUrl = urlUtil.getBaseUrl();
@@ -45,7 +46,7 @@ module.exports = {
       });
   },
 
-  checkInviteKey(key){
+  checkInviteKey(key: string){
     debug('checking invite key');
     return knex('omh.account_invites').select('email').where({key, used:false})
     .then(function(result){
@@ -56,7 +57,7 @@ module.exports = {
     });
   },
 
-  useInvite(key){
+  useInvite(key: string){
     debug('using invite key');
     return knex('omh.account_invites').update({used:true}).where({key})
     .then(function(){
@@ -71,13 +72,13 @@ module.exports = {
     });
   },
 
-  checkAdmin(user_id){
+  checkAdmin(user_id: number){
     return knex('omh.admins').select('user_id').where({user_id})
     .then(function(result){
       if(result && result.length === 1){
         return true;
       }
-      return null;
+      return false;
     });
   }
 

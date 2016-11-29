@@ -1,10 +1,11 @@
+// @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var Layer = require('./layer');
 
 module.exports = {
 
-  getPhotoAttachment(photo_id, trx=null){
+  getPhotoAttachment(photo_id: number, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.photo_attachments').where({photo_id})
@@ -16,7 +17,7 @@ module.exports = {
     });
   },
 
-  getPhotoIdsForFeature(layer_id, osm_id, trx=null){
+  getPhotoIdsForFeature(layer_id: number, osm_id: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments').select('omh.photo_attachments.photo_id')
@@ -24,7 +25,7 @@ module.exports = {
     .where({layer_id, osm_id});
   },
 
-  getPhotoAttachmentsForFeature(layer_id, osm_id, trx=null){
+  getPhotoAttachmentsForFeature(layer_id: number, osm_id: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments').select('omh.photo_attachments.*')
@@ -32,7 +33,7 @@ module.exports = {
     .where({layer_id, osm_id});
   },
 
-  setPhotoAttachment(layer_id, osm_id, data, info, user_id, trx=null){
+  setPhotoAttachment(layer_id: number, osm_id: string, data: string, info: string, user_id: number, trx: any=null){
     var _this = this;
     return this.getPhotoAttachmentsForFeature(layer_id, osm_id, trx)
     .then(function(results){
@@ -51,7 +52,7 @@ module.exports = {
     });
   },
 
-  addPhotoAttachment(layer_id, osm_id, data, info, user_id, trx=null){
+  addPhotoAttachment(layer_id: number, osm_id: string, data: string, info: string, user_id: number, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.photo_attachments')
@@ -71,13 +72,13 @@ module.exports = {
     });
   },
 
-  updatePhotoAttachment(photo_id, data, info, trx=null){
+  updatePhotoAttachment(photo_id: number, data: string, info: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.photo_attachments').update({data, info}).where({photo_id});
   },
 
-  deletePhotoAttachment(layer_id, osm_id, photo_id, trx=null){
+  deletePhotoAttachment(layer_id: number, osm_id: string, photo_id: number, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments')
@@ -88,7 +89,7 @@ module.exports = {
   },
 
   //need to call this before deleting a layer
-  removeAllLayerAttachments(layer_id, trx=null){
+  removeAllLayerAttachments(layer_id: number, trx: any=null){
     var _this = this;
     let db = knex;
     if(trx){db = trx;}  
@@ -104,7 +105,7 @@ module.exports = {
     });
   },
 
-  addPhotoUrlPreset(layer, user_id, trx){
+  addPhotoUrlPreset(layer: Object, user_id: number, trx: any){
     var presets = layer.presets;
 
 

@@ -1,3 +1,4 @@
+// @flow
 var React = require('react');
 
 var Header = require('../components/header');
@@ -14,7 +15,7 @@ var About = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 

@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 //var debug = require('../../services/debug')('routes/stories');
 var login = require('connect-ensure-login');
 var User = require('../../models/user');
@@ -10,7 +10,7 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   //Views
   app.get('/stories', function(req, res, next) {
@@ -136,7 +136,7 @@ module.exports = function(app) {
     var story_id = parseInt(req.params.story_id || '', 10);
     var username = req.params.username;
 
-      var user_id = null;
+      var user_id = -1;
       if ( (req.isAuthenticated || req.isAuthenticated())
           && req.session && req.session.user) {
             user_id = req.session.user.id;

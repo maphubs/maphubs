@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var knex = require('../connection.js');
 var debug = require('../services/debug')('model/image');
 var ImageUtils = require('../services/image-utils');
@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 
 module.exports = {
 
-  getImageByID(image_id){
+  getImageByID(image_id: number){
     return knex('omh.images').select('image_id','image').where({image_id})
     .then(function(result) {
       if (result && result.length == 1) {
@@ -17,7 +17,7 @@ module.exports = {
     });
   },
 
-  getThumbnailImageByID(image_id){
+  getThumbnailImageByID(image_id: number){
     return knex('omh.images').select('image_id','thumbnail').where({image_id})
     .then(function(result) {
       if (result && result.length == 1) {
@@ -32,7 +32,7 @@ module.exports = {
   // Groups
   ////////////
 
-  getGroupImage(group_id){
+  getGroupImage(group_id: string){
     debug('get image for group: ' + group_id);
     var _this = this;
     return knex('omh.group_images').select('image_id')
@@ -50,7 +50,7 @@ module.exports = {
     });
   },
 
-  getGroupThumbnail(group_id){
+  getGroupThumbnail(group_id: string){
     debug('get image for group: ' + group_id);
     var _this = this;
     return knex('omh.group_images').select('image_id')
@@ -69,7 +69,7 @@ module.exports = {
   },
 
 
-  insertGroupImage(group_id, image, info, trx){
+  insertGroupImage(group_id: string, image: any, info: any, trx: any){
     return ImageUtils.resizeBase64(image, 40, 40)
       .then(function(thumbnail){
         return trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
@@ -80,7 +80,7 @@ module.exports = {
     });
   },
 
-  setGroupImage(group_id, image, info){
+  setGroupImage(group_id: string, image: any, info: any){
     var _this = this;
       return knex.transaction(function(trx) {
         return trx('omh.group_images').select('image_id')
@@ -106,7 +106,7 @@ module.exports = {
   // Hubs
   ////////////
 
-  getHubImage(hub_id, type="logo"){
+  getHubImage(hub_id: string, type: string="logo"){
     debug('get image for hub: ' + hub_id);
     var _this = this;
     return knex('omh.hub_images').select('image_id')
@@ -126,7 +126,7 @@ module.exports = {
     });
   },
 
-  getHubThumbnail(hub_id, type="logo"){
+  getHubThumbnail(hub_id: string, type: string="logo"){
     debug('get image for hub: ' + hub_id);
     var _this = this;
     return knex('omh.hub_images').select('image_id')
@@ -143,7 +143,7 @@ module.exports = {
     });
   },
 
-  insertHubImage(hub_id, image, info, type, trx){
+  insertHubImage(hub_id: string, image: any, info: any, type: string, trx: any){
     if(type == 'logo'){
       return ImageUtils.resizeBase64(image, 72, 72) //for @2x story logos shown at 36x36
       .then(function(thumbnail){
@@ -166,7 +166,7 @@ module.exports = {
   },
 
   //delete prev image if there is one, then insert
-  setHubImage(hub_id, image, info, type){
+  setHubImage(hub_id: string, image: any, info: any, type: string){
     var _this = this;
     return knex.transaction(function(trx) {
       return trx('omh.hub_images').select('image_id')
@@ -192,7 +192,7 @@ module.exports = {
   // Stories
   ////////////
 
-  getStoryImage(story_id, image_id){
+  getStoryImage(story_id: number, image_id: number){
     debug('get image for story: ' + story_id);
     var _this = this;
     return knex('omh.story_images').select('image_id').where({story_id, image_id})
@@ -206,7 +206,7 @@ module.exports = {
     });
   },
 
-  getStoryThumbnail(story_id, image_id){
+  getStoryThumbnail(story_id: number, image_id: number){
     debug('get image for story: ' + story_id);
     var _this = this;
     return knex('omh.story_images').select('image_id').where({story_id, image_id})
@@ -220,7 +220,7 @@ module.exports = {
     });
   },
 
-  addStoryImage(story_id, image, info){
+  addStoryImage(story_id: number, image: any, info: any){
     return knex.transaction(function(trx) {
       return ImageUtils.resizeBase64(image, 800, 240, true)
       .then(function(thumbnail){
@@ -236,7 +236,7 @@ module.exports = {
     });
   },
 
-  removeStoryImage(story_id, image_id){
+  removeStoryImage(story_id: number, image_id: number){
     return knex.transaction(function(trx) {
       return trx('omh.story_images').where({story_id, image_id}).del()
       .then(function(){
@@ -245,7 +245,7 @@ module.exports = {
     });
   },
 
-  removeAllStoryImages(story_id, trx){
+  removeAllStoryImages(story_id: number, trx: any){
       return trx('omh.story_images').select('image_id').where({story_id})
       .then(function(results){
         var commands = [];

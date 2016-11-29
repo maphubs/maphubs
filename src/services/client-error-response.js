@@ -1,8 +1,9 @@
+// @flow
 var debug = require('./debug')('clientError');
 
 module.exports = {
 
-  checkClientError(res, err, cb, onSuccess){
+  checkClientError(res: Object, err: Object, cb: Function, onSuccess: Function){
     if(err && res && res.body && res.body.error){
       debug(res.body.error);
       cb(res.body.error);

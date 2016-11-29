@@ -1,3 +1,4 @@
+// @flow
 var Layer = require('../../models/layer');
 var Group = require('../../models/group');
 var Hub = require('../../models/hub');
@@ -7,7 +8,7 @@ var Promise = require('bluebird');
 var nextError = require('../../services/error-response').nextError;
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/', csrfProtection, function(req, res, next) {
     Promise.all([

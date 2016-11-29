@@ -1,6 +1,6 @@
-/* @flow weak */
+// @flow
 module.exports = {
-  getBaseUrl(internal){
+  getBaseUrl(internal: boolean=false): string{
     var host, port;
     if(internal){
        host = MAPHUBS_CONFIG.host_internal;
@@ -18,7 +18,7 @@ module.exports = {
     return  url;
   },
 
-  getUrlParameter(sParam) {
+  getUrlParameter(sParam: string) {
     if(typeof window === 'undefined') return;
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
         sURLVariables = sPageURL.split('&'),

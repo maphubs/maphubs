@@ -1,10 +1,11 @@
+// @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var debug = require('../services/debug')('model/stats');
 
 module.exports = {
 
-  getLayerStats(layer_id){
+  getLayerStats(layer_id: number){
 
     var queryViewsByDay = knex.select(knex.raw("date_trunc('day', time) as day"), knex.raw('count(view_id)'))
     .from('omh.layer_views')
@@ -34,10 +35,10 @@ module.exports = {
     });
   },
 
-  addLayerView(layer_id, user_id){
+  addLayerView(layer_id: number, user_id: number){
     return knex('omh.layer_views').select(knex.raw('count(view_id)')).where({layer_id})
-    .then(function(views){
-      views = parseInt(views[0].count);
+    .then(function(viewsResult){
+      var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
       }else{
@@ -52,10 +53,10 @@ module.exports = {
     });
   },
 
-  addMapView(map_id, user_id){
+  addMapView(map_id: number, user_id: number){
     return knex('omh.map_views').select(knex.raw('count(view_id)')).where({map_id})
-    .then(function(views){
-      views = parseInt(views[0].count);
+    .then(function(viewsResult){
+      var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
       }else{
@@ -70,10 +71,10 @@ module.exports = {
     });
   },
 
-  addStoryView(story_id, user_id){
+  addStoryView(story_id: number, user_id: number){
     return knex('omh.story_views').select(knex.raw('count(view_id)')).where({story_id})
-    .then(function(views){
-      views = parseInt(views[0].count);
+    .then(function(viewsResult){
+      var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
       }else{
@@ -88,10 +89,10 @@ module.exports = {
     });
   },
 
-  addHubView(hub_id, user_id){
+  addHubView(hub_id: string, user_id: number){
     return knex('omh.hub_views').select(knex.raw('count(view_id)')).where({hub_id})
-    .then(function(views){
-      views = parseInt(views[0].count);
+    .then(function(viewsResult){
+      var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
       }else{

@@ -1,8 +1,8 @@
-/* @flow weak */
+// @flow
 var knex = require('../connection');
 var log = require('./log');
 var debug = require('./debug')('password-util');
-var uuid = require('node-uuid');
+var uuid = require('uuid').v4;
 var bcrypt = require('bcrypt');
 var Promise = require('bluebird');
 Promise.promisifyAll(bcrypt);
@@ -16,7 +16,7 @@ var local = require('../local');
 module.exports = {
 
 
-  checkPassword(user_id, password, cb){
+  checkPassword(user_id: number, password: string, cb: Function){
 
     return User.getUser(user_id, true)
     .then(function(user){
@@ -32,13 +32,13 @@ module.exports = {
           cb(false);
         }
       });
-    }).catch(function(err){
+    }).catch(function(err: Error){
       log.error(err);
     });
 
   },
 
-  updatePassword(user_id, password, sendEmail, __){
+  updatePassword(user_id: number, password: string, sendEmail: boolean, __: Function){
     return User.getUser(user_id, true)
     .then(function(user){
       debug('Updating password for: ' + user.display_name);
@@ -69,16 +69,16 @@ module.exports = {
         });
       });
     })
-    .catch(function(err){
+    .catch(function(err: Error){
       log.error(err);
     });
   },
 
-  forgotPassword(email, __){
+  forgotPassword(email: string, __: Function){
     return User.getUserByEmail(email, true)
     .then(function(user){
       //generate a unique reset link
-      var pass_reset = uuid.v4();
+      var pass_reset = uuid();
       knex('users').update({pass_reset}).where({id: user.id})
       .then(function(){
         var baseUrl = urlUtil.getBaseUrl();
@@ -93,7 +93,7 @@ module.exports = {
           html: user.display_name + ',<br />' +
             __('Please go to this link in your browser to reset your password:') + ' ' + url
         })
-        .catch(function(err){
+        .catch(function(err: Error){
           log.error(err);
         });
       });

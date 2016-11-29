@@ -1,3 +1,4 @@
+// @flow
 var Layer = require('../../models/layer');
 var Map = require('../../models/map');
 var Promise = require('bluebird');

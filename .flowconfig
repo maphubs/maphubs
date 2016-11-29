@@ -4,6 +4,7 @@
 .*/temp/.*
 .*/db-server/.*
 [include]
+../node_modules/
 [libs]
 flow-typed/
 [options]

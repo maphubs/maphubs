@@ -1,3 +1,4 @@
+// @flow
 var request = require('superagent-bluebird-promise');
 var debug = require('../services/debug')('screenshot-utils');
 var local = require('../local');
@@ -7,7 +8,7 @@ var urlUtil = require('../services/url-util');
 
 module.exports = {
 
-  base64Download(url, data){
+  base64Download(url: string, data: any){
     return request.post(url)
     .type('json')
     .send(data)
@@ -17,7 +18,7 @@ module.exports = {
     });
   },
 
-  getLayerThumbnail(layer_id){
+  getLayerThumbnail(layer_id: number){
     var _this = this;
     debug('get thumbnail image for layer: ' + layer_id);
     return knex('omh.layers').select('thumbnail').where({layer_id})
@@ -32,7 +33,7 @@ module.exports = {
     });
   },
 
-  updateLayerThumbnail(layer_id){
+  updateLayerThumbnail(layer_id: number){
     debug('updating image for layer: ' + layer_id);
     //get screenshot from the manet service
     //generate 640x480 and then display at 320x240 for retina
@@ -72,7 +73,7 @@ module.exports = {
 
   },
 
-  reloadLayerThumbnail(layer_id){
+  reloadLayerThumbnail(layer_id: number){
       return knex('omh.layers').update({thumbnail: null}).where({layer_id})
       .then(function(){
         var baseUrl = urlUtil.getBaseUrl();
@@ -86,7 +87,7 @@ module.exports = {
       });
   },
 
-  getMapImage(map_id){
+  getMapImage(map_id: number){
     var _this = this;
     debug('get screenshot image for map: ' + map_id);
     return knex('omh.maps').select('screenshot').where({map_id})
@@ -101,7 +102,7 @@ module.exports = {
     });
   },
 
-  updateMapImage(map_id){
+  updateMapImage(map_id: number){
     debug('updating image for map: ' + map_id);
     //get screenshot from the manet service
     var width = 1200;
@@ -142,7 +143,7 @@ module.exports = {
     });
   },
 
-  updateMapThumbnail(map_id){
+  updateMapThumbnail(map_id: number){
     debug('updating thumbnail for map: ' + map_id);
     //get screenshot from the manet service
     var width = 400;
@@ -182,7 +183,7 @@ module.exports = {
     });
   },
 
-  getMapThumbnail(map_id){
+  getMapThumbnail(map_id: number){
     var _this = this;
     debug('get thumbnail image for map: ' + map_id);
     return knex('omh.maps').select('thumbnail').where({map_id})
@@ -197,7 +198,7 @@ module.exports = {
     });
   },
 
-  returnImage(image, req, res){
+  returnImage(image: any, req: any, res: any){
     var img = new Buffer(image, 'base64');
     var hash = require('crypto').createHash('md5').update(img).digest("hex");
     var match = req.get('If-None-Match');

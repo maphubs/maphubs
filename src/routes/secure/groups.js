@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var Promise = require('bluebird');
 var Group = require('../../models/group');
 var User = require('../../models/user');
@@ -16,7 +16,7 @@ var local = require('../../local');
 
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
 
   //Views
@@ -51,7 +51,7 @@ module.exports = function(app) {
 
     var group_id = req.params.id;
 
-    var user_id = null;
+    var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
     }
@@ -62,8 +62,8 @@ module.exports = function(app) {
         Group.getGroupMembers(group_id),
         Group.allowedToModify(group_id, user_id)
       ])
-      .then(function(result) {
-        var group = result[0];
+      .then(function(result: Array<any>) {
+        var group: Object = result[0];
         var layers = result[1];
         var members = result[2];
         var canEdit = result[3];

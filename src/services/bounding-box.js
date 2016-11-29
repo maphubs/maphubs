@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var _map = require('lodash.map');
 var _min = require('lodash.min');
 var _max = require('lodash.max');
@@ -71,19 +71,19 @@ Bbox.prototype.centerLat = function() {
   return (this.minLat + this.maxLat) / 2.0;
 };
 
-Bbox.prototype.width = function() {
+Bbox.prototype.width = function(): number {
   return this.maxLon - this.minLon;
 };
 
-Bbox.prototype.height = function() {
+Bbox.prototype.height = function(): number {
   return this.maxLat - this.minLat;
 };
 
-Bbox.prototype.toArray = function() {
+Bbox.prototype.toArray = function(): Array<number> {
   return [this.minLon, this.minLat, this.maxLon, this.maxLat];
 };
 
-Bbox.prototype.toString = function() {
+Bbox.prototype.toString = function(): string {
   return this.toArray().join(',');
 };
 
@@ -117,7 +117,7 @@ var getBbox = {
       return new Bbox(nullLatLon);
     }
   },
-  FromScaledActions(actions) {
+  FromScaledActions(actions: any) {
     var lat: Array<number> = [];
     var lon: Array<number> = [];
     var nodes = _filter(actions, function(action) {
@@ -135,7 +135,7 @@ var getBbox = {
       _max(lat) / ratio
     ]);
   },
-  FromNodes(nodes) {
+  FromNodes(nodes: Array<Object>) {
     var lat: Array<number> = [];
     var lon: Array<number> = [];
     for(var i = 0, ii = nodes.length; i < ii; ++i) {

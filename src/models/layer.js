@@ -1,3 +1,4 @@
+// @flow
 var knex = require('../connection.js');
 var dbgeo = require('dbgeo');
 var Promise = require('bluebird');
@@ -15,7 +16,7 @@ var PhotoAttachment = require('./photo-attachment');
 
 module.exports = {
 
-  getAllLayers(includeMapInfo = false) {
+  getAllLayers(includeMapInfo: boolean = false) {
     if(includeMapInfo){
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
@@ -35,7 +36,7 @@ module.exports = {
 
   },
 
-  getRecentLayers(number = 15){
+  getRecentLayers(number: number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets',
@@ -47,7 +48,7 @@ module.exports = {
     .limit(number);
   },
 
-  getPopularLayers(number = 15){
+  getPopularLayers(number: number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets',
@@ -61,7 +62,7 @@ module.exports = {
     .limit(number);
   },
 
-  getFeaturedLayers(number = 15){
+  getFeaturedLayers(number: number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets',
@@ -73,7 +74,7 @@ module.exports = {
     .limit(number);
   },
 
-  getSearchSuggestions(input) {
+  getSearchSuggestions(input: string) {
     input = input.toLowerCase();
     return knex.select('name', 'layer_id').table('omh.layers')
     .where({published: true, status: 'published'})
@@ -96,7 +97,7 @@ module.exports = {
     .orderBy('name');
   },
 
-  getSearchResults(input) {
+  getSearchResults(input: string) {
     input = input.toLowerCase();
     return knex('omh.layers')
     .select('layer_id', 'name', 'description', 'data_type',
@@ -124,8 +125,8 @@ module.exports = {
     .orderBy('name');
   },
 
-  getGroupLayers(group_id, includePrivate = false) {
-    var query = knex.select('layer_id', 'name', 'description', 'data_type',
+  getGroupLayers(group_id: string, includePrivate: boolean = false) {
+    var query: knex = knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'published', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
@@ -144,7 +145,7 @@ module.exports = {
     return query;
   },
 
-  getUserLayers(user_id, number, includePrivate = false) {
+  getUserLayers(user_id: number, number: number, includePrivate: boolean = false) {
 
     var subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
 
@@ -165,7 +166,7 @@ module.exports = {
     return query;
   },
 
-  getLayerByID(layer_id, trx = null) {
+  getLayerByID(layer_id: number, trx: any = null) {
     debug('getting layer: ' + layer_id);
     let db = knex;
     if(trx){db = trx;}
@@ -189,7 +190,7 @@ module.exports = {
       });
   },
 
-  getLayerInfo(layer_id){
+  getLayerInfo(layer_id: number){
     return knex('omh.layers')
     .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
     .where('layer_id', layer_id)
@@ -201,7 +202,7 @@ module.exports = {
     });
   },
 
-  getHubLayers(hub_id, includePrivate = false) {
+  getHubLayers(hub_id: string, includePrivate: boolean = false) {
     var query = knex.select(
     'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
     'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
@@ -225,9 +226,9 @@ module.exports = {
     return query;
   },
 
-  allowedToModify(layer_id, user_id, trx=null){
-    if(!layer_id || !user_id){
-      return false;
+  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null){
+    if(!layer_id || user_id <= 0){
+      return new Promise(function(fulfill){fulfill(false);});
     }
     return this.getLayerByID(layer_id, trx)
       .then(function(layer){
@@ -245,7 +246,7 @@ module.exports = {
       });
     },
 
-    getGeoJSON(layer_id) {
+    getGeoJSON(layer_id: number) {
       return this.getLayerByID(layer_id)
       .then(function(layer){
         var layerView = '';
@@ -296,7 +297,7 @@ module.exports = {
       });
     },
 
-    createLayer(name, description, group_id, published, user_id){
+    createLayer(name: string, description: string, group_id: string, published: boolean, user_id: number){
       return knex('omh.layers').returning('layer_id')
         .insert({
           name, description,
@@ -312,7 +313,7 @@ module.exports = {
     },
 
 
-    createRemoteLayer(group_id, layer, host, user_id){
+    createRemoteLayer(group_id: string, layer: any, host: string, user_id: number){
 
       layer.remote = true;
       layer.remote_host = host;
@@ -338,7 +339,7 @@ module.exports = {
         .insert(layer);
     },
 
-    updateRemoteLayer(layer_id, group_id, layer, host, user_id){
+    updateRemoteLayer(layer_id: number, group_id: string, layer: Object, host: string, user_id: number){
 
       layer.remote = true;
       layer.remote_host = host;
@@ -367,7 +368,7 @@ module.exports = {
     /*
     Used by delete
     */
-    removeLayerFromMaps(layer_id, trx = null){
+    removeLayerFromMaps(layer_id: number, trx: any = null){
       //get maps that use this layer
       let db = knex;
       if(trx){db = trx;}
@@ -405,7 +406,7 @@ module.exports = {
       });
     },
 
-    removeLayerFromHubs(layer_id, trx = null){
+    removeLayerFromHubs(layer_id: number, trx: knex.transtion = null){
       var _this = this;
       let db = knex;
       if(trx){db = trx;}
@@ -441,11 +442,11 @@ module.exports = {
       });
     },
 
-    setComplete(layer_id){
+    setComplete(layer_id: number){
       return knex('omh.layers').update({status: 'published'}).where({layer_id});
     },
 
-    delete(layer_id){
+    delete(layer_id: number){
       var _this = this;
       return knex.transaction(function(trx) {
         var commands = [
@@ -475,7 +476,7 @@ module.exports = {
 
     },
 
-    saveSettings(layer_id, name, description, group_id, published, user_id) {
+    saveSettings(layer_id: number, name: string, description: string, group_id: string, published: boolean, user_id: number) {
       //Note: not allowing the group_id to changed, at least until we build a more complete layer transfer solution
         return knex('omh.layers')
           .update({
@@ -486,7 +487,7 @@ module.exports = {
           }).where({layer_id});
     },
 
-    setUpdated(layer_id, user_id, trx=null) {
+    setUpdated(layer_id: number, user_id: number, trx: any=null) {
       let db = knex;
       if(trx){db = trx;}
         return db('omh.layers')
@@ -496,7 +497,7 @@ module.exports = {
           }).where({layer_id});
     },
 
-    saveDataSettings(layer_id, is_empty, empty_data_type, is_external, external_layer_type, external_layer_config, user_id){
+    saveDataSettings(layer_id: number, is_empty: boolean, empty_data_type: string, is_external: boolean, external_layer_type: string, external_layer_config: any, user_id: number){
       if(is_external){
       return knex('omh.layers').where({
           layer_id
@@ -525,7 +526,7 @@ module.exports = {
     },
 
 
-    saveSource(layer_id, source, license, user_id) {
+    saveSource(layer_id: number, source: any, license: any, user_id: number) {
       return knex('omh.layers').where({
           layer_id
         })
@@ -537,7 +538,7 @@ module.exports = {
         });
     },
 
-    saveStyle(layer_id, style, labels, legend_html, settings, preview_position, user_id) {
+    saveStyle(layer_id: number, style: any, labels: any, legend_html: any, settings: any, preview_position: any, user_id: number) {
       return knex('omh.layers').where({
           layer_id
         })
@@ -555,8 +556,7 @@ module.exports = {
         });
     },
 
-
-    savePresets(layer_id, presets, user_id, create, trx=null) {
+    savePresets(layer_id: number, presets: any, user_id: number, create: boolean, trx: any=null) {
       let db = knex;
       if(trx){db = trx;}
       if(create){
@@ -596,7 +596,7 @@ module.exports = {
 
     },
 
-    getLayerNotes(layer_id){
+    getLayerNotes(layer_id: number){
       return knex('omh.layer_notes').select('notes')
       .where({layer_id})
       .then(function(result){
@@ -607,7 +607,7 @@ module.exports = {
       });
     },
 
-    saveLayerNote(layer_id, user_id, notes){
+    saveLayerNote(layer_id: number, user_id: number, notes: string){
       return knex('omh.layer_notes').select('layer_id').where({layer_id})
       .then(function(result){
         if(result && result.length == 1){

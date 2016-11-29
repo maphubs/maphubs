@@ -1,3 +1,4 @@
+// @flow
 var React = require('react');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -22,21 +23,21 @@ var Home = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
   propTypes: {
-    trendingLayers: React.PropTypes.array,
-    trendingGroups: React.PropTypes.array,
-    trendingHubs: React.PropTypes.array,
-    trendingMaps: React.PropTypes.array,
-    trendingStories: React.PropTypes.array,
-    featuredStories:  React.PropTypes.array,
+    trendingLayers: React.PropTypes.array.isRequired,
+    trendingGroups: React.PropTypes.array.isRequired,
+    trendingHubs: React.PropTypes.array.isRequired,
+    trendingMaps: React.PropTypes.array.isRequired,
+    trendingStories: React.PropTypes.array.isRequired,
+    featuredStories:  React.PropTypes.array.isRequired,
     locale: React.PropTypes.string.isRequired
   },
 
-  getInitialState(){
+  getInitialState(): Object{
     return {
       trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
       trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
@@ -46,7 +47,7 @@ var Home = React.createClass({
     };
   },
 
-  handleSearch(input){
+  handleSearch(input: string){
     window.location = '/search?q=' + input;
   },
 

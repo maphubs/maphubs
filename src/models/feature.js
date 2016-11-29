@@ -1,3 +1,4 @@
+// @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var dbgeo = require('dbgeo');
@@ -10,7 +11,7 @@ var geojsonUtils = require('../services/geojson-utils');
 module.exports = {
 
 
-  getFeatureByID(osm_id, layer) {
+  getFeatureByID(osm_id: string, layer: Object) {
     var _this = this;
     return _this.getOSMRecord(osm_id, layer.layer_id)
       .then(function(featureResults) {
@@ -27,7 +28,7 @@ module.exports = {
       });
   },
 
-  getFeatureNotes(osm_id, layer_id){
+  getFeatureNotes(osm_id: string, layer_id: number){
     return knex('omh.feature_notes').select('notes')
     .where({osm_id, layer_id})
     .then(function(result){
@@ -38,7 +39,7 @@ module.exports = {
     });
   },
 
-  saveFeatureNote(osm_id, layer_id, user_id, notes){
+  saveFeatureNote(osm_id: string, layer_id: number, user_id: number, notes: string){
     return knex('omh.feature_notes').select('osm_id').where({osm_id, layer_id})
     .then(function(result){
       if(result && result.length == 1){
@@ -64,7 +65,7 @@ module.exports = {
     });
   },
 
-  getOSMRecord(id, layer_id){
+  getOSMRecord(id: string, layer_id: number){
     var osm_id = id.substring(1);
     debug('getting osm record for: ' + id + ' - '+ osm_id);
     if(id.startsWith('n')){
@@ -80,7 +81,7 @@ module.exports = {
   },
 
 
-    getGeoJSON(osm_id, layer_id) {
+    getGeoJSON(osm_id: string, layer_id: number) {
 
       return Layer.getLayerByID(layer_id)
       .then(function(layer){
@@ -128,13 +129,12 @@ module.exports = {
               fulfill(result);
             });
           });
-
         });
       });
     },
 
     //not used?
-    updateFeature(osm_id, tags){
+    updateFeature(osm_id: string, tags: Object){
 
       return this.getOSMRecord(osm_id)
         .then(function(feature) {

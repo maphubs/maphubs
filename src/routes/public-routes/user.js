@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var User = require('../../models/user');
 var Admin = require('../../models/admin');
 var passport = require('passport');
@@ -19,7 +19,7 @@ if(!local.mapHubsPro){
 }
 
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
 
   app.get('/user/passwordreset/:key', csrfProtection, function(req, res) {

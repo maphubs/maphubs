@@ -1,11 +1,11 @@
-/* @flow weak */
+// @flow
 var knex = require('../../connection.js');
 var toGeoJSON = require('../../services/osm-data-to-geojson.js');
 var queryBbox = require('../../services/query-bbox.js');
 var BoundingBox = require('../../services/bounding-box.js');
 var log = require('../../services/log.js');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
   /**
    * @api {get} /map GeoJSON - Get entities in bounding box
    * @apiGroup bbox

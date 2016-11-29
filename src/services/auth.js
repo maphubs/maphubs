@@ -1,8 +1,4 @@
-/**
- * Module dependencies.
- */
-
-/* @flow weak */
+// @flow
 var passport = require('passport'),
   //OpenStreetMapStrategy = require('passport-openstreetmap').Strategy,
   LocalStrategy = require('passport-local').Strategy,

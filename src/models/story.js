@@ -1,10 +1,10 @@
+// @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var _find = require('lodash.find');
 var debug = require ('../services/debug')('model/story');
 
 module.exports = {
-
 
   getAllStories() {
       return knex.select(
@@ -25,7 +25,7 @@ module.exports = {
       .orderBy('omh.stories.created_at', 'desc');
     },
 
-  getRecentStories(number=10) {
+  getRecentStories(number: number=10) {
       return knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
@@ -45,7 +45,7 @@ module.exports = {
       .limit(number);
     },
 
-    getPopularStories(number=10) {
+    getPopularStories(number: number=10) {
         return knex.select(
           'omh.stories.story_id', 'omh.stories.title',
            'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
@@ -65,7 +65,7 @@ module.exports = {
         .limit(number);
       },
 
-    getFeaturedStories(number=10) {
+    getFeaturedStories(number: number=10) {
         return knex.select(
           'omh.stories.story_id', 'omh.stories.title',
            'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
@@ -85,13 +85,13 @@ module.exports = {
         .limit(number);
       },
 
-    getSearchSuggestions(input) {
+    getSearchSuggestions(input: string) {
       input = input.toLowerCase();
       return knex.select('title').table('omh.stories')
       .where(knex.raw('lower(title)'), 'like', '%' + input + '%');
     },
 
-    getStoryByID(story_id) {
+    getStoryByID(story_id: number) {
       var _this = this;
       return _this.getUserStoryById(story_id)
       .then(function(userStoryResult){
@@ -111,7 +111,7 @@ module.exports = {
 
     },
 
-    getHubStoryById(story_id) {
+    getHubStoryById(story_id: number) {
       debug('get hub story: ' + story_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
@@ -131,7 +131,7 @@ module.exports = {
       return query;
     },
 
-    getUserStories(user_id, includeDrafts = false) {
+    getUserStories(user_id: number, includeDrafts: boolean = false) {
       debug('get stories for user: ' + user_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
@@ -157,7 +157,7 @@ module.exports = {
       return query;
     },
 
-    getUserStoryById(story_id) {
+    getUserStoryById(story_id: number) {
       debug('get user story: ' + story_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
@@ -179,7 +179,7 @@ module.exports = {
       return query;
     },
 
-    updateStory(story_id, title, body, author, firstline, firstimage) {
+    updateStory(story_id: number, title: string, body: string, author: string, firstline: string, firstimage: any) {
       return knex('omh.stories')
         .where('story_id', story_id)
         .update({
@@ -188,7 +188,16 @@ module.exports = {
         });
     },
 
-    delete(story_id, trx){
+    publishStory(story_id: number) {
+      return knex('omh.stories')
+        .where('story_id', story_id)
+        .update({
+          published: true,
+          updated_at: knex.raw('now()')
+        });
+    },
+
+    delete(story_id: number, trx: any){
       return trx('omh.story_views').where({story_id}).del()
       .then(function(){
         return trx('omh.story_maps').where({story_id}).del()
@@ -204,7 +213,7 @@ module.exports = {
       });
     },
 
-    createHubStory(hub_id, title, body, author, firstline, firstimage, user_id) {
+    createHubStory(hub_id: number, title: string, body: string, author: string, firstline: string, firstimage: string, user_id: number) {
       return knex.transaction(function(trx) {
         return trx('omh.stories').insert({
           title, body, author, firstline, firstimage, user_id,
@@ -220,7 +229,7 @@ module.exports = {
       });
     },
 
-    createUserStory(user_id, title, body, firstline, firstimage) {
+    createUserStory(user_id: number, title: string, body: string, firstline: string, firstimage: any) {
       return knex.transaction(function(trx) {
         return trx('omh.stories').insert({
           title, body, firstline, firstimage, user_id,
@@ -236,8 +245,7 @@ module.exports = {
       });
     },
 
-
-    allowedToModify(story_id, user_id) {
+    allowedToModify(story_id: number, user_id: number) {
       var _this = this;
       //look in both hub stories and user Stories
       return Promise.all([
@@ -267,10 +275,10 @@ module.exports = {
       });
     },
 
-  allowedToModifyHub(hub_id, user_id){
+  allowedToModifyHub(hub_id: string, user_id: number){
     debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
     return this.getHubMembers(hub_id)
-      .then(function(users){
+      .then(function(users: Array<Object>){
         if(_find(users, {id: user_id}) !== undefined){
           debug('user found');
           return true;
@@ -280,7 +288,7 @@ module.exports = {
       });
     },
 
-    getHubMembers(hub_id) {
+    getHubMembers(hub_id: string) {
       return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
         .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
         .whereRaw('lower(omh.hub_memberships.hub_id) = ?', hub_id.toLowerCase());

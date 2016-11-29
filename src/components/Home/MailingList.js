@@ -10,6 +10,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var _isequal = require('lodash.isequal');
 
 var OnboardingLinks = React.createClass({
 
@@ -25,6 +26,18 @@ var OnboardingLinks = React.createClass({
       placeholder: null,
       email: ''
     };
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   onValid() {
@@ -72,7 +85,7 @@ render(){
 
       <Formsy.Form onSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInvalid}>
         <div className="col s12 m4 offset-m4">
-            <TextInput name="email" label="" placeholder={placeholder}
+            <TextInput name="email" label={null} placeholder={placeholder}
               className="left no-margin no-padding mailing-list-text-input"
                   validations={{isEmail:true}} validationErrors={{
                    isEmail: this.__('Not a valid email address.')

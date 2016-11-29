@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var Promise = require('bluebird');
 var Map = require('../models/map');
 var nextError = require('./error-response').nextError;
@@ -6,7 +6,7 @@ var urlUtil = require('../services/url-util');
 var debug = require('./debug')('map-utils');
 
 module.exports = {
-  completeEmbedMapRequest(req, res, next, map_id, isStatic, canEdit){
+  completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean){
     Promise.all([
     Map.getMap(map_id),
     Map.getMapLayers(map_id)
@@ -27,7 +27,7 @@ module.exports = {
     }).catch(nextError(next));
   },
 
-  completeUserMapRequest(req, res, next, map_id, canEdit){
+  completeUserMapRequest(req: any, res: any, next: any, map_id: number, canEdit: boolean){
     debug('completeUserMapRequest');
     return Promise.all([
     Map.getMap(map_id),

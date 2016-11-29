@@ -1,3 +1,4 @@
+// @flow
 var React = require('react');
 var request = require('superagent');
 var SearchBar = require('./SearchBar/SearchBar');
@@ -25,7 +26,7 @@ var SearchBox = React.createClass({
     };
   },
 
-  onChange(input, resolve) {
+  onChange(input: string, resolve: Function) {
     var _this = this;
     if (typeof window !== 'undefined' && this.props.suggestionUrl) {
       request.get(this.props.suggestionUrl + '?q=' + input)
@@ -46,7 +47,7 @@ var SearchBox = React.createClass({
     }
 
  },
- onSubmit(input) {
+ onSubmit(input: string) {
    if (!input) return;
    this.props.onSearch(input);
  },

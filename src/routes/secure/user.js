@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 
 var User = require('../../models/user');
 
@@ -8,7 +8,7 @@ var apiDataError = require('../../services/error-response').apiDataError;
 
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
 
   app.get('/user/settings', csrfProtection, function(req, res, next) {

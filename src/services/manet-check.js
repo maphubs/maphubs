@@ -1,10 +1,13 @@
+// @flow weak
 var log = require('./log');
 var local = require('../local');
 var debug = require('../services/debug')('manet-check');
+var dns = require('dns');
+var url = require('url');
 
-module.exports = function(setCors, allowForwardedIP){
+module.exports = function(setCors: boolean, allowForwardedIP: boolean){
 
-return function(req, res, next){
+return function(req: any, res: any, next: any){
 
   var failure = function(){
     if(setCors) res.header('Access-Control-Allow-Origin', local.host);
@@ -38,7 +41,7 @@ return function(req, res, next){
     var forwardedIP = req.headers['x-forwarded-for'];
     log.info('RemoteAddress:' + ip);
     log.info('x-forwarded-for:' + forwardedIP);
-    var manetUrl = local.manetUrl;
+    var manetUrl: string = local.manetUrl;
     if(process.env.OMH_MANET_IP) {
        if(process.env.OMH_MANET_IP !== ip){
           //remoteAddress doesn't match
@@ -51,7 +54,7 @@ return function(req, res, next){
             }
           }else{
             log.error('Unauthenticated screenshot request, manet IP does not match');
-            log.error('Expected IP:' + process.env.OMH_MANET_IP);
+            log.error(`Expected IP: ${process.env.OMH_MANET_IP}`);
             return failure();
           }
         }
@@ -59,8 +62,9 @@ return function(req, res, next){
         return success();
 
     }else{
-      var manetHost = require('url').parse(manetUrl).hostname;
-      return require('dns').lookup(manetHost, function(err, addresses) {
+      var parsedUrl: Object = url.parse(manetUrl);
+      var manetHost: string = parsedUrl.hostname;
+      return dns.lookup(manetHost, function(err: Error, addresses: any) {
         if(err){
           log.error(err);
           return failure();

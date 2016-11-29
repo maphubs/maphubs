@@ -1,16 +1,15 @@
+// @flow
 var Layer = require('../models/layer');
 var Hub = require('../models/hub');
 var Story = require('../models/story');
 var Map = require('../models/map');
 var Group = require('../models/group');
 var slug = require('slug');
-
-var local = require('../local');
 var urlUtil = require('./url-util');
 
 module.exports = {
 
-  addLayersToSiteMap(sm){
+  addLayersToSiteMap(sm: any){
     var baseUrl = urlUtil.getBaseUrl();
     return Layer.getAllLayers()
     .then(function(layers){
@@ -27,7 +26,7 @@ module.exports = {
     });
   },
 
-  addStoriesToSiteMap(sm){
+  addStoriesToSiteMap(sm: any){
     return Story.getAllStories()
     .then(function(stories){
       stories.forEach(function(story){
@@ -52,7 +51,7 @@ module.exports = {
     });
   },
 
-  addHubsToSiteMap(sm){
+  addHubsToSiteMap(sm: any){
     return Hub.getAllHubs()
     .then(function(hubs){
       hubs.forEach(function(hub){
@@ -70,7 +69,7 @@ module.exports = {
     });
   },
 
-  addMapsToSiteMap(sm){
+  addMapsToSiteMap(sm: any){
     return Map.getAllMaps()
     .then(function(maps){
       maps.forEach(function(map){
@@ -87,7 +86,7 @@ module.exports = {
     });
   },
 
-  addGroupsToSiteMap(sm){
+  addGroupsToSiteMap(sm: any){
     return Group.getAllGroups()
     .then(function(groups){
       groups.forEach(function(group){

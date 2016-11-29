@@ -1,4 +1,4 @@
-/* @flow weak */
+// @flow
 var knex = require('../../connection.js');
 var Layer = require('../../models/layer');
 var Group = require('../../models/group');
@@ -37,7 +37,7 @@ var notAllowedError = require('../../services/error-response').notAllowedError;
 
 var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
 
 
@@ -75,7 +75,7 @@ module.exports = function(app) {
 
     var layer_id = parseInt(req.params.id || '', 10);
 
-    var user_id = null;
+    var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
     }
@@ -99,17 +99,17 @@ module.exports = function(app) {
         Layer.allowedToModify(layer_id, user_id),
         Layer.getLayerNotes(layer_id)
       ])
-      .then(function(results){
-        var layer = results[0];
+      .then(function(results: Array<any>){
+        var layer: Object = results[0];
         var stats = results[1];
-        var canEdit = results[2];
+        var canEdit: boolean = results[2];
         var notesObj = results[3];
 
         return Promise.all([
           User.getUser(layer.created_by_user_id),
           User.getUser(layer.updated_by_user_id)
         ])
-        .then(function(userResults){
+        .then(function(userResults: Array<any>){
           var createdByUser = userResults[0];
           var updatedByUser = userResults[1];
           var notes = null;

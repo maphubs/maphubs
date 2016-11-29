@@ -1,13 +1,12 @@
+// @flow
 var knex = require('../connection');
 var Promise = require('bluebird');
 var debug = require('../services/debug')('models/map');
-var find = require('lodash.find');
 var forEachRight = require('lodash.foreachright');
-var Group = require('../models/group');
 
 module.exports = {
 
-  getMap(map_id){
+  getMap(map_id: number){
     return knex('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, basemap, created_by,
@@ -24,7 +23,7 @@ module.exports = {
     });
   },
 
-  getMapLayers(map_id, trx){
+  getMapLayers(map_id: number, trx: any){
     let db = knex;
     if(trx){db = trx;}
     return db.select('omh.layers.*','omh.map_layers.style as map_style', 'omh.map_layers.labels as map_labels',  'omh.map_layers.settings as map_settings', 'omh.map_layers.position as position', 'omh.map_layers.legend_html as map_legend_html', 'omh.map_layers.map_id as map_id')
@@ -34,7 +33,7 @@ module.exports = {
       .where('omh.maps.map_id', map_id).orderBy('position');
   },
 
-  allowedToModify(map_id, user_id){
+  allowedToModify(map_id: number, user_id: number){
     return this.getMap(map_id)
       .then(function(map){
           //FIXME: use the user_maps table instead
@@ -58,7 +57,7 @@ module.exports = {
         .orderBy('omh.maps.updated_at', 'desc');
     },
 
-    getFeaturedMaps(number=10){
+    getFeaturedMaps(number: number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
@@ -73,7 +72,7 @@ module.exports = {
         .limit(number);
     },
 
-    getPopularMaps(number=10){
+    getPopularMaps(number: number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
@@ -88,7 +87,7 @@ module.exports = {
         .limit(number);
     },
 
-    getRecentMaps(number=10){
+    getRecentMaps(number: number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
@@ -102,7 +101,7 @@ module.exports = {
         .limit(number);
     },
 
-  getUserMaps(user_id){
+  getUserMaps(user_id: number){
     return knex.select('omh.maps.map_id', 'omh.maps.title',
       'omh.maps.updated_at', 'omh.user_maps.user_id',
       knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
@@ -114,7 +113,7 @@ module.exports = {
       .where('omh.user_maps.user_id', user_id);
   },
 
-  getSearchSuggestions(input) {
+  getSearchSuggestions(input: string) {
     input = input.toLowerCase();
     return knex.select('title', 'map_id').table('omh.maps')
     .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
@@ -124,7 +123,7 @@ module.exports = {
     .orderBy('title');
   },
 
-  getSearchResults(input) {
+  getSearchResults(input: string) {
     input = input.toLowerCase();
     return knex.select('omh.maps.map_id', 'omh.maps.title',
       'omh.maps.updated_at', 'omh.user_maps.user_id',
@@ -143,7 +142,7 @@ module.exports = {
       .orderBy('omh.maps.updated_at', 'desc');
   },
 
-  createMap(layers, style, basemap, position, title, user_id){
+  createMap(layers: Array<Object>, style: any, basemap: string, position: any, title: string, user_id: number){
     return knex.transaction(function(trx) {
     return trx('omh.maps')
       .insert({
@@ -162,7 +161,7 @@ module.exports = {
         //insert layers
         var mapLayers = [];
         if(layers && Array.isArray(layers) && layers.length > 0){
-          layers.forEach(function(layer, i){
+          layers.forEach(function(layer: Object, i: number){
             var mapStyle = layer.map_style ? layer.map_style : layer.style;
             var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
             var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
@@ -187,7 +186,7 @@ module.exports = {
     });
   },
 
-  copyMap(map_id, to_user_id){
+  copyMap(map_id: number, to_user_id: number){
     var _this = this;
     return Promise.all([
       this.getMap(map_id),
@@ -200,7 +199,7 @@ module.exports = {
     });
   },
 
-  updateMap(map_id, layers, style, basemap, position, title, user_id){
+  updateMap(map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number){
     return knex.transaction(function(trx) {
       return trx('omh.maps')
         .update({position, style, basemap, title,
@@ -241,7 +240,7 @@ module.exports = {
       });
   },
 
-  deleteMap(map_id){
+  deleteMap(map_id: number){
     return knex.transaction(function(trx) {
       return trx('omh.map_views').where({map_id}).del()
       .then(function(){
@@ -259,7 +258,7 @@ module.exports = {
     });
   },
 
-  createUserMap(layers, style, basemap, position, title, user_id){
+  createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number){
     return this.createMap(layers, style, basemap, position, title, user_id)
     .then(function(result){
       debug(result);
@@ -269,7 +268,7 @@ module.exports = {
     });
   },
 
-  saveHubMap(layers, style, basemap, position, hub_id, user_id){
+  saveHubMap(layers: Array<Object>, style: Object, basemap: string, position: any, hub_id: string, user_id: number){
     return knex.transaction(function(trx) {
       return trx('omh.hubs')
       .update({
@@ -297,7 +296,7 @@ module.exports = {
     });
   },
   //TODO: this code is duplicated in MapStore, need to bring then back together
-  buildMapStyle(layers){
+  buildMapStyle(layers: Array<Object>){
     var mapStyle = {
       sources: {},
       layers: []

@@ -1,4 +1,4 @@
-'use strict';
+// @flow
 
 /**
 * Way.js
@@ -52,7 +52,7 @@ var Way = {
     }
   },
 
-  fromEntity(entity, meta, layerID) {
+  fromEntity(entity: any, meta: any, layerID: any) {
     var model = {};
     model.visible = (entity.visible !== 'false' && entity.visible !== false);
     model.version = parseInt(entity.version, 10) || 1;
@@ -73,7 +73,7 @@ var Way = {
     return model;
   },
 
-  fromOSM(xml) {
+  fromOSM(xml: any) {
 
     // Transfer all attributes.
     var model = {};
@@ -113,31 +113,14 @@ var Way = {
     return model;
   },
 
-  canBeDeleted(way_id) {
+  canBeDeleted(way_id: number) {
     // TODO add relations support
-    return new Promise(function(fullfill, reject) {
+    return new Promise(function(fullfill) {
       fullfill(true);
     });
   },
 
-  attachNodeIDs(ways, wayNodes) {
-    // For each way, attach every node it contains using the wayNodes server
-    //response.
-    for (var j = 0, jj = ways.length; j < jj; ++j) {
-      var way = ways[j];
-      var nodesInWay = [];
-      for (var i = 0, ii = wayNodes.length; i < ii; ++i) {
-        var wayNode = wayNodes[i];
-        if (wayNode.way_id === way.id) {
-          nodesInWay.push(wayNode);
-        }
-      }
-      way.nodes = nodesInWay;
-    }
-    return ways;
-  },
-
-  save(q) {
+  save(q: any) {
     var actions = [];
     var model = this;
     ['create', 'modify', 'delete'].forEach(function(action) {
@@ -154,7 +137,7 @@ var Way = {
     });
   },
 
-  create(q) {
+  create(q: any) {
 
     var raw = q.changeset.create.way;
     if(!Array.isArray(raw)){
@@ -162,7 +145,9 @@ var Way = {
     }
 
     // Create a list of models of just way creations with proper attributes.
-    var models = raw.map(function(entity) { return Way.fromEntity(entity, q.meta, q.layerID); });
+    var models = raw.map(function(entity) {
+       return Way.fromEntity(entity, q.meta, q.layerID); 
+    });
 
     return Promise.map(chunk(models), function(models) {
       return q.transaction(Way.tableName).insert(models).returning('id');
@@ -171,7 +156,7 @@ var Way = {
       var ids = [].concat.apply([], _ids);
       log.info('Remapping', ids.length, 'way IDs');
       var wayNodes = [];
-      var tags = [];
+      var tags: Array<any> = [];
       raw.forEach(function(entity, i) {
         // Map old id to new id.
         q.map.way[entity.id] = ids[i];
@@ -193,7 +178,7 @@ var Way = {
             entity.tag = [entity.tag];
           }
           if(entity.tag.length) {
-            tags.push(entity.tag.map(function(tag) {
+            tags.push(entity.tag.map(function(tag: Object) {
               return {
                 k: tag.k,
                 v: tag.v,
@@ -228,7 +213,7 @@ var Way = {
     });
   },
 
-  modify(q) {
+  modify(q: any) {
     var raw = q.changeset.modify.way;
     if(!Array.isArray(raw)){
         raw = [raw];
@@ -297,7 +282,7 @@ var Way = {
     });
   },
 
-  'delete'(q) {
+  'delete'(q: any) {
     var raw = q.changeset['delete'].way;
     if(!Array.isArray(raw)){
         raw = [raw];
