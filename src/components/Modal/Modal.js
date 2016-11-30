@@ -18,8 +18,7 @@ var ModalContent = React.createClass({
 
   getDefaultProps() {
     return {
-      style: {},
-      insideAnotherModal: false
+      style: {}
     };
   },
 
@@ -57,9 +56,9 @@ var Modal = React.createClass({
     dismissible: React.PropTypes.bool,
     in_duration: React.PropTypes.number,
     out_duration: React.PropTypes.number,
+    opacity: React.PropTypes.number,
     ready: React.PropTypes.func,
-    complete: React.PropTypes.func,
-    insideAnotherModal: React.PropTypes.bool
+    complete: React.PropTypes.func
   },
 
   getDefaultProps() {
@@ -78,40 +77,29 @@ var Modal = React.createClass({
     };
   },
 
+  componentDidMount(){
+     $(this.refs.modal).modal({
+        dismissible: this.props.dismissible,
+        opacity: this.props.opacity,
+        in_duration: this.props.in_duration,
+        out_duration: this.props.out_duration,
+        ready: this.props.ready,
+        complete: this.props.complete
+      });
+  },
+
   componentDidUpdate(prevProps) {
-    var _this = this;
     if(this.props.show && !prevProps.show){
       //switch from off to on
-      $('#'+this.props.id).openModal({
-        dismissible: _this.props.dismissible,
-        opacity: _this.props.opacity,
-        in_duration: _this.props.in_duration,
-        out_duration: _this.props.out_duration,
-        ready: _this.props.ready,
-        complete: _this.props.complete
-      });
-
-      if(this.props.insideAnotherModal){
-        //hide duplicate mask overlays
-        var overlays = $('.lean-overlay');
-        if(overlays.length > 1){
-          overlays.each(function( index ) {
-            if(index != 0){
-              $(this).hide();
-            }
-          });
-        }
-        var firstIndex = $('.modal').first().attr('z-index');
-        $('.lean-overlay').attr('z-index', firstIndex-1);
-      }
-
+      $(this.refs.modal).modal('open');
+      //fire window resize for maps etc inside the modal
       var evt = document.createEvent('UIEvents');
       evt.initUIEvent('resize', true, false, window, 0);
       window.dispatchEvent(evt);
     } else if(prevProps.show && !this.props.show){
       //switch from on to off
-      $('#'+this.props.id).closeModal();
-      $('.lean-overlay').remove(); //for some reason materialize isn't clearing the overlay mask possibly related to https://github.com/Dogfalo/materialize/issues/1647
+      $(this.refs.modal).modal('close');
+      //$('.lean-overlay').remove(); //for some reason materialize isn't clearing the overlay mask possibly related to https://github.com/Dogfalo/materialize/issues/1647
     }
 
   },
@@ -124,7 +112,7 @@ var Modal = React.createClass({
       className = classNames('modal', this.props.className);
     }
     return (
-      <div id={this.props.id} className={className}>
+      <div ref="modal" id={this.props.id} className={className}>
         {this.props.children}
       </div>
 

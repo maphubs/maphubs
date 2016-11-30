@@ -11,7 +11,7 @@ var _isequal = require('lodash.isequal');
 var $ = require('jquery');
 
 import Cropper from 'react-cropper';
-import Progress from './Progress';
+//import Progress from './Progress';
 
 var EXIF = require('exif-js');
 
@@ -489,12 +489,12 @@ resizeImage(sourceCanvas){
         <br style={{clear: 'both'}}/>
           {saveButton}
       </div>
-        <Progress id="imagecrop-loading" title={this.__('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
         </ModalContent>
       </Modal>
       );
   }
-
+//<Progress id="imagecrop-loading" title={this.__('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
+        
 });
 
 module.exports = ImageCrop;
