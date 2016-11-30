@@ -1,7 +1,7 @@
 // @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
-var Layer = require('./layer');
+var Presets = require('./presets');
 
 module.exports = {
 
@@ -134,7 +134,7 @@ module.exports = {
         type: 'text',
         id: maxId + 1
       });
-      return Layer.savePresets(layer.layer_id, presets, user_id, false, trx)
+      return Presets.savePresets(layer.layer_id, presets, user_id, false, trx)
       .then(function(){
         return presets;
       });

@@ -691,13 +691,13 @@ app.post('/api/layer/presets/save', function(req, res) {
     res.status(401).send("Unauthorized, user not logged in");
     return;
   }
-  var user_id = req.session.user.id;
+  var user_id: number = req.session.user.id;
 
   var data = req.body;
   if(data && data.layer_id && data.presets && data.create !== undefined){
     knex.transaction(function(trx) {
     return Layer.allowedToModify(data.layer_id, user_id, trx)
-    .then(function(allowed){
+    .then(function(allowed: boolean){
       if(allowed){
         return Layer.savePresets(data.layer_id, data.presets, user_id, data.create, trx)
         .then(function(){
