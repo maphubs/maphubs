@@ -35,6 +35,10 @@ type $JSXIntrinsics = {
   button: JSXHelper<{className: string, type: string, style: Object}>,
   form: JSXHelper<{id: string, style: Object}>,
   input: JSXHelper<{id: string, style: Object}>,
+  ul: JSXHelper<{id: string, style: Object}>,
+  li: JSXHelper<{id: string, style: Object}>,
+  ol: JSXHelper<{id: string, style: Object}>,
+  table: JSXHelper<{id: string, style: Object}>
 };
 
 declare module 'uuid/v4' {
