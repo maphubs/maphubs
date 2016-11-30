@@ -1,0 +1,25 @@
+{
+  "ignore": [
+    "**/deps/**",
+    "**/node_modules/**",
+    "**/assets/**",
+    "**/vendor/**",
+    "**/**-min-**",
+    "**/**-min.**",
+    "**/**.min.**",
+    "**/**jquery.?(ui|effects)-*.*.?(*).?(cs|j)s",
+    "**/**jquery-*.*.?(*).?(cs|j)s",
+  ],
+  "test": [
+
+  ],
+  "critics": {
+    "wc": { "limit": 5000 }
+  },
+  "dependencies": {
+    "unused-ignores": [
+      "pg",
+      "pg-native"
+    ]
+  }
+}
