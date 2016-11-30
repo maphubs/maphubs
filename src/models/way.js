@@ -11,12 +11,13 @@
 var _map = require('lodash.map');
 var _includes = require('lodash.includes');
 var Promise = require('bluebird');
-
+var knex = require('../connection.js');
 var log = require('../services/log.js');
-var chunk = require('../services/chunk.js');
 //var Node = require('./node-model.js');
 var WayNode = require('./way-node.js');
 var WayTag = require('./way-tag.js');
+
+const BATCH_INSERT_SIZE: number = 1000;
 
 var Way = {
   tableName: 'current_ways',
@@ -149,9 +150,7 @@ var Way = {
        return Way.fromEntity(entity, q.meta, q.layerID); 
     });
 
-    return Promise.map(chunk(models), function(models) {
-      return q.transaction(Way.tableName).insert(models).returning('id');
-    }, {concurrency: 1})
+    return knex.batchInsert(Way.tableName, models, BATCH_INSERT_SIZE).returning('id').transacting(q.transaction)
     .then(function(_ids) {
       var ids = [].concat.apply([], _ids);
       log.info('Remapping', ids.length, 'way IDs');
@@ -190,18 +189,14 @@ var Way = {
       });
 
       wayNodes = [].concat.apply([], wayNodes);
-      return Promise.map(chunk(wayNodes), function(wn) {
-        return q.transaction(WayNode.tableName).insert(wn);
-      }, {concurrency: 1})
+      return knex.batchInsert(WayNode.tableName, wayNodes, BATCH_INSERT_SIZE).transacting(q.transaction)
       .then(function() {
         if(!Array.isArray(tags)){
             tags = [tags];
         }
         if (tags.length) {
           tags = [].concat.apply([], tags);
-          return Promise.map(chunk(tags), function(t) {
-            return q.transaction(WayTag.tableName).insert(t);
-          }, {concurrency: 1});
+          return knex.batchInsert(WayTag.tableName, tags, BATCH_INSERT_SIZE).transacting(q.transaction);
         }
         return [];
 
@@ -264,17 +259,22 @@ var Way = {
       }
       });
 
+      wayNodes = [].concat.apply([], wayNodes);
       if (tags.length) {
         tags = [].concat.apply([], tags);
         // We execute this query as a side-effect on purpose;
         // Nothing depends on it, and it can execute asynchronously of anything else.
-        q.transaction(WayTag.tableName).insert(tags).catch(function(err) {
+        return knex.batchInsert(WayTag.tableName, tags, BATCH_INSERT_SIZE).transacting(q.transaction)
+        .then(function(){
+          return knex.batchInsert(WayNode.tableName, wayNodes, BATCH_INSERT_SIZE).transacting(q.transaction);
+        })
+        .catch(function(err) {
           log.error('Creating way tags in create', err);
           throw new Error(err);
         });
-      }
-      wayNodes = [].concat.apply([], wayNodes);
-      return q.transaction(WayNode.tableName).insert(wayNodes);
+      }else{
+        return knex.batchInsert(WayNode.tableName, wayNodes, BATCH_INSERT_SIZE).transacting(q.transaction);
+      }      
     })
     .catch(function(err) {
       log.error('Modifying ways', err);

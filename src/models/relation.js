@@ -10,6 +10,7 @@
  var _includes = require('lodash.includes');
 var Promise = require('bluebird');
 
+var knex = require('../connection.js');
 var Member = require('./relation-member.js');
 var RelationTag = require('./relation-tag.js');
 var log = require('../services/log');
@@ -112,7 +113,7 @@ var Relation = {
     return model;
   },
 
-  createDependents(raw: Array<Object>, ids: Array<number>, map: any, transaction: any) {
+  createDependents(raw: Array<Object>, ids: Array<number>, map: any, trx: any) {
     var tags = [];
     var members = [];
     raw.forEach(function(entity, i) {
@@ -154,7 +155,7 @@ var Relation = {
     ].map(function(d) {
       if (d.data.length) {
         var data = [].concat.apply([], d.data);
-        return transaction(d.table).insert(data);
+        return knex.batchInsert(d.table, data, 1000).transacting(trx);
       }
       return [];
     }))
@@ -164,10 +165,10 @@ var Relation = {
     });
   },
 
-  destroyDependents(ids, transaction: any) {
+  destroyDependents(ids, trx: any) {
     return Promise.all([
-      transaction(Member.tableName).whereIn('relation_id', ids).del(),
-      transaction(RelationTag.tableName).whereIn('relation_id', ids).del()
+      trx(Member.tableName).whereIn('relation_id', ids).del(),
+      trx(RelationTag.tableName).whereIn('relation_id', ids).del()
     ]).catch(function(err) {
       log.error('Destroying relation tags and members', err);
     });
@@ -199,14 +200,16 @@ var Relation = {
     var models = raw.map(function(entity) {
       return Relation.fromEntity(entity, q.meta, q.layerID);
     });
-
-    return q.transaction(Relation.tableName).insert(models).returning('id')
+    return knex.batchInsert(Relation.tableName, models, 1000).returning('id')
+    .transacting( q.transaction)
     .then(function(ids) {
       // We don't necessarily need to update these ids, but it's useful for testing,
       // as this will be included in the server response.
+      /*
       raw.forEach(function(entity, i) {
         q.map.relation[entity.id] = ids[i];
       });
+      */
 
       // Save members and tags.
       return Relation.createDependents(raw, ids, q.map, q.transaction);

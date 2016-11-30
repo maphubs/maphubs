@@ -16,11 +16,12 @@ var knex = require('../connection.js');
 var log = require('../services/log.js');
 var RATIO = require('../services/ratio.js');
 var QuadTile = require('../services/quad-tile.js');
-var chunk = require('../services/chunk.js');
 var NodeTag = require('./node-tag.js');
 var WayNode = require('./way-node.js');
 var Way = require('./way.js');
 var debug = require('../services/debug')('model/node');
+
+const BATCH_INSERT_SIZE: number = 1000;
 
 var Node = {
 
@@ -209,12 +210,10 @@ var Node = {
   },
 
   create(q: any) {
-
     var raw = q.changeset.create.node;
     if(!Array.isArray(raw)){
         raw = [raw];
     }
-
     // Map each node creation to a model with proper attributes.
     var models = raw.map(function(entity) { return Node.fromEntity(entity, q.meta, q.layerID); });
 
@@ -254,10 +253,8 @@ var Node = {
       if (tags.length) {
         tags = [].concat.apply([], tags);
 
-        return Promise.map(chunk(tags), function(tags) {
-          return q.transaction(NodeTag.tableName).insert(tags);
-        }, {concurrency: 1})
-
+        return knex.batchInsert(NodeTag.tableName, tags, BATCH_INSERT_SIZE)
+        .transacting(q.transaction)
         .catch(function(err) {
           log.error('Creating node tags in create', err);
           throw new Error(err);
@@ -266,7 +263,7 @@ var Node = {
       return [];
     }
     log.info("inserting nodes");
-    return knex.batchInsert(Node.tableName, models, 1000).returning('id')
+    return knex.batchInsert(Node.tableName, models, BATCH_INSERT_SIZE).returning('id')
     .transacting(q.transaction)
     .then(remap)
     .then(saveTags)
@@ -312,7 +309,8 @@ var Node = {
       });
       if (tags.length) {
         tags = [].concat.apply([], tags);
-        return q.transaction(NodeTag.tableName).insert(tags);
+        return knex.batchInsert(NodeTag.tableName, tags, BATCH_INSERT_SIZE)
+        .transacting(q.transaction);
       }
       return [];
     })
