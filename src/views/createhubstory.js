@@ -54,7 +54,7 @@ var CreateHubStory = React.createClass({
             <StoryEditor storyType="hub"
               myMaps={this.props.myMaps}
               popularMaps={this.props.popularMaps}
-              hubid={this.props.hub.hub_id}/>
+              hub_id={this.props.hub.hub_id}/>
           </div>
         </main>
         <Notification />

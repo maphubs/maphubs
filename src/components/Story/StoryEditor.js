@@ -1,21 +1,21 @@
+// @flow
 var React = require('react');
 var slug = require('slug');
 var $ = require('jquery');
 var debounce = require('lodash.debounce');
 var _isequal = require('lodash.isequal');
+var Actions = require('../../actions/StoryActions');
 var MessageActions = require('../../actions/MessageActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var urlUtil = require('../../services/url-util');
 var AddMapModal = require('./AddMapModal');
 var ImageCrop = require('../ImageCrop');
-var checkClientError = require('../../services/client-error-response').checkClientError;
-//var debug = require('../../services/debug')('story-editor');
 
-var request = require('superagent');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
+var StoryStore = require('../../stores/StoryStore');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
@@ -24,36 +24,32 @@ import Editor from 'react-medium-editor';
 
 var StoryEditor = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(StoryStore, {initWithProps: ['story', 'storyType', 'hub_id']}), StateMixin.connect(LocaleStore)],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
   propTypes: {
     story: React.PropTypes.object,
-    hubid: React.PropTypes.string,
+    hub_id: React.PropTypes.string,
     storyType: React.PropTypes.string,
     username: React.PropTypes.string,
     myMaps: React.PropTypes.array,
     popularMaps: React.PropTypes.array
   },
 
-  getDefaultProps() {
+  getDefaultProps(): Object {
     return {
       story: {},
       hub_id: null,
+      username: '',
       storyType: 'unknown'
     };
   },
 
-  getInitialState() {
+  getInitialState(): Object {
     return {
-      title: this.props.story.title,
-      body: this.props.story.body,
-      author: this.props.story.author,
-      story_id: this.props.story.story_id,
-      unsavedChanges: false,
       saving: false,
       addingMap: false
     };
@@ -83,14 +79,14 @@ var StoryEditor = React.createClass({
    $('.storyeditor-tooltips').tooltip();
  },
 
- shouldComponentUpdate(nextProps, nextState) {
+ shouldComponentUpdate(nextProps: Object, nextState: Object) {
    if(nextState.addingMap) return true;
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
     }
     if(!_isequal(this.state, nextState)){
-      if(this.body && _isequal(this.body, nextState.body)){
+      if(this.body && _isequal(this.body, nextState.story.body)){
         this.body = null;
         return false;
       }
@@ -99,24 +95,15 @@ var StoryEditor = React.createClass({
     return false;
  },
 
-
   handleBodyChange(body) {
-    var _this = this;
-    this.body = body;
-    _this.setState({body, unsavedChanges: true});
-    var debounced = debounce(function(){
-      _this.saveSelectionRange();
-    }, 500).bind(this);
-    debounced();
- },
-
- handleTitleChange(title) {
-  this.setState({title, unsavedChanges: true});
-},
-
-handleAuthorChange(author) {
- this.setState({author, unsavedChanges: true});
-},
+        var _this = this;
+        this.body = body;
+        Actions.handleBodyChange(body);        
+        var debounced = debounce(function(){
+            _this.saveSelectionRange();
+        }, 500).bind(this);
+        debounced();
+    },
 
 getFirstLine(){
   var first_line = $('.storybody').find('p')
@@ -142,13 +129,13 @@ getFirstImage(){
 save(){
   var _this = this;
 
-  if(!this.state.title || this.state.title == ''){
+  if(!this.state.story.title || this.state.story.title == ''){
     NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
 
   //if this is a hub story, require an author
-  if(this.props.storyType == 'hub' && !this.state.author){
+  if(this.props.storyType == 'hub' && !this.state.story.author){
     NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
@@ -165,113 +152,50 @@ save(){
   //get first image
   var firstimage = this.getFirstImage();
 
-  var url = '';
-  var story = {
-      title: this.state.title,
-      body,
-      author: this.state.author,
-      firstline,
-      firstimage
-  };
+  Actions.save(body, firstline, firstimage, this.state._csrf, function(err: Error, story: Object){
+      _this.setState({saving: false});
+      if(err){
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
+      }else{         
+        _this.addMapCloseButtons(); //put back the close buttons
+        _this.addImageButtons();
+        NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('View Story'),
+          dismissAfter: 10000,
+          onDismiss(){
 
-
-  if(this.props.storyType == 'hub'){
-    var baseUrl = '/hub/' + this.props.hubid;
-    
-    if(this.state.story_id && this.state.story_id > 0){
-      //saving an existing hub story
-      story.story_id = this.state.story_id;
-      url = baseUrl + '/api/hub/story/save';
-
-    }else{
-
-      //creating a new hub story
-      url = baseUrl + '/api/hub/story/create';
-    }
-
-  }else if(this.props.storyType == 'user'){
-    if(this.state.story_id && this.state.story_id > 0){
-      //saving an existing user story
-      story.story_id = this.state.story_id;
-      url = '/api/user/story/save';
-    }else{
-      //creating a new user story
-        url = '/api/user/story/create';
-    }
-  }
-
-  request.post(url)
-  .type('json').accept('json')
-  .send(story)
-  .end(function(err, res){
-    checkClientError(res, err, function(err){
-        _this.setState({saving: false});
-        if(err){
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          var story_id = _this.state.story_id;
-          if(res.body.story_id){
-            story_id = res.body.story_id;
-            _this.setState({story_id, unsavedChanges: false});
-          }else{
-            _this.setState({unsavedChanges: false});
-          }
-          _this.addMapCloseButtons(); //put back the close buttons
-          _this.addImageButtons();
-          NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('View Story'),
-            dismissAfter: 10000,
-            onDismiss(){
-
-            },
-            onClick(){
-              if(_this.props.storyType == 'user'){
-                window.location = '/user/' + _this.props.username + '/story/' + story_id + '/' + slug(story.title);
-              }else{
-                var baseUrl = '';
-                if(MAPHUBS_CONFIG.mapHubsPro){
-                  baseUrl = '/hub/' + _this.props.hubid;
-                }
-                window.location = baseUrl + '/story/' + story_id + '/' + slug(story.title);
-              }
-
+          },
+          onClick(){
+            if(_this.props.storyType == 'user'){
+              window.location = '/user/' + _this.props.username + '/story/' + story.story_id + '/' + slug(story.title);
+            }else{
+              var baseUrl = '/hub/' + _this.props.hub_id;              
+              window.location = baseUrl + '/story/' + story.story_id + '/' + slug(story.title);
             }
-          });
-        }
-    },
-    function(cb){
-      cb();
-    });
+          }
+        });
+      }
   });
-
 },
 
 delete(){
   var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Delete'),
-    message: _this.__('Please confirm removal of ') + this.state.title,
+    message: _this.__('Please confirm removal of ') + this.state.story.title,
     onPositiveResponse(){
-      request.post('/api/story/delete')
-      .type('json').accept('json')
-      .send({story_id: _this.state.story_id})
-      .end(function(err, res){
-        checkClientError(res, err, function(err){
-            if(err){
+      Actions.delete(_this.state._csrf, function(err){
+        if(err){
               MessageActions.showMessage({title: _this.__('Error'), message: err});
             }else{
-
               NotificationActions.showNotification({
                 message: _this.__('Story Deleted'),
+                dismissAfter: 1000,
                 onDismiss(){
                   window.location = '/';
                 }
               });
             }
-        },
-        function(cb){
-          cb();
-        });
-      });
+      });     
     }
   });
 },
@@ -295,7 +219,7 @@ getSelectionRange(){
   }
 },
 
-pasteHtmlAtCaret(html, rangeInput=null) {
+pasteHtmlAtCaret(html: any, rangeInput: any=null) {
     var sel, savedRange = this.savedSelectionRange;
     var selection = window.getSelection();
     var range = null;
@@ -328,7 +252,7 @@ pasteHtmlAtCaret(html, rangeInput=null) {
     this.handleBodyChange($('.storybody').html());
 },
 
-onAddMap(map){
+onAddMap(map: Object){
   var _this = this;
   var map_id = map.map_id;
   //this.setState({addingMap: true});
@@ -336,7 +260,6 @@ onAddMap(map){
   var range = null;
 
   var url = urlUtil.getBaseUrl() + '/map/embed/' + map_id + '/static';
-
 
   url = url.replace(/http:/, '');
   url = url.replace(/https:/, '');
@@ -349,15 +272,6 @@ onAddMap(map){
   );
 
   _this.handleBodyChange($('.storybody').html());
-
-  /*
-  setTimeout(function(){
-    _this.setState({addingMap: false});
-    _this.addMapCloseButtons();
-
-  }, 15000);
-  */
-
 },
 
 onMapCancel(){
@@ -366,7 +280,7 @@ onMapCancel(){
   this.addMapCloseButtons();
 },
 
-removeMap(map_id){
+removeMap(map_id: number){
   var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Map Removal'),
@@ -429,54 +343,37 @@ removeImageButtons(){
   });
 },
 
-
-onAddImage(data, info){
+onAddImage(data: string, info: Object){
   var _this = this;
-  request.post('/api/story/addimage')
-  .type('json').accept('json')
-  .send({story_id: _this.state.story_id, image: data, info})
-  .end(function(err, res){
-    checkClientError(res, err, function(err){
-        if(err || !res.body || !res.body.image_id){
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          var image_id = res.body.image_id;
-          var url = '/images/story/' + _this.state.story_id + '/image/' + image_id + '.jpg';
-          //<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"
-          _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + image_id + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><br /><p></p>');
-          NotificationActions.showNotification({message: _this.__('Image Added')});
-          _this.addImageButtons();
-        }
-    },
-    function(cb){
-      cb();
-    });
+  Actions.addImage(data, info, this.state._csrf, function(err, res){
+    if(err || !res.body || !res.body.image_id){
+      MessageActions.showMessage({title: _this.__('Error'), message: err});
+    }else{
+      var image_id = res.body.image_id;
+      var url = '/images/story/' + _this.state.story.story_id + '/image/' + image_id + '.jpg';
+      //<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"
+      _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + image_id + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><br /><p></p>');
+      NotificationActions.showNotification({message: _this.__('Image Added')});
+      _this.addImageButtons();
+    }
   });
 },
 
-onRemoveImage(image_id){
+onRemoveImage(image_id: number){
   var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Image Removal'),
     message: _this.__('Please confirm that you want to remove this image'),
     onPositiveResponse(){
-      request.post('/api/story/removeimage')
-      .type('json').accept('json')
-      .send({story_id: _this.state.story_id, image_id})
-      .end(function(err, res){
-        checkClientError(res, err, function(err){
-            if(err){
-              MessageActions.showMessage({title: _this.__('Error'), message: err});
-            }else{
-              //remove from content
-               $('#image-'+image_id).remove();
-               _this.handleBodyChange($('.storybody').html());
-              NotificationActions.showNotification({message: _this.__('Image Removed')});
-            }
-        },
-        function(cb){
-          cb();
-        });
+      Actions.removeImage(image_id, _this.state._csrf, function(err){
+          if(err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            //remove from content
+              $('#image-'+image_id).remove();
+              _this.handleBodyChange($('.storybody').html());
+            NotificationActions.showNotification({message: _this.__('Image Removed')});
+          }
       });
     }
   });
@@ -509,18 +406,15 @@ showAddMap(){
 },
 
 showImageCrop(){
-
-  if(!this.state.story_id || this.state.story_id == -1){
+  if(!this.state.story.story_id || this.state.story.story_id == -1){
     NotificationActions.showNotification({message: this.__('Please Save the Story Before Adding in Image'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
-
   if(this.savedSelectionRange){
     this.refs.imagecrop.show();
   }else {
     NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'});
   }
-
 },
 
   render() {
@@ -530,8 +424,8 @@ showImageCrop(){
         <div className="story-author" style={{height: '30px'}}>
           <Editor
          tag="b"
-         text={this.state.author}
-         onChange={this.handleAuthorChange}
+         text={this.state.story.author}
+         onChange={Actions.handleAuthorChange}
          options={{buttonLabels: false,
            placeholder: {text: this.__('Enter the Author')},
            disableReturn: true,
@@ -543,7 +437,7 @@ showImageCrop(){
     }
 
     var deleteButton = '';
-    if(this.state.story_id){
+    if(this.state.story.story_id){
       deleteButton = (
         <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
           <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete}
@@ -563,8 +457,8 @@ showImageCrop(){
           <div className="story-title">
             <Editor
            tag="h3"
-           text={this.state.title}
-           onChange={this.handleTitleChange}
+           text={this.state.story.title}
+           onChange={Actions.handleTitleChange}
            options={{buttonLabels: false,
              placeholder: {text: this.__('Enter a Title for Your Story')},
              disableReturn: true,
@@ -572,13 +466,12 @@ showImageCrop(){
              toolbar: {buttons: []}
            }}
          />
-
         </div>
         {author}
        <div className="story-content">
          <Editor
            className="storybody"
-           text={this.state.body}
+           text={this.state.story.body}
            onChange={this.handleBodyChange}
            options={{
              buttonLabels: 'fontawesome',
@@ -613,7 +506,6 @@ showImageCrop(){
               <i className="large material-icons">add</i>
             </a>
             <ul>
-
               <li>
                 <a  onMouseDown={this.showAddMap} className="btn-floating storyeditor-tooltips green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
                   <i className="material-icons">map</i>
@@ -624,7 +516,6 @@ showImageCrop(){
                   <i className="material-icons">insert_photo</i>
                 </a>
               </li>
-
             </ul>
           </div>
           <div className="fixed-action-btn action-button-bottom-right">

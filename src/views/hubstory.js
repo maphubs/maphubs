@@ -44,10 +44,7 @@ var HubStory = React.createClass({
     var story = this.props.story;
     var title = story.title.replace('&nbsp;', '');
     var button = '';
-    var baseUrl = '';
-    if(MAPHUBS_CONFIG.mapHubsPro){
-      baseUrl = '/hub/' + this.props.hub.hub_id;
-    }
+    var baseUrl = '/hub/' + this.props.hub.hub_id;
     if(this.props.canEdit){
       button = (
         <div className="fixed-action-btn action-button-bottom-right">

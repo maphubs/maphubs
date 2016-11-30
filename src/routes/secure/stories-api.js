@@ -1,17 +1,16 @@
-/* @flow weak */
+// @flow
 var knex = require('../../connection.js');
 //var debug = require('../../services/debug')('routes/stories');
-
 var Story = require('../../models/story');
 var Image = require('../../models/image');
-
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
+var csrfProtection = require('csurf')({cookie: false});
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
-  app.post('/api/user/story/create', function(req, res) {
+  app.post('/api/user/story/create', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -38,7 +37,7 @@ module.exports = function(app) {
     }
   });
 
-  app.post('/api/user/story/save', function(req, res) {
+  app.post('/api/story/save', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -73,7 +72,7 @@ module.exports = function(app) {
   });
 
 
-  app.post('/api/story/delete', function(req, res) {
+  app.post('/api/story/delete', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -104,7 +103,7 @@ module.exports = function(app) {
     }
   });
 
-  app.post('/api/story/addimage', function(req, res) {
+  app.post('/api/story/addimage', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -130,7 +129,7 @@ module.exports = function(app) {
     }
   });
 
-  app.post('/api/story/removeimage', function(req, res) {
+  app.post('/api/story/removeimage', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;

@@ -120,8 +120,6 @@ module.exports = function(app: any) {
     }
   });
 
-  app.use('/hub/:hubid/assets/', express.static('assets'));
-
 
   var renderHubPage = function(hub, canEdit, req, res){
     debug('loading hub, canEdit: ' + canEdit);
@@ -305,7 +303,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect(baseUrl + '/unauthorized?path='+req.path);
     }
