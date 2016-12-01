@@ -35,7 +35,10 @@ module.exports = {
     });
   },
 
-  addLayerView(layer_id: number, user_id: number){
+  addLayerView(layer_id: number, user_id: any){
+    if(user_id <= 0){
+      user_id = null;
+    }
     return knex('omh.layer_views').select(knex.raw('count(view_id)')).where({layer_id})
     .then(function(viewsResult){
       var views: number = parseInt(viewsResult[0].count);
@@ -53,7 +56,10 @@ module.exports = {
     });
   },
 
-  addMapView(map_id: number, user_id: number){
+  addMapView(map_id: number, user_id: any){
+    if(user_id <= 0){
+      user_id = null;
+    }
     return knex('omh.map_views').select(knex.raw('count(view_id)')).where({map_id})
     .then(function(viewsResult){
       var views: number = parseInt(viewsResult[0].count);
@@ -71,7 +77,10 @@ module.exports = {
     });
   },
 
-  addStoryView(story_id: number, user_id: number){
+  addStoryView(story_id: number, user_id: any){
+    if(user_id <= 0){
+      user_id = null;
+    }
     return knex('omh.story_views').select(knex.raw('count(view_id)')).where({story_id})
     .then(function(viewsResult){
       var views: number = parseInt(viewsResult[0].count);
@@ -89,7 +98,10 @@ module.exports = {
     });
   },
 
-  addHubView(hub_id: string, user_id: number){
+  addHubView(hub_id: string, user_id: any){
+    if(user_id <= 0){
+      user_id = null;
+    }
     return knex('omh.hub_views').select(knex.raw('count(view_id)')).where({hub_id})
     .then(function(viewsResult){
       var views: number = parseInt(viewsResult[0].count);
