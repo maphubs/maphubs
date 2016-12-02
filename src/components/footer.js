@@ -14,7 +14,7 @@ var Footer = React.createClass({
 
   render() {
 
-    var m4eFooter = '';
+    var m4eFooter = '', about = '', services = '', journalists = '';
     if(!MAPHUBS_CONFIG.mapHubsPro){
       m4eFooter = (
         <ul style={{marginTop: '0px'}}>
@@ -27,7 +27,25 @@ var Footer = React.createClass({
           </li>
         </ul>
       );
+
+      about = (
+        <li><a href="/about">{this.__('About')}</a></li>
+      );
+      services = (
+        <li><a href="/services">{this.__('Services')}</a></li>
+      );
+      journalists = (
+        <li><a href="/journalists">{this.__('Journalists')}</a></li>
+      );
+    }else{
+      about = (
+        <li><a href="https://maphubs.com/about">{this.__('About')}</a></li>
+      );
+      services = (
+        <li><a href="https://maphubs.com/services">{this.__('Services')}</a></li>
+      );
     }
+
 
     return (
         <footer className="page-footer white">
@@ -62,10 +80,10 @@ var Footer = React.createClass({
               <div className="col l3 s12">
                 <ul>
                   <li>{this.__('Learn More')}</li>
-                  <li><a href="/about">{this.__('About')}</a></li>
-                  <li><a href="/services">{this.__('Services')}</a></li>
+                  {about}
+                  {services}                                   
                   <li><a href="http://help.maphubs.com" target="_blank">{this.__('Help')}</a></li>
-                  <li><a href="/journalists">{this.__('Journalists')}</a></li>
+                  {journalists}                  
                   <li><a href="/terms">{this.__('Terms')}</a></li>
                   <li><a href="/privacy">{this.__('Privacy')}</a></li>
                 </ul>
