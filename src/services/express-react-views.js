@@ -17,9 +17,10 @@ var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
 var log = require('./log');
-var version = require('../version.json').version;
+var version = require('../../package.json').version;
 var local = require('../local');
 var urlUtil = require('./url-util');
+var webpackAssets = require('../webpack-assets.json');
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
 };
@@ -176,8 +177,14 @@ function createEngine(engineOptions) {
         markup += '<link href="/assets/css/opensans.css" rel="stylesheet" type="text/css">\n';
         markup +=
       //  '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
-        '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">' +
-        '<link rel="stylesheet" type="text/css" href="/public/' + clientFileName + '.css">' +
+        '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">';
+
+        //some endpoints don't generate css
+        if(webpackAssets[clientFileName] && webpackAssets[clientFileName].css){
+          markup += '<link rel="stylesheet" type="text/css" href="' + webpackAssets[clientFileName].css + '">';
+        }
+        
+         markup +=
         '</head>\n'+
         '<body>\n' +
          ' <div id="app">' + reactMarkup + '</div>\n' +
@@ -186,14 +193,17 @@ function createEngine(engineOptions) {
 
 
         markup +=
-          '<script type="text/javascript" src="/public/vendor.js"></script>\n' +
-          '<script type="text/javascript" src="/public/locales.js"></script>\n' +
+          '<script type="text/javascript" src="' + webpackAssets['vendor'].js + '"></script>\n' +
+          '<script type="text/javascript" src="' + webpackAssets['locales'].js + '"></script>\n' +
           '<script type="text/javascript" src="/clientconfig.js"></script>\n' +
-          '<script type="text/javascript" src="/public/' + clientFileName + '.js"></script>\n';
+          '<script type="text/javascript" src="' + webpackAssets[clientFileName].js + '"></script>\n';
 
+          //mapbox-gl now loads in webpack as a prebuilt asset in /assets
+          /*
           if(options.mapboxgl){
             markup += '<script type="text/javascript" src="/public/mapboxgl.js"></script>\n';
           }
+          */
 
         if(options.rangy){
           markup +=

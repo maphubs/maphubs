@@ -1,6 +1,8 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var AssetsPlugin = require('assets-webpack-plugin');
 var local = require('./local');
+var version = require('../package.json').version;
 require('babel-polyfill');
 var path = require('path');
 //var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
@@ -8,6 +10,9 @@ var pathToMapboxGL = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapb
 
 var pathToPica = path.resolve(__dirname, '../node_modules/pica/dist/pica.min.js');
 var pathToMediumEditor = path.resolve(__dirname, '../node_modules/medium-editor/dist/js/medium-editor.js');
+
+
+
 
 module.exports = {
   devtool: 'eval',
@@ -79,7 +84,7 @@ module.exports = {
   output: {
     path: local.publicFilePath,
     publicPath: '/public/',
-    filename: "[name].js"
+    filename: "[name].[chunkhash].js"
   },
 
   node: {
@@ -134,14 +139,17 @@ module.exports = {
            names: ["locales", "vendor"],
                        minChunks: Infinity
    }),
-   new ExtractTextPlugin("[name].css"),
+   new ExtractTextPlugin("[name].[chunkhash].css"),
    new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly|clientconfig)$/),
    new webpack.DefinePlugin({
     'process.env': {
         APP_ENV: JSON.stringify('browser'),
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }
-})
+  }),
+  new AssetsPlugin({
+    path: path.join(__dirname, '../src'),
+    prettyPrint: true, update: true, metadata: {version: version}})
   ],
 
   externals: {
