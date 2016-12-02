@@ -32,16 +32,7 @@ if(typeof module !== 'undefined'){
 EOF
 
 cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
-mkdir /app/css
-
-#write iD config
-cat <<EOF >/app/iD/js/config.js
-var OMH_CONFIG = {
-  AUTH_URL: "${ID_AUTH_URL}",
-  OAUTH_CONSUMER_KEY: "${ID_KEY}",
-  OAUTH_SECRET: "${ID_SECRET}"
-};
-EOF
+mkdir -p /app/css
 
 #run any pending database migrations
 node node_modules/knex/bin/cli.js --knexfile=src/knexfile.js migrate:latest --env production

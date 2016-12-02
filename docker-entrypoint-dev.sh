@@ -34,13 +34,4 @@ EOF
 cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
 
 
-#write iD config
-cat <<EOF >/app/iD/js/config.js
-var OMH_CONFIG = {
-  AUTH_URL: "${ID_AUTH_URL}",
-  OAUTH_CONSUMER_KEY: "${ID_KEY}",
-  OAUTH_SECRET: "${ID_SECRET}"
-};
-EOF
-
 node --max-old-space-size=$NODE_MEM_SIZE src/app.js
