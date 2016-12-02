@@ -642,6 +642,7 @@ app.post('/api/layer/finishupload', function(req, res) {
 
 });
 
+/*
 app.get('/api/layer/tempdata/:id.geojson', function(req, res) {
   if (!req.isAuthenticated || !req.isAuthenticated()
       || !req.session || !req.session.user) {
@@ -663,6 +664,7 @@ app.get('/api/layer/tempdata/:id.geojson', function(req, res) {
     }
   }).catch(apiError(res, 500));
 });
+*/
 
 app.get('/api/layer/deletedata/:id', function(req, res) {
   if (!req.isAuthenticated || !req.isAuthenticated()
