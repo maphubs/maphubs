@@ -10,10 +10,10 @@
     "webpack-stats": "NODE_ENV=production node node_modules/webpack/bin/webpack.js --profile --json --config src/webpack.config.min.js > stats.json",
     "debug": "/bin/sh run-debug.sh",
     "prod-test": "DEBUG=maphubs:* NODE_ENV=production node src/app.js",
-    "changelog": "github_changelog_generator",
+    "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -m \"update changelog\" && git push",  
     "preversion": "",
     "version": "npm run webpack && git add -A assets && git add src/webpack-assets.json",
-    "postversion": "npm run changelog && git add CHANGELOG.md && git commit -m \"update changelog\" && git push && git push --tags",
+    "postversion": "git push && git push --tags && npm run changelog",
     "deploy-patch": "npm version patch --force -m \"version %s\"",
     "deploy-minor": "npm version minor --force -m \"version %s\""
   },
