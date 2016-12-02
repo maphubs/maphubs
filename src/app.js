@@ -16,9 +16,7 @@ var express = require('express'),
   compression = require('compression');
 
 
-var webpack = require("webpack");
-var webpackConfig = require('./webpack.config');
-var compiler = webpack(webpackConfig);
+
 var session = require('express-session');
 var KnexSessionStore = require('connect-session-knex')(session);
 var knex = require('./connection.js');
@@ -102,6 +100,9 @@ if (app.get('env') !== 'production') {
 
 //use webpack middleware in local dev environment
 if(process.env.NODE_ENV !== 'production'){
+  var webpack = require("webpack");
+  var webpackConfig = require('./webpack.config');
+  var compiler = webpack(webpackConfig);
   var webpackDevMiddleware = require("webpack-dev-middleware");
   log.info('Dev: Using Webpack Dev Middleware');
   app.use(webpackDevMiddleware(compiler, {
