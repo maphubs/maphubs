@@ -2,24 +2,38 @@
 
 MapHubs is a collaborative platform for sharing mapping data, organizing data into hubs, and telling stories with maps.
 
-## Contributing
+## Status
+
+Web: [![Docker Repository on Quay](https://quay.io/repository/maphubs/web/status "Docker Repository on Quay")](https://quay.io/repository/maphubs/web)
+
+Assets: [![Docker Repository on Quay](https://quay.io/repository/maphubs/assets/status "Docker Repository on Quay")](https://quay.io/repository/maphubs/assets)
+
+Database: [![Docker Repository on Quay](https://quay.io/repository/maphubs/db/status "Docker Repository on Quay")](https://quay.io/repository/maphubs/db)
+
+## Running MapHubs
+
+MapHubs runs as a stack of Docker containers (see list below) using either docker-compose or [Docker Cloud](cloud.docker.com)
+
+## Development
 
 ### Installing dependencies
 ```sh
 git clone git@github.com:maphubs/maphubs.git
 cd maphubs
-npm install
+yarn install
 ```
 
 ### Local configuration
 
-Before running the server, you will need to add `local.js` and `clientconfig.js` in your root directory (see `local-example.js` and `clientconfig-example.js`).
+Before running maphubs locally, you will need to update the environment config variables
+
+- In env/dev/secret copy each of the sample files
 
 MapHubs is made of multiple components: a database, the web application (this project), a vector tile server, and a screenshot service. The easiest way to run everything is with Docker.
 
 #### Database
 
-The `db-server` directory contains instructions on running your own postgresql database with the appropriate table schema using Docker. For Mac OS X users you might need [docker-machine](https://github.com/docker/machine)
+The `db-server` directory contains instructions on running your own postgresql database with the appropriate table schema using Docker.
 
 #### Vector Tile Server
 https://github.com/maphubs/maphubs-tileserver
