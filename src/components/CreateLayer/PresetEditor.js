@@ -12,7 +12,7 @@ var Locales = require('../../services/locales');
 var PresetEditor = React.createClass({
 
   mixins: [
-    Reflux.connect(PresetStore, 'presets'),
+    Reflux.connect(PresetStore, 'store'),
     StateMixin.connect(LocaleStore)
   ],
 
@@ -35,7 +35,7 @@ var PresetEditor = React.createClass({
   componentDidMount(){
     var _this = this;
     window.onbeforeunload = function(){
-      if(_this.props.warnIfUnsaved && _this.state.presets.pendingChanges){
+      if(_this.props.warnIfUnsaved && _this.state.store.pendingChanges){
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
@@ -56,8 +56,8 @@ var PresetEditor = React.createClass({
 	render() {
     var _this = this;
     var presets = [];
-    if(this.state.presets && this.state.presets.presets && Array.isArray(this.state.presets.presets)){
-      presets = this.state.presets.presets;
+    if(this.state.store && Array.isArray(this.state.store.presets)){
+      presets = this.state.store.presets;
     }
 		return (
         <div>

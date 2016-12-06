@@ -9,6 +9,8 @@ var actions = Reflux.createActions({
   'deletePreset': {},
   'updatePreset': {},
   'setLayerId': {},
+  'moveUp': {},
+  'moveDown': {},
   'loadPresets': {},
   'loadDefaultPresets': {}  
 });

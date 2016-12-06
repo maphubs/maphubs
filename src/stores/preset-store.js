@@ -27,6 +27,8 @@ module.exports = Reflux.createStore({
     this.listenTo(actions.setLayerId, this.setLayerId);
     this.listenTo(actions.loadPresets, this.loadPresets);
     this.listenTo(actions.loadDefaultPresets, this.loadDefaultPresets);
+    this.listenTo(actions.moveUp, this.moveUp);
+    this.listenTo(actions.moveDown, this.moveDown);
   },
 
   setLayerId(layerId){
@@ -130,6 +132,27 @@ module.exports = Reflux.createStore({
    }
 
  },
+
+ moveUp(id){
+   var index = _findIndex(this.data.presets, {id});
+   if(index === 0) return;
+   this.data.presets = this.move(this.data.presets, index, index-1);
+   this.trigger(this.data);
+   actions.presetsChanged(this.data.presets);
+ },
+
+ moveDown(id){
+   var index = _findIndex(this.data.presets, {id});
+   if(index === this.data.presets.length -1) return;
+   this.data.presets = this.move(this.data.presets, index, index+1);
+   this.trigger(this.data);
+   actions.presetsChanged(this.data.presets);
+ },
+
+ move(array, fromIndex, toIndex) {
+    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
+    return array;
+  },
 
   getInitialState() {
     return this.data;

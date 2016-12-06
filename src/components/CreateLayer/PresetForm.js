@@ -99,6 +99,14 @@ var PresetForm = React.createClass({
 
   },
 
+  onMoveUp(){
+  actions.moveUp(this.props.id);
+  },
+
+  onMoveDown(){
+    actions.moveDown(this.props.id);
+  },
+
 	render() {
     var presetOptions = [
       {value: 'text', label: this.__('Text')},
@@ -161,8 +169,12 @@ var PresetForm = React.createClass({
             </Formsy.Form>
             </div>
             <div className="row">
-              <div className="right">
-                <a className="waves-effect waves-light btn" onClick={this.onRemove}><i className="material-icons left">delete</i>{this.__('Remove')}</a>
+              <div className="col s8">
+                <a className="waves-effect waves-light btn" onClick={this.onMoveUp}><i className="material-icons left">arrow_upward</i>{this.__('Move Up')}</a>
+                <a className="waves-effect waves-light btn" style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className="material-icons left">arrow_downward</i>{this.__('Move Down')}</a>             
+              </div>
+              <div className="col s4">
+                <a className="waves-effect waves-light btn right" onClick={this.onRemove}><i className="material-icons left">delete</i>{this.__('Remove')}</a>
               </div>
             </div>
       </div>
