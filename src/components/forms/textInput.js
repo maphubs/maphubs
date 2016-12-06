@@ -80,6 +80,12 @@ var TextInput= React.createClass({
     return false;
   },
 
+  componentDidUpdate(prevProps){
+    if(!prevProps.dataTooltip && this.props.dataTooltip){
+      $(this.refs.inputWrapper).tooltip();
+    }
+  },
+
   changeValue(event){
      event.stopPropagation();
      this.setValue(event.currentTarget.value);
