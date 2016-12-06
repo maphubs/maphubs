@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.5.3](https://github.com/maphubs/maphubs/tree/v0.5.3) (2016-12-06)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.2...v0.5.3)
+
+**Implemented enhancements:**
+
+- option to specify field display order [\#143](https://github.com/maphubs/maphubs/issues/143)
+- toggle to show field in hover popup [\#141](https://github.com/maphubs/maphubs/issues/141)
+
+**Fixed bugs:**
+
+- error during signup [\#291](https://github.com/maphubs/maphubs/issues/291)
+
 ## [v0.5.2](https://github.com/maphubs/maphubs/tree/v0.5.2) (2016-12-02)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.1...v0.5.2)
 
