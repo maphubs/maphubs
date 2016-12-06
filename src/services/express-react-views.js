@@ -90,6 +90,17 @@ function createEngine(engineOptions) {
         title = options.title;
       }
 
+      var getAssets = function(entryName){
+        if(process.env.NODE_ENV == 'production'){
+          return webpackAssets[entryName];
+        }else{
+          return {
+            js: '/public/' + entryName + '.js',
+            css: '/public/' + entryName + '.css',
+          };
+        }
+      };
+
       //#TODO:230 set HTML header meta tags and language tags
       markup += `
       <html lang="` + locale + `">
@@ -180,8 +191,9 @@ function createEngine(engineOptions) {
         '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">';
 
         //some endpoints don't generate css
-        if(webpackAssets[clientFileName] && webpackAssets[clientFileName].css){
-          markup += '<link rel="stylesheet" type="text/css" href="' + webpackAssets[clientFileName].css + '">';
+        var cssFile = getAssets(clientFileName).css;
+        if(cssFile){
+          markup += '<link rel="stylesheet" type="text/css" href="' + cssFile + '">';
         }
         
          markup +=
@@ -193,10 +205,10 @@ function createEngine(engineOptions) {
 
 
         markup +=
-          '<script type="text/javascript" src="' + webpackAssets['vendor'].js + '"></script>\n' +
-          '<script type="text/javascript" src="' + webpackAssets['locales'].js + '"></script>\n' +
+          '<script type="text/javascript" src="' + getAssets('vendor').js + '"></script>\n' +
+          '<script type="text/javascript" src="' + getAssets('locales').js + '"></script>\n' +
           '<script type="text/javascript" src="/clientconfig.js"></script>\n' +
-          '<script type="text/javascript" src="' + webpackAssets[clientFileName].js + '"></script>\n';
+          '<script type="text/javascript" src="' + getAssets(clientFileName).js + '"></script>\n';
 
           //mapbox-gl now loads in webpack as a prebuilt asset in /assets
           /*

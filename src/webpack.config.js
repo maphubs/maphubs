@@ -1,8 +1,6 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var AssetsPlugin = require('assets-webpack-plugin');
 var local = require('./local');
-var version = require('../package.json').version;
 require('babel-polyfill');
 var path = require('path');
 //var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
@@ -84,7 +82,7 @@ module.exports = {
   output: {
     path: local.publicFilePath,
     publicPath: '/public/',
-    filename: "[name].[chunkhash].js"
+    filename: "[name].js"
   },
 
   node: {
@@ -138,8 +136,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
            names: ["locales", "vendor"],
                        minChunks: Infinity
-   }),
-   new ExtractTextPlugin("[name].[chunkhash].css"),
+   }),   
    new webpack.IgnorePlugin(/^(i18n|winston|winston-loggly|clientconfig)$/),
    new webpack.DefinePlugin({
     'process.env': {
@@ -147,9 +144,7 @@ module.exports = {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }
   }),
-  new AssetsPlugin({
-    path: path.join(__dirname, '../src'),
-    prettyPrint: true, update: true, metadata: {version: version}})
+  new ExtractTextPlugin("[name].css"),
   ],
 
   externals: {
