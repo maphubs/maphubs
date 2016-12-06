@@ -77,6 +77,7 @@ module.exports = {
   forgotPassword(email: string, __: Function){
     return User.getUserByEmail(email, true)
     .then(function(user){
+      if(!user) throw new Error('User not found');
       //generate a unique reset link
       var pass_reset = uuid();
       knex('users').update({pass_reset}).where({id: user.id})

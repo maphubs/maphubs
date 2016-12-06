@@ -101,7 +101,7 @@ module.exports = {
         } else {
           let msg = "email not found: "+ email;
           log.error(msg);
-          throw new Error(msg);
+          return null;
         }
       });
     },
