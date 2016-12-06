@@ -48,8 +48,8 @@ module.exports = Reflux.createStore({
   loadDefaultPresets(){
     //called when setting up a new empty layer
     var presets = [
-      {tag: 'name', label: 'Name', type: 'text', isRequired: true, id: this.idSequence++},
-      {tag: 'description', label: 'Description', type: 'text', isRequired: false, id: this.idSequence++}
+      {tag: 'name', label: 'Name', type: 'text', isRequired: true, showOnMap: true, id: this.idSequence++},
+      {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.idSequence++}
     ];
     this.data.presets = presets;
     this.data.pendingChanges = true;
@@ -67,9 +67,9 @@ module.exports = Reflux.createStore({
     data.forEach(function(tag){
       var preset = {};
       if(tag == 'osm_id'){
-         preset = {tag:'orig_osm_id', label: 'orig_osm_id', type: 'text', isRequired: false, mapTo: tag, id: _this.idSequence++};
+         preset = {tag:'orig_osm_id', label: 'orig_osm_id', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
       }else{
-         preset = {tag, label: tag, type: 'text', isRequired: false, mapTo: tag, id: _this.idSequence++};
+         preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
       }
       _this.data.presets.push(preset);
     });
@@ -112,6 +112,7 @@ module.exports = Reflux.createStore({
       label: '',
       type: 'text',
       isRequired: false,
+      showOnMap: true,
       id: this.idSequence++
     });
     this.data.pendingChanges = true;

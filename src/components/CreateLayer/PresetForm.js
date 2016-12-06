@@ -28,6 +28,7 @@ var PresetForm = React.createClass({
     type: React.PropTypes.string,
     options: React.PropTypes.array, //if type requires a list of options
     isRequired: React.PropTypes.bool,
+    showOnMap: React.PropTypes.bool,
     onValid: React.PropTypes.func,
     onInvalid: React.PropTypes.func
 
@@ -35,6 +36,7 @@ var PresetForm = React.createClass({
 
   getDefaultProps() {
     return {
+      showOnMap: true
     };
   },
 
@@ -49,7 +51,8 @@ var PresetForm = React.createClass({
         label: this.props.label,
         type: this.props.type,
         options: this.props.options,
-        isRequired: this.props.isRequired
+        isRequired: this.props.isRequired,
+        showOnMap: this.props.showOnMap
       },
       valid
     };
@@ -116,12 +119,13 @@ var PresetForm = React.createClass({
       {value: 'combo', label: this.__('Combo Box (Dropdown)')},
       {value: 'check', label: this.__('Check Box (Yes/No)')}
     ];
-
+    
     var typeOptions = '';
 
     if(this.state.preset.type == 'combo' || this.state.preset.type == 'radio'){
       typeOptions = (
-        <TextArea name="options" label={this.__('Options(seperate with commas)')} icon="list" className="col s12" validations="maxLength:500" validationErrors={{
+        <TextArea name="options" label={this.__('Options(seperate with commas)')} icon="list" 
+        className="col s12" validations="maxLength:500" validationErrors={{
                  maxLength: this.__('Description must be 500 characters or less.')
              }} length={500}
             value={this.state.preset.options}
@@ -139,7 +143,8 @@ var PresetForm = React.createClass({
           <div className="row">
             <Formsy.Form ref="form" onChange={this.onFormChange}
                 onValid={this.onValid} onInvalid={this.onInvalid}>
-              <TextInput name="tag" id={this.props.tag+'-tag'} label={this.__('Tag')} icon="code" className="col l6 m6 s12"
+              <TextInput name="tag" id={this.props.tag+'-tag'} label={this.__('Tag')} icon="code" 
+                  className="col l6 m6 s12"
                   validations="maxLength:25" validationErrors={{
                      maxLength: this.__('Name must be 25 characters or less.')
                  }} length={25}
@@ -157,7 +162,12 @@ var PresetForm = React.createClass({
                   <Toggle name="isRequired" labelOff="Optional" labelOn="Required" className="col l6 m6 s12"
                        style={{paddingTop: '25px'}}
                        defaultChecked={this.state.preset.isRequired}
-                        dataPosition="right" dataTooltip={this.__('Editing/collection tools will require the user to submit this field.')}
+                        dataPosition="bottom" dataTooltip={this.__('Editing/collection tools will require the user to submit this field.')}
+                        />
+                  <Toggle name="showOnMap" labelOff="Hide in Map" labelOn="Show in Map" className="col l6 m6 s12"
+                       style={{paddingTop: '25px'}}
+                       defaultChecked={this.state.preset.showOnMap}
+                        dataPosition="bottom" dataTooltip={this.__('Option to hide this field in the map popup. It will still display in the data table.')}
                         />
                       <Select name="type" id="preset-type-select" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"
                     value={this.state.preset.type} defaultValue={this.state.preset.type} startEmpty={typeStartEmpty}
