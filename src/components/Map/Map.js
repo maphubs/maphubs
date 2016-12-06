@@ -685,8 +685,8 @@ map.on('mousemove', function(e) {
        if(_this.state.selected){
         _this.clearSelection();
       }
-      _this.setSelectionFilter(features);
-      _this.setState({selectedFeatures:features, selected:true});
+      _this.setSelectionFilter([features[0]]);
+      _this.setState({selectedFeatures:[features[0]], selected:true});
        map.addClass('selected');
       } else if(_this.state.selectedFeatures != null) {
           _this.clearSelection();
