@@ -1,0 +1,586 @@
+{
+  "user_id": 1,
+  "task": "Create DRC District Hubs",
+  "baseMap": "outdoors",
+  "hubs": [
+    {
+      "id": "Basankusu",
+      "name": "Basankusu - Agriculture Concessions",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Basankusu District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",
+      
+      "count": 23,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.3344306945800781,
+            0.3492990136147682
+          ],
+          [
+            20.8399200439454262,
+            1.6856110095977783
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Inongo",
+      "name": "Inongo - Agriculture Concessions",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Inongo District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 8,
+      "mapPosition": {
+        "bbox": [
+          [
+            16.6605701446533772,
+            -2.6885290145874023
+          ],
+          [
+            19.3195781707763672,
+            -1.1286079883574871
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Yohuma",
+      "name": "Yohuma - Agriculture Concessions",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Yohuma District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 5,
+      "mapPosition": {
+        "bbox": [
+          [
+            22.2864017486572266,
+            -0.4952799975872040
+          ],
+          [
+            23.7504692077637856,
+            2.1225008964539143
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Bolomba",
+      "name": "Bolomba - Agriculture Concessions",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Bolomba District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            18.2833595275879475,
+            -0.2375189960002331
+          ],
+          [
+            20.6228694915771484,
+            1.3996210098267170
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Kutu",
+      "name": "Kutu - Agriculture Concessions",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Kutu District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 4,
+      "mapPosition": {
+        "bbox": [
+          [
+            16.9456825256347656,
+            -3.6469600200652508
+          ],
+          [
+            19.0534496307374184,
+            -2.2680599689483643
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Tshilenge",
+      "name": "Tshilenge - Agriculture Concessions",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Tshilenge District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            22.9519023895264809,
+            -6.8082599639892010
+          ],
+          [
+            24.0981197357178303,
+            -5.6161098480224609
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Lukula",
+      "name": "Lukula",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Lukula District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            12.5377349853516193,
+            -5.5879111289977459
+          ],
+          [
+            13.3070507049560547,
+            -5.1339588165282635
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Tshela",
+      "name": "Tshela",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Tshela District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 4,
+      "mapPosition": {
+        "bbox": [
+          [
+            12.4708061218261150,
+            -5.2755208015441895
+          ],
+          [
+            13.3873672485352699,
+            -4.5866498947143555
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Bongandanga",
+      "name": "Bongandanga",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Bongandanga District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 7,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.2620296478271484,
+            0.7304800152779762
+          ],
+          [
+            22.5886001586915199,
+            2.1875998973845867
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Bumba",
+      "name": "Bumba",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Bumba District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 6,
+      "mapPosition": {
+        "bbox": [
+          [
+            21.7407703399658772,
+            2.0102810859680176
+          ],
+          [
+            23.6513996124268715,
+            3.2691299915314289
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Lisala",
+      "name": "Lisala",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Lisala District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 7,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.8433418273925781,
+            1.8634769916534992
+          ],
+          [
+            21.8678226470948402,
+            3.0590300559996990
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Businga",
+      "name": "Businga",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Businga District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 5,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.9455890655518147,
+            2.8843200206756592
+          ],
+          [
+            22.0611305236817543,
+            4.0134911537169842
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Budjala",
+      "name": "Budjala",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Budjala District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 10,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.1422500610351562,
+            1.9991910457611084
+          ],
+          [
+            20.8793182373046875,
+            3.0589799880982582
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Gemena",
+      "name": "Gemena",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Gemena District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 3,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.0684127807616619,
+            2.7430000305175781
+          ],
+          [
+            20.2861309051514240,
+            4.0665807723999023
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Bambesa",
+      "name": "Bambesa",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Bambesa District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            25.1053371429443359,
+            2.2101700305939289
+          ],
+          [
+            26.5010108947755043,
+            3.7505700588227455
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Kungu",
+      "name": "Kungu",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Kungu District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 3,
+      "mapPosition": {
+        "bbox": [
+          [
+            18.0652847290039631,
+            1.8843820095062824
+          ],
+          [
+            19.3493404388427734,
+            3.1734991073609535
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Buta",
+      "name": "Buta",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Buta District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            24.1767997741699219,
+            2.1504709720612141
+          ],
+          [
+            25.9054393768311684,
+            3.5283110141753582
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Befale",
+      "name": "Befale",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Befale District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 8,
+      "mapPosition": {
+        "bbox": [
+          [
+            20.3232727050781250,
+            -0.0524690002202988
+          ],
+          [
+            22.3640098571778481,
+            1.1854209899902344
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Ilebo",
+      "name": "Ilebo",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Ilebo District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 3,
+      "mapPosition": {
+        "bbox": [
+          [
+            20.0333003997802166,
+            -5.9121608734130291
+          ],
+          [
+            21.0934772491456215,
+            -4.2755589485167320
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Boende",
+      "name": "Boende",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Boende District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 7,
+      "mapPosition": {
+        "bbox": [
+          [
+            19.7776317596436115,
+            -1.3322989940643311
+          ],
+          [
+            21.8741703033446697,
+            0.2867510020734017
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Bokungu",
+      "name": "Bokungu",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Bokungu District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 4,
+      "mapPosition": {
+        "bbox": [
+          [
+            21.4356117248535725,
+            -1.9588910341262817
+          ],
+          [
+            23.0060291290283203,
+            0.0775099992753212
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Djolu",
+      "name": "Djolu",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Djolu District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 4,
+      "mapPosition": {
+        "bbox": [
+          [
+            21.6212100982667152,
+            -0.4053699970245361
+          ],
+          [
+            23.4136028289795490,
+            1.7527589797974201
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Ikela",
+      "name": "Ikela",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Ikela District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 4,
+      "mapPosition": {
+        "bbox": [
+          [
+            22.3250083923340412,
+            -2.0855610370635986
+          ],
+          [
+            24.4202976226806072,
+            0.0550700016319752
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Kinshasa Rural",
+      "name": "Kinshasa Rural",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Kinshasa Rural District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 3,
+      "mapPosition": {
+        "bbox": [
+          [
+            15.1499986648560139,
+            -5.0336089134216309
+          ],
+          [
+            16.5499992370606606,
+            -3.9498209953307537
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Kenge",
+      "name": "Kenge",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Kenge District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            16.2502593994141762,
+            -5.9863190650939941
+          ],
+          [
+            17.7797698974610512,
+            -4.3114809989928631
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Bulungu-Kikwit",
+      "name": "Bulungu/Kikwit",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Bulungu/Kikwit District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            18.1158695220947834,
+            -5.4201707839965820
+          ],
+          [
+            19.2628574371337891,
+            -3.9484388828276451
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Banalia",
+      "name": "Banalia",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Banalia District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 7,
+      "mapPosition": {
+        "bbox": [
+          [
+            24.3450126647949219,
+            0.6283910274506752
+          ],
+          [
+            26.5499897003174965,
+            2.3446509838104816
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Basoko",
+      "name": "Basoko",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Basoko District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      
+      "count": 1,
+      "mapPosition": {
+        "bbox": [
+          [
+            22.6803073883057209,
+            0.9406890273095314
+          ],
+          [
+            25.1483001708984375,
+            2.2983798980713459
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Isangi",
+      "name": "Isangi",
+      "tagline": "Agriculture monitoring at the district level",
+      "description": "This hub provides a map of agriculture concessions, overlapping land uses such as logging permits, and transport networks in Isangi District. Map stories regarding concessions in the district can be published as well as related documents and links. Map data posted in this hub is managed in groups run by the organizations who own it. Only members of a hub can edit the map, add a story, or post a resource link.",       
+      "count": 9,
+      "mapPosition": {
+        "bbox": [
+          [
+            23.5162696838378906,
+            -0.3577390015125275
+          ],
+          [
+            25.0591697692871094,
+            1.1279499530792236
+          ]
+        ]
+      }
+    }
+  ]
+}
