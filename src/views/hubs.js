@@ -1,9 +1,9 @@
+// @flow
 var React = require('react');
-
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+var CardCollection = require('../components/CardCarousel/CardCollection');
 var debug = require('../services/debug')('views/hubs');
 var urlUtil = require('../services/url-util');
 var cardUtil = require('../services/card-util');
@@ -23,7 +23,7 @@ var Hubs = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
@@ -31,16 +31,20 @@ var Hubs = React.createClass({
     featuredHubs: React.PropTypes.array,
     popularHubs: React.PropTypes.array,
     recentHubs: React.PropTypes.array,
+    allHubs:  React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
   getDefaultProps() {
     return {
-      hubs: []
+      featuredHubs: [],
+      popularHubs: [],
+      recentHubs: [],
+      allHubs: []
     };
   },
 
-  handleSearch(input) {
+  handleSearch(input: string) {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/hubs/search?q=' + input)
@@ -75,21 +79,14 @@ var Hubs = React.createClass({
     var featuredCards = this.props.featuredHubs.map(cardUtil.getHubCard);
     var recentCards = this.props.recentHubs.map(cardUtil.getHubCard);
     var popularCards = this.props.popularHubs.map(cardUtil.getHubCard);
-
+    var allCards = this.props.allHubs.map(cardUtil.getHubCard);
+    
     var searchResults = '';
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
-
         var searchCards = this.state.searchResults.map(cardUtil.getHubCard);
-
         searchResults = (
-          <div className="row">
-            <div className="col s12">
-            <h5>{this.__('Search Results')}</h5>
-            <div className="divider"></div>
-            <CardCarousel infinite={false} cards={searchCards}/>
-          </div>
-          </div>
+          <CardCollection cards={searchCards} title={this.__('Search Results')} />
         );
       }
       else {
@@ -103,20 +100,16 @@ var Hubs = React.createClass({
           </div>
         );
       }
-
     }
 
     var featured = '';
     if(featuredCards.length > 0){
-      featured = (
-        <div className="row">
-          <div className="col s12">
-            <h5>{this.__('Featured')}</h5>
-            <div className="divider"></div>
-            <CardCarousel cards={featuredCards} infinite={false}/>
-          </div>
-        </div>
-      );
+      featured = (<CardCollection cards={featuredCards} title={this.__('Featured')} />);
+    }
+
+    var all = '';
+    if(allCards.length > 0){
+      all = (<CardCollection cards={allCards} title={this.__('All Hubs')} />);
     }
 
 		return (
@@ -131,23 +124,11 @@ var Hubs = React.createClass({
               </div>
             </div>
 
-              {searchResults}
-              {featured}
-
-            <div className="row">
-              <div className="col s12">
-                <h5>{this.__('Popular')}</h5>
-                <div className="divider"></div>
-                <CardCarousel cards={popularCards} infinite={false}/>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col s12">
-                <h5>{this.__('Recent')}</h5>
-                <div className="divider"></div>
-                <CardCarousel cards={recentCards} infinite={false}/>
-              </div>
-            </div>
+            {searchResults}
+            {featured}
+            <CardCollection cards={popularCards} title={this.__('Popular')} />
+            <CardCollection cards={recentCards} title={this.__('Recent')} />            
+            {all}
             <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Hub')}>
               <a className="btn-floating btn-large red red-text" href="/createhub">
                 <i className="large material-icons">add</i>

@@ -3,7 +3,7 @@ var Map = require('../components/Map/Map');
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+var CardCollection = require('../components/CardCarousel/CardCollection');
 var cardUtil = require('../services/card-util');
 var Promise = require('bluebird');
 var request = require('superagent-bluebird-promise');
@@ -184,12 +184,7 @@ var Search = React.createClass({
     var cardsPanel = '';
     if(this.state.searchCards && this.state.searchCards.length > 0){
       cardsPanel = (
-        <div className="row">
-          <div className="col s12">
-            <div className="divider"></div>
-            <CardCarousel cards={this.state.searchCards} infinite={false}/>
-          </div>
-        </div>
+        <CardCollection cards={this.state.searchCards} />
       );
     }
 

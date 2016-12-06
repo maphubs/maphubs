@@ -1,5 +1,4 @@
 // @flow
-var express = require('express');
 var Layer = require('../../models/layer');
 var Story = require('../../models/story');
 var Hub = require('../../models/hub');
@@ -17,6 +16,7 @@ var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
+var local = require('../../local');
 
 module.exports = function(app: any) {
 
@@ -63,12 +63,24 @@ module.exports = function(app: any) {
         var featuredHubs = results[0];
         var popularHubs = results[1];
         var recentHubs = results[2];
-        res.render('hubs', {
-          title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            featuredHubs, popularHubs, recentHubs
-          }, req
-        });
+        if(local.mapHubsPro){
+          return  Hub.getAllHubs()
+          .then(function(allHubs){
+            res.render('hubs', {
+              title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
+              props: {
+                featuredHubs, popularHubs, recentHubs, allHubs
+              }, req
+            });
+          });
+        }else{
+          res.render('hubs', {
+            title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
+            props: {
+              featuredHubs, popularHubs, recentHubs
+            }, req
+          });
+        }
       }).catch(nextError(next));
   });
 
