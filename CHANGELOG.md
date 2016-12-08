@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.5.4](https://github.com/maphubs/maphubs/tree/v0.5.4) (2016-12-08)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.3...v0.5.4)
+
+**Fixed bugs:**
+
+- layer & map thumbnails not sending etags [\#290](https://github.com/maphubs/maphubs/issues/290)
+
 ## [v0.5.3](https://github.com/maphubs/maphubs/tree/v0.5.3) (2016-12-06)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.2...v0.5.3)
 
