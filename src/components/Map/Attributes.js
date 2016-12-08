@@ -45,6 +45,7 @@ var Attributes = React.createClass({
                 presets.map(function(preset){
                   if(typeof preset.showOnMap !== 'undefined' && preset.showOnMap === false) return '';
                   var val = _this.props.attributes[preset.tag];
+                  if(!val || (typeof val === 'string' && val === 'null')) return '';
                   if(typeof val === 'string' && val.startsWith('http')){
                     val = (<a target="_blank" href={val}>{val}</a>);
                   }
