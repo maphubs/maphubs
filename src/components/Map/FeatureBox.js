@@ -12,6 +12,7 @@ var request = require('superagent');
 var checkClientError = require('../../services/client-error-response').checkClientError;
 var urlUtil = require('../../services/url-util');
 var GroupTag = require('../../components/Groups/GroupTag');
+var $ = require('jquery');
 
 var FeatureBox = React.createClass({
 
@@ -41,7 +42,8 @@ var FeatureBox = React.createClass({
     selectedFeature: 1,
     selected: this.props.selected,
     currentFeatures: this.props.features ? this.props.features : [],
-    maxHeight: 'calc(100% - 50px)'
+    maxHeight: 'calc(100% - 50px)',
+    layerLoaded: false
   };
   },
 
@@ -51,7 +53,7 @@ var FeatureBox = React.createClass({
       if(selectedFeature.properties.layer_id){
           this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
       }
-    }
+    }  
   },
 
   componentWillReceiveProps(nextProps) {
@@ -81,6 +83,12 @@ var FeatureBox = React.createClass({
     }
   },
 
+  componentDidUpdate(prevProps, prevState){
+    if(!prevState.layerLoaded && this.state.layerLoaded){
+      $('.feature-box-tooltips').tooltip();
+    }
+  },
+
   getLayer(layer_id, host){
     var _this = this;
     var baseUrl;
@@ -94,7 +102,7 @@ var FeatureBox = React.createClass({
     .end(function(err, res){
       checkClientError(res, err, function(){}, function(cb){
         var layer = res.body.layer;
-        _this.setState({layer});
+        _this.setState({layer, layerLoaded: true});
         cb();
       });
     });
@@ -170,13 +178,13 @@ var FeatureBox = React.createClass({
           featureLink = 'https://' + host + '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
         }
       infoPanel = (<div className="row" style={{marginTop: '10px', marginBottom: '10px'}}>
-        <div className="col s6 center">
+        <div className="col s10 center">
         {layerinfo}
         </div>
-        <div className="col s6 center">
+        <div className="col s2 center no-padding">
           <a href={featureLink}
-              className="btn-floating waves-effect waves-light tooltipped" data-delay="50" data-position="bottom" data-tooltip={this.__('Layer Info')}>
-            <i className="material-icons">info</i>
+              className="feature-box-tooltips" data-delay="50" data-position="bottom" data-tooltip={this.__('More Info')}>
+            <i className="material-icons omh-accent-color" style={{fontSize: 32}}>info_outline</i>
           </a>
         </div>
       </div>);
@@ -236,7 +244,7 @@ var FeatureBox = React.createClass({
     //only show the panel if there is at least one feature active
     var display = 'none';
     var attributes = '';
-    if(this.state.currentFeatures.length > 0){
+    if(this.state.currentFeatures.length > 0 && this.state.layerLoaded){
       display = 'flex';
       var properties = [];
       currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
@@ -247,19 +255,19 @@ var FeatureBox = React.createClass({
       if(this.state.layer){
         presets = this.state.layer.presets;
       }
-      attributes = (
-        <Attributes
-            attributes={properties}
-            selected={this.state.selected}
-            multipleSelected={multipleSelected}
-            presets={presets}>
-          <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
-            {infoPanel}
-            {pager}
-          </div>
-        </Attributes>
+        attributes = (
+          <Attributes
+              attributes={properties}
+              selected={this.state.selected}
+              multipleSelected={multipleSelected}
+              presets={presets}>
+            <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
+              {infoPanel}
+              {pager}
+            </div>
+          </Attributes>
 
-      );
+        );
     }
 
 
