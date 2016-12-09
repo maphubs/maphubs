@@ -33,16 +33,16 @@ module.exports = function(app: any) {
 
   app.get('/user/:username/stories', function(req, res, next) {
 
-    var username = req.params.username;
+    var username: string = req.params.username;
     if(!username){apiDataError(res);}
-    var myStories = false;
+    var myStories: boolean = false;
 
     function completeRequest(){
 
       User.getUserByName(username)
       .then(function(user){
         if(user){
-          return Story.getUserStories(user.id)
+          return Story.getUserStories(user.id, myStories)
           .then(function(stories){
             res.render('userstories', {title: 'Stories - ' + username,
             addthis: true,
@@ -68,7 +68,7 @@ module.exports = function(app: any) {
         if(user.display_name === username){
           myStories = true;
         }
-        completeRequest();
+        completeRequest();       
       }).catch(nextError(next));
     }
   });
@@ -79,20 +79,24 @@ module.exports = function(app: any) {
     }
 
     var username = req.session.user.display_name;
-    Promise.all([
-      Map.getUserMaps(req.session.user.id),
-      Map.getPopularMaps()
-    ]).then(function(results){
-      var myMaps = results[0];
-      var popularMaps = results[1];
+     var user_id = req.session.user.id;
+     Story.createUserStory(user_id)
+     .then(function(story_id){
+        return Promise.all([
+          Map.getUserMaps(req.session.user.id),
+          Map.getPopularMaps()
+        ]).then(function(results){
+          var myMaps = results[0];
+          var popularMaps = results[1];
 
-      res.render('createuserstory', {
-        title: 'Create Story',
-        fontawesome: true,
-        rangy: true,
-        props: {
-          username, myMaps, popularMaps
-        }, req
+          res.render('createuserstory', {
+            title: 'Create Story',
+            fontawesome: true,
+            rangy: true,
+            props: {
+              username, myMaps, popularMaps, story_id
+            }, req
+          });
       });
     }).catch(nextError(next));
 

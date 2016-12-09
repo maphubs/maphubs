@@ -2,6 +2,7 @@
 var knex = require('../../connection.js');
 //var debug = require('../../services/debug')('routes/stories');
 var Story = require('../../models/story');
+var Hub = require('../../models/hub');
 var Image = require('../../models/image');
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
@@ -9,33 +10,6 @@ var notAllowedError = require('../../services/error-response').notAllowedError;
 var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
-
-  app.post('/api/user/story/create', csrfProtection, function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var data = req.body;
-    if (data && data.title && data.body) {
-          Story.createUserStory(user_id, data.title, data.body, data.firstline, data.firstimage)
-            .then(function(result) {
-              if (result && result.length == 1) {
-                res.send({
-                  success: true,
-                  story_id: result[0]
-                });
-              } else {
-                res.send({
-                  success: false,
-                  error: "Failed to Create Story"
-                });
-              }
-            }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-  });
 
   app.post('/api/story/save', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -71,6 +45,33 @@ module.exports = function(app: any) {
     }
   });
 
+  app.post('/api/story/publish', csrfProtection, function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if (data && data.story_id) {
+      Story.allowedToModify(data.story_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          return knex.transaction(function(trx) {
+              return Story.publishStory(data.story_id, trx)
+                .then(function() {
+                  res.send({
+                    success: true
+                  });
+              });        
+            }).catch(apiError(res, 500));
+        }else {
+          notAllowedError(res, 'story');
+        }
+      }).catch(apiError(res, 500));
+    } else {
+      apiDataError(res);
+    }
+  });
 
   app.post('/api/story/delete', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {

@@ -22,7 +22,7 @@ module.exports = {
       .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
       .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
       .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
-      .orderBy('omh.stories.created_at', 'desc');
+      .orderBy('omh.stories.updated_at', 'desc');
     },
 
   getRecentStories(number: number=10) {
@@ -41,7 +41,7 @@ module.exports = {
       .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
       .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')    
       .whereRaw('omh.stories.published=true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
-      .orderBy('omh.stories.created_at', 'desc')
+      .orderBy('omh.stories.updated_at', 'desc')
       .limit(number);
     },
 
@@ -81,7 +81,7 @@ module.exports = {
         .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
         .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
         .whereRaw('omh.stories.published=true AND omh.stories.featured=true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
-        .orderBy('omh.stories.created_at', 'desc')
+        .orderBy('omh.stories.updated_at', 'desc')
         .limit(number);
       },
 
@@ -154,6 +154,7 @@ module.exports = {
           'public.users.id': user_id
         });
       }
+      query.orderBy('updated_at', 'desc');
       return query;
     },
 
@@ -213,34 +214,40 @@ module.exports = {
       });
     },
 
-    createHubStory(hub_id: number, title: string, body: string, author: string, firstline: string, firstimage: string, user_id: number) {
+    createHubStory(hub_id: string, user_id: number) {
       return knex.transaction(function(trx) {
         return trx('omh.stories').insert({
-          title, body, author, firstline, firstimage, user_id,
-          published: true,
+          user_id,
+          published: false,
           created_at: knex.raw('now()'),
           updated_at: knex.raw('now()')
         }).returning('story_id')
         .then(function(story_id){
           story_id = parseInt(story_id);
           return trx('omh.hub_stories').insert({hub_id, story_id})
-          .returning('story_id');
+          .returning('story_id')
+          .then(function(result){
+            return result[0];
+          });
         });
       });
     },
 
-    createUserStory(user_id: number, title: string, body: string, firstline: string, firstimage: any) {
+    createUserStory(user_id: number) {
       return knex.transaction(function(trx) {
         return trx('omh.stories').insert({
-          title, body, firstline, firstimage, user_id,
-          published: true,
+          user_id,
+          published: false,
           created_at: knex.raw('now()'),
           updated_at: knex.raw('now()')
         }).returning('story_id')
         .then(function(story_id){
           story_id = parseInt(story_id);
           return trx('omh.user_stories').insert({user_id, story_id})
-          .returning('story_id');
+          .returning('story_id')
+          .then(function(result){
+            return result[0];
+          });
         });
       });
     },

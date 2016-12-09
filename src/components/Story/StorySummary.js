@@ -57,6 +57,15 @@ var StorySummary = React.createClass({
       );
     }
 
+    var draft = '';
+    if(!this.props.story.published){
+      draft = (
+         <p style={{position: 'absolute', top: '15px', left: '50%', right: '50%'}}>
+          <b style={{color: 'red', textTransform: 'uppercase'}}>{this.__('Draft')}</b>
+        </p>
+      );
+    }
+
    return (
      <div>
        <StoryHeader story={this.props.story} baseUrl={this.props.baseUrl} />
@@ -74,6 +83,7 @@ var StorySummary = React.createClass({
        <a href={linkUrl} style={{fontSize: '12px', color:'rgba(0, 0, 0, 0.45)'}}>
          {this.__('Read more...')}
        </a>
+       {draft}
        <div className="addthis_sharing_toolbox right"  data-url={linkUrl} data-title={this.props.story.title}></div>
      </div>
    );

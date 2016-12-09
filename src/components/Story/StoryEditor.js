@@ -159,18 +159,13 @@ save(){
       }else{         
         _this.addMapCloseButtons(); //put back the close buttons
         _this.addImageButtons();
-        NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('View Story'),
+        NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('Publish'),
           dismissAfter: 10000,
           onDismiss(){
 
           },
           onClick(){
-            if(_this.props.storyType == 'user'){
-              window.location = '/user/' + _this.props.username + '/story/' + story.story_id + '/' + slug(story.title);
-            }else{
-              var baseUrl = '/hub/' + _this.props.hub_id;              
-              window.location = baseUrl + '/story/' + story.story_id + '/' + slug(story.title);
-            }
+            _this.publish();
           }
         });
       }
@@ -379,6 +374,36 @@ onRemoveImage(image_id: number){
   });
 },
 
+publish(){
+   var _this = this;
+  ConfirmationActions.showConfirmation({
+    title: _this.__('Confirm Publish Story'),
+    message: _this.__('Please confirm that you want to publish this story.'),
+    onPositiveResponse(){
+      Actions.publish(_this.state._csrf, function(err){
+        if(err){
+          MessageActions.showMessage({title: _this.__('Error'), message: err});
+        }else{
+          NotificationActions.showNotification({message: _this.__('Story Published'), action: _this.__('View Story'),
+          dismissAfter: 10000,
+          onDismiss(){
+
+          },
+          onClick(){
+            if(_this.props.storyType == 'user'){
+              window.location = '/user/' + _this.props.username + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+            }else{
+              var baseUrl = '/hub/' + _this.props.hub_id;              
+              window.location = baseUrl + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+            }
+          }
+        });
+        }
+      });
+    }
+  });
+},
+
 saveSelectionRange(){
   var sel = window.getSelection();
 
@@ -447,12 +472,23 @@ showImageCrop(){
         </div>
       );
     }
+    var publishButton = '';
+    var saveButtonText = this.__('Save');
+    if(!this.state.story.published){
+        publishButton = (
+          <div className="center center-align" style={{margin: 'auto', position: 'fixed', bottom: '15px', zIndex: '1', right: 'calc(50% - 60px)'}}>
+            <button className="waves-effect waves-light btn" onClick={this.publish}>{this.__('Publish')}</button>
+          </div>
+        );
+        saveButtonText = this.__('Save Draft');
+      }
 
     return (
       <div style={{position: 'relative'}}>
         <div className="edit-header omh-color" style={{opacity: 0.5}}>
           <p style={{textAlign: 'center', color: '#FFF'}}>{this.__('Editing Story')}</p>
         </div>
+        {publishButton}
         <div className="container editor-container">
           <div className="story-title">
             <Editor
@@ -519,7 +555,7 @@ showImageCrop(){
             </ul>
           </div>
           <div className="fixed-action-btn action-button-bottom-right">
-            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save} data-delay="50" data-position="left" data-tooltip={this.__('Save')}>
+            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save} data-delay="50" data-position="left" data-tooltip={saveButtonText}>
               <i className="large material-icons">save</i>
             </a>
           </div>

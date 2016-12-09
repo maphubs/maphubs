@@ -23,6 +23,7 @@ var CreateHubStory = React.createClass({
   },
 
   propTypes: {
+    story_id: React.PropTypes.number.isRequired,
     hub: React.PropTypes.object.isRequired,
     myMaps: React.PropTypes.array,
     popularMaps: React.PropTypes.array,
@@ -52,6 +53,7 @@ var CreateHubStory = React.createClass({
           </div>
           <div className="row no-margin">
             <StoryEditor storyType="hub"
+              story={{story_id: this.props.story_id, published: false}}
               myMaps={this.props.myMaps}
               popularMaps={this.props.popularMaps}
               hub_id={this.props.hub.hub_id}/>

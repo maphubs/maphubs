@@ -40,40 +40,26 @@ module.exports = Reflux.createStore({
   save(body: string, firstline: string, firstimage: any, _csrf: string, cb){
     var _this = this;
 
-    var url = '';
     var data = this.state.story;
 
     data.firstline = firstline;
     data.firstimage = firstimage;
     data._csrf = _csrf;
 
-    if(this.state.story.story_id && this.state.story.story_id > 0){
-      url = '/api/story/save';
-    }else{
-      if(this.state.storyType == 'hub'){
-          //creating a new hub story
-        url = '/hub/' + this.state.hub_id + '/api/hub/story/create';
-      }else if(this.state.storyType == 'user'){
-          //creating a new user story
-        url = '/api/user/story/create';
-      }
-    }
-
-  request.post(url)
-  .type('json').accept('json')
-  .send(data)
-  .end(function(err, res){
-    checkClientError(res, err, cb, function(cb){
-      var story = _this.state.story;
-      if(res.body.story_id){   
-        story.story_id = res.body.story_id;
-      }
-      _this.setState({story, unsavedChanges: false});
-      cb(null, story);
+    request.post('/api/story/save')
+    .type('json').accept('json')
+    .send(data)
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        var story = _this.state.story;
+        if(res.body.story_id){   
+          story.story_id = res.body.story_id;
+        }
+        _this.setState({story, unsavedChanges: false});
+        cb(null, story);
+      });
     });
-  });
-
-},
+  },
 
   addImage(data: string, info: Object, _csrf: string, cb: Function){
   var _this = this;

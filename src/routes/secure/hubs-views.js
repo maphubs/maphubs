@@ -324,21 +324,24 @@ module.exports = function(app: any) {
     Hub.allowedToModify(hub_id, user_id)
     .then(function(allowed: bool){
       if(allowed){
-        Promise.all([
-          Hub.getHubByID(hub_id),
-          Map.getUserMaps(req.session.user.id),
-          Map.getPopularMaps()
-        ]).then(function(results: Array<any>) {
-          var hub = results[0];
-          var myMaps = results[1];
-          var popularMaps = results[2];
-          res.render('createhubstory', {
-            title: 'Create Story',
-            fontawesome: true,
-            rangy: true,
-            props: {
-              hub, myMaps, popularMaps
-            }, req
+        return Story.createHubStory(hub_id, user_id)
+        .then(function(story_id){
+        return Promise.all([
+            Hub.getHubByID(hub_id),
+            Map.getUserMaps(req.session.user.id),
+            Map.getPopularMaps()
+          ]).then(function(results: Array<any>) {
+            var hub = results[0];
+            var myMaps = results[1];
+            var popularMaps = results[2];
+            res.render('createhubstory', {
+              title: 'Create Story',
+              fontawesome: true,
+              rangy: true,
+              props: {
+                hub, myMaps, popularMaps, story_id
+              }, req
+            });
           });
         }).catch(nextError(next));
       }else{

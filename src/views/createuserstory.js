@@ -16,6 +16,7 @@ var CreateUserStory = React.createClass({
   },
 
   propTypes: {
+    story_id: React.PropTypes.number.isRequired,
     username: React.PropTypes.string.isRequired,
     myMaps: React.PropTypes.array,
     popularMaps: React.PropTypes.array,
@@ -28,6 +29,7 @@ var CreateUserStory = React.createClass({
         <Header />
         <main>
           <StoryEditor storyType="user"
+            story={{story_id: this.props.story_id, published: false}}
             myMaps={this.props.myMaps}
             popularMaps={this.props.popularMaps}
             username={this.props.username}/>
