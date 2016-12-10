@@ -98,7 +98,7 @@ var Home = React.createClass({
        },
        {
          title: MAPHUBS_CONFIG.productName + ' ' + this.__('Services'),
-         text: MAPHUBS_CONFIG.productName + ' ' + this.__('currently offers a range of service to help you get mapping'),
+         text: this.__('We offer a range of service to help you get mapping'),
          buttonText: this.__('Learn More'),
          link: '/services',
          img: '/assets/home/Moabi-Forest.jpg'
