@@ -270,6 +270,7 @@ module.exports = {
           debug('found a user story');
           // the story must belong to the requesting user
           if(parseInt(userStories[0].user_id) == parseInt(user_id)){
+            debug('user: ' + user_id + ' is the owner of story: ' + story_id);
             return true;
           }else {
             debug('user: ' + user_id + ' is not the owner of story: ' + story_id);

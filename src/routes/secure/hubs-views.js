@@ -409,19 +409,23 @@ module.exports = function(app: any) {
             if(story.firstimage){
               imageUrl = story.firstimage;
             }
-            res.render('hubstory', {
-              title: story.title,
-              addthis: true,
-              props: {
-                story, hub, canEdit: false
-              },
-              twitterCard: {
+            if(!story.published){
+              res.status(401).send("Unauthorized");
+            }else{
+              res.render('hubstory', {
                 title: story.title,
-                description: story.firstline,
-                image: imageUrl
-              },
-              req
-            });
+                addthis: true,
+                props: {
+                  story, hub, canEdit: false
+                },
+                twitterCard: {
+                  title: story.title,
+                  description: story.firstline,
+                  image: imageUrl
+                },
+                req
+              });
+            }
           }).catch(nextError(next));
     }else{
       Story.allowedToModify(story_id, user_id)
@@ -437,19 +441,23 @@ module.exports = function(app: any) {
             if(story.firstimage){
               imageUrl = story.firstimage;
             }
-            res.render('hubstory', {
-              title: story.title,
-              addthis: true,
-              props: {
-                story, hub, canEdit
-              },
-              twitterCard: {
+             if(!story.published && !canEdit){
+              res.status(401).send("Unauthorized");
+            }else{
+              res.render('hubstory', {
                 title: story.title,
-                description: story.firstline,
-                image: imageUrl
-              },
-               req
-            });
+                addthis: true,
+                props: {
+                  story, hub, canEdit
+                },
+                twitterCard: {
+                  title: story.title,
+                  description: story.firstline,
+                  image: imageUrl
+                },
+                req
+              });
+            }
           });
       }).catch(nextError(next));
     }

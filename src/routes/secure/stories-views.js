@@ -102,11 +102,12 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/user/:userid/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
+  app.get('/user/:username/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
+    var username = req.params.username;
     var user_id = req.session.user.id;
     var story_id = parseInt(req.params.story_id || '', 10);
     Story.allowedToModify(story_id, user_id)
@@ -125,7 +126,7 @@ module.exports = function(app: any) {
               fontawesome: true,
               rangy: true,
               props: {
-                story, myMaps, popularMaps
+                story, myMaps, popularMaps, username
               }, req
             });
           }).catch(nextError(next));
@@ -160,14 +161,18 @@ module.exports = function(app: any) {
 
       req.session.views = (req.session.views || 0) + 1;
 
-    if (!user_id) {
+    if (user_id === -1) { //don't check permissions if user is not logged in
           Story.getStoryByID(story_id)
           .then(function(story) {
              var imageUrl = '';
             if(story.firstimage){
               imageUrl = story.firstimage;
             }
-            res.render('userstory', {
+            if(!story.published){
+              //guest users never see draft stories
+              res.status(401).send("Unauthorized");
+            }else{
+              res.render('userstory', {
               title: story.title,
               addthis: true,
               props: {
@@ -180,6 +185,7 @@ module.exports = function(app: any) {
               },
               req
             });
+            }          
           }).catch(nextError(next));
     } else {
       Story.allowedToModify(story_id, user_id)
@@ -190,18 +196,23 @@ module.exports = function(app: any) {
             if(story.firstimage){
               imageUrl = story.firstimage;
             }
-          res.render('userstory', {
-            title: story.title,
-            addthis: true,
-            props: {
-              story, username, canEdit
-            },
-            twitterCard: {
+
+          if(!story.published && !canEdit){
+              res.status(401).send("Unauthorized");
+            }else{
+              res.render('userstory', {
                 title: story.title,
-                description: story.firstline,
-                image: imageUrl
-            }, req
-          });
+                addthis: true,
+                props: {
+                  story, username, canEdit
+                },
+                twitterCard: {
+                    title: story.title,
+                    description: story.firstline,
+                    image: imageUrl
+                }, req
+              });
+            }
         }).catch(nextError(next));
       });
     }

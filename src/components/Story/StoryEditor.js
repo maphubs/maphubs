@@ -159,7 +159,8 @@ save(){
       }else{         
         _this.addMapCloseButtons(); //put back the close buttons
         _this.addImageButtons();
-        NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('Publish'),
+        if(!_this.state.story.published){
+           NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('Publish'),
           dismissAfter: 10000,
           onDismiss(){
 
@@ -168,6 +169,23 @@ save(){
             _this.publish();
           }
         });
+        }else{
+          NotificationActions.showNotification({message: _this.__('Story Saved'), action: _this.__('View Story'),
+          dismissAfter: 10000,
+          onDismiss(){
+
+          },
+          onClick(){
+            if(_this.props.storyType == 'user'){
+              window.location = '/user/' + _this.props.username + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+            }else{
+              var baseUrl = '/hub/' + _this.props.hub_id;              
+              window.location = baseUrl + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+            }
+          }
+        });
+        }
+       
       }
   });
 },
@@ -377,10 +395,39 @@ onRemoveImage(image_id: number){
 publish(){
    var _this = this;
   ConfirmationActions.showConfirmation({
-    title: _this.__('Confirm Publish Story'),
-    message: _this.__('Please confirm that you want to publish this story.'),
+    title: _this.__('Publish story?'),
+    message: _this.__('Please confirm that you want to publish this story'),
     onPositiveResponse(){
-      Actions.publish(_this.state._csrf, function(err){
+
+    if(!_this.state.story.title || _this.state.story.title == ''){
+      NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
+      return;
+    }
+
+    //if this is a hub story, require an author
+    if(_this.props.storyType == 'hub' && !_this.state.story.author){
+      NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'});
+      return;
+    }
+
+    //remove the map buttons so they are not saved
+    _this.removeMapCloseButtons();
+    _this.removeImageButtons();
+    var body = $('.storybody').html();
+    _this.setState({saving: true});
+
+  //get first line
+  var firstline = _this.getFirstLine();
+
+  //get first image
+  var firstimage = _this.getFirstImage();
+
+  Actions.save(body, firstline, firstimage, _this.state._csrf, function(err: Error, story: Object){
+      _this.setState({saving: false});
+      if(err){
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
+      }else{         
+          Actions.publish(_this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
@@ -400,6 +447,9 @@ publish(){
         });
         }
       });
+      }
+  });
+      
     }
   });
 },
