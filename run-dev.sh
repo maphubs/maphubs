@@ -1,12 +1,20 @@
 #!/bin/sh
 
-export $(cat env/dev/db.env | grep -v ^# | xargs) && \
-export $(cat env/dev/web.env | grep -v ^# | xargs) && \
-export $(cat env/dev/host.env | grep -v ^# | xargs) && \
-export $(cat env/dev/id-config.env | grep -v ^# | xargs) && \
-export $(cat env/dev/secret/db-pass.env | grep -v ^# | xargs) && \
-export $(cat env/dev/secret/web-secret.env | grep -v ^# | xargs) && \
-export $(cat env/dev/secret/id-secret.env | grep -v ^# | xargs)
+source env/dev/db.env
+export $(cut -d= -f1 env/dev/db.env)
+source env/dev/web.env
+export $(cut -d= -f1 env/dev/web.env)
+source env/dev/host.env
+export $(cut -d= -f1 env/dev/host.env)
+source env/dev/id-config.env
+export $(cut -d= -f1 env/dev/id-config.env)
+source env/dev/secret/db-pass.env
+export $(cut -d= -f1 env/dev/secret/db-pass.env)
+source env/dev/secret/web-secret.env
+export $(cut -d= -f1 env/dev/secret/web-secret.env)
+source env/dev/secret/id-secret.env
+export $(cut -d= -f1 env/dev/secret/id-secret.env)
+
 #overwrite the client-config with live values
 cat <<EOF >./src/clientconfig.js
 var MAPHUBS_CONFIG = {
