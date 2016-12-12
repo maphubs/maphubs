@@ -11,6 +11,7 @@ var debug = require('../../services/debug')('routes/groups');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
+var urlUtil = require('../../services/url-util');
 
 var local = require('../../local');
 
@@ -67,11 +68,23 @@ module.exports = function(app: any) {
         var layers = result[1];
         var members = result[2];
         var canEdit = result[3];
+        var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
         res.render('groupinfo', {
           title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
+          description: group.description,
           props: {
             group, layers, members, canEdit
-          }, req
+          },
+           twitterCard: {
+            card: 'summary',
+            title: group.name,
+            description: group.description,
+            image,
+            imageType: 'image/png',
+            imageWidth: 600,
+            imageHeight: 600
+          },
+           req
         });
       }).catch(nextError(next));
   });

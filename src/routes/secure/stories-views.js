@@ -9,6 +9,7 @@ var Promise = require('bluebird');
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
+var urlUtil = require('../../services/url-util');
 
 module.exports = function(app: any) {
 
@@ -166,7 +167,11 @@ module.exports = function(app: any) {
           .then(function(story) {
              var imageUrl = '';
             if(story.firstimage){
-              imageUrl = story.firstimage;
+              imageUrl = urlUtil.getBaseUrl() + story.firstimage;
+            }
+            var description = story.title;
+            if(story.firstline){
+              description = story.firstline;
             }
             if(!story.published){
               //guest users never see draft stories
@@ -174,14 +179,16 @@ module.exports = function(app: any) {
             }else{
               res.render('userstory', {
               title: story.title,
+              description,
               addthis: true,
               props: {
                 story, username, canEdit: false
               },
               twitterCard: {
                 title: story.title,
-                description: story.firstline,
-                image: imageUrl
+                description,
+                image: imageUrl,
+                imageType: 'image/jpeg'
               },
               req
             });
@@ -196,20 +203,26 @@ module.exports = function(app: any) {
             if(story.firstimage){
               imageUrl = story.firstimage;
             }
+           var description = story.title;
+            if(story.firstline){
+              description = story.firstline;
+            }
 
           if(!story.published && !canEdit){
               res.status(401).send("Unauthorized");
             }else{
               res.render('userstory', {
                 title: story.title,
+                description,
                 addthis: true,
                 props: {
                   story, username, canEdit
                 },
                 twitterCard: {
                     title: story.title,
-                    description: story.firstline,
-                    image: imageUrl
+                    description,
+                    image: imageUrl,
+                    imageType: 'image/jpeg'
                 }, req
               });
             }

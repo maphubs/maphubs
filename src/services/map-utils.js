@@ -52,8 +52,10 @@ module.exports = {
            oembed: 'map',
            twitterCard: {
              title,
-             //description: '',
-             image: baseUrl + '/api/screenshot/map/' + map.map_id + '.png'
+             image: baseUrl + '/api/screenshot/map/' + map.map_id + '.png',
+             imageWidth: 1200,
+             imageHeight: 630,
+             imageType: 'image/png'
            },
            req
          }

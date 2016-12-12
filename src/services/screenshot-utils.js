@@ -67,6 +67,7 @@ module.exports = {
     .then(function(image){
       return knex('omh.layers').update({thumbnail: image}).where({layer_id})
       .then(function(){
+        log.info('Updated Layer Thumbnail: ' + layer_id);
         return image;
       });
     });
@@ -74,18 +75,83 @@ module.exports = {
   },
 
   reloadLayerThumbnail(layer_id: number){
-      return knex('omh.layers').update({thumbnail: null}).where({layer_id})
-      .then(function(){
-        var baseUrl = urlUtil.getBaseUrl();
-        var url = baseUrl + '/api/screenshot/layer/thumbnail/' + layer_id + '.jpg';
-        //note: returning the promise here on purpose, we don't want to wait for this to finish
-        request.get(url).timeout(60000).catch(function(err){
-          debug('thumbnail request complete');
-          if(err){log.error(err);}
-        });
-        return true;
-      });
+    var _this = this;
+    return knex('omh.layers').update({thumbnail: null}).where({layer_id})
+    .then(function(){
+       //don't return the promise because we want this to run async
+       _this.updateLayerThumbnail(layer_id);
+       return true;    
+    });
   },
+
+  //Layer image
+  getLayerImage(layer_id: number){
+    var _this = this;
+    debug('get image for layer: ' + layer_id);
+    return knex('omh.layers').select('screenshot').where({layer_id})
+    .then(function(result){
+      if(result && result.length == 1 && result[0].screenshot != null && result[0].screenshot.length > 0){
+        debug('found image in database for layer: ' + layer_id);
+        return result[0].screenshot;
+      }else{
+        debug('no image in database for layer: ' + layer_id);
+        return _this.updateLayerImage(layer_id);
+      }
+    });
+  },
+
+  updateLayerImage(layer_id: number){
+    debug('updating image for layer: ' + layer_id);
+    //get screenshot from the manet service
+    var width = 1200;
+    var height = 630;
+
+    var baseUrl = urlUtil.getBaseUrl(); //use internal route
+    var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
+    var manetUrl = local.manetUrl;
+    var manetData = {
+      url: maphubsUrl,
+      width,
+      height,
+      force: true,
+      delay: 15000,
+      zoom: 1.25,
+      format: 'png',
+      quality: 1,
+      cookies: [{
+        name: 'manet',
+        value: local.manetAPIKey,
+        domain: local.host,
+        path: "/"
+      }]
+    };
+
+    debug(JSON.stringify(manetData));
+    //replace image in database
+
+    return this.base64Download(manetUrl, manetData)
+    .then(function(image){
+      return knex('omh.layers').update({screenshot: image}).where({layer_id})
+      .then(function(){
+        log.info('Updated Layer Image: ' + layer_id);
+        return image;
+      });
+    });
+
+  },
+
+   reloadLayerImage(layer_id: number){
+    var _this = this;
+    return knex('omh.layers').update({screenshot: null}).where({layer_id})
+    .then(function(){
+       //don't return the promise because we want this to run async
+       _this.updateLayerImage(layer_id);
+       return true;    
+    });
+  },
+
+
+  //Map Image
 
   getMapImage(map_id: number){
     var _this = this;
@@ -138,8 +204,19 @@ module.exports = {
     .then(function(image){
       return knex('omh.maps').update({screenshot: image}).where({map_id})
       .then(function(){
+        log.info('Updated Map Image: ' + map_id);
         return image;
       });
+    });
+  },
+
+  reloadMapImage(map_id: number){
+    var _this = this;
+    return knex('omh.maps').update({screenshot: null}).where({map_id})
+    .then(function(){
+       //don't return the promise because we want this to run async
+       _this.updateMapImage(map_id);
+       return true;    
     });
   },
 
@@ -178,6 +255,7 @@ module.exports = {
     .then(function(image){
       return knex('omh.maps').update({thumbnail: image}).where({map_id})
       .then(function(){
+        log.info('Updated Map Thumbnail: ' + map_id);
         return image;
       });
     });
@@ -198,7 +276,17 @@ module.exports = {
     });
   },
 
-  returnImage(image: any, req: any, res: any){
+  reloadMapThumbnail(map_id: number){
+    var _this = this;
+    return knex('omh.maps').update({thumbnail: null}).where({map_id})
+    .then(function(){
+       //don't return the promise because we want this to run async
+       _this.updateMapThumbnail(map_id);
+       return true;    
+    });
+  },
+
+  returnImage(image: any, type: string, req: any, res: any){
     var img = new Buffer(image, 'base64');
     var hash = require('crypto').createHash('md5').update(img).digest("hex");
     var match = req.get('If-None-Match');
@@ -213,6 +301,4 @@ module.exports = {
       res.end(img);
     }
   }
-
-
 };

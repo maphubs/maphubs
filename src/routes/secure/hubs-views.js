@@ -142,15 +142,29 @@ module.exports = function(app: any) {
       .then(function(result) {
         var layers = result[0];
         var stories = result[1];
+
+        var image = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id + '/images/logo';
+
         res.render('hubinfo', {
           title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
+          description: hub.description,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           mapboxgl:true,
           fontawesome: true,
           addthis: true,
           props: {
             hub, layers, stories, canEdit
-          }, req
+          },
+          twitterCard: {
+            card: 'summary',
+            title: hub.name,
+            description: hub.description,
+            image,
+            imageType: 'image/png',
+            imageWidth: 300,
+            imageHeight: 300
+          },
+           req
         });
       });
   };
@@ -405,23 +419,29 @@ module.exports = function(app: any) {
           .then(function(results) {
             var story = results[0];
             var hub = results[1];
-             var imageUrl = '';
+             var image;
             if(story.firstimage){
-              imageUrl = story.firstimage;
+              image = story.firstimage;
+            }
+            var description = story.title;
+            if(story.firstline){
+              description = story.firstline;
             }
             if(!story.published){
               res.status(401).send("Unauthorized");
             }else{
               res.render('hubstory', {
                 title: story.title,
+                description,
                 addthis: true,
                 props: {
                   story, hub, canEdit: false
                 },
                 twitterCard: {
                   title: story.title,
-                  description: story.firstline,
-                  image: imageUrl
+                  description,
+                  image,
+                  imageType: 'image/jpeg'
                 },
                 req
               });
@@ -437,23 +457,29 @@ module.exports = function(app: any) {
           .then(function(results) {
             var story = results[0];
             var hub = results[1];
-             var imageUrl = '';
+             var image;
             if(story.firstimage){
-              imageUrl = story.firstimage;
+              image = story.firstimage;
+            }
+            var description = story.title;
+            if(story.firstline){
+              description = story.firstline;
             }
              if(!story.published && !canEdit){
               res.status(401).send("Unauthorized");
             }else{
               res.render('hubstory', {
                 title: story.title,
+                description,
                 addthis: true,
                 props: {
                   story, hub, canEdit
                 },
                 twitterCard: {
                   title: story.title,
-                  description: story.firstline,
-                  image: imageUrl
+                  description,
+                  image,
+                  imageType: 'image/jpeg'
                 },
                 req
               });

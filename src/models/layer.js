@@ -552,7 +552,10 @@ module.exports = {
           last_updated: knex.raw('now()')
         }).then(function(){
           //update the thumbnail
-          return ScreenshotUtils.reloadLayerThumbnail(layer_id);
+          return ScreenshotUtils.reloadLayerThumbnail(layer_id)
+          .then(function(){
+            return ScreenshotUtils.reloadLayerImage(layer_id);
+          });
         });
     },
 

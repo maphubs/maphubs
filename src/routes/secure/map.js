@@ -8,7 +8,9 @@ var Map = require('../../models/map');
 var Layer = require('../../models/layer');
 var Stats = require('../../models/stats');
 var BoundingBox = require('../../services/bounding-box.js');
+var ScreenshotUtil = require('../../services/screenshot-utils');
 var debug = require('../../services/debug')('routes/map');
+var log = require('../../services/log');
 var MapUtils = require('../../services/map-utils');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
@@ -332,7 +334,13 @@ module.exports = function(app: any) {
       if(data && data.basemap && data.position && data.title){
           Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id)
           .then(function(result){
-            res.status(200).send({success: true, map_id: result[0]});
+            var map_id = result[0];
+            ScreenshotUtil.reloadMapThumbnail(map_id)
+            .then(function(){
+              return ScreenshotUtil.reloadMapImage(map_id);
+            })
+            .catch(function(err){log.error(err);});
+            res.status(200).send({success: true, map_id});
           }).catch(apiError(res, 500));
       }else{
         apiDataError(res);
@@ -350,6 +358,11 @@ module.exports = function(app: any) {
       if(data && data.map_id){
           Map.copyMap(data.map_id, user_id)
           .then(function(map_id){
+            ScreenshotUtil.reloadMapThumbnail(map_id)
+            .then(function(){
+              return ScreenshotUtil.reloadMapImage(map_id);
+            })
+            .catch(function(err){log.error(err);});
             res.status(200).send({success: true, map_id});
           }).catch(apiError(res, 500));
       }else{
@@ -373,6 +386,11 @@ module.exports = function(app: any) {
             Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
             .then(function(){
               res.status(200).send({success: true});
+              ScreenshotUtil.reloadMapThumbnail(data.map_id)
+              .then(function(){
+                return ScreenshotUtil.reloadMapImage(data.map_id);
+              })
+              .catch(function(err){log.error(err);});
             }).catch(apiError(res, 500));
           }else{
             notAllowedError(res, 'map');

@@ -111,7 +111,7 @@ function createEngine(engineOptions) {
 
         if(options.description){
           markup += `
-            <meta name="description" content="` + options.description + `"/>
+            <meta name="description" content="${options.description}"/>
           `;
         }
 
@@ -143,35 +143,78 @@ function createEngine(engineOptions) {
         <meta name="msapplication-square310x310logo" content="/assets/themes/`+ iconFolder +`/mstile-310x310.png" />
         `;
 
+        var baseUrl = urlUtil.getBaseUrl();
         if(options.oembed){
-          var baseUrl = urlUtil.getBaseUrl();
-          var url = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
-          markup += `
-          <link rel="alternate" type="application/json+oembed" href="` + url + `&format=json" title="Maphubs Map" />
-          <link rel="alternate" type="text/xml+oembed" href="` + url + `&format=xml" title="Maphubs Map" />
-          `;
+          if(options.oembed === 'map'){
+            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
+            markup += `
+            <link rel="alternate" type="application/json+oembed" href="${oembedUrl}&format=json" title="Maphubs Map" />
+            <link rel="alternate" type="text/xml+oembed" href="${oembedUrl}&format=xml" title="Maphubs Map" />
+            `;
+          }else if(options.oembed === 'layer'){
+            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
+            markup += `
+            <link rel="alternate" type="application/json+oembed" href="${oembedUrl}&format=json" title="Maphubs Layer" />
+            <link rel="alternate" type="text/xml+oembed" href="${oembedUrl}&format=xml" title="Maphubs Layer" />
+            `;
+          }         
         }
 
         if(options.twitterCard){
+          if(options.twitterCard.card){
+             markup += `
+            <meta name="twitter:card" content="${options.twitterCard.card}">
+            `;
+          }else{
+             markup += `
+            <meta name="twitter:card" content="summary_large_image">
+            `;
+          }
           markup += `
-          <meta name="twitter:card" content="summary_large_image">
-          <meta name="twitter:site" content="@` + MAPHUBS_CONFIG.twitter + `">
-          <meta name="twitter:title" content="` + options.twitterCard.title + `">
-          <meta name="twitter:description" content="` + options.twitterCard.description + `">
-          <meta name="twitter:image" content="` + options.twitterCard.image + `">
+          <meta name="twitter:site" content="@${MAPHUBS_CONFIG.twitter}">
+          <meta name="twitter:title" content="${options.twitterCard.title}">
           `;
-
-
+          if(options.twitterCard.description){
+            markup += `
+              <meta name="twitter:description" content="${options.twitterCard.description}">
+              `;
+            }
+          if(options.twitterCard.image){
           markup += `
-          <meta property="og:title" content="` + options.twitterCard.title + `" />
-          <meta property="og:description" content="` + options.twitterCard.description + `" />
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content="` + url + `" />
-          <meta property="og:image" content="` + options.twitterCard.image + `" />
-          <meta property="og:image:type" content="image/png" />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
+          <meta name="twitter:image" content="${options.twitterCard.image}">
           `;
+          }
+
+          if(local.FACEBOOK_APP_ID){
+            markup += `<meta property="fb:app_id" content="${local.FACEBOOK_APP_ID}" />`;
+          }
+
+          markup += `<meta property="og:title" content="${options.twitterCard.title}" />`;
+          if(options.twitterCard.description){
+            markup += `<meta property="og:description" content="${options.twitterCard.description}" />`;
+          }
+            var openGraphUrl = baseUrl + req.url;
+            markup += `
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="${openGraphUrl}" />
+            `;
+           if(options.twitterCard.image){
+            markup += `
+            <meta property="og:image" content="${options.twitterCard.image}" />
+            `;         
+            if(options.twitterCard.imageType){
+                markup += `<meta property="og:image:type" content="${options.twitterCard.imageType}" />`;         
+            }else{
+              markup += `<meta property="og:image:type" content="image/png" />`;
+            }
+            if(options.twitterCard.imageWidth){
+              markup += `<meta property="og:image:width" content="${options.twitterCard.imageWidth}" />`;
+            }
+            if(options.twitterCard.imageHeight){
+              markup += `<meta property="og:image:height" content="${options.twitterCard.imageHeight}" />`;
+            }
+          }
+          
         }
 
         if(materialicons){
@@ -193,42 +236,31 @@ function createEngine(engineOptions) {
         //some endpoints don't generate css
         var cssFile = getAssets(clientFileName).css;
         if(cssFile){
-          markup += '<link rel="stylesheet" type="text/css" href="' + cssFile + '">';
+          markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`;
         }
         
-         markup +=
-        '</head>\n'+
-        '<body>\n' +
-         ' <div id="app">' + reactMarkup + '</div>\n' +
-
-          '<script>window.__appData = ' + appData + '; </script>\n';
-
-
-        markup +=
-          '<script type="text/javascript" src="' + getAssets('vendor').js + '"></script>\n' +
-          '<script type="text/javascript" src="' + getAssets('locales').js + '"></script>\n' +
-          '<script type="text/javascript" src="/clientconfig.js"></script>\n' +
-          '<script type="text/javascript" src="' + getAssets(clientFileName).js + '"></script>\n';
-
-          //mapbox-gl now loads in webpack as a prebuilt asset in /assets
-          /*
-          if(options.mapboxgl){
-            markup += '<script type="text/javascript" src="/public/mapboxgl.js"></script>\n';
-          }
-          */
+         markup += `
+          </head>
+          <body>
+          <div id="app">${reactMarkup}</div>
+          <script>window.__appData = ${appData}; </script>
+          <script type="text/javascript" src="${getAssets('vendor').js}"></script>
+          <script type="text/javascript" src="${getAssets('locales').js}"></script>
+          <script type="text/javascript" src="/clientconfig.js"></script>
+          <script type="text/javascript" src="${getAssets(clientFileName).js}"></script>
+        `;
 
         if(options.rangy){
-          markup +=
-          '<script src="/assets/js/rangy-core.js"></script>\n' +
-          '<script src="/assets/js/rangy-cssclassapplier.js"></script>\n';
+          markup += `
+          <script src="/assets/js/rangy-core.js"></script>
+          <script src="/assets/js/rangy-cssclassapplier.js"></script>
+          `;
         }
 
         if(options.addthis  && !local.disableTracking){
-          markup += '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55d2323271adc34b" async="async"></script>\n';
-        }
-
-        if(options.mailchimp && !local.disableTracking){
-          //markup += '<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/signup-forms/popup/embed.js" data-dojo-config="usePlainJson: true, isDebug: false"></script><script type="text/javascript">require(["mojo/signup-forms/Loader"], function(L) { L.start({"baseUrl":"mc.us12.list-manage.com","uuid":"d2eac39a023dd41d2dd00b58e","lid":"0cbfb0b04d"}) })</script>';
+          markup += `
+          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55d2323271adc34b" async="async"></script>
+          `;
         }
 
         if(!options.hideFeedback && req && req.__){
@@ -271,9 +303,9 @@ function createEngine(engineOptions) {
             <script>!function(e,o,n){
                 window.HSCW=o,window.HS=n,n.beacon=n.beacon||{};
                 var t=n.beacon;
-                t.userConfig={icon: 'question', color: '` + MAPHUBS_CONFIG.primaryColor + `', topArticles: true,
-                  topics: [{val: 'question', label: '` + t('Question') + `'},{val: 'suggestion', label: '` + t('Suggestion') + `'},{val: 'problem', label: '` + t('Report a Problem') + `'}],
-                  translation: ` + beaconTranslationText +`,
+                t.userConfig={icon: 'question', color: '${MAPHUBS_CONFIG.primaryColor}', topArticles: true,
+                  topics: [{val: 'question', label: '${t('Question')}'},{val: 'suggestion', label: '${t('Suggestion')}'},{val: 'problem', label: '${t('Report a Problem')}'}],
+                  translation: ${beaconTranslationText},
                 },
                 t.readyQueue=[],t.config=function(e){this.userConfig=e},t.ready=function(e){this.readyQueue.push(e)},o.config={docs:{enabled:!0,baseUrl:"//maphubs.helpscoutdocs.com/"},contact:{enabled:!0,formId:"59df584f-4d3b-11e6-aae8-0a7d6919297d"}};
                 var r=e.getElementsByTagName("script")[0],c=e.createElement("script");
@@ -289,16 +321,17 @@ function createEngine(engineOptions) {
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-          ga('create', 'UA-80486445-3', 'auto');
+          ga('create', '${local.GOOGLE_ANALYTICS_ID}', 'auto');
           ga('send', 'pageview');
 
         </script>
         `;
       }
-      markup +=
-      '</body>\n' +
-      '</html>\n'
-    ;
+
+      markup += `
+      </body>
+      </html>
+      `;
 
     } catch (e) {
       return cb(e);

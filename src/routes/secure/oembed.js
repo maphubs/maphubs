@@ -1,6 +1,5 @@
-var urlUtil = require('../../services/url-util');
-var local = require('../../local');
 var Map = require('../../models/map');
+var User = require('../../models/user');
 var libxml = require('libxmljs');
 var debug = require('../../services/debug')('oembed');
 
@@ -20,21 +19,18 @@ module.exports = function(app) {
     debug(map_id);
 
     Map.getMap(map_id).then(function(map){
+      return User.getUser(map.created_by).then(function(user){
 
-      var url = urlUtil.getBaseUrl() + '/map/embed/' + map.map_id + '/static';
-      //url = url.replace(/http:/, '');
-      //url = url.replace(/https:/, '');
-
-      var imageUrl = urlUtil.getBaseUrl() + '/api/screenshot/map/' + map.map_id + '.png';
-      //imageUrl = imageUrl.replace(/http:/, '');
-      //imageUrl = imageUrl.replace(/https:/, '');
+      //Always use MapHubs as a redirect for now
+      var url = 'https://maphubs.com' + '/map/embed/' + map.map_id + '/static';
+      var imageUrl = 'https://maphubs.com' + '/api/screenshot/map/' + map.map_id + '.png';
 
       var oembed = {
         type: "rich",
         version: "1.0",
         provider_name: "Maphubs",
         provider_url: "https://maphubs.com",
-        author_name: '',
+        author_name: user.display_name,
         author_url: '',
         author_id: parseInt(map.created_by),
         title: map.title,
@@ -72,6 +68,7 @@ module.exports = function(app) {
         //just use JSON
         res.status(200).send(oembed);
       }
+    });
     });
   });
 

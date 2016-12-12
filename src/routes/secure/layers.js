@@ -74,6 +74,7 @@ module.exports = function(app: any) {
   app.get('/layer/info/:id/*', csrfProtection, function(req, res, next) {
 
     var layer_id = parseInt(req.params.id || '', 10);
+    var baseUrl = urlUtil.getBaseUrl();
 
     var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
@@ -120,9 +121,17 @@ module.exports = function(app: any) {
           if(layer){
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
-          props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
-          mapboxgl:true,
-          fontawesome: true, req});
+          props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},       
+          fontawesome: true, addthis: true,
+          twitterCard: {
+            title: layer.name,
+            description: layer.description,
+            image: baseUrl + '/api/screenshot/layer/image/' + layer.layer_id + '.png',
+            imageWidth: 1200,
+            imageHeight: 630,
+            imageType: 'image/png'
+          },   
+          req});
         }else{
           res.render('error', {
             title: req.__('Not Found'),
@@ -147,12 +156,24 @@ module.exports = function(app: any) {
   app.get('/layer/map/:id/*', csrfProtection, function(req, res, next) {
 
     var layer_id = parseInt(req.params.id || '', 10);
+    var baseUrl = urlUtil.getBaseUrl();
 
     Layer.getLayerByID(layer_id)
     .then(function(layer){
-      res.render('layermap', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
-      mapboxgl:true,
-      props: {layer}, hideFeedback: true, addthis: true, req});
+      res.render('layermap', {
+        title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
+        description: layer.description,
+        props: {layer}, hideFeedback: true, addthis: true,
+        twitterCard: {
+          title: layer.name,
+          description: layer.description,
+          image: baseUrl + '/api/screenshot/layer/image/' + layer.layer_id + '.png',
+          imageWidth: 1200,
+          imageHeight: 630,
+          imageType: 'image/png'
+        },    
+        req
+      });
     }).catch(nextError(next));
   });
 

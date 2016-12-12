@@ -448,6 +448,8 @@ var LayerInfo = React.createClass({
             collapsible={true}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
+            <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
+          
         </Map>
       );
       exportTabContent = (
@@ -475,6 +477,7 @@ var LayerInfo = React.createClass({
             collapsible={true}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
+          <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>        
         </Map>
       );
       var geoJSONURL = '/api/layer/' + this.props.layer.layer_id + '/export/json/' + slug(this.props.layer.name) + '.geojson';
