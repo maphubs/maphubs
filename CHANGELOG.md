@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.5.5](https://github.com/maphubs/maphubs/tree/v0.5.5) (2016-12-12)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.4...v0.5.5)
+
+**Implemented enhancements:**
+
+- add draft mode for new stories [\#60](https://github.com/maphubs/maphubs/issues/60)
+
 ## [v0.5.4](https://github.com/maphubs/maphubs/tree/v0.5.4) (2016-12-08)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.3...v0.5.4)
 
