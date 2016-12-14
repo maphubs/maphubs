@@ -20,6 +20,7 @@ var GroupInfo = React.createClass({
   propTypes: {
     group: React.PropTypes.object,
     layers: React.PropTypes.array,
+    hubs: React.PropTypes.array,
     members: React.PropTypes.array,
     canEdit: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
@@ -31,6 +32,7 @@ var GroupInfo = React.createClass({
         name: "Unknown"
       },
       layers: [],
+      hubs: [],
       members: [],
       canEdit: false
     };
@@ -38,7 +40,8 @@ var GroupInfo = React.createClass({
 
   getInitialState(){
     return {
-      layerCards: this.props.layers.map(cardUtil.getLayerCard)
+      layerCards: this.props.layers.map(cardUtil.getLayerCard),
+      hubCards: this.props.hubs.map(cardUtil.getHubCard)
     };
   },
 
@@ -91,6 +94,23 @@ var GroupInfo = React.createClass({
       status = this.__('Published');
     }
 
+    var layers = '';
+    if(this.state.layerCards && this.state.layerCards.length > 0){
+      layers = (
+        <div className="row">
+          <CardCarousel cards={this.state.layerCards} infinite={false}/>
+        </div>
+      );
+    }
+
+    var hubs = '';
+    if(this.state.hubCards && this.state.hubCards.length > 0){
+      hubs = (
+        <div className="row">
+          <CardCarousel cards={this.state.hubCards} infinite={false}/>
+        </div>
+      );
+    }
 
     return (
       <div>
@@ -119,15 +139,21 @@ var GroupInfo = React.createClass({
           <div className="divider" />
             <div className="row">
               <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
-              <div className="row">
-                <CardCarousel cards={this.state.layerCards} infinite={false}/>
-              </div>
+              {layers}
               <div className="valign-wrapper">
                 <a className="btn valign" style={{margin: 'auto'}} href={'/createlayer?group_id=' + this.props.group.group_id}>{this.__('Add a Layer')}</a>
               </div>
             </div>
-            </div>
             <div className="divider" />
+            <div className="row">
+              <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Hubs')}</h5>
+              {hubs}
+              <div className="valign-wrapper">
+                <a className="btn valign" style={{margin: 'auto'}} href={'/createhub?group_id=' + this.props.group.group_id}>{this.__('Create a Hub')}</a>
+              </div>
+            </div>
+          </div>
+          <div className="divider" />
           <div className="container">
           <div>
             <ul className="collection with-header">
