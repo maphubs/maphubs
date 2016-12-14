@@ -254,11 +254,8 @@ var Node = {
         tags = [].concat.apply([], tags);
 
         return knex.batchInsert(NodeTag.tableName, tags, BATCH_INSERT_SIZE)
-        .transacting(q.transaction)
-        .catch(function(err) {
-          log.error('Creating node tags in create', err);
-          throw new Error(err);
-        });
+        .transacting(q.transaction);
+      
       }
       return [];
     }
@@ -266,11 +263,7 @@ var Node = {
     return knex.batchInsert(Node.tableName, models, BATCH_INSERT_SIZE).returning('id')
     .transacting(q.transaction)
     .then(remap)
-    .then(saveTags)
-    .catch(function(err) {
-      log.error('Inserting new nodes in create', err);
-      throw new Error(err);
-    });
+    .then(saveTags);
   },
 
   modify(q: any) {
@@ -313,11 +306,8 @@ var Node = {
         .transacting(q.transaction);
       }
       return [];
-    })
-    .catch(function(err) {
-      log.error('Error modifying nodes', err);
-      throw new Error(err);
     });
+    
   },
 
   'delete'(q: any) {
