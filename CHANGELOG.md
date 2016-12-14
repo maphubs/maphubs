@@ -1,5 +1,21 @@
 # Change Log
 
+## [v0.5.6](https://github.com/maphubs/maphubs/tree/v0.5.6) (2016-12-14)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.5...v0.5.6)
+
+**Implemented enhancements:**
+
+- add addthis share links to layer maps [\#59](https://github.com/maphubs/maphubs/issues/59)
+
+**Fixed bugs:**
+
+- error when importing point dataset [\#294](https://github.com/maphubs/maphubs/issues/294)
+- Facebook embeds broken [\#292](https://github.com/maphubs/maphubs/issues/292)
+
+**Closed issues:**
+
+- Add a rich text editor to the hub intro section [\#154](https://github.com/maphubs/maphubs/issues/154)
+
 ## [v0.5.5](https://github.com/maphubs/maphubs/tree/v0.5.5) (2016-12-12)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.4...v0.5.5)
 
