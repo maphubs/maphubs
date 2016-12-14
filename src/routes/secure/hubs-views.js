@@ -515,36 +515,4 @@ module.exports = function(app: any) {
     }
   });
 
-    app.get('/hub/:id/admin', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
-
-      var user_id = req.session.user.id;
-      var hub_id = req.params.id;
-
-      //confirm that this user is allowed to administer this hub
-      Hub.getHubRole(user_id, hub_id)
-        .then(function(result) {
-          if (result && result.length == 1 && result[0].role == 'Administrator') {
-            Promise.all([
-                Hub.getHubByID(hub_id),
-                Layer.getHubLayers(hub_id),
-                Hub.getHubMembers(hub_id)
-              ])
-              .then(function(result) {
-                var hub = result[0];
-                var layers = result[1];
-                var members = result[2];
-                res.render('hubadmin', {
-                  title: hub.name + '|' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
-                  props: {
-                    hub, layers, members
-                  }
-                });
-              }).catch(nextError(next));
-          } else {
-            res.redirect(baseUrl + '/unauthorized?path='+req.path);
-          }
-        }).catch(nextError(next));
-
-    });
-
 };

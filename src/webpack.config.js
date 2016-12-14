@@ -42,7 +42,6 @@ module.exports = {
     hubs: "./src/client/hubs",
     hubinfo: "./src/client/hubinfo",
     hubbuilder: "./src/client/hubbuilder",
-    hubadmin: "./src/client/hubadmin",
     hubmap: "./src/client/hubmap",
     hubstories: "./src/client/hubstories",
     hubresources: "./src/client/hubresources",
