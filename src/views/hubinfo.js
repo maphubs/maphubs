@@ -2,7 +2,6 @@ var React = require('react');
 //var $ = require('jquery');
 var isEmpty = require('lodash.isempty');
 
-
 var HubBanner = require('../components/Hub/HubBanner');
 var HubMap = require('../components/Hub/HubMap');
 var HubStories = require('../components/Hub/HubStories');
@@ -30,7 +29,7 @@ import Progress from '../components/Progress';
 var HubInfo = React.createClass({
 
   mixins:[
-    StateMixin.connect(HubStore, {initWithProps: ['hub', 'layers', 'members', 'stories', 'canEdit']}),
+    StateMixin.connect(HubStore, {initWithProps: ['hub', 'layers', 'stories', 'canEdit']}),
     StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})
   ],
 
@@ -41,7 +40,6 @@ var HubInfo = React.createClass({
   propTypes: {
     hub: React.PropTypes.object,
     layers: React.PropTypes.array,
-    members: React.PropTypes.array,
     stories: React.PropTypes.array,
     canEdit: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
@@ -53,7 +51,6 @@ var HubInfo = React.createClass({
         name: "Unknown"
       },
       layers: [],
-      members: [],
       stories: [],
       canEdit: false
     };

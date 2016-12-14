@@ -15,7 +15,6 @@ module.exports = Reflux.createStore({
   getInitialState() {
     return  {
       hub: {},
-      members: [],
       layers: [],
       logoImage: null,
       bannerImage: null,
@@ -41,11 +40,6 @@ module.exports = Reflux.createStore({
  loadHub(hub){
    debug('load hub');
    this.setState({hub});
- },
-
- loadMembers(members){
-   debug('load members');
-   this.setState({members});
  },
 
  loadLayers(layers){
@@ -250,78 +244,6 @@ module.exports = Reflux.createStore({
 
  },
 
- addMember(display_name, asAdmin, cb){
-   debug('add member');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/addmember')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, display_name, asAdmin})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.reloadMembers(cb);
-     });
-   });
- },
- removeMember(user_id, cb){
-   debug('remove member');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/removemember')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, user_id})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.reloadMembers(cb);
-     });
-   });
- },
- setMemberAdmin(user_id, cb){
-   debug('set member admin');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/updatememberrole')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, user_id, role: 'Administrator'})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.reloadMembers(cb);
-     });
-   });
- },
- removeMemberAdmin(user_id, cb){
-   debug('remove member admin');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/updatememberrole')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, user_id, role: 'Member'})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.reloadMembers(cb);
-     });
-   });
- },
-
- reloadMembers(cb){
-   debug('reload members');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.get(baseUrl + '/api/members')
-   .type('json').accept('json')
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.loadMembers(res.body.members);
-       cb(null);
-     });
-   });
- },
-
  addLayer(layer_id, active, cb){
    debug('add layer');
    var _this = this;
@@ -337,7 +259,7 @@ module.exports = Reflux.createStore({
    });
  },
  removeLayer(layer_id, cb){
-   debug('remove member');
+   debug('remove layer');
    var _this = this;
    var baseUrl = '/hub/' + this.state.hub.hub_id;
 
