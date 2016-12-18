@@ -1,17 +1,20 @@
 var React = require('react');
-
 var Header = require('../components/header');
-
 var MapMaker = require('../components/MapMaker/MapMaker');
-
+var Reflux = require('reflux');
+var StateMixin = require('reflux-state-mixin')(Reflux);
+var LocaleStore = require('../stores/LocaleStore');
 
 var MapEdit = React.createClass({
+
+  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   propTypes: {
     map: React.PropTypes.object.isRequired,
     layers: React.PropTypes.array.isRequired,
     popularLayers: React.PropTypes.array.isRequired,
-    myLayers: React.PropTypes.array.isRequired
+    myLayers: React.PropTypes.array.isRequired,
+    locale: React.PropTypes.string.isRequired
   },
 
   getDefaultProps() {

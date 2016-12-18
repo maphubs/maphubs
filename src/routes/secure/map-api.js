@@ -13,6 +13,8 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 
+var csrfProtection = require('csurf')({cookie: false});
+
 module.exports = function(app: any) {
 
     //disable global API only support one layer at a time for now
@@ -68,7 +70,7 @@ module.exports = function(app: any) {
             }).catch(nextError(next));
     });
 
-    app.post('/api/map/create/usermap', function(req, res) {
+    app.post('/api/map/create/usermap', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
@@ -92,7 +94,7 @@ module.exports = function(app: any) {
       }
     });
 
-    app.post('/api/map/copy', function(req, res) {
+    app.post('/api/map/copy', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
@@ -116,7 +118,7 @@ module.exports = function(app: any) {
     });
 
 
-    app.post('/api/map/save', function(req, res) {
+    app.post('/api/map/save', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
@@ -146,7 +148,7 @@ module.exports = function(app: any) {
       }
     });
 
-    app.post('/api/map/delete', function(req, res) {
+    app.post('/api/map/delete', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;

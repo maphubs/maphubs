@@ -210,7 +210,7 @@ var MapMaker = React.createClass({
 
     var basemap = this.refs.map.getBaseMap();
     if(!this.state.map_id || this.state.map_id == -1){
-      Actions.createUserMap(position, basemap, function(err){
+      Actions.createUserMap(position, basemap, _this.state._csrf, function(err){
         if(err){
           //display error to user
           MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -221,7 +221,7 @@ var MapMaker = React.createClass({
         }
       });
     }else{
-      Actions.saveMap(position, basemap, function(err){
+      Actions.saveMap(position, basemap, this.state._csrf, function(err){
         if(err){
           //display error to user
           MessageActions.showMessage({title: _this.__('Error'), message: err});

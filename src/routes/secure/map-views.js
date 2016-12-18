@@ -10,6 +10,8 @@ var MapUtils = require('../../services/map-utils');
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 
+var csrfProtection = require('csurf')({cookie: false});
+
 module.exports = function(app: any) {
 
   var recordMapView = function(session: Object, map_id: number, user_id: number,  next: any){
@@ -29,7 +31,7 @@ module.exports = function(app: any) {
   };
 
 
-  app.get('/map/new', function(req, res, next) {
+  app.get('/map/new', csrfProtection, function(req, res, next) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
@@ -54,7 +56,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/maps', function(req, res, next) {
+  app.get('/maps', csrfProtection, function(req, res, next) {
 
     Promise.all([
       Map.getFeaturedMaps(),
@@ -69,7 +71,7 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/user/:username/maps', function(req, res, next) {
+  app.get('/user/:username/maps', csrfProtection, function(req, res, next) {
 
     var username = req.params.username;
     debug(username);
@@ -109,7 +111,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/view/:map_id/*', function(req, res, next) {
+  app.get('/map/view/:map_id/*', csrfProtection, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -134,7 +136,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/user/:username/map/:map_id', function(req, res, next) {
+  app.get('/user/:username/map/:map_id', csrfProtection, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -159,7 +161,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/edit/:map_id', function(req, res, next) {
+  app.get('/map/edit/:map_id', csrfProtection, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -212,7 +214,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/embed/:map_id', function(req, res, next) {
+  app.get('/map/embed/:map_id', csrfProtection, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -235,7 +237,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/embed/:map_id/static', function(req, res, next) {
+  app.get('/map/embed/:map_id/static', csrfProtection, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);

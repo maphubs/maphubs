@@ -102,7 +102,7 @@ var UserMap = React.createClass({
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of ') + this.props.map.title,
       onPositiveResponse(){
-        MapMakerActions.deleteMap(_this.props.map.map_id, function(err){
+        MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {

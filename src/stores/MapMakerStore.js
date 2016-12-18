@@ -140,7 +140,7 @@ module.exports = Reflux.createStore({
     this.updateMap(layers);
   },
 
-  saveMap(position, basemap, cb){
+  saveMap(position, basemap, _csrf, cb){
     var _this = this;
     //resave an existing map
     request.post('/api/map/save')
@@ -151,7 +151,8 @@ module.exports = Reflux.createStore({
         style: this.state.mapStyle,
         title: this.state.title,
         position,
-        basemap
+        basemap,
+        _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -161,7 +162,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  createUserMap(position, basemap, cb){
+  createUserMap(position, basemap, _csrf, cb){
     var _this = this;
     request.post('/api/map/create/usermap')
     .type('json').accept('json')
@@ -170,7 +171,8 @@ module.exports = Reflux.createStore({
         style: this.state.mapStyle,
         title: this.state.title,
         position,
-        basemap
+        basemap,
+        _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -235,10 +237,10 @@ module.exports = Reflux.createStore({
      return mapStyle;
    },
 
-   deleteMap(map_id, cb){
+   deleteMap(map_id, _csrf, cb){
      request.post('/api/map/delete')
      .type('json').accept('json')
-     .send({map_id})
+     .send({map_id, _csrf})
      .end(function(err, res){
        checkClientError(res, err, cb, function(cb){
          cb();
