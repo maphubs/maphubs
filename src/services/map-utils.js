@@ -52,6 +52,7 @@ module.exports = {
            oembed: 'map',
            twitterCard: {
              title,
+             description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
              image: baseUrl + '/api/screenshot/map/' + map.map_id + '.png',
              imageWidth: 1200,
              imageHeight: 630,
