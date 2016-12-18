@@ -181,47 +181,6 @@ module.exports = Reflux.createStore({
     this.updateMap(layers);
   },
 
-  saveMap(position, basemap, cb){
-    var _this = this;
-    //resave an existing map
-    request.post('/api/map/save')
-    .type('json').accept('json')
-    .send({
-        map_id: this.state.map_id,
-        layers: this.state.mapLayers,
-        style: this.state.mapStyle,
-        title: this.state.title,
-        position,
-        basemap
-    })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
-        _this.setState({position, basemap});
-        cb();
-      });
-    });
-  },
-
-  createUserMap(position, basemap, cb){
-    var _this = this;
-    request.post('/api/map/create/usermap')
-    .type('json').accept('json')
-    .send({
-        layers: this.state.mapLayers,
-        style: this.state.mapStyle,
-        title: this.state.title,
-        position,
-        basemap
-    })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
-        var map_id = res.body.map_id;
-        _this.setState({map_id, position, basemap});
-        cb();
-      });
-    });
-  },
-
   showMapDesigner(){
     this.setState({show: true});
   },
@@ -285,25 +244,6 @@ module.exports = Reflux.createStore({
      return mapStyle;
    },
 
-   reloadSearchLayersUser(force, cb){
-     debug('reload search layers');
-     var _this = this;
-     if(force || !this.state.allLayers){
-       request.get('/api/layers/recommended/user')
-       .type('json').accept('json')
-       .end(function(err, res){
-         checkClientError(res, err, cb, function(cb){
-           _this.setSearchLayers(res.body.layers);
-           cb(null);
-         });
-       });
-     }else{
-       _this.setSearchLayers(_this.state.allLayers);
-       cb(null);
-     }
-
-   },
-
    reloadSearchLayersHub(hub_id, force, cb){
      debug('reload search layers');
      var _this = this;
@@ -320,34 +260,5 @@ module.exports = Reflux.createStore({
        _this.setSearchLayers(_this.state.allLayers);
        cb(null);
      }
-   },
-
-   reloadSearchLayersAll(force, cb){
-     debug('reload search layers');
-     var _this = this;
-     if(force || !this.state.allLayers){
-       request.get('/api/layers/all')
-       .type('json').accept('json')
-       .end(function(err, res){
-         checkClientError(res, err, cb, function(cb){
-           _this.setSearchLayers(res.body.layers);
-           cb(null);
-         });
-       });
-     }else{
-       _this.setSearchLayers(_this.state.allLayers);
-       cb(null);
-     }
-   },
-
-   deleteMap(map_id, cb){
-     request.post('/api/map/delete')
-     .type('json').accept('json')
-     .send({map_id})
-     .end(function(err, res){
-       checkClientError(res, err, cb, function(cb){
-         cb();
-       });
-     });
    }
 });
