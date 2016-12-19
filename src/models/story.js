@@ -1,7 +1,7 @@
 // @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
-var _find = require('lodash.find');
+var Group = require('./group');
 var debug = require ('../services/debug')('model/story');
 
 module.exports = {
@@ -283,22 +283,11 @@ module.exports = {
       });
     },
 
-  allowedToModifyHub(hub_id: string, user_id: number){
-    debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
-    return this.getHubMembers(hub_id)
-      .then(function(users: Array<Object>){
-        if(_find(users, {id: user_id}) !== undefined){
-          debug('user found');
-          return true;
-        }
-        debug('user not allowed: ' + user_id);
-        return false;
+    allowedToModifyHub(hub_id: string, user_id: number){
+      debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
+      return this.getHubByID(hub_id).then(function(hub){
+        return Group.allowedToModify(hub.owned_by_group_id, user_id);
       });
-    },
-
-    getHubMembers(hub_id: string) {
-      return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
-        .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
-        .whereRaw('lower(omh.hub_memberships.hub_id) = ?', hub_id.toLowerCase());
     }
+
 };

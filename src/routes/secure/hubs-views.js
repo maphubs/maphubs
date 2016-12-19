@@ -3,6 +3,7 @@ var Layer = require('../../models/layer');
 var Story = require('../../models/story');
 var Hub = require('../../models/hub');
 var User = require('../../models/user');
+var Group = require('../../models/group');
 var Map = require('../../models/map');
 var Stats = require('../../models/stats');
 var login = require('connect-ensure-login');
@@ -326,6 +327,19 @@ module.exports = function(app: any) {
             }
           });
         }
+    }).catch(nextError(next));
+  });
+
+  app.get('/createhub', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+    
+    var user_id = req.session.user.id;
+
+    Group.getGroupsForUser(user_id)
+    .then(function(groups){
+      res.render('hubbuilder', {
+        title: req.__('Create Hub') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {groups}, req
+      });
     }).catch(nextError(next));
   });
 

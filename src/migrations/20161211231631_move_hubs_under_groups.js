@@ -1,25 +1,17 @@
 
 exports.up = function(knex, Promise) {
   return Promise.all([
-    knex.raw(`
-      CREATE TABLE omh.group_hubs (
-        group_id text,
-        hub_id text,
-        CONSTRAINT grouphubsgroupfk FOREIGN KEY (group_id)
-              REFERENCES omh.groups (group_id),
-        CONSTRAINT grouphubshubfk FOREIGN KEY (hub_id)
-              REFERENCES omh.hubs (hub_id),
-        PRIMARY KEY (group_id, hub_id)
-      ) 
-    `),
+    knex.raw(`ALTER TABLE omh.hubs ADD COLUMN owned_by_group_id text;`),
     knex.raw(`
       INSERT INTO omh.groups (group_id, name, description, published) 
         SELECT hub_id || '-Hub', name || ' - Hub', description, true FROM omh.hubs;
     `),
     knex.raw(`
-      INSERT INTO omh.group_hubs(group_id, hub_id) 
-          SELECT hub_id || '-Hub', hub_id FROM omh.hubs;
-            `),
+      UPDATE omh.hubs SET owned_by_group_id= hub_id || '-Hub';
+    `),
+    knex.raw(`
+     ALTER TABLE omh.hubs ADD CONSTRAINT hubsownedbygroupfk FOREIGN KEY (owned_by_group_id) REFERENCES omh.groups (group_id);
+    `),
     knex.raw(`
       INSERT INTO omh.group_images(group_id, image_id) 
           SELECT hub_id || '-Hub', image_id FROM omh.hub_images WHERE type = 'logo';

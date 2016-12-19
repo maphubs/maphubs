@@ -47,7 +47,7 @@ module.exports = Reflux.createStore({
    this.setState({layers});
  },
 
- createHub(hub_id, name, published, cb){
+ createHub(hub_id, group_id, name, published, _csrf, cb){
    debug('create hub');
    var _this = this;
 
@@ -55,8 +55,10 @@ module.exports = Reflux.createStore({
    .type('json').accept('json')
    .send({
      hub_id,
+     group_id,
      name,
-     published
+     published,
+     _csrf
    })
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
@@ -71,7 +73,7 @@ module.exports = Reflux.createStore({
      });
    });
  },
- saveHub(cb){
+ saveHub(_csrf, cb){
    debug('save hub');
    var _this = this;
 
@@ -95,7 +97,8 @@ module.exports = Reflux.createStore({
      logoImage: this.state.logoImage,
      logoImageInfo: this.state.logoImageInfo,
      bannerImage: this.state.bannerImage,
-    bannerImageInfo: this.state.bannerImageInfo
+    bannerImageInfo: this.state.bannerImageInfo,
+    _csrf
 
    })
    .end(function(err, res){
@@ -105,14 +108,14 @@ module.exports = Reflux.createStore({
      });
    });
  },
- deleteHub(cb){
+ deleteHub(_csrf, cb){
    var _this = this;
    debug('delete hub');
    var baseUrl = '/hub/' + this.state.hub.hub_id;
 
    request.post(baseUrl + '/api/delete')
    .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id})
+   .send({hub_id: this.state.hub.hub_id, _csrf})
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){
        _this.setState({hub: {}});
@@ -131,53 +134,10 @@ module.exports = Reflux.createStore({
    this.trigger(this.state);
  },
 
- saveMap(cb){
-   debug('save hub map');
-   var _this = this;
-   this.setState({saving: true});
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/savemap')
-   .type('json').accept('json')
-   .send({
-     style: this.state.hub.map_style,
-     basemap: this.state.hub.basemap,
-     layers:  this.state.layers,
-     position: this.state.hub.map_position
-   })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       var hub = _this.state.hub;
-       _this.setState({hub, saving: false});
-       _this.trigger(_this.state);
-       cb(null);
-     });
-   });
- },
-
  setHubLogoImage(data, info){
     var hub = this.state.hub;
     hub.hasLogoImage = true;
    this.setState({logoImage: data, logoImageInfo: info, unsavedChanges: true, hub});
- },
-
- saveHubLogoImage(cb){
-   debug('save hub logo image');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/setphoto')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, image: this.state.logoImage, info: this.state.logoImageInfo, type: 'logo'})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       var hub = _this.state.hub;
-       hub.hasLogoImage = true;
-       _this.setState({hub});
-       _this.trigger(_this.state);
-       cb(null);
-     });
-   });
  },
 
  setHubBannerImage(data, info){
@@ -186,37 +146,18 @@ module.exports = Reflux.createStore({
    this.setState({bannerImage: data, bannerImageInfo: info, unsavedChanges: true, hub});
  },
 
- saveHubBannerImage(cb){
-   debug('set hub banner image');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/setphoto')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, image: this.state.bannerImage, info: this.state.bannerImageInfo, type: 'banner'})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       var hub = _this.state.hub;
-       hub.hasBannerImage = true;
-       _this.setState({hub});
-       _this.trigger(_this.state);
-       cb(null);
-     });
-   });
- },
-
  setTitle(title){
    var hub = this.state.hub;
    hub.name = title;
    this.setState({hub, unsavedChanges: true});
  },
 
-  publish(cb){
+  publish(_csrf, cb){
    var hub = this.state.hub;
    hub.published = true;
    this.setState({hub, unsavedChanges: true});
    this.trigger(this.state);
-   this.saveHub(cb);
+   this.saveHub(_csrf, cb);
  },
 
  setTagline(tagline){
@@ -241,50 +182,6 @@ module.exports = Reflux.createStore({
    var hub = this.state.hub;
    hub.about = about;
    this.setState({hub, unsavedChanges: true});
-
- },
-
- addLayer(layer_id, active, cb){
-   debug('add layer');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/addlayer')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, layer_id, active})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.reloadLayers(cb);
-     });
-   });
- },
- removeLayer(layer_id, cb){
-   debug('remove layer');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.post(baseUrl + '/api/removelayer')
-   .type('json').accept('json')
-   .send({hub_id: this.state.hub.hub_id, layer_id})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.reloadLayers(cb);
-     });
-   });
- },
- reloadLayers(cb){
-   debug('reload layers');
-   var _this = this;
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
-
-   request.get(baseUrl + '/api/hub/' + this.state.hub.hub_id + '/layers')
-   .type('json').accept('json')
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
-       _this.loadLayers(res.body.layers);
-       cb(null);
-     });
-   });
  },
 
  //map functions
@@ -328,7 +225,6 @@ module.exports = Reflux.createStore({
    this.setState({layers, hub});
    this.trigger(this.state);
  },
-
 
  buildMapStyle(layers){
    var mapStyle = {

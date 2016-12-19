@@ -55,7 +55,7 @@ var HubStoriesPage = React.createClass({
 
   stopEditing(){
     var _this = this;
-    HubActions.saveHub(function(err){
+    HubActions.saveHub(this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -74,7 +74,7 @@ var HubStoriesPage = React.createClass({
             || !this.state.hub.hasLogoImage || !this.state.hub.hasBannerImage){
       MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')});
     }else {
-      HubActions.publish(function(err){
+      HubActions.publish(this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});
         }else{

@@ -36,6 +36,7 @@ module.exports = {
       id: hub.hub_id,
       title,
       description: hub.description,
+      group: hub.owned_by_group_id,
       image_url: '/hub/' + hub.hub_id + '/images/logo',
       background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
       link: hubUrl,

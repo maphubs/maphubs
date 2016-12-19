@@ -7,65 +7,86 @@ var Image = require('../../models/image');
 //var debug = require('../../services/debug')('routes/hubs');
 var Promise = require('bluebird');
 var apiError = require('../../services/error-response').apiError;
+var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
+var login = require('connect-ensure-login');
+
 var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
- 
-  app.post('/hub/:hubid/api/map/save', function(req, res) {
+  app.post('/api/hub/checkidavailable', login.ensureLoggedIn(), function(req, res, next) {
+    var data = req.body;
+    if (data && data.id) {
+      Hub.checkHubIdAvailable(data.id)
+        .then(function(result) {
+          res.send({
+            available: result
+          });
+        }).catch(nextError(next));
+    } else {
+      res.status(400).send('Bad Request: required data not found');
+    }
+  });
+
+  app.get('/api/hubs/search/suggestions', function(req, res, next) {
+    if (!req.query.q) {
+      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+    }
+    var q = req.query.q;
+    Hub.getSearchSuggestions(q)
+      .then(function(result) {
+        var suggestions = [];
+        result.forEach(function(hub) {
+          suggestions.push({key: hub.hub_id, value:hub.name});
+        });
+        res.send({
+          suggestions
+        });
+      }).catch(nextError(next));
+  });
+
+  app.get('/api/hubs/search', function(req, res) {
+    if (!req.query.q) {
+      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+    }
+    Hub.getSearchResults(req.query.q)
+      .then(function(result){
+        res.status(200).send({hubs: result});
+      }).catch(apiError(res, 500));
+  });
+
+  app.post('/api/hub/create', function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
     var user_id = req.session.user.id;
-    var hub_id = req.params.hubid;
     var data = req.body;
-    if(data && data.layers && data.style && data.basemap && data.position && data.map_id){
-      Hub.allowedToModify(hub_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
-          .then(function(){
-            res.status(200).send({success: true});
-          }).catch(apiError(res, 500));
-        }else{
-          notAllowedError(res, 'map');
-        }
-      }).catch(apiError(res, 500));
-    }else{
-      apiDataError(res);
+    if (data && data.hub_id && data.group_id && data.name) {
+      Hub.createHub(data.hub_id, data.group_id, data.name, data.published, user_id)
+        .then(function(result) {
+          if (result) {
+            res.send({
+              success: true
+            });
+          } else {
+            res.send({
+              success: false,
+              error: "Failed to Create Hub"
+            });
+          }
+        }).catch(apiError(res, 500));
+    } else {
+      res.status(400).send({
+        success: false,
+        error: 'Bad Request: required data not found'
+      });
     }
   });
 
-  app.post('/hub/:hubid/api/map/delete', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.id;
-    var hub_id = req.params.hubid;
-    var data = req.body;
-    if(data && data.map_id){
-      Hub.allowedToModify(hub_id, user_id)
-      .then(function(allowed){
-        if(allowed){
-          Map.deleteMap(data.map_id)
-          .then(function(){
-            res.status(200).send({success: true});
-          }).catch(apiError(res, 500));
-        }else{
-          notAllowedError(res, 'map');
-        }
-      }).catch(apiError(res, 500));
-    }else{
-      apiDataError(res);
-    }
-  });
-
-  //Hub Management
-  app.post('/hub/:hubid/api/save', function(req, res) {
+  app.post('/hub/:hubid/api/save', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -115,33 +136,6 @@ module.exports = function(app: any) {
     }
   });
 
-    app.post('/hub/:hubid/api/setphoto', function(req, res) {
-
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-
-      var user_id = req.session.user.id;
-      var data = req.body;
-
-      if(data && data.hub_id && data.image){
-        Hub.allowedToModify(data.hub_id, user_id)
-        .then(function(allowed){
-          if(allowed){
-            Image.setHubImage(data.hub_id, data.image, data.info, data.type)
-            .then(function(){
-              res.status(200).send({success: true});
-            });
-          } else {
-            res.status(401).send();
-          }
-        }).catch(apiError(res, 500));
-      } else {
-        apiDataError(res);
-      }
-    });
-
     app.get('/hub/:hubid/api/layers', function(req, res) {
       var hub_id = req.params.hubid;
       Layer.getHubLayers(hub_id)
@@ -150,34 +144,7 @@ module.exports = function(app: any) {
       }).catch(apiError(res, 500));
   });
 
-  app.post('/hub/:hubid/api/savemap', function(req, res) {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-
-    var session_user_id = req.session.user.id;
-    var data = req.body;
-
-    if(data && data.hub_id && data.layers && data.style && data.basemap && data.position ){
-      Hub.allowedToModify(data.hub_id, session_user_id)
-      .then(function(allowed){
-        if(allowed){
-            Map.saveHubMap(data.layers, data.style, data.basemap, data.position, data.hub_id, session_user_id)
-            .then(function(){
-              res.status(200).send({success: true});
-            }).catch(apiError(res, 500));
-        }else {
-          notAllowedError(res, 'hub');
-        }
-      }).catch(apiError(res, 500));
-    } else {
-      apiDataError(res);
-    }
-
-  });
-
-    app.post('/hub/:hubid/api/delete', function(req, res) {
+    app.post('/hub/:hubid/api/delete', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
@@ -200,15 +167,4 @@ module.exports = function(app: any) {
         apiDataError(res);
       }
     });
-
-    app.post('/hub/:hubid/api/user/setlocale', function(req, res) {
-      var data = req.body;
-      if(data.locale){
-        req.session.locale = data.locale;
-        req.setLocale(data.locale);
-      }
-      res.status(200).send({success: true});
-
-    });
-
 };
