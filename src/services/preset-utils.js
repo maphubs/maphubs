@@ -35,8 +35,9 @@ module.exports = {
       };
 
       var fieldsList = [];
+      var nameFound = false;
       layer.presets.forEach(function(preset){
-
+        if(preset.tag === 'name') nameFound = true;
         var presetObject = {
           "key": preset.tag,
           "type": preset.type,
@@ -55,6 +56,17 @@ module.exports = {
 
         fieldsList.push(preset.tag.toLowerCase());
       });
+
+      if(!nameFound){
+        customPreset.fields['name'] = {
+          "key": 'name',
+          "type": 'text',
+          "label": 'Name',
+          "placeholder": ''
+        };
+        fieldsList.push('name');
+      }
+
 
       customPreset.presets['layer-' + layer_id] = {
                   "name": layer.name,

@@ -23,7 +23,6 @@ module.exports = function queryWays(knex, layer_id) {
     return knex.raw('CREATE UNIQUE INDEX bboxquerytempways_idx ON bboxquerytempways (id)')
     .then(function(){
 
-
   var selectWays =  knex.select('current_ways.*', 'users.display_name as user', 'users.id as uid')
     .from('current_ways')
     .join('bboxquerytempways', 'current_ways.id', 'bboxquerytempways.id')
@@ -49,11 +48,11 @@ module.exports = function queryWays(knex, layer_id) {
 
  var selectNodes =  knex('current_nodes')
  .select('current_nodes.*', 'users.display_name as user', 'users.id as uid')
-   .join('bboxquerytempnodes', 'current_nodes.id', 'bboxquerytempnodes.id')
+    .join('current_way_nodes', 'current_way_nodes.node_id', 'current_nodes.id')
+    .join('bboxquerytempways', 'current_way_nodes.way_id', 'bboxquerytempways.id')
    .leftJoin('changesets', 'current_nodes.changeset_id', 'changesets.id')
    .leftJoin('users', 'changesets.user_id', 'users.id')
    .orderBy('current_nodes.id', 'asc');
-
 
 
 var selectNodesTags =  knex('current_node_tags')
