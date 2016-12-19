@@ -2,7 +2,6 @@ var React = require('react');
 //var $ = require('jquery');
 var isEmpty = require('lodash.isempty');
 
-
 var HubBanner = require('../components/Hub/HubBanner');
 var HubMap = require('../components/Hub/HubMap');
 var HubStories = require('../components/Hub/HubStories');
@@ -30,7 +29,7 @@ import Progress from '../components/Progress';
 var HubInfo = React.createClass({
 
   mixins:[
-    StateMixin.connect(HubStore, {initWithProps: ['hub', 'layers', 'members', 'stories', 'canEdit']}),
+    StateMixin.connect(HubStore, {initWithProps: ['hub', 'layers', 'stories', 'canEdit']}),
     StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})
   ],
 
@@ -41,7 +40,6 @@ var HubInfo = React.createClass({
   propTypes: {
     hub: React.PropTypes.object,
     layers: React.PropTypes.array,
-    members: React.PropTypes.array,
     stories: React.PropTypes.array,
     canEdit: React.PropTypes.bool,
     locale: React.PropTypes.string.isRequired
@@ -53,7 +51,6 @@ var HubInfo = React.createClass({
         name: "Unknown"
       },
       layers: [],
-      members: [],
       stories: [],
       canEdit: false
     };
@@ -80,7 +77,7 @@ var HubInfo = React.createClass({
 
   stopEditing(){
     var _this = this;
-    HubActions.saveHub(function(err){
+    HubActions.saveHub(this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -99,7 +96,7 @@ var HubInfo = React.createClass({
             || !this.state.hub.hasLogoImage || !this.state.hub.hasBannerImage){
       MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')});
     }else {
-      HubActions.publish(function(err){
+      HubActions.publish(this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});
         }else{

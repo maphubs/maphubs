@@ -9,6 +9,12 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var LocaleChooser = require('../LocaleChooser');
 
+var NotificationActions = require('../../actions/NotificationActions');
+var ConfirmationActions = require('../../actions/ConfirmationActions');
+var MessageActions = require('../../actions/MessageActions');
+var HubActions = require('../../actions/HubActions');
+
+
 var HubHav = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
@@ -32,15 +38,39 @@ var HubHav = React.createClass({
     $(this.refs.hubNav).sideNav({edge: 'right'});
   },
 
+    deleteHub(){
+    var _this = this;
+    ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Hub Deletion'),
+      message: this.__('Please confirm that you want to delete this hub and all of its stories.'),
+      onPositiveResponse(){
+        HubActions.deleteHub(_this.state._csrf, function(err){
+          if(err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            NotificationActions.showNotification({
+              message: _this.__('Hub Deleted'),
+              dismissAfter: 7000,
+              onDismiss(){
+                window.location = '/hubs';
+              }
+            });
+          }
+        });
+      }
+    });
+  },
+
+
   render(){
     var omhBaseUrl = urlUtil.getBaseUrl();
 
     var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
 
-    var manageButton = '';
+    var deleteButton = '';
     if(this.props.canEdit){
-      manageButton = (
-        <li className="nav-link-wrapper"><a href={hubBaseUrl + 'admin'}>{this.__('Manage Hub')}</a></li>
+      deleteButton = (
+        <li className="nav-link-wrapper"><a href="#" onClick={this.deleteHub}>{this.__('Delete Hub')}</a></li>
       );
     }
     return (
@@ -59,7 +89,7 @@ var HubHav = React.createClass({
               <LocaleChooser />
               <hr />
               <li className="nav-link-wrapper"><a href={omhBaseUrl}>{this.__('Back to ') + MAPHUBS_CONFIG.productName}</a></li>
-              {manageButton}
+              {deleteButton}
             </ul>
           </div>
         </nav>

@@ -3,6 +3,7 @@ var Promise = require('bluebird');
 var Group = require('../../models/group');
 var User = require('../../models/user');
 var Layer = require('../../models/layer');
+var Hub = require('../../models/hub');
 var Image = require('../../models/image');
 var Email = require('../../services/email-util');
 var login = require('connect-ensure-login');
@@ -60,20 +61,22 @@ module.exports = function(app: any) {
     Promise.all([
         Group.getGroupByID(group_id),
         Layer.getGroupLayers(group_id),
+        Hub.getGroupHubs(group_id),
         Group.getGroupMembers(group_id),
         Group.allowedToModify(group_id, user_id)
       ])
       .then(function(result: Array<any>) {
         var group: Object = result[0];
         var layers = result[1];
-        var members = result[2];
-        var canEdit = result[3];
+        var hubs = result[2];
+        var members = result[3];
+        var canEdit = result[4];
         var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
         res.render('groupinfo', {
           title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: group.description,
           props: {
-            group, layers, members, canEdit
+            group, layers, hubs, members, canEdit
           },
            twitterCard: {
             card: 'summary',

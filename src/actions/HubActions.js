@@ -18,7 +18,6 @@ var actions = Reflux.createActions({
   'setMemberAdmin': {},
   'removeMemberAdmin': {},
   'setMap': {},
-  'saveMap': {},
   'deleteHub': {},
   'publish': {},
   'moveUp': {},

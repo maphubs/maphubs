@@ -5,6 +5,7 @@ var Header = require('../components/header');
 var Formsy = require('formsy-react');
 var $ = require('jquery');
 var TextInput = require('../components/forms/textInput');
+var Select = require('../components/forms/select');
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 
@@ -32,6 +33,7 @@ var HubBuilder = React.createClass({
    propTypes: {
      onSubmit: React.PropTypes.func,
      active: React.PropTypes.bool.isRequired,
+     groups: React.PropTypes.array,
      locale: React.PropTypes.string.isRequired
    },
 
@@ -114,39 +116,27 @@ var HubBuilder = React.createClass({
 
 
      saveHub(model){
-       var _this = this;
-       this.setState({canSubmit: false, saving:true}); //disable submit button
-       if(this.state.hub.created){
-         HubActions.updateHub(model.hub_id, model.name, model.description, model.location, model.published, function(err){
-            this.setState({saving:false});
-           if(err){
-             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-           }else{
-             NotificationActions.showNotification(
-               {
-                 message: _this.__('Hub Saved'),
-                 position: 'topright',
-                 dismissAfter: 3000,
-                 onDismiss: _this.props.onSubmit
-             });
-           }
-         });
-       }else {
-         HubActions.createHub(model.hub_id, model.name, false, function(err){
-           if(err){
-             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-           }else{
-             NotificationActions.showNotification(
-               {
-                 message: _this.__('Hub Created'),
-                 position: 'topright',
-                 dismissAfter: 3000,
-                 onDismiss() {_this.onComplete(model.hub_id);}
-             });
-           }
-         });
-       }
+      var _this = this;
+      this.setState({canSubmit: false, saving:true}); //disable submit button
 
+      if(!model.group && this.props.groups.length == 1){
+        //creating a new layer when user is only the member of a single group (not showing the group dropdown)
+        model.group = this.props.groups[0].group_id;
+      }
+      
+      HubActions.createHub(model.hub_id, model.group, model.name, false, this.state._csrf, function(err){
+        if(err){
+          MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+        }else{
+          NotificationActions.showNotification(
+            {
+              message: _this.__('Hub Created'),
+              position: 'topright',
+              dismissAfter: 3000,
+              onDismiss() {_this.onComplete(model.hub_id);}
+          });
+        }
+      });
      },
 
 
@@ -157,6 +147,48 @@ var HubBuilder = React.createClass({
 
 
 	render() {
+
+    if(!this.props.groups || this.props.groups.length == 0){
+      return (
+        <div className="container">
+          <div className="row">
+            <h5>{this.__('Please Join a Group')}</h5>
+            <p>{this.__('Please create or join a group before creating a hub.')}</p>
+          </div>
+        </div>
+      );
+    }
+
+    var groups = '';
+
+   if(this.props.groups.length > 1){
+      var groupOptions = [];
+
+      this.props.groups.map(function(group){
+        groupOptions.push({
+          value: group.group_id,
+          label: group.name
+        });
+      });
+
+      groups = (
+        <div>
+          <p>{this.__('Since you are in multiple groups, please select the group that should own this hub.')}</p>
+          <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={true}
+            emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
+              dataPosition="right" dataTooltip={this.__('Owned by Group')}
+              required
+              />
+        </div>
+        );
+
+      }else{
+        groups = (
+          <div>
+            <b>{this.__('Group:')} </b>{this.props.groups[0].name}
+          </div>
+        );
+      }
 
 		return (
       <div>
@@ -184,6 +216,9 @@ var HubBuilder = React.createClass({
                      }} length={100}
                      dataPosition="top" dataTooltip={this.__('Short Descriptive Name for the Hub')}
                      required/>
+                </div>
+                <div  className="row">
+                  {groups}
                 </div>
                 <div className="right">
                     <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>

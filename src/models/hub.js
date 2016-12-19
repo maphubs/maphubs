@@ -2,10 +2,10 @@
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var _map = require('lodash.map');
-var _find = require('lodash.find');
 var debug = require ('../services/debug')('model/hub');
 var Story = require('../models/story');
 var Image = require('../models/image');
+var Group = require('../models/group');
 
 module.exports = {
 
@@ -149,91 +149,55 @@ module.exports = {
 
     getHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
-      return knex.select('omh.hubs.*').from('omh.hub_memberships')
-        .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
-        .where('omh.hub_memberships.user_id', user_id);
+
+/*
+SELECT *
+FROM omh.hubs
+WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE user_id = 1);
+*/
+    return knex('omh.hubs')
+      .whereIn('owned_by_group_id',
+        knex.select('group_id').from('omh.group_memberships').where({user_id}))
+      .orderBy('name');
     },
 
     getPublishedHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
-      return knex.select('omh.hubs.*').from('omh.hub_memberships')
-        .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
-        .where({
-          'omh.hub_memberships.user_id': user_id,
-          'omh.hubs.published': true
-        });
+      return knex.select().from('omh.hubs')
+      .whereIn('owned_by_group_id',
+        knex.select('group_id').from('omh.group_memberships').where({user_id}))   
+      .where({'omh.hubs.published': true})
+      .orderBy('name');
     },
 
     getDraftHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
-      return knex.select('omh.hubs.*').from('omh.hub_memberships')
-        .leftJoin('omh.hubs', 'omh.hub_memberships.hub_id', 'omh.hubs.hub_id')
-        .where({
-          'omh.hub_memberships.user_id': user_id,
-          'omh.hubs.published': false
-        });
+      return knex.select().from('omh.hubs')
+        .whereIn('owned_by_group_id',
+          knex.select('group_id').from('omh.group_memberships').where({user_id}))     
+        .where({'omh.hubs.published': false})
+        .orderBy('name');
     },
 
-
-    getHubRole(user_id: number, hub_id: string) {
-      return knex.select('omh.hub_memberships.role').from('omh.hub_memberships')
-      .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id]);
-    },
-
-    getHubMembers(hub_id: string) {
-      return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
-        .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
-        .whereRaw('lower(omh.hub_memberships.hub_id) = ?', hub_id.toLowerCase());
-    },
-
-    getHubMembersByRole(hub_id: string, role: string) {
-      return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.hub_memberships.role').from('omh.hub_memberships')
-        .leftJoin('public.users', 'omh.hub_memberships.user_id', 'public.users.id')
-        .where({'omh.hub_memberships.hub_id': hub_id, 'omh.hub_memberships.role': role});
-    },
-
-    addHubMember(hub_id: string, user_id: number, role: string) {
-      hub_id = hub_id.toLowerCase();
-      return knex('omh.hub_memberships')
-      .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id])
-      .then(function(result){
-        if(result.length > 0){
-          throw new Error("User is already a member of the hub");
-        }else {
-          return knex('omh.hub_memberships').insert({
-            hub_id, user_id, role
-          });
-        }
+    getGroupHubs(group_id: string, includePrivate: boolean = false) {
+    var query = knex.select().from('omh.hubs').orderBy('name');
+    if (includePrivate) {
+      query.where('owned_by_group_id', group_id);
+    } else {
+      query.where({
+        'published': true,
+        'owned_by_group_id': group_id
       });
-
-    },
-
-    updateHubMemberRole(hub_id: string, user_id: number, role: string) {
-      return knex('omh.hub_memberships')
-        .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id])
-        .update({
-          role
-        });
-    },
-
-    removeHubMember(hub_id: string, user_id: number) {
-      return knex('omh.hub_memberships')
-        .whereRaw('lower(hub_id) = ? AND user_id= ?', [hub_id.toLowerCase(), user_id])
-        .del();
-    },
+    }
+    return query;
+  },
 
     allowedToModify(hub_id: string, user_id: number){
       debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
-      return this.getHubMembers(hub_id)
-        .then(function(users){
-          if(_find(users, {id: user_id}) !== undefined){
-            debug('user found');
-            return true;
-          }
-          debug('user not allowed: ' + user_id);
-          return false;
-        });
-      },
+      return this.getHubByID(hub_id).then(function(hub){
+        return Group.allowedToModify(hub.owned_by_group_id, user_id);
+      });
+    },
 
     checkHubIdAvailable(hub_id: string) {
       return this.getHubByID(hub_id)
@@ -243,23 +207,17 @@ module.exports = {
         });
     },
 
-    createHub(hub_id: string, name: string, published: boolean, user_id: number) {
-      var role = 'Administrator';
+    createHub(hub_id: string, group_id: string, name: string, published: boolean, user_id: number) {
       hub_id = hub_id.toLowerCase();
       return knex.transaction(function(trx) {
-      return Promise.all([
-        trx('omh.hubs').insert({
+      return trx('omh.hubs').insert({
           hub_id, name, published,
+          owned_by_group_id: group_id,
           created_by: user_id,
           created_at: knex.raw('now()'),
           updated_by: user_id,
           updated_at: knex.raw('now()')
-        }),
-        //insert creating user as first admin
-        trx('omh.hub_memberships').insert({
-          hub_id, user_id, role
-        })
-      ]);
+        });
     });
     },
 
@@ -310,7 +268,6 @@ module.exports = {
             }
             commands.push(trx('omh.hub_views').where('hub_id', hub_id).delete());
             commands.push(trx('omh.hub_layers').where('hub_id', hub_id).delete());
-            commands.push(trx('omh.hub_memberships').where('hub_id', hub_id).delete());
             commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
 
             return Promise.each(commands, function(command){
