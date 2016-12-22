@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.5.9](https://github.com/maphubs/maphubs/tree/v0.5.9) (2016-12-22)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.8...v0.5.9)
+
+**Fixed bugs:**
+
+- error opening a hub story when logged in [\#299](https://github.com/maphubs/maphubs/issues/299)
+
 ## [v0.5.8](https://github.com/maphubs/maphubs/tree/v0.5.8) (2016-12-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.7...v0.5.8)
 
