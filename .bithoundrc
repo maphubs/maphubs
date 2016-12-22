@@ -9,9 +9,11 @@
     "**/**.min.**",
     "**/**jquery.?(ui|effects)-*.*.?(*).?(cs|j)s",
     "**/**jquery-*.*.?(*).?(cs|j)s",
+    "node_modules/**",
+    "assets/**"
   ],
   "test": [
-
+    "**/tests/**"
   ],
   "critics": {
     "wc": { "limit": 5000 }
