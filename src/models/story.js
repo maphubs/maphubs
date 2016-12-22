@@ -283,6 +283,19 @@ module.exports = {
       });
     },
 
+    getHubByID(hub_id: string) {
+      debug('get hub: ' + hub_id);
+      return knex('omh.hubs')
+        .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
+        .then(function(hubResult) {
+          if (hubResult && hubResult.length == 1) {
+              return hubResult[0];
+          }
+          //else
+          return null;
+        });
+    },
+
     allowedToModifyHub(hub_id: string, user_id: number){
       debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
       return this.getHubByID(hub_id).then(function(hub){
