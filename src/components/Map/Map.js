@@ -10,17 +10,19 @@ var request = require('superagent-bluebird-promise');
 var $ = require('jquery');
 var _includes = require('lodash.includes');
 var TerraformerGL = require('../../services/terraformerGL.js');
-var Radio = require('../forms/radio');
-var Formsy = require('formsy-react');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
+var BaseMapActions = require('../../actions/map/BaseMapActions'); 
+var BaseMapStore = require('../../stores/map/BaseMapStore'); 
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
-var _centroid = require('@turf/centroid');
 
-
+var BaseMapSelection = require('./BaseMapSelection');
+var EditBaseMapBox = require('./EditBaseMapBox');
+var MapToolButton = require('./MapToolButton');
+var InsetMap = require('./InsetMap');
 
 var mapboxgl = {};
 
@@ -31,14 +33,14 @@ if (typeof window !== 'undefined') {
 
 var Map = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}), StateMixin.connect(LocaleStore)],
+
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
   propTypes:  {
-    center: React.PropTypes.object,
     className: React.PropTypes.string,
     id: React.PropTypes.string,
     maxBounds: React.PropTypes.object,
@@ -47,9 +49,6 @@ var Map = React.createClass({
     height: React.PropTypes.string,
     style: React.PropTypes.object,
     glStyle: React.PropTypes.object,
-    zoom: React.PropTypes.number,
-    keyboard: React.PropTypes.bool,
-    year: React.PropTypes.number,
     features:  React.PropTypes.array,
     tileJSONType: React.PropTypes.string,
     tileJSONUrl:  React.PropTypes.string,
@@ -71,15 +70,10 @@ var Map = React.createClass({
     gpxLink: React.PropTypes.string
   },
 
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
   getDefaultProps() {
     return {
       maxZoom: 18,
       minZoom: 5,
-      keyboard: false,
       className: '',
       interactive: true,
       showFeatureInfoEditButtons: true,
@@ -90,7 +84,8 @@ var Map = React.createClass({
       insetMap: true,
       hoverInteraction: false,
       interactionBufferSize: 10,
-      hash: true
+      hash: true,
+      style: {}
     };
   },
 
@@ -113,7 +108,6 @@ var Map = React.createClass({
       glStyle,
       interactiveLayers,
       mapLoaded: false,
-      baseMap: this.props.baseMap,
       restoreBounds,
       allowLayersToMoveMap: restoreBounds ? false : true
     };
@@ -278,17 +272,6 @@ var Map = React.createClass({
 
   },
 
-  reloadInset(mapName){
-    debug("reloading inset map with basemap: " + mapName);
-    var _this = this;
-    this.getBaseMapFromName(mapName, function(baseMap){
-      if(_this.props.insetMap && _this.insetMap){
-        _this.insetMap.setStyle(baseMap);
-      }
-    });
-
-  },
-
   getInteractiveLayers(glStyle){
     var interactiveLayers = [];
     if(glStyle){
@@ -313,74 +296,9 @@ var Map = React.createClass({
 
   componentDidMount() {
     this.createMap();
-
-    $(this.refs.basemapButton).show();
-    $(this.refs.editBaseMapButton).show();
-    if(this.refs.insetMap){
-      $(this.refs.insetMap).show();
-    }
-    $('.base-map-tooltip').tooltip();
-  },
-
-
-  getGeoJSONFromBounds(bounds){
-    var v1 = bounds.getNorthWest().toArray();
-    var v2 = bounds.getNorthEast().toArray();
-    var v3 = bounds.getSouthEast().toArray();
-    var v4 = bounds.getSouthWest().toArray();
-    var v5 = v1;
-    return {
-      type: 'FeatureCollection',
-      features: [{
-          type: 'Feature',
-          properties: {name: 'bounds'},
-          geometry: {
-              type: "Polygon",
-              coordinates: [
-                [ v1,v2,v3,v4,v5 ]
-              ]
-            }
-      }]
-    };
-  },
-
-  //give the bounds, determine if the inset location is too small and should be a point instead of the polygon
-  showInsetAsPoint(){
-    if(this.map){
-      var zoom = this.map.getZoom();
-      if(zoom > 9){
-        return true;
-      }
-    }
-    return false;
-  },
-
-  updateInsetGeomFromBounds(bounds){
-    var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
-    var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");
-    if(insetGeoJSONData){
-      try{
-        var geoJSONBounds = this.getGeoJSONFromBounds(bounds);
-        geoJSONBounds.features[0].properties = {'v': 1};
-        insetGeoJSONData.setData(geoJSONBounds);
-        var geoJSONCentroid = _centroid(geoJSONBounds);
-        geoJSONCentroid.properties = {'v': 1};
-        insetGeoJSONCentroidData.setData(geoJSONCentroid);
-        this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
-
-        if(this.showInsetAsPoint()){
-          this.insetMap.setFilter('center', ['==', 'v', 1]);
-          this.insetMap.setFilter('bounds', ['==', 'v', 2]);
-        } else {
-          this.insetMap.setFilter('center', ['==', 'v', 2]);
-          this.insetMap.setFilter('bounds', ['==', 'v', 1]);
-        }
-
-        this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate: false});
-      }catch(err){
-          debug(err);
-      }
-    }
+    //this.setState({componentMounted: true});
+    //$(this.refs.basemapButton).show();
+    //$(this.refs.editBaseMapButton).show();
   },
 
   addMapData(map, glStyle, geoJSON, cb){
@@ -433,7 +351,6 @@ var Map = React.createClass({
             });
           })
         );
-
 
       } else if(type === 'ags-mapserver-query'){
         requests.push(TerraformerGL.getArcGISGeoJSON(url)
@@ -492,7 +409,7 @@ var Map = React.createClass({
     var _this = this;
     debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
-      this.getBaseMapFromName(this.state.baseMap, function(baseMap){
+      BaseMapActions.getBaseMapFromName(this.state.baseMap, function(baseMap){
         var dragRotate  = false;
         if(!_this.props.enableRotation){
           dragRotate = true;
@@ -511,8 +428,6 @@ var Map = React.createClass({
         hash: _this.props.hash
       });
 
-
-
   map.on('style.load', function() {
     debug('(' + _this.state.id + ') ' +'style.load');
    //add the omh data
@@ -530,8 +445,8 @@ var Map = React.createClass({
           }
           debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
           map.fitBounds(fitBounds, {animate:false});
-          if(_this.insetMap){
-            _this.insetMap.fitBounds(fitBounds, {maxZoom: 1.8, padding: 10, animate:false});
+          if(_this.refs.insetMap){
+            _this.refs.insetMap.fitBounds(fitBounds, {maxZoom: 1.8, padding: 10, animate:false});
           }
 
         }else{
@@ -542,11 +457,10 @@ var Map = React.createClass({
         debug('(' + _this.state.id + ') ' +'Not restoring bounds for GeoJSON data');
       }
 
-
       if(_this.state.locale != 'en'){
         _this.changeLocale(_this.state.locale, _this.map);
-        if(_this.insetMap){
-           _this.changeLocale(_this.state.locale, _this.insetMap);
+        if(_this.refs.insetMap){
+           _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap());
         }
 
       }
@@ -563,69 +477,15 @@ var Map = React.createClass({
       debug('(' + _this.state.id + ') ' +e.type);
     });
 */
-    if(_this.props.insetMap && !_this.insetMap){
-      var center = map.getCenter();
-      var insetMap =  new mapboxgl.Map({
-        container: _this.state.id + '_inset',
-        style: baseMap,
-        zoom: 0,
-        interactive: false,
-        center
-      });
-
-      insetMap.on('style.load', function() {
-
-        var bounds = map.getBounds();
-        insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
-        //create geojson from bounds
-        var geoJSON = _this.getGeoJSONFromBounds(bounds);
-        geoJSON.features[0].properties = {'v': 1};
-        var geoJSONCentroid = _centroid(geoJSON);
-        geoJSONCentroid.properties = {'v': 1};
-        insetMap.addSource("inset-bounds", {"type": "geojson", data:geoJSON});
-        insetMap.addSource("inset-centroid", {"type": "geojson", data:geoJSONCentroid});
-        insetMap.addLayer({
-            'id': 'bounds',
-            'type': 'line',
-            'source': 'inset-bounds',
-            'paint': {
-                'line-color': 'rgb(244, 118, 144)',
-                'line-opacity': 0.75,
-                'line-width': 5
-            }
-        });
-
-        insetMap.addLayer({
-            'id': 'center',
-            'type': 'circle',
-            'source': 'inset-centroid',
-            'paint': {
-                'circle-color': 'rgb(244, 118, 144)',
-                'circle-opacity': 0.75
-            }
-        });
-
-        if(_this.showInsetAsPoint()){
-          insetMap.setFilter('center', ['==', 'v', 1]);
-          insetMap.setFilter('bounds', ['==', 'v', 2]);
-        } else {
-          insetMap.setFilter('center', ['==', 'v', 2]);
-          insetMap.setFilter('bounds', ['==', 'v', 1]);
-        }
-
-      });
-      _this.insetMap = insetMap;
-
+    if(_this.refs.insetMap){
+      if(!_this.refs.insetMap.getInsetMap()){
+        _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap);
+      } 
       map.on('moveend', function(){
-        if(_this.props.insetMap){
-          _this.updateInsetGeomFromBounds(map.getBounds());
-        }
+        _this.refs.insetMap.updateInsetGeomFromBounds(map.getBounds(), map.getZoom());
       });
     }
-
-
   });//end style.load
-
 
 map.on('mousemove', function(e) {
     if(_this.state.showBaseMaps) return;
@@ -667,8 +527,6 @@ map.on('mousemove', function(e) {
 
  });
 
-
-
  map.on('click', function(e) {
     if(!_this.state.selected &&_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
      _this.setState({selected:true});
@@ -697,7 +555,6 @@ map.on('mousemove', function(e) {
    }
   });
 
-
   if(_this.state.interactive){
     map.addControl(new mapboxgl.NavigationControl(), _this.props.navPosition);
   }
@@ -721,41 +578,20 @@ map.on('mousemove', function(e) {
 
   _this.map = map;
   });
-
   },
 
   clearSelection(){
-
     if(this.map.hasClass('selected')){
       this.map.removeClass('selected');
     }
-
     this.clearSelectionFilter();
     this.setState({selectedFeatures:null});
   },
 
-
-
-  shouldUpdateCenter(next, prev) {
-    if (!prev) return true;
-    next = this.normalizeCenter(next);
-    prev = this.normalizeCenter(prev);
-    return next[0] !== prev[0] || next[1] !== prev[1];
-  },
-
   componentDidUpdate(prevProps, prevState) {
-    var center = this.props.center;
-    var zoom = this.props.zoom;
-    if (center && this.shouldUpdateCenter(center, prevProps.center)) {
-      debug('(' + this.state.id + ') ' +'updating map center to: ' + center);
-      this.map.setView(center, zoom, {animate: false});
-    }
-    else if (zoom && zoom !== prevProps.zoom) {
-      debug('(' + this.state.id + ') ' +'updating map zoom to: ' + zoom);
-      this.map.setZoom(zoom);
-    }
 
-    if(this.state.interactive && !prevState.interactive){
+    //switch to interactive
+    if(this.state.interactive && !prevState.interactive){    
       this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
       var interaction = this.map.interaction;
       interaction.enable();
@@ -763,12 +599,13 @@ map.on('mousemove', function(e) {
       $(this.refs.editBaseMapButton).show();
     }
 
-      if(this.state.locale && (this.state.locale != prevState.locale) ){
-        this.changeLocale(this.state.locale, this.map);
-        if(this.insetMap){
-           this.changeLocale(this.state.locale, this.insetMap);
-        }
+    //change locale
+    if(this.state.locale && (this.state.locale != prevState.locale) ){     
+      this.changeLocale(this.state.locale, this.map);
+      if(this.refs.insetMap){
+          this.changeLocale(this.state.locale, this.refs.getInsetMap());
       }
+    }
   },
 
   componentWillReceiveProps(nextProps){
@@ -819,8 +656,9 @@ map.on('mousemove', function(e) {
             }
 
           }
-          this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
-          this.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+          this.setState({allowLayersToMoveMap});
+          BaseMapActions.setBaseMap(nextProps.baseMap);
+          BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
             //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
             let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
             _this.reload(_this.state.glStyle, styleCopy, baseMapUrl);
@@ -834,9 +672,10 @@ map.on('mousemove', function(e) {
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
         debug('(' + this.state.id + ') ' +"basemap changing from props");
-        allowLayersToMoveMap = false;
-        this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
-        this.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+        allowLayersToMoveMap = false;    
+        this.setState({allowLayersToMoveMap});
+        BaseMapActions.setBaseMap(nextProps.baseMap);
+        BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
           _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
         });
 
@@ -845,26 +684,14 @@ map.on('mousemove', function(e) {
         //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
         if(bounds){
           debug('(' + this.state.id + ') ' +'only bounds changing, bounds: ' + bounds);
-          if(bounds._ne && bounds._sw){
-            debug('(' + this.state.id + ') ' +'calling map fitBounds');
-            this.map.fitBounds(bounds, {animate:false});
-            if(this.insetMap){
-              this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
-            }
-           }else if(Array.isArray(bounds) && bounds.length > 2){
-             debug('(' + this.state.id + ') ' +'calling map fitBounds');
-             this.map.fitBounds([[bounds[0], bounds[1]],
-                           [bounds[2], bounds[3]]], {animate:false});
-             if(this.insetMap){
-               this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
-             }
-           }else{
-             debug('(' + this.state.id + ') ' +'calling map fitBounds');
-             this.map.fitBounds(bounds, {animate:false});
-             if(this.insetMap){
-               this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
-             }
+          if(Array.isArray(bounds) && bounds.length > 2){           
+             bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
            }
+           debug('(' + this.state.id + ') ' +'calling map fitBounds');
+           this.map.fitBounds(bounds, {animate:false});
+            if(this.refs.insetMap){
+              this.refs.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
+            }
            this.setState({allowLayersToMoveMap});
         }else{
           debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
@@ -892,8 +719,9 @@ map.on('mousemove', function(e) {
         //** Style Not Found, but Base Map is Changing **/
         debug('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
 
-      this.setState({baseMap: nextProps.baseMap, allowLayersToMoveMap});
-      this.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+      this.setState({allowLayersToMoveMap});
+      BaseMapActions.setBaseMap(nextProps.baseMap);
+      BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
         _this.reload(this.state.glStyle, this.state.glStyle, baseMapUrl);
       });
 
@@ -1040,97 +868,27 @@ map.on('mousemove', function(e) {
     }
   },
 
-  toggleBaseMaps(){
-    if(this.state.showEditBaseMap){
-      this.closeEditBaseMap();
-    }
-    if(this.state.showBaseMaps){
-      this.closeBaseMaps();
-    }else{
-      this.setState({showBaseMaps: true});
-    }
-  },
-
-  closeBaseMaps(){
-    this.setState({showBaseMaps: false});
-  },
-
-  toggleEditBaseMap(){
-    if(this.state.showBaseMaps){
-      this.closeBaseMaps();
-    }
-    if(this.state.showEditBaseMap){
-      this.closeEditBaseMap();
-    }else{
-      this.setState({showEditBaseMap: true});
-    }
-  },
-
-  closeEditBaseMap(){
-    this.setState({showEditBaseMap: false});
-  },
-
-  getBaseMapFromName(mapName, cb){
-    var mapboxName = 'light-v9';
-    var optimize = true;
-
-    if (mapName == 'default') {
-        mapboxName = 'light-v9';
-        optimize = true;
-    }
-    else if(mapName == 'dark'){
-      mapboxName = 'dark-v9';
-      optimize = true;
-    }
-    else if(mapName == 'outdoors'){
-      mapboxName = 'outdoors-v9';
-      optimize = true;
-    }
-    else if(mapName == 'streets'){
-      mapboxName = 'streets-v9';
-      optimize = true;
-    }
-    else if(mapName == 'mapbox-satellite'){
-      mapboxName = 'satellite-streets-v9';
-      optimize = true;
-    }
-    var url = 'mapbox://styles/mapbox/' + mapboxName;
-    if(optimize){
-      url += '?optimize=true'; //requires mapbox-gl-js 0.24.0+
-    }
-    cb(url);
-    /*
-    var url = 'https://api.mapbox.com/styles/v1/mapbox/' + mapboxName + '?';
-    if(optimize){
-      //url += 'optimize=true&';
-    }
-    url += 'access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
-    request.get(url)
-    .then(function(res) {
-      cb(res.body);
-    });
-    */
-  },
-
   getBaseMap(){
     return this.state.baseMap;
   },
 
   changeBaseMap(mapName){
     debug('changing basemap to: ' + mapName);
-    $('.base-map-tooltip').tooltip('remove'); //fix stuck tooltips
-    $('.base-map-tooltip').tooltip();
     var _this = this;
-    this.getBaseMapFromName(mapName, function(baseMapUrl){
-      _this.closeBaseMaps();
-      _this.setState({baseMap: mapName, allowLayersToMoveMap: false});
+    BaseMapActions.getBaseMapFromName(mapName, function(baseMapUrl){
+      BaseMapActions.closeBaseMaps();
+      BaseMapActions.setBaseMap(mapName);
+      _this.setState({allowLayersToMoveMap: false});
       _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
-      _this.reloadInset(mapName);
+
+      if(_this.refs.insetMap){
+        _this.refs.insetMap.reloadInset(baseMapUrl);
+      }
+      
       if(_this.props.onChangeBaseMap){
         _this.props.onChangeBaseMap(mapName);
       }
     });
-
   },
 
   render() {
@@ -1150,11 +908,6 @@ map.on('mousemove', function(e) {
       );
     }
 
-    var style = {};
-    if(this.props.style){
-      style = this.props.style;
-    }
-
     var interactiveButton = '';
     if(!this.state.interactive && this.props.showPlayButton){
       interactiveButton = (
@@ -1167,165 +920,28 @@ map.on('mousemove', function(e) {
     if(this.state.mapLoaded && this.props.showLogo){
       logo = (
         <img style={{position:'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt="Logo"/>
-      );
+      );      
       children = this.props.children;
     }
 
-    var baseMapBox = '';
-    if(this.state.showBaseMaps){
-      var baseMapOptions = [
-        {value: 'default', label: this.__('Default')},
-        {value: 'dark', label: this.__('Dark')},
-        {value: 'streets', label: this.__('Streets')},
-        {value: 'outdoors', label: this.__('Outdoors')},
-        {value: 'mapbox-satellite', label: this.__('Satellite')}
-      ];
-      baseMapBox = (
-        <div className="features z-depth-1" style={{width: '140px', marginRight: '10px', backgroundColor: 'white', textAlign: 'center'}}>
-          <Formsy.Form>
-          <h6>{this.__('Base Maps')}</h6>
-          <Radio name="baseMap" label=""
-              defaultValue={this.state.baseMap}
-              options={baseMapOptions} onChange={this.changeBaseMap}
-            />
-          </Formsy.Form>
-        </div>
-      );
-    }
-
-    var editBaseMapBox = '';
-    if(this.state.showEditBaseMap){
-      var origHash = window.location.hash.replace('#', '');
-      var hashParts = origHash.split('/');
-      var zoom =  Math.round(hashParts[0]);
-      var lon = hashParts[1];
-      var lat = hashParts[2];
-      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat;
-      var loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + zoom + '/' + lat + '/' + lon;
-      if(this.props.gpxLink){
-        osmEditLink += '&gpx=' + this.props.gpxLink;
-        loggingRoadsEditLink +=  '&gpx=' + this.props.gpxLink;
-      }
-      editBaseMapBox = (
-        <div className="features z-depth-1" style={{width: '240px', textAlign: 'center'}}>
-            <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
-              <li className="collection-header">
-                <h6>{this.__('Edit Base Map Data')}</h6>
-              </li>
-             <li className="collection-item">
-               <a className="btn" target="_blank" href={osmEditLink} onClick={this.toggleEditBaseMap}>{this.__('OpenStreetMap')}</a>
-             </li>
-             <li className="collection-item">
-               <a className="btn" target="_blank" href={loggingRoadsEditLink} onClick={this.toggleEditBaseMap}>{this.__('LoggingRoads')}</a>
-             </li>
-           </ul>
-
-
-
-        </div>
-      );
-    }
-
-    var baseMapButton = '', editBaseMapButton = '';
-    if(this.state.interactive){
-      baseMapButton = (
-        <a
-          onClick={this.toggleBaseMaps}
-          style={{position: 'absolute',
-            top: '10px',
-            right: '10px',
-            height:'30px',
-            zIndex: '100',
-            lineHeight: '30px',
-            textAlign: 'center',
-            width: '30px'}}
-          >
-          <i className="material-icons z-depth-1 base-map-tooltip"
-            ref="basemapButton"
-            style={{height:'30px',
-                    lineHeight: '30px',
-                    display: 'none',
-                    width: '30px',
-                    color: MAPHUBS_CONFIG.primaryColor,
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white',
-                    borderColor: '#ddd',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    textAlign: 'center',
-                    fontSize:'25px'}}
-            data-position="bottom" data-delay="50" data-tooltip={this.__('Change Base Map')}
-            >layers</i>
-        </a>
-      );
-
-      editBaseMapButton = (
-        <a
-          onClick={this.toggleEditBaseMap}
-          style={{position: 'absolute',
-            top: '10px',
-            right: '45px',
-            height:'30px',
-            zIndex: '100',
-            lineHeight: '30px',
-            textAlign: 'center',
-            width: '30px'}}
-          >
-          <i className="material-icons z-depth-1 base-map-tooltip"
-            ref="editBaseMapButton"
-            style={{height:'30px',
-                    lineHeight: '30px',
-                    display: 'none',
-                    width: '30px',
-                    color: MAPHUBS_CONFIG.primaryColor,
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white',
-                    borderColor: '#ddd',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    textAlign: 'center',
-                    fontSize:'25px'}}
-            data-position="bottom" data-delay="50" data-tooltip={this.__('Edit Base Map')}
-            >edit</i>
-        </a>
-      );
-
-    }
-
-    var inset = '';
+    var insetMap = '';
     if(this.props.insetMap){
-      inset = (
-        <div style={{
-          position: 'absolute', bottom: '30px', left: '5px',
-          minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
-          height: '25vw', width: '25vw'
-          }}>
-          <div id={this.state.id + '_inset'} ref="insetMap" className="map z-depth-1"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              display: 'none',
-              border: '0.5px solid rgba(222,222,222,50)', zIndex: 1
-            }}></div>
-        </div>
-
-      );
+      insetMap = (<InsetMap ref="insetMap" id={this.state.id} />);
     }
-
 
     return (
-      <div ref="mapcontainer" className={this.props.className} style={style}>
+      <div ref="mapcontainer" className={this.props.className} style={this.props.style}>
         <div id={this.state.id} ref="map" className={className} style={{width:'100%', height:'100%'}}>
-          {inset}
-          {editBaseMapButton}
-          {baseMapButton}
-          {baseMapBox}
-          {editBaseMapBox}
+          {insetMap}
+          
+          <MapToolButton  top="10px" right="45px" icon="edit" show={this.state.interactive && this.state.mapLoaded}
+            onClick={BaseMapActions.toggleEditBaseMap} tooltipText={this.__('Edit Base Map')} />
+
+          <MapToolButton  top="10px" right="10px" icon="layers" show={this.state.interactive && this.state.mapLoaded}
+            onClick={BaseMapActions.toggleBaseMaps} tooltipText={this.__('Change Base Map')} />
+
+          <BaseMapSelection onChange={this.changeBaseMap}/>
+          <EditBaseMapBox onChange={this.toggleEditBaseMap} gpxLink={this.props.gpxLink}/>
           {featureBox}
           {interactiveButton}
           {children}
