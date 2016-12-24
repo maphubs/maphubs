@@ -1,7 +1,5 @@
 var React = require('react');
-var Radio = require('../forms/radio');
-var Formsy = require('formsy-react');
-//var Actions = require('../../actions/map/BaseMapActions');
+var Actions = require('../../actions/map/BaseMapActions');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -48,10 +46,10 @@ var EditBaseMapBox = React.createClass({
                 <h6>{this.__('Edit Base Map Data')}</h6>
               </li>
              <li className="collection-item">
-               <a className="btn" target="_blank" href={osmEditLink} onClick={this.toggleEditBaseMap}>{this.__('OpenStreetMap')}</a>
+               <a className="btn" target="_blank" href={osmEditLink} onClick={Actions.toggleEditBaseMap}>{this.__('OpenStreetMap')}</a>
              </li>
              <li className="collection-item">
-               <a className="btn" target="_blank" href={loggingRoadsEditLink} onClick={this.toggleEditBaseMap}>{this.__('LoggingRoads')}</a>
+               <a className="btn" target="_blank" href={loggingRoadsEditLink} onClick={Actions.toggleEditBaseMap}>{this.__('LoggingRoads')}</a>
              </li>
            </ul>
         </div>
