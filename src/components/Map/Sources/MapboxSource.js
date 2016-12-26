@@ -23,6 +23,23 @@ var MapboxSource = {
             map.addSource(key, source);
           });
         });
+  },
+  addLayer(layer, source, map){
+    this.mbstyle.layers.forEach(function(mbStyleLayer){
+      if(mbStyleLayer.type !== 'background'){ //ignore the Mapbox Studio background layer
+        map.addLayer(mbStyleLayer);
+      }
+    });
+  },
+  removeLayer(layer, map){
+     this.mbstyle.layers.forEach(function(mbStyleLayer){
+      map.removeLayer(mbStyleLayer.id);
+    });
+  },
+  remove(key, map){
+    Object.keys(this.mbstyle.sources).forEach(function(mbstyleKey) {
+      map.removeSource(mbstyleKey);
+    });
   }
 };
 

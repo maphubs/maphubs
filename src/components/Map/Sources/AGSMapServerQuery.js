@@ -11,6 +11,15 @@ var AGSMapServerQuery = {
       }, function(error) {
         debug('(' + mapComponent.state.id + ') ' +error);
       });
+  },
+  addLayer(layer, source, map){
+    map.addLayer(layer);
+  },
+  removeLayer(layer, map){
+    map.removeLayer(layer.id);
+  },
+  remove(key, map){
+    map.removeSource(key);
   }
 };
 

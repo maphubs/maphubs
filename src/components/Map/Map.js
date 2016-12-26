@@ -142,18 +142,13 @@ var Map = React.createClass({
     var _this = this;
     glStyle.layers.forEach(function(layer){
     try{
-      if(layer.type == 'mapbox-style-placeholder'){
-        _this.mbstyle.layers.forEach(function(mbStyleLayer){
-          if(mbStyleLayer.type !== 'background'){ //ignore the Mapbox Studio background layer
-            map.addLayer(mbStyleLayer);
-          }
-        });
-      }else if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
-        map.addLayer(layer, 'water');
+      var source = _this.state.glStyle.sources[layer.source];
+      if( LayerSources[source.type] && LayerSources[source.type].addLayer){
+        //use custom driver for this source type
+         LayerSources[source.type].addLayer(layer, source, map);
       }else{
         map.addLayer(layer);
       }
-
     }catch(err){
       debug('(' + _this.state.id + ') ' +'Failed to add layer: ' + layer.id);
       debug('(' + _this.state.id + ') ' +err);
@@ -166,14 +161,12 @@ var Map = React.createClass({
     if(prevStyle && prevStyle.layers){
       prevStyle.layers.forEach(function(layer){
         try{
-          if(layer.type == 'mapbox-style-placeholder'){
-            _this.mbstyle.layers.forEach(function(mbStyleLayer){
-              _this.map.removeLayer(mbStyleLayer.id);
-            });
+          var source = _this.state.glStyle.sources[layer.source];
+          if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
+            LayerSources[source.type].removeLayer(layer, _this.map);
           }else{
             _this.map.removeLayer(layer.id);
           }
-
         }catch(err){
           debug('(' + _this.state.id + ') ' +'Failed to remove layer: ' + layer.id);
         }
@@ -186,13 +179,11 @@ var Map = React.createClass({
       if(prevStyle && prevStyle.sources){
       Object.keys(prevStyle.sources).forEach(function(key) {
           try{
-            if(prevStyle.sources[key].type == 'mapbox-style' && _this.mbstyle){
-              Object.keys(_this.mbstyle.sources).forEach(function(mbstyleKey) {
-                _this.map.removeSource(mbstyleKey);
-              });
+            if(LayerSources[prevStyle.sources[key].type] && LayerSources[prevStyle.sources[key].type].remove){
+              LayerSources[prevStyle.sources[key].type].remove(key, _this.map);
             }else{
               _this.map.removeSource(key);
-            }
+            }           
           }catch(err){
             debug('(' + _this.state.id + ') ' +'Failed to remove source: ' + key);
           }
