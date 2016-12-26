@@ -1,14 +1,10 @@
 var React = require('react');
 var classNames = require('classnames');
 var FeatureBox = require('./FeatureBox');
-var styles = require('./styles');
 var debug = require('../../services/debug')('map');
 var isEqual = require('lodash.isequal');
 var Promise = require('bluebird');
-var request = require('superagent-bluebird-promise');
 var $ = require('jquery');
-
-
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var BaseMapActions = require('../../actions/map/BaseMapActions'); 
@@ -16,27 +12,23 @@ var BaseMapStore = require('../../stores/map/BaseMapStore');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
-
 var BaseMapSelection = require('./BaseMapSelection');
 var EditBaseMapBox = require('./EditBaseMapBox');
 var MapToolButton = require('./MapToolButton');
 var InsetMap = require('./InsetMap');
-
 var MapboxGLHelperMixin = require('./MapboxGLHelperMixin');
 var MapInteractionMixin = require('./MapInteractionMixin');
-
+var MapGeoJSONMixin = require('./MapGeoJSONMixin');
 var LayerSources = require('./Sources');
 
 var mapboxgl = {};
-
 if (typeof window !== 'undefined') {
     mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl.js");
 }
 
-
 var Map = React.createClass({
 
-  mixins:[MapboxGLHelperMixin, MapInteractionMixin, StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}), StateMixin.connect(LocaleStore)],
+  mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}), StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -141,7 +133,6 @@ var Map = React.createClass({
     if(!_isequal(this.state, nextState)){
       return true;
     }
-    //debug('(' + this.state.id + ') ' + ' shouldComponentUpdate: no need to update');
     return false;
   },
 
@@ -242,57 +233,15 @@ var Map = React.createClass({
         var type = source.type;
         var url = source.url;
         if(key != 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
-          //load as tilejson
-          url = url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
-          sources.push(request.get(url)
-          .then(function(res) {
-            var tileJSON = res.body;
-            tileJSON.type = 'vector';
-
-            map.on('source.load', function(e) {
-              if (e.source.id === key && _this.state.allowLayersToMoveMap) {
-                debug('Zooming map extent of source: ' + e.source.id);
-                map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
-                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
-              }
-            });
-            map.addSource(key, tileJSON);
-          }, function(error) {
-           debug('(' + _this.state.id + ') ' +error);
-          })
-        );
-      } else if(type === 'mapbox-style'){
-        var mapboxid = source.mapboxid;
-        url = 'https://api.mapbox.com/styles/v1/' + mapboxid + '?access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
-        sources.push(request.get(url)
-          .then(function(res) {
-            var mbstyle = res.body;
-            _this.mbstyle = mbstyle;
-
-            //TODO: not sure if it is possible to combine sprites/glyphs sources yet, so this doesn't work with all mapbox styles
-
-            //add sources
-            Object.keys(mbstyle.sources).forEach(function(key) {
-              var source = mbstyle.sources[key];
-              map.on('source.load', function(e) {
-                if (e.source.id === key && this.state.allowLayersToMoveMap) {
-                  //map.flyTo({center: mbstyle.center, zoom:mbstyle.zoom});
-                }
-              });
-              map.addSource(key, source);
-            });
-          })
-        );
-
-    } else if(type === 'ags-mapserver-query'){
-      sources.push(LayerSources[type].load(key, source, map).bind(_this));
-    } else if(type === 'ags-featureserver-query'){
-      sources.push(LayerSources[type].load(key, source, map).bind(_this));
-  } else {
-      //just add the source as-is
-      map.addSource(key, source);
-    }
-
+          //MapHubs Vector Source
+          sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));   
+        } else if(LayerSources[type]){
+          //we have a custom driver for this source
+          sources.push(LayerSources[type].load(key, source, map, _this));      
+        } else {
+          //just add the source as-is
+          map.addSource(key, source);
+        }
       });
       //once all sources are loaded then load the layers
       Promise.all(sources).then(function(){
@@ -309,6 +258,7 @@ var Map = React.createClass({
       _this.initGeoJSON(map, geoJSON);
     }
     else{
+      //just the base map, the map is loaded
       _this.setState({mapLoaded: true});
     }
   },
@@ -336,7 +286,7 @@ var Map = React.createClass({
 
   map.on('style.load', function() {
     debug('(' + _this.state.id + ') ' +'style.load');
-   //add the omh data
+    //add the omh data
     _this.addMapData(map, _this.state.glStyle, _this.props.data, function(){
       //do stuff that needs to happen after data loads
       debug('(' + _this.state.id + ') ' +'finished adding map data');
@@ -477,7 +427,6 @@ var Map = React.createClass({
             _this.setState({glStyle: styleCopy, interactiveLayers});//wait to change state style until after reloaded
           });
 
-
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
         debug('(' + this.state.id + ') ' +"basemap changing from props");
@@ -502,12 +451,7 @@ var Map = React.createClass({
               this.refs.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
             }
            this.setState({allowLayersToMoveMap});
-        }else{
-          debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
         }
-
-     }else{
-       //debug('(' + this.state.id + ') ' +'No changes needed in props update');
      }
 
     }else if(nextProps.glStyle
@@ -548,49 +492,8 @@ var Map = React.createClass({
            this.map.fitBounds(bounds, {animate:false});
          }
          this.setState({allowLayersToMoveMap});
-      }else{
-        debug('(' + this.state.id + ') ' +'Warning: Null bounds when fit bounds is changing');
       }
-
-   }else{
-     debug('(' + this.state.id + ') ' +'No changes needed in props update');
    }
-  },
-
-  initGeoJSON(map, data){
-    if(data && data.features && data.features.length > 0){
-      map.addSource("omh-geojson", {"type": "geojson", data});
-      var glStyle = styles.defaultStyle('geojson', null, null);
-      delete glStyle.sources; //ignore the tilejson source
-      this.addLayers(map, glStyle);
-
-      var interactiveLayers = this.getInteractiveLayers(glStyle);
-
-      this.setState({interactiveLayers, glStyle});
-      this.zoomToData(data);
-    } else {
-      //empty data
-      debug('(' + this.state.id + ') ' +'Empty/Missing GeoJSON Data');
-    }
-  },
-
-  resetGeoJSON(){
-    var geoJSONData = this.map.getSource("omh-geojson");
-    geoJSONData.setData({
-      type: 'FeatureCollection',
-      features: []
-    });
-    this.map.flyTo({center: [0,0], zoom:0});
-  },
-
-  zoomToData(data){
-    if(data.bbox && data.bbox.length > 0){
-      var bbox = data.bbox;
-      var sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
-      var ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
-      var llb = new mapboxgl.LngLatBounds(sw, ne);
-      this.map.fitBounds(llb, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
-    }
   },
 
   componentWillUnmount() {
@@ -688,5 +591,4 @@ var Map = React.createClass({
     );
   }
 });
-
 module.exports = Map;
