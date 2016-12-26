@@ -12,12 +12,14 @@ if (typeof window !== 'undefined') {
 var InsetMap = React.createClass({
 
   propTypes: {
-    id: React.PropTypes.string  
+    id: React.PropTypes.string,
+    attributionControl: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return {
-      id: 'map'
+      id: 'map',
+      attributionControl: false
     };
   },
 
@@ -34,7 +36,8 @@ var InsetMap = React.createClass({
         style: baseMap,
         zoom: 0,
         interactive: false,
-        center
+        center,
+        attributionControl: this.props.attributionControl
       });
 
       insetMap.on('style.load', function() {

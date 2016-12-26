@@ -61,7 +61,8 @@ var Map = React.createClass({
     hoverInteraction: React.PropTypes.bool,
     interactionBufferSize: React.PropTypes.number,
     hash: React.PropTypes.bool,
-    gpxLink: React.PropTypes.string
+    gpxLink: React.PropTypes.string,
+    attributionControl: React.PropTypes.bool
   },
 
   getDefaultProps() {
@@ -79,6 +80,7 @@ var Map = React.createClass({
       hoverInteraction: false,
       interactionBufferSize: 10,
       hash: true,
+      attributionControl: false,
       style: {}
     };
   },
@@ -281,7 +283,8 @@ var Map = React.createClass({
       dragRotate: _this.props.enableRotation ? true : false,
       touchZoomRotate: _this.props.enableRotation ? true : false,
       center: [0,0],
-      hash: _this.props.hash
+      hash: _this.props.hash,
+      attributionControl: _this.props.attributionControl
     });
 
   map.on('style.load', function() {
