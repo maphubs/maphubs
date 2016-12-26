@@ -673,5 +673,10 @@
 	"Save Draft": "Save Draft",
 	"We offer a range of service to help you get mapping": "We offer a range of service to help you get mapping",
 	"View interactive map on ": "View interactive map on ",
-	"Since you are in multiple groups, please select the group that should own this hub.": "Since you are in multiple groups, please select the group that should own this hub."
+	"Since you are in multiple groups, please select the group that should own this hub.": "Since you are in multiple groups, please select the group that should own this hub.",
+	"Default": "Default",
+	"Dark": "Dark",
+	"Streets": "Streets",
+	"Outdoors": "Outdoors",
+	"Satellite": "Satellite"
 }

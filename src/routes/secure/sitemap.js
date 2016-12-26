@@ -20,7 +20,7 @@ module.exports = function(app) {
       res.send('User-agent: *\nDisallow: /');
     }else{
       //don't crawl exports
-      res.send('User-agent: *\nDisallow: /*.kml$\nDisallow: /*.zip$\nDisallow: /*.geojson$\nDisallow: /*.csv$');
+      res.send('User-agent: *\nDisallow: /*.kml$\nDisallow: /*.zip$\nDisallow: /*.geojson$\nDisallow: /*.csv$\nDisallow: /xml/map/*');
     }
 });
 
