@@ -1,12 +1,12 @@
 var React = require('react');
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
-var _isequal = require('lodash.isequal');
 var $ = require('jquery');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var TextInput= React.createClass({
 
-  mixins: [Formsy.Mixin],
+  mixins: [PureRenderMixin, Formsy.Mixin],
 
   propTypes: {
     value: React.PropTypes.string,
@@ -67,17 +67,6 @@ var TextInput= React.createClass({
     if(this.props.dataTooltip){
       $(this.refs.inputWrapper).tooltip();
     }
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
   },
 
   componentDidUpdate(prevProps){

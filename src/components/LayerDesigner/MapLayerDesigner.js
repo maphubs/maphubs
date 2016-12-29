@@ -87,6 +87,10 @@ var MapLayerDesigner = React.createClass({
    this.props.onStyleChange(this.state.layer.layer_id, style, labels, this.state.layer.map_legend_html, this.state.layer.settings);
   },
 
+  setMarkers(style){
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, this.state.layer.settings);
+  },
+
   setSettings(style, settings){
      this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, settings);
   },
@@ -129,7 +133,7 @@ var MapLayerDesigner = React.createClass({
         <div>
             <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
               style={this.state.layer.style} onStyleChange={this.setStyle}
-              labels={this.state.layer.labels} onLabelsChange={this.setLabels}
+              labels={this.state.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
               settings={this.state.layer.map_settings} onSettingsChange={this.setSettings}
               layer={this.state.layer}
               showAdvanced={this.props.showAdvanced}

@@ -7,13 +7,13 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var $ = require('jquery');
-var _isequal = require('lodash.isequal');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var styles = require('../Map/styles');
 
 var AdvancedLayerSettings = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -52,17 +52,6 @@ var AdvancedLayerSettings = React.createClass({
       this.setState({style: nextProps.style});
     }
 
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
   },
 
    onFormChange(values){

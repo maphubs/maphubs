@@ -38,7 +38,13 @@ type $JSXIntrinsics = {
   ul: JSXHelper<{id: string, style: Object}>,
   li: JSXHelper<{id: string, style: Object}>,
   ol: JSXHelper<{id: string, style: Object}>,
-  table: JSXHelper<{id: string, style: Object}>
+  table: JSXHelper<{id: string, style: Object}>,
+  svg: JSXHelper<{baseProfile: string, xmlns: string, width: number, height: number, viewBox: string}>,
+  path: JSXHelper<{d: string}>,
+    g: JSXHelper<{id: string}>,
+  use: JSXHelper<{xlinkHref: string}>,
+  polygon: JSXHelper<{points: string}>,
+  rect: JSXHelper<{x: number, y: number, width: number, height: number}>
 };
 
 declare module 'uuid/v4' {

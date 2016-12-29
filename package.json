@@ -135,6 +135,7 @@
     "pica": "^2.0.8",
     "react": "^15.4.1",
     "react-ace": "^4.1.0",
+    "react-addons-pure-render-mixin": "^15.4.1",
     "react-colorpickr": "openmaphub/react-colorpickr#29c5725cdfd0fba529fe211b930b0c23dffe0649",
     "react-cropper": "0.8.0",
     "react-data-grid": "maphubs/react-data-grid#34cda5225ce224b2803eb550fb433914cb8dd3e1",

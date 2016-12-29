@@ -8,12 +8,13 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var $ = require('jquery');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var styles = require('../Map/styles');
 
 var LabelSettings = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -100,14 +101,19 @@ var LabelSettings = React.createClass({
       <div>
         <div className="row">
           <Formsy.Form ref="form" onChange={this.onFormChange}>
-             <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="col l6 m6 s12 tooltip-label-settings"
+           <div className="row" style={{marginTop: '10px', marginBottom: '0px'}}>
+            <b>{this.__('Enable Labels')}</b>
+             <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="col s12 tooltip-label-settings"
                        defaultChecked={this.state.enabled}
                         dataPosition="right" dataTooltip={this.__('Enable Labels for this Layer')}
                         />
-              <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} className="col l6 m6 s12 label-field tooltip-label-settings"
+            </div>
+            <div className="row no-margin">
+              <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} className="col s12 label-field tooltip-label-settings no-margin"
                     value={this.state.field} defaultValue={this.state.field} startEmpty={this.state.field ? false : true}
                    dataPosition="top" dataTooltip={this.__('Data field to use in map labels.')}
                    required/>
+            </div>
           </Formsy.Form>
           {invalidMessage}
         </div>

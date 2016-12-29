@@ -3,13 +3,13 @@ var Formsy = require('formsy-react');
 var find = require('lodash.find');
 var result = require('lodash.result');
 var classNames = require('classnames');
-var _isequal = require('lodash.isequal');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 import ReactMaterialSelect from 'react-material-select';
 
 var Select = React.createClass({
 
-  mixins: [Formsy.Mixin],
+  mixins: [PureRenderMixin, Formsy.Mixin],
 
   propTypes:  {
     emptyText: React.PropTypes.string,
@@ -67,18 +67,6 @@ var Select = React.createClass({
       this.setValue(nextProps.defaultValue);
       this.setNote(nextProps.defaultValue);
     }
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
   },
 
    validate() {

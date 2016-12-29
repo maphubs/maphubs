@@ -678,5 +678,18 @@
 	"Dark": "Dark",
 	"Streets": "Streets",
 	"Outdoors": "Outdoors",
-	"Satellite": "Satellite"
+	"Satellite": "Satellite",
+	"Markers": "Markers",
+	"Enable Markers for this Layer": "Enable Markers for this Layer",
+	"Map Pin": "Map Pin",
+	"Square Pin": "Square Pin",
+	"Rounded Square": "Rounded Square",
+	"Square": "Square",
+	"Palm Oil": "Palm Oil",
+	"None": "None",
+	"Marker Shape": "Marker Shape",
+	"Shape of the map marker": "Shape of the map marker",
+	"Marker Size": "Marker Size",
+	"Marker Icon": "Marker Icon",
+	"Maker icon overlay": "Maker icon overlay"
 }

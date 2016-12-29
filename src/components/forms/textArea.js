@@ -2,10 +2,11 @@ var React = require('react');
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var $ = require('jquery');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var TextArea = React.createClass({
 
-  mixins: [Formsy.Mixin],
+  mixins: [PureRenderMixin, Formsy.Mixin],
 
   propTypes: {
     length: React.PropTypes.number,

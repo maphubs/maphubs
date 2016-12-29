@@ -1,10 +1,11 @@
 var React = require('react');
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var Radio= React.createClass({
 
-  mixins: [Formsy.Mixin],
+  mixins: [PureRenderMixin,Formsy.Mixin],
 
   propTypes: {
     className: React.PropTypes.string,
