@@ -17,12 +17,7 @@ var EditBaseMapBox = React.createClass({
   },
 
   propTypes: {
-    onChange: React.PropTypes.func.isRequired,
     gpxLink: React.PropTypes.string
-  },
-
-  onChange(val){
-    this.props.onChange(val);
   },
 
   render(){
