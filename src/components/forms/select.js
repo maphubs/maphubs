@@ -3,7 +3,6 @@ var Formsy = require('formsy-react');
 var find = require('lodash.find');
 var result = require('lodash.result');
 var classNames = require('classnames');
-var _isequal = require('lodash.isequal');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 import ReactMaterialSelect from 'react-material-select';
