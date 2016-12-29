@@ -46,7 +46,7 @@ var MapHubsSource = {
       }
 
     if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
-      var markerConfig = layer.metadata['maphubs:markers'];
+      var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
       markerConfig.dataUrl = markerConfig.dataUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       var layer_id = layer.metadata['maphubs:layer_id'];
     //load geojson for this layer
