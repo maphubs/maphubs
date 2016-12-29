@@ -133,6 +133,10 @@ var LayerStyle = React.createClass({
     LayerActions.setStyle(style, labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
   },
 
+  setMarkers(style){
+    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
+  },
+
   setSettings(style, settings){
     LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, settings, this.state.layer.preview_position);
   },
@@ -226,7 +230,7 @@ var LayerStyle = React.createClass({
         <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
             style={this.state.layer.style} onStyleChange={this.setStyle}
-            labels={this.state.layer.labels} onLabelsChange={this.setLabels}
+            labels={this.state.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
             settings={this.state.layer.settings} onSettingsChange={this.setSettings}
             layer={this.state.layer}
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>

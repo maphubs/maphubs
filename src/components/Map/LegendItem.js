@@ -1,8 +1,12 @@
 var React = require('react');
 var urlUtil = require('../../services/url-util');
 var GroupTag = require('../Groups/GroupTag');
+var Marker = require('./Marker');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var LegendItem = React.createClass({
+  mixins: [PureRenderMixin],
+
   propTypes:  {
     layer: React.PropTypes.object.isRequired,
     style: React.PropTypes.object
@@ -15,7 +19,7 @@ var LegendItem = React.createClass({
   },
 
   render(){
-
+    var _this = this;
     if(this.props.layer == undefined) return (<div></div>);
     var baseUrl = urlUtil.getBaseUrl();
     var infoURL = baseUrl + '/lyr/' + this.props.layer.layer_id;
@@ -30,13 +34,37 @@ var LegendItem = React.createClass({
         <div></div>
       );
     }
+    var legendItem = (
+        <div className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: legendHtml}}></div>             
+      );
+    if(this.props.layer.style.layers && Array.isArray(this.props.layer.style.layers) && this.props.layer.style.layers.length > 0){
+      this.props.layer.style.layers.forEach(function(layer){
+        if(layer.id.startsWith('omh-data-point')){
+          if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
+            //clone object to avoid changing size of real markers
+            var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
+            markerConfig.width = 18;
+            markerConfig.height = 18;
+            legendItem = (
+              <div className="omh-legend valign-wrapper">
+                <div style={{float: 'left'}}>
+                  <Marker  {...markerConfig}/>
+                </div>              
+                <h3 className="valign">{_this.props.layer.name}</h3>
+              </div>
+             
+            );
+          }
+        }
+      });
+    }
 
     /*eslint-disable react/no-danger*/
     return (
           <li key={this.props.layer.layer_id} style={this.props.style} className="collection-item row">
             <div className="row no-margin valign-wrapper" style={{padding: '2px'}}>
               <div className="col s6 no-margin no-padding valign">
-                <div className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: legendHtml}}></div>
+                {legendItem}
               </div>
               <div className="col s6 no-margin no-padding">
                 <div className="row no-margin no-padding center">

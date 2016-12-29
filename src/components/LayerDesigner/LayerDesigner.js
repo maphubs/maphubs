@@ -4,6 +4,7 @@ var ColorPicker = require('react-colorpickr');
 var ColorSwatch = require('./ColorSwatch');
 var CodeEditor = require('./CodeEditor');
 var LabelSettings = require('./LabelSettings');
+var MarkerSettings = require('./MarkerSettings');
 var AdvancedLayerSettings = require('./AdvancedLayerSettings');
 
 var Reflux = require('reflux');
@@ -24,6 +25,7 @@ var LayerDesigner = React.createClass({
     onColorChange: React.PropTypes.func,
     onStyleChange: React.PropTypes.func,
     onLabelsChange: React.PropTypes.func,
+    onMarkersChange: React.PropTypes.func,
     onLegendChange: React.PropTypes.func,
     onSettingsChange: React.PropTypes.func,
     color: React.PropTypes.string,
@@ -103,6 +105,11 @@ var LayerDesigner = React.createClass({
     this.props.onLabelsChange(style, labels);
   },
 
+  onMarkersChange(style, markers){
+    this.setState({style, markers});
+    this.props.onMarkersChange(style, markers);
+  },
+
   onSettingsChange(style, settings){
     this.setState({style, settings});
     this.props.onSettingsChange(style, settings);
@@ -122,6 +129,21 @@ var LayerDesigner = React.createClass({
   },
 
   render(){
+    var markers = '';
+    if(this.props.layer.data_type === 'point'){
+      markers = (
+        <li>
+           <div className="collapsible-header">
+             <i className="material-icons">place</i>{this.__('Markers')}
+             </div>
+           <div className="collapsible-body">
+             <MarkerSettings onChange={this.onMarkersChange} style={this.state.style} layer={this.props.layer} />
+           </div>
+         </li>
+      );
+    }
+
+
     var advanced = '';
     if(this.props.showAdvanced){
       advanced = (
@@ -215,6 +237,7 @@ var LayerDesigner = React.createClass({
              <LabelSettings onChange={this.onLabelsChange} style={this.state.style} labels={this.state.labels} layer={this.props.layer} />
            </div>
          </li>
+         {markers}
          {advanced}
 
        </ul>

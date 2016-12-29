@@ -20,6 +20,7 @@ var MapboxGLHelperMixin = require('./MapboxGLHelperMixin');
 var MapInteractionMixin = require('./MapInteractionMixin');
 var MapGeoJSONMixin = require('./MapGeoJSONMixin');
 var LayerSources = require('./Sources');
+var MarkerSprites = require('./MarkerSprites');
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
@@ -143,7 +144,9 @@ var Map = React.createClass({
     glStyle.layers.forEach(function(layer){
     try{
       var source = _this.state.glStyle.sources[layer.source];
-      if( LayerSources[source.type] && LayerSources[source.type].addLayer){
+      if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+         LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
+      } else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
         //use custom driver for this source type
          LayerSources[source.type].addLayer(layer, source, map);
       }else{
@@ -162,7 +165,9 @@ var Map = React.createClass({
       prevStyle.layers.forEach(function(layer){
         try{
           var source = _this.state.glStyle.sources[layer.source];
-          if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
+          if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+            LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
+          }else if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
             LayerSources[source.type].removeLayer(layer, _this.map);
           }else{
             _this.map.removeLayer(layer.id);
@@ -581,6 +586,7 @@ var Map = React.createClass({
           {children}
           {logo}
         </div>
+        <MarkerSprites />
         </div>
     );
   }
