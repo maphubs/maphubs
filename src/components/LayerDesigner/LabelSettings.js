@@ -111,7 +111,7 @@ var LabelSettings = React.createClass({
             <div className="row no-margin">
               <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} className="col s12 label-field tooltip-label-settings no-margin"
                     value={this.state.field} defaultValue={this.state.field} startEmpty={this.state.field ? false : true}
-                   dataPosition="top" dataTooltip={this.__('Data field to use in map labels.')}
+                   dataPosition="right" dataTooltip={this.__('Data field to use in map labels.')}
                    required/>
             </div>
           </Formsy.Form>

@@ -691,5 +691,6 @@
 	"Shape of the map marker": "Shape of the map marker",
 	"Marker Size": "Marker Size",
 	"Marker Icon": "Marker Icon",
-	"Maker icon overlay": "Maker icon overlay"
+	"Maker icon overlay": "Maker icon overlay",
+	"Enable Labels": "Enable Labels"
 }
