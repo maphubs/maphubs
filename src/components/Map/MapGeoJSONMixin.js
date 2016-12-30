@@ -12,7 +12,7 @@ var MapGeoJSONMixin = {
     if(data && data.features && data.features.length > 0){
       map.addSource("omh-geojson", {"type": "geojson", data});
       var glStyle = styles.defaultStyle('geojson', null, null);
-      delete glStyle.sources; //ignore the tilejson source
+      glStyle.sources["omh-geojson"] = {"type": "geojson", data: {}}; //just a placeholder
       this.addLayers(map, glStyle);
 
       var interactiveLayers = this.getInteractiveLayers(glStyle);

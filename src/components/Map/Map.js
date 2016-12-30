@@ -143,7 +143,7 @@ var Map = React.createClass({
     var _this = this;
     glStyle.layers.forEach(function(layer){
     try{
-      var source = _this.state.glStyle.sources[layer.source];
+      var source = glStyle.sources[layer.source];
       if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
          LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
       } else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
@@ -369,7 +369,7 @@ var Map = React.createClass({
   componentWillReceiveProps(nextProps){
     //debug('(' + this.state.id + ') ' +'componentWillReceiveProps');
     var _this = this;
-    if(nextProps.data){
+    if(nextProps.data && this.map){
       var geoJSONData = this.map.getSource("omh-geojson");
       if(geoJSONData){
         debug('(' + this.state.id + ') ' +'update geoJSON data');
