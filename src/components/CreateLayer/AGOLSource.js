@@ -94,7 +94,7 @@ var AGOLSource = React.createClass({
         }
       };
     }
-    LayerActions.saveDataSettings(dataSettings,function(err){
+    LayerActions.saveDataSettings(dataSettings, _this.state._csrf, function(err){
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

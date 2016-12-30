@@ -87,6 +87,7 @@ var LayerStyle = React.createClass({
       legend_html: this.state.layer.legend_html,
       preview_position
     },
+    this.state._csrf,
     function(err){
       _this.setState({saving: false});
       if(err){

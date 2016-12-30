@@ -98,7 +98,7 @@ var LayerSettings = React.createClass({
       model.group = this.state.groups[0].group_id;
     }
     if(this.props.create){
-      LayerActions.createLayer(model, function(err){
+      LayerActions.createLayer(model, _this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
@@ -109,7 +109,7 @@ var LayerSettings = React.createClass({
         }
       });
     }else {
-      LayerActions.saveSettings(model, function(err){
+      LayerActions.saveSettings(model, _this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{

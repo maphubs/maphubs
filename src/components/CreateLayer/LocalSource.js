@@ -95,7 +95,7 @@ var LocalSource = React.createClass({
       data.is_empty = true;
       data.empty_data_type = this.state.selectedDataType;
     }
-    LayerActions.saveDataSettings(data,function(err){
+    LayerActions.saveDataSettings(data, _this.state._csrf, function(err){
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -141,7 +141,7 @@ var LocalSource = React.createClass({
 
   finishUpload(shapefileName){
     var _this = this;
-    LayerActions.finishUpload(shapefileName, function(err, result){
+    LayerActions.finishUpload(shapefileName, this.state._csrf, function(err, result){
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
         PresetActions.setImportedTags(result.uniqueProps);

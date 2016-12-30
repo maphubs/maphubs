@@ -371,7 +371,7 @@ var LayerInfo = React.createClass({
   stopEditingNotes(){
     var _this = this;
 
-    LayerNotesActions.saveNotes(this.props.layer.layer_id, function(err){
+    LayerNotesActions.saveNotes(this.props.layer.layer_id, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{

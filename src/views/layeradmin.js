@@ -70,7 +70,7 @@ var LayerAdmin = React.createClass({
   savePresets(){
     var _this = this;
     //save presets
-    PresetActions.submitPresets(false, function(err){
+    PresetActions.submitPresets(false, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -95,7 +95,7 @@ var LayerAdmin = React.createClass({
       + this.props.layer.name + '. '
       + _this.__('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
       onPositiveResponse(){
-        LayerActions.deleteLayer(function(err){
+        LayerActions.deleteLayer(_this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {
@@ -109,7 +109,6 @@ var LayerAdmin = React.createClass({
         });
       }
     });
-
   },
 
   refreshRemoteLayer(){

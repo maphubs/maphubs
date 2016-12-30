@@ -37,7 +37,7 @@ var Step5 = React.createClass({
 
   onSubmit(layer_id, name) {
     var _this = this;
-    LayerActions.setComplete(function(){
+    LayerActions.setComplete(this.state._csrf, function(){
       if(_this.props.onSubmit) _this.props.onSubmit(layer_id, name);
     });
   },

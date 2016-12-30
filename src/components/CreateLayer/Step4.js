@@ -64,12 +64,12 @@ var Step4 = React.createClass({
 
     _this.setState({saving: true});
     //save presets
-    PresetActions.submitPresets(true, function(err){
+    PresetActions.submitPresets(true, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
           _this.setState({saving: false});
       }else{
-        LayerActions.loadData(function(err){
+        LayerActions.loadData(_this.state._csrf, function(err){
           _this.setState({saving: false});
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});

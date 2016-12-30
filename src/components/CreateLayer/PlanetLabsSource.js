@@ -82,7 +82,8 @@ var PlanetLabsSource = React.createClass({
         planet_labs_mosaic: model.mosaic,
         tiles: [url]
       }
-    },function(err){
+      
+    }, _this.state._csrf, function(err){
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

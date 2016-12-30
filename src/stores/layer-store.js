@@ -93,7 +93,7 @@ module.exports = Reflux.createStore({
     this.trigger(this.state);
   },
 
-  createLayer(data, cb){
+  createLayer(data, _csrf, cb){
     var _this = this;
     var layer = this.state.layer;
     request.post('/api/layer/admin/createLayer')
@@ -103,7 +103,8 @@ module.exports = Reflux.createStore({
       name: data.name,
       description: data.description,
       group_id: data.group,
-      published: data.published
+      published: data.published,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -130,7 +131,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  saveSettings(data, cb){
+  saveSettings(data, _csrf, cb){
     var _this = this;
     request.post('/api/layer/admin/saveSettings')
     .type('json').accept('json')
@@ -139,7 +140,8 @@ module.exports = Reflux.createStore({
       name: data.name,
       description: data.description,
       group_id: data.group,
-      published: data.published
+      published: data.published,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -155,7 +157,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  saveSource(data, cb){
+  saveSource(data, _csrf, cb){
     debug("saveSource");
     var _this = this;
     var layer = this.state.layer;
@@ -164,7 +166,8 @@ module.exports = Reflux.createStore({
     .send({
       layer_id: layer.layer_id,
       source: data.source,
-      license: data.license
+      license: data.license,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -177,7 +180,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  saveDataSettings(data, cb){
+  saveDataSettings(data, _csrf, cb){
     debug("saveDataSettings");
     var _this = this;
     var layer = this.state.layer;
@@ -189,7 +192,8 @@ module.exports = Reflux.createStore({
       empty_data_type: data.empty_data_type,
       is_external: data.is_external,
       external_layer_type: data.external_layer_type,
-      external_layer_config: data.external_layer_config
+      external_layer_config: data.external_layer_config,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -241,14 +245,15 @@ module.exports = Reflux.createStore({
     this.trigger(this.state);
   },
 
-  setComplete(cb){
+  setComplete(_csrf, cb){
     var _this = this;
     var layer = this.state.layer;
     layer.complete = true;
     request.post('/api/layer/admin/setComplete')
     .type('json').accept('json')
     .send({
-      layer_id: layer.layer_id
+      layer_id: layer.layer_id,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -260,7 +265,7 @@ module.exports = Reflux.createStore({
 
   },
 
-  saveStyle(data, cb){
+  saveStyle(data, _csrf, cb){
     var _this = this;
     var layer = this.state.layer;
     request.post('/api/layer/admin/saveStyle')
@@ -271,7 +276,8 @@ module.exports = Reflux.createStore({
       labels: data.labels,
       legend_html: data.legend_html,
       preview_position: data.preview_position,
-      settings: data.settings
+      settings: data.settings,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -285,11 +291,12 @@ module.exports = Reflux.createStore({
     });
   },
 
-  loadData(cb){
+  loadData(_csrf, cb){
     debug("loadData");
     var _this = this;
-    request.get('/api/layer/create/savedata/' + _this.state.layer.layer_id)
+    request.post('/api/layer/create/savedata/' + _this.state.layer.layer_id)
     .type('json').accept('json').timeout(1200000)
+    .set('csrf-token', _csrf)
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         _this.trigger(_this.state);
@@ -299,11 +306,12 @@ module.exports = Reflux.createStore({
     });
   },
 
-  initEmptyLayer(cb){
+  initEmptyLayer(_csrf, cb){
     debug("initEmptyLayer");
     var _this = this;
-    request.get('/api/layer/create/empty/' + _this.state.layer.layer_id)
+    request.post('/api/layer/create/empty/' + _this.state.layer.layer_id)
     .type('json').accept('json')
+    .set('csrf-token', _csrf)
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         _this.trigger(_this.state);
@@ -313,13 +321,14 @@ module.exports = Reflux.createStore({
     });
   },
 
-  finishUpload(requestedShapefile, cb){
+  finishUpload(requestedShapefile, _csrf, cb){
     var _this = this;
     request.post('/api/layer/finishupload')
     .type('json').accept('json')
     .send({
       layer_id: _this.state.layer.layer_id,
-      requestedShapefile
+      requestedShapefile,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -328,10 +337,11 @@ module.exports = Reflux.createStore({
     });
   },
 
-  deleteData(data, cb){
+  deleteData(data, _csrf, cb){
     var _this = this;
-    request.get('/api/layer/deletedata/' + _this.state.layer.layer_id)
+    request.post('/api/layer/deletedata/' + _this.state.layer.layer_id)
     .type('json').accept('json')
+    .set('csrf-token', _csrf)
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         cb();
@@ -339,12 +349,13 @@ module.exports = Reflux.createStore({
     });
   },
 
-  deleteLayer(cb){
+  deleteLayer(_csrf, cb){
     var _this = this;
     request.post('/api/layer/admin/delete')
     .type('json').accept('json')
     .send({
-      layer_id: _this.state.layer.layer_id
+      layer_id: _this.state.layer.layer_id,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
@@ -353,40 +364,19 @@ module.exports = Reflux.createStore({
     });
   },
   
-  cancelLayer(cb){
+  cancelLayer(_csrf, cb){
     var _this = this;
     request.post('/api/layer/admin/delete')
     .type('json').accept('json')
     .send({
-      layer_id: _this.state.layer.layer_id
+      layer_id: _this.state.layer.layer_id,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         _this.setState({layer: emptyLayer});
         _this.trigger(_this.state);
         cb();
-      });
-    });
-  },
-
-  addPhotoPoint(data, info, cb){
-    debug('add layer photo point');
-    var _this = this;
-
-    request.post('/api/layer/addPhotoPoint')
-    .type('json').accept('json')
-    .send({
-      layer_id: _this.state.layer.layer_id,
-      image: data,
-      info
-    })
-    .end(function(err, res){
-       checkClientError(res, err, cb, function(cb){
-          var feature = _this.state.feature;
-          feature.hasImage = true;
-          _this.setState({feature});
-          _this.trigger(_this.state);
-          cb();
       });
     });
   }

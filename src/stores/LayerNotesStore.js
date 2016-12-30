@@ -26,7 +26,7 @@ module.exports = Reflux.createStore({
   },
 
  //listeners
- saveNotes(layer_id, cb){
+ saveNotes(layer_id, _csrf, cb){
    debug('save layer notes');
    var _this = this;
    this.setState({saving: true});
@@ -34,7 +34,8 @@ module.exports = Reflux.createStore({
    .type('json').accept('json')
    .send({
      layer_id,
-     notes: this.state.notes
+     notes: this.state.notes,
+     _csrf
    })
    .end(function(err, res){
      checkClientError(res, err, cb, function(cb){

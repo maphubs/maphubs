@@ -60,7 +60,7 @@ var Step1 = React.createClass({
     var _this = this;
     if(_this.state.created){
       //delete the layer
-      LayerActions.cancelLayer(function(err){
+      LayerActions.cancelLayer(this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{

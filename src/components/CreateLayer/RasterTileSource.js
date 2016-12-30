@@ -69,7 +69,7 @@ var RasterTileSource = React.createClass({
         type: 'raster',
         tiles: [model.rasterTileUrl]
       }
-    },function(err){
+    }, _this.state._csrf, function(err){
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

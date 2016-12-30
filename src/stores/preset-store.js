@@ -78,7 +78,7 @@ module.exports = Reflux.createStore({
     actions.presetsChanged(this.data.presets);
   },
 
-  submitPresets(create, cb){
+  submitPresets(create, _csrf, cb){
     debug("submitPresets");
     var _this = this;
     request.post('/api/layer/presets/save')
@@ -86,7 +86,8 @@ module.exports = Reflux.createStore({
     .send({
       layer_id: _this.data.layer_id,
       presets: _this.data.presets,
-      create
+      create,
+      _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
