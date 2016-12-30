@@ -106,11 +106,10 @@ var CreateGroupStep1 = React.createClass({
       this.saveGroup(model);
     },
 
-
     saveGroup(model){
       var _this = this;
       if(this.state.group.created){
-        GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, function(err){
+        GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{
@@ -124,7 +123,7 @@ var CreateGroupStep1 = React.createClass({
           }
         });
       }else {
-        GroupActions.createGroup(model.group_id, model.name, model.description, model.location, model.published, function(err){
+        GroupActions.createGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{
@@ -144,7 +143,7 @@ var CreateGroupStep1 = React.createClass({
     handleCancel(){
       var _this = this;
       if(_this.state.group.created){
-        GroupActions.deleteGroup(function(err){
+        GroupActions.deleteGroup(_this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{

@@ -1,169 +1,19 @@
 // @flow
-var Promise = require('bluebird');
 var Group = require('../../models/group');
 var User = require('../../models/user');
 var Layer = require('../../models/layer');
-var Hub = require('../../models/hub');
 var Image = require('../../models/image');
 var Email = require('../../services/email-util');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log');
 var debug = require('../../services/debug')('routes/groups');
 var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
-var urlUtil = require('../../services/url-util');
-
 var local = require('../../local');
 
 var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
-
-
-  //Views
-  app.get('/groups', csrfProtection, function(req, res, next) {
-    Promise.all([
-      Group.getFeaturedGroups(),
-      Group.getRecentGroups(),
-      Group.getPopularGroups()
-    ])
-      .then(function(results) {
-        var featuredGroups = results[0];
-        var recentGroups = results[1];
-        var popularGroups = results[2];
-        res.render('groups', {
-          title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            featuredGroups, recentGroups, popularGroups
-          }, req
-        });
-      }).catch(nextError(next));
-  });
-
-  app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), function(req, res) {
-    res.render('creategroup', {
-      title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,
-      props: {}, req
-    });
-  });
-
-
-  app.get('/group/:id', csrfProtection, function(req, res, next) {
-
-    var group_id = req.params.id;
-
-    var user_id = -1;
-    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
-      user_id = req.session.user.id;
-    }
-
-    Promise.all([
-        Group.getGroupByID(group_id),
-        Layer.getGroupLayers(group_id),
-        Hub.getGroupHubs(group_id),
-        Group.getGroupMembers(group_id),
-        Group.allowedToModify(group_id, user_id)
-      ])
-      .then(function(result: Array<any>) {
-        var group: Object = result[0];
-        var layers = result[1];
-        var hubs = result[2];
-        var members = result[3];
-        var canEdit = result[4];
-        var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
-        res.render('groupinfo', {
-          title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
-          description: group.description,
-          props: {
-            group, layers, hubs, members, canEdit
-          },
-           twitterCard: {
-            card: 'summary',
-            title: group.name,
-            description: group.description,
-            image,
-            imageType: 'image/png',
-            imageWidth: 600,
-            imageHeight: 600
-          },
-           req
-        });
-      }).catch(nextError(next));
-  });
-
-
-  app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
-
-    var user_id = req.session.user.id;
-    var group_id = req.params.id;
-
-    //confirm that this user is allowed to administer this group
-    Group.getGroupRole(user_id, group_id)
-      .then(function(result) {
-        if (result && result.length == 1 && result[0].role == 'Administrator') {
-          Promise.all([
-              Group.getGroupByID(group_id),
-              Layer.getGroupLayers(group_id, true),
-              Group.getGroupMembers(group_id)
-            ])
-            .then(function(result) {
-              var group = result[0];
-              var layers = result[1];
-              var members = result[2];
-              res.render('groupadmin', {
-                title: group.name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
-                props: {
-                  group, layers, members
-                }, req
-              });
-            }).catch(nextError(next));
-        } else {
-          res.redirect('/unauthorized');
-        }
-      }).catch(nextError(next));
-  });
-
-
-  app.get('/user/:username/groups', csrfProtection, function(req, res, next) {
-
-    var username = req.params.username;
-    debug(username);
-    if(!username){nextError(next);}
-    var canEdit = false;
-
-    function completeRequest(userCanEdit){
-      User.getUserByName(username)
-      .then(function(user){
-        if(user){
-          return Group.getGroupsForUser(user.id)
-          .then(function(groups){
-            res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit}, req});
-          });
-        }else{
-          res.redirect('/notfound?path='+req.path);
-        }
-      }).catch(nextError(next));
-    }
-
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-          completeRequest();
-    } else {
-      //get user id
-      var user_id = req.session.user.id;
-
-      //get user for logged in user
-      User.getUser(user_id)
-      .then(function(user){
-        //flag if requested user is logged in user
-        if(user.display_name === username){
-          canEdit = true;
-        }
-        completeRequest(canEdit);
-      }).catch(nextError(next));
-    }
-  });
 
   //API Endpoints
   app.post('/api/group/checkidavailable', login.ensureLoggedIn(), function(req, res) {
@@ -174,7 +24,7 @@ module.exports = function(app: any) {
           res.send({
             available: result
           });
-        }).catch(apiError(res, 500));
+        }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
@@ -194,7 +44,7 @@ module.exports = function(app: any) {
         res.send({
           suggestions
         });
-      }).catch(apiError(res, 500));
+      }).catch(apiError(res, 200));
   });
 
   app.get('/api/groups/search', function(req, res) {
@@ -204,10 +54,10 @@ module.exports = function(app: any) {
     Group.getSearchResults(req.query.q)
       .then(function(result){
         res.status(200).send({groups: result});
-      }).catch(apiError(res, 500));
+      }).catch(apiError(res, 200));
   });
 
-  app.post('/api/group/create', function(req, res) {
+  app.post('/api/group/create', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -227,13 +77,13 @@ module.exports = function(app: any) {
               error: "Failed to Create Group"
             });
           }
-        }).catch(apiError(res, 500));
+        }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
   });
 
-  app.post('/api/group/save', function(req, res) {
+  app.post('/api/group/save', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -256,7 +106,7 @@ module.exports = function(app: any) {
                   error: "Failed to Save Group"
                 });
               }
-            }).catch(apiError(res, 500));
+            }).catch(apiError(res, 200));
         }else{
           res.status(401).send();
         }
@@ -266,7 +116,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/group/delete', function(req, res) {
+  app.post('/api/group/delete', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -298,9 +148,9 @@ module.exports = function(app: any) {
                       error: "Failed to Delete Group"
                     });
                   }
-                }).catch(apiError(res, 500));
+                }).catch(apiError(res, 200));
             }
-          }).catch(apiError(res, 500));
+          }).catch(apiError(res, 200));
 
           }else{
             res.status(401).send();
@@ -312,7 +162,7 @@ module.exports = function(app: any) {
   });
 
 
-  app.post('/api/group/setphoto', function(req, res) {
+  app.post('/api/group/setphoto', csrfProtection, function(req, res) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -329,27 +179,41 @@ module.exports = function(app: any) {
           Image.setGroupImage(data.group_id, data.image, data.info)
           .then(function(){
             res.status(200).send({success: true});
-          }).catch(apiError(res, 500));
+          }).catch(apiError(res, 200));
         } else {
           res.status(401).send();
         }
 
-      }).catch(apiError(res, 500));
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
 
   });
 
-  app.get('/api/group/:id/members', function(req, res) {
+  app.post('/api/group/:id/members', csrfProtection, function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var session_user_id = req.session.user.id;
     var group_id = req.params.id;
-    Group.getGroupMembers(group_id)
-    .then(function(members){
-      res.status(200).send({success: true, members});
-    }).catch(apiError(res, 500));
+
+    Group.allowedToModify(group_id, session_user_id)
+      .then(function(allowed){
+        if(allowed){
+          return Group.getGroupMembers(group_id)
+          .then(function(members){
+            res.status(200).send({success: true, members});
+          });
+        } else {
+          res.status(401).send();
+        }
+      }).catch(apiError(res, 200));
+
 });
 
-  app.post('/api/group/addmember', function(req, res) {
+  app.post('/api/group/addmember', csrfProtection, function(req, res) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -410,7 +274,7 @@ module.exports = function(app: any) {
         });
         return;
       }
-      }).catch(apiError(res, 500));
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
       return;
@@ -418,7 +282,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.post('/api/group/updatememberrole', function(req, res) {
+  app.post('/api/group/updatememberrole', csrfProtection, function(req, res) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -442,15 +306,15 @@ module.exports = function(app: any) {
           } else {
             res.status(401).send();
           }
-        }).catch(apiError(res, 500));
-      }).catch(apiError(res, 500));
+        }).catch(apiError(res, 200));
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
 
   });
 
-    app.post('/api/group/removemember', function(req, res) {
+    app.post('/api/group/removemember', csrfProtection, function(req, res) {
 
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
@@ -490,13 +354,13 @@ module.exports = function(app: any) {
                     res.status(200).send({success: true});
                   });
                 }
-              }).catch(apiError(res, 500));
+              }).catch(apiError(res, 200));
 
               } else {
                 res.status(401).send();
               }
-          }).catch(apiError(res, 500));
-      }).catch(apiError(res, 500));
+          }).catch(apiError(res, 200));
+      }).catch(apiError(res, 200));
       } else {
         apiDataError(res);
       }

@@ -51,7 +51,7 @@ var CreateGroupStep2 = React.createClass({
     onCrop(data){
       var _this = this;
       //send data to server
-      GroupActions.setGroupImage(data, function(err){
+      GroupActions.setGroupImage(data, this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});
         }else{

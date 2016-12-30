@@ -74,7 +74,7 @@ var GroupAdmin = React.createClass({
 
     submit (model) {
       var _this = this;
-      GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, function(err){
+      GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
         if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});
         }else{
@@ -137,7 +137,7 @@ var GroupAdmin = React.createClass({
       title:  _this.__('Confirm Removal'),
       message:  _this.__('Please confirm removal of ') + user.label,
       onPositiveResponse(){
-        GroupActions.removeMember(user.key, function(err){
+        GroupActions.removeMember(user.key, _this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title:  _this.__('Error'), message: err});
           }else{
@@ -155,7 +155,7 @@ var GroupAdmin = React.createClass({
       title: _this.__('Confirm Deletion'),
       message: _this.__('Please confirm removal of group ') + this.state.group.name,
       onPositiveResponse(){
-        GroupActions.deleteGroup(function(err){
+        GroupActions.deleteGroup(_this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -169,7 +169,6 @@ var GroupAdmin = React.createClass({
         });
       }
     });
-
   },
 
   handleMemberMakeAdmin(user){
@@ -181,7 +180,7 @@ var GroupAdmin = React.createClass({
         title: _this.__('Confirm Administrator'),
         message: _this.__('Please confirm that you want to make this user an Administrator: ') + user.label,
         onPositiveResponse(){
-          GroupActions.setMemberAdmin(user.key, function(err){
+          GroupActions.setMemberAdmin(user.key, _this.state._csrf, function(err){
             if(err){
               MessageActions.showMessage({title: _this.__('Error'), message: err});
             }else{
@@ -200,7 +199,7 @@ var GroupAdmin = React.createClass({
       title: _this.__('Confirm Remove Administrator'),
       message: _this.__('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
       onPositiveResponse(){
-        GroupActions.removeMemberAdmin(user.key, function(err){
+        GroupActions.removeMemberAdmin(user.key, _this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -214,7 +213,7 @@ var GroupAdmin = React.createClass({
   handleAddMember(user){
     var _this = this;
     debug(user.value.value + ' as Admin:' + user.option);
-    GroupActions.addMember(user.value.value, user.option, function(err){
+    GroupActions.addMember(user.value.value, user.option, _this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -230,7 +229,7 @@ var GroupAdmin = React.createClass({
   onCrop(data){
     var _this = this;
     //send data to server
-    GroupActions.setGroupImage(data, function(err){
+    GroupActions.setGroupImage(data, _this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
