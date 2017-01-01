@@ -692,5 +692,20 @@
 	"Marker Size": "Marker Size",
 	"Marker Icon": "Marker Icon",
 	"Maker icon overlay": "Maker icon overlay",
-	"Enable Labels": "Enable Labels"
+	"Enable Labels": "Enable Labels",
+	"Circle": "Circle",
+	"Chainsaw": "Chainsaw",
+	"Clearcutting": "Clearcutting",
+	"Clinic": "Clinic",
+	"Dam": "Dam",
+	"Eye": "Eye",
+	"Log Pile": "Log Pile",
+	"Sawblade": "Sawblade",
+	"Star": "Star",
+	"Village": "Village",
+	"Enable Markers": "Enable Markers",
+	"Enable markers for this Layer": "Enable markers for this Layer",
+	"Size of the map marker": "Size of the map marker",
+	"Invert Colors": "Invert Colors",
+	"Invert colors": "Invert colors"
 }
