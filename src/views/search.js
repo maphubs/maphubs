@@ -201,18 +201,6 @@ var Search = React.createClass({
           <Map ref="map" style={{width: '100%', height: '100%'}}
             disableScrollZoom={true} hoverInteraction={false} showLogo={false} attributionControl={true}
             data={this.state.searchResult} >
-            <div style={{
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                zIndex: '1',
-                width: '160px'
-              }} >
-              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map - &nbsp;
-              <a className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
-              <a className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
-              </span>
-            </div>
           </Map>
          </div>
          <div className="divider"></div>
