@@ -25,7 +25,7 @@ var AddPhotoPoint = React.createClass({
 
   mixins:[StateMixin.connect(AddPhotoPointStore, {initWithProps: ['layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
+  __(text: string){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
@@ -34,7 +34,7 @@ var AddPhotoPoint = React.createClass({
     locale: React.PropTypes.string.isRequired
   },
 
-  getInitialState(){
+  getInitialState(): Object{
     return {
       saving: false
     };
@@ -58,7 +58,7 @@ var AddPhotoPoint = React.createClass({
     this.showImageCrop();
   },
 
-  onCrop(data, info){
+  onCrop(data: any, info: Object){
     var _this = this;
     Actions.setImage(data, info, function(err){
       if(err){
@@ -72,10 +72,10 @@ var AddPhotoPoint = React.createClass({
     });
   },
 
-  onSubmit(model){
+  onSubmit(model: Object){
     var _this = this;
     this.setState({saving: true});
-    Actions.submit(model, function(err){
+    Actions.submit(model, this.state._csrf, function(err){
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -97,7 +97,7 @@ var AddPhotoPoint = React.createClass({
                 featureName = _this.state.geoJSON.features[0].properties[name];
               }
             });
-            var featurePageUrl = '/feature/' + _this.state.layer.layer_id + '/n' + _this.state.osm_id + '/' + featureName;
+            var featurePageUrl = '/feature/' + _this.state.layer.layer_id + '/' + _this.state.osm_id + '/' + featureName;
             window.location = featurePageUrl;
           }
         });

@@ -1,6 +1,6 @@
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/FeatureNotesActions');
+var Actions = require('../actions/FeaturePhotoActions');
 var request = require('superagent');
 var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
@@ -24,7 +24,7 @@ module.exports = Reflux.createStore({
     debug('store updated');
   },
 
-  addPhoto(data, info, cb){
+  addPhoto(data, info, _csrf, cb){
     debug('add feature photo');
     var _this = this;
 
@@ -34,7 +34,8 @@ module.exports = Reflux.createStore({
       layer_id: this.state.feature.layer_id,
       osm_id: this.state.feature.osm_id,
       image: data,
-      info
+      info,
+      _csrf
     })
     .end(function(err, res){
        checkClientError(res, err, cb, function(cb){
@@ -53,7 +54,7 @@ module.exports = Reflux.createStore({
     });
   },
 
-  removePhoto(cb){
+  removePhoto(_csrf, cb){
     debug('remove photo');
     var _this = this;
 
@@ -62,7 +63,8 @@ module.exports = Reflux.createStore({
     .send({
       layer_id: this.state.feature.layer_id,
       osm_id: this.state.feature.osm_id,
-      photo_id: this.state.photo.photo_id
+      photo_id: this.state.photo.photo_id,
+      _csrf
     })
     .end(function(err, res){
        checkClientError(res, err, cb, function(cb){

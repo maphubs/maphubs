@@ -10,20 +10,17 @@ var Promise = require('bluebird');
 var layerViews = require('../../services/layer-views');
 var debug = require('../../services/debug')('routes/features');
 var log = require('../../services/log');
-
 //var log = require('../../services/log.js');
 //var debug = require('../../services/debug')('routes/features');
-
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
-
+var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-
-  app.get('/feature/:layer_id/:osm_id/*', function(req, res, next) {
+  app.get('/feature/:layer_id/:osm_id/*', csrfProtection, function(req, res, next) {
 
     var osm_id = req.params.osm_id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -50,8 +47,8 @@ module.exports = function(app: any) {
           photo = photos[0];
         }
         var notes = null;
-        if(results.notes && results.notes.notes){
-          notes = results.notes.notes;
+        if(results[0].notes && results[0].notes.notes){
+          notes = results[0].notes.notes;
         }
         var featureName = "Feature";
         if(feature.geojson.features.length > 0 && feature.geojson.features[0].properties){
@@ -59,9 +56,13 @@ module.exports = function(app: any) {
           if(geoJSONProps.name) {
             featureName = geoJSONProps.name;
           }
+          geoJSONProps.layer_id = layer_id;
+          geoJSONProps.osm_id = osm_id;
         }
         feature.layer_id = layer_id;
+        
         feature.osm_id = osm_id;
+       
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           res.render('featureinfo',
@@ -168,8 +169,7 @@ module.exports = function(app: any) {
 
   });
 
-
-  app.post('/api/feature/notes/save', function(req, res) {
+  app.post('/api/feature/notes/save', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -193,8 +193,7 @@ module.exports = function(app: any) {
     }
   });
 
-
-  app.post('/api/feature/photo/add', function(req, res) {
+  app.post('/api/feature/photo/add', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -259,7 +258,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/feature/photo/delete', function(req, res) {
+  app.post('/api/feature/photo/delete', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -311,7 +310,4 @@ module.exports = function(app: any) {
       apiDataError(res);
     }
   });
-
-
-
 };

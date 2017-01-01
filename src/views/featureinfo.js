@@ -22,6 +22,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var FeatureNotesActions = require('../actions/FeatureNotesActions');
+var FeaturePhotoActions = require('../actions/FeaturePhotoActions');
 var FeatureNotesStore = require('../stores/FeatureNotesStore');
 var FeaturePhotoStore = require('../stores/FeaturePhotoStore');
 var Locales = require('../services/locales');
@@ -84,7 +85,7 @@ var FeatureInfo = React.createClass({
     var _this = this;
     var geoJSONProps = this.props.feature.geojson.features[0].properties;
 
-    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.osm_id, function(err){
+    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.osm_id, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -102,7 +103,7 @@ var FeatureInfo = React.createClass({
   onCrop(data, info){
     var _this = this;
     //send data to server
-    FeaturePhotoStore.addPhoto(data, info, function(err){
+    FeaturePhotoActions.addPhoto(data, info, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -115,10 +116,8 @@ var FeatureInfo = React.createClass({
               location.reload();
             }
         });
-
       }
     });
-
   },
 
   deletePhoto(){
@@ -127,7 +126,7 @@ var FeatureInfo = React.createClass({
       title: _this.__('Confirm Removal'),
       message: _this.__('Are you sure you want to remove this photo?'),
       onPositiveResponse(){
-        FeaturePhotoStore.removePhoto(function(err){
+        FeaturePhotoActions.removePhoto(this.state._csrf, function(err){
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{

@@ -254,6 +254,7 @@ var Map = React.createClass({
     }
     else if(geoJSON){
       _this.initGeoJSON(map, geoJSON);
+      _this.setState({mapLoaded: true});
     }
     else{
       //just the base map, the map is loaded

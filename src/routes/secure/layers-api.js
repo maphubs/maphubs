@@ -331,7 +331,8 @@ app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
               .then(function(){
                 //get the osm_id for the feature
                 debug(processChangeSetResult);
-                var osm_id = processChangeSetResult.created.node['-1'];
+                var raw_osm_id = processChangeSetResult.created.node['-1'];
+                var osm_id = 'n' + raw_osm_id;
                 debug('osm_id:' + osm_id);
                 return PhotoAttachment.setPhotoAttachment(data.layer_id, osm_id, data.image, data.imageInfo, user_id, trx)
                   .then(function(photo_id) {
@@ -340,7 +341,7 @@ app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
                       var baseUrl = urlUtil.getBaseUrl();
                       var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                       //add a tag to the feature
-                      return Tag.setNodeTag(osm_id, 'photo_url', photo_url, trx)
+                      return Tag.setNodeTag(raw_osm_id, 'photo_url', photo_url, trx)
                       .then(function(){
                         return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
                         .then(function(presets){

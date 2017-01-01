@@ -104,7 +104,7 @@ module.exports = Reflux.createStore({
   }
   },
 
-  submit(fields, cb){
+  submit(fields, _csrf, cb){
     debug('submit photo point');
     var _this = this;
 
@@ -122,7 +122,8 @@ module.exports = Reflux.createStore({
       layer_id: this.state.layer.layer_id,
       geoJSON: this.state.geoJSON,
       image: this.state.image,
-      imageInfo: this.state.imageInfo
+      imageInfo: this.state.imageInfo,
+      _csrf
     })
     .end(function(err, res){
        checkClientError(res, err, cb, function(cb){
