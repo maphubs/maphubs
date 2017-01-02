@@ -20,6 +20,7 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
+  //TODO: [Privacy]
   app.get('/feature/:layer_id/:osm_id/*', csrfProtection, function(req, res, next) {
 
     var osm_id = req.params.osm_id;
@@ -104,6 +105,7 @@ module.exports = function(app: any) {
     }
   });
 
+  //TODO: [Privacy]
   app.get('/api/feature/gpx/:layer_id/:osm_id/*', function(req, res, next) {
 
     var osm_id = req.params.osm_id;
@@ -160,6 +162,7 @@ module.exports = function(app: any) {
     }
   });
 
+  //TODO: [Privacy]
   app.get('/feature/photo/:photo_id.jpg', function(req, res) {
     var photo_id = req.params.photo_id;
     PhotoAttachment.getPhotoAttachment(photo_id)

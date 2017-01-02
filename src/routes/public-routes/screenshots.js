@@ -4,35 +4,43 @@ var Map = require('../../models/map');
 var Promise = require('bluebird');
 //var log = require('../../services/log');
 //var debug = require('../../services/debug')('routes/screenshots-public');
-
 var nextError = require('../../services/error-response').nextError;
-
 var manetCheck = require('../../services/manet-check')(false,true);
+var privateLayerCheck = require('../../services/private-layer-check');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
   //create a map view that we will use to screenshot the layer
   app.get('/api/layer/:layerid/static/render/', manetCheck, function(req, res, next) {
 
-    //TODO: [Privacy] check that user is authorized to view this layer
-
     var layer_id = parseInt(req.params.layerid || '', 10);
-    Layer.getLayerByID(layer_id).then(function(layer){
-      var title = layer.name + ' - ' + MAPHUBS_CONFIG.productName;
-        res.render('staticmap', {title, hideFeedback: true,
-           props:{
-             name: layer.name,
-             layers: [layer],
-             position: layer.preview_position,
-             basemap: 'default',
-             style: layer.style,
-             showLegend: false,
-             insetMap: false,
-             showLogo: false
-           }, req
-         });
-    }).catch(nextError(next));
+    privateLayerCheck(layer_id, req)
+    .then(function(allowed){
+      if(allowed){
+        return Layer.getLayerByID(layer_id).then(function(layer){
+        var title = layer.name + ' - ' + MAPHUBS_CONFIG.productName;
+          res.render('staticmap', {title, hideFeedback: true,
+            props:{
+              name: layer.name,
+              layers: [layer],
+              position: layer.preview_position,
+              basemap: 'default',
+              style: layer.style,
+              showLegend: false,
+              insetMap: false,
+              showLogo: false
+            }, req
+          });
+        });
+      }else{
+        res.status(401).send({
+        success: false,
+        error: "Unauthorized"
+        });
+      }
+    }).catch(nextError(next));    
   });
 
+  //TODO: [Privacy]
   app.get('/api/map/:mapid/static/render/', manetCheck, function(req, res, next) {
     var map_id = parseInt(req.params.mapid || '', 10);
     Promise.all([
@@ -59,6 +67,7 @@ module.exports = function(app) {
       }).catch(nextError(next));
   });
 
+  //TODO: [Privacy]
   app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, function(req, res, next) {
     var map_id = parseInt(req.params.mapid || '', 10);
     Promise.all([
