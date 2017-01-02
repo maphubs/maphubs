@@ -43,9 +43,11 @@ module.exports = function(app: any) {
       //get user id
       var user_id = req.session.user.id;
 
+      var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
+
       Promise.all([
         Layer.getPopularLayers(),
-        Layer.getUserLayers(user_id, 15)
+        Layer.getUserLayers(user_id, 15, canAddPrivateLayers)
       ])
         .then(function(results){
           var popularLayers = results[0];
@@ -181,11 +183,13 @@ module.exports = function(app: any) {
       Map.allowedToModify(map_id, user_id)
       .then(function(allowed){
         if(allowed){
+          var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
+
           return Promise.all([
           Map.getMap(map_id),
           Map.getMapLayers(map_id),
           Layer.getPopularLayers(),
-          Layer.getUserLayers(user_id, 15)
+          Layer.getUserLayers(user_id, 15, canAddPrivateLayers)
           ])
           .then(function(results){
             var map = results[0];

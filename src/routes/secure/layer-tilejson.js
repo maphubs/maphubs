@@ -5,6 +5,7 @@ var apiError = require('../../services/error-response').apiError;
 
 module.exports = function(app) {
 
+//TODO: [Privacy]
 app.get('/api/layer/:id/tile.json', function(req, res) {
 
     var layer_id = parseInt(req.params.id || '', 10);

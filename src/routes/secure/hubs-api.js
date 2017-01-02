@@ -136,13 +136,15 @@ module.exports = function(app: any) {
     }
   });
 
+/* Not Used?
     app.get('/hub/:hubid/api/layers', function(req, res) {
       var hub_id = req.params.hubid;
-      Layer.getHubLayers(hub_id)
+      Layer.getHubLayers(hub_id, false)
       .then(function(layers){
         res.status(200).send({success: true, layers});
       }).catch(apiError(res, 500));
   });
+  */
 
     app.post('/hub/:hubid/api/delete', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {

@@ -16,68 +16,97 @@ var PhotoAttachment = require('./photo-attachment');
 
 module.exports = {
 
+  /**
+   * Can include private?: No
+   */
   getAllLayers(includeMapInfo: boolean = false) {
     if(includeMapInfo){
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
-      'status', 'published', 'source', 'license', 'presets',
+      'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html','labels', 'settings', 'extent_bbox', 'preview_position')
-      .table('omh.layers').where({published: true, status: 'published'}).orderBy('name');
+      .table('omh.layers').where({private: false, status: 'published'}).orderBy('name');
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
-      'status', 'published', 'source', 'license', 'presets',
+      'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-      .table('omh.layers').where({published: true, status: 'published'}).orderBy('name');
+      .table('omh.layers').where({private: false, status: 'published'}).orderBy('name');
     }
 
   },
 
+  /**
+   * Can include private?: No
+   */
   getRecentLayers(number: number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets',
+    'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
-    .where({published: true, status: 'published'})
+    .where({private: false, status: 'published'})
     .orderBy('last_updated', 'desc')
     .limit(number);
   },
 
+   /**
+   * Can include private?: No
+   */
   getPopularLayers(number: number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets',
+    'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
     'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
-    .where({published: true, status: 'published'})
+    .where({private: false, status: 'published'})
     .whereNotNull('views')
     .orderBy('views', 'desc')
     .limit(number);
   },
 
+   /**
+   * Can include private?: No
+   */
   getFeaturedLayers(number: number = 15){
     return knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets',
+    'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
-    .where({published: true, status: 'published', featured: true})
+    .where({private: false, status: 'published', featured: true})
     .orderBy('name')
     .limit(number);
   },
 
-  getSearchSuggestions(input: string) {
+  /**
+   * Can include private?: No
+   */
+  getLayerInfo(layer_id: number){
+    return knex('omh.layers')
+    .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
+    .where({layer_id, private: false})
+    .then(function(result){
+      if (result && result.length == 1) {
+        return result[0];
+      }
+      return null;
+    });
+  },
+
+   /**
+   * Can include private?: If Requested
+   */
+  getSearchSuggestions(input: string, includePrivate: boolean = false) {
     input = input.toLowerCase();
-    return knex.select('name', 'layer_id').table('omh.layers')
-    .where({published: true, status: 'published'})
+    var query = knex.select('name', 'layer_id').table('omh.layers')
     .where(knex.raw(`to_tsvector('english', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
@@ -95,17 +124,29 @@ module.exports = {
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       `))
     .orderBy('name');
+
+    if (includePrivate) {
+      query.where({status: 'published'});
+    } else {
+      query.where({
+        private: false,
+        status: 'published'
+      });
+    }
+    return query;
   },
 
-  getSearchResults(input: string) {
+   /**
+   * Can include private?: If Requested
+   */
+  getSearchResults(input: string, includePrivate: boolean = false) {
     input = input.toLowerCase();
-    return knex('omh.layers')
+    var query =  knex('omh.layers')
     .select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets', 'style', 'legend_html', 'labels', 'settings',
+    'status', 'source', 'license', 'presets', 'style', 'legend_html', 'labels', 'settings',
     'extent_bbox',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-    .where({published: true, status: 'published'})
     .where(knex.raw(`to_tsvector('english', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
@@ -123,12 +164,25 @@ module.exports = {
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       `))
     .orderBy('name');
+
+    if (includePrivate) {
+      query.where({status: 'published'});
+    } else {
+      query.where({
+        private: false,
+        status: 'published'
+      });
+    }
+    return query;
   },
 
+   /**
+   * Can include private?: If Requested
+   */
   getGroupLayers(group_id: string, includePrivate: boolean = false) {
     var query: knex = knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets',
+    'status', 'private', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers').orderBy('name');
 
@@ -136,7 +190,7 @@ module.exports = {
       query.where('owned_by_group_id', group_id);
     } else {
       query.where({
-        'published': true,
+        'private': false,
         status: 'published',
         'owned_by_group_id': group_id
       });
@@ -145,13 +199,16 @@ module.exports = {
     return query;
   },
 
+  /**
+   * Can include private?: If Requested
+   */
   getUserLayers(user_id: number, number: number, includePrivate: boolean = false) {
 
     var subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
 
     var query = knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
-    'status', 'published', 'source', 'license', 'presets',
+    'status', 'private', 'source', 'license', 'presets',
     'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
@@ -160,12 +217,15 @@ module.exports = {
     .limit(number);
 
     if (!includePrivate) {
-      query.where({published: true, status: 'published'});
+      query.where({private: false, status: 'published'});
     }
 
     return query;
   },
 
+  /**
+   * Can include private?: If Requested
+   */
   getLayerByID(layer_id: number, trx: any = null) {
     debug('getting layer: ' + layer_id);
     let db = knex;
@@ -173,7 +233,7 @@ module.exports = {
     return db.select(
       'layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
-      'status', 'published', 'source', 'license', 'presets',
+      'status', 'private', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
       'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
@@ -190,25 +250,18 @@ module.exports = {
       });
   },
 
-  getLayerInfo(layer_id: number){
-    return knex('omh.layers')
-    .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
-    .where('layer_id', layer_id)
-    .then(function(result){
-      if (result && result.length == 1) {
-        return result[0];
-      }
-      return null;
-    });
-  },
-
-  getHubLayers(hub_id: string, includePrivate: boolean = false) {
-    var query = knex.select(
+  /**
+   * Can include private?: If Requested
+   */
+  getHubLayers(hub_id: string, includePrivate: boolean, trx: knex.transtion = null) {
+    let db = knex;
+    if(trx){db = trx;}
+    var query =  db.select(
     'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
     'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
-    'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
+    'omh.layers.status', 'omh.layers.private', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
     'omh.layers.is_external', 'omh.layers.external_layer_type', 'omh.layers.external_layer_config',
-    'omh.layers.owned_by_group_id', knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'), 'omh.layers.views',
+    'omh.layers.owned_by_group_id', db.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'), 'omh.layers.views',
     'omh.layers.style', 'omh.layers.labels', 'omh.layers.settings', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
      'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.labels as map_labels', 'omh.hub_layers.settings as map_settings', 'omh.hub_layers.legend_html as map_legend_html')
       .from('omh.hub_layers')
@@ -218,7 +271,7 @@ module.exports = {
       query.where('omh.hub_layers.hub_id', hub_id);
     } else {
       query.where({
-        'omh.layers.published': true,
+        'omh.layers.private': false,
         'omh.hub_layers.hub_id': hub_id
       });
     }
@@ -226,23 +279,17 @@ module.exports = {
     return query;
   },
 
-  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null){
-    if(!layer_id || user_id <= 0){
-      return new Promise(function(fulfill){fulfill(false);});
-    }
-    return this.getLayerByID(layer_id, trx)
-      .then(function(layer){
-            if(layer){
-             return Group.getGroupMembers(layer.owned_by_group_id)
-            .then(function(users){
-              if(_find(users, {id: user_id}) !== undefined){
-                return true;
-              }
-              return false;
-            });
-          }else{
-            return false;
-          }
+    /**
+     * Can include private?: If Requested
+     */
+    getLayerNotes(layer_id: number){
+      return knex('omh.layer_notes').select('notes')
+      .where({layer_id})
+      .then(function(result){
+        if(result && result.length == 1){
+          return result[0];
+        }
+        return null;
       });
     },
 
@@ -297,12 +344,53 @@ module.exports = {
       });
     },
 
-    createLayer(name: string, description: string, group_id: string, published: boolean, user_id: number){
+    //Layer Security
+
+  isPrivate(layer_id: number){
+  return knex.select('private').from('omh.layers').where({layer_id})
+    .then(function(result) {
+      if (result && result.length == 1) {
+        return result[0].private;
+      }
+      //else
+      return true; //if we don't find the layer, assume it should be private
+    });
+  },
+
+    /**
+   * Can include private?: Yes
+   */
+  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null){
+    if(!layer_id || user_id <= 0){
+      return new Promise(function(fulfill){fulfill(false);});
+    }
+    return this.getLayerByID(layer_id, trx)
+      .then(function(layer){
+            if(layer){
+             return Group.getGroupMembers(layer.owned_by_group_id)
+            .then(function(users){
+              if(_find(users, {id: user_id}) !== undefined){
+                return true;
+              }
+              return false;
+            });
+          }else{
+            return false;
+          }
+      });
+    },
+
+    //Layer creation/modification
+
+    /**
+   * Can include private?: Yes
+   */
+    createLayer(name: string, description: string, group_id: string, isPrivate: boolean, user_id: number){
       return knex('omh.layers').returning('layer_id')
         .insert({
           name, description,
           owned_by_group_id: group_id,
-            published,
+            private: isPrivate,
             status: 'incomplete',
             created_by_user_id: user_id,
             creation_time: knex.raw('now()'),
@@ -312,7 +400,10 @@ module.exports = {
         });
     },
 
-
+    /**
+     * Can include private?:Yes, however the remote layer must be public
+     */
+    //TODO: implement private remote layers
     createRemoteLayer(group_id: string, layer: any, host: string, user_id: number){
 
       layer.remote = true;
@@ -339,6 +430,9 @@ module.exports = {
         .insert(layer);
     },
 
+    /**
+     * Can include private?:Yes, however the remote layer must be public
+     */
     updateRemoteLayer(layer_id: number, group_id: string, layer: Object, host: string, user_id: number){
 
       layer.remote = true;
@@ -418,7 +512,7 @@ module.exports = {
           //get layers for hub
           var hub_id = result.hub_id;
           debug('removing layer: ' + layer_id + ' from hub: '+ hub_id);
-          hubLayerQuerys.push(_this.getHubLayers(hub_id, db));
+          hubLayerQuerys.push(_this.getHubLayers(hub_id, true, db));
         });
         return db('omh.hub_layers').where({layer_id}).del()
         .then(function(){
@@ -476,12 +570,12 @@ module.exports = {
 
     },
 
-    saveSettings(layer_id: number, name: string, description: string, group_id: string, published: boolean, user_id: number) {
+    saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, user_id: number) {
       //Note: not allowing the group_id to changed, at least until we build a more complete layer transfer solution
         return knex('omh.layers')
           .update({
             name, description,
-              published,
+              private: isPrivate,
               updated_by_user_id: user_id,
               last_updated: knex.raw('now()')
           }).where({layer_id});
@@ -563,16 +657,7 @@ module.exports = {
       return Presets.savePresets(layer_id, presets, user_id, create, trx);
     },
 
-    getLayerNotes(layer_id: number){
-      return knex('omh.layer_notes').select('notes')
-      .where({layer_id})
-      .then(function(result){
-        if(result && result.length == 1){
-          return result[0];
-        }
-        return null;
-      });
-    },
+    
 
     saveLayerNote(layer_id: number, user_id: number, notes: string){
       return knex('omh.layer_notes').select('layer_id').where({layer_id})

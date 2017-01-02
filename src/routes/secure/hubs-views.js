@@ -134,10 +134,10 @@ module.exports = function(app: any) {
   });
 
 
-  var renderHubPage = function(hub, canEdit, req, res){
-    debug('loading hub, canEdit: ' + canEdit);
+  var renderHubPage = function(hub, canEdit: boolean, req, res){
+    debug(`loading hub, canEdit: ${canEdit}`);
     return Promise.all([
-        Layer.getHubLayers(hub.hub_id),
+        Layer.getHubLayers(hub.hub_id, canEdit),
         Hub.getHubStories(hub.hub_id, canEdit)
       ])
       .then(function(result) {
@@ -198,9 +198,9 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  var renderHubMapPage = function(hub, canEdit, req, res){
+  var renderHubMapPage = function(hub, canEdit: boolean, req, res){
       return Promise.all([
-        Layer.getHubLayers(hub.hub_id)
+        Layer.getHubLayers(hub.hub_id, canEdit)
       ])
       .then(function(results) {
         var layers = results[0];

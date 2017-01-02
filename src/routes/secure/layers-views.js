@@ -93,8 +93,8 @@ module.exports = function(app: any) {
           if(notesObj && notesObj.notes){
             notes = notesObj.notes;
           }
-
-          if(layer){
+          //only show private layers if the current user is allowed to edit them
+          if(layer && (canEdit || !layer.private)){
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
           props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},       
@@ -134,22 +134,57 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
 
-    Layer.getLayerByID(layer_id)
-    .then(function(layer){
-      res.render('layermap', {
-        title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
-        description: layer.description,
-        props: {layer}, hideFeedback: true, addthis: true,
-        twitterCard: {
-          title: layer.name,
+    var user_id = -1;
+    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+      user_id = req.session.user.id;
+    }
+
+    if(!req.session.layerviews){
+      req.session.layerviews = {};
+    }
+    if(!req.session.layerviews[layer_id]){
+      req.session.layerviews[layer_id] = 1;
+      Stats.addLayerView(layer_id,user_id).catch(nextError(next));
+    }else{
+      var views = req.session.layerviews[layer_id];
+
+      req.session.layerviews[layer_id] = views + 1;
+    }
+     req.session.views = (req.session.views || 0) + 1;
+      Promise.all([
+      Layer.getLayerByID(layer_id),
+      Layer.allowedToModify(layer_id, user_id)
+      ])
+    .then(function(results){
+      var layer = results[0];
+      var canEdit = results[1];
+       //only show private layers if the current user is allowed to edit them
+      if(layer && (canEdit || !layer.private)){
+        res.render('layermap', {
+          title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
-          image: baseUrl + '/api/screenshot/layer/image/' + layer.layer_id + '.png',
-          imageWidth: 1200,
-          imageHeight: 630,
-          imageType: 'image/png'
-        },    
-        req
-      });
+          props: {layer}, hideFeedback: true, addthis: true,
+          twitterCard: {
+            title: layer.name,
+            description: layer.description,
+            image: baseUrl + '/api/screenshot/layer/image/' + layer.layer_id + '.png',
+            imageWidth: 1200,
+            imageHeight: 630,
+            imageType: 'image/png'
+          },    
+          req
+        });
+       }else{
+          res.render('error', {
+            title: req.__('Not Found'),
+            props: {
+              title: req.__('Not Found'),
+              error: req.__('The page you request was not found'),
+              url: req.url
+            },
+            req
+          });
+        }
     }).catch(nextError(next));
   });
 
