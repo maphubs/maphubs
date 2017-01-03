@@ -73,6 +73,8 @@ services:
       - ./env/dev/secret/db-pass.env
       - ./env/dev/tiles.env
       - ./env/dev/secret/web-secret.env
+    volumes:
+      -  ../maphubs-tileserver/data:/data
     ports:
       - '4001:4001'
     restart: always
