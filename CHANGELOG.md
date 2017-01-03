@@ -1,5 +1,21 @@
 # Change Log
 
+## [v0.5.10](https://github.com/maphubs/maphubs/tree/v0.5.10) (2017-01-03)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.9...v0.5.10)
+
+**Implemented enhancements:**
+
+- option to style points with icons [\#17](https://github.com/maphubs/maphubs/issues/17)
+
+**Fixed bugs:**
+
+- add polygon centroid views [\#304](https://github.com/maphubs/maphubs/issues/304)
+
+**Merged pull requests:**
+
+- Implements map markers for point layers, closes \#17 [\#302](https://github.com/maphubs/maphubs/pull/302) ([kriscarle](https://github.com/kriscarle))
+- Features/map refactor [\#301](https://github.com/maphubs/maphubs/pull/301) ([kriscarle](https://github.com/kriscarle))
+
 ## [v0.5.9](https://github.com/maphubs/maphubs/tree/v0.5.9) (2016-12-22)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.8...v0.5.9)
 
