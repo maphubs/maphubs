@@ -271,6 +271,12 @@ module.exports = {
       LEFT JOIN layers.node_geom_` + layer_id + ` c on a.id = c.node_id
       WHERE b.node_id IS NULL
       AND a.tags IS NOT NULL --ignore orphaned nodes without a way or a tag
+      ;`,
+
+      `CREATE OR REPLACE VIEW layers.centroids_` + layer_id + ` AS
+      SELECT
+      st_centroid(geom) as centroid, * 
+      FROM layers.polygons_` + layer_id + `
       ;`
 
     ];
