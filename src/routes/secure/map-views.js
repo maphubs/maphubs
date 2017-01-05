@@ -187,7 +187,7 @@ module.exports = function(app: any) {
 
           return Promise.all([
           Map.getMap(map_id),
-          Map.getMapLayers(map_id),
+          Map.getMapLayers(map_id, user_id),
           Layer.getPopularLayers(),
           Layer.getUserLayers(user_id, 15, canAddPrivateLayers)
           ])

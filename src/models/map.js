@@ -22,8 +22,8 @@ module.exports = {
       return null;
     });
   },
-
-  getMapLayers(map_id: number, trx: any){
+//TODO: [Privacy]
+  getMapLayers(map_id: number, user_id: number, trx: any){
     let db = knex;
     if(trx){db = trx;}
     return db.select(
@@ -47,7 +47,32 @@ module.exports = {
       .from('omh.maps')
       .leftJoin('omh.map_layers', 'omh.maps.map_id', 'omh.map_layers.map_id')
       .leftJoin('omh.layers', 'omh.map_layers.layer_id', 'omh.layers.layer_id')
-      .where('omh.maps.map_id', map_id).orderBy('position');
+      .where('omh.maps.map_id', map_id).orderBy('position')
+      .then(function(layers){
+        return db.select('group_id').from('omh.group_memberships').where({user_id})
+        .then(function(groups){
+          layers.forEach(function(layer){
+            if(layer.private){
+              var owned_by_group_id = layer.owned_by_group_id;
+              var allowed = false;
+              groups.forEach(function(group){
+                if(group.group_id === owned_by_group_id){
+                  allowed = true;
+                }
+              });
+              if(!allowed){
+                layer = {
+                  name: 'Private (Group Access Required)',
+                  description: 'Please request access to see this layer',
+                  style: {},
+                  legend_html: '',
+                  owned_by_group_id
+                };
+              }
+            }          
+          });
+        });
+      });
   },
 
   allowedToModify(map_id: number, user_id: number){

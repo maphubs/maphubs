@@ -97,6 +97,9 @@ var LayerSettings = React.createClass({
       //creating a new layer when user is only the member of a single group (not showing the group dropdown)
       model.group = this.state.groups[0].group_id;
     }
+    if(!model.private){
+      model.private = false;
+    }
     if(this.props.create){
       LayerActions.createLayer(model, _this.state._csrf, function(err){
         if(err){
@@ -128,7 +131,7 @@ var LayerSettings = React.createClass({
   },
 
 	render() {
-
+    var _this = this;
     var groups = '';
 
     if(!this.state.groups || this.state.groups.length == 0){
@@ -186,8 +189,25 @@ var LayerSettings = React.createClass({
     }
 
     var startEmpty = true;
+    var privateToggle = '';
     if(this.state.layer && this.state.layer.owned_by_group_id){
       startEmpty = false;
+      var owner;
+      this.state.groups.forEach(function(group){
+        if(group.group_id === _this.state.layer.owned_by_group_id){
+          owner = group;
+        }
+      });
+      if(owner && owner.tier_id && owner.tier_id > 0){
+        privateToggle = (
+          <div className="row">
+            <h5>{this.__('Limit access to group members only (BETA)')}</h5>
+            <Toggle name="private" labelOff={this.__('Public')} labelOn={this.__('Private')} defaultChecked={this.state.layer.private} className="col s4"
+                dataPosition="right" dataTooltip={this.__('Make Layer Private')}
+              />
+          </div>
+        );
+      }   
     }
 
 		return (
@@ -211,11 +231,8 @@ var LayerSettings = React.createClass({
                     dataPosition="top" dataTooltip={this.__('Brief Description of the Layer')}
                     required/>
               </div>
-              <div className="row">
-                <Toggle name="published" labelOff={this.__('Draft')} labelOn={this.__('Published')} defaultChecked={this.state.layer.published} className="col s4"
-                    dataPosition="right" dataTooltip={this.__('Indicate Layer is a Draft')}
-                  />
-              </div>
+              {privateToggle}
+             
             <div  className="row">
               {groups}
             </div>

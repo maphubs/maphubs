@@ -80,7 +80,7 @@ module.exports = {
     }
   },
 
-
+    //TODO: [Privacy]
     getGeoJSON(osm_id: string, layer_id: number) {
 
       return Layer.getLayerByID(layer_id)

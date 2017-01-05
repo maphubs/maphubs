@@ -199,6 +199,24 @@ module.exports = {
     return query;
   },
 
+
+  /**
+   * Can include private?: If Requested
+   */
+  getLayerForPhotoAttachment(photo_id: number, trx: any=null){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.feature_photo_attachments').select('layer_id').where({photo_id})
+    .then(function(results){
+      if(results && results.length > 0 && results[0].layer_id){
+        var layer_id = results[0].layer_id;
+        return this.getLayerByID(layer_id, trx);
+      }else{
+        throw new Error('Not a layer photo');
+      }
+    });
+  },
+
   /**
    * Can include private?: If Requested
    */

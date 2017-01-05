@@ -14,6 +14,7 @@ var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 
 var csrfProtection = require('csurf')({cookie: false});
+var privateLayerCheck = require('../../services/private-layer-check').middleware;
 
 module.exports = function(app: any) {
 
@@ -43,31 +44,30 @@ module.exports = function(app: any) {
     });
     */
 
-    app.get('/xml/map/:layer_id', function (req, res, next) {
-        // parse and validate bbox parameter from query
-        // See services/BoundingBox.js.
-        var layer_id = parseInt(req.params.layer_id || '', 10);
+    app.get('/xml/map/:layer_id', privateLayerCheck, function (req, res, next) {
+      // parse and validate bbox parameter from query
+      // See services/BoundingBox.js.
+      var layer_id = parseInt(req.params.layer_id || '', 10);
+      var paramString = req.query.bbox || '';
+          var bbox = new BoundingBox.FromCoordinates(paramString.split(','));
+          if (bbox.error) {
+              res.status(500).send({error: bbox.error});
+              return;
+          }
 
-        var paramString = req.query.bbox || '';
-        var bbox = new BoundingBox.FromCoordinates(paramString.split(','));
-        if (bbox.error) {
-            res.status(500).send({error: bbox.error});
-            return;
-        }
-
-        queryBbox(knex, bbox, layer_id)
-            .then(function (result) {
-              debug("convert result to XML");
-                var xmlDoc = XML.write({
-                    bbox,
-                    nodes:result.nodes,
-                    ways: result.ways,
-                    relations: result.relations
-                });
-                debug("XML ready");
-                res.header("Content-Type", "text/xml");
-                res.send(xmlDoc.toString());
-            }).catch(nextError(next));
+          queryBbox(knex, bbox, layer_id)
+          .then(function (result) {
+            debug("convert result to XML");
+              var xmlDoc = XML.write({
+                  bbox,
+                  nodes:result.nodes,
+                  ways: result.ways,
+                  relations: result.relations
+              });
+              debug("XML ready");
+              res.header("Content-Type", "text/xml");
+              res.send(xmlDoc.toString());
+          }).catch(nextError(next));
     });
 
     app.post('/api/map/create/usermap', csrfProtection, function(req, res) {
@@ -94,6 +94,7 @@ module.exports = function(app: any) {
       }
     });
 
+    //TODO: [Private Maps]
     app.post('/api/map/copy', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
@@ -173,11 +174,16 @@ module.exports = function(app: any) {
       }
     });
 
+    //TODO: [Private Maps]
     app.get('/api/map/info/:id', function(req, res) {
       var map_id = parseInt(req.params.id || '', 10);
+      var user_id = -1;
+      if(req.session.user){
+        user_id = req.session.user.id;
+      }
       Promise.all([
       Map.getMap(map_id),
-      Map.getMapLayers(map_id)
+      Map.getMapLayers(map_id, user_id)
       ])
       .then(function(results){
         var map = results[0];
@@ -186,6 +192,7 @@ module.exports = function(app: any) {
       }).catch(apiError(res, 500));
     });
 
+    //TODO: [Private Maps]
     app.get('/api/maps/search/suggestions', function(req, res) {
       if(!req.query.q){
         res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
@@ -202,6 +209,7 @@ module.exports = function(app: any) {
         }).catch(apiError(res, 500));
     });
 
+    //TODO: [Private Maps]
     app.get('/api/maps/search', function(req, res) {
       if (!req.query.q) {
         res.status(400).send('Bad Request: Expected query param. Ex. q=abc');

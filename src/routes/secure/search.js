@@ -18,6 +18,7 @@ module.exports = function(app: any) {
       });
   });
 
+  //TODO: [Privacy] exclude private data from search
   app.get('/api/global/search', function(req, res, next) {
     if (!req.query.q) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
