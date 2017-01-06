@@ -38,6 +38,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     var commands = [
+      'DROP VIEW IF EXISTS layers.centroids_' + layer_id,
       'DROP VIEW IF EXISTS layers.points_' + layer_id,
       'DROP VIEW IF EXISTS layers.lines_' + layer_id,
       'DROP VIEW IF EXISTS layers.polygons_' + layer_id,
