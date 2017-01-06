@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.5.11](https://github.com/maphubs/maphubs/tree/v0.5.11) (2017-01-06)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.10...v0.5.11)
+
+**Fixed bugs:**
+
+- error editing layer [\#307](https://github.com/maphubs/maphubs/issues/307)
+
 ## [v0.5.10](https://github.com/maphubs/maphubs/tree/v0.5.10) (2017-01-03)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.9...v0.5.10)
 
