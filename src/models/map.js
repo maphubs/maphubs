@@ -6,8 +6,10 @@ var forEachRight = require('lodash.foreachright');
 
 module.exports = {
 
-  getMap(map_id: number){
-    return knex('omh.maps')
+  getMap(map_id: number, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, basemap, created_by,
       created_at, updated_by, updated_at, views,
@@ -23,10 +25,10 @@ module.exports = {
     });
   },
 
-  getMapLayers(map_id: number, trx: any){
+  getMapLayers(map_id: number, includePrivateLayers: boolean, trx: any){
     let db = knex;
     if(trx){db = trx;}
-    return db.select(
+    var query = db.select(
       'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
       'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
       'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
@@ -35,19 +37,23 @@ module.exports = {
       knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', omh.layers.creation_time) as creation_time'),
       'omh.layers.views',
-      'omh.layers.style','omh.layers.labels', 'omh.layers.settings', 
-      'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position', 
+      'omh.layers.style','omh.layers.labels', 'omh.layers.settings',
+      'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
       'omh.layers.updated_by_user_id', 'omh.layers.created_by_user_id',
-      'omh.map_layers.style as map_style', 
-      'omh.map_layers.labels as map_labels',  
-      'omh.map_layers.settings as map_settings', 
-      'omh.map_layers.position as position', 
-      'omh.map_layers.legend_html as map_legend_html', 
+      'omh.map_layers.style as map_style',
+      'omh.map_layers.labels as map_labels',
+      'omh.map_layers.settings as map_settings',
+      'omh.map_layers.position as position',
+      'omh.map_layers.legend_html as map_legend_html',
       'omh.map_layers.map_id as map_id')
       .from('omh.maps')
       .leftJoin('omh.map_layers', 'omh.maps.map_id', 'omh.map_layers.map_id')
       .leftJoin('omh.layers', 'omh.map_layers.layer_id', 'omh.layers.layer_id')
       .where('omh.maps.map_id', map_id).orderBy('position');
+      if(!includePrivateLayers){
+        query.where('omh.layers.private', false);
+      }
+      return query;
   },
 
   allowedToModify(map_id: number, user_id: number){

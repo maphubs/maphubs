@@ -4,6 +4,7 @@ var Group = require('../../models/group');
 var User = require('../../models/user');
 var Layer = require('../../models/layer');
 var Hub = require('../../models/hub');
+var Account = require('../../models/account');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log');
 var debug = require('../../services/debug')('routes/groups');
@@ -48,20 +49,19 @@ module.exports = function(app: any) {
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
     }
-
-    Promise.all([
-        Group.getGroupByID(group_id),
-        Layer.getGroupLayers(group_id),
-        Hub.getGroupHubs(group_id),
-        Group.getGroupMembers(group_id),
-        Group.allowedToModify(group_id, user_id)
-      ])
+    Group.allowedToModify(group_id, user_id)
+    .then(function(canEdit){
+      return Promise.all([
+          Group.getGroupByID(group_id),
+          Layer.getGroupLayers(group_id, canEdit),
+          Hub.getGroupHubs(group_id),
+          Group.getGroupMembers(group_id),
+        ])
       .then(function(result: Array<any>) {
         var group: Object = result[0];
         var layers = result[1];
         var hubs = result[2];
         var members = result[3];
-        var canEdit = result[4];
         var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
         res.render('groupinfo', {
           title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
@@ -80,6 +80,7 @@ module.exports = function(app: any) {
           },
            req
         });
+        });
       }).catch(nextError(next));
   });
 
@@ -90,21 +91,23 @@ module.exports = function(app: any) {
 
     //confirm that this user is allowed to administer this group
     Group.getGroupRole(user_id, group_id)
-      .then(function(result) {
-        if (result && result.length == 1 && result[0].role == 'Administrator') {
+      .then(function(role) {
+        if (role == 'Administrator') {
           Promise.all([
               Group.getGroupByID(group_id),
               Layer.getGroupLayers(group_id, true),
-              Group.getGroupMembers(group_id)
+              Group.getGroupMembers(group_id),
+              Account.getStatus(group_id)
             ])
             .then(function(result) {
               var group = result[0];
               var layers = result[1];
               var members = result[2];
+              var account = result[3];
               res.render('groupadmin', {
                 title: group.name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
                 props: {
-                  group, layers, members
+                  group, layers, members, account
                 }, req
               });
             }).catch(nextError(next));

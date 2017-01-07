@@ -9,6 +9,7 @@ var Presets = require('./presets');
 var DataLoadUtils = require('../services/data-load-utils');
 var Group = require('./group');
 var Map = require('./map');
+var Hub = require('./hub');
 var debug = require('../services/debug')('model/layers');
 var ScreenshotUtils = require('../services/screenshot-utils');
 var geojsonUtils = require('../services/geojson-utils');
@@ -567,18 +568,97 @@ module.exports = {
         });
     });
 
+    },
+
+    removePrivateLayerFromMaps(layer: Object, trx: any){
+      let db = knex;
+      if(trx){db = trx;}
+      var layer_id = layer.layer_id;
+      return db.select('map_id').from('omh.map_layers').where({layer_id})
+      .then(function(mapLayers){
+        if(mapLayers && mapLayers.length > 0){
+          mapLayers.forEach(function(mapLayer){
+            return Map.getMap(mapLayer.map_id, trx).then(function(map){
+              if(!map.private || map.owned_by_group_id !== layer.owned_by_group_id){
+                //delete layer from this map
+                  return db('omh.map_layers').where({layer_id}).del()
+                  .then(function(){
+                    return Map.getMapLayers(map.map_id, trx)
+                    .then(function(layers){
+                      //TODO: this will wipe out any custom styles from the map maker, need to use style from map_layers table instead...
+                      var style = Map.buildMapStyle(layers);
+                      return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});           
+                    });
+                  });
+              }
+            });
+          });
+        }
+      });
 
     },
 
+    removePrivateLayerFromHubs(layer: Object, trx: any){
+      var _this = this;
+      let db = knex;
+      if(trx){db = trx;}
+      var layer_id = layer.layer_id;
+      //remove layer hubs that are not also private or not part of the same group
+      return db.select('hub_id').from('omh.hub_layers').where({layer_id})
+        .then(function(hubLayers){
+          if(hubLayers && hubLayers.length > 0){
+            hubLayers.forEach(function(hubLayer){
+              return Hub.getHubByID(hubLayer.hub_id, trx).then(function(hub){
+                if(!hub.private || hub.owned_by_group_id !== layer.owned_by_group_id){
+                  //delete layer from this hub
+                  return db('omh.hub_layers').where({layer_id}).del()
+                  .then(function(){
+                    return _this.getHubLayers(hub.hub_id, true, trx)
+                    .then(function(layers){
+                      var map_style = Map.buildMapStyle(layers);
+                      return db('omh.hubs').where({hub_id: hub.hub_id}).update({map_style});
+                    });
+                  });
+                }
+              });             
+            });
+          }         
+      });
+    },
+
     saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, user_id: number) {
-      //Note: not allowing the group_id to changed, at least until we build a more complete layer transfer solution
-        return knex('omh.layers')
-          .update({
-            name, description,
-              private: isPrivate,
-              updated_by_user_id: user_id,
-              last_updated: knex.raw('now()')
-          }).where({layer_id});
+      var _this = this;
+      return knex.transaction(function(trx) {
+        return _this.getLayerByID(layer_id, trx)
+        .then(function(layer){
+
+          var update =  trx('omh.layers')
+            .update({
+              name, description,
+                private: isPrivate,
+                updated_by_user_id: user_id,
+                last_updated: knex.raw('now()')
+            }).where({layer_id});
+
+          if(group_id !== layer.owned_by_group_id){
+            //TODO: support transfering layer ownership
+            log.warn('transfering layer ownership not implemented: ' + layer_id);
+          }
+          
+          if(!layer.private && isPrivate){
+            //public layer is switching to private
+            log.info('Public layer switching to private: ' + layer_id);
+            return _this.removePrivateLayerFromMaps(layer_id, trx)
+            .then(function(){
+              return _this.removePrivateLayerFromHubs(layer, trx).then(function(){
+                return update;
+              });
+            });           
+          }else{
+            return update;
+          }       
+        });
+      });
     },
 
     setUpdated(layer_id: number, user_id: number, trx: any=null) {

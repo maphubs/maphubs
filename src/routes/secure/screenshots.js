@@ -2,11 +2,12 @@
 var Stats = require('../../models/stats');
 var ScreenshotUtils = require('../../services/screenshot-utils');
 var apiError = require('../../services/error-response').apiError;
+var privateLayerCheck = require('../../services/private-layer-check').middleware;
 
 module.exports = function(app: any) {
 
-  app.get('/api/screenshot/layer/thumbnail/:layerid.jpg', function(req, res) {
-    var layer_id = parseInt(req.params.layerid || '', 10);
+  app.get('/api/screenshot/layer/thumbnail/:layer_id.jpg', privateLayerCheck, function(req, res) {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     ScreenshotUtils.getLayerThumbnail(layer_id)
     .then(function(image){
       ScreenshotUtils.returnImage(image, 'image/jpeg', req, res);
@@ -14,8 +15,8 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/api/screenshot/layer/image/:layerid.png', function(req, res) {
-    var layer_id = parseInt(req.params.layerid || '', 10);
+  app.get('/api/screenshot/layer/image/:layer_id.png', privateLayerCheck, function(req, res) {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     ScreenshotUtils.getLayerImage(layer_id)
     .then(function(image){
       ScreenshotUtils.returnImage(image, 'image/png', req, res);

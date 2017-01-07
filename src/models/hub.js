@@ -115,13 +115,15 @@ module.exports = {
       .orderBy('name');
     },
 
-    getHubByID(hub_id: string) {
+    getHubByID(hub_id: string, trx: any) {
+      let db = knex;
+      if(trx){db = trx;}
       debug('get hub: ' + hub_id);
-      return knex('omh.hubs')
+      return db('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
         .then(function(hubResult) {
           if (hubResult && hubResult.length == 1) {
-            return knex('omh.hub_images').select().distinct('type')
+            return db('omh.hub_images').select().distinct('type')
             .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
             .then(function(imagesResult){
               var hub = hubResult[0];

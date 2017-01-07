@@ -4,29 +4,38 @@ var local = require('../local');
 var debug = require('../services/debug')('manet-check');
 var dns = require('dns');
 var url = require('url');
+var Layer = require('../models/layer');
+var Map = require('../models/map');
 
-module.exports = function(setCors: boolean, allowForwardedIP: boolean){
+module.exports = function(allowForwardedIP: boolean){
 
 return function(req: any, res: any, next: any){
 
-  var failure = function(){
-    if(setCors) res.header('Access-Control-Allow-Origin', local.host);
+
+  var user_id = -1;
+  if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+    user_id = req.session.user.id;
+  }
+  var layer_id, map_id;
+  if(req.params.layer_id){
+    layer_id = parseInt(req.params.layer_id || '', 10);
+  }else if(req.body.layer_id){
+    layer_id = req.body.layer_id;
+  }else if(req.params.map_id){
+    map_id = parseInt(req.params.map_id || '', 10);
+  }else if(req.body.map_id){
+    map_id = req.body.map_id;
+  }
+    
+  var failure = function(){   
     return res.status(401).send("Unauthorized");
   };
+
   var success = function(){
-    if(setCors) res.header('Access-Control-Allow-Origin', '*');
     next();
   };
 
-  if(!local.requireLogin){
-    return success();
-  }
-
-  if(req.isAuthenticated && req.isAuthenticated()){
-    //allow authenticated request, but since this a require user restrict CORS
-    if(setCors) res.header('Access-Control-Allow-Origin', local.host);
-    next();
-  }else{
+  var manetCheck = function(){
     //determine if this is the manet screenshot service
 
     //first check the cookie
@@ -85,6 +94,75 @@ return function(req: any, res: any, next: any){
 
       });
     }
-  }
+  };
+
+  if(layer_id){
+    //check if the layer is private
+    Layer.getLayerByID(layer_id)
+    .then(function(layer){
+      //if layer is private, 
+      if(layer.private){
+        if(req.isAuthenticated && req.isAuthenticated()){
+          // if there is a user session, the user must be allowed to edit
+          layer.allowedToModify(layer_id, user_id)
+          .then(function(allowed){
+            if(allowed){
+              return success();
+            }else{
+              log.error('Unauthenticated screenshot request, not authorized to view private layer: ' + layer_id);
+              return failure();
+            }
+          });
+          }else{
+            // else private but no session = check for manet
+            manetCheck();
+          }
+      }else{
+        // else not private = allow if login not required, or login required and authenticated
+        if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
+          return success();
+        }else {
+          //check for manet
+          manetCheck();
+        }
+      }
+    });
+   }else if(map_id){
+     Map.getMap(map_id)
+     .then(function(map){
+       if(map.private){
+         if(req.isAuthenticated && req.isAuthenticated()){
+           map.allowedToModify(map_id, user_id)
+            .then(function(allowed){
+              if(allowed){
+                return success();
+              }else{
+                log.error('Unauthenticated screenshot request, not authorized to view private map: ' + map_id);
+                return failure();
+              }
+            });
+         }else{
+            // else private but no session = check for manet
+            manetCheck();
+          }
+       }else{
+        // else not private = allow if login not required, or login required and authenticated
+        if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
+          return success();
+        }else {
+          //check for manet
+          manetCheck();
+        }
+      }
+     });
+   }else{
+     if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
+          return success();
+        }else {
+          //check for manet
+          manetCheck();
+        }
+   }
+  
 };
 };
