@@ -2,6 +2,7 @@
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var _find = require('lodash.find');
+var Account = require('./account');
 
 module.exports = {
 
@@ -108,7 +109,19 @@ module.exports = {
       .from('omh.group_memberships')
         .leftJoin('omh.groups', 'omh.group_memberships.group_id', 'omh.groups.group_id')
         .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
-        .where('omh.group_memberships.user_id', user_id);
+        .where('omh.group_memberships.user_id', user_id)
+        .then(function(groups){
+          var commands = [];
+          groups.forEach(function(group){
+            commands.push(Account.getStatus(group.group_id));
+          });
+          return Promise.all(commands).then(function(results){
+            results.forEach(function(status, i){
+              groups[i].account = status;
+            });
+             return groups;
+          });       
+        });
     },
 
     getGroupRole(user_id: number, group_id: string) {
@@ -116,6 +129,11 @@ module.exports = {
         .where({
           group_id,
           user_id
+        }).then(function(results){
+          if(results && results.length ==- 1){
+            return results[0].role;
+          }
+          return null;
         });
     },
 

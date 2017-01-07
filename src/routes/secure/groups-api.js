@@ -3,6 +3,7 @@ var Group = require('../../models/group');
 var User = require('../../models/user');
 var Layer = require('../../models/layer');
 var Image = require('../../models/image');
+var Account = require('../../models/account');
 var Email = require('../../services/email-util');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log');
@@ -81,6 +82,31 @@ module.exports = function(app: any) {
     } else {
       apiDataError(res);
     }
+  });
+
+  app.post('/api/group/account/status', csrfProtection, function(req, res) {
+     if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if (data && data.group_id) {
+      Group.allowedToModify(data.group_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          return Account.getStatus(data.group_id)
+          .then(function(status){
+             res.status(200).send({status});
+          });
+        }else{
+        res.status(401).send();
+        }
+      });
+    } else {
+      apiDataError(res);
+    }
+          
   });
 
   app.post('/api/group/save', csrfProtection, function(req, res) {

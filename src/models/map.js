@@ -6,8 +6,10 @@ var forEachRight = require('lodash.foreachright');
 
 module.exports = {
 
-  getMap(map_id: number){
-    return knex('omh.maps')
+  getMap(map_id: number, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, basemap, created_by,
       created_at, updated_by, updated_at, views,
@@ -22,11 +24,11 @@ module.exports = {
       return null;
     });
   },
-//TODO: [Privacy]
-  getMapLayers(map_id: number, user_id: number, trx: any){
+
+  getMapLayers(map_id: number, includePrivateLayers: boolean, trx: any){
     let db = knex;
     if(trx){db = trx;}
-    return db.select(
+    var query = db.select(
       'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
       'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
       'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
@@ -47,32 +49,11 @@ module.exports = {
       .from('omh.maps')
       .leftJoin('omh.map_layers', 'omh.maps.map_id', 'omh.map_layers.map_id')
       .leftJoin('omh.layers', 'omh.map_layers.layer_id', 'omh.layers.layer_id')
-      .where('omh.maps.map_id', map_id).orderBy('position')
-      .then(function(layers){
-        return db.select('group_id').from('omh.group_memberships').where({user_id})
-        .then(function(groups){
-          layers.forEach(function(layer){
-            if(layer.private){
-              var owned_by_group_id = layer.owned_by_group_id;
-              var allowed = false;
-              groups.forEach(function(group){
-                if(group.group_id === owned_by_group_id){
-                  allowed = true;
-                }
-              });
-              if(!allowed){
-                layer = {
-                  name: 'Private (Group Access Required)',
-                  description: 'Please request access to see this layer',
-                  style: {},
-                  legend_html: '',
-                  owned_by_group_id
-                };
-              }
-            }          
-          });
-        });
-      });
+      .where('omh.maps.map_id', map_id).orderBy('position');
+      if(!includePrivateLayers){
+        query.where('omh.layers.private', false);
+      }
+      return query;
   },
 
   allowedToModify(map_id: number, user_id: number){

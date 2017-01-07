@@ -181,6 +181,7 @@ module.exports = function(app: any) {
       if(req.session.user){
         user_id = req.session.user.id;
       }
+      
       Promise.all([
       Map.getMap(map_id),
       Map.getMapLayers(map_id, user_id)
