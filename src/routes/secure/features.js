@@ -21,7 +21,7 @@ var privateLayerCheck = require('../../services/private-layer-check');
 
 module.exports = function(app: any) {
 
-  app.get('/feature/:layer_id/:osm_id/*', csrfProtection, privateLayerCheck.middleware, function(req, res, next) {
+  app.get('/feature/:layer_id/:osm_id/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
 
     var osm_id = req.params.osm_id;
     var layer_id = parseInt(req.params.layer_id || '', 10);

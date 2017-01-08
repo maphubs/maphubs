@@ -10,7 +10,7 @@ var login = require('connect-ensure-login');
 var urlUtil = require('../../services/url-util');
 var nextError = require('../../services/error-response').nextError;
 var csrfProtection = require('csurf')({cookie: false});
-var privateLayerCheck = require('../../services/private-layer-check').middleware;
+var privateLayerCheck = require('../../services/private-layer-check').middlewareView;
 
 module.exports = function(app: any) {
 

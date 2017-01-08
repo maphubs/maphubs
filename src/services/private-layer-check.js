@@ -3,9 +3,7 @@ var log = require('./log');
 var nextError = require('./error-response').nextError;
 var apiDataError = require('./error-response').apiDataError;
 
-module.exports = {
-
-check(layer_id, user_id){
+var check = function(layer_id, user_id){
   return Layer.isPrivate(layer_id)
   .then(function(isPrivate){
     if(isPrivate){
@@ -18,10 +16,11 @@ check(layer_id, user_id){
       return true;
     }
   });
-},
+};
 
-middleware(req, res, next){
-   var user_id = -1;
+var middleware = function(view) {
+  return function(req, res, next){
+    var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
     }
@@ -37,20 +36,32 @@ middleware(req, res, next){
     }
 
     if(layer_id && Number.isInteger(layer_id) && layer_id > 0){
-      this.check(layer_id, user_id)
-    .then(function(allowed){
-      if(allowed){
-        next();
-      }else{
-        log.warn('Unauthorized attempt to access layer: ' + layer_id);
-        res.status(401).send({
-        success: false,
-        error: "Unauthorized"
-        });
-      }
-    }).catch(nextError(next));
+      check(layer_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          next();
+        }else{
+          log.warn('Unauthorized attempt to access layer: ' + layer_id);
+          if(view){
+            res.redirect('/unauthorized');
+          }else{
+            res.status(401).send({
+              success: false,
+              error: "Unauthorized"
+            });
+          }           
+        }
+      }).catch(nextError(next));
     }else{
       apiDataError(res, 'missing or invalid layer id');
     }  
-}
+  };
+};
+
+module.exports = {
+
+  check: check,
+  middlewareView:  middleware(true),
+  middleware: middleware(false)
+
 };
