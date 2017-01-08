@@ -47,7 +47,7 @@ module.exports = function(app: any) {
 
       Promise.all([
         Layer.getPopularLayers(),
-        Layer.getUserLayers(user_id, 15, canAddPrivateLayers)
+        Layer.getUserLayers(user_id, 50, canAddPrivateLayers)
       ])
         .then(function(results){
           var popularLayers = results[0];

@@ -15,7 +15,7 @@ module.exports = function(app: any) {
       return;
     }
     var q = req.query.q;
-    Layer.getSearchSuggestions(q)
+    Layer.getSearchSuggestions(q, false)
       .then(function(result){
         var suggestions = [];
           result.forEach(function(layer){
@@ -30,7 +30,7 @@ module.exports = function(app: any) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
       return;
     }
-    Layer.getSearchResults(req.query.q)
+    Layer.getSearchResults(req.query.q, false)
       .then(function(result){
         res.status(200).send({layers: result});
       }).catch(apiError(res, 500));

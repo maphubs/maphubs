@@ -88,12 +88,12 @@ module.exports = {
   },
 
   /**
-   * Can include private?: No
+   * Can include private?: If Requested
    */
   getLayerInfo(layer_id: number){
     return knex('omh.layers')
     .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
-    .where({layer_id, private: false})
+    .where({layer_id})
     .then(function(result){
       if (result && result.length == 1) {
         return result[0];
@@ -103,44 +103,40 @@ module.exports = {
   },
 
    /**
-   * Can include private?: If Requested
+   * Can include private?: No
    */
-  getSearchSuggestions(input: string, includePrivate: boolean = false) {
+  getSearchSuggestions(input: string) {
     input = input.toLowerCase();
     var query = knex.select('name', 'layer_id').table('omh.layers')
-    .where(knex.raw(`to_tsvector('english', name
+    .where(knex.raw(`
+      private = false AND status = 'published'
+      AND (
+      to_tsvector('english', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
-      .orWhere(knex.raw(`to_tsvector('spanish', name
+      OR
+      to_tsvector('spanish', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
-      .orWhere(knex.raw(`to_tsvector('french', name
+      OR
+      to_tsvector('french', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
-      .orWhere(knex.raw(`to_tsvector('italian', name
+      OR
+      to_tsvector('italian', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      )
       `))
     .orderBy('name');
 
-    if (includePrivate) {
-      query.where({status: 'published'});
-    } else {
-      query.where({
-        private: false,
-        status: 'published'
-      });
-    }
     return query;
   },
 
    /**
-   * Can include private?: If Requested
+   * Can include private?: No
    */
-  getSearchResults(input: string, includePrivate: boolean = false) {
+  getSearchResults(input: string) {
     input = input.toLowerCase();
     var query =  knex('omh.layers')
     .select('layer_id', 'name', 'description', 'data_type',
@@ -148,32 +144,28 @@ module.exports = {
     'status', 'source', 'license', 'presets', 'style', 'legend_html', 'labels', 'settings',
     'extent_bbox',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-    .where(knex.raw(`to_tsvector('english', name
+    .where(knex.raw(`
+      private = false AND status = 'published'
+      AND (
+      to_tsvector('english', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
-      .orWhere(knex.raw(`to_tsvector('spanish', name
+      OR
+      to_tsvector('spanish', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
-      .orWhere(knex.raw(`to_tsvector('french', name
+      OR
+      to_tsvector('french', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
-      .orWhere(knex.raw(`to_tsvector('italian', name
+      OR
+      to_tsvector('italian', name
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
-      `))
+      )
+      `))    
     .orderBy('name');
 
-    if (includePrivate) {
-      query.where({status: 'published'});
-    } else {
-      query.where({
-        private: false,
-        status: 'published'
-      });
-    }
     return query;
   },
 
@@ -205,13 +197,14 @@ module.exports = {
    * Can include private?: If Requested
    */
   getLayerForPhotoAttachment(photo_id: number, trx: any=null){
+    var _this = this;
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments').select('layer_id').where({photo_id})
     .then(function(results){
       if(results && results.length > 0 && results[0].layer_id){
         var layer_id = results[0].layer_id;
-        return this.getLayerByID(layer_id, trx);
+        return _this.getLayerByID(layer_id, trx);
       }else{
         throw new Error('Not a layer photo');
       }
