@@ -29,6 +29,7 @@ var Card = React.createClass({
     source: React.PropTypes.string,
     data: React.PropTypes.object,
     type: React.PropTypes.string,
+    private: React.PropTypes.bool,
     onClick: React.PropTypes.func
   },
 
@@ -131,6 +132,16 @@ var Card = React.createClass({
       );
     }
 
+    var privateIcon = '';
+    if(this.props.private){
+      privateIcon = (
+        <div style={{position: 'absolute', top: '5px', right: '5px'}}>
+        <i className="material-icons grey-text text-darken-3 card-tooltip"
+        data-position="bottom" data-delay="50" data-tooltip={this.__('Private')}>lock</i>
+        </div>
+      )
+    }
+
     var cardContents = (<div className="carousel-card small"></div>);
     if(this.state.mounted){
       var image = '';
@@ -170,9 +181,10 @@ var Card = React.createClass({
           </div>
         );
       }
-      cardContents = (  <div ref="card" className='hoverable margin5 small carousel-card card' onClick={this.onClick}>
+      cardContents = (  
+        <div ref="card" className='hoverable margin5 small carousel-card card' onClick={this.onClick}>
           {image}
-
+          {privateIcon}
         <div className="card-content no-padding" style={{margin: '10px'}}>
 
           <b>{this.props.title}</b> <br />

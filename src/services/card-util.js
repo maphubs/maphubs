@@ -25,6 +25,7 @@ module.exports = {
       type: 'layer',
       link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name),
       data: layer,
+      private: layer.private,
       onClick
     };
   },
@@ -42,6 +43,7 @@ module.exports = {
       link: hubUrl,
       type: 'hub',
       data: hub,
+      private: hub.private,
       onClick
     };
   },
@@ -55,6 +57,7 @@ module.exports = {
       link: '/user/' + map.username + '/map/' + map.map_id,
       type: 'map',
       data: map,
+      private: map.private,
       onClick
     };
   },
