@@ -20,8 +20,7 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  //TODO: [Privacy]
-  app.get('/feature/:layer_id/:osm_id/*', csrfProtection, function(req, res, next) {
+  app.get('/feature/:layer_id/:osm_id/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
 
     var osm_id = req.params.osm_id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -61,9 +60,9 @@ module.exports = function(app: any) {
           geoJSONProps.osm_id = osm_id;
         }
         feature.layer_id = layer_id;
-        
+
         feature.osm_id = osm_id;
-       
+
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           res.render('featureinfo',
@@ -116,7 +115,7 @@ module.exports = function(app: any) {
         .then(function(layer){
           return Feature.getFeatureByID(osm_id, layer)
           .then(function(result){
-            var feature = result.feature;        
+            var feature = result.feature;
             var geoJSON = feature.geojson;
             geoJSON.features[0].geometry.type = "LineString";
             var coordinates = geoJSON.features[0].geometry.coordinates[0][0];
@@ -147,13 +146,13 @@ module.exports = function(app: any) {
                   coordinates.forEach(function(coord){
                      gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`;
                   });
-                    
+
                  gpx += `
                   </trkseg>
                 </trk>
                 </gpx>`;
 
-              res.end(gpx);         
+              res.end(gpx);
             }
           });
           }).catch(nextError(next));

@@ -10,6 +10,7 @@ var login = require('connect-ensure-login');
 var urlUtil = require('../../services/url-util');
 var nextError = require('../../services/error-response').nextError;
 var csrfProtection = require('csurf')({cookie: false});
+var privateLayerCheck = require('../../services/private-layer-check').middlewareView;
 
 module.exports = function(app: any) {
 
@@ -25,8 +26,8 @@ module.exports = function(app: any) {
         var recentLayers = results[1];
         var popularLayers = results[2];
         res.render('layers', {
-          title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName, 
-          props: {featuredLayers, recentLayers, popularLayers}, 
+          title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {featuredLayers, recentLayers, popularLayers},
           req
         });
       }).catch(nextError(next));
@@ -39,8 +40,8 @@ module.exports = function(app: any) {
     Group.getGroupsForUser(user_id)
     .then(function(result){
       res.render('createlayer', {
-        title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName, 
-        props: {groups: result}, 
+        title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {groups: result},
         req
       });
     }).catch(nextError(next));
@@ -97,7 +98,7 @@ module.exports = function(app: any) {
           if(layer && (canEdit || !layer.private)){
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
-          props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},       
+          props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
           fontawesome: true, addthis: true,
           twitterCard: {
             title: layer.name,
@@ -106,7 +107,7 @@ module.exports = function(app: any) {
             imageWidth: 1200,
             imageHeight: 630,
             imageType: 'image/png'
-          },   
+          },
           req});
         }else{
           res.render('error', {
@@ -171,7 +172,7 @@ module.exports = function(app: any) {
             imageWidth: 1200,
             imageHeight: 630,
             imageType: 'image/png'
-          },    
+          },
           req
         });
        }else{
