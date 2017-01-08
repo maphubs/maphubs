@@ -94,7 +94,7 @@ module.exports = function(app: any) {
       var actionData = [];
       switch(action){
         case 'createLayer':
-          if(!data.name || !data.description || !data.group_id || !data.published){
+          if(!data.name || !data.description || !data.group_id || data.private === undefined){
             apiDataError(res);
             return;
           }
@@ -102,7 +102,7 @@ module.exports = function(app: any) {
             data.name,
             data.description,
             data.group_id,
-            data.published
+            data.private
           ];
           break;
         case 'saveSettings':
@@ -115,7 +115,7 @@ module.exports = function(app: any) {
             data.name,
             data.description,
             data.group_id,
-            data.published
+            data.private
           ];
         break;
         case 'saveDataSettings':

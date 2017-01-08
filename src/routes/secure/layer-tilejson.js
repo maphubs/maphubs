@@ -2,13 +2,13 @@ var Layer = require('../../models/layer');
 var urlUtil = require('../../services/url-util');
 var slug = require('slug');
 var apiError = require('../../services/error-response').apiError;
+var privateLayerCheck = require('../../services/private-layer-check').middleware;
 
 module.exports = function(app) {
 
-//TODO: [Privacy]
-app.get('/api/layer/:id/tile.json', function(req, res) {
+app.get('/api/layer/:layer_id/tile.json', privateLayerCheck, function(req, res) {
 
-    var layer_id = parseInt(req.params.id || '', 10);
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
 
     Layer.getLayerByID(layer_id)
@@ -41,7 +41,5 @@ app.get('/api/layer/:id/tile.json', function(req, res) {
         res.status(404).send("TileJSON not supported for this layer");
       }
     }).catch(apiError(res, 500));
-
 });
-
 };

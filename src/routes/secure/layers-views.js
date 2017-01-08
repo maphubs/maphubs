@@ -48,9 +48,9 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/layer/info/:id/*', csrfProtection, function(req, res, next) {
+  app.get('/layer/info/:layer_id/*', privateLayerCheck, csrfProtection, function(req, res, next) {
 
-    var layer_id = parseInt(req.params.id || '', 10);
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
 
     var user_id = -1;
@@ -94,8 +94,7 @@ module.exports = function(app: any) {
           if(notesObj && notesObj.notes){
             notes = notesObj.notes;
           }
-          //only show private layers if the current user is allowed to edit them
-          if(layer && (canEdit || !layer.private)){
+          if(layer){
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
           props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
@@ -130,9 +129,9 @@ module.exports = function(app: any) {
     res.redirect(baseUrl + '/layer/info/' + layerid + '/');
   });
 
-  app.get('/layer/map/:id/*', csrfProtection, function(req, res, next) {
+  app.get('/layer/map/:layer_id/*', privateLayerCheck, csrfProtection, function(req, res, next) {
 
-    var layer_id = parseInt(req.params.id || '', 10);
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
 
     var user_id = -1;
@@ -159,12 +158,11 @@ module.exports = function(app: any) {
     .then(function(results){
       var layer = results[0];
       var canEdit = results[1];
-       //only show private layers if the current user is allowed to edit them
-      if(layer && (canEdit || !layer.private)){
+      if(layer){
         res.render('layermap', {
           title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
-          props: {layer}, hideFeedback: true, addthis: true,
+          props: {layer, canEdit}, hideFeedback: true, addthis: true,
           twitterCard: {
             title: layer.name,
             description: layer.description,

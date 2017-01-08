@@ -17,6 +17,7 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 var csrfProtection = require('csurf')({cookie: false});
+var privateLayerCheck = require('../../services/private-layer-check');
 
 module.exports = function(app: any) {
 
@@ -104,8 +105,7 @@ module.exports = function(app: any) {
     }
   });
 
-  //TODO: [Privacy]
-  app.get('/api/feature/gpx/:layer_id/:osm_id/*', function(req, res, next) {
+  app.get('/api/feature/gpx/:layer_id/:osm_id/*', privateLayerCheck.middleware, function(req, res, next) {
 
     var osm_id = req.params.osm_id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -164,9 +164,24 @@ module.exports = function(app: any) {
   //TODO: [Privacy]
   app.get('/feature/photo/:photo_id.jpg', function(req, res) {
     var photo_id = req.params.photo_id;
-    PhotoAttachment.getPhotoAttachment(photo_id)
-    .then(function(result){
-      imageUtils.processImage(result.data, req, res);
+    var user_id = -1;
+    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+      user_id = req.session.user.id;
+    }
+    Layer.getLayerForPhotoAttachment(photo_id)
+    .then(function(layer){
+      return privateLayerCheck.check(layer.layer_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          return PhotoAttachment.getPhotoAttachment(photo_id)
+          .then(function(result){
+            imageUtils.processImage(result.data, req, res);
+          });
+        }else{
+          log.warn('Unauthorized attempt to access layer: ' + layer.layer_id);
+          throw new Error('Unauthorized');
+        }
+      });
     }).catch(apiError(res, 404));
 
   });

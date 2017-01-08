@@ -200,6 +200,24 @@ module.exports = {
     return query;
   },
 
+
+  /**
+   * Can include private?: If Requested
+   */
+  getLayerForPhotoAttachment(photo_id: number, trx: any=null){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.feature_photo_attachments').select('layer_id').where({photo_id})
+    .then(function(results){
+      if(results && results.length > 0 && results[0].layer_id){
+        var layer_id = results[0].layer_id;
+        return this.getLayerByID(layer_id, trx);
+      }else{
+        throw new Error('Not a layer photo');
+      }
+    });
+  },
+
   /**
    * Can include private?: If Requested
    */
@@ -587,7 +605,7 @@ module.exports = {
                     .then(function(layers){
                       //TODO: this will wipe out any custom styles from the map maker, need to use style from map_layers table instead...
                       var style = Map.buildMapStyle(layers);
-                      return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});           
+                      return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});
                     });
                   });
               }
@@ -620,9 +638,9 @@ module.exports = {
                     });
                   });
                 }
-              });             
+              });
             });
-          }         
+          }
       });
     },
 
@@ -644,7 +662,7 @@ module.exports = {
             //TODO: support transfering layer ownership
             log.warn('transfering layer ownership not implemented: ' + layer_id);
           }
-          
+
           if(!layer.private && isPrivate){
             //public layer is switching to private
             log.info('Public layer switching to private: ' + layer_id);
@@ -653,10 +671,10 @@ module.exports = {
               return _this.removePrivateLayerFromHubs(layer, trx).then(function(){
                 return update;
               });
-            });           
+            });
           }else{
             return update;
-          }       
+          }
         });
       });
     },
@@ -737,7 +755,7 @@ module.exports = {
       return Presets.savePresets(layer_id, presets, user_id, create, trx);
     },
 
-    
+
 
     saveLayerNote(layer_id: number, user_id: number, notes: string){
       return knex('omh.layer_notes').select('layer_id').where({layer_id})

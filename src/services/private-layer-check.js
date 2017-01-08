@@ -1,4 +1,7 @@
 var Layer = require('../models/layer');
+var log = require('./log');
+var nextError = require('./error-response').nextError;
+var apiDataError = require('./error-response').apiDataError;
 
 var check = function(layer_id, user_id){
   return Layer.isPrivate(layer_id)
@@ -20,6 +23,16 @@ var middleware = function(view) {
     var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
+    }
+    var layer_id;
+    if(req.params.layer_id){
+      layer_id = parseInt(req.params.layer_id || '', 10);
+    }else if(req.body.layer_id){
+      layer_id = req.body.layer_id;
+    }else if(req.params.id){
+      layer_id =  parseInt(req.params.id || '', 10);
+    }else{
+      apiDataError(res, 'Unable to determine layer_id');
     }
 
     if(layer_id && Number.isInteger(layer_id) && layer_id > 0){

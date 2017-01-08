@@ -103,7 +103,7 @@ module.exports = Reflux.createStore({
       name: data.name,
       description: data.description,
       group_id: data.group,
-      published: data.published,
+      private: data.private,
       _csrf
     })
     .end(function(err, res){
@@ -113,7 +113,7 @@ module.exports = Reflux.createStore({
           layer.name = data.name;
           layer.description = data.description;
           layer.owned_by_group_id = data.group;
-          layer.published = data.published;
+          layer.private = data.private;
           layer.style = mapStyles.defaultStyle(layer.layer_id, _this.getSourceConfig(), layer.data_type),
           layer.legend_html = mapStyles.defaultLegend(layer),
           layer.settings = mapStyles.defaultSettings();
@@ -140,7 +140,7 @@ module.exports = Reflux.createStore({
       name: data.name,
       description: data.description,
       group_id: data.group,
-      published: data.published,
+      private: data.private,
       _csrf
     })
     .end(function(err, res){
@@ -149,7 +149,7 @@ module.exports = Reflux.createStore({
         layer.name = data.name;
         layer.description = data.description;
         layer.owned_by_group_id = data.group;
-        layer.published = data.published;
+        layer.private = data.private;
         _this.setState({layer});
         //_this.trigger(_this.state);
         cb();

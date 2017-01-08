@@ -4,7 +4,7 @@ var Layer = require('../../models/layer');
 var Presets = require('../../services/preset-utils');
 //var debug = require('../../services/debug')('routes/layers');
 var apiError = require('../../services/error-response').apiError;
-
+var privateLayerCheck = require('../../services/private-layer-check').middleware;
 //Layer API Endpoints that do not require authentication
 
 module.exports = function(app: any) {
@@ -52,16 +52,16 @@ module.exports = function(app: any) {
       }).catch(apiError(res, 500));
   });
 
-  app.get('/api/layer/info/:id', function(req, res) {
-    var layer_id = parseInt(req.params.id || '', 10);
+  app.get('/api/layer/info/:layer_id', privateLayerCheck, function(req, res) {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getLayerInfo(layer_id)
     .then(function(layer){
       res.status(200).send({success: true, layer});
     }).catch(apiError(res, 500));
   });
 
-  app.get('/api/layer/metadata/:id', function(req, res) {
-    var layer_id = parseInt(req.params.id || '', 10);
+  app.get('/api/layer/metadata/:layer_id', privateLayerCheck, function(req, res) {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getLayerByID(layer_id)
     .then(function(layer){
       //inject this site's URL into the style source, to support remote layers
@@ -73,8 +73,8 @@ module.exports = function(app: any) {
     }).catch(apiError(res, 500));
   });
 
-  app.get('/api/layer/presets/:id', function(req, res) {
-    var layer_id = parseInt(req.params.id || '', 10);
+  app.get('/api/layer/presets/:layer_id', privateLayerCheck, function(req, res) {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
     Presets.getIdEditorPresets(layer_id)
     .then(function(preset){
       res.status(200).send(preset);
