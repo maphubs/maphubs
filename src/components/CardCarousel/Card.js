@@ -137,7 +137,8 @@ var Card = React.createClass({
       privateIcon = (
         <div style={{position: 'absolute', top: '5px', right: '5px'}}>
         <i className="material-icons grey-text text-darken-3 card-tooltip"
-        data-position="bottom" data-delay="50" data-tooltip={this.__('Private')}>lock</i>
+        data-position="bottom" data-delay="50" data-tooltip={this.__('Private')}>
+        lock</i>
         </div>
       )
     }
