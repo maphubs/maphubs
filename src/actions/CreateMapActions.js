@@ -9,7 +9,6 @@ var actions = Reflux.createActions({
   'setHubId': {},
   'search': {},
   'addToMap': {},
-  'editMap': {},
   'removeFromMap': {},
   'moveUp': {},
   'moveDown': {},

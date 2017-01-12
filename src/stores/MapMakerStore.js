@@ -58,31 +58,6 @@ module.exports = Reflux.createStore({
     this.setState({basemap});
   },
 
-  editMap(map_id, cb){
-    var _this = this;
-    debug('editing map: ' + map_id);
-    request.get(urlUtil.getBaseUrl() + '/api/map/info/' + map_id)
-    .type('json').accept('json')
-    .end(function(err, res){
-      if (err) {
-        cb(JSON.stringify(err));
-      }else{
-        var map = res.body.map;
-
-        _this.setState({
-          map_id,
-          position: map.position,
-          basemap: map.basemap,
-          title: map.title,
-          mapLayers: map.layers,
-          show: true
-        });
-        _this.updateMap(map.layers);
-        cb();
-      }
-    });
-  },
-
   addToMap(layer, cb){
     //check if the map already has this layer
     if(_find(this.state.mapLayers, {layer_id: layer.layer_id})){
