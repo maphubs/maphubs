@@ -48,19 +48,20 @@ module.exports = {
     getSearchSuggestions(input: string) {
       input = input.toLowerCase();
       return knex.select('name', 'group_id').table('omh.groups')
-      .where(knex.raw(`to_tsvector('english', group_id
+      .where(knex.raw(`
+        to_tsvector('english', group_id
         || ' ' || name || ' ' || COALESCE(location, '')
         || ' ' || COALESCE(description, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('spanish', group_id
+        OR
+        to_tsvector('spanish', group_id
         || ' ' || name || ' ' || COALESCE(location, '')
         || ' ' || COALESCE(description, '')) @@ plainto_tsquery('` + input + `')
-        `))
-         .orWhere(knex.raw(`to_tsvector('french', group_id
+        OR
+        to_tsvector('french', group_id
         || ' ' || name || ' ' || COALESCE(location, '')
         || ' ' || COALESCE(description, '')) @@ plainto_tsquery('` + input + `')
-        `))
-         .orWhere(knex.raw(`to_tsvector('italian', group_id
+        OR
+        to_tsvector('italian', group_id
         || ' ' || name || ' ' || COALESCE(location, '')
         || ' ' || COALESCE(description, '')) @@ plainto_tsquery('` + input + `')
         `));
@@ -85,19 +86,20 @@ module.exports = {
       )
       .table('omh.groups')
       .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
-      .where(knex.raw(`to_tsvector('english', omh.groups.group_id
+      .where(knex.raw(`
+        to_tsvector('english', omh.groups.group_id
         || ' ' || omh.groups.name || ' ' || COALESCE(omh.groups.location, '')
         || ' ' || COALESCE(omh.groups.description, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('spanish', omh.groups.group_id
+        OR
+        to_tsvector('spanish', omh.groups.group_id
         || ' ' || omh.groups.name || ' ' || COALESCE(omh.groups.location, '')
         || ' ' || COALESCE(omh.groups.description, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('french', omh.groups.group_id
+        OR
+        to_tsvector('french', omh.groups.group_id
         || ' ' || omh.groups.name || ' ' || COALESCE(omh.groups.location, '')
         || ' ' || COALESCE(omh.groups.description, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('italian', omh.groups.group_id
+        OR
+        to_tsvector('italian', omh.groups.group_id
         || ' ' || omh.groups.name || ' ' || COALESCE(omh.groups.location, '')
         || ' ' || COALESCE(omh.groups.description, '')) @@ plainto_tsquery('` + input + `')
         `));

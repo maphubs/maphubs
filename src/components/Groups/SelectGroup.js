@@ -4,7 +4,18 @@ var _isequal = require('lodash.isequal');
 var Toggle = require('../forms/toggle');
 var Select = require('../forms/select');
 
+var Reflux = require('reflux');
+var StateMixin = require('reflux-state-mixin')(Reflux);
+var LocaleStore = require('../../stores/LocaleStore');
+var Locales = require('../../services/locales');
+
 var SelectGroup = React.createClass({
+
+  mixins:[StateMixin.connect(LocaleStore)],
+
+  __(text){
+    return Locales.getLocaleString(this.state.locale, text);
+  },
 
   propTypes: {
     groups: React.PropTypes.array.isRequired,
@@ -76,7 +87,7 @@ var SelectGroup = React.createClass({
         <div>
           <p>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
           <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
-            value={this.state.layer.owned_by_group_id} defaultValue={this.state.layer.owned_by_group_id}
+            value={this.state.group_id} defaultValue={this.state.group_id}
             emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
               dataPosition="right" dataTooltip={this.__('Owned by Group')}
               required

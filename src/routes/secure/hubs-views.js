@@ -18,6 +18,7 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
 var local = require('../../local');
+var privateHubCheck = require('../../services/private-hub-check').middlewareView;
 
 module.exports = function(app: any) {
 
@@ -170,7 +171,7 @@ module.exports = function(app: any) {
       });
   };
 
-  app.get('/hub/:hubid', csrfProtection, function(req, res, next) {
+  app.get('/hub/:hubid', csrfProtection, privateHubCheck, function(req, res, next) {
     var hub_id: string = req.params.hubid;
     var user_id: number;
     if(req.session.user){
@@ -215,7 +216,7 @@ module.exports = function(app: any) {
       });
   };
 
-  app.get('/hub/:hubid/map', csrfProtection, function(req, res, next) {
+  app.get('/hub/:hubid/map', csrfProtection, privateHubCheck, function(req, res, next) {
 
     const hub_id: string = req.params.hubid;
     let user_id: number;
@@ -259,7 +260,7 @@ module.exports = function(app: any) {
       });
   };
 
-  app.get('/hub/:hubid/stories', csrfProtection, function(req, res, next) {
+  app.get('/hub/:hubid/stories', csrfProtection, privateHubCheck, function(req, res, next) {
 
     const hub_id: string = req.params.hubid;
     let user_id: number;
@@ -300,7 +301,7 @@ module.exports = function(app: any) {
       });
   };
 
-  app.get('/hub/:hubid/resources', csrfProtection, function(req, res, next) {
+  app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, function(req, res, next) {
 
     const hub_id: string = req.params.hubid;
     let user_id: number;
@@ -415,7 +416,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, function(req, res, next) {
+  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, privateHubCheck, function(req, res, next) {
 
     const hub_id: string = req.params.hubid;
     const story_id: number = parseInt(req.params.story_id || '', 10);
@@ -508,7 +509,7 @@ module.exports = function(app: any) {
     res.redirect('/');
   });
 
-  app.get('/hub/:hub/map/embed/:map_id', function(req, res, next) {
+  app.get('/hub/:hub/map/embed/:map_id', privateHubCheck, function(req, res, next) {
     var map_id = req.params.map_id;
     var hub_id = req.params.hub;
     if(!map_id){

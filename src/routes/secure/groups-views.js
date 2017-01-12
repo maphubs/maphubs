@@ -4,6 +4,7 @@ var Group = require('../../models/group');
 var User = require('../../models/user');
 var Layer = require('../../models/layer');
 var Hub = require('../../models/hub');
+var Map = require('../../models/map');
 var Account = require('../../models/account');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log');
@@ -53,8 +54,9 @@ module.exports = function(app: any) {
     .then(function(canEdit){
       return Promise.all([
           Group.getGroupByID(group_id),
+          Map.getGroupMaps(group_id, canEdit),
           Layer.getGroupLayers(group_id, canEdit),
-          Hub.getGroupHubs(group_id),
+          Hub.getGroupHubs(group_id, canEdit),
           Group.getGroupMembers(group_id),
         ])
       .then(function(result: Array<any>) {
@@ -95,6 +97,7 @@ module.exports = function(app: any) {
         if (role == 'Administrator') {
           Promise.all([
               Group.getGroupByID(group_id),
+              Map.getGroupMaps(group_id, true),
               Layer.getGroupLayers(group_id, true),
               Group.getGroupMembers(group_id),
               Account.getStatus(group_id)

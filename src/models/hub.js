@@ -9,112 +9,144 @@ var Group = require('../models/group');
 
 module.exports = {
 
+  /**
+   * Can include private?: No
+   */
   getAllHubs() {
       return knex.select(
         'omh.hubs.*',
          knex.raw('timezone(\'UTC\', omh.hubs.updated_at) as updated_at_withTZ')
-    ).table('omh.hubs').where('published', true);
+    ).table('omh.hubs').where({published: true, private: false});
     },
 
+  /**
+   * Can include private?: No
+   */
   getRecentHubs(number: number = 15){
     return knex.select().table('omh.hubs')
-    .where('published', true)
+    .where({published: true, private: false})
     .orderBy('updated_at', 'desc')
     .limit(number);
   },
 
+  /**
+   * Can include private?: No
+   */
   getPopularHubs(number: number = 15){
     return knex.select().table('omh.hubs')
-    .where('published', true)
+    .where({published: true, private: false})
     .whereNotNull('views')
     .orderBy('views', 'desc')
     .limit(number);
   },
 
+  /**
+   * Can include private?: No
+   */
   getFeaturedHubs(number: number = 15){
     return knex.select().table('omh.hubs')
-    .where({published: true, featured: true})
+    .where({published: true, featured: true, private: false})
     .orderBy('name')
     .limit(number);
   },
 
-    getHubStories(hub_id: string, includeDrafts: boolean = false) {
-      debug('get stories for hub: ' + hub_id);
-      var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
-       'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
-       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-       knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'))
-        .from('omh.stories')
-        .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-        .leftJoin('omh.hubs', 'omh.hub_stories.hub_id', 'omh.hubs.hub_id');
-      if (!includeDrafts) {
-        query.where({
-          'omh.hub_stories.hub_id': hub_id,
-          'omh.stories.published': true
-        });
-      }else{
-        query.where({
-          'omh.hub_stories.hub_id': hub_id
-        });
-      }
-      return query;
-    },
+  /**
+   * Can include private?: If part of requested hub
+   */
+  getHubStories(hub_id: string, includeDrafts: boolean = false) {
+    debug('get stories for hub: ' + hub_id);
+    var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
+      'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
+      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
+      knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'))
+      .from('omh.stories')
+      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
+      .leftJoin('omh.hubs', 'omh.hub_stories.hub_id', 'omh.hubs.hub_id');
+    if (!includeDrafts) {
+      query.where({
+        'omh.hub_stories.hub_id': hub_id,
+        'omh.stories.published': true
+      });
+    }else{
+      query.where({
+        'omh.hub_stories.hub_id': hub_id
+      });
+    }
+    return query;
+  },
 
-    getSearchSuggestions(input: string) {
-      input = input.toLowerCase();
-      return knex.select('name')
-      .table('omh.hubs')
-      .where('published', true)
-      .where(knex.raw(`to_tsvector('english', hub_id
-        || ' ' || name
-        || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('spanish', hub_id
-        || ' ' || name
-        || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('french', hub_id
-        || ' ' || name
-        || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('italian', hub_id
-        || ' ' || name
-        || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-      .orderBy('name');
-    },
+  /**
+   * Can include private?: No
+   */
+  getSearchSuggestions(input: string) {
+    input = input.toLowerCase();
+    return knex.select('name')
+    .table('omh.hubs')
+    .where(knex.raw(`
+    private = false AND published = true
+    AND (
+    to_tsvector('english', hub_id
+      || ' ' || name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      OR
+      to_tsvector('spanish', hub_id
+      || ' ' || name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      OR
+      to_tsvector('french', hub_id
+      || ' ' || name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      OR
+      to_tsvector('italian', hub_id
+      || ' ' || name
+      || ' ' || COALESCE(description, '')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      )
+      `))
+    .orderBy('name');
+  },
 
+    /**
+     * Can include private?: No
+     */
     getSearchResults(input: string) {
       input = input.toLowerCase();
       return knex.select().table('omh.hubs')
-      .where('published', true)
-      .where(knex.raw(`to_tsvector('english', hub_id
+      .where({published: true, private: false})
+      .where(knex.raw(`
+       private = false AND published = true
+        AND (
+        to_tsvector('english', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
         || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('spanish', hub_id
+        OR
+        to_tsvector('spanish', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
         || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('french', hub_id
+        OR
+        to_tsvector('french', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
         || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
-        `))
-        .orWhere(knex.raw(`to_tsvector('italian', hub_id
+        OR
+        to_tsvector('italian', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
         || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        )
         `))
+
       .orderBy('name');
     },
 
+    /**
+     * Can include private?: If Requested
+     */
     getHubByID(hub_id: string, trx: any) {
       let db = knex;
       if(trx){db = trx;}
@@ -149,20 +181,9 @@ module.exports = {
         });
     },
 
-    getHubsForUser(user_id: number) {
-      debug('get hubs for user: ' + user_id);
-
-/*
-SELECT *
-FROM omh.hubs
-WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE user_id = 1);
-*/
-    return knex('omh.hubs')
-      .whereIn('owned_by_group_id',
-        knex.select('group_id').from('omh.group_memberships').where({user_id}))
-      .orderBy('name');
-    },
-
+    /**
+     * Can include private?: Yes
+     */
     getPublishedHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
       return knex.select().from('omh.hubs')
@@ -172,6 +193,9 @@ WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE use
       .orderBy('name');
     },
 
+    /**
+     * Can include private?: Yes
+     */
     getDraftHubsForUser(user_id: number) {
       debug('get hubs for user: ' + user_id);
       return knex.select().from('omh.hubs')
@@ -181,6 +205,9 @@ WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE use
         .orderBy('name');
     },
 
+     /**
+     * Can include private?: If Requested
+     */
     getGroupHubs(group_id: string, includePrivate: boolean = false) {
     var query = knex.select().from('omh.hubs').orderBy('name');
     if (includePrivate) {
@@ -188,12 +215,26 @@ WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE use
     } else {
       query.where({
         'published': true,
+        'private': false,
         'owned_by_group_id': group_id
       });
     }
     return query;
   },
 
+
+  isPrivate(hub_id: number){
+  return knex.select('private').from('omh.hubs').where({hub_id})
+    .then(function(result) {
+      if (result && result.length == 1) {
+        return result[0].private;
+      }
+      //else
+      return true; //if we don't find the layer, assume it should be private
+    });
+  },
+
+    
     allowedToModify(hub_id: string, user_id: number){
       debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
       return this.getHubByID(hub_id).then(function(hub){
@@ -201,6 +242,9 @@ WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE use
       });
     },
 
+     /**
+     * Can include private?: Yes
+     */
     checkHubIdAvailable(hub_id: string) {
       return this.getHubByID(hub_id)
         .then(function(result) {
@@ -209,11 +253,11 @@ WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE use
         });
     },
 
-    createHub(hub_id: string, group_id: string, name: string, published: boolean, user_id: number) {
+    createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, user_id: number) {
       hub_id = hub_id.toLowerCase();
       return knex.transaction(function(trx) {
       return trx('omh.hubs').insert({
-          hub_id, name, published,
+          hub_id, name, published, private: isPrivate,
           owned_by_group_id: group_id,
           created_by: user_id,
           created_at: knex.raw('now()'),
@@ -243,6 +287,26 @@ WHERE owned_by_group_id IN (SELECT group_id FROM omh.group_memberships WHERE use
           updated_at: knex.raw('now()')
         });
     },
+
+    setPrivate(hub_id: string, isPrivate: boolean, user_id: number) {
+      return knex('omh.hubs')
+      .where('hub_id', hub_id)
+      .update({
+        private: isPrivate,
+        updated_by: user_id,
+        updated_at: knex.raw('now()')
+      });
+    },
+
+    transferHubToGroup(hub_id: string, group_id: string, user_id: number){
+     return knex('omh.hubs')
+    .update({
+      owned_by_group_id: group_id,
+      updated_by: user_id,
+      updated_at: knex.raw('now()')
+    })
+    .where({hub_id});
+  },
 
     deleteHub(hub_id: string) {
       return knex.transaction(function(trx) {

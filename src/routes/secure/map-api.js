@@ -2,8 +2,8 @@
 var knex = require('../../connection.js');
 var queryBbox = require('../../services/query-bbox.js');
 var XML = require('../../services/xml.js');
-var Promise = require('bluebird');
 var Map = require('../../models/map');
+var Group = require('../../models/group');
 var BoundingBox = require('../../services/bounding-box.js');
 var ScreenshotUtil = require('../../services/screenshot-utils');
 var debug = require('../../services/debug')('routes/map');
@@ -70,7 +70,7 @@ module.exports = function(app: any) {
           }).catch(nextError(next));
     });
 
-    app.post('/api/map/create/usermap', csrfProtection, function(req, res) {
+    app.post('/api/map/create', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
@@ -78,8 +78,21 @@ module.exports = function(app: any) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.basemap && data.position && data.title){
-          Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id)
+      if(data && data.basemap && data.position && data.title && data.private !== undefined){
+          var createMap;
+          if(data.group_id){
+            createMap = Group.allowedToModify(data.group_id, user_id)
+            .then(function(allowed){
+              if(allowed){
+                return Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, user_id, data.group_id, data.private);
+              }else{
+                throw new Error('Unauthorized');
+              }
+            });
+          }else{
+            createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id, data.private);
+          }
+         createMap
           .then(function(result){
             var map_id = result[0];
             ScreenshotUtil.reloadMapThumbnail(map_id)
@@ -94,7 +107,6 @@ module.exports = function(app: any) {
       }
     });
 
-    //TODO: [Private Maps]
     app.post('/api/map/copy', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
@@ -104,20 +116,111 @@ module.exports = function(app: any) {
 
       var data = req.body;
       if(data && data.map_id){
-          Map.copyMap(data.map_id, user_id)
-          .then(function(map_id){
-            ScreenshotUtil.reloadMapThumbnail(map_id)
-            .then(function(){
-              return ScreenshotUtil.reloadMapImage(map_id);
-            })
-            .catch(function(err){log.error(err);});
-            res.status(200).send({success: true, map_id});
-          }).catch(apiError(res, 500));
+        Map.isPrivate(data.map_id).then(function(isPrivate){
+          if(isPrivate){
+            return Map.allowedToModify(data.map_id, user_id)
+            .then(function(allowed){
+              if(allowed){
+                if(data.group_id){
+                  //copy to a group
+                  return Group.allowedToModify(data.group_id, user_id)
+                  .then(function(groupAllowed){
+                    if(groupAllowed){
+                      return Map.copyMapToGroup(data.map_id, data.group_id, user_id)
+                      .then(function(map_id){
+                        //don't wait for screenshot
+                        ScreenshotUtil.reloadMapThumbnail(map_id)
+                        .then(function(){
+                          return ScreenshotUtil.reloadMapImage(map_id);
+                        }).catch(function(err){log.error(err);});
+                        res.status(200).send({success: true, map_id});
+                      }).catch(apiError(res, 500));
+                    }else{
+                      notAllowedError(res, 'group');
+                    }
+                  });
+                }else{
+                  //copy to the requesting user
+                  return Map.copyMapToUser(data.map_id, user_id)
+                  .then(function(map_id){
+                    //don't wait for screenshot
+                    ScreenshotUtil.reloadMapThumbnail(map_id)
+                    .then(function(){
+                      return ScreenshotUtil.reloadMapImage(map_id);
+                    }).catch(function(err){log.error(err);});
+                    res.status(200).send({success: true, map_id});
+                  }).catch(apiError(res, 500));
+                }
+              }else{
+                notAllowedError(res, 'map');
+              }
+            });
+          }else{
+            if(data.group_id){
+                  //copy to a group
+                  return Group.allowedToModify(data.group_id, user_id)
+                  .then(function(groupAllowed){
+                    if(groupAllowed){
+                      return Map.copyMapToGroup(data.map_id, data.group_id, user_id)
+                      .then(function(map_id){
+                        //don't wait for screenshot
+                        ScreenshotUtil.reloadMapThumbnail(map_id)
+                        .then(function(){
+                          return ScreenshotUtil.reloadMapImage(map_id);
+                        }).catch(function(err){log.error(err);});
+                        res.status(200).send({success: true, map_id});
+                      }).catch(apiError(res, 500));
+                    }else{
+                      notAllowedError(res, 'group');
+                    }
+                  });
+                }else{
+                  //copy to the requesting user
+                  Map.copyMapToUser(data.map_id, user_id)
+                  .then(function(map_id){
+                    //don't wait for screenshot
+                    ScreenshotUtil.reloadMapThumbnail(map_id)
+                    .then(function(){
+                      return ScreenshotUtil.reloadMapImage(map_id);
+                    }).catch(function(err){log.error(err);});
+                    res.status(200).send({success: true, map_id});
+                  }).catch(apiError(res, 500));
+                }
+          }
+        });
       }else{
         apiDataError(res);
       }
     });
 
+    /**
+     * change map privacy settings
+     */
+    app.post('/api/map/privacy', csrfProtection, function(req, res) {
+      if (!req.isAuthenticated || !req.isAuthenticated()) {
+        res.status(401).send("Unauthorized, user not logged in");
+        return;
+      }
+      var user_id = req.session.user.id;
+      var data = req.body;
+      if(data && data.map_id && data.isPrivate){
+        Map.allowedToModify(data.map_id, user_id)
+        .then(function(allowed){
+          if(allowed){
+            return Map.setPrivate(data.map_id, data.isPrivate, data.user_id)
+            .then(function(){
+              res.status(200).send({success: true});
+            });
+          }else{
+            notAllowedError(res, 'map');
+          }
+        }).catch(apiError(res, 200));
+      }else{
+        apiDataError(res);
+      }
+
+    });
+    
 
     app.post('/api/map/save', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -127,23 +230,23 @@ module.exports = function(app: any) {
       var user_id = req.session.user.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.basemap && data.position && data.map_id){
+      if(data && data.layers && data.style && data.basemap && data.position && data.map_id && data.title){
         Map.allowedToModify(data.map_id, user_id)
         .then(function(allowed){
           if(allowed){
-            Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
+            return Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
             .then(function(){
               res.status(200).send({success: true});
+              //don't wait for screenshot
               ScreenshotUtil.reloadMapThumbnail(data.map_id)
               .then(function(){
                 return ScreenshotUtil.reloadMapImage(data.map_id);
-              })
-              .catch(function(err){log.error(err);});
-            }).catch(apiError(res, 500));
+              }).catch(function(err){log.error(err);});
+            }).catch(apiError(res, 200));
           }else{
             notAllowedError(res, 'map');
           }
-        }).catch(apiError(res, 500));
+        }).catch(apiError(res, 200));
       }else{
         apiDataError(res);
       }
@@ -174,26 +277,6 @@ module.exports = function(app: any) {
       }
     });
 
-    //TODO: [Private Maps]
-    app.get('/api/map/info/:id', function(req, res) {
-      var map_id = parseInt(req.params.id || '', 10);
-      var user_id = -1;
-      if(req.session.user){
-        user_id = req.session.user.id;
-      }
-      
-      Promise.all([
-      Map.getMap(map_id),
-      Map.getMapLayers(map_id, user_id)
-      ])
-      .then(function(results){
-        var map = results[0];
-        map.layers = results[1];
-        res.status(200).send({success: true, map});
-      }).catch(apiError(res, 500));
-    });
-
-    //TODO: [Private Maps]
     app.get('/api/maps/search/suggestions', function(req, res) {
       if(!req.query.q){
         res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
@@ -210,7 +293,6 @@ module.exports = function(app: any) {
         }).catch(apiError(res, 500));
     });
 
-    //TODO: [Private Maps]
     app.get('/api/maps/search', function(req, res) {
       if (!req.query.q) {
         res.status(400).send('Bad Request: Expected query param. Ex. q=abc');

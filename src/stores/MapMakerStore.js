@@ -22,6 +22,7 @@ module.exports = Reflux.createStore({
       mapLayers: [],
       mapStyle: null,
       position: null,
+      private: false,
       basemap: 'default'
     };
   },
@@ -139,7 +140,7 @@ module.exports = Reflux.createStore({
 
   createUserMap(position, basemap, _csrf, cb){
     var _this = this;
-    request.post('/api/map/create/usermap')
+    request.post('/api/map/create')
     .type('json').accept('json')
     .send({
         layers: this.state.mapLayers,
@@ -147,6 +148,7 @@ module.exports = Reflux.createStore({
         title: this.state.title,
         position,
         basemap,
+        private: this.state.private,
         _csrf
     })
     .end(function(err, res){
@@ -157,6 +159,24 @@ module.exports = Reflux.createStore({
       });
     });
   },
+
+  setPrivate(isPrivate, _csrf, cb){
+    var _this = this;
+    request.post('/api/map/privacy')
+    .type('json').accept('json')
+    .send({
+        map_id: this.state.map_id,
+        private: isPrivate,
+        _csrf
+    })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        _this.setState({private: isPrivate});
+        cb();
+      });
+    });
+  },
+
   //helpers
   updateMap(mapLayers){
     var mapStyle = this.buildMapStyle(mapLayers);

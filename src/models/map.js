@@ -6,12 +6,15 @@ var forEachRight = require('lodash.foreachright');
 
 module.exports = {
 
+  /**
+   * Can include private?: Yes
+   */
   getMap(map_id: number, trx: any){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.maps')
     .select(knex.raw(
-      `map_id, title, position, style, basemap, created_by,
+      `map_id, title, position, style, basemap, private, created_by,
       created_at, updated_by, updated_at, views,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
@@ -25,6 +28,28 @@ module.exports = {
     });
   },
 
+   /**
+   * Can include private?: Yes
+   */
+  getGroupMaps(owned_by_group_id: number, includePrivate: boolean, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    var query = db('omh.maps')
+    .select(knex.raw(
+      `map_id, title, position, style, basemap, private, created_by,
+      created_at, updated_by, updated_at, views,
+     CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
+   ))
+    .where({owned_by_group_id});
+    if(!includePrivate){
+        query.where({private: false});
+      }
+    return query;
+  },
+
+  /**
+   * Can include private?: Yes
+   */
   getMapLayers(map_id: number, includePrivateLayers: boolean, trx: any){
     let db = knex;
     if(trx){db = trx;}
@@ -56,6 +81,17 @@ module.exports = {
       return query;
   },
 
+  isPrivate(map_id: number){
+  return knex.select('private').from('omh.maps').where({map_id})
+    .then(function(result) {
+      if (result && result.length == 1) {
+        return result[0].private;
+      }
+      //else
+      return true; //if we don't find the layer, assume it should be private
+    });
+  },
+
   allowedToModify(map_id: number, user_id: number){
     return this.getMap(map_id)
       .then(function(map){
@@ -67,8 +103,11 @@ module.exports = {
       });
     },
 
+    /**
+     * Can include private?: No
+     */
     getAllMaps(){
-      return knex.select('omh.maps.map_id', 'omh.maps.title',
+      return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
@@ -76,12 +115,16 @@ module.exports = {
         .from('omh.maps')
         .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
         .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+         .where('omh.maps.private', false)
         .whereNotNull('omh.user_maps.map_id')
         .orderBy('omh.maps.updated_at', 'desc');
     },
 
+    /**
+     * Can include private?: No
+     */
     getFeaturedMaps(number: number=10){
-      return knex.select('omh.maps.map_id', 'omh.maps.title',
+      return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
@@ -90,13 +133,16 @@ module.exports = {
         .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
         .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
         .whereNotNull('omh.user_maps.map_id')
-        .where('omh.maps.featured', true)
+        .where('omh.maps.featured', true).where('omh.maps.private', false)
         .orderBy('omh.maps.updated_at', 'desc')
         .limit(number);
     },
 
+    /**
+     * Can include private?: No
+     */
     getPopularMaps(number: number=10){
-      return knex.select('omh.maps.map_id', 'omh.maps.title',
+      return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
@@ -104,14 +150,18 @@ module.exports = {
         .from('omh.maps')
         .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
         .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .where('omh.maps.private', false)
         .whereNotNull('omh.user_maps.map_id')
         .whereNotNull('views')
         .orderBy('views', 'desc')
         .limit(number);
     },
 
+  /**
+   * Can include private?: No
+   */
     getRecentMaps(number: number=10){
-      return knex.select('omh.maps.map_id', 'omh.maps.title',
+      return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at', 'omh.user_maps.user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
@@ -119,13 +169,17 @@ module.exports = {
         .from('omh.maps')
         .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
         .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .where('omh.maps.private', false)
         .whereNotNull('omh.user_maps.map_id')
         .orderBy('omh.maps.updated_at', 'desc')
         .limit(number);
     },
 
+  /**
+   * Can include private?: Yes
+   */
   getUserMaps(user_id: number){
-    return knex.select('omh.maps.map_id', 'omh.maps.title',
+    return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
       'omh.maps.updated_at', 'omh.user_maps.user_id',
       knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
       knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
@@ -136,20 +190,31 @@ module.exports = {
       .where('omh.user_maps.user_id', user_id);
   },
 
+  /**
+   * Can include private?: No
+   */
   getSearchSuggestions(input: string) {
     input = input.toLowerCase();
     return knex.select('title', 'map_id').table('omh.maps')
-    .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
-    .orWhere(knex.raw(`to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')`))
-    .orWhere(knex.raw(`to_tsvector('french', title) @@ plainto_tsquery('` + input + `')`))
-    .orWhere(knex.raw(`to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')`))
+    .where(knex.raw(`
+    private = false
+    AND (
+    to_tsvector('english', title) @@ plainto_tsquery('` + input + `')
+    OR to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')
+    OR to_tsvector('french', title) @@ plainto_tsquery('` + input + `')
+    OR to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')
+    )
+    `))
     .orderBy('title');
   },
 
+  /**
+   * Can include private?: No
+   */
   getSearchResults(input: string) {
     input = input.toLowerCase();
-    return knex.select('omh.maps.map_id', 'omh.maps.title',
-      'omh.maps.updated_at', 'omh.user_maps.user_id',
+    return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
+      'omh.maps.updated_at', 'omh.user_maps.user_id', 
       knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
       knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
       'public.users.display_name as username')
@@ -157,15 +222,28 @@ module.exports = {
       .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
       .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
       .whereNotNull('omh.user_maps.map_id')
-      .where(knex.raw(`to_tsvector('english', title) @@ plainto_tsquery('` + input + `')`))
-      .orWhere(knex.raw(`to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')`))
-      .orWhere(knex.raw(`to_tsvector('french', title) @@ plainto_tsquery('` + input + `')`))
-      .orWhere(knex.raw(`to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')`))
+      .where(knex.raw(`
+      omh.maps.private = false
+      AND ( 
+      to_tsvector('english', title) @@ plainto_tsquery('` + input + `')
+      OR to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')
+      OR to_tsvector('french', title) @@ plainto_tsquery('` + input + `')
+      OR to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')
+      )
+      `))
       .orderBy('omh.maps.title')
       .orderBy('omh.maps.updated_at', 'desc');
   },
 
-  createMap(layers: Array<Object>, style: any, basemap: string, position: any, title: string, user_id: number){
+  createMap(layers: Array<Object>, style: any, basemap: string, position: any, title: string, user_id: number, isPrivate: boolean){
+   if(layers && Array.isArray(layers) && layers.length > 0){
+    if(!isPrivate){
+      //confirm no private layers
+      layers.forEach(function(layer){
+        if(layer.private) throw new Error('Private layer not allowed in public map');
+      });
+    }
+   }
     return knex.transaction(function(trx) {
     return trx('omh.maps')
       .insert({
@@ -173,6 +251,7 @@ module.exports = {
           style,
           basemap,
           title,
+          private: isPrivate,
           created_by: user_id,
           created_at: knex.raw('now()'),
           updated_by: user_id,
@@ -209,7 +288,11 @@ module.exports = {
     });
   },
 
-  copyMap(map_id: number, to_user_id: number){
+  /**
+   * Create a new map as a copy of the requested map an assign to the requested user
+   * Can include private?: If requested
+   */
+  copyMapToUser(map_id: number, to_user_id: number){
     var _this = this;
     return Promise.all([
       this.getMap(map_id),
@@ -221,6 +304,84 @@ module.exports = {
       return _this.createUserMap(layers, map.style, map.basemap, map.position, title, to_user_id);
     });
   },
+
+  /**
+   * Create a new map as a copy of the requested map an assign to the requested group
+   * Can include private?: If requested
+   */
+  copyMapToGroup(map_id: number, to_group_id: string, user_id: number){
+    var _this = this;
+    return Promise.all([
+      this.getMap(map_id),
+      this.getMapLayers(map_id)
+    ]).then(function(results){
+      var map = results[0];
+      var layers = results[1];
+      var title = map.title + ' - Copy';
+      return _this.createGroupMap(layers, map.style, map.basemap, map.position, title, user_id, to_group_id);
+    });
+  },
+
+  transferMapToUser(map_id: number, to_user_id: number, user_id: number){
+    return knex('omh.maps')
+    .update({
+      owned_by_user_id: to_user_id, 
+      owned_by_group_id: null,
+      updated_by: user_id,
+      updated_at: knex.raw('now()')
+    })
+    .where({map_id});
+  },
+
+  transferMapToGroup(map_id: number, group_id: string, user_id: number){
+     return knex('omh.maps')
+    .update({
+      owned_by_user_id: null, 
+      owned_by_group_id: group_id,
+      updated_by: user_id,
+      updated_at: knex.raw('now()')
+    })
+    .where({map_id});
+  },
+
+  setPrivate(map_id: string, isPrivate: boolean, user_id: number) {
+      var _this = this;
+      return this.getMap(map_id)
+      .then(function(map){
+        if(map.private && !isPrivate){
+          //private to public
+          return _this.getMapLayers(map_id).then(function(layers){
+            if(layers && Array.isArray(layers) && layers.length > 0){
+              if(!isPrivate){
+                //confirm no private layers
+                layers.forEach(function(layer){
+                  if(layer.private) throw new Error('Private layer not allowed in public map');
+                });
+              }
+            }
+            return knex('omh.maps')
+            .where('map_id', map_id)
+            .update({
+              private: isPrivate,
+              updated_by: user_id,
+              updated_at: knex.raw('now()')
+            });          
+          });
+        }else if(!map.private && isPrivate){
+          //public to private - just update
+          return knex('omh.maps')
+          .where('map_id', map_id)
+          .update({
+            private: isPrivate,
+            updated_by: user_id,
+            updated_at: knex.raw('now()')
+          });
+        }else{
+          //not changing
+          return null;
+        }
+      });  
+    },
 
   updateMap(map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number){
     return knex.transaction(function(trx) {
@@ -281,13 +442,37 @@ module.exports = {
     });
   },
 
-  createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number){
-    return this.createMap(layers, style, basemap, position, title, user_id)
+  createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number, isPrivate: boolean){
+    return this.createMap(layers, style, basemap, position, title, user_id, isPrivate)
     .then(function(result){
       debug(result);
       var map_id = result;
       debug('Saving User Map with ID: ' + map_id);
-      return knex('omh.user_maps').insert({user_id, map_id}).returning('map_id');
+      return knex('omh.maps').update({owned_by_user_id: user_id}).where({map_id})
+      .then(function(){
+        return map_id; //pass on the new map_id
+      });
+    });
+  },
+
+  createGroupMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number, group_id: string, isPrivate: boolean){
+    if(layers && Array.isArray(layers) && layers.length > 0){
+    if(isPrivate){
+        //confirm all private layers owned by same group
+        layers.forEach(function(layer){
+          if(layer.owned_by_group_id !== group_id) throw new Error('Private layers must be owned by the same group');
+        });
+      }
+   }
+    return this.createMap(layers, style, basemap, position, title, user_id, isPrivate)
+    .then(function(result){
+      debug(result);
+      var map_id = result;
+      debug('Saving User Map with ID: ' + map_id);
+      return knex('omh.maps').update({owned_by_group_id: group_id}).where({map_id})
+      .then(function(){
+        return map_id; //pass on the new map_id
+      });
     });
   },
 

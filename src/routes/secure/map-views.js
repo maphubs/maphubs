@@ -9,6 +9,7 @@ var debug = require('../../services/debug')('routes/map');
 var MapUtils = require('../../services/map-utils');
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
+var privateMapCheck = require('../../services/private-map-check').middlewareView;
 
 var csrfProtection = require('csurf')({cookie: false});
 
@@ -113,7 +114,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/view/:map_id/*', csrfProtection, function(req, res, next) {
+  app.get('/map/view/:map_id/*', csrfProtection, privateMapCheck, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -138,7 +139,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/user/:username/map/:map_id', csrfProtection, function(req, res, next) {
+  app.get('/user/:username/map/:map_id/*', csrfProtection, privateMapCheck, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -218,7 +219,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/embed/:map_id', csrfProtection, function(req, res, next) {
+  app.get('/map/embed/:map_id', csrfProtection, privateMapCheck, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -241,7 +242,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/embed/:map_id/static', csrfProtection, function(req, res, next) {
+  app.get('/map/embed/:map_id/static', csrfProtection, privateMapCheck, function(req, res, next) {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);

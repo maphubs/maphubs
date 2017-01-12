@@ -47,7 +47,7 @@ module.exports = Reflux.createStore({
    this.setState({layers});
  },
 
- createHub(hub_id, group_id, name, published, _csrf, cb){
+ createHub(hub_id, group_id, name, published, isPrivate, _csrf, cb){
    debug('create hub');
    var _this = this;
 
@@ -58,6 +58,7 @@ module.exports = Reflux.createStore({
      group_id,
      name,
      published,
+     private: isPrivate,
      _csrf
    })
    .end(function(err, res){
@@ -108,6 +109,49 @@ module.exports = Reflux.createStore({
      });
    });
  },
+
+ setPrivate(isPrivate, _csrf, cb){
+    var _this = this;
+    debug('hub privacy');
+    var baseUrl = '/hub/' + this.state.hub.hub_id;
+    request.post(baseUrl + '/api/privacy')
+    .type('json').accept('json')
+    .send({
+        hub_id: this.state.hub.hub_id,
+        private: isPrivate,
+        _csrf
+    })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        var hub = _this.state.hub;
+        hub.private = isPrivate;
+        _this.setState({hub});
+        cb();
+      });
+    });
+  },
+
+  transferOwnership(to_group_id, _csrf, cb){
+    var _this = this;
+    debug('hub privacy');
+    var baseUrl = '/hub/' + this.state.hub.hub_id;
+    request.post(baseUrl + '/api/transfer')
+    .type('json').accept('json')
+    .send({
+        hub_id: this.state.hub.hub_id,
+        group_id: to_group_id,
+        _csrf
+    })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+         var hub = _this.state.hub;
+         hub.owned_by_group_id = to_group_id;
+        _this.setState({hub});
+        cb();
+      });
+    });
+  },
+
  deleteHub(_csrf, cb){
    var _this = this;
    debug('delete hub');

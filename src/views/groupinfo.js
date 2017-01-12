@@ -19,6 +19,7 @@ var GroupInfo = React.createClass({
 
   propTypes: {
     group: React.PropTypes.object,
+    maps: React.PropTypes.array,
     layers: React.PropTypes.array,
     hubs: React.PropTypes.array,
     members: React.PropTypes.array,
@@ -31,6 +32,7 @@ var GroupInfo = React.createClass({
       group: {
         name: "Unknown"
       },
+      maps: [],
       layers: [],
       hubs: [],
       members: [],
@@ -40,6 +42,7 @@ var GroupInfo = React.createClass({
 
   getInitialState(){
     return {
+      mapCards: this.props.maps.map(cardUtil.getMapCard),
       layerCards: this.props.layers.map(cardUtil.getLayerCard),
       hubCards: this.props.hubs.map(cardUtil.getHubCard)
     };
@@ -94,6 +97,15 @@ var GroupInfo = React.createClass({
       status = this.__('Published');
     }
 
+     var maps = '';
+    if(this.state.mapCards && this.state.mapCards.length > 0){
+      maps = (
+        <div className="row">
+          <CardCarousel cards={this.state.mapCards} infinite={false}/>
+        </div>
+      );
+    }
+
     var layers = '';
     if(this.state.layerCards && this.state.layerCards.length > 0){
       layers = (
@@ -137,6 +149,13 @@ var GroupInfo = React.createClass({
 
           </div>
           <div className="divider" />
+            <div className="row">
+              <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Maps')}</h5>
+              {maps}
+              <div className="valign-wrapper">
+                <a className="btn valign" style={{margin: 'auto'}} href={'/map/new?group_id=' + this.props.group.group_id}>{this.__('Create a Map')}</a>
+              </div>
+            </div>
             <div className="row">
               <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
               {layers}

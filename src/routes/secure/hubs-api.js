@@ -1,5 +1,4 @@
 // @flow
-var Layer = require('../../models/layer');
 var Hub = require('../../models/hub');
 var Map = require('../../models/map');
 var Image = require('../../models/image');
@@ -64,8 +63,8 @@ module.exports = function(app: any) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.hub_id && data.group_id && data.name) {
-      Hub.createHub(data.hub_id, data.group_id, data.name, data.published, user_id)
+    if (data && data.hub_id && data.group_id && data.name ) {
+      Hub.createHub(data.hub_id, data.group_id, data.name, data.published, data.private, user_id)
         .then(function(result) {
           if (result) {
             res.send({
@@ -134,6 +133,35 @@ module.exports = function(app: any) {
     } else {
       apiDataError(res);
     }
+  });
+
+
+  /**
+   * change hub privacy settings
+   */
+  app.post('/hub/:hubid/api/privacy', csrfProtection, function(req, res) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.id;
+    var data = req.body;
+    if(data && data.hub_id && data.isPrivate){
+      Hub.allowedToModify(data.hub_id, user_id)
+      .then(function(allowed){
+        if(allowed){
+          return Hub.setPrivate(data.hub_id, data.isPrivate, data.user_id)
+          .then(function(){
+            res.status(200).send({success: true});
+          });
+        }else{
+          notAllowedError(res, 'hub');
+        }
+      }).catch(apiError(res, 200));
+    }else{
+      apiDataError(res);
+    }
+
   });
 
 /* Not Used?

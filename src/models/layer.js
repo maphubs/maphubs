@@ -496,13 +496,11 @@ module.exports = {
               //rebuild map style, excluding the removed layer
               var layers = result;
               var map_id = result[0].map_id;
-              //TODO: this will wipe out any custom styles from the map maker, need to use style from map_layers table instead...
               var style = Map.buildMapStyle(layers);
               saveMapStyleCommands.push(db('omh.maps').where({map_id}).update({style, screenshot: null, thumbnail: null}));
             });
             return Promise.all(saveMapStyleCommands)
             .then(function(result){
-              //remove layer from maps
               //TODO: notify map owners that a layer has been removed
 
                 return result;
@@ -552,6 +550,16 @@ module.exports = {
       return knex('omh.layers').update({status: 'published'}).where({layer_id});
     },
 
+    transferLayerToGroup(layer_id: number, group_id: string, user_id: number){
+     return knex('omh.layers')
+      .update({
+        owned_by_group_id: group_id,
+        updated_by_user_id: user_id,
+        last_updated: knex.raw('now()')
+      })
+      .where({layer_id});
+  },
+
     delete(layer_id: number){
       var _this = this;
       return knex.transaction(function(trx) {
@@ -595,8 +603,7 @@ module.exports = {
                   return db('omh.map_layers').where({layer_id}).del()
                   .then(function(){
                     return Map.getMapLayers(map.map_id, trx)
-                    .then(function(layers){
-                      //TODO: this will wipe out any custom styles from the map maker, need to use style from map_layers table instead...
+                    .then(function(layers){                    
                       var style = Map.buildMapStyle(layers);
                       return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});
                     });

@@ -25,7 +25,7 @@ var commands = [];
 //loop through districts
 data.hubs.forEach(function(hub){
   var hub_id = hub.id.toLowerCase();
-  var command = HubModel.createHub(hub_id, hub.name, true, user_id)
+  var command = HubModel.createHub(hub_id, hub.name, true, false, user_id)
     .then(function(){
       log.info('Hub Created: ' + hub_id);
       return HubModel.getHubByID(HUB_TEMPLATE)

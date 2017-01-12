@@ -9,7 +9,7 @@ var Formsy = require('formsy-react');
 var TextArea = require('../forms/textArea');
 var TextInput = require('../forms/textInput');
 var Toggle = require('../forms/toggle');
-var Select = require('../forms/select');
+var SelectGroup = require('../Groups/SelectGroup');
 
 
 var LayerStore = require('../../stores/layer-store');
@@ -144,7 +144,19 @@ var LayerSettings = React.createClass({
         </div>
       );
     }
+    var canChangeGroup = true;
+    if(this.state.layer.status === 'published'){
+      canChangeGroup = false;
+    }
+     groups = (
+        <SelectGroup groups={this.state.groups} type="layer" canChangeGroup={canChangeGroup}/>
+      );
+
+      /*
     if(this.props.showGroup){
+
+      
+
       if(this.state.groups.length > 1){
       var groupOptions = [];
 
@@ -175,6 +187,7 @@ var LayerSettings = React.createClass({
         );
       }
     }
+    */
 
     var cancel = '', submitIcon = '';
     if(this.props.showCancel){
