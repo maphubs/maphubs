@@ -685,13 +685,25 @@ var LayerInfo = React.createClass({
       );
     }
 
+    var privateIcon = '';
+    if(this.props.layer.private){
+      privateIcon = (
+        <div style={{position: 'absolute', top: '15px', right: '10px'}}>
+        <i className="material-icons grey-text text-darken-3 layer-info-tooltip"
+        data-position="left" data-delay="50" data-tooltip={this.__('Private')}>
+        lock</i>
+        </div>
+      );
+    }
+
 		return (
 
       <div>
         <Header />
         <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
         <div className="row" style={{height: '100%', margin: 0}}>
-          <div className="col s12 m6 l6 no-padding" style={{height: '100%'}}>
+          <div className="col s12 m6 l6 no-padding" style={{height: '100%', position: 'relative'}}>
+          {privateIcon}
             <div style={{margin: '10px'}}>
               <h5>{this.props.layer.name}</h5>
             </div>
