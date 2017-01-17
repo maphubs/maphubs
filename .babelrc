@@ -7,5 +7,7 @@
   "plugins": ["transform-flow-strip-types"],
   "ignore": [
     "mapbox-gl.js", "mapbox-gl-dev.js"
-  ]
+  ],
+  "sourceMaps": true,
+  "retainLines": true
 }

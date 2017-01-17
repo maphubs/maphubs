@@ -7,7 +7,8 @@
 			// Name of configuration; appears in the launch configuration drop down menu.
 			"name": "MapHubs",
 			// Type of configuration. Possible values: "node", "mono".
-			"type": "node",
+			"type": "node2",
+      "request": "launch",
 			// Workspace relative or absolute path to the program.
 			"program": "${workspaceRoot}/src/app.js",
 			// Automatically stop program after launch.
@@ -15,38 +16,21 @@
 			// Command line arguments passed to the program.
 			"args": [],
 			// Workspace relative or absolute path to the working directory of the program being debugged. Default is the current workspace.
-			"cwd": "",
+			"cwd": "${workspaceRoot}",
+      "preLaunchTask": "load-dev-env",
 			// Workspace relative or absolute path to the runtime executable to be used. Default is the runtime executable on the PATH.
 			"runtimeExecutable": null,
 			// Optional arguments passed to the runtime executable.
-			"runtimeArgs": [],
+      //"console": "internalConsole",
+      "runtimeArgs": [ "--nolazy", "-r", "babel-register"],
 			// Environment variables passed to the program.
-			"env": { "NODE_ENV": "development", "DEBUG": "maphubs:*" },
+			"env": {
+        "NODE_ENV": "development", 
+        "DEBUG": "maphubs:*"       
+        },
 			// Use JavaScript source maps (if they exist).
 			"sourceMaps": true
-		},
-        {
-			// Name of configuration; appears in the launch configuration drop down menu.
-			"name": "MapHubs-NoWebpack",
-			// Type of configuration. Possible values: "node", "mono".
-			"type": "node",
-			// Workspace relative or absolute path to the program.
-			"program": "${workspaceRoot}/src/app.js",
-			// Automatically stop program after launch.
-			"stopOnEntry": false,
-			// Command line arguments passed to the program.
-			"args": [],
-			// Workspace relative or absolute path to the working directory of the program being debugged. Default is the current workspace.
-			"cwd": "",
-			// Workspace relative or absolute path to the runtime executable to be used. Default is the runtime executable on the PATH.
-			"runtimeExecutable": null,
-			// Optional arguments passed to the runtime executable.
-			"runtimeArgs": [],
-			// Environment variables passed to the program.
-			"env": { "NODE_ENV": "production", "DEBUG": "maphubs:*" },
-			// Use JavaScript source maps (if they exist).
-			"sourceMaps": true
-		},
+		},   
 		{
 			"name": "Attach",
 			"type": "node",
