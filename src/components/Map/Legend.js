@@ -5,11 +5,12 @@ var LegendItem = require('./LegendItem');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
+var BaseMapStore = require('../../stores/map/BaseMapStore');
 var Locales = require('../../services/locales');
 
 var Legend = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(LocaleStore), StateMixin.connect(BaseMapStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -100,9 +101,9 @@ var Legend = React.createClass({
                 })
               }
               <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-                <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map&nbsp;-&nbsp;
-                <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
-                <a style={{fontSize: '8px', lineHeight: '0.75rem', height: '10px', padding: 0, display: 'inherit'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
+                <span style={{fontSize: '8px', paddingLeft: '2px', lineHeight: '0.75rem',  height: '10px', padding: 0, display: 'inherit'}} 
+                className="grey-text">
+                Base Map&nbsp;-&nbsp;{this.state.attribution}
                 </span>
               </li>
             </ul>

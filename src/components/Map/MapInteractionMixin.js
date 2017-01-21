@@ -2,6 +2,7 @@
 var $ = require('jquery');
 var _debounce = require('lodash.debounce');
 var debug = require('../../services/debug')('MapInteractionMixin');
+var BaseMapActions = require('../../actions/map/BaseMapActions');
 /**
  * Helper functions for interacting with the map and selecting features
  */
@@ -132,6 +133,8 @@ var MapInteractionMixin = {
        } else {
          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
        }
+
+       BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
 
     }, 200).bind(this);
     debounced();

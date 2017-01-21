@@ -1,6 +1,15 @@
 var React = require('react');
 
+
+var Reflux = require('reflux');
+var StateMixin = require('reflux-state-mixin')(Reflux);
+var BaseMapStore = require('../../stores/map/BaseMapStore');
+
+
 var MiniLegend = React.createClass({
+
+  mixins:[StateMixin.connect(BaseMapStore)],
+
   propTypes:  {
     layers: React.PropTypes.array,
     hideInactive: React.PropTypes.bool,
@@ -39,9 +48,7 @@ var MiniLegend = React.createClass({
 
             }
             <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text">Base Map - </span>
-              <a style={{fontSize: '8px'}} className="grey-text" href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox </a>
-              <a style={{fontSize: '8px'}} className="grey-text" href="http://www.openstreetmap.org/about/" target="_blank"> © OpenStreetMap</a>
+              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text align-left">Base Map - {this.state.attribution}</span>
             </li>
           </ul>
         </div>

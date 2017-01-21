@@ -7,7 +7,8 @@ var actions = Reflux.createActions({
   'closeEditBaseMap': {},
   'changeBaseMap': {},
   'getBaseMapFromName': {},
-  'setBaseMap': {}
+  'setBaseMap': {},
+  'updateMapPosition': {}
 });
 
 module.exports = actions;

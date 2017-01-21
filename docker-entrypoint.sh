@@ -23,6 +23,7 @@ var MAPHUBS_CONFIG = {
   tileServiceUrl: "${OMH_TILESERVICE_URL}",
   MAPBOX_ACCESS_TOKEN: "${OMH_MAPBOX_TOKEN}",
   PLANET_LABS_API_KEY: "${PLANET_LABS_API_KEY}",
+  BING_KEY:  "${BING_API_KEY}",
   theme: "${OMH_THEME}"
 };
 if(typeof module !== 'undefined'){
