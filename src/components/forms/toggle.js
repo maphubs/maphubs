@@ -19,6 +19,7 @@ var Toggle= React.createClass({
     labelOff: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,
     style: React.PropTypes.object,
+    disabled: React.PropTypes.bool,
     onChange: React.PropTypes.func
   },
 
@@ -27,7 +28,8 @@ var Toggle= React.createClass({
     return {
       style: {},
       defaultChecked: false,
-      dataDelay: 100
+      dataDelay: 100,
+      disabled: false
     };
   },
 
@@ -63,12 +65,12 @@ var Toggle= React.createClass({
      var defaultChecked = this.props.defaultChecked ? this.props.defaultChecked : false;
 
     return (
-          <div ref="toggle" className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
+          <div ref="toggle" className={className} disabled={this.props.disabled} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
               style={this.props.style}
               data-tooltip={this.props.dataTooltip}>
             <label>
               {this.props.labelOff}
-              <input type="checkbox" id={this.props.name} defaultChecked={defaultChecked} onChange={this.changeValue}/>
+              <input type="checkbox" id={this.props.name} defaultChecked={defaultChecked} disabled={this.props.disabled} onChange={this.changeValue}/>
               <span className="lever"></span>
               {this.props.labelOn}
             </label>

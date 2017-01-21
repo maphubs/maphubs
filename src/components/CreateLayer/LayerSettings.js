@@ -8,7 +8,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var Formsy = require('formsy-react');
 var TextArea = require('../forms/textArea');
 var TextInput = require('../forms/textInput');
-var Toggle = require('../forms/toggle');
 var SelectGroup = require('../Groups/SelectGroup');
 
 
@@ -52,8 +51,7 @@ var LayerSettings = React.createClass({
 
   getInitialState() {
     return {
-      canSubmit: false,
-      created: false
+      canSubmit: false
     };
   },
 
@@ -131,8 +129,6 @@ var LayerSettings = React.createClass({
   },
 
 	render() {
-    var _this = this;
-    var groups = '';
 
     if(!this.state.groups || this.state.groups.length == 0){
       return (
@@ -148,47 +144,7 @@ var LayerSettings = React.createClass({
     if(this.state.layer.status === 'published'){
       canChangeGroup = false;
     }
-     groups = (
-        <SelectGroup groups={this.state.groups} type="layer" canChangeGroup={canChangeGroup}/>
-      );
-
-      /*
-    if(this.props.showGroup){
-
-      
-
-      if(this.state.groups.length > 1){
-      var groupOptions = [];
-
-      this.state.groups.map(function(group){
-        groupOptions.push({
-          value: group.group_id,
-          label: group.name
-        });
-      });
-
-      groups = (
-        <div>
-          <p>{this.__('Since you are in multiple groups, please select the group that should own this layer.')}</p>
-          <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
-            value={this.state.layer.owned_by_group_id} defaultValue={this.state.layer.owned_by_group_id}
-            emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
-              dataPosition="right" dataTooltip={this.__('Owned by Group')}
-              required
-              />
-        </div>
-        );
-
-      }else{
-        groups = (
-          <div>
-            <b>{this.__('Group:')} </b>{this.state.groups[0].name}
-          </div>
-        );
-      }
-    }
-    */
-
+    
     var cancel = '', submitIcon = '';
     if(this.props.showCancel){
       cancel = (
@@ -199,28 +155,6 @@ var LayerSettings = React.createClass({
       submitIcon = (
         <i className="material-icons right">arrow_forward</i>
       );
-    }
-
-    var startEmpty = true;
-    var privateToggle = '';
-    if(this.state.layer && this.state.layer.owned_by_group_id){
-      startEmpty = false;
-      var owner;
-      this.state.groups.forEach(function(group){
-        if(group.group_id === _this.state.layer.owned_by_group_id){
-          owner = group;
-        }
-      });
-      if(owner && owner.tier_id && owner.tier_id > 0){
-        privateToggle = (
-          <div className="row">
-            <h5>{this.__('Limit access to group members only (BETA)')}</h5>
-            <Toggle name="private" labelOff={this.__('Public')} labelOn={this.__('Private')} defaultChecked={this.state.layer.private} className="col s4"
-                dataPosition="right" dataTooltip={this.__('Make Layer Private')}
-              />
-          </div>
-        );
-      }   
     }
 
 		return (
@@ -244,10 +178,9 @@ var LayerSettings = React.createClass({
                     dataPosition="top" dataTooltip={this.__('Brief Description of the Layer')}
                     required/>
               </div>
-              {privateToggle}
              
             <div  className="row">
-              {groups}
+              <SelectGroup groups={this.state.groups} type="layer" canChangeGroup={canChangeGroup} editing={!this.props.create}/>
             </div>
 
             {cancel}

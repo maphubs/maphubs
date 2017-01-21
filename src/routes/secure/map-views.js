@@ -3,6 +3,7 @@ var Promise = require('bluebird');
 var User = require('../../models/user');
 var Map = require('../../models/map');
 var Layer = require('../../models/layer');
+var Group = require('../../models/group');
 var Stats = require('../../models/stats');
 var debug = require('../../services/debug')('routes/map');
 //var log = require('../../services/log');
@@ -38,7 +39,7 @@ module.exports = function(app: any) {
         || !req.session || !req.session.user) {
             Layer.getPopularLayers()
             .then(function(popularLayers){
-              res.render('map', {title: 'New Map ', props:{popularLayers}, mapboxgl:true, req});
+              res.render('map', {title: 'New Map ', props:{popularLayers}, req});
             }).catch(nextError(next));
     } else {
       //get user id
@@ -48,12 +49,14 @@ module.exports = function(app: any) {
 
       Promise.all([
         Layer.getPopularLayers(),
-        Layer.getUserLayers(user_id, 50, canAddPrivateLayers)
+        Layer.getUserLayers(user_id, 50, canAddPrivateLayers),
+        Group.getGroupsForUser(user_id)
       ])
         .then(function(results){
           var popularLayers = results[0];
           var myLayers = results[1];
-          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers}, mapboxgl:true, req});
+          var myGroups = results[2];
+          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers, myGroups}, req});
         }).catch(nextError(next));
     }
 
@@ -184,19 +187,20 @@ module.exports = function(app: any) {
       Map.allowedToModify(map_id, user_id)
       .then(function(allowed){
         if(allowed){
-          var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
 
           return Promise.all([
           Map.getMap(map_id),
-          Map.getMapLayers(map_id, user_id),
+          Map.getMapLayers(map_id, true),
           Layer.getPopularLayers(),
-          Layer.getUserLayers(user_id, 15, canAddPrivateLayers)
+          Layer.getUserLayers(user_id, 50, true),
+          Group.getGroupsForUser(user_id)
           ])
           .then(function(results){
             var map = results[0];
             var layers = results[1];
             var popularLayers = results[2];
             var myLayers = results[3];
+            var myGroups = results[4];
             var title = 'Map';
             if(map.title){
               title = map.title;
@@ -205,9 +209,8 @@ module.exports = function(app: any) {
               res.render('mapedit',
                {
                  title,
-                 props:{map, layers, popularLayers, myLayers},
+                 props:{map, layers, popularLayers, myLayers, myGroups},
                  hideFeedback: true,
-                 mapboxgl:true,
                  req
                }
              );

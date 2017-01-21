@@ -53,8 +53,9 @@ module.exports = {
     return {
       id: map.map_id.toString(),
       title: map.title ? map.title : '',
+      group: map.owned_by_group_id,
       image_url,
-      link: '/user/' + map.username + '/map/' + map.map_id,
+      link: '/map/view/' + map.map_id + '/' + slug(map.title),
       type: 'map',
       data: map,
       private: map.private,

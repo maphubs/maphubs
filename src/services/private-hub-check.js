@@ -24,17 +24,23 @@ var middleware = function(view) {
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
     }
+
     var hub_id;
     if(req.params.hub_id){
-      hub_id = parseInt(req.params.hub_id || '', 10);
+      hub_id = req.params.hub_id;
     }else if(req.body.hub_id){
       hub_id = req.body.hub_id;
     }else if(req.params.hub){
-      hub_id =  parseInt(req.params.hub || '', 10);
+      hub_id =  req.params.hub;
     }else if(req.params.hubid){
-      hub_id =  parseInt(req.params.hubid || '', 10);
+      hub_id = req.params.hubid;
     }else{
-      apiDataError(res, 'Unable to determine hub_id');
+     if(view){
+       res.redirect('/notfound');
+     }else{
+       apiDataError(res, 'not found');
+     }
+      
     }
 
     if(hub_id){
@@ -55,7 +61,11 @@ var middleware = function(view) {
         }
       }).catch(nextError(next));
     }else{
-      apiDataError(res, 'missing or invalid hub_id');
+      if(view){
+       res.redirect('/notfound');
+      }else{
+        apiDataError(res, 'not found');
+      }
     }
   };
 };

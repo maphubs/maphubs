@@ -93,8 +93,7 @@ module.exports = function(app: any) {
             createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id, data.private);
           }
          createMap
-          .then(function(result){
-            var map_id = result[0];
+          .then(function(map_id){
             ScreenshotUtil.reloadMapThumbnail(map_id)
             .then(function(){
               return ScreenshotUtil.reloadMapImage(map_id);

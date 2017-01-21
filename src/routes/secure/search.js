@@ -13,7 +13,6 @@ module.exports = function(app: any) {
   app.get('/search', csrfProtection, function(req, res) {
       res.render('search', {
         title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
-        mapboxgl:true,
         props: {}, req
       });
   });

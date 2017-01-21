@@ -36,6 +36,8 @@ var GroupAdmin = React.createClass({
   propTypes: {
     group: React.PropTypes.object.isRequired,
     layers: React.PropTypes.array,
+    maps: React.PropTypes.array,
+    hubs: React.PropTypes.array,
     members: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
@@ -43,6 +45,8 @@ var GroupAdmin = React.createClass({
   getDefaultProps() {
     return {
       layers: [],
+      maps: [],
+      hubs: [],
       members: []
     };
   },
@@ -362,6 +366,42 @@ var GroupAdmin = React.createClass({
                         <i className="material-icons">map</i>
                       </a>
                       <a className="secondary-content" href={'/layer/info/' + layer.layer_id + '/' + slug(layer.name)}>
+                        <i className="material-icons">info</i>
+                      </a>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div className="row">
+            <ul className="collection with-header">
+              <li className="collection-header">
+                <h4>{this.__('Maps')}</h4>
+              </li>
+              {this.props.maps.map(function (map, i) {
+                return (
+                  <li className="collection-item" key={map.map_id}>
+                    <div>{map.title}
+                      <a className="secondary-content" href={'/map/view/' + map.map_id + '/' + slug(map.title)}>
+                        <i className="material-icons">map</i>
+                      </a>                     
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div className="row">
+            <ul className="collection with-header">
+              <li className="collection-header">
+                <h4>{this.__('Hubs')}</h4>
+              </li>
+              {this.props.hubs.map(function (hub, i) {
+                return (
+                  <li className="collection-item" key={hub.hub_id}>
+                    <div>{hub.name}                
+                      <a className="secondary-content" href={'/hub/' + hub.hub_id}>
                         <i className="material-icons">info</i>
                       </a>
                     </div>

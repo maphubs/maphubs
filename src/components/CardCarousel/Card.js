@@ -116,11 +116,14 @@ var Card = React.createClass({
       }else if(this.props.type == 'map'){
         iconName = 'map';
         toolTipText = this.__('Map');
-        mapCardUserTag = (
+        if(!this.props.group){
+          mapCardUserTag = (
           <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
             <MapCardUserTag map={this.props.data} />
           </div>
         );
+        }
+        
       }
 
       typeIcon = (
@@ -140,7 +143,7 @@ var Card = React.createClass({
         data-position="bottom" data-delay="50" data-tooltip={this.__('Private')}>
         lock</i>
         </div>
-      )
+      );
     }
 
     var cardContents = (<div className="carousel-card small"></div>);

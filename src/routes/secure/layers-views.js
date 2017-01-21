@@ -155,9 +155,9 @@ module.exports = function(app: any) {
       Layer.getLayerByID(layer_id),
       Layer.allowedToModify(layer_id, user_id)
       ])
-    .then(function(results){
-      var layer = results[0];
-      var canEdit = results[1];
+    .then(function(results: Array<any>){
+      var layer: Object = results[0];
+      var canEdit: boolean = results[1];
       if(layer){
         res.render('layermap', {
           title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
@@ -199,7 +199,6 @@ module.exports = function(app: any) {
             if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
               if(layer.data_type == 'point' && !layer.is_external){
                 res.render('addphotopoint', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
-                mapboxgl:true,
                 props: {layer}, req});
               }else{
                 res.status(400).send('Bad Request: Feature not support for this layer');
@@ -228,7 +227,6 @@ module.exports = function(app: any) {
           var layer = results[0];
           var groups = results[1];
           res.render('layeradmin', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
-          mapboxgl:true,
           props: {layer, groups}, req});
           });
         }else{

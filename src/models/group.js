@@ -126,20 +126,20 @@ module.exports = {
         });
     },
 
-    getGroupRole(user_id: number, group_id: string) {
+    getGroupRole(user_id: number, group_id: string): Object {
       return knex.select('omh.group_memberships.role').from('omh.group_memberships')
         .where({
           group_id,
           user_id
         }).then(function(results){
-          if(results && results.length ==- 1){
+          if(results && results.length === 1){
             return results[0].role;
           }
           return null;
         });
     },
 
-    getGroupMembers(group_id: string, trx: any= null) {
+    getGroupMembers(group_id: string, trx: any= null): Promise<Array<Object>> {
       let db = knex;
       if(trx){db = trx;}
       return db.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.group_memberships.role').from('omh.group_memberships')
@@ -197,7 +197,7 @@ module.exports = {
       return knex.transaction(function(trx) {
         return Promise.all([
           trx('omh.groups').insert({
-            group_id, name, description, location, published
+            group_id, name, description, location, published, tier_id: 'public'
           }),
           //insert creating user as first admin
           trx('omh.group_memberships').insert({

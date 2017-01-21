@@ -15,7 +15,7 @@ module.exports = {
     return db('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, basemap, private, created_by,
-      created_at, updated_by, updated_at, views,
+      created_at, updated_by, updated_at, views, owned_by_group_id, owned_by_user_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
     .where({map_id})
@@ -37,7 +37,7 @@ module.exports = {
     var query = db('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, basemap, private, created_by,
-      created_at, updated_by, updated_at, views,
+      created_at, updated_by, updated_at, views, owned_by_group_id, owned_by_user_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
     .where({owned_by_group_id});
@@ -95,11 +95,13 @@ module.exports = {
   allowedToModify(map_id: number, user_id: number){
     return this.getMap(map_id)
       .then(function(map){
-          //FIXME: use the user_maps table instead
-          if(map.created_by === user_id){
-            return true;
-          }
+        if(map.owned_by_user_id && map.owned_by_user_id === user_id){
+          return true;
+        }else if(map.owned_by_group_id){
+          return Group.allowedToModify(map.owned_by_group_id, user_id);
+        }else{
           return false;
+        }
       });
     },
 
@@ -108,15 +110,14 @@ module.exports = {
      */
     getAllMaps(){
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        'omh.maps.updated_at',
+        'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
-        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
          .where('omh.maps.private', false)
-        .whereNotNull('omh.user_maps.map_id')
         .orderBy('omh.maps.updated_at', 'desc');
     },
 
@@ -125,14 +126,13 @@ module.exports = {
      */
     getFeaturedMaps(number: number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        'omh.maps.updated_at',
+        'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
          'public.users.display_name as username')
         .from('omh.maps')
-        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
-        .whereNotNull('omh.user_maps.map_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
         .where('omh.maps.featured', true).where('omh.maps.private', false)
         .orderBy('omh.maps.updated_at', 'desc')
         .limit(number);
@@ -143,15 +143,14 @@ module.exports = {
      */
     getPopularMaps(number: number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        'omh.maps.updated_at',
+        'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
-        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
         .where('omh.maps.private', false)
-        .whereNotNull('omh.user_maps.map_id')
         .whereNotNull('views')
         .orderBy('views', 'desc')
         .limit(number);
@@ -162,15 +161,14 @@ module.exports = {
    */
     getRecentMaps(number: number=10){
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-        'omh.maps.updated_at', 'omh.user_maps.user_id',
+        'omh.maps.updated_at',
+        'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
         knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
         knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
-        .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-        .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
+        .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
         .where('omh.maps.private', false)
-        .whereNotNull('omh.user_maps.map_id')
         .orderBy('omh.maps.updated_at', 'desc')
         .limit(number);
     },
@@ -180,14 +178,14 @@ module.exports = {
    */
   getUserMaps(user_id: number){
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at', 'omh.user_maps.user_id',
+      'omh.maps.updated_at',
+       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
       knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
       'public.users.display_name as username')
       .from('omh.maps')
-      .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-      .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
-      .where('omh.user_maps.user_id', user_id);
+      .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
+      .where('omh.maps.owned_by_user_id', user_id);
   },
 
   /**
@@ -214,14 +212,13 @@ module.exports = {
   getSearchResults(input: string) {
     input = input.toLowerCase();
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at', 'omh.user_maps.user_id', 
+      'omh.maps.updated_at',
+      'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
       knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
       'public.users.display_name as username')
       .from('omh.maps')
-      .leftJoin('omh.user_maps', 'omh.maps.map_id', 'omh.user_maps.map_id')
-      .leftJoin('public.users', 'public.users.id', 'omh.user_maps.user_id')
-      .whereNotNull('omh.user_maps.map_id')
+      .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
       .where(knex.raw(`
       omh.maps.private = false
       AND ( 
@@ -318,7 +315,7 @@ module.exports = {
       var map = results[0];
       var layers = results[1];
       var title = map.title + ' - Copy';
-      return _this.createGroupMap(layers, map.style, map.basemap, map.position, title, user_id, to_group_id);
+      return _this.createGroupMap(layers, map.style, map.basemap, map.position, title, user_id, to_group_id, map.private);
     });
   },
 
@@ -428,9 +425,9 @@ module.exports = {
     return knex.transaction(function(trx) {
       return trx('omh.map_views').where({map_id}).del()
       .then(function(){
-        return trx('omh.user_maps').where({map_id}).del()
+        return trx('omh.user_maps').where({map_id}).del() //keep until all user maps migrated
         .then(function(){
-          return trx('omh.story_maps').where({map_id}).del()
+          return trx('omh.story_maps').where({map_id}).del() //keep until all story maps migrated
           .then(function(){
             return trx('omh.map_layers').where({map_id}).del()
             .then(function(){

@@ -74,6 +74,15 @@ var GroupInfo = React.createClass({
             </ul>
         </div>
       );
+
+      var addButtons = (
+         <div className="valign-wrapper">
+          <a className="btn valign" style={{margin: 'auto'}} href={'/map/new?group_id=' + this.props.group.group_id}>{this.__('Make a Map')}</a>
+          <a className="btn valign" style={{margin: 'auto'}} href={'/createlayer?group_id=' + this.props.group.group_id}>{this.__('Add a Layer')}</a>
+          <a className="btn valign" style={{margin: 'auto'}} href={'/createhub?group_id=' + this.props.group.group_id}>{this.__('Create a Hub')}</a>
+        </div>
+      );
+
     }
 
     var unofficial = '';
@@ -97,32 +106,7 @@ var GroupInfo = React.createClass({
       status = this.__('Published');
     }
 
-     var maps = '';
-    if(this.state.mapCards && this.state.mapCards.length > 0){
-      maps = (
-        <div className="row">
-          <CardCarousel cards={this.state.mapCards} infinite={false}/>
-        </div>
-      );
-    }
-
-    var layers = '';
-    if(this.state.layerCards && this.state.layerCards.length > 0){
-      layers = (
-        <div className="row">
-          <CardCarousel cards={this.state.layerCards} infinite={false}/>
-        </div>
-      );
-    }
-
-    var hubs = '';
-    if(this.state.hubCards && this.state.hubCards.length > 0){
-      hubs = (
-        <div className="row">
-          <CardCarousel cards={this.state.hubCards} infinite={false}/>
-        </div>
-      );
-    }
+    var allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.hubCards]);
 
     return (
       <div>
@@ -149,28 +133,12 @@ var GroupInfo = React.createClass({
 
           </div>
           <div className="divider" />
-            <div className="row">
-              <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Maps')}</h5>
-              {maps}
-              <div className="valign-wrapper">
-                <a className="btn valign" style={{margin: 'auto'}} href={'/map/new?group_id=' + this.props.group.group_id}>{this.__('Create a Map')}</a>
+            <div className="row">              
+               <div className="row">
+                <CardCarousel cards={allCards} infinite={false}/>
               </div>
-            </div>
-            <div className="row">
-              <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
-              {layers}
-              <div className="valign-wrapper">
-                <a className="btn valign" style={{margin: 'auto'}} href={'/createlayer?group_id=' + this.props.group.group_id}>{this.__('Add a Layer')}</a>
-              </div>
-            </div>
-            <div className="divider" />
-            <div className="row">
-              <h5 className="no-margin" style={{lineHeight: '50px'}}>{this.__('Hubs')}</h5>
-              {hubs}
-              <div className="valign-wrapper">
-                <a className="btn valign" style={{margin: 'auto'}} href={'/createhub?group_id=' + this.props.group.group_id}>{this.__('Create a Hub')}</a>
-              </div>
-            </div>
+              {addButtons}
+            </div>           
           </div>
           <div className="divider" />
           <div className="container">

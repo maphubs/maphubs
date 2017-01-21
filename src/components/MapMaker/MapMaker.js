@@ -8,18 +8,15 @@ var _isEqual = require('lodash.isequal');
 var _debounce = require('lodash.debounce');
 var Map = require('../Map/Map');
 
-var Formsy = require('formsy-react');
-var TextInput = require('../forms/textInput');
-
 var MiniLegend = require('../Map/MiniLegend');
 
 var AddLayerPanel = require('./AddLayerPanel');
+var SaveMapPanel = require('./SaveMapPanel');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var MapMakerStore = require('../../stores/MapMakerStore');
 var UserStore = require('../../stores/UserStore');
-var UserActions = require('../../actions/UserActions');
 var Actions = require('../../actions/MapMakerActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var NotificationActions = require('../../actions/NotificationActions');
@@ -47,10 +44,12 @@ var MapMaker = React.createClass({
     onClose: React.PropTypes.func,
     myLayers: React.PropTypes.array,
     popularLayers: React.PropTypes.array,
+    myGroups: React.PropTypes.array,
     title: React.PropTypes.string,
     position: React.PropTypes.object,
     basemap: React.PropTypes.string,
-    mapId: React.PropTypes.number
+    map_id: React.PropTypes.number,
+    owned_by_group_id: React.PropTypes.string,
   },
 
   getDefaultProps() {
@@ -60,7 +59,8 @@ var MapMaker = React.createClass({
       showVisibility: true,
       mapLayers: null,
       showTitleEdit: true,
-      mapId: null,
+      map_id: null,
+      owned_by_group_id: null,
       title: null,
       basemap: null
     };
@@ -92,8 +92,12 @@ var MapMaker = React.createClass({
       Actions.setMapBasemap(this.props.basemap);
     }
 
-    if(this.props.mapId){
-      Actions.setMapId(this.props.mapId);
+    if(this.props.map_id){
+      Actions.setMapId(this.props.map_id);
+    }
+
+     if(this.props.owned_by_group_id){
+      Actions.setOwnedByGroupId(this.props.owned_by_group_id);
     }
 
     if (typeof window === 'undefined') return; //only run this on the client
@@ -140,12 +144,6 @@ var MapMaker = React.createClass({
     var _this = this;
     $('ul.tabs').tabs();
     $('.collapsible').collapsible();
-    $(this.refs.sidenav).sideNav({
-      menuWidth: 300, // Default is 240
-      edge: 'left', // Choose the horizontal origin
-      closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    }
-    );
     if(this.props.edit){
       this.toggleMapTab();
     }
@@ -192,58 +190,82 @@ var MapMaker = React.createClass({
 
   onCreate(){
     this.setState({saved: true});
-    if(this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.user.display_name);
+    if(this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.title);
+  },
+
+
+   privacyCheck(isPrivate, group_id){
+    //check if layers meet privacy rules, before sending a request to the server that will fail...
+    if(isPrivate){
+      if(!group_id){
+         return this.__('Private map must be saved to a group');
+      }
+      //check all layers are in the same group
+      var privateLayerInOtherGroup = false;
+      this.state.mapLayers.forEach(function(layer){
+        if(layer.private && layer.owned_by_group_id !== group_id){
+          privateLayerInOtherGroup = true;
+        }
+      });
+      if(privateLayerInOtherGroup){
+        return this.__('Private layers must belong to the same group that owns the map. Change the group where you are saving the map or remove the private layer.');
+      }
+
+    }else{
+      //check that no private layers are included
+      var privateLayerInPublicMap = false;
+      this.state.mapLayers.forEach(function(layer){
+        if(layer.private){
+          privateLayerInPublicMap = true;
+        }
+      });
+      if(privateLayerInPublicMap){
+        return this.__('A public map cannot contain private layers. Please save as a private map owned by your group, or remove the private layer');
+      }
+    }
+
   },
 
 
   onSave(model){
-    this.handleTitleChange(model.title.trim());
+    
     var _this = this;
-
-    if(!model.title || model.title == ''){
-      NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'});
-      return;
-    }
 
     var position = this.refs.map.getPosition();
     position.bbox = this.refs.map.getBounds();
 
-    var basemap = this.refs.map.getBaseMap();
-    if(!this.state.map_id || this.state.map_id == -1){
-      Actions.createUserMap(position, basemap, _this.state._csrf, function(err){
-        if(err){
-          //display error to user
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          //hide designer
-          NotificationActions.showNotification({message: _this.__('Map Saved')});
-          _this.onCreate();
-        }
-      });
+    if(model.private === undefined) model.private = false;
+
+    var err = this.privacyCheck(model.private, model.group);
+    if(err){
+       MessageActions.showMessage({title: _this.__('Error'), message: err});
     }else{
-      Actions.saveMap(position, basemap, this.state._csrf, function(err){
-        if(err){
-          //display error to user
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          //hide designer
-          NotificationActions.showNotification({message: _this.__('Map Saved')});
-          _this.onCreate();
-        }
-      });
-    }
-  },
 
-  handleTitleChange(title){
-    Actions.setMapTitle(title);
-  },
-
-  recheckLogin(){
-    UserActions.getUser(function(err){
-      if(err){
-        NotificationActions.showNotification({message: this.__('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'topright'});
+      var basemap = this.refs.map.getBaseMap();
+      if(!this.state.map_id || this.state.map_id == -1){
+        Actions.createMap(model.title, position, basemap, model.group, model.private, _this.state._csrf, function(err){
+          if(err){
+            //display error to user
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            //hide designer
+            NotificationActions.showNotification({message: _this.__('Map Saved')});
+            _this.onCreate();
+          }
+        });
+      }else{
+        Actions.saveMap(model.title, position, basemap, this.state._csrf, function(err){
+          if(err){
+            //display error to user
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            //hide designer
+            NotificationActions.showNotification({message: _this.__('Map Saved')});
+            _this.onCreate();
+          }
+        });
       }
-    });
+    }
   },
 
   toggleVisibility(layer_id){
@@ -326,18 +348,6 @@ var MapMaker = React.createClass({
 
   },
 
-  enableSaveButton() {
-    this.setState({
-      canSave: true
-    });
-  },
-
-  disableSaveButton() {
-    this.setState({
-      canSave: false
-    });
-  },
-
   render(){
     var _this = this;
 
@@ -346,42 +356,7 @@ var MapMaker = React.createClass({
       tabContentDisplay = 'inherit';
     }
 
-    var settings = '';
-
-    if(this.state.loggedIn){
-      settings = (
-        <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
-          <div className="row" style={{margin: '25px'}}>
-            <TextInput name="title"
-              defaultValue={this.state.title} value={this.state.title}
-              label={this.__('Map Title')}
-              className="col s12" length={200}
-               required/>
-          </div>
-          <div className="row">
-            <div className="col s12 valign-wrapper">
-                  <button type="submit" className="valign waves-effect waves-light btn" style={{margin: 'auto'}} disabled={!this.state.canSave}>{this.__('Save Map')}</button>
-            </div>
-          </div>
-
-        </Formsy.Form>
-      );
-    }else{
-      settings = (
-        <div>
-          <div className="row center-align">
-            <p>{this.__('You must login or sign up before saving a map.')}</p>
-          </div>
-          <div className="row center-align">
-            <a className="btn" href="/login" target="_blank">{this.__('Login')}</a>
-          </div>
-          <div className="row center-align">
-            <a className="btn" onClick={this.recheckLogin}>{this.__('Retry')}</a>
-          </div>
-        </div>
-      );
-    }
-
+    
     var sidebarContent = '';
     if(this.state.showMapLayerDesigner){
       sidebarContent = (
@@ -441,7 +416,10 @@ var MapMaker = React.createClass({
             <li>
               <div className="collapsible-header"><i className="material-icons">save</i>{this.__('Save')}</div>
               <div className="collapsible-body">
-                {settings}
+                <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
+                  <SaveMapPanel groups={this.props.myGroups} onSave={this.onSave} />
+                </div>
+                
               </div>
             </li>
         </ul>

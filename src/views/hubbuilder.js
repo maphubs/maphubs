@@ -5,7 +5,7 @@ var Header = require('../components/header');
 var Formsy = require('formsy-react');
 var $ = require('jquery');
 var TextInput = require('../components/forms/textInput');
-var Select = require('../components/forms/select');
+var SelectGroup = require('../components/Groups/SelectGroup');
 var MessageActions = require('../actions/MessageActions');
 var NotificationActions = require('../actions/NotificationActions');
 
@@ -159,37 +159,6 @@ var HubBuilder = React.createClass({
       );
     }
 
-    var groups = '';
-
-   if(this.props.groups.length > 1){
-      var groupOptions = [];
-
-      this.props.groups.map(function(group){
-        groupOptions.push({
-          value: group.group_id,
-          label: group.name
-        });
-      });
-
-      groups = (
-        <div>
-          <p>{this.__('Since you are in multiple groups, please select the group that should own this hub.')}</p>
-          <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={true}
-            emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
-              dataPosition="right" dataTooltip={this.__('Owned by Group')}
-              required
-              />
-        </div>
-        );
-
-      }else{
-        groups = (
-          <div>
-            <b>{this.__('Group:')} </b>{this.props.groups[0].name}
-          </div>
-        );
-      }
-
 		return (
       <div>
           <Header />
@@ -218,7 +187,7 @@ var HubBuilder = React.createClass({
                      required/>
                 </div>
                 <div  className="row">
-                  {groups}
+                  <SelectGroup groups={this.props.groups} type="hub" canChangeGroup={true} editing={false}/>
                 </div>
                 <div className="right">
                     <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>

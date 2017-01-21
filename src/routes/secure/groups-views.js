@@ -61,15 +61,16 @@ module.exports = function(app: any) {
         ])
       .then(function(result: Array<any>) {
         var group: Object = result[0];
-        var layers = result[1];
-        var hubs = result[2];
-        var members = result[3];
+        var maps = result[1];
+        var layers = result[2];
+        var hubs = result[3];
+        var members = result[4];
         var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
         res.render('groupinfo', {
           title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: group.description,
           props: {
-            group, layers, hubs, members, canEdit
+            group, maps, layers, hubs, members, canEdit
           },
            twitterCard: {
             card: 'summary',
@@ -88,7 +89,7 @@ module.exports = function(app: any) {
 
   app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
-    var user_id = req.session.user.id;
+    var user_id = parseInt(req.session.user.id);
     var group_id = req.params.id;
 
     //confirm that this user is allowed to administer this group
@@ -99,18 +100,21 @@ module.exports = function(app: any) {
               Group.getGroupByID(group_id),
               Map.getGroupMaps(group_id, true),
               Layer.getGroupLayers(group_id, true),
+              Hub.getGroupHubs(group_id, true),
               Group.getGroupMembers(group_id),
               Account.getStatus(group_id)
             ])
-            .then(function(result) {
-              var group = result[0];
-              var layers = result[1];
-              var members = result[2];
-              var account = result[3];
+            .then(function(result: Array<any>) {
+              var group: Object = result[0];
+              var maps: Array<Object> = result[1];
+              var layers: Array<Object> = result[2];
+              var hubs: Array<Object> = result[3];
+              var members: Array<Object> = result[4];
+              var account: Object = result[5];
               res.render('groupadmin', {
                 title: group.name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
                 props: {
-                  group, layers, members, account
+                  group, maps, layers, hubs, members, account
                 }, req
               });
             }).catch(nextError(next));

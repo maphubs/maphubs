@@ -9,7 +9,7 @@ module.exports = {
   completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean){
     Promise.all([
     Map.getMap(map_id),
-    Map.getMapLayers(map_id)
+    Map.getMapLayers(map_id, canEdit)
     ])
     .then(function(results){
       var map = results[0];
@@ -22,7 +22,6 @@ module.exports = {
         res.render('embedmap', {
           title,
           props:{map, layers, canEdit, isStatic},
-          mapboxgl:true,
           hideFeedback: true, req});
     }).catch(nextError(next));
   },
@@ -31,7 +30,7 @@ module.exports = {
     debug('completeUserMapRequest');
     return Promise.all([
     Map.getMap(map_id),
-    Map.getMapLayers(map_id)
+    Map.getMapLayers(map_id, canEdit)
     ])
     .then(function(results){
       var map = results[0];
@@ -47,7 +46,6 @@ module.exports = {
            title,
            props:{map, layers, canEdit},
            hideFeedback: true,
-           mapboxgl:true,
            addthis: true,
            oembed: 'map',
            twitterCard: {

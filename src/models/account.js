@@ -14,81 +14,83 @@ module.exports = {
    * Get tiers current offer to end-users
    * otherwise tiers are hidden to support grandfathered and custom accounts
    */
-  getAvailableTiers(trx: any= null){
+  getAvailableTiers(trx: any= null): Bluebird$Promise<Array<Object>>{
     let db = knex;
     if(trx){db = trx;}
     return db('omh.account_tiers').where({available: true});
   },
 
-  getGroupTier(group_id: string, trx: any= null){
+  getGroupTier(group_id: string, trx: any= null): Bluebird$Promise<Object>{
       let db = knex;
     if(trx){db = trx;}
-    db.select('omh.account_tiers.*')
+    return db.select('omh.account_tiers.*')
     .from('omh.groups').leftJoin('omh.account_tiers', 'omh.groups.tier_id', 'omh.account_tiers.tier_id')
     .where('omh.groups.group_id', group_id)
     .then(function(results){
       if(results && results.length === 1){
         return results[0];
       }
-      return null;
+      return {};
     });
   },
 
-  countGroupMembers(group_id: string, trx: any= null){
+  countGroupMembers(group_id: string, trx: any= null): Bluebird$Promise<number>{
     let db = knex;
     if(trx){db = trx;}
     return db.count('user_id').from('omh.group_memberships').where({group_id})
     .then(function(result){
-      return parseInt(result.count);
+      return parseInt(result[0].count);
     });
   },
 
-  countGroupPrivateLayers(group_id: string, trx: any= null){
+  countGroupPrivateLayers(group_id: string, trx: any= null): Bluebird$Promise<number>{
     let db = knex;
     if(trx){db = trx;}
     return db.count('layer_id').from('omh.layers')
     .where({owned_by_group_id: group_id, private: true})
     .then(function(result){
-      return parseInt(result.count);
+      return parseInt(result[0].count);
     });
   },
 
-  countGroupPrivateHubs(group_id: string, trx: any= null){
+  countGroupPrivateHubs(group_id: string, trx: any= null): Bluebird$Promise<number>{
     let db = knex;
     if(trx){db = trx;}
     return db.count('hub_id').from('omh.hubs')
     .where({owned_by_group_id: group_id, private: true})
     .then(function(result){
-      return parseInt(result.count);
+      return parseInt(result[0].count);
     });
   },
 
-  countGroupPrivateMaps(group_id: string, trx: any= null){
+  countGroupPrivateMaps(group_id: string, trx: any= null): Bluebird$Promise<number>{
     let db = knex;
     if(trx){db = trx;}
     return db.count('map_id').from('omh.maps')
     .where({owned_by_group_id: group_id, private: true})
     .then(function(result){
-      return parseInt(result.count);
+      return parseInt(result[0].count);
     });
   },
 
-  getStatus(group_id: string, trx: any= null){
+  getStatus(group_id: string, trx: any= null): Bluebird$Promise<Object>{
+
     return Promise.all([
-      this.getGroupTier(group_id, trx),
-      this.countGroupMembers(group_id, trx),
-      this.countGroupPrivateLayers(group_id, trx),
-      this.countGroupPrivateHubs(group_id, trx),
-      this.countGroupPrivateMaps(group_id, trx)
-    ]).then(function(results){
-      return {
-        tier: results[0],
-        numGroupMembers: results[1],
-        numPrivateLayers: results[2],
-        numPrivateHubs: results[3],
-        numPrivateMaps: results[4],
-      };
-    });
+    this.getGroupTier(group_id, trx),
+    this.countGroupMembers(group_id, trx),
+    this.countGroupPrivateLayers(group_id, trx),
+    this.countGroupPrivateHubs(group_id, trx),
+    this.countGroupPrivateMaps(group_id, trx)
+  ]).then(function(results){
+    return {
+      tier: results[0],
+      numGroupMembers: results[1],
+      numPrivateLayers: results[2],
+      numPrivateHubs: results[3],
+      numPrivateMaps: results[4],
+    };
+  });
+
   }
 
 };

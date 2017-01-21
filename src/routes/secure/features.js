@@ -26,7 +26,7 @@ module.exports = function(app: any) {
     var osm_id = req.params.osm_id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
 
-    var user_id = null;
+    var user_id: number = -1;
     if(req.session.user){
       user_id = req.session.user.id;
     }
@@ -70,7 +70,6 @@ module.exports = function(app: any) {
           {
             title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
             fontawesome: true,
-            mapboxgl:true,
             props: {feature, notes, photo, layer, canEdit: false},
              req
            });
@@ -82,7 +81,6 @@ module.exports = function(app: any) {
               {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
-                mapboxgl:true,
                 props: {feature, notes, photo, layer, canEdit: true}, req
               });
             }
@@ -91,7 +89,6 @@ module.exports = function(app: any) {
               {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
-                mapboxgl:true,
                 props: {feature, notes, photo, layer, canEdit: false},
                  req
                });
@@ -119,7 +116,7 @@ module.exports = function(app: any) {
             var geoJSON = feature.geojson;
             geoJSON.features[0].geometry.type = "LineString";
             var coordinates = geoJSON.features[0].geometry.coordinates[0][0];
-            log.info(coordinates)
+            log.info(coordinates);
             var resultStr = JSON.stringify(geoJSON);
             log.info(resultStr);
             var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");

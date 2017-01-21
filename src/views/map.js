@@ -4,6 +4,7 @@ var MapMaker = require('../components/MapMaker/MapMaker');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
+var slug = require('slug');
 
 var Map = React.createClass({
 
@@ -12,6 +13,7 @@ var Map = React.createClass({
   propTypes: {
     popularLayers: React.PropTypes.array,
     myLayers: React.PropTypes.array,
+    myGroups: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -23,8 +25,8 @@ var Map = React.createClass({
     };
   },
 
-  mapCreated(map_id, username){
-    window.location = '/user/' + username + '/map/'+map_id;
+  mapCreated(map_id, title){
+    window.location = '/map/view/' + map_id + '/'+ slug(title);
   },
 
 	render() {
@@ -32,7 +34,7 @@ var Map = React.createClass({
       <div>
         <Header activePage="map"/>
         <main style={{height: 'calc(100% - 70px)'}}>
-          <MapMaker onCreate={this.mapCreated} popularLayers={this.props.popularLayers} myLayers={this.props.myLayers} />
+          <MapMaker onCreate={this.mapCreated} popularLayers={this.props.popularLayers} myLayers={this.props.myLayers} myGroups={this.props.myGroups} />
         </main>
       </div>
 		);

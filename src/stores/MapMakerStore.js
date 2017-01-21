@@ -22,7 +22,8 @@ module.exports = Reflux.createStore({
       mapLayers: [],
       mapStyle: null,
       position: null,
-      private: false,
+      isPrivate: false,
+      owned_by_group_id: null,
       basemap: 'default'
     };
   },
@@ -48,7 +49,16 @@ module.exports = Reflux.createStore({
   },
 
   setMapTitle(title){
+    title = title.trim();
     this.setState({title});
+  },
+
+  setPrivate(isPrivate){
+    this.setState({isPrivate});
+  },
+
+  setOwnedByGroupId(group_id){
+    this.setState({owned_by_group_id: group_id});
   },
 
   setMapPosition(position){
@@ -116,51 +126,54 @@ module.exports = Reflux.createStore({
     this.updateMap(layers);
   },
 
-  saveMap(position, basemap, _csrf, cb){
+  saveMap(title, position, basemap, _csrf, cb){
     var _this = this;
     //resave an existing map
+    title = title.trim();
     request.post('/api/map/save')
     .type('json').accept('json')
     .send({
         map_id: this.state.map_id,
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
-        title: this.state.title,
+        title: title,
         position,
         basemap,
         _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
-        _this.setState({position, basemap});
+        _this.setState({title, position, basemap});
         cb();
       });
     });
   },
 
-  createUserMap(position, basemap, _csrf, cb){
+  createMap(title, position, basemap, group_id, isPrivate, _csrf, cb){
     var _this = this;
+    title = title.trim();
     request.post('/api/map/create')
     .type('json').accept('json')
     .send({
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
-        title: this.state.title,
+        title,
+        group_id,
         position,
         basemap,
-        private: this.state.private,
+        private: isPrivate,
         _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
         var map_id = res.body.map_id;
-        _this.setState({map_id, position, basemap});
+        _this.setState({title, map_id, position, basemap, owned_by_group_id: group_id, isPrivate});
         cb();
       });
     });
   },
 
-  setPrivate(isPrivate, _csrf, cb){
+  savePrivate(isPrivate, _csrf, cb){
     var _this = this;
     request.post('/api/map/privacy')
     .type('json').accept('json')
@@ -171,7 +184,7 @@ module.exports = Reflux.createStore({
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
-        _this.setState({private: isPrivate});
+        _this.setState({isPrivate});
         cb();
       });
     });

@@ -172,7 +172,7 @@ module.exports = {
    /**
    * Can include private?: If Requested
    */
-  getGroupLayers(group_id: string, includePrivate: boolean = false) {
+  getGroupLayers(group_id: string, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
     var query: knex = knex.select('layer_id', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
@@ -214,7 +214,7 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getUserLayers(user_id: number, number: number, includePrivate: boolean = false) {
+  getUserLayers(user_id: number, number: number, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
 
     var subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
 
@@ -372,9 +372,9 @@ module.exports = {
     /**
    * Can include private?: Yes
    */
-  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null){
+  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null): Bluebird$Promise<boolean>{
     if(!layer_id || user_id <= 0){
-      return new Promise(function(fulfill){fulfill(false);});
+      return false;
     }
     return this.getLayerByID(layer_id, trx)
       .then(function(layer){

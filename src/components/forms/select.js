@@ -23,6 +23,7 @@ var Select = React.createClass({
     label: React.PropTypes.string,
     successText: React.PropTypes.string,
     id: React.PropTypes.string,
+    onChange: React.PropTypes.func,
     note: React.PropTypes.string //optional note that displays below the select, will be updated on selection if option contains a note
   },
 
@@ -54,6 +55,9 @@ var Select = React.createClass({
      var val = selected.value;
      this.setValue(val);
      this.setNote(val);
+     if(this.props.onChange){
+       this.props.onChange(val);
+     }
 
    },
 

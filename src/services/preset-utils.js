@@ -42,7 +42,8 @@ module.exports = {
           "key": preset.tag,
           "type": preset.type,
           "label": preset.label ? preset.label : '',
-          "placeholder": preset.placeholder ? preset.placeholder : ''
+          "placeholder": preset.placeholder ? preset.placeholder : '',
+          "options": []
         };
 
         if((preset.type == 'radio' || preset.type == 'combo') && preset.options){

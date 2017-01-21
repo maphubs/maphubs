@@ -708,5 +708,10 @@
 	"Size of the map marker": "Size of the map marker",
 	"Invert Colors": "Invert Colors",
 	"Invert colors": "Invert colors",
-	"Since you are in multiple groups, please select the group that should own this item.": "Since you are in multiple groups, please select the group that should own this item."
+	"Since you are in multiple groups, please select the group that should own this item.": "Since you are in multiple groups, please select the group that should own this item.",
+	"Create a Map": "Create a Map",
+	"Private": "Private",
+	"Owned by Me": "Owned by Me",
+	"Owned by My Group": "Owned by My Group",
+	"Select who should own this map": "Select who should own this map"
 }

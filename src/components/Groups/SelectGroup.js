@@ -22,13 +22,15 @@ var SelectGroup = React.createClass({
     type: React.PropTypes.string.isRequired,
     group_id: React.PropTypes.string,
     canChangeGroup: React.PropTypes.bool,
-    private: React.PropTypes.bool
+    private: React.PropTypes.bool,
+    editing: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return  {
       canChangeGroup: true,
-      private: true
+      private: true,
+      editing: false
     };
   },
 
@@ -66,6 +68,10 @@ var SelectGroup = React.createClass({
     return owner;
   },
 
+  onGroupChange(group_id){
+    this.setState({group_id});
+  },
+
   render(){
 
     var startEmpty = true;
@@ -84,11 +90,11 @@ var SelectGroup = React.createClass({
       });
 
       groups = (
-        <div>
-          <p>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
+        <div className="row">
+          <p style={{padding: '10px'}}>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
           <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
-            value={this.state.group_id} defaultValue={this.state.group_id}
-            emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
+            value={this.state.group_id} defaultValue={this.state.group_id} onChange={this.onGroupChange}
+            emptyText={this.__('Choose a Group')} options={groupOptions} className="col s12"
               dataPosition="right" dataTooltip={this.__('Owned by Group')}
               required
               />
@@ -97,7 +103,7 @@ var SelectGroup = React.createClass({
 
       }else{
         groups = (
-          <div>
+          <div className="row">
             <b>{this.__('Group:')} </b>{this.props.groups[0].name}
           </div>
         );
@@ -110,45 +116,74 @@ var SelectGroup = React.createClass({
         //check if allowed to have private content
         var privateAllowed = false;
         var overLimit = false;        
+        var itemCount, itemLimit, itemName;
         if(owner.account.tier.tier_id !== 'public'){
 
           if(this.props.type === 'layer'){
             if(owner.account.tier.private_layer_limit > 0){
               privateAllowed = true;
-              if((owner.account.numPrivateLayers + 1) >= owner.account.tier.private_layer_limit){
+              itemCount = owner.account.numPrivateLayers;
+              itemLimit = owner.account.tier.private_layer_limit;
+              if((itemCount + 1) > itemLimit){
                 overLimit = true;
               }
+              itemName = this.__('private layers');
             }
           }else if(this.props.type === 'hub'){
             if(owner.account.tier.private_hub_limit > 0){
               privateAllowed = true;
-              if((owner.account.numPrivateHubs + 1) >= owner.account.tier.private_hub_limit){
+              itemCount = owner.account.numPrivateHubs;
+              itemLimit = owner.account.tier.private_hub_limit;
+              if((itemCount + 1) > itemLimit){
                 overLimit = true;
               }
+              itemName = this.__('private hubs');
             }
           }else if(this.props.type === 'map'){
             if(owner.account.tier.private_map_limit > 0){
               privateAllowed = true;
-              if((owner.account.numPrivateMaps + 1) >= owner.account.tier.private_map_limit){
+              itemCount = owner.account.numPrivateMaps;
+              itemLimit = owner.account.tier.private_map_limit;
+              if((itemCount + 1) > itemLimit){
                 overLimit = true;
               }
+              itemName = this.__('private maps');
             }
           } 
         }
         if(privateAllowed){
-          var tooltipMessage = '';
-          if(this.state.private){
-            tooltipMessage = this.__('Only accessible to members of the same group');
-          }else{
-             tooltipMessage = this.__('Publicly Avaliable');
+          var tooltipMessage = this.__('Private layers are only accessible to members of the same group');
+          
+          var defaultChecked = false;
+          var disablePrivate = false;
+          var overLimitMessage = '';
+          if(overLimit){
+            disablePrivate = true;
+            //keep previous settings even if over the limit
+            if(this.props.editing){
+              defaultChecked = this.state.private;
+            }else{
+              overLimitMessage = (
+                <p>{this.__('Upgrade your account to add additional ')} {itemName}</p>
+              );
+            }
+          }else{           
+            defaultChecked = this.state.private;
           }
-           privateToggle = (
-          <div className="row">
-            <Toggle name="private" labelOff={this.__('Public')} labelOn={this.__('Private')} defaultChecked={this.state.private} className="col s4"
-                dataPosition="right" dataTooltip={tooltipMessage}
-              />
-          </div>
-        );
+         
+          privateToggle = (
+            <div className="row">
+              <p style={{padding: '10px'}}>{this.__('Account Level:')} <b>{owner.account.tier.name}</b>&nbsp;
+                <span>
+                  {this.__('You are currently using ')} {itemCount} {this.__('of')} {itemLimit} {itemName}
+                </span>
+              </p>
+              <Toggle name="private" labelOff={this.__('Public')} disabled={disablePrivate} labelOn={this.__('Private')} defaultChecked={defaultChecked} className="col s12"
+                  dataPosition="right" dataTooltip={tooltipMessage}
+                />
+              {overLimitMessage}
+            </div>
+          );
         }
         
       }

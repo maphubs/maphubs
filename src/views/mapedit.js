@@ -4,6 +4,7 @@ var MapMaker = require('../components/MapMaker/MapMaker');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
+var slug = require('slug');
 
 var MapEdit = React.createClass({
 
@@ -13,7 +14,8 @@ var MapEdit = React.createClass({
     map: React.PropTypes.object.isRequired,
     layers: React.PropTypes.array.isRequired,
     popularLayers: React.PropTypes.array.isRequired,
-    myLayers: React.PropTypes.array.isRequired,
+    myLayers: React.PropTypes.array,
+    myGroups: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -25,8 +27,8 @@ var MapEdit = React.createClass({
     };
   },
 
-  mapCreated(map_id, username){
-    window.location = '/user/' + username + '/map/'+map_id;
+  mapCreated(map_id, title){
+    window.location = '/map/view/' + map_id + '/'+ slug(title);
   },
 
 	render() {
@@ -37,10 +39,13 @@ var MapEdit = React.createClass({
           <MapMaker onCreate={this.mapCreated}
             mapLayers={this.props.layers}
             basemap={this.props.map.basemap}
-            mapId={this.props.map.map_id} title={this.props.map.title}
+            map_id={this.props.map.map_id} title={this.props.map.title}
+            owned_by_group_id={this.props.map.owned_by_group_id}
             position={this.props.map.position}
             popularLayers={this.props.popularLayers}
-            myLayers={this.props.myLayers} edit/>
+            myLayers={this.props.myLayers}
+            myGroups={this.props.myGroups}
+             edit/>
         </main>
       </div>
 		);
