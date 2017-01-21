@@ -149,7 +149,7 @@ var UserMap = React.createClass({
     var _this = this;
     request.post('/api/map/copy')
     .type('json').accept('json')
-    .send({map_id: this.props.map.map_id})
+    .send({map_id: this.props.map.map_id, _csrf: _this.state._csrf})
     .end(function(err, res){
       checkClientError(res, err, function(err){
           if(err || !res.body || !res.body.map_id){
