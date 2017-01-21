@@ -33,7 +33,10 @@ var BaseMapSelection = React.createClass({
         {value: 'streets', label: this.__('Streets')},
         {value: 'outdoors', label: this.__('Outdoors')},
         {value: 'bing-satellite', label: this.__('Bing Aerial')},
-        {value: 'mapbox-satellite', label: this.__('Mapbox Satellite')}
+        {value: 'mapbox-satellite', label: this.__('Mapbox Satellite')},
+        {value: 'stamen-toner', label: this.__('Stamen - Toner')},
+        {value: 'stamen-terrain', label: this.__('Stamen - Terrain')},
+        {value: 'stamen-watercolor', label: this.__('Stamen - Watercolor')}
       ];
       if(this.state.showBaseMaps){
         return (

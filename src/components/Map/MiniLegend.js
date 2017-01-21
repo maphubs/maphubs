@@ -48,7 +48,8 @@ var MiniLegend = React.createClass({
 
             }
             <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-              <span style={{fontSize: '8px', paddingLeft: '2px'}} className="grey-text align-left">Base Map - {this.state.attribution}</span>
+              <span style={{fontSize: '8px', paddingLeft: '2px', float: 'left', backgroundColor: '#FFF'}} 
+              className="grey-text align-left">Base Map - {this.state.attribution}</span>
             </li>
           </ul>
         </div>

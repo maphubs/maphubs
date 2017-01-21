@@ -147,6 +147,84 @@ module.exports = Reflux.createStore({
       mapboxName = 'satellite-streets-v9';
       optimize = true;
     }
+    else if(mapName == 'stamen-toner'){
+      style={
+        "version": 8,
+        "sources": {
+            "stamen-toner-tiles": {
+                "type": "raster",
+                "tiles":[  
+                  "https://stamen-tiles-a.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-b.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-c.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-d.a.ssl.fastly.net/toner/{z}/{x}/{y}.png"
+                ],
+                "tileSize": 256
+            }
+        },
+        "layers": [{
+            "id": "stamen-toner-tiles",
+            "type": "raster",
+            "source": "stamen-toner-tiles",
+            "minzoom": 0,
+            "maxzoom": 22
+        }]
+    };
+    this.setState({attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)'});
+     cb(style);
+    }
+    else if(mapName == 'stamen-terrain'){
+      style={
+        "version": 8,
+        "sources": {
+            "stamen-terrain-tiles": {
+                "type": "raster",
+                "tiles":[  
+                  "https://stamen-tiles-a.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-b.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-c.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-d.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png"
+                ],
+                "tileSize": 256
+            }
+        },
+        "layers": [{
+            "id": "stamen-terrain-tiles",
+            "type": "raster",
+            "source": "stamen-terrain-tiles",
+            "minzoom": 0,
+            "maxzoom": 22
+        }]
+    };
+    this.setState({attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)'});
+     cb(style);
+    }
+     else if(mapName == 'stamen-watercolor'){
+      style={
+        "version": 8,
+        "sources": {
+            "stamen-watercolor-tiles": {
+                "type": "raster",
+                "tiles":[  
+                  "https://stamen-tiles-a.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-b.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-c.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png",
+                  "https://stamen-tiles-d.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png"
+                ],
+                "tileSize": 256
+            }
+        },
+        "layers": [{
+            "id": "stamen-watercolor-tiles",
+            "type": "raster",
+            "source": "stamen-watercolor-tiles",
+            "minzoom": 0,
+            "maxzoom": 22
+        }]
+    };
+    this.setState({attribution: ' Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)'});
+     cb(style);
+    }
     else if(mapName == 'bing-satellite'){
       style={
         "version": 8,
