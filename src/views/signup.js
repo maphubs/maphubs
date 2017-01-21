@@ -216,7 +216,7 @@ var Signup = React.createClass({
              required/>
           </div>
           {joinList}
-          <div className="row valign-wrapper">
+          <div className="row valign-wrapper" style={{marginBottom: '20px'}}>
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
               <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>
               <button type="submit"
