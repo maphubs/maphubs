@@ -27,7 +27,7 @@ var Header = React.createClass({
   },
 
   componentDidMount() {
-    $(".button-collapse").sideNav();
+    $(this.refs.sideNav).sideNav();
      $('.nav-tooltip').tooltip();
     $(this.refs.explore).dropdown({
       inDuration: 300,
@@ -158,7 +158,7 @@ getCookie(cname) {
 
           </a>
 
-          <a className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
+          <a ref="sideNav" className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
             <li className="nav-link-wrapper">
               <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>

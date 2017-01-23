@@ -143,7 +143,7 @@ var MapMaker = React.createClass({
   componentDidMount(){
     var _this = this;
     $('ul.tabs').tabs();
-    $('.collapsible').collapsible();
+    $(this.refs.mapMakerToolPanel).collapsible();
     if(this.props.edit){
       this.toggleMapTab();
     }
@@ -403,7 +403,7 @@ var MapMaker = React.createClass({
     return (
       <div className="row no-margin" style={{width: '100%', height: '100%'}}>
         <div className="create-map-side-nav col s6 m3 l3 no-padding" style={{height: '100%'}}>
-          <ul className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>
+          <ul ref="mapMakerToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>
             <li>
               <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Map Layers')}</div>
               <div className="collapsible-body" >

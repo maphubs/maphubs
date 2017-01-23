@@ -89,7 +89,7 @@ var EmbedMap = React.createClass({
 
   componentDidUpdate(prevState){
     if(this.state.interactive && !prevState.interactive){
-      $(".button-collapse").sideNav();
+      $(this.refs.mapLayersPanel).sideNav();
     }
   },
 
