@@ -14,6 +14,7 @@ require("cropperjs/dist/cropper.css");
 var AddPhotoPoint = require('../views/addphotopoint');
 
 require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 
 
 

@@ -70,76 +70,88 @@ var MapInteractionMixin = {
     var map = this.map;
     var _this = this;
 
-    if(!_this.state.selected &&_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
-     _this.setState({selected:true});
-   }else{
-     $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+    if(this.state.enableMeasurementTools){
+      return;
+    }
+    else{
+      //feature selection
+      if(!_this.state.selected &&_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
+        _this.setState({selected:true});
+      }else{
+        $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
 
-     var features = map.queryRenderedFeatures(
-       [
-        [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
-        [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
-      ], {layers: _this.state.interactiveLayers});
+        var features = map.queryRenderedFeatures(
+          [
+            [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
+            [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
+          ], {layers: _this.state.interactiveLayers});
 
-     if (features.length) {
-       if(_this.state.selected){
-        _this.clearSelection();
+        if (features.length) {
+          if(_this.state.selected){
+            _this.clearSelection();
+          }
+          _this.setSelectionFilter([features[0]]);
+          _this.setState({selectedFeatures:[features[0]], selected:true});
+          map.addClass('selected');
+          } else if(_this.state.selectedFeatures != null) {
+              _this.clearSelection();
+              _this.setState({selected: false});
+              $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+          }
       }
-      _this.setSelectionFilter([features[0]]);
-      _this.setState({selectedFeatures:[features[0]], selected:true});
-       map.addClass('selected');
-      } else if(_this.state.selectedFeatures != null) {
-          _this.clearSelection();
-          _this.setState({selected: false});
-          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
-      }
-   }
+    }
   },
 
   moveHandler(e){
     var map = this.map;
     var _this = this;
 
-    if(_this.state.showBaseMaps) return;
+    if(this.state.enableMeasurementTools){
+      return;
+    }
+    else{
 
-    var debounced = _debounce(function(){
-      if(_this.state.mapLoaded && _this.state.restoreBounds){
-        debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
-        _this.setState({restoreBounds:null});
-        //stop restoring map possition after user has moved the map
-      }
+      if(_this.state.showBaseMaps) return;
 
-      var features = map.queryRenderedFeatures(
-        [
-          [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
-          [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
-        ],
-      {layers: _this.state.interactiveLayers});
-
-      if (features.length) {
-        if(_this.state.selected){
-          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-        } else if(_this.props.hoverInteraction){
-          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-           _this.setSelectionFilter(features);
-           _this.setState({selectedFeatures:features});
-           map.addClass('selected');
-        }else{
-           $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
+      var debounced = _debounce(function(){
+        if(_this.state.mapLoaded && _this.state.restoreBounds){
+          debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
+          _this.setState({restoreBounds:null});
+          //stop restoring map possition after user has moved the map
         }
-       } else if(!_this.state.selected && _this.state.selectedFeatures != null) {
-           _this.clearSelection();
-           $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
-       } else {
-         $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
-       }
 
-       BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
+        var features = map.queryRenderedFeatures(
+          [
+            [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
+            [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
+          ],
+        {layers: _this.state.interactiveLayers});
 
-    }, 200).bind(this);
-    debounced();
+        if (features.length) {
+          if(_this.state.selected){
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+          } else if(_this.props.hoverInteraction){
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+            _this.setSelectionFilter(features);
+            _this.setState({selectedFeatures:features});
+            map.addClass('selected');
+          }else{
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
+          }
+        } else if(!_this.state.selected && _this.state.selectedFeatures != null) {
+            _this.clearSelection();
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+        } else {
+          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+        }
 
- }
+        BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
+
+      }, 200).bind(this);
+      debounced();
+
+  }
+  }
 
 };
 

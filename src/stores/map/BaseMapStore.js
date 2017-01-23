@@ -13,8 +13,6 @@ module.exports = Reflux.createStore({
   getInitialState() {
     return {
       baseMap: 'default',
-      showEditBaseMap: false,
-      showBaseMaps: false,
       attribution: '© Mapbox © OpenStreetMap',
       bingImagerySet: null,
       updateWithMapPosition: false
@@ -76,38 +74,7 @@ module.exports = Reflux.createStore({
     }
   },
 
-  toggleBaseMaps(){
-    if(this.state.showEditBaseMap){
-      this.closeEditBaseMap();
-    }
-    if(this.state.showBaseMaps){
-      this.closeBaseMaps();
-    }else{
-      this.setState({showBaseMaps: true});
-    }
-  },
-
-  closeBaseMaps(){
-    this.setState({showBaseMaps: false});
-  },
-
-    toggleEditBaseMap(){
-    if(this.state.showBaseMaps){
-      this.closeBaseMaps();
-    }
-    if(this.state.showEditBaseMap){
-      this.closeEditBaseMap();
-    }else{
-      this.setState({showEditBaseMap: true});
-    }
-  },
-
-  closeEditBaseMap(){
-    this.setState({showEditBaseMap: false});
-  },
-
-//https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key=AglFsH7yKSyaHko0gJFWCy5A-8IeWYGb2Bx_kkQOBk_fRbdNqWbEigfcL_WWA5LG&include=ImageryProviders
-  getBingSource(type, cb){
+ getBingSource(type, cb){
     var url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`;
     request.get(url)
     .end(function(err, res){
@@ -170,7 +137,10 @@ module.exports = Reflux.createStore({
             "maxzoom": 22
         }]
     };
-    this.setState({attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)'});
+    this.setState({
+      attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)',
+      updateWithMapPosition: false
+    });
      cb(style);
     }
     else if(mapName == 'stamen-terrain'){
@@ -196,7 +166,10 @@ module.exports = Reflux.createStore({
             "maxzoom": 22
         }]
     };
-    this.setState({attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)'});
+    this.setState({
+      attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)',
+      updateWithMapPosition: false
+    });
      cb(style);
     }
      else if(mapName == 'stamen-watercolor'){
@@ -222,7 +195,10 @@ module.exports = Reflux.createStore({
             "maxzoom": 22
         }]
     };
-    this.setState({attribution: ' Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)'});
+    this.setState({
+      attribution: ' Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)',
+      updateWithMapPosition: false
+    });
      cb(style);
     }
     else if(mapName == 'bing-satellite'){
@@ -262,7 +238,7 @@ module.exports = Reflux.createStore({
         if(optimize){
           url += '?optimize=true'; //requires mapbox-gl-js 0.24.0+
         }
-        this.setState({attribution: '© Mapbox © OpenStreetMap'});
+        this.setState({attribution: '© Mapbox © OpenStreetMap', updateWithMapPosition: false});
         cb(url);
     }
    

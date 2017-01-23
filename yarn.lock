@@ -52,6 +52,13 @@
   dependencies:
     "@turf/meta" "^3.7.3"
 
+"@turf/distance@^3.7.3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-3.7.3.tgz#9dda60ef74a022ecd7c7bb0137280ce7e0f47ada"
+  dependencies:
+    "@turf/helpers" "^3.7.3"
+    "@turf/invariant" "^3.7.3"
+
 "@turf/helpers@^3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-3.7.3.tgz#b28004ae72b282bcd3dccadd5855e8641b56858a"
@@ -71,6 +78,13 @@
 "@turf/invariant@^3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-3.7.3.tgz#4a3b5d34ce38e94ab0ec3eb9c6ea6fc154cb7100"
+
+"@turf/line-distance@^3.7.3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@turf/line-distance/-/line-distance-3.7.3.tgz#75048c65092f628085937f01481340eeec75f3f8"
+  dependencies:
+    "@turf/distance" "^3.7.3"
+    "@turf/helpers" "^3.7.3"
 
 "@turf/meta@^3.7.3":
   version "3.7.3"

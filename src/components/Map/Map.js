@@ -9,15 +9,16 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var BaseMapActions = require('../../actions/map/BaseMapActions'); 
 var BaseMapStore = require('../../stores/map/BaseMapStore'); 
+
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
-var BaseMapSelection = require('./BaseMapSelection');
-var EditBaseMapBox = require('./EditBaseMapBox');
 var MapToolButton = require('./MapToolButton');
+var MapToolPanel = require('./MapToolPanel');
 var InsetMap = require('./InsetMap');
 var MapboxGLHelperMixin = require('./MapboxGLHelperMixin');
 var MapInteractionMixin = require('./MapInteractionMixin');
+var MeasurementToolMixin = require('./MeasurementToolMixin');
 var MapGeoJSONMixin = require('./MapGeoJSONMixin');
 var LayerSources = require('./Sources');
 var MarkerSprites = require('./MarkerSprites');
@@ -29,7 +30,10 @@ if (typeof window !== 'undefined') {
 
 var Map = React.createClass({
 
-  mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}), StateMixin.connect(LocaleStore)],
+  mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, 
+            MeasurementToolMixin,
+            StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}),          
+            StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -516,7 +520,6 @@ var Map = React.createClass({
     debug('changing basemap to: ' + mapName);
     var _this = this;
     BaseMapActions.getBaseMapFromName(mapName, function(baseMapUrl){
-      BaseMapActions.closeBaseMaps();
       BaseMapActions.setBaseMap(mapName);
       _this.setState({allowLayersToMoveMap: false});
       _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
@@ -569,19 +572,45 @@ var Map = React.createClass({
       insetMap = (<InsetMap ref="insetMap" id={this.state.id} />);
     }
 
+    var measurementTools = '';
+    if(this.state.enableMeasurementTools){
+
+      measurementTools= (
+        <div>
+          <div style={{
+            position: 'absolute',
+            top: '46px',
+            right: '10px',
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            color: '#FFF',
+            height:'30px',
+            paddingLeft: '5px',
+            paddingRight: '5px',
+            borderRadius: '4px',
+            zIndex: '100',
+            lineHeight: '30px',
+          }}>
+          <span>{this.state.measurementMessage}</span>
+          </div>
+          <MapToolButton  top="80px" right="10px" icon="close" show={true} color="#000"
+            onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
+        </div>
+      );
+     
+    }
+
     return (
       <div ref="mapcontainer" className={this.props.className} style={this.props.style}>
         <div id={this.state.id} ref="map" className={className} style={{width:'100%', height:'100%'}}>
           {insetMap}
           
-          <MapToolButton  top="10px" right="45px" icon="edit" show={this.state.interactive && this.state.mapLoaded}
-            onClick={BaseMapActions.toggleEditBaseMap} tooltipText={this.__('Edit Base Map')} />
-
-          <MapToolButton  top="10px" right="10px" icon="layers" show={this.state.interactive && this.state.mapLoaded}
-            onClick={BaseMapActions.toggleBaseMaps} tooltipText={this.__('Change Base Map')} />
-
-          <BaseMapSelection onChange={this.changeBaseMap}/>
-          <EditBaseMapBox gpxLink={this.props.gpxLink}/>
+          <MapToolPanel show={this.state.interactive && this.state.mapLoaded} 
+          gpxLink={this.props.gpxLink}
+          toggleMeasurementTools={this.toggleMeasurementTools}
+          enableMeasurementTools={this.state.enableMeasurementTools}
+          onChangeBaseMap={this.changeBaseMap}
+           />
+          {measurementTools}
           {featureBox}
           {interactiveButton}
           {children}
