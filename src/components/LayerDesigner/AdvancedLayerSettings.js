@@ -82,16 +82,16 @@ var AdvancedLayerSettings = React.createClass({
             <div className="row">
               <b>{this.__('Interactive')}</b>
                <Toggle name="interactive" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-advanced-layer-settings"
-                         defaultChecked={this.state.settings.interactive}
-                          dataPosition="right" dataTooltip={this.__('Allow users to interact with this layer by clicking the map')}
-                          />
+                  checked={this.state.settings.interactive}
+                  dataPosition="right" dataTooltip={this.__('Allow users to interact with this layer by clicking the map')}
+                />
             </div>
             <div className="row">
               <b>{this.__('Show Below Base Map Labels')}</b>
                 <Toggle name="showBehindBaseMapLabels" className="tooltip-advanced-layer-settings" labelOff={this.__('Off')} labelOn={this.__('On')}
-                          defaultChecked={this.state.settings.showBehindBaseMapLabels}
-                           dataPosition="right" dataTooltip={this.__('Allow base map labels to display on top of this layer')}
-                           />
+                  checked={this.state.settings.showBehindBaseMapLabels}
+                  dataPosition="right" dataTooltip={this.__('Allow base map labels to display on top of this layer')}
+                />
             </div>
 
           </Formsy.Form>

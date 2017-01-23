@@ -3,6 +3,7 @@ var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var $ = require('jquery');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
+var debug = require('../../services/debug')('Toggle');
 
 var Toggle= React.createClass({
 
@@ -14,13 +15,14 @@ var Toggle= React.createClass({
     dataTooltip: React.PropTypes.string,
     dataDelay: React.PropTypes.number,
     dataPosition: React.PropTypes.string,
-    defaultChecked: React.PropTypes.bool,
     labelOn: React.PropTypes.string.isRequired,
     labelOff: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,
     style: React.PropTypes.object,
     disabled: React.PropTypes.bool,
-    onChange: React.PropTypes.func
+    onChange: React.PropTypes.func,
+    defaultChecked: React.PropTypes.bool,
+    checked: React.PropTypes.bool
   },
 
 
@@ -34,24 +36,37 @@ var Toggle= React.createClass({
   },
 
   changeValue(event) {
+    
     event.stopPropagation();
-     this.setValue(event.currentTarget.checked);
+    var checked = event.currentTarget.checked;
+    debug('change value: ' + checked);
+    if(checked !== this.getValue())
+     this.setValue(checked);
      if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}
    },
 
-   componentWillMount() {
-     this.setValue(this.props.defaultChecked ? this.props.defaultChecked : false);
-   },
 
-   componentDidMount(){
-     $(this.refs.toggle).tooltip();
+  componentWillMount() {
+    if ('checked' in this.props) {
+      this.setValue(this.props.checked);
+    }else{
+      this.setValue(this.props.defaultChecked);  
+    }       
   },
 
-   componentWillReceiveProps(nextProps){
-     if(nextProps.defaultChecked != this.props.defaultChecked){
-       this.setValue(nextProps.defaultChecked);
-     }
-   },
+  componentDidMount(){
+    if(this.props.dataTooltip){
+      $(this.refs.toggle).tooltip();
+    }   
+  },
+
+  componentWillReceiveProps(nextProps) {
+    var currentValue =  this.props.checked;
+    if ('checked' in nextProps 
+    && nextProps.checked !== currentValue){
+         this.setValue(nextProps.checked);
+    }   
+  },
 
    componentDidUpdate(prevProps){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
@@ -59,24 +74,40 @@ var Toggle= React.createClass({
     }
   },
 
-  render() {
-     var className = classNames('switch', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+/*
+  handleChange(event, value) {
+    this.setValue(value);
+    if (this.props.onChange) this.props.onChange(event, value);
+  },
+*/
 
-     var defaultChecked = this.props.defaultChecked ? this.props.defaultChecked : false;
+  render() {
+    const props = { ...this.props };
+    // Remove React warning.
+    // Warning: Input elements must be either controlled or uncontrolled
+    // (specify either the value prop, or the defaultValue prop, but not both).
+    delete props.defaultChecked;
+
+    var className = classNames('switch', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+
+    let checked = this.getValue();
+
+    if (typeof checked === 'boolean') {
+      checked = checked ? 1 : 0;
+    }
 
     return (
-          <div ref="toggle" className={className} disabled={this.props.disabled} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
-              style={this.props.style}
-              data-tooltip={this.props.dataTooltip}>
-            <label>
-              {this.props.labelOff}
-              <input type="checkbox" id={this.props.name} defaultChecked={defaultChecked} disabled={this.props.disabled} onChange={this.changeValue}/>
-              <span className="lever"></span>
-              {this.props.labelOn}
-            </label>
-          </div>
+      <div ref="toggle" className={className} disabled={props.disabled} data-delay={props.dataDelay} data-position={props.dataPosition}
+          style={props.style}
+          data-tooltip={props.dataTooltip}>
+        <label>
+          {props.labelOff}
+          <input type="checkbox" id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue}/>
+          <span className="lever"></span>
+          {props.labelOn}
+        </label>
+      </div>
     );
-
   }
 });
 

@@ -335,7 +335,7 @@ var GroupAdmin = React.createClass({
               <div className="row">
                 <Toggle name="published" labelOff={this.__('Draft')} labelOn={this.__('Published')} className="col s12"
                     dataPosition="top" dataTooltip={this.__('Include in Public Group Listings')}
-                    defaultChecked={isPublished}
+                    checked={isPublished}
                   />
               </div>
               <div className="right">

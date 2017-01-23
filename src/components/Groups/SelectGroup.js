@@ -154,21 +154,21 @@ var SelectGroup = React.createClass({
         if(privateAllowed){
           var tooltipMessage = this.__('Private layers are only accessible to members of the same group');
           
-          var defaultChecked = false;
+          var checked = false;
           var disablePrivate = false;
           var overLimitMessage = '';
           if(overLimit){
             disablePrivate = true;
             //keep previous settings even if over the limit
             if(this.props.editing){
-              defaultChecked = this.state.private;
+              checked = this.state.private;
             }else{
               overLimitMessage = (
                 <p>{this.__('Upgrade your account to add additional ')} {itemName}</p>
               );
             }
           }else{           
-            defaultChecked = this.state.private;
+            checked = this.state.private;
           }
          
           privateToggle = (
@@ -178,7 +178,7 @@ var SelectGroup = React.createClass({
                   {this.__('You are currently using ')} {itemCount} {this.__('of')} {itemLimit} {itemName}
                 </span>
               </p>
-              <Toggle name="private" labelOff={this.__('Public')} disabled={disablePrivate} labelOn={this.__('Private')} defaultChecked={defaultChecked} className="col s12"
+              <Toggle name="private" labelOff={this.__('Public')} disabled={disablePrivate} labelOn={this.__('Private')} checked={checked} className="col s12"
                   dataPosition="right" dataTooltip={tooltipMessage}
                 />
               {overLimitMessage}

@@ -200,7 +200,7 @@ var AddItem = React.createClass({
             </div>
           </form>
             <Formsy.Form >
-              <Toggle name="admin" onChange={this.handleAddWithOptionChecked} labelOff={this.__('Member')} labelOn={this.__('Administrator')} defaultChecked={this.state.option}
+              <Toggle name="admin" onChange={this.handleAddWithOptionChecked} labelOff={this.__('Member')} labelOn={this.__('Administrator')} checked={this.state.option}
                 dataPosition="top" dataTooltip={this.props.optionLabel}
                 />
             </Formsy.Form>

@@ -151,7 +151,7 @@ var MarkerSettings = React.createClass({
            <div className="row" style={{marginTop: '10px', marginBottom: '0px'}}>
            <b>{this.__('Enable Markers')}</b>
              <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-label-settings"
-                       defaultChecked={this.state.options.enabled}
+                       checked={this.state.options.enabled}
                         dataPosition="right" dataTooltip={this.__('Enable markers for this Layer')}
                         />
             </div>
@@ -177,7 +177,7 @@ var MarkerSettings = React.createClass({
              <div className="row no-margin">
              <b>{this.__('Invert Colors')}</b>
              <Toggle name="inverted" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-label-settings"
-                       defaultChecked={this.state.options.inverted}
+                       checked={this.state.options.inverted}
                         dataPosition="right" dataTooltip={this.__('Invert colors')}
                         />
             </div>

@@ -161,12 +161,12 @@ var PresetForm = React.createClass({
                     required/>
                   <Toggle name="isRequired" labelOff="Optional" labelOn="Required" className="col l6 m6 s12"
                        style={{paddingTop: '25px'}}
-                       defaultChecked={this.state.preset.isRequired}
+                       checked={this.state.preset.isRequired}
                         dataPosition="bottom" dataTooltip={this.__('Editing/collection tools will require the user to submit this field.')}
                         />
                   <Toggle name="showOnMap" labelOff="Hide in Map" labelOn="Show in Map" className="col l6 m6 s12"
                        style={{paddingTop: '25px'}}
-                       defaultChecked={this.state.preset.showOnMap}
+                       checked={this.state.preset.showOnMap}
                         dataPosition="bottom" dataTooltip={this.__('Option to hide this field in the map popup. It will still display in the data table.')}
                         />
                       <Select name="type" id="preset-type-select" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"

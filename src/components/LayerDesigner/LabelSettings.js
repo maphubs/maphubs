@@ -104,7 +104,7 @@ var LabelSettings = React.createClass({
            <div className="row" style={{marginTop: '10px', marginBottom: '0px'}}>
             <b>{this.__('Enable Labels')}</b>
              <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="col s12 tooltip-label-settings"
-                       defaultChecked={this.state.enabled}
+                       checked={this.state.enabled}
                         dataPosition="right" dataTooltip={this.__('Enable Labels for this Layer')}
                         />
             </div>

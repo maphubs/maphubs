@@ -89,7 +89,7 @@ var SaveMapPanel = React.createClass({
           groupToggle = (
             <div className="row">   
               <Toggle name="ownedByGroup" labelOff={this.__('Owned by Me')} labelOn={this.__('Owned by My Group')} 
-              defaultChecked={this.state.ownedByGroup} className="col s12"
+              checked={this.state.ownedByGroup} className="col s12"
               onChange={this.onOwnedByGroup}
                   dataPosition="right" dataTooltip={this.__('Select who should own this map')}
                 />
