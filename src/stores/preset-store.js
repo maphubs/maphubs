@@ -49,7 +49,8 @@ module.exports = Reflux.createStore({
     //called when setting up a new empty layer
     var presets = [
       {tag: 'name', label: 'Name', type: 'text', isRequired: true, showOnMap: true, id: this.idSequence++},
-      {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.idSequence++}
+      {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.idSequence++},
+      {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.idSequence++}
     ];
     this.data.presets = presets;
     this.data.pendingChanges = true;
