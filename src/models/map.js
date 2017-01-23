@@ -3,6 +3,7 @@ var knex = require('../connection');
 var Promise = require('bluebird');
 var debug = require('../services/debug')('models/map');
 var forEachRight = require('lodash.foreachright');
+var Group = require('./group');
 
 module.exports = {
 
