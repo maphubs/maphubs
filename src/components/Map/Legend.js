@@ -101,7 +101,7 @@ var Legend = React.createClass({
                 })
               }
               <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-                <span style={{fontSize: '8px', paddingLeft: '2px', lineHeight: '0.75rem',  height: '10px', padding: 0, display: 'inherit'}} 
+                <span style={{fontSize: '8px', paddingLeft: '2px', lineHeight: '0.75rem',  minHeight: '10px', padding: 0, display: 'inherit'}} 
                 className="grey-text">
                 Base Map&nbsp;-&nbsp;{this.state.attribution}
                 </span>
