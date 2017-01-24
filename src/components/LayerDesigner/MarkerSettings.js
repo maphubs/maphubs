@@ -175,7 +175,7 @@ var MarkerSettings = React.createClass({
       <div>
         <div className="row">
           <Formsy.Form ref="form" onChange={this.onFormChange}>
-           <div className="row" style={{marginTop: '10px', marginBottom: '0px'}}>
+           <div className="row" style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
            <b>{this.__('Enable Markers')}</b>
              <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-label-settings"
                        checked={this.state.options.enabled}
@@ -201,7 +201,7 @@ var MarkerSettings = React.createClass({
                     dataPosition="right" dataTooltip={this.__('Maker icon overlay')}
                     required/> 
             </div>
-             <div className="row no-margin">
+             <div className="row no-margin" style={{padding: '0 .75rem'}}>
              <b>{this.__('Invert Colors')}</b>
              <Toggle name="inverted" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-label-settings"
                        checked={this.state.options.inverted}

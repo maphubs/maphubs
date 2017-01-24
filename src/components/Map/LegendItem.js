@@ -49,10 +49,10 @@ var LegendItem = React.createClass({
             markerConfig.height = 18;
             legendItem = (
               <div className="omh-legend valign-wrapper">
-                <div style={{float: 'left'}}>
+                <div className="valign" style={{float: 'left'}}>
                   <Marker  {...markerConfig}/>
                 </div>              
-                <h3 className="valign">{_this.props.layer.name}</h3>
+                <h3 className="valign" style={{paddingLeft: '5px', paddingTop: '0px', paddingBottom: '5px'}}>{_this.props.layer.name}</h3>
               </div>
              
             );

@@ -101,7 +101,7 @@ var LabelSettings = React.createClass({
       <div>
         <div className="row">
           <Formsy.Form ref="form" onChange={this.onFormChange}>
-           <div className="row" style={{marginTop: '10px', marginBottom: '0px'}}>
+           <div className="row" style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
             <b>{this.__('Enable Labels')}</b>
              <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="col s12 tooltip-label-settings"
                        checked={this.state.enabled}
