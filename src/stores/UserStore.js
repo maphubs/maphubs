@@ -13,7 +13,8 @@ module.exports = Reflux.createStore({
   getInitialState() {
     return  {
       user: {},
-      loggedIn: false
+      loggedIn: false,
+      loaded: false
     };
   },
 
@@ -27,7 +28,7 @@ module.exports = Reflux.createStore({
 
  //listeners
  login(user){
-   this.setState({user, loggedIn: true});
+   this.setState({user, loggedIn: true, loaded: true});
  },
 
  getUser(cb){
@@ -43,6 +44,7 @@ module.exports = Reflux.createStore({
            _this.login(res.body.user);
            cb();
          }else{
+           _this.setState({loaded: true});
            cb(JSON.stringify(res.body));
          }
        }

@@ -56,7 +56,10 @@ var UserMenu = React.createClass({
   },
 
   render() {
-    var user = (<div></div>);
+    var user = (<div style={{width: '194px'}}></div>);
+    if(!this.state.loaded){
+      return user;
+    }
     if(this.state.loggedIn && this.state.user){
 
       var adminInvites = '';
