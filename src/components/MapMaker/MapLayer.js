@@ -47,6 +47,11 @@ var MapLayer = React.createClass({
     $('.map-layer-tooltipped').tooltip();
   },
 
+  removeFromMap(layer){
+    $('.map-layer-tooltipped').tooltip('remove');
+    this.props.removeFromMap(layer);
+  },
+
   render(){
     var _this = this;
     var layer = _this.props.layer;
@@ -86,7 +91,7 @@ var MapLayer = React.createClass({
              {visibilityButton}
             </div>
             <div className="col s2 no-padding">
-              <a onClick={function(){_this.props.removeFromMap(layer);}}
+              <a onClick={function(){_this.removeFromMap(layer);}}
                 className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}>
                 <i className="material-icons omh-accent-text">delete</i></a>
