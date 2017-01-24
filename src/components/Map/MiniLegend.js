@@ -4,7 +4,7 @@ var React = require('react');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var BaseMapStore = require('../../stores/map/BaseMapStore');
-
+var LegendItem = require('./LegendItem');
 
 var MiniLegend = React.createClass({
 
@@ -32,21 +32,13 @@ var MiniLegend = React.createClass({
 
             <ul className="collection with-header no-margin z-depth-2" style={{backgroundColor: '#FFF'}}>
             {
-              this.props.layers.map(function (layer, i) {
-                if(_this.props.hideInactive && !layer.active){
-                  return (<div key={i}></div>);
-                }
-                var legendHtml = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
-                /*eslint-disable react/no-danger*/
-                return (
-                  <li key={i} className="collection-item no-margin no-padding">
-                    <div className="no-margin valign" style={{padding: '2px'}} dangerouslySetInnerHTML={{__html: legendHtml}}></div>
-                  </li>
-                );
-                /*eslint-enable react/no-danger*/
-              })
-
-            }
+                this.props.layers.map(function (layer) {
+                  var legendHtml = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
+                  layer.legend_html = legendHtml;
+                  return (<LegendItem key={layer.layer_id} layer={layer} style={{padding: '2px', width: '100%', margin: 'auto'}} mini/>);
+                })
+              }
+ 
             <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
               <span style={{fontSize: '8px', paddingLeft: '2px', float: 'left', backgroundColor: '#FFF'}} 
               className="grey-text align-left">Base Map - <span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span></span>

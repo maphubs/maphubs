@@ -9,12 +9,14 @@ var LegendItem = React.createClass({
 
   propTypes:  {
     layer: React.PropTypes.object.isRequired,
+    mini:  React.PropTypes.bool,
     style: React.PropTypes.object
   },
 
   getDefaultProps() {
     return {
-      style: {}
+      style: {},
+      mini: false
     };
   },
 
@@ -57,6 +59,9 @@ var LegendItem = React.createClass({
           }
         }
       });
+    }
+    if(this.props.mini){
+      return legendItem;
     }
 
     /*eslint-disable react/no-danger*/
