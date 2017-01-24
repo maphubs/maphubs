@@ -18,12 +18,14 @@ var UserMenu = React.createClass({
   },
 
   propTypes:  {
-    id: React.PropTypes.string
+    id: React.PropTypes.string,
+    sideNav: React.PropTypes.bool
   },
 
   getDefaultProps() {
     return {
-      id: 'user-menu'
+      id: 'user-menu',
+      sideNav: false
     };
   },
 
@@ -90,10 +92,25 @@ var UserMenu = React.createClass({
         </li>
       );
     } else {
+
+      var signup = '';
+      var style = {};
+      if(!this.props.sideNav){
+        style={marginLeft: '1px', marginRight: '5px'};
+      }
+      if(!MAPHUBS_CONFIG.mapHubsPro){
+        signup = (
+          <a className="btn" style={style} href="/signup">{this.__('Sign Up')}</a>
+        );
+      }
+
       user = (
-        <li className="nav-link-wrapper">
-            <a className="nav-link-item" href="#" onClick={this.loginClick}>{this.__('Login')}</a>
-        </li>
+        <span>
+          <li className="nav-link-wrapper">
+              <a className="nav-link-item" style={{float: !this.props.sideNav ? 'left' : 'inherit'}} href="#" onClick={this.loginClick}>{this.__('Login')}</a>
+          </li>
+          {signup}
+        </span>
       );
     }
 

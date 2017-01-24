@@ -181,16 +181,17 @@ getCookie(cname) {
 
             <LocaleChooser/>
 
-            <UserMenu id="user-menu-header"/>
+            
             <li className="nav-link-wrapper nav-tooltip"
               data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
               <a  className="nav-link-item" href='/search'>
                 <i className="material-icons">search</i>
               </a>
             </li>
+            <UserMenu id="user-menu-header"/>
           </ul>
           <ul className="side-nav" id="side-nav-menu">
-              <UserMenu id="user-menu-sidenav"/>
+              <UserMenu id="user-menu-sidenav" sideNav/>
 
               <LocaleChooser id="locale-sidenav"/>
 
