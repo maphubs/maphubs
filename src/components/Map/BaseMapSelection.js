@@ -28,12 +28,13 @@ var BaseMapSelection = React.createClass({
 
   render(){
     var baseMapOptions = [
-      {value: 'default', label: this.__('Default')},
+      {value: 'default', label: this.__('Default (Light)')},
       {value: 'dark', label: this.__('Dark')},
       {value: 'streets', label: this.__('Streets')},
       {value: 'outdoors', label: this.__('Outdoors')},
       {value: 'bing-satellite', label: this.__('Bing Aerial')},
       {value: 'mapbox-satellite', label: this.__('Mapbox Satellite')},
+      {value: 'landsat-2014', label: this.__('Landsat - 2014')},
       {value: 'stamen-toner', label: this.__('Stamen - Toner')},
       {value: 'stamen-terrain', label: this.__('Stamen - Terrain')},
       {value: 'stamen-watercolor', label: this.__('Stamen - Watercolor')}

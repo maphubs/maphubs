@@ -103,7 +103,7 @@ var Legend = React.createClass({
               <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
                 <span style={{fontSize: '8px', paddingLeft: '2px', lineHeight: '0.75rem',  minHeight: '10px', padding: 0, display: 'inherit'}} 
                 className="grey-text">
-                Base Map&nbsp;-&nbsp;{this.state.attribution}
+                Base Map&nbsp;-&nbsp;<span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span>
                 </span>
               </li>
             </ul>

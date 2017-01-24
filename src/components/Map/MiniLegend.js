@@ -30,7 +30,7 @@ var MiniLegend = React.createClass({
       <div style={this.props.style}>
         <div style={{textAlign: 'left'}}>
 
-            <ul className="collection with-header no-margin z-depth-2">
+            <ul className="collection with-header no-margin z-depth-2" style={{backgroundColor: '#FFF'}}>
             {
               this.props.layers.map(function (layer, i) {
                 if(_this.props.hideInactive && !layer.active){
@@ -49,7 +49,7 @@ var MiniLegend = React.createClass({
             }
             <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
               <span style={{fontSize: '8px', paddingLeft: '2px', float: 'left', backgroundColor: '#FFF'}} 
-              className="grey-text align-left">Base Map - {this.state.attribution}</span>
+              className="grey-text align-left">Base Map - <span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span></span>
             </li>
           </ul>
         </div>

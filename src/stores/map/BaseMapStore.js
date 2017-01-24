@@ -48,7 +48,12 @@ module.exports = Reflux.createStore({
           if(metadata.resourceSets && metadata.resourceSets.length > 0 
             && metadata.resourceSets[0].resources && metadata.resourceSets[0].resources.length > 0 
             && metadata.resourceSets[0].resources[0].imageryProviders && metadata.resourceSets[0].resources[0].imageryProviders.length > 0){
-            var imageryProviders = metadata.resourceSets[0].resources[0].imageryProviders;
+            var resource = metadata.resourceSets[0].resources[0];
+            var imageryTime = '';
+            if(resource.vintageEnd){
+              imageryTime = '<b class="no-margin no-padding">(' + resource.vintageEnd + ')</b>';
+            }
+            var imageryProviders = resource.imageryProviders;
             imageryProviders.forEach(function (provider) {
             for (var i = 0; i < provider.coverageAreas.length; i++) {
               var providerBboxFeature = _bboxPolygon(provider.coverageAreas[i].bbox);
@@ -60,12 +65,11 @@ module.exports = Reflux.createStore({
               }
             }
             });
-             attributionString =  attributionString + ': ' + attributions.toString();
+             attributionString =  attributionString + ': ' + imageryTime + ' ' + attributions.toString();
           }     
           _this.setState({attribution: attributionString});
       }
     });
-     
     }
   },
 
@@ -197,6 +201,32 @@ module.exports = Reflux.createStore({
     };
     this.setState({
       attribution: ' Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)',
+      updateWithMapPosition: false
+    });
+     cb(style);
+    }
+     else if(mapName == 'landsat-2014'){
+      style={
+        "version": 8,
+        "sources": {
+            "landsat-2014": {
+                "type": "raster",
+                "tiles":[  
+                  "https://mapforenvironment.org/raster/congo-landsat-2014/{z}/{x}/{y}.png"
+                ],
+                "tileSize": 256
+            }
+        },
+        "layers": [{
+            "id": "landsat-2014",
+            "type": "raster",
+            "source": "landsat-2014",
+            "minzoom": 3,
+            "maxzoom": 12
+        }]
+    };
+    this.setState({
+      attribution: ' Landsat 7',
       updateWithMapPosition: false
     });
      cb(style);
