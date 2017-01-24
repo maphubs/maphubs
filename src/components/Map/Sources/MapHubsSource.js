@@ -38,12 +38,12 @@ var MapHubsSource = {
 
     //try to delete any old markers
     if(layer.metadata && layer.metadata['maphubs:markers']){  
-        let layer_id = layer.metadata['maphubs:layer_id'];    
-        $('.maphubs-marker-'+layer_id).each(function(i, markerDiv){
-          ReactDOM.unmountComponentAtNode(markerDiv);
-          $(markerDiv).remove();
-        });
-      }
+      let layer_id = layer.metadata['maphubs:layer_id'];    
+      $('.maphubs-marker-'+layer_id).each(function(i, markerDiv){
+        ReactDOM.unmountComponentAtNode(markerDiv);
+        $(markerDiv).remove();
+      });
+    }
 
     if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
       var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
@@ -106,6 +106,13 @@ var MapHubsSource = {
     }
   },
   removeLayer(layer, map){
+    if(layer.metadata && layer.metadata['maphubs:markers']){  
+      let layer_id = layer.metadata['maphubs:layer_id'];    
+      $('.maphubs-marker-'+layer_id).each(function(i, markerDiv){
+        ReactDOM.unmountComponentAtNode(markerDiv);
+        $(markerDiv).remove();
+      });
+    }
     map.removeLayer(layer.id);
   },
   remove(key, map){
