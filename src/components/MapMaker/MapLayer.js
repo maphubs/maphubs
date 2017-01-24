@@ -8,6 +8,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var $ = require('jquery');
+var _isEqual = require('lodash.isequal');
 
 var MapLayer = React.createClass({
 
@@ -40,6 +41,17 @@ var MapLayer = React.createClass({
 
   componentDidMount(){
     $('.map-layer-tooltipped').tooltip();
+  },
+
+  shouldComponentUpdate(nextProps, nextState){
+    //only update if something changes
+    if(!_isEqual(this.props, nextProps)){
+      return true;
+    }
+    if(!_isEqual(this.state, nextState)){
+      return true;
+    }
+    return false;
   },
 
   resetTooltips(){

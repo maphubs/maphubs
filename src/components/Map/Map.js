@@ -168,7 +168,7 @@ var Map = React.createClass({
     if(prevStyle && prevStyle.layers){
       prevStyle.layers.forEach(function(layer){
         try{
-          var source = _this.state.glStyle.sources[layer.source];
+          var source = prevStyle.sources[layer.source];
           if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
             LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
           }else if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
@@ -393,7 +393,7 @@ var Map = React.createClass({
     var bounds = null;
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
 
-    if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds)){
+    if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds) && this.map){
       debug('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
       fitBoundsChanging = true;
       allowLayersToMoveMap = false;
@@ -419,16 +419,18 @@ var Map = React.createClass({
             }
 
           }
-          this.setState({allowLayersToMoveMap});
+          //clone the style object otherwise it is impossible to detect updates made to the object outside this component...      
+          var prevStyle = JSON.parse(JSON.stringify(this.state.glStyle));
+          var styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
+          this.setState({allowLayersToMoveMap, glStyle: styleCopy});
           BaseMapActions.setBaseMap(nextProps.baseMap);
           BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
-            //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
-            let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
-            _this.reload(_this.state.glStyle, styleCopy, baseMapUrl);
+            
+            _this.reload(prevStyle, styleCopy, baseMapUrl);
 
             var interactiveLayers = _this.getInteractiveLayers(styleCopy);
 
-            _this.setState({glStyle: styleCopy, interactiveLayers});//wait to change state style until after reloaded
+            _this.setState({interactiveLayers});//wait to change state style until after reloaded
           });
 
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
