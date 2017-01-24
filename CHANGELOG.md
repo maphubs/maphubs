@@ -1,5 +1,24 @@
 # Change Log
 
+## [v0.6.0](https://github.com/maphubs/maphubs/tree/v0.6.0) (2017-01-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.11...v0.6.0)
+
+**Implemented enhancements:**
+
+- add distance/area measurement tools [\#319](https://github.com/maphubs/maphubs/issues/319)
+- add a register/signup button to header [\#315](https://github.com/maphubs/maphubs/issues/315)
+- add source field by default to new empty layers [\#309](https://github.com/maphubs/maphubs/issues/309)
+- add Bing satellite basemap option [\#95](https://github.com/maphubs/maphubs/issues/95)
+
+**Fixed bugs:**
+
+- markers not showing in map legend [\#322](https://github.com/maphubs/maphubs/issues/322)
+- markers not cleared when removing layer [\#321](https://github.com/maphubs/maphubs/issues/321)
+- inset map looses position after changing basemap [\#320](https://github.com/maphubs/maphubs/issues/320)
+- editing map fails to restore map bounds [\#318](https://github.com/maphubs/maphubs/issues/318)
+- error copying a map [\#311](https://github.com/maphubs/maphubs/issues/311)
+- map designer layer didn't update on second search [\#305](https://github.com/maphubs/maphubs/issues/305)
+
 ## [v0.5.11](https://github.com/maphubs/maphubs/tree/v0.5.11) (2017-01-06)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.10...v0.5.11)
 
