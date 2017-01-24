@@ -528,6 +528,7 @@ var Map = React.createClass({
 
       if(_this.refs.insetMap){
         _this.refs.insetMap.reloadInset(baseMapUrl);
+        _this.refs.insetMap.fitBounds(_this.map.getBounds(), {maxZoom: 1.8, padding: 10, animate:false});
       }
       
       if(_this.props.onChangeBaseMap){
