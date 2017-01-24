@@ -97,6 +97,7 @@ module.exports = Reflux.createStore({
     var mapboxName;
     var style;
     var optimize = true;
+    if(!mapName) mapName = 'default';
 
     if (mapName == 'default') {
         mapboxName = 'light-v9';
