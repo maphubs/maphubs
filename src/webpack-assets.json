@@ -17,8 +17,8 @@
     "css": "/public/creategroup.b4819401d0d187f9e1d2.css"
   },
   "createhubstory": {
-    "js": "/public/createhubstory.a5de518a5fcb4b32a6c0.js",
-    "css": "/public/createhubstory.a5de518a5fcb4b32a6c0.css"
+    "js": "/public/createhubstory.c155ff6e50b37ecdbe18.js",
+    "css": "/public/createhubstory.c155ff6e50b37ecdbe18.css"
   },
   "createlayer": {
     "js": "/public/createlayer.e425d8205cf4a8fc01e2.js",
@@ -33,8 +33,8 @@
     "css": "/public/createuserstory.75c918583fd2decbf219.css"
   },
   "edithubstory": {
-    "js": "/public/edithubstory.784952eecbab125bca70.js",
-    "css": "/public/edithubstory.784952eecbab125bca70.css"
+    "js": "/public/edithubstory.4ef5d186d5ce280f96ee.js",
+    "css": "/public/edithubstory.4ef5d186d5ce280f96ee.css"
   },
   "edituserstory": {
     "js": "/public/edituserstory.4cd2240b5fe79a22fc9c.js",
@@ -71,8 +71,8 @@
     "css": "/public/groups.0f76dd794f4b8e535507.css"
   },
   "home": {
-    "js": "/public/home.17989ba94d28b04e3268.js",
-    "css": "/public/home.17989ba94d28b04e3268.css"
+    "js": "/public/home.5ad0ed764b4204fc968a.js",
+    "css": "/public/home.5ad0ed764b4204fc968a.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
@@ -81,28 +81,28 @@
     "js": "/public/hubbuilder.4521492f51df83c947d8.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.f40526cf6f4255556b1b.js",
-    "css": "/public/hubinfo.f40526cf6f4255556b1b.css"
+    "js": "/public/hubinfo.0192bc47ddd7a74e2e99.js",
+    "css": "/public/hubinfo.0192bc47ddd7a74e2e99.css"
   },
   "hubmap": {
-    "js": "/public/hubmap.1fab543fedb5ed4c8749.js",
-    "css": "/public/hubmap.1fab543fedb5ed4c8749.css"
+    "js": "/public/hubmap.f7dc5f8374e7122aef03.js",
+    "css": "/public/hubmap.f7dc5f8374e7122aef03.css"
   },
   "hubresources": {
-    "js": "/public/hubresources.9e29f491e977df962357.js",
-    "css": "/public/hubresources.9e29f491e977df962357.css"
+    "js": "/public/hubresources.e4003250b0c5ee017c43.js",
+    "css": "/public/hubresources.e4003250b0c5ee017c43.css"
   },
   "hubs": {
     "js": "/public/hubs.744ebff91021029609a3.js",
     "css": "/public/hubs.744ebff91021029609a3.css"
   },
   "hubstories": {
-    "js": "/public/hubstories.5337f87ce659aaa72bbd.js",
-    "css": "/public/hubstories.5337f87ce659aaa72bbd.css"
+    "js": "/public/hubstories.e844d6530f7ba5b67dee.js",
+    "css": "/public/hubstories.e844d6530f7ba5b67dee.css"
   },
   "hubstory": {
-    "js": "/public/hubstory.54cd7874e2e7b156a994.js",
-    "css": "/public/hubstory.54cd7874e2e7b156a994.css"
+    "js": "/public/hubstory.3dc54c5cdb3653a39e0f.js",
+    "css": "/public/hubstory.3dc54c5cdb3653a39e0f.css"
   },
   "journalists": {
     "js": "/public/journalists.df0f3319f2aa06e0f3d9.js"
@@ -124,7 +124,7 @@
     "css": "/public/layers.bb86a352c9c2780322e1.css"
   },
   "locales": {
-    "js": "/public/locales.ecf35f4cd6af3c756f6e.js"
+    "js": "/public/locales.420193d85c0339c7cc9d.js"
   },
   "login": {
     "js": "/public/login.ac9cf04abaeaa4316331.js"
@@ -168,8 +168,8 @@
     "css": "/public/staticmap.ce2f0ba1055169c1fe92.css"
   },
   "stories": {
-    "js": "/public/stories.b83e46b3693db9a31373.js",
-    "css": "/public/stories.b83e46b3693db9a31373.css"
+    "js": "/public/stories.c50cef0b504c3ac849dc.js",
+    "css": "/public/stories.c50cef0b504c3ac849dc.css"
   },
   "terms": {
     "js": "/public/terms.c0fe6fe7cec1367611a5.js"
@@ -194,17 +194,17 @@
     "js": "/public/usersettings.2fc67726a4ac8850163b.js"
   },
   "userstories": {
-    "js": "/public/userstories.46575c84d127667fef29.js",
-    "css": "/public/userstories.46575c84d127667fef29.css"
+    "js": "/public/userstories.332a7a93b53aed94b6b6.js",
+    "css": "/public/userstories.332a7a93b53aed94b6b6.css"
   },
   "userstory": {
     "js": "/public/userstory.7f1c9d189fad91a78ec0.js",
     "css": "/public/userstory.7f1c9d189fad91a78ec0.css"
   },
   "vendor": {
-    "js": "/public/vendor.a037294f3eab524f9d86.js"
+    "js": "/public/vendor.fe35c8047df7f7308daf.js"
   },
   "metadata": {
-    "version": "0.6.0"
+    "version": "0.6.1"
   }
 }
