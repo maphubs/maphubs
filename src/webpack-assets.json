@@ -124,21 +124,21 @@
     "css": "/public/layers.bb86a352c9c2780322e1.css"
   },
   "locales": {
-    "js": "/public/locales.420193d85c0339c7cc9d.js"
+    "js": "/public/locales.af24cfeec3575ffd02bc.js"
   },
   "login": {
     "js": "/public/login.ac9cf04abaeaa4316331.js"
   },
   "map": {
-    "js": "/public/map.dc25f9a1d516174a07b7.js",
-    "css": "/public/map.dc25f9a1d516174a07b7.css"
+    "js": "/public/map.b211cc74361faa649f49.js",
+    "css": "/public/map.b211cc74361faa649f49.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.d522978f984d98614fb0.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.43f9b87f7a8e7cfa9ed2.js",
-    "css": "/public/mapedit.43f9b87f7a8e7cfa9ed2.css"
+    "js": "/public/mapedit.eed8f05e514938a25204.js",
+    "css": "/public/mapedit.eed8f05e514938a25204.css"
   },
   "maps": {
     "js": "/public/maps.d52d0602c72ccdb2c6b0.js",
@@ -202,9 +202,9 @@
     "css": "/public/userstory.7f1c9d189fad91a78ec0.css"
   },
   "vendor": {
-    "js": "/public/vendor.fe35c8047df7f7308daf.js"
+    "js": "/public/vendor.91a2971653d4233dedad.js"
   },
   "metadata": {
-    "version": "0.6.1"
+    "version": "0.6.2"
   }
 }
