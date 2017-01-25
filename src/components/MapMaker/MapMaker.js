@@ -162,17 +162,6 @@ var MapMaker = React.createClass({
     }
   },
 
-   shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-    if(!_isEqual(this.props, nextProps)){
-      return true;
-    }
-    if(!_isEqual(this.state, nextState)){
-      return true;
-    }
-    return false;
-  },
-
   componentDidUpdate(){
     $('.layer-card-tooltipped').tooltip();
     $('.savebutton-tooltipped').tooltip();
