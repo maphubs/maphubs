@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.6.2](https://github.com/maphubs/maphubs/tree/v0.6.2) (2017-01-25)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.1...v0.6.2)
+
 ## [v0.6.1](https://github.com/maphubs/maphubs/tree/v0.6.1) (2017-01-25)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.0...v0.6.1)
 
@@ -465,6 +468,7 @@
 
 - better error message when going to a hub that does not exist [\#50](https://github.com/maphubs/maphubs/issues/50)
 - feature page is loading the wrong data [\#48](https://github.com/maphubs/maphubs/issues/48)
+- IE11 compatibility [\#46](https://github.com/maphubs/maphubs/issues/46)
 - need to trim spaces off story titles [\#44](https://github.com/maphubs/maphubs/issues/44)
 - layer info description needs to wrap long URLs [\#35](https://github.com/maphubs/maphubs/issues/35)
 
