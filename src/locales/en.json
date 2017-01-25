@@ -727,5 +727,7 @@
 	"Choose a Base Map": "Choose a Base Map",
 	"Distance": "Distance",
 	"Show Measurement Tools": "Show Measurement Tools",
-	"Measurement Tools": "Measurement Tools"
+	"Measurement Tools": "Measurement Tools",
+	"Default (Light)": "Default (Light)",
+	"Landsat - 2014": "Landsat - 2014"
 }
