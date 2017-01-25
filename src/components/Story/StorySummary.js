@@ -31,7 +31,10 @@ var StorySummary = React.createClass({
   },
 
   render(){
-    var title = this.props.story.title.replace('&nbsp;', '');
+    var title = '';
+    if(this.props.story.title){
+      title = this.props.story.title.replace('&nbsp;', '');
+    }
     var linkUrl = '';
     var baseUrl = urlUtil.getBaseUrl();
     if(this.props.story.display_name){
