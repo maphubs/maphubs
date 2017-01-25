@@ -134,6 +134,8 @@ var HubMap = React.createClass({
                       bottom: '30px',
                       right: '5px',
                       minWidth: '200px',
+                      maxHeight: 'calc(100% - 80px)',
+                      overflowY: 'auto',
                       zIndex: '1',
                       width: '25%'
                     }} layers={this.state.layers} />
