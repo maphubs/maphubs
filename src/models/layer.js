@@ -180,7 +180,10 @@ module.exports = {
     .table('omh.layers').orderBy('name');
 
     if (includePrivate) {
-      query.where('owned_by_group_id', group_id);
+      query.where({
+        status: 'published',
+        'owned_by_group_id': group_id
+      });
     } else {
       query.where({
         'private': false,
@@ -225,6 +228,7 @@ module.exports = {
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .whereIn('owned_by_group_id', subquery)
+    .where({status: 'published'})
     .orderBy('last_updated', 'desc')
     .limit(number);
 
