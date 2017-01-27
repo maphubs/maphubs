@@ -572,7 +572,11 @@ var Map = React.createClass({
 
     var insetMap = '';
     if(this.props.insetMap){
-      insetMap = (<InsetMap ref="insetMap" id={this.state.id} />);
+      var bottom='5px';
+      if(this.props.showLogo){
+         bottom='30px';
+      }
+      insetMap = (<InsetMap ref="insetMap" id={this.state.id}  bottom={bottom} />);
     }
 
     var measurementTools = '';
