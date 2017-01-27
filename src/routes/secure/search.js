@@ -25,16 +25,16 @@ module.exports = function(app: any) {
     var commands = [
       //points
       knex.raw(`
-        SELECT layer_id, array_agg('n'|| id) AS ids 
+        SELECT omh.layers.layer_id, array_agg('n'|| id) AS ids 
         FROM current_nodes
         LEFT JOIN omh.layers on omh.layers.layer_id = current_nodes.layer_id
         WHERE omh.layers.private = false AND id IN(SELECT node_id FROM current_node_tags
           WHERE lower(v) LIKE '%` + q +`%')
-          GROUP BY layer_id;
+          GROUP BY omh.layers.layer_id;
       `),
       //lines
       knex.raw(`
-        select layer_id, array_agg('w'|| id) as ids
+        select omh.layers.layer_id, array_agg('w'|| id) as ids
          from current_ways a
          left join (SELECT
            way_id,
@@ -44,7 +44,7 @@ module.exports = function(app: any) {
            END AS tags
            FROM current_way_tags
            GROUP BY way_id) b on a.id = b.way_id
-        left join omh.layers on omh.layers.layer_id = current_ways.layer_id
+        left join omh.layers on omh.layers.layer_id = a.layer_id
         where omh.layers.private = false AND id IN(select way_id from current_way_tags where lower(v) LIKE '%` + q +`%')
         AND ((tags->'area') NOT IN ('yes', 'true') OR (tags->'area') IS NULL)
          AND id NOT IN (
@@ -53,14 +53,14 @@ module.exports = function(app: any) {
            LEFT JOIN current_relation_members  ON current_relation_members.relation_id = current_relations.id
            WHERE k = 'type' AND v = 'multipolygon' AND member_type = 'Way'
          )
-        group by layer_id;
+        group by omh.layers.layer_id;
       `),
       //polygons (not multipolygons)
       knex.raw(`
-      select layer_id, array_agg('p'|| id) as ids
+      select omh.layers.layer_id, array_agg('p'|| id) as ids
       from current_ways a
       left join current_way_tags b  on a.id = b.way_id
-      left join omh.layers on omh.layers.layer_id = current_ways.layer_id
+      left join omh.layers on omh.layers.layer_id = a.layer_id
       where omh.layers.private = false AND lower(b.v) LIKE '%` + q +`%'
       AND id IN (select distinct way_id from current_way_tags where k='area' AND v IN ('yes', 'true'))
       AND id NOT IN (
@@ -69,16 +69,16 @@ module.exports = function(app: any) {
        LEFT JOIN current_relation_members ON current_relation_members.relation_id = current_relations.id
        WHERE k = 'type' AND v = 'multipolygon' AND member_type = 'Way'
       )
-      group by layer_id;
+      group by omh.layers.layer_id;
       `),
       //multipolygons
       knex.raw(`
-      select layer_id, array_agg(distinct 'm'|| id) as ids
+      select omh.layers.layer_id, array_agg(distinct 'm'|| id) as ids
        from current_relations a
        left join current_relation_tags b on a.id = b.relation_id
-       left join omh.layers on omh.layers.layer_id = current_relations.layer_id
+       left join omh.layers on omh.layers.layer_id = a.layer_id
       where omh.layers.private = false AND lower(v) LIKE '%` + q +`%'
-      group by layer_id;
+      group by omh.layers.layer_id;
       `)
 
     ];
