@@ -11,14 +11,21 @@ var csrfProtection = require('csurf')({cookie: false});
 module.exports = function(app: any) {
 
   app.get('/', csrfProtection, function(req, res, next) {
-    Promise.all([
-      Layer.getPopularLayers(5),
+    var homePageDataRequests = [
+       Layer.getPopularLayers(5),
       Group.getPopularGroups(5),
       Hub.getPopularHubs(5),
       Map.getPopularMaps(5),
       Story.getPopularStories(5),
       Story.getFeaturedStories(5)
-    ]).then(function(results){
+    ];
+    if(MAPHUBS_CONFIG.homepageMapHubId){
+      const hub_id: string = MAPHUBS_CONFIG.homepageMapHubId;
+      homePageDataRequests.push(Hub.getHubByID(hub_id));
+      homePageDataRequests.push(Layer.getHubLayers(hub_id, false));
+    }
+    Promise.all(homePageDataRequests)
+    .then(function(results){
       var trendingLayers = results[0];
       var trendingGroups = results[1];
       var trendingHubs = results[2];
@@ -26,13 +33,19 @@ module.exports = function(app: any) {
       var trendingStories = results[4];
       var featuredStories = results[5];
 
+      var mapHub, mapHubLayers;
+       if(MAPHUBS_CONFIG.homepageMapHubId){
+         mapHub = results[6];
+         mapHubLayers = results[7];
+       }
+
       res.render('home', {
         title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
         description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
         addthis: true,
         props: {
-          trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories, featuredStories,
+          trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories, featuredStories, mapHub, mapHubLayers,
           _csrf: req.csrfToken()
         }, req
       });

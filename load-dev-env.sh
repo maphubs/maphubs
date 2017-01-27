@@ -33,7 +33,11 @@ var MAPHUBS_CONFIG = {
   MAPBOX_ACCESS_TOKEN: "${OMH_MAPBOX_TOKEN}",
   PLANET_LABS_API_KEY: "${PLANET_LABS_API_KEY}",
   BING_KEY:  "${BING_API_KEY}",
-  theme: "${OMH_THEME}"
+  theme: "${OMH_THEME}",
+  homepageProLinks: ${OMH_HOMEPAGE_PRO_LINKS},
+  homepageSlides: ${OMH_HOMEPAGE_SLIDES},
+  homepageMapHubId: "${OMH_HOMEPAGE_MAP_HUB_ID}",
+  homepageMailingList: ${OMH_HOMEPAGE_MAILINGLIST}
 };
 if(typeof module !== 'undefined'){
   module.exports = MAPHUBS_CONFIG;

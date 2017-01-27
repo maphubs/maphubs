@@ -11,6 +11,7 @@ import SliderDecorators from '../components/Home/SliderDecorators';
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
 var MapHubsProLinks = require('../components/Home/MapHubsProLinks');
 var MailingList = require('../components/Home/MailingList');
+var HomePageMap = require('../components/Home/HomePageMap');
 var _shuffle = require('lodash.shuffle');
 var cardUtil = require('../services/card-util');
 
@@ -34,7 +35,9 @@ var Home = React.createClass({
     trendingMaps: React.PropTypes.array.isRequired,
     trendingStories: React.PropTypes.array.isRequired,
     featuredStories:  React.PropTypes.array.isRequired,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    mapHub: React.PropTypes.object,
+    mapHubLayers: React.PropTypes.array
   },
 
   getInitialState(): Object{
@@ -59,7 +62,7 @@ var Home = React.createClass({
     this.state.trendingMapCards,
     this.state.trendingStoryCards]);
 
-
+     //TODO: move this to a config inside the theme
      var slides = [
        {
          title: this.__('MapHubs is now Map for Environment'),
@@ -105,14 +108,15 @@ var Home = React.createClass({
        }
      ];
 
-     var homePageCarousel = '', proLinks = '', mailingList = '';
-     if(MAPHUBS_CONFIG.mapHubsPro){
+     var homePageCarousel = '', proLinks = '', mailingList = '', homepageMap= '';
+     if(MAPHUBS_CONFIG.homepageProLinks){
        proLinks = (
          <div className="row">
           <MapHubsProLinks />
         </div>
        );
-     }else {
+     }
+     if(MAPHUBS_CONFIG.homepageSlides){
        homePageCarousel = (
          <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
            <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
@@ -139,8 +143,19 @@ var Home = React.createClass({
 
          </div>
        );
-      mailingList = (
+     
+     }
+     if(MAPHUBS_CONFIG.homepageMailingList){
+        mailingList = (
          <MailingList />
+       );
+     }
+     if(MAPHUBS_CONFIG.homepageMapHubId && this.props.mapHub){
+       homepageMap = (
+         <div className="row no-margin" style={{height: 'calc(100vh - 150px)'}}>
+            <HomePageMap height="100%" hub={this.props.mapHub} layers={this.props.mapHubLayers}/>
+            <div className="divider" />
+          </div>
        );
      }
 
@@ -172,6 +187,7 @@ var Home = React.createClass({
       <Header />
       <main style={{margin: 0, height: '100%'}}>
         {homePageCarousel}
+        {homepageMap}
         {mailingList}
          <div className="row">
           <OnboardingLinks />
