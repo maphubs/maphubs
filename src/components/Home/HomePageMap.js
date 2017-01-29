@@ -95,6 +95,7 @@ var HomePageMap = React.createClass({
               style={{width: '100%', height: '100%'}}
               glStyle={this.state.hub.map_style}
               baseMap={this.state.hub.basemap}
+              showLogo={false}
               disableScrollZoom>
 
               <MiniLegend style={{
