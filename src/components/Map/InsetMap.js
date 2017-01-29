@@ -13,12 +13,14 @@ var InsetMap = React.createClass({
 
   propTypes: {
     id: React.PropTypes.string,
+    bottom:  React.PropTypes.string,
     attributionControl: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return {
       id: 'map',
+      bottom: '30px',
       attributionControl: false
     };
   },
@@ -162,7 +164,7 @@ var InsetMap = React.createClass({
   render(){
     return (
        <div style={{
-          position: 'absolute', bottom: '30px', left: '5px',
+          position: 'absolute', bottom: this.props.bottom, left: '5px',
           minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
           height: '25vw', width: '25vw'
           }}>

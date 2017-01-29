@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.6.3](https://github.com/maphubs/maphubs/tree/v0.6.3) (2017-01-27)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.2...v0.6.3)
+
+**Fixed bugs:**
+
+- Global search error [\#328](https://github.com/maphubs/maphubs/issues/328)
+
 ## [v0.6.2](https://github.com/maphubs/maphubs/tree/v0.6.2) (2017-01-25)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.1...v0.6.2)
 
