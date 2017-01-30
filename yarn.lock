@@ -328,7 +328,7 @@ arrify@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
-asap@~2.0.3:
+asap@^2.0.3, asap@~2.0.3:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.5.tgz#522765b50c3510490e52d7dcfe085ef9ba96958f"
 
@@ -2341,9 +2341,22 @@ difflet@~0.2.0:
     deep-is "0.1.x"
     traverse "0.6.x"
 
+disposables@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/disposables/-/disposables-1.0.1.tgz#064727a25b54f502bd82b89aa2dfb8df9f1b39e3"
+
 dms2dec@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/dms2dec/-/dms2dec-1.1.0.tgz#a60b43731194927886b74ba8dbca762efbfe847c"
+
+dnd-core@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/dnd-core/-/dnd-core-2.0.2.tgz#4528da4fbeb1abb6c308414b2d2e8389f3514646"
+  dependencies:
+    asap "^2.0.3"
+    invariant "^2.0.0"
+    lodash "^4.2.0"
+    redux "^3.2.0"
 
 doctrine@^1.2.2:
   version "1.5.0"
@@ -3789,7 +3802,7 @@ intl@1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/intl/-/intl-1.2.5.tgz#82244a2190c4e419f8371f5aa34daa3420e2abde"
 
-invariant@^2.1.1, invariant@^2.2.0, invariant@^2.2.1:
+invariant@^2.0.0, invariant@^2.1.0, invariant@^2.1.1, invariant@^2.2.0, invariant@^2.2.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
   dependencies:
@@ -4402,6 +4415,10 @@ lodash.findindex@4.6.0:
 lodash.flatten@4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
+
+lodash.flow@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.flow/-/lodash.flow-3.5.0.tgz#87bf40292b8cf83e4e8ce1a3ae4209e20071675a"
 
 lodash.foreach@4.5.0:
   version "4.5.0"
@@ -6136,6 +6153,21 @@ react-disqus-thread@maphubs/react-disqus-thread#4114ce406af88bd15b65cc4b7bb07449
   version "0.4.0"
   resolved "https://codeload.github.com/maphubs/react-disqus-thread/tar.gz/4114ce406af88bd15b65cc4b7bb0744985a3dd48"
 
+react-dnd-html5-backend@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-dnd-html5-backend/-/react-dnd-html5-backend-2.1.2.tgz#bcff5866629c335b310b1062fe6537af35073c66"
+  dependencies:
+    lodash "^4.2.0"
+
+react-dnd@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/react-dnd/-/react-dnd-2.1.4.tgz#dd2afeddddd5ff4507d795a5bd44361c84374c0f"
+  dependencies:
+    disposables "^1.0.1"
+    dnd-core "^2.0.1"
+    invariant "^2.1.0"
+    lodash "^4.2.0"
+
 "react-dom@^0.14.3 || ^15.0.0", react-dom@^15.0.1, react-dom@^15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.2.tgz#015363f05b0a1fd52ae9efdd3a0060d90695208f"
@@ -6357,7 +6389,7 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-redux@^3.5.2:
+redux@^3.2.0, redux@^3.5.2:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.6.0.tgz#887c2b3d0b9bd86eca2be70571c27654c19e188d"
   dependencies:

@@ -243,6 +243,11 @@ module.exports = Reflux.createStore({
    cb();
  },
 
+ updateLayers(layers){
+   this.setState({layers});
+   this.updateMap(layers);
+ },
+
  moveUp(layer_id){
    var index = findIndex(this.state.layers, {layer_id});
    if(index === 0) return;

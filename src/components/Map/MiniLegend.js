@@ -21,6 +21,7 @@ var MiniLegend = React.createClass({
     layers: React.PropTypes.array,
     hideInactive: React.PropTypes.bool,
     collapsible: React.PropTypes.bool,
+    collapseToBottom: React.PropTypes.bool,
     style: React.PropTypes.object
   },
 
@@ -29,6 +30,7 @@ var MiniLegend = React.createClass({
       layers: [],
       hideInactive: true,
       collapsible: true,
+      collapseToBottom: true,
       style: {}
     };
   },
@@ -61,10 +63,21 @@ var MiniLegend = React.createClass({
     var title = '';
     if(this.props.collapsible){
 
-      var iconName = 'keyboard_arrow_down';
-      if(this.state.collapsed){
-        iconName = 'keyboard_arrow_up';
+      var iconName;
+      if(this.props.collapseToBottom){
+        if(this.state.collapsed){
+          iconName = 'keyboard_arrow_up';
+        }else{
+          iconName = 'keyboard_arrow_down';
+        }
+      }else{
+         if(this.state.collapsed){
+          iconName = 'keyboard_arrow_down';
+        }else{
+          iconName = 'keyboard_arrow_up';
+        }
       }
+     
 
       title = (
         <div className="row no-margin" style={{height: '30px'}}>

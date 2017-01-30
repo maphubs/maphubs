@@ -46,3 +46,6 @@ if(typeof module !== 'undefined'){
 EOF
 
 cp ./src/sass/${OMH_THEME}.scss ./src/theme.scss
+
+#work-around old babel config included in dnd-core
+rm ./node_modules/dnd-core/.babelrc

@@ -6,7 +6,7 @@ var Map = require('../Map/Map');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
-var HubMapLayers = require('../Hub/HubMapLayers');
+var HomePageMapLayers = require('./HomePageMapLayers');
 var MiniLegend = require('../Map/MiniLegend');
 var HubStore = require('../../stores/HubStore');
 var LocaleStore = require('../../stores/LocaleStore');
@@ -65,30 +65,44 @@ var HomePageMap = React.createClass({
     return (
       <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border}}>
         <div className="row no-margin" style={{height: '100%'}}>
-          <div style={{height: '100%', overflowY: 'auto'}} className="col no-padding s0 hide-on-small-only m3 l3">
-            <HubMapLayers />
-          </div>
-          <div className="col s12 m9 l9 no-padding" style={{height: '100%'}}>
-            <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
-              <a href="#" ref="mapLayersPanel"
+          <div className="col s12 no-padding" style={{height: '100%'}}>
+            <nav className="white"  style={{height: '0px', position: 'relative'}}>
+               <a ref="mapLayersPanel"
+                href="#" 
                 data-activates="map-layers"
-                style={{position: 'absolute',
-                  top: '110px',
-                  left: '5px',
-                  height:'35px',
-                  lineHeight: '35px',
-                  width: '35px'}}
-                className="button-collapse">
-                <i className="material-icons omh-btn"
-                  style={{height:'35px',
-                          lineHeight: '35px',
-                          width: '35px',
-                          fontSize:'35px'}}
+                style={{
+                  display: 'inherit',
+                  position: 'absolute',         
+                  top: '10px',            
+                  left: '10px',
+                  height:'30px',
+                  zIndex: '100',
+                  borderRadius: '4px',
+                  lineHeight: '30px',
+                  textAlign: 'center',
+                  boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
+                  width: '30px'
+                }}
+                  data-position="bottom" data-delay="50" 
+                  data-tooltip={this.__('Tools')}
+                >
+                <i  className="material-icons"
+                  style={{height:'30px',
+                          lineHeight: '30px',
+                          width: '30px',
+                          color: '#000',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          backgroundColor: 'white',
+                          borderColor: '#ddd',
+                          borderStyle: 'none',
+                          borderWidth: '1px',
+                          textAlign: 'center',
+                          fontSize:'18px'}}          
                   >layers</i>
               </a>
               <div className="side-nav" id="map-layers">
-                <HubMapLayers />
-
+                <HomePageMapLayers />
               </div>
             </nav>
             <Map ref="map" id="hub-map" fitBounds={bounds}
@@ -106,7 +120,7 @@ var HomePageMap = React.createClass({
                   maxHeight: 'calc(100% - 80px)',
                   overflowY: 'auto',
                   zIndex: '1',
-                  width: '25%'
+                  width: '20%'
                 }} layers={this.state.layers} />
             </Map>
           </div>

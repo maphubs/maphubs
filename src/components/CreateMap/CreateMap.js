@@ -471,7 +471,7 @@ var CreateMap = React.createClass({
                         minWidth: '200px',
                         zIndex: '1',
                         width: '25%'
-                      }} layers={this.state.mapLayers} hideInactive={false} />
+                      }} layers={this.state.mapLayers} collapseToBottom={false} hideInactive={false} />
 
                 <div className="fixed-action-btn action-button-bottom-right savebutton-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Save Map')}>
                   <a onClick={this.onSave} className="btn-floating btn-large blue">

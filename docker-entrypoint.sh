@@ -39,6 +39,9 @@ EOF
 cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
 mkdir -p /app/css
 
+#work-around old babel config included in dnd-core
+rm ./node_modules/dnd-core/.babelrc
+
 #run any pending database migrations
 node node_modules/knex/bin/cli.js --knexfile=src/knexfile.js migrate:latest --env production
 

@@ -46,11 +46,13 @@ var MapToolButton = React.createClass({
             height:'30px',
             zIndex: '100',
             lineHeight: '30px',
+             borderRadius: '4px',
             textAlign: 'center',
+            boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
             width: '30px'}}
             data-position="bottom" data-delay="50" data-tooltip={this.props.tooltipText}
           >
-          <i  className="material-icons z-depth-1"
+          <i  className="material-icons"
             style={{height:'30px',
                     lineHeight: '30px',
                     width: '30px',
@@ -62,7 +64,7 @@ var MapToolButton = React.createClass({
                     borderStyle: 'solid',
                     borderWidth: '1px',
                     textAlign: 'center',
-                    fontSize:'25px'}}          
+                    fontSize:'18px'}}          
             >{this.props.icon}</i>
         </a>
     );

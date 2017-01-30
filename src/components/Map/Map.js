@@ -563,10 +563,12 @@ var Map = React.createClass({
     }
 
     var logo = '', children = '';
-    if(this.state.mapLoaded && this.props.showLogo){
-      logo = (
-        <img style={{position:'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt="Logo"/>
-      );      
+    if(this.state.mapLoaded){
+      if(this.props.showLogo){
+        logo = (
+          <img style={{position:'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt="Logo"/>
+        );      
+      }
       children = this.props.children;
     }
 

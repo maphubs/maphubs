@@ -4,6 +4,7 @@ var actions = Reflux.createActions({
   'loadHub': {},
   'loadMembers': {},
   'loadLayers': {},
+  'updateLayers': {},
   'createHub': {},
   'saveHub': {},
   'setTitle' : {},
