@@ -240,7 +240,10 @@ var Map = React.createClass({
         } else if(LayerSources[type]){
           //we have a custom driver for this source
           sources.push(LayerSources[type].load(key, source, map, _this));      
-        } else {
+      }else if(type === 'raster' && !url.startsWith('mapbox://')){
+        source.url = source.url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
+        map.addSource(key, source);
+      }else {
           //just add the source as-is
           map.addSource(key, source);
         }
