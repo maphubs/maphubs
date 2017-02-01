@@ -153,6 +153,12 @@ var Map = React.createClass({
       } else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
         //use custom driver for this source type
          LayerSources[source.type].addLayer(layer, source, map);
+      }else if(source.type === 'raster' && !source.url.startsWith('mapbox://')){
+        if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
+          map.addLayer(layer, 'water');
+        }else{
+          map.addLayer(layer);
+        }
       }else{
         map.addLayer(layer);
       }
