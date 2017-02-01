@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.6.5](https://github.com/maphubs/maphubs/tree/v0.6.5) (2017-02-01)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.4...v0.6.5)
+
+**Fixed bugs:**
+
+- mobile legend button not responding to clicks [\#329](https://github.com/maphubs/maphubs/issues/329)
+- create hub form always says name is available [\#325](https://github.com/maphubs/maphubs/issues/325)
+- show behind base map labels not working for raster layers [\#317](https://github.com/maphubs/maphubs/issues/317)
+- long layer names without spaces don't wrap [\#287](https://github.com/maphubs/maphubs/issues/287)
+
+## [v0.6.4](https://github.com/maphubs/maphubs/tree/v0.6.4) (2017-01-31)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.3...v0.6.4)
+
 ## [v0.6.3](https://github.com/maphubs/maphubs/tree/v0.6.3) (2017-01-27)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.2...v0.6.3)
 
