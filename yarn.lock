@@ -3164,9 +3164,9 @@ formidable@1.0.x, formidable@^1.0.17:
   version "1.0.17"
   resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.0.17.tgz#ef5491490f9433b705faa77249c99029ae348559"
 
-formsy-react@^0.19.1:
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/formsy-react/-/formsy-react-0.19.1.tgz#d196f2d755c5bd1dfccc386b110ee09bf761ab49"
+formsy-react@^0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/formsy-react/-/formsy-react-0.19.2.tgz#7fa818ff93c8c07195486c4d2e42b6da0c0ee4a3"
   dependencies:
     form-data-to-object "^0.2.0"
 

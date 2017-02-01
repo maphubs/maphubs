@@ -77,7 +77,7 @@
     "express-remove-route": "0.1.1",
     "express-session": "^1.14.2",
     "express-xml-bodyparser": "0.3.0",
-    "formsy-react": "^0.19.1",
+    "formsy-react": "^0.19.2",
     "geojson-validation": "0.1.6",
     "getenv": "0.7.0",
     "griddle-react": "0.6.1",
