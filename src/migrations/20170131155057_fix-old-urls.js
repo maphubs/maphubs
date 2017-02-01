@@ -5,7 +5,7 @@ var updateStyle = function(style){
     Object.keys(style.sources).map(function(key) {
       var source = style.sources[key];
       var type = source.type;
-      if(key != 'osm' && (type === 'vector' || type === 'raster') && !source.url.startsWith('mapbox://')  ){
+      if(key != 'osm' && (type === 'vector' || type === 'raster') && source.url && !source.url.startsWith('mapbox://')  ){
         console.log('Before: ' + source.url);
         source.url = source.url.replace('https://maphubs.com', '{MAPHUBS_DOMAIN}');
         console.log('After: ' +source.url);
