@@ -153,6 +153,12 @@ var Map = React.createClass({
       } else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
         //use custom driver for this source type
          LayerSources[source.type].addLayer(layer, source, map);
+      }else if(source.type === 'raster' && !source.url.startsWith('mapbox://')){
+        if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
+          map.addLayer(layer, 'water');
+        }else{
+          map.addLayer(layer);
+        }
       }else{
         map.addLayer(layer);
       }
@@ -240,7 +246,10 @@ var Map = React.createClass({
         } else if(LayerSources[type]){
           //we have a custom driver for this source
           sources.push(LayerSources[type].load(key, source, map, _this));      
-        } else {
+      }else if(type === 'raster' && !url.startsWith('mapbox://')){
+        source.url = source.url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
+        map.addSource(key, source);
+      }else {
           //just add the source as-is
           map.addSource(key, source);
         }

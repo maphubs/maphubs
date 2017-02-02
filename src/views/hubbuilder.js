@@ -63,7 +63,7 @@ var HubBuilder = React.createClass({
           url: '/api/hub/checkidavailable',
           contentType : 'application/json;charset=UTF-8',
           dataType: 'json',
-          data: JSON.stringify({id}),
+          data: JSON.stringify({id, _csrf: this.state._csrf}),
            async: false,
            success(msg){
              if(msg.available){

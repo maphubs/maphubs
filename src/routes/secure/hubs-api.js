@@ -15,7 +15,7 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.post('/api/hub/checkidavailable', login.ensureLoggedIn(), function(req, res, next) {
+  app.post('/api/hub/checkidavailable', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
     var data = req.body;
     if (data && data.id) {
       Hub.checkHubIdAvailable(data.id)

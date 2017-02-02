@@ -88,6 +88,15 @@ var UserMap = React.createClass({
     $('.user-map-tooltip').tooltip();
   },
 
+  componentDidMount() {
+  $(this.refs.mapLayersPanel).sideNav({
+    menuWidth: 240, // Default is 240
+    edge: 'left', // Choose the horizontal origin
+    closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+  });
+
+  },
+
   componentDidUpdate(){
     debounce(function(){
       var evt = document.createEvent('UIEvents');

@@ -705,9 +705,8 @@ var LayerInfo = React.createClass({
           <div className="col s12 m6 l6 no-padding" style={{height: '100%', position: 'relative'}}>
           {privateIcon}
             <div style={{margin: '10px'}}>
-              <h5>{this.props.layer.name}</h5>
+              <h5 style={{wordWrap: 'break-word'}}>{this.props.layer.name}</h5>
             </div>
-
 
             <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
               <ul className="tabs" style={{overflowX: 'auto'}}>
