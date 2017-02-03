@@ -59,6 +59,7 @@ module.exports = {
     about: "./src/client/about",
     terms: "./src/client/terms",
     privacy: "./src/client/privacy",
+    pageedit: "./src/client/pageedit",
     services: "./src/client/services",
     journalists: "./src/client/journalists",
     explore: "./src/client/explore",

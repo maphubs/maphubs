@@ -31,14 +31,16 @@ var CodeEditor = React.createClass({
     title: React.PropTypes.string.isRequired,
     code: React.PropTypes.string,
     mode: React.PropTypes.string,
-    theme: React.PropTypes.string
+    theme: React.PropTypes.string,
+    modal: React.PropTypes.bool
   },
 
   getDefaultProps() {
     return {
       id: 'code-editor',
       mode: 'json',
-      theme: 'monokai'
+      theme: 'monokai',
+      modal: true
     };
   },
 
@@ -102,7 +104,9 @@ var CodeEditor = React.createClass({
 
   onSave(){
     if(this.state.canSave){
-      this.hide();
+      if(this.props.modal){
+        this.hide();
+      }    
       this.props.onSave(this.state.code);
     }
 
@@ -127,7 +131,8 @@ var CodeEditor = React.createClass({
           editorProps={{$blockScrolling: true}}
         />
     );
-    }
+  }
+  if(this.props.modal){
     return (
       <Modal id={this.props.id} show={this.state.show} className="code-edit-modal" fixedFooter={true} dismissible={false}>
         <ModalContent style={{padding: '0px'}}>
@@ -148,6 +153,17 @@ var CodeEditor = React.createClass({
           </ModalFooter>
       </Modal>
     );
+  }else{
+    return (
+      <div style={{height: 'calc(100% - 100px)', width: '100%'}}>
+        <p className="left no-padding">{this.props.title}</p>
+        {editor}
+         <div className="right">
+            <a className="waves-effect waves-light btn" style={{float: 'none', marginTop: '15px'}} disabled={!this.state.canSave} onClick={this.onSave}>{this.__('Save')}</a>
+          </div>
+      </div>
+    );
+  }
   }
 });
 

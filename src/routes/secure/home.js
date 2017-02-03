@@ -3,6 +3,7 @@ var Layer = require('../../models/layer');
 var Group = require('../../models/group');
 var Hub = require('../../models/hub');
 var Map = require('../../models/map');
+var Page = require('../../models/page');
 var Story = require('../../models/story');
 var Promise = require('bluebird');
 var nextError = require('../../services/error-response').nextError;
@@ -11,43 +12,64 @@ var csrfProtection = require('csurf')({cookie: false});
 module.exports = function(app: any) {
 
   app.get('/', csrfProtection, function(req, res, next) {
-    var homePageDataRequests = [
-       Layer.getPopularLayers(5),
-      Group.getPopularGroups(5),
-      Hub.getPopularHubs(5),
-      Map.getPopularMaps(5),
-      Story.getPopularStories(5),
-      Story.getFeaturedStories(5)
-    ];
-    if(MAPHUBS_CONFIG.homepageMapHubId){
-      const hub_id: string = MAPHUBS_CONFIG.homepageMapHubId;
-      homePageDataRequests.push(Hub.getHubByID(hub_id));
-      homePageDataRequests.push(Layer.getHubLayers(hub_id, false));
-    }
-    Promise.all(homePageDataRequests)
-    .then(function(results){
-      var trendingLayers = results[0];
-      var trendingGroups = results[1];
-      var trendingHubs = results[2];
-      var trendingMaps = results[3];
-      var trendingStories = results[4];
-      var featuredStories = results[5];
 
-      var mapHub, mapHubLayers;
-       if(MAPHUBS_CONFIG.homepageMapHubId){
-         mapHub = results[6];
-         mapHubLayers = results[7];
-       }
+    Page.getPageConfig('home').then(function(pageConfig){
+     var dataRequests = [];
+     var dataRequestNames = [];
+    //use page config to determine data requests
+    if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
+      pageConfig.components.forEach(function(component: any){
+        if(component.type === 'hubmap'){
+          dataRequests.push(Hub.getHubByID(component.hub_id));
+          dataRequestNames.push('mapHub');
+          dataRequests.push(Layer.getHubLayers(component.hub_id, false));
+          dataRequestNames.push('mapHubLayers');
+
+        }else if(component.type === 'storyfeed'){
+            dataRequests.push(Story.getPopularStories(5));
+            dataRequestNames.push('trendingStories');
+            dataRequests.push(Story.getFeaturedStories(5));
+            dataRequestNames.push('featuredStories');
+
+        }else if(component.type === 'carousel'){
+          if(component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0){
+            component.datasets.forEach(function(dataset){
+              if(dataset.type == 'layer' && dataset.filter === 'popular'){
+                 dataRequests.push(Layer.getPopularLayers(5));
+                  dataRequestNames.push('trendingLayers');
+              }else if(dataset.type == 'group' && dataset.filter === 'popular'){
+                 dataRequests.push(Group.getPopularGroups(5));
+                  dataRequestNames.push('trendingGroups');
+              }else if(dataset.type == 'hub' && dataset.filter === 'popular'){
+                dataRequests.push(Hub.getPopularHubs(5));
+                 dataRequestNames.push('trendingHubs');
+              }else if(dataset.type == 'map' && dataset.filter === 'popular'){
+                dataRequests.push(Map.getPopularMaps(5));
+                 dataRequestNames.push('trendingMaps');
+              }
+            });
+          }
+        }
+      });
+    }
+    
+    Promise.all(dataRequests)
+    .then(function(results){
+      var props = {};
+      results.forEach(function(result, i){
+        props[dataRequestNames[i]] = result;
+      });
+
+      props._csrf = req.csrfToken();
 
       res.render('home', {
         title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
         description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
         addthis: true,
-        props: {
-          trendingLayers, trendingGroups, trendingHubs, trendingMaps, trendingStories, featuredStories, mapHub, mapHubLayers,
-          _csrf: req.csrfToken()
-        }, req
+        props, 
+        req
+      });
       });
     }).catch(nextError(next));
   });
