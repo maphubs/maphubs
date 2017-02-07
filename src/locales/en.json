@@ -766,5 +766,11 @@
 	"MaxZoom": "MaxZoom",
 	"Highest tile zoom level available in data": "Highest tile zoom level available in data",
 	"Bounds": "Bounds",
-	"Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy": "Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy"
+	"Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy": "Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy",
+	"Forest Alerts": "Forest Alerts",
+	"2017 GLAD Alerts": "2017 GLAD Alerts",
+	"Calculate": "Calculate",
+	"Edit Page": "Edit Page",
+	"Editing Page Config: ": "Editing Page Config: ",
+	"Welcome to the MapHubs Demo Site": "Welcome to the MapHubs Demo Site"
 }
