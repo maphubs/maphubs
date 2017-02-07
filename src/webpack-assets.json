@@ -71,8 +71,8 @@
     "css": "/public/groups.6f2e1974cb4c196fdb8c.css"
   },
   "home": {
-    "js": "/public/home.1088f73b44ce269b9c45.js",
-    "css": "/public/home.1088f73b44ce269b9c45.css"
+    "js": "/public/home.488c1669b73a382821d8.js",
+    "css": "/public/home.488c1669b73a382821d8.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
@@ -202,14 +202,14 @@
     "css": "/public/userstory.489d1d220edded7b711e.css"
   },
   "vendor": {
-    "js": "/public/vendor.a37bb8931b2214590122.js"
+    "js": "/public/vendor.28fc3b88fd811375f1dc.js"
   },
   "metadata": {
-    "version": "0.7.0"
+    "version": "0.7.1"
   },
   "homedemo": {
-    "js": "/public/homedemo.bf98a30fc42addc2f166.js",
-    "css": "/public/homedemo.bf98a30fc42addc2f166.css"
+    "js": "/public/homedemo.8211a1f45dd32e614f23.js",
+    "css": "/public/homedemo.8211a1f45dd32e614f23.css"
   },
   "pageedit": {
     "js": "/public/pageedit.2dff81531b39c7957ec8.js"
