@@ -417,7 +417,7 @@ module.exports = {
 
       if(source){
         if(source.type === 'vector'){
-          var url = '{MAPHUBS_DOMAIN}/tiles/layer/' + layer_id + '/index.json';
+          var url = '{MAPHUBS_DOMAIN}/api/layer/' + layer_id + '/tile.json';
 
           styles.sources['omh-' + layer_id] = {
             "type": "vector",

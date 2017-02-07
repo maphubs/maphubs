@@ -62,12 +62,21 @@ var RasterTileSource = React.createClass({
 
   submit (model) {
     var _this = this;
+
+    var boundsArr = model.bounds.split(',');
+    boundsArr.map(function(item){
+      return item.trim();
+    });
+
     LayerActions.saveDataSettings({
       is_external: true,
-      external_layer_type: 'Raster Tile Service',
+      external_layer_type: 'Vector Tile Service',
       external_layer_config: {
-        type: 'raster',
-        tiles: [model.rasterTileUrl]
+        type: 'vector',
+        minzoom: model.minzoom,
+        maxzoom: model.maxzoom,
+        bounds: boundsArr,
+        tiles: [model.vectorTileUrl]
       }
     }, _this.state._csrf, function(err){
       if (err){
@@ -121,16 +130,31 @@ var RasterTileSource = React.createClass({
           <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
             <div>
-              <p>Raster Tile Source</p>
+              <p>Vector Tile Source</p>
             <div className="row">
-              <TextInput name="rasterTileUrl" label={this.__('Raster Tile URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
+              <TextInput name="vectorTileUrl" label={this.__('Vector Tile URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
                      maxLength: this.__('Must be 500 characters or less.'),
                      isHttps:  this.__('SSL required for external links, URLs must start with https://')
                  }} length={500}
-                 dataPosition="top" dataTooltip={this.__('Raster URL for example:') +'http://myserver/tiles/{z}/{x}/{y}.png'}
+                 dataPosition="top" dataTooltip={this.__('Vector Tile URL for example:') +'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                  required/>
             </div>
+            <div className="row">
+              <TextInput name="minzoom" label={this.__('MinZoom')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Lowest tile zoom level available in data')}
+                 required/>
             </div>
+            <div className="row">
+              <TextInput name="maxzoom" label={this.__('MaxZoom')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Highest tile zoom level available in data')}
+                 required/>
+            </div>
+            <div className="row">
+              <TextInput name="bounds" label={this.__('Bounds')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                 required/>
+            </div>
+          </div>
 
 
             {prevButton}

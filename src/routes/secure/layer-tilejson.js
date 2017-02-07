@@ -14,26 +14,104 @@ app.get('/api/layer/:layer_id/tile.json', privateLayerCheck, function(req, res) 
     Layer.getLayerByID(layer_id)
     .then(function(layer){
       if(layer.is_external && layer.external_layer_config.type == 'raster'){
-        var bounds = [-180, -180, 180, 180];
+        let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
-        var tileJSON = {
+        let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
+        let maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
+
+        let centerZoom = Math.floor((maxzoom - minzoom) / 2);
+        let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
+        let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
+
+        let legend = layer.legend_html ?  layer.legend_html : layer.name;
+
+        let tileJSON = {
           attribution: layer.source,
           autoscale: true,
           bounds,
-          center: [0, 0, 3],
+          center: [centerX, centerY, centerZoom],
           created: layer.last_updated,
           description: layer.description,
+          legend,
           filesize: 0,
           format: "png8:m=h:c=64",
           id: 'omh-' + layer.layer_id,
-          maxzoom: 19,
-          minzoom: 0,
+          maxzoom,
+          minzoom,
           name: layer.name,
-          private: false,
+          private: layer.private,
           scheme: "xyz",
-          source: "",
-          tilejson: "2.0.0",
+          tilejson: "2.2.0",
           tiles: layer.external_layer_config.tiles,
+          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+        };
+        res.status(200).send(tileJSON);
+      }else if(layer.is_external && layer.external_layer_config.type == 'vector'){
+        let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
+        if(layer.extent_bbox) bounds = layer.extent_bbox;
+        let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
+        let maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
+
+        let centerZoom = Math.floor((maxzoom - minzoom) / 2);
+        let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
+        let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
+
+        let legend = layer.legend_html ?  layer.legend_html : layer.name;
+
+        let tileJSON = {
+          attribution: layer.source,
+          bounds,
+          center: [centerX, centerY, centerZoom],
+          created: layer.last_updated,
+          updated: layer.last_updated,
+          description: layer.description,
+          legend,
+          format: "pbf",
+          id: 'omh-' + layer.layer_id,
+          group_id: layer.owned_by_group_id,
+          maxzoom,
+          minzoom,
+          name: layer.name,
+          private: layer.private,
+          scheme: "xyz",
+          tilejson: "2.2.0",
+          tiles: layer.external_layer_config.tiles,
+          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
+        };
+        res.status(200).send(tileJSON);
+      }else if(!layer.is_external){
+        let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
+        if(layer.extent_bbox) bounds = layer.extent_bbox;
+        let minzoom = 0;
+        let maxzoom = 9;
+
+        let centerZoom = Math.floor((maxzoom - minzoom) / 2);
+        let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
+        let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
+
+        let legend = layer.legend_html ?  layer.legend_html : layer.name;
+
+        let  uri = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/layer/' + layer.layer_id + '/{z}/{x}/{y}.pbf';
+
+        let tileJSON = {
+          attribution: layer.source,
+          bounds,
+          center: [centerX, centerY, centerZoom],
+          created: layer.last_updated,
+          updated: layer.last_updated,
+          description: layer.description,
+          legend,
+          format: "pbf",
+          id: 'omh-' + layer.layer_id,
+          group_id: layer.owned_by_group_id,
+          maxzoom,
+          minzoom,
+          name: layer.name,
+          private: layer.private,
+          scheme: "xyz",
+          tilejson: "2.2.0",
+          tiles: [uri],
+          data: baseUrl + '/api/layer/' + layer.layer_id + '/export/json/' + + slug(layer.name) + '.geojson',
           webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name)
         };
         res.status(200).send(tileJSON);

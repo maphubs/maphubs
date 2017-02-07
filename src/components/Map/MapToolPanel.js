@@ -25,14 +25,21 @@ var MapToolPanel = React.createClass({
     gpxLink: React.PropTypes.string,
     onChangeBaseMap:  React.PropTypes.func.isRequired,
     toggleMeasurementTools:  React.PropTypes.func.isRequired,
-    enableMeasurementTools:  React.PropTypes.bool
+    toggleForestAlerts: React.PropTypes.func.isRequired,
+    calculateForestAlerts: React.PropTypes.func.isRequired,
+    enableMeasurementTools:  React.PropTypes.bool,
+    forestAlerts: React.PropTypes.object
   },
 
   getDefaultProps(){
     return {
       show: false,
       buttonTooltipText: '',
-      enableMeasurementTools: false
+      enableMeasurementTools: false,
+      forestAlerts: {
+        enableGLAD2017: false,
+        result: null
+      }
     };
   },
 
@@ -61,9 +68,33 @@ var MapToolPanel = React.createClass({
     this.props.toggleMeasurementTools(model.enableMeasurementTools);
   },
 
+   toggleForestAlerts(model){
+     //leave panel open for this tool?
+    //if(model.enableGLAD2017) this.closePanel();
+    this.props.toggleForestAlerts(model);
+  },
+
 
   render(){
-
+    var forestAlertsResult = '';
+    if(this.props.forestAlerts.result){
+      forestAlertsResult = (
+        
+        <div>
+          <div className="row no-margin">
+            <div className="col s12" style={{height: '50px', border: '1px solid #ddd'}}>
+              <span><b>{this.__('Alert Count: ')}</b>{this.props.forestAlerts.result.alertCount}</span>         
+            </div>                
+          </div>
+          <div className="row no-margin">
+            <div className="col s12" style={{height: '50px', border: '1px solid #ddd'}}>
+              <span><b>{this.__('Total Area: ')}</b>{this.props.forestAlerts.result.areaMessage}</span>
+            </div>                
+          </div>        
+        </div>
+      );
+    }
+  
     return (
       <div> 
          <a ref="mapToolButton"
@@ -129,6 +160,23 @@ var MapToolPanel = React.createClass({
                         checked={this.props.enableMeasurementTools}
                     />                     
                   </Formsy.Form>                 
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">warning</i>{this.__('Forest Alerts')}</div>
+              <div className="collapsible-body center">
+                <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
+                  <Formsy.Form onChange={this.toggleForestAlerts}>
+                   <b>{this.__('2017 GLAD Alerts')}</b>          
+                    <Toggle name="enableGLAD2017"
+                        labelOff={this.__('Off')} labelOn={this.__('On')}                       
+                        className="col s12"
+                        checked={this.props.forestAlerts.enableGLAD2017}
+                    />                     
+                  </Formsy.Form>             
+                  <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
+                  {forestAlertsResult}
                 </div>
               </div>
             </li>
