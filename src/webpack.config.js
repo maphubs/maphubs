@@ -47,6 +47,7 @@ module.exports = {
     hubresources: "./src/client/hubresources",
     userhubs: "./src/client/userhubs",
     home: "./src/client/home",
+    homedemo: "./src/client/homedemo",
     search: "./src/client/search",
     error: "./src/client/error",
     map: "./src/client/map",

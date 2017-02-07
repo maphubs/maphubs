@@ -62,7 +62,17 @@ module.exports = function(app: any) {
 
       props._csrf = req.csrfToken();
 
-      res.render('home', {
+      if(MAPHUBS_CONFIG.mapHubsProDemo){
+        res.render('homedemo', {
+        title: MAPHUBS_CONFIG.productName + ' | ' + req.__('Welcome to the MapHubs Demo Site'),
+        description: MAPHUBS_CONFIG.productName + req.__('Welcome to the MapHubs Demo Site'),
+        mailchimp: false,
+        addthis: true,
+        props, 
+        req
+      });
+      }else{
+        res.render('home', {
         title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
         description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
         mailchimp: true,
@@ -70,6 +80,9 @@ module.exports = function(app: any) {
         props, 
         req
       });
+      }
+
+      
       });
     }).catch(nextError(next));
   });

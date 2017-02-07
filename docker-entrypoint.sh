@@ -28,7 +28,8 @@ var MAPHUBS_CONFIG = {
   homepageProLinks: "${OMH_HOMEPAGE_PRO_LINKS}",
   homepageSlides: "${OMH_HOMEPAGE_SLIDES}",
   homepageMapHubId: "${OMH_HOMEPAGE_MAP_HUB_ID}",
-  homepageMailingList: "${OMH_HOMEPAGE_MAILINGLIST}"
+  homepageMailingList: "${OMH_HOMEPAGE_MAILINGLIST}",
+  mapHubsProDemo: "${OMH_MAPHUBS_PRO_DEMO}"
 };
 if(typeof module !== 'undefined'){
   module.exports = MAPHUBS_CONFIG;
