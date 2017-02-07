@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.7.0](https://github.com/maphubs/maphubs/tree/v0.7.0) (2017-02-07)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.6...v0.7.0)
+
+**Implemented enhancements:**
+
+- add forest alert tool [\#331](https://github.com/maphubs/maphubs/issues/331)
+- external vector tile layers [\#324](https://github.com/maphubs/maphubs/issues/324)
+
+## [v0.6.6](https://github.com/maphubs/maphubs/tree/v0.6.6) (2017-02-02)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.5...v0.6.6)
+
 ## [v0.6.5](https://github.com/maphubs/maphubs/tree/v0.6.5) (2017-02-01)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.4...v0.6.5)
 
@@ -15,6 +26,10 @@
 
 ## [v0.6.3](https://github.com/maphubs/maphubs/tree/v0.6.3) (2017-01-27)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.6.2...v0.6.3)
+
+**Implemented enhancements:**
+
+- option to show map on homepage [\#326](https://github.com/maphubs/maphubs/issues/326)
 
 **Fixed bugs:**
 
