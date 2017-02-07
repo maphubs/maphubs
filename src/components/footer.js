@@ -92,7 +92,7 @@ var Footer = React.createClass({
           </div>
           <div className="footer-copyright white">
             <div className="grey-text container center">
-              <small>&copy; 2016 {MAPHUBS_CONFIG.productName}</small>
+              <small>&copy; 2017 {MAPHUBS_CONFIG.productName}</small>
             </div>
           </div>
 
