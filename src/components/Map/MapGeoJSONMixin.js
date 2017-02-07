@@ -5,6 +5,7 @@ var mapboxgl = {};
 if (typeof window !== 'undefined') {
     mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl.js");
 }
+var _bbox = require('@turf/bbox');
 
 var MapGeoJSONMixin = {
 
@@ -38,13 +39,18 @@ var MapGeoJSONMixin = {
   },
 
   zoomToData(data){
+    var bbox;
     if(data.bbox && data.bbox.length > 0){
-      var bbox = data.bbox;
-      var sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
-      var ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
-      var llb = new mapboxgl.LngLatBounds(sw, ne);
-      this.map.fitBounds(llb, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
+       bbox = data.bbox;      
+    }else{
+       bbox = _bbox(data);
     }
+    if(bbox){
+      let sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
+      let ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
+      let llb = new mapboxgl.LngLatBounds(sw, ne);
+      this.map.fitBounds(llb, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
+    }  
   },
 
 };

@@ -38,11 +38,13 @@ module.exports = Reflux.createStore({
 
   loadPresets(presets){
     var _this = this;
-    presets.forEach(function(preset){
-      preset.id = _this.idSequence++;
-    });
-    this.data.presets = presets;
-    this.trigger(this.data);
+    if(presets && Array.isArray(presets)){
+      presets.forEach(function(preset){
+        preset.id = _this.idSequence++;
+      });
+      this.data.presets = presets;
+      this.trigger(this.data);
+    }  
   },
 
   loadDefaultPresets(){

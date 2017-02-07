@@ -6,6 +6,7 @@ var Formsy = require('formsy-react');
 var LocalSource = require('./LocalSource');
 var MapboxSource = require('./MapboxSource');
 var RasterTileSource = require('./RasterTileSource');
+var VectorTileSource = require('./VectorTileSource');
 //var GithubSource = require('./GithubSource');
 var AGOLSource = require('./AGOLSource');
 //var OSMSource = require('./OSMSource');
@@ -71,16 +72,16 @@ var Step2 = React.createClass({
     var sourceOptions = [
       {value: 'local', label: this.__('Upload Data')},
       {value: 'mapbox', label: this.__('Link to a Mapbox Style or Tileset')},
-      {value: 'raster', label: this.__('Link to Raster Tile Service')},
-
+      {value: 'raster', label: this.__('Link to a Raster Tile Service')},
+      {value: 'vector', label: this.__('Link to a Vector Tile Service')},
       {value: 'ags', label: this.__('Link to an ArcGIS Online or ArcGIS Server services')}
     ];
 
     if(MAPHUBS_CONFIG.mapHubsPro){
-      sourceOptions.push({value: 'planet', label: this.__('Link to Planet Labs')});
+      sourceOptions.push({value: 'planet', label: this.__('Link to Planet API (planet.com)')});
     }
     // osm=false,github = false,
-    var local = false, mapbox = false, raster = false, ags = false, planet = false;
+    var local, mapbox, raster, vector, ags, planet;
     switch(this.state.selectedSource){
       case 'local':
         local = true;
@@ -93,6 +94,9 @@ var Step2 = React.createClass({
         break;
       case 'raster':
         raster = true;
+        break;
+       case 'vector':
+        vector = true;
         break;
       //case 'github':
       //  github = true;
@@ -126,9 +130,9 @@ var Step2 = React.createClass({
           <LocalSource active={local} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
           <MapboxSource active={mapbox} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
           <RasterTileSource active={raster} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
+          <VectorTileSource active={vector} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />     
           <PlanetLabsSource active={planet} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
           <AGOLSource active={ags} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-
 
       </div>
 		);

@@ -756,5 +756,15 @@
 	"Video": "Video",
 	"Whale": "Whale",
 	"WiFi": "WiFi",
-	"Wolf": "Wolf"
+	"Wolf": "Wolf",
+	"Link to a Raster Tile Service": "Link to a Raster Tile Service",
+	"Link to a Vector Tile Service": "Link to a Vector Tile Service",
+	"Vector Tile URL": "Vector Tile URL",
+	"Vector Tile URL for example:": "Vector Tile URL for example:",
+	"MinZoom": "MinZoom",
+	"Lowest tile zoom level available in data": "Lowest tile zoom level available in data",
+	"MaxZoom": "MaxZoom",
+	"Highest tile zoom level available in data": "Highest tile zoom level available in data",
+	"Bounds": "Bounds",
+	"Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy": "Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy"
 }
