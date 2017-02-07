@@ -19,6 +19,7 @@ var InsetMap = require('./InsetMap');
 var MapboxGLHelperMixin = require('./MapboxGLHelperMixin');
 var MapInteractionMixin = require('./MapInteractionMixin');
 var MeasurementToolMixin = require('./MeasurementToolMixin');
+var ForestAlertMixin = require('./ForestAlertMixin');
 var MapGeoJSONMixin = require('./MapGeoJSONMixin');
 var LayerSources = require('./Sources');
 var MarkerSprites = require('./MarkerSprites');
@@ -31,7 +32,7 @@ if (typeof window !== 'undefined') {
 var Map = React.createClass({
 
   mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, 
-            MeasurementToolMixin,
+            MeasurementToolMixin, ForestAlertMixin,
             StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}),          
             StateMixin.connect(LocaleStore)],
 
@@ -324,6 +325,11 @@ var Map = React.createClass({
            _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap());
         }
       }
+
+      if(_this.state.forestAlerts){
+        _this.restoreForestAlerts();
+      }
+      
       debug('(' + _this.state.id + ') ' +'MAP LOADED');
       _this.setState({mapLoaded: true});
     });
@@ -539,6 +545,10 @@ var Map = React.createClass({
         _this.refs.insetMap.reloadInset(baseMapUrl);
         _this.refs.insetMap.fitBounds(_this.map.getBounds(), {maxZoom: 1.8, padding: 10, animate:false});
       }
+
+      if(_this.state.forestAlerts){
+        _this.restoreForestAlerts();
+      }
       
       if(_this.props.onChangeBaseMap){
         _this.props.onChangeBaseMap(mapName);
@@ -624,6 +634,9 @@ var Map = React.createClass({
           gpxLink={this.props.gpxLink}
           toggleMeasurementTools={this.toggleMeasurementTools}
           enableMeasurementTools={this.state.enableMeasurementTools}
+          toggleForestAlerts={this.toggleForestAlerts}
+          calculateForestAlerts={this.calculateForestAlerts}
+          forestAlerts={this.state.forestAlerts}
           onChangeBaseMap={this.changeBaseMap}
            />
           {measurementTools}
