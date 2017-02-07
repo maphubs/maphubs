@@ -144,7 +144,7 @@ var HomePageMapLayerItem = React.createClass({
           paddingTop: '0px', paddingBottom: '0px',
           backgroundColor}}>
           <div className="row no-margin">
-            <b className="title grey-text text-darken-4" style={{fontSize: '12px'}}>{layer.name}</b>        
+            <b className="title grey-text text-darken-4 truncate" style={{fontSize: '12px'}}>{layer.name}</b>        
           </div>
           <div className="row no-margin">
             <div className="title col no-padding s6">
