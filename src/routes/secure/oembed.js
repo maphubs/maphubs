@@ -2,6 +2,7 @@ var Map = require('../../models/map');
 var User = require('../../models/user');
 var libxml = require('libxmljs');
 var debug = require('../../services/debug')('oembed');
+var urlUtil = require('../../services/url-util');
 
 module.exports = function(app) {
 
@@ -18,18 +19,19 @@ module.exports = function(app) {
 
     debug(map_id);
 
+    var baseUrl = urlUtil.getBaseUrl();
+
     Map.getMap(map_id).then(function(map){
       return User.getUser(map.created_by).then(function(user){
 
-      //Always use MapHubs as a redirect for now
-      var url = 'https://maphubs.com' + '/map/embed/' + map.map_id + '/static';
-      var imageUrl = 'https://maphubs.com' + '/api/screenshot/map/' + map.map_id + '.png';
+      var url =baseUrl + '/map/embed/' + map.map_id + '/static';
+      var imageUrl = baseUrl + '/api/screenshot/map/' + map.map_id + '.png';
 
       var oembed = {
         type: "rich",
         version: "1.0",
-        provider_name: "Maphubs",
-        provider_url: "https://maphubs.com",
+        provider_name: "MapHubs",
+        provider_url: baseUrl,
         author_name: user.display_name,
         author_url: '',
         author_id: parseInt(map.created_by),

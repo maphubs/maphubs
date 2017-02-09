@@ -44,7 +44,7 @@ var Journalists = React.createClass({
                 </div>
                 <div className="col s12 m12 l7">
                   <div className="video-container">
-                    <iframe src="https://maphubs.com/map/embed/158/static" frameBorder="0"></iframe>
+                    <iframe src="https://mapforenvironment.org/map/embed/158/static" frameBorder="0"></iframe>
                   </div>
                 </div>
               </div>

@@ -39,10 +39,10 @@ var Footer = React.createClass({
       );
     }else{
       about = (
-        <li><a href="https://maphubs.com/about">{this.__('About')}</a></li>
+        <li><a href="https://maphubs.com">{this.__('About')}</a></li>
       );
       services = (
-        <li><a href="https://maphubs.com/services">{this.__('Services')}</a></li>
+        <li><a href="https://maphubs.com">{this.__('Services')}</a></li>
       );
     }
 
