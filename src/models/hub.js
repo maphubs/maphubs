@@ -223,8 +223,9 @@ module.exports = {
   },
 
 
-  isPrivate(hub_id: number){
-  return knex.select('private').from('omh.hubs').where({hub_id})
+  isPrivate(hub_id: string){
+  return knex.select('private').from('omh.hubs')
+    .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
     .then(function(result) {
       if (result && result.length == 1) {
         return result[0].private;
@@ -305,39 +306,44 @@ module.exports = {
       updated_by: user_id,
       updated_at: knex.raw('now()')
     })
-    .where({hub_id});
+    .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
   },
 
-    deleteHub(hub_id: string) {
+    deleteHub(hub_id_input: string) {
+      var _this = this;
       return knex.transaction(function(trx) {
-        return Promise.all([
-            trx('omh.hub_images').select('image_id').where({hub_id}),
-            trx('omh.hub_stories').select('story_id').where({hub_id})
-        ])
+        _this.getHubByID(hub_id_input, trx)
+        .then(function(hub){
+         var hub_id = hub.hub_id;
+          return Promise.all([
+              trx('omh.hub_images').select('image_id').where({hub_id}),
+              trx('omh.hub_stories').select('story_id').where({hub_id})
+          ])
 
-        .then(function(results){
-          var imageIdResult = results[0];
-          var storyIds = results[1];
-          return Promise.each(storyIds, function(storyResult){
-            var story_id = storyResult.story_id;
-            debug('Deleting Hub Story: '+ story_id);
-            return Image.removeAllStoryImages(story_id, trx)
-              .then(function() {
-                return Story.delete(story_id, trx);
-                });
-              }).then(function(){
-            var commands = [];
-            if(imageIdResult.length > 0){
-              var imageIds = _map(imageIdResult, 'image_id');
-              commands.push(trx('omh.hub_images').where('hub_id', hub_id).delete());
-              commands.push(trx('omh.images').whereIn('image_id', imageIds).delete());
-            }
-            commands.push(trx('omh.hub_views').where('hub_id', hub_id).delete());
-            commands.push(trx('omh.hub_layers').where('hub_id', hub_id).delete());
-            commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
+          .then(function(results){
+            var imageIdResult = results[0];
+            var storyIds = results[1];
+            return Promise.each(storyIds, function(storyResult){
+              var story_id = storyResult.story_id;
+              debug('Deleting Hub Story: '+ story_id);
+              return Image.removeAllStoryImages(story_id, trx)
+                .then(function() {
+                  return Story.delete(story_id, trx);
+                  });
+                }).then(function(){
+              var commands = [];
+              if(imageIdResult.length > 0){
+                var imageIds = _map(imageIdResult, 'image_id');
+                commands.push(trx('omh.hub_images').where('hub_id', hub_id).delete());
+                commands.push(trx('omh.images').whereIn('image_id', imageIds).delete());
+              }
+              commands.push(trx('omh.hub_views').where('hub_id', hub_id).delete());
+              commands.push(trx('omh.hub_layers').where('hub_id', hub_id).delete());
+              commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
 
-            return Promise.each(commands, function(command){
-              return command;
+              return Promise.each(commands, function(command){
+                return command;
+              });
             });
           });
         });

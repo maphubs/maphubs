@@ -171,22 +171,22 @@ module.exports = function(app: any) {
   };
 
   app.get('/hub/:hubid', csrfProtection, privateHubCheck, function(req, res, next) {
-    var hub_id: string = req.params.hubid;
+    var hub_id_input: string = req.params.hubid;
     var user_id: number;
     if(req.session.user){
       user_id = req.session.user.id;
     }
-    Hub.getHubByID(hub_id)
+    Hub.getHubByID(hub_id_input)
       .then(function(hub) {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
-        recordHubView(req.session, hub_id, user_id, next);
+        recordHubView(req.session, hub.hub_id, user_id, next);
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           return renderHubPage(hub, false, req, res);
         } else {
-          return Hub.allowedToModify(hub_id, user_id)
+          return Hub.allowedToModify(hub.hub_id, user_id)
           .then(function(allowed){
             if(allowed){
               return renderHubPage(hub, true, req, res);
@@ -216,23 +216,23 @@ module.exports = function(app: any) {
 
   app.get('/hub/:hubid/map', csrfProtection, privateHubCheck, function(req, res, next) {
 
-    const hub_id: string = req.params.hubid;
+    const hub_id_input: string = req.params.hubid;
     let user_id: number;
     if(req.session.user){
       user_id = req.session.user.id;
     }
-    Hub.getHubByID(hub_id)
+    Hub.getHubByID(hub_id_input)
       .then(function(hub) {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
-        recordHubView(req.session, hub_id, user_id, next);
+        recordHubView(req.session, hub.hub_id, user_id, next);
 
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         return renderHubMapPage(hub, false, req, res);
       } else {
-        return Hub.allowedToModify(hub_id, user_id)
+        return Hub.allowedToModify(hub.hub_id, user_id)
         .then(function(allowed){
           if(allowed){
             return renderHubMapPage(hub, true, req, res);
@@ -260,22 +260,22 @@ module.exports = function(app: any) {
 
   app.get('/hub/:hubid/stories', csrfProtection, privateHubCheck, function(req, res, next) {
 
-    const hub_id: string = req.params.hubid;
+    const hub_id_input: string = req.params.hubid;
     let user_id: number;
     if(req.session.user){
       user_id = req.session.user.id;
     }
-    Hub.getHubByID(hub_id)
+    Hub.getHubByID(hub_id_input)
       .then(function(hub) {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
-        recordHubView(req.session, hub_id, user_id, next);
+        recordHubView(req.session, hub.hub_id, user_id, next);
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           return renderHubStoryPage(hub, false, req, res);
         } else {
-          return Hub.allowedToModify(hub_id, user_id)
+          return Hub.allowedToModify(hub.hub_id, user_id)
           .then(function(allowed){
             if(allowed){
               return renderHubStoryPage(hub, true, req, res);
@@ -301,23 +301,23 @@ module.exports = function(app: any) {
 
   app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, function(req, res, next) {
 
-    const hub_id: string = req.params.hubid;
+    const hub_id_input: string = req.params.hubid;
     let user_id: number;
     if(req.session.user){
       user_id = req.session.user.id;
     }
-    Hub.getHubByID(hub_id)
+    Hub.getHubByID(hub_id_input)
       .then(function(hub) {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
-        recordHubView(req.session, hub_id, user_id, next);
+        recordHubView(req.session, hub.hub_id, user_id, next);
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
           return renderHubResourcesPage(hub, false, req, res);
         } else {
-          return Hub.allowedToModify(hub_id, user_id)
+          return Hub.allowedToModify(hub.hub_id, user_id)
           .then(function(allowed){
             if(allowed){
               return renderHubResourcesPage(hub, true, req, res);
@@ -347,27 +347,28 @@ module.exports = function(app: any) {
       res.redirect(baseUrl + '/unauthorized?path='+req.path);
     }
     const user_id: number = req.session.user.id;
-    const hub_id: string = req.params.hubid;
-    Hub.allowedToModify(hub_id, user_id)
+    const hub_id_input: string = req.params.hubid;
+    Hub.allowedToModify(hub_id_input, user_id)
     .then(function(allowed: bool){
       if(allowed){
-        return Story.createHubStory(hub_id, user_id)
-        .then(function(story_id){
-        return Promise.all([
-            Hub.getHubByID(hub_id),
-            Map.getUserMaps(req.session.user.id),
-            Map.getPopularMaps()
-          ]).then(function(results: Array<any>) {
-            var hub = results[0];
-            var myMaps = results[1];
-            var popularMaps = results[2];
-            res.render('createhubstory', {
-              title: 'Create Story',
-              fontawesome: true,
-              rangy: true,
-              props: {
-                hub, myMaps, popularMaps, story_id
-              }, req
+        return Hub.getHubByID(hub_id_input)
+        .then(function(hub) {
+          return Story.createHubStory(hub.hub_id, user_id)
+          .then(function(story_id){
+            return Promise.all([
+              Map.getUserMaps(req.session.user.id),
+              Map.getPopularMaps()
+            ]).then(function(results: Array<any>) {
+              var myMaps = results[0];
+              var popularMaps = results[1];
+              res.render('createhubstory', {
+                title: 'Create Story',
+                fontawesome: true,
+                rangy: true,
+                props: {
+                  hub, myMaps, popularMaps, story_id
+                }, req
+              });
             });
           });
         }).catch(nextError(next));
