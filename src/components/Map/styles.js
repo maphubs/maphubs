@@ -476,13 +476,18 @@ module.exports = {
 
     },
 
+    htmlEncode(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    },
+
     legendWithColor(layer, color) {
       var html = '';
+      var name = this.htmlEncode(layer.name);
       if(layer.data_type == 'point'){
         html = `<div class="omh-legend">
  <div class="point double-stroke" style="background-color: ` + color + `">
  </div>
- <h3>` + layer.name + `</h3>
+ <h3>` + name + `</h3>
  </div>
 `;
 
@@ -490,21 +495,21 @@ module.exports = {
         html = `<div class="omh-legend">
 <div class="block double-stroke" style="height:  4px; background-color: ` + color + `">
 </div>
-<h3>` + layer.name + `</h3>
+<h3>` + name + `</h3>
 </div>`;
 
       }else if(layer.data_type  == 'polygon'){
         html = `<div class="omh-legend">
  <div class="block double-stroke" style="background-color: ` + color + `">
  </div>
- <h3>` + layer.name + `</h3>
+ <h3>` + name + `</h3>
  </div>
 `;
      }else {
        html = `<div class="omh-legend">
  <div class="block double-stroke" style="background-color: ` + color + `">
  </div>
- <h3>` + layer.name + `</h3>
+ <h3>` + name + `</h3>
  </div>
 `;
      }
@@ -523,7 +528,8 @@ module.exports = {
     },
 
     rasterLegend(layer) {
-      var html = `<div class="omh-legend">\n<h3>` + layer.name + `</h3>\n</div>`;
+      var name = this.htmlEncode(layer.name);
+      var html = `<div class="omh-legend">\n<h3>` + name + `</h3>\n</div>`;
       return html;
     },
 
