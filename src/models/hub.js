@@ -312,11 +312,14 @@ module.exports = {
     deleteHub(hub_id_input: string) {
       var _this = this;
       return knex.transaction(function(trx) {
-        _this.getHubByID(hub_id_input, trx)
+        return _this.getHubByID(hub_id_input, trx)
         .then(function(hub){
-         var hub_id = hub.hub_id;
+          var hub_id = hub.hub_id;
           return Promise.all([
-              trx('omh.hub_images').select('image_id').where({hub_id}),
+              trx('omh.hub_images')
+              .leftJoin('omh.group_images', 'omh.hub_images.image_id', 'omh.group_images.image_id')
+              .select('omh.hub_images.image_id')
+              .where({hub_id}).whereNull('omh.group_images.image_id'),
               trx('omh.hub_stories').select('story_id').where({hub_id})
           ])
 
