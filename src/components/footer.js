@@ -46,6 +46,18 @@ var Footer = React.createClass({
       );
     }
 
+    var copyright = '';
+
+    if(MAPHUBS_CONFIG.copyrightText){
+      copyright = (
+        <small>&copy; {MAPHUBS_CONFIG.copyrightText}</small>
+      );
+    }else{
+      copyright = (
+        <small>&copy; 2017 {MAPHUBS_CONFIG.productName}</small>
+      );
+    }
+
 
     return (
         <footer className="page-footer white">
@@ -92,7 +104,7 @@ var Footer = React.createClass({
           </div>
           <div className="footer-copyright white">
             <div className="grey-text container center">
-              <small>&copy; 2017 {MAPHUBS_CONFIG.productName}</small>
+              {copyright}
             </div>
           </div>
 
