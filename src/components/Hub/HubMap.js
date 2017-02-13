@@ -82,7 +82,7 @@ var HubMap = React.createClass({
     }
     var border = 'none';
     if(this.props.border){
-      border = '1px solid #212121';
+      border = '1px solid #e0e0e0';
     }
 
     var bounds = null;

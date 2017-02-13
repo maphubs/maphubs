@@ -6,9 +6,10 @@ var HubBanner = require('../components/Hub/HubBanner');
 var HubMap = require('../components/Hub/HubMap');
 var HubStories = require('../components/Hub/HubStories');
 var HubNav = require('../components/Hub/HubNav');
-var HubLinkSection = require('../components/Hub/HubLinkSection');
+//var HubLinkSection = require('../components/Hub/HubLinkSection');
 var HubEditButton = require('../components/Hub/HubEditButton');
 var HubResources = require('../components/Hub/HubResources');
+var HubDescription = require('../components/Hub/HubDescription');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -135,34 +136,40 @@ var HubInfo = React.createClass({
           <div className="row no-margin">
             <HubBanner editing={this.state.editing} hubid={this.props.hub.hub_id}/>
           </div>
-          <div className="container">
-              <HubLinkSection hubid={this.props.hub.hub_id} />
+          <div className="row">
+              
 
-          <div className="row" style={{height: '100vh', maxHeight: '500px'}}>
-            <a href={linkBaseUrl + 'map'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Map')}</h5></a>
-            <hr />
+          <div className="row" style={{height: 'calc(100vh - 65px)'}}>
             <HubMap editing={this.state.editing} height="calc(100% - 65px)" hub={this.state.hub} border/>
             <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
               <a href={linkBaseUrl + 'map'} className="btn">{this.__('View Larger Map')}</a>
             </div>
           </div>
+          <div className="row no-margin">
+            <HubDescription editing={this.state.editing} hubid={this.props.hub.hub_id}/>
+          </div>
               <div className="row">
-                <a href={linkBaseUrl + 'stories'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
-                <hr />
-                <HubStories hub={this.props.hub}
-                  editing={this.state.editing}
-                  stories={this.props.stories} limit={3}/>
+                <a href={linkBaseUrl + 'stories'}><h5 className="hub-section center-align" style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
+                <div className="divider" />
+                <div className="container">
+                  <HubStories hub={this.props.hub}
+                    editing={this.state.editing}
+                    stories={this.props.stories} limit={3}/>
+                 
+                </div>
                 <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
                   <a href={linkBaseUrl + 'stories'} className="btn">{this.__('View More Stories')}</a>
                 </div>
               </div>
               <div className="row" style={{minHeight: '200px'}}>
-                <a href={linkBaseUrl + 'resources'}><h5 className="hub-section" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
-                <hr/>
-                <HubResources editing={this.state.editing} />
-                <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
-                  <a href={linkBaseUrl + 'resources'} className="btn">{this.__('View Resources')}</a>
+                <a href={linkBaseUrl + 'resources'}><h5 className="hub-section center-align" style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
+                <div className="divider" />
+                <div className="container">
+                  <HubResources editing={this.state.editing} />                  
                 </div>
+                <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
+                    <a href={linkBaseUrl + 'resources'} className="btn">{this.__('View Resources')}</a>
+                  </div>
               </div>
             </div>
 

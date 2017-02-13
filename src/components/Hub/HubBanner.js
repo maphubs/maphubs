@@ -65,10 +65,6 @@ var HubBanner = React.createClass({
     HubActions.setTagline(tagline);
   },
 
-  handleDescriptionChange(desc){
-    HubActions.setDescription(desc);
-  },
-
   showLogoEdit(){
     this.setState({
       imageCropAspectRatio: 1,
@@ -106,15 +102,14 @@ var HubBanner = React.createClass({
     if(this.props.subPage) {
       bannerClass='hub-banner-subpage';
     }
-    var description = '', title = '', tagline = '',
+    var title = '', tagline = '',
     logoEditButton = '', bannerEditButton = '', imageCrop = '';
 
     var nameVal = null;
     if(this.state.hub.name) nameVal = this.state.hub.name.replace('&nbsp;', '');
     var taglineVal = null;
     if(this.state.hub.tagline) taglineVal = this.state.hub.tagline.replace('&nbsp;', '');
-    var descriptionVal = null;
-    if (this.state.hub.description) descriptionVal = this.state.hub.description.replace('&nbsp;', '');
+
     if(this.props.editing){
       title = (
         <div className="white-text text-shadow hub-title">
@@ -140,23 +135,7 @@ var HubBanner = React.createClass({
          />
         </div>
       );
-      description = (
-        <div className="container">
-          <div className="row">
-            <div className="flow-text">
-              <Editor
-               tag="p"
-               text={descriptionVal}
-               onChange={this.handleDescriptionChange}
-               options={{toolbar: false, buttonLabels: false,
-                 placeholder: {text: this.__('Enter a Description or Intro for Your Hub')},
-                 disableReturn: true, buttons: []}}
-             />
-            </div>
-          </div>
-        </div>
-
-      );
+      
       logoEditButton = (
         <a className="btn-floating omh-color white-text" onClick={this.showLogoEdit}
           style={{position: 'absolute', top: '-15px', left: '85px'}}>
@@ -186,13 +165,6 @@ var HubBanner = React.createClass({
 
       tagline = (
         <p className="white-text text-shadow no-margin">{taglineVal}</p>
-      );
-      description = (
-        <div className="container">
-          <div className="row">
-            <p className="flow-text hub-description">{descriptionVal}</p>
-          </div>
-        </div>
       );
     }
     var logoImage = '', bannerImage= '';
@@ -233,10 +205,6 @@ var HubBanner = React.createClass({
       );
     }
 
-    if(this.props.subPage){
-      description = '';
-    }
-
     return (
       <div>
         <div className={'row no-margin valign-wrapper ' + bannerClass} style={{position: 'relative'}}>
@@ -253,7 +221,6 @@ var HubBanner = React.createClass({
             </div>
           </div>
         </div>
-        {description}
         {imageCrop}
       </div>
     );
