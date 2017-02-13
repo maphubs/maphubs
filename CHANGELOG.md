@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.7.2](https://github.com/maphubs/maphubs/tree/v0.7.2) (2017-02-13)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.1...v0.7.2)
+
+**Implemented enhancements:**
+
+- set copyright text from config [\#327](https://github.com/maphubs/maphubs/issues/327)
+
+**Fixed bugs:**
+
+- legend encoding issue with & in name [\#334](https://github.com/maphubs/maphubs/issues/334)
+- errors with uppercase hub IDs [\#333](https://github.com/maphubs/maphubs/issues/333)
+- error deleting older migrated hubs [\#332](https://github.com/maphubs/maphubs/issues/332)
+
 ## [v0.7.1](https://github.com/maphubs/maphubs/tree/v0.7.1) (2017-02-07)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.0...v0.7.1)
 
