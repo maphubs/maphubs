@@ -2,11 +2,11 @@ var Layer = require('../../models/layer');
 var urlUtil = require('../../services/url-util');
 var slug = require('slug');
 var apiError = require('../../services/error-response').apiError;
-var privateLayerCheck = require('../../services/private-layer-check').middleware;
+var manetCheck = require('../../services/manet-check')(false,true);
 
 module.exports = function(app) {
 
-app.get('/api/layer/:layer_id/tile.json', privateLayerCheck, function(req, res) {
+app.get('/api/layer/:layer_id/tile.json', manetCheck, function(req, res) {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
