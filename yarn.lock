@@ -52,12 +52,23 @@
   dependencies:
     "@turf/meta" "^3.7.5"
 
+"@turf/distance@^3.10.0":
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-3.10.0.tgz#eb65f309b09a176e0fd4d80edae62b96ed05a587"
+  dependencies:
+    "@turf/helpers" "^3.10.0"
+    "@turf/invariant" "^3.10.0"
+
 "@turf/distance@^3.7.5":
   version "3.7.5"
   resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-3.7.5.tgz#a0f7cb0826f031e9a59f86ef850bd177cd6d1c77"
   dependencies:
     "@turf/helpers" "^3.7.5"
     "@turf/invariant" "^3.7.5"
+
+"@turf/helpers@^3.10.0":
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-3.10.0.tgz#686e72790f1013f6acb4072e321f8ab9e893487f"
 
 "@turf/helpers@^3.7.5":
   version "3.7.5"
@@ -74,6 +85,10 @@
   resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-3.7.5.tgz#e36b4c4bf06bcafe3626ab30277513d16c2877ae"
   dependencies:
     jsts "1.3.0"
+
+"@turf/invariant@^3.10.0":
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-3.10.0.tgz#c9e22d0af9a817c42e393fe102c4657dd08de373"
 
 "@turf/invariant@^3.7.5":
   version "3.7.5"

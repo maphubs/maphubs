@@ -341,13 +341,11 @@ var Map = React.createClass({
       if(!_this.refs.insetMap.getInsetMap()){
         _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap);
       } 
-      map.on('moveend', function(){
-        _this.refs.insetMap.updateInsetGeomFromBounds(map.getBounds(), map.getZoom());
-      });
     }
   });//end style.load
 
-  map.on('mousemove', _this.moveHandler);
+  map.on('mousemove', _this.mousemoveHandler);
+  map.on('moveend', _this.moveendHandler);
   map.on('click', _this.clickHandler);
 
   if(_this.state.interactive){

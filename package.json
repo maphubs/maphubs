@@ -38,6 +38,7 @@
     "@turf/bbox-polygon": "^3.7.5",
     "@turf/buffer": "^3.7.5",
     "@turf/centroid": "^3.7.5",
+    "@turf/distance": "^3.10.0",
     "@turf/helpers": "^3.7.5",
     "@turf/inside": "^3.7.5",
     "@turf/intersect": "^3.7.5",

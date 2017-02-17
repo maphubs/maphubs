@@ -102,10 +102,20 @@ var MapInteractionMixin = {
     }
   },
 
-  moveHandler(e){
+
+  moveendHandler(e){
+     debug('mouse up fired');
+     if(this.refs.insetMap){
+       this.refs.insetMap.updateInsetGeomFromBounds(this.map.getBounds(), this.map.getZoom());
+     }
+    BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds());
+  },
+
+  //fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
+  mousemoveHandler(e){
     var map = this.map;
     var _this = this;
-
+   
     if(this.state.enableMeasurementTools){
       return;
     }
@@ -145,11 +155,8 @@ var MapInteractionMixin = {
           $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
         }
 
-        BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
-
-      }, 200).bind(this);
+      }, 300).bind(this);
       debounced();
-
   }
   }
 
