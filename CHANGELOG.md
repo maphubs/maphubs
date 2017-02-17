@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.7.4](https://github.com/maphubs/maphubs/tree/v0.7.4) (2017-02-17)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.3...v0.7.4)
+
+**Fixed bugs:**
+
+- uneeded calls to bing metadata api [\#335](https://github.com/maphubs/maphubs/issues/335)
+
 ## [v0.7.3](https://github.com/maphubs/maphubs/tree/v0.7.3) (2017-02-16)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.2...v0.7.3)
 
