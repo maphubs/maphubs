@@ -3,6 +3,7 @@ var Layer = require('../../models/layer');
 //var log = require('../../services/log');
 var Presets = require('../../services/preset-utils');
 //var debug = require('../../services/debug')('routes/layers');
+var urlUtil = require('../../services/url-util');
 var apiError = require('../../services/error-response').apiError;
 var privateLayerCheck = require('../../services/private-layer-check').middleware;
 //Layer API Endpoints that do not require authentication
@@ -67,7 +68,7 @@ module.exports = function(app: any) {
       //inject this site's URL into the style source, to support remote layers
       Object.keys(layer.style.sources).forEach(function(key) {
         var source = layer.style.sources[key];
-        source.url = source.url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
+        source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       });
       res.status(200).send({success: true, layer});
     }).catch(apiError(res, 500));

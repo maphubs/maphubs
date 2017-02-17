@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
 var MapHubsSource = {
   load(key, source, map, mapComponent){
     //load as tilejson
-    var url = source.url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
+    var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
     return request.get(url)
       .then(function(res) {
         var tileJSON = res.body;

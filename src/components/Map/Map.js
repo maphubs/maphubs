@@ -9,7 +9,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var BaseMapActions = require('../../actions/map/BaseMapActions'); 
 var BaseMapStore = require('../../stores/map/BaseMapStore'); 
-
+var urlUtil = require('../../services/url-util');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
@@ -249,7 +249,7 @@ var Map = React.createClass({
           sources.push(LayerSources[type].load(key, source, map, _this));      
       }else if(type === 'raster'){
         if(source.url){
-          source.url = source.url.replace('{MAPHUBS_DOMAIN}', MAPHUBS_CONFIG.tileServiceUrl);
+          source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
         }  
         map.addSource(key, source);
       }else {
