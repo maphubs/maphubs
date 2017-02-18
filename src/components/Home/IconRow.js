@@ -4,7 +4,8 @@ var IconRow = React.createClass({
 
 propTypes: {
   icon: React.PropTypes.string,
-  iconFontSize: React.PropTypes.string
+  iconFontSize: React.PropTypes.string,
+  children: React.PropTypes.element
 },
 
 getDefaultProps() {

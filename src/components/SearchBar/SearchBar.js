@@ -51,6 +51,7 @@ var SearchBar = React.createClass({
   },
 
   componentDidMount() {
+    /*eslint-disable react/no-find-dom-node */
     if (this.props.autoFocus) {
       ReactDOM.findDOMNode(this.refs.value).focus();
     }
@@ -63,7 +64,7 @@ var SearchBar = React.createClass({
      belowOrigin: true // Displays dropdown below the button
    });
    $(document.body).on("click", this.hideSuggestions);
-
+   /*eslint-enable react/no-find-dom-node */
   },
   componentWillUnmount () {
     document.body.removeEventListener('click', this.hideSuggestions);
@@ -99,10 +100,14 @@ var SearchBar = React.createClass({
       suggestions,
       highlightedItem: -1
     });
+    /*eslint-disable react/no-find-dom-node */
     $(ReactDOM.findDOMNode(this.refs.suggestions)).show();
+    /*eslint-enable react/no-find-dom-node */
   },
   hideSuggestions(){
+    /*eslint-disable react/no-find-dom-node */
       $(ReactDOM.findDOMNode(this.refs.suggestions)).hide();
+    /*eslint-enable react/no-find-dom-node */
   },
   fillInSuggestion(suggestion) {
     this.setState({value: suggestion.value});

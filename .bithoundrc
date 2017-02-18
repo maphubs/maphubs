@@ -4,6 +4,7 @@
     "**/node_modules/**",
     "**/assets/**",
     "**/vendor/**",
+    "src/migrations/**",
     "**/**-min-**",
     "**/**-min.**",
     "**/**.min.**",

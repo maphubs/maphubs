@@ -197,7 +197,6 @@ var CreateMap = React.createClass({
 
   onSave(){
     $('.savebutton-tooltipped').tooltip('remove');
-    var _this = this;
 
     if(this.props.showTitleEdit && (!this.state.title || this.state.title == '')){
       NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});

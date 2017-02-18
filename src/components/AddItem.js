@@ -18,6 +18,8 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 
+
+
 var AddItem = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
@@ -88,11 +90,12 @@ var AddItem = React.createClass({
    this.setState({option});
  },
 
-
  componentDidMount() {
-   if (this.props.autoFocus) {
+   /*eslint-disable react/no-find-dom-node */
+   if (this.props.autoFocus) {  
      ReactDOM.findDOMNode(this.refs.value).focus();
    }
+   
    $(ReactDOM.findDOMNode(this.refs.suggestions)).dropdown({
     inDuration: 300,
     outDuration: 225,
@@ -102,7 +105,7 @@ var AddItem = React.createClass({
     belowOrigin: true // Displays dropdown below the button
   });
   $(document.body).on("click", this.hideSuggestions);
-
+  /*eslint-enable react/no-find-dom-node*/
  },
  componentWillUnmount () {
    document.body.removeEventListener('click', this.hideSuggestions);
@@ -138,10 +141,15 @@ var AddItem = React.createClass({
      suggestions,
      highlightedItem: -1
    });
+   //findDOMNode needed here, possible due to the way suggestions are added dynamicallly below
+   /*eslint-disable react/no-find-dom-node */
    $(ReactDOM.findDOMNode(this.refs.suggestions)).show();
+    /*eslint-enable react/no-find-dom-node  */
  },
  hideSuggestions(){
+   /*eslint-disable react/no-find-dom-node */
      $(ReactDOM.findDOMNode(this.refs.suggestions)).hide();
+      /*eslint-enable react/no-find-dom-node */
  },
 
  fillInSuggestion(suggestion) {

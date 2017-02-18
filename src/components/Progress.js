@@ -22,14 +22,14 @@ var Progress = React.createClass({
       show: false,
       message: '',
       onClose: null
-    }
+    };
   },
 
 
   getInitialState() {
   return {
     show: this.props.show
-  }
+  };
 },
 
   componentWillReceiveProps(nextProps) {

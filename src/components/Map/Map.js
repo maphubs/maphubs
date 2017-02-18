@@ -68,7 +68,8 @@ var Map = React.createClass({
     interactionBufferSize: React.PropTypes.number,
     hash: React.PropTypes.bool,
     gpxLink: React.PropTypes.string,
-    attributionControl: React.PropTypes.bool
+    attributionControl: React.PropTypes.bool,
+    children: React.PropTypes.element
   },
 
   getDefaultProps() {

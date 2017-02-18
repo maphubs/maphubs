@@ -13,7 +13,8 @@ var classNames = require('classnames');
 var ModalContent = React.createClass({
   propTypes:  {
     className: React.PropTypes.string,
-    style:  React.PropTypes.object
+    style:  React.PropTypes.object,
+    children: React.PropTypes.element
   },
 
   getDefaultProps() {
@@ -34,7 +35,8 @@ var ModalContent = React.createClass({
 
 var ModalFooter = React.createClass({
   propTypes:  {
-    className: React.PropTypes.string
+    className: React.PropTypes.string,
+    children: React.PropTypes.element
   },
   render(){
       var className = classNames('modal-footer', this.props.className);
@@ -58,7 +60,8 @@ var Modal = React.createClass({
     out_duration: React.PropTypes.number,
     opacity: React.PropTypes.number,
     ready: React.PropTypes.func,
-    complete: React.PropTypes.func
+    complete: React.PropTypes.func,
+    children: React.PropTypes.element
   },
 
   getDefaultProps() {

@@ -13,7 +13,7 @@ var EditList = React.createClass({
   getDefaultProps() {
     return {
       items: []
-    }
+    };
   },
 
   onDelete(key) {
@@ -54,7 +54,7 @@ var EditList = React.createClass({
               action = (
                 <a className="tooltipped" data-delay="50" data-position="bottom" data-tooltip={item.actionLabel}>
                   <i className="material-icons" onClick={function () {
-                    _this.onAction(item)
+                    _this.onAction(item);
                   }} style={{cursor: 'pointer'}}>{item.actionIcon}</i>
                 </a>
               );
@@ -67,7 +67,8 @@ var EditList = React.createClass({
               );
             }
 
-            return <li className={className} key={item.key}>
+            return (
+              <li className={className} key={item.key}>
                 {icon}
                 <span className="title">
                   <b>{item.label}</b>
@@ -77,13 +78,14 @@ var EditList = React.createClass({
                   {action}
                   <a className="tooltipped" data-delay="50" data-position="bottom" data-tooltip="Remove" >
                     <i className="material-icons"onClick={function () {
-                      _this.onDelete(item)
+                      _this.onDelete(item);
                     }} style={{
                       cursor: 'pointer'
                     }}>delete</i>
                   </a>
                 </div>
               </li>
+              );
           })}
       </ul>
     );

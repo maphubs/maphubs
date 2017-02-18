@@ -6,7 +6,8 @@ var Attributes = React.createClass({
 		attributes: React.PropTypes.object.isRequired,
     selected: React.PropTypes.bool.isRequired,
     multipleSelected: React.PropTypes.bool.isRequired,
-    presets:  React.PropTypes.array
+    presets:  React.PropTypes.array,
+    children: React.PropTypes.element
   },
 
 
