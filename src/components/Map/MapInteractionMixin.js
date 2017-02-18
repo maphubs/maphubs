@@ -102,7 +102,6 @@ var MapInteractionMixin = {
     }
   },
 
-
   moveendHandler(e){
      debug('mouse up fired');
      if(this.refs.insetMap){

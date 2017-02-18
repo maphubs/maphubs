@@ -131,34 +131,36 @@ var InsetMap = React.createClass({
   },
 
    updateInsetGeomFromBounds(bounds, zoom){
-    var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
-    var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");
-    if(insetGeoJSONData){
-      try{
-        var geoJSONBounds = this.getGeoJSONFromBounds(bounds);
-        geoJSONBounds.features[0].properties = {'v': 1};
-        insetGeoJSONData.setData(geoJSONBounds);
-        var geoJSONCentroid = _centroid(geoJSONBounds);
-        geoJSONCentroid.properties = {'v': 1};
-        insetGeoJSONCentroidData.setData(geoJSONCentroid);
-        this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
+     if(this.insetMap){
+      var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
+      var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");
+      if(insetGeoJSONData){
+        try{
+          var geoJSONBounds = this.getGeoJSONFromBounds(bounds);
+          geoJSONBounds.features[0].properties = {'v': 1};
+          insetGeoJSONData.setData(geoJSONBounds);
+          var geoJSONCentroid = _centroid(geoJSONBounds);
+          geoJSONCentroid.properties = {'v': 1};
+          insetGeoJSONCentroidData.setData(geoJSONCentroid);
+          this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
 
-        if(zoom < 2.3){
-          this.insetMap.setFilter('center', ['==', 'v', 2]);
-          this.insetMap.setFilter('bounds', ['==', 'v', 2]);
-        }else if(this.showInsetAsPoint(zoom)){
-          this.insetMap.setFilter('center', ['==', 'v', 1]);
-          this.insetMap.setFilter('bounds', ['==', 'v', 2]);
-        } else {
-          this.insetMap.setFilter('center', ['==', 'v', 2]);
-          this.insetMap.setFilter('bounds', ['==', 'v', 1]);
+          if(zoom < 2.3){
+            this.insetMap.setFilter('center', ['==', 'v', 2]);
+            this.insetMap.setFilter('bounds', ['==', 'v', 2]);
+          }else if(this.showInsetAsPoint(zoom)){
+            this.insetMap.setFilter('center', ['==', 'v', 1]);
+            this.insetMap.setFilter('bounds', ['==', 'v', 2]);
+          } else {
+            this.insetMap.setFilter('center', ['==', 'v', 2]);
+            this.insetMap.setFilter('bounds', ['==', 'v', 1]);
+          }
+
+          this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate: false});
+        }catch(err){
+            debug(err);
         }
-
-        this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate: false});
-      }catch(err){
-          debug(err);
       }
-    }
+   }
   },
 
   render(){
