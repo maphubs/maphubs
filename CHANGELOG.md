@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.7.5](https://github.com/maphubs/maphubs/tree/v0.7.5) (2017-02-18)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.4...v0.7.5)
+
 ## [v0.7.4](https://github.com/maphubs/maphubs/tree/v0.7.4) (2017-02-17)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.3...v0.7.4)
 
@@ -118,10 +121,6 @@
 
 ## [v0.5.8](https://github.com/maphubs/maphubs/tree/v0.5.8) (2016-12-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.7...v0.5.8)
-
-**Fixed bugs:**
-
-- layer thumbnails included in map page [\#298](https://github.com/maphubs/maphubs/issues/298)
 
 ## [v0.5.7](https://github.com/maphubs/maphubs/tree/v0.5.7) (2016-12-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.5.6...v0.5.7)
