@@ -92,12 +92,7 @@ function createEngine(engineOptions) {
 
       var getAssets = function(entryName){
         if(process.env.NODE_ENV == 'production'){
-          if(local.useLocalAssets){
-            return webpackAssets[entryName];
-          }else{
-            //use Amazon cloudfront version
-            return 'https://d28qp8lgme8ph4.cloudfront.net' + webpackAssets[entryName];
-          }     
+          return webpackAssets[entryName];  
         }else{
           return {
             js: '/public/' + entryName + '.js',
@@ -106,9 +101,9 @@ function createEngine(engineOptions) {
         }
       };
 
-      var assetPath = '/assets';
+      var assetHost = '';
      if(process.env.NODE_ENV == 'production' && !local.useLocalAssets){
-      assetPath = 'https://d28qp8lgme8ph4.cloudfront.net/assets';
+      assetHost = 'https://d28qp8lgme8ph4.cloudfront.net';
      }
 
       //#TODO:230 set HTML header meta tags and language tags
@@ -131,26 +126,26 @@ function createEngine(engineOptions) {
         }
         //icons
         markup += `
-        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-60x60.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="` + assetPath + `/themes/`+ iconFolder +`/apple-touch-icon-152x152.png" />
-        <link rel="icon" type="image/png" href="` + assetPath + `/themes/`+ iconFolder +`/favicon-196x196.png" sizes="196x196" />
-        <link rel="icon" type="image/png" href="` + assetPath + `/themes/`+ iconFolder +`/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/png" href="` + assetPath + `/themes/`+ iconFolder +`/favicon-32x32.png" sizes="32x32" />
-        <link rel="icon" type="image/png" href="` + assetPath + `/themes/`+ iconFolder +`/favicon-16x16.png" sizes="16x16" />
-        <link rel="icon" type="image/png" href="` + assetPath + `/themes/`+ iconFolder +`/favicon-128.png" sizes="128x128" />
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-152x152.png" />
+        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-196x196.png" sizes="196x196" />
+        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-16x16.png" sizes="16x16" />
+        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-128.png" sizes="128x128" />
         <meta name="application-name" content="` + iconFolder +`"/>
         <meta name="msapplication-TileColor" content="#FFFFFF" />
-        <meta name="msapplication-TileImage" content="` + assetPath + `/themes/`+ iconFolder +`/mstile-144x144.png" />
-        <meta name="msapplication-square70x70logo" content="` + assetPath + `/themes/`+ iconFolder +`/mstile-70x70.png" />
-        <meta name="msapplication-square150x150logo" content="` + assetPath + `/themes/`+ iconFolder +`/mstile-150x150.png" />
-        <meta name="msapplication-wide310x150logo" content="` + assetPath + `/themes/`+ iconFolder +`/mstile-310x150.png" />
-        <meta name="msapplication-square310x310logo" content="` + assetPath + `/themes/`+ iconFolder +`/mstile-310x310.png" />
+        <meta name="msapplication-TileImage" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-144x144.png" />
+        <meta name="msapplication-square70x70logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-70x70.png" />
+        <meta name="msapplication-square150x150logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-150x150.png" />
+        <meta name="msapplication-wide310x150logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-310x150.png" />
+        <meta name="msapplication-square310x310logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-310x310.png" />
         `;
 
         var baseUrl = urlUtil.getBaseUrl();
@@ -229,22 +224,22 @@ function createEngine(engineOptions) {
 
         if(materialicons){
           //https://fonts.googleapis.com/icon?family=Material+Icons
-          markup += '<link href="' + assetPath + '/css/material-icons.css" rel="stylesheet">\n';
+          markup += '<link href="' + assetHost + '/assets/css/material-icons.css" rel="stylesheet">\n';
         }
         if(options.fontawesome){
           //https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css
-          markup += '<link href="' + assetPath + '/css/font-awesome.css" rel="stylesheet">\n';
+          markup += '<link href="' + assetHost + '/assets/css/font-awesome.css" rel="stylesheet">\n';
         }
         //https://fonts.googleapis.com/css?family=Raleway|Merriweather:400,700,400italic
-        markup += '<link href="' + assetPath + '/css/raleway.css" rel="stylesheet" type="text/css">\n';
+        markup += '<link href="' + assetHost + '/assets/css/raleway.css" rel="stylesheet" type="text/css">\n';
         //https://fonts.googleapis.com/css?family=Open+Sans
-        markup += '<link href="' + assetPath + '/css/opensans.css" rel="stylesheet" type="text/css">\n';
+        markup += '<link href="' + assetHost + '/assets/css/opensans.css" rel="stylesheet" type="text/css">\n';
         markup +=
       //  '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
         '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">';
 
         //some endpoints don't generate css
-        var cssFile = getAssets(clientFileName).css;
+        var cssFile = assetHost + getAssets(clientFileName).css;
         if(cssFile){
           markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`;
         }
@@ -254,16 +249,16 @@ function createEngine(engineOptions) {
           <body>
           <div id="app">${reactMarkup}</div>
           <script>window.__appData = ${appData}; </script>
-          <script type="text/javascript" src="${getAssets('vendor').js}"></script>
-          <script type="text/javascript" src="${getAssets('locales').js}"></script>
+          <script type="text/javascript" src="${assetHost + getAssets('vendor').js}"></script>
+          <script type="text/javascript" src="${assetHost + getAssets('locales').js}"></script>
           <script type="text/javascript" src="/clientconfig.js"></script>
-          <script type="text/javascript" src="${getAssets(clientFileName).js}"></script>
+          <script type="text/javascript" src="${assetHost + getAssets(clientFileName).js}"></script>
         `;
 
         if(options.rangy){
           markup += `
-          <script src="` + assetPath + `/js/rangy-core.js"></script>
-          <script src="` + assetPath + `/js/rangy-cssclassapplier.js"></script>
+          <script src="` + assetHost + `/assets/js/rangy-core.js"></script>
+          <script src="` + assetHost + `/assets/js/rangy-cssclassapplier.js"></script>
           `;
         }
 
