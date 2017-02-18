@@ -3,8 +3,8 @@
     "js": "/public/about.594670ff1459fb34e9d7.js"
   },
   "addphotopoint": {
-    "js": "/public/addphotopoint.83de2cd5ba70a63fc165.js",
-    "css": "/public/addphotopoint.83de2cd5ba70a63fc165.css"
+    "js": "/public/addphotopoint.2262903a324e525862bb.js",
+    "css": "/public/addphotopoint.2262903a324e525862bb.css"
   },
   "adminuserinvite": {
     "js": "/public/adminuserinvite.2ddf3372bd8b97c13729.js"
@@ -21,12 +21,12 @@
     "css": "/public/createhubstory.dde9401a8b9c10222582.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.c13c1892397877744963.js",
-    "css": "/public/createlayer.c13c1892397877744963.css"
+    "js": "/public/createlayer.38998a27cc9cfadf9552.js",
+    "css": "/public/createlayer.38998a27cc9cfadf9552.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.0a1a35632979bd19a08c.js",
-    "css": "/public/createremotelayer.0a1a35632979bd19a08c.css"
+    "js": "/public/createremotelayer.486e178714c24ef80507.js",
+    "css": "/public/createremotelayer.486e178714c24ef80507.css"
   },
   "createuserstory": {
     "js": "/public/createuserstory.bac7ce5443c6b0471f6c.js",
@@ -44,8 +44,8 @@
     "js": "/public/emailconfirmation.f928a67cff3060875651.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.941943f21a2dd0b579eb.js",
-    "css": "/public/embedmap.941943f21a2dd0b579eb.css"
+    "js": "/public/embedmap.70ef9125b780fe551bfc.js",
+    "css": "/public/embedmap.70ef9125b780fe551bfc.css"
   },
   "error": {
     "js": "/public/error.4b65957e6eb22f51426c.js"
@@ -55,8 +55,8 @@
     "css": "/public/explore.aa78875d19ed94da1160.css"
   },
   "featureinfo": {
-    "js": "/public/featureinfo.404f6678314dccbde62a.js",
-    "css": "/public/featureinfo.404f6678314dccbde62a.css"
+    "js": "/public/featureinfo.6a90d89bcb0b63f255d5.js",
+    "css": "/public/featureinfo.6a90d89bcb0b63f255d5.css"
   },
   "groupadmin": {
     "js": "/public/groupadmin.06014bca06157181761e.js",
@@ -71,8 +71,8 @@
     "css": "/public/groups.a59cd78d1ad37f53fe38.css"
   },
   "home": {
-    "js": "/public/home.14e79b2d4638bbbfdb04.js",
-    "css": "/public/home.14e79b2d4638bbbfdb04.css"
+    "js": "/public/home.dcb878c15e2ae56e77a9.js",
+    "css": "/public/home.dcb878c15e2ae56e77a9.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
@@ -81,12 +81,12 @@
     "js": "/public/hubbuilder.9d28996122e54a797fe4.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.5f1fc8162c1c5353f8c7.js",
-    "css": "/public/hubinfo.5f1fc8162c1c5353f8c7.css"
+    "js": "/public/hubinfo.da178e644e770feebbda.js",
+    "css": "/public/hubinfo.da178e644e770feebbda.css"
   },
   "hubmap": {
-    "js": "/public/hubmap.11aea2dda92926f725f0.js",
-    "css": "/public/hubmap.11aea2dda92926f725f0.css"
+    "js": "/public/hubmap.fa927192fa2873f1328a.js",
+    "css": "/public/hubmap.fa927192fa2873f1328a.css"
   },
   "hubresources": {
     "js": "/public/hubresources.91357fcdb5f121f3b0fd.js",
@@ -108,16 +108,16 @@
     "js": "/public/journalists.fa4953ae213d3429deaa.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.b71463f01e3ac44c5c81.js",
-    "css": "/public/layeradmin.b71463f01e3ac44c5c81.css"
+    "js": "/public/layeradmin.e2b59176bfac2ac947b0.js",
+    "css": "/public/layeradmin.e2b59176bfac2ac947b0.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.1e721fd78753d6afd269.js",
-    "css": "/public/layerinfo.1e721fd78753d6afd269.css"
+    "js": "/public/layerinfo.0f6bb0e9455179980a86.js",
+    "css": "/public/layerinfo.0f6bb0e9455179980a86.css"
   },
   "layermap": {
-    "js": "/public/layermap.6a21517210d869beeee8.js",
-    "css": "/public/layermap.6a21517210d869beeee8.css"
+    "js": "/public/layermap.ed683d288e58b8750f14.js",
+    "css": "/public/layermap.ed683d288e58b8750f14.css"
   },
   "layers": {
     "js": "/public/layers.f9bf944541b7023762bf.js",
@@ -130,15 +130,15 @@
     "js": "/public/login.0c9d746c90102036b78e.js"
   },
   "map": {
-    "js": "/public/map.d55b559fbc6985c62d4d.js",
-    "css": "/public/map.d55b559fbc6985c62d4d.css"
+    "js": "/public/map.40b279818af5e321dab0.js",
+    "css": "/public/map.40b279818af5e321dab0.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.f0e3fbd95dafe21edc5e.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.c39984101caf946fbcb5.js",
-    "css": "/public/mapedit.c39984101caf946fbcb5.css"
+    "js": "/public/mapedit.f3b7266b4bacafb7871e.js",
+    "css": "/public/mapedit.f3b7266b4bacafb7871e.css"
   },
   "maps": {
     "js": "/public/maps.5ca9ac16d9c7c6dc4aa5.js",
@@ -154,8 +154,8 @@
     "js": "/public/privacy.c244bb832c476f751510.js"
   },
   "search": {
-    "js": "/public/search.49b93fcf654d9faecdfc.js",
-    "css": "/public/search.49b93fcf654d9faecdfc.css"
+    "js": "/public/search.ecef4e875f533d25292d.js",
+    "css": "/public/search.ecef4e875f533d25292d.css"
   },
   "services": {
     "js": "/public/services.f61f5bbef01d2f51b5e4.js"
@@ -164,8 +164,8 @@
     "js": "/public/signup.2409104834dea2e47205.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.901738f2c4a8127fbd31.js",
-    "css": "/public/staticmap.901738f2c4a8127fbd31.css"
+    "js": "/public/staticmap.5f0e36be860673608029.js",
+    "css": "/public/staticmap.5f0e36be860673608029.css"
   },
   "stories": {
     "js": "/public/stories.20758a9e6d0d3a4acfcb.js",
@@ -183,8 +183,8 @@
     "css": "/public/userhubs.6666cccd82b9a87d315d.css"
   },
   "usermap": {
-    "js": "/public/usermap.81b9eb85c751717826cb.js",
-    "css": "/public/usermap.81b9eb85c751717826cb.css"
+    "js": "/public/usermap.e6a10151725ae7133fd4.js",
+    "css": "/public/usermap.e6a10151725ae7133fd4.css"
   },
   "usermaps": {
     "js": "/public/usermaps.1b1d267fa195410c92d4.js",
@@ -202,14 +202,14 @@
     "css": "/public/userstory.9d8ec1a1830fbc93b1cd.css"
   },
   "vendor": {
-    "js": "/public/vendor.45fc73002db48ccdbd9a.js"
+    "js": "/public/vendor.d181ccbc2800e965c2f9.js"
   },
   "metadata": {
-    "version": "0.7.4"
+    "version": "0.7.5"
   },
   "homedemo": {
-    "js": "/public/homedemo.c159d55679d8fc4ef4b4.js",
-    "css": "/public/homedemo.c159d55679d8fc4ef4b4.css"
+    "js": "/public/homedemo.535a8e323516fc546963.js",
+    "css": "/public/homedemo.535a8e323516fc546963.css"
   },
   "pageedit": {
     "js": "/public/pageedit.c1f9a2962bf2c4fe470b.js"
