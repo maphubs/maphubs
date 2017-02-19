@@ -52,7 +52,7 @@ var MiniLegend = React.createClass({
   },
 
   render(){
-
+    var _this = this;
     var titleText = '';
     if(this.props.title){
       titleText = this.props.title;
@@ -114,6 +114,9 @@ var MiniLegend = React.createClass({
             <ul className="collection no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden'}}>
               {
                 this.props.layers.map(function (layer) {
+                  if(_this.props.hideInactive && !layer.active){
+                    return null;
+                  }
                   var legendHtml = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
                   layer.legend_html = legendHtml;
                   return (<LegendItem key={layer.layer_id} layer={layer} style={{padding: '2px', width: '100%', margin: 'auto'}} mini/>);

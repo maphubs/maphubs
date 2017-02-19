@@ -1,6 +1,6 @@
 var React = require('react');
 
-var MapLayer = require('./MapLayer');
+var LayerList = require('./LayerList');
 
 var $ = require('jquery');
 //var _isEmpty = require('lodash.isempty');
@@ -373,22 +373,15 @@ var MapMaker = React.createClass({
       );
     }else{
       sidebarContent = (
-        <div style={{height: '100%', padding: 0, margin: 0}}>
-          <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{
-            this.state.mapLayers.map(function (layer) {
-                return (
-                  <MapLayer key={layer.layer_id} showVisibility={_this.props.showVisibility}
-                    toggleVisibility={_this.toggleVisibility}
-                    removeFromMap={_this.removeFromMap}
-                    showLayerDesigner={_this.showLayerDesigner}
-                    moveUp={_this.moveUp}
-                    moveDown={_this.moveDown}
-                    layer={layer}
-                  />
-              );
-            })
-          }</ul>
-        </div>
+        <LayerList 
+          layers={this.state.mapLayers}
+          showVisibility={_this.props.showVisibility}
+          showRemove={true} showDesign={true}
+          toggleVisibility={_this.toggleVisibility}
+          removeFromMap={_this.removeFromMap}
+          showLayerDesigner={_this.showLayerDesigner}
+          updateLayers={Actions.setMapLayers}
+          />
       );
     }
 
@@ -402,8 +395,8 @@ var MapMaker = React.createClass({
 
     return (
       <div className="row no-margin" style={{width: '100%', height: '100%'}}>
-        <div className="create-map-side-nav col s6 m3 l3 no-padding" style={{height: '100%'}}>
-          <ul ref="mapMakerToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>
+        <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>
+          <ul ref="mapMakerToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%', borderTop: 'none'}}>
             <li>
               <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Map Layers')}</div>
               <div className="collapsible-body" >
@@ -424,7 +417,7 @@ var MapMaker = React.createClass({
             </li>
         </ul>
         </div>
-        <div className="col s6 m9 l9 no-padding" style={{height: '100%'}}>
+        <div className="col s6 m8 l9 no-padding" style={{height: '100%'}}>
           <ul className="tabs" ref="tabs" style={{overflowX: 'hidden'}}>
             <li className="tab mapmaker-tab"><a className="active" href="#addlayer" onClick={this.toggleAddLayerTab}>{this.__('Add a Layer')}</a></li>
             <li className="tab mapmaker-tab"><a href="#maptab" onClick={this.toggleMapTab}>{this.__('View Map')}</a></li>
@@ -453,7 +446,7 @@ var MapMaker = React.createClass({
                         minWidth: '200px',
                         zIndex: '1',
                         width: '25%'
-                      }} layers={this.state.mapLayers} collapseToBottom={false} hideInactive={false} />
+                      }} layers={this.state.mapLayers} collapseToBottom={false} hideInactive={true} />
               </div>
             </div>
         </div>

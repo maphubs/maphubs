@@ -9,8 +9,6 @@ var actions = Reflux.createActions({
   'search': {},
   'addToMap': {},
   'removeFromMap': {},
-  'moveUp': {},
-  'moveDown': {},
   'updateLayerStyle': {},
   'setMapTitle': {},
   'setMapPosition': {},

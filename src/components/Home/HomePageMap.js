@@ -6,11 +6,12 @@ var Map = require('../Map/Map');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
-var HomePageMapLayers = require('./HomePageMapLayers');
+var LayerList = require('../MapMaker/LayerList');
 var MiniLegend = require('../Map/MiniLegend');
 var HubStore = require('../../stores/HubStore');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var HubActions = require('../../actions/HubActions');
 
 var HomePageMap = React.createClass({
 
@@ -47,6 +48,10 @@ var HomePageMap = React.createClass({
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
+  },
+
+  toggleVisibility(layer_id){
+    HubActions.toggleVisibility(layer_id, function(){});
   },
 
   render() {
@@ -102,7 +107,11 @@ var HomePageMap = React.createClass({
                   >layers</i>
               </a>
               <div className="side-nav" id="map-layers">
-                <HomePageMapLayers />
+                <LayerList layers={this.state.layers}
+                  showDesign={false} showRemove={false} showVisibility={true}
+                  toggleVisibility={this.toggleVisibility}
+                  updateLayers={HubActions.updateLayers}
+                 />
               </div>
             </nav>
             <Map ref="map" id="hub-map" fitBounds={bounds}

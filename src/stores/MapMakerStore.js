@@ -8,7 +8,7 @@ var _reject = require('lodash.reject');
 var _find = require('lodash.find');
 var _forEachRight = require('lodash.foreachright');
 //var $ = require('jquery');
-var urlUtil = require('../services/url-util');
+//var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
 module.exports = Reflux.createStore({
@@ -102,20 +102,6 @@ module.exports = Reflux.createStore({
     cb();
   },
 
-  moveUp(layer){
-    var index = _findIndex(this.state.mapLayers, {'layer_id': layer.layer_id});
-    if(index === 0) return;
-    var layers = this.move(this.state.mapLayers, index, index-1);
-    this.updateMap(layers);
-  },
-
-  moveDown(layer){
-    var index = _findIndex(this.state.mapLayers, {'layer_id': layer.layer_id});
-    if(index === this.state.mapLayers.length -1) return;
-    var layers = this.move(this.state.mapLayers, index, index+1);
-    this.updateMap(layers);
-  },
-
   updateLayerStyle(layer_id, style, labels, legend, settings){
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
@@ -195,11 +181,6 @@ module.exports = Reflux.createStore({
     var mapStyle = this.buildMapStyle(mapLayers);
     this.setState({mapLayers, mapStyle});
   },
-
-  move(array, fromIndex, toIndex) {
-     array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
-     return array;
-   },
 
    buildMapStyle(layers){
      var mapStyle = {
