@@ -7,6 +7,8 @@ var MapToolButton = React.createClass({
     icon: React.PropTypes.string,
     top: React.PropTypes.string,
     right: React.PropTypes.string,
+    bottom: React.PropTypes.string,
+    left: React.PropTypes.string,
     tooltipText: React.PropTypes.string,
     color: React.PropTypes.string,
     onClick: React.PropTypes.func.isRequired,
@@ -20,13 +22,17 @@ var MapToolButton = React.createClass({
       top: '10px',
       color: MAPHUBS_CONFIG.primaryColor,
       right: '10px',
+      bottom: 'auto',
+      left: 'auto',
       tooltipText: '',
       show: true
     };
   },
 
   componentDidMount(){
-    $(this.refs.mapToolButton).tooltip();
+    if(this.props.tooltipText && this.props.tooltipText != ''){
+      $(this.refs.mapToolButton).tooltip();
+    }  
   },
 
   onClick(e){
@@ -43,6 +49,8 @@ var MapToolButton = React.createClass({
           style={{position: 'absolute',
             top: this.props.top,
             right: this.props.right,
+            bottom: this.props.bottom,
+            left: this.props.left,
             height:'30px',
             zIndex: '100',
             lineHeight: '30px',

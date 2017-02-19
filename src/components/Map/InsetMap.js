@@ -2,6 +2,7 @@ var React = require('react');
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 var _centroid = require('@turf/centroid');
+var MapToolButton = require('./MapToolButton'); 
 
 var mapboxgl = {};
 
@@ -14,14 +15,22 @@ var InsetMap = React.createClass({
   propTypes: {
     id: React.PropTypes.string,
     bottom:  React.PropTypes.string,
-    attributionControl: React.PropTypes.bool
+    attributionControl: React.PropTypes.bool,
+    collapsed: React.PropTypes.bool
   },
 
   getDefaultProps(){
     return {
       id: 'map',
       bottom: '30px',
-      attributionControl: false
+      attributionControl: false,
+      collapsed: false
+    };
+  },
+
+  getInitialState(){
+    return {
+      collapsed: this.props.collapsed
     };
   },
 
@@ -98,6 +107,15 @@ var InsetMap = React.createClass({
     }
   },
 
+  toggleCollapsed(){
+    if(this.state.collapsed){
+      this.setState({collapsed: false});
+    }else{
+      this.setState({collapsed: true});
+      $(this.refs.insetMap).show();
+    }
+  },
+
   getInsetMap(){
     return this.insetMap;
   },
@@ -164,24 +182,61 @@ var InsetMap = React.createClass({
   },
 
   render(){
-    return (
-       <div style={{
-          position: 'absolute', bottom: this.props.bottom, left: '5px',
-          minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
-          height: '25vw', width: '25vw'
-          }}>
-          <div id={this.props.id + '_inset'} ref="insetMap" className="map z-depth-1"
+    if(this.state.collapsed){
+      return (
+         <div style={{
+            position: 'absolute', bottom: this.props.bottom, left: '5px',
+            minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
+            height: '25vw', width: '25vw'
+            }}>
+            
+            <div id={this.props.id + '_inset'} ref="insetMap"
+              style={{             
+                display: 'none'
+              }}>
+              <MapToolButton onClick={this.toggleCollapsed} 
+              color="#212121"
+              top="auto" right="auto" bottom="5px" left="5px" icon="near_me"  />
+              </div>
+          </div>
+      );
+    }else{
+     
+      return (
+        <div style={{
+            position: 'absolute', bottom: this.props.bottom, left: '5px',
+            minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
+            height: '25vw', width: '25vw'
+            }}>
+            <div id={this.props.id + '_inset'} ref="insetMap" className="map z-depth-1"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                display: 'none',
+                border: '0.5px solid rgba(222,222,222,50)', zIndex: 1
+              }}></div>
+               <i  className="material-icons"
+               onClick={this.toggleCollapsed}
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              display: 'none',
-              border: '0.5px solid rgba(222,222,222,50)', zIndex: 1
-            }}></div>
-        </div>
-    );
+                    position: 'absolute',
+                    top: '-5px',
+                    right: '-5px',
+                    height:'30px',
+                    lineHeight: '30px',
+                    width: '30px',
+                    color: '#212121',                  
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    zIndex: 2,
+                    transform: 'rotate(45deg)', 
+                    fontSize:'18px'}}          
+            >arrow_downward</i>
+          </div>
+      );
+    }
   }
 
 });
