@@ -54,6 +54,10 @@ var HomePageMap = React.createClass({
     HubActions.toggleVisibility(layer_id, function(){});
   },
 
+  onChangeBaseMap(baseMap){
+     HubActions.setMap(this.state.layers, this.state.hub.map_style, this.state.hub.map_position, baseMap);
+  },
+
   render() {
 
     var border = 'none';
@@ -118,6 +122,7 @@ var HomePageMap = React.createClass({
               style={{width: '100%', height: '100%'}}
               glStyle={this.state.hub.map_style}
               baseMap={this.state.hub.basemap}
+              onChangeBaseMap={this.onChangeBaseMap}
               showLogo={false}
               disableScrollZoom>
 
