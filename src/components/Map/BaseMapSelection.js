@@ -30,15 +30,20 @@ var BaseMapSelection = React.createClass({
     var baseMapOptions = [
       {value: 'default', label: this.__('Default (Light)')},
       {value: 'dark', label: this.__('Dark')},
-      {value: 'streets', label: this.__('Streets')},
-      {value: 'outdoors', label: this.__('Outdoors')},
-      {value: 'bing-satellite', label: this.__('Bing Aerial')},
-      {value: 'mapbox-satellite', label: this.__('Mapbox Satellite')},
-      {value: 'landsat-2014', label: this.__('Landsat - 2014')},
-      {value: 'stamen-toner', label: this.__('Stamen - Toner')},
-      {value: 'stamen-terrain', label: this.__('Stamen - Terrain')},
-      {value: 'stamen-watercolor', label: this.__('Stamen - Watercolor')}
+      {value: 'streets', label: this.__('Streets')}
     ];
+    if(MAPHUBS_CONFIG.useMapboxBaseMaps){
+      baseMapOptions.push({value: 'outdoors', label: this.__('Outdoors')});
+      baseMapOptions.push({value: 'mapbox-satellite', label: this.__('Mapbox Satellite')});
+    }
+
+    baseMapOptions.push({value: 'bing-satellite', label: this.__('Bing Aerial')});
+    baseMapOptions.push({value: 'landsat-2016', label: this.__('Landsat - 2016')});
+    baseMapOptions.push({value: 'landsat-2014', label: this.__('Landsat - 2014')});
+    baseMapOptions.push({value: 'stamen-toner', label: this.__('Stamen - Toner')});
+    baseMapOptions.push({value: 'stamen-terrain', label: this.__('Stamen - Terrain')});
+    baseMapOptions.push({value: 'stamen-watercolor', label: this.__('Stamen - Watercolor')});
+
     return (
       <div style={{width: '100%', marginRight: '10px', backgroundColor: 'white', textAlign: 'left'}}>
           <Formsy.Form>

@@ -8,6 +8,11 @@ var _intersect = require('@turf/intersect');
 var _debounce = require('lodash.debounce');
 var _distance = require('@turf/distance');
 
+var positron = require('../../components/Map/styles/positron.json');
+var darkmatter = require('../../components/Map/styles/darkmatter.json');
+var osmLiberty = require('../../components/Map/styles/osm-liberty.json');
+var osmBright = require('../../components/Map/styles/osm-liberty.json');
+
 module.exports = Reflux.createStore({
   mixins: [StateMixin],
   listenables: Actions,
@@ -137,24 +142,61 @@ module.exports = Reflux.createStore({
     if(!mapName) mapName = 'default';
 
     if (mapName == 'default') {
+      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
         mapboxName = 'light-v9';
         optimize = true;
+      }else{
+        this.setState({
+          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          updateWithMapPosition: false
+        });
+        cb(positron);
+      }
+        
     }
     else if(mapName == 'dark'){
-      mapboxName = 'dark-v9';
-      optimize = true;
+      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
+        mapboxName = 'dark-v9';
+        optimize = true;
+      }else{
+        this.setState({
+          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          updateWithMapPosition: false
+        });
+        cb(darkmatter);
+      }
     }
     else if(mapName == 'outdoors'){
-      mapboxName = 'outdoors-v9';
-      optimize = true;
+      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
+        mapboxName = 'outdoors-v9';
+        optimize = true;
+      }else{
+        this.setState({
+          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          updateWithMapPosition: false
+        });
+        cb(osmBright);
+      } 
     }
     else if(mapName == 'streets'){
-      mapboxName = 'streets-v9';
-      optimize = true;
+      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
+        mapboxName = 'streets-v9';
+        optimize = true;
+      }else{
+        this.setState({
+          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          updateWithMapPosition: false
+        });
+        cb(osmLiberty);
+      } 
     }
     else if(mapName == 'mapbox-satellite'){
-      mapboxName = 'satellite-streets-v9';
-      optimize = true;
+      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
+        mapboxName = 'satellite-streets-v9';
+        optimize = true;
+      }else{
+        return this.getBaseMapFromName('bing-satellite', cb);
+      }
     }
     else if(mapName == 'stamen-toner'){
       style={
@@ -239,6 +281,32 @@ module.exports = Reflux.createStore({
     };
     this.setState({
       attribution: ' Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)',
+      updateWithMapPosition: false
+    });
+     cb(style);
+    }
+    else if(mapName == 'landsat-2016'){
+      style={
+        "version": 8,
+        "sources": {
+            "landsat-2016": {
+                "type": "raster",
+                "tiles":[  
+                  "https://mapforenvironment.org/raster/congo-landsat-2016/{z}/{x}/{y}.png"
+                ],
+                "tileSize": 256
+            }
+        },
+        "layers": [{
+            "id": "landsat-2016",
+            "type": "raster",
+            "source": "landsat-2016",
+            "minzoom": 3,
+            "maxzoom": 12
+        }]
+    };
+    this.setState({
+      attribution: ' Landsat 7',
       updateWithMapPosition: false
     });
      cb(style);
