@@ -37,7 +37,7 @@ var draggableIndicator = React.createClass({
     for(var i = 0; i < _this.props.numX; i++){
       for(var j = 0; j < _this.props.numY; j++){
         rows.push(
-          <rect x={(_this.props.initialX + i*_this.props.offset )}
+          <rect key={i + '-' + j} x={(_this.props.initialX + i*_this.props.offset )}
             y={( _this.props.initialY + j*_this.props.offset )} fill="#ccc"
             width={_this.props.dotWidth} height={_this.props.dotWidth} 
           />

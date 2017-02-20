@@ -36,7 +36,7 @@ var ModalContent = React.createClass({
 var ModalFooter = React.createClass({
   propTypes:  {
     className: React.PropTypes.string,
-    children: React.PropTypes.array
+    children: React.PropTypes.object
   },
   render(){
       var className = classNames('modal-footer', this.props.className);
