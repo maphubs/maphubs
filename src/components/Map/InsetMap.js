@@ -40,6 +40,20 @@ var InsetMap = React.createClass({
     }
   },
 
+  componentDidUpdate(){
+    if(this.insetMap){
+      if(!this.state.collapsed){
+        $(this.refs.insetMapArrow).show();
+      }
+      if(!this.insetMapActive){
+         $(this.refs.insetMap).addClass('z-depth-1');
+         // border: '0.5px solid rgba(222,222,222,50)'
+         $(this.refs.insetMap).style('border', '0.5px solid rgba(222,222,222,50)');
+         this.insetMapActive = true;
+      }
+    }
+  },
+
   createInsetMap(center, bounds, baseMap) {
       var _this = this;
       var insetMap =  new mapboxgl.Map({
@@ -208,7 +222,7 @@ var InsetMap = React.createClass({
             minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
             height: '25vw', width: '25vw'
             }}>
-            <div id={this.props.id + '_inset'} ref="insetMap" className="map z-depth-1"
+            <div id={this.props.id + '_inset'} ref="insetMap" className="map"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -216,18 +230,20 @@ var InsetMap = React.createClass({
                 bottom: 0,
                 right: 0,
                 display: 'none',
-                border: '0.5px solid rgba(222,222,222,50)', zIndex: 1
+               zIndex: 1
               }}></div>
                <i  className="material-icons"
+               ref="insetMapArrow"
                onClick={this.toggleCollapsed}
             style={{
                     position: 'absolute',
                     top: '-5px',
                     right: '-5px',
                     height:'30px',
+                    display: 'none',
                     lineHeight: '30px',
                     width: '30px',
-                    color: '#212121',                  
+                    color: '#717171',                  
                     cursor: 'pointer',
                     textAlign: 'center',
                     zIndex: 2,
