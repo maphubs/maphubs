@@ -16,9 +16,9 @@ var LayerList = React.createClass({
     showDesign: React.PropTypes.bool,
     showRemove: React.PropTypes.bool,
     showChangeDesign: React.PropTypes.bool,
-    toggleVisibility: React.PropTypes.func.isRequired,
-    removeFromMap: React.PropTypes.func.isRequired,
-    showLayerDesigner: React.PropTypes.func.isRequired,
+    toggleVisibility: React.PropTypes.func,
+    removeFromMap: React.PropTypes.func,
+    showLayerDesigner: React.PropTypes.func,
     updateLayers: React.PropTypes.func.isRequired
   },
 

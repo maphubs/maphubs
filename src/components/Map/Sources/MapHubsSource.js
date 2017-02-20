@@ -10,7 +10,7 @@ var $ =require('jquery');
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
-    mapboxgl = require("../../../../assets/assets/js/mapbox-gl/mapbox-gl.js");
+    mapboxgl = require("../../../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js");
 }
 
 var MapHubsSource = {

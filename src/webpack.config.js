@@ -3,13 +3,10 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
-//var pathToMapboxGL = path.resolve(__dirname, 'node_modules/mapbox-gl/dist/mapbox-gl.js');
-var pathToMapboxGL = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapbox-gl.js');
+var pathToMapboxGL = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js');
 var pathToMapboxGLDraw = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
 var pathToPica = path.resolve(__dirname, '../node_modules/pica/dist/pica.min.js');
 var pathToMediumEditor = path.resolve(__dirname, '../node_modules/medium-editor/dist/js/medium-editor.js');
-
-
 
 
 module.exports = {
@@ -71,7 +68,7 @@ module.exports = {
     emailconfirmation: "./src/client/emailconfirmation",
     vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./src/services/locales"],
-    mapboxgl: ["./assets/assets/js/mapbox-gl/mapbox-gl.js"]
+    mapboxgl: ["./assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js"]
   },
   resolve: {
     modulesDirectories: ['node_modules'],

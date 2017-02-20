@@ -8,7 +8,7 @@ require('../../node_modules/react-colorpickr/dist/colorpickr.css');
 require('medium-editor/dist/css/medium-editor.css');
 var UserMap = require('../views/usermap');
 
-require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 
 document.addEventListener('DOMContentLoaded', () => {

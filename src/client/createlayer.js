@@ -8,7 +8,7 @@ require('jquery');
 require("materialize-css");
 
 
-require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 require('../../node_modules/react-colorpickr/dist/colorpickr.css');
 

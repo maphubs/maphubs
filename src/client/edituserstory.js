@@ -13,7 +13,7 @@ require('../../node_modules/slick-carousel/slick/slick-theme.css');
 
 
 require('./story.css');
-require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 
 require("cropperjs/dist/cropper.css");

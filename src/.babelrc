@@ -6,6 +6,6 @@
   ],
   "plugins": ["transform-flow-strip-types"],
   "ignore": [
-    "mapbox-gl.js", "mapbox-gl-dev.js"
+    "mapbox-gl-0-32-1.js", "mapbox-gl-dev.js"
   ]
 }

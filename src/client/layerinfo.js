@@ -12,7 +12,7 @@ require('jquery');
 require("materialize-css");
 var LayerInfo = require('../views/layerinfo');
 
-require('../../assets/assets/js/mapbox-gl/mapbox-gl.css');
+require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 require("../../assets/assets/css/react-data-grid.css");
 require('medium-editor/dist/css/medium-editor.css');
