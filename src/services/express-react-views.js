@@ -318,7 +318,7 @@ function createEngine(engineOptions) {
             `;
 
         }
-      if(process.env.NODE_ENV == 'production' && !local.disableTracking){
+      if(process.env.NODE_ENV == 'production' && !local.disableTracking && !options.disableGoogleAnalytics){
         markup += `
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

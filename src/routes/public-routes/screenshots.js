@@ -14,7 +14,8 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getLayerByID(layer_id).then(function(layer){
     var title = layer.name + ' - ' + MAPHUBS_CONFIG.productName;
-      res.render('staticmap', {title, hideFeedback: true,
+      res.render('staticmap', {title, hideFeedback: true, 
+        disableGoogleAnalytics: true,
         props:{
           name: layer.name,
           layers: [layer],
@@ -45,6 +46,7 @@ module.exports = function(app: any) {
         }
         title += ' - ' + MAPHUBS_CONFIG.productName;
         res.render('staticmap', {title, hideFeedback: true,
+          disableGoogleAnalytics: true,
            props:{
              name: map.title,
              layers,
@@ -71,6 +73,7 @@ module.exports = function(app: any) {
         }
         title += ' - ' + MAPHUBS_CONFIG.productName;
         res.render('staticmap', {title, hideFeedback: true,
+          disableGoogleAnalytics: true,
            props:{
              name: map.title,
              layers,
