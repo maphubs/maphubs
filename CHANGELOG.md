@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.7.7](https://github.com/maphubs/maphubs/tree/v0.7.7) (2017-02-20)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.6...v0.7.7)
+
+**Implemented enhancements:**
+
+- collapsible inset map [\#341](https://github.com/maphubs/maphubs/issues/341)
+- update to latest mapbox-gl [\#340](https://github.com/maphubs/maphubs/issues/340)
+- add drag and drop to map maker [\#338](https://github.com/maphubs/maphubs/issues/338)
+- use toggles for layer visibility [\#337](https://github.com/maphubs/maphubs/issues/337)
+
 ## [v0.7.6](https://github.com/maphubs/maphubs/tree/v0.7.6) (2017-02-18)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.5...v0.7.6)
 
