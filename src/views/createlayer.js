@@ -55,7 +55,7 @@ var CreateLayer = React.createClass({
          url: '/api/layer/admin/delete',
          contentType : 'application/json;charset=UTF-8',
          dataType: 'json',
-         data: JSON.stringify({layer_id: _this.state.layer.layer_id}),
+         data: JSON.stringify({layer_id: _this.state.layer.layer_id, _csrf: _this.state._csrf}),
           async: false,
           success(){
 

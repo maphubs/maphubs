@@ -48,7 +48,7 @@ var InsetMap = React.createClass({
       if(!this.insetMapActive){
          $(this.refs.insetMap).addClass('z-depth-1');
          // border: '0.5px solid rgba(222,222,222,50)'
-         $(this.refs.insetMap).style('border', '0.5px solid rgba(222,222,222,50)');
+         $(this.refs.insetMap).css('border', '0.5px solid rgba(222,222,222,50)');
          this.insetMapActive = true;
       }
     }

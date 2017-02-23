@@ -126,9 +126,9 @@ var LayerInfo = React.createClass({
 
     var firstRow = originalRows[0];
 
-    var rowKey = 'osm_id';
-    if(firstRow.osm_id){
-      rowKey = 'osm_id';
+    var rowKey = 'mhid';
+    if(firstRow.mhid){
+      rowKey = 'mhid';
     }
     else if(firstRow.objectid){
       rowKey = 'objectid';

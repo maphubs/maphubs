@@ -132,7 +132,6 @@
     "object-assign": "^4.1.1",
     "object-sizeof": "^1.1.1",
     "ogr2ogr": "1.0.0",
-    "osm-and-geojson": "openmaphub/osm-and-geojson",
     "passport": "0.3.2",
     "passport-http": "0.3.0",
     "passport-http-oauth": "0.1.3",

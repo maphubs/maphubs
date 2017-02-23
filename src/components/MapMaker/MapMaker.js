@@ -297,16 +297,6 @@ var MapMaker = React.createClass({
     Actions.removeFromMap(layer);
     $('.layer-card-tooltipped').tooltip();
   },
-  moveUp(layer){
-    $('.layer-card-tooltipped').tooltip('remove');
-    Actions.moveUp(layer);
-    $('.layer-card-tooltipped').tooltip();
-  },
-  moveDown(layer){
-    $('.layer-card-tooltipped').tooltip('remove');
-    Actions.moveDown(layer);
-    $('.layer-card-tooltipped').tooltip();
-  },
 
   addLayer(layer){
     var _this=this;

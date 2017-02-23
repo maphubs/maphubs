@@ -69,8 +69,8 @@ module.exports = Reflux.createStore({
     //convert tags to presets
     data.forEach(function(tag){
       var preset = {};
-      if(tag == 'osm_id'){
-         preset = {tag:'orig_osm_id', label: 'orig_osm_id', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
+      if(tag == 'mhid'){
+         preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
       }else{
          preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
       }

@@ -310,27 +310,11 @@ module.exports = {
     },
 
     getGeoJSON(layer_id: number) {
-      return this.getLayerByID(layer_id)
-      .then(function(layer){
-        var layerView = '';
-        switch(layer.data_type){
-          case 'polygon':
-            layerView = 'layers.polygons_' + layer_id;
-            break;
-          case 'line':
-            layerView = 'layers.lines_' + layer_id;
-            break;
-          case 'point':
-            layerView = 'layers.points_' + layer_id;
-            break;
-          default:
-          layerView = 'layers.polygons_' + layer_id;
-          break;
-        }
-
+        var layerTable = 'layers.data_' + layer_id;
+       
       return Promise.all([
-          knex.raw("select osm_id, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom, '{' || replace(tags::text, '=>', ':') || '}' as tags from " + layerView),
-          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(geom) as bbox from (select ST_Transform(geom, 4326) as geom from " + layerView + ") a) b")
+          knex.raw("select mhid, ST_AsGeoJSON(wkb_geometry) as geom, tags from " + layerTable),
+          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from " + layerTable + ") a")
         ])
         .then(function(results) {
           var data = results[0];
@@ -355,9 +339,7 @@ module.exports = {
               fulfill(result);
             });
           });
-
         });
-      });
     },
 
     //Layer Security

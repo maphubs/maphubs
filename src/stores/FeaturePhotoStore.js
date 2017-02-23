@@ -32,7 +32,7 @@ module.exports = Reflux.createStore({
     .type('json').accept('json')
     .send({
       layer_id: this.state.feature.layer_id,
-      osm_id: this.state.feature.osm_id,
+      mhid: this.state.feature.mhid,
       image: data,
       info,
       _csrf
@@ -62,7 +62,7 @@ module.exports = Reflux.createStore({
     .type('json').accept('json')
     .send({
       layer_id: this.state.feature.layer_id,
-      osm_id: this.state.feature.osm_id,
+      mhid: this.state.feature.mhid,
       photo_id: this.state.photo.photo_id,
       _csrf
     })

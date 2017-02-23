@@ -85,7 +85,7 @@ var FeatureInfo = React.createClass({
     var _this = this;
     var geoJSONProps = this.props.feature.geojson.features[0].properties;
 
-    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.osm_id, this.state._csrf, function(err){
+    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, function(err){
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -337,7 +337,7 @@ var FeatureInfo = React.createClass({
 
     var gpxLink; 
     if(this.props.layer.data_type === 'polygon'){
-      gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.osm_id + '/feature.gpx';
+      gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.mhid + '/feature.gpx';
     }
     return (
       <div>
@@ -381,9 +381,9 @@ var FeatureInfo = React.createClass({
               <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
                 <ReactDisqusThread
                       shortname="maphubs"
-                      identifier={'maphubs-feature-' + this.props.layer.layer_id + '-' + this.props.feature.osm_id + '-' + featureName}
-                      url={baseUrl + '/feature/' + this.props.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
-                      title={this.props.layer.layer_id + '/' + this.props.feature.osm_id + '/' + featureName}
+                      identifier={'maphubs-feature-' + this.props.layer.layer_id + '-' + this.props.feature.mhid + '-' + featureName}
+                      url={baseUrl + '/feature/' + this.props.layer.layer_id + '/' + this.props.feature.mhid + '/' + featureName}
+                      title={this.props.layer.layer_id + '/' + this.props.feature.mhid + '/' + featureName}
                       />
               </div>
               <div id="notes" className="col s12" style={{position: 'relative', height: 'calc(100% - 48px)'}}>

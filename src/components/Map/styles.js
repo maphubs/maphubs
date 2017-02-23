@@ -228,7 +228,7 @@ module.exports = {
         "id": "omh-hover-point-" + layer_id,
         "type": "circle",
         "source": "omh-" + layer_id,
-        "filter": ["==", "osm_id", ""],
+        "filter": ["==", "mhid", ""],
         "paint": {
           "circle-radius": 15,
           "circle-color": hoverColor,
@@ -272,7 +272,7 @@ module.exports = {
         "id": "omh-hover-line-" + layer_id,
         "type": "line",
         "source": "omh-" + layer_id,
-        "filter": ["==", "osm_id", ""],
+        "filter": ["==", "mhid", ""],
         "paint": {
           "line-color": hoverColor,
           "line-opacity": 0.3,
@@ -369,7 +369,7 @@ module.exports = {
       "id": "omh-hover-polygon-" + layer_id,
       "type": "fill",
       "source": "omh-" + layer_id,
-      "filter": ["==", "osm_id", ""],
+      "filter": ["==", "mhid", ""],
       "paint": {
         "fill-color": hoverColor,
         "fill-outline-color": hoverOutlineColor,

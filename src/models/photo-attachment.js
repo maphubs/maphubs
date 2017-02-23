@@ -17,42 +17,42 @@ module.exports = {
     });
   },
 
-  getPhotoIdsForFeature(layer_id: number, osm_id: string, trx: any=null){
+  getPhotoIdsForFeature(layer_id: number, mhid: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments').select('omh.photo_attachments.photo_id')
     .leftJoin('omh.photo_attachments', 'omh.feature_photo_attachments.photo_id', 'omh.photo_attachments.photo_id')
-    .where({layer_id, osm_id});
+    .where({layer_id, mhid});
   },
 
-  getPhotoAttachmentsForFeature(layer_id: number, osm_id: string, trx: any=null){
+  getPhotoAttachmentsForFeature(layer_id: number, mhid: string, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments').select('omh.photo_attachments.*')
     .leftJoin('omh.photo_attachments', 'omh.feature_photo_attachments.photo_id', 'omh.photo_attachments.photo_id')
-    .where({layer_id, osm_id});
+    .where({layer_id, mhid});
   },
 
-  setPhotoAttachment(layer_id: number, osm_id: string, data: string, info: string, user_id: number, trx: any=null){
+  setPhotoAttachment(layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any=null){
     var _this = this;
-    return this.getPhotoAttachmentsForFeature(layer_id, osm_id, trx)
+    return this.getPhotoAttachmentsForFeature(layer_id, mhid, trx)
     .then(function(results){
       if(results && results.length > 0){
         var commands = [];
         results.forEach(function(result){
-          commands.push(_this.deletePhotoAttachment(layer_id, osm_id, result.photo_id, trx));
+          commands.push(_this.deletePhotoAttachment(layer_id, mhid, result.photo_id, trx));
         });
         return Promise.all(commands)
         .then(function(){
-          return _this.addPhotoAttachment(layer_id, osm_id, data, info, user_id, trx);
+          return _this.addPhotoAttachment(layer_id, mhid, data, info, user_id, trx);
         });
       }else{
-        return _this.addPhotoAttachment(layer_id, osm_id, data, info, user_id, trx);
+        return _this.addPhotoAttachment(layer_id, mhid, data, info, user_id, trx);
       }
     });
   },
 
-  addPhotoAttachment(layer_id: number, osm_id: string, data: string, info: string, user_id: number, trx: any=null){
+  addPhotoAttachment(layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.photo_attachments')
@@ -65,7 +65,7 @@ module.exports = {
     .returning('photo_id')
     .then(function(photo_id){
       photo_id = parseInt(photo_id);
-      return db('omh.feature_photo_attachments').insert({layer_id, osm_id, photo_id})
+      return db('omh.feature_photo_attachments').insert({layer_id, mhid, photo_id})
       .then(function(){
         return photo_id;
       });
@@ -78,11 +78,11 @@ module.exports = {
     return db('omh.photo_attachments').update({data, info}).where({photo_id});
   },
 
-  deletePhotoAttachment(layer_id: number, osm_id: string, photo_id: number, trx: any=null){
+  deletePhotoAttachment(layer_id: number, mhid: string, photo_id: number, trx: any=null){
     let db = knex;
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments')
-    .where({layer_id, osm_id, photo_id}).del()
+    .where({layer_id, mhid, photo_id}).del()
     .then(function(){
       return db('omh.photo_attachments').where({photo_id}).del();
     });
@@ -98,7 +98,7 @@ module.exports = {
        var commands = [];
       featurePhotoAttachments.forEach(function(fpa){
         commands.push(
-        _this.deletePhotoAttachment(layer_id, fpa.osm_id, fpa.photo_id)
+        _this.deletePhotoAttachment(layer_id, fpa.mhid, fpa.photo_id)
       );
       return Promise.all(commands);
       });    

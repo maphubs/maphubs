@@ -1,10 +1,10 @@
 // @flow
 var knex = require('../../connection.js');
-var queryBbox = require('../../services/query-bbox.js');
-var XML = require('../../services/xml.js');
+
+//var XML = require('../../services/xml.js');
 var Map = require('../../models/map');
 var Group = require('../../models/group');
-var BoundingBox = require('../../services/bounding-box.js');
+//var BoundingBox = require('../../services/bounding-box.js');
 var ScreenshotUtil = require('../../services/screenshot-utils');
 var debug = require('../../services/debug')('routes/map');
 var log = require('../../services/log');
@@ -43,7 +43,7 @@ module.exports = function(app: any) {
             }).catch(nextError(next));
     });
     */
-
+    /*
     app.get('/xml/map/:layer_id', privateLayerCheck, function (req, res, next) {
       // parse and validate bbox parameter from query
       // See services/BoundingBox.js.
@@ -69,6 +69,8 @@ module.exports = function(app: any) {
               res.send(xmlDoc.toString());
           }).catch(nextError(next));
     });
+
+    */
 
     app.post('/api/map/create', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {

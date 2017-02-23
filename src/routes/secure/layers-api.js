@@ -8,10 +8,9 @@ var Presets = require('../../services/preset-utils');
 var debug = require('../../services/debug')('routes/layers');
 var layerViews = require('../../services/layer-views');
 var urlUtil = require('../../services/url-util');
-var geojson2osm = require('../../services/geojson_to_macrocosm');
-var Changeset = require('../../services/changeset');
+
 var PhotoAttachment = require('../../models/photo-attachment');
-var Tag = require('../../models/tag');
+//var Tag = require('../../models/tag');
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
@@ -36,7 +35,7 @@ module.exports = function(app: any) {
         return knex.transaction(function(trx) {
           return Layer.getLayerByID(layer_id, trx)
             .then(function(layer){
-              return DataLoadUtils.loadTempDataToOSM(layer_id, user_id, trx)
+              return DataLoadUtils.loadTempData(layer_id, user_id, trx)
               .then(function(){
                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
                 .then(function(){
@@ -306,6 +305,8 @@ app.post('/api/layer/notes/save', csrfProtection, function(req, res) {
   }
 });
 
+//TODO: update to new data management code
+/*
 app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send("Unauthorized, user not logged in");
@@ -365,5 +366,5 @@ app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
     apiDataError(res);
   }
 });
-
+*/
 };

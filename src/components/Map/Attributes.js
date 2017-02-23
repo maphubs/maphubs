@@ -71,7 +71,7 @@ var Attributes = React.createClass({
               {photo}
               {
                 Object.keys(_this.props.attributes).map(function (key) {
-                    if(key !== 'osm_id' || key !== 'layer_id'
+                    if(key !== 'mhid' || key !== 'layer_id'
                     || key !== 'maphubs_host'){
                      var val = _this.props.attributes[key];
                      if(typeof val === 'string' && val.startsWith('http')){

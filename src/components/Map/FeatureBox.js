@@ -142,14 +142,14 @@ var FeatureBox = React.createClass({
         header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Features')}</h6>);
       }
       if(this.props.showButtons){
-        var osm_id = -1;
+        var mhid = -1;
         var layer_id = null;
         var host = null;
         var featureName = 'unknown';
         if(this.state.currentFeatures.length > 0){
           var currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
           if(currentFeature && currentFeature.properties){
-            osm_id = currentFeature.properties.osm_id;
+            mhid = currentFeature.properties.mhid;
             layer_id = currentFeature.properties.layer_id;
             host = currentFeature.properties.maphubs_host;
             var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
@@ -173,9 +173,9 @@ var FeatureBox = React.createClass({
 
         var featureLink;
         if(host === window.location.hostname || host === 'dev.docker'){
-          featureLink = '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
+          featureLink = '/feature/' + layer_id + '/' + mhid + '/' + featureName;
         }else{
-          featureLink = 'https://' + host + '/feature/' + layer_id + '/' + osm_id + '/' + featureName;
+          featureLink = 'https://' + host + '/feature/' + layer_id + '/' + mhid + '/' + featureName;
         }
       infoPanel = (<div className="row" style={{marginTop: '10px', marginBottom: '10px'}}>
         <div className="col s10 center">

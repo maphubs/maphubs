@@ -4,8 +4,8 @@ var GJV = require("geojson-validation");
 var log = require('./log');
 var local = require('../local');
 var debug = require('./debug')('data-load-utils');
-var geojson2osm = require('./geojson_to_macrocosm');
-var Changeset = require('./changeset');
+//var geojson2osm = require('./geojson_to_macrocosm');
+//var Changeset = require('./changeset');
 var fs = require('fs');
 //var XML = require('./xml');
 var LayerViews = require('./layer-views');
@@ -14,10 +14,10 @@ var sizeof = require('object-sizeof');
 var styles = require('../components/Map/styles');
 //var fileEncodingUtils = require('./file-encoding-utils');
 var ogr2ogr = require('ogr2ogr');
-var dbgeo = require('dbgeo');
+//var dbgeo = require('dbgeo');
 
 const LARGE_DATA_THRESHOLD = 20000000;
-const FEATURE_CHUNK_SIZE = 1000; 
+//const FEATURE_CHUNK_SIZE = 1000; 
 
 module.exports = {
 
@@ -115,7 +115,7 @@ module.exports = {
       }
       var cleanedFeatures = [];
       //loop through features
-      geoJSON.features.forEach(function(feature){
+      geoJSON.features.map(function(feature, i){
         //confirm feature is expected type/SRID
         if(feature.crs && feature.crs.properties && feature.crs.properties.name){
           let featureSRID = feature.crs.properties.name.split(':')[1];
@@ -132,10 +132,6 @@ module.exports = {
           
           key = key.replace("-", "_");
           key = key.replace("'", "''");
-          //rename osm_id so it doesn't conflict
-          key = key.replace(/^osm_id$/, "osm_id_orig");
-          key = key.replace(/^area_import$/, "area_import2");
-          key = key.replace(/^area$/, "area_import");
           
           if(!uniqueProps.includes(key)){
             uniqueProps.push(key);
@@ -159,7 +155,11 @@ module.exports = {
           cleanedFeatureProps[key] = val;
         });
 
-        feature.properties = cleanedFeatureProps;
+        let mhid = `${layer_id}:${i+1}`;
+        feature.properties = {
+          mhid,
+          tags: JSON.stringify(cleanedFeatureProps)
+        };
 
         if(GJV.isFeature(feature) && feature.geometry){
           cleanedFeatures.push(feature);
@@ -298,6 +298,33 @@ module.exports = {
   },
   */
 
+  loadTempData(layer_id: number, uid: number, trx: any){
+
+    return trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
+      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
+      .then(function(){
+        return trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
+        .then(function(){
+          return trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
+            ON layers.data_${layer_id}
+            USING gist
+            (wkb_geometry);`)
+          .then(function(){
+            return trx.raw(`DROP TABLE layers.temp_${layer_id};`)
+            .then(function(){
+              return trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
+              .then(function(result){
+                var maxVal = parseInt(result.rows[0].cnt) + 1;
+                debug('creating sequence starting at: ' + maxVal);
+                return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`);
+                //then update tag search index
+              });       
+            });       
+          });
+        });
+      });
+  }
+/*
   loadTempDataToOSM(layer_id: number, uid: number, trx: any){
     //get GeoJSON from temp table
     debug('loading temp data to OSM');
@@ -400,4 +427,5 @@ module.exports = {
         throw err;
       });
   }
+  */
 };

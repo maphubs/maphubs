@@ -12,9 +12,9 @@ var MapInteractionMixin = {
     var _this = this;
     if(this.state.glStyle){
       this.state.glStyle.layers.forEach(function(layer){
-        var filter = ['in', "osm_id"];
+        var filter = ['in', "mhid"];
         features.forEach(function(feature){
-          filter.push(feature.properties.osm_id);
+          filter.push(feature.properties.mhid);
         });
         if(layer.id.startsWith('omh-hover-point')){
           _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
@@ -32,7 +32,7 @@ var MapInteractionMixin = {
     if(this.state.glStyle){
       this.state.glStyle.layers.forEach(function(layer){
         if(layer.id.startsWith('omh-hover')){
-          _this.map.setFilter(layer.id,  ["==", "osm_id", ""]);
+          _this.map.setFilter(layer.id,  ["==", "mhid", ""]);
         }
       });
     }

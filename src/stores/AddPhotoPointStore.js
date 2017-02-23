@@ -18,7 +18,7 @@ module.exports = Reflux.createStore({
       imageInfo: null,
       geoJSON: null,
       submitted: false,
-      osm_id: null
+      mhid: null
     };
   },
 
@@ -128,7 +128,7 @@ module.exports = Reflux.createStore({
     .end(function(err, res){
        checkClientError(res, err, cb, function(cb){
           _this.setState({
-            osm_id: res.body.osm_id,
+            mhid: res.body.mhid,
             image_id: res.body.image_id,
             image_url: res.body.image_url,
             submitted: true

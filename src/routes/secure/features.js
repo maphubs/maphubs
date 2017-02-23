@@ -3,7 +3,7 @@ var Feature = require('../../models/feature');
 var Layer = require('../../models/layer');
 var PhotoAttachment = require('../../models/photo-attachment');
 var knex = require('../../connection.js');
-var Tag = require('../../models/tag');
+//var Tag = require('../../models/tag');
 var urlUtil = require('../../services/url-util');
 var imageUtils = require('../../services/image-utils');
 var Promise = require('bluebird');
@@ -21,9 +21,9 @@ var privateLayerCheck = require('../../services/private-layer-check');
 
 module.exports = function(app: any) {
 
-  app.get('/feature/:layer_id/:osm_id/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
+  app.get('/feature/:layer_id/:mhid/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
 
-    var osm_id = req.params.osm_id;
+    var mhid = req.params.mhid;
     var layer_id = parseInt(req.params.layer_id || '', 10);
 
     var user_id: number = -1;
@@ -31,13 +31,13 @@ module.exports = function(app: any) {
       user_id = req.session.user.id;
     }
 
-    if(osm_id && layer_id){
+    if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
         .then(function(layer){
 
       return Promise.all([
-        Feature.getFeatureByID(osm_id, layer),
-        PhotoAttachment.getPhotoIdsForFeature(layer_id, osm_id),
+        Feature.getFeatureByID(mhid, layer),
+        PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid),
       ])
       .then(function(results){
         var feature = results[0].feature;
@@ -58,11 +58,11 @@ module.exports = function(app: any) {
             featureName = geoJSONProps.name;
           }
           geoJSONProps.layer_id = layer_id;
-          geoJSONProps.osm_id = osm_id;
+          geoJSONProps.mhid = mhid;
         }
         feature.layer_id = layer_id;
 
-        feature.osm_id = osm_id;
+        feature.mhid = mhid;
 
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -102,15 +102,15 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/api/feature/gpx/:layer_id/:osm_id/*', privateLayerCheck.middleware, function(req, res, next) {
+  app.get('/api/feature/gpx/:layer_id/:mhid/*', privateLayerCheck.middleware, function(req, res, next) {
 
-    var osm_id = req.params.osm_id;
+    var mhid = req.params.mhid;
     var layer_id = parseInt(req.params.layer_id || '', 10);
 
-    if(osm_id && layer_id){
+    if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
         .then(function(layer){
-          return Feature.getFeatureByID(osm_id, layer)
+          return Feature.getFeatureByID(mhid, layer)
           .then(function(result){
             var feature = result.feature;
             var geoJSON = feature.geojson;
@@ -158,7 +158,6 @@ module.exports = function(app: any) {
     }
   });
 
-  //TODO: [Privacy]
   app.get('/feature/photo/:photo_id.jpg', function(req, res) {
     var photo_id = req.params.photo_id;
     var user_id = -1;
@@ -190,11 +189,11 @@ module.exports = function(app: any) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.layer_id && data.osm_id && data.notes) {
+    if (data && data.layer_id && data.mhid && data.notes) {
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Feature.saveFeatureNote(data.osm_id, data.layer_id, user_id, data.notes)
+          Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes)
             .then(function() {
               res.send({success: true});
             }).catch(apiError(res, 500));
@@ -207,6 +206,7 @@ module.exports = function(app: any) {
     }
   });
 
+/*
   app.post('/api/feature/photo/add', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -214,14 +214,14 @@ module.exports = function(app: any) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.layer_id && data.osm_id && data.image && data.info) {
-      var raw_osm_id = data.osm_id.substring(1);
+    if (data && data.layer_id && data.mhid && data.image && data.info) {
+      var raw_mhid = data.mhid.substring(1);
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
           return knex.transaction(function(trx) {
             //set will replace existing photo
-          return PhotoAttachment.setPhotoAttachment(data.layer_id, data.osm_id, data.image, data.info, user_id, trx)
+          return PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, user_id, trx)
             .then(function(photo_id) {
               return Layer.getLayerByID(data.layer_id, trx)
               .then(function(layer){
@@ -229,20 +229,20 @@ module.exports = function(app: any) {
                 var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                 //add a tag to the feature
                 var command = new Promise(function(cb){cb();});
-                if(data.osm_id.startsWith('n')){
+                if(data.mhid.startsWith('n')){
                   debug('set node tag');
-                  command = Tag.setNodeTag(raw_osm_id, 'photo_url', photo_url, trx);
-                }else if(data.osm_id.startsWith('w')){
+                  command = Tag.setNodeTag(raw_mhid, 'photo_url', photo_url, trx);
+                }else if(data.mhid.startsWith('w')){
                   debug('set way tag');
-                  command = Tag.setWayTag(raw_osm_id, 'photo_url', photo_url, trx);
-                }else if(data.osm_id.startsWith('p')){
+                  command = Tag.setWayTag(raw_mhid, 'photo_url', photo_url, trx);
+                }else if(data.mhid.startsWith('p')){
                   debug('set polygon tag');
-                  command = Tag.setPolygonTag(data.layer_id, raw_osm_id, 'photo_url', photo_url, trx);
-                }else if(data.osm_id.startsWith('m')){
+                  command = Tag.setPolygonTag(data.layer_id, raw_mhid, 'photo_url', photo_url, trx);
+                }else if(data.mhid.startsWith('m')){
                   debug('set multipolygon tag');
-                  command = Tag.setMultiPolygonTag(data.layer_id, raw_osm_id, 'photo_url', photo_url, trx);
+                  command = Tag.setMultiPolygonTag(data.layer_id, raw_mhid, 'photo_url', photo_url, trx);
                 }else{
-                  throw new Error('old osm_id found: ' + data.osm_id);
+                  throw new Error('old mhid found: ' + data.mhid);
                 }
 
                 return command.then(function(){
@@ -271,6 +271,7 @@ module.exports = function(app: any) {
       apiDataError(res);
     }
   });
+ 
 
   app.post('/api/feature/photo/delete', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -279,29 +280,29 @@ module.exports = function(app: any) {
     }
     var user_id = req.session.user.id;
     var data = req.body;
-    if (data && data.layer_id && data.osm_id && data.photo_id) {
-      var raw_osm_id = data.osm_id.substring(1); //without the type prefix
+    if (data && data.layer_id && data.mhid && data.photo_id) {
+      var raw_mhid = data.mhid.substring(1); //without the type prefix
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
           return knex.transaction(function(trx) {
             //set will replace existing photo
-          return PhotoAttachment.deletePhotoAttachment(data.layer_id, data.osm_id, data.photo_id, trx)
+          return PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, data.photo_id, trx)
             .then(function() {
               return Layer.getLayerByID(data.layer_id, trx)
               .then(function(layer){
                 //remove tag from feature
                 var command;
-                if(data.osm_id.startsWith('n')){
-                  command = Tag.removeNodeTag(raw_osm_id, 'photo_url', trx);
-                }else if(data.osm_id.startsWith('w')){
-                  command = Tag.removeWayTag(raw_osm_id, 'photo_url', trx);
-                }else if(data.osm_id.startsWith('p')){
-                  command = Tag.removePolygonTag(data.layer_id, raw_osm_id, 'photo_url', trx);
-                }else if(data.osm_id.startsWith('m')){
-                  command = Tag.removeMultiPolygonTag(data.layer_id, raw_osm_id, 'photo_url', trx);
+                if(data.mhid.startsWith('n')){
+                  command = Tag.removeNodeTag(raw_mhid, 'photo_url', trx);
+                }else if(data.mhid.startsWith('w')){
+                  command = Tag.removeWayTag(raw_mhid, 'photo_url', trx);
+                }else if(data.mhid.startsWith('p')){
+                  command = Tag.removePolygonTag(data.layer_id, raw_mhid, 'photo_url', trx);
+                }else if(data.mhid.startsWith('m')){
+                  command = Tag.removeMultiPolygonTag(data.layer_id, raw_mhid, 'photo_url', trx);
                 }else{
-                  throw new Error('old osm_id found: ' + data.osm_id);
+                  throw new Error('old mhid found: ' + data.mhid);
                 }
 
                 return command.then(function(){
@@ -324,4 +325,5 @@ module.exports = function(app: any) {
       apiDataError(res);
     }
   });
+   */
 };
