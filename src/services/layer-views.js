@@ -52,15 +52,15 @@ module.exports = {
       
       `CREATE OR REPLACE VIEW layers.data_full_` + layer_id + ` AS
       SELECT
-      mhid, ${layer_id}::integer as layer_id, wkb_geometry as geom,`
+      mhid, ${layer_id}::integer as layer_id, ST_Transform(wkb_geometry, 900913)::geometry(Geometry, 900913) as geom,`
       + tagColumns +
       ` tags FROM layers.data_${layer_id}
       ;`,
 
       `CREATE OR REPLACE VIEW layers.centroids_${layer_id} AS
       SELECT
-      st_centroid(wkb_geometry) as centroid, * 
-      FROM layers.data_${layer_id};`
+      st_centroid(geom)::geometry(Point,900913) as centroid, * 
+      FROM layers.data_full_${layer_id};`
 
     ];
 
