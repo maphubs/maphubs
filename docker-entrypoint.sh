@@ -43,6 +43,7 @@ cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
 mkdir -p /app/css
 
 #work-around old babel config included in dnd-core
+touch ./node_modules/dnd-core/.babelrc
 rm ./node_modules/dnd-core/.babelrc
 
 #run any pending database migrations

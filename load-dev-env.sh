@@ -51,4 +51,5 @@ EOF
 cp ./src/sass/${OMH_THEME}.scss ./src/theme.scss
 
 #work-around old babel config included in dnd-core
+touch ./node_modules/dnd-core/.babelrc
 rm ./node_modules/dnd-core/.babelrc
