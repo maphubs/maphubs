@@ -24,7 +24,8 @@ module.exports = Reflux.createStore({
       position: null,
       isPrivate: false,
       owned_by_group_id: null,
-      basemap: 'default'
+      basemap: 'default',
+      editingLayer: false
     };
   },
 
@@ -224,6 +225,14 @@ module.exports = Reflux.createStore({
      });
 
      return mapStyle;
+   },
+
+   startEditing(){
+    this.setState({editingLayer: true});
+   },
+
+   stopEditing(){
+    this.setState({editingLayer: false});
    },
 
    deleteMap(map_id, _csrf, cb){

@@ -1,7 +1,7 @@
 // @flow
 var knex = require('../connection.js');
 var Promise = require('bluebird');
-var dbgeo = require('dbgeo');
+//var dbgeo = require('dbgeo');
 var log = require('../services/log.js');
 //var debug = require('../services/debug')('model/features');
 var geojsonUtils = require('../services/geojson-utils');
@@ -61,35 +61,31 @@ module.exports = {
 
     getGeoJSON(mhid: string, layer_id: number) {
 
-      var layerTable = 'layers.data_' + layer_id;       
-      return Promise.all([
-        knex.raw(
+      var layerTable = 'layers.data_' + layer_id;  
+      return knex.raw(
           `select mhid,
           ST_AsGeoJSON(wkb_geometry) as geom, tags
-          from ${layerTable} where mhid='${mhid}'`),
-        knex.raw(`select 
-        '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
-        from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)
-      ])
-      .then(function(results) {
-        var data = results[0];
-        var bbox = results[1];
-        return new Promise(function(fulfill, reject) {
-          dbgeo.parse(data.rows,{
-            "outputFormat": "geojson",
-            "geometryColumn": "geom",
-            "geometryType": "geojson"
-          }, function(error, result) {
-            if (error) {
-              log.error(error);
-              reject(error);
-            }
-            //convert tags to properties
-            result.features = geojsonUtils.convertTagsToProps(result.features);
-            result.bbox = JSON.parse(bbox.rows[0].bbox);
-            fulfill(result);
+          from ${layerTable} where mhid='${mhid}'`)
+          .then(function(data){
+            return  knex.raw(`select 
+            '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
+            from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)             
+            .then(function(bbox) {
+
+            var feature = {
+              type: 'Feature',
+              geometry: JSON.parse(data.rows[0].geom),
+              properties: data.rows[0].tags
+            };
+
+            feature.properties.mhid = mhid;
+
+            return {
+              type: "FeatureCollection",
+              features: [feature],
+              bbox: JSON.parse(bbox.rows[0].bbox)
+            };
           });
-        });
       });
     }
 

@@ -20,7 +20,9 @@ var actions = Reflux.createActions({
   'createMap': {},
   'toggleVisibility': {},
   'reset': {},
-  'deleteMap': {}
+  'deleteMap': {},
+  'startEditing': {},
+  'stopEditing': {}
 });
 
 module.exports = actions;

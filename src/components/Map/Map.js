@@ -11,6 +11,7 @@ var BaseMapActions = require('../../actions/map/BaseMapActions');
 var BaseMapStore = require('../../stores/map/BaseMapStore'); 
 var urlUtil = require('../../services/url-util');
 var LocaleStore = require('../../stores/LocaleStore');
+var DataEditorStore = require('../../stores/DataEditorStore');
 var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
 var MapToolButton = require('./MapToolButton');
@@ -21,6 +22,7 @@ var MapInteractionMixin = require('./MapInteractionMixin');
 var MeasurementToolMixin = require('./MeasurementToolMixin');
 var ForestAlertMixin = require('./ForestAlertMixin');
 var MapGeoJSONMixin = require('./MapGeoJSONMixin');
+var DataEditorMixin = require('./DataEditorMixin');
 var LayerSources = require('./Sources');
 var MarkerSprites = require('./MarkerSprites');
 
@@ -32,7 +34,8 @@ if (typeof window !== 'undefined') {
 var Map = React.createClass({
 
   mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, 
-            MeasurementToolMixin, ForestAlertMixin,
+            MeasurementToolMixin, ForestAlertMixin, DataEditorMixin,
+            StateMixin.connect(DataEditorStore),
             StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}),          
             StateMixin.connect(LocaleStore)],
 
@@ -225,7 +228,11 @@ var Map = React.createClass({
     this.removeAllSources(prevStyle);
     if(baseMap){
       debug('(' + _this.state.id + ') ' +'reload: base map');
-      this.map.setStyle(baseMap);
+      this.map.setStyle(baseMap, {diff: false}); 
+      //TODO: find a way to do this without forcing a full reload
+      //the problem is we currently rely on style.load to finish loading the map...
+      //revist after custom sources are ready
+      
       //map data is loaded when style.load handler is called
     }else {
       this.addMapData(this.map, newStyle, this.props.data, function(){

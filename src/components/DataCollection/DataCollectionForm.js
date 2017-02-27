@@ -18,13 +18,21 @@ var DataCollectionForm = React.createClass({
 
 
   propTypes: {
-		presets: React.PropTypes.object.isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
+		presets: React.PropTypes.array.isRequired,
+    values: React.PropTypes.object,
+    showSubmit: React.PropTypes.bool,
+    onSubmit: React.PropTypes.func,
     onValid: React.PropTypes.func,
     onInValid: React.PropTypes.func,
+    onChange:  React.PropTypes.func,
     submitText: React.PropTypes.string
   },
 
+  getDefaultProps(){
+    return {
+      showSubmit: true
+    };
+  },
 
   getInitialState(){
     var submitText = '';
@@ -56,21 +64,38 @@ var DataCollectionForm = React.createClass({
     if(this.props.onValid) this.props.onInValid();
   },
 
+  onChange(model){
+    if(this.props.onChange) this.props.onChange(model);
+  },
+
   render() {
+    var _this = this;
+
+    var submit = '';
+    if(this.props.showSubmit){
+      submit = (
+        <div className="right">
+          <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.state.submitText}</button>
+        </div>
+      );
+    }
+
     return (
-      <Formsy.Form onValidSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInValid}>
+      <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onChange} onValid={this.onValid} onInvalid={this.onInValid}>
         {
           this.props.presets.map(function(preset){
+            var value;
+            if(_this.props.values && _this.props.values[preset.tag]){
+              value = _this.props.values[preset.tag];
+            }
             if(preset.tag != 'photo_url'){
               return (
-                <FormField preset={preset} />
+                <FormField key={preset.tag} preset={preset} value={value} />
               );
             }
           })        
         }
-        <div className="right">
-          <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.state.submitText}</button>
-        </div>
+        {submit}
       </Formsy.Form>
     );
   }

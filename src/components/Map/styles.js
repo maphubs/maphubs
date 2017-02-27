@@ -214,6 +214,7 @@ module.exports = {
         "id": "omh-data-point-" + layer_id,
         "type": "circle",
         "metadata":{
+          "maphubs:layer_id": layer_id,
           "maphubs:interactive": interactive,
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
@@ -227,6 +228,9 @@ module.exports = {
       {
         "id": "omh-hover-point-" + layer_id,
         "type": "circle",
+        "metadata":{
+          "maphubs:layer_id": layer_id
+        },
         "source": "omh-" + layer_id,
         "filter": ["==", "mhid", ""],
         "paint": {
@@ -257,6 +261,7 @@ module.exports = {
         "id": "omh-data-line-" + layer_id,
         "type": "line",
         "metadata":{
+          "maphubs:layer_id": layer_id,
           "maphubs:interactive": interactive,
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
@@ -271,6 +276,9 @@ module.exports = {
       {
         "id": "omh-hover-line-" + layer_id,
         "type": "line",
+        "metadata":{
+          "maphubs:layer_id": layer_id
+        },
         "source": "omh-" + layer_id,
         "filter": ["==", "mhid", ""],
         "paint": {
@@ -301,6 +309,7 @@ module.exports = {
         "id": "omh-data-polygon-" + layer_id,
         "type": "fill",
         "metadata":{
+          "maphubs:layer_id": layer_id,
           "maphubs:interactive": interactive,
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
@@ -314,6 +323,9 @@ module.exports = {
       }, {
         "id": "omh-data-doublestroke-polygon-" + layer_id,
         "type": "line",
+        "metadata":{
+          "maphubs:layer_id": layer_id
+        },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "Polygon"],
         "paint": {
@@ -345,6 +357,9 @@ module.exports = {
       }, {
         "id": "omh-data-outline-polygon-" + layer_id,
         "type": "line",
+        "metadata":{
+          "maphubs:layer_id": layer_id
+        },
         "source": "omh-" + layer_id,
         "filter": ["in", "$type", "Polygon"],
         "paint": {
@@ -368,6 +383,9 @@ module.exports = {
       {
       "id": "omh-hover-polygon-" + layer_id,
       "type": "fill",
+      "metadata":{
+          "maphubs:layer_id": layer_id
+        },
       "source": "omh-" + layer_id,
       "filter": ["==", "mhid", ""],
       "paint": {

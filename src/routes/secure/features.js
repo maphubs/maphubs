@@ -1,6 +1,7 @@
 // @flow
 var Feature = require('../../models/feature');
 var Layer = require('../../models/layer');
+var LayerData = require('../../models/layer-data');
 var PhotoAttachment = require('../../models/photo-attachment');
 var knex = require('../../connection.js');
 //var Tag = require('../../models/tag');
@@ -21,10 +22,12 @@ var privateLayerCheck = require('../../services/private-layer-check');
 
 module.exports = function(app: any) {
 
-  app.get('/feature/:layer_id/:mhid/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
+  app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
 
-    var mhid = req.params.mhid;
+    var id = req.params.id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
+
+    var mhid = `${layer_id}:${id}`;
 
     var user_id: number = -1;
     if(req.session.user){
@@ -102,10 +105,41 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/api/feature/gpx/:layer_id/:mhid/*', privateLayerCheck.middleware, function(req, res, next) {
+  app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, function(req, res) {
 
-    var mhid = req.params.mhid;
+    var id = req.params.id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
+
+    var mhid = `${layer_id}:${id}`;
+
+    if(mhid && layer_id){
+       Feature.getGeoJSON(mhid, layer_id)
+      .then(function(geoJSON){
+        var resultStr = JSON.stringify(geoJSON);
+        var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+        var match = req.get('If-None-Match');
+        if(hash == match){
+          res.status(304).send();
+        }else{
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'ETag': hash
+          });
+          res.end(resultStr);
+        }
+        return;
+      }).catch(apiError(res, 500));
+    }else{
+      apiDataError(res);
+    }
+  });
+
+  app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, function(req, res, next) {
+
+    var id = req.params.id;
+    var layer_id = parseInt(req.params.layer_id || '', 10);
+
+    var mhid = `${layer_id}:${id}`;
 
     if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
@@ -206,7 +240,7 @@ module.exports = function(app: any) {
     }
   });
 
-/*
+
   app.post('/api/feature/photo/add', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -215,7 +249,6 @@ module.exports = function(app: any) {
     var user_id = req.session.user.id;
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.image && data.info) {
-      var raw_mhid = data.mhid.substring(1);
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
@@ -228,24 +261,8 @@ module.exports = function(app: any) {
                 var baseUrl = urlUtil.getBaseUrl();
                 var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                 //add a tag to the feature
-                var command = new Promise(function(cb){cb();});
-                if(data.mhid.startsWith('n')){
-                  debug('set node tag');
-                  command = Tag.setNodeTag(raw_mhid, 'photo_url', photo_url, trx);
-                }else if(data.mhid.startsWith('w')){
-                  debug('set way tag');
-                  command = Tag.setWayTag(raw_mhid, 'photo_url', photo_url, trx);
-                }else if(data.mhid.startsWith('p')){
-                  debug('set polygon tag');
-                  command = Tag.setPolygonTag(data.layer_id, raw_mhid, 'photo_url', photo_url, trx);
-                }else if(data.mhid.startsWith('m')){
-                  debug('set multipolygon tag');
-                  command = Tag.setMultiPolygonTag(data.layer_id, raw_mhid, 'photo_url', photo_url, trx);
-                }else{
-                  throw new Error('old mhid found: ' + data.mhid);
-                }
-
-                return command.then(function(){
+                return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
+                .then(function(){
                   debug('addPhotoUrlPreset');
                   return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
                   .then(function(presets){
@@ -271,7 +288,6 @@ module.exports = function(app: any) {
       apiDataError(res);
     }
   });
- 
 
   app.post('/api/feature/photo/delete', csrfProtection, function(req, res) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -281,7 +297,7 @@ module.exports = function(app: any) {
     var user_id = req.session.user.id;
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.photo_id) {
-      var raw_mhid = data.mhid.substring(1); //without the type prefix
+      
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
@@ -291,21 +307,9 @@ module.exports = function(app: any) {
             .then(function() {
               return Layer.getLayerByID(data.layer_id, trx)
               .then(function(layer){
-                //remove tag from feature
-                var command;
-                if(data.mhid.startsWith('n')){
-                  command = Tag.removeNodeTag(raw_mhid, 'photo_url', trx);
-                }else if(data.mhid.startsWith('w')){
-                  command = Tag.removeWayTag(raw_mhid, 'photo_url', trx);
-                }else if(data.mhid.startsWith('p')){
-                  command = Tag.removePolygonTag(data.layer_id, raw_mhid, 'photo_url', trx);
-                }else if(data.mhid.startsWith('m')){
-                  command = Tag.removeMultiPolygonTag(data.layer_id, raw_mhid, 'photo_url', trx);
-                }else{
-                  throw new Error('old mhid found: ' + data.mhid);
-                }
-
-                return command.then(function(){
+                //remove the photo URL from feature
+                return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx)
+                .then(function(){
                   return layerViews.replaceViews(data.layer_id, layer.presets, trx)
                   .then(function(){
                     return Layer.setUpdated(data.layer_id, user_id, trx)
@@ -325,5 +329,5 @@ module.exports = function(app: any) {
       apiDataError(res);
     }
   });
-   */
+   
 };

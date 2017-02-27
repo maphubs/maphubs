@@ -31,9 +31,11 @@ var LayerListItem = React.createClass({
     showVisibility: React.PropTypes.bool,
     showRemove: React.PropTypes.bool,
     showDesign: React.PropTypes.bool,
+    showEdit: React.PropTypes.bool,
     toggleVisibility: React.PropTypes.func,
     removeFromMap: React.PropTypes.func,
     showLayerDesigner: React.PropTypes.func,
+    editLayer: React.PropTypes.func,
     isDragging: React.PropTypes.bool.isRequired,
     connectDragSource: React.PropTypes.func.isRequired,
     connectDropTarget: React.PropTypes.func.isRequired,
@@ -91,17 +93,20 @@ var LayerListItem = React.createClass({
     var buttonCount = 1;
     if(this.props.showRemove) buttonCount++;
     if(this.props.showDesign) buttonCount++;
+     if(this.props.showEdit) buttonCount++;
     var buttonClass = '';
     if(buttonCount === 1){
       buttonClass = 'col s12 no-padding';
     }else if(buttonCount === 2){
       buttonClass = 'col s6 no-padding';
+    }else if(buttonCount === 3){
+      buttonClass = 'col s4 no-padding';
     }else{
-       buttonClass = 'col s4 no-padding';
+       buttonClass = 'col s3 no-padding';
     }
 
 
-    var removeButton = '', designButton = '', visibilityToggle = '';
+    var removeButton = '', designButton = '', editButton = '', visibilityToggle = '';
     if(this.props.showRemove){
       removeButton = (
         <div className={buttonClass} style={{height: '30px'}}>
@@ -124,9 +129,20 @@ var LayerListItem = React.createClass({
         </div>  
       );
     }
+    if(this.props.showEdit){
+      editButton = (
+        <div className={buttonClass} style={{height: '30px'}}>
+          <a onClick={function(){_this.props.editLayer(layer); _this.resetTooltips();}}
+            className="layer-item-btn map-layer-tooltipped"
+            data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Data')}>
+            <i className="material-icons omh-accent-text" 
+            style={{height: 'inherit', lineHeight: 'inherit'}}>edit</i></a>
+        </div>  
+      );
+    }
     if(this.props.showVisibility){
       visibilityToggle = (
-        <div className="col s6 no-padding" style={{marginTop: '2px'}}>
+        <div className="col s5 no-padding" style={{marginTop: '2px'}}>
           <Formsy.Form>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
             labelOff="" labelOn="" checked={layer.active}
@@ -163,7 +179,7 @@ var LayerListItem = React.createClass({
           paddingLeft: '0px', 
           paddingRight: '0px'
           }}>
-          <div className="col s6 no-padding">
+          <div className="col s7 no-padding">
            <div className={buttonClass} style={{height: '30px'}}>
               <a href={'/lyr/'+ layer.layer_id} target="_blank"
                 className="layer-item-btn map-layer-tooltipped"
@@ -174,7 +190,7 @@ var LayerListItem = React.createClass({
             </div>
             {removeButton}
             {designButton}
-            
+            {editButton}
             </div>
             {visibilityToggle}
           </div>
@@ -186,7 +202,7 @@ var LayerListItem = React.createClass({
               width: '8px',
               height: '50px',
               position: 'absolute',
-              right: 2,
+              right: 0,
               top: 0,
               bottom: 0,
               margin: 'auto'

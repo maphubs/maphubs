@@ -86,10 +86,16 @@ var MapInteractionMixin = {
             [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
           ], {layers: _this.state.interactiveLayers});
 
-        if (features.length) {
+        if (features.length) {          
           if(_this.state.selected){
             _this.clearSelection();
           }
+
+          if(_this.state.editing){
+            _this.editFeature(features[0]);
+            return;
+          }
+
           _this.setSelectionFilter([features[0]]);
           _this.setState({selectedFeatures:[features[0]], selected:true});
           map.addClass('selected');
@@ -136,7 +142,7 @@ var MapInteractionMixin = {
           ],
         {layers: _this.state.interactiveLayers});
 
-        if (features.length) {
+        if (features && features.length) {
           if(_this.state.selected){
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
           } else if(_this.props.hoverInteraction){

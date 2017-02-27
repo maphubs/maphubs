@@ -1,10 +1,10 @@
 // @flow
 var knex = require('../../connection.js');
 var Layer = require('../../models/layer');
+var LayerData = require('../../models/layer-data');
 var Group = require('../../models/group');
 //var log = require('../../services/log');
 var DataLoadUtils = require('../../services/data-load-utils');
-var Presets = require('../../services/preset-utils');
 var debug = require('../../services/debug')('routes/layers');
 var layerViews = require('../../services/layer-views');
 var urlUtil = require('../../services/url-util');
@@ -305,8 +305,7 @@ app.post('/api/layer/notes/save', csrfProtection, function(req, res) {
   }
 });
 
-//TODO: update to new data management code
-/*
+
 app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send("Unauthorized, user not logged in");
@@ -319,43 +318,29 @@ app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
     .then(function(allowed){
       if(allowed){
         return knex.transaction(function(trx) {
-          return Changeset.createChangeset(user_id, trx)
-          .then(function(changeSetResult){
-            var changeset_id = changeSetResult[0];
-            debug('created changeset: ' + changeset_id);
-
-            let osmJSON = geojson2osm(data.geoJSON, changeset_id, true, 0, 1);
-
-            return Changeset.processChangeset(changeset_id, user_id, data.layer_id, osmJSON, trx)
-            .then(function(processChangeSetResult){
-              return Changeset.closeChangeset(changeset_id, trx)
-              .then(function(){
-                //get the osm_id for the feature
-                debug(processChangeSetResult);
-                var raw_osm_id = processChangeSetResult.created.node['-1'];
-                var osm_id = 'n' + raw_osm_id;
-                debug('osm_id:' + osm_id);
-                return PhotoAttachment.setPhotoAttachment(data.layer_id, osm_id, data.image, data.imageInfo, user_id, trx)
-                  .then(function(photo_id) {
-                    return Layer.getLayerByID(data.layer_id, trx)
-                    .then(function(layer){
-                      var baseUrl = urlUtil.getBaseUrl();
-                      var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
-                      //add a tag to the feature
-                      return Tag.setNodeTag(raw_osm_id, 'photo_url', photo_url, trx)
-                      .then(function(){
-                        return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                        .then(function(presets){
-                            return layerViews.replaceViews(data.layer_id, presets, trx)
-                          .then(function(){
-                            res.send({success: true, photo_id, photo_url, osm_id});
-                          });
+          return LayerData.createFeature(data.layer_id, data.geoJSON, trx)
+          .then(function(mhid: string){
+              //get the mhid for the new feature
+              debug('new mhid: ' + mhid);
+              return PhotoAttachment.setPhotoAttachment(data.layer_id, mhid, data.image, data.imageInfo, user_id, trx)
+                .then(function(photo_id) {
+                  return Layer.getLayerByID(data.layer_id, trx)
+                  .then(function(layer){
+                    var baseUrl = urlUtil.getBaseUrl();
+                    var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
+                    //add a tag to the feature
+                    return LayerData.setStringTag(layer.layer_id, mhid, 'photo_url', photo_url, trx)                                   
+                    .then(function(){
+                      return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
+                      .then(function(presets){
+                          return layerViews.replaceViews(data.layer_id, presets, trx)
+                        .then(function(){
+                          res.send({success: true, photo_id, photo_url, mhid});
                         });
                       });
                     });
                   });
                 });
-              });
             });
         }).catch(apiError(res, 500));
       }else {
@@ -366,5 +351,5 @@ app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
     apiDataError(res);
   }
 });
-*/
+
 };

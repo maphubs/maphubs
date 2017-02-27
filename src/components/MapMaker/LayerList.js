@@ -15,11 +15,13 @@ var LayerList = React.createClass({
     showVisibility: React.PropTypes.bool,
     showDesign: React.PropTypes.bool,
     showRemove: React.PropTypes.bool,
+    showEdit: React.PropTypes.bool,
     showChangeDesign: React.PropTypes.bool,
     toggleVisibility: React.PropTypes.func,
     removeFromMap: React.PropTypes.func,
     showLayerDesigner: React.PropTypes.func,
-    updateLayers: React.PropTypes.func.isRequired
+    updateLayers: React.PropTypes.func.isRequired,
+    editLayer: React.PropTypes.func
   },
 
   getDefaultProps() {
@@ -70,9 +72,11 @@ var LayerList = React.createClass({
                       showVisibility={_this.props.showVisibility}
                       showRemove={_this.props.showRemove}
                       showDesign={_this.props.showDesign}
+                      showEdit={_this.props.showEdit}
                       moveItem={_this.moveLayer}
                       removeFromMap={_this.props.removeFromMap}
                       showLayerDesigner={_this.props.showLayerDesigner}
+                      editLayer={_this.props.editLayer}
                     />
                   </li>
                 );

@@ -12,7 +12,8 @@ var MapToolButton = React.createClass({
     tooltipText: React.PropTypes.string,
     color: React.PropTypes.string,
     onClick: React.PropTypes.func.isRequired,
-    show: React.PropTypes.bool
+    show: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
 
   },
 
@@ -25,7 +26,8 @@ var MapToolButton = React.createClass({
       bottom: 'auto',
       left: 'auto',
       tooltipText: '',
-      show: true
+      show: true,
+      disabled: false
     };
   },
 
@@ -36,6 +38,8 @@ var MapToolButton = React.createClass({
   },
 
   onClick(e){
+    if(this.props.disabled) return;
+
     $(this.refs.mapToolButton).tooltip('remove');
     $(this.refs.mapToolButton).tooltip();
     this.props.onClick(e);
@@ -43,6 +47,12 @@ var MapToolButton = React.createClass({
 
   render(){
     if(this.props.show){
+      var backgroundColor = 'white';
+      var color = this.props.color;
+      if(this.props.disabled){
+        backgroundColor = '#DFDFDF';
+        color = "#9F9F9F";
+      }
     return (
       <a ref="mapToolButton"
           onClick={this.onClick}
@@ -64,10 +74,10 @@ var MapToolButton = React.createClass({
             style={{height:'30px',
                     lineHeight: '30px',
                     width: '30px',
-                    color: this.props.color,
+                    color,
                     borderRadius: '4px',
                     cursor: 'pointer',
-                    backgroundColor: 'white',
+                    backgroundColor,
                     borderColor: '#ddd',
                     borderStyle: 'solid',
                     borderWidth: '1px',

@@ -18,11 +18,13 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var MapMakerStore = require('../../stores/MapMakerStore');
 var UserStore = require('../../stores/UserStore');
 var Actions = require('../../actions/MapMakerActions');
+var DataEditorActions = require('../../actions/DataEditorActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var MessageActions = require('../../actions/MessageActions');
-
+var EditLayerPanel = require('./EditLayerPanel');
 var MapLayerDesigner = require('../LayerDesigner/MapLayerDesigner');
+var EditorToolButtons = require('./EditorToolButtons');
 
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
@@ -162,10 +164,23 @@ var MapMaker = React.createClass({
     }
   },
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState){
     $('.layer-card-tooltipped').tooltip();
     $('.savebutton-tooltipped').tooltip();
 
+    if(this.state.editingLayer && !prevState.editingLayer){
+      if(this.refs.editLayerPanel){
+        $(this.refs.layersListPanel).removeClass('active');
+        $(this.refs.layersListPanel).find('.collapsible-body').css('display', 'none');
+
+        $(this.refs.saveMapPanel).removeClass('active');
+        $(this.refs.saveMapPanel).find('.collapsible-body').css('display', 'none');
+
+        $(this.refs.editLayerPanel).addClass('active');
+        $(this.refs.editLayerPanel).find('.collapsible-body').css('display', 'block');
+        
+      }
+    }
   },
 
   onClose(){
@@ -338,8 +353,28 @@ var MapMaker = React.createClass({
 
   },
 
+  editLayer(layer){
+    Actions.startEditing();
+    DataEditorActions.startEditing(layer);
+    this.refs.map.startEditingTool(layer);
+  },
+
+  saveEdits(){
+    DataEditorActions.saveEdits(this.state._csrf, function(){
+      //TODO: notify user
+    });
+  },
+
+  stopEditingLayer(){
+    //TODO: warn user if there are unsaved edits
+  Actions.stopEditing();
+    DataEditorActions.stopEditing();
+    this.refs.map.stopEditingTool();
+  },
+
   render(){
     var _this = this;
+    var panelHeight = this.state.height - 155;
 
     var tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
@@ -347,32 +382,54 @@ var MapMaker = React.createClass({
     }
 
     
-    var sidebarContent = '';
+    var overlayLayerList = '';
     if(this.state.showMapLayerDesigner){
-      sidebarContent = (
+      overlayLayerList = (
         <MapLayerDesigner ref="LayerDesigner"
           layer={this.state.layerDesignerLayer}
           onStyleChange={this.onLayerStyleChange}
           onClose={this.closeLayerDesigner} />
       );
     }else if (!this.state.mapLayers || this.state.mapLayers.length == 0) {
-      sidebarContent = (
+      overlayLayerList = (
         <div style={{height: '100%', padding: 0, margin: 0}}>
-          <p>{this.__('No layers in map, use the tab to the right to add a layer.')}</p>
+          <p>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
         </div>
       );
     }else{
-      sidebarContent = (
+      overlayLayerList = (
         <LayerList 
           layers={this.state.mapLayers}
           showVisibility={_this.props.showVisibility}
-          showRemove={true} showDesign={true}
+          showRemove={true} showDesign={true} showEdit={!this.state.editingLayer}
           toggleVisibility={_this.toggleVisibility}
           removeFromMap={_this.removeFromMap}
           showLayerDesigner={_this.showLayerDesigner}
           updateLayers={Actions.setMapLayers}
+          editLayer={_this.editLayer}
           />
       );
+    }
+
+    var editLayerPanel='', editingTools = '';
+    if(this.state.editingLayer){
+      panelHeight = this.state.height - 186;
+      editLayerPanel = (
+        <li ref="editLayerPanel">
+              <div className="collapsible-header"><i className="material-icons">edit</i>{this.__('Editing Layer')}</div>
+              <div className="collapsible-body" >
+                <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
+                  <EditLayerPanel />
+                </div>
+
+              </div>
+            </li>
+      );
+
+      editingTools= (
+        <EditorToolButtons stopEditingLayer={this.stopEditingLayer} />     
+      );
+     
     }
 
     var mapExtent = null;
@@ -381,22 +438,21 @@ var MapMaker = React.createClass({
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];
     }
 
-    var panelHeight = this.state.height - 155;
-
     return (
       <div className="row no-margin" style={{width: '100%', height: '100%'}}>
         <div className="create-map-side-nav col s6 m4 l3 no-padding" style={{height: '100%'}}>
           <ul ref="mapMakerToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%', borderTop: 'none'}}>
-            <li>
-              <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Map Layers')}</div>
+            {editLayerPanel}
+            <li ref="layersListPanel">
+              <div className="collapsible-header active"><i className="material-icons">layers</i>{this.__('Overlay Layers')}</div>
               <div className="collapsible-body" >
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-                  {sidebarContent}
+                  {overlayLayerList}
                 </div>
 
               </div>
             </li>
-            <li>
+            <li  ref="saveMapPanel">
               <div className="collapsible-header"><i className="material-icons">save</i>{this.__('Save')}</div>
               <div className="collapsible-body">
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
@@ -427,7 +483,9 @@ var MapMaker = React.createClass({
                   onChangeBaseMap={Actions.setMapBasemap}
                   fitBounds={mapExtent}
                   hash={true}
-                  />
+                  >
+                  {editingTools}
+                  </Map>
 
                   <MiniLegend style={{
                         position: 'absolute',

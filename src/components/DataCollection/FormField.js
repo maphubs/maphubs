@@ -18,7 +18,8 @@ var FormField = React.createClass({
   },
 
   propTypes: {
-		preset: React.PropTypes.object.isRequired
+		preset: React.PropTypes.object.isRequired,
+    value: React.PropTypes.any
   },
 
   render() {
@@ -27,8 +28,10 @@ var FormField = React.createClass({
       <TextInput
         name={preset.tag}
         label={preset.label}
-        className="col l6 m6 s12"
+        className="col s12 no-margin"
         required={preset.isRequired}
+        showCharCount={false}
+        value={this.props.value}
       />
     );
 
@@ -50,11 +53,12 @@ var FormField = React.createClass({
         <TextInput
           name={preset.tag}
           label={preset.label}
-          className="col l6 m6 s12"
+          className="col s12 no-margin"
           validations="isNumeric" validationErrors={{
                isNumeric: this.__('Value must be a number')
            }}
           required={preset.isRequired}
+          value={this.props.value}
         />
       );
     }else if(preset.type == 'radio' || preset.type == 'combo'){
@@ -64,9 +68,10 @@ var FormField = React.createClass({
             name={preset.tag} id={'select-' + preset.tag}
             label={preset.label}
             options={options}
-            className="col l6 m6 s12"
-            startEmpty={true}
+            className="col s12 no-margin"
+            startEmpty={!this.props.value}
             required={preset.isRequired}
+            value={this.props.value}
          />
      );
    }else if(preset.type == 'check'){
@@ -74,6 +79,7 @@ var FormField = React.createClass({
         <Toggle name={preset.tag}
           labelOff="" labelOn={preset.label}
           className="col s12"
+          checked={this.props.value}
         />
       );
     }
