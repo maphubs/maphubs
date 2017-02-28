@@ -42,5 +42,6 @@ module.exports = {
   writeDebugData: getenv.bool('OMH_WRITEDEBUGDATA', false),
   requireLogin: getenv.bool('OMH_REQUIRE_LOGIN', false),
   requireInvite: getenv.bool('OMH_REQUIRE_INVITE', false),
-  manetAPIKey: getenv('OMH_MANET_API_KEY')
+  manetAPIKey: getenv('OMH_MANET_API_KEY'),
+  uselocalAssets: getenv.bool('OMH_USE_LOCAL_ASSETS', false)
 };
