@@ -51,11 +51,11 @@ module.exports = Reflux.createStore({
   updateFeatures(features){
     var _this = this;
     features.forEach(feature =>{
-        //determine if this is a modification or an unsaved feature
+        //determine if this is a modify or an unsaved feature
          var edit;
         if(feature.properties.mhid){
           edit = {
-            status: 'modification',
+            status: 'modify',
             geojson: feature
           };
         }else{
@@ -77,15 +77,23 @@ module.exports = Reflux.createStore({
   undoEdit(){
      if(this.state.edits.length > 0){
       var lastEdit = this.state.edits.pop();
-      this.state.redo.push(lastEdit);
-      var currEdit = this.getLastEditForID(lastEdit.geojson.geometry.id);
-      if(lastEdit.geojson.geometry.id === this.state.selectedEditFeature.geojson.geometry.id){
+      var lastEditCopy = JSON.parse(JSON.stringify(lastEdit));
+      this.state.redo.push(lastEditCopy);
+      var currEdit = this.getLastEditForID(lastEdit.geojson.id);
+      if(this.state.selectedEditFeature 
+        && lastEdit.geojson.id === this.state.selectedEditFeature.geojson.id){
         //if popping an edit to the selected feature, updated it
         this.state.selectedEditFeature = currEdit;
       }
-      //tell mapboxGL to update
-      Actions.onFeatureUpdate(currEdit);
-
+      
+      if(lastEdit.status === 'create'){
+        //tell mapboxGL to delete the feature
+        Actions.onFeatureUpdate('delete', lastEdit);
+      }else{
+        //tell mapboxGL to update
+        Actions.onFeatureUpdate('update', currEdit);
+      }
+     
       this.trigger(this.state);
     }
   },
@@ -93,13 +101,16 @@ module.exports = Reflux.createStore({
   redoEdit(){
     if(this.state.redo.length > 0){
       var prevEdit = this.state.redo.pop();
-      this.state.edits.push(prevEdit);
-      if(prevEdit.geojson.geometry.id === this.state.selectedEditFeature.geojson.geometry.id){
+      var prevEditCopy = JSON.parse(JSON.stringify(prevEdit));
+      var prevEditCopy2 = JSON.parse(JSON.stringify(prevEdit));
+      this.state.edits.push(prevEditCopy);
+      if(this.state.selectedEditFeature 
+        && prevEdit.geojson.id === this.state.selectedEditFeature.geojson.id){
         //if popping an edit to the selected feature, updated it
-        this.state.selectedEditFeature = prevEdit;
+        this.state.selectedEditFeature = prevEditCopy2;
       }
       //tell mapboxGL to update
-      Actions.onFeatureUpdate(prevEdit);
+      Actions.onFeatureUpdate('update', prevEdit);
       this.trigger(this.state);
     }
     
@@ -108,20 +119,23 @@ module.exports = Reflux.createStore({
   getLastEditForID(id){
     var matchingEdits = [];
     _forEachRight(this.state.edits, edit => {
-        if(edit.geojson.geometry.id === id){
+        if(edit.geojson.id === id){
           matchingEdits.push(edit);
         }
     });
     if(matchingEdits.length > 0){
-      return matchingEdits[0];
+      return JSON.parse(JSON.stringify(matchingEdits[0]));
     }else{
       var original;
       this.state.originals.forEach(orig => {
-        if(orig.geojson.geometry.id === id){
+        if(orig.geojson.id === id){
           original = orig;
         }
       });
-      return original;
+      if(original){
+        return JSON.parse(JSON.stringify(original));
+      }
+      return null;
     }
   },
 
@@ -137,30 +151,20 @@ module.exports = Reflux.createStore({
     var selected = this.state.selectedEditFeature;
 
     //check if selected feature has been edited yet
-    var editRecord;
-    this.state.edits.forEach(edit => {
-      if(edit.geojson.geometry.id === selected.geojson.geometry.id){
-        //already edited update the edit record
-        editRecord = edit;
-        //update the edit record
-        _assignIn(edit.geojson.properties, data);
-      }
-    });
-    if(!editRecord){
-        //update the selected feature
-        _assignIn(selected.geojson.properties, data);
-        //create a new modification edit
-        var record = {
-          status: 'modification',
-          mhid: selected.mhid,
-          geojson: selected.geojson
-        };
-        _this.state.edits.push(record);
-        _this.state.redo = []; //redo resets if use makes an edit
-        selected = record;
-      }
+    var editRecord = {
+      status: 'modify',
+      geojson: JSON.parse(JSON.stringify(selected.geojson))
+    };    
 
-    this.setState({selectedEditFeature: selected});
+    //update the edit record
+    _assignIn(editRecord.geojson.properties, data);
+    var editRecordCopy = JSON.parse(JSON.stringify(editRecord));
+    _this.state.edits.push(editRecordCopy);
+    _this.state.redo = []; //redo resets if use makes an edit
+
+    //update the selected feature
+    this.state.selectedEditFeature = selected;
+    this.trigger(this.state);
   },
 
 
@@ -183,10 +187,9 @@ module.exports = Reflux.createStore({
 
           var selected = {
               status: 'original',
-              mhid,
               geojson: feature
             };
-          selected.geojson.geometry.id = selected.geojson.properties.mhid; 
+          selected.geojson.id = mhid; 
           var original = JSON.parse(JSON.stringify(selected)); //needs to be a clone
           _this.state.originals.push(original);
           _this.setState({
@@ -205,10 +208,9 @@ module.exports = Reflux.createStore({
   createFeature(feature){
     var created = {
         status: 'create',
-        mhid: feature.geometry.id, //just a temp id as asigned by draw
-        geojson: feature
+        geojson: JSON.parse(JSON.stringify(feature))
       };
-    this.state.originals.push(created);
+    this.state.edits.push(created);
     this.setState({
       selectedEditFeature: created
     });
@@ -217,8 +219,7 @@ module.exports = Reflux.createStore({
   deleteFeature(feature){
     var edit = {
       status: 'delete',
-      mhid: feature.geometry.id,
-      geojson: feature
+      geojson: JSON.parse(JSON.stringify(feature))
     };
     this.state.edits.push(edit);
     this.state.redo = []; //redo resets if use makes an edit

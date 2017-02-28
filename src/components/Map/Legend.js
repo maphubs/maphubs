@@ -64,7 +64,7 @@ var Legend = React.createClass({
       }
       title = (
         <div className="row no-margin" style={{height: '44px'}}>
-          <div className="col s10 no-padding valign-wrapper" style={{height: '44px', wordBreak: 'break-all'}}>
+          <div className="col s10 no-padding valign-wrapper word-wrap" style={{height: '44px'}}>
             <h6 className="black-text valign" style={{padding: '0.2rem', marginLeft: '2px', fontWeight: '500'}}>{titleText}</h6>
           </div>
           <div className="col s2 no-padding valign">
@@ -74,8 +74,8 @@ var Legend = React.createClass({
       );
     }else{
       title = (
-        <div className="row no-margin valign-wrapper" style={{height: '44px', wordBreak: 'break-all'}}>
-          <h6 className="black-text valign" style={{padding: '0.2rem',  marginLeft: '2px', fontWeight: '500', wordWrap: 'break-word'}}>{titleText}</h6>
+        <div className="row no-margin valign-wrapper word-wrap" style={{height: '44px'}}>
+          <h6 className="black-text valign word-wrap" style={{padding: '0.2rem',  marginLeft: '2px', fontWeight: '500'}}>{titleText}</h6>
         </div>
       );
     }

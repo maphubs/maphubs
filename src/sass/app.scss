@@ -531,6 +531,21 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   background-color: $primary-color;
 }
 
+@mixin word-wrap() {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+.word-wrap {
+  @include word-wrap;
+}
+
 /*MaterializeCSS has a bug where the invalid labels don't resize with the dynamically resizing text area */
 textarea.materialize-textarea+label:after {
   position: relative!important;
@@ -539,7 +554,7 @@ textarea.materialize-textarea+label:after {
 
 .LabelColumn {
   width: 100px;
-  word-wrap: break-word;
+  @include word-wrap;
 }
 
 .slick-next:before, .slick-prev:before {
@@ -789,8 +804,13 @@ textarea.materialize-textarea+label:after {
   transform: rotate(90deg); 
 }
 
-.mapbox-gl-draw_trash{
+.mapbox-gl-draw_trash, .mapbox-gl-draw_point, .mapbox-gl-draw_line, .mapbox-gl-draw_polygon{
   transform: rotate(90deg); 
+}
+
+.mapbox-gl-draw_point, .mapbox-gl-draw_line, .mapbox-gl-draw_polygon{
+  border-bottom: none !important;
+  border-right: 1px #ddd solid !important;
 }
 
 .mapboxgl-ctrl-top-right {

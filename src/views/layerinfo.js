@@ -705,7 +705,7 @@ var LayerInfo = React.createClass({
           <div className="col s12 m6 l6 no-padding" style={{height: '100%', position: 'relative'}}>
           {privateIcon}
             <div style={{margin: '10px'}}>
-              <h5 style={{wordWrap: 'break-word'}}>{this.props.layer.name}</h5>
+              <h5 className="word-wrap">{this.props.layer.name}</h5>
             </div>
 
             <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
@@ -717,7 +717,7 @@ var LayerInfo = React.createClass({
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
               <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
-                <div className="row" style={{height: 'calc(100% - 75px)', marginLeft:'10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden', wordWrap: 'break-word'}}>
+                <div className="row word-wrap" style={{height: 'calc(100% - 75px)', marginLeft:'10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
                   <div className="right">
                     <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
                   </div>
@@ -738,7 +738,7 @@ var LayerInfo = React.createClass({
                 {updatedTime}
                 <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
                 <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
-                <p style={{fontSize: '16px', wordWrap: 'break-word', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>
+                <p className="word-wrap" style={{fontSize: '16px', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>
 
                 </div>
 

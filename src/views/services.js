@@ -98,9 +98,7 @@ var Services = React.createClass({
               <IconRow icon="lightbulb_outline">
                 <p lang="en" style={{fontSize: '18px'}}>
                   Looking for ideas on what you can fund? Check out our GitHub issue tracker at
-                  <a style={{
-                      overflowWrap: 'break-word',
-                      wordWrap: 'break-word'}}
+                  <a className="word-wrap"
                       href="https://github.com/maphubs/maphubs/issues">
                       https://github.com/maphubs/maphubs/issues
                   </a>

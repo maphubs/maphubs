@@ -162,10 +162,18 @@ var Map = React.createClass({
         if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
           map.addLayer(layer, 'water');
         }else{
-          map.addLayer(layer);
+          if(_this.state.editing){
+            map.addLayer(layer, _this.getFirstDrawLayerID());
+          }else{
+            map.addLayer(layer);
+          }      
         }
       }else{
-        map.addLayer(layer);
+        if(_this.state.editing){
+            map.addLayer(layer, _this.getFirstDrawLayerID());
+          }else{
+            map.addLayer(layer);
+          }
       }
     }catch(err){
       debug('(' + _this.state.id + ') ' +'Failed to add layer: ' + layer.id);

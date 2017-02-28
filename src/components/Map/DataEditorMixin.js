@@ -11,6 +11,10 @@ if (typeof window !== 'undefined') {
 
 var DataEditorMixin = {
 
+  getFirstDrawLayerID(){
+    this.getEditorStyles()[0].id + '.cold';
+  },
+
   getEditorStyles(){
     return [
     {
@@ -147,7 +151,7 @@ var DataEditorMixin = {
     //get the feature from the database, since features from vector tiles can be incomplete or simplified
     DataEditorActions.selectFeature(feature.properties.mhid, feature =>{      
       if(_this.draw){
-      if(!_this.draw.get(feature.geometry.id)){
+      if(!_this.draw.get(feature.id)){
         //if not already editing this feature
         _this.draw.add(feature);
         _this.updateMapLayerFilters();
@@ -178,7 +182,7 @@ var DataEditorMixin = {
 
     this.map.on('draw.create', e => {
       debug('draw create');
-      var features = e.data.features;
+      var features = e.features;
       if(features && features.length > 0){
         features.forEach( feature => {
           DataEditorActions.createFeature(feature);
@@ -197,7 +201,7 @@ var DataEditorMixin = {
        debug('draw delete');
       var features = e.features;
       if(features && features.length > 0){
-        features.forEach( feature => {
+        features.forEach(feature => {
           DataEditorActions.deleteFeature(feature);
         });
       }
@@ -206,7 +210,15 @@ var DataEditorMixin = {
      this.map.on('draw.selectionchange', e => {
        debug('draw selection');
        //if in simple mode (e.g. not selecting vertices) then check if selected feature changed
-
+       var mode = _this.draw.getMode();
+       if(mode === 'simple_select'){
+        var features = e.features;
+        if(features && features.length > 0){
+          features.forEach(feature => {
+            DataEditorActions.selectFeature(feature.id, ()=>{});
+          });
+        }
+       }
     });
 
    
@@ -225,11 +237,24 @@ var DataEditorMixin = {
      }
   },
 
-  onFeatureUpdate(feature){
+  /**
+   * Triggered when the store updates a feature
+   * 
+   * @param {string} type
+   * @param {any} feature 
+  
+   * 
+   */
+  onFeatureUpdate(type, feature){
     if(this.draw){
-      this.draw.add(feature.geojson);
+      if(type === 'update' || type === 'create'){
+        this.draw.add(feature.geojson);
+      }else if(type === 'delete'){
+        this.draw.delete(feature.geojson.id);
+      }
     }
   },
+  
 
   /**
    * Add filter to hide vector tile versions of features active in the drawing tool
@@ -244,14 +269,14 @@ var DataEditorMixin = {
     var uniqueIds = [];
 
     this.state.edits.forEach(edit =>{
-      var mhid = edit.mhid;
+      var mhid = edit.geojson.id;
       if(mhid && !uniqueIds.includes(mhid)){
         uniqueIds.push(mhid);
       }
     });
 
     this.state.originals.forEach(orig =>{
-      var mhid = orig.mhid;
+      var mhid = orig.geojson.id;
       if(mhid && !uniqueIds.includes(mhid)){
         uniqueIds.push(mhid);
       }
@@ -291,5 +316,4 @@ var DataEditorMixin = {
   },
 };
 
-module.exports = _assignIn(DataEditorMixin, 
-Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate'));
+module.exports = _assignIn(DataEditorMixin,Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate'));

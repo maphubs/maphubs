@@ -60,7 +60,7 @@ var SaveMapPanel = React.createClass({
   },
 
   onSave(model){
-  
+    var _this = this;
     if(!model.title || model.title == ''){
       NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'});
       return;
@@ -70,7 +70,10 @@ var SaveMapPanel = React.createClass({
         //creating a new layer when user is only the member of a single group (not showing the group dropdown)
         model.group = this.props.groups[0].group_id;
       }
-    this.props.onSave(model);
+    this.setState({saving: true});
+    this.props.onSave(model, () =>{
+      _this.setState({saving: false});
+    });
   },
 
   onOwnedByGroup(ownedByGroup){
@@ -112,7 +115,7 @@ var SaveMapPanel = React.createClass({
 
     if(this.state.loggedIn){
      return (
-        <Formsy.Form onValidSubmit={this.props.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
+        <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row">
             <TextInput name="title"
               defaultValue={this.state.title} value={this.state.title}
@@ -124,7 +127,8 @@ var SaveMapPanel = React.createClass({
           {groups}
           <div className="row">
             <div className="col s12 valign-wrapper">
-                  <button type="submit" className="valign waves-effect waves-light btn" style={{margin: 'auto'}} disabled={!this.state.canSave}>{this.__('Save Map')}</button>
+                  <button type="submit" className="valign waves-effect waves-light btn" style={{margin: 'auto'}} 
+                  disabled={(!this.state.canSave || this.state.saving)}>{this.__('Save Map')}</button>
             </div>
           </div>
 

@@ -43,7 +43,9 @@ var EditLayerPanel = React.createClass({
     var layerTitle = '';
     if(this.state.editingLayer){
       layerTitle = (
-        <p>{this.__('Editing: ') + this.state.editingLayer.name}</p>
+        <p className="word-wrap" style={{paddingTop: '2px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '5px'}}>
+          <b>{this.__('Editing:')}</b> {this.state.editingLayer.name}
+        </p>
       );
     }
 

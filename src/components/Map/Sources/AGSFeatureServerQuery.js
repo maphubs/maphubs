@@ -12,8 +12,12 @@ var AGSFeatureServerQuery = {
        debug('(' + mapComponent.state.id + ') ' +error);
       });
   },
-  addLayer(layer, source, map){
-    map.addLayer(layer);
+  addLayer(layer, source, map, mapComponent){
+    if(mapComponent.state.editing){
+      map.addLayer(layer, mapComponent.getFirstDrawLayerID());
+    }else{
+      map.addLayer(layer);
+    }
   },
   removeLayer(layer, map){
     map.removeLayer(layer.id);

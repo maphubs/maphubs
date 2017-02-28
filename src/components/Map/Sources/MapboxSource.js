@@ -24,10 +24,14 @@ var MapboxSource = {
           });
         });
   },
-  addLayer(layer, source, map){
+  addLayer(layer, source, map, mapComponent){
     this.mbstyle.layers.forEach(function(mbStyleLayer){
       if(mbStyleLayer.type !== 'background'){ //ignore the Mapbox Studio background layer
-        map.addLayer(mbStyleLayer);
+        if(mapComponent.state.editing){
+          map.addLayer(mbStyleLayer, mapComponent.getFirstDrawLayerID());
+        }else{
+          map.addLayer(mbStyleLayer);
+        }
       }
     });
   },

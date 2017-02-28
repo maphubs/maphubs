@@ -16,12 +16,14 @@ var MapInteractionMixin = {
         features.forEach(function(feature){
           filter.push(feature.properties.mhid);
         });
-        if(layer.id.startsWith('omh-hover-point')){
-          _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
-        }else if(layer.id.startsWith('omh-hover-line')){
-          _this.map.setFilter(layer.id,  ["all", ["in", "$type", "LineString"], filter]);
-        }else if(layer.id.startsWith('omh-hover-polygon')){
-          _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Polygon"], filter]);
+        if(_this.map.getLayer(layer.id)){
+          if(layer.id.startsWith('omh-hover-point')){
+            _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
+          }else if(layer.id.startsWith('omh-hover-line')){
+            _this.map.setFilter(layer.id,  ["all", ["in", "$type", "LineString"], filter]);
+          }else if(layer.id.startsWith('omh-hover-polygon')){
+            _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Polygon"], filter]);
+          }
         }
       });
     }
@@ -32,7 +34,9 @@ var MapInteractionMixin = {
     if(this.state.glStyle){
       this.state.glStyle.layers.forEach(function(layer){
         if(layer.id.startsWith('omh-hover')){
-          _this.map.setFilter(layer.id,  ["==", "mhid", ""]);
+          if(_this.map.getLayer(layer.id)){
+            _this.map.setFilter(layer.id,  ["==", "mhid", ""]);
+          }
         }
       });
     }
@@ -92,8 +96,12 @@ var MapInteractionMixin = {
           }
 
           if(_this.state.editing){
-            _this.editFeature(features[0]);
-            return;
+            var feature = features[0];
+            if(feature.properties.layer_id && 
+              this.state.editingLayer.layer_id === feature.properties.layer_id){
+                _this.editFeature(feature);
+              }    
+            return; //return here to disable interactation with other layers when editing
           }
 
           _this.setSelectionFilter([features[0]]);

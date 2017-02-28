@@ -102,7 +102,12 @@ var MapHubsSource = {
     }else if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
       map.addLayer(layer, 'water');
     }else{
-      map.addLayer(layer);
+      if(mapComponent.state.editing){
+        map.addLayer(layer, mapComponent.getFirstDrawLayerID());
+      }else{
+        map.addLayer(layer);
+      }
+      
     }
   },
   removeLayer(layer, map){

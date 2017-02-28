@@ -189,7 +189,7 @@ var Card = React.createClass({
         <div ref="card" className='hoverable margin5 small carousel-card card' onClick={this.onClick}>
           {image}
           {privateIcon}
-        <div className="card-content no-padding" style={{margin: '10px', wordBreak: 'break-all'}}>
+        <div className="card-content no-padding word-wrap" style={{margin: '10px'}}>
 
           <b>{this.props.title}</b> <br />
 

@@ -53,7 +53,7 @@ var Attributes = React.createClass({
                   return (
                      <li key={preset.tag} style={{ paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className="collection-item attribute-collection-item">
                       <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{preset.label}</p>
-                       <p style={{wordWrap: 'break-word'}}>
+                       <p className="word-wrap">
                          {val}
                        </p>
                      </li>
@@ -80,7 +80,7 @@ var Attributes = React.createClass({
                      return (
                       <li key={key} style={{ padding: 5}} className="collection-item attribute-collection-item">
                       <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{key}</p>
-                       <p style={{wordWrap: 'break-word'}}>
+                       <p className="word-wrap">
                          {val}
                        </p>
                      </li>
