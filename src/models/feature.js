@@ -1,20 +1,20 @@
 // @flow
 var knex = require('../connection.js');
-var Promise = require('bluebird');
+//var Promise = require('bluebird');
 //var dbgeo = require('dbgeo');
-var log = require('../services/log.js');
+//var log = require('../services/log.js');
 //var debug = require('../services/debug')('model/features');
-var geojsonUtils = require('../services/geojson-utils');
+//var geojsonUtils = require('../services/geojson-utils');
 
 module.exports = {
 
 
-  getFeatureByID(mhid: string, layer: Object) {
+  getFeatureByID(mhid: string, layer_id: number) {
     var _this = this;
-    return _this.getGeoJSON(mhid, layer.layer_id)
+    return _this.getGeoJSON([mhid], layer_id)
       .then(function(geojson){
         var feature = {geojson};
-        return _this.getFeatureNotes(mhid, layer.layer_id)
+        return _this.getFeatureNotes(mhid, layer_id)
         .then(function(notes){
           var result = {feature, notes};
           return result;
@@ -59,13 +59,21 @@ module.exports = {
     });
   },
 
-    getGeoJSON(mhid: string, layer_id: number) {
+  /**
+   * Get GeoJSON for feature(s)
+   * 
+   * @param {Array<string>} mhid 
+   * @param {number} layer_id 
+   * @returns 
+   */
+    getGeoJSON(mhid: Array<string>, layer_id: number) {
+      if(!Array.isArray(mhid)){
+        mhid = [mhid];
+      }
 
       var layerTable = 'layers.data_' + layer_id;  
-      return knex.raw(
-          `select mhid,
-          ST_AsGeoJSON(wkb_geometry) as geom, tags
-          from ${layerTable} where mhid='${mhid}'`)
+      return knex.select(knex.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags')
+      .from(layerTable).whereIn('mhid', mhid)
           .then(function(data){
             return  knex.raw(`select 
             '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
@@ -74,8 +82,8 @@ module.exports = {
 
             var feature = {
               type: 'Feature',
-              geometry: JSON.parse(data.rows[0].geom),
-              properties: data.rows[0].tags
+              geometry: JSON.parse(data[0].geom),
+              properties: data[0].tags
             };
 
             feature.properties.mhid = mhid;

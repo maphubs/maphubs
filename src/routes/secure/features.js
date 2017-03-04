@@ -39,7 +39,7 @@ module.exports = function(app: any) {
         .then(function(layer){
 
       return Promise.all([
-        Feature.getFeatureByID(mhid, layer),
+        Feature.getFeatureByID(mhid, layer.layer_id),
         PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid),
       ])
       .then(function(results){
@@ -144,7 +144,7 @@ module.exports = function(app: any) {
     if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
         .then(function(layer){
-          return Feature.getFeatureByID(mhid, layer)
+          return Feature.getFeatureByID(mhid, layer.layer_id)
           .then(function(result){
             var feature = result.feature;
             var geoJSON = feature.geojson;

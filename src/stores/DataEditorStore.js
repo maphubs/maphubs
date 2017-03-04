@@ -21,7 +21,6 @@ module.exports = Reflux.createStore({
       edits: [],
       redo: [], //if we undo edits, add them here so we can redo them
       selectedEditFeature: null, //selected feature
-      createIDIndex: -9999
     };
   },
 
@@ -51,21 +50,22 @@ module.exports = Reflux.createStore({
   updateFeatures(features){
     var _this = this;
     features.forEach(feature =>{
-        //determine if this is a modify or an unsaved feature
-         var edit;
-        if(feature.properties.mhid){
-          edit = {
+      debug('Updating feature: ' + feature.id);
+
+        var edit = {
             status: 'modify',
-            geojson: feature
+            geojson: JSON.parse(JSON.stringify(feature))
           };
-        }else{
-           edit = {
-            status: 'create',
-            geojson: feature
-          };
-        }
-        _this.state.edits.push(edit);
-        _this.state.redo = []; //redo resets if use makes an edit
+
+        if(this.state.selectedEditFeature 
+        && feature.id === this.state.selectedEditFeature.geojson.id){
+        //if popping an edit to the selected feature, updated it
+        this.state.selectedEditFeature = edit;
+      }
+      //edit history gets a different clone from the selection state
+      var editCopy = JSON.parse(JSON.stringify(edit));
+      _this.state.edits.push(editCopy);
+      _this.state.redo = []; //redo resets if use makes an edit
     });
     this.trigger(this.state);
   },
@@ -143,7 +143,63 @@ module.exports = Reflux.createStore({
    * Save all edits to the server and reset current edits
    */
   saveEdits(_csrf, cb){
+    var _this = this;
+    var featureIds = this.getUniqueFeatureIds();
+    var editsToSave = [];
+    featureIds.forEach(id => {
+      var featureEdits = _this.getAllEditsForFeatureId(id);
+      var lastFeatureEdit = featureEdits[featureEdits.length -1];
+      if(featureEdits.length > 1){      
+        if(featureEdits[0].status === 'create'){
+        //first edit is a create, so mark edit as create
+        lastFeatureEdit.status = 'create';
+        }
+      }
+      editsToSave.push(lastFeatureEdit);
+    });
 
+    //send edits to server
+    request.post('/api/edits/save')
+    .type('json').accept('json')
+    .send({
+        layer_id: this.state.editingLayer.layer_id,
+        edits: editsToSave,
+        _csrf
+    })
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        //after saving clear all edit history
+        _this.setState({
+          originals: [], 
+          edits: [],
+          redo: [], 
+          selectedEditFeature: null
+        });
+        cb();
+      });
+    });
+
+  },
+
+  getUniqueFeatureIds(){
+    var uniqueIds = [];
+    this.state.edits.forEach(edit =>{
+      var id = edit.geojson.id;
+      if(id && !uniqueIds.includes(id)){
+        uniqueIds.push(id);
+      }
+    });
+    return uniqueIds;
+  },
+
+  getAllEditsForFeatureId(id){
+    var featureEdits = [];
+    this.state.edits.forEach(edit =>{
+      if(edit.geojson.id === id){
+        featureEdits.push(edit);
+      }
+    });
+    return featureEdits;
   },
 
   updateSelectedFeatureTags(data){

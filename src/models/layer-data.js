@@ -21,8 +21,8 @@ module.exports = {
     return db.raw(`INSERT INTO layers.data_${layer_id} (mhid, wkb_geometry, tags)
     VALUES ( ${layer_id} || ':' || nextval(layers.mhid_seq_${layer_id}), 
     ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'),
-    '${JSON.stringify(geojson.properties)}'::jsonb RETURNING mhid;
-    `).then(function(result){
+    '${JSON.stringify(geojson.properties)}'::jsonb) RETURNING mhid;
+    `).then(result => {
       if(result.rows && result.rows.length === 1){
         return result.rows[0].mhid;
       }else{
@@ -44,7 +44,7 @@ module.exports = {
     debug('updating feature: ' + mhid);
     let db = knex; if(trx){db = trx;}
     return db.raw(`UPDATE layers.data_${layer_id}
-    SET wkb_geometry = ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'
+    SET wkb_geometry = ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}')
     tags = '${JSON.stringify(geojson.properties)}'::jsonb
     WHERE mhid = '${mhid}';
     `);

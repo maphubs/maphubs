@@ -230,10 +230,9 @@ var DataEditorMixin = {
    
   },
 
-  updateEdits(){
-    var data = this.draw.getAll();
-     if (data.features.length > 0) {
-      DataEditorActions.updateFeatures(data.features);
+  updateEdits(e){
+     if (e.features.length > 0) {
+      DataEditorActions.updateFeatures(e.features);
      }
   },
 
