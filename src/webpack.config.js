@@ -58,6 +58,7 @@ module.exports = {
     terms: "./src/client/terms",
     privacy: "./src/client/privacy",
     pageedit: "./src/client/pageedit",
+    searchindexadmin: "./src/client/searchindexadmin",
     services: "./src/client/services",
     journalists: "./src/client/journalists",
     explore: "./src/client/explore",

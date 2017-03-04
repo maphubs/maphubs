@@ -87,7 +87,41 @@ services:
     ports:
       - '8891:8891'
     restart: always
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    container_name: elasticsearch1
+    environment:
+      - cluster.name=maphubs-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 256m
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.2.2
+    environment:
+      SERVER_NAME: maphubs.dev
+      SERVER_PORT: 5601
+      ELASTICSEARCH_URL: http://elasticsearch1:9200
+    ports:
+      - '5601:5601'
+    depends_on:
+      - elasticsearch1
 volumes:
+  esdata1:
+    external:
+      name: search-db-data
   db-data:
     external:
       name: maphubs-db-data
