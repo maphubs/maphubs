@@ -47,18 +47,37 @@ module.exports = function(app: any) {
 
       var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
 
-      Promise.all([
+      var dataRequests: any = [
         Layer.getPopularLayers()
           .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
         Layer.getUserLayers(user_id, 50, canAddPrivateLayers)
           .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
         Group.getGroupsForUser(user_id)
-      ])
+      ];
+
+      var editLayerId = req.query.editlayer;
+      if(editLayerId){
+        dataRequests.push(
+          Layer.allowedToModify(editLayerId, user_id).then(allowed=>{
+            if(allowed){
+              return Layer.getLayerByID((editLayerId));
+            }else{
+              return null;
+            }
+          })
+        );
+      }
+
+      Promise.all(dataRequests)
         .then(function(results){
           var popularLayers = results[0];
           var myLayers = results[1];
           var myGroups = results[2];
-          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers, myGroups}, req});
+          var editLayer;
+          if(results.length === 4){
+            editLayer = results[3];
+          }
+          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers, myGroups, editLayer}, req});
         }).catch(nextError(next));
     }
 

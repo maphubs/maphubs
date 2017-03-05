@@ -52,6 +52,7 @@ var MapMaker = React.createClass({
     basemap: React.PropTypes.string,
     map_id: React.PropTypes.number,
     owned_by_group_id: React.PropTypes.string,
+    editLayer: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -64,14 +65,16 @@ var MapMaker = React.createClass({
       map_id: null,
       owned_by_group_id: null,
       title: null,
-      basemap: null
+      basemap: null,
+      editLayer: null
     };
   },
 
   getInitialState(){
     return {
       showMapLayerDesigner: false,
-      canSave: false
+      canSave: false,
+      editLayerLoaded: false
     };
   },
 
@@ -150,6 +153,8 @@ var MapMaker = React.createClass({
       this.toggleMapTab();
     }
 
+    
+
     window.onbeforeunload = function(){
       if(!_this.state.saved && _this.state.mapLayers.length > 0){
         return _this.__('Please save your map to avoid losing your work!');
@@ -181,6 +186,13 @@ var MapMaker = React.createClass({
         
       }
     }
+
+    if(!this.state.editLayerLoaded && this.props.editLayer && this.refs.map && this.refs.map.map){
+     this.addLayer(this.props.editLayer);
+     this.editLayer(this.props.editLayer);
+     this.setState({editLayerLoaded: true});
+    }
+
   },
 
   onClose(){

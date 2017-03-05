@@ -14,6 +14,7 @@ var Map = React.createClass({
     popularLayers: React.PropTypes.array,
     myLayers: React.PropTypes.array,
     myGroups: React.PropTypes.array,
+    editLayer: React.PropTypes.object,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -34,7 +35,13 @@ var Map = React.createClass({
       <div>
         <Header activePage="map"/>
         <main style={{height: 'calc(100% - 70px)'}}>
-          <MapMaker onCreate={this.mapCreated} popularLayers={this.props.popularLayers} myLayers={this.props.myLayers} myGroups={this.props.myGroups} />
+          <MapMaker 
+            onCreate={this.mapCreated} 
+            popularLayers={this.props.popularLayers} 
+            myLayers={this.props.myLayers} 
+            myGroups={this.props.myGroups}
+            editLayer={this.props.editLayer}
+             />
         </main>
       </div>
 		);
