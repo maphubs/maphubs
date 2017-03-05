@@ -37,9 +37,9 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-            Layer.getPopularLayers()
+            Layer.getPopularLayers()           
             .then(function(popularLayers){
-              res.render('map', {title: 'New Map ', props:{popularLayers}, req});
+                res.render('map', {title: 'New Map ', props:{popularLayers}, req});
             }).catch(nextError(next));
     } else {
       //get user id
@@ -48,8 +48,10 @@ module.exports = function(app: any) {
       var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
 
       Promise.all([
-        Layer.getPopularLayers(),
-        Layer.getUserLayers(user_id, 50, canAddPrivateLayers),
+        Layer.getPopularLayers()
+          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
+        Layer.getUserLayers(user_id, 50, canAddPrivateLayers)
+          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
         Group.getGroupsForUser(user_id)
       ])
         .then(function(results){

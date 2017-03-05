@@ -74,10 +74,13 @@ module.exports = {
     });
   },
 
-  updateFeature(layer_id: number, mhid: string, refreshImmediately: boolean = true){
+  updateFeature(layer_id: number, mhid: string, refreshImmediately: boolean = true, trx: any){
     
-    return Feature.getFeatureByID(mhid, layer_id)
+    return Feature.getFeatureByID(mhid, layer_id, trx)
     .then(result => {
+
+      //HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
+      delete result.feature.geojson.features[0].properties.timestamp;
 
       var centroid = _centroid(result.feature.geojson);
 
@@ -101,6 +104,14 @@ module.exports = {
       });
     });
 
+  },
+
+  deleteFeature(mhid: string){
+    return client.delete({
+      index: this.searchIndexName,
+      type: 'feature',
+      id: mhid
+    });
   },
 
   queryFeatures(query: string){
@@ -141,4 +152,4 @@ module.exports = {
 
   }
 
-}
+};

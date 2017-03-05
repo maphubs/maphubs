@@ -355,6 +355,20 @@ module.exports = {
     });
   },
 
+  attachPermissionsToLayers(layers: Array<Object>, user_id: number){
+    var _this = this;
+    var updates = [];
+    layers.forEach(layer =>{
+      updates.push(_this.allowedToModify(layer.layer_id, user_id).then(allowed =>{
+        layer.canEdit = allowed;
+      }));
+    });
+
+    return Promise.all(updates).then(()=>{
+      return layers;
+    });
+  },
+
     /**
    * Can include private?: Yes
    */

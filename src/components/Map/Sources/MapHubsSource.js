@@ -70,6 +70,13 @@ var MapHubsSource = {
           el.addEventListener('click', function(e){
             e.stopPropagation();
             marker.properties.layer_id = layer_id;
+            //
+            if(mapComponent.state.editing){
+              if(this.state.editingLayer.layer_id === marker.properties.layer_id){
+                mapComponent.editFeature(marker);
+              }    
+            return; //return here to disable interactation with other layers when editing
+          }
             mapComponent.setSelectionFilter([marker]);
             mapComponent.setState({selectedFeatures:[marker], selected:true});
             map.addClass('selected');
@@ -88,10 +95,18 @@ var MapHubsSource = {
             offsetHeight = -markerConfig.height / 2;
           }
 
-          new mapboxgl.Marker(el, {offset: [offsetWidth, offsetHeight]})
+          var mapboxMarker = new mapboxgl.Marker(el, {offset: [offsetWidth, offsetHeight]})
               .setLngLat(marker.geometry.coordinates)
               .addTo(map);
+          var markerId;
+          if(marker.properties.mhid){
+            markerId = marker.properties.mhid;
+          }else if(marker.properties.osm_id){
+            markerId = marker.properties.osm_id;
+          }
+          mapComponent.markers[markerId] = mapboxMarker;
           });
+          
         }
       },
       function(cb){

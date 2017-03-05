@@ -17,7 +17,7 @@ module.exports = {
       var pass: string = local.elasticSearchPass ? local.elasticSearchPass : 'changeme';
       this.client = new elasticsearch.Client({
         host: host + ':' + port,
-        log: 'warn',
+        log: 'warning',
         httpAuth: user + ':' + pass
       });
     }

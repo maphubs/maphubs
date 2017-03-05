@@ -55,6 +55,7 @@ module.exports = function(app: any) {
                   };
 
                   feature.properties.mhid = result.mhid;
+                  feature.properties.layer_id = layer_id;
                   featureCollection.features.push(feature);
               });
              

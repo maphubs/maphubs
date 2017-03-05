@@ -81,6 +81,7 @@ var LayerListItem = React.createClass({
   render() {
     var _this = this;
     var layer = this.props.item;
+    var canEdit = (this.props.showEdit && layer.canEdit);
 
     var isDragging = this.props.isDragging;
     var connectDragSource = this.props.connectDragSource;
@@ -93,7 +94,7 @@ var LayerListItem = React.createClass({
     var buttonCount = 1;
     if(this.props.showRemove) buttonCount++;
     if(this.props.showDesign) buttonCount++;
-     if(this.props.showEdit) buttonCount++;
+    if(canEdit) buttonCount++;
     var buttonClass = '';
     if(buttonCount === 1){
       buttonClass = 'col s12 no-padding';
@@ -129,7 +130,7 @@ var LayerListItem = React.createClass({
         </div>  
       );
     }
-    if(this.props.showEdit){
+    if(canEdit){
       editButton = (
         <div className={buttonClass} style={{height: '30px'}}>
           <a onClick={function(){_this.props.editLayer(layer); _this.resetTooltips();}}

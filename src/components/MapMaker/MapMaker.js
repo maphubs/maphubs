@@ -363,6 +363,7 @@ var MapMaker = React.createClass({
 
   saveEdits(){
     DataEditorActions.saveEdits(this.state._csrf, function(){
+      this.refs.map.stopEditingTool();
       //TODO: notify user
     });
   },

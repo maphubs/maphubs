@@ -2,7 +2,7 @@
 var debug = require('../../services/debug')('Map/MeasureArea');
 var DataEditorActions = require('../../actions/DataEditorActions');
 var $ = require('jquery');
-var _assignIn = require('lodash.assignIn');
+var _assignIn = require('lodash.assignin');
 var Reflux = require('reflux');
 var MapboxDraw = {};
 if (typeof window !== 'undefined') {
@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
 var DataEditorMixin = {
 
   getFirstDrawLayerID(){
-    this.getEditorStyles()[0].id + '.cold';
+    return this.getEditorStyles()[0].id + '.cold';
   },
 
   getEditorStyles(){
