@@ -7,7 +7,6 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 
 var TextInput = require('../forms/textInput');
 var Radio = require('../forms/radio');
-var classNames = require('classnames');
 var PresetActions = require('../../actions/presetActions');
 var LayerActions = require('../../actions/LayerActions');
 var NotificationActions = require('../../actions/NotificationActions');
@@ -27,15 +26,13 @@ var AGOLSource = React.createClass({
 
   propTypes: {
     onSubmit: React.PropTypes.func.isRequired,
-    active: React.PropTypes.bool.isRequired,
     showPrev: React.PropTypes.bool,
     onPrev: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
-      onSubmit: null,
-      active: false
+      onSubmit: null
     };
   },
 
@@ -145,12 +142,6 @@ var AGOLSource = React.createClass({
       break;
     }
 
-    //hide if not active
-    var className = classNames('row');
-    if(!this.props.active) {
-      className = classNames('row', 'hidden');
-    }
-
     var msqForm = '';
     if(msqOption){
       msqForm = (
@@ -212,9 +203,9 @@ var AGOLSource = React.createClass({
     }
 
 		return (
-        <div className={className}>
+        <div className="row">
           <Formsy.Form>
-            <h5>2) {this.__('Choose an Option')}</h5>
+            <b>{this.__('Choose an Option')}</b>
             <div  className="row">
               <Radio name="type" label=""
                   defaultValue={this.state.selectedOption}

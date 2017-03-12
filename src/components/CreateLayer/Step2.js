@@ -1,139 +1,110 @@
 var React = require('react');
-var classNames = require('classnames');
-
-var Radio = require('../forms/radio');
-var Formsy = require('formsy-react');
-var LocalSource = require('./LocalSource');
-var MapboxSource = require('./MapboxSource');
-var RasterTileSource = require('./RasterTileSource');
-var VectorTileSource = require('./VectorTileSource');
-//var GithubSource = require('./GithubSource');
-var AGOLSource = require('./AGOLSource');
-//var OSMSource = require('./OSMSource');
-var PlanetLabsSource = require('./PlanetLabsSource');
-
+var LayerSettings = require('./LayerSettings');
+var LayerActions = require('../../actions/LayerActions');
+var PresetActions = require('../../actions/presetActions');
+var MessageActions = require('../../actions/MessageActions');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
+var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
-require('../../stores/preset-store'); //needed to init the store used by the source options
+var LocaleMixin = require('../LocaleMixin');
+import Progress from '../Progress';
 
 var Step2 = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore), LocaleMixin],
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    active: React.PropTypes.bool.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+		groups: React.PropTypes.array,
+    onSubmit: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
-      onSubmit: null,
-      active: false
+      groups: [],
+      onSubmit: null
     };
   },
 
   getInitialState() {
     return {
-      canSubmit: false,
-      selectedSource: 'local'
+      saving: false
     };
   },
 
-  sourceChange(value){
-    this.setState({selectedSource: value});
+  onSubmit(){
+    if(!this.state.layer.is_external && !this.state.layer.is_empty){
+      return this.saveDataLoad();
+    }else if(this.state.layer.is_empty){
+      return this.initEmptyLayer();
+    }
+    else{
+      return this.saveExternal();
+    }
   },
 
-  onPrev() {
-    if(this.props.onPrev) this.props.onPrev();
+  initEmptyLayer() {
+    var _this = this;
+
+    //save presets
+    PresetActions.loadDefaultPresets();
+    PresetActions.submitPresets(true, this.state._csrf, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
+      }else{
+        LayerActions.initEmptyLayer(_this.state._csrf, function(err){
+          if(err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            LayerActions.tileServiceInitialized();
+            if(_this.props.onSubmit){
+              _this.props.onSubmit();
+            }
+          }
+        });
+      }
+    });
   },
 
-  onSubmit() {
+  saveDataLoad() {
+    var _this = this;
+
+    _this.setState({saving: true});
+    //save presets
+    PresetActions.submitPresets(true, this.state._csrf, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
+          _this.setState({saving: false});
+      }else{
+        LayerActions.loadData(_this.state._csrf, function(err){
+          _this.setState({saving: false});
+          if(err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            LayerActions.tileServiceInitialized();
+            if(_this.props.onSubmit){
+              _this.props.onSubmit();
+            }
+          }
+        });
+      }
+    });
+  },
+
+  saveExternal() {
     this.props.onSubmit();
   },
 
 	render() {
-
-    //hide if not active
-    var className = classNames('container');
-    if(!this.props.active) {
-      className = classNames('container', 'hidden');
-    }
-    //{value: 'osm', label: 'Import from OpenStreetMap (read-only)'},
-    //{value: 'github', label: 'Github GeoJSON File'},
-    var sourceOptions = [
-      {value: 'local', label: this.__('Upload Data')},
-      {value: 'mapbox', label: this.__('Link to a Mapbox Style or Tileset')},
-      {value: 'raster', label: this.__('Link to a Raster Tile Service')},
-      {value: 'vector', label: this.__('Link to a Vector Tile Service')},
-      {value: 'ags', label: this.__('Link to an ArcGIS Online or ArcGIS Server services')}
-    ];
-
-    if(MAPHUBS_CONFIG.mapHubsPro){
-      sourceOptions.push({value: 'planet', label: this.__('Link to Planet API (planet.com)')});
-    }
-    // osm=false,github = false,
-    var local, mapbox, raster, vector, ags, planet;
-    switch(this.state.selectedSource){
-      case 'local':
-        local = true;
-        break;
-      //case 'osm':
-      //  osm = true;
-      //  break;
-      case 'mapbox':
-        mapbox = true;
-        break;
-      case 'raster':
-        raster = true;
-        break;
-       case 'vector':
-        vector = true;
-        break;
-      //case 'github':
-      //  github = true;
-      //  break;
-      case 'ags':
-        ags = true;
-        break;
-      case 'planet':
-        planet = true;
-        break;
-      default:
-      break;
-    }
-
-    //<OSMSource active={osm} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-    //<GithubSource active={github} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
 		return (
-        <div className={className}>
-          <h5 style={{marginLeft: '-0.5rem'}}>1) Choose a Data Source</h5>
-          <Formsy.Form>
-
-            <div  className="row" style={{marginLeft: '-1.5rem'}}>
-              <Radio name="type" label=""
-                  defaultValue={this.state.selectedSource}
-                  options={sourceOptions} onChange={this.sourceChange}
-                  className="col s8"
+        <div className="row">
+        <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving}/>
+        
+            <p>{this.__('Provide Information About the Data Layer')}</p>
+            <LayerSettings groups={this.props.groups}               
+                submitText={this.__('Save and Continue')} onSubmit={this.onSubmit}
+                warnIfUnsaved={false}
                 />
-            </div>
-            <hr />
-          </Formsy.Form>
-          <LocalSource active={local} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-          <MapboxSource active={mapbox} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-          <RasterTileSource active={raster} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-          <VectorTileSource active={vector} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />     
-          <PlanetLabsSource active={planet} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-          <AGOLSource active={ags} showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />
-
       </div>
 		);
 	}

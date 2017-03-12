@@ -3,7 +3,6 @@ var Reflux = require('reflux');
 var actions = Reflux.createActions({
   'loadLayer': {},
   'saveSettings': {},
-  'saveSource': {},
   'saveDataSettings': {},
   'saveStyle': {},
   'loadData': {},

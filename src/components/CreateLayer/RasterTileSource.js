@@ -24,16 +24,14 @@ var RasterTileSource = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    active: React.PropTypes.bool.isRequired,
+    onSubmit: React.PropTypes.func.isRequired,   
     showPrev: React.PropTypes.bool,
     onPrev: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
-      onSubmit: null,
-      active: false
+      onSubmit: null
     };
   },
 
@@ -101,12 +99,6 @@ var RasterTileSource = React.createClass({
 
 	render() {
 
-    //hide if not active
-    var className = classNames('row');
-    if(!this.props.active) {
-      className = classNames('row', 'hidden');
-    }
-
     var prevButton = '';
     if(this.props.showPrev){
       prevButton = (
@@ -117,9 +109,8 @@ var RasterTileSource = React.createClass({
     }
 
 		return (
-        <div className={className}>
+        <div className="row">
           <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-
             <div>
               <p>Raster Tile Source</p>
             <div className="row">
@@ -132,13 +123,11 @@ var RasterTileSource = React.createClass({
             </div>
             </div>
 
-
             {prevButton}
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
             </div>
           </Formsy.Form>
-
       </div>
 		);
 	}

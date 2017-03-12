@@ -93,45 +93,38 @@ module.exports = Reflux.createStore({
     this.trigger(this.state);
   },
 
-  createLayer(data, _csrf, cb){
+  initLayer(layer){
+    layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type),
+    layer.legend_html = mapStyles.defaultLegend(layer),
+    layer.settings = mapStyles.defaultSettings();
+    layer.preview_position = {
+      zoom: 1,
+      lat: 0,
+      lng: 0,
+      bbox: null
+    }; 
+    return layer;
+  },
+
+  createLayer(_csrf, cb){
     var _this = this;
     var layer = this.state.layer;
     request.post('/api/layer/admin/createLayer')
     .type('json').accept('json')
     .send({
-      layer_id: layer.layer_id,
-      name: data.name,
-      description: data.description,
-      group_id: data.group,
-      private: data.private,
       _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
-
           layer.layer_id = res.body.layer_id;
-          layer.name = data.name;
-          layer.description = data.description;
-          layer.owned_by_group_id = data.group;
-          layer.private = data.private;
-          layer.style = mapStyles.defaultStyle(layer.layer_id, _this.getSourceConfig(), layer.data_type),
-          layer.legend_html = mapStyles.defaultLegend(layer),
-          layer.settings = mapStyles.defaultSettings();
-          layer.preview_position = {
-            zoom: 1,
-            lat: 0,
-            lng: 0,
-            bbox: null
-          };
-
         _this.setState({layer});
-        _this.trigger(_this.state);
+        //_this.trigger(_this.state);
         cb();
       });
     });
   },
 
-  saveSettings(data, _csrf, cb){
+  saveSettings(data, _csrf, initLayer, cb){
     var _this = this;
     request.post('/api/layer/admin/saveSettings')
     .type('json').accept('json')
@@ -141,6 +134,8 @@ module.exports = Reflux.createStore({
       description: data.description,
       group_id: data.group,
       private: data.private,
+      source: data.source,
+      license: data.license,
       _csrf
     })
     .end(function(err, res){
@@ -150,31 +145,12 @@ module.exports = Reflux.createStore({
         layer.description = data.description;
         layer.owned_by_group_id = data.group;
         layer.private = data.private;
-        _this.setState({layer});
-        //_this.trigger(_this.state);
-        cb();
-      });
-    });
-  },
-
-  saveSource(data, _csrf, cb){
-    debug("saveSource");
-    var _this = this;
-    var layer = this.state.layer;
-    request.post('/api/layer/admin/saveSource')
-    .type('json').accept('json')
-    .send({
-      layer_id: layer.layer_id,
-      source: data.source,
-      license: data.license,
-      _csrf
-    })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
         layer.source = data.source;
         layer.license = data.license;
+        if(initLayer){
+          layer = _this.initLayer(layer);
+        }
         _this.setState({layer});
-        _this.trigger(_this.state);
         cb();
       });
     });

@@ -6,14 +6,14 @@ var slug = require('slug');
 var Header = require('../components/header');
 var Step1 = require('../components/CreateLayer/Step1');
 var Step2 = require('../components/CreateLayer/Step2');
-var Step3 = require('../components/CreateLayer/Step3');
+//var Step3 = require('../components/CreateLayer/Step3');
 //var Step4 = require('../components/CreateLayer/Step4');
 var Step5 = require('../components/CreateLayer/Step5');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LayerStore = require('../stores/layer-store');
-var emptyLayer = require('../stores/empty-layer');
+//var emptyLayer = require('../stores/empty-layer');
 var debug = require('../services/debug');
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
@@ -28,14 +28,13 @@ var CreateLayer = React.createClass({
 
   propTypes: {
 		groups: React.PropTypes.array,
-    layer: React.PropTypes.object,
+    layer: React.PropTypes.object.isRequired,
     locale: React.PropTypes.string.isRequired
   },
 
   getDefaultProps() {
     return {
-      groups: [],
-      layer: emptyLayer
+      groups: []
     };
   },
 
@@ -109,41 +108,37 @@ var CreateLayer = React.createClass({
 
     var stepText = this.__('Step') + ' ' + this.state.step;
     var progressWidth = '';
-    var step1 = false, step2 = false, step3 = false, step4 = false; // step5 = false;
-    switch(this.state.step){
-      case 1:
-        progressWidth = 'width-25';
-        step1 = true;
-        break;
-      case 2:
-        progressWidth = 'width-50';
-        step2 = true;
-        break;
-      case 3:
-        progressWidth = 'width-75';
-        step3 = true;
-        break;
-      case 4:
-        progressWidth = 'width-full';
-        step4 = true;
-        break;
-    //  case 5:
-    //    progressWidth = 'width-full';
-    //    step5 = true;
-    //    break;
-      default:
-      break;
-    }
-    var progressClassName = classNames('determinate', progressWidth);
 
+    var progressClassName = classNames('determinate', progressWidth);
+    var step1 = '';
+    if(this.state.step === 1){
+      progressWidth = 'width-25';
+      step1 = (
+        <Step1 onSubmit={this.nextStep}/>
+      );
+    }
+    var step2 = '';
+    if(this.state.step === 2){
+       progressWidth = 'width-50';
+      step2 = (
+        <Step2  groups={this.props.groups} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
+      );
+    }
+    var step3 = '';
+    if(this.state.step === 3){
+       progressWidth = 'width-75';
+      step3 = (
+        <Step5 showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} />         
+      );
+    }
 
 		return (
       <div>
           <Header />
         <main>
           <div style={{marginLeft: '10px', marginRight: '10px'}}>
-            <h4>{this.__('Create Layer')}</h4>
-            <div className="row center">
+            <h5>{this.__('Create Layer')}</h5>
+            <div className="row center no-margin">
 
               <b>{stepText}</b>
 
@@ -151,12 +146,10 @@ var CreateLayer = React.createClass({
                     <div className={progressClassName}></div>
                 </div>
             </div>
-
-            <Step1 groups={this.props.groups} active={step1} onSubmit={this.nextStep}/>
-            <Step2 active={step2} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
-            <Step3 active={step3} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
-            <Step5 active={step4} showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} />
-          </div>
+            {step1}
+            {step2}
+            {step3}
+            </div>
         </main>
 
       </div>

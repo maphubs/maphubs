@@ -30,9 +30,9 @@ module.exports = function(app: any) {
 
      var user_id = req.session.user.id;
      var layer_id = parseInt(req.params.id || '', 10);
-     Layer.allowedToModify(layer_id, user_id)
-     .then(function(allowed){
-       if(allowed){
+     Layer.getLayerByID(layer_id)
+     .then(function(layer){
+       if(layer.created_by_user_id === user_id){
          debug('Mimetype: ' +req.file.mimetype);
          if(_endsWith(req.file.originalname, '.zip')){
            debug('Zip File Detected');

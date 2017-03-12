@@ -35,7 +35,7 @@ module.exports = function(app: any) {
         return knex.transaction(function(trx) {
           return Layer.getLayerByID(layer_id, trx)
             .then(function(layer){
-              return DataLoadUtils.loadTempData(layer_id, user_id, trx)
+              return DataLoadUtils.loadTempData(layer_id, trx)
               .then(function(){
                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
                 .then(function(){
@@ -62,16 +62,20 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.id || '', 10);
 
     Layer.allowedToModify(layer_id, user_id)
-    .then(function(allowed){
+    .then(allowed =>{
       if(allowed){
-        return knex.transaction(function(trx) {
+        return knex.transaction(trx => {
           return Layer.getLayerByID(layer_id, trx)
-            .then(function(layer){
-                return layerViews.createLayerViews(layer_id, layer.presets, trx)
-                .then(function(){
+            .then(layer=>{
+              return DataLoadUtils.createEmptyDataTable(layer.layer_id, trx)
+              .then(()=>{
+                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
+                .then(()=>{
                     debug('init empty transaction complete');
                     res.status(200).send({success: true});
+                });
               });
+               
           });
         }).catch(apiError(res, 500));
       }else{
@@ -92,17 +96,8 @@ module.exports = function(app: any) {
     if(data){
       var actionData = [];
       switch(action){
-        case 'createLayer':
-          if(!data.name || !data.description || !data.group_id || data.private === undefined){
-            apiDataError(res);
-            return;
-          }
-          actionData = [
-            data.name,
-            data.description,
-            data.group_id,
-            data.private
-          ];
+        case 'createLayer':       
+          actionData = [];
           break;
         case 'saveSettings':
           if(!data.layer_id){
@@ -114,7 +109,9 @@ module.exports = function(app: any) {
             data.name,
             data.description,
             data.group_id,
-            data.private
+            data.private,
+            data.source,
+            data.license
           ];
         break;
         case 'saveDataSettings':
@@ -131,17 +128,6 @@ module.exports = function(app: any) {
             data.external_layer_config
           ];
         break;
-        case 'saveSource':
-          if(!data.layer_id){
-            apiDataError(res);
-            return;
-          }
-          actionData = [
-            data.layer_id,
-            data.source,
-            data.license
-          ];
-          break;
         case 'saveStyle':
           if(!data.layer_id || !data.style){
             apiDataError(res);

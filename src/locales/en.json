@@ -781,5 +781,16 @@
 	"Connection Status:": "Connection Status:",
 	"Index Status:": "Index Status:",
 	"Create Index": "Create Index",
-	"Rebuild Feature Index": "Rebuild Feature Index"
+	"Rebuild Feature Index": "Rebuild Feature Index",
+	"Planet API": "Planet API",
+	"Create New Data": "Create New Data",
+	"Point": "Point",
+	"Line": "Line",
+	"Polygon": "Polygon",
+	"Add Existing Data": "Add Existing Data",
+	"Mapbox": "Mapbox",
+	"Raster Tiles": "Raster Tiles",
+	"Vector Tiles": "Vector Tiles",
+	"ArcGIS Services": "ArcGIS Services",
+	"Mapbox Styles": "Mapbox Styles"
 }

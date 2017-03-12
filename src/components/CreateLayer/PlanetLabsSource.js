@@ -14,8 +14,6 @@ var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
-var classNames = require('classnames');
-
 var PlanetLabsSource = React.createClass({
 
   mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
@@ -26,15 +24,13 @@ var PlanetLabsSource = React.createClass({
 
   propTypes: {
     onSubmit: React.PropTypes.func.isRequired,
-    active: React.PropTypes.bool.isRequired,
     showPrev: React.PropTypes.bool,
     onPrev: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
-      onSubmit: null,
-      active: false
+      onSubmit: null
     };
   },
 
@@ -170,13 +166,6 @@ var PlanetLabsSource = React.createClass({
       );
     }
 
-
-    //hide if not active
-    var className = classNames('row');
-    if(!this.props.active) {
-      className = classNames('row', 'hidden');
-    }
-
     var prevButton = '';
     if(this.props.showPrev){
       prevButton = (
@@ -187,9 +176,9 @@ var PlanetLabsSource = React.createClass({
     }
 
 		return (
-        <div className={className}>
+        <div className="row">
           <Formsy.Form>
-            <h5>2) {this.__('Choose an Option')}</h5>
+            <b>{this.__('Choose an Option')}</b>
             <div  className="row">
               <Radio name="type" label=""
                   defaultValue={this.state.selectedOption}

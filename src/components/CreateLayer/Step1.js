@@ -1,49 +1,51 @@
 var React = require('react');
-
-var LayerSettings = require('./LayerSettings');
 var classNames = require('classnames');
 
-var LayerActions = require('../../actions/LayerActions');
 var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+var LocaleMixin = require('../LocaleMixin');
+
+var LayerActions = require('../../actions/LayerActions');
+var MessageActions = require('../../actions/MessageActions');
+var CreateLayer = require('./CreateLayer');
 
 var Step1 = React.createClass({
 
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
 
   propTypes: {
-		groups: React.PropTypes.array,
-    onSubmit: React.PropTypes.func,
-    active: React.PropTypes.bool.isRequired
+    onSubmit: React.PropTypes.func.isRequired,
+    showPrev: React.PropTypes.bool,
+    onPrev: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
-      groups: [],
-      onSubmit: null,
-      active: false
+      onSubmit: null
     };
   },
 
   getInitialState() {
     return {
       created: false,
-      warnIfUnsaved: true
+      canSubmit: false,
+      selectedSource: 'local'
     };
   },
 
-  submit () {
-    this.setState({created: true});
-    NotificationActions.showNotification({message: this.__('Layer Saved'),dismissAfter: 1000, onDismiss: this.props.onSubmit});
+  sourceChange(value){
+    this.setState({selectedSource: value});
+  },
+
+  onPrev() {
+    if(this.props.onPrev) this.props.onPrev();
+  },
+
+  onSubmit() {
+    this.props.onSubmit();
   },
 
   cancelCallback(){
@@ -56,7 +58,7 @@ var Step1 = React.createClass({
     });
   },
 
-  handleCancel(){
+   onCancel(){
     var _this = this;
     if(_this.state.created){
       //delete the layer
@@ -74,21 +76,12 @@ var Step1 = React.createClass({
   },
 
 	render() {
-
-    //hide if not active
-    var className = classNames('row');
-    if(!this.props.active) {
-      className = classNames('row', 'hidden');
-    }
-
-		return (
-        <div className={className}>
-            <p>{this.__('Provide Information About the Data Layer')}</p>
-            <LayerSettings groups={this.props.groups} create={!this.state.created}
-                showCancel={true} cancelText={this.__('Cancel')} onCancel={this.handleCancel}
-                submitText={this.__('Save and Continue')} onSubmit={this.submit}
-                warnIfUnsaved={this.state.warnIfUnsaved}
-                />
+    
+    return (
+        <div className="row">
+          <CreateLayer onPrev={this.onPrev} onSubmit={this.onSubmit} 
+          showCancel={true} cancelText={this.__('Cancel')} onCancel={this.onCancel}
+         />      
       </div>
 		);
 	}

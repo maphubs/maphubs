@@ -4,7 +4,6 @@ var slug = require('slug');
 
 var Header = require('../components/header');
 var LayerSettings = require('../components/CreateLayer/LayerSettings');
-var LayerSource = require('../components/CreateLayer/LayerSource');
 var PresetEditor = require('../components/CreateLayer/PresetEditor');
 var LayerStyle = require('../components/CreateLayer/LayerStyle');
 var MessageActions = require('../actions/MessageActions');
@@ -182,7 +181,6 @@ var LayerAdmin = React.createClass({
              <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
              <ul className="tabs" style={{overflowX: 'hidden'}}>
                <li className="tab"><a className="active" href="#info">{this.__('Info/Settings')}</a></li>
-               <li className="tab"><a href="#source">{this.__('Source/License')}</a></li>
                <li className="tab"><a href="#fields">{this.__('Fields')}</a></li>
                <li className="tab"><a href="#style">{this.__('Style/Display')}</a></li>
              </ul>
@@ -194,12 +192,6 @@ var LayerAdmin = React.createClass({
                  warnIfUnsaved
                  submitText={this.__('Save')} onSubmit={this.save}
              />
-           </div>
-           <div id="source" className="col s12" style={{display: tabContentDisplay}}>
-             <LayerSource
-                 showPrev={false}
-                 submitText={this.__('Save')} onSubmit={this.save}
-              />
            </div>
            <div id="fields" className="col s12" style={{display: tabContentDisplay}}>
              <div className="container" >

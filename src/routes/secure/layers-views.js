@@ -36,13 +36,17 @@ module.exports = function(app: any) {
   app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
 
     var user_id = req.session.user.id;
-
-    Group.getGroupsForUser(user_id)
-    .then(function(result){
-      res.render('createlayer', {
-        title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {groups: result},
-        req
+    Layer.createLayer(user_id).then(layer_id =>{
+      layer_id = parseInt(layer_id);
+      return Layer.getLayerByID(layer_id).then(layer =>{
+        return Group.getGroupsForUser(user_id)
+        .then(function(result){
+          res.render('createlayer', {
+            title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
+            props: {groups: result, layer},
+            req
+          });
+        });
       });
     }).catch(nextError(next));
 

@@ -9,6 +9,8 @@ var Formsy = require('formsy-react');
 var TextArea = require('../forms/textArea');
 var TextInput = require('../forms/textInput');
 var SelectGroup = require('../Groups/SelectGroup');
+var Select = require('../forms/select');
+var Licenses = require('./licenses');
 
 
 var LayerStore = require('../../stores/layer-store');
@@ -30,12 +32,11 @@ var LayerSettings = React.createClass({
     active: React.PropTypes.bool,
     onValid: React.PropTypes.func,
     onInValid: React.PropTypes.func,
-    showCancel: React.PropTypes.bool,
-    cancelText: React.PropTypes.string,
-    onCancel: React.PropTypes.func,
     submitText: React.PropTypes.string,
-    create:  React.PropTypes.bool,
     showGroup: React.PropTypes.bool,
+    showPrev: React.PropTypes.bool,
+    onPrev: React.PropTypes.func,
+    prevText: React.PropTypes.string,
     warnIfUnsaved: React.PropTypes.bool
   },
 
@@ -43,9 +44,9 @@ var LayerSettings = React.createClass({
     return {
       onSubmit: null,
       active: true,
-      create: false,
       showGroup: true,
-      warnIfUnsaved: false
+      warnIfUnsaved: false,
+      showPrev: false
     };
   },
 
@@ -88,6 +89,11 @@ var LayerSettings = React.createClass({
 
   onSubmit(model) {
     var _this = this;
+
+    var initLayer = false;
+    if(!this.state.layer.owned_by_group_id){
+      initLayer = true;
+    }
     if(!model.group && this.state.layer.owned_by_group_id){
       //editing settings on an existing layer
       model.group = this.state.layer.owned_by_group_id;
@@ -98,34 +104,21 @@ var LayerSettings = React.createClass({
     if(!model.private){
       model.private = false;
     }
-    if(this.props.create){
-      LayerActions.createLayer(model, _this.state._csrf, function(err){
-        if(err){
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          _this.setState({pendingChanges: false});
-          if(_this.props.onSubmit){
-            _this.props.onSubmit();
-          }
-        }
-      });
-    }else {
-      LayerActions.saveSettings(model, _this.state._csrf, function(err){
-        if(err){
-          MessageActions.showMessage({title: _this.__('Error'), message: err});
-        }else{
-          _this.setState({pendingChanges: false});
-          if(_this.props.onSubmit){
-            _this.props.onSubmit();
-          }
-        }
-      });
-    }
 
+    LayerActions.saveSettings(model, _this.state._csrf, initLayer, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Error'), message: err});
+      }else{
+        _this.setState({pendingChanges: false});
+        if(_this.props.onSubmit){
+          _this.props.onSubmit();
+        }
+      }
+    });
   },
 
-  onCancel(){
-    this.props.onCancel();
+  onPrev() {
+    if(this.props.onPrev) this.props.onPrev();
   },
 
 	render() {
@@ -145,48 +138,78 @@ var LayerSettings = React.createClass({
       canChangeGroup = false;
     }
     
-    var cancel = '', submitIcon = '';
-    if(this.props.showCancel){
-      cancel = (
+    var licenseOptions = Licenses.getLicenses(this.__);
+
+
+    var prevButton = '', submitIcon = '';
+    if(this.props.showPrev){
+      prevButton = (
         <div className="left">
-            <a className="waves-effect waves-light white omh-accent-text redirect btn" onClick={this.onCancel}><i className="material-icons left">delete</i>{this.props.cancelText}</a>
+          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>{this.props.prevText}</a>
         </div>
       );
+
       submitIcon = (
         <i className="material-icons right">arrow_forward</i>
       );
     }
 
 		return (
-        <div className="container">
+        <div style={{marginRight: '2%', marginLeft: '2%', marginTop:'10px'}}>
             <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
               <div className="row">
-                <TextInput name="name" label={this.__('Name')} icon="info" className="col s12"
-                    value={this.state.layer.name}
-                    validations="maxLength:100" validationErrors={{
-                       maxLength: this.__('Name must be 100 characters or less.')
-                     }} length={100}
-                    dataPosition="top" dataTooltip={this.__('Short Descriptive Name for the Layer')}
-                    required/>
+              <div className="col s12 m6">
+                <div className="row">
+                  <TextInput name="name" label={this.__('Name')} icon="info" className="col s12"
+                      value={this.state.layer.name}
+                      validations="maxLength:100" validationErrors={{
+                        maxLength: this.__('Name must be 100 characters or less.')
+                      }} length={100}
+                      dataPosition="top" dataTooltip={this.__('Short Descriptive Name for the Layer')}
+                      required/>
+                </div>
+                <div className="row">
+                  <TextArea name="description" label={this.__('Description')} icon="description" className="col s12"
+                      value={this.state.layer.description}
+                      validations="maxLength:1000" validationErrors={{
+                        maxLength: this.__('Description must be 1000 characters or less.')
+                      }} length={1000}
+                      dataPosition="top" dataTooltip={this.__('Brief Description of the Layer')}
+                      required/>
+                </div>             
+                <div  className="row">
+                  <SelectGroup groups={this.state.groups} type="layer" canChangeGroup={canChangeGroup} editing={!canChangeGroup}/>
+                </div>
               </div>
+              <div className="col s12 m6">
               <div className="row">
-                <TextArea name="description" label={this.__('Description')} icon="description" className="col s12"
-                    value={this.state.layer.description}
-                    validations="maxLength:1000" validationErrors={{
-                       maxLength: this.__('Description must be 1000 characters or less.')
-                     }} length={1000}
-                    dataPosition="top" dataTooltip={this.__('Brief Description of the Layer')}
-                    required/>
+                <TextInput name="source" label={this.__('Source Description')} icon="explore" className="col s12"
+                  value={this.state.layer.source}
+                  validations="maxLength:300" validationErrors={{
+                       maxLength: this.__('Name must be 300 characters or less.')
+                   }} length={300}
+                   dataPosition="top" dataTooltip={this.__('Short Description of the Layer Source')}
+                   required/>
               </div>
-             
-            <div  className="row">
-              <SelectGroup groups={this.state.groups} type="layer" canChangeGroup={canChangeGroup} editing={!this.props.create}/>
+              <div  className="row">
+                  <Select name="license" id="layer-source-select" label={this.__('License')} startEmpty={false}
+                    value={this.state.layer.license} defaultValue={this.state.layer.license} options={licenseOptions}
+                    note={this.__('Select a license for more information')}
+                    icon="info"
+                    className="col s12"
+                    dataPosition="top" dataTooltip={this.__('Layer License')}
+                    />
+                </div>
+              </div>
             </div>
-
-            {cancel}
-            <div className="right">
-                <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}>{submitIcon}{this.props.submitText}</button>
+            <div className="container">
+              {prevButton}
+              <div className="right">
+                  <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}>{submitIcon}{this.props.submitText}</button>
+              </div>
             </div>
+            
+           
           </Formsy.Form>
 
       </div>
