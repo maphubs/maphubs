@@ -60,7 +60,10 @@ module.exports = function(app: any) {
         dataRequests.push(
           Layer.allowedToModify(editLayerId, user_id).then(allowed=>{
             if(allowed){
-              return Layer.getLayerByID((editLayerId));
+              return Layer.getLayerByID((editLayerId)).then(layer=>{
+                layer.canEdit = true;
+                return layer;
+              });
             }else{
               return null;
             }
