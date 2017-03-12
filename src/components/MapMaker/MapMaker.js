@@ -174,6 +174,7 @@ var MapMaker = React.createClass({
     $('.savebutton-tooltipped').tooltip();
 
     if(this.state.editingLayer && !prevState.editingLayer){
+      //starting editing
       if(this.refs.editLayerPanel){
         $(this.refs.layersListPanel).removeClass('active');
         $(this.refs.layersListPanel).find('.collapsible-body').css('display', 'none');
@@ -185,6 +186,10 @@ var MapMaker = React.createClass({
         $(this.refs.editLayerPanel).find('.collapsible-body').css('display', 'block');
         
       }
+    }else if(!this.state.editingLayer && prevState.editingLayer){
+      //stopping editing
+      $(this.refs.layersListPanel).addClass('active');
+      $(this.refs.layersListPanel).find('.collapsible-body').css('display', 'block');
     }
 
     if(!this.state.editLayerLoaded && this.props.editLayer && this.refs.map && this.refs.map.map){
@@ -373,13 +378,11 @@ var MapMaker = React.createClass({
   saveEdits(){
     DataEditorActions.saveEdits(this.state._csrf, function(){
       this.refs.map.stopEditingTool();
-      //TODO: notify user
     });
   },
 
   stopEditingLayer(){
-    //TODO: warn user if there are unsaved edits
-  Actions.stopEditing();
+    Actions.stopEditing();
     DataEditorActions.stopEditing();
     this.refs.map.stopEditingTool();
   },

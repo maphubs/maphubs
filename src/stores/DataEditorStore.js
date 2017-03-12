@@ -167,15 +167,19 @@ module.exports = Reflux.createStore({
         _csrf
     })
     .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
-        //after saving clear all edit history
-        _this.setState({
+      checkClientError(res, err, cb, function(cb){       
+        if(err){
+          cb(err);
+        }else{
+          //after saving clear all edit history
+          _this.setState({
           originals: [], 
           edits: [],
           redo: [], 
           selectedEditFeature: null
         });
         cb();
+        }      
       });
     });
 
