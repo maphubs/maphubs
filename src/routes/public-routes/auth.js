@@ -84,7 +84,7 @@ module.exports = function(app: any) {
   app.post('/oauth2/dialog/authorize/decision', oauth2.decision);
 app.post('/oauth2/token', oauth2.token);
 
-*/
+
   app.get('/oauth/authorize', oauth.userAuthorization);
   app.post('/dialog/authorize/decision', oauth.userDecision);
 
@@ -92,5 +92,5 @@ app.post('/oauth2/token', oauth2.token);
 
   app.post('/oauth/request_token', oauth.requestToken);
   app.post('/oauth/access_token', oauth.accessToken);
-
+*/
 };
