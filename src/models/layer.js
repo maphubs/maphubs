@@ -397,17 +397,14 @@ module.exports = {
     /**
    * Can include private?: Yes
    */
-    createLayer(name: string, description: string, group_id: string, isPrivate: boolean, user_id: number){
+    createLayer(user_id: number){
       return knex('omh.layers').returning('layer_id')
         .insert({
-          name, description,
-          owned_by_group_id: group_id,
-            private: isPrivate,
             status: 'incomplete',
             created_by_user_id: user_id,
             creation_time: knex.raw('now()'),
             updated_by_user_id: user_id,
-            extent_bbox: '[-175,-85,175,85]', //needs to be slightly less than global otherwise mapbox gl gets confused
+            extent_bbox: '[-175,-85,175,85]', //make sure we always init a default for this
             last_updated: knex.raw('now()')
         });
     },
@@ -644,24 +641,33 @@ module.exports = {
       });
     },
 
-    saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, user_id: number) {
+    saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, source: any, license: any, user_id: number) {
       var _this = this;
       return knex.transaction(function(trx) {
         return _this.getLayerByID(layer_id, trx)
         .then(function(layer){
+          //don't change privacy if request is missing the value
+          if(isPrivate === undefined){
+            isPrivate = layer.private;
+          }
+          var owned_by_group_id = layer.owned_by_group_id;
+          if(!owned_by_group_id){
+            //set for the first time
+            owned_by_group_id = group_id;
+          }else if(group_id !== layer.owned_by_group_id){
+            log.warn('transfering layer ownership not implemented in this method: ' + layer_id);
+          }
 
           var update =  trx('omh.layers')
             .update({
               name, description,
                 private: isPrivate,
+                source,
+                license,
+                owned_by_group_id,
                 updated_by_user_id: user_id,
                 last_updated: knex.raw('now()')
             }).where({layer_id});
-
-          if(group_id !== layer.owned_by_group_id){
-            //TODO: support transfering layer ownership
-            log.warn('transfering layer ownership not implemented: ' + layer_id);
-          }
 
           if(!layer.private && isPrivate){
             //public layer is switching to private
@@ -717,7 +723,7 @@ module.exports = {
       }
     },
 
-
+/*
     saveSource(layer_id: number, source: any, license: any, user_id: number) {
       return knex('omh.layers').where({
           layer_id
@@ -729,6 +735,7 @@ module.exports = {
             last_updated: knex.raw('now()')
         });
     },
+    */
 
     saveStyle(layer_id: number, style: any, labels: any, legend_html: any, settings: any, preview_position: any, user_id: number) {
       return knex('omh.layers').where({

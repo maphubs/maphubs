@@ -57,20 +57,46 @@ module.exports = {
     .then(layers => {
       var commands = [];
       layers.forEach(layer =>{
-        var updateCommands = [];
         if(!layer.is_external && !layer.remote){
-          log.info('Adding layer: ' + layer.layer_id);
-          commands.push(knex(`layers.data_${layer.layer_id}`).select('mhid')
-          .then(mhidResults =>{
-            log.info('updating ' + mhidResults.length + ' features');
-            mhidResults.forEach(mhidResult =>{
-              updateCommands.push(_this.updateFeature(layer.layer_id, mhidResult.mhid, false));
-            });
-            return Promise.all(updateCommands);
-          }));
+         commands.push(_this.updateLayer(layer));
         }
       }); 
       return Promise.all(commands);
+    });
+  },
+
+  updateLayer(layer_id: number, trx: any){
+    var _this = this;
+    let db = knex; if(trx){db = trx;}
+    var updateCommands = [];
+
+    log.info('Adding layer in search index: ' + layer_id);
+    return db(`layers.data_${layer_id}`).select('mhid')
+    .then(mhidResults =>{
+      log.info('updating ' + mhidResults.length + ' features');
+      mhidResults.forEach(mhidResult =>{
+        updateCommands.push(_this.updateFeature(layer_id, mhidResult.mhid, false, trx));
+      });
+      return Promise.all(updateCommands);
+    });
+  },
+
+
+  deleteLayer(layer_id: number, trx: any){
+    var _this = this;
+    let db = knex; if(trx){db = trx;}
+    var deleteCommands = [];
+
+    log.info('Deleting layer form search index: ' + layer_id);
+    return db(`layers.data_${layer_id}`).select('mhid')
+    .then(mhidResults =>{
+      log.info('deleting ' + mhidResults.length + ' features');
+      mhidResults.forEach(mhidResult =>{
+        deleteCommands.push(_this.deleteFeature(mhidResult.mhid));
+      }).catch(err =>{
+        log.error(err);
+      });
+      return Promise.all(deleteCommands);
     });
   },
 
@@ -98,9 +124,12 @@ module.exports = {
             lon: centroid.geometry.coordinates[0]
           },
           properties: result.feature.geojson.features[0].properties,
-          notes: result.feature.notes,
+          notes: result.notes,
           published: true,
+          timeout: 60000
         }
+      }).catch(err =>{
+        log.error(err);
       });
     });
 
@@ -110,7 +139,10 @@ module.exports = {
     return client.delete({
       index: this.searchIndexName,
       type: 'feature',
-      id: mhid
+      id: mhid,
+      timeout: 60000
+    }).catch(err =>{
+      log.error(err);
     });
   },
 
@@ -126,7 +158,8 @@ module.exports = {
               "query": query + '*'
             }
           }
-        }
+        },
+        timeout: 60000
       }
     ).then(results => {
       if(results && results.hits && results.hits.hits){
@@ -134,10 +167,6 @@ module.exports = {
       }
       return null;
     });
-  },
-
-  updateLayer(){
-
   },
 
   updateStory(){

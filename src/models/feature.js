@@ -1,13 +1,7 @@
 // @flow
 var knex = require('../connection.js');
-//var Promise = require('bluebird');
-//var dbgeo = require('dbgeo');
-//var log = require('../services/log.js');
-//var debug = require('../services/debug')('model/features');
-//var geojsonUtils = require('../services/geojson-utils');
 
 module.exports = {
-
 
   getFeatureByID(mhid: string, layer_id: number, trx: any) {
     var _this = this;

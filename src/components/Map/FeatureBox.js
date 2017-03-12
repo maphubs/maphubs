@@ -172,10 +172,11 @@ var FeatureBox = React.createClass({
         }
 
         var featureLink;
-        if(host === window.location.hostname || host === 'dev.docker'){
-          featureLink = '/feature/' + layer_id + '/' + mhid + '/' + featureName;
+        var featureID = mhid.split(':')[1];
+        if(host === window.location.hostname || host === 'dev.docker'){      
+          featureLink = '/feature/' + layer_id + '/' + featureID + '/' + featureName;
         }else{
-          featureLink = 'https://' + host + '/feature/' + layer_id + '/' + mhid + '/' + featureName;
+          featureLink = 'https://' + host + '/feature/' + layer_id + '/' + featureID + '/' + featureName;
         }
       infoPanel = (<div className="row" style={{marginTop: '10px', marginBottom: '10px'}}>
         <div className="col s10 center">

@@ -52,7 +52,7 @@ module.exports = {
     debug('updating feature: ' + mhid);
     let db = knex; if(trx){db = trx;}
     return db.raw(`UPDATE layers.data_${layer_id}
-    SET wkb_geometry =  ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'), 4326)::geometry(Geometry,4326)
+    SET wkb_geometry =  ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'), 4326)::geometry(Geometry,4326),
     tags = '${JSON.stringify(geojson.properties)}'::jsonb
     WHERE mhid = '${mhid}';
     `).then(()=>{

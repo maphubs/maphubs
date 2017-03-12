@@ -2,6 +2,7 @@
 var elasticsearch = require('elasticsearch');
 var local = require('../local');
 var log = require('../services/log');
+var Bluebird = require('bluebird');
 
 /**
  * Singleton wrapper around Elasticsearch client object
@@ -18,7 +19,11 @@ module.exports = {
       this.client = new elasticsearch.Client({
         host: host + ':' + port,
         log: 'warning',
-        httpAuth: user + ':' + pass
+        httpAuth: user + ':' + pass,
+        requestTimeout: 60000,
+        defer: () => {
+          return Bluebird.defer();
+        }
       });
     }
 

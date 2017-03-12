@@ -3,6 +3,7 @@ var Feature = require('../../models/feature');
 var Layer = require('../../models/layer');
 var LayerData = require('../../models/layer-data');
 var PhotoAttachment = require('../../models/photo-attachment');
+var SearchIndex = require('../../models/search-index');
 var knex = require('../../connection.js');
 //var Tag = require('../../models/tag');
 var urlUtil = require('../../services/url-util');
@@ -227,13 +228,19 @@ module.exports = function(app: any) {
       Layer.allowedToModify(data.layer_id, user_id)
       .then(function(allowed){
         if(allowed){
-          Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes)
+          return knex.transaction(function(trx) {
+          return Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes, trx)
+          .then(()=>{
+            return SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx)
             .then(function() {
-              res.send({success: true});
-            }).catch(apiError(res, 500));
+                res.send({success: true});
+              });
+          }).catch(apiError(res, 500));
+        });
         }else {
           notAllowedError(res, 'layer');
         }
+        
       }).catch(apiError(res, 500));
     } else {
       apiDataError(res);

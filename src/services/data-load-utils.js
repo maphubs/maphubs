@@ -14,7 +14,7 @@ var sizeof = require('object-sizeof');
 var styles = require('../components/Map/styles');
 //var fileEncodingUtils = require('./file-encoding-utils');
 var ogr2ogr = require('ogr2ogr');
-//var dbgeo = require('dbgeo');
+var SearchIndex = require('../models/search-index');
 
 const LARGE_DATA_THRESHOLD = 20000000;
 //const FEATURE_CHUNK_SIZE = 1000; 
@@ -26,23 +26,20 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     //remove views
-    return LayerViews.dropLayerViews(layer_id, trx).then(function(){
-      //delete data from OSM
-      var commands = [
-          'DELETE FROM current_relation_tags WHERE relation_id IN (SELECT id FROM current_relations WHERE layer_id =' + layer_id + ')',
-          'DELETE FROM current_relation_members WHERE relation_id IN (SELECT id FROM current_relations WHERE layer_id =' + layer_id + ')',
-          'DELETE FROM current_relations WHERE layer_id =' + layer_id,
-          'DELETE FROM current_way_tags WHERE way_id IN (SELECT id FROM current_ways WHERE layer_id =' + layer_id + ')',
-          'DELETE FROM current_way_nodes WHERE way_id IN (SELECT id FROM current_ways WHERE layer_id =' + layer_id + ')',
-          'DELETE FROM current_ways WHERE layer_id =' + layer_id,
-          'DELETE FROM current_node_tags WHERE node_id IN (SELECT id FROM current_nodes WHERE layer_id =' + layer_id + ')',
-          'DELETE FROM current_nodes WHERE layer_id =' + layer_id
-      ];
-      return Promise.each(commands, function(command){
-        return db.raw(command);
+    return db('omh.layers').select('status').where({layer_id}).then(result =>{
+      let status = result[0].status;
+      if(status === 'published ' || status === 'loaded'){
+        return SearchIndex.deleteLayer(layer_id, trx)
+      .then(()=>{
+        return LayerViews.dropLayerViews(layer_id, trx).then(()=>{
+          //delete data from OSM
+        return db.raw(`DROP TABLE layers.data_${layer_id};`);
+        });
       });
+      }else{
+        return null;
+      }     
     });
-
   },
 
   storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
@@ -140,16 +137,10 @@ module.exports = {
           if(typeof val === 'string'){
             val = val.replace(/\r?\n/g, ' ');
           }
-          if(typeof val === 'string' && val.length > 255){
-            //trim data to 255 chars
-            log.info('trimming string attribute to 255 chars: ' + key);
-            //first replace html
-            val = val.replace(/<(?:.|\n)*?>/gm, '');
-            val = val.substring(0, 254);
-          }else if(typeof val === 'object'){
-            //stringify nested JSON objects, and limit to 255 chars
-            log.info('trimming attribute to 255 chars: ' + key);
-            val = JSON.stringify(val).substring(0, 254);
+
+          if(typeof val === 'object'){
+            log.info('converting nested object to string: ' + key);
+            val = JSON.stringify(val);
           }
           
           cleanedFeatureProps[key] = val;
@@ -280,152 +271,55 @@ module.exports = {
     }
   });
   },
-/*
-  getTempData(layer_id){
-    debug('getTempData');
-    return knex('omh.temp_data').select('uploadtmppath').where({layer_id})
-    .then(function(result){
-      return new Promise(function (resolve, reject) {
-        let data = fileEncodingUtils.getDecodedFileWithBestGuess(result[0].uploadtmppath + '.geojson');
-        if(data){
-          var geoJSON = JSON.parse(data);
-          resolve(geoJSON);
-        }else{
-          reject(new Error('Error loading temp geoJSON file'));
-        }
-        });
-      });
-  },
-  */
 
-  loadTempData(layer_id: number, uid: number, trx: any){
-
-    return trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
-      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
-      .then(function(){
+  createEmptyDataTable(layer_id: number, trx: any){
+     return trx.raw(`CREATE TABLE layers.data_${layer_id}
+     (
+       mhid text, 
+       wkb_geometry geometry(Geometry, 4326),
+       tags jsonb
+     )`).then(()=>{
         return trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
-        .then(function(){
+        .then(()=>{
           return trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
             ON layers.data_${layer_id}
             USING gist
             (wkb_geometry);`)
-          .then(function(){
+          .then(()=>{
+              return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`);
+            });
+        });
+    });
+  },
+
+  loadTempData(layer_id: number, trx: any){
+
+    return trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
+      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
+      .then(()=>{
+        return trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
+        .then(()=>{
+          return trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
+            ON layers.data_${layer_id}
+            USING gist
+            (wkb_geometry);`)
+          .then(()=>{
             return trx.raw(`DROP TABLE layers.temp_${layer_id};`)
-            .then(function(){
+            .then(()=>{
               return trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
-              .then(function(result){
+              .then(result =>{
                 var maxVal = parseInt(result.rows[0].cnt) + 1;
                 debug('creating sequence starting at: ' + maxVal);
-                return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`);
-                //then update tag search index
+                return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
+                .then(()=>{
+                  return SearchIndex.updateLayer(layer_id, trx).then(()=>{
+                    return trx('omh.layers').update({status: 'loaded'}).where({layer_id});
+                  });
+                });                                
               });       
             });       
           });
         });
       });
   }
-/*
-  loadTempDataToOSM(layer_id: number, uid: number, trx: any){
-    //get GeoJSON from temp table
-    debug('loading temp data to OSM');
-        //create a new changeset
-        return trx('omh.temp_data').select('unique_props').where({layer_id})
-        .then(function(propsResult){
-          var props = propsResult[0]['unique_props'];
-          var selectedProps = [];
-          props.forEach(function(prop){
-            selectedProps.push(trx.raw(`"${prop.toLowerCase()}" as "${prop}"`));
-          });
-          selectedProps.push(trx.raw('ST_AsGeoJSON(wkb_geometry) as geom'));
-          
-        
-        return Changeset.createChangeset(uid, trx)
-        .then(function(changeSetResult){
-          var changeset_id = changeSetResult[0];
-          debug('created changeset: ' + changeset_id);
-
-          return trx(`layers.temp_${layer_id}`).count('ogc_fid as count')
-          .then(function(countResult){
-          var numFeatures = countResult[0].count;
-         
-          //by default we only need one interation
-          var chunks = 1;
-          var chunkSize = numFeatures;
-
-          if(numFeatures > FEATURE_CHUNK_SIZE){
-            chunks = Math.ceil(numFeatures / FEATURE_CHUNK_SIZE);
-            chunkSize = Math.ceil(numFeatures / chunks);
-            log.info('Large Data - chunking data load into ' + chunks + ' chunks of ' + chunkSize + ' features');
-          }
-
-
-          var chunksArr = [];
-          for(var i = chunks-1; i >= 0; i--){
-            chunksArr.push(i);
-          }
-
-          //loop through chunks
-          return Promise.map(chunksArr, function(i){
-            var start = chunkSize * i;
-            debug('chunk: ' + (i+1) + '/' + chunks + ' features: ' + start + ' through ' + (start + chunkSize));
-            
-            return trx(`layers.temp_${layer_id}`)
-            .select(selectedProps)
-            .limit(FEATURE_CHUNK_SIZE)
-            .offset(start)
-            .then(function(data){
-              return new Promise(function(fulfill, reject) {
-                dbgeo.parse(data,{
-                      "outputFormat": "geojson",
-                      "geometryColumn": "geom",
-                      "geometryType": "geojson"
-                    }, function(error, result) {
-                      if (error) {
-                        log.error('DBGEO: ' + error);
-                        reject(error);
-                      }
-
-                      if(local.writeDebugData){
-                        fs.writeFile(local.tempFilePath + '/osm-' + layer_id + '-' + i + '.geojson', JSON.stringify(result), function(err){
-                          if(err) {
-                            log.error(err);
-                            reject(error);
-                          }
-                        });
-                      }   
-
-                      let osmJSON = geojson2osm(result, changeset_id, true, 0, FEATURE_CHUNK_SIZE);
-
-                      if(local.writeDebugData){
-                        fs.writeFile(local.tempFilePath + '/osm-' + layer_id + '-' + i + '.json', JSON.stringify(osmJSON), function(err){
-                          if(err) {
-                            log.error(err);
-                            reject(error);
-                          }
-                        });
-                      }   
-                      fulfill(osmJSON);                  
-                  });      
-              }).then(function(osmJSON){
-                return Changeset.processChangeset(changeset_id, uid, layer_id, osmJSON, trx);  
-              });
-            });
-        
-          }, {concurrency: 1})
-          .then(function(results){
-            var processChangeSetResult = results[results.length-1];
-            return Changeset.closeChangeset(changeset_id, trx)
-            .then(function(){
-              return processChangeSetResult;
-            });
-          });
-        });
-        });
-        })
-      .catch(function (err) {
-        log.error(err);
-        throw err;
-      });
-  }
-  */
 };
