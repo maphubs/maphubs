@@ -107,10 +107,12 @@ module.exports = Reflux.createStore({
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
     layers[index].map_style = style;
+    layers[index].style = style;
     layers[index].map_labels = labels;
     layers[index].map_legend_html = legend;
     layers[index].map_settings = settings;
     this.updateMap(layers);
+    this.setState({mapLayers: layers});
   },
 
   saveMap(title, position, basemap, _csrf, cb){

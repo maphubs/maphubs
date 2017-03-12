@@ -311,10 +311,7 @@ var MapMaker = React.createClass({
   },
 
   onLayerStyleChange(layer_id, style, labels, legend, settings){
-    var _this = this;
-    Actions.updateLayerStyle(layer_id, style, labels, legend, settings, function(){
-      _this.refs.map.reload(null, _this.state.mapStyle);
-    });
+    Actions.updateLayerStyle(layer_id, style, labels, legend, settings);
   },
 
   closeLayerDesigner(){

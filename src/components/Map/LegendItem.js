@@ -39,8 +39,14 @@ var LegendItem = React.createClass({
     var legendItem = (
         <div className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: legendHtml}}></div>             
       );
-    if(this.props.layer.style.layers && Array.isArray(this.props.layer.style.layers) && this.props.layer.style.layers.length > 0){
-      this.props.layer.style.layers.forEach(function(layer){
+    var style;
+    if(this.props.layer.map_style){
+      style = this.props.layer.map_style;
+    }else{
+      style = this.props.layer.style;
+    }
+    if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+      style.layers.forEach(function(layer){
         if(layer.id.startsWith('omh-data-point')){
           if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
             //clone object to avoid changing size of real markers

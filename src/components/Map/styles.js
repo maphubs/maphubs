@@ -50,7 +50,7 @@ module.exports = {
 
           //re-enable mapbox-gl interaction
           if(layer.metadata["maphubs:markers"].interactive){
-            layer.metadata['maphubs:interactive'].interactive = true;
+            layer.metadata['maphubs:interactive'] = true;
           }
 
         }else if(layer.id.startsWith('omh-label')){

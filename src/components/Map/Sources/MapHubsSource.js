@@ -7,6 +7,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Marker = require('../Marker');
 var $ =require('jquery');
+var MarkerActions = require('../../../actions/map/MarkerActions');
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
@@ -43,9 +44,14 @@ var MapHubsSource = {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
       });
+      MarkerActions.removeLayer(layer_id);     
     }
 
-    if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
+    if(layer.metadata 
+      && layer.metadata['maphubs:markers'] 
+      && layer.metadata['maphubs:markers'].enabled
+      && !(layer.layout && layer.layout.visibility && layer.layout.visibility === 'none')
+      ){
       var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
       markerConfig.dataUrl = markerConfig.dataUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       var layer_id = layer.metadata['maphubs:layer_id'];
@@ -72,7 +78,7 @@ var MapHubsSource = {
             marker.properties.layer_id = layer_id;
             //
             if(mapComponent.state.editing){
-              if(this.state.editingLayer.layer_id === marker.properties.layer_id){
+              if(mapComponent.state.editingLayer.layer_id === marker.properties.layer_id){
                 mapComponent.editFeature(marker);
               }    
             return; //return here to disable interactation with other layers when editing
@@ -104,7 +110,9 @@ var MapHubsSource = {
           }else if(marker.properties.osm_id){
             markerId = marker.properties.osm_id;
           }
-          mapComponent.markers[markerId] = mapboxMarker;
+
+          MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
+          
           });
           
         }
@@ -132,6 +140,7 @@ var MapHubsSource = {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
       });
+      MarkerActions.removeLayer(layer_id);
     }
     map.removeLayer(layer.id);
   },

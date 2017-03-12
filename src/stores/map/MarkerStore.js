@@ -25,15 +25,17 @@ module.exports = Reflux.createStore({
   },
 
   addMarker(layer_id, mhid, marker){
+    var featureId = mhid.split(':')[1];
     if(!this.state.markers[layer_id]){
       this.state.markers[layer_id] = {};
     }
-    this.state.markers[layer_id][mhid] = marker;
+    this.state.markers[layer_id][featureId] = marker;
   },
 
   removeMarker(layer_id, mhid){
+    var featureId = mhid.split(':')[1];
     if(this.state.markers[layer_id]){
-      delete this.state.markers[layer_id][mhid];
+      delete this.state.markers[layer_id][featureId];
     }
   },
 
@@ -44,8 +46,9 @@ module.exports = Reflux.createStore({
   },
 
   getMarker(layer_id, mhid, cb){
+    var featureId = mhid.split(':')[1];
     if(this.state.markers[layer_id]){
-      cb(this.state.markers[layer_id][mhid]);
+      cb(this.state.markers[layer_id][featureId]);
     }else{
       cb();
     }
