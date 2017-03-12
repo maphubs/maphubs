@@ -24,6 +24,8 @@ var Select = React.createClass({
     successText: React.PropTypes.string,
     id: React.PropTypes.string,
     onChange: React.PropTypes.func,
+    startEmpty: React.PropTypes.bool,
+    icon: React.PropTypes.string,
     note: React.PropTypes.string //optional note that displays below the select, will be updated on selection if option contains a note
   },
 
@@ -87,20 +89,27 @@ var Select = React.createClass({
   },
 
   render() {
-     var className = classNames('input-field', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
-     var value = this.getValue();
+    var className = classNames('input-field', {tooltipped: this.props.dataTooltip ? true : false});
+    var value = this.getValue();
 
-     var note = '';
-     if(this.state.note){
-       /*eslint-disable react/no-danger*/
-       note = (<div dangerouslySetInnerHTML={{__html: this.state.note}}></div>);
-       /*eslint-enable react/no-danger*/
-     }
+    var note = '';
+    if(this.state.note){
+      /*eslint-disable react/no-danger*/
+      note = (<div dangerouslySetInnerHTML={{__html: this.state.note}}></div>);
+      /*eslint-enable react/no-danger*/
+    }
+
+    var icon = '';
+    if(this.props.icon){
+        icon = (<i className="material-icons prefix">{this.props.icon}</i>);
+    }
 
     return (
-      <div>
+      <div className={this.props.className}>
+          
           <div  className={className} id={this.props.id} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
               data-tooltip={this.props.dataTooltip}>
+              {icon}
               <ReactMaterialSelect label={this.props.emptyText}
                 resetLabel={this.props.emptyText} defaultValue={value}
                  onChange={this.handleSelectChange}>
@@ -117,17 +126,5 @@ var Select = React.createClass({
 
   }
 });
-
-/*
-
-<select ref="selectBox" id={this.props.id} value={value} defaultValue={value} onChange={function(e){e.stopPropagation();}}>
-  {emptyOption}
-  {this.props.options.map(function(option){
-    return (<option key={option.value} value={option.value}>{option.label}</option>);
-  })}
-</select>
-<label htmlFor={this.props.name}  data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
-
-*/
 
 module.exports = Select;

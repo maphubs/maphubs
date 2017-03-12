@@ -153,7 +153,7 @@
     "react-dom": "^15.4.2",
     "react-fileupload-progress": "openmaphub/react-fileupload-progress",
     "react-intl": "^2.2.3",
-    "react-material-select": "maphubs/react-material-select#0a35e572d57392bb040c7883331d38365add1db1",
+    "react-material-select": "^1.1.0",
     "react-medium-editor": "^1.8.1",
     "react-notification": "^6.6.0",
     "react-responsive-mixin": "^0.4.0",
