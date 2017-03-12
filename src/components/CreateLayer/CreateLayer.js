@@ -59,29 +59,26 @@ var CreateLayer = React.createClass({
 
     return (
       <div>
-        <h5>{this.__('Create New Data')}</h5>
         <div className="row" style={{maxWidth: '500px', margin: 'auto'}}>
           <div className="col s6 m4 l4">
-            <SourceSelectionBox name={this.__('Point')} value={'point'} 
+            <SourceSelectionBox name={this.__('New Point(s)')} value={'point'} 
             selected={this.state.source === 'point'} icon="place"
             onSelect={this.selectSource} />
           </div>
           <div className="col s6 m4 l4">
-            <SourceSelectionBox name={this.__('Line')} value={'line'} 
+            <SourceSelectionBox name={this.__('New Line(s)')} value={'line'} 
             selected={this.state.source === 'line'} icon="timeline"
             onSelect={this.selectSource} />
           </div>
           <div className="col s6 m4 l4">
-            <SourceSelectionBox name={this.__('Polygon')} value={'polygon'} 
+            <SourceSelectionBox name={this.__('New Polygon(s)')} value={'polygon'} 
             selected={this.state.source === 'polygon'} icon="crop_din"
             onSelect={this.selectSource} />
           </div>
         </div>
-        <div className="divider" />
-        <h5>{this.__('Add Existing Data')}</h5>
         <div className="row" style={{maxWidth: '800px', margin: 'auto'}}>
           <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('Upload Data')} value={'local'} 
+            <SourceSelectionBox name={this.__('Upload File')} value={'local'} 
             selected={this.state.source === 'local'} icon="file_upload"
             onSelect={this.selectSource} />
           </div>
@@ -108,7 +105,7 @@ var CreateLayer = React.createClass({
           {planetSource}
         </div>
         <div className="divider" />
-        <div className="row">
+        <div className="container">
           {sourceDisplay}
         </div>
         
