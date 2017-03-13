@@ -1,5 +1,19 @@
 # Change Log
 
+## [v0.8.0](https://github.com/maphubs/maphubs/tree/v0.8.0) (2017-03-13)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.8...v0.8.0)
+
+**Fixed bugs:**
+
+- prevent multiple clicks on map save button [\#344](https://github.com/maphubs/maphubs/issues/344)
+
+## [v0.7.8](https://github.com/maphubs/maphubs/tree/v0.7.8) (2017-02-28)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.7...v0.7.8)
+
+**Implemented enhancements:**
+
+- option to disable Google Analytics on certain pages [\#312](https://github.com/maphubs/maphubs/issues/312)
+
 ## [v0.7.7](https://github.com/maphubs/maphubs/tree/v0.7.7) (2017-02-20)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.7.6...v0.7.7)
 
