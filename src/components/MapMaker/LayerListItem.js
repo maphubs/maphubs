@@ -81,7 +81,10 @@ var LayerListItem = React.createClass({
   render() {
     var _this = this;
     var layer = this.props.item;
-    var canEdit = (this.props.showEdit && layer.canEdit);
+    var canEdit = (this.props.showEdit 
+                    && layer.canEdit 
+                    && !layer.remote 
+                    && !layer.is_external);
 
     var isDragging = this.props.isDragging;
     var connectDragSource = this.props.connectDragSource;
