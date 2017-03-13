@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
   .then(function(){
     return knex.raw("alter table omh.feature_notes alter column osm_id type varchar(255) using osm_id::varchar")
     .then(function(){
-      return knex('omh.layers').select('layer_id', 'presets', 'data_type')
+      return knex('omh.layers').select('layer_id', 'presets', 'data_type').where({status:'published', is_external: false, remote: false})
       .then(function(results){
         var updates = [];
         results.forEach(function(layer){

@@ -1,6 +1,6 @@
 
 exports.up = function(knex, Promise) {
-  return knex('omh.layers').select('layer_id', 'data_type', 'status')
+  return knex('omh.layers').select('layer_id', 'data_type', 'status').where({status:'published', is_external: false, remote: false})
       .then(function(results){
         var updates = [];
         results.forEach(function(layer){
