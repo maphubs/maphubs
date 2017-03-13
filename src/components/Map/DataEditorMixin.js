@@ -1,5 +1,5 @@
 
-var debug = require('../../services/debug')('Map/MeasureArea');
+var debug = require('../../services/debug')('Map/DataEditorMixin');
 var DataEditorActions = require('../../actions/DataEditorActions');
 var $ = require('jquery');
 var _assignIn = require('lodash.assignin');

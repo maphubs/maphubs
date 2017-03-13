@@ -25,6 +25,9 @@ var MapGeoJSONMixin = require('./MapGeoJSONMixin');
 var DataEditorMixin = require('./DataEditorMixin');
 var LayerSources = require('./Sources');
 var MarkerSprites = require('./MarkerSprites');
+var AnimationOverlay = require('./AnimationOverlay');
+var ForestLossMixin = require('./ForestLossMixin');
+var AnimationStore = require('../../stores/map/AnimationStore');
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
@@ -34,8 +37,9 @@ if (typeof window !== 'undefined') {
 var Map = React.createClass({
 
   mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, 
-            MeasurementToolMixin, ForestAlertMixin, DataEditorMixin,
+            MeasurementToolMixin, ForestAlertMixin, DataEditorMixin, ForestLossMixin,
             StateMixin.connect(DataEditorStore),
+            StateMixin.connect(AnimationStore),
             StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}),          
             StateMixin.connect(LocaleStore)],
 
@@ -649,6 +653,22 @@ var Map = React.createClass({
      
     }
 
+    var animationOverlay = '';
+    if(this.state.showForestLoss){
+      animationOverlay = (
+        <AnimationOverlay style={{
+          position: 'absolute',
+          bottom: '5px',
+          left: '45%',
+          right: '45%',
+          fontSize: '32px',
+          color: '#FFF',
+          textShadow: '-1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000',
+          zIndex: 1
+        }} />
+      );
+    }
+
     return (
       <div ref="mapcontainer" className={this.props.className} style={this.props.style}>
         <div id={this.state.id} ref="map" className={className} style={{width:'100%', height:'100%'}}>
@@ -659,6 +679,7 @@ var Map = React.createClass({
           toggleMeasurementTools={this.toggleMeasurementTools}
           enableMeasurementTools={this.state.enableMeasurementTools}
           toggleForestAlerts={this.toggleForestAlerts}
+          toggleForestLoss={this.toggleForestLoss}
           calculateForestAlerts={this.calculateForestAlerts}
           forestAlerts={this.state.forestAlerts}
           onChangeBaseMap={this.changeBaseMap}
@@ -668,6 +689,7 @@ var Map = React.createClass({
           {interactiveButton}
           {children}
           {logo}
+          {animationOverlay}
         </div>
         <MarkerSprites />
         </div>

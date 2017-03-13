@@ -11,6 +11,7 @@ var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
+var AnimationActions = require('../../actions/map/AnimationActions');
 
 var MapToolPanel = React.createClass({
 
@@ -26,9 +27,11 @@ var MapToolPanel = React.createClass({
     onChangeBaseMap:  React.PropTypes.func.isRequired,
     toggleMeasurementTools:  React.PropTypes.func.isRequired,
     toggleForestAlerts: React.PropTypes.func.isRequired,
+    toggleForestLoss: React.PropTypes.func.isRequired,
     calculateForestAlerts: React.PropTypes.func.isRequired,
     enableMeasurementTools:  React.PropTypes.bool,
-    forestAlerts: React.PropTypes.object
+    forestAlerts: React.PropTypes.object,
+    forestLoss: React.PropTypes.object
   },
 
   getDefaultProps(){
@@ -38,6 +41,10 @@ var MapToolPanel = React.createClass({
       enableMeasurementTools: false,
       forestAlerts: {
         enableGLAD2017: false,
+        result: null
+      },
+      forestLoss: {
+        enableForestLoss: false,
         result: null
       }
     };
@@ -72,6 +79,10 @@ var MapToolPanel = React.createClass({
      //leave panel open for this tool?
     //if(model.enableGLAD2017) this.closePanel();
     this.props.toggleForestAlerts(model);
+  },
+
+  toggleForestLoss(model){
+    this.props.toggleForestLoss(model);
   },
 
 
@@ -177,6 +188,16 @@ var MapToolPanel = React.createClass({
                   </Formsy.Form>             
                   <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
                   {forestAlertsResult}
+                  <Formsy.Form onChange={this.toggleForestLoss}>
+                   <b>{this.__('2001 - 2014 Forest Loss')}</b>          
+                    <Toggle name="enableForestLoss"
+                        labelOff={this.__('Off')} labelOn={this.__('On')}                       
+                        className="col s12"
+                        checked={this.props.forestLoss.enableForestLoss}
+                    />                     
+                  </Formsy.Form>    
+                  <button className="btn" onClick={AnimationActions.play}>{this.__('Play')}</button> 
+                  <button className="btn" onClick={AnimationActions.stop}>{this.__('Pause')}</button> 
                 </div>
               </div>
             </li>
