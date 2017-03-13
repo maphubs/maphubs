@@ -19,12 +19,9 @@ var EditBaseMapBox = React.createClass({
     gpxLink: React.PropTypes.string
   },
 
-  render(){
-      if(typeof window === 'undefined'){
-        return null;
-      }
-      
-      var origHash = window.location.hash.replace('#', '');
+
+  getLinks(){
+    var origHash = window.location.hash.replace('#', '');
       var hashParts = origHash.split('/');
       var zoom =  Math.round(hashParts[0]);
       var lon = hashParts[1];
@@ -35,15 +32,33 @@ var EditBaseMapBox = React.createClass({
         osmEditLink += '&gpx=' + this.props.gpxLink;
         loggingRoadsEditLink +=  '&gpx=' + this.props.gpxLink;
       }
+      return {
+        osm: osmEditLink,
+        loggingroads: loggingRoadsEditLink
+      }
+  },
+
+  openOSM(){
+    var links = this.getLinks();
+    window.location = links.osm;
+  },
+
+  openLogginRoads(){
+    var links = this.getLinks();
+    window.location = links.loggingroads;
+  },
+
+  render(){
+
       return (
         <div style={{width: '100%', textAlign: 'center'}}>
           <p style={{padding: '5px'}}>Edit OpenStreetMap at this location</p>
           <ul className="collection with-header custom-scroll-bar" style={{margin: 0, width: '100%', overflow: 'auto'}}>
             <li className="collection-item" style={{paddingLeft: 0}}>
-              <a className="btn" target="_blank" href={osmEditLink} onClick={Actions.toggleEditBaseMap}>{this.__('OpenStreetMap')}</a>
+              <a className="btn" onClick={this.openOSM}>{this.__('OpenStreetMap')}</a>
             </li>
             <li className="collection-item" style={{paddingLeft: 0}}>
-              <a className="btn" target="_blank" href={loggingRoadsEditLink} onClick={Actions.toggleEditBaseMap}>{this.__('LoggingRoads')}</a>
+              <a className="btn" onClick={this.openLoggingRoads}>{this.__('LoggingRoads')}</a>
             </li>
           </ul>
       </div>
