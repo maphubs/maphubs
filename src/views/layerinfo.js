@@ -509,11 +509,6 @@ var LayerInfo = React.createClass({
              <li className="collection-item">{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
              {gpxExport}
             </ul>
-           <ul className="collection with-header">
-            <li className="collection-header"><h5>{this.__('Services')}</h5></li>
-            <li className="collection-item">{this.__('Feature Service (ArcGIS compatible):')} Coming Soon</li>
-            <li className="collection-item">{this.__('API (OpenStreetMap compatible):')} <a href={osmURL}>{osmURL}/</a></li>
-           </ul>
           </div>
         );
       }else{
@@ -772,8 +767,6 @@ var LayerInfo = React.createClass({
                 <div className="row no-margin">
                   {dataTabContent}
                 </div>
-
-
               </div>
               <div id="export" className="col s12" style={{display: tabContentDisplay}}>
                 {exportTabContent}
