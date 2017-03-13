@@ -83,6 +83,11 @@ var CreateLayer = React.createClass({
             onSelect={this.selectSource} />
           </div>
           <div className="col s6 m3 l2">
+            <SourceSelectionBox name={this.__('GeoJSON URL')} value={'geojson'} 
+            selected={this.state.source === 'gejosn'} icon="cloud_download"
+            onSelect={this.selectSource} />
+          </div>
+          <div className="col s6 m3 l2">
             <SourceSelectionBox name={this.__('Mapbox Styles')} value={'mapbox'} 
             selected={this.state.source === 'mapbox'} icon="cloud_download"
             onSelect={this.selectSource} />

@@ -4,6 +4,7 @@ var EmptyLocalSource = require('./EmptyLocalSource');
 var MapboxSource = require('./MapboxSource');
 var RasterTileSource = require('./RasterTileSource');
 var VectorTileSource = require('./VectorTileSource');
+var GeoJSONUrlSource = require('./GeoJSONUrlSource');
 //var GithubSource = require('./GithubSource');
 var AGOLSource = require('./AGOLSource');
 //var OSMSource = require('./OSMSource');
@@ -17,6 +18,8 @@ var LayerSourceMixin = {
   getSource(type){
     if(type === 'local'){
       return (<UploadLocalSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
+    }else if(type === 'geojson'){
+      return(<GeoJSONUrlSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
     }else if(type === 'mapbox'){
       return (<MapboxSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
     }else if(type === 'raster'){

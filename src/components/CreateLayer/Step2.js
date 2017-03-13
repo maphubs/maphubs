@@ -92,7 +92,10 @@ var Step2 = React.createClass({
   },
 
   saveExternal() {
-    this.props.onSubmit();
+    LayerActions.tileServiceInitialized();
+    if(this.props.onSubmit){
+      this.props.onSubmit();
+    }
   },
 
 	render() {

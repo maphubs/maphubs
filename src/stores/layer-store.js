@@ -64,6 +64,8 @@ module.exports = Reflux.createStore({
         layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
     }else if(layer.is_external && layer.external_layer_config.type == 'ags-mapserver-tiles'){
         layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url + '?f=json', 'arcgisraster');
+    }else if(layer.is_external && layer.external_layer_config.type == 'geojson'){
+        layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.external_layer_config.data_type);
     }else if(layer.style.sources.osm){
       alert('Unable to reset OSM layers');
       return;

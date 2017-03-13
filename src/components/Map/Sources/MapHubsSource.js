@@ -8,6 +8,7 @@ var ReactDOM = require('react-dom');
 var Marker = require('../Marker');
 var $ =require('jquery');
 var MarkerActions = require('../../../actions/map/MarkerActions');
+var _bbox = require('@turf/bbox');
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
@@ -16,24 +17,40 @@ if (typeof window !== 'undefined') {
 
 var MapHubsSource = {
   load(key, source, map, mapComponent){
-    //load as tilejson
-    var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
-    return request.get(url)
-      .then(function(res) {
-        var tileJSON = res.body;
-        tileJSON.type = 'vector';
 
-        map.on('source.load', function(e) {
-          if (e.source.id === key && mapComponent.state.allowLayersToMoveMap) {
-            debug('Zooming map extent of source: ' + e.source.id);
-            map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
-                            [tileJSON.bounds[2], tileJSON.bounds[3]]]);
+    if(source.type === 'geojson' && source.data){
+      return request.get(source.data)
+        .then(function(res) {
+          var geoJSON = res.body;
+          if(geoJSON.features){
+            geoJSON.features.forEach((feature, i)=>{
+              feature.properties.mhid = i;
+            });
           }
+          map.addSource(key, {type: 'geojson', data: geoJSON});
+        }, function(error) {
+          debug('(' + mapComponent.state.id + ') ' +error);
         });
-        map.addSource(key, tileJSON);
-      }, function(error) {
-        debug('(' + mapComponent.state.id + ') ' +error);
-      });
+    }else{
+      //load as tilejson
+      var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+      return request.get(url)
+        .then(function(res) {
+          var tileJSON = res.body;
+          tileJSON.type = 'vector';
+
+          map.on('source.load', function(e) {
+            if (e.source.id === key && mapComponent.state.allowLayersToMoveMap) {
+              debug('Zooming map extent of source: ' + e.source.id);
+              map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
+                              [tileJSON.bounds[2], tileJSON.bounds[3]]]);
+            }
+          });
+          map.addSource(key, tileJSON);
+        }, function(error) {
+          debug('(' + mapComponent.state.id + ') ' +error);
+        });
+    }
   },
   addLayer(layer, source, map, mapComponent){
 
@@ -56,7 +73,11 @@ var MapHubsSource = {
       markerConfig.dataUrl = markerConfig.dataUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       var layer_id = layer.metadata['maphubs:layer_id'];
     //load geojson for this layer
-     superagent.get(markerConfig.dataUrl)
+    var geojsonUrl = markerConfig.dataUrl;
+    if(source.type === 'geojson'){
+      geojsonUrl = source.data;
+    }
+     superagent.get(geojsonUrl)
     .type('json').accept('json')
     .end(function(err, res){
       checkClientError(res, err, function(err){
@@ -65,7 +86,21 @@ var MapHubsSource = {
         }else{
           var geojson = res.body;        
           // add markers to map
-          geojson.features.forEach(function(marker) {
+          geojson.features.forEach(function(marker, i) {
+
+          var markerId;
+          if(marker.properties.osm_id){
+            marker.properties.mhid = layer_id + ':' + marker.properties.osm_id;
+          }else if(marker.properties['id']){
+            marker.properties.mhid = layer_id + ':' + marker.properties['id'];
+          }else if(marker.properties['ID']){
+            marker.properties.mhid = layer_id + ':' + marker.properties['ID'];
+          }else if(marker.properties['OBJECTID']){
+            marker.properties.mhid = layer_id + ':' + marker.properties['OBJECTID'];
+          }else{
+            marker.properties.mhid = layer_id + ':' + i;
+          }
+          markerId = marker.properties.mhid;
            
           // create a DOM element for the marker
           var el = document.createElement('div');
@@ -104,12 +139,7 @@ var MapHubsSource = {
           var mapboxMarker = new mapboxgl.Marker(el, {offset: [offsetWidth, offsetHeight]})
               .setLngLat(marker.geometry.coordinates)
               .addTo(map);
-          var markerId;
-          if(marker.properties.mhid){
-            markerId = marker.properties.mhid;
-          }else if(marker.properties.osm_id){
-            markerId = marker.properties.osm_id;
-          }
+          
 
           MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
           

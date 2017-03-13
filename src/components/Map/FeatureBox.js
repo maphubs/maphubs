@@ -52,6 +52,8 @@ var FeatureBox = React.createClass({
       var selectedFeature = this.props.features[0];
       if(selectedFeature.properties.layer_id){
           this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
+      }else{
+        this.setState({layerLoaded: true});
       }
     }  
   },
@@ -74,6 +76,8 @@ var FeatureBox = React.createClass({
         var selectedFeature = features[0];
         if(selectedFeature.properties.layer_id){
             this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
+        }else{
+          this.setState({layerLoaded: true});
         }
 
       } else {
@@ -117,6 +121,8 @@ var FeatureBox = React.createClass({
     this.setState({selectedFeature});
     if(selectedFeature.properties.layer_id){
         this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
+    }else{
+       this.setState({layerLoaded: true});
     }
   },
 
@@ -171,8 +177,12 @@ var FeatureBox = React.createClass({
           );
         }
 
-        var featureLink;
-        var featureID = mhid.split(':')[1];
+        var featureLink, featureID;
+        if(typeof mhid === 'string' && mhid.includes(':')){
+          featureID = mhid.split(':')[1];
+        }else{
+          featureID = mhid;
+        }
         if(host === window.location.hostname || host === 'dev.docker'){      
           featureLink = '/feature/' + layer_id + '/' + featureID + '/' + featureName;
         }else{
@@ -190,41 +200,7 @@ var FeatureBox = React.createClass({
         </div>
       </div>);
       }
-      if(this.state.currentFeatures.length > 1){
-        var index = this.state.selectedFeature;
-        var leftButton = (
-          <li className="waves-effect"><a  onClick={function(){var newIndex = index-1; _this.handleChangeSelectedFeature(newIndex);}}><i className="material-icons">chevron_left</i></a></li>
-        );
-        if(index == 1) {
-          leftButton = (
-            <li className="disabled"><a><i className="material-icons">chevron_left</i></a></li>
-          );
-        }
-        var rightButton = (
-          <li className="waves-effect"><a onClick={function(){var newIndex = index+1; _this.handleChangeSelectedFeature(newIndex);}}><i className="material-icons">chevron_right</i></a></li>
-        );
-        if(index == this.state.currentFeatures.length) {
-          rightButton = (
-            <li className="disabled"><a><i className="material-icons">chevron_right</i></a></li>
-          );
-        }
-        pager = (
-          <ul className="pagination margin-auto">
-              {leftButton}
-                {this.state.currentFeatures.map(function(feature, i){
-                  if (i + 1 == index){
-                    return (
-                    <li key={i} className="active omh-color"><a>{i+1}</a></li>
-                    );
-                  }
-                  return (
-                  <li key={i} className="waves-effect"><a onClick={function(){var newIndex = i+1; _this.handleChangeSelectedFeature(newIndex);}}>{i+1}</a></li>
-                  );
-                })}
-                {rightButton}
-              </ul>
-        );
-      }
+      
     } else{ //Feature is hovered, but not selected
       if(this.state.currentFeatures.length > 1){
         infoPanel = (
@@ -245,9 +221,9 @@ var FeatureBox = React.createClass({
     //only show the panel if there is at least one feature active
     var display = 'none';
     var attributes = '';
+    var properties = [];
     if(this.state.currentFeatures.length > 0 && this.state.layerLoaded){
-      display = 'flex';
-      var properties = [];
+      display = 'flex';     
       currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
       if(currentFeature && currentFeature.properties){
         properties = currentFeature.properties;

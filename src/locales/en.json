@@ -793,5 +793,9 @@
 	"Vector Tiles": "Vector Tiles",
 	"ArcGIS Services": "ArcGIS Services",
 	"Mapbox Styles": "Mapbox Styles",
-	"LoggingRoads": "LoggingRoads"
+	"LoggingRoads": "LoggingRoads",
+	"New Point(s)": "New Point(s)",
+	"New Line(s)": "New Line(s)",
+	"New Polygon(s)": "New Polygon(s)",
+	"GeoJSON URL": "GeoJSON URL"
 }

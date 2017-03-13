@@ -153,9 +153,11 @@ var Map = React.createClass({
     glStyle.layers.forEach(function(layer){
     try{
       var source = glStyle.sources[layer.source];
-      if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+      if(layer.source != 'osm'  && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
          LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
-      } else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
+      }else if(source.type === 'geojson' && source.data){
+         LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
+      }else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
         //use custom driver for this source type
          LayerSources[source.type].addLayer(layer, source, map);
       }else if(source.type === 'raster'){
@@ -189,6 +191,8 @@ var Map = React.createClass({
         try{
           var source = prevStyle.sources[layer.source];
           if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+            LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
+          }else if(source.type === 'geojson' && source.data){
             LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
           }else if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
             LayerSources[source.type].removeLayer(layer, _this.map);
@@ -260,7 +264,9 @@ var Map = React.createClass({
         if(key != 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
           //MapHubs Vector Source
           sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));   
-        } else if(LayerSources[type]){
+        }else if(type === 'geojson' && source.data){
+          sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));  
+        }else if(LayerSources[type]){
           //we have a custom driver for this source
           sources.push(LayerSources[type].load(key, source, map, _this));      
       }else if(type === 'raster'){

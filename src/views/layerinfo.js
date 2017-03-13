@@ -203,6 +203,14 @@ var LayerInfo = React.createClass({
           _this.processGeoJSON(geoJSON);
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
+      }else if(this.props.layer.external_layer_config.type === 'geojson'){
+          request.get(this.props.layer.external_layer_config.data)
+          .type('json').accept('json')
+          .end(function(err, res){
+            var geoJSON = res.body;
+            _this.processGeoJSON(geoJSON);
+          });
+         _this.setState({dataMsg: _this.__('Data Loading')});
       }else{
         _this.setState({dataMsg: _this.__('Data table not support for this layer.')});
       }

@@ -8,12 +8,12 @@ var PresetActions = require('../../actions/presetActions');
 var LayerActions = require('../../actions/LayerActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var MessageActions = require('../../actions/MessageActions');
-
+var Radio = require('../forms/radio');
 var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
-var RasterTileSource = React.createClass({
+var GeoJSONUrlSource = React.createClass({
 
   mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
 
@@ -59,20 +59,14 @@ var RasterTileSource = React.createClass({
   submit (model) {
     var _this = this;
 
-    var boundsArr = model.bounds.split(',');
-    boundsArr.map(function(item){
-      return item.trim();
-    });
-
     LayerActions.saveDataSettings({
       is_external: true,
-      external_layer_type: 'Vector Tile Service',
+      external_layer_type: 'GeoJSON',
       external_layer_config: {
-        type: 'vector',
-        minzoom: model.minzoom,
-        maxzoom: model.maxzoom,
-        bounds: boundsArr,
-        tiles: [model.vectorTileUrl]
+        type: 'geojson',
+        id: model.id,
+        data_type: model.data_type,
+        data: model.geojsonUrl
       }
     }, _this.state._csrf, function(err){
       if (err){
@@ -95,7 +89,6 @@ var RasterTileSource = React.createClass({
     });
   },
 
-
   sourceChange(value){
     this.setState({selectedSource: value});
   },
@@ -115,14 +108,20 @@ var RasterTileSource = React.createClass({
       );
     }
 
+    var dataTypeOptions = [
+      {value: 'point', label: this.__('Point')},
+      {value: 'line', label: this.__("Line")},
+      {value: 'polygon', label: this.__("Polygon")}
+    ];
+
 		return (
         <div className="row">
           <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
             <div>
-              <p>{this.__('Vector Tile Source')}</p>
+              <p>{this.__('GeoJSON URL')}</p>
             <div className="row">
-              <TextInput name="vectorTileUrl" label={this.__('Vector Tile URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
+              <TextInput name="geojsonUrl" label={this.__('GeoJSON URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
                      maxLength: this.__('Must be 500 characters or less.'),
                      isHttps:  this.__('SSL required for external links, URLs must start with https://')
                  }} length={500}
@@ -130,22 +129,18 @@ var RasterTileSource = React.createClass({
                  required/>
             </div>
             <div className="row">
-              <TextInput name="minzoom" label={this.__('MinZoom')} icon="info" className="col s12" 
-                 dataPosition="top" dataTooltip={this.__('Lowest tile zoom level available in data')}
+              <TextInput name="id" label={this.__('ID Property (Optional)')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Some features require idenify a unique identifier that can be used to select features')}
                  required/>
-            </div>
-            <div className="row">
-              <TextInput name="maxzoom" label={this.__('MaxZoom')} icon="info" className="col s12" 
-                 dataPosition="top" dataTooltip={this.__('Highest tile zoom level available in data')}
-                 required/>
-            </div>
-            <div className="row">
-              <TextInput name="bounds" label={this.__('Bounds')} icon="info" className="col s12" 
-                 dataPosition="top" dataTooltip={this.__('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
-                 required/>
+            </div>  
+            <div  className="row">
+              <Radio name="data_type" label=""
+                  defaultValue="point"
+                  options={dataTypeOptions}
+                  className="col s10"
+                />
             </div>
           </div>
-
 
             {prevButton}
             <div className="right">
@@ -158,4 +153,4 @@ var RasterTileSource = React.createClass({
 	}
 });
 
-module.exports = RasterTileSource;
+module.exports = GeoJSONUrlSource;

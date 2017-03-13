@@ -452,6 +452,14 @@ module.exports = {
             "type": "arcgisraster",
              url: source.url + '?f=json'
           };
+        }else if(source.type === 'geojson'){
+          styles.sources['omh-' + layer_id] = {
+            "type": "geojson",
+             "data": source.data
+          };
+          style.layers.map(layer =>{
+            delete layer['source-layer'];
+          });
         }
 
       }
