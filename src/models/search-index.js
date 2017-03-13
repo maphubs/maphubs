@@ -29,15 +29,17 @@ module.exports = {
   initIndex() {  
     return client.indices.create({
         "index": this.searchIndexName, 
-        "mappings": {
-          "feature": {
-            "properties": {
-              "location": {
-                "type": "geo_point"
+        "body": {
+          "mappings": {
+            "feature": {
+              "properties": {
+                "location": {
+                  "type": "geo_point"
+                }
               }
             }
-          }
-      }      
+          }   
+        }     
     });
   },
 
