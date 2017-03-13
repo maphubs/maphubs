@@ -43,5 +43,9 @@ module.exports = {
   requireLogin: getenv.bool('OMH_REQUIRE_LOGIN', false),
   requireInvite: getenv.bool('OMH_REQUIRE_INVITE', false),
   manetAPIKey: getenv('OMH_MANET_API_KEY'),
-  uselocalAssets: getenv.bool('OMH_USE_LOCAL_ASSETS', false)
+  uselocalAssets: getenv.bool('OMH_USE_LOCAL_ASSETS', false),
+  elasticSearchHost: getenv('OMH_ELASTICSEARCH_HOST'),
+  elasticSearchPort: getenv('OMH_ELASTICSEARCH_PORT'),
+  elasticSearchUser: getenv('OMH_ELASTICSEARCH_USER'),
+  elasticSearchPass: getenv('OMH_ELASTICSEARCH_PASS')
 };
