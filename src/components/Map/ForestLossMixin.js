@@ -77,13 +77,19 @@ var ForestLossMixin = {
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       addBefore = glStyle.layers[0].id;
     }
+
+    var treecoverLayer = _this.getLayer('treecover', 2001);
+    _this.map.addSource(treecoverLayer.id, treecoverLayer.source);
+    _this.map.addLayer(treecoverLayer.layer, addBefore);
     
+    /*
     for(var i = 2001; i <= 2014; i++){
       var treecoverLayer = _this.getLayer('treecover', i);
       _this.map.addSource(treecoverLayer.id, treecoverLayer.source);
       _this.map.addLayer(treecoverLayer.layer, addBefore);
             
     }
+    */
     var firstLabelLayer = this.getFirstLabelLayer();
 
     for(var j = 2001; j <= 2014; j++){
@@ -102,11 +108,16 @@ var ForestLossMixin = {
   removeForestLossLayers(){
     var _this = this;
 
-    for(var i = 2001; i <= 2014; i++){
-       var treecoverLayer = _this.getLayer('treecover', i);
+     var treecoverLayer = _this.getLayer('treecover', 2001);
        _this.map.removeLayer(treecoverLayer.layer.id);
         _this.map.removeSource(treecoverLayer.id);
 
+    for(var i = 2001; i <= 2014; i++){
+      /*
+       var treecoverLayer = _this.getLayer('treecover', i);
+       _this.map.removeLayer(treecoverLayer.layer.id);
+        _this.map.removeSource(treecoverLayer.id);
+*/
        var lossLayer = _this.getLayer('lossyear', i);
         _this.map.removeLayer(lossLayer.layer.id);
         _this.map.removeSource(lossLayer.id);
@@ -118,17 +129,20 @@ var ForestLossMixin = {
   tick(year){
     var _this = this;
     //add this year
-    this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
+    if(year === 2001){
+      this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
+    }
+    //this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
     this.map.setLayoutProperty(`omh-lossyear-${year}`, 'visibility', 'visible');
 
     setTimeout(()=>{
       if(year > 2001){
         //hide previous year
-        _this.map.setLayoutProperty(`omh-treecover-${year-1}`, 'visibility', 'none');
+        //_this.map.setLayoutProperty(`omh-treecover-${year-1}`, 'visibility', 'none');
         //allow loss to build
         //_this.map.setLayoutProperty(`omh-lossyear-${year-1}`, 'visibility', 'none');
       }else if(year === 2001){
-        _this.map.setLayoutProperty(`omh-treecover-${2014}`, 'visibility', 'none');
+        //_this.map.setLayoutProperty(`omh-treecover-${2014}`, 'visibility', 'none');
         //reset hide all loss years
         for(var i = 2002; i <= 2014; i++){
           _this.map.setLayoutProperty(`omh-lossyear-${i}`, 'visibility', 'none');
