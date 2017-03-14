@@ -125,7 +125,7 @@ var LayerListItem = React.createClass({
     if(this.props.showDesign){
       designButton = (
         <div className={buttonClass} style={{height: '30px'}}>
-          <a onClick={function(){_this.props.showLayerDesigner(layer); _this.resetTooltips();}}
+          <a onClick={function(){_this.props.showLayerDesigner(layer.layer_id); _this.resetTooltips();}}
             className="layer-item-btn map-layer-tooltipped"
             data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}>
             <i className="material-icons omh-accent-text" 

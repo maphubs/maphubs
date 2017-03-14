@@ -109,7 +109,7 @@ var MapLayer = React.createClass({
                 <i className="material-icons omh-accent-text">delete</i></a>
             </div>
             <div className="col s2 no-padding">
-              <a onClick={function(){_this.props.showLayerDesigner(layer); _this.resetTooltips();}}
+              <a onClick={function(){_this.props.showLayerDesigner(layer.layer_id); _this.resetTooltips();}}
                 className="create-map-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}>
                 <i className="material-icons omh-accent-text">color_lens</i></a>

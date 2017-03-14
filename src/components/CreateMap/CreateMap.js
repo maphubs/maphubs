@@ -6,6 +6,7 @@ var GroupTag = require('../Groups/GroupTag');
 var $ = require('jquery');
 var _isEmpty = require('lodash.isempty');
 var _isEqual = require('lodash.isequal');
+var _find = require('lodash.find');
 var slug = require('slug');
 var Map = require('../Map/Map');
 //var Legend = require('../Map/Legend');
@@ -241,7 +242,8 @@ var CreateMap = React.createClass({
     $('.layer-card-tooltipped').tooltip();
   },
 
-  showLayerDesigner(layer){
+  showLayerDesigner(layer_id){
+    var layer = _find(this.state.mapLayers, {layer_id});
     $('.layer-card-tooltipped').tooltip('remove');
     this.setState({showMapLayerDesigner: true, layerDesignerLayer: layer});
     $('.layer-card-tooltipped').tooltip();
@@ -394,7 +396,7 @@ var CreateMap = React.createClass({
                                 width: '215px'
                               }}>
                                <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.removeFromMap(layer);}} className="btn-floating red layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}><i className="material-icons">remove</i></a></li>
-                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.showLayerDesigner(layer);}} className="btn-floating amber darken-4 layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
+                               <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.showLayerDesigner(layer.layer_id);}} className="btn-floating amber darken-4 layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}><i className="material-icons">color_lens</i></a></li>
                                <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.moveUp(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Up')}><i className="material-icons">keyboard_arrow_up</i></a></li>
                                <li className="create-map-popup-btn no-padding"><a onClick={function(){_this.moveDown(layer);}} className="btn-floating omh-color layer-card-tooltipped" data-position="top" data-delay="50" data-tooltip={_this.__('Move Down')}><i className="material-icons">keyboard_arrow_down</i></a></li>
                              </ul>

@@ -6,6 +6,7 @@ var $ = require('jquery');
 //var _isEmpty = require('lodash.isempty');
 var _isEqual = require('lodash.isequal');
 var _debounce = require('lodash.debounce');
+var _find = require('lodash.find');
 var Map = require('../Map/Map');
 
 var MiniLegend = require('../Map/MiniLegend');
@@ -32,7 +33,7 @@ var Locales = require('../../services/locales');
 
 var MapMaker = React.createClass({
 
-  mixins:[StateMixin.connect(MapMakerStore), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(MapMakerStore, {initWithProps: ['position', 'basemap', 'title', 'map_id', 'owned_by_group_id']}), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -80,21 +81,22 @@ var MapMaker = React.createClass({
 
   componentWillMount(){
     var _this = this;
-
     if(this.props.mapLayers){
       Actions.setMapLayers(this.props.mapLayers);
     }
-
-    if(this.props.title){
-      Actions.setMapTitle(this.props.title);
-    }
-
+ /*
     if(this.props.position){
       Actions.setMapPosition(this.props.position);
     }
 
     if(this.props.basemap){
       Actions.setMapBasemap(this.props.basemap);
+    }
+
+    
+
+    if(this.props.title){
+      Actions.setMapTitle(this.props.title);
     }
 
     if(this.props.map_id){
@@ -104,6 +106,7 @@ var MapMaker = React.createClass({
      if(this.props.owned_by_group_id){
       Actions.setOwnedByGroupId(this.props.owned_by_group_id);
     }
+    */
 
     if (typeof window === 'undefined') return; //only run this on the client
     function isRetinaDisplay() {
@@ -309,7 +312,8 @@ var MapMaker = React.createClass({
     $('.layer-card-tooltipped').tooltip();
   },
 
-  showLayerDesigner(layer){
+  showLayerDesigner(layer_id){
+    var layer = _find(this.state.mapLayers, {layer_id});
     $('.layer-card-tooltipped').tooltip('remove');
     this.setState({showMapLayerDesigner: true, layerDesignerLayer: layer});
     $('.layer-card-tooltipped').tooltip();

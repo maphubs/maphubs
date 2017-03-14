@@ -105,7 +105,12 @@ var MapLayerDesigner = React.createClass({
   },
 
   render(){
-
+    var style; 
+    if(this.state.layer.map_style){
+      style = this.state.layer.map_style;
+    }else{
+       style = this.state.layer.style;
+    }
     var designer = '';
     if(this.state.layer){
       if(this.state.layer.is_external
@@ -115,7 +120,7 @@ var MapLayerDesigner = React.createClass({
         designer = (
           <div style={{padding:'5px'}}>
              <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-            style={this.state.layer.style} onStyleChange={this.setStyle}
+            style={style} onStyleChange={this.setStyle}
             layer={this.state.layer}
             settings={this.state.layer.settings} onSettingsChange={this.setSettings}
             legendCode={this.state.layer.map_legend_html} onLegendChange={this.setLegend} showAdvanced/>
@@ -132,7 +137,7 @@ var MapLayerDesigner = React.createClass({
        designer = (
         <div>
             <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-              style={this.state.layer.style} onStyleChange={this.setStyle}
+              style={style} onStyleChange={this.setStyle}
               labels={this.state.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
               settings={this.state.layer.map_settings} onSettingsChange={this.setSettings}
               layer={this.state.layer}
