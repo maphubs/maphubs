@@ -148,7 +148,7 @@ var MapToolPanel = React.createClass({
                 height: 'calc(100% - 100px)', 
                 overflow: 'hidden',
                 padding: 0, marginTop: '50px',
-                border: 'none', boxShadow: 'none'}}>
+                border: '1px solid #d3d3d3'}}>
             
             <ul ref="mapToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>
             <li>
