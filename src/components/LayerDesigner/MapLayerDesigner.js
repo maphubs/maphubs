@@ -33,8 +33,12 @@ var MapLayerDesigner = React.createClass({
   },
 
   getInitialState() {
+    let mapColor = '#FF0000';
+    if(this.props.layer && this.props.layer.settings && this.props.layer.settings.color){
+      mapColor = this.props.layer.settings.color;
+    }
     return {
-      mapColor: this.props.layer.settings.color ? this.props.layer.settings.color : '#FF0000',
+      mapColor,
       rasterOpacity: 100,
       layer: this.props.layer ? this.props.layer : null
     };
