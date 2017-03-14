@@ -55,41 +55,34 @@ var ForestLossMixin = {
   getFirstLabelLayer(){
     var glStyle = this.state.glStyle;
     var firstLayer;
-    if(this.state.baseMap === 'default' ||
-       this.state.baseMap === 'dark' ||
-       this.state.baseMap === 'streets'){
-      firstLayer = 'place_other';
-    }else if(glStyle && glStyle.layers && glStyle.layers.length > 0){
+    if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       glStyle.layers.forEach(layer=>{
         if(!firstLayer && layer.id.startsWith('omh-label')){
           firstLayer = layer.id;
         }
       });
+    }else if(this.state.baseMap === 'default' ||
+       this.state.baseMap === 'dark' ||
+       this.state.baseMap === 'streets'){
+      firstLayer = 'place_other';
     }
      return firstLayer;
   },
 
   addForestLossLayers(){   
     var _this = this;
-    /*
-    var addBefore;
+    
+    var addBefore = 'water';
     var glStyle = this.state.glStyle;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       addBefore = glStyle.layers[0].id;
     }
-    */
+    
     for(var i = 2001; i <= 2014; i++){
       var treecoverLayer = _this.getLayer('treecover', i);
       _this.map.addSource(treecoverLayer.id, treecoverLayer.source);
-      _this.map.addLayer(treecoverLayer.layer, 'water');
-      /*
-       if(addBefore){
-        //add treecover below user layers
-        _this.map.addLayer(treecoverLayer.layer, addBefore);
-      }else{
-        _this.map.addLayer(treecoverLayer.layer);
-      }
-      */
+      _this.map.addLayer(treecoverLayer.layer, addBefore);
+            
     }
     var firstLabelLayer = this.getFirstLabelLayer();
 
