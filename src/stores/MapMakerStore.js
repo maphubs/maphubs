@@ -206,7 +206,11 @@ module.exports = Reflux.createStore({
        var style = layer.map_style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style
-         if(layer.active != undefined && layer.active == false){
+         if(typeof layer.active === 'undefined'){
+           //default to on if no state provided
+           layer.active = true;
+         }
+         if(!layer.active){
            //hide style layers for this layer
            style.layers.forEach(function(styleLayer){
              if(!styleLayer['layout']){
