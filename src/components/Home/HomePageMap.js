@@ -12,6 +12,7 @@ var HubStore = require('../../stores/HubStore');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var HubActions = require('../../actions/HubActions');
+var ForestLossLegendHelper = require('../Map/ForestLossLegendHelper');
 
 var HomePageMap = React.createClass({
 
@@ -56,6 +57,32 @@ var HomePageMap = React.createClass({
 
   onChangeBaseMap(baseMap){
      HubActions.setMap(this.state.layers, this.state.hub.map_style, this.state.hub.map_position, baseMap);
+  },
+
+  onToggleForestLoss(enabled){
+    var mapLayers = this.state.layers;
+    var layers = ForestLossLegendHelper.getLegendLayers();
+  
+    if(enabled){
+      //add layers to legend
+       mapLayers = mapLayers.concat(layers);
+    }else{
+      var updatedLayers = [];
+      //remove layers from legend
+      mapLayers.forEach(mapLayer=>{
+        var foundInLayers;
+        layers.forEach(layer=>{
+          if(mapLayer.id === layer.id){
+            foundInLayers = true;
+          }
+        });
+        if(!foundInLayers){
+          updatedLayers.push(mapLayer);
+        }
+      });    
+      mapLayers = updatedLayers;
+    }
+    HubActions.updateLayers(mapLayers, false);
   },
 
   render() {
@@ -123,6 +150,7 @@ var HomePageMap = React.createClass({
               glStyle={this.state.hub.map_style}
               baseMap={this.state.hub.basemap}
               onChangeBaseMap={this.onChangeBaseMap}
+              onToggleForestLoss={this.onToggleForestLoss}
               showLogo={false}
               disableScrollZoom>
 

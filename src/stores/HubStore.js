@@ -243,9 +243,12 @@ module.exports = Reflux.createStore({
    cb();
  },
 
- updateLayers(layers){
+ updateLayers(layers, update=true){
    this.setState({layers});
-   this.updateMap(layers);
+   if(update){
+    this.updateMap(layers);
+   }
+   
  },
 
  moveUp(layer_id){

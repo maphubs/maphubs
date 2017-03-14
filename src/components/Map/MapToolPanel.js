@@ -196,8 +196,8 @@ var MapToolPanel = React.createClass({
                         checked={this.props.forestLoss.enableForestLoss}
                     />                     
                   </Formsy.Form>    
-                  <button className="btn" onClick={AnimationActions.play}>{this.__('Play')}</button> 
-                  <button className="btn" onClick={AnimationActions.stop}>{this.__('Pause')}</button> 
+                  <button className="btn-floating" style={{marginRight: '5px'}} onClick={AnimationActions.play}><i className="material-icons">play_arrow</i></button> 
+                  <button className="btn-floating" onClick={AnimationActions.stop}><i className="material-icons">pause</i></button> 
                 </div>
               </div>
             </li>

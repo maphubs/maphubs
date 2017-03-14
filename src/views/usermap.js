@@ -21,6 +21,7 @@ var LocaleStore = require('../stores/LocaleStore');
 var MapMakerStore = require('../stores/MapMakerStore');
 var Locales = require('../services/locales');
 var debounce = require('lodash.debounce');
+var ForestLossLegendHelper = require('../components/Map/ForestLossLegendHelper');
 
 var UserMap = React.createClass({
 
@@ -47,7 +48,8 @@ var UserMap = React.createClass({
     return {
       width: 1024,
       height: 600,
-      downloading: false
+      downloading: false,
+      layers: this.props.layers
     };
   },
 
@@ -95,7 +97,13 @@ var UserMap = React.createClass({
     closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
   });
 
-  },
+},
+
+componentWillReceiveProps(nextProps){
+  if(nextProps.layers && nextProps.layers.length !== this.state.layers.length){
+    this.setState({layers: nextProps.layers});
+  }
+},
 
   componentDidUpdate(){
     debounce(function(){
@@ -181,6 +189,32 @@ var UserMap = React.createClass({
     });
   },
 
+  onToggleForestLoss(enabled){
+    var mapLayers = this.state.layers;
+    var layers = ForestLossLegendHelper.getLegendLayers();
+  
+    if(enabled){
+      //add layers to legend
+       mapLayers = mapLayers.concat(layers);
+    }else{
+      var updatedLayers = [];
+      //remove layers from legend
+      mapLayers.forEach(mapLayer=>{
+        var foundInLayers;
+        layers.forEach(layer=>{
+          if(mapLayer.id === layer.id){
+            foundInLayers = true;
+          }
+        });
+        if(!foundInLayers){
+          updatedLayers.push(mapLayer);
+        }
+      });    
+      mapLayers = updatedLayers;
+    }
+   this.setState({layers: mapLayers});
+  },
+
   render() {
     var map = '';
     var title = null;
@@ -200,7 +234,7 @@ var UserMap = React.createClass({
           }}
           collapsible={false}
             title={title}
-            layers={this.props.layers}/>
+            layers={this.state.layers}/>
         );
     } else {
       legend = (
@@ -217,7 +251,7 @@ var UserMap = React.createClass({
             flexDirection: 'column'
           }}
           title={title}
-            layers={this.props.layers}/>
+            layers={this.state.layers}/>
       );
     }
 
@@ -298,6 +332,7 @@ var UserMap = React.createClass({
       <Map ref="map" fitBounds={bounds}
         style={{width: '100%', height: '100%'}}
         glStyle={this.props.map.style}
+        onToggleForestLoss={this.onToggleForestLoss}
         baseMap={this.props.map.basemap}
          navPosition="top-right">
         {legend}

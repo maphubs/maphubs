@@ -797,5 +797,7 @@
 	"New Point(s)": "New Point(s)",
 	"New Line(s)": "New Line(s)",
 	"New Polygon(s)": "New Polygon(s)",
-	"GeoJSON URL": "GeoJSON URL"
+	"GeoJSON URL": "GeoJSON URL",
+	"2001 - 2014 Forest Loss": "2001 - 2014 Forest Loss",
+	"Pause": "Pause"
 }

@@ -25,7 +25,7 @@ var MessageActions = require('../../actions/MessageActions');
 var EditLayerPanel = require('./EditLayerPanel');
 var MapLayerDesigner = require('../LayerDesigner/MapLayerDesigner');
 var EditorToolButtons = require('./EditorToolButtons');
-
+var ForestLossLegendHelper = require('../Map/ForestLossLegendHelper');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
@@ -333,7 +333,7 @@ var MapMaker = React.createClass({
     var _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
 
-    if(this.state.mapLayers.length == 0){
+    if(this.state.mapLayers.length == 0 && layer.extent_bbox){
       _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false);
     }
 
@@ -385,6 +385,32 @@ var MapMaker = React.createClass({
     Actions.stopEditing();
     DataEditorActions.stopEditing();
     this.refs.map.stopEditingTool();
+  },
+
+  onToggleForestLoss(enabled){
+    var mapLayers = this.state.mapLayers;
+    var layers = ForestLossLegendHelper.getLegendLayers();
+  
+    if(enabled){
+      //add layers to legend
+       mapLayers = mapLayers.concat(layers);
+    }else{
+      var updatedLayers = [];
+      //remove layers from legend
+      mapLayers.forEach(mapLayer=>{
+        var foundInLayers;
+        layers.forEach(layer=>{
+          if(mapLayer.id === layer.id){
+            foundInLayers = true;
+          }
+        });
+        if(!foundInLayers){
+          updatedLayers.push(mapLayer);
+        }
+      });    
+      mapLayers = updatedLayers;
+    }
+    Actions.setMapLayers(mapLayers, false);
   },
 
   render(){
@@ -496,6 +522,7 @@ var MapMaker = React.createClass({
                   baseMap={this.state.basemap}
                   insetMap={false}
                   onChangeBaseMap={Actions.setMapBasemap}
+                  onToggleForestLoss={this.onToggleForestLoss}
                   fitBounds={mapExtent}
                   hash={true}
                   >

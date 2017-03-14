@@ -37,10 +37,19 @@ var ForestLossMixin = {
 
   toggleForestLoss(){
     if(!this.state.showForestLoss){
+      if(this.props.onToggleForestLoss){
+        this.props.onToggleForestLoss(true);
+      }
       this.addForestLossLayers();
+      
     }else{
+      if(this.props.onToggleForestLoss){
+        this.props.onToggleForestLoss(false);
+      }
       this.removeForestLossLayers();
+      
     }
+    
   },
 
   addForestLossLayers(){   
@@ -96,10 +105,15 @@ var ForestLossMixin = {
       if(year > 2001){
         //hide previous year
         _this.map.setLayoutProperty(`omh-treecover-${year-1}`, 'visibility', 'none');
-        _this.map.setLayoutProperty(`omh-lossyear-${year-1}`, 'visibility', 'none');
+        //allow loss to build
+        //_this.map.setLayoutProperty(`omh-lossyear-${year-1}`, 'visibility', 'none');
       }else if(year === 2001){
         _this.map.setLayoutProperty(`omh-treecover-${2014}`, 'visibility', 'none');
-        _this.map.setLayoutProperty(`omh-lossyear-${2014}`, 'visibility', 'none');
+        //reset hide all loss years
+        for(var i = 2002; i <= 2014; i++){
+          _this.map.setLayoutProperty(`omh-lossyear-${i}`, 'visibility', 'none');
+        }
+        
       }
     }, 1000);
 

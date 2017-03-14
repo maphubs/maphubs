@@ -40,9 +40,11 @@ module.exports = Reflux.createStore({
 
  //listeners
 
-  setMapLayers(mapLayers){
+  setMapLayers(mapLayers, update=true){
     this.setState({mapLayers});
-    this.updateMap(mapLayers);
+    if(update){
+      this.updateMap(mapLayers);
+    } 
   },
 
   setMapId(map_id){
@@ -180,8 +182,13 @@ module.exports = Reflux.createStore({
   },
 
   //helpers
-  updateMap(mapLayers){
-    var mapStyle = this.buildMapStyle(mapLayers);
+  updateMap(mapLayers, rebuild=true){
+    var mapStyle;
+    if(rebuild){
+      mapStyle = this.buildMapStyle(mapLayers);
+    }else{
+       mapStyle = this.state.mapStyle;
+    }
     this.setState({mapLayers, mapStyle});
   },
 
