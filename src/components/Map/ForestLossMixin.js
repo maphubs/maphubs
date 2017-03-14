@@ -55,7 +55,11 @@ var ForestLossMixin = {
   getFirstLabelLayer(){
     var glStyle = this.state.glStyle;
     var firstLayer;
-    if(glStyle && glStyle.layers && glStyle.layers.length > 0){
+    if(this.state.baseMap === 'default' ||
+       this.state.baseMap === 'dark' ||
+       this.state.baseMap === 'streets'){
+      firstLayer = 'place_other';
+    }else if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       glStyle.layers.forEach(layer=>{
         if(!firstLayer && layer.id.startsWith('omh-label')){
           firstLayer = layer.id;
