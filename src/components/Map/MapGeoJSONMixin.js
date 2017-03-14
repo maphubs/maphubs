@@ -46,8 +46,17 @@ var MapGeoJSONMixin = {
        bbox = _bbox(data);
     }
     if(bbox){
-      let sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
-      let ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
+      let s = bbox[0];
+      if(s < -175) s = -175;
+      let w = bbox[1];
+      if(w < -85) w = -85;
+      let n = bbox[2];
+      if(n > 175) n = 175;
+      let e = bbox[3];
+      if(e > 85) e = 85;
+
+      let sw = new mapboxgl.LngLat(s, w);
+      let ne = new mapboxgl.LngLat(n, e);
       let llb = new mapboxgl.LngLatBounds(sw, ne);
       this.map.fitBounds(llb, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
     }  
