@@ -76,6 +76,7 @@ var Map = React.createClass({
     hash: React.PropTypes.bool,
     gpxLink: React.PropTypes.string,
     attributionControl: React.PropTypes.bool,
+    allowLayerOrderOptimization: React.PropTypes.bool,
     children: React.PropTypes.element
   },
 
@@ -95,7 +96,8 @@ var Map = React.createClass({
       interactionBufferSize: 10,
       hash: true,
       attributionControl: false,
-      style: {}
+      style: {},
+      allowLayerOrderOptimization: true
     };
   },
 
@@ -152,9 +154,31 @@ var Map = React.createClass({
     return false;
   },
 
+  /**
+   * Attempt to optimize layers, put labels on top of other layer types
+   * @param {*} glStyle 
+   */
+  optimizeLayerOrder(glStyle){
+    var regularLayers = [];
+    var labelLayers = [];
+    if(this.props.allowLayerOrderOptimization){
+       glStyle.layers.forEach(layer=>{
+         if(layer.type === 'symbol'){
+           labelLayers.push(layer);
+         }else{
+           regularLayers.push(layer);
+         }
+       });
+      return regularLayers.concat(labelLayers);
+    }else{
+      return glStyle.layers;
+    }
+  },
+
   addLayers(map, glStyle){
     var _this = this;
-    glStyle.layers.forEach(function(layer){
+    var layers = this.optimizeLayerOrder(glStyle);
+    layers.forEach(function(layer){
     try{
       var source = glStyle.sources[layer.source];
       if(layer.source != 'osm'  && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
