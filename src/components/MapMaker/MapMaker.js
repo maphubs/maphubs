@@ -33,7 +33,7 @@ var Locales = require('../../services/locales');
 
 var MapMaker = React.createClass({
 
-  mixins:[StateMixin.connect(MapMakerStore, {initWithProps: ['position', 'basemap', 'title', 'map_id', 'owned_by_group_id']}), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
+  mixins:[StateMixin.connect(MapMakerStore, {initWithProps: ['position', 'title', 'map_id', 'owned_by_group_id']}), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -84,14 +84,16 @@ var MapMaker = React.createClass({
     if(this.props.mapLayers){
       Actions.setMapLayers(this.props.mapLayers);
     }
+
+    if(this.props.basemap){
+      Actions.setMapBasemap(this.props.basemap);
+    }
  /*
     if(this.props.position){
       Actions.setMapPosition(this.props.position);
     }
 
-    if(this.props.basemap){
-      Actions.setMapBasemap(this.props.basemap);
-    }
+    
 
     
 
