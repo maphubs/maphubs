@@ -349,7 +349,7 @@ var MapMaker = React.createClass({
     Actions.setMapPosition(position);
     Actions.addToMap(layer, function(err){
       if(err){
-        NotificationActions.showNotification({message: this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'});
+        NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'});
       }
       //reset stuck tooltips...
       $('.layer-card-tooltipped').tooltip();
@@ -526,7 +526,7 @@ var MapMaker = React.createClass({
                 <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
                   glStyle={this.state.mapStyle}
                   baseMap={this.state.basemap}
-                  insetMap={false}
+                  insetMap={true}
                   onChangeBaseMap={Actions.setMapBasemap}
                   onToggleForestLoss={this.onToggleForestLoss}
                   fitBounds={mapExtent}
