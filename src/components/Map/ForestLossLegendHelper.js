@@ -2,12 +2,11 @@
 
 module.exports = {
   getLegendLayers(){
-    return [
-     
+    return [   
       {
         active: true,
         layer_id: '-2',
-        name: 'Tree Cover',
+        name: 'Tree Cover 2000',
         source: '',
         description: '',
         owned_by_group_id: 'GLAD',
@@ -19,7 +18,7 @@ module.exports = {
         },
         legend_html: `
         <div class="omh-legend">
-<h3>Tree Cover</h3>
+<h3>Tree Cover 2000</h3>
 <table style="table-layout: fixed; width: 100%;">
     <thead>
         <tr style="font-size: 8px;">
@@ -48,8 +47,8 @@ module.exports = {
        {
         active: true,
         layer_id: '-1',
-        name: 'Tree Cover Loss',
-        source: '',
+        name: 'Tree Cover Loss 2001-2014',
+        source: 'Hansen/UMD/Google/USGS/NASA',
         description: '',
         owned_by_group_id: 'GLAD',
         remote: true,
@@ -62,7 +61,7 @@ module.exports = {
           <div class="omh-legend">
  <div style="background-color: #FF0000; width: 10px; height: 10px; float: left; margin-right: 5px;">
  </div>
- <h3>Tree Cover Loss</h3>
+ <h3>Tree Cover Loss 2001-2014</h3>
  </div>
         `
       }
