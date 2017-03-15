@@ -37,8 +37,11 @@ var LegendItem = React.createClass({
       );
     }
     var legendItem = (
-        <div className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: legendHtml}}></div>             
-      );
+        <li style={{position: 'relative'}}>
+          <span className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: legendHtml}} />
+          <span className="grey-text right right-align truncate no-padding" style={{margin: 0, fontSize: '6px', position: 'absolute', bottom: 0, right: 0}}>{this.props.layer.source}</span>             
+        </li>      
+        );
     var style;
     if(this.props.layer.map_style){
       style = this.props.layer.map_style;
@@ -59,6 +62,7 @@ var LegendItem = React.createClass({
                   <Marker  {...markerConfig}/>
                 </div>              
                 <h3 className="valign" style={{paddingLeft: '5px', paddingTop: '0px', paddingBottom: '5px'}}>{_this.props.layer.name}</h3>
+                <span className="grey-text left left-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '0.75em', width: '50%'}}>({this.props.layer.source})</span>
               </div>
              
             );

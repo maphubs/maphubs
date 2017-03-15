@@ -115,6 +115,12 @@ var MapLayerDesigner = React.createClass({
     }else{
        style = this.state.layer.style;
     }
+    var legendCode;
+    if(this.state.layer.map_legend_html){
+      legendCode = this.state.layer.map_legend_html;
+    }else{
+       legendCode = this.state.layer.legend_html;
+    }
     var designer = '';
     if(this.state.layer){
       if(this.state.layer.is_external
@@ -127,7 +133,7 @@ var MapLayerDesigner = React.createClass({
             style={style} onStyleChange={this.setStyle}
             layer={this.state.layer}
             settings={this.state.layer.settings} onSettingsChange={this.setSettings}
-            legendCode={this.state.layer.map_legend_html} onLegendChange={this.setLegend} showAdvanced/>
+            legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced/>
           </div>
         );
       }else if(this.state.layer.is_external
@@ -146,7 +152,7 @@ var MapLayerDesigner = React.createClass({
               settings={this.state.layer.map_settings} onSettingsChange={this.setSettings}
               layer={this.state.layer}
               showAdvanced={this.props.showAdvanced}
-              legendCode={this.state.layer.map_legend_html} onLegendChange={this.setLegend}/>
+              legendCode={legendCode} onLegendChange={this.setLegend}/>
         </div>
       );
     }
