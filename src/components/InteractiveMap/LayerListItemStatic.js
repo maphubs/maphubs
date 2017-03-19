@@ -9,14 +9,9 @@ var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 var $ = require('jquery');
 var _isEqual = require('lodash.isequal');
-var flow = require('lodash.flow');
-require('dnd-core/lib/actions/dragDrop');
-var DragSource = require('react-dnd').DragSource;
-var DropTarget = require('react-dnd').DropTarget;
-var DraggleIndicator = require('../../components/UI/DraggableIndicator');
-var DragItemConfig = require('../../components/UI/DragItemConfig');
 
-var LayerListItem = React.createClass({
+
+var LayerListItemStatic = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
 
@@ -44,7 +39,7 @@ var LayerListItem = React.createClass({
 
   getDefaultProps(){
     return {
-      showVisibility: false
+      showVisibility: true
     };
   },
 
@@ -156,7 +151,7 @@ var LayerListItem = React.createClass({
       );
     }
 
-    return connectDragSource(connectDropTarget(
+    return (
       <div className="collection-item"
         style={{
           opacity: isDragging ? 0.75 : 1, 
@@ -212,15 +207,12 @@ var LayerListItem = React.createClass({
               margin: 'auto'
             }}     
           >
-            <DraggleIndicator numX={2} numY={16} width={12} height={64} />
+           
           </div>
       </div>
-    ));
+    );
   }
 
 });
 
-module.exports = flow(
-  DropTarget('layer', DragItemConfig.dropTargetConfig, DragItemConfig.connect),
-  DragSource('layer', DragItemConfig.dragSourceConfig, DragItemConfig.collect),
-)(LayerListItem);
+module.exports = LayerListItemStatic;

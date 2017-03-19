@@ -1,13 +1,9 @@
 var React = require('react');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
-var LayerListItem = require('./LayerListItem');
+var LayerListItemStatic = require('./LayerListItemStatic');
 var _isEqual = require('lodash.isequal');
-var DragDropContext = require('react-dnd').DragDropContext;
-var HTML5Backend = require('react-dnd-html5-backend');
 
-import update from 'react/lib/update';
-
-var LayerList = React.createClass({
+var LayerListStatic = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes:  {
@@ -44,20 +40,7 @@ var LayerList = React.createClass({
     }
   },
 
-  moveLayer(dragIndex, hoverIndex) {
-    const layers = this.state.layers;
-    const dragLayer = layers[dragIndex];
 
-    var updatedLayers = update(layers, {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, dragLayer],
-        ]
-    });
-
-    this.props.updateLayers(updatedLayers);
-
-  },
 
   render(){
     var _this = this;
@@ -68,13 +51,12 @@ var LayerList = React.createClass({
               if(layer.layer_id && layer.layer_id > 0){
                 return (
                   <li key={layer.layer_id} >
-                    <LayerListItem id={layer.layer_id} item={layer} index={i}              
+                    <LayerListItemStatic id={layer.layer_id} item={layer} index={i}              
                       toggleVisibility={_this.props.toggleVisibility}
                       showVisibility={_this.props.showVisibility}
                       showRemove={_this.props.showRemove}
                       showDesign={_this.props.showDesign}
                       showEdit={_this.props.showEdit}
-                      moveItem={_this.moveLayer}
                       removeFromMap={_this.props.removeFromMap}
                       showLayerDesigner={_this.props.showLayerDesigner}
                       editLayer={_this.props.editLayer}
@@ -91,4 +73,4 @@ var LayerList = React.createClass({
 
 });
 
-module.exports = DragDropContext(HTML5Backend)(LayerList);
+module.exports = LayerListStatic;

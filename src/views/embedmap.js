@@ -1,6 +1,6 @@
 var React = require('react');
 var $ = require('jquery');
-var Legend = require('../components/Map/Legend');
+var MiniLegend = require('../components/Map/MiniLegend');
 var Map = require('../components/Map/Map');
 var _debounce = require('lodash.debounce');
 
@@ -116,7 +116,7 @@ var EmbedMap = React.createClass({
       if(this.state.width < 600){
         //mapHeight = mapHeight - legendHeight;
         bottomLegend = (
-          <Legend style={{
+          <MiniLegend style={{
               width: '100%'
             }}
               title={title}
@@ -124,7 +124,7 @@ var EmbedMap = React.createClass({
           );
       }else{
         legend = (
-          <Legend style={{
+          <MiniLegend style={{
               position: 'absolute',
               top: '5px',
               left: '5px',

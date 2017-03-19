@@ -1,7 +1,6 @@
 var React = require('react');
 var $ = require('jquery');
-var Legend = require('../components/Map/Legend');
-var Map = require('../components/Map/Map');
+var InteractiveMap = require('../components/InteractiveMap');
 var Header = require('../components/header');
 //var NotificationActions = require('../actions/NotificationActions');
 var ConfirmationActions = require('../actions/ConfirmationActions');
@@ -217,16 +216,12 @@ componentWillReceiveProps(nextProps){
 
   render() {
     var map = '';
-    var title = null;
-
-    if(this.props.map.title && this.props.map.title != ''){
-      title = this.props.map.title;
-    }
-
+   
+/*
     var legend = '', bottomLegend = '';
     if(this.state.width < 600){
       bottomLegend = (
-        <Legend style={{
+        <MiniLegend style={{
             width: '100%',
             maxHeight: 'calc(100% - 140px)',
             display: 'flex',
@@ -238,7 +233,7 @@ componentWillReceiveProps(nextProps){
         );
     } else {
       legend = (
-        <Legend style={{
+        <MiniLegend style={{
             position: 'absolute',
             top: '5px',
             left: '5px',
@@ -254,6 +249,7 @@ componentWillReceiveProps(nextProps){
             layers={this.state.layers}/>
       );
     }
+    */
 
     var button = '',  deleteButton = '', editButton ='';
     if(this.props.canEdit){
@@ -326,19 +322,15 @@ componentWillReceiveProps(nextProps){
   </li>
   */
 
-    var bbox = this.props.map.position.bbox;
-    var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+
     map = (
-      <Map ref="map" fitBounds={bounds}
-        style={{width: '100%', height: '100%'}}
-        glStyle={this.props.map.style}
-        onToggleForestLoss={this.onToggleForestLoss}
-        baseMap={this.props.map.basemap}
-         navPosition="top-right">
-        {legend}
+      <InteractiveMap height="100%" 
+             {...this.props.map}         
+             layers={this.props.layers}
+             >
         <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
         {button}
-      </Map>
+        </InteractiveMap> 
     );
 
     return (
@@ -346,7 +338,20 @@ componentWillReceiveProps(nextProps){
         <Header />
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>
-          <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative'}}>
+          
+          {map}
+
+        </main>
+      </div>
+    );
+  }
+});
+
+module.exports = UserMap;
+
+/*
+
+ <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative'}}>
           <a href="#" ref="mapLayersPanel"
             data-activates="user-map-layers"
             style={{position: 'absolute',
@@ -379,12 +384,5 @@ componentWillReceiveProps(nextProps){
           </div>
 
         </nav>
-          {map}
 
-        </main>
-      </div>
-    );
-  }
-});
-
-module.exports = UserMap;
+        */

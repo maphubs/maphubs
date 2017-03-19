@@ -83,20 +83,20 @@ var MapLayerDesigner = React.createClass({
   },
 
   setStyle(style){
-    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, this.state.layer.settings);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings);
     this.setState({style});
   },
 
   setLabels(style, labels){
-   this.props.onStyleChange(this.state.layer.layer_id, style, labels, this.state.layer.map_legend_html, this.state.layer.settings);
+   this.props.onStyleChange(this.state.layer.layer_id, style, labels, this.state.layer.legend_html, this.state.layer.settings);
   },
 
   setMarkers(style){
-    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, this.state.layer.settings);
+    this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings);
   },
 
   setSettings(style, settings){
-     this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.map_legend_html, settings);
+     this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, this.state.layer.legend_html, settings);
   },
 
   setLegend(legend_html){
@@ -109,18 +109,9 @@ var MapLayerDesigner = React.createClass({
   },
 
   render(){
-    var style; 
-    if(this.state.layer.map_style){
-      style = this.state.layer.map_style;
-    }else{
-       style = this.state.layer.style;
-    }
-    var legendCode;
-    if(this.state.layer.map_legend_html){
-      legendCode = this.state.layer.map_legend_html;
-    }else{
-       legendCode = this.state.layer.legend_html;
-    }
+    var style = this.state.layer.style; 
+    var legendCode = this.state.layer.legend_html;
+  
     var designer = '';
     if(this.state.layer){
       if(this.state.layer.is_external
@@ -149,7 +140,7 @@ var MapLayerDesigner = React.createClass({
             <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
               style={style} onStyleChange={this.setStyle}
               labels={this.state.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
-              settings={this.state.layer.map_settings} onSettingsChange={this.setSettings}
+              settings={this.state.layer.settings} onSettingsChange={this.setSettings}
               layer={this.state.layer}
               showAdvanced={this.props.showAdvanced}
               legendCode={legendCode} onLegendChange={this.setLegend}/>

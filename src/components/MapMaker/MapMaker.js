@@ -339,6 +339,9 @@ var MapMaker = React.createClass({
     var _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
 
+    //clone the layer object so we don't mutate the data in the search results
+    layer = JSON.parse(JSON.stringify(layer));
+
     if(this.state.mapLayers.length == 0 && layer.extent_bbox){
       _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false);
     }

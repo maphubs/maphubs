@@ -6,7 +6,7 @@ var $ = require('jquery');
 
 
 var Map = require('../Map/Map');
-var Legend = require('../Map/Legend');
+var MiniLegend = require('../Map/MiniLegend');
 
 
 var LayerStore = require('../../stores/layer-store');
@@ -23,7 +23,7 @@ var LayerDesigner = require('../LayerDesigner/LayerDesigner');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
-var _isequal = require('lodash.isequal');
+//var _isequal = require('lodash.isequal');
 
 
 var LayerStyle = React.createClass({
@@ -183,7 +183,7 @@ var LayerStyle = React.createClass({
               showLogo={false}
               fitBounds={mapExtent}
               />
-            <Legend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
+            <MiniLegend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
                 collapsible={false}
                 layers={[this.state.layer]}/>
           </div>

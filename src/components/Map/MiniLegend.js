@@ -22,6 +22,7 @@ var MiniLegend = React.createClass({
     hideInactive: React.PropTypes.bool,
     collapsible: React.PropTypes.bool,
     collapseToBottom: React.PropTypes.bool,
+    showLayersButton: React.PropTypes.bool,
     style: React.PropTypes.object
   },
 
@@ -30,7 +31,8 @@ var MiniLegend = React.createClass({
       layers: [],
       hideInactive: true,
       collapsible: true,
-      collapseToBottom: true,
+      collapseToBottom: false,
+      showLayersButton: true,
       style: {}
     };
   },
@@ -47,14 +49,60 @@ var MiniLegend = React.createClass({
     });
   },
 
-  componentDidMount(){
-    $(this.refs.legend).collapsible();
+
+  componentDidMount() {
+    if(this.props.collapsible){
+       $(this.refs.legend).collapsible();
+    }
+   
+    if(this.props.showLayersButton){
+      $(this.refs.mapLayersButton).sideNav({
+        menuWidth: 240, // Default is 240
+        edge: 'left', // Choose the horizontal origin
+        closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      });
+    }
   },
 
   render(){
     var _this = this;
+
+    var layersButton = '';
+    if(this.props.showLayersButton){
+      layersButton = (
+         <a ref="mapLayersButton"
+                href="#" 
+                data-activates="map-layers"
+                style={{
+                  position: 'absolute',
+                  right: '20px',
+                  display: 'inherit',
+                  height:'30px',
+                  zIndex: '100',
+                  borderRadius: '4px',
+                  lineHeight: '30px',
+                  textAlign: 'center',
+                  width: '30px'
+                }}
+                  data-position="bottom" data-delay="50" 
+                  data-tooltip={this.__('Tools')}
+                >
+                <i  className="material-icons"
+                  style={{height:'30px',
+                          lineHeight: '30px',
+                          width: '30px',
+                          color: '#000',  
+                          cursor: 'pointer',
+                          borderStyle: 'none',
+                          textAlign: 'center',
+                          fontSize:'18px'}}          
+                  >settings</i>
+              </a>
+      );
+    }
+
     var titleText = '';
-    if(this.props.title){
+    if(this.props.title && this.props.title != ''){
       titleText = this.props.title;
     }else{
       titleText = this.__('Legend');
@@ -78,13 +126,13 @@ var MiniLegend = React.createClass({
         }
       }
      
-
       title = (
         <div className="row no-margin" style={{height: '30px'}}>
           <div className="col s10 no-padding valign-wrapper" style={{height: '30px'}}>
             <h6 className="black-text valign" style={{padding: '0.2rem', marginLeft: '2px', marginTop: '0px', marginBottom: '0px', fontWeight: '500'}}>{titleText}</h6>
           </div>
           <div className="col s2 no-padding valign">
+            {layersButton}
             <i ref="titleIcon" className="material-icons icon-fade-in" style={{float: 'right', marginRight: 0, height: '100%', lineHeight: '30px'}}>{iconName}</i>
           </div>
         </div>
@@ -93,6 +141,9 @@ var MiniLegend = React.createClass({
       title = (
         <div className="row no-margin valign-wrapper" style={{height: '44px'}}>
           <h6 className="black-text valign" style={{padding: '0.2rem',  marginLeft: '2px', fontWeight: '500'}}>{titleText}</h6>
+          <div className="col s2 no-padding valign">
+            {layersButton}
+          </div>
         </div>
       );
     }
@@ -114,17 +165,15 @@ var MiniLegend = React.createClass({
             <ul className="collection no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden'}}>
               {
                 this.props.layers.map(function (layer) {
-                  if(_this.props.hideInactive && !layer.active){
+                  if(_this.props.hideInactive && !layer.settings.active){
                     return null;
                   }
-                  var legendHtml = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
-                  layer.legend_html = legendHtml;
-                  return (<LegendItem key={layer.layer_id} layer={layer} style={{padding: '2px', width: '100%', margin: 'auto'}} mini/>);
+                  return (<LegendItem key={layer.layer_id} layer={layer} style={{padding: '2px', width: '100%', margin: 'auto'}}/>);
                 })
               }
  
-            <li className="collection-item no-margin no-padding" style={{lineHeight: '0.75em'}}>
-              <span style={{fontSize: '8px', paddingLeft: '2px', float: 'left', backgroundColor: '#FFF'}} 
+            <li className="collection-item no-margin" style={{lineHeight: '0.75em', padding: '2px'}}>
+              <span style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}} 
               className="grey-text align-left">Base Map - <span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span></span>
             </li>           
             </ul>

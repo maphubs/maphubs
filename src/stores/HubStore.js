@@ -15,6 +15,7 @@ module.exports = Reflux.createStore({
   getInitialState() {
     return  {
       hub: {},
+      map: null,
       layers: [],
       logoImage: null,
       bannerImage: null,
@@ -40,11 +41,6 @@ module.exports = Reflux.createStore({
  loadHub(hub){
    debug('load hub');
    this.setState({hub});
- },
-
- loadLayers(layers){
-   debug('load layers');
-   this.setState({layers});
  },
 
  createHub(hub_id, group_id, name, published, isPrivate, _csrf, cb){
@@ -91,10 +87,7 @@ module.exports = Reflux.createStore({
      resources: this.state.hub.resources,
      about: this.state.hub.about,
      published: this.state.hub.published,
-     style: this.state.hub.map_style,
-     basemap: this.state.hub.basemap,
-     position: this.state.hub.map_position,
-     layers:  this.state.layers,
+     map_id: this.state.hub.map_id,
      logoImage: this.state.logoImage,
      logoImageInfo: this.state.logoImageInfo,
      bannerImage: this.state.bannerImage,
@@ -169,13 +162,10 @@ module.exports = Reflux.createStore({
    });
  },
 
- setMap(layers, style, position, basemap){
+ setMap(map){
    var hub = this.state.hub;
-   hub.map_style = style;
-   hub.map_position = position;
-   hub.basemap = basemap;
-   this.setState({hub, layers, unsavedChanges: true});
-   this.trigger(this.state);
+   hub.map_id = map.map_id;
+   this.setState({hub, map, unsavedChanges: true});
  },
 
  setHubLogoImage(data, info){
@@ -226,95 +216,5 @@ module.exports = Reflux.createStore({
    var hub = this.state.hub;
    hub.about = about;
    this.setState({hub, unsavedChanges: true});
- },
-
- //map functions
- toggleVisibility(layer_id, cb){
-   var layers = this.state.layers;
-   var index = findIndex(layers, {layer_id});
-
-   if(layers[index].active){
-     layers[index].active = false;
-   }else {
-     layers[index].active = true;
-   }
-
-   this.updateMap(layers);
-   cb();
- },
-
- updateLayers(layers, update=true){
-   this.setState({layers});
-   if(update){
-    this.updateMap(layers);
-   }
-   
- },
-
- moveUp(layer_id){
-   var index = findIndex(this.state.layers, {layer_id});
-   if(index === 0) return;
-   var layers = this.move(this.state.layers, index, index-1);
-   this.updateMap(layers);
- },
-
- moveDown(layer_id){
-   var index = findIndex(this.state.layers, {layer_id});
-   if(index === this.state.layers.length -1) return;
-   var layers = this.move(this.state.layers, index, index+1);
-   this.updateMap(layers);
- },
-
- move(array, fromIndex, toIndex) {
-    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
-    return array;
-  },
-
- updateMap(layers){
-   var style = this.buildMapStyle(layers);
-  var hub = this.state.hub;
-  hub.map_style = style;
-   this.setState({layers, hub});
-   this.trigger(this.state);
- },
-
- buildMapStyle(layers){
-   var mapStyle = {
-     sources: {},
-     layers: []
-   };
-
-   //reverse the order for the styles, since the map draws them in the order recieved
-   forEachRight(layers, function(layer){
-     if(!layer.map_style) layer.map_style = layer.style;
-     var style = layer.map_style;
-     if(style && style.sources && style.layers){
-       //check for active flag and update visibility in style
-       if(layer.active != undefined && layer.active == false){
-         //hide style layers for this layer
-         style.layers.forEach(function(styleLayer){
-           styleLayer['layout'] = {
-             "visibility": "none"
-           };
-         });
-       } else {
-         //reset all the style layers to visible
-         style.layers.forEach(function(styleLayer){
-           styleLayer['layout'] = {
-             "visibility": "visible"
-           };
-         });
-       }
-       //add source
-       $.extend(mapStyle.sources, style.sources);
-       //add layers
-       mapStyle.layers = mapStyle.layers.concat(style.layers);
-     } else {
-       debug('Not added to map, incomplete style for layer: ' + layer.layer_id);
-     }
-
-   });
-   return mapStyle;
  }
-
 });

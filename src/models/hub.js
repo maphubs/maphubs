@@ -268,12 +268,12 @@ module.exports = {
     });
     },
 
-    updateHub(hub_id: string, name: string, description: string, tagline: string, published: boolean, resources: string, about: string, user_id: number) {
-      //#TODO add option to change hub_id
+    updateHub(hub_id: string, name: string, description: string, tagline: string, published: boolean, resources: string, about: string, map_id: number, user_id: number) {
+      //TODO add option to change hub_id
       return knex('omh.hubs')
         .where('hub_id', hub_id)
         .update({
-          name, description, tagline, published, resources, about,
+          name, description, tagline, published, resources, about, map_id,
           updated_by: user_id,
           updated_at: knex.raw('now()')
         });

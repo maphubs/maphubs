@@ -39,7 +39,12 @@ if(typeof module !== 'undefined'){
 
 EOF
 
+if [ -z ${OMH_REMOTE_THEME} ]; then
+wget ${OMH_REMOTE_THEME} -o /app/src/theme.scss
+else
 cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
+fi
+
 mkdir -p /app/css
 
 #work-around old babel config included in dnd-core

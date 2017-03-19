@@ -51,6 +51,8 @@ var MapboxGLHelperMixin = {
   },
 
   changeLocale(locale, map){
+  //disable until OpenMapTile has translations;
+    /*
     var supportedLangauges = ['en', 'fr', 'es', 'de', 'de', 'ru', 'zh'];
     var foundLocale = _includes(supportedLangauges, locale);
     if(!foundLocale){
@@ -59,38 +61,42 @@ var MapboxGLHelperMixin = {
     }
     debug('(' + this.state.id + ') ' +'changing map language to: ' + locale);
     try{
-    map.setLayoutProperty('country-label-lg', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('country-label-md', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('country-label-sm', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('state-label-lg', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_point_other', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_point_3', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_point_2', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_point_1', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_line_other', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_line_3', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_line_2', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('marine_label_line_1', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_neighborhood', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_other', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_city_small_s', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_city_small_n', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_city_medium_s', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_city_medium_n', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_city_large_s', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('place_label_city_large_n', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('road-label-sm', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('road-label-med', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('road-label-large', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('airport-label', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('poi-parks-scalerank1', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('poi-scalerank1', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('waterway-label', 'text-field', '{name_' + locale + '}');
-    map.setLayoutProperty('water-label', 'text-field', '{name_' + locale + '}');
+      if(this.state.baseMap === 'streets'){
+        map.setLayoutProperty('continent', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('state', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('water_name_line', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('water_name_point', 'text-field', '{name_' + locale + '}');
+      }else if(this.state.baseMap === 'default'){
+        map.setLayoutProperty('place_country_major', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_country_other', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_state', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_city_large', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_capital', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_city', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_town', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_village', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_suburb', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_other', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('water_name', 'text-field', '{name_' + locale + '}');
+            
+      }else if(this.state.baseMap === 'dark'){
+        map.setLayoutProperty('place_country_major', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_country_other', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_state', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_city_large', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_city', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_town', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_village', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_suburb', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('place_other', 'text-field', '{name_' + locale + '}');
+        map.setLayoutProperty('water_name', 'text-field', '{name_' + locale + '}');
+            
+      }
+   
     }catch(err){
       debug(err);
     }
-
+*/
 
   },
 };

@@ -9,11 +9,30 @@ var PublicOnboardingLinks = React.createClass({
 
   mixins:[StateMixin.connect(LocaleStore)],
 
+  propTypes:  {
+    demo: React.PropTypes.bool
+  },
+
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
   },
 
 render(){
+  var mapDemoText = '', storyDemoText = '', hubDemoText = '', searchDemoText = '';
+  if(this.props.demo){
+    mapDemoText = (
+       <div className="flow-text center-align">Interactive maps you’ve made</div>
+    );
+    storyDemoText = (
+       <div className="flow-text center-align">Use your interactive maps with images and text to make stories or blog posts</div>
+    );
+    hubDemoText = (
+      <div className="flow-text center-align">Create mini project sites with your maps and stories</div>
+    );
+    searchDemoText = (
+      <div className="flow-text center-align">Search your content by keyword</div>
+    );
+  }
   return (
     <div className="row no-margin">
         <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
@@ -23,7 +42,7 @@ render(){
             </div>
             <h5 className="center-align">{this.__('Maps')}</h5>
           </a>
-          <div className="flow-text center-align">Interactive maps you’ve made</div>
+         {mapDemoText}
         </div>
         <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
           <a href="/stories" style={{margin: 'auto'}}>
@@ -32,7 +51,7 @@ render(){
             </div>
             <h5 className="center-align">{this.__('Stories')}</h5>
           </a>
-          <div className="flow-text center-align">Use your interactive maps with images and text to make stories or blog posts</div>
+         {storyDemoText}
         </div>
         <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
           <a href="/hubs" style={{margin: 'auto'}}>
@@ -41,7 +60,7 @@ render(){
             </div>
             <h5 className="center-align">{this.__('Hubs')}</h5>
           </a>
-          <div className="flow-text center-align">Create mini project sites with your maps and stories</div>
+          {hubDemoText}
         </div>
         <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
           <a href="/search" style={{margin: 'auto'}}>
@@ -50,7 +69,7 @@ render(){
             </div>
             <h5 className="center-align">{this.__('Search')}</h5>
           </a>
-          <div className="flow-text center-align">Search your content by keyword</div>
+          {searchDemoText}
         </div>
       </div>
   );

@@ -1,18 +1,13 @@
 var React = require('react');
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
-var Map = require('../Map/Map');
+var InteractiveMap = require('../InteractiveMap');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var HubStore = require('../../stores/HubStore');
 var HubActions = require('../../actions/HubActions');
-
-var HubMapLayers = require('./HubMapLayers');
-var MiniLegend = require('../Map/MiniLegend');
-
-var CreateMap = require('../CreateMap/CreateMap');
-var CreateMapActions = require('../../actions/CreateMapActions');
+var AddMapModal = require('../Story/AddMapModal');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
@@ -28,14 +23,18 @@ var HubMap = React.createClass({
     hub: React.PropTypes.object.isRequired,
     editing: React.PropTypes.bool,
     height: React.PropTypes.string,
-    border: React.PropTypes.bool
+    border: React.PropTypes.bool,
+    myMaps: React.PropTypes.array,
+    popularMaps: React.PropTypes.array
   },
 
   getDefaultProps(){
     return {
       editing: false,
       height: '300px',
-      border: false
+      border: false,
+      myMaps: [],
+      popularMaps: []
     };
   },
 
@@ -48,107 +47,61 @@ var HubMap = React.createClass({
 
   },
 
-
   componentDidUpdate(){
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
   },
 
-  showMapEdit(){
-    CreateMapActions.showMapDesigner();
+  onSetMap(map){
+    HubActions.setMap(map);
   },
 
-  saveMap(layers, style, position, basemap){
-    HubActions.setMap(layers, style, position, basemap);
+  showMapSelection(){
+    this.refs.addmap.show();
   },
 
   render() {
-    var mapEditButton = '', createMap = '';
+
+    //TODO: if map is set, show the map, otherwise show instruction to set a map
+
+    var mapEditButton = '', selectMap = '';
     if(this.props.editing){
-      createMap = (
-        <CreateMap mapLayers={this.state.layers}
-          basemap={this.props.hub.basemap}
-          position={this.props.hub.map_position}
-          showTitleEdit={false} titleLabel={this.__('Edit Hub Map')}
-          onSaveHubMap={this.saveMap} hubId={this.props.hub.hub_id} hubMap/>
+      selectMap = (
+         <AddMapModal ref="addmap"
+         onAdd={this.onSetMap} onClose={this.onMapCancel}
+         myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
       );
-      mapEditButton = (
-        <a className="btn-floating omh-color white-text" onClick={this.showMapEdit}
-          style={{position: 'absolute', top: '5px', left: '5px'}}>
-          <i className="material-icons">edit</i>
+      if(this.state.map){
+         mapEditButton = (
+          <a className="btn omh-color white-text" onClick={this.showMapSelection}
+            style={{position: 'absolute', top: '5px', left: '45%'}}>
+            {this.__('Change Map')}
+          </a>
+        );
+      }else{
+       mapEditButton = (
+        <a className="btn omh-color white-text" onClick={this.showMapSelection}
+          style={{position: 'absolute', top: '45%', left: '45%'}}>
+          {this.__('Select a Map')}
         </a>
       );
+      }
+     
     }
-    var border = 'none';
-    if(this.props.border){
-      border = '1px solid #e0e0e0';
-    }
-
-    var bounds = null;
-    if(this.state.hub.map_position){
-      var bbox = this.state.hub.map_position.bbox;
-      bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
-    }
-
-
+ 
     return (
-      <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border}}>
-            <div className="row no-margin" style={{height: '100%'}}>
-              <div style={{height: '100%', overflowY: 'auto'}} className="col no-padding s0 hide-on-small-only m3 l3">
-                <HubMapLayers />
-              </div>
-              <div className="col s12 m9 l9 no-padding" style={{height: '100%'}}>
-                <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
-                <a href="#" ref="mapLayersPanel"
-                  data-activates="map-layers"
-                  style={{position: 'absolute',
-                    top: '110px',
-                    left: '5px',
-                    height:'35px',
-                    lineHeight: '35px',
-                    width: '35px'}}
-                  className="button-collapse">
-                  <i className="material-icons omh-btn"
-                    style={{height:'35px',
-                            lineHeight: '35px',
-                            width: '35px',
-                            fontSize:'35px'}}
-                    >layers</i>
-                </a>
-                <div className="side-nav" id="map-layers">
-                  <HubMapLayers />
+      <div style={{width: '100%', height: this.props.height, overflow: 'hidden'}}>
+        <div className="row no-margin" style={{height: '100%', position: 'relative'}}>
 
-                </div>
+          <InteractiveMap {...this.state.map} 
+            height={this.props.height} showTitle={false}
+            layers={this.state.layers} />
+          
+            {mapEditButton}
 
-              </nav>
-                <Map ref="map" id="hub-map" fitBounds={bounds}
-                  style={{width: '100%', height: '100%'}}
-                  glStyle={this.state.hub.map_style}
-                  baseMap={this.state.hub.basemap}
-                  disableScrollZoom>
-
-
-                  <MiniLegend style={{
-                      position: 'absolute',
-                      bottom: '30px',
-                      right: '5px',
-                      minWidth: '200px',
-                      maxHeight: 'calc(100% - 80px)',
-                      overflowY: 'auto',
-                      zIndex: '1',
-                      width: '25%'
-                    }} layers={this.state.layers} />
-                    {mapEditButton}
-                </Map>
-
-              </div>
-            </div>
-
-
-
-
-        {createMap}
+        </div>
+        {selectMap}
       </div>
     );
   }

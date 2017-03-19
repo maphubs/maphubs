@@ -67,7 +67,7 @@ var LocaleChooser = React.createClass({
         data-position="bottom" data-delay="50" data-tooltip={this.__('Change Language')}>
         <a ref="dropdownButton" className="locale-dropdown-button nav-dropdown-button"
           href="#!" data-activates={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
-          <i className="material-icons right" style={{marginLeft: 0, color: '#212121 !important'}}>arrow_drop_down</i></a>
+          <i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
           <ul ref="dropdownMenu" id={this.props.id} className="dropdown-content">
             <li><a href="#!" onClick={function(){_this.onChange('en');}} className="nav-hover-menu-item">English (EN)</a></li>
             <li><a href="#!" onClick={function(){_this.onChange('fr');}} className="nav-hover-menu-item">Français (FR)</a></li>

@@ -1,7 +1,7 @@
 var React = require('react');
 
 var Map = require('../components/Map/Map');
-var Legend = require('../components/Map/Legend');
+var MiniLegend = require('../components/Map/MiniLegend');
 var Header = require('../components/header');
 var slug = require('slug');
 var styles = require('../components/Map/styles');
@@ -441,7 +441,7 @@ var LayerInfo = React.createClass({
         <Map ref="map" className="map-absolute map-with-header width-50"
           fitBounds={this.props.layer.preview_position.bbox}
           glStyle={glStyle}>
-          <Legend style={{
+          <MiniLegend style={{
               position: 'absolute',
               top: '5px',
               left: '5px',
@@ -470,7 +470,7 @@ var LayerInfo = React.createClass({
         <Map ref="map" className="map-absolute map-with-header width-50"
           fitBounds={this.props.layer.preview_position.bbox}
           glStyle={glStyle} >
-          <Legend style={{
+          <MiniLegend style={{
               position: 'absolute',
               top: '5px',
               left: '5px',

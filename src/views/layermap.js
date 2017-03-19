@@ -2,7 +2,7 @@ var React = require('react');
 var $ = require('jquery');
 var Header = require('../components/header');
 var Map = require('../components/Map/Map');
-var Legend = require('../components/Map/Legend');
+var MiniLegend = require('../components/Map/MiniLegend');
 var _debounce = require('lodash.debounce');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -73,7 +73,7 @@ var LayerMap = React.createClass({
     var legend = '', bottomLegend = '';
     if(this.state.width < 600){
       bottomLegend = (
-        <Legend style={{
+        <MiniLegend style={{
             width: '100%'
           }}
           title={this.props.layer.name}
@@ -81,7 +81,7 @@ var LayerMap = React.createClass({
         );
     } else {
       legend = (
-        <Legend style={{
+        <MiniLegend style={{
             position: 'absolute',
             top: '5px',
             left: '5px',

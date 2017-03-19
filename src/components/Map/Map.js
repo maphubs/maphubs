@@ -77,7 +77,7 @@ var Map = React.createClass({
     gpxLink: React.PropTypes.string,
     attributionControl: React.PropTypes.bool,
     allowLayerOrderOptimization: React.PropTypes.bool,
-    children: React.PropTypes.element
+    children: React.PropTypes.any
   },
 
   getDefaultProps() {
@@ -431,7 +431,7 @@ var Map = React.createClass({
     if(this.state.locale && (this.state.locale != prevState.locale) ){     
       this.changeLocale(this.state.locale, this.map);
       if(this.refs.insetMap){
-          this.changeLocale(this.state.locale, this.refs.getInsetMap());
+          this.changeLocale(this.state.locale, this.refs.insetMap.__getInsetMap());
       }
     }
   },

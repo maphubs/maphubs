@@ -1,76 +1,15 @@
 // @flow
-var knex = require('../../connection.js');
-
-//var XML = require('../../services/xml.js');
 var Map = require('../../models/map');
 var Group = require('../../models/group');
-//var BoundingBox = require('../../services/bounding-box.js');
 var ScreenshotUtil = require('../../services/screenshot-utils');
-var debug = require('../../services/debug')('routes/map');
+//var debug = require('../../services/debug')('routes/map');
 var log = require('../../services/log');
 var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
-
 var csrfProtection = require('csurf')({cookie: false});
-var privateLayerCheck = require('../../services/private-layer-check').middleware;
 
 module.exports = function(app: any) {
-
-    //disable global API only support one layer at a time for now
-     /*
-    app.get('/xml/map', function (req, res, next) {
-        // parse and validate bbox parameter from query
-        // See services/BoundingBox.js.
-        var paramString = req.query.bbox || '';
-        var bbox = new BoundingBox.FromCoordinates(paramString.split(','));
-        if (bbox.error) {
-            res.send(400, {error: bbox.error});
-            return;
-        }
-
-        queryBbox(knex, bbox, null)
-            .then(function (result) {
-                var xmlDoc = XML.write({
-                    bbox,
-                    nodes: Node.withTags(result.nodes, result.nodetags, 'node_id'),
-                    ways: Node.withTags(result.ways, result.waytags, 'way_id'),
-                    relations: result.relations
-                });
-                res.header("Content-Type", "text/xml");
-                res.send(xmlDoc.toString());
-            }).catch(nextError(next));
-    });
-    */
-    /*
-    app.get('/xml/map/:layer_id', privateLayerCheck, function (req, res, next) {
-      // parse and validate bbox parameter from query
-      // See services/BoundingBox.js.
-      var layer_id = parseInt(req.params.layer_id || '', 10);
-      var paramString = req.query.bbox || '';
-          var bbox = new BoundingBox.FromCoordinates(paramString.split(','));
-          if (bbox.error) {
-              res.status(500).send({error: bbox.error});
-              return;
-          }
-
-          queryBbox(knex, bbox, layer_id)
-          .then(function (result) {
-            debug("convert result to XML");
-              var xmlDoc = XML.write({
-                  bbox,
-                  nodes:result.nodes,
-                  ways: result.ways,
-                  relations: result.relations
-              });
-              debug("XML ready");
-              res.header("Content-Type", "text/xml");
-              res.send(xmlDoc.toString());
-          }).catch(nextError(next));
-    });
-
-    */
 
     app.post('/api/map/create', csrfProtection, function(req, res) {
       if (!req.isAuthenticated || !req.isAuthenticated()) {

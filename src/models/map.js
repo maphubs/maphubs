@@ -63,14 +63,14 @@ module.exports = {
       knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', omh.layers.creation_time) as creation_time'),
       'omh.layers.views',
-      'omh.layers.style','omh.layers.labels', 'omh.layers.settings',
-      'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
+      'omh.layers.style as default_style','omh.layers.labels as default_labels', 'omh.layers.settings as default_settings',
+      'omh.layers.legend_html as default_legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
       'omh.layers.updated_by_user_id', 'omh.layers.created_by_user_id',
-      'omh.map_layers.style as map_style',
-      'omh.map_layers.labels as map_labels',
-      'omh.map_layers.settings as map_settings',
+      'omh.map_layers.style as style',
+      'omh.map_layers.labels as labels',
+      'omh.map_layers.settings as settings',
       'omh.map_layers.position as position',
-      'omh.map_layers.legend_html as map_legend_html',
+      'omh.map_layers.legend_html as legend_html',
       'omh.map_layers.map_id as map_id')
       .from('omh.maps')
       .leftJoin('omh.map_layers', 'omh.maps.map_id', 'omh.map_layers.map_id')
@@ -79,7 +79,18 @@ module.exports = {
       if(!includePrivateLayers){
         query.where('omh.layers.private', false);
       }
-      return query;
+      return query.then(layers =>{
+         layers.map(layer=>{
+          //repair layer settings if not set
+          if(!layer.settings){
+            layer.settings = {};
+          }
+          if(typeof layer.settings.active === 'undefined'){
+            layer.settings.active = true;
+          }
+        });
+        return layers;
+      });
   },
 
   isPrivate(map_id: number){
@@ -262,17 +273,13 @@ module.exports = {
         var mapLayers = [];
         if(layers && Array.isArray(layers) && layers.length > 0){
           layers.forEach(function(layer: Object, i: number){
-            var mapStyle = layer.map_style ? layer.map_style : layer.style;
-            var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
-            var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
-            var mapSettings = layer.map_settings ? layer.map_settings : layer.settings;
             mapLayers.push({
               map_id,
               layer_id: layer.layer_id,
-              style: mapStyle,
-              labels: mapLabels,
-              legend_html: mapLegend,
-              settings: mapSettings,
+              style: layer.style,
+              labels: layer.labels,
+              legend_html: layer.legend_html,
+              settings: layer.settings,
               position: i
             });
           });
@@ -398,17 +405,13 @@ module.exports = {
             //insert layers
             var mapLayers = [];
             layers.forEach(function(layer, i){
-              var mapStyle = layer.map_style ? layer.map_style : layer.style;
-              var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
-              var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
-              var mapSettings = layer.map_settings ? layer.map_settings : layer.settings;
               mapLayers.push({
                 map_id,
                 layer_id: layer.layer_id,
-                style: mapStyle,
-                labels: mapLabels,
-                legend_html: mapLegend,
-                settings: mapSettings,
+                style: layer.style,
+                labels: layer.labels,
+                legend_html: layer.legend_html,
+                settings: layer.settings,
                 position: i
               });
             });
@@ -474,33 +477,6 @@ module.exports = {
     });
   },
 
-  saveHubMap(layers: Array<Object>, style: Object, basemap: string, position: any, hub_id: string, user_id: number){
-    return knex.transaction(function(trx) {
-      return trx('omh.hubs')
-      .update({
-        map_style: style,
-        basemap,
-        map_position: position,
-        updated_by: user_id,
-        updated_at: knex.raw('now()')
-      }).where({hub_id})
-      .then(function(){
-        return trx('omh.hub_layers').where({hub_id}).del()
-        .then(function(){
-          var commands = [];
-          layers.forEach(function(layer, i){
-            var mapStyle = layer.map_style ? layer.map_style : layer.style;
-            var mapLabels = layer.map_labels ? layer.map_labels : layer.labels;
-            var mapLegend = layer.map_legend_html ? layer.map_legend_html : layer.legend_html;
-            var mapSettings = layer.map_settings ? layer.map_settings : layer.settings;
-            commands.push(trx('omh.hub_layers')
-            .insert({hub_id, layer_id: layer.layer_id, style: mapStyle, labels: mapLabels, legend_html: mapLegend, settings: mapSettings, active: layer.active, position: i}));
-          });
-          return Promise.all(commands);
-        });
-      });
-    });
-  },
   //TODO: this code is duplicated in MapStore, need to bring then back together
   buildMapStyle(layers: Array<Object>){
     var mapStyle = {
@@ -510,27 +486,27 @@ module.exports = {
 
     //reverse the order for the styles, since the map draws them in the order received
     forEachRight(layers, function(layer){
-      if(layer.map_style && layer.map_style.sources && layer.map_style.layers){
+      if(layer.style && layer.style.sources && layer.style.layers){
         //check for active flag and update visibility in style
-        if(layer.active != undefined && layer.active == false){
+        if(layer.settings.active != undefined && layer.settings.active == false){
           //hide style layers for this layer
-          layer.map_style.layers.forEach(function(styleLayer){
+          layer.style.layers.forEach(function(styleLayer){
             styleLayer['layout'] = {
               "visibility": "none"
             };
           });
         } else {
           //reset all the style layers to visible
-          layer.map_style.layers.forEach(function(styleLayer){
+          layer.style.layers.forEach(function(styleLayer){
             styleLayer['layout'] = {
               "visibility": "visible"
             };
           });
         }
         //add source
-        mapStyle.sources = Object.assign(mapStyle.sources, layer.map_style.sources);
+        mapStyle.sources = Object.assign(mapStyle.sources, layer.style.sources);
         //add layers
-        mapStyle.layers = mapStyle.layers.concat(layer.map_style.layers);
+        mapStyle.layers = mapStyle.layers.concat(layer.style.layers);
       } else {
         debug('Not added to map, incomplete style for layer: ' + layer.layer_id);
       }

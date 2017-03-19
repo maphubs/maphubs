@@ -1,6 +1,6 @@
 var React = require('react');
 var $ = require('jquery');
-var Legend = require('../components/Map/Legend');
+var MiniLegend = require('../components/Map/MiniLegend');
 var Map = require('../components/Map/Map');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -91,7 +91,7 @@ var StaticMap = React.createClass({
     if(this.props.showLegend){
       if(this.state.width < 600){
         bottomLegend = (
-          <Legend style={{
+          <MiniLegend style={{
               width: '100%'
             }}
             title={title}
@@ -99,7 +99,7 @@ var StaticMap = React.createClass({
           );
       } else {
         legend = (
-          <Legend style={{
+          <MiniLegend style={{
               position: 'absolute',
               top: '5px',
               left: '5px',

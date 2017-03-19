@@ -77,7 +77,10 @@ module.exports = Reflux.createStore({
     if(_find(this.state.mapLayers, {layer_id: layer.layer_id})){
       cb(true);
     }else{
-      layer.active = true; //tell the map to make this layer visible
+      if(!layer.settings){
+        layer.settings = {};
+      }
+      layer.settings.active = true; //tell the map to make this layer visible
       var layers = this.state.mapLayers;
       layers.push(layer);
       this.updateMap(layers);
@@ -95,10 +98,10 @@ module.exports = Reflux.createStore({
     var mapLayers = this.state.mapLayers;
     var index = _findIndex(mapLayers, {layer_id});
 
-    if(mapLayers[index].active){
-      mapLayers[index].active = false;
+    if(mapLayers[index].settings.active){
+      mapLayers[index].settings.active = false;
     }else {
-      mapLayers[index].active = true;
+      mapLayers[index].settings.active = true;
     }
 
     this.updateMap(mapLayers);
@@ -108,11 +111,10 @@ module.exports = Reflux.createStore({
   updateLayerStyle(layer_id, style, labels, legend, settings){
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
-    layers[index].map_style = style;
     layers[index].style = style;
-    layers[index].map_labels = labels;
-    layers[index].map_legend_html = legend;
-    layers[index].map_settings = settings;
+    layers[index].labels = labels;
+    layers[index].legend_html = legend;
+    layers[index].settings = settings;
     this.updateMap(layers);
     this.setState({mapLayers: layers});
   },
@@ -200,17 +202,14 @@ module.exports = Reflux.createStore({
 
      //reverse the order for the styles, since the map draws them in the order recieved
      _forEachRight(layers, function(layer){
-       if(!layer.map_style) layer.map_style = layer.style;
-       if(!layer.map_labels) layer.map_labels = layer.labels;
-       if(!layer.map_settings) layer.map_settings = layer.settings;
-       var style = layer.map_style;
+       var style = layer.style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style
-         if(typeof layer.active === 'undefined'){
+         if(typeof layer.settings.active === 'undefined'){
            //default to on if no state provided
-           layer.active = true;
+           layer.settings.active = true;
          }
-         if(!layer.active){
+         if(!layer.settings.active){
            //hide style layers for this layer
            style.layers.forEach(function(styleLayer){
              if(!styleLayer['layout']){

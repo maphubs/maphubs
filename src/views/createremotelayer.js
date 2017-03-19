@@ -8,7 +8,7 @@ var Header = require('../components/header');
 var TextInput = require('../components/forms/textInput');
 var Select = require('../components/forms/select');
 var Map = require('../components/Map/Map');
-var Legend = require('../components/Map/Legend');
+var MiniLegend = require('../components/Map/MiniLegend');
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -156,7 +156,7 @@ var CreateRemoteLayer = React.createClass({
                 showFeatureInfoEditButtons={false}
                 glStyle={this.state.layer.style}
                 fitBounds={this.state.layer.preview_position.bbox}>
-                <Legend
+                <MiniLegend
                   style={{
                     position: 'absolute',
                     top: '5px',

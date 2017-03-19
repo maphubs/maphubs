@@ -30,7 +30,7 @@ import Progress from '../components/Progress';
 var HubInfo = React.createClass({
 
   mixins:[
-    StateMixin.connect(HubStore, {initWithProps: ['hub', 'layers', 'stories', 'canEdit']}),
+    StateMixin.connect(HubStore, {initWithProps: ['hub', 'map', 'layers', 'stories', 'canEdit']}),
     StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})
   ],
 
@@ -40,9 +40,12 @@ var HubInfo = React.createClass({
 
   propTypes: {
     hub: React.PropTypes.object,
+    map: React.PropTypes.object,
     layers: React.PropTypes.array,
     stories: React.PropTypes.array,
     canEdit: React.PropTypes.bool,
+    myMaps: React.PropTypes.array,
+    popularMaps: React.PropTypes.array,
     locale: React.PropTypes.string.isRequired
   },
 
@@ -84,6 +87,7 @@ var HubInfo = React.createClass({
       }else{
         NotificationActions.showNotification({message: _this.__('Hub Saved')});
         _this.setState({editing: false});
+        window.location.reload(true);
       }
     });
 
@@ -138,12 +142,10 @@ var HubInfo = React.createClass({
           </div>
           <div className="row">
               
-
           <div className="row" style={{height: 'calc(100vh - 65px)'}}>
-            <HubMap editing={this.state.editing} height="calc(100% - 65px)" hub={this.state.hub} border/>
-            <div className="center-align" style={{marginTop: '10px', marginBottom:'10px'}}>
-              <a href={linkBaseUrl + 'map'} className="btn">{this.__('View Larger Map')}</a>
-            </div>
+            <HubMap editing={this.state.editing} height="calc(100% - 65px)" 
+            hub={this.state.hub} myMaps={this.props.myMaps} popularMaps={this.props.popularMaps}
+            border/>          
           </div>
           <div className="row no-margin">
             <HubDescription editing={this.state.editing} hubid={this.props.hub.hub_id}/>

@@ -2,8 +2,6 @@ var Reflux = require('reflux');
 
 var actions = Reflux.createActions({
   'loadHub': {},
-  'loadMembers': {},
-  'loadLayers': {},
   'updateLayers': {},
   'createHub': {},
   'saveHub': {},
@@ -14,16 +12,9 @@ var actions = Reflux.createActions({
   'setAbout' : {},
   'setHubLogoImage': {},
   'setHubBannerImage': {},
-  'addMember': {},
-  'removeMember': {},
-  'setMemberAdmin': {},
-  'removeMemberAdmin': {},
   'setMap': {},
   'deleteHub': {},
-  'publish': {},
-  'moveUp': {},
-  'moveDown': {},
-  'toggleVisibility': {}
+  'publish': {}
 });
 
 module.exports = actions;

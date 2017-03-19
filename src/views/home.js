@@ -11,7 +11,7 @@ import SliderDecorators from '../components/Home/SliderDecorators';
 var OnboardingLinks = require('../components/Home/OnboardingLinks');
 var MapHubsProLinks = require('../components/Home/MapHubsProLinks');
 var MailingList = require('../components/Home/MailingList');
-var HomePageMap = require('../components/Home/HomePageMap');
+//var HomePageMap = require('../components/Home/HomePageMap');
 var _shuffle = require('lodash.shuffle');
 var cardUtil = require('../services/card-util');
 
@@ -150,6 +150,7 @@ var Home = React.createClass({
          <MailingList />
        );
      }
+     /*
      if(MAPHUBS_CONFIG.homepageMapHubId && this.props.mapHub){
        homepageMap = (
          <div className="row no-margin" style={{height: 'calc(100vh - 150px)'}}>
@@ -158,6 +159,7 @@ var Home = React.createClass({
           </div>
        );
      }
+     */
 
      var featured = '';
      if(this.props.featuredStories && this.props.featuredStories.length > 0){

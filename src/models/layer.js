@@ -266,35 +266,6 @@ module.exports = {
       });
   },
 
-  /**
-   * Can include private?: If Requested
-   */
-  getHubLayers(hub_id: string, includePrivate: boolean, trx: knex.transtion = null) {
-    let db = knex;
-    if(trx){db = trx;}
-    var query =  db.select(
-    'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
-    'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
-    'omh.layers.status', 'omh.layers.private', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
-    'omh.layers.is_external', 'omh.layers.external_layer_type', 'omh.layers.external_layer_config',
-    'omh.layers.owned_by_group_id', db.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'), 'omh.layers.views',
-    'omh.layers.style', 'omh.layers.labels', 'omh.layers.settings', 'omh.layers.legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
-     'omh.hub_layers.active', 'omh.hub_layers.position', 'omh.hub_layers.hub_id', 'omh.hub_layers.style as map_style', 'omh.hub_layers.labels as map_labels', 'omh.hub_layers.settings as map_settings', 'omh.hub_layers.legend_html as map_legend_html')
-      .from('omh.hub_layers')
-      .leftJoin('omh.layers', 'omh.hub_layers.layer_id', 'omh.layers.layer_id').orderBy('position');
-
-    if (includePrivate) {
-      query.where('omh.hub_layers.hub_id', hub_id);
-    } else {
-      query.where({
-        'omh.layers.private': false,
-        'omh.hub_layers.hub_id': hub_id
-      });
-    }
-
-    return query;
-  },
-
     /**
      * Can include private?: If Requested
      */

@@ -58,6 +58,14 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   line-height: 50px;
 }
 
+.nav-dropdown-link-wrapper ul {
+  background-color: $nav-background-color;
+}
+
+.nav-dropdown-link-wrapper i {
+  color: $navbar-font-color;
+}
+
 .hub-banner {
   height: 250px;
 }
@@ -183,7 +191,24 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   background-color: transparent !important;
 }
 
+.nav-dropdown-button i {
+  color:$navbar-font-color !important;
+}
+
 .nav-dropdown-button:hover {
+  color:$navbar-hover-font-color !important;
+  background-color: $primary-color !important;
+}
+
+.category-dropdown-button {
+  color:$navbar-font-color !important;
+}
+
+.category-dropdown-button i {
+  color:$navbar-font-color !important;
+}
+
+.category-dropdown-button:hover {
   color:$navbar-hover-font-color !important;
   background-color: $primary-color !important;
 }

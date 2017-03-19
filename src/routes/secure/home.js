@@ -19,11 +19,11 @@ module.exports = function(app: any) {
     //use page config to determine data requests
     if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
       pageConfig.components.forEach(function(component: any){
-        if(component.type === 'hubmap'){
-          dataRequests.push(Hub.getHubByID(component.hub_id));
-          dataRequestNames.push('mapHub');
-          dataRequests.push(Layer.getHubLayers(component.hub_id, false));
-          dataRequestNames.push('mapHubLayers');
+        if(component.type === 'map'){
+          dataRequests.push(Map.getMap(component.map_id));
+          dataRequestNames.push('map');
+          dataRequests.push(Map.getMapLayers(component.map_id, false));
+          dataRequestNames.push('layers');
 
         }else if(component.type === 'storyfeed'){
             dataRequests.push(Story.getPopularStories(5));
@@ -55,17 +55,27 @@ module.exports = function(app: any) {
     
     Promise.all(dataRequests)
     .then(function(results){
-      var props = {};
+      var props = {pageConfig, _csrf: req.csrfToken()};
       results.forEach(function(result, i){
         props[dataRequestNames[i]] = result;
       });
+      var title =  MAPHUBS_CONFIG.productName, description =  MAPHUBS_CONFIG.productName;
+      if(pageConfig.title && pageConfig.title[req.locale]){
+        title = pageConfig.title[req.locale];
+      }else if(pageConfig.title && pageConfig.title.en){
+        title = pageConfig.title.en;
+      }
 
-      props._csrf = req.csrfToken();
+      if(pageConfig.description && pageConfig.description[req.locale]){
+        description = pageConfig.description[req.locale];
+      }else if(pageConfig.description && pageConfig.description.en){
+        description = pageConfig.description.en;
+      }
 
-      if(MAPHUBS_CONFIG.mapHubsProDemo){
-        res.render('homedemo', {
-        title: MAPHUBS_CONFIG.productName + ' | ' + req.__('Welcome to the MapHubs Demo Site'),
-        description: MAPHUBS_CONFIG.productName + req.__('Welcome to the MapHubs Demo Site'),
+      if(MAPHUBS_CONFIG.mapHubsPro){
+        res.render('homepro', {
+        title,
+        description,
         mailchimp: false,
         addthis: true,
         props, 

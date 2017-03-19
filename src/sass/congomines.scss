@@ -1,0 +1,24 @@
+$maphubs-accent-color: #3AACDB;
+
+$primary-color: $maphubs-accent-color;
+$primary-color-light: lighten($primary-color, 15%);
+$primary-color-dark: darken($primary-color, 15%);
+
+$secondary-color: $maphubs-accent-color;
+
+$navbar-height: 50px;
+$navbar-height-mobile: 50px;
+$navbar-font-color: #FFF;
+$navbar-hover-font-color: #FFF;
+
+$button-raised-color: #FFF;
+$button-raised-background: $maphubs-accent-color;
+$button-raised-background-hover: $primary-color-light;
+
+$button-floating-color: #FFF;
+$button-floating-background: $maphubs-accent-color;
+$button-floating-background-hover: $primary-color-light;
+
+$link-color: $primary-color-light;
+
+$nav-background-color: #2f3032;
