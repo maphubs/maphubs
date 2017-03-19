@@ -46,7 +46,7 @@ var LegendItem = React.createClass({
                   <Marker  {...markerConfig}/>
                 </div>              
                 <h3 className="valign" style={{paddingLeft: '5px', paddingTop: '0px', paddingBottom: '5px'}}>{_this.props.layer.name}</h3>
-                <span className="grey-text left left-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>({this.props.layer.source})</span>
+                <span className="grey-text left left-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>({_this.props.layer.source})</span>
               </div>
              
             );
