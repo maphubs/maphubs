@@ -81,10 +81,8 @@ var LayerListItemStatic = React.createClass({
                     && !layer.remote 
                     && !layer.is_external);
 
-    var isDragging = this.props.isDragging;
-    var connectDragSource = this.props.connectDragSource;
-    var connectDropTarget = this.props.connectDropTarget;
-    var backgroundColor = 'inherit';
+   
+    var backgroundColor = '#FFF';
             if(!layer.settings.active){
                backgroundColor = '#eeeeee';
             }
@@ -154,7 +152,7 @@ var LayerListItemStatic = React.createClass({
     return (
       <div className="collection-item"
         style={{
-          opacity: isDragging ? 0.75 : 1, 
+          opacity: 1, 
           borderBottom: '1px solid #ddd',
           height: '70px', 
           paddingRight: '10px', paddingLeft: '10px', 

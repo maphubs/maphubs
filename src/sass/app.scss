@@ -208,11 +208,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   color:$navbar-font-color !important;
 }
 
-.category-dropdown-button:hover {
-  color:$navbar-hover-font-color !important;
-  background-color: $primary-color !important;
-}
-
 .dropdown-content li:hover{
   color: $navbar-hover-font-color;
   background-color: $primary-color;
