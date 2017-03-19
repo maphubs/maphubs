@@ -21,12 +21,12 @@
     "css": "/public/createhubstory.e232c88b7b58d95f01b5.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.b2ca28b871b0498ab312.js",
-    "css": "/public/createlayer.b2ca28b871b0498ab312.css"
+    "js": "/public/createlayer.229113dc5857f1bbcac9.js",
+    "css": "/public/createlayer.229113dc5857f1bbcac9.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.cefc2f6f07b5363ebc6c.js",
-    "css": "/public/createremotelayer.cefc2f6f07b5363ebc6c.css"
+    "js": "/public/createremotelayer.ab6c46932c25f45b03c1.js",
+    "css": "/public/createremotelayer.ab6c46932c25f45b03c1.css"
   },
   "createuserstory": {
     "js": "/public/createuserstory.6df77367b3e0b1950596.js",
@@ -44,8 +44,8 @@
     "js": "/public/emailconfirmation.f1e17e1f22e9fc45ef9c.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.af5f375f432add828e46.js",
-    "css": "/public/embedmap.af5f375f432add828e46.css"
+    "js": "/public/embedmap.12beffc3ce440d024534.js",
+    "css": "/public/embedmap.12beffc3ce440d024534.css"
   },
   "error": {
     "js": "/public/error.74cdf8e11d00d82f7485.js"
@@ -81,8 +81,8 @@
     "js": "/public/hubbuilder.ed75e6d0e1673ea17cb8.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.78a3fdffee7ffb22d1fc.js",
-    "css": "/public/hubinfo.78a3fdffee7ffb22d1fc.css"
+    "js": "/public/hubinfo.633f4210e61d275ab6e9.js",
+    "css": "/public/hubinfo.633f4210e61d275ab6e9.css"
   },
   "hubmap": {
     "js": "/public/hubmap.64826aba6be7ecc9e4f3.js",
@@ -108,16 +108,16 @@
     "js": "/public/journalists.95b7b517c088aead6627.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.0ff858aa23fb94856dd5.js",
-    "css": "/public/layeradmin.0ff858aa23fb94856dd5.css"
+    "js": "/public/layeradmin.acae83828110da8886ec.js",
+    "css": "/public/layeradmin.acae83828110da8886ec.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.77ce8d4f9a930523a56f.js",
-    "css": "/public/layerinfo.77ce8d4f9a930523a56f.css"
+    "js": "/public/layerinfo.920a221cbe09db31060e.js",
+    "css": "/public/layerinfo.920a221cbe09db31060e.css"
   },
   "layermap": {
-    "js": "/public/layermap.d4e6131919f93aadfae2.js",
-    "css": "/public/layermap.d4e6131919f93aadfae2.css"
+    "js": "/public/layermap.cdc0d64d7e65c287562c.js",
+    "css": "/public/layermap.cdc0d64d7e65c287562c.css"
   },
   "layers": {
     "js": "/public/layers.46579de88f27021ff0e6.js",
@@ -130,15 +130,15 @@
     "js": "/public/login.b0fb586f2ddd957364b4.js"
   },
   "map": {
-    "js": "/public/map.269f21f53ebddf36265c.js",
-    "css": "/public/map.269f21f53ebddf36265c.css"
+    "js": "/public/map.aa426a858e3e277071c2.js",
+    "css": "/public/map.aa426a858e3e277071c2.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.4bfdc1b137ccb8235442.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.29733c1672a10b1b1744.js",
-    "css": "/public/mapedit.29733c1672a10b1b1744.css"
+    "js": "/public/mapedit.d7263e227eb4d2be2ec7.js",
+    "css": "/public/mapedit.d7263e227eb4d2be2ec7.css"
   },
   "maps": {
     "js": "/public/maps.a76470bd6b4fc0dab4e3.js",
@@ -164,8 +164,8 @@
     "js": "/public/signup.dd34933ace63c6d384bc.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.919491c772178c8474e7.js",
-    "css": "/public/staticmap.919491c772178c8474e7.css"
+    "js": "/public/staticmap.b8e5c30808f5de626222.js",
+    "css": "/public/staticmap.b8e5c30808f5de626222.css"
   },
   "stories": {
     "js": "/public/stories.aec36aa5f026acbd7d4f.js",
@@ -183,8 +183,8 @@
     "css": "/public/userhubs.6f2ad9c50cea5ab6dcc4.css"
   },
   "usermap": {
-    "js": "/public/usermap.a04cd08ba1cbd46a1ad3.js",
-    "css": "/public/usermap.a04cd08ba1cbd46a1ad3.css"
+    "js": "/public/usermap.4b421dc3fabf56a4ebcb.js",
+    "css": "/public/usermap.4b421dc3fabf56a4ebcb.css"
   },
   "usermaps": {
     "js": "/public/usermaps.46056e03c795cce91c81.js",
@@ -202,10 +202,10 @@
     "css": "/public/userstory.3ba64109a14acd833b26.css"
   },
   "vendor": {
-    "js": "/public/vendor.afed7a80eec5aa73ee40.js"
+    "js": "/public/vendor.4f142e578a0832a06799.js"
   },
   "metadata": {
-    "version": "0.8.6"
+    "version": "0.8.7"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
@@ -218,7 +218,7 @@
     "js": "/public/searchindexadmin.eb2e7f20f908f20c9252.js"
   },
   "homepro": {
-    "js": "/public/homepro.3d0669e666629135d78c.js",
-    "css": "/public/homepro.3d0669e666629135d78c.css"
+    "js": "/public/homepro.93787437cce5592bb5da.js",
+    "css": "/public/homepro.93787437cce5592bb5da.css"
   }
 }
