@@ -128,7 +128,7 @@ module.exports = {
           properties: result.feature.geojson.features[0].properties,
           notes: result.notes,
           published: true,
-          timeout: 60000
+          timeout: '60s'
         }
       }).catch(err =>{
         log.error(err);
@@ -142,7 +142,7 @@ module.exports = {
       index: this.searchIndexName,
       type: 'feature',
       id: mhid,
-      timeout: 60000
+      timeout: '60s'
     }).catch(err =>{
       log.error(err);
     });
@@ -161,7 +161,7 @@ module.exports = {
             }
           }
         },
-        timeout: 60000
+        timeout: '60s'
       }
     ).then(results => {
       if(results && results.hits && results.hits.hits){
