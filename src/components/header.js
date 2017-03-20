@@ -154,7 +154,7 @@ getCookie(cname) {
         <div className="nav-wrapper z-depth-0">
           <a className="brand-logo valign-wrapper" href="/">
             <img className="valign" width={MAPHUBS_CONFIG.logoWidth} height={MAPHUBS_CONFIG.logoHeight} style={{margin: '5px'}} src={MAPHUBS_CONFIG.logo} alt={MAPHUBS_CONFIG.productName + ' ' + this.__('Logo')}/>
-              <small style={{color: '#222222', position: 'absolute', top: '12px', left: MAPHUBS_CONFIG.logoWidth + 5 + 'px', fontSize: '12px'}}>{MAPHUBS_CONFIG.betaText}</small>
+              <small id="beta-text" style={{position: 'absolute', top: '12px', left: MAPHUBS_CONFIG.logoWidth + 5 + 'px', fontSize: '12px'}}>{MAPHUBS_CONFIG.betaText}</small>
 
           </a>
 
