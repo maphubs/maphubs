@@ -110,7 +110,12 @@ module.exports = {
       //HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
       delete result.feature.geojson.features[0].properties.timestamp;
 
-      var centroid = _centroid(result.feature.geojson);
+      var centroid;
+      if(result.feature.geojson.features[0].geometry.type === 'Point'){
+        centroid = result.feature.geojson.features[0];
+      }else{
+        centroid = _centroid(result.feature.geojson);
+      }
 
       //update feature
        return client.index({
