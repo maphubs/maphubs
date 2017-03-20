@@ -153,30 +153,41 @@ var MiniLegend = React.createClass({
       allowScroll = false;
     }
 
+    var style = this.props.style;
+    style.height = '9999px'; //needed for the flex box to work correctly
+
     return (
       <div style={this.props.style}>
-
-       <ul ref="legend" className="collapsible" data-collapsible="accordion" style={{textAlign: 'left', display: 'flex', flexDirection: 'column', marginTop: 0}}>
-        <li style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FFF'}}>
+       <ul ref="legend" className="collapsible" data-collapsible="accordion" 
+       style={{display: 'flex', flexDirection: 'column', textAlign: 'left',  margin: 0, maxHeight: '100%', boxShadow: 'none', border: 'none'}}>
+        <li className="z-depth-1" 
+          style={{display: 'flex', flexDirection: 'column', 
+                  backgroundColor: '#FFF', maxHeight: '100%', 
+                  borderTop: '1px solid #ddd',
+                  borderRight: '1px solid #ddd',
+                  borderLeft: '1px solid #ddd'}}>
           <div className="collapsible-header active no-padding" style={{height: '30px', minHeight: '30px'}} onClick={this.toggleCollapsed}>
             {title}
           </div>
-          <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', padding: '5px'}}>
-            <ul className="collection no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden'}}>
+          <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>
+            <div className="no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden', padding: '5px'}}>
               {
                 this.props.layers.map(function (layer) {
+                  if(typeof layer.settings.active === 'undefined'){
+                    layer.settings.active = true;
+                  }
                   if(_this.props.hideInactive && !layer.settings.active){
                     return null;
                   }
-                  return (<LegendItem key={layer.layer_id} layer={layer} style={{padding: '2px', width: '100%', margin: 'auto'}}/>);
+                  return (<LegendItem key={layer.layer_id} layer={layer} />);
                 })
               }
  
-            <li className="collection-item no-margin" style={{lineHeight: '0.75em', padding: '2px'}}>
+            <div style={{lineHeight: '0.75em', padding: '2px'}}>
               <span style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}} 
               className="grey-text align-left">Base Map - <span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span></span>
-            </li>           
-            </ul>
+            </div>           
+            </div>
           </div>
           </li>
         </ul>

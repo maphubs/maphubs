@@ -216,41 +216,6 @@ componentWillReceiveProps(nextProps){
 
   render() {
     var map = '';
-   
-/*
-    var legend = '', bottomLegend = '';
-    if(this.state.width < 600){
-      bottomLegend = (
-        <MiniLegend style={{
-            width: '100%',
-            maxHeight: 'calc(100% - 140px)',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-          collapsible={false}
-            title={title}
-            layers={this.state.layers}/>
-        );
-    } else {
-      legend = (
-        <MiniLegend style={{
-            position: 'absolute',
-            top: '5px',
-            left: '5px',
-            minWidth: '275px',
-            zIndex: '1',
-            width: '25%',
-            maxWidth: '325px',
-            maxHeight: 'calc(100% - 200px)',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-          title={title}
-            layers={this.state.layers}/>
-      );
-    }
-    */
-
     var button = '',  deleteButton = '', editButton ='';
     if(this.props.canEdit){
       deleteButton = (
@@ -348,41 +313,3 @@ componentWillReceiveProps(nextProps){
 });
 
 module.exports = UserMap;
-
-/*
-
- <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative'}}>
-          <a href="#" ref="mapLayersPanel"
-            data-activates="user-map-layers"
-            style={{position: 'absolute',
-              top: '10px',
-              left: '10px',
-              height:'30px',
-              lineHeight: '30px',
-              textAlign: 'center',
-              width: '30px'}}
-            className="button-collapse">
-            <i className="material-icons z-depth-1"
-              style={{height:'30px',
-                      lineHeight: '30px',
-                      width: '30px',
-                      color: MAPHUBS_CONFIG.primaryColor,
-                      borderRadius: '4px',
-                      backgroundColor: 'white',
-                      borderColor: '#ddd',
-                      borderStyle: 'solid',
-                      borderWidth: '1px',
-                      fontSize:'25px'}}
-              >info</i>
-          </a>
-          <div className="side-nav" id="user-map-layers"
-            style={{backgroundColor: 'rgba(0,0,0,0)',
-              height: 'calc(100% - 100px)', padding: 0, marginTop: '100px',
-              border: 'none', boxShadow: 'none'}}>
-            {bottomLegend}
-
-          </div>
-
-        </nav>
-
-        */

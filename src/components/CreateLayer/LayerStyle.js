@@ -184,7 +184,7 @@ var LayerStyle = React.createClass({
               fitBounds={mapExtent}
               />
             <MiniLegend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
-                collapsible={false}
+                collapsible={true} hideInactive={false} showLayersButton={false}
                 layers={[this.state.layer]}/>
           </div>
         );

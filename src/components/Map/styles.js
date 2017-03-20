@@ -548,6 +548,7 @@ module.exports = {
 
     defaultSettings(){
       return {
+        active: true,
         interactive: true,
         showBehindBaseMapLabels: false
       };

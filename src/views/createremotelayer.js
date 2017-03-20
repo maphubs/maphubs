@@ -169,7 +169,7 @@ var CreateRemoteLayer = React.createClass({
                     display: 'flex',
                     flexDirection: 'column'
                   }}
-                  collapsible={true}
+                  collapsible={true} hideInactive={false} showLayersButton={false}
                   title={this.state.layer.name}
                     layers={[this.state.layer]}/>
                 </Map>

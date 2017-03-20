@@ -12,7 +12,7 @@ var LegendItem = React.createClass({
 
   getDefaultProps() {
     return {
-      style: {},
+      style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'},
     };
   },
 
@@ -26,10 +26,10 @@ var LegendItem = React.createClass({
       );
     }
     var legendItem = (
-        <li style={{position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1', padding: '2px'}}>
+        <div style={this.props.style}>
           <span className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: this.props.layer.legend_html}} />
           <span className="grey-text right right-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{this.props.layer.source}</span>             
-        </li>      
+        </div>      
         );
     var style = this.props.layer.style;  
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
@@ -41,12 +41,12 @@ var LegendItem = React.createClass({
             markerConfig.width = 18;
             markerConfig.height = 18;
             legendItem = (
-              <div className="omh-legend valign-wrapper">
+              <div className="omh-legend valign-wrapper" style={_this.props.style}>
                 <div className="valign" style={{float: 'left'}}>
                   <Marker  {...markerConfig}/>
                 </div>              
                 <h3 className="valign" style={{paddingLeft: '5px', paddingTop: '0px', paddingBottom: '5px'}}>{_this.props.layer.name}</h3>
-                <span className="grey-text left left-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>({_this.props.layer.source})</span>
+                <span className="grey-text left left-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{_this.props.layer.source}</span>
               </div>
              
             );

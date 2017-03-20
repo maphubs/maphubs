@@ -453,7 +453,7 @@ var LayerInfo = React.createClass({
               display: 'flex',
               flexDirection: 'column'
             }}
-            collapsible={true}
+            collapsible={true} hideInactive={false} showLayersButton={false}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
             <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
@@ -482,7 +482,7 @@ var LayerInfo = React.createClass({
               display: 'flex',
               flexDirection: 'column'
             }}
-            collapsible={true}
+            collapsible={true} hideInactive={false} showLayersButton={false}
             title={this.props.layer.name}
               layers={[this.props.layer]}/>
           <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>        

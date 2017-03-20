@@ -77,6 +77,7 @@ var LayerMap = React.createClass({
             width: '100%'
           }}
           title={this.props.layer.name}
+          hideInactive={false} showLayersButton={false}
             layers={[this.props.layer]}/>
         );
     } else {
@@ -90,6 +91,7 @@ var LayerMap = React.createClass({
             width: '25%'
           }}
             title={this.props.layer.name}
+            hideInactive={false} showLayersButton={false}
             layers={[this.props.layer]}/>
       );
     }

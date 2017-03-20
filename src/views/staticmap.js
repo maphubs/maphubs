@@ -95,6 +95,7 @@ var StaticMap = React.createClass({
               width: '100%'
             }}
             title={title}
+            hideInactive={false} showLayersButton={false}
               layers={this.props.layers}/>
           );
       } else {
@@ -108,6 +109,7 @@ var StaticMap = React.createClass({
               width: '25%'
             }}
             title={title}
+            hideInactive={false} showLayersButton={false}
               layers={this.props.layers}/>
         );
       }
