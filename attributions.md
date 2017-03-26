@@ -84,3 +84,7 @@ And many many more, see [package.json](https://github.com/maphubs/maphubs/blob/m
 * Dolphin by matthew hall from the Noun Project https://thenounproject.com/term/dolphin/25774/
 
 * Fox by m. turan ercan from the Noun Project https://thenounproject.com/term/fox/106672/
+
+* Mining by Yu luck from the Noun Project https://thenounproject.com/search/?q=mining&i=383745
+
+* Factory by Gregor Cresnar from the Noun Project https://thenounproject.com/search/?q=factory&i=780243
