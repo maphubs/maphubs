@@ -433,72 +433,20 @@ var LayerInfo = React.createClass({
       );
     }
 
-    var mapContent = '';
     var exportTabContent = '';
 
     if(this.props.layer.is_external){
-      mapContent = (
-        <Map ref="map" className="map-absolute map-with-header width-50"
-          fitBounds={this.props.layer.preview_position.bbox}
-          glStyle={glStyle}>
-          <MiniLegend style={{
-              position: 'absolute',
-              top: '5px',
-              left: '5px',
-              minWidth: '275px',
-              zIndex: '1',
-              width: '25%',
-              maxWidth: '325px',
-              maxHeight: 'calc(100% - 200px)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-            collapsible={true} hideInactive={false} showLayersButton={false}
-            title={this.props.layer.name}
-              layers={[this.props.layer]}/>
-            <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
-          
-        </Map>
-      );
       exportTabContent = (
         <div>
           <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this.props.layer.source}</p>
         </div>
       );
     }else {
-      mapContent = (
-        <Map ref="map" className="map-absolute map-with-header width-50"
-          fitBounds={this.props.layer.preview_position.bbox}
-          glStyle={glStyle} >
-          <MiniLegend style={{
-              position: 'absolute',
-              top: '5px',
-              left: '5px',
-              minWidth: '275px',
-              zIndex: '1',
-              width: '25%',
-              maxWidth: '325px',
-              maxHeight: 'calc(100% - 200px)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-            collapsible={true} hideInactive={false} showLayersButton={false}
-            title={this.props.layer.name}
-              layers={[this.props.layer]}/>
-          <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>        
-        </Map>
-      );
       var geoJSONURL = '/api/layer/' + this.props.layer.layer_id + '/export/json/' + slug(this.props.layer.name) + '.geojson';
       var shpURL = '/api/layer/' + this.props.layer.layer_id + '/export/shp/' + slug(this.props.layer.name) + '.zip';
       var kmlURL = '/api/layer/' + this.props.layer.layer_id + '/export/kml/' + slug(this.props.layer.name) + '.kml';
       var csvURL = '/api/layer/' + this.props.layer.layer_id + '/export/csv/' + slug(this.props.layer.name) + '.csv';
       var gpxURL = '/api/layer/' + this.props.layer.layer_id + '/export/gpx/' + slug(this.props.layer.name) + '.gpx';
-
-      var bounds = '';
-      if(this.props.layer.extent_bbox){
-        bounds = this.props.layer.extent_bbox.toString();
-      }
-      var osmURL = '/xml/map/'  + this.props.layer.layer_id + '?bbox=' + bounds;
 
       if(!this.props.layer.disable_export){
         var gpxExport = '';
@@ -618,9 +566,6 @@ var LayerInfo = React.createClass({
     }
 
 
-
-
-
     var licenseOptions = Licenses.getLicenses(this.__);
     var license = _find(licenseOptions, {value: this.props.layer.license});
 
@@ -707,11 +652,11 @@ var LayerInfo = React.createClass({
         <div className="row" style={{height: '100%', margin: 0}}>
           <div className="col s12 m6 l6 no-padding" style={{height: '100%', position: 'relative'}}>
           {privateIcon}
-            <div style={{margin: '10px'}}>
+            <div style={{margin: '10px', height: '50px'}}>
               <h5 className="word-wrap">{this.props.layer.name}</h5>
             </div>
 
-            <div className="row no-margin" style={{height: 'calc(100% - 50px)'}}>
+            <div className="row no-margin" style={{height: 'calc(100% - 72px)'}}>
               <ul className="tabs" style={{overflowX: 'auto'}}>
                 <li className="tab"><a className="active" href="#info">{this.__('Info')}</a></li>
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
@@ -783,7 +728,25 @@ var LayerInfo = React.createClass({
 
           </div>
             <div className="col hide-on-small-only m6 l6 no-padding">
-              {mapContent}
+              <Map ref="map" className="map-absolute map-with-header width-50"
+                fitBounds={this.props.layer.preview_position.bbox}
+                glStyle={glStyle}>
+                <MiniLegend style={{
+                    position: 'absolute',
+                    top: '5px',
+                    left: '5px',
+                    minWidth: '275px',
+                    zIndex: '1',
+                    width: '25%',
+                    maxWidth: '325px',
+                    maxHeight: 'calc(100% - 200px)',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
+                  collapsible={true} hideInactive={false} showLayersButton={false}
+                    layers={[this.props.layer]}/>
+                <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>       
+              </Map>
             </div>
           </div>
           {editButton}

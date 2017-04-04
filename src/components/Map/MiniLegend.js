@@ -77,20 +77,20 @@ var MiniLegend = React.createClass({
                   position: 'absolute',
                   right: '20px',
                   display: 'inherit',
-                  height:'30px',
+                  height:'32px',
                   zIndex: '100',
                   borderRadius: '4px',
-                  lineHeight: '30px',
+                  lineHeight: '32px',
                   textAlign: 'center',
-                  width: '30px'
+                  width: '32px'
                 }}
                   data-position="bottom" data-delay="50" 
                   data-tooltip={this.__('Tools')}
                 >
                 <i  className="material-icons"
-                  style={{height:'30px',
-                          lineHeight: '30px',
-                          width: '30px',
+                  style={{height:'32px',
+                          lineHeight: '32px',
+                          width: '32px',
                           color: '#000',  
                           cursor: 'pointer',
                           borderStyle: 'none',
@@ -127,13 +127,13 @@ var MiniLegend = React.createClass({
       }
      
       title = (
-        <div className="row no-margin" style={{height: '30px'}}>
-          <div className="col s10 no-padding valign-wrapper" style={{height: '30px'}}>
-            <h6 className="black-text valign" style={{padding: '0.2rem', marginLeft: '2px', marginTop: '0px', marginBottom: '0px', fontWeight: '500'}}>{titleText}</h6>
+        <div className="row no-margin" style={{height: '32px'}}>
+          <div className="col s10 no-padding valign-wrapper" style={{height: '32px'}}>
+            <h6 className="black-text valign word-wrap" style={{padding: '0.2rem', marginLeft: '2px', marginTop: '0px', marginBottom: '2px', fontWeight: '500'}}>{titleText}</h6>
           </div>
           <div className="col s2 no-padding valign">
             {layersButton}
-            <i ref="titleIcon" className="material-icons icon-fade-in" style={{float: 'right', marginRight: 0, height: '100%', lineHeight: '30px'}}>{iconName}</i>
+            <i ref="titleIcon" className="material-icons icon-fade-in" style={{float: 'right', marginRight: 0, height: '100%', lineHeight: '32px'}}>{iconName}</i>
           </div>
         </div>
       );
@@ -166,7 +166,7 @@ var MiniLegend = React.createClass({
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
                   borderLeft: '1px solid #ddd'}}>
-          <div className="collapsible-header active no-padding" style={{height: '30px', minHeight: '30px'}} onClick={this.toggleCollapsed}>
+          <div className="collapsible-header active no-padding" style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
             {title}
           </div>
           <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>
