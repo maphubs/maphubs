@@ -106,8 +106,12 @@ var InteractiveMap = React.createClass({
 
     var bounds = null;
     if(this.state.position){
-      var bbox = this.state.position.bbox;
-      bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+      if(typeof window === 'undefined' || !window.location.hash){
+        //only update position if there isn't absolute hash in the URL
+         var bbox = this.state.position.bbox;
+         bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+      }
+     
     }
 
     var children = '';
