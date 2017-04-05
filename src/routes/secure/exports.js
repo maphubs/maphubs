@@ -1,4 +1,5 @@
 var Layer = require('../../models/layer');
+var Feature = require('../../models/feature');
 var apiError = require('../../services/error-response').apiError;
 var ogr2ogr = require('ogr2ogr');
 var tokml = require('tokml');
@@ -139,6 +140,67 @@ module.exports = function(app) {
         }
       });
     }).catch(apiError(res, 200));
+  });
+
+  app.get('/api/feature/:layer_id/:id/export/kml/*', privateLayerCheck, function(req, res, next) {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
+     var id = req.params.id;
+
+
+     var mhid = `${layer_id}:${id}`;
+
+    if(mhid && layer_id){
+        Layer.getLayerByID(layer_id)
+        .then(layer => {
+          return Feature.getFeatureByID(mhid, layer.layer_id)
+          .then(result =>{
+            var feature = result.feature;
+            var geoJSON = feature.geojson;
+            var geoJSONStr = JSON.stringify(geoJSON);
+        var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
+        var match = req.get('If-None-Match');
+        if(hash == match){
+          res.status(304).send();
+        }else{
+          res.header("Content-Type", "application/vnd.google-earth.kml+xml");
+          res.header("ETag", hash);
+
+          geoJSON.features.map(function(feature){
+            if(feature.properties){
+              if(layer.data_type === 'polygon'){
+                feature.properties['stroke'] = '#212121';
+                feature.properties['stroke-width'] = 2;
+                feature.properties['fill'] = '#FF0000';
+                feature.properties['fill-opacity'] = 0.5;
+              }else if(layer.data_type === 'line'){
+                feature.properties['stroke'] = '#FF0000';
+                feature.properties['stroke-width'] = 2;
+              }else if(layer.data_type === 'point'){
+                feature.properties['marker-color'] = '#FF0000';
+                feature.properties['marker-size'] = 'medium';
+              }
+            }
+          });
+
+          var kml = tokml(geoJSON, {
+              name: 'name',
+              description: 'description',
+              documentName: layer.name,
+              documentDescription: layer.description,
+              simplestyle: true
+          });
+
+          debug("KML Generated");
+
+          res.status(200).send(kml);
+        }
+          });
+        }).catch(apiError(res, 200));
+
+    }else{
+      next(new Error('Missing Required Data'));
+    }
+          
   });
 
   app.get('/api/layer/:layer_id/export/gpx/*', privateLayerCheck, function(req, res) {

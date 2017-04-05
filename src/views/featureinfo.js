@@ -335,6 +335,49 @@ var FeatureInfo = React.createClass({
 
     var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
 
+    var exportTabContent = '';
+
+    var mhid = this.props.feature.mhid.split(':')[1];
+
+     var gpxLink; 
+   
+    if(this.props.layer.is_external){
+      exportTabContent = (
+        <div>
+          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this.props.layer.source}</p>
+        </div>
+      );
+    }else {
+      var geoJSONURL = '/api/feature/json/' + this.props.layer.layer_id + '/' + mhid + '/' + slug(this.props.layer.name) + '.geojson';
+      var kmlURL = '/api/feature/' + this.props.layer.layer_id + '/' + mhid + '/export/kml/' + slug(this.props.layer.name) + '.kml';
+      
+      if(!this.props.layer.disable_export){
+        var gpxExport = '';
+        if(this.props.layer.data_type === 'polygon'){
+          gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + mhid + '/feature.gpx';
+          gpxExport = (
+            <li className="collection-item">{this.__('GPX:')} <a href={gpxLink}>{gpxLink}</a></li>
+          );
+        }
+        exportTabContent = (
+          <div>
+            <ul className="collection with-header">
+             <li className="collection-header"><h5>{this.__('Export Data')}</h5></li>
+             <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
+             <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
+             {gpxExport}
+            </ul>
+          </div>
+        );
+      }else{
+        exportTabContent = (
+          <div>
+            <p>{this.__('Export is not available for this layer.')}</p>
+          </div>
+        );
+      }
+    }
+
     var gpxLink; 
     if(this.props.layer.data_type === 'polygon'){
       gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.mhid + '/feature.gpx';
@@ -356,6 +399,7 @@ var FeatureInfo = React.createClass({
                 <li className="tab"><a href="#photo">{this.__('Photo')}</a></li>
                 <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
+                <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
               <div id="data" className="col s12" style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
                 <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.layer.name}</a></p>
@@ -389,6 +433,9 @@ var FeatureInfo = React.createClass({
               <div id="notes" className="col s12" style={{position: 'relative', height: 'calc(100% - 48px)'}}>
                 <FeatureNotes editing={this.state.editingNotes}/>
                 {notesEditButton}
+              </div>
+              <div id="export" className="col s12">
+                {exportTabContent}
               </div>
             </div>
 
