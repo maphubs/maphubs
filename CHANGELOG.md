@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.8.13](https://github.com/maphubs/maphubs/tree/v0.8.13) (2017-04-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.12...v0.8.13)
+
+## [v0.8.12](https://github.com/maphubs/maphubs/tree/v0.8.12) (2017-04-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.11...v0.8.12)
+
+**Fixed bugs:**
+
+- don't reposition map if url contains hash [\#276](https://github.com/maphubs/maphubs/issues/276)
+
 ## [v0.8.11](https://github.com/maphubs/maphubs/tree/v0.8.11) (2017-03-26)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.10...v0.8.11)
 
