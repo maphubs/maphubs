@@ -514,7 +514,7 @@ var MapMaker = React.createClass({
         </ul>
         </div>
         <div className="col s6 m8 l9 no-padding" style={{height: '100%'}}>
-          <ul className="tabs" ref="tabs" style={{overflowX: 'hidden'}}>
+          <ul className="tabs" ref="tabs" style={{overflowX: 'hidden', borderBottom: '1px solid #ddd'}}>
             <li className="tab mapmaker-tab"><a className="active" href="#addlayer" onClick={this.toggleAddLayerTab}>{this.__('Add a Layer')}</a></li>
             <li className="tab mapmaker-tab"><a href="#maptab" onClick={this.toggleMapTab}>{this.__('View Map')}</a></li>
           </ul>
