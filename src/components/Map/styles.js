@@ -457,7 +457,7 @@ module.exports = {
             "type": "geojson",
              "data": source.data
           };
-          style.layers.map(layer =>{
+          styles.layers.map(layer =>{
             delete layer['source-layer'];
           });
         }
@@ -497,9 +497,48 @@ module.exports = {
       return styles;
     },
 
+    multiRasterStyleWithOpacity(layer_id, layers, opacity, type="raster"){
+      
+
+      opacity = opacity / 100;
+      var styles = {
+          sources: {},
+          layers: []
+      };
+
+      layers.forEach((raster, i) => {
+        var id = `omh-raster-${i}-${layer_id}`;
+        styles.layers.push(
+          {
+            "id": id,
+            "type": "raster",
+            "source": id,
+            "minzoom": 0,
+            "maxzoom": 18,
+            "paint": {
+              "raster-opacity": opacity
+            }
+            }
+        );
+        styles.sources[id] = {
+          type,
+          tiles: raster.tiles,
+          "tileSize": 256
+
+      };
+      });
+
+
+      return styles;
+    },
+
     defaultRasterStyle(layer_id, sourceUrl, type="raster"){
       return this.rasterStyleWithOpacity(layer_id, sourceUrl, 100, type);
 
+    },
+
+    defaultMultiRasterStyle(layer_id, layers, type="raster"){
+       return this.multiRasterStyleWithOpacity(layer_id, layers, 100, type);
     },
 
     htmlEncode(str) {

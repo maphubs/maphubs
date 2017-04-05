@@ -60,6 +60,8 @@ module.exports = Reflux.createStore({
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url);
     }else if(layer.is_external && layer.external_layer_config.type == 'raster'){
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json');
+    }else if(layer.is_external && layer.external_layer_config.type == 'multiraster'){
+      layer.style = mapStyles.defaultMultiRasterStyle(layer.layer_id, layer.external_layer_config.layers);
     }else if(layer.is_external && layer.external_layer_config.type == 'mapbox-style'){
         layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
     }else if(layer.is_external && layer.external_layer_config.type == 'ags-mapserver-tiles'){
@@ -79,6 +81,7 @@ module.exports = Reflux.createStore({
     var layer = this.state.layer;
     if(layer.is_external
       && (layer.external_layer_config.type == 'raster'
+          || layer.external_layer_config.type == 'multiraster'
           || layer.external_layer_config.type == 'ags-mapserver-tiles')){
       layer.legend_html = mapStyles.rasterLegend(layer);
     }else if(layer.is_external && layer.external_layer_config.type == 'mapbox-style'){
@@ -96,15 +99,25 @@ module.exports = Reflux.createStore({
   },
 
   initLayer(layer){
-    layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type),
-    layer.legend_html = mapStyles.defaultLegend(layer),
-    layer.settings = mapStyles.defaultSettings();
-    layer.preview_position = {
+    if(!layer.style){
+      layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);   
+    }
+    if(!layer.legend_html){
+      layer.legend_html = mapStyles.defaultLegend(layer);
+    }else{
+      this.resetLegendHTML();
+    }
+    if(!layer.settings){
+      layer.settings = mapStyles.defaultSettings();
+    }
+    if(!layer.preview_position){
+      layer.preview_position = {
       zoom: 1,
       lat: 0,
       lng: 0,
       bbox: null
     }; 
+    }  
     return layer;
   },
 

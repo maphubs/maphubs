@@ -799,5 +799,7 @@
 	"New Polygon(s)": "New Polygon(s)",
 	"GeoJSON URL": "GeoJSON URL",
 	"2001 - 2014 Forest Loss": "2001 - 2014 Forest Loss",
-	"Pause": "Pause"
+	"Pause": "Pause",
+	"Factory": "Factory",
+	"Mining": "Mining"
 }

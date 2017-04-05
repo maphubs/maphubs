@@ -1,9 +1,7 @@
 var React = require('react');
 var Marker = require('./Marker');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var LegendItem = React.createClass({
-  mixins: [PureRenderMixin],
 
   propTypes:  {
     layer: React.PropTypes.object.isRequired,

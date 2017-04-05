@@ -71,10 +71,13 @@ var MapLayerDesigner = React.createClass({
 
   setRasterOpacity(opacity){
     var baseUrl = urlUtil.getBaseUrl();
-    var style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
-
-    if(this.state.layer.external_layer_config.type == 'ags-mapserver-tiles'){
+    var style; 
+    if(this.state.layer.external_layer_config.type === 'ags-mapserver-tiles'){
       style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
+    }else if(this.state.layer.external_layer_config.type === 'multiraster'){
+      style = mapStyles.multiRasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.layers, opacity, 'raster');
+    }else{
+      style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
     }
 
     var legend = mapStyles.rasterLegend(this.state.layer);
@@ -117,6 +120,7 @@ var MapLayerDesigner = React.createClass({
       if(this.state.layer.is_external
         && (
           this.state.layer.external_layer_config.type == 'raster'
+        || this.state.layer.external_layer_config.type == 'multiraster'
         || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
         designer = (
           <div style={{padding:'5px'}}>

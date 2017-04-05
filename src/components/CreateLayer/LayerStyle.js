@@ -116,7 +116,10 @@ var LayerStyle = React.createClass({
     var style = null;
     if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'ags-mapserver-tiles'){
       style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
-    }else{
+    }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'multiraster'){
+       style = mapStyles.multiRasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.layers, opacity, 'raster');
+    }
+    else{
       var baseUrl = urlUtil.getBaseUrl();
       style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
     }
@@ -203,6 +206,7 @@ var LayerStyle = React.createClass({
     var colorChooser = '';
     if(this.state.layer.is_external
       && (this.state.layer.external_layer_config.type == 'raster'
+      || this.state.layer.external_layer_config.type == 'multiraster'
       || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
       colorChooser = (
         <div>

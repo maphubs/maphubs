@@ -3,8 +3,7 @@ var Formsy = require('formsy-react');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
-var Radio = require('../forms/radio');
-var TextInput = require('../forms/textInput');
+var TextArea = require('../forms/textArea');
 var PresetActions = require('../../actions/presetActions');
 var LayerActions = require('../../actions/LayerActions');
 var NotificationActions = require('../../actions/NotificationActions');
@@ -42,6 +41,20 @@ var PlanetLabsSource = React.createClass({
     };
   },
 
+  componentWillMount(){
+    Formsy.addValidationRule('isNotRapidEye', function (values, value) {
+        return !value.startsWith('REOrthoTile');
+    });
+
+    Formsy.addValidationRule('isNotOrtho', function (values, value) {
+        return !value.startsWith('PSOrthoTile');
+    });
+
+    Formsy.addValidationRule('isNotSentinel', function (values, value) {
+        return !value.startsWith('Sentinel2L1C');
+    });
+  },
+
   enableButton () {
     this.setState({
       canSubmit: true
@@ -53,30 +66,50 @@ var PlanetLabsSource = React.createClass({
     });
   },
 
-  submit (model) {
-    var _this = this;
+  getAPIUrl(selected){
+    var APIType = 'ortho'; // 'rapideye', 'landsat'
+    var selectedArr = selected.split(':');
+    var selectedType = selectedArr[0];
+    var selectedScene = selectedArr[1];
+    if(selectedType === 'PSScene4Band' || selectedType === 'PSScene3Band' || selectedType === 'PSOrthoTile'){
+       APIType = 'ortho';
+    }else if(selectedType === 'REOrthoTile'){
+      APIType = 'rapideye';
+    }else if(selectedType === 'Landsat8L1G'){
+      APIType = 'landsat';
+    }else if(selectedType === 'Sentinel2L1C'){
+      APIType = 'sentinel';
+    }
 
     //build planet labs API URL
-
     //https://tiles.planet.com/v0/scenes/ortho/20160909_175231_0c75/{z}/{x}/{y}.png?api_key=9f988728129f45ea9a939b7041686e89
-    var url = "https://tiles.planet.com";
-
-    if(this.state.selectedOption == 'scene'){
-      url += '/v0/scenes/' + this.state.selectedSceneOption + '/' + model.planetScene;
-
-    }else if(this.state.selectedOption == 'mosaic'){
-      url += '/v0/mosaics/' + model.planetMosaic;
-    }
+    var url = `https://tiles.planet.com/v0/scenes/${APIType}/${selectedScene}`;
     url += '/{z}/{x}/{y}.png?api_key=' + MAPHUBS_CONFIG.PLANET_LABS_API_KEY;
+    return url;
+  },
+
+  submit (model) {
+    var _this = this;
+    var layers = [];
+
+    var selectedIDs = model.selectedIDs;
+
+    var selectedIDArr = selectedIDs.split(',');
+
+    selectedIDArr.forEach(selected => {
+      var url = _this.getAPIUrl(selected);
+      layers.push({
+        planet_labs_scene: selected,
+        tiles: [url]
+      });
+    });
 
     LayerActions.saveDataSettings({
       is_external: true,
-      external_layer_type: 'Planet Labs',
+      external_layer_type: 'Planet',
       external_layer_config: {
-        type: 'raster',
-        planet_labs_scene: model.scene,
-        planet_labs_mosaic: model.mosaic,
-        tiles: [url]
+        type: 'multiraster',
+        layers
       }
       
     }, _this.state._csrf, function(err){
@@ -113,59 +146,6 @@ var PlanetLabsSource = React.createClass({
   },
 
 	render() {
-
-    var planetLabsOptions = [
-      {value: 'scene', label: this.__('Link to a Planet Labs Scene')},
-      {value: 'mosaic', label: this.__("Link to a Planet Labs Mosaic")}
-    ];
-
-    var planetSceneOptions = [
-      {value: 'ortho', label: this.__('Ortho')},
-      {value: 'rapideye', label: this.__("RapidEye")},
-      {value: 'landsat', label: this.__("Landsat")}
-    ];
-
-
-    var form = '';
-    if(this.state.selectedOption == 'scene'){
-      form = (
-        <div>
-          <p>{this.__('Planet Labs Scene: ')}<a href="https://www.planet.com/docs/referencev0/scenes/" target="_blank">https://www.planet.com/docs/referencev0/scenes/</a></p>
-            <div  className="row">
-              <Radio name="type" label=""
-                  defaultValue={this.state.selectedSceneOption}
-                  options={planetSceneOptions} onChange={this.sceneOptionChange}
-                  className="col s10"
-                />
-            </div>
-          <div className="row">
-            <TextInput name="planetScene" label={this.__('Planet Labs Scene ID')}
-              validations="maxLength:250" validationErrors={{
-                     maxLength: this.__('Must be 250 characters or less.')
-                 }} length={250}
-               dataPosition="top" dataTooltip={this.__('Copy and Paste from the Planet Scene Browser')}
-
-              icon="info" className="col s12"required/>
-          </div>
-        </div>
-      );
-    }else if(this.state.selectedOption == 'mosaic'){
-      form = (
-        <div>
-          <p>{this.__('Planet Labs Mosaic: ')}<a href="https://www.planet.com/docs/referencev0/scenes/" target="_blank">https://www.planet.com/docs/referencev0/scenes/</a></p>
-          <div className="row">
-            <TextInput name="planetMosaic"
-              label={this.__('Planet Labs Mosaic ID')}
-              validations="maxLength:250" validationErrors={{
-                     maxLength: this.__('Must be 250 characters or less.')
-                 }} length={250}
-               dataPosition="top" dataTooltip={this.__('Extract from browser URL in Mosaic Browser')}
-              icon="info" className="col s12" required/>
-          </div>
-        </div>
-      );
-    }
-
     var prevButton = '';
     if(this.props.showPrev){
       prevButton = (
@@ -177,20 +157,20 @@ var PlanetLabsSource = React.createClass({
 
 		return (
         <div className="row">
-          <Formsy.Form>
-            <b>{this.__('Choose an Option')}</b>
-            <div  className="row">
-              <Radio name="type" label=""
-                  defaultValue={this.state.selectedOption}
-                  options={planetLabsOptions} onChange={this.optionChange}
-                  className="col s10"
-                />
-            </div>
-            <hr />
-          </Formsy.Form>
-
           <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-            {form}
+             <div>
+              <p>{this.__('Paste the selected IDs from the Planet Explorer API box')}</p>
+              <div className="row">
+                <TextArea name="selectedIDs" label={this.__('Planet Explorer Selected IDs')}
+                  length={2000}
+                  validations={{isNotRapidEye:true, isNotSentinel:true, isNotOrtho:true}} validationErrors={{
+                   isNotRapidEye: this.__('RapidEye Not Supported: We are currently researching an issue with the RapidEye API, and hope to restore support at a later date.'),
+                   isNotOrtho: this.__('Ortho Not Supported: Try a 3-band or 4-band scene instead. We are investigating an issue with the Planet API support for Ortho scenes.'),
+                   isNotSentinel: this.__('Sentinel 2 tiles are not yet supported by the Planet API')
+                  }}
+                  icon="info" className="col s12"required/>
+              </div>
+            </div>
             {prevButton}
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
