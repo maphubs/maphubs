@@ -107,6 +107,11 @@ var CreateLayer = React.createClass({
             selected={this.state.source === 'ags'} icon="cloud_download"
             onSelect={this.selectSource} />
           </div>
+          <div className="col s6 m3 l2">
+            <SourceSelectionBox name={this.__('MapHubs Layer')} value={'remote'} 
+            selected={this.state.source === 'ags'} icon="cloud_download"
+            onSelect={this.selectSource} />
+          </div>
           {planetSource}
         </div>
         <div className="divider" />

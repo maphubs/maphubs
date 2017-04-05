@@ -30,6 +30,12 @@ var LayerSourceMixin = {
       return(<AGOLSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
     }else if(type === 'planet'){
       return(<PlanetLabsSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
+    }else if(type === 'remote'){
+      return(
+        <div style={{marginTop: '20px'}}>
+          <a className="btn" href="/createremotelayer">{this.__('Go to Remote Layer Tool')}</a>
+        </div>
+      );
     }else if(type === 'point' || type === 'line' || type === 'polygon'){
       return (<EmptyLocalSource showPrev={true} type={type}
       onPrev={this.onPrev} onSubmit={this.onSubmit} />);
