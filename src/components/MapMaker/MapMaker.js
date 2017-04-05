@@ -543,7 +543,6 @@ var MapMaker = React.createClass({
                         top: '5px',
                         left: '5px',
                         minWidth: '200px',
-                        zIndex: '1',
                         width: '25%'
                       }} layers={this.state.mapLayers} collapseToBottom={false} hideInactive={true} showLayersButton={false} />
               </div>

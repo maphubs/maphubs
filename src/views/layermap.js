@@ -87,7 +87,6 @@ var LayerMap = React.createClass({
             top: '5px',
             left: '5px',
             minWidth: '275px',
-            zIndex: '1',
             width: '25%'
           }}
             title={this.props.layer.name}

@@ -129,7 +129,6 @@ var EmbedMap = React.createClass({
               top: '5px',
               left: '5px',
               minWidth: '275px',
-              zIndex: '9999',
               width: '25%',
               maxWidth: '325px',
               maxHeight: 'calc(100% - 200px)',

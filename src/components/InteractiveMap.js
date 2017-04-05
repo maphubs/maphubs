@@ -163,7 +163,6 @@ var InteractiveMap = React.createClass({
                   left: '5px',
                   minWidth: '200px',
                   maxHeight: 'calc(100% - 185px)',
-                  zIndex: '2',
                   width: '20%'
                 }} layers={this.state.layers} title={title} />
                 {children}

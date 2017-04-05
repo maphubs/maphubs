@@ -105,7 +105,6 @@ var StaticMap = React.createClass({
               top: '5px',
               left: '5px',
               minWidth: '275px',
-              zIndex: '9999',
               width: '25%'
             }}
             title={title}

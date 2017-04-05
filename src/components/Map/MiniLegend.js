@@ -159,9 +159,9 @@ var MiniLegend = React.createClass({
     return (
       <div style={this.props.style}>
        <ul ref="legend" className="collapsible" data-collapsible="accordion" 
-       style={{display: 'flex', flexDirection: 'column', textAlign: 'left',  margin: 0, maxHeight: '100%', boxShadow: 'none', border: 'none'}}>
+       style={{zIndex: 1, display: 'flex', flexDirection: 'column', textAlign: 'left',  margin: 0, maxHeight: '100%', boxShadow: 'none', border: 'none'}}>
         <li className="z-depth-1" 
-          style={{display: 'flex', flexDirection: 'column', 
+          style={{zIndex: 1, display: 'flex', flexDirection: 'column', 
                   backgroundColor: '#FFF', maxHeight: '100%', 
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
