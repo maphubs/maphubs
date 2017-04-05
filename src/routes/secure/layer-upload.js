@@ -201,11 +201,12 @@ app.post('/api/layer/finishupload', csrfProtection, function(req, res) {
   var user_id = req.session.user.id;
   if(req.body.layer_id && req.body.requestedShapefile){
     debug('finish upload for layer: ' + req.body.layer_id + ' requesting shapefile: ' + req.body.requestedShapefile);
-  Layer.allowedToModify(req.body.layer_id, user_id)
-  .then(function(allowed){
-    if(allowed){
+   Layer.getLayerByID(req.body.layer_id)
+     .then(function(layer){
+      if(layer.created_by_user_id === user_id){
+      debug('allowed');
       //get file path
-      DataLoadUtils.getTempShapeUpload(req.body.layer_id)
+      return DataLoadUtils.getTempShapeUpload(req.body.layer_id)
       .then(function(path){
         debug("finishing upload with file: " + path);
         shapefileFairy(path, function(result){
@@ -232,8 +233,9 @@ app.post('/api/layer/finishupload', csrfProtection, function(req, res) {
     }else {
       notAllowedError(res, 'layer');
     }
-  });
+  }).catch(apiError(res, 500));
 }else{
+  debug('missing required data');
   apiDataError(res);
 }
 
