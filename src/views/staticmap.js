@@ -114,8 +114,13 @@ var StaticMap = React.createClass({
       }
     }
 
-    var bbox = this.props.position.bbox;
-    var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+   
+    var bounds;
+    if(typeof window === 'undefined' || !window.location.hash){
+        //only update position if there isn't absolute hash in the URL
+          var bbox = this.props.position.bbox;
+          bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+      }
     map = (
       <Map ref="map" interactive={false} showPlayButton={false} fitBounds={bounds} insetMap={this.props.insetMap}
         showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}

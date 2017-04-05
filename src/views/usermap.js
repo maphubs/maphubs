@@ -135,6 +135,14 @@ componentWillReceiveProps(nextProps){
     //CreateMapActions.showMapDesigner();
   },
 
+  onFullScreen(){
+    var fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`;
+    if(window.location.hash){
+      fullScreenLink = fullScreenLink += window.location.hash;
+    }
+    window.location = fullScreenLink;
+  },
+
   onMapChanged(){
     location.reload();
   },
@@ -155,9 +163,14 @@ componentWillReceiveProps(nextProps){
 
   showEmbedCode(){
     var url = urlUtil.getBaseUrl() + '/map/embed/' + this.props.map.map_id + '/static';
-    var code = '&lt;iframe src="' + url
-    + '" style="width: 600px; height: 330px;" frameborder="0"&gt;&lt;/iframe&gt;';
-    var message = '<p>' + this.__('Paste the following code into your website to embed a map:') + '</p><pre>' + code + '</pre>';
+    var code = `
+      &lt;iframe src="${url}"
+        style="width: 600px; height: 330px;" frameborder="0"&gt;
+      &lt;/iframe&gt;
+    `;
+    var messageIntro =  this.__('Paste the following code into your website to embed a map:');
+     var message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`;
+
     MessageActions.showMessage({title: this.__('Embed Code'), message});
   },
 
@@ -273,6 +286,12 @@ componentWillReceiveProps(nextProps){
             <i className="material-icons">code</i>
           </a>
         </li>
+         <li>
+          <a onClick={this.onFullScreen} className="btn-floating user-map-tooltip yellow"
+            data-delay="50" data-position="left" data-tooltip={this.__('Full Screen')}>
+            <i className="material-icons">fullscreen</i>
+          </a>
+        </li>
 
       </ul>
     </div>
@@ -292,6 +311,7 @@ componentWillReceiveProps(nextProps){
       <InteractiveMap height="100%" 
              {...this.props.map}         
              layers={this.props.layers}
+             disableScrollZoom={false}
              >
         <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
         {button}
