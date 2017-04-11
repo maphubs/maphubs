@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.8.14](https://github.com/maphubs/maphubs/tree/v0.8.14) (2017-04-11)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.13...v0.8.14)
+
+**Fixed bugs:**
+
+- layer style legend didn't update [\#351](https://github.com/maphubs/maphubs/issues/351)
+
 ## [v0.8.13](https://github.com/maphubs/maphubs/tree/v0.8.13) (2017-04-05)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.12...v0.8.13)
 
