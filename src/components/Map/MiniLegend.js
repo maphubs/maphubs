@@ -154,7 +154,7 @@ var MiniLegend = React.createClass({
     }
 
     var style = this.props.style;
-    style.height = '9999px'; //needed for the flex box to work correctly
+    //style.height = '9999px'; //needed for the flex box to work correctly
 
     return (
       <div style={this.props.style}>

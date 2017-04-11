@@ -773,7 +773,10 @@ textarea.materialize-textarea+label:after {
 }
 
 .omh-legend {
-  padding: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 2px;
+  padding-bottom: 4px;
   min-height: 20px;
 }
 
