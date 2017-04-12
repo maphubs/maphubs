@@ -65,6 +65,7 @@ var Map = React.createClass({
     showLogo: React.PropTypes.bool,
     showFeatureInfoEditButtons: React.PropTypes.bool,
     fitBounds: React.PropTypes.array,
+    fitBoundsOptions: React.PropTypes.object,
     disableScrollZoom: React.PropTypes.bool,
     enableRotation: React.PropTypes.bool,
     navPosition:  React.PropTypes.string,
@@ -97,7 +98,8 @@ var Map = React.createClass({
       hash: true,
       attributionControl: false,
       style: {},
-      allowLayerOrderOptimization: true
+      allowLayerOrderOptimization: true,
+      fitBoundsOptions: {animate:false}
     };
   },
 
@@ -365,7 +367,8 @@ var Map = React.createClass({
           fitBounds = new mapboxgl.LngLatBounds(sw, ne);
         }
         debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
-        map.fitBounds(fitBounds, {animate:false});
+        
+        map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
         if(_this.refs.insetMap){
           _this.refs.insetMap.fitBounds(fitBounds, {maxZoom: 1.8, padding: 10, animate:false});
         }     
@@ -517,7 +520,7 @@ var Map = React.createClass({
              bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
            }
            debug('(' + this.state.id + ') ' +'calling map fitBounds');
-           this.map.fitBounds(bounds, {animate:false});
+           this.map.fitBounds(bounds, this.props.fitBoundsOptions);
             if(this.refs.insetMap){
               this.refs.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
             }
@@ -555,12 +558,12 @@ var Map = React.createClass({
       if(bounds){
         debug('(' + this.state.id + ') ' +'only bounds changing');
         if(bounds._ne && bounds._sw){
-         this.map.fitBounds(bounds, {animate:false});
+         this.map.fitBounds(bounds, this.props.fitBoundsOptions);
          }else if(Array.isArray(bounds) && bounds.length > 2){
            this.map.fitBounds([[bounds[0], bounds[1]],
-                         [bounds[2], bounds[3]]], {animate:false});
+                         [bounds[2], bounds[3]]], this.props.fitBoundsOptions);
          }else{
-           this.map.fitBounds(bounds, {animate:false});
+           this.map.fitBounds(bounds, this.props.fitBoundsOptions);
          }
          this.setState({allowLayersToMoveMap});
       }
