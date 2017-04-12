@@ -521,7 +521,7 @@ var Map = React.createClass({
             if(this.refs.insetMap){
               this.refs.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
             }
-           this.setState({allowLayersToMoveMap});
+           this.setState({allowLayersToMoveMap, restoreBounds: bounds});
         }
      }
 
