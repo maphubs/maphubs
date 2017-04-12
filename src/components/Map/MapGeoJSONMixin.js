@@ -10,6 +10,10 @@ var _bbox = require('@turf/bbox');
 var MapGeoJSONMixin = {
 
   initGeoJSON(map, data){
+    if(!this.state.mapLoaded){
+      debug(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
+      return;
+    }
     if(data && data.features && data.features.length > 0){
       map.addSource("omh-geojson", {"type": "geojson", data});
       var glStyle = styles.defaultStyle('geojson', null, null);
@@ -22,7 +26,7 @@ var MapGeoJSONMixin = {
       this.zoomToData(data);
     } else {
       //empty data
-      debug('(' + this.state.id + ') ' +'Empty/Missing GeoJSON Data');
+      debug(`(${this.state.id}) Empty/Missing GeoJSON Data`);
     }
   },
 

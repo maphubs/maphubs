@@ -312,22 +312,26 @@ var Map = React.createClass({
       //once all sources are loaded then load the layers
       Promise.all(sources).then(function(){
         _this.addLayers(map, glStyle);
+         if(geoJSON){
+            _this.initGeoJSON(map, geoJSON);
+          }
         cb();
       }).catch(function(err){
         debug('(' + _this.state.id + ') ' +err);
         //try to load the map anyway
         _this.addLayers(map, glStyle);
+        if(geoJSON){
+          _this.initGeoJSON(map, geoJSON);
+        }
         cb();
       });
     }
-    else if(geoJSON){
+     else if(geoJSON){
       _this.initGeoJSON(map, geoJSON);
-      _this.setState({mapLoaded: true});
-    }
-    else{
-      //just the base map, the map is loaded
-      _this.setState({mapLoaded: true});
-    }
+      cb();
+    }else{
+      cb();
+    }    
   },
 
   createMap() {
