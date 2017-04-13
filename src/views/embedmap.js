@@ -3,11 +3,13 @@ var $ = require('jquery');
 var MiniLegend = require('../components/Map/MiniLegend');
 var Map = require('../components/Map/Map');
 var _debounce = require('lodash.debounce');
-
+var request = require('superagent');
+var checkClientError = require('../services/client-error-response').checkClientError;
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
+var _bbox = require('@turf/bbox');
 
 var EmbedMap = React.createClass({
 
@@ -21,22 +23,70 @@ var EmbedMap = React.createClass({
     map: React.PropTypes.object.isRequired,
     layers: React.PropTypes.array.isRequired,
     isStatic: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    interactive: React.PropTypes.bool,
+    locale: React.PropTypes.string.isRequired,
+    geoJSONUrl: React.PropTypes.string,
+    markerColor: React.PropTypes.string
   },
 
   getDefaultProps() {
     return {
-      isStatic: false
+      isStatic: false,
+      interactive: false,
+      markerColor: '#FF0000'
     };
   },
 
-
   getInitialState(){
+    var glStyle = this.props.map.style;
+    if(this.props.geoJSONUrl){
+      glStyle.sources['geojson-overlay'] = {
+        type: 'geojson',
+        data: this.props.geoJSONUrl
+      };
+
+      glStyle.layers.push({
+      "id": "geojson-overlay",
+      "type": "circle",
+      "metadata": {
+        "maphubs:layer_id": 0,
+        "maphubs:interactive": false,
+        "maphubs:showBehindBaseMapLabels": false,
+        "maphubs:markers": {
+          "shape": "MAP_PIN",
+          "size": "32",
+          "width": 32,
+          "height": 32,
+          "shapeFill": this.props.markerColor,
+          "shapeFillOpacity": 0.75,
+          "shapeStroke": "#FFFFFF",
+          "shapeStrokeWidth": 2,
+          "inverted": false,
+          "enabled": true,
+          "dataUrl": this.props.geoJSONUrl,
+          "interactive": true
+        }
+      },
+      "source": "geojson-overlay",
+      "filter": [
+        "in",
+        "$type",
+        "Point"
+      ],
+      "paint": {
+        "circle-color": this.props.markerColor,
+        "circle-opacity": 0.5
+      }
+    });
+    }
+
     return {
       retina: false,
       width: 1024,
       height: 600,
-      interactive: false
+      interactive: this.props.interactive,
+      bounds: null,
+      glStyle
     };
   },
 
@@ -85,6 +135,13 @@ var EmbedMap = React.createClass({
 
   componentDidMount(){
     $('.embed-tooltips').tooltip();
+
+
+    if(this.props.geoJSONUrl){
+      this.loadGeoJSON(this.props.geoJSONUrl);
+    }
+  
+
   },
 
   componentDidUpdate(prevState){
@@ -98,6 +155,22 @@ var EmbedMap = React.createClass({
     $('.embed-tooltips').tooltip('remove');
 
   },
+
+
+  loadGeoJSON(url){
+    var _this = this;
+    request.get(url)
+    .type('json').accept('json')
+    .end(function(err, res){
+      checkClientError(res, err, ()=>{}, function(){
+        var geoJSON = res.body;
+        var bounds = _bbox(geoJSON);
+        //_this.refs.map.fitBounds(bounds, 12, 10, true);
+        _this.setState({bounds});
+      });
+    });
+  },
+  
 
   render() {
     var map = '';
@@ -140,6 +213,9 @@ var EmbedMap = React.createClass({
         );
       }
     }
+ 
+    var bounds;
+    
 
     if(this.props.isStatic && !this.state.interactive){
       var url = '/api/screenshot/map/' + this.props.map.map_id + '.png';
@@ -152,8 +228,12 @@ var EmbedMap = React.createClass({
           </div>
         );
     }else {
-      var bbox = this.props.map.position.bbox;
-      var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+       if(!this.state.bounds){
+        var bbox = this.props.map.position.bbox;
+        bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+      }else{
+        bounds = this.state.bounds;
+      }
       map = (
         <div>
           <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative', backgroundColor: 'rgba(0,0,0,0)'}}>
@@ -190,9 +270,10 @@ var EmbedMap = React.createClass({
           </div>
 
         </nav>
-          <Map ref="map" interactive={this.state.interactive} fitBounds={bounds}
+          <Map ref="map" interactive={this.state.interactive} 
+            fitBounds={bounds} fitBoundsOptions={{animate: false, padding: 200}}
             style={{width: '100%', height: mapHeight + 'px'}}
-            glStyle={this.props.map.style}
+            glStyle={this.state.glStyle}
             baseMap={this.props.map.basemap}
             navPosition="top-right" disableScrollZoom>
             {legend}

@@ -230,7 +230,7 @@ module.exports = function(app: any) {
             var popularLayers = results[2];
             var myLayers = results[3];
             var myGroups = results[4];
-            var title = 'Map';
+            var title: string = 'Map';
             if(map.title){
               title = map.title;
             }
@@ -265,11 +265,11 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-          MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false);
+          MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false, false);
     } else {
       Map.allowedToModify(map_id, user_id)
       .then(function(allowed){
-        MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed);
+        MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false);
       });
     }
   });
@@ -288,11 +288,34 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false);
+          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, false);
     } else {
       Map.allowedToModify(map_id, user_id)
       .then(function(allowed){
-        MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed);
+        MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false);
+      });
+    }
+  });
+
+  app.get('/map/embed/:map_id/interactive', csrfProtection, privateMapCheck, function(req, res, next) {
+    var map_id = req.params.map_id;
+    if(!map_id){
+      apiDataError(res);
+    }
+
+    var user_id = -1;
+    if(req.session.user){
+      user_id = req.session.user.id;
+    }
+    recordMapView(req.session, map_id, user_id, next);
+
+    if (!req.isAuthenticated || !req.isAuthenticated()
+        || !req.session || !req.session.user) {
+          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, true);
+    } else {
+      Map.allowedToModify(map_id, user_id)
+      .then(function(allowed){
+        MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true);
       });
     }
   });
