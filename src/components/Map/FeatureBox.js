@@ -188,15 +188,21 @@ var FeatureBox = React.createClass({
         }else{
           featureLink = 'https://' + host + '/feature/' + layer_id + '/' + featureID + '/' + featureName;
         }
+        var featureButton = '';
+        if(host && featureLink){
+          featureButton = (
+            <a href={featureLink}
+              className="feature-box-tooltips" data-delay="50" data-position="bottom" data-tooltip={this.__('More Info')}>
+            <i className="material-icons omh-accent-color" style={{fontSize: 32}}>info_outline</i>
+          </a>
+          );
+        }
       infoPanel = (<div className="row" style={{marginTop: '10px', marginBottom: '10px'}}>
         <div className="col s10 center">
         {layerinfo}
         </div>
         <div className="col s2 center no-padding">
-          <a href={featureLink}
-              className="feature-box-tooltips" data-delay="50" data-position="bottom" data-tooltip={this.__('More Info')}>
-            <i className="material-icons omh-accent-color" style={{fontSize: 32}}>info_outline</i>
-          </a>
+          {featureButton}
         </div>
       </div>);
       }
