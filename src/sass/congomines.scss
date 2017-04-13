@@ -1,14 +1,14 @@
-$maphubs-accent-color: #3AACDB;
+$maphubs-accent-color: #32ACDE;
 
 $primary-color: $maphubs-accent-color;
 $primary-color-light: lighten($primary-color, 15%);
-$primary-color-dark: darken($primary-color, 15%);
+$primary-color-dark: #32ACDE;
 
 $secondary-color: $maphubs-accent-color;
 
 $navbar-height: 50px;
 $navbar-height-mobile: 50px;
-$navbar-font-color: #FFF;
+$navbar-font-color: #c2c2c2;
 $navbar-hover-font-color: #FFF;
 
 $button-raised-color: #FFF;
@@ -21,4 +21,7 @@ $button-floating-background-hover: $primary-color-light;
 
 $link-color: $primary-color-light;
 
-$nav-background-color: #2f3032;
+$nav-background-color: #323538;
+$footer-bg-color: #323538;
+$footer-font-color: #c2c2c2;
+$header-font-color: #32ACDE;
