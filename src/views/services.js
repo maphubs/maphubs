@@ -19,7 +19,8 @@ var Services = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   render() {
@@ -110,7 +111,7 @@ var Services = React.createClass({
               </p>
             </div>
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
   }

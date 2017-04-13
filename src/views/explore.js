@@ -39,7 +39,8 @@ var Home = React.createClass({
     recentHubs: React.PropTypes.array,
     recentMaps: React.PropTypes.array,
     recentStories: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState(){
@@ -259,7 +260,7 @@ var Home = React.createClass({
                </div>
               </div>
        </main>
-       <Footer />
+       <Footer {...this.props.footerConfig}/>
 			</div>
 		);
 	}

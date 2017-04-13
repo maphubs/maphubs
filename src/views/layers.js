@@ -29,7 +29,8 @@ var Layers = React.createClass({
     featuredLayers: React.PropTypes.array,
     recentLayers: React.PropTypes.array,
     popularLayers: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -162,7 +163,7 @@ var Layers = React.createClass({
             </a>
           </div>
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
       </div>
 		);
 	}

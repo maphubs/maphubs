@@ -19,7 +19,8 @@ var Error = React.createClass({
     title: React.PropTypes.string,
 		error: React.PropTypes.string,
 		url: React.PropTypes.string,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -40,7 +41,7 @@ var Error = React.createClass({
             <p className="flow-text center-align"><a href={this.props.url} target="_blank">{this.props.url}</a></p>
           </div>
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
       </div>
     );
   }

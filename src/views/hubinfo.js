@@ -46,7 +46,8 @@ var HubInfo = React.createClass({
     canEdit: React.PropTypes.bool,
     myMaps: React.PropTypes.array,
     popularMaps: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -177,7 +178,7 @@ var HubInfo = React.createClass({
 
 
           {editButton}
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </main>
 
         <Notification />

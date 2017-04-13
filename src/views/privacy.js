@@ -17,7 +17,8 @@ var Privacy = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   render() {
@@ -113,7 +114,7 @@ var Privacy = React.createClass({
             </div>
 
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
 

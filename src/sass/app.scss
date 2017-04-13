@@ -528,6 +528,19 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     margin: 0;
   }
 
+  .page-footer {
+    color: $footer-font-color;
+  }
+
+  .footer-copyright {
+     color: $footer-font-color;
+    background-color: $footer-bg-color;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $header-font-color;
+  }
+
   .features {
     position:absolute;
     right:0;

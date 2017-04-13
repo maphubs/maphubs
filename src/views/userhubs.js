@@ -24,7 +24,8 @@ var UserHubs = React.createClass({
     publishedHubs: React.PropTypes.array,
     user: React.PropTypes.object,
     canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -112,7 +113,7 @@ var UserHubs = React.createClass({
           {emptyMessage}
           {addButton}
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
       </div>
 		);
 	}

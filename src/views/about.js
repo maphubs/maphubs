@@ -21,7 +21,8 @@ var About = React.createClass({
 
   propTypes: {
     locale: React.PropTypes.string.isRequired,
-    version: React.PropTypes.string
+    version: React.PropTypes.string,
+    footerConfig: React.PropTypes.object
   },
 
   render() {
@@ -132,7 +133,7 @@ var About = React.createClass({
               <p lang="en">{MAPHUBS_CONFIG.productName} is possible thanks to many open-source code libraries, fonts, and icons. For a full list see <a href="https://github.com/maphubs/maphubs/blob/master/attritions.md">Attributions</a></p>
             </div>
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
 

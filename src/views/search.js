@@ -31,7 +31,8 @@ var Search = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState() {
@@ -209,7 +210,7 @@ var Search = React.createClass({
           </div>
           <Progress id="searching" title={this.__('Searching')} subTitle="" dismissible={false} show={this.state.searching}/>
        </main>
-       <Footer />
+       <Footer {...this.props.footerConfig}/>
 			</div>
 		);
 	}

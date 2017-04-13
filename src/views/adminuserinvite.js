@@ -23,7 +23,8 @@ var PasswordReset = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState(): Object{
@@ -101,7 +102,7 @@ var PasswordReset = React.createClass({
           </div>
           <Progress id="saving-user-invite" title={this.__('Sending')} subTitle="" dismissible={false} show={this.state.saving}/>
       </main>
-      <Footer />
+      <Footer {...this.props.footerConfig}/>
       </div>
     );
   }

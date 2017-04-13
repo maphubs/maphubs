@@ -1,6 +1,7 @@
 // @flow
 var User = require('../../models/user');
 var Admin = require('../../models/admin');
+var Page = require('../../models/page');
 var passport = require('passport');
 var log = require('../../services/log');
 var debug = require('../../services/debug')('routes/user');
@@ -22,10 +23,13 @@ if(!local.mapHubsPro){
 module.exports = function(app: any) {
 
 
-  app.get('/user/passwordreset/:key', csrfProtection, function(req, res) {
+  app.get('/user/passwordreset/:key', csrfProtection, function(req, res, next) {
 
     var passreset = req.params.key;
-    res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName, props: {passreset}, req});
+    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+      var footerConfig = pageConfigs['footer'];
+      res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName, props: {passreset, footerConfig}, req});
+    }).catch(nextError(next));
 
   });
 
@@ -72,7 +76,10 @@ module.exports = function(app: any) {
 
     User.checkEmailConfirmation(key)
     .then(function(valid){
-      res.render('emailconfirmation', {title: req.__('Email Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, props: {valid}, req});
+      return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+        var footerConfig = pageConfigs['footer'];
+        res.render('emailconfirmation', {title: req.__('Email Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, props: {valid, footerConfig}, req});
+      });
     }).catch(nextError(next));
   });
 

@@ -1,7 +1,7 @@
 // @flow
 
 var User = require('../../models/user');
-
+var Page = require('../../models/page');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
@@ -32,7 +32,10 @@ module.exports = function(app: any) {
     var user_id = req.session.user.id;
     User.getUser(user_id)
       .then(function(user){
-        res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}, req});
+        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+          var footerConfig = pageConfigs['footer'];
+          res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - ' + MAPHUBS_CONFIG.productName, props: {user, footerConfig}, req});
+        });
       }).catch(nextError(next));
   });
 

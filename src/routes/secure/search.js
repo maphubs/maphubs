@@ -6,14 +6,19 @@ var log = require('../../services/log.js');
 var turf_bbox = require('@turf/bbox');
 var csrfProtection = require('csurf')({cookie: false});
 var SearchIndex = require('../../models/search-index');
+var Page = require('../../models/page');
+var nextError = require('../../services/error-response').nextError;
 
 module.exports = function(app: any) {
 
-  app.get('/search', csrfProtection, function(req, res) {
-      res.render('search', {
-        title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {}, req
-      });
+  app.get('/search', csrfProtection, function(req, res, next) {
+     Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+        var footerConfig = pageConfigs['footer'];
+        res.render('search', {
+          title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {footerConfig}, req
+        });
+      }).catch(nextError(next));
   });
 
   //TODO: rewrite

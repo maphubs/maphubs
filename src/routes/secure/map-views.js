@@ -11,7 +11,7 @@ var MapUtils = require('../../services/map-utils');
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var privateMapCheck = require('../../services/private-map-check').middlewareView;
-
+var Page = require('../../models/page');
 var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
@@ -91,13 +91,15 @@ module.exports = function(app: any) {
     Promise.all([
       Map.getFeaturedMaps(),
       Map.getRecentMaps(),
-      Map.getPopularMaps()
+      Map.getPopularMaps(),
+      Page.getPageConfigs(['footer'])
     ])
       .then(function(results){
         var featuredMaps = results[0];
         var recentMaps = results[1];
         var popularMaps = results[2];
-        res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
+        var footerConfig = results[3].footer;
+        res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps, footerConfig}, req});
       }).catch(nextError(next));
   });
 
@@ -114,7 +116,10 @@ module.exports = function(app: any) {
         if(user){
           return Map.getUserMaps(user.id)
           .then(function(maps){
-            res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps}, req});
+            return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+              var footerConfig = pageConfigs['footer'];
+              res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps, footerConfig}, req});
+            });
           });
         }else{
           res.redirect('/notfound?path='+req.path);

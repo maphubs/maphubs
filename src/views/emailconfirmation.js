@@ -17,7 +17,8 @@ var EmailConfirmation = React.createClass({
 
   propTypes: {
     valid: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
   render() {
     var content = '';
@@ -45,7 +46,7 @@ var EmailConfirmation = React.createClass({
             {content}
           </div>
       </main>
-      <Footer />
+      <Footer {...this.props.footerConfig}/>
       </div>
     );
   }

@@ -3,6 +3,7 @@ var Layer = require('../../models/layer');
 var Group = require('../../models/group');
 var User = require('../../models/user');
 var Stats = require('../../models/stats');
+var Page = require('../../models/page');
 //var log = require('../../services/log');
 var Promise = require('bluebird');
 var login = require('connect-ensure-login');
@@ -16,18 +17,20 @@ module.exports = function(app: any) {
 
   //Views
   app.get('/layers', csrfProtection, function(req, res, next) {
-    Promise.all([
+    Promise.all([     
       Layer.getFeaturedLayers(),
       Layer.getRecentLayers(),
-      Layer.getPopularLayers()
+      Layer.getPopularLayers(),
+      Page.getPageConfigs(['footer'])
     ])
       .then(function(results){
         var featuredLayers = results[0];
         var recentLayers = results[1];
         var popularLayers = results[2];
+        var footerConfig = results[3]['footer'];
         res.render('layers', {
           title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {featuredLayers, recentLayers, popularLayers},
+          props: {featuredLayers, recentLayers, popularLayers, footerConfig},
           req
         });
       }).catch(nextError(next));

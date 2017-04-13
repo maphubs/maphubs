@@ -29,7 +29,8 @@ var Groups = React.createClass({
     featuredGroups: React.PropTypes.array,
     recentGroups: React.PropTypes.array,
     popularGroups: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -165,7 +166,7 @@ var Groups = React.createClass({
               </div>
             </div>
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
       </div>
 		);
 	}

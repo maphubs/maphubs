@@ -24,7 +24,8 @@ var UserMaps = React.createClass({
 		maps: React.PropTypes.array,
     user: React.PropTypes.object,
     myMaps: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -81,7 +82,7 @@ var UserMaps = React.createClass({
           {myMaps}
           {createMaps}
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig} />
       </div>
 		);
 	}

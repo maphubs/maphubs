@@ -1,11 +1,12 @@
 /* @flow weak */
 
 var Admin = require('../../models/admin');
+var Page = require('../../models/page');
 var csrfProtection = require('csurf')({cookie: false});
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
-var log = require('../../services/log');
+//var log = require('../../services/log');
 
 module.exports = function(app) {
 
@@ -16,7 +17,10 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     Admin.checkAdmin(user_id).then(function(allowed){
       if(allowed){
-        res.render('adminuserinvite', {title: req.__('Invite User') + ' - ' + MAPHUBS_CONFIG.productName, props: {}, req});
+        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+          var footerConfig = pageConfigs['footer'];
+            res.render('adminuserinvite', {title: req.__('Invite User') + ' - ' + MAPHUBS_CONFIG.productName, props: {footerConfig}, req});
+          });
       }else{
         return res.redirect('/login');
       }

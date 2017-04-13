@@ -23,7 +23,8 @@ var UserGroups = React.createClass({
 		groups: React.PropTypes.array,
     user: React.PropTypes.object,
     canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -86,7 +87,7 @@ var UserGroups = React.createClass({
           {groups}
           {addButton}
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
       </div>
 		);
 	}

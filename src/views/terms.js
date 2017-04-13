@@ -17,7 +17,8 @@ var Terms = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   render() {
@@ -174,7 +175,7 @@ The base map as well as map data indicated as sourced from OpenStreetMap is copy
 </ol>
 
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
 

@@ -12,10 +12,27 @@ var Footer = React.createClass({
     return Locales.getLocaleString(this.state.locale, text);
   },
 
-  render() {
+  propTypes:  {
+    copyrightText: React.PropTypes.string,
+    showPoweredByMapHubs: React.PropTypes.bool,
+    showMapForEnvironmentMoabiLogo: React.PropTypes.bool,
+    showContactUs: React.PropTypes.bool,
+    links: React.PropTypes.array
+  },
 
-    var m4eFooter = '', about = '', services = '', journalists = '';
-    if(!MAPHUBS_CONFIG.mapHubsPro){
+  getDefaultProps(){
+    return {
+      showPoweredByMapHubs: true,
+      showMapForEnvironmentMoabiLogo: false,
+      showContactUs: true
+    };
+  },
+
+  render() {
+    var _this = this;
+
+    var m4eFooter = '';
+    if(this.props.showMapForEnvironmentMoabiLogo){
       m4eFooter = (
         <ul style={{marginTop: '0px'}}>
           <li className="valign-wrapper">
@@ -27,30 +44,14 @@ var Footer = React.createClass({
           </li>
         </ul>
       );
-
-      about = (
-        <li><a href="/about">{this.__('About')}</a></li>
-      );
-      services = (
-        <li><a href="/services">{this.__('Services')}</a></li>
-      );
-      journalists = (
-        <li><a href="/journalists">{this.__('Journalists')}</a></li>
-      );
-    }else{
-      about = (
-        <li><a href="https://maphubs.com">{this.__('About')}</a></li>
-      );
-      services = (
-        <li><a href="https://maphubs.com">{this.__('Services')}</a></li>
-      );
+   
     }
 
     var copyright = '';
 
-    if(MAPHUBS_CONFIG.copyrightText){
+    if(this.props.copyrightText){
       copyright = (
-        <small>&copy; {MAPHUBS_CONFIG.copyrightText}</small>
+        <small>&copy; {this.props.copyrightText}</small>
       );
     }else{
       copyright = (
@@ -58,52 +59,72 @@ var Footer = React.createClass({
       );
     }
 
+    var poweredByMapHubs = '';
+    if(this.props.showPoweredByMapHubs){
+      poweredByMapHubs = (
+        <ul>
+          <li className="valign-wrapper">
+            <span className="valign">{this.__('Powered by') + ' '}</span>
+            <a href="http://maphubs.com" className="valign" style={{float: 'left'}}>
+                <img width="111" height="30" style={{marginTop: '10px'}} src="/assets/maphubs-logo-small.png" alt="MapHubs.com" />
+              </a>
+              
+            </li>
+          <li>
+            {this.__('View the open source code on ')}<a href="https://github.com/maphubs">GitHub</a>
+          </li>
+        </ul>
+      );
+    }
+
+    var contactUs = '';
+    if(this.props.showContactUs){
+      contactUs = (
+         <ul>
+          <li>{this.__('Contact Us')}</li>
+          <li><a className="text-darken-3 center" href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></li>
+          <li><a className="text-darken-3 center" href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}>@{MAPHUBS_CONFIG.twitter}</a></li>
+        </ul>
+      );
+    }
+
+    var linkSection = '';
+    if(this.props.links){
+      linkSection = (
+        <ul>
+        <li>{this.__('Learn More')}</li>
+        {_this.props.links.map((link, i) =>{
+          return (
+            <li key={`footer-link-${i}`}>
+              <a href={link.href} target={link.target}>{_this.__(link.name)}</a>
+            </li>
+          );
+        })      
+        }
+        </ul>
+      );
+    }
 
     return (
-        <footer className="page-footer white">
-          <div className="divider"></div>
+        <footer className="page-footer">
           <div className="container">
 
             <div className="row">
               <div className="col l4 s12" style={{marginTop: '15px'}}>
                 {m4eFooter}
-                <ul>
-                  <li className="valign-wrapper">
-                    <a href="http://maphubs.com" className="valign" style={{float: 'left', paddingRight: '5px'}}>
-                        <img width="111" height="30" src="/assets/maphubs-logo-small.png" alt="MapHubs.com" />
-                      </a>
-                      <span className="valign">{this.__('Powered by MapHubs')}</span>
-                    </li>
-                  <li>
-                    {this.__('View the open source code on ')}<a href="https://github.com/maphubs">GitHub</a>
-                  </li>
-                </ul>
+                {poweredByMapHubs}
 
               </div>
               <div className="col l5 s12">
-
-                <ul>
-                  <li>{this.__('Contact Us')}</li>
-                  <li><a className="text-darken-3 center" href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></li>
-                  <li><a className="text-darken-3 center" href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}>@{MAPHUBS_CONFIG.twitter}</a></li>
-
-                </ul>
+                {contactUs}         
               </div>
               <div className="col l3 s12">
-                <ul>
-                  <li>{this.__('Learn More')}</li>
-                  {about}
-                  {services}                                   
-                  <li><a href="http://help.maphubs.com" target="_blank">{this.__('Help')}</a></li>
-                  {journalists}                  
-                  <li><a href="/terms">{this.__('Terms')}</a></li>
-                  <li><a href="/privacy">{this.__('Privacy')}</a></li>
-                </ul>
+                {linkSection}
               </div>
             </div>
           </div>
-          <div className="footer-copyright white">
-            <div className="grey-text container center">
+          <div className="footer-copyright">
+            <div className="container center">
               {copyright}
             </div>
           </div>

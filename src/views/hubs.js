@@ -32,7 +32,8 @@ var Hubs = React.createClass({
     popularHubs: React.PropTypes.array,
     recentHubs: React.PropTypes.array,
     allHubs:  React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -135,7 +136,7 @@ var Hubs = React.createClass({
               </a>
             </div>
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
       </div>
 		);
 	}

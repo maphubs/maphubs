@@ -21,7 +21,8 @@ var PendingConfirmation = React.createClass({
 
   propTypes: {
     user: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState() {
@@ -81,7 +82,7 @@ var PendingConfirmation = React.createClass({
             </div>
           </div>
       </main>
-      <Footer />
+      <Footer {...this.props.footerConfig}/>
       </div>
     );
   }

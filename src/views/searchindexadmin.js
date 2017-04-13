@@ -25,6 +25,7 @@ var SearchIndexAdmin = React.createClass({
     locale: React.PropTypes.string.isRequired,
     connectionStatus: React.PropTypes.string.isRequired,
     indexStatus: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
 
@@ -113,7 +114,7 @@ var SearchIndexAdmin = React.createClass({
               <button className="btn" onClick={this.rebuildFeatures}>{this.__('Rebuild Feature Index')}</button>
             </div>
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
 

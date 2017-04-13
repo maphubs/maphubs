@@ -13,9 +13,11 @@ module.exports = function(app: any) {
 
   app.get('/', csrfProtection, function(req, res, next) {
 
-    Page.getPageConfig('home').then(function(pageConfig){
-     var dataRequests = [];
-     var dataRequestNames = [];
+    Page.getPageConfigs(['home', 'footer']).then(function(pageConfigs: Object){
+      var pageConfig = pageConfigs['home'];
+      var footerConfig = pageConfigs['footer'];
+      var dataRequests = [];
+      var dataRequestNames = [];
     //use page config to determine data requests
     if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
       pageConfig.components.forEach(function(component: any){
@@ -55,7 +57,7 @@ module.exports = function(app: any) {
     
     Promise.all(dataRequests)
     .then(function(results){
-      var props = {pageConfig, _csrf: req.csrfToken()};
+      var props = {pageConfig, footerConfig, _csrf: req.csrfToken()};
       results.forEach(function(result, i){
         props[dataRequestNames[i]] = result;
       });
@@ -115,7 +117,8 @@ module.exports = function(app: any) {
       Group.getRecentGroups(10),
       Hub.getRecentHubs(10),
       Map.getRecentMaps(10),
-      Story.getRecentStories(10)
+      Story.getRecentStories(10),
+      Page.getPageConfigs(['footer'])
     ]).then(function(results){
       var featuredLayers = results[0];
       var featuredGroups = results[1];
@@ -134,29 +137,39 @@ module.exports = function(app: any) {
       var recentHubs = results[12];
       var recentMaps = results[13];
       var recentStories = results[14];
+      var footerConfig = results[15].footer;
       res.render('explore', {
         title: req.__('Explore') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           featuredLayers, featuredGroups, featuredHubs, featuredMaps, featuredStories,
           popularLayers, popularGroups, popularHubs, popularMaps, popularStories,
-          recentLayers, recentGroups, recentHubs, recentMaps, recentStories
+          recentLayers, recentGroups, recentHubs, recentMaps, recentStories,
+          footerConfig
         }, req
       });
     }).catch(nextError(next));
   });
 
-  app.get('/services', csrfProtection, function(req, res) {
-    res.render('services', {
-      title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
-      req
-    });
+  app.get('/services', csrfProtection, function(req, res, next) {
+    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+      var footerConfig = pageConfigs['footer'];
+      res.render('services', {
+        title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
+        props:{footerConfig},
+        req
+      });
+    }).catch(nextError(next));
   });
 
-  app.get('/journalists', csrfProtection, function(req, res) {
-    res.render('journalists', {
-      title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
-      req
-    });
+  app.get('/journalists', csrfProtection, function(req, res, next) {
+    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+      var footerConfig = pageConfigs['footer'];
+      res.render('journalists', {
+        title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
+        props:{footerConfig},
+        req
+      });
+    }).catch(nextError(next));
   });
 
 };

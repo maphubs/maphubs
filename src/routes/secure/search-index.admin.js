@@ -1,6 +1,7 @@
 var csrfProtection = require('csurf')({cookie: false});
 var login = require('connect-ensure-login');
 var Admin = require('../../models/admin');
+var Page = require('../../models/page');
 var elasticClient = require('../../services/elasticsearch');
 var SearchIndex = require('../../models/search-index');
 var nextError = require('../../services/error-response').nextError;
@@ -17,14 +18,17 @@ module.exports = app => {
 
     Admin.checkAdmin(user_id).then(isAdmin =>{
       if(isAdmin){ 
-        return SearchIndex.indexExists().then(indexExistsResult => {
-          let indexStatus = JSON.stringify(indexExistsResult);
-          elasticClient.testClient(error =>{
-            let connectionStatus = 'Active';
-            if(error) connectionStatus = error;
-            res.render('searchindexadmin', {
-              title: req.__('Search Index Admin') + ' - ' + MAPHUBS_CONFIG.productName,
-              props: {connectionStatus, indexStatus}, req
+        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+          var footerConfig = pageConfigs['footer'];
+          return SearchIndex.indexExists().then(indexExistsResult => {
+            let indexStatus = JSON.stringify(indexExistsResult);
+            elasticClient.testClient(error =>{
+              let connectionStatus = 'Active';
+              if(error) connectionStatus = error;
+              res.render('searchindexadmin', {
+                title: req.__('Search Index Admin') + ' - ' + MAPHUBS_CONFIG.productName,
+                props: {connectionStatus, indexStatus, footerConfig}, req
+              });
             });
           });
         });

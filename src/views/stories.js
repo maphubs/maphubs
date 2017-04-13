@@ -21,7 +21,8 @@ var Stories = React.createClass({
   propTypes: {
     popularStories: React.PropTypes.array,
     featuredStories:  React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   onCreateStory(){
@@ -79,7 +80,7 @@ var Stories = React.createClass({
           </a>
         </div>
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
 			</div>
 		);
 	}

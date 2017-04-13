@@ -29,7 +29,8 @@ var Maps = React.createClass({
     featuredMaps: React.PropTypes.array,
     recentMaps: React.PropTypes.array,
     popularMaps: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -162,7 +163,7 @@ var Maps = React.createClass({
             </div>
           </div>
         </main>
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
       </div>
 		);
 	}

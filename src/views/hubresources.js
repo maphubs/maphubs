@@ -28,7 +28,8 @@ var HubResourcesPage = React.createClass({
   propTypes: {
     hub: React.PropTypes.object,
     canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   __(text){
@@ -126,7 +127,7 @@ var HubResourcesPage = React.createClass({
             <HubResources editing={this.state.editing} />
           </div>
           {editButton}
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </main>
         <Notification />
         <Message />

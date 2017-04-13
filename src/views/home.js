@@ -37,7 +37,8 @@ var Home = React.createClass({
     featuredStories:  React.PropTypes.array.isRequired,
     locale: React.PropTypes.string.isRequired,
     mapHub: React.PropTypes.object,
-    mapHubLayers: React.PropTypes.array
+    mapHubLayers: React.PropTypes.array,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState(): Object{
@@ -212,7 +213,7 @@ var Home = React.createClass({
            </div>
           </div>
             {featured}
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
        </main>
 
 			</div>

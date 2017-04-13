@@ -26,7 +26,8 @@ var HubStoriesPage = React.createClass({
     hub: React.PropTypes.object,
     stories: React.PropTypes.array,
     canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   __(text){
@@ -120,7 +121,7 @@ var HubStoriesPage = React.createClass({
             </div>
           </div>
           {editButton}
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </main>
         <Notification />
         <Message />

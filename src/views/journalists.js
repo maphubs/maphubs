@@ -19,7 +19,8 @@ var Journalists = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   render() {
@@ -107,7 +108,7 @@ var Journalists = React.createClass({
                 </div>
             </div>
             </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
 

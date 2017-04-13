@@ -24,7 +24,8 @@ var PageEdit = React.createClass({
   propTypes: {
     locale: React.PropTypes.string.isRequired,
     page_id: React.PropTypes.string.isRequired,
-    pageConfig: React.PropTypes.object.isRequired
+    pageConfig: React.PropTypes.object.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState(){
@@ -74,7 +75,7 @@ var PageEdit = React.createClass({
                         title={this.__('Editing Page Config: ') + this.props.page_id}
                         onSave={this.savePageConfig} modal={false}/>
           </main>
-          <Footer />
+          <Footer {...this.props.footerConfig}/>
         </div>
       );
 

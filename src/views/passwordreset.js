@@ -19,7 +19,8 @@ var PasswordReset = React.createClass({
 
   propTypes: {
     passreset: React.PropTypes.string.isRequired,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   onSave(){
@@ -38,7 +39,7 @@ var PasswordReset = React.createClass({
             </div>
           </div>
       </main>
-      <Footer />
+      <Footer {...this.props.footerConfig}/>
       </div>
     );
   }

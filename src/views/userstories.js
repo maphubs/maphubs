@@ -21,7 +21,8 @@ var UserStories = React.createClass({
 		stories: React.PropTypes.array,
     myStories: React.PropTypes.bool,
     username: React.PropTypes.string.isRequired,
-    locale: React.PropTypes.string.isRequired
+    locale: React.PropTypes.string.isRequired,
+    footerConfig: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -79,7 +80,7 @@ var UserStories = React.createClass({
         </div>
         {button}
       </main>
-      <Footer />
+      <Footer {...this.props.footerConfig} />
 			</div>
 		);
 	}
