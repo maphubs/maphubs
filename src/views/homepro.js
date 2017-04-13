@@ -36,7 +36,8 @@ var HomePro = React.createClass({
     locale: React.PropTypes.string.isRequired,
     map: React.PropTypes.object,
     pageConfig: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array
+    layers: React.PropTypes.array,
+    footerConfig: React.PropTypes.object
   },
 
   getInitialState(): Object{
@@ -53,11 +54,11 @@ var HomePro = React.createClass({
     window.location = '/search?q=' + input;
   },
 
-  renderHomePageMap(config: Object){
+  renderHomePageMap(config: Object, key: string){
     var homepageMap= '';
     if(this.props.map){
       homepageMap = (
-         <div className="row" style={{height: 'calc(100vh - 150px)'}}>
+         <div key={key} className="row" style={{height: 'calc(100vh - 150px)'}}>
             <InteractiveMap height="100%" 
              {...this.props.map} categories={config.categories}     
              layers={this.props.layers} showTitle={false}/>
@@ -68,30 +69,31 @@ var HomePro = React.createClass({
     return homepageMap;   
   },
 
-  renderLinks(){
+  renderLinks(config: Object, key: string){
     var links = '';
-
+    var bgColor = config.bgColor ? config.bgColor : 'inherit';
     links = (
-      <div className="row">
+      <div key={key} className="row" style={{backgroundColor: bgColor}}>
         <PublicOnboardingLinks />
-        <div className="divider" />
       </div>
     );
     return links;
   },
 
-  renderCarousel(){
+  renderCarousel(config: Object, key: string){
     var trendingCards = cardUtil.combineCards([this.state.trendingLayerCards,
     this.state.trendingGroupCards,
     this.state.trendingHubCards,
     this.state.trendingMapCards,
     this.state.trendingStoryCards]);
 
+     var bgColor = config.bgColor ? config.bgColor : 'inherit';
+
     return (
-      <div className="row" style={{marginBottom: '50px'}}>
+      <div key={key} className="row" style={{marginBottom: '50px', backgroundColor: bgColor}}>
            <div className="row no-margin" style={{height: '50px'}}>
              <div>
-                <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
+                <h5 className="no-margin center-align" style={{lineHeight: '50px'}}>
                   {this.__('Trending')}
                   <i className="material-icons" style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
                 </h5>
@@ -107,17 +109,17 @@ var HomePro = React.createClass({
 
   },
 
-  renderStories(){
+  renderStories(key: string){
     var featured = '';
      if(this.props.featuredStories && this.props.featuredStories.length > 0){
        featured = (
-         <div>
+         <div key={key}>
            <div className="divider" />
            <div className="row">
              <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
                {this.__('Featured Stories')}
              </h5>
-               {this.props.featuredStories.map(function (story) {
+               {this.props.featuredStories.map(story => {
                  return (
                    <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                      <div className="card-content">
@@ -134,11 +136,11 @@ var HomePro = React.createClass({
 
   },
 
-  renderText(config: Object){
+  renderText(config: Object, key: string){
     var text = config.text[this.state.locale];
     if(!text) text = config.text.en;
     return (
-      <div className="row">
+      <div key={key} className="row">
         <div className="flow-text center align-center">
           {text}
         </div>
@@ -155,24 +157,25 @@ var HomePro = React.createClass({
       <Header />
       <main style={{margin: 0, height: '100%'}}>
 
-       {this.props.pageConfig.components.map(component => {
+       {this.props.pageConfig.components.map((component, i) => {
+         var key = `homepro-component-${i}`;
           if(component.type === 'map'){
-            return _this.renderHomePageMap(component);
+            return _this.renderHomePageMap(component, key);
           }else if(component.type === 'carousel'){
-            return _this.renderCarousel();
+            return _this.renderCarousel(component, key);
           }else if(component.type === 'storyfeed'){
-            return _this.renderStories();
+            return _this.renderStories(key);
           }else if(component.type === 'text'){
-            return _this.renderText(component);
+            return _this.renderText(component, key);
           }else if(component.type === 'links'){
-            return _this.renderLinks(component);
+            return _this.renderLinks(component, key);
           }else{
             return '';
           }
           
         })
        }
-        <Footer />
+        <Footer {...this.props.footerConfig}/>
        </main>
 			</div>
 		);
