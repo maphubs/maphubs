@@ -271,7 +271,7 @@ var EmbedMap = React.createClass({
 
         </nav>
           <Map ref="map" interactive={this.state.interactive} 
-            fitBounds={bounds} fitBoundsOptions={{animate: false, padding: 200}}
+            fitBounds={bounds} fitBoundsOptions={{animate: false, padding: 200, maxZoom: 8}}
             style={{width: '100%', height: mapHeight + 'px'}}
             glStyle={this.state.glStyle}
             baseMap={this.props.map.basemap}
