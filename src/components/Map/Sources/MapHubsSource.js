@@ -8,7 +8,19 @@ var ReactDOM = require('react-dom');
 var Marker = require('../Marker');
 var $ =require('jquery');
 var MarkerActions = require('../../../actions/map/MarkerActions');
-var _bbox = require('@turf/bbox');
+var GJV = require("geojson-validation");
+GJV.define("Position", function(position){
+    //the postion must be valid point on the earth, x between -180 and 180
+    var errors = [];
+    if(position[0] < -180 || position[0] > 180){
+        errors.push("Longitude must be between -180 and 180");
+    }
+    if(position[1] < -90 || position[1] > 90){
+        errors.push("Latitude must be between -90 and 90");
+    }
+    return errors;
+
+});
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
@@ -87,6 +99,21 @@ var MapHubsSource = {
           var geojson = res.body;        
           // add markers to map
           geojson.features.forEach(function(marker, i) {
+          var valid = true;
+          GJV.isFeature(marker, function(valid, errs){
+            if(!valid){
+              valid = false;
+              debug(errs);
+            }
+            GJV.isPoint(marker.geometry, function(valid, errs){
+            if(!valid){
+              valid = false;
+              debug(errs);
+            }
+         
+          
+
+          if(valid){
 
           var markerId;
           if(marker.properties.osm_id){
@@ -142,7 +169,11 @@ var MapHubsSource = {
           
 
           MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
-          
+          }else{
+            debug('Invalid GeoJSON - Unable to draw marker');
+          }
+          });
+          });
           });
           
         }
