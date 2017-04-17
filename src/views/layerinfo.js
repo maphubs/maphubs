@@ -600,6 +600,9 @@ var LayerInfo = React.createClass({
       }else if((!this.props.layer.external_layer_type || this.props.layer.external_layer_type == '')
               && this.props.layer.external_layer_config.type){
         type = this.props.layer.external_layer_config.type;
+      }else if(this.props.layer.external_layer_config.type == 'geojson'){
+        type = 'GeoJSON';
+        externalUrl = this.props.layer.external_layer_config.data;
       }else{
         type = this.props.layer.external_layer_type;
       }
