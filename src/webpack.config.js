@@ -71,10 +71,7 @@ module.exports = {
     mapboxgl: ["./assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js"]
   },
   resolve: {
-    modulesDirectories: ['node_modules'],
-    alias: {
-    },
-    extensions: ['', '.js', '.jsx', '.json']
+    extensions: ['.js', '.jsx', '.json']
   },
 
   output: {
@@ -91,30 +88,39 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.json$/,
-        loader: 'json'
-      },{
         test: /\.(glsl|vert|frag)([\?]?.*)$/,
-        loader: 'raw'
-      },{
-      test: /\.jsx?$/,
-      loader: 'babel-loader',
-
-      include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /reflux-state-mixin/, /react-colorpickr/],
-      query: {
-        presets: [
-          "es2015",
-          "react",
-          "stage-0"
-        ],
-        plugins: ['transform-flow-strip-types']
+        use: [{loader: 'raw-loader'}]
+      },
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /reflux-state-mixin/, /react-colorpickr/],       
+        options: {
+          presets: [
+            "es2015",
+            "react",
+            "stage-0"
+          ],
+          plugins: ['transform-flow-strip-types']         
+        }  
+      },
+      {
+        test: /\.(scss|css)$/, 
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: [
+            "css-loader",
+            "resolve-url-loader",
+            "sass-loader"
+          ]
+        })
+      },
+      {
+        test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, 
+        use: [{loader: "file-loader?name=[name].[ext]"}]
       }
-    },
-
-      {test: /\.(scss|css)$/, loader: ExtractTextPlugin.extract('style-loader', "css!resolve-url!sass")},
-      {test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"}
     ],
     noParse: [
       pathToPica,
@@ -143,13 +149,11 @@ module.exports = {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }
   }),
-  new ExtractTextPlugin("[name].css"),
+  new webpack.BannerPlugin({banner: `MapHubs (https://github.com/maphubs)`, raw: false, entryOnly: true}),
+  new ExtractTextPlugin({filename: "[name].css"})
   ],
 
   externals: {
     'unicode/category/So': '{}'
 }
 };
-
-//
-//  new webpack.optimize.DedupePlugin(),
