@@ -66,6 +66,10 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   color: $navbar-font-color;
 }
 
+.collapsible-body {
+  padding: 0;
+}
+
 .hub-banner {
   height: 250px;
 }
