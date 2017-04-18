@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var $ = require('jquery');
 
@@ -8,10 +9,10 @@ var classNames = require('classnames');
 var OSMSource = React.createClass({
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    active: React.PropTypes.bool.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    active: PropTypes.bool.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

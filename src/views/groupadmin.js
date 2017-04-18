@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var $ = require('jquery');
 var EditList = require('../components/EditList');
@@ -34,12 +35,12 @@ var GroupAdmin = React.createClass({
   },
 
   propTypes: {
-    group: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array,
-    maps: React.PropTypes.array,
-    hubs: React.PropTypes.array,
-    members: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    group: PropTypes.object.isRequired,
+    layers: PropTypes.array,
+    maps: PropTypes.array,
+    hubs: PropTypes.array,
+    members: PropTypes.array,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

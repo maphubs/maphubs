@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var MiniLegend = require('../components/Map/MiniLegend');
 var Map = require('../components/Map/Map');
@@ -19,15 +20,15 @@ var StaticMap = React.createClass({
   },
 
   propTypes: {
-    name: React.PropTypes.string,
-    layers: React.PropTypes.array.isRequired,
-    style: React.PropTypes.object.isRequired,
-    position: React.PropTypes.object.isRequired,
-    basemap: React.PropTypes.string.isRequired,
-    showLegend: React.PropTypes.bool,
-    showLogo: React.PropTypes.bool,
-    insetMap:  React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    name: PropTypes.string,
+    layers: PropTypes.array.isRequired,
+    style: PropTypes.object.isRequired,
+    position: PropTypes.object.isRequired,
+    basemap: PropTypes.string.isRequired,
+    showLegend: PropTypes.bool,
+    showLogo: PropTypes.bool,
+    insetMap:  PropTypes.bool,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

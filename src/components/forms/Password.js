@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var TextInput = require('../forms/textInput');
 
@@ -20,10 +21,10 @@ var Password = React.createClass({
   },
 
   propTypes: {
-    onSave: React.PropTypes.func,
-    userid: React.PropTypes.number,
-    passreset:  React.PropTypes.string,
-    csrf:  React.PropTypes.string.required
+    onSave: PropTypes.func,
+    userid: PropTypes.number,
+    passreset:  PropTypes.string,
+    csrf:  PropTypes.string.required
 
   },
 

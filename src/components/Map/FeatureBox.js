@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Attributes = require('./Attributes');
 var classNames = require('classnames');
@@ -23,11 +24,11 @@ var FeatureBox = React.createClass({
   },
 
   propTypes: {
-		features: React.PropTypes.array.isRequired,
-    selected: React.PropTypes.bool.isRequired,
-    onUnselected: React.PropTypes.func.isRequired,
-    showButtons: React.PropTypes.bool,
-    className: React.PropTypes.string
+		features: PropTypes.array.isRequired,
+    selected: PropTypes.bool.isRequired,
+    onUnselected: PropTypes.func.isRequired,
+    showButtons: PropTypes.bool,
+    className: PropTypes.string
   },
 
   getDefaultProps() {

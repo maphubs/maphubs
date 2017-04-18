@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var UserMenu = require('./UserMenu');
 var Reflux = require('reflux');
@@ -23,7 +24,7 @@ var Header = React.createClass({
   },
 
   propTypes:  {
-    activePage: React.PropTypes.string
+    activePage: PropTypes.string
   },
 
   componentDidMount() {

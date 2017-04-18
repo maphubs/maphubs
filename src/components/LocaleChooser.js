@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var UserStore = require('../stores/UserStore');
@@ -16,7 +17,7 @@ var LocaleChooser = React.createClass({
   },
 
   propTypes:  {
-    id: React.PropTypes.string
+    id: PropTypes.string
   },
 
   getDefaultProps(){

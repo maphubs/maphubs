@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -19,8 +20,8 @@ var Services = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   render() {

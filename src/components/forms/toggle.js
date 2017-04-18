@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var $ = require('jquery');
@@ -11,18 +12,18 @@ var Toggle= React.createClass({
 
 
   propTypes:  {
-    className: React.PropTypes.string,
-    dataTooltip: React.PropTypes.string,
-    dataDelay: React.PropTypes.number,
-    dataPosition: React.PropTypes.string,
-    labelOn: React.PropTypes.string.isRequired,
-    labelOff: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string.isRequired,
-    style: React.PropTypes.object,
-    disabled: React.PropTypes.bool,
-    onChange: React.PropTypes.func,
-    defaultChecked: React.PropTypes.bool,
-    checked: React.PropTypes.bool
+    className: PropTypes.string,
+    dataTooltip: PropTypes.string,
+    dataDelay: PropTypes.number,
+    dataPosition: PropTypes.string,
+    labelOn: PropTypes.string.isRequired,
+    labelOff: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    style: PropTypes.object,
+    disabled: PropTypes.bool,
+    onChange: PropTypes.func,
+    defaultChecked: PropTypes.bool,
+    checked: PropTypes.bool
   },
 
 

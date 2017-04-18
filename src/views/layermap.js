@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var Header = require('../components/header');
 var Map = require('../components/Map/Map');
@@ -18,8 +19,8 @@ var LayerMap = React.createClass({
   },
 
   propTypes: {
-    layer: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired
+    layer: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired
   },
 
   getInitialState(){

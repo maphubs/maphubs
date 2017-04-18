@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var request = require('superagent');
 var SearchBar = require('./SearchBar/SearchBar');
 var debug = require('../services/debug')('SearchBox');
@@ -9,13 +10,13 @@ var debug = require('../services/debug')('SearchBox');
 var SearchBox = React.createClass({
 
   propTypes: {
-    label: React.PropTypes.string,
-    suggestionUrl: React.PropTypes.string,
-    onSearch: React.PropTypes.func.isRequired,
-    onError: React.PropTypes.func,
-    onReset: React.PropTypes.func,
-    style: React.PropTypes.object,
-    id: React.PropTypes.string
+    label: PropTypes.string,
+    suggestionUrl: PropTypes.string,
+    onSearch: PropTypes.func.isRequired,
+    onError: PropTypes.func,
+    onReset: PropTypes.func,
+    style: PropTypes.object,
+    id: PropTypes.string
   },
 
   getDefaultProps() {

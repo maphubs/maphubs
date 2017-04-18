@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header = require('../components/header');
 var StoryEditor = require('../components/Story/StoryEditor');
 
@@ -17,11 +18,11 @@ var EditUserStory = React.createClass({
   },
 
   propTypes: {
-    story: React.PropTypes.object.isRequired,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array,
-    username: React.PropTypes.string.isRequired,
-    locale: React.PropTypes.string.isRequired
+    story: PropTypes.object.isRequired,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array,
+    username: PropTypes.string.isRequired,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

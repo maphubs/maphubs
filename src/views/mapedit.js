@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header = require('../components/header');
 var MapMaker = require('../components/MapMaker/MapMaker');
 var Reflux = require('reflux');
@@ -11,12 +12,12 @@ var MapEdit = React.createClass({
   mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   propTypes: {
-    map: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array.isRequired,
-    popularLayers: React.PropTypes.array.isRequired,
-    myLayers: React.PropTypes.array,
-    myGroups: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    map: PropTypes.object.isRequired,
+    layers: PropTypes.array.isRequired,
+    popularLayers: PropTypes.array.isRequired,
+    myLayers: PropTypes.array,
+    myGroups: PropTypes.array,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

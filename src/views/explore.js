@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
@@ -24,23 +25,23 @@ var Home = React.createClass({
   },
 
   propTypes: {
-    featuredLayers: React.PropTypes.array,
-    featuredGroups: React.PropTypes.array,
-    featuredHubs: React.PropTypes.array,
-    featuredMaps: React.PropTypes.array,
-    featuredStories: React.PropTypes.array,
-    popularLayers: React.PropTypes.array,
-    popularGroups: React.PropTypes.array,
-    popularHubs: React.PropTypes.array,
-    popularMaps: React.PropTypes.array,
-    popularStories: React.PropTypes.array,
-    recentLayers: React.PropTypes.array,
-    recentGroups: React.PropTypes.array,
-    recentHubs: React.PropTypes.array,
-    recentMaps: React.PropTypes.array,
-    recentStories: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    featuredLayers: PropTypes.array,
+    featuredGroups: PropTypes.array,
+    featuredHubs: PropTypes.array,
+    featuredMaps: PropTypes.array,
+    featuredStories: PropTypes.array,
+    popularLayers: PropTypes.array,
+    popularGroups: PropTypes.array,
+    popularHubs: PropTypes.array,
+    popularMaps: PropTypes.array,
+    popularStories: PropTypes.array,
+    recentLayers: PropTypes.array,
+    recentGroups: PropTypes.array,
+    recentHubs: PropTypes.array,
+    recentMaps: PropTypes.array,
+    recentStories: PropTypes.array,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getInitialState(){

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var isEmpty = require('lodash.isempty');
 
 var HubBanner = require('../components/Hub/HubBanner');
@@ -23,11 +24,11 @@ var HubStoriesPage = React.createClass({
 
   mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub', 'stories']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
   propTypes: {
-    hub: React.PropTypes.object,
-    stories: React.PropTypes.array,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    hub: PropTypes.object,
+    stories: PropTypes.array,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   __(text){

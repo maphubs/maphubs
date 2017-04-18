@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 //var _isEqual = require('lodash.isequal');
 var _find = require('lodash.find');
@@ -13,9 +14,9 @@ var MapLayerMenu = React.createClass({
   mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
 
   propTypes:  {
-    categories:  React.PropTypes.array,
-    layers:  React.PropTypes.array,
-    toggleVisibility: React.PropTypes.func
+    categories:  PropTypes.array,
+    layers:  PropTypes.array,
+    toggleVisibility: PropTypes.func
   },
 
   getDefaultProps() {

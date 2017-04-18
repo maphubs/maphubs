@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var LayerStyle = require('./LayerStyle');
 var LayerActions = require('../../actions/LayerActions');
 var Reflux = require('reflux');
@@ -11,8 +12,8 @@ var Step5 = React.createClass({
   mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
 
   propTypes: {
-    onSubmit: React.PropTypes.func,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func,
+    onPrev: PropTypes.func
   },
 
   onSubmit(layer_id, name) {

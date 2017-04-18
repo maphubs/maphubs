@@ -8,6 +8,7 @@ Modified to support MaterializeCSS and other customizations
 
 //import 'babel-polyfill';
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Suggestions from './Suggestions';
 
@@ -23,15 +24,15 @@ var SearchBar = React.createClass({
   displayName: 'SearchBar',
 
   propTypes: {
-    autoFocus: React.PropTypes.bool,
-    autosuggestDelay: React.PropTypes.number,
-    inputName: React.PropTypes.string,
-    style: React.PropTypes.object,
-    placeholder: React.PropTypes.string,
-    onReset: React.PropTypes.func,
-    onSubmit: React.PropTypes.func,
-    onChange: React.PropTypes.func,
-    id: React.PropTypes.string
+    autoFocus: PropTypes.bool,
+    autosuggestDelay: PropTypes.number,
+    inputName: PropTypes.string,
+    style: PropTypes.object,
+    placeholder: PropTypes.string,
+    onReset: PropTypes.func,
+    onSubmit: PropTypes.func,
+    onChange: PropTypes.func,
+    id: PropTypes.string
   },
   getDefaultProps() {
     return {

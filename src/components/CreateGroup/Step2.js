@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var MessageActions = require('../../actions/MessageActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var classNames = require('classnames');
@@ -21,10 +22,10 @@ var CreateGroupStep2 = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func,
-    active: React.PropTypes.bool.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func,
+    active: PropTypes.bool.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

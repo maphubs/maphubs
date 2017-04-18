@@ -1,4 +1,6 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
+
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 
@@ -7,14 +9,14 @@ var draggableIndicator = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes:  {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    dotWidth:  React.PropTypes.number,
-    offset:  React.PropTypes.number,
-    numX:  React.PropTypes.number,
-    numY:  React.PropTypes.number,
-    initialX: React.PropTypes.number,
-    initialY: React.PropTypes.number
+    width: PropTypes.number,
+    height: PropTypes.number,
+    dotWidth:  PropTypes.number,
+    offset:  PropTypes.number,
+    numX:  PropTypes.number,
+    numY:  PropTypes.number,
+    initialX: PropTypes.number,
+    initialY: PropTypes.number
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
@@ -16,11 +17,11 @@ var Error = React.createClass({
   },
 
   propTypes: {
-    title: React.PropTypes.string,
-		error: React.PropTypes.string,
-		url: React.PropTypes.string,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    title: PropTypes.string,
+		error: PropTypes.string,
+		url: PropTypes.string,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
 var InteractiveMap = require('../InteractiveMap');
@@ -20,12 +21,12 @@ var HubMap = React.createClass({
   },
 
   propTypes: {
-    hub: React.PropTypes.object.isRequired,
-    editing: React.PropTypes.bool,
-    height: React.PropTypes.string,
-    border: React.PropTypes.bool,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array
+    hub: PropTypes.object.isRequired,
+    editing: PropTypes.bool,
+    height: PropTypes.string,
+    border: PropTypes.bool,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array
   },
 
   getDefaultProps(){

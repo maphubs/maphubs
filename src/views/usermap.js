@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var InteractiveMap = require('../components/InteractiveMap');
 var Header = require('../components/header');
@@ -31,10 +32,10 @@ var UserMap = React.createClass({
   },
 
   propTypes: {
-    map: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array.isRequired,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    map: PropTypes.object.isRequired,
+    layers: PropTypes.array.isRequired,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps(){

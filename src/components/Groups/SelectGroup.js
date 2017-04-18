@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var _isequal = require('lodash.isequal');
 
 var Toggle = require('../forms/toggle');
@@ -18,12 +19,12 @@ var SelectGroup = React.createClass({
   },
 
   propTypes: {
-    groups: React.PropTypes.array.isRequired,
-    type: React.PropTypes.string.isRequired,
-    group_id: React.PropTypes.string,
-    canChangeGroup: React.PropTypes.bool,
-    private: React.PropTypes.bool,
-    editing: React.PropTypes.bool
+    groups: PropTypes.array.isRequired,
+    type: PropTypes.string.isRequired,
+    group_id: PropTypes.string,
+    canChangeGroup: PropTypes.bool,
+    private: PropTypes.bool,
+    editing: PropTypes.bool
   },
 
   getDefaultProps(){

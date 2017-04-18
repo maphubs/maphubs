@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var urlUtil = require('../../services/url-util');
 
@@ -27,7 +28,7 @@ var MapCardUserTag = React.createClass({
   },
 
   propTypes: {
-    map: React.PropTypes.object.isRequired
+    map: PropTypes.object.isRequired
   },
 
   getDefaultProps(){

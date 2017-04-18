@@ -1,13 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const SliderDecorators = [
   {
     component: React.createClass({
 
       propTypes:  {
-        currentSlide: React.PropTypes.number,
-        wrapAround: React.PropTypes.bool,
-        previousSlide:  React.PropTypes.func
+        currentSlide: PropTypes.number,
+        wrapAround: PropTypes.bool,
+        previousSlide:  PropTypes.func
       },
       render() {
         return (
@@ -38,11 +39,11 @@ const SliderDecorators = [
   {
     component: React.createClass({
       propTypes:  {
-        currentSlide: React.PropTypes.number,
-        slidesToScroll: React.PropTypes.number,
-        slideCount: React.PropTypes.number,
-        wrapAround: React.PropTypes.bool,
-        nextSlide:  React.PropTypes.func
+        currentSlide: PropTypes.number,
+        slidesToScroll: PropTypes.number,
+        slideCount: PropTypes.number,
+        wrapAround: PropTypes.bool,
+        nextSlide:  PropTypes.func
       },
       render() {
         return (

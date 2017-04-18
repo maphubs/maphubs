@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var LayerList = require('./LayerList');
 
@@ -40,20 +41,20 @@ var MapMaker = React.createClass({
   },
 
   propTypes:  {
-    edit: React.PropTypes.bool,
-    mapLayers: React.PropTypes.array,
-    showVisibility: React.PropTypes.bool,
-    onCreate: React.PropTypes.func,
-    onClose: React.PropTypes.func,
-    myLayers: React.PropTypes.array,
-    popularLayers: React.PropTypes.array,
-    myGroups: React.PropTypes.array,
-    title: React.PropTypes.string,
-    position: React.PropTypes.object,
-    basemap: React.PropTypes.string,
-    map_id: React.PropTypes.number,
-    owned_by_group_id: React.PropTypes.string,
-    editLayer: React.PropTypes.object
+    edit: PropTypes.bool,
+    mapLayers: PropTypes.array,
+    showVisibility: PropTypes.bool,
+    onCreate: PropTypes.func,
+    onClose: PropTypes.func,
+    myLayers: PropTypes.array,
+    popularLayers: PropTypes.array,
+    myGroups: PropTypes.array,
+    title: PropTypes.string,
+    position: PropTypes.object,
+    basemap: PropTypes.string,
+    map_id: PropTypes.number,
+    owned_by_group_id: PropTypes.string,
+    editLayer: PropTypes.object
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import {Modal, ModalContent, ModalFooter} from '../Modal/Modal';
 
@@ -26,13 +27,13 @@ var CodeEditor = React.createClass({
   },
 
   propTypes: {
-    id:  React.PropTypes.string,
-    onSave: React.PropTypes.func.isRequired,
-    title: React.PropTypes.string.isRequired,
-    code: React.PropTypes.string,
-    mode: React.PropTypes.string,
-    theme: React.PropTypes.string,
-    modal: React.PropTypes.bool
+    id:  PropTypes.string,
+    onSave: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    code: PropTypes.string,
+    mode: PropTypes.string,
+    theme: PropTypes.string,
+    modal: PropTypes.bool
   },
 
   getDefaultProps() {

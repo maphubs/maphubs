@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 
 var Reflux = require('reflux');
@@ -23,8 +24,8 @@ var SaveMapPanel = React.createClass({
   },
 
   propTypes:  {
-    onSave: React.PropTypes.func.isRequired,
-    groups: React.PropTypes.array
+    onSave: PropTypes.func.isRequired,
+    groups: PropTypes.array
   },
 
   getInitialState(){

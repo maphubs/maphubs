@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var debug = require('../services/debug')('ImageCrop');
 import {Modal, ModalContent} from './Modal/Modal.js';
 var Promise = require('bluebird');
@@ -7,7 +8,7 @@ var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
 var Locales = require('../services/locales');
 var MessageActions = require('../actions/MessageActions');
-var _isequal = require('lodash.isequal');
+//var _isequal = require('lodash.isequal');
 var $ = require('jquery');
 
 import Cropper from 'react-cropper';
@@ -24,18 +25,18 @@ var ImageCrop = React.createClass({
   },
 
   propTypes:  {
-    onCrop: React.PropTypes.func,
-    lockAspect:  React.PropTypes.bool,
-    aspectRatio: React.PropTypes.number,
-    autoCropArea: React.PropTypes.number,
-    allowedExtensions: React.PropTypes.array,
-    max_size: React.PropTypes.number,
-    skip_size: React.PropTypes.number,
-    jpeg_quality: React.PropTypes.number,
-    resize_height: React.PropTypes.number,
-    resize_max_height: React.PropTypes.number,
-    resize_width: React.PropTypes.number,
-    resize_max_width: React.PropTypes.number
+    onCrop: PropTypes.func,
+    lockAspect:  PropTypes.bool,
+    aspectRatio: PropTypes.number,
+    autoCropArea: PropTypes.number,
+    allowedExtensions: PropTypes.array,
+    max_size: PropTypes.number,
+    skip_size: PropTypes.number,
+    jpeg_quality: PropTypes.number,
+    resize_height: PropTypes.number,
+    resize_max_height: PropTypes.number,
+    resize_width: PropTypes.number,
+    resize_max_width: PropTypes.number
   },
 
   getDefaultProps(){

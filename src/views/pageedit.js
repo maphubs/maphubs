@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -22,10 +23,10 @@ var PageEdit = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired,
-    page_id: React.PropTypes.string.isRequired,
-    pageConfig: React.PropTypes.object.isRequired,
-    footerConfig: React.PropTypes.object
+    locale: PropTypes.string.isRequired,
+    page_id: PropTypes.string.isRequired,
+    pageConfig: PropTypes.object.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getInitialState(){

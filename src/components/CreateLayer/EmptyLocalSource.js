@@ -1,6 +1,6 @@
 
-var React = require('react');
-//var ReactDOM = require('react-dom');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
@@ -21,10 +21,10 @@ var EmptyLocalSource = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    showPrev: React.PropTypes.bool,
-    type: React.PropTypes.string,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    showPrev: PropTypes.bool,
+    type: PropTypes.string,
+    onPrev: PropTypes.func
   },
 
 

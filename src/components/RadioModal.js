@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var Radio = require('./forms/radio');
 
@@ -8,10 +9,10 @@ import {Modal, ModalContent, ModalFooter} from './Modal/Modal';
 var RadioModal = React.createClass({
 
   propTypes: {
-    onCancel: React.PropTypes.func,
-    onSubmit: React.PropTypes.func.isRequired,
-    options: React.PropTypes.array.isRequired,
-    title: React.PropTypes.string.isRequired
+    onCancel: PropTypes.func,
+    onSubmit: PropTypes.func.isRequired,
+    options: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired
   },
 
   getInitialState(){

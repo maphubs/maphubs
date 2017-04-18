@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var urlUtil = require('../../services/url-util');
 var $ = require('jquery');
 var _isequal = require('lodash.isequal');
@@ -8,12 +9,12 @@ var classNames = require('classnames');
 var GroupTag = React.createClass({
 
   propTypes: {
-    group: React.PropTypes.string.isRequired,
-    size: React.PropTypes.number,
-    chipWidth: React.PropTypes.number,
-    fontSize: React.PropTypes.number,
-    showTooltip: React.PropTypes.bool,
-    className: React.PropTypes.string
+    group: PropTypes.string.isRequired,
+    size: PropTypes.number,
+    chipWidth: PropTypes.number,
+    fontSize: PropTypes.number,
+    showTooltip: PropTypes.bool,
+    className: PropTypes.string
   },
 
   getDefaultProps(){

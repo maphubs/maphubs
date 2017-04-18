@@ -1,11 +1,12 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Marker = require('./Marker');
 
 var LegendItem = React.createClass({
 
   propTypes:  {
-    layer: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object
+    layer: PropTypes.object.isRequired,
+    style: PropTypes.object
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 
@@ -29,10 +30,10 @@ var Signup = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired,
-    email:  React.PropTypes.string,
-    lockEmail:  React.PropTypes.bool,
-    inviteKey: React.PropTypes.string
+    locale: PropTypes.string.isRequired,
+    email:  PropTypes.string,
+    lockEmail:  PropTypes.bool,
+    inviteKey: PropTypes.string
   },
 
   getDefaultProps() {

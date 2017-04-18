@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header =require('../components/header');
 
 var ReactDisqusThread = require('react-disqus-thread');
@@ -20,10 +21,10 @@ var UserStory = React.createClass({
   },
 
   propTypes: {
-    story: React.PropTypes.object.isRequired,
-    username: React.PropTypes.string.isRequired,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    story: PropTypes.object.isRequired,
+    username: PropTypes.string.isRequired,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

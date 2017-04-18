@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var GroupTag = require('../Groups/GroupTag');
 var MapCardUserTag = require('./MapCardUserTag');
 var StoryHeader = require('../Story/StoryHeader');
@@ -19,18 +20,18 @@ var Card = React.createClass({
   },
 
   propTypes:  {
-    id: React.PropTypes.string.isRequired,
-    title: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string,
-    image_url: React.PropTypes.string,
-    background_image_url: React.PropTypes.string,
-    link: React.PropTypes.string,
-    group: React.PropTypes.string,
-    source: React.PropTypes.string,
-    data: React.PropTypes.object,
-    type: React.PropTypes.string,
-    private: React.PropTypes.bool,
-    onClick: React.PropTypes.func
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    image_url: PropTypes.string,
+    background_image_url: PropTypes.string,
+    link: PropTypes.string,
+    group: PropTypes.string,
+    source: PropTypes.string,
+    data: PropTypes.object,
+    type: PropTypes.string,
+    private: PropTypes.bool,
+    onClick: PropTypes.func
   },
 
   onClick(){
@@ -189,7 +190,7 @@ var Card = React.createClass({
         <div ref="card" className='hoverable margin5 small carousel-card card' onClick={this.onClick}>
           {image}
           {privateIcon}
-        <div className="card-content no-padding word-wrap" style={{margin: '10px'}}>
+        <div className="card-content no-padding word-wrap" style={{margin: '5px'}}>
 
           <b>{this.props.title}</b> <br />
 

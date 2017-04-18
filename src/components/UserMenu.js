@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -18,8 +19,8 @@ var UserMenu = React.createClass({
   },
 
   propTypes:  {
-    id: React.PropTypes.string,
-    sideNav: React.PropTypes.bool
+    id: PropTypes.string,
+    sideNav: PropTypes.bool
   },
 
   getDefaultProps() {

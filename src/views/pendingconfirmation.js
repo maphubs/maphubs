@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -20,9 +21,9 @@ var PendingConfirmation = React.createClass({
   },
 
   propTypes: {
-    user: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    user: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getInitialState() {

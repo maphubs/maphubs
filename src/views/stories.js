@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -19,10 +20,10 @@ var Stories = React.createClass({
   },
 
   propTypes: {
-    popularStories: React.PropTypes.array,
-    featuredStories:  React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    popularStories: PropTypes.array,
+    featuredStories:  PropTypes.array,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   onCreateStory(){

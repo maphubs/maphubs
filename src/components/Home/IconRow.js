@@ -1,11 +1,12 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var IconRow = React.createClass({
 
 propTypes: {
-  icon: React.PropTypes.string,
-  iconFontSize: React.PropTypes.string,
-  children: React.PropTypes.any
+  icon: PropTypes.string,
+  iconFontSize: PropTypes.string,
+  children: PropTypes.any
 },
 
 getDefaultProps() {

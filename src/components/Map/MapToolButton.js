@@ -1,19 +1,20 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 
 var MapToolButton = React.createClass({
 
   propTypes: {
-    icon: React.PropTypes.string,
-    top: React.PropTypes.string,
-    right: React.PropTypes.string,
-    bottom: React.PropTypes.string,
-    left: React.PropTypes.string,
-    tooltipText: React.PropTypes.string,
-    color: React.PropTypes.string,
-    onClick: React.PropTypes.func.isRequired,
-    show: React.PropTypes.bool,
-    disabled: React.PropTypes.bool,
+    icon: PropTypes.string,
+    top: PropTypes.string,
+    right: PropTypes.string,
+    bottom: PropTypes.string,
+    left: PropTypes.string,
+    tooltipText: PropTypes.string,
+    color: PropTypes.string,
+    onClick: PropTypes.func.isRequired,
+    show: PropTypes.bool,
+    disabled: PropTypes.bool,
 
   },
 

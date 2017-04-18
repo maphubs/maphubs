@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var Toggle = require('../forms/toggle');
 
@@ -20,10 +21,10 @@ var AdvancedLayerSettings = React.createClass({
   },
 
   propTypes: {
-    onChange: React.PropTypes.func.isRequired,
-    layer: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object,
-    settings: React.PropTypes.object
+    onChange: PropTypes.func.isRequired,
+    layer: PropTypes.object.isRequired,
+    style: PropTypes.object,
+    settings: PropTypes.object
   },
 
   getDefaultProps(){

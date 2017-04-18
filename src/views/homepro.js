@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
@@ -27,17 +28,17 @@ var HomePro = React.createClass({
   },
 
   propTypes: {
-    trendingLayers: React.PropTypes.array.isRequired,
-    trendingGroups: React.PropTypes.array.isRequired,
-    trendingHubs: React.PropTypes.array.isRequired,
-    trendingMaps: React.PropTypes.array.isRequired,
-    trendingStories: React.PropTypes.array.isRequired,
-    featuredStories:  React.PropTypes.array.isRequired,
-    locale: React.PropTypes.string.isRequired,
-    map: React.PropTypes.object,
-    pageConfig: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array,
-    footerConfig: React.PropTypes.object
+    trendingLayers: PropTypes.array.isRequired,
+    trendingGroups: PropTypes.array.isRequired,
+    trendingHubs: PropTypes.array.isRequired,
+    trendingMaps: PropTypes.array.isRequired,
+    trendingStories: PropTypes.array.isRequired,
+    featuredStories:  PropTypes.array.isRequired,
+    locale: PropTypes.string.isRequired,
+    map: PropTypes.object,
+    pageConfig: PropTypes.object.isRequired,
+    layers: PropTypes.array,
+    footerConfig: PropTypes.object
   },
 
   getInitialState(): Object{

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var isEmpty = require('lodash.isempty');
 
@@ -26,10 +27,10 @@ var HubResourcesPage = React.createClass({
 
   mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
   propTypes: {
-    hub: React.PropTypes.object,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    hub: PropTypes.object,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   __(text){

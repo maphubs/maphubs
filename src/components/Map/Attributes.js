@@ -1,13 +1,14 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Attributes = React.createClass({
 
   propTypes: {
-		attributes: React.PropTypes.object.isRequired,
-    selected: React.PropTypes.bool.isRequired,
-    multipleSelected: React.PropTypes.bool.isRequired,
-    presets:  React.PropTypes.array,
-    children: React.PropTypes.any
+		attributes: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    multipleSelected: PropTypes.bool.isRequired,
+    presets:  PropTypes.array,
+    children: PropTypes.any
   },
 
 

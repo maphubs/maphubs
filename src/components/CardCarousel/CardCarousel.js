@@ -1,19 +1,20 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Slider = require('react-slick');
 var Card = require('./Card');
 
 var CardCarousel = React.createClass({
 
   propTypes:  {
-    cards: React.PropTypes.array.isRequired,
-    autoplay: React.PropTypes.bool,
-    arrows: React.PropTypes.bool,
-    dots: React.PropTypes.bool,
-    infinite: React.PropTypes.bool,
-    speed: React.PropTypes.number,
-    slidesToShow: React.PropTypes.number,
-    slidesToScroll: React.PropTypes.number,
-    responsive: React.PropTypes.array
+    cards: PropTypes.array.isRequired,
+    autoplay: PropTypes.bool,
+    arrows: PropTypes.bool,
+    dots: PropTypes.bool,
+    infinite: PropTypes.bool,
+    speed: PropTypes.number,
+    slidesToShow: PropTypes.number,
+    slidesToScroll: PropTypes.number,
+    responsive: PropTypes.array
   },
 
   getDefaultProps() {

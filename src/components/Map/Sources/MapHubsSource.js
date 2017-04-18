@@ -3,7 +3,7 @@ var debug = require('../../../services/debug')('MapHubsSource');
 var superagent = require('superagent');
 var urlUtil = require('../../../services/url-util');
 var checkClientError = require('../../../services/client-error-response').checkClientError;
-var React = require('react');
+import React from 'react';
 var ReactDOM = require('react-dom');
 var Marker = require('../Marker');
 var $ =require('jquery');

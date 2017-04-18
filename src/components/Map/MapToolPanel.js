@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 
 var EditBaseMapBox = require('./EditBaseMapBox');
@@ -22,16 +23,16 @@ var MapToolPanel = React.createClass({
   },
 
   propTypes: {
-    show: React.PropTypes.bool,
-    gpxLink: React.PropTypes.string,
-    onChangeBaseMap:  React.PropTypes.func.isRequired,
-    toggleMeasurementTools:  React.PropTypes.func.isRequired,
-    toggleForestAlerts: React.PropTypes.func.isRequired,
-    toggleForestLoss: React.PropTypes.func.isRequired,
-    calculateForestAlerts: React.PropTypes.func.isRequired,
-    enableMeasurementTools:  React.PropTypes.bool,
-    forestAlerts: React.PropTypes.object,
-    forestLoss: React.PropTypes.object
+    show: PropTypes.bool,
+    gpxLink: PropTypes.string,
+    onChangeBaseMap:  PropTypes.func.isRequired,
+    toggleMeasurementTools:  PropTypes.func.isRequired,
+    toggleForestAlerts: PropTypes.func.isRequired,
+    toggleForestLoss: PropTypes.func.isRequired,
+    calculateForestAlerts: PropTypes.func.isRequired,
+    enableMeasurementTools:  PropTypes.bool,
+    forestAlerts: PropTypes.object,
+    forestLoss: PropTypes.object
   },
 
   getDefaultProps(){

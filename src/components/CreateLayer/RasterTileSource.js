@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -13,8 +14,6 @@ var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
 
-var classNames = require('classnames');
-
 var RasterTileSource = React.createClass({
 
   mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
@@ -24,9 +23,9 @@ var RasterTileSource = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,   
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,   
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

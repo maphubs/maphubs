@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -18,9 +19,9 @@ var PasswordReset = React.createClass({
   },
 
   propTypes: {
-    passreset: React.PropTypes.string.isRequired,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    passreset: PropTypes.string.isRequired,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   onSave(){

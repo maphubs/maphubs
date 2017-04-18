@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var slug = require('slug');
 
 var urlUtil = require('../../services/url-util');
@@ -20,8 +21,8 @@ var StorySummary = React.createClass({
   },
 
   propTypes: {
-    story: React.PropTypes.object.isRequired,
-    baseUrl: React.PropTypes.string
+    story: PropTypes.object.isRequired,
+    baseUrl: PropTypes.string
   },
 
   getDefaultProps(){

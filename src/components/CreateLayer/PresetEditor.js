@@ -1,5 +1,6 @@
 
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var PresetForm = require('./PresetForm');
 
@@ -21,9 +22,9 @@ var PresetEditor = React.createClass({
   },
 
   propTypes: {
-    onValid: React.PropTypes.func,
-    onInvalid: React.PropTypes.func,
-    warnIfUnsaved: React.PropTypes.bool
+    onValid: PropTypes.func,
+    onInvalid: PropTypes.func,
+    warnIfUnsaved: PropTypes.bool
   },
 
   getDefaultProps(){

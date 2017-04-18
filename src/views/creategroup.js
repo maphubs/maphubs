@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 
@@ -20,7 +21,7 @@ var CreateGroup = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

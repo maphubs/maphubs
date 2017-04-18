@@ -1,13 +1,14 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var SubPageBanner = React.createClass({
 
 propTypes: {
-  title: React.PropTypes.string.isRequired,
-  subTitle: React.PropTypes.string,
-  img: React.PropTypes.string,
-  backgroundPosition: React.PropTypes.string,
-  locale: React.PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  subTitle: PropTypes.string,
+  img: PropTypes.string,
+  backgroundPosition: PropTypes.string,
+  locale: PropTypes.string.isRequired
 },
 
 getDefaultProps() {

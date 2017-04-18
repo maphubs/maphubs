@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -26,11 +27,11 @@ var Groups = React.createClass({
   },
 
   propTypes: {
-    featuredGroups: React.PropTypes.array,
-    recentGroups: React.PropTypes.array,
-    popularGroups: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    featuredGroups: PropTypes.array,
+    recentGroups: PropTypes.array,
+    popularGroups: PropTypes.array,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

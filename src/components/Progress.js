@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import {Modal, ModalContent} from './Modal/Modal';
 
@@ -8,12 +9,12 @@ var Progress = React.createClass({
   displayName: 'Progress',
 
   propTypes: {
-    id: React.PropTypes.string,
-    message: React.PropTypes.string,
-    onClose: React.PropTypes.func,
-    show: React.PropTypes.bool,
-    title: React.PropTypes.string,
-    subTitle: React.PropTypes.string
+    id: PropTypes.string,
+    message: PropTypes.string,
+    onClose: PropTypes.func,
+    show: PropTypes.bool,
+    title: PropTypes.string,
+    subTitle: PropTypes.string
   },
 
   getDefaultProps() {

@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var urlUtil = require('../services/url-util');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -15,10 +16,10 @@ var OAuthDialog = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired,
-    user: React.PropTypes.string,
-    client: React.PropTypes.string,
-    transactionID: React.PropTypes.string
+    locale: PropTypes.string.isRequired,
+    user: PropTypes.string,
+    client: PropTypes.string,
+    transactionID: PropTypes.string
   },
 
   getDefaultProps() {

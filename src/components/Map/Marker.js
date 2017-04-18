@@ -1,22 +1,23 @@
 // @flow
 //Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Marker = React.createClass({
 
   propTypes:  {
-    shape: React.PropTypes.string,
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    shapeFill: React.PropTypes.string,
-    shapeFillOpacity: React.PropTypes.number,
-    shapeStroke: React.PropTypes.string,
-    shapeStrokeWidth: React.PropTypes.number,
-    icon:  React.PropTypes.string,
-    iconFill: React.PropTypes.string,
-    iconFillOpacity: React.PropTypes.number,
-    iconStroke: React.PropTypes.string,
-    iconStrokeWidth: React.PropTypes.number
+    shape: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    shapeFill: PropTypes.string,
+    shapeFillOpacity: PropTypes.number,
+    shapeStroke: PropTypes.string,
+    shapeStrokeWidth: PropTypes.number,
+    icon:  PropTypes.string,
+    iconFill: PropTypes.string,
+    iconFillOpacity: PropTypes.number,
+    iconStroke: PropTypes.string,
+    iconStrokeWidth: PropTypes.number
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var urlUtil = require('../../services/url-util');
 var UserMenu = require('../UserMenu');
@@ -24,8 +25,8 @@ var HubHav = React.createClass({
   },
 
   propTypes: {
-    hubid: React.PropTypes.string.isRequired,
-    canEdit: React.PropTypes.bool
+    hubid: PropTypes.string.isRequired,
+    canEdit: PropTypes.bool
   },
 
   getDefaultProps() {

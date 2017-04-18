@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Map = require('../components/Map/Map');
 var Header = require('../components/header');
@@ -53,12 +54,12 @@ var FeatureInfo = React.createClass({
   },
 
   propTypes: {
-    feature: React.PropTypes.object.isRequired,
-    notes: React.PropTypes.string,
-    photo: React.PropTypes.object,
-    layer: React.PropTypes.object,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    feature: PropTypes.object.isRequired,
+    notes: PropTypes.string,
+    photo: PropTypes.object,
+    layer: PropTypes.object,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired
   },
 
   getInitialState() {

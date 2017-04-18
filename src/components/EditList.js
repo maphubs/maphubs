@@ -1,13 +1,14 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var EditList = React.createClass({
 
   propTypes: {
-    title: React.PropTypes.string.isRequired,
-    items: React.PropTypes.array, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
-    onDelete: React.PropTypes.func.isRequired,
-    onAction: React.PropTypes.func,
-    onError: React.PropTypes.func
+    title: PropTypes.string.isRequired,
+    items: PropTypes.array, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
+    onDelete: PropTypes.func.isRequired,
+    onAction: PropTypes.func,
+    onError: PropTypes.func
   },
 
   getDefaultProps() {

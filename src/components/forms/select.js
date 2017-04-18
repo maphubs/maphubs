@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var find = require('lodash.find');
 var result = require('lodash.result');
@@ -12,21 +13,21 @@ var Select = React.createClass({
   mixins: [PureRenderMixin, Formsy.Mixin],
 
   propTypes:  {
-    emptyText: React.PropTypes.string,
-    defaultValue: React.PropTypes.string,
-    name: React.PropTypes.string,
-    className: React.PropTypes.string,
-    options: React.PropTypes.array,
-    dataTooltip: React.PropTypes.string,
-    dataDelay: React.PropTypes.number,
-    dataPosition: React.PropTypes.string,
-    label: React.PropTypes.string,
-    successText: React.PropTypes.string,
-    id: React.PropTypes.string,
-    onChange: React.PropTypes.func,
-    startEmpty: React.PropTypes.bool,
-    icon: React.PropTypes.string,
-    note: React.PropTypes.string //optional note that displays below the select, will be updated on selection if option contains a note
+    emptyText: PropTypes.string,
+    defaultValue: PropTypes.string,
+    name: PropTypes.string,
+    className: PropTypes.string,
+    options: PropTypes.array,
+    dataTooltip: PropTypes.string,
+    dataDelay: PropTypes.number,
+    dataPosition: PropTypes.string,
+    label: PropTypes.string,
+    successText: PropTypes.string,
+    id: PropTypes.string,
+    onChange: PropTypes.func,
+    startEmpty: PropTypes.bool,
+    icon: PropTypes.string,
+    note: PropTypes.string //optional note that displays below the select, will be updated on selection if option contains a note
   },
 
   getDefaultProps() {

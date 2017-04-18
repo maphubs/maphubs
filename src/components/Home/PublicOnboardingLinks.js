@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -10,7 +11,7 @@ var PublicOnboardingLinks = React.createClass({
   mixins:[StateMixin.connect(LocaleStore)],
 
   propTypes:  {
-    demo: React.PropTypes.bool
+    demo: PropTypes.bool
   },
 
   __(text){

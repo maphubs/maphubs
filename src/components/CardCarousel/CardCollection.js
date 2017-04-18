@@ -1,11 +1,12 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var CardCarousel = require('./CardCarousel');
 
 var CardRow = React.createClass({
 
   propTypes: {
-    cards: React.PropTypes.array.isRequired,
-    title: React.PropTypes.string
+    cards: PropTypes.array.isRequired,
+    title: PropTypes.string
   },
 
   getDefaultProps(){

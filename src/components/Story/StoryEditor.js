@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var slug = require('slug');
 var $ = require('jquery');
 var debounce = require('lodash.debounce');
@@ -31,12 +32,12 @@ var StoryEditor = React.createClass({
   },
 
   propTypes: {
-    story: React.PropTypes.object,
-    hub_id: React.PropTypes.string,
-    storyType: React.PropTypes.string,
-    username: React.PropTypes.string,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array
+    story: PropTypes.object,
+    hub_id: PropTypes.string,
+    storyType: PropTypes.string,
+    username: PropTypes.string,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array
   },
 
   getDefaultProps(): Object {

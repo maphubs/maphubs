@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var slug = require('slug');
 
@@ -33,10 +34,10 @@ var LayerAdmin = React.createClass({
   },
 
   propTypes: {
-		layer: React.PropTypes.object.isRequired,
-    groups: React.PropTypes.array.isRequired,
-    onSubmit: React.PropTypes.func,
-    locale: React.PropTypes.string.isRequired
+		layer: PropTypes.object.isRequired,
+    groups: PropTypes.array.isRequired,
+    onSubmit: PropTypes.func,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

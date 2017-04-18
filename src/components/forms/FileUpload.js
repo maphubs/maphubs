@@ -1,5 +1,6 @@
-var React = require('react');
+import React from 'react';
 var debug = require('../../services/debug')('FileUpload');
+import PropTypes from 'prop-types';
 
 import FileUploadProgress from 'react-fileupload-progress';
 
@@ -17,14 +18,14 @@ var File = React.createClass({
   },
 
   propTypes: {
-    action: React.PropTypes.string,
-    onUpload: React.PropTypes.func,
-    onChange: React.PropTypes.func,
-    onFinishTx: React.PropTypes.func,
-    onAbort: React.PropTypes.func,
-    onError: React.PropTypes.func,
-    inputStyle: React.PropTypes.object,
-    style: React.PropTypes.object
+    action: PropTypes.string,
+    onUpload: PropTypes.func,
+    onChange: PropTypes.func,
+    onFinishTx: PropTypes.func,
+    onAbort: PropTypes.func,
+    onError: PropTypes.func,
+    inputStyle: PropTypes.object,
+    style: PropTypes.object
   },
 
 

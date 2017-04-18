@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var AnimationActions = require('../../actions/map/AnimationActions');
 var Reflux = require('reflux');
@@ -8,7 +9,7 @@ var AnimationOverlay = React.createClass({
   mixins:[Reflux.listenTo(AnimationActions.tick, 'tick')],
 
   propTypes:  {
-    style: React.PropTypes.object.isRequired
+    style: PropTypes.object.isRequired
   },
 
   getDefaultProps() {

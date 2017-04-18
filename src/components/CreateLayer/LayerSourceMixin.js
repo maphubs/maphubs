@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 var UploadLocalSource = require('./UploadLocalSource');
 var EmptyLocalSource = require('./EmptyLocalSource');
 var MapboxSource = require('./MapboxSource');

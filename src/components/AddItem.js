@@ -1,5 +1,6 @@
-var React = require('react');
+import React from 'react';
 var ReactDOM = require('react-dom');
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var Promise = require('bluebird');
 var Formsy = require('formsy-react');
@@ -41,15 +42,15 @@ var AddItem = React.createClass({
   },
 
   propTypes: {
-    id: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    suggestionUrl: React.PropTypes.string,
-    onAdd: React.PropTypes.func.isRequired,
-    autosuggestDelay: React.PropTypes.number,
-    autoFocus: React.PropTypes.bool,
-    inputName: React.PropTypes.string,
-    optionLabel: React.PropTypes.string,
-    addButtonLabel: React.PropTypes.string
+    id: PropTypes.string,
+    placeholder: PropTypes.string,
+    suggestionUrl: PropTypes.string,
+    onAdd: PropTypes.func.isRequired,
+    autosuggestDelay: PropTypes.number,
+    autoFocus: PropTypes.bool,
+    inputName: PropTypes.string,
+    optionLabel: PropTypes.string,
+    addButtonLabel: PropTypes.string
   },
 
   getInitialState() {

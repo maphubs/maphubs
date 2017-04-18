@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../stores/LocaleStore');
@@ -13,11 +14,11 @@ var Footer = React.createClass({
   },
 
   propTypes:  {
-    copyrightText: React.PropTypes.string,
-    showPoweredByMapHubs: React.PropTypes.bool,
-    showMapForEnvironmentMoabiLogo: React.PropTypes.bool,
-    showContactUs: React.PropTypes.bool,
-    links: React.PropTypes.array
+    copyrightText: PropTypes.string,
+    showPoweredByMapHubs: PropTypes.bool,
+    showMapForEnvironmentMoabiLogo: PropTypes.bool,
+    showContactUs: PropTypes.bool,
+    links: PropTypes.array
   },
 
   getDefaultProps(){

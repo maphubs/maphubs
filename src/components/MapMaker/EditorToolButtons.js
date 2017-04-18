@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
@@ -20,7 +21,7 @@ var EditorToolButtons = React.createClass({
   },
 
   propTypes: {
-    stopEditingLayer: React.PropTypes.func.isRequired
+    stopEditingLayer: PropTypes.func.isRequired
   },
 
   getInitialState(): Object {

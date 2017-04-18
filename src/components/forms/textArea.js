@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var $ = require('jquery');
@@ -9,15 +10,15 @@ var TextArea = React.createClass({
   mixins: [PureRenderMixin, Formsy.Mixin],
 
   propTypes: {
-    length: React.PropTypes.number,
-    value: React.PropTypes.string,
-    icon: React.PropTypes.string,
-    className: React.PropTypes.string,
-    dataTooltip: React.PropTypes.string,
-    dataDelay: React.PropTypes.number,
-    dataPosition: React.PropTypes.string,
-    name: React.PropTypes.string,
-    label: React.PropTypes.string
+    length: PropTypes.number,
+    value: PropTypes.string,
+    icon: PropTypes.string,
+    className: PropTypes.string,
+    dataTooltip: PropTypes.string,
+    dataDelay: PropTypes.number,
+    dataPosition: PropTypes.string,
+    name: PropTypes.string,
+    label: PropTypes.string
   },
 
   getDefaultProps() {

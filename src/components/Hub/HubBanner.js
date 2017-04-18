@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import Editor from 'react-medium-editor';
 
@@ -24,9 +25,9 @@ var HubBanner = React.createClass({
   },
 
   propTypes: {
-    hubid: React.PropTypes.string.isRequired,
-    editing: React.PropTypes.bool,
-    subPage: React.PropTypes.bool
+    hubid: PropTypes.string.isRequired,
+    editing: PropTypes.bool,
+    subPage: PropTypes.bool
   },
 
   getDefaultProps(){

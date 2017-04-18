@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -25,9 +26,9 @@ var MapboxSource = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

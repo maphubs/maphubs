@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var GroupTag = require('../Groups/GroupTag');
 var Formsy = require('formsy-react');
@@ -20,21 +21,21 @@ var LayerListItemStatic = React.createClass({
   },
 
   propTypes:  {
-    id: React.PropTypes.number.isRequired,
-    item: React.PropTypes.object.isRequired,    
-    moveItem: React.PropTypes.func.isRequired,
-    showVisibility: React.PropTypes.bool,
-    showRemove: React.PropTypes.bool,
-    showDesign: React.PropTypes.bool,
-    showEdit: React.PropTypes.bool,
-    toggleVisibility: React.PropTypes.func,
-    removeFromMap: React.PropTypes.func,
-    showLayerDesigner: React.PropTypes.func,
-    editLayer: React.PropTypes.func,
-    isDragging: React.PropTypes.bool.isRequired,
-    connectDragSource: React.PropTypes.func.isRequired,
-    connectDropTarget: React.PropTypes.func.isRequired,
-    index: React.PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+    item: PropTypes.object.isRequired,    
+    moveItem: PropTypes.func,
+    showVisibility: PropTypes.bool,
+    showRemove: PropTypes.bool,
+    showDesign: PropTypes.bool,
+    showEdit: PropTypes.bool,
+    toggleVisibility: PropTypes.func,
+    removeFromMap: PropTypes.func,
+    showLayerDesigner: PropTypes.func,
+    editLayer: PropTypes.func,
+    isDragging: PropTypes.bool,
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    index: PropTypes.number.isRequired,
   },
 
   getDefaultProps(){

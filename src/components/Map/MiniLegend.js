@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var $ = require('jquery');
 var Reflux = require('reflux');
@@ -17,13 +18,13 @@ var MiniLegend = React.createClass({
   },
 
   propTypes:  {
-    title: React.PropTypes.string,
-    layers: React.PropTypes.array,
-    hideInactive: React.PropTypes.bool,
-    collapsible: React.PropTypes.bool,
-    collapseToBottom: React.PropTypes.bool,
-    showLayersButton: React.PropTypes.bool,
-    style: React.PropTypes.object
+    title: PropTypes.string,
+    layers: PropTypes.array,
+    hideInactive: PropTypes.bool,
+    collapsible: PropTypes.bool,
+    collapseToBottom: PropTypes.bool,
+    showLayersButton: PropTypes.bool,
+    style: PropTypes.object
   },
 
   getDefaultProps() {

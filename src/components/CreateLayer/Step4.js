@@ -1,4 +1,6 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
+
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var classNames = require('classnames');
@@ -25,10 +27,10 @@ var Step4 = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func,
-    active: React.PropTypes.bool.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func,
+    active: PropTypes.bool.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

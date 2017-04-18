@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var classNames = require('classnames');
 var slug = require('slug');
@@ -27,9 +28,9 @@ var CreateLayer = React.createClass({
   },
 
   propTypes: {
-		groups: React.PropTypes.array,
-    layer: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired
+		groups: PropTypes.array,
+    layer: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

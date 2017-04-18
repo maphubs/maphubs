@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -20,12 +21,12 @@ var UserHubs = React.createClass({
   },
 
   propTypes: {
-		draftHubs: React.PropTypes.array,
-    publishedHubs: React.PropTypes.array,
-    user: React.PropTypes.object,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+		draftHubs: PropTypes.array,
+    publishedHubs: PropTypes.array,
+    user: PropTypes.object,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

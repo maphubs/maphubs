@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var CodeEditor = require('./CodeEditor');
 var Reflux = require('reflux');
@@ -16,16 +17,16 @@ var OpacityChooser = React.createClass({
   },
 
   propTypes: {
-    onChange: React.PropTypes.func.isRequired,
-    value: React.PropTypes.number,
-    onStyleChange: React.PropTypes.func,
-    onLegendChange: React.PropTypes.func,
-    onSettingsChange: React.PropTypes.func,
-    style: React.PropTypes.object,
-    legendCode: React.PropTypes.string,
-    layer: React.PropTypes.object,
-    settings: React.PropTypes.object,
-    showAdvanced: React.PropTypes.bool
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.number,
+    onStyleChange: PropTypes.func,
+    onLegendChange: PropTypes.func,
+    onSettingsChange: PropTypes.func,
+    style: PropTypes.object,
+    legendCode: PropTypes.string,
+    layer: PropTypes.object,
+    settings: PropTypes.object,
+    showAdvanced: PropTypes.bool
   },
 
   getDefaultProps(){

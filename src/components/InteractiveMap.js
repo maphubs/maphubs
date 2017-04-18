@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
 var Map = require('./Map/Map');
@@ -24,18 +25,18 @@ var InteractiveMap = React.createClass({
   },
 
   propTypes: {
-    map_id: React.PropTypes.number.isRequired,
-    title: React.PropTypes.string.isRequired,
-    style: React.PropTypes.object.isRequired,
-    position: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array.isRequired,
-    height: React.PropTypes.string,
-    border: React.PropTypes.bool,
-    showLogo: React.PropTypes.bool,
-    disableScrollZoom: React.PropTypes.bool,
-    showTitle: React.PropTypes.bool,
-    categories: React.PropTypes.array,
-    children: React.PropTypes.any
+    map_id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    style: PropTypes.object.isRequired,
+    position: PropTypes.object.isRequired,
+    layers: PropTypes.array.isRequired,
+    height: PropTypes.string,
+    border: PropTypes.bool,
+    showLogo: PropTypes.bool,
+    disableScrollZoom: PropTypes.bool,
+    showTitle: PropTypes.bool,
+    categories: PropTypes.array,
+    children: PropTypes.any
   },
 
   getDefaultProps(){

@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var TextInput = require('../components/forms/textInput');
 var Header = require('../components/header');
@@ -23,8 +24,8 @@ var PasswordReset = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getInitialState(): Object{

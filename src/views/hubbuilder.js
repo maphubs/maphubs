@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 
@@ -31,10 +32,10 @@ var HubBuilder = React.createClass({
   },
 
    propTypes: {
-     onSubmit: React.PropTypes.func,
-     active: React.PropTypes.bool.isRequired,
-     groups: React.PropTypes.array,
-     locale: React.PropTypes.string.isRequired
+     onSubmit: PropTypes.func,
+     active: PropTypes.bool.isRequired,
+     groups: PropTypes.array,
+     locale: PropTypes.string.isRequired
    },
 
    getDefaultProps() {

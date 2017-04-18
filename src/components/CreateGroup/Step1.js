@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var $ = require('jquery');
 var TextArea = require('../forms/textArea');
@@ -25,8 +26,8 @@ var CreateGroupStep1 = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func,
-    active: React.PropTypes.bool.isRequired
+    onSubmit: PropTypes.func,
+    active: PropTypes.bool.isRequired
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -18,8 +19,8 @@ var FormField = React.createClass({
   },
 
   propTypes: {
-		preset: React.PropTypes.object.isRequired,
-    value: React.PropTypes.any
+		preset: PropTypes.object.isRequired,
+    value: PropTypes.any
   },
 
   render() {

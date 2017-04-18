@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var FileUpload = require('../forms/FileUpload');
@@ -18,11 +19,11 @@ var DataUpload= React.createClass({
   },
 
   propTypes: {
-    layerId: React.PropTypes.string,
-    className: React.PropTypes.string,
-    dataTooltip: React.PropTypes.string,
-    dataDelay: React.PropTypes.number,
-    dataPosition: React.PropTypes.string
+    layerId: PropTypes.string,
+    className: PropTypes.string,
+    dataTooltip: PropTypes.string,
+    dataDelay: PropTypes.number,
+    dataPosition: PropTypes.string
   },
 
   getInitialState() {

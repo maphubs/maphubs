@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 var Formsy = require('formsy-react');
 var TextInput = require('../forms/textInput');
 

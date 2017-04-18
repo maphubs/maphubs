@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -18,11 +19,11 @@ var UserStories = React.createClass({
   },
 
   propTypes: {
-		stories: React.PropTypes.array,
-    myStories: React.PropTypes.bool,
-    username: React.PropTypes.string.isRequired,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+		stories: PropTypes.array,
+    myStories: PropTypes.bool,
+    username: PropTypes.string.isRequired,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

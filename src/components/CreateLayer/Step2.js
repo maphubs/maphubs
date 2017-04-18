@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var LayerSettings = require('./LayerSettings');
 var LayerActions = require('../../actions/LayerActions');
 var PresetActions = require('../../actions/presetActions');
@@ -15,8 +16,8 @@ var Step2 = React.createClass({
   mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore), LocaleMixin],
 
   propTypes: {
-		groups: React.PropTypes.array,
-    onSubmit: React.PropTypes.func
+		groups: PropTypes.array,
+    onSubmit: PropTypes.func
   },
 
   getDefaultProps() {

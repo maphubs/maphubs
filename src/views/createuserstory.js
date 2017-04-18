@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header = require('../components/header');
 var StoryEditor = require('../components/Story/StoryEditor');
 
@@ -16,11 +17,11 @@ var CreateUserStory = React.createClass({
   },
 
   propTypes: {
-    story_id: React.PropTypes.number.isRequired,
-    username: React.PropTypes.string.isRequired,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    story_id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array,
+    locale: PropTypes.string.isRequired
   },
 
   render() {

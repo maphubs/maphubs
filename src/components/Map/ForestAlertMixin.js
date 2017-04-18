@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 var _area = require('@turf/area');
 
 var ForestAlertMixin = {

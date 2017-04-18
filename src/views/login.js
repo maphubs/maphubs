@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var TextInput = require('../components/forms/textInput');
 var Notification = require('../components/Notification');
@@ -22,10 +23,10 @@ var Login = React.createClass({
   },
 
   propTypes: {
-    name: React.PropTypes.string,
-    failed: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired,
-    showSignup: React.PropTypes.bool
+    name: PropTypes.string,
+    failed: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
+    showSignup: PropTypes.bool
   },
 
   getDefaultProps() {

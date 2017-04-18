@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var $ = require('jquery');
 var Header = require('../components/header');
@@ -19,8 +20,8 @@ var UserSettings = React.createClass({
   },
 
   propTypes: {
-    user: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired
+    user: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired
   },
 
   componentDidMount(){

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Formsy = require('formsy-react');
 var FormField =require('./FormField');
@@ -18,14 +19,14 @@ var DataCollectionForm = React.createClass({
 
 
   propTypes: {
-		presets: React.PropTypes.array.isRequired,
-    values: React.PropTypes.object,
-    showSubmit: React.PropTypes.bool,
-    onSubmit: React.PropTypes.func,
-    onValid: React.PropTypes.func,
-    onInValid: React.PropTypes.func,
-    onChange:  React.PropTypes.func,
-    submitText: React.PropTypes.string
+		presets: PropTypes.array.isRequired,
+    values: PropTypes.object,
+    showSubmit: PropTypes.bool,
+    onSubmit: PropTypes.func,
+    onValid: PropTypes.func,
+    onInValid: PropTypes.func,
+    onChange:  PropTypes.func,
+    submitText: PropTypes.string
   },
 
   getDefaultProps(){

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Map = require('../components/Map/Map');
 var MiniLegend = require('../components/Map/MiniLegend');
@@ -61,13 +62,13 @@ var LayerInfo = React.createClass({
   },
 
   propTypes: {
-		layer: React.PropTypes.object.isRequired,
-    notes: React.PropTypes.string,
-    stats: React.PropTypes.object,
-    canEdit: React.PropTypes.bool,
-    createdByUser: React.PropTypes.object.isRequired,
-    updatedByUser: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired
+		layer: PropTypes.object.isRequired,
+    notes: PropTypes.string,
+    stats: PropTypes.object,
+    canEdit: PropTypes.bool,
+    createdByUser: PropTypes.object.isRequired,
+    updatedByUser: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps(){

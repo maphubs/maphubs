@@ -1,5 +1,5 @@
-var React = require('react');
-var classNames = require('classnames');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var NotificationActions = require('../../actions/NotificationActions');
 
@@ -17,9 +17,9 @@ var Step1 = React.createClass({
   mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
@@ -8,15 +9,15 @@ var Radio= React.createClass({
   mixins: [PureRenderMixin,Formsy.Mixin],
 
   propTypes: {
-    className: React.PropTypes.string,
-    dataTooltip: React.PropTypes.string,
-    dataDelay: React.PropTypes.number,
-    dataPosition: React.PropTypes.string,
-    defaultValue: React.PropTypes.string,
-    label: React.PropTypes.string,
-    name: React.PropTypes.string,
-    onChange: React.PropTypes.func,
-    options: React.PropTypes.array
+    className: PropTypes.string,
+    dataTooltip: PropTypes.string,
+    dataDelay: PropTypes.number,
+    dataPosition: PropTypes.string,
+    defaultValue: PropTypes.string,
+    label: PropTypes.string,
+    name: PropTypes.string,
+    onChange: PropTypes.func,
+    options: PropTypes.array
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import Editor from 'react-medium-editor';
 
@@ -19,7 +20,7 @@ var HubResources = React.createClass({
   },
 
   propTypes: {
-    editing: React.PropTypes.bool
+    editing: PropTypes.bool
   },
 
   getDefaultProps(){

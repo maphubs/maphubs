@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 var LayerActions = require('../../actions/LayerActions');
 var LayerStore = require('../../stores/layer-store');
 var Reflux = require('reflux');

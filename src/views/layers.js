@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -26,11 +27,11 @@ var Layers = React.createClass({
   },
 
   propTypes: {
-    featuredLayers: React.PropTypes.array,
-    recentLayers: React.PropTypes.array,
-    popularLayers: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    featuredLayers: PropTypes.array,
+    recentLayers: PropTypes.array,
+    popularLayers: PropTypes.array,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 var LayerListItemStatic = require('./LayerListItemStatic');
 var _isEqual = require('lodash.isequal');
@@ -7,17 +8,17 @@ var LayerListStatic = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes:  {
-    layers:  React.PropTypes.array,
-    showVisibility: React.PropTypes.bool,
-    showDesign: React.PropTypes.bool,
-    showRemove: React.PropTypes.bool,
-    showEdit: React.PropTypes.bool,
-    showChangeDesign: React.PropTypes.bool,
-    toggleVisibility: React.PropTypes.func,
-    removeFromMap: React.PropTypes.func,
-    showLayerDesigner: React.PropTypes.func,
-    updateLayers: React.PropTypes.func.isRequired,
-    editLayer: React.PropTypes.func
+    layers:  PropTypes.array,
+    showVisibility: PropTypes.bool,
+    showDesign: PropTypes.bool,
+    showRemove: PropTypes.bool,
+    showEdit: PropTypes.bool,
+    showChangeDesign: PropTypes.bool,
+    toggleVisibility: PropTypes.func,
+    removeFromMap: PropTypes.func,
+    showLayerDesigner: PropTypes.func,
+    updateLayers: PropTypes.func,
+    editLayer: PropTypes.func
   },
 
   getDefaultProps() {

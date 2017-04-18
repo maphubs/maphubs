@@ -1,5 +1,6 @@
 
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
@@ -25,13 +26,13 @@ var LayerSource = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func,
-    onValid: React.PropTypes.func,
-    onInValid: React.PropTypes.func,
-    showPrev: React.PropTypes.bool,
-    prevText: React.PropTypes.string,
-    onPrev: React.PropTypes.func,
-    submitText: React.PropTypes.string
+    onSubmit: PropTypes.func,
+    onValid: PropTypes.func,
+    onInValid: PropTypes.func,
+    showPrev: PropTypes.bool,
+    prevText: PropTypes.string,
+    onPrev: PropTypes.func,
+    submitText: PropTypes.string
   },
 
   getDefaultProps() {

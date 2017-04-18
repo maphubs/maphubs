@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Radio = require('../forms/radio');
 var Formsy = require('formsy-react');
 //var Actions = require('../../actions/map/BaseMapActions');
@@ -19,7 +20,7 @@ var BaseMapSelection = React.createClass({
   },
 
   propTypes: {
-    onChange: React.PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired
   },
 
   onChange(val){

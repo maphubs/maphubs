@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var HubNav = require('../components/Hub/HubNav');
 var HubBanner = require('../components/Hub/HubBanner');
 var StoryEditor = require('../components/Story/StoryEditor');
@@ -23,11 +24,11 @@ var CreateHubStory = React.createClass({
   },
 
   propTypes: {
-    story_id: React.PropTypes.number.isRequired,
-    hub: React.PropTypes.object.isRequired,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+    story_id: PropTypes.number.isRequired,
+    hub: PropTypes.object.isRequired,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

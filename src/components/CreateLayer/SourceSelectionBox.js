@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -10,11 +11,11 @@ var SourceSelectionBox = React.createClass({
    mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
 
   propTypes: {
-    onSelect: React.PropTypes.func.isRequired,
-    name: React.PropTypes.string.isRequired,
-    value: React.PropTypes.string.isRequired,
-    icon: React.PropTypes.string,
-    selected: React.PropTypes.bool
+    onSelect: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    icon: PropTypes.string,
+    selected: PropTypes.bool
   },
 
   getDefaultProps(){

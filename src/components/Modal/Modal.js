@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var classNames = require('classnames');
 
@@ -12,9 +13,9 @@ var classNames = require('classnames');
 
 var ModalContent = React.createClass({
   propTypes:  {
-    className: React.PropTypes.string,
-    style:  React.PropTypes.object,
-    children: React.PropTypes.any
+    className: PropTypes.string,
+    style:  PropTypes.object,
+    children: PropTypes.any
   },
 
   getDefaultProps() {
@@ -35,8 +36,8 @@ var ModalContent = React.createClass({
 
 var ModalFooter = React.createClass({
   propTypes:  {
-    className: React.PropTypes.string,
-    children: React.PropTypes.any
+    className: PropTypes.string,
+    children: PropTypes.any
   },
   render(){
       var className = classNames('modal-footer', this.props.className);
@@ -51,17 +52,17 @@ var ModalFooter = React.createClass({
 var Modal = React.createClass({
 
   propTypes:  {
-    id: React.PropTypes.string,
-    show: React.PropTypes.bool.isRequired,
-    className: React.PropTypes.string, //additional classname to apply to model
-    fixedFooter: React.PropTypes.bool,
-    dismissible: React.PropTypes.bool,
-    in_duration: React.PropTypes.number,
-    out_duration: React.PropTypes.number,
-    opacity: React.PropTypes.number,
-    ready: React.PropTypes.func,
-    complete: React.PropTypes.func,
-    children: React.PropTypes.any
+    id: PropTypes.string,
+    show: PropTypes.bool.isRequired,
+    className: PropTypes.string, //additional classname to apply to model
+    fixedFooter: PropTypes.bool,
+    dismissible: PropTypes.bool,
+    in_duration: PropTypes.number,
+    out_duration: PropTypes.number,
+    opacity: PropTypes.number,
+    ready: PropTypes.func,
+    complete: PropTypes.func,
+    children: PropTypes.any
   },
 
   getDefaultProps() {

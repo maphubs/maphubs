@@ -13,7 +13,7 @@
  1) Assumes there is a client js file with the same name as the view in for examples client/login.js
  2) Assumes that the client will load its data out of window.__appData and use the query selector id="app"
  */
-var React = require('react');
+import React from 'react';
 var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
 var log = require('./log');

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var classNames = require('classnames');
 var $ = require('jquery');
@@ -9,24 +10,24 @@ var TextInput= React.createClass({
   mixins: [PureRenderMixin, Formsy.Mixin],
 
   propTypes: {
-    value: React.PropTypes.string,
-    length: React.PropTypes.number,
-    successText: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    icon: React.PropTypes.string,
-    className: React.PropTypes.string,
-    dataTooltip: React.PropTypes.string,
-    dataDelay: React.PropTypes.number,
-    dataPosition: React.PropTypes.string,
-    name: React.PropTypes.string,
-    label: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    id: React.PropTypes.string,
-    type: React.PropTypes.string,
-    style: React.PropTypes.object,
-    showCharCount: React.PropTypes.bool,
-    useMaterialize: React.PropTypes.bool,
-    onClick: React.PropTypes.func
+    value: PropTypes.string,
+    length: PropTypes.number,
+    successText: PropTypes.string,
+    disabled: PropTypes.bool,
+    icon: PropTypes.string,
+    className: PropTypes.string,
+    dataTooltip: PropTypes.string,
+    dataDelay: PropTypes.number,
+    dataPosition: PropTypes.string,
+    name: PropTypes.string,
+    label: PropTypes.string,
+    placeholder: PropTypes.string,
+    id: PropTypes.string,
+    type: PropTypes.string,
+    style: PropTypes.object,
+    showCharCount: PropTypes.bool,
+    useMaterialize: PropTypes.bool,
+    onClick: PropTypes.func
   },
 
   getDefaultProps() {

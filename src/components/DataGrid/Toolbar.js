@@ -1,15 +1,16 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 
 const Toolbar = React.createClass({
   propTypes: {
-    onAddRow: React.PropTypes.func,
-    onToggleFilter: React.PropTypes.func,
-    onToggleFilterCallback: React.PropTypes.func,
-    enableFilter: React.PropTypes.bool,
-    numberOfRows: React.PropTypes.number,
-    filterButtonText: React.PropTypes.string,
-    viewFeatureButtonText: React.PropTypes.string,
-    onViewFeatureCallback: React.PropTypes.func
+    onAddRow: PropTypes.func,
+    onToggleFilter: PropTypes.func,
+    onToggleFilterCallback: PropTypes.func,
+    enableFilter: PropTypes.bool,
+    numberOfRows: PropTypes.number,
+    filterButtonText: PropTypes.string,
+    viewFeatureButtonText: PropTypes.string,
+    onViewFeatureCallback: PropTypes.func
   },
 
   onAddRow() {

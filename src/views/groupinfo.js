@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
@@ -18,13 +19,13 @@ var GroupInfo = React.createClass({
   },
 
   propTypes: {
-    group: React.PropTypes.object,
-    maps: React.PropTypes.array,
-    layers: React.PropTypes.array,
-    hubs: React.PropTypes.array,
-    members: React.PropTypes.array,
-    canEdit: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired
+    group: PropTypes.object,
+    maps: PropTypes.array,
+    layers: PropTypes.array,
+    hubs: PropTypes.array,
+    members: PropTypes.array,
+    canEdit: PropTypes.bool,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

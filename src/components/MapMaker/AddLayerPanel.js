@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var SearchBox = require('../SearchBox');
 var CardCarousel = require('../CardCarousel/CardCarousel');
@@ -25,9 +26,9 @@ var AddLayerPanel = React.createClass({
   },
 
   propTypes:  {
-    myLayers: React.PropTypes.array,
-    popularLayers: React.PropTypes.array,
-    onAdd: React.PropTypes.func.isRequired
+    myLayers: PropTypes.array,
+    popularLayers: PropTypes.array,
+    onAdd: PropTypes.func.isRequired
   },
 
   getInitialState(){

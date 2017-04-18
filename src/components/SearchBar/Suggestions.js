@@ -7,6 +7,7 @@ Modified to support MaterializeCSS and other customizations
 */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 export default React.createClass({
@@ -18,8 +19,8 @@ export default React.createClass({
     }
   },
   propTypes: {
-    suggestions: React.PropTypes.array,
-    highlightedItem: React.PropTypes.number
+    suggestions: PropTypes.array,
+    highlightedItem: PropTypes.number
   },
   render() {
     let suggestions = this.props.suggestions.map((match, index) =>

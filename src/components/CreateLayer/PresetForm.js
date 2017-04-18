@@ -1,5 +1,6 @@
 
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var TextArea = require('../forms/textArea');
 var TextInput = require('../forms/textInput');
@@ -22,15 +23,15 @@ var PresetForm = React.createClass({
   },
 
   propTypes: {
-    id: React.PropTypes.number,
-		tag: React.PropTypes.string,
-    label: React.PropTypes.string,
-    type: React.PropTypes.string,
-    options: React.PropTypes.array, //if type requires a list of options
-    isRequired: React.PropTypes.bool,
-    showOnMap: React.PropTypes.bool,
-    onValid: React.PropTypes.func,
-    onInvalid: React.PropTypes.func
+    id: PropTypes.number,
+		tag: PropTypes.string,
+    label: PropTypes.string,
+    type: PropTypes.string,
+    options: PropTypes.array, //if type requires a list of options
+    isRequired: PropTypes.bool,
+    showOnMap: PropTypes.bool,
+    onValid: PropTypes.func,
+    onInvalid: PropTypes.func
 
   },
 

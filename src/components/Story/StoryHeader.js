@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var urlUtil = require('../../services/url-util');
 
@@ -29,9 +30,9 @@ var StoryHeader = React.createClass({
   },
 
   propTypes: {
-    story: React.PropTypes.object.isRequired,
-    baseUrl: React.PropTypes.string,
-    short:  React.PropTypes.bool
+    story: PropTypes.object.isRequired,
+    baseUrl: PropTypes.string,
+    short:  PropTypes.bool
   },
 
   getDefaultProps(){

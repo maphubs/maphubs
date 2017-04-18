@@ -1,11 +1,12 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var OAuth2Dialog = React.createClass({
 
   propTypes: {
-    user: React.PropTypes.string,
-    client: React.PropTypes.string,
-    transactionID: React.PropTypes.string
+    user: PropTypes.string,
+    client: PropTypes.string,
+    transactionID: PropTypes.string
   },
 
   getDefaultProps() {

@@ -1,5 +1,5 @@
-
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 //var $ = require('jquery');
 var Reflux = require('reflux');
@@ -25,9 +25,9 @@ var AGOLSource = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func
   },
 
   getDefaultProps() {

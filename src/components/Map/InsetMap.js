@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 var _centroid = require('@turf/centroid');
@@ -13,10 +14,10 @@ if (typeof window !== 'undefined') {
 var InsetMap = React.createClass({
 
   propTypes: {
-    id: React.PropTypes.string,
-    bottom:  React.PropTypes.string,
-    attributionControl: React.PropTypes.bool,
-    collapsed: React.PropTypes.bool
+    id: PropTypes.string,
+    bottom:  PropTypes.string,
+    attributionControl: PropTypes.bool,
+    collapsed: PropTypes.bool
   },
 
   getDefaultProps(){

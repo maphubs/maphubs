@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -21,11 +22,11 @@ var UserMaps = React.createClass({
   },
 
   propTypes: {
-		maps: React.PropTypes.array,
-    user: React.PropTypes.object,
-    myMaps: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+		maps: PropTypes.array,
+    user: PropTypes.object,
+    myMaps: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

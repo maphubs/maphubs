@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var mapStyles = require('../Map/styles');
@@ -39,11 +40,11 @@ var LayerStyle = React.createClass({
   },
 
   propTypes: {
-    onSubmit: React.PropTypes.func,
-    showPrev: React.PropTypes.bool,
-    prevText: React.PropTypes.string,
-    onPrev: React.PropTypes.func,
-    waitForTileInit: React.PropTypes.bool
+    onSubmit: PropTypes.func,
+    showPrev: PropTypes.bool,
+    prevText: PropTypes.string,
+    onPrev: PropTypes.func,
+    waitForTileInit: PropTypes.bool
   },
 
 

@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var LayerDesigner = require('./LayerDesigner');
 var OpacityChooser = require('./OpacityChooser');
 var mapStyles = require('../Map/styles');
@@ -18,11 +19,11 @@ var MapLayerDesigner = React.createClass({
   },
 
   propTypes: {
-    id: React.PropTypes.string,
-    layer: React.PropTypes.object,
-    onStyleChange: React.PropTypes.func.isRequired,
-    onClose: React.PropTypes.func.isRequired,
-    showAdvanced: React.PropTypes.bool
+    id: PropTypes.string,
+    layer: PropTypes.object,
+    onStyleChange: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    showAdvanced: PropTypes.bool
   },
 
   getDefaultProps(){

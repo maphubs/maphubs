@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 //var $ = require('jquery');
 var isEmpty = require('lodash.isempty');
 
@@ -39,15 +40,15 @@ var HubInfo = React.createClass({
   },
 
   propTypes: {
-    hub: React.PropTypes.object,
-    map: React.PropTypes.object,
-    layers: React.PropTypes.array,
-    stories: React.PropTypes.array,
-    canEdit: React.PropTypes.bool,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    hub: PropTypes.object,
+    map: PropTypes.object,
+    layers: PropTypes.array,
+    stories: PropTypes.array,
+    canEdit: PropTypes.bool,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

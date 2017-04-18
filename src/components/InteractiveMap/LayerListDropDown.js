@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 var LayerListStatic = require('./LayerListStatic');
 var $ = require('jquery');
@@ -7,10 +8,10 @@ var LayerListDropDown = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes:  {
-    id: React.PropTypes.string.isRequired,
-    name:  React.PropTypes.string.isRequired,
-    layers:  React.PropTypes.array.isRequired,
-    toggleVisibility: React.PropTypes.func.isRequired
+    id: PropTypes.string.isRequired,
+    name:  PropTypes.string.isRequired,
+    layers:  PropTypes.array.isRequired,
+    toggleVisibility: PropTypes.func.isRequired
   },
 
   componentDidMount() {

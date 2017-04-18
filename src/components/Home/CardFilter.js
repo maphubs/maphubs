@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -14,8 +15,8 @@ var CardFilter = React.createClass({
   },
 
   propTypes: {
-    defaultValue: React.PropTypes.string,
-    onChange: React.PropTypes.func.isRequired
+    defaultValue: PropTypes.string,
+    onChange: PropTypes.func.isRequired
   },
 
   getDefaultProps(){

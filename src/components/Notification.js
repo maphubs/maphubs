@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 import {Notification} from 'react-notification';
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);

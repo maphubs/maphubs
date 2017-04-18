@@ -1,13 +1,14 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var _isequal = require('lodash.isequal');
 
 var HubEditButton = React.createClass({
 
   propTypes: {
-    editing: React.PropTypes.bool.isRequired,
-    startEditing: React.PropTypes.func.isRequired,
-    stopEditing: React.PropTypes.func.isRequired,
-    style: React.PropTypes.object
+    editing: PropTypes.bool.isRequired,
+    startEditing: PropTypes.func.isRequired,
+    stopEditing: PropTypes.func.isRequired,
+    style: PropTypes.object
   },
 
   getDefaultProps(){

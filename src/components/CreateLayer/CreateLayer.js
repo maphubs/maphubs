@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Reflux = require('reflux');
 var StateMixin = require('reflux-state-mixin')(Reflux);
@@ -12,10 +13,10 @@ var CreateLayer = React.createClass({
    mixins:[StateMixin.connect(LocaleStore), LocaleMixin, LayerSourceMixin],
 
    propTypes: {
-    onSubmit: React.PropTypes.func.isRequired,
-    showPrev: React.PropTypes.bool,
-    onPrev: React.PropTypes.func,
-    onCancel: React.PropTypes.func
+    onSubmit: PropTypes.func.isRequired,
+    showPrev: PropTypes.bool,
+    onPrev: PropTypes.func,
+    onCancel: PropTypes.func
   },
 
    getInitialState() {

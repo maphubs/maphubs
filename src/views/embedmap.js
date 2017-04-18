@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var MiniLegend = require('../components/Map/MiniLegend');
 var Map = require('../components/Map/Map');
@@ -20,13 +21,13 @@ var EmbedMap = React.createClass({
   },
 
   propTypes: {
-    map: React.PropTypes.object.isRequired,
-    layers: React.PropTypes.array.isRequired,
-    isStatic: React.PropTypes.bool,
-    interactive: React.PropTypes.bool,
-    locale: React.PropTypes.string.isRequired,
-    geoJSONUrl: React.PropTypes.string,
-    markerColor: React.PropTypes.string
+    map: PropTypes.object.isRequired,
+    layers: PropTypes.array.isRequired,
+    isStatic: PropTypes.bool,
+    interactive: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
+    geoJSONUrl: PropTypes.string,
+    markerColor: PropTypes.string
   },
 
   getDefaultProps() {

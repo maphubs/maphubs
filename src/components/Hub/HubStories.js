@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var slug = require('slug');
 var StorySummary = require('../Story/StorySummary');
 
@@ -17,10 +18,10 @@ var HubStories = React.createClass({
   },
 
   propTypes: {
-    hub: React.PropTypes.object.isRequired,
-    stories: React.PropTypes.array,
-    limit: React.PropTypes.number,
-    editing: React.PropTypes.bool
+    hub: PropTypes.object.isRequired,
+    stories: PropTypes.array,
+    limit: PropTypes.number,
+    editing: PropTypes.bool
   },
   getDefaultProps() {
     return {

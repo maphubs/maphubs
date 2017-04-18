@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var $ = require('jquery');
 var ColorPicker = require('react-colorpickr');
 var ColorSwatch = require('./ColorSwatch');
@@ -22,19 +23,19 @@ var LayerDesigner = React.createClass({
   },
 
   propTypes: {
-    onColorChange: React.PropTypes.func,
-    onStyleChange: React.PropTypes.func,
-    onLabelsChange: React.PropTypes.func,
-    onMarkersChange: React.PropTypes.func,
-    onLegendChange: React.PropTypes.func,
-    onSettingsChange: React.PropTypes.func,
-    color: React.PropTypes.string,
-    style: React.PropTypes.object,
-    labels: React.PropTypes.object,
-    legendCode: React.PropTypes.string,
-    layer: React.PropTypes.object,
-    showAdvanced: React.PropTypes.bool,
-    settings: React.PropTypes.object,
+    onColorChange: PropTypes.func,
+    onStyleChange: PropTypes.func,
+    onLabelsChange: PropTypes.func,
+    onMarkersChange: PropTypes.func,
+    onLegendChange: PropTypes.func,
+    onSettingsChange: PropTypes.func,
+    color: PropTypes.string,
+    style: PropTypes.object,
+    labels: PropTypes.object,
+    legendCode: PropTypes.string,
+    layer: PropTypes.object,
+    showAdvanced: PropTypes.bool,
+    settings: PropTypes.object,
   },
 
   getDefaultProps(){

@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 //Attributions
 //Palm Oil by Stephanie Wauters from the Noun Project CC-BY 3.0 https://thenounproject.com/search/?q=palm+oil&i=15487

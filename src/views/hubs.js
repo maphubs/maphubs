@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Header = require('../components/header');
 var Footer = require('../components/footer');
 var SearchBox = require('../components/SearchBox');
@@ -28,12 +29,12 @@ var Hubs = React.createClass({
   },
 
   propTypes: {
-    featuredHubs: React.PropTypes.array,
-    popularHubs: React.PropTypes.array,
-    recentHubs: React.PropTypes.array,
-    allHubs:  React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired,
-    footerConfig: React.PropTypes.object
+    featuredHubs: PropTypes.array,
+    popularHubs: PropTypes.array,
+    recentHubs: PropTypes.array,
+    allHubs:  PropTypes.array,
+    locale: PropTypes.string.isRequired,
+    footerConfig: PropTypes.object
   },
 
   getDefaultProps() {

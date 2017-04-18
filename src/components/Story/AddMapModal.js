@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 import {Modal, ModalContent} from '../Modal/Modal.js';
 
 var Reflux = require('reflux');
@@ -25,10 +26,10 @@ var AddMapModal = React.createClass({
   },
 
   propTypes:  {
-    onAdd:  React.PropTypes.func,
-    onClose:  React.PropTypes.func,
-    myMaps: React.PropTypes.array,
-    popularMaps: React.PropTypes.array
+    onAdd:  PropTypes.func,
+    onClose:  PropTypes.func,
+    myMaps: PropTypes.array,
+    popularMaps: PropTypes.array
   },
 
   getDefaultProps(){

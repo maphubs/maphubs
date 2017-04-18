@@ -1,12 +1,13 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var ColorSwatch = React.createClass({
   mixins:[PureRenderMixin],
 
   propTypes: {
-   onClick: React.PropTypes.func.isRequired,
-   color: React.PropTypes.string.isRequired
+   onClick: PropTypes.func.isRequired,
+   color: PropTypes.string.isRequired
   },
 
   render(){

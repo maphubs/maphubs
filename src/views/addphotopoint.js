@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 
@@ -30,8 +31,8 @@ var AddPhotoPoint = React.createClass({
   },
 
   propTypes: {
-		layer: React.PropTypes.object.isRequired,
-    locale: React.PropTypes.string.isRequired
+		layer: PropTypes.object.isRequired,
+    locale: PropTypes.string.isRequired
   },
 
   getInitialState(): Object{

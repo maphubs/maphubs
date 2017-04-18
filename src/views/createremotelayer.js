@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var slug = require('slug');
 var request = require('superagent');
@@ -25,8 +26,8 @@ var CreateRemoteLayer = React.createClass({
   },
 
   propTypes: {
-		groups: React.PropTypes.array,
-    locale: React.PropTypes.string.isRequired
+		groups: PropTypes.array,
+    locale: PropTypes.string.isRequired
   },
 
   getDefaultProps() {

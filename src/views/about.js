@@ -1,5 +1,6 @@
 // @flow
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var Header = require('../components/header');
 var Footer = require('../components/footer');
@@ -20,9 +21,9 @@ var About = React.createClass({
   },
 
   propTypes: {
-    locale: React.PropTypes.string.isRequired,
-    version: React.PropTypes.string,
-    footerConfig: React.PropTypes.object
+    locale: PropTypes.string.isRequired,
+    version: PropTypes.string,
+    footerConfig: PropTypes.object
   },
 
   render() {

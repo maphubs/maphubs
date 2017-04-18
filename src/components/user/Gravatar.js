@@ -1,13 +1,14 @@
-var React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
 var crypto = require('crypto');
 
 var Gravatar = React.createClass({
 
   propTypes:  {
-    email: React.PropTypes.string,
-    emailHash: React.PropTypes.string,
-    size: React.PropTypes.number
+    email: PropTypes.string,
+    emailHash: PropTypes.string,
+    size: PropTypes.number
   },
 
   getDefaultProps(){
