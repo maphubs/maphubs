@@ -7,7 +7,6 @@ var Header = require('../components/header');
 var slug = require('slug');
 var styles = require('../components/Map/styles');
 var $ = require('jquery');
-var _map = require('lodash.map');
 var _find = require('lodash.find');
 var ReactDisqusThread = require('react-disqus-thread');
 var urlUtil = require('../services/url-util');
@@ -27,6 +26,7 @@ var LayerNotes = require('../components/CreateLayer/LayerNotes');
 var HubEditButton = require('../components/Hub/HubEditButton');
 var LayerNotesActions = require('../actions/LayerNotesActions');
 var LayerNotesStore = require('../stores/LayerNotesStore');
+var LayerDataGrid = require('../components/DataGrid/LayerDataGrid');
 
 var moment = require('moment-timezone');
 var clipboard;
@@ -80,12 +80,9 @@ var LayerInfo = React.createClass({
 
   getInitialState(){
     return {
-      geoJSON: null,
-      dataMsg: '',
+      editingNotes: false,
       gridHeight: 100,
-      gridWidth: 100,
-      gridHeightOffset: 48,
-      editingNotes: false
+      gridHeightOffset: 48
     };
   },
 
@@ -112,8 +109,8 @@ var LayerInfo = React.createClass({
         .end(function(err, res){
           checkClientError(res, err, cb, function(cb){
             var presets = res.body;
-            _this.processGeoJSON(geoJSON, presets);
-              cb();
+            _this.setState({geoJSON, presets});
+            cb();
           });
         });
         cb();
@@ -121,68 +118,7 @@ var LayerInfo = React.createClass({
     });
   },
 
-  processGeoJSON(geoJSON, presets=null){
-    var _this = this;
-    var originalRows = _map(geoJSON.features, 'properties');
-
-    var firstRow = originalRows[0];
-
-    var rowKey = 'mhid';
-    if(firstRow.mhid){
-      rowKey = 'mhid';
-    }
-    else if(firstRow.objectid){
-      rowKey = 'objectid';
-
-    } else if(firstRow.OBJECTID){
-      rowKey = 'OBJECTID';
-    }
-
-    var columns = [];
-    columns.push(
-      {
-        key: rowKey,
-        name: 'ID',
-        width : 120,
-        resizable: true,
-        sortable : true,
-        filterable: true
-      }
-    );
-    if(presets){
-      Object.keys(presets.fields).forEach(function(fieldsKey){
-        var field = presets.fields[fieldsKey];
-
-        columns.push(
-          {
-            key: field.key,
-            name: field.label,
-            width : 120,
-            resizable: true,
-            sortable : true,
-            filterable: true
-          }
-        );
-      });
-    }else{
-      Object.keys(firstRow).forEach(function(key){
-        columns.push(
-          {
-            key,
-            name: key,
-            width : 120,
-            resizable: true,
-            sortable : true,
-            filterable: true
-          }
-        );
-      });
-    }
-
-    var rows = originalRows.slice(0);
-
-    _this.setState({geoJSON, originalRows, columns, rowKey, rows, filters : {}});
-  },
+  
 
 
   componentDidMount(){
@@ -251,10 +187,17 @@ var LayerInfo = React.createClass({
 
   },
 
-  onToggleFilter(){
-    //var _this = this;
-    //var gridHeight = $(this.refs.dataTabContent).height() - _this.state.gridHeightOffset - 45;
-    //this.setState({gridHeight, userResize: false});
+  onRowSelected(idVal, idField){
+    var _this = this;
+    if(this.state.geoJSON){
+      this.state.geoJSON.features.forEach(function(feature){
+        if(idVal === feature.properties[idField]){
+          var bbox = require('@turf/bbox')(feature);
+          _this.refs.map.fitBounds(bbox, 16, 25);
+          return;
+        }
+      });
+    }
   },
 
   //Build iD edit link
@@ -270,103 +213,6 @@ var LayerInfo = React.createClass({
   openEditor(){
     var editLink = this.getEditLink();
     window.location = editLink;
-  },
-
-  onRowSelect(rows){
-    var _this = this;
-    if(!rows || rows.length == 0){
-      return;
-    }
-    var row = rows[0];
-    var idField = this.state.rowKey;
-    var idVal = row[idField];
-
-    if(this.state.geoJSON){
-      this.state.geoJSON.features.forEach(function(feature){
-        if(idVal === feature.properties[idField]){
-          var bbox = require('@turf/bbox')(feature);
-          _this.refs.map.fitBounds(bbox, 16, 25);
-          return;
-        }
-      });
-    }
-    this.setState({selectedRows: rows});
-  },
-
-  onViewSelectedFeature(){
-    if(!this.state.selectedRows || this.state.selectedRows.length == 0){
-      return;
-    }
-    var row = this.state.selectedRows[0];
-    var idField = this.state.rowKey;
-    var idVal = row[idField];
-
-    var featureName = 'unknown';
-    var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-    nameFields.forEach(function(name){
-      if(featureName == 'unknown' && row[name]){
-        featureName = row[name];
-      }
-    });
-    var url = '/feature/' + this.props.layer.layer_id + '/' + idVal + '/' + featureName;
-    window.location = url;
-  },
-
-  rowGetter(rowIdx){
-    return this.state.rows[rowIdx];
-  },
-
-  handleGridSort(sortColumn, sortDirection){
-
-    var comparer = function(a, b) {
-      if(sortDirection === 'ASC'){
-        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
-      }else if(sortDirection === 'DESC'){
-        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
-      }
-    };
-
-    var rows;
-
-    if (sortDirection === 'NONE') {
-      var originalRows = this.state.originalRows;
-      rows = this.filterRows(originalRows, this.state.filters);
-    } else {
-      rows = this.state.rows.sort(comparer);
-    }
-
-    this.setState({rows});
-  },
-
-  filterRows(originalRows, filters) {
-    var rows = originalRows.filter(function(r){
-      var include = true;
-      for (var columnKey in filters) {
-        if(filters.hasOwnProperty(columnKey)) {
-          var rowValue = null;
-          if(r[columnKey]){
-            rowValue = r[columnKey].toString().toLowerCase();
-            if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
-              include = false;
-            }
-          }
-        }
-      }
-      return include;
-    });
-    return rows;
-  },
-
-  handleFilterChange(filter){
-    this.setState(function(currentState) {
-      if (filter.filterTerm) {
-        currentState.filters[filter.columnKey] = filter.filterTerm;
-      } else {
-        delete currentState.filters[filter.columnKey];
-      }
-      currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
-      return currentState;
-    });
   },
 
   handleNewComment(){
@@ -398,41 +244,6 @@ var LayerInfo = React.createClass({
 	render() {
     var _this = this;
     var glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.layer.data_type];
-
-    var dataTabContent = '';
-    if(this.state.originalRows && typeof window !== 'undefined'){
-      var ReactDataGrid = require('react-data-grid');
-      var ReactDataGridAddons = require('react-data-grid/addons');
-      var Toolbar = require('../components/DataGrid/Toolbar');
-
-       dataTabContent = (
-         <ReactDataGrid
-           ref="grid"
-           columns={this.state.columns}
-           rowKey={this.state.rowKey}
-            rowGetter={this.rowGetter}
-            rowsCount={this.state.rows.length}
-            minHeight={this.state.gridHeight}
-            onGridSort={this.handleGridSort}
-            enableRowSelect="single"
-            onRowSelect={this.onRowSelect}
-            toolbar={<Toolbar
-              enableFilter={true}
-              filterButtonText={this.__('Filter Data')}
-              onToggleFilterCallback={_this.onToggleFilter}
-              viewFeatureButtonText={this.__('View Selected Feature')}
-              onViewFeatureCallback={_this.onViewSelectedFeature}
-              />
-            }
-            onAddFilter={this.handleFilterChange}
-            />
-       );
-
-    }else {
-      dataTabContent = (
-        <div><h5>{this.state.dataMsg}</h5></div>
-      );
-    }
 
     var exportTabContent = '';
 
@@ -721,8 +532,8 @@ var LayerInfo = React.createClass({
                 {disqus}
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
-                <div className="row no-margin">
-                  {dataTabContent}
+                <div className="row no-margin">                
+                  <LayerDataGrid  layer_id={this.props.layer.layer_id} gridHeight={this.state.gridHeight} geoJSON={this.state.geoJSON} presets={this.state.presets} onRowSelected={this.onRowSelected} />
                 </div>
               </div>
               <div id="export" className="col s12" style={{display: tabContentDisplay}}>

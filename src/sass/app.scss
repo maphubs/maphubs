@@ -954,6 +954,13 @@ textarea.materialize-textarea+label:after {
  }
 }
 
+.react-grid-checkbox:checked+.react-grid-checkbox-label:before {
+  background: inherit !important;
+  box-shadow: none !important;
+}
+
+
+
 .griddle-container{
   border:1px solid #DDD;
 }
