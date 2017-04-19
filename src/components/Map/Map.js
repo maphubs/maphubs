@@ -458,7 +458,12 @@ var Map = React.createClass({
         //do nothing, still updating from the last prop change...
       }else {
         debug('(' + this.state.id + ') ' +'init geoJSON data');
-        this.initGeoJSON(this.map, nextProps.data);
+        if(this.state.mapLoaded){
+          this.initGeoJSON(this.map, nextProps.data);
+        }else{
+          debug(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
+        }
+        
       }
     }
 
