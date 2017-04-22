@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const UserMaps = require('../views/usermaps');
+import UserMaps from '../views/usermaps';
 
 require('babel-polyfill');
 require('jquery');

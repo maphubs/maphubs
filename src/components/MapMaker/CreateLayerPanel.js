@@ -1,17 +1,18 @@
+//@flow
 import React from 'react';
-var LayerActions = require('../../actions/LayerActions');
-var LayerStore = require('../../stores/layer-store');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var LocaleMixin = require('../LocaleMixin');
-var MessageActions = require('../../actions/MessageActions');
+import LayerActions from '../../actions/LayerActions';
+import LayerStore from '../../stores/layer-store';
+import MessageActions from '../../actions/MessageActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-var CreateLayerPanel = React.createClass({
+export default class CreateLayerPanel extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore), LocaleMixin],
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-  createEmptyLayer(){
+  createEmptyLayer = () => {
     var _this = this;
     LayerActions.createLayer(this.state._csrf, err =>{
       if(err){
@@ -23,14 +24,11 @@ var CreateLayerPanel = React.createClass({
         }
       }
     });
-  },
+  }
 
   render(){
     return (
       <div></div>
     );
   }
-
-});
-
-module.exports = CreateLayerPanel;
+}

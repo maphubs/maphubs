@@ -1,61 +1,57 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
+
 var slug = require('slug');
 var $ = require('jquery');
 var debounce = require('lodash.debounce');
 var _isequal = require('lodash.isequal');
-var Actions = require('../../actions/StoryActions');
-var MessageActions = require('../../actions/MessageActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var ConfirmationActions = require('../../actions/ConfirmationActions');
+import Actions from '../../actions/StoryActions';
+import MessageActions from '../../actions/MessageActions';
+import NotificationActions from '../../actions/NotificationActions';
+import ConfirmationActions from '../../actions/ConfirmationActions';
 var urlUtil = require('../../services/url-util');
-var AddMapModal = require('./AddMapModal');
-var ImageCrop = require('../ImageCrop');
-
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var StoryStore = require('../../stores/StoryStore');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
+import AddMapModal from './AddMapModal';
+import ImageCrop from '../ImageCrop';
+import StoryStore from '../../stores/StoryStore';
 import Progress from '../Progress';
 import Editor from 'react-medium-editor';
+import MapHubsComponent from '../../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
 
-var StoryEditor = React.createClass({
+export default class StoryEditor extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(StoryStore, {initWithProps: ['story', 'storyType', 'hub_id']}), StateMixin.connect(LocaleStore)],
+  props: {
+    story: Object,
+    hub_id: string,
+    storyType: string,
+    username: string,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>
+  }
 
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    story: {},
+    hub_id: null,
+    username: '',
+    storyType: 'unknown'
+  }
 
-  propTypes: {
-    story: PropTypes.object,
-    hub_id: PropTypes.string,
-    storyType: PropTypes.string,
-    username: PropTypes.string,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array
-  },
+  state: {
+    saving: false,
+    addingMap: false
+  }
 
-  getDefaultProps(): Object {
-    return {
-      story: {},
-      hub_id: null,
-      username: '',
-      storyType: 'unknown'
-    };
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(StoryStore);
+	}
 
-  getInitialState(): Object {
-    return {
-      saving: false,
-      addingMap: false
-    };
-  },
- componentDidMount(){
+  componentWillMount() {
+    Rehydrate.initStore(StoryStore);
+    Actions.rehydrate({story: this.props.story, storyType: this.props.storyType, hub_id: this.props.hub_id});
+  }
+
+  componentDidMount(){
    var _this = this;
 
    $('.storybody').on('focus', function(){
@@ -78,7 +74,7 @@ var StoryEditor = React.createClass({
    };
 
    $('.storyeditor-tooltips').tooltip();
- },
+ }
 
  shouldComponentUpdate(nextProps: Object, nextState: Object) {
    if(nextState.addingMap) return true;
@@ -94,17 +90,17 @@ var StoryEditor = React.createClass({
       return true;
     }
     return false;
- },
+ }
 
   handleBodyChange(body) {
-        var _this = this;
-        this.body = body;
-        Actions.handleBodyChange(body);        
-        var debounced = debounce(function(){
-            _this.saveSelectionRange();
-        }, 500).bind(this);
-        debounced();
-    },
+    var _this = this;
+    this.body = body;
+    Actions.handleBodyChange(body);        
+    var debounced = debounce(function(){
+        _this.saveSelectionRange();
+    }, 500).bind(this);
+    debounced();
+  }
 
 getFirstLine(){
   var first_line = $('.storybody').find('p')
@@ -112,7 +108,7 @@ getFirstLine(){
        return ($.trim($(this).text()).length);
      }).first().text();
   return  first_line;
-},
+}
 
 getFirstImage(){
   //attempt to find the first map or image
@@ -125,7 +121,7 @@ getFirstImage(){
     first_img = firstEmbed.attr('src');
   }
   return first_img;
-},
+}
 
 save(){
   var _this = this;
@@ -189,7 +185,7 @@ save(){
        
       }
   });
-},
+}
 
 delete(){
   var _this = this;
@@ -212,7 +208,7 @@ delete(){
       });     
     }
   });
-},
+}
 
 getSelectionRange(){
   var sel, range;
@@ -231,7 +227,7 @@ getSelectionRange(){
       range = sel.createRange();
       return range;
   }
-},
+}
 
 pasteHtmlAtCaret(html: any, rangeInput: any=null) {
     var sel, savedRange = this.savedSelectionRange;
@@ -264,7 +260,7 @@ pasteHtmlAtCaret(html: any, rangeInput: any=null) {
         range.pasteHTML(html);
     }
     this.handleBodyChange($('.storybody').html());
-},
+}
 
 onAddMap(map: Object){
   var _this = this;
@@ -286,13 +282,13 @@ onAddMap(map: Object){
   );
 
   _this.handleBodyChange($('.storybody').html());
-},
+}
 
 onMapCancel(){
   this.setState({addingMap: false});
   this.removeMapCloseButtons();
   this.addMapCloseButtons();
-},
+}
 
 removeMap(map_id: number){
   var _this = this;
@@ -305,7 +301,7 @@ removeMap(map_id: number){
     }
   });
 
-},
+}
 
 addMapCloseButtons(){
   var _this = this;
@@ -325,14 +321,14 @@ addMapCloseButtons(){
 
     $('.edit-map-tooltips').tooltip();
   });
-},
+}
 
 removeMapCloseButtons(){
   $('.edit-map-tooltips').tooltip('remove');
   $('.map-remove-button').each(function(i, button){
     $(button).remove();
   });
-},
+}
 
 addImageButtons(){
   var _this = this;
@@ -348,14 +344,14 @@ addImageButtons(){
     });
     $('.remove-image-tooltips').tooltip();
   });
-},
+}
 
 removeImageButtons(){
   $('.remove-image-tooltips').tooltip('remove');
   $('.image-remove-button').each(function(i, button){
     $(button).remove();
   });
-},
+}
 
 onAddImage(data: string, info: Object){
   var _this = this;
@@ -371,7 +367,7 @@ onAddImage(data: string, info: Object){
       _this.addImageButtons();
     }
   });
-},
+}
 
 onRemoveImage(image_id: number){
   var _this = this;
@@ -391,7 +387,7 @@ onRemoveImage(image_id: number){
       });
     }
   });
-},
+}
 
 publish(){
    var _this = this;
@@ -453,7 +449,7 @@ publish(){
       
     }
   });
-},
+}
 
 saveSelectionRange(){
   var sel = window.getSelection();
@@ -471,7 +467,7 @@ saveSelectionRange(){
   }else {
     this.savedSelectionRange = null;
   }
-},
+}
 
 showAddMap(){
   if(this.savedSelectionRange){
@@ -479,7 +475,7 @@ showAddMap(){
   }else {
     NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'});
   }
-},
+}
 
 showImageCrop(){
   if(!this.state.story.story_id || this.state.story.story_id == -1){
@@ -491,7 +487,7 @@ showImageCrop(){
   }else {
     NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'});
   }
-},
+}
 
   render() {
     var author='';
@@ -516,7 +512,7 @@ showImageCrop(){
     if(this.state.story.story_id){
       deleteButton = (
         <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
-          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete}
+          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete.bind(this)}
             data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
             <i className="large material-icons">delete</i>
           </a>
@@ -528,7 +524,7 @@ showImageCrop(){
     if(!this.state.story.published){
         publishButton = (
           <div className="center center-align" style={{margin: 'auto', position: 'fixed', bottom: '15px', zIndex: '1', right: 'calc(50% - 60px)'}}>
-            <button className="waves-effect waves-light btn" onClick={this.publish}>{this.__('Publish')}</button>
+            <button className="waves-effect waves-light btn" onClick={this.publish.bind(this)}>{this.__('Publish')}</button>
           </div>
         );
         saveButtonText = this.__('Save Draft');
@@ -559,7 +555,7 @@ showImageCrop(){
          <Editor
            className="storybody"
            text={this.state.story.body}
-           onChange={this.handleBodyChange}
+           onChange={this.handleBodyChange.bind(this)}
            options={{
              buttonLabels: 'fontawesome',
              delay: 100,
@@ -583,10 +579,10 @@ showImageCrop(){
        </div>
 
        <AddMapModal ref="addmap"
-         onAdd={this.onAddMap} onClose={this.onMapCancel}
+         onAdd={this.onAddMap.bind(this)} onClose={this.onMapCancel.bind(this)}
          myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
 
-       <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
+       <ImageCrop ref="imagecrop" onCrop={this.onAddImage.bind(this)} resize_max_width={1200}/>
 
        <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '155px'}}>
             <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red red-text">
@@ -594,19 +590,19 @@ showImageCrop(){
             </a>
             <ul>
               <li>
-                <a  onMouseDown={this.showAddMap} className="btn-floating storyeditor-tooltips green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
+                <a  onMouseDown={this.showAddMap.bind(this)} className="btn-floating storyeditor-tooltips green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
                   <i className="material-icons">map</i>
                 </a>
               </li>
               <li>
-                <a onMouseDown={this.showImageCrop} className="btn-floating storyeditor-tooltips yellow" data-delay="50" data-position="left" data-tooltip={this.__('Insert Image')}>
+                <a onMouseDown={this.showImageCrop.bind(this)} className="btn-floating storyeditor-tooltips yellow" data-delay="50" data-position="left" data-tooltip={this.__('Insert Image')}>
                   <i className="material-icons">insert_photo</i>
                 </a>
               </li>
             </ul>
           </div>
           <div className="fixed-action-btn action-button-bottom-right">
-            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save} data-delay="50" data-position="left" data-tooltip={saveButtonText}>
+            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save.bind(this)} data-delay="50" data-position="left" data-tooltip={saveButtonText}>
               <i className="large material-icons">save</i>
             </a>
           </div>
@@ -617,6 +613,4 @@ showImageCrop(){
       </div>
     );
   }
-});
-
-module.exports = StoryEditor;
+}

@@ -1,49 +1,50 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
 var classNames = require('classnames');
 var slug = require('slug');
 
-var Header = require('../components/header');
-var Step1 = require('../components/CreateLayer/Step1');
-var Step2 = require('../components/CreateLayer/Step2');
-//var Step3 = require('../components/CreateLayer/Step3');
-//var Step4 = require('../components/CreateLayer/Step4');
-var Step5 = require('../components/CreateLayer/Step5');
+import Header from '../components/header';
+import Step1 from '../components/CreateLayer/Step1';
+import Step2 from '../components/CreateLayer/Step2';
+import Step5 from '../components/CreateLayer/Step5';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LayerStore = require('../stores/layer-store');
-//var emptyLayer = require('../stores/empty-layer');
+
 var debug = require('../services/debug');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
 
-var CreateLayer = React.createClass({
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
+import LayerStore from '../stores/layer-store';
+import LayerActions from '../actions/LayerActions';
 
-  mixins:[StateMixin.connect(LayerStore, {initWithProps: ['groups', 'layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+export default class CreateLayer extends MapHubsComponent {
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+		groups: Array,
+    layer: Object,
+    locale: string
+  }
 
-  propTypes: {
-		groups: PropTypes.array,
-    layer: PropTypes.object.isRequired,
-    locale: PropTypes.string.isRequired
-  },
+  static defaultProps:{
+    groups: []
+  }
 
-  getDefaultProps() {
-    return {
-      groups: []
-    };
-  },
+  state: {
+    step: 1
+  }
 
-  getInitialState() {
-    return {
-      step: 1
-    };
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(LayerStore);
+	}
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(LayerStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    LayerActions.rehydrate({groups: this.props.groups, layer: this.props.layer});
+  }
 
   componentDidMount(){
     var _this = this;
@@ -74,20 +75,19 @@ var CreateLayer = React.createClass({
         return _this.__('You have not finished creating your layer.');
       }
     };
-  },
+  }
 
+  submit(layer_id, name){
+      window.location = '/layer/info/' + layer_id + '/' + slug(name);
+  }
 
-    submit(layer_id, name){
-        window.location = '/layer/info/' + layer_id + '/' + slug(name);
-    },
+  nextStep () {
+    this.setState({step: this.state.step + 1});
+  }
 
-    nextStep () {
-      this.setState({step: this.state.step + 1});
-    },
-
-    prevStep () {
-      this.setState({step: this.state.step - 1});
-    },
+  prevStep () {
+    this.setState({step: this.state.step - 1});
+  }
 
 	render() {
 
@@ -156,6 +156,4 @@ var CreateLayer = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = CreateLayer;
+}

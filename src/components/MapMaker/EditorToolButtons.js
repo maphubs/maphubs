@@ -1,36 +1,30 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var DataEditorActions = require('../../actions/DataEditorActions');
-var DataEditorStore = require('../../stores/DataEditorStore');
-var MapToolButton = require('../Map/MapToolButton');
-var MessageActions = require('../../actions/MessageActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var ConfirmationActions = require('../../actions/ConfirmationActions');
+import DataEditorActions from '../../actions/DataEditorActions';
+import DataEditorStore from '../../stores/DataEditorStore';
+import MapToolButton from '../Map/MapToolButton';
+import MessageActions from '../../actions/MessageActions';
+import NotificationActions from '../../actions/NotificationActions';
+import ConfirmationActions from '../../actions/ConfirmationActions';
 import Progress from '../Progress';
+import MapHubsComponent from '../MapHubsComponent';
 
-var EditorToolButtons = React.createClass({
+export default class EditorToolButtons extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(DataEditorStore), StateMixin.connect(LocaleStore)],
+  props: {
+    stopEditingLayer: Function
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+ state: {
+    saving: false
+  }
 
-  propTypes: {
-    stopEditingLayer: PropTypes.func.isRequired
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(DataEditorStore);
+  }
 
-  getInitialState(): Object {
-    return {
-      saving: false
-    };
-  },
-
-  saveEdits(cb){
+  saveEdits = (cb: Function) => {
     var _this = this;
     this.setState({saving: true});
     DataEditorActions.saveEdits(this.state._csrf, function(err){
@@ -46,9 +40,9 @@ var EditorToolButtons = React.createClass({
       }
 
     });
-  },
+  }
 
-  stopEditing(){
+  stopEditing = () => {
      var _this = this;
      if(this.state.edits.length > 0){
       ConfirmationActions.showConfirmation({
@@ -68,7 +62,7 @@ var EditorToolButtons = React.createClass({
      }else{
       this.props.stopEditingLayer();    
      } 
-  },
+  }
 
   render(){
    
@@ -90,5 +84,4 @@ var EditorToolButtons = React.createClass({
     );
     
   }
-});
-module.exports = EditorToolButtons;
+}

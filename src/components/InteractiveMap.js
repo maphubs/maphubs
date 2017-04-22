@@ -1,53 +1,51 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
-var Map = require('./Map/Map');
+import Map from './Map/Map';
+import LayerList from './MapMaker/LayerList';
+import MiniLegend from './Map/MiniLegend';
+import MapStore from '../stores/MapStore';
+import MapActions from '../actions/MapActions';
+import ForestLossLegendHelper from './Map/ForestLossLegendHelper';
+import MapLayerMenu from './InteractiveMap/MapLayerMenu';
+import MapHubsComponent from './MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
+export default class InteractiveMap extends MapHubsComponent {
 
-var LayerList = require('./MapMaker/LayerList');
-var MiniLegend = require('./Map/MiniLegend');
-var MapStore = require('../stores/MapStore');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var MapActions = require('../actions/MapActions');
-var ForestLossLegendHelper = require('./Map/ForestLossLegendHelper');
-var MapLayerMenu = require('./InteractiveMap/MapLayerMenu');
+  props: {
+    map_id: number,
+    title: string,
+    style: Object,
+    position: Object,
+    layers: Array<Object>,
+    height: string,
+    border: boolean,
+    showLogo: boolean,
+    disableScrollZoom: boolean,
+    showTitle: boolean,
+    categories: Array<Object>,
+    children: any
+  }
 
-var InteractiveMap = React.createClass({
-
-  mixins:[StateMixin.connect(MapStore, {initWithProps: ['style', 'position', 'layers']}), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    map_id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    style: PropTypes.object.isRequired,
-    position: PropTypes.object.isRequired,
-    layers: PropTypes.array.isRequired,
-    height: PropTypes.string,
-    border: PropTypes.bool,
-    showLogo: PropTypes.bool,
-    disableScrollZoom: PropTypes.bool,
-    showTitle: PropTypes.bool,
-    categories: PropTypes.array,
-    children: PropTypes.any
-  },
-
-  getDefaultProps(){
-    return {
+  static defaultProps: {
       height: '300px',
       border: false,
       disableScrollZoom: true,
       showLogo: true,
       showTitle: true
-    };
-  },
+  }
+
+  constructor(props: Object){
+		super(props);
+    this.stores.push(MapStore);
+	}
+
+  componentWillMount() {
+    Rehydrate.initStore(MapStore);
+    MapActions.rehydrate({style: this.props.style, position: this.props.position, layers: this.props.layers});
+  }
 
   componentDidMount() {
     $(this.refs.mapLayersPanel).sideNav({
@@ -55,24 +53,23 @@ var InteractiveMap = React.createClass({
       edge: 'left', // Choose the horizontal origin
       closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
     });
-
-  },
+  }
 
   componentDidUpdate(){
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
-  },
+  }
 
-  toggleVisibility(layer_id){
+  toggleVisibility(layer_id: number){
     MapActions.toggleVisibility(layer_id, function(){});
-  },
+  }
 
-  onChangeBaseMap(basemap){
+  onChangeBaseMap(basemap: string){
      MapActions.changeBaseMap(basemap);
-  },
+  }
 
-  onToggleForestLoss(enabled){
+  onToggleForestLoss(enabled: boolean){
     var mapLayers = this.state.layers;
     var layers = ForestLossLegendHelper.getLegendLayers();
   
@@ -96,7 +93,7 @@ var InteractiveMap = React.createClass({
       mapLayers = updatedLayers;
     }
     MapActions.updateLayers(mapLayers, false);
-  },
+  }
 
   render() {
 
@@ -143,7 +140,7 @@ var InteractiveMap = React.createClass({
             <div className="side-nav" id="map-layers">
               <LayerList layers={this.state.layers}
                 showDesign={false} showRemove={false} showVisibility={true}
-                toggleVisibility={this.toggleVisibility}
+                toggleVisibility={this.toggleVisibility.bind(this)}
                 updateLayers={MapActions.updateLayers}
                 />
             </div>
@@ -153,8 +150,8 @@ var InteractiveMap = React.createClass({
               style={{width: '100%', height}}
               glStyle={this.state.style}
               baseMap={this.state.basemap}
-              onChangeBaseMap={this.onChangeBaseMap}
-              onToggleForestLoss={this.onToggleForestLoss}
+              onChangeBaseMap={this.onChangeBaseMap.bind(this)}
+              onToggleForestLoss={this.onToggleForestLoss.bind(this)}
               showLogo={this.props.showLogo}
               disableScrollZoom={this.props.disableScrollZoom}>
 
@@ -173,7 +170,4 @@ var InteractiveMap = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = InteractiveMap;
+}

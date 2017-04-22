@@ -1,27 +1,16 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import TextInput from '../forms/textInput';
+import Toggle from '../forms/toggle';
+import Select from '../forms/select';
+import MapHubsComponent from '../MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class FormField extends MapHubsComponent {
 
-var TextInput = require('../forms/textInput');
-var Toggle = require('../forms/toggle');
-var Select = require('../forms/select');
-
-var FormField = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-		preset: PropTypes.object.isRequired,
-    value: PropTypes.any
-  },
+  props: {
+		preset: Object,
+    value: any
+  }
 
   render() {
     var preset = this.props.preset;
@@ -91,6 +80,4 @@ var FormField = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = FormField;
+}

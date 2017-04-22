@@ -1,30 +1,28 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var urlUtil = require('../../services/url-util');
 var $ = require('jquery');
 var _isequal = require('lodash.isequal');
-
 var classNames = require('classnames');
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var GroupTag = React.createClass({
+export default class GroupTag extends MapHubsComponent {
 
-  propTypes: {
-    group: PropTypes.string.isRequired,
-    size: PropTypes.number,
-    chipWidth: PropTypes.number,
-    fontSize: PropTypes.number,
-    showTooltip: PropTypes.bool,
-    className: PropTypes.string
-  },
+  props: {
+    group: string,
+    size: number,
+    chipWidth: number,
+    fontSize: number,
+    showTooltip: boolean,
+    className: string
+  }
 
-  getDefaultProps(){
-    return  {
-      size: 20,
-      chipWidth: 100,
-      fontSize: 10,
-      showTooltip: false
-    };
-  },
+  static defaultProps: {
+    size: 20,
+    chipWidth: 100,
+    fontSize: 10,
+    showTooltip: false
+  }
 
   componentDidMount(){
     if(this.props.showTooltip){
@@ -34,9 +32,9 @@ var GroupTag = React.createClass({
      $(this.refs.groupimg).error(function(){
         $(this).attr('src', '/assets/missing_group.png');
      });
-  },
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -45,7 +43,7 @@ var GroupTag = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
   render(){
     var baseUrl = urlUtil.getBaseUrl();
@@ -94,7 +92,4 @@ var GroupTag = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = GroupTag;
+}

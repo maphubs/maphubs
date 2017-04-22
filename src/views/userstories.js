@@ -1,37 +1,32 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import StorySummary from '../components/Story/StorySummary';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var StorySummary = require('../components/Story/StorySummary');
+export default class UserStories extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  props: {
+		stories: Array<Object>,
+    myStories: boolean,
+    username: string,
+    locale: string,
+    footerConfig: Object
+  }
 
-var UserStories = React.createClass({
+  static defaultProps: {
+    stories: [],
+    myStories: false
+  }
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-		stories: PropTypes.array,
-    myStories: PropTypes.bool,
-    username: PropTypes.string.isRequired,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {
-      stories: [],
-      myStories: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
 	render() {
     var _this = this;
@@ -85,6 +80,4 @@ var UserStories = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = UserStories;
+}

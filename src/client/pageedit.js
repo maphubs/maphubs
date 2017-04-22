@@ -1,8 +1,8 @@
 
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const PageEdit = require('../views/pageedit');
+import PageEdit from '../views/pageedit';
 
 require('jquery');
 require("materialize-css");

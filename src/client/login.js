@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Login = require('../views/login');
+import Login from '../views/login';
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;

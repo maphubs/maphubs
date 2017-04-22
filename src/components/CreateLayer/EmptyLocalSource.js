@@ -1,40 +1,32 @@
-
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
 
-var NotificationActions = require('../../actions/NotificationActions');
-var LayerStore = require('../../stores/layer-store');
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
-var MessageActions = require('../../actions/MessageActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+import NotificationActions from '../../actions/NotificationActions';
+import LayerStore from '../../stores/layer-store';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import MessageActions from '../../actions/MessageActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-var EmptyLocalSource = React.createClass({
+export default class EmptyLocalSource extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    type: string,
+    onPrev: Function
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    onSubmit: null
+  }
 
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    type: PropTypes.string,
-    onPrev: PropTypes.func
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-
-  getDefaultProps() {
-    return {
-      onSubmit: null
-    };
-  },
-
-  onSubmit(){
+  onSubmit = () => {
     var _this = this;
     var data = {
       is_external: false,
@@ -52,12 +44,11 @@ var EmptyLocalSource = React.createClass({
         NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
       }
     });
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
-
+  }
 
 	render() {
 
@@ -80,6 +71,4 @@ var EmptyLocalSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = EmptyLocalSource;
+}

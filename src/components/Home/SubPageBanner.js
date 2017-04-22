@@ -11,7 +11,7 @@ propTypes: {
   locale: PropTypes.string.isRequired
 },
 
-getDefaultProps() {
+static defaultProps: {
   return {
     backgroundPosition: 'center'
   };

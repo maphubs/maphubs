@@ -1,8 +1,5 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'showNotification': {},
-  'dismissNotification': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'showNotification',
+  'dismissNotification'
+]);

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
 //react components
@@ -35,7 +35,7 @@ var LayerSource = React.createClass({
     submitText: PropTypes.string
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       layer_id: null,
       onSubmit: null,

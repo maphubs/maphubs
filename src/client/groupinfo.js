@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const GroupInfo = require('../views/groupinfo');
+import GroupInfo from '../views/groupinfo';
 
 require('jquery');
 require("materialize-css");

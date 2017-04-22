@@ -1,42 +1,38 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 //var debug = require('../services/debug')('usermaps');
 var cardUtil = require('../services/card-util');
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var UserHubs = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class UserHubs extends MapHubsComponent {
 
   propTypes: {
-		draftHubs: PropTypes.array,
-    publishedHubs: PropTypes.array,
-    user: PropTypes.object,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+		draftHubs: Array<Object>,
+    publishedHubs: Array<Object>,
+    user: Object,
+    canEdit: boolean,
+    locale: string,
+    footerConfig: Object
+  }
 
-  getDefaultProps() {
-    return {
-      draftHubs: [],
-      publishedHubs: [],
-      user: {},
-      canEdit: false
-    };
-  },
+  static defaultProps: {
+    draftHubs: [],
+    publishedHubs: [],
+    user: {},
+    canEdit: false
+  }
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
 	render() {
 
@@ -118,6 +114,4 @@ var UserHubs = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = UserHubs;
+}

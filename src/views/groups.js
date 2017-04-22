@@ -1,53 +1,48 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import SearchBox from '../components/SearchBox';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 var debug = require('../services/debug')('views/groups');
 var urlUtil = require('../services/url-util');
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
 var cardUtil = require('../services/card-util');
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var Groups = React.createClass({
+export default class Groups extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    featuredGroups: Array<Object>,
+    recentGroups: Array<Object>,
+    popularGroups: Array<Object>,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    groups: []
+  }
 
-  propTypes: {
-    featuredGroups: PropTypes.array,
-    recentGroups: PropTypes.array,
-    popularGroups: PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  state: {
+    searchResults: [],
+    searchActive: false
+  }
 
-  getDefaultProps() {
-    return {
-      groups: []
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
-  getInitialState(){
-    return {
-      searchResults: [],
-      searchActive: false
-    };
-  },
-
-  handleSearch(input) {
+  handleSearch(input: string) {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
@@ -72,11 +67,11 @@ var Groups = React.createClass({
       );
 
     });
-  },
+  }
 
   resetSearch(){
     this.setState({searchActive: false, searchResults: []});
-  },
+  }
 
 	render() {
 
@@ -171,6 +166,4 @@ var Groups = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Groups;
+}

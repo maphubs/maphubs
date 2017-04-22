@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 var Actions = require('../../actions/map/BaseMapActions');
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');

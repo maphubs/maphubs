@@ -1,54 +1,45 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var MiniLegend = require('../components/Map/MiniLegend');
-var Map = require('../components/Map/Map');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var _debounce = require('lodash.debounce');
+import MiniLegend from '../components/Map/MiniLegend';
+import Map from '../components/Map/Map';
+import _debounce from 'lodash.debounce';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
 //A reponsive full window map used to render screenshots
+export default class StaticMap extends MapHubsComponent {
 
-var StaticMap = React.createClass({
+  props: {
+    name: string,
+    layers: Array<Object>,
+    style: Object,
+    position: Object,
+    basemap: string,
+    showLegend: boolean,
+    showLogo: boolean,
+    insetMap:  boolean,
+    locale: string
+  }
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  static defaultProps: {
+    showLegend: true,
+    showLogo: true,
+    insetMap: true
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    name: PropTypes.string,
-    layers: PropTypes.array.isRequired,
-    style: PropTypes.object.isRequired,
-    position: PropTypes.object.isRequired,
-    basemap: PropTypes.string.isRequired,
-    showLegend: PropTypes.bool,
-    showLogo: PropTypes.bool,
-    insetMap:  PropTypes.bool,
-    locale: PropTypes.string.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      showLegend: true,
-      showLogo: true,
-      insetMap: true
-    };
-  },
-
-  getInitialState(){
-    return {
-      retina: false,
-      width: 1024,
-      height: 600
-    };
-  },
+  state: {
+    retina: false,
+    width: 1024,
+    height: 600
+  }
 
   componentWillMount(){
     var _this = this;
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
     if (typeof window === 'undefined') return; //only run this on the client
 
     function getSize(){
@@ -76,9 +67,7 @@ var StaticMap = React.createClass({
       }, 2500).bind(this);
       debounced();
     });
-
-
-  },
+  }
 
   render() {
     var map = '';
@@ -137,6 +126,4 @@ var StaticMap = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = StaticMap;
+}

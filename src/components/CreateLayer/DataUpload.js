@@ -1,57 +1,38 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var classNames = require('classnames');
-var FileUpload = require('../forms/FileUpload');
+import {HOC} from 'formsy-react';
+import classNames from 'classnames';
+import FileUpload from '../forms/FileUpload';
 var debug = require('../../services/debug')('DataUpload');
+import MapHubsComponent from '../MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
-var DataUpload= React.createClass({
-
-  mixins: [Formsy.Mixin, StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
+class DataUpload extends MapHubsComponent {
+  
   propTypes: {
-    layerId: PropTypes.string,
-    className: PropTypes.string,
-    dataTooltip: PropTypes.string,
-    dataDelay: PropTypes.number,
-    dataPosition: PropTypes.string
-  },
+    layerId: string,
+    className: string,
+    dataTooltip: string,
+    dataDelay: number,
+    dataPosition: string
+  }
 
-  getInitialState() {
-    return {
-      value: ''
-    };
-  },
+  static defaultProps: {
+    layerId: null
+  }
 
-  getDefaultProps() {
-    return {
-      layerId: null
-    };
-  },
+  state: {
+    value: ''
+  }
 
-  changeValue(event) {
+  changeValue = (event) => {
      this.setValue(event.currentTarget.value);
      this.setState({value: event.currentTarget.value});
-   },
+   }
 
-   onUpload(e){
+   onUpload = (e) => {
      debug(e);
-     //console.log(e.data);
-   },
-/*
-  componentDidMount() {
-    //run jquery materializecss stuff
-  },
-*/
+   }
+
   render() {
      var className = classNames( this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
      var url = "/api/layer/1/upload/shapefile";
@@ -63,8 +44,6 @@ var DataUpload= React.createClass({
            </FileUpload>
       </div>
     );
-
   }
-});
-
-module.exports = DataUpload;
+}
+export default HOC(DataUpload);

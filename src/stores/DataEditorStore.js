@@ -1,6 +1,6 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/DataEditorActions');
+import Reflux from 'reflux';
+
+import Actions from '../actions/DataEditorActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/DataEditorStore');
 var _assignIn = require('lodash.assignin');
@@ -9,40 +9,43 @@ var _forEachRight = require('lodash.foreachright');
 //var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class DataEditorStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       editing: false,
       editingLayer: null,
       originals: [], //store the orginal GeoJSON to support undo
       edits: [],
       redo: [], //if we undo edits, add them here so we can redo them
       selectedEditFeature: null, //selected feature
-    };
-  },
+    }
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState(this.getDefaultState());
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
 
   startEditing(layer){
     this.setState({editing: true, editingLayer:layer});
-  },
+  }
 
   stopEditing(){
     //TODO: error if unsaved edits?
     this.setState({editing: false, editingLayer: null});
-  },
-
+  }
 
   /**
    * receive updates from the drawing tool
@@ -68,11 +71,11 @@ module.exports = Reflux.createStore({
       _this.state.redo = []; //redo resets if use makes an edit
     });
     this.trigger(this.state);
-  },
+  }
 
   resetEdits(){
     this.setState({edits: [], redo: []});
-  },
+  }
 
   undoEdit(){
      if(this.state.edits.length > 0){
@@ -96,7 +99,7 @@ module.exports = Reflux.createStore({
      
       this.trigger(this.state);
     }
-  },
+  }
 
   redoEdit(){
     if(this.state.redo.length > 0){
@@ -114,7 +117,7 @@ module.exports = Reflux.createStore({
       this.trigger(this.state);
     }
     
-  },
+  }
 
   getLastEditForID(id){
     var matchingEdits = [];
@@ -137,7 +140,7 @@ module.exports = Reflux.createStore({
       }
       return null;
     }
-  },
+  }
 
   /**
    * Save all edits to the server and reset current edits
@@ -183,7 +186,7 @@ module.exports = Reflux.createStore({
       });
     });
 
-  },
+  }
 
   getUniqueFeatureIds(){
     var uniqueIds = [];
@@ -194,7 +197,7 @@ module.exports = Reflux.createStore({
       }
     });
     return uniqueIds;
-  },
+  }
 
   getAllEditsForFeatureId(id){
     var featureEdits = [];
@@ -204,7 +207,7 @@ module.exports = Reflux.createStore({
       }
     });
     return featureEdits;
-  },
+  }
 
   updateSelectedFeatureTags(data){
     var _this = this;
@@ -225,8 +228,7 @@ module.exports = Reflux.createStore({
     //update the selected feature
     this.state.selectedEditFeature = selected;
     this.trigger(this.state);
-  },
-
+  }
 
   selectFeature(mhid, cb){
     var _this = this;
@@ -259,7 +261,7 @@ module.exports = Reflux.createStore({
         });
       });    
     }
-  },
+  }
 
   /**
    * Called when mapbox-gl-draw is used to create new feature 
@@ -274,7 +276,7 @@ module.exports = Reflux.createStore({
     this.setState({
       selectedEditFeature: created
     });
-  },
+  }
 
   deleteFeature(feature){
     var edit = {
@@ -286,4 +288,4 @@ module.exports = Reflux.createStore({
     this.trigger(this.state);
   }
   
-});
+}

@@ -1,14 +1,11 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'save': {},
-  'delete': {},
-  'addImage': {},
-  'removeImage': {},
-  'handleBodyChange': {},
-  'handleTitleChange': {},
-  'handleAuthorChange': {},
-  'publish': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'save',
+  'delete',
+  'addImage',
+  'removeImage',
+  'handleBodyChange',
+  'handleTitleChange',
+  'handleAuthorChange',
+  'publish'
+]);

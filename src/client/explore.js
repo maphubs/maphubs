@@ -1,5 +1,5 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 if (!global.Intl) {
  require('intl');
@@ -13,7 +13,7 @@ require('babel-polyfill');
 require('jquery');
 
 require("materialize-css");
-var Explore = require('../views/explore');
+import Explore from '../views/explore';
 
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');

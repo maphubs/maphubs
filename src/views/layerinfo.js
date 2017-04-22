@@ -1,33 +1,24 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Map = require('../components/Map/Map');
-var MiniLegend = require('../components/Map/MiniLegend');
-var Header = require('../components/header');
+import Map from '../components/Map/Map';
+import MiniLegend from '../components/Map/MiniLegend';
+import Header from '../components/header';
+import _find from 'lodash.find';
+import ReactDisqusThread from 'react-disqus-thread';
+import TerraformerGL from '../services/terraformerGL.js';
+import GroupTag from '../components/Groups/GroupTag';
+import Licenses from '../components/CreateLayer/licenses';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import LayerNotes from '../components/CreateLayer/LayerNotes';
+import HubEditButton from '../components/Hub/HubEditButton';
+import LayerNotesActions from '../actions/LayerNotesActions';
+import LayerNotesStore from '../stores/LayerNotesStore';
+import LayerDataGrid from '../components/DataGrid/LayerDataGrid';
+var urlUtil = require('../services/url-util');
 var slug = require('slug');
 var styles = require('../components/Map/styles');
 var $ = require('jquery');
-var _find = require('lodash.find');
-var ReactDisqusThread = require('react-disqus-thread');
-var urlUtil = require('../services/url-util');
-var TerraformerGL = require('../services/terraformerGL.js');
-var GroupTag = require('../components/Groups/GroupTag');
-
-var Licenses = require('../components/CreateLayer/licenses');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var LayerNotes = require('../components/CreateLayer/LayerNotes');
-var HubEditButton = require('../components/Hub/HubEditButton');
-var LayerNotesActions = require('../actions/LayerNotesActions');
-var LayerNotesStore = require('../stores/LayerNotesStore');
-var LayerDataGrid = require('../components/DataGrid/LayerDataGrid');
-
 var moment = require('moment-timezone');
 var clipboard;
 if(process.env.APP_ENV === 'browser'){
@@ -46,80 +37,47 @@ addLocaleData(fr);
 addLocaleData(it);
 
 //var debug = require('../services/debug')('layerinfo');
-
-var request = require('superagent');
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var LayerInfo = React.createClass({
-
-  mixins:[
-    StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']}),
-    StateMixin.connect(LayerNotesStore, {initWithProps: ['notes']})
-  ],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class LayerInfo extends MapHubsComponent {
 
   propTypes: {
-		layer: PropTypes.object.isRequired,
-    notes: PropTypes.string,
-    stats: PropTypes.object,
-    canEdit: PropTypes.bool,
-    createdByUser: PropTypes.object.isRequired,
-    updatedByUser: PropTypes.object.isRequired,
-    locale: PropTypes.string.isRequired
-  },
+		layer: Object,
+    notes: string,
+    stats: Object,
+    canEdit: boolean,
+    createdByUser: Object,
+    updatedByUser: Object,
+    locale: string
+  }
 
-  getDefaultProps(){
-    return {
+  static defaultProps: {
       stats: {maps: 0, stories: 0, hubs: 0},
       canEdit: false
-    };
-  },
+  }
 
-  getInitialState(){
-    return {
-      editingNotes: false,
-      gridHeight: 100,
-      gridHeightOffset: 48
-    };
-  },
+  state: {
+    editingNotes: false,
+    gridHeight: 100,
+    gridHeightOffset: 48
+  }
 
-  getGeoJSON(cb){
-    var _this = this;
-      var baseUrl, dataUrl, presetUrl;
-    if(this.props.layer.remote){
-      baseUrl = 'https://' + this.props.layer.remote_host;
-      dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/json/data.geojson';
-      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.remote_layer_id;
-    }else{
-      baseUrl = urlUtil.getBaseUrl();
-      dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson';
-      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.layer_id;
-    }
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerNotesStore);
+  }
 
-    request.get(dataUrl)
-    .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
-        var geoJSON = res.body;
-        request.get(presetUrl)
-        .type('json').accept('json')
-        .end(function(err, res){
-          checkClientError(res, err, cb, function(cb){
-            var presets = res.body;
-            _this.setState({geoJSON, presets});
-            cb();
-          });
-        });
-        cb();
-      });
-    });
-  },
-
-  
-
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(LayerNotesStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    LayerNotesActions.rehydrate({notes: this.props.notes});
+  }
 
   componentDidMount(){
     var _this = this;
@@ -162,7 +120,7 @@ var LayerInfo = React.createClass({
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
-  },
+  }
 
   componentDidUpdate(){
 
@@ -171,8 +129,39 @@ var LayerInfo = React.createClass({
       evt.initUIEvent('resize', true, false, window, 0);
       window.dispatchEvent(evt);
     }
+  }
 
-  },
+  getGeoJSON(cb){
+    var _this = this;
+      var baseUrl, dataUrl, presetUrl;
+    if(this.props.layer.remote){
+      baseUrl = 'https://' + this.props.layer.remote_host;
+      dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/json/data.geojson';
+      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.remote_layer_id;
+    }else{
+      baseUrl = urlUtil.getBaseUrl();
+      dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson';
+      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.layer_id;
+    }
+
+    request.get(dataUrl)
+    .type('json').accept('json')
+    .end(function(err, res){
+      checkClientError(res, err, cb, function(cb){
+        var geoJSON = res.body;
+        request.get(presetUrl)
+        .type('json').accept('json')
+        .end(function(err, res){
+          checkClientError(res, err, cb, function(cb){
+            var presets = res.body;
+            _this.setState({geoJSON, presets});
+            cb();
+          });
+        });
+        cb();
+      });
+    });
+  }
 
   onTabSelect(){
     var _this = this;
@@ -185,9 +174,9 @@ var LayerInfo = React.createClass({
       _this.setState({gridHeight, userResize: true});
     });
 
-  },
+  }
 
-  onRowSelected(idVal, idField){
+  onRowSelected(idVal: string, idField: string){
     var _this = this;
     if(this.state.geoJSON){
       this.state.geoJSON.features.forEach(function(feature){
@@ -198,7 +187,7 @@ var LayerInfo = React.createClass({
         }
       });
     }
-  },
+  }
 
   //Build iD edit link
   getEditLink(){
@@ -208,20 +197,20 @@ var LayerInfo = React.createClass({
     if(zoom < 10) zoom = 10;
     var baseUrl = urlUtil.getBaseUrl();
     return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' + position.lng + '/' + position.lat;
-  },
+  }
 
   openEditor(){
     var editLink = this.getEditLink();
     window.location = editLink;
-  },
+  }
 
   handleNewComment(){
 
-  },
+  }
 
   startEditingNotes(){
     this.setState({editingNotes: true});
-  },
+  }
 
   stopEditingNotes(){
     var _this = this;
@@ -234,12 +223,11 @@ var LayerInfo = React.createClass({
         _this.setState({editingNotes: false});
       }
     });
+  }
 
-  },
-
-  copyToClipboard(val){
+  copyToClipboard(val: string){
     clipboard.copy(val);
-  },
+  }
 
 	render() {
     var _this = this;
@@ -299,14 +287,14 @@ var LayerInfo = React.createClass({
       notesEditButton = (
         <HubEditButton editing={this.state.editingNotes}
           style={{position: 'absolute'}}
-          startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
+          startEditing={this.startEditingNotes.bind(this)} stopEditing={this.stopEditingNotes.bind(this)} />
       );
 
       var idEditButton = '', addPhotoPointButton = '';
       if(!this.props.layer.is_external){
         idEditButton = (
           <li>
-            <a onClick={this.openEditor} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map Data')}>
+            <a onClick={this.openEditor.bind(this)} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map Data')}>
               <i className="material-icons">mode_edit</i>
             </a>
           </li>
@@ -436,7 +424,7 @@ var LayerInfo = React.createClass({
               shortname="maphubs"
               identifier={'maphubs-layer-' + this.props.layer.layer_id}
               title={this.props.layer.name}
-              onNewComment={this.handleNewComment}
+              onNewComment={this.handleNewComment.bind(this)}
               />
           );
     }else{
@@ -533,7 +521,7 @@ var LayerInfo = React.createClass({
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
                 <div className="row no-margin">                
-                  <LayerDataGrid  layer_id={this.props.layer.layer_id} gridHeight={this.state.gridHeight} geoJSON={this.state.geoJSON} presets={this.state.presets} onRowSelected={this.onRowSelected} />
+                  <LayerDataGrid  layer_id={this.props.layer.layer_id} gridHeight={this.state.gridHeight} geoJSON={this.state.geoJSON} presets={this.state.presets} onRowSelected={this.onRowSelected.bind(this)} />
                 </div>
               </div>
               <div id="export" className="col s12" style={{display: tabContentDisplay}}>
@@ -569,6 +557,4 @@ var LayerInfo = React.createClass({
 
 		);
 	}
-});
-
-module.exports = LayerInfo;
+}

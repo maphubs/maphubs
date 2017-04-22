@@ -1,35 +1,31 @@
+//@flow
 import React from 'react';
 import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var request = require('superagent');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
-var ConfirmationActions = require('../actions/ConfirmationActions');
+import ConfirmationActions from '../actions/ConfirmationActions';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
+export default class SearchIndexAdmin extends MapHubsComponent {
 
-var SearchIndexAdmin = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
+  props: {
     locale: PropTypes.string.isRequired,
     connectionStatus: PropTypes.string.isRequired,
     indexStatus: PropTypes.string.isRequired,
     footerConfig: PropTypes.object
-  },
+  }
 
-
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   createIndex(){
 
@@ -62,8 +58,7 @@ var SearchIndexAdmin = React.createClass({
         });
       }
     });
-   
-  },
+  }
 
   rebuildFeatures(){
    var _this = this;
@@ -95,7 +90,7 @@ var SearchIndexAdmin = React.createClass({
         });
       }
     });
-  },
+  }
 
   render() {
       return (
@@ -109,18 +104,14 @@ var SearchIndexAdmin = React.createClass({
               <p><b>{this.__('Index Status:')}</b> {this.props.indexStatus}</p>
             </div>
             <div>
-              <button className="btn" onClick={this.createIndex}>{this.__('Create Index')}</button>
+              <button className="btn" onClick={this.createIndex.bind(this)}>{this.__('Create Index')}</button>
             </div>
              <div>
-              <button className="btn" onClick={this.rebuildFeatures}>{this.__('Rebuild Feature Index')}</button>
+              <button className="btn" onClick={this.rebuildFeatures.bind(this)}>{this.__('Rebuild Feature Index')}</button>
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>
         </div>
       );
-
-
   }
-});
-
-module.exports = SearchIndexAdmin;
+}

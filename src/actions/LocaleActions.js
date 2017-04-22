@@ -1,7 +1,4 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'changeLocale': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'changeLocale'
+]);

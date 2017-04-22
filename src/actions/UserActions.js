@@ -1,16 +1,13 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'login': {},
-  'logout': {},
-  'register': {},
-  'getUser': {},
-  'updatePassword': {},
-  'forgotPassword': {},
-  'checkUserNameAvailable': {},
-  'signup': {},
-  'resendConfirmation': {},
-  'joinMailingList': {}
-});
-
-module.exports = actions;
+import Reflux from 'reflux';
+export default Reflux.createActions([
+  'login',
+  'logout',
+  'register',
+  'getUser',
+  'updatePassword',
+  'forgotPassword',
+  'checkUserNameAvailable',
+  'signup',
+  'resendConfirmation',
+  'joinMailingList'
+]);

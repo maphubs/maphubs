@@ -1,7 +1,6 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
-
-const HubBuilder = require('../views/hubbuilder');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import HubBuilder from '../views/hubbuilder';
 
 require('jquery');
 require("materialize-css");

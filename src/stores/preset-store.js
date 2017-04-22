@@ -1,40 +1,28 @@
-var Reflux = require('reflux');
-var actions = require('../actions/presetActions');
+import Reflux from 'reflux';
+import Actions from '../actions/presetActions';
 var request = require('superagent');
 var _findIndex = require('lodash.findindex');
 var _remove =  require('lodash.remove');
 var debug = require('../services/debug')('preset-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-
-
-module.exports = Reflux.createStore({
-  data: {},
-
-  init() {
-    this.data = {
+export default class PresetStore extends Reflux.Store {
+  
+  constructor(){
+    super();
+    this.state = {
       layer_id: -1,
       presets: [],
-      pendingChanges: false
+      pendingChanges: false,
+      idSequence: 1
     };
+    this.listenables = Actions;
+  }
 
-    this.idSequence = 1;
-    this.listenTo(actions.setImportedTags, this.setImportedTags);
-    this.listenTo(actions.submitPresets, this.submitPresets);
-    this.listenTo(actions.addPreset, this.addPreset);
-    this.listenTo(actions.deletePreset, this.deletePreset);
-    this.listenTo(actions.updatePreset, this.updatePreset);
-    this.listenTo(actions.setLayerId, this.setLayerId);
-    this.listenTo(actions.loadPresets, this.loadPresets);
-    this.listenTo(actions.loadDefaultPresets, this.loadDefaultPresets);
-    this.listenTo(actions.moveUp, this.moveUp);
-    this.listenTo(actions.moveDown, this.moveDown);
-  },
-
-  setLayerId(layerId){
+  setLayerId(layer_id){
     debug("setLayerId");
-    this.data.layer_id = layerId;
-  },
+    this.setState({layer_id});
+  }
 
   loadPresets(presets){
     var _this = this;
@@ -42,10 +30,9 @@ module.exports = Reflux.createStore({
       presets.forEach(function(preset){
         preset.id = _this.idSequence++;
       });
-      this.data.presets = presets;
-      this.trigger(this.data);
-    }  
-  },
+      this.setState({presets});
+    }
+  }
 
   loadDefaultPresets(){
     //called when setting up a new empty layer
@@ -54,18 +41,15 @@ module.exports = Reflux.createStore({
       {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.idSequence++},
       {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.idSequence++}
     ];
-    this.data.presets = presets;
-    this.data.pendingChanges = true;
-    this.trigger(this.data);
-  },
+    this.setState({presets, pendingChanges: true});
+  }
 
   setImportedTags(data){
     debug("setImportedTags");
     var _this = this;
     //clear default presets
-    delete this.data.presets;
-    this.data.presets = [];
-    _this.trigger(this.data);
+    var presets = [];
+
     //convert tags to presets
     data.forEach(function(tag){
       var preset = {};
@@ -74,12 +58,11 @@ module.exports = Reflux.createStore({
       }else{
          preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
       }
-      _this.data.presets.push(preset);
+      presets.push(preset);
     });
-    this.data.pendingChanges = true;
-    _this.trigger(this.data);
-    actions.presetsChanged(this.data.presets);
-  },
+    this.setState({presets, pendingChanges: true});
+    Actions.presetsChanged(this.state.presets);
+  }
 
   submitPresets(create, _csrf, cb){
     debug("submitPresets");
@@ -87,31 +70,30 @@ module.exports = Reflux.createStore({
     request.post('/api/layer/presets/save')
     .type('json').accept('json')
     .send({
-      layer_id: _this.data.layer_id,
-      presets: _this.data.presets,
+      layer_id: _this.state.layer_id,
+      presets: _this.state.presets,
       create,
       _csrf
     })
     .end(function(err, res){
       checkClientError(res, err, cb, function(cb){
-        _this.data.pendingChanges = false;
-        _this.trigger(_this.data);
+        _this.setState({pendingChanges: false});
         cb();
       });
     });
-  },
+  }
 
   deletePreset(id){
     debug("delete preset:"+ id);
-    _remove(this.data.presets, {id});
-    this.data.pendingChanges = true;
-    this.trigger(this.data);
-    actions.presetsChanged(this.data.presets);
-  },
+    _remove(this.state.presets, {id});
+    this.state.pendingChanges = true;
+    this.trigger(this.state);
+    Actions.presetsChanged(this.state.presets);
+  }
 
   addPreset(){
       debug("adding new preset");
-      this.data.presets.push({
+      this.state.presets.push({
       tag: '',
       label: '',
       type: 'text',
@@ -119,47 +101,43 @@ module.exports = Reflux.createStore({
       showOnMap: true,
       id: this.idSequence++
     });
-    this.data.pendingChanges = true;
-    this.trigger(this.data);
-    actions.presetsChanged(this.data.presets);
-  },
+    this.state.pendingChanges = true;
+    this.trigger(this.state);
+    Actions.presetsChanged(this.state.presets);
+  }
 
  updatePreset(id, preset){
    debug("update preset:" + id);
-   var i = _findIndex(this.data.presets, {id});
+   var i = _findIndex(this.state.presets, {id});
    if(i >= 0){
-     this.data.presets[i] = preset;
-     this.data.pendingChanges = true;
-     //this.trigger(this.data);
-     //actions.presetsChanged(this.data.presets);
+     this.state.presets[i] = preset;
+     this.state.pendingChanges = true;
+     //this.trigger(this.state);
+     //actions.presetsChanged(this.state.presets);
    }else{
      debug("Can't find preset with id: "+ id);
    }
-
- },
+ }
 
  moveUp(id){
-   var index = _findIndex(this.data.presets, {id});
+   var index = _findIndex(this.state.presets, {id});
    if(index === 0) return;
-   this.data.presets = this.move(this.data.presets, index, index-1);
-   this.trigger(this.data);
-   actions.presetsChanged(this.data.presets);
- },
+   this.state.presets = this.move(this.state.presets, index, index-1);
+   this.trigger(this.state);
+   Actions.presetsChanged(this.state.presets);
+ }
 
  moveDown(id){
-   var index = _findIndex(this.data.presets, {id});
-   if(index === this.data.presets.length -1) return;
-   this.data.presets = this.move(this.data.presets, index, index+1);
-   this.trigger(this.data);
-   actions.presetsChanged(this.data.presets);
- },
+   var index = _findIndex(this.state.presets, {id});
+   if(index === this.state.presets.length -1) return;
+   this.state.presets = this.move(this.state.presets, index, index+1);
+   this.trigger(this.state);
+   Actions.presetsChanged(this.state.presets);
+ }
 
  move(array, fromIndex, toIndex) {
     array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
     return array;
-  },
+ }
 
-  getInitialState() {
-    return this.data;
-  }
-});
+}

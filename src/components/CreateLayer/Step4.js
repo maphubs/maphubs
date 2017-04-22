@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var classNames = require('classnames');
 var $ = require('jquery');
@@ -33,7 +33,7 @@ var Step4 = React.createClass({
     onPrev: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       layer_id: null,
       onSubmit: null,

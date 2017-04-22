@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Services = require('../views/services');
+import Services from '../views/services';
 
 require('jquery');
 require("materialize-css");

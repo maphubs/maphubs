@@ -1,48 +1,42 @@
+//#flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Map = require('../components/Map/Map');
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
-var CardCollection = require('../components/CardCarousel/CardCollection');
+import Map from '../components/Map/Map';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import SearchBox from '../components/SearchBox';
+import CardCollection from '../components/CardCarousel/CardCollection';
 var cardUtil = require('../services/card-util');
-var Promise = require('bluebird');
-var request = require('superagent-bluebird-promise');
+import Promise from 'bluebird';
+import request from 'superagent-bluebird-promise';
 var debug = require('../services/debug')('home');
 var $ = require('jquery');
-
-var _shuffle = require('lodash.shuffle');
-
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
+import _shuffle from 'lodash.shuffle';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
 import Progress from '../components/Progress';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Search = React.createClass({
+export default class Search extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    locale: string,
+    footerConfig: Object
+  }
 
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  state: {
+    searchResult: null,
+    searchCards: [],
+    searching: false
+  }
 
-  getInitialState() {
-    return {
-      searchResult: null,
-      searchCards: [],
-      searching: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -53,14 +47,14 @@ var Search = React.createClass({
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
-  },
+  }
 
   componentDidMount(){
     var q = this.getParameterByName('q');
     if(q){
       this.handleSearch(q);
     }
-  },
+  }
 
   componentDidUpdate(){
     if(this.state.searchResult){
@@ -69,12 +63,12 @@ var Search = React.createClass({
          scrollTop: scrollTarget.offset().top
        }, 1000);
     }
-  },
+  }
 
   onResetSearch(){
     this.refs.map.resetGeoJSON();
     this.setState({searchResult: null, searchCards: []});
-  },
+  }
 
   handleSearch(input){
     var _this = this;
@@ -171,7 +165,7 @@ var Search = React.createClass({
       MessageActions.showMessage({title: 'Error', message: err.toString()});
 
     });
-  },
+  }
 
   getMixedCardSet(layers, groups, hubs, maps, stories){
     return _shuffle(layers.map(cardUtil.getLayerCard)
@@ -180,7 +174,7 @@ var Search = React.createClass({
       .concat(maps.map(cardUtil.getMapCard))
       .concat(stories.map(cardUtil.getStoryCard))
     );
-  },
+  }
 
 	render() {
     var cardsPanel = '';
@@ -196,7 +190,7 @@ var Search = React.createClass({
       <main style={{margin: 0}}>
         <div ref="search" className="container" style={{height: '55px', paddingTop:'10px'}}>
           <div className="row no-margin">
-            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch.bind(this)} onReset={this.onResetSearch.bind(this)}/>
           </div>
         </div>
         <div className="row no-margin" style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
@@ -215,6 +209,4 @@ var Search = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = Search;
+}

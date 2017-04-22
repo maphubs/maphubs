@@ -1,51 +1,50 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var TextInput = require('../components/forms/textInput');
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var NotificationActions = require('../actions/NotificationActions');
+import Formsy from 'formsy-react';
+import TextInput from '../components/forms/textInput';
+import Header from '../components/header';
+import Footer from '../components/footer';
+
+import NotificationActions from '../actions/NotificationActions';
 import Progress from '../components/Progress';
-var MessageActions = require('../actions/MessageActions');
-var request = require('superagent');
+import MessageActions from '../actions/MessageActions';
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-var PasswordReset = React.createClass({
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+export default class AdminUserInvite extends MapHubsComponent {
 
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
-  getInitialState(): Object{
-    return {
-      canSubmit: false,
-      saving: false
-    };
-  },
+  state: {
+    canSubmit: false,
+    saving: false
+  }
 
   enableButton() {
     this.setState({
       canSubmit: true
     });
-  },
+  }
 
   disableButton() {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
   onSubmit(model: Object){
     var _this = this;
@@ -74,7 +73,7 @@ var PasswordReset = React.createClass({
         cb();
       });
     });
-  },
+  }
 
   render() {
     return (
@@ -107,6 +106,4 @@ var PasswordReset = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = PasswordReset;
+}

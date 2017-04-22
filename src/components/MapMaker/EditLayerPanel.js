@@ -1,29 +1,19 @@
+//@flow
 import React from 'react';
+import DataEditorActions from '../../actions/DataEditorActions';
+import DataEditorStore from '../../stores/DataEditorStore';
+import DataCollectionForm from '../DataCollection/DataCollectionForm';
+import _isequal from 'lodash.isequal';
+import MapHubsComponent from '../MapHubsComponent';
 
+export default class EditLayerPanel extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var DataEditorActions = require('../../actions/DataEditorActions');
-var DataEditorStore = require('../../stores/DataEditorStore');
-var DataCollectionForm = require('../DataCollection/DataCollectionForm');
-//var UserStore = require('../../stores/UserStore');
-var _isequal = require('lodash.isequal');
+  constructor(props: Object){
+    super(props);
+    this.stores.push(DataEditorStore);
+  }
 
-//var NotificationActions = require('../../actions/NotificationActions');
-
-
-var EditLayerPanel = React.createClass({
-
-  mixins:[StateMixin.connect(DataEditorStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-
-  onChange(data){
+  onChange = (data: Object) => {
     //don't fire change if this update came from state (e.g. undo/redo)
     //the geojson may have tags not in the presets so we need to ignore them when checking for changes
     var foundChange;
@@ -34,7 +24,7 @@ var EditLayerPanel = React.createClass({
     if(foundChange){   
        DataEditorActions.updateSelectedFeatureTags(data);
     }
-  },
+  }
 
   render(){
     //var canSave = this.state.edits.length > 0;
@@ -64,8 +54,6 @@ var EditLayerPanel = React.createClass({
         {layerTitle}
         {featureAttributes}
       </div>
-    );
-    
+    );   
   }
-});
-module.exports = EditLayerPanel;
+}

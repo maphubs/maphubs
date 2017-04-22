@@ -8,7 +8,7 @@ var MessageActions = require('../../actions/MessageActions');
 import Progress from '../Progress';
 
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
@@ -32,7 +32,7 @@ var Step3 = React.createClass({
     onPrev: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       onSubmit: null,
       active: false

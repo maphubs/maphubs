@@ -1,37 +1,33 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var Header = require('../components/header');
-var Map = require('../components/Map/Map');
-var MiniLegend = require('../components/Map/MiniLegend');
-var _debounce = require('lodash.debounce');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import Header from '../components/header';
+import Map from '../components/Map/Map';
+import MiniLegend from '../components/Map/MiniLegend';
+import _debounce from 'lodash.debounce';
 
-var LayerMap = React.createClass({
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+export default class LayerMap extends MapHubsComponent {
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    layer: Object,
+    locale: string,
+    _csrf: string
+  }
 
-  propTypes: {
-    layer: PropTypes.object.isRequired,
-    locale: PropTypes.string.isRequired
-  },
-
-  getInitialState(){
-    return {
-      width: 1024,
-      height: 600
-    };
-  },
+  state: {
+    width: 1024,
+    height: 600
+  }
 
   componentWillMount(){
     var _this = this;
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
     if (typeof window === 'undefined') return; //only run this on the client
 
     function getSize(){
@@ -59,15 +55,13 @@ var LayerMap = React.createClass({
       }, 2500).bind(this);
       debounced();
     });
-
-
-  },
+  }
 
   componentDidUpdate(){
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
-  },
+  }
 
 	render() {
 
@@ -149,6 +143,4 @@ var LayerMap = React.createClass({
 
 		);
 	}
-});
-
-module.exports = LayerMap;
+}

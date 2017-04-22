@@ -1,32 +1,32 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/ConfirmationActions');
+//@flow
+import Reflux from 'reflux';
+import Actions from '../actions/ConfirmationActions';
 var debug = require('../services/debug')('stores/confirmation-store');
 var $ = require('jquery');
-var LocaleStore = require('./LocaleStore');
+import LocaleActions from '../actions/LocaleActions';
 var Locales = require('../services/locales');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin, Reflux.ListenerMixin],
-  listenables: Actions,
+export default class ConfirmationStore extends Reflux.Store {
+ 
+  constructor(){
+    super();
+    this.state = this.getEmptyState();
+    this.listenables = Actions;
+    this.listenTo(LocaleActions.changeLocale,this.updateLocale);
+  }
 
-  __(text){
+  __(text: string){
     var locale = 'en';
     if(this.state && this.state.locale){
       locale = this.state.locale;
     }
     return Locales.getLocaleString(locale, text);
-  },
-
-  getInitialState() {
-    this.listenTo(LocaleStore.locale,this.updateLocale);
-    return this.getEmptyState();
-  },
+  }
 
   getEmptyState(){
     return  {
       show: false,
-      locale: LocaleStore.state.locale,
+      locale: 'en',
       title: this.__('Confirmation'),
       message: this.__('Please confirm'),
       postitiveButtonText: this.__('Okay'),
@@ -34,29 +34,28 @@ module.exports = Reflux.createStore({
       onPositiveResponse() {},
       onNegativeResponse() {}
     };
-  },
+  }
 
   reset(){
     this.setState(this.getEmptyState());
-  },
+  }
 
-  updateLocale(locale){
+  updateLocale(locale: string){
     this.setState({locale});
-  },
+  }
 
   storeDidUpdate() {
     debug('store updated');
-  },
+  }
 
   //listeners
-  showConfirmation(options) {
+  showConfirmation(options: Object) {
     if (options) {
-      var updatedState = $.extend(this.getInitialState(), options);
+      var updatedState = $.extend(this.getEmptyState(), options);
       this.setState(updatedState);
       this.setState({
         show: true
       });
     }
   }
-
-});
+}

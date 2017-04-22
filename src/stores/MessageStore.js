@@ -1,46 +1,48 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/MessageActions');
+import Reflux from 'reflux';
+import Actions from '../actions/MessageActions';
 var debug = require('../services/debug')('stores/message-store');
 var $ = require('jquery');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class MessageStore extends Reflux.Store {
 
-  getInitialState() {
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
     return {
       show: false,
       title: 'Message',
       message: '',
       onDismiss: null
     };
-  },
+  }
 
   reset() {
-    this.setState(this.getInitialState());
+    this.setState(this.getDefaultState());
     this.trigger(this.state);
-  },
+  }
 
   storeDidUpdate() {
     debug('store updated');
-  },
+  }
 
   //listeners
   showMessage(options) {
     if (options) {
-      var updatedState = $.extend(this.getInitialState(), options);
+      var updatedState = $.extend(this.getDefaultState(), options);
       this.setState(updatedState);
       this.setState({
         show: true
       });
     }
-  },
+  }
 
   dismissMessage() {
     if(this.state.onDismiss) this.state.onDismiss();
     this.reset();
   }
 
-
-});
+}

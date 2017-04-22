@@ -1,38 +1,53 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var GroupTag = require('../Groups/GroupTag');
-var MapCardUserTag = require('./MapCardUserTag');
-var StoryHeader = require('../Story/StoryHeader');
+import GroupTag from '../Groups/GroupTag';
+import MapCardUserTag from './MapCardUserTag';
+import StoryHeader from '../Story/StoryHeader';
 var $ = require('jquery');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
 var _isequal = require('lodash.isequal');
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Card = React.createClass({
+export default class Card extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props:  {
+    id: string,
+    title: string,
+    description: string,
+    image_url: string,
+    background_image_url: string,
+    link: string,
+    group: string,
+    source: string,
+    data: Object,
+    type: string,
+    private: boolean,
+    onClick: Function
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  state: {
+    mounted: false
+  }
 
-  propTypes:  {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    image_url: PropTypes.string,
-    background_image_url: PropTypes.string,
-    link: PropTypes.string,
-    group: PropTypes.string,
-    source: PropTypes.string,
-    data: PropTypes.object,
-    type: PropTypes.string,
-    private: PropTypes.bool,
-    onClick: PropTypes.func
-  },
+  componentDidMount() {
+    if(!this.state.mounted){
+      this.setState({mounted: true});
+    }
+  }
+
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
+
+  componentDidUpdate(){
+     $('.card-tooltip').tooltip();
+  }
 
   onClick(){
     if(this.props.onClick){
@@ -42,34 +57,7 @@ var Card = React.createClass({
         window.location = this.props.link;
       }
     }
-
-  },
-
-  getInitialState() {
-    return {mounted: false};
-  },
-
-  componentDidMount() {
-    if(!this.state.mounted){
-      this.setState({mounted: true});
-    }
-
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
-  },
-
-  componentDidUpdate(){
-     $('.card-tooltip').tooltip();
-  },
+  }
 
   render() {
 
@@ -208,6 +196,4 @@ var Card = React.createClass({
         <div>{cardContents}</div>
      );
   }
-});
-
-module.exports = Card;
+}

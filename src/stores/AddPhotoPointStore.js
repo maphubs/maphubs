@@ -1,18 +1,22 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/AddPhotoPointActions');
+//@flow
+import Reflux from 'reflux';
+import Actions from '../actions/AddPhotoPointActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var dms2dec = require('dms2dec');
 var moment = require('moment');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class AddPhotoPointStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+   constructor(){
+      super();
+      this.state = this.getDefaultState();
+      this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       layer: null,
       image: null,
       imageInfo: null,
@@ -20,17 +24,17 @@ module.exports = Reflux.createStore({
       submitted: false,
       mhid: null
     };
-  },
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState(this.getDefaultState());
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
-  setImage(data, info, cb){
+  setImage(data: any, info: any, cb: any){
     debug('set image');
 
     if(info && info.exif && info.exif['GPSLatitude']){
@@ -48,10 +52,11 @@ module.exports = Reflux.createStore({
           geometry: {
             type: 'Point',
             coordinates: dms2dec(lat, latRef, lon, lonRef).reverse()
-          }
-
+          },
+          properties: {}
         }
-      ]
+      ],
+      bbox: undefined
     };
 
     var bbox = require('@turf/bbox')(geoJSON);
@@ -102,9 +107,9 @@ module.exports = Reflux.createStore({
     //image does not contain GPS Location
     cb('Photo Missing GPS Information');
   }
-  },
+  }
 
-  submit(fields, _csrf, cb){
+  submit(fields: any, _csrf: any, cb: any){
     debug('submit photo point');
     var _this = this;
 
@@ -138,6 +143,4 @@ module.exports = Reflux.createStore({
       });
     });
   }
-
-
-});
+}

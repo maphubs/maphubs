@@ -1,52 +1,57 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import Formsy from 'formsy-react';
 var $ = require('jquery');
-var TextArea = require('../forms/textArea');
-var TextInput = require('../forms/textInput');
-var Toggle = require('../forms/toggle');
-var MessageActions = require('../../actions/MessageActions');
-var NotificationActions = require('../../actions/NotificationActions');
+import TextArea from '../forms/textArea';
+import TextInput from '../forms/textInput';
+import Toggle from '../forms/toggle';
+import MessageActions from '../../actions/MessageActions';
+import NotificationActions from '../../actions/NotificationActions';
 var classNames = require('classnames');
 
+import GroupStore from '../../stores/GroupStore';
+import GroupActions from '../../actions/GroupActions';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var GroupStore = require('../../stores/GroupStore');
-var GroupActions = require('../../actions/GroupActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class CreateGroupStep1 extends MapHubsComponent {
 
-var CreateGroupStep1 = React.createClass({
+  props: {
+    onSubmit: Function,
+    active: boolean
+  }
 
-  mixins:[StateMixin.connect(GroupStore, 'group'), StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    onSubmit: null,
+    active: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  state: {
+    canSubmit: false,
+    showError: false,
+    errorMessage: '',
+    errorTitle: ''
+  }
 
-  propTypes: {
-    onSubmit: PropTypes.func,
-    active: PropTypes.bool.isRequired
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(GroupStore);
+	}
 
-  getDefaultProps() {
-    return {
-      onSubmit: null,
-      active: false
-    };
-  },
+  componentWillMount() {
+    var _this = this;
+    Formsy.addValidationRule('isAvailable', function (values, value) {
+        if(_this.state.group.created) return true;
+        if(!this.groupIdValue || value !== this.groupIdValue){
+          this.groupIdValue = value;
+          this.groupIdAvailable = _this.checkGroupIdAvailable(value);
 
-  getInitialState() {
-    return {
-      canSubmit: false,
-      showError: false,
-      errorMessage: '',
-      errorTitle: ''
-    };
-  },
+        }
+        return this.groupIdAvailable;
 
-  checkGroupIdAvailable(id){
+    });
+  }
+
+  checkGroupIdAvailable = (id: string) => {
     var _this = this;
     var result = false;
     //only check if a valid value was provided and we are running in the browser
@@ -72,42 +77,26 @@ var CreateGroupStep1 = React.createClass({
     }
     return result;
 
-    },
+    }
 
-  componentWillMount() {
-    var _this = this;
-    Formsy.addValidationRule('isAvailable', function (values, value) {
-        if(_this.state.group.created) return true;
-        if(!this.groupIdValue || value !== this.groupIdValue){
-          this.groupIdValue = value;
-          this.groupIdAvailable = _this.checkGroupIdAvailable(value);
+  
 
-        }
-        return this.groupIdAvailable;
-
-    });
-  },
-
-  componentDidMount() {
-
-  },
-
-  enableButton () {
+  enableButton = () => {
       this.setState({
         canSubmit: true
       });
-    },
-    disableButton () {
-      this.setState({
-        canSubmit: false
-      });
-    },
+    }
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
+  }
 
-    submit (model) {
-      this.saveGroup(model);
-    },
+  submit = (model: Object) => {
+    this.saveGroup(model);
+  }
 
-    saveGroup(model){
+    saveGroup = (model: Object) => {
       var _this = this;
       if(this.state.group.created){
         GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
@@ -139,9 +128,9 @@ var CreateGroupStep1 = React.createClass({
         });
       }
 
-    },
+    }
 
-    handleCancel(){
+    handleCancel = () => {
       var _this = this;
       if(_this.state.group.created){
         GroupActions.deleteGroup(_this.state._csrf, function(err){
@@ -171,7 +160,7 @@ var CreateGroupStep1 = React.createClass({
             }
         });
       }
-    },
+    }
 
 	render() {
 
@@ -238,6 +227,4 @@ var CreateGroupStep1 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = CreateGroupStep1;
+}

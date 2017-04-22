@@ -1,43 +1,30 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+
 var $ = require('jquery');
 var urlUtil = require('../../services/url-util');
-var UserMenu = require('../UserMenu');
+import UserMenu from '../UserMenu';
+import LocaleChooser from '../LocaleChooser';
+import NotificationActions from '../../actions/NotificationActions';
+import ConfirmationActions from '../../actions/ConfirmationActions';
+import MessageActions from '../../actions/MessageActions';
+import HubActions from '../../actions/HubActions';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var LocaleChooser = require('../LocaleChooser');
+export default class HubHav extends MapHubsComponent {
 
-var NotificationActions = require('../../actions/NotificationActions');
-var ConfirmationActions = require('../../actions/ConfirmationActions');
-var MessageActions = require('../../actions/MessageActions');
-var HubActions = require('../../actions/HubActions');
+  props: {
+    hubid: string,
+    canEdit: boolean
+  }
 
-
-var HubHav = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    hubid: PropTypes.string.isRequired,
-    canEdit: PropTypes.bool
-  },
-
-  getDefaultProps() {
-    return {
-      canEdit: false
-    };
-  },
+  static defaultProps: {
+    canEdit: false
+  }
 
   componentDidMount() {
     $(this.refs.hubNav).sideNav({edge: 'right'});
-  },
+  }
 
     deleteHub(){
     var _this = this;
@@ -60,8 +47,7 @@ var HubHav = React.createClass({
         });
       }
     });
-  },
-
+  }
 
   render(){
     var omhBaseUrl = urlUtil.getBaseUrl();
@@ -95,6 +81,4 @@ var HubHav = React.createClass({
         </nav>
     );
   }
-});
-
-module.exports = HubHav;
+}

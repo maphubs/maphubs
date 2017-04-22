@@ -1,36 +1,31 @@
+//#flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import UserActions from '../actions/UserActions';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var UserActions = require('../actions/UserActions');
+export default class PendingConfirmation extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  props: {
+    user: Object,
+    locale: string,
+    footerConfig: Object
+  }
 
-var PendingConfirmation = React.createClass({
+  state: {
+    canSubmit: false
+  }
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    user: PropTypes.object.isRequired,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   onResend(){
     var _this = this;
@@ -45,7 +40,7 @@ var PendingConfirmation = React.createClass({
         });
       }
     });
-  },
+  }
 
   render() {
     if(this.props.user.email_valid){
@@ -74,7 +69,7 @@ var PendingConfirmation = React.createClass({
               <p className="center-align">{this.__('We sent you an email at')} {this.props.user.email}</p>
               <p className="center-align">{this.__('Please click the link in the email to confirm your account')}</p>
               <button
-                onClick={this.onResend}
+                onClick={this.onResend.bind(this)}
                 className="waves-effect waves-light btn valign center"
                 style={{marginTop: '25px', marginLeft: 'auto', marginRight: 'auto'}}>
                 {this.__('Resend Email')}
@@ -87,6 +82,4 @@ var PendingConfirmation = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = PendingConfirmation;
+}

@@ -1,7 +1,6 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/LayerActions');
-var PresetActions = require('../actions/presetActions');
+import Reflux from 'reflux';
+import Actions from '../actions/LayerActions';
+import PresetActions from '../actions/presetActions';
 var request = require('superagent');
 var mapStyles = require('../components/Map/styles');
 var urlUtil = require('../services/url-util');
@@ -9,21 +8,18 @@ var checkClientError = require('../services/client-error-response').checkClientE
 var debug = require('../services/debug')('layer-store');
 var emptyLayer = require('./empty-layer');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class LayerStore extends Reflux.Store {
 
-
-
-  getInitialState() {
-    this.listenTo(PresetActions.presetsChanged, this.presetsChanged);
-    return {
+  constructor(){
+    super();
+    this.state = {
       layer: emptyLayer,
       mapColor: '#FF0000',
       groups: []
     };
-
-  },
+    this.listenables = Actions;
+    this.listenTo(PresetActions.presetsChanged, this.presetsChanged);
+  }
 
   getSourceConfig(){
     var sourceConfig = {
@@ -33,7 +29,7 @@ module.exports = Reflux.createStore({
       sourceConfig = this.state.layer.external_layer_config;
     }
     return sourceConfig;
-  },
+  }
 
   loadLayer(layer){
     var mapColor = this.state.mapColor;
@@ -51,7 +47,7 @@ module.exports = Reflux.createStore({
     }
 
     this.trigger(this.state);
-  },
+  }
 
   resetStyleGL(){
     var layer = this.state.layer;
@@ -75,7 +71,7 @@ module.exports = Reflux.createStore({
       layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);
     }
     this.setState({layer});
-  },
+  }
 
   resetLegendHTML(){
     var layer = this.state.layer;
@@ -90,13 +86,13 @@ module.exports = Reflux.createStore({
       layer.legend_html = mapStyles.defaultLegend(layer);
     }
     this.setState({layer});
-  },
+  }
 
   resetStyle(){
     this.resetStyleGL();
     this.resetLegendHTML();
     this.trigger(this.state);
-  },
+  }
 
   initLayer(layer){
     if(!layer.style){
@@ -119,7 +115,7 @@ module.exports = Reflux.createStore({
     }; 
     }  
     return layer;
-  },
+  }
 
   createLayer(_csrf, cb){
     var _this = this;
@@ -137,7 +133,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   saveSettings(data, _csrf, initLayer, cb){
     var _this = this;
@@ -169,7 +165,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   saveDataSettings(data, _csrf, cb){
     debug("saveDataSettings");
@@ -200,7 +196,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   setStyle(style, labels, legend_html, settings, preview_position, cb){
     var layer = this.state.layer;
@@ -218,7 +214,7 @@ module.exports = Reflux.createStore({
     this.setState({layer, mapColor});
     this.trigger(this.state);
     if(cb) cb();
-  },
+  }
 
   setDataType(data_type){
     var layer = this.state.layer;
@@ -226,7 +222,7 @@ module.exports = Reflux.createStore({
 
     this.setState({layer});
     this.trigger(this.state);
-  },
+  }
 
   presetsChanged(presets){
     var layer = this.state.layer;
@@ -234,7 +230,7 @@ module.exports = Reflux.createStore({
 
     this.setState({layer});
     this.trigger(this.state);
-  },
+  }
 
   setComplete(_csrf, cb){
     var _this = this;
@@ -253,8 +249,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-
-  },
+  }
 
   saveStyle(data, _csrf, cb){
     var _this = this;
@@ -280,7 +275,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   loadData(_csrf, cb){
     debug("loadData");
@@ -295,7 +290,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   initEmptyLayer(_csrf, cb){
     debug("initEmptyLayer");
@@ -310,7 +305,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   finishUpload(requestedShapefile, _csrf, cb){
     var _this = this;
@@ -326,7 +321,7 @@ module.exports = Reflux.createStore({
         cb(null, res.body);
       });
     });
-  },
+  }
 
   deleteData(data, _csrf, cb){
     var _this = this;
@@ -338,7 +333,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   deleteLayer(_csrf, cb){
     var _this = this;
@@ -353,7 +348,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
   
   cancelLayer(_csrf, cb){
     var _this = this;
@@ -371,4 +366,4 @@ module.exports = Reflux.createStore({
       });
     });
   }
-});
+}

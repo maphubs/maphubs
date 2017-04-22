@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 var ReactDOM = require('react-dom');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
 var $ = require('jquery');
@@ -34,7 +34,7 @@ var UploadLocalSource = React.createClass({
   },
 
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       onSubmit: null
     };

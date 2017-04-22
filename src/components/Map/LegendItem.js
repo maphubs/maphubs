@@ -1,19 +1,17 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Marker = require('./Marker');
+import Marker from './Marker';
 
-var LegendItem = React.createClass({
+export default class LegendItem extends React.Component {
 
-  propTypes:  {
-    layer: PropTypes.object.isRequired,
-    style: PropTypes.object
-  },
+  props: {
+    layer: Object,
+    style: Object
+  }
 
-  getDefaultProps() {
-    return {
+  static defaultProps: {
       style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'},
-    };
-  },
+  }
 
   render(){
     var _this = this;
@@ -55,5 +53,4 @@ var LegendItem = React.createClass({
     }
     return legendItem;
   }
-});
-module.exports = LegendItem;
+}

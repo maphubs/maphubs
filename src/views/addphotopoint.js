@@ -1,45 +1,46 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
 
-var Header = require('../components/header');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import Map from '../components/Map/Map';
+import DataCollectionForm from '../components/DataCollection/DataCollectionForm';
+import ImageCrop from '../components/ImageCrop';
+import AddPhotoPointStore from '../stores/AddPhotoPointStore';
+import Actions from '../actions/AddPhotoPointActions';
 
-var Map = require('../components/Map/Map');
-var DataCollectionForm = require('../components/DataCollection/DataCollectionForm');
-var ImageCrop = require('../components/ImageCrop');
-var AddPhotoPointStore = require('../stores/AddPhotoPointStore');
-var Actions = require('../actions/AddPhotoPointActions');
-
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var ConfirmationActions = require('../actions/ConfirmationActions');
-
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import ConfirmationActions from '../actions/ConfirmationActions';
 import Progress from '../components/Progress';
 
+export default class AddPhotoPoint extends MapHubsComponent {
 
-var AddPhotoPoint = React.createClass({
+  props: {
+		layer: Object,
+    locale: string,
+    _csrf: string
+  }
 
-  mixins:[StateMixin.connect(AddPhotoPointStore, {initWithProps: ['layer']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-		layer: PropTypes.object.isRequired,
-    locale: PropTypes.string.isRequired
-  },
-
-  getInitialState(): Object{
-    return {
+  state: {
       saving: false
-    };
-  },
+  }
+
+  constructor(props: Object){
+		super(props);
+    this.stores.push(AddPhotoPointStore);
+	}
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(AddPhotoPointStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    Actions.rehydrate({layer: this.props.layer});
+  }
 
   componentDidMount(){
     var _this = this;
@@ -48,16 +49,16 @@ var AddPhotoPoint = React.createClass({
         return _this.__('You have not saved your data, your work will be lost.');
       }
     };
-  },
+  }
 
   showImageCrop(){
     this.refs.imagecrop.show();
-  },
+  }
 
   resetPhoto(){
     Actions.resetPhoto();
     this.showImageCrop();
-  },
+  }
 
   onCrop(data: any, info: Object){
     var _this = this;
@@ -71,7 +72,7 @@ var AddPhotoPoint = React.createClass({
         NotificationActions.showNotification({message: _this.__('Photo Added')});
       }
     });
-  },
+  }
 
   onSubmit(model: Object){
     var _this = this;
@@ -104,7 +105,7 @@ var AddPhotoPoint = React.createClass({
         });
       }
     });
-  },
+  }
 
   render(){
 
@@ -164,6 +165,4 @@ var AddPhotoPoint = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = AddPhotoPoint;
+}

@@ -1,26 +1,24 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
+export default class Privacy extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  props: {
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-var Privacy = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
       return (
@@ -28,7 +26,7 @@ var Privacy = React.createClass({
           <Header />
           <main className="container" lang="en">
             <div className="row">
-              <h4>{MAPHUBS_CONFIG.ProductName + ' ' + this.__('Privacy Policy')}</h4>
+              <h4>{MAPHUBS_CONFIG.productName + ' ' + this.__('Privacy Policy')}</h4>
   <p>
   We respect your privacy and will not share your information other than in the circumstances outlined below.
   </p>
@@ -121,6 +119,4 @@ var Privacy = React.createClass({
 
 
   }
-});
-
-module.exports = Privacy;
+}

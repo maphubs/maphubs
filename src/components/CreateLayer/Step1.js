@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 var NotificationActions = require('../../actions/NotificationActions');
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var LocaleMixin = require('../LocaleMixin');
@@ -22,7 +22,7 @@ var Step1 = React.createClass({
     onPrev: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       onSubmit: null
     };

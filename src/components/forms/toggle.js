@@ -1,51 +1,34 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
 var debug = require('../../services/debug')('Toggle');
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var Toggle= React.createClass({
-
-  mixins: [PureRenderMixin, Formsy.Mixin],
-
+class Toggle extends MapHubsPureComponent {
 
   propTypes:  {
-    className: PropTypes.string,
-    dataTooltip: PropTypes.string,
-    dataDelay: PropTypes.number,
-    dataPosition: PropTypes.string,
-    labelOn: PropTypes.string.isRequired,
-    labelOff: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    style: PropTypes.object,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func,
-    defaultChecked: PropTypes.bool,
-    checked: PropTypes.bool
-  },
+    className: string,
+    dataTooltip: string,
+    dataDelay: number,
+    dataPosition: string,
+    labelOn: string,
+    labelOff: string,
+    name: string,
+    style: Object,
+    disabled: boolean,
+    onChange: Function,
+    defaultChecked: boolean,
+    checked: boolean
+  }
 
-
-  getDefaultProps() {
-    return {
-      style: {},
-      defaultChecked: false,
-      dataDelay: 100,
-      disabled: false
-    };
-  },
-
-  changeValue(event) {
-    
-    event.stopPropagation();
-    var checked = event.currentTarget.checked;
-    debug('change value: ' + checked);
-    if(checked !== this.getValue())
-     this.setValue(checked);
-     if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}
-   },
-
+  static defaultProps: {
+    style: {},
+    defaultChecked: false,
+    dataDelay: 100,
+    disabled: false
+  }
 
   componentWillMount() {
     if ('checked' in this.props) {
@@ -53,13 +36,13 @@ var Toggle= React.createClass({
     }else{
       this.setValue(this.props.defaultChecked);  
     }       
-  },
+  }
 
   componentDidMount(){
     if(this.props.dataTooltip){
       $(this.refs.toggle).tooltip();
     }   
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     var currentValue =  this.props.checked;
@@ -67,20 +50,22 @@ var Toggle= React.createClass({
     && nextProps.checked !== currentValue){
          this.setValue(nextProps.checked);
     }   
-  },
+  }
 
-   componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
       $(this.refs.toggle).tooltip();
     }
-  },
+  }
 
-/*
-  handleChange(event, value) {
-    this.setValue(value);
-    if (this.props.onChange) this.props.onChange(event, value);
-  },
-*/
+  changeValue = (event) => {    
+    event.stopPropagation();
+    var checked = event.currentTarget.checked;
+    debug('change value: ' + checked);
+    if(checked !== this.getValue())
+     this.setValue(checked);
+     if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}
+   }
 
   render() {
     const props = { ...this.props };
@@ -110,6 +95,5 @@ var Toggle= React.createClass({
       </div>
     );
   }
-});
-
-module.exports = Toggle;
+}
+export default HOC(Toggle);

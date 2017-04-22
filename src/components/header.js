@@ -1,31 +1,27 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var UserMenu = require('./UserMenu');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var UserStore = require('../stores/UserStore');
-var Notification = require('../components/Notification');
-var Message = require('../components/message');
-var MessageActions = require('../actions/MessageActions');
-var Confirmation = require('../components/confirmation');
-
+import UserMenu from './UserMenu';
+import MapHubsComponent from './MapHubsComponent';
+import UserStore from '../stores/UserStore';
+import Notification from '../components/Notification';
+import Message from '../components/message';
+import MessageActions from '../actions/MessageActions';
+import Confirmation from '../components/confirmation';
+import LocaleStore from '../stores/LocaleStore';
 //var debug = require('../services/debug')('header');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var LocaleChooser = require('./LocaleChooser');
+import LocaleChooser from './LocaleChooser';
 
-var Header = React.createClass({
+export default class Header extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
+  props: {
+    activePage: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    activePage: PropTypes.string
-  },
+  constructor(props: Object){
+		super(props);
+		this.stores = [LocaleStore, UserStore];
+	}
 
   componentDidMount() {
     $(this.refs.sideNav).sideNav();
@@ -46,7 +42,7 @@ var Header = React.createClass({
         message: this.__('Unable to support Internet Explorer. Please use Firefox or Chrome.')
       });
     }
-  },
+  }
 
 /**
  * detect IE
@@ -100,16 +96,16 @@ detectIE() {
 */
   // other browser
   return false;
-},
+}
 
-setCookie(cname, cvalue, exdays) {
+setCookie(cname: string, cvalue: any, exdays: number) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
-},
+}
 
-getCookie(cname) {
+getCookie(cname: string) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++) {
@@ -118,7 +114,7 @@ getCookie(cname) {
         if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
     }
     return "";
-},
+}
 
   render() {
 
@@ -219,6 +215,4 @@ getCookie(cname) {
       </header>
     );
   }
-});
-
-module.exports = Header;
+}

@@ -1,63 +1,51 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import Radio from '../forms/radio';
+import LayerStore from '../../stores/layer-store';
+import MapHubsComponent from '../MapHubsComponent';
 
-var TextInput = require('../forms/textInput');
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
-var Radio = require('../forms/radio');
-var LayerStore = require('../../stores/layer-store');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class GeoJSONUrlSource extends MapHubsComponent {
 
-var GeoJSONUrlSource = React.createClass({
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  state: {
+    canSubmit: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      onSubmit: null
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentWillMount(){
     Formsy.addValidationRule('isHttps', function (values, value) {
         return value.startsWith('https://');
     });
-  },
+  }
 
-  enableButton () {
+  enableButton = () => {
     this.setState({
       canSubmit: true
     });
-  },
-  disableButton () {
+  }
+
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
-  submit (model) {
+  submit = (model) => {
     var _this = this;
 
     LayerActions.saveDataSettings({
@@ -88,15 +76,15 @@ var GeoJSONUrlSource = React.createClass({
       }
 
     });
-  },
+  }
 
-  sourceChange(value){
+  sourceChange = (value: string) => {
     this.setState({selectedSource: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
 
@@ -152,6 +140,4 @@ var GeoJSONUrlSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = GeoJSONUrlSource;
+}

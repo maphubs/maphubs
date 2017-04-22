@@ -1,9 +1,6 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'setImage': {},
-  'submit': {},
-  'resetPhoto': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'setImage',
+  'submit',
+  'resetPhoto'
+]);

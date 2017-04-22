@@ -1,37 +1,35 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Slider = require('react-slick');
-var Card = require('./Card');
+import Slider from 'react-slick';
+import Card  from './Card';
 
-var CardCarousel = React.createClass({
+export default class CardCarousel extends React.Component {
 
-  propTypes:  {
-    cards: PropTypes.array.isRequired,
-    autoplay: PropTypes.bool,
-    arrows: PropTypes.bool,
-    dots: PropTypes.bool,
-    infinite: PropTypes.bool,
-    speed: PropTypes.number,
-    slidesToShow: PropTypes.number,
-    slidesToScroll: PropTypes.number,
-    responsive: PropTypes.array
-  },
+  props: {
+    cards: any,
+    autoplay: boolean,
+    arrows: boolean,
+    dots: boolean,
+    infinite: boolean,
+    speed: number,
+    slidesToShow: number,
+    slidesToScroll: number,
+    responsive: any
+  }
 
-  getDefaultProps() {
-    return {
-      cards: [],
-      responsive: [
-        {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
-        {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},
-        {breakpoint: 950, settings: {slidesToShow: 3,  slidesToScroll: 3}},
-        {breakpoint: 1150, settings: {slidesToShow: 4,  slidesToScroll: 4}},
-        {breakpoint: 1400, settings: {slidesToShow: 5,  slidesToScroll: 5}},
-        {breakpoint: 1700, settings: {slidesToShow: 6,  slidesToScroll: 6}},
-         {breakpoint: 2500, settings: {slidesToShow: 8,  slidesToScroll: 8}},
-         {breakpoint: 4000, settings: {slidesToShow: 10,  slidesToScroll: 10}}
-     ]
-    };
-  },
+  static defaultProps: {
+    cards: [],
+    responsive: [
+      {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
+      {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},
+      {breakpoint: 950, settings: {slidesToShow: 3,  slidesToScroll: 3}},
+      {breakpoint: 1150, settings: {slidesToShow: 4,  slidesToScroll: 4}},
+      {breakpoint: 1400, settings: {slidesToShow: 5,  slidesToScroll: 5}},
+      {breakpoint: 1700, settings: {slidesToShow: 6,  slidesToScroll: 6}},
+        {breakpoint: 2500, settings: {slidesToShow: 8,  slidesToScroll: 8}},
+        {breakpoint: 4000, settings: {slidesToShow: 10,  slidesToScroll: 10}}
+    ]
+  }
 
   render() {
     var settings = {
@@ -67,6 +65,4 @@ var CardCarousel = React.createClass({
       </div>
      );
   }
-});
-
-module.exports = CardCarousel;
+}

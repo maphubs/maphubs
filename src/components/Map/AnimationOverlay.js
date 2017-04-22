@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 var AnimationActions = require('../../actions/map/AnimationActions');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 
 var AnimationOverlay = React.createClass({
 
@@ -12,7 +12,7 @@ var AnimationOverlay = React.createClass({
     style: PropTypes.object.isRequired
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
      
     };

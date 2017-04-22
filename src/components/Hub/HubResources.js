@@ -1,35 +1,27 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import Editor from 'react-medium-editor';
+import HubActions from '../../actions/HubActions';
+import HubStore from '../../stores/HubStore';
+import _isequal from 'lodash.isequal';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../../stores/HubStore');
-var HubActions = require('../../actions/HubActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
+export default class HubResources extends MapHubsComponent {
 
-var HubResources = React.createClass({
+  props: {
+    editing: boolean
+  }
 
-  mixins:[StateMixin.connect(HubStore), StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    editing: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  propTypes: {
-    editing: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      editing: false
-    };
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -38,11 +30,11 @@ var HubResources = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  handleResourcesChange(resources){
+  handleResourcesChange(resources: string){
     HubActions.setResources(resources);
-  },
+  }
 
   render(){
     var resources = '';
@@ -77,6 +69,4 @@ var HubResources = React.createClass({
       </div>
     );
   }
-
-});
-module.exports = HubResources;
+}

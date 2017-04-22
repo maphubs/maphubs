@@ -1,59 +1,60 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var isEmpty = require('lodash.isempty');
+import isEmpty from 'lodash.isempty';
+import HubBanner from '../components/Hub/HubBanner';
+import HubStories from '../components/Hub/HubStories';
+import HubNav from '../components/Hub/HubNav';
+import HubEditButton from '../components/Hub/HubEditButton';
+import HubStore from '../stores/HubStore';
+import HubActions from '../actions/HubActions';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import Notification from '../components/Notification';
+import Message from '../components/message';
+import Confirmation from '../components/confirmation';
+import Footer from '../components/footer';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var HubBanner = require('../components/Hub/HubBanner');
-var HubStories = require('../components/Hub/HubStories');
-var HubNav = require('../components/Hub/HubNav');
-var HubEditButton = require('../components/Hub/HubEditButton');
+export default class HubStoriesPage extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../stores/HubStore');
-var HubActions = require('../actions/HubActions');
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var Notification = require('../components/Notification');
-var Message = require('../components/message');
-var Confirmation = require('../components/confirmation');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var Footer = require('../components/footer');
-
-var HubStoriesPage = React.createClass({
-
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub', 'stories']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
   propTypes: {
-    hub: PropTypes.object,
-    stories: PropTypes.array,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+    hub: Object,
+    stories: Array<Object>,
+    canEdit: boolean,
+    locale: string,
+    footerConfig: Object
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    hub: {
+      name: "Unknown"
+    },
+    stories: [],
+    canEdit: false
+  }
 
-  getDefaultProps() {
-    return {
-      hub: {
-        name: "Unknown"
-      },
-      stories: [],
-      canEdit: false
-    };
-  },
+  state: {
+    editing: false
+  }
 
-  getInitialState() {
-    return {
-      editing: false
-    };
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(HubStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    HubActions.rehydrate({hub: this.props.hub, stories: this.props.stories});
+  }
 
   startEditing(){
     this.setState({editing: true});
-  },
+  }
 
   stopEditing(){
     var _this = this;
@@ -65,8 +66,7 @@ var HubStoriesPage = React.createClass({
         _this.setState({editing: false});
       }
     });
-
-  },
+  }
 
   publish(){
     var _this = this;
@@ -84,7 +84,7 @@ var HubStoriesPage = React.createClass({
         }
       });
     }
-  },
+  }
 
   render() {
 
@@ -94,13 +94,13 @@ var HubStoriesPage = React.createClass({
     if(this.props.canEdit){
       editButton = (
         <HubEditButton editing={this.state.editing}
-          startEditing={this.startEditing} stopEditing={this.stopEditing} />
+          startEditing={this.startEditing.bind(this)} stopEditing={this.stopEditing.bind(this)} />
       );
 
       if(!this.state.hub.published){
         publishButton = (
           <div className="center center-align" style={{margin: 'auto', position: 'fixed', top: '15px', right: 'calc(50% - 60px)'}}>
-            <button className="waves-effect waves-light btn" onClick={this.publish}>{this.__('Publish')}</button>
+            <button className="waves-effect waves-light btn" onClick={this.publish.bind(this)}>{this.__('Publish')}</button>
           </div>
         );
       }
@@ -130,6 +130,4 @@ var HubStoriesPage = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = HubStoriesPage;
+}

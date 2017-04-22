@@ -1,74 +1,64 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+
 var debug = require('../services/debug')('ImageCrop');
 import {Modal, ModalContent} from './Modal/Modal.js';
 var Promise = require('bluebird');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var MessageActions = require('../actions/MessageActions');
-//var _isequal = require('lodash.isequal');
+
+import MessageActions from '../actions/MessageActions';
 var $ = require('jquery');
-
 import Cropper from 'react-cropper';
-//import Progress from './Progress';
-
 var EXIF = require('exif-js');
+import MapHubsComponent from './MapHubsComponent';
 
-var ImageCrop = React.createClass({
+export default class ImageCrop extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+    onCrop: Function,
+    lockAspect:  boolean,
+    aspectRatio: number,
+    autoCropArea: number,
+    allowedExtensions: Array<string>,
+    max_size: number,
+    skip_size: number,
+    jpeg_quality: number,
+    resize_height: number,
+    resize_max_height: number,
+    resize_width: number,
+    resize_max_width: number
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    lockAspect: false,
+    aspectRatio: null,
+    autoCropArea: 1,
+    allowedExtensions: ['jpg', 'jpeg', 'png'],
+    max_size: 5242880, //5MB
+    skip_size: 10000, //10kb
+    jpeg_quality: 75,
+    resize_height: null,
+    resize_max_height: null,
+    resize_width: null,
+    resize_max_width: null
+  }
 
-  propTypes:  {
-    onCrop: PropTypes.func,
-    lockAspect:  PropTypes.bool,
-    aspectRatio: PropTypes.number,
-    autoCropArea: PropTypes.number,
-    allowedExtensions: PropTypes.array,
-    max_size: PropTypes.number,
-    skip_size: PropTypes.number,
-    jpeg_quality: PropTypes.number,
-    resize_height: PropTypes.number,
-    resize_max_height: PropTypes.number,
-    resize_width: PropTypes.number,
-    resize_max_width: PropTypes.number
-  },
+  state: {
+    img: null,
+    file: null,
+    show: false,
+    preview: null,
+    loading: false,
+    autoCropArea: number,
+    aspectRatio: number,
+  }
 
-  getDefaultProps(){
-    return {
-        lockAspect: false,
-        aspectRatio: null,
-        autoCropArea: 1,
-        allowedExtensions: ['jpg', 'jpeg', 'png'],
-        max_size: 5242880, //5MB
-        skip_size: 10000, //10kb
-        jpeg_quality: 75,
-        resize_height: null,
-        resize_max_height: null,
-        resize_width: null,
-        resize_max_width: null
+  constructor(props: Object){
+		super(props);
+    this.state.autoCropArea = props.autoCropArea;
+    this.state.aspectRatio = props.aspectRatio;
+	}
 
-    };
-  },
-
-  getInitialState() {
-    return {
-      img: null,
-      file: null,
-      show: false,
-      preview: null,
-      autoCropArea: this.props.autoCropArea,
-      aspectRatio: this.props.aspectRatio,
-      loading: false
-    };
-  },
-
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     var updateProps = {};
     if(nextProps.aspectRatio) {
       debug('update aspectratio to: ' + nextProps.aspectRatio);
@@ -79,15 +69,14 @@ var ImageCrop = React.createClass({
       updateProps.autoCropArea = nextProps.autoCropArea;
     }
     this.setState(updateProps);
-  },
-
+  }
 
   show(){
     this.setState({show: true});
-  },
+  }
 
 
-    checkFile(file) {
+  checkFile(file: Object) {
      let allowedFileExt = new RegExp('\.(' + this.props.allowedExtensions.join('|') + ')$', 'i');
      let message;
 
@@ -96,26 +85,26 @@ var ImageCrop = React.createClass({
 
        return new Error(message);
      }
-   },
+   }
 
-    checkFileSize(file) {
-      var _this = this;
-      return new Promise(function(fulfill, reject){
-        let maxSize =  _this.props.max_size;
-        let message;
+  checkFileSize(file: Object) {
+    var _this = this;
+    return new Promise(function(fulfill, reject){
+      let maxSize =  _this.props.max_size;
+      let message;
 
-        if (file.size > maxSize) {
-          message = _this.__('Maximum Size Exceeded:') + ' ' +  Math.round(maxSize / 1024);
-          debug(message);
-          return reject(new Error(message));
-        }
+      if (file.size > maxSize) {
+        message = _this.__('Maximum Size Exceeded:') + ' ' +  Math.round(maxSize / 1024);
+        debug(message);
+        return reject(new Error(message));
+      }
 
-        return fulfill();
-      });
-    },
+      return fulfill();
+    });
+  }
 
 
-resizeImage(sourceCanvas){
+resizeImage(sourceCanvas: any){
   var pica = null;
   if (typeof window === 'undefined') {
     return;
@@ -138,13 +127,13 @@ resizeImage(sourceCanvas){
     return;
   }
 
-  let scaledHeight, scaledWidth;
+  let scaledHeight: number, scaledWidth: number;
 
 
-  let resize_height = _this.props.resize_height;
-  let resize_width = _this.props.resize_width;
-  let resize_max_height = _this.props.resize_max_height;
-  let resize_max_width = _this.props.resize_max_width;
+  let resize_height: number = _this.props.resize_height;
+  let resize_width: number = _this.props.resize_width;
+  let resize_max_height: number = _this.props.resize_max_height;
+  let resize_max_width: number = _this.props.resize_max_width;
 
 
   if (resize_height && !resize_width) {
@@ -152,7 +141,7 @@ resizeImage(sourceCanvas){
     // and crop by max_width
     scaledHeight = resize_height;
 
-    let proportionalWidth = Math.floor(_this.state.cropWidth * scaledHeight / _this.state.cropHeight);
+    let proportionalWidth: number = Math.floor(_this.state.cropWidth * scaledHeight / _this.state.cropHeight);
 
     scaledWidth = (!resize_max_width || resize_max_width > proportionalWidth) ? proportionalWidth : resize_max_width;
 
@@ -161,7 +150,7 @@ resizeImage(sourceCanvas){
     // and crop by max_height
     scaledWidth = resize_width;
 
-    let proportionalHeight = Math.floor(_this.state.cropHeight * scaledWidth / _this.state.cropWidth);
+    let proportionalHeight: number = Math.floor(_this.state.cropHeight * scaledWidth / _this.state.cropWidth);
 
     scaledHeight = (!resize_max_height || resize_max_height > proportionalHeight) ? proportionalHeight : resize_max_height;
 
@@ -195,23 +184,24 @@ resizeImage(sourceCanvas){
 
   dest.width = scaledWidth;
   dest.height = scaledHeight;
-
-  pica.resizeCanvas(sourceCanvas, dest, {alpha}, function (err){
+  if(pica){
+    pica.resizeCanvas(sourceCanvas, dest, {alpha}, function (err){
     if(err){
       reject(err);
     }
     var data = dest.toDataURL(_this.state.file.type, quality);
     fulfill(data);
   });
+  }
 
   });
 
-},
+}
 
-  _onChange(e){
+  _onChange(e: any){
     var _this = this;
     _this.setState({loading: true});
-    let files;
+    let files: Array<Object>;
     if (e.dataTransfer) {
       files = e.dataTransfer.files;
     } else if (e.target) {
@@ -250,7 +240,7 @@ resizeImage(sourceCanvas){
 
           if(exifdata.Orientation && exifdata.Orientation !== 1){
             //transfrom the canvas
-            var ctx = tempCanvas.getContext('2d');
+            var ctx: any = tempCanvas.getContext('2d');
             switch(exifdata.Orientation){
               case 1:
                 ctx.transform(1, 0, 0, 1, 0, 0);
@@ -309,7 +299,7 @@ resizeImage(sourceCanvas){
         MessageActions.showMessage({title: 'Error', message: err});
     });
 
-  },
+  }
 
   _crop(e){
     this.setState({
@@ -318,7 +308,7 @@ resizeImage(sourceCanvas){
       cropScaleX: e.scaleX,
       cropScaleY: e.scaleY
     });
- },
+ }
 
   onSave(){
     var _this = this;
@@ -341,38 +331,37 @@ resizeImage(sourceCanvas){
       debug(err);
         MessageActions.showMessage({title: 'Error', message: err});
     });
-  },
-
+  }
 
   handleCloseSelected(){
     this.resetImageCrop();
     this.setState({show: false});
-  },
+  }
 
   zoomIn(){
     this.refs.cropper.zoom(0.1);
-  },
+  }
 
   zoomOut(){
     this.refs.cropper.zoom(-0.1);
-  },
+  }
 
    cropOriginal(){
     this.resetCropPosition();
     this.setState({autoCropArea: 1, aspectRatio: null});
-  },
+  }
 
   aspect16by9(){
     this.setState({aspectRatio: 16 / 9});
-  },
+  }
 
   aspect3by2(){
     this.setState({aspectRatio: 3 / 2});
-  },
+  }
 
   aspectSquare(){
     this.setState({aspectRatio: 1 / 1});
-  },
+  }
 
   resetCropPosition(){
     this.setState({
@@ -380,8 +369,7 @@ resizeImage(sourceCanvas){
       aspectRatio: NaN
     });
     this.refs.cropper.reset();
-
-  },
+  }
 
   resetImageCrop(){
     if(this.refs.cropper && this.refs.cropper.reset) this.refs.cropper.reset();
@@ -396,8 +384,7 @@ resizeImage(sourceCanvas){
         autoCropArea: this.props.autoCropArea,
         aspectRatio: this.props.aspectRatio
       });
-
-  },
+  }
 
   render(){
 
@@ -496,6 +483,4 @@ resizeImage(sourceCanvas){
   }
 //<Progress id="imagecrop-loading" title={this.__('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
         
-});
-
-module.exports = ImageCrop;
+}

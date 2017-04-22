@@ -1,73 +1,65 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import MapMakerStore from '../../stores/MapMakerStore';
+import UserStore from '../../stores/UserStore';
+import UserActions from '../../actions/UserActions';
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import NotificationActions from '../../actions/NotificationActions';
+import SelectGroup from '../Groups/SelectGroup';
+import Toggle from '../forms/toggle';
+import MapHubsComponent from '../MapHubsComponent';
 
+export default class SaveMapPanel extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var MapMakerStore = require('../../stores/MapMakerStore');
-var UserStore = require('../../stores/UserStore');
-var UserActions = require('../../actions/UserActions');
-var Formsy = require('formsy-react');
-var TextInput = require('../forms/textInput');
-var NotificationActions = require('../../actions/NotificationActions');
-var SelectGroup = require('../Groups/SelectGroup');
-var Toggle = require('../forms/toggle');
+  props: {
+    onSave: Function,
+    groups: Array<Object>
+  }
 
-var SaveMapPanel = React.createClass({
-
-  mixins:[StateMixin.connect(MapMakerStore), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    onSave: PropTypes.func.isRequired,
-    groups: PropTypes.array
-  },
-
-  getInitialState(){
+  constructor(props: Object){
+    super(props);
+    this.stores.push(MapMakerStore);
+    this.stores.push(UserStore);
     var ownedByGroup = false;
     if(this.props.groups && this.props.groups.length > 0){
       //suggest a group by default if user is member of groups
       ownedByGroup = true;
     }
-    return {
+    this.state = {
       canSave: false,
       ownedByGroup
     };
-  },
+  }
 
-  enableSaveButton() {
+  enableSaveButton = () => {
     this.setState({
       canSave: true
     });
-  },
+  }
 
-  disableSaveButton() {
+  disableSaveButton = () => {
     this.setState({
       canSave: false
     });
-  },
+  }
 
-  recheckLogin(){
-    UserActions.getUser(function(err){
+  recheckLogin = () => {
+    UserActions.getUser((err) => {
       if(err){
         NotificationActions.showNotification({message: this.__('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'topright'});
       }
     });
-  },
+  }
 
-  onSave(model){
+  onSave = (model: Object) => {
     var _this = this;
-    if(!model.title || model.title == ''){
+    if(!model.title || model.title === ''){
       NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'});
       return;
     }
 
-    if(!model.group && this.props.groups.length == 1){
+    if(!model.group && this.props.groups.length === 1){
         //creating a new layer when user is only the member of a single group (not showing the group dropdown)
         model.group = this.props.groups[0].group_id;
       }
@@ -75,11 +67,11 @@ var SaveMapPanel = React.createClass({
     this.props.onSave(model, () =>{
       _this.setState({saving: false});
     });
-  },
+  }
 
-  onOwnedByGroup(ownedByGroup){
+  onOwnedByGroup = (ownedByGroup: string) =>{
     this.setState({ownedByGroup});
-  },
+  }
 
   render(){
 
@@ -152,5 +144,4 @@ var SaveMapPanel = React.createClass({
     }
 
   }
-});
-module.exports = SaveMapPanel;
+}

@@ -1,44 +1,30 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var SearchBox = require('../SearchBox');
-var CardCarousel = require('../CardCarousel/CardCarousel');
+import SearchBox from '../SearchBox';
+import CardCarousel from '../CardCarousel/CardCarousel';
 var cardUtil = require('../../services/card-util');
 var debug = require('../../services/debug')('mapmaker/addlayerpanel');
-
 var urlUtil = require('../../services/url-util');
-var request = require('superagent');
+import request from 'superagent';
 var checkClientError = require('../../services/client-error-response').checkClientError;
-var MessageActions = require('../../actions/MessageActions');
-var NotificationActions = require('../../actions/NotificationActions');
+import MessageActions from '../../actions/MessageActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class AddLayerPanel extends MapHubsComponent {
 
-var AddLayerPanel = React.createClass({
+  props:  {
+    myLayers: Array<Object>,
+    popularLayers: Array<Object>,
+    onAdd: Function
+  }
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  state: {
+    searchResults: [],
+    searchActive: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    myLayers: PropTypes.array,
-    popularLayers: PropTypes.array,
-    onAdd: PropTypes.func.isRequired
-  },
-
-  getInitialState(){
-    return {
-      searchResults: [],
-      searchActive: false
-    };
-  },
-
-  handleSearch(input) {
+  handleSearch = (input) => {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
@@ -62,11 +48,11 @@ var AddLayerPanel = React.createClass({
       }
       );
     });
-  },
+  }
 
-  resetSearch(){
+  resetSearch = () => {
     this.setState({searchActive: false, searchResults: []});
-  },
+  }
 
   render(){
     var _this = this;
@@ -153,10 +139,5 @@ var AddLayerPanel = React.createClass({
           </div>
       </div>
     );
-
   }
-
-
-});
-
-module.exports = AddLayerPanel;
+}

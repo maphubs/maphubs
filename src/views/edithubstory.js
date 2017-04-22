@@ -1,40 +1,44 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var HubNav = require('../components/Hub/HubNav');
-var HubBanner = require('../components/Hub/HubBanner');
-var StoryEditor = require('../components/Story/StoryEditor');
-var Notification = require('../components/Notification');
-var Message = require('../components/message');
-var Confirmation = require('../components/confirmation');
+import HubNav from '../components/Hub/HubNav';
+import HubBanner from '../components/Hub/HubBanner';
+import StoryEditor from '../components/Story/StoryEditor';
+import Notification from '../components/Notification';
+import Message from '../components/message';
+import Confirmation from '../components/confirmation';
+import HubStore from '../stores/HubStore';
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
+import HubActions from '../actions/HubActions';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../stores/HubStore');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+export default class EditHubStory extends MapHubsComponent {
 
-var EditHubStory = React.createClass({
+  props: {
+    story: Object,
+    hub: Object,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>,
+    locale: string,
+    _csrf: string
+  }
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}),StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  static defaultProps: {
+    story: {}
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+   constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  propTypes: {
-    story: PropTypes.object.isRequired,
-    hub: PropTypes.object.isRequired,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array,
-    locale: PropTypes.string.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      story: {}
-    };
-  },
-
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(HubStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    HubActions.rehydrate({hub: this.props.hub});
+  }
 
   render() {
     return (
@@ -57,6 +61,4 @@ var EditHubStory = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = EditHubStory;
+}

@@ -1,30 +1,30 @@
+//@flow
 import React from 'react';
-
-
 import {Modal, ModalContent, ModalFooter} from './Modal/Modal';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Store = require('../stores/ConfirmationStore');
-var Actions = require('../actions/ConfirmationActions');
+import Reflux from 'reflux';
+import Store from '../stores/ConfirmationStore';
+import Actions from '../actions/ConfirmationActions';
 
+export default class Confirmation extends Reflux.Component {
 
-var Confirmation = React.createClass({
-
-  mixins:[StateMixin.connect(Store)],
+  constructor(props: Object){
+		super(props);
+		this.stores = [Store];
+	}
 
   hide(){
     Actions.reset();
-  },
+  }
 
   onNegativeResponse(){
     this.state.onNegativeResponse();
     this.hide();
-  },
+  }
 
   onPositiveResponse(){
     this.state.onPositiveResponse();
     this.hide();
-  },
+  }
 
   render(){
     return (
@@ -43,6 +43,4 @@ var Confirmation = React.createClass({
       </Modal>
     );
   }
-});
-
-module.exports = Confirmation;
+}

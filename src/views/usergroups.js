@@ -1,40 +1,37 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 //var debug = require('../services/debug')('usermaps');
 var cardUtil = require('../services/card-util');
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var UserGroups = React.createClass({
+export default class UserGroups extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+		groups: Array<Object>,
+    user: Object,
+    canEdit: boolean,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    groups: [],
+    user: {},
+    canEdit: false
+  }
 
-  propTypes: {
-		groups: PropTypes.array,
-    user: PropTypes.object,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {
-      groups: [],
-      user: {},
-      canEdit: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
 	render() {
 
@@ -92,6 +89,4 @@ var UserGroups = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = UserGroups;
+}

@@ -1,71 +1,60 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import LayerSettings from '../components/CreateLayer/LayerSettings';
+import PresetEditor from '../components/CreateLayer/PresetEditor';
+import LayerStyle from '../components/CreateLayer/LayerStyle';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import ConfirmationActions from '../actions/ConfirmationActions';
+import request from 'superagent';
+import LayerActions from '../actions/LayerActions';
+import PresetActions from '../actions/presetActions';
+import LayerStore from '../stores/layer-store';
 var $ = require('jquery');
 var slug = require('slug');
-
-var Header = require('../components/header');
-var LayerSettings = require('../components/CreateLayer/LayerSettings');
-var PresetEditor = require('../components/CreateLayer/PresetEditor');
-var LayerStyle = require('../components/CreateLayer/LayerStyle');
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var ConfirmationActions = require('../actions/ConfirmationActions');
-
-var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import PresetStore from '../stores/preset-store';
 
+export default class LayerAdmin extends MapHubsComponent {
 
-var LayerActions = require('../actions/LayerActions');
-var PresetActions = require('../actions/presetActions');
+  props: {
+		layer: Object,
+    groups: Array<Object>,
+    onSubmit: Function,
+    locale: string,
+    _csrf: string
+  }
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LayerStore = require('../stores/layer-store');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-var LayerAdmin = React.createClass({
-
-  mixins:[StateMixin.connect(LayerStore, {initWithProps: ['layer', 'groups']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-		layer: PropTypes.object.isRequired,
-    groups: PropTypes.array.isRequired,
-    onSubmit: PropTypes.func,
-    locale: PropTypes.string.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      onSubmit() {}
-    };
-  },
-
-  getInitialState() {
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(LayerStore);
+    Rehydrate.initStore(PresetStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    LayerActions.rehydrate({layer: this.props.layer, groups: this.props.groups});
+    LayerActions.loadLayer(this.props.layer);
     PresetActions.setLayerId(this.props.layer.layer_id);
     PresetActions.loadPresets(this.props.layer.presets);
-    return {
-
-    };
-  },
+  }
 
   componentDidMount(){
     $('ul.tabs').tabs();
     $('.layeradmin-tooltips').tooltip();
-  },
-
-  componentWillMount(){
-      LayerActions.loadLayer(this.props.layer);
-  },
+  }
 
   save(){
     NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000, onDismiss: this.props.onSubmit});
-  },
+  }
 
   savePresets(){
     var _this = this;
@@ -77,15 +66,15 @@ var LayerAdmin = React.createClass({
         _this.save();
       }
     });
-  },
+  }
 
   presetsValid(){
     this.setState({canSavePresets: true});
-  },
+  }
 
   presetsInvalid(){
     this.setState({canSavePresets: false});
-  },
+  }
 
   deleteLayer(){
     var _this = this;
@@ -109,7 +98,7 @@ var LayerAdmin = React.createClass({
         });
       }
     });
-  },
+  }
 
   refreshRemoteLayer(){
     var _this = this;
@@ -128,7 +117,7 @@ var LayerAdmin = React.createClass({
         cb();
       });
     });
-  },
+  }
 
 	render() {
 
@@ -154,13 +143,13 @@ var LayerAdmin = React.createClass({
                  <h5>{this.__('Unable to modify remote layers.')}</h5>
                   <div className="center-align center">
                     <button className="btn" style={{marginTop: '20px'}}
-                      onClick={this.refreshRemoteLayer}>{this.__('Refresh Remote Layer')}</button>
+                      onClick={this.refreshRemoteLayer.bind(this)}>{this.__('Refresh Remote Layer')}</button>
                   </div>
                   <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
               </div>
               <div className="fixed-action-btn action-button-bottom-right">
                 <a className="btn-floating btn-large tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
-                    onClick={this.deleteLayer}>
+                    onClick={this.deleteLayer.bind(this)}>
                   <i className="material-icons">delete</i>
                 </a>
               </div>
@@ -191,32 +180,32 @@ var LayerAdmin = React.createClass({
                  showCancel={false}
                  showGroup={false}
                  warnIfUnsaved
-                 submitText={this.__('Save')} onSubmit={this.save}
+                 submitText={this.__('Save')} onSubmit={this.save.bind(this)}
              />
            </div>
            <div id="fields" className="col s12" style={{display: tabContentDisplay}}>
              <div className="container" >
                <h5>{this.__('Data Fields')}</h5>
                <div className="right">
-                 <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                 <button onClick={this.savePresets.bind(this)} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
                </div>
-               <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid}/>
+               <PresetEditor onValid={this.presetsValid.bind(this)} onInvalid={this.presetsInvalid.bind(this)}/>
                <div className="right">
-                 <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                 <button onClick={this.savePresets.bind(this)} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
                </div>
              </div>
            </div>
            <div id="style" className="col s12" style={{display: tabContentDisplay}}>
              <LayerStyle
                  showPrev={false}
-                 submitText="Save" onSubmit={this.save}
+                 submitText="Save" onSubmit={this.save.bind(this)}
               />
            </div>
         </div>
       </div>
       <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large layeradmin-tooltips red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
-              onClick={this.deleteLayer}>
+              onClick={this.deleteLayer.bind(this)}>
             <i className="material-icons">delete</i>
           </a>
       </div>
@@ -225,6 +214,4 @@ var LayerAdmin = React.createClass({
 		);
 	}
 }
-});
-
-module.exports = LayerAdmin;
+}

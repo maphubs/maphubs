@@ -1,53 +1,46 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import SearchBox from '../components/SearchBox';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 var debug = require('../services/debug')('views/layers');
 var urlUtil = require('../services/url-util');
-var request = require('superagent');
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
 var cardUtil = require('../services/card-util');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
-var Layers = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class Layers extends MapHubsComponent {
 
   propTypes: {
-    featuredLayers: PropTypes.array,
-    recentLayers: PropTypes.array,
-    popularLayers: PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+    featuredLayers: Array<Object>,
+    recentLayers: Array<Object>,
+    popularLayers: Array<Object>,
+    locale: string,
+    footerConfig: Object
+  }
 
-  getDefaultProps() {
-    return {
-      layers: []
-    };
-  },
+  static defaultProps: {
+    layers: []
+  }
 
-  getInitialState(){
-    return {
-      searchResults: [],
-      searchActive: false
-    };
-  },
+  state: {
+    searchResults: [],
+    searchActive: false
+  }
 
-  handleSearch(input) {
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
+  handleSearch(input: string) {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
@@ -71,11 +64,11 @@ var Layers = React.createClass({
       }
       );
     });
-  },
+  }
 
   resetSearch(){
     this.setState({searchActive: false, searchResults: []});
-  },
+  }
 
 	render() {
 
@@ -137,7 +130,7 @@ var Layers = React.createClass({
                 <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse layers or create a new layer.')}</p>
               </div>
               <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+                <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch.bind(this)} onReset={this.resetSearch.bind(this)}/>
               </div>
             </div>
           </div>
@@ -168,5 +161,4 @@ var Layers = React.createClass({
       </div>
 		);
 	}
-});
-module.exports = Layers;
+}

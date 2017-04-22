@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Maps = require('../views/maps');
+import Maps from '../views/maps';
 if (!global.Intl) {
  require('intl');
  require('intl/locale-data/jsonp/en.js');

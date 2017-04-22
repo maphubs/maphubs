@@ -1,11 +1,11 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("cropperjs/dist/cropper.css");
-var FeatureInfo = require('../views/featureinfo');
+import FeatureInfo from '../views/featureinfo';
 
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');

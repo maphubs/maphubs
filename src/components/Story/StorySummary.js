@@ -1,35 +1,20 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var slug = require('slug');
-
 var urlUtil = require('../../services/url-util');
+import StoryHeader from './StoryHeader';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class StorySummary extends MapHubsComponent {
 
-var StoryHeader = require('./StoryHeader');
+  props: {
+    story: Object,
+    baseUrl: string
+  }
 
-
-var StorySummary = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    story: PropTypes.object.isRequired,
-    baseUrl: PropTypes.string
-  },
-
-  getDefaultProps(){
-    return {
-      baseUrl: ''
-    };
-  },
+  static defaultProps: {
+    baseUrl: ''
+  }
 
   render(){
     var title = '';
@@ -46,8 +31,6 @@ var StorySummary = React.createClass({
     }
 
     linkUrl += '/story/' + this.props.story.story_id + '/' + slug(title);
-
-
 
     var image = '';
     if(this.props.story.firstimage){
@@ -92,7 +75,4 @@ var StorySummary = React.createClass({
      </div>
    );
   }
-
-});
-
-module.exports = StorySummary;
+}

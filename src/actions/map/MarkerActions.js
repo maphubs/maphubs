@@ -1,10 +1,7 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'addMarker': {},
-  'removeMarker': {},
-  'removeLayer': {},
-  'getMarker': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'addMarker',
+  'removeMarker',
+  'removeLayer',
+  'getMarker'
+]);

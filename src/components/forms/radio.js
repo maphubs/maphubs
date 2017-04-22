@@ -1,43 +1,39 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var classNames = require('classnames');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
+import {HOC} from 'formsy-react';
+import classNames from 'classnames';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var Radio= React.createClass({
+class Radio extends MapHubsPureComponent {
 
-  mixins: [PureRenderMixin,Formsy.Mixin],
+  props: {
+    className: string,
+    dataTooltip: string,
+    dataDelay: number,
+    dataPosition: string,
+    defaultValue: string,
+    label: string,
+    name: string,
+    onChange: Function,
+    options: Array<Object>
+  }
 
-  propTypes: {
-    className: PropTypes.string,
-    dataTooltip: PropTypes.string,
-    dataDelay: PropTypes.number,
-    dataPosition: PropTypes.string,
-    defaultValue: PropTypes.string,
-    label: PropTypes.string,
-    name: PropTypes.string,
-    onChange: PropTypes.func,
-    options: PropTypes.array
-  },
+  static defaultProps: {
+    options: {},
+    defaultValue: null,
+    dataDelay: 100
+  }
 
-  getDefaultProps() {
-    return {
-      options: {},
-      defaultValue: undefined,
-      dataDelay: 100
-    };
-  },
+  componentWillMount() {
+    this.setValue(this.props.defaultValue);
+  }
 
-  changeValue(event) {
-     this.setValue(event.target.id);
-     if(this.props.onChange){
-       this.props.onChange(event.target.id);
-     }
-   },
-
-   componentWillMount() {
-     this.setValue(this.props.defaultValue);
-   },
+  changeValue = (event) => {
+    this.setValue(event.target.id);
+    if(this.props.onChange){
+      this.props.onChange(event.target.id);
+    }
+  }
 
   render() {
      var className = classNames(this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
@@ -52,7 +48,7 @@ var Radio= React.createClass({
             <label>{this.props.label}</label>
               {this.props.options.map(function(option){
                 var checked = false;
-                if(option.value == value){
+                if(option.value === value){
                   checked = true;
                 }
                 return (<p key={option.value}>
@@ -62,10 +58,6 @@ var Radio= React.createClass({
               })}
             </div>
     );
-
   }
-});
-
-
-
-module.exports = Radio;
+}
+export default HOC(Radio);

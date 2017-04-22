@@ -1,29 +1,32 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/FeatureNotesActions');
+import Reflux from 'reflux';
+import Actions from '../actions/FeatureNotesActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class FeatureNotesStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+   constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       notes: null,
       unsavedChanges: false,
       saving: false
     };
-  },
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState(this.getDefaultState());
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
  saveNotes(layer_id, mhid, _csrf, cb){
@@ -44,7 +47,7 @@ module.exports = Reflux.createStore({
        cb(null);
      });
    });
- },
+ }
 
  setNotes(notes){
    var state = this.state;
@@ -53,5 +56,4 @@ module.exports = Reflux.createStore({
    this.setState(state);
  }
 
-
-});
+}

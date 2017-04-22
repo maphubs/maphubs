@@ -1,41 +1,38 @@
 // @flow
 //Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
 import React from 'react';
-import PropTypes from 'prop-types';
 
-var Marker = React.createClass({
+export default class Marker extends React.Component {
 
-  propTypes:  {
-    shape: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    shapeFill: PropTypes.string,
-    shapeFillOpacity: PropTypes.number,
-    shapeStroke: PropTypes.string,
-    shapeStrokeWidth: PropTypes.number,
-    icon:  PropTypes.string,
-    iconFill: PropTypes.string,
-    iconFillOpacity: PropTypes.number,
-    iconStroke: PropTypes.string,
-    iconStrokeWidth: PropTypes.number
-  },
+  props: {
+    shape: string,
+    width: number,
+    height: number,
+    shapeFill: string,
+    shapeFillOpacity: number,
+    shapeStroke: string,
+    shapeStrokeWidth: number,
+    icon:  string,
+    iconFill: string,
+    iconFillOpacity: number,
+    iconStroke: string,
+    iconStrokeWidth: number
+  }
 
-  getDefaultProps() {
-    return {
-      shape: 'MAP_PIN',
-      width: 48,
-      height: 48,
-      shapeFill: 'red',
-      shapeFillOpacity: 1,
-      shapeStroke: 'black',
-      shapeStrokeWidth: 1,
-      icon:  'none',
-      iconFill: 'white',
-      iconFillOpacity: 1,
-      iconStroke: '#212121',
-      iconStrokeWidth: 0
-    };
-  },
+  static defaultProps: {
+    shape: 'MAP_PIN',
+    width: 48,
+    height: 48,
+    shapeFill: 'red',
+    shapeFillOpacity: 1,
+    shapeStroke: 'black',
+    shapeStrokeWidth: 1,
+    icon:  'none',
+    iconFill: 'white',
+    iconFillOpacity: 1,
+    iconStroke: '#212121',
+    iconStrokeWidth: 0
+  }
 
   render(){
      
@@ -112,8 +109,4 @@ var Marker = React.createClass({
       </svg>
     );
   }
-
-});
-
-module.exports = Marker;
-
+}

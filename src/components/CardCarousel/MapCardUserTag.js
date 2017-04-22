@@ -1,14 +1,9 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 
 var urlUtil = require('../../services/url-util');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
 var moment = require('moment-timezone');
-var Gravatar = require('../user/Gravatar');
+import Gravatar from '../user/Gravatar';
 
 import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -19,24 +14,17 @@ addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
 
-var MapCardUserTag = React.createClass({
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-  mixins:[StateMixin.connect(LocaleStore)],
+export default class MapCardUserTag extends MapHubsComponent {
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    map: Object
+  }
 
-  propTypes: {
-    map: PropTypes.object.isRequired
-  },
-
-  getDefaultProps(){
-    return {
-      baseUrl: ''
-    };
-  },
-
+  static defaultProps: {
+    baseUrl: ''
+  }
 
   render(){
 
@@ -69,16 +57,10 @@ var MapCardUserTag = React.createClass({
         </div>
       );
 
-
-
-
    return (
      <div>
        {author}
      </div>
    );
   }
-
-});
-
-module.exports = MapCardUserTag;
+}

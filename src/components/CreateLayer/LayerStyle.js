@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var mapStyles = require('../Map/styles');
 var $ = require('jquery');
@@ -49,7 +49,7 @@ var LayerStyle = React.createClass({
 
 
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       onSubmit: null,
       waitForTileInit: false //wait for tile service before showing map

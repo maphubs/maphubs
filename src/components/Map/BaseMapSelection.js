@@ -4,7 +4,7 @@ var Radio = require('../forms/radio');
 var Formsy = require('formsy-react');
 //var Actions = require('../../actions/map/BaseMapActions');
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var BaseMapStore = require('../../stores/map/BaseMapStore');
 var LocaleStore = require('../../stores/LocaleStore');

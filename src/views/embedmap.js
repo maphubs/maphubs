@@ -1,44 +1,39 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var MiniLegend = require('../components/Map/MiniLegend');
-var Map = require('../components/Map/Map');
+import MiniLegend from '../components/Map/MiniLegend';
+import Map from '../components/Map/Map';
 var _debounce = require('lodash.debounce');
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
 var _bbox = require('@turf/bbox');
 
-var EmbedMap = React.createClass({
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+export default class EmbedMap extends MapHubsComponent {
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    map: Object,
+    layers: Array<Object>,
+    isStatic: boolean,
+    interactive: boolean,
+    locale: string,
+    geoJSONUrl: string,
+    markerColor: string,
+    _csrf: string
+  }
 
-  propTypes: {
-    map: PropTypes.object.isRequired,
-    layers: PropTypes.array.isRequired,
-    isStatic: PropTypes.bool,
-    interactive: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    geoJSONUrl: PropTypes.string,
-    markerColor: PropTypes.string
-  },
+  static defaultProps: {
+    isStatic: false,
+    interactive: false,
+    markerColor: '#FF0000'
+  }
 
-  getDefaultProps() {
-    return {
-      isStatic: false,
-      interactive: false,
-      markerColor: '#FF0000'
-    };
-  },
-
-  getInitialState(){
+  constructor(props: Object){
+		super(props);
     var glStyle = this.props.map.style;
     if(this.props.geoJSONUrl){
       glStyle.sources['geojson-overlay'] = {
@@ -81,7 +76,7 @@ var EmbedMap = React.createClass({
     });
     }
 
-    return {
+    this.state = {
       retina: false,
       width: 1024,
       height: 600,
@@ -89,10 +84,12 @@ var EmbedMap = React.createClass({
       bounds: null,
       glStyle
     };
-  },
+	}
 
   componentWillMount(){
     var _this = this;
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
     if (typeof window === 'undefined') return; //only run this on the client
     function isRetinaDisplay() {
         if (window.matchMedia) {
@@ -132,33 +129,28 @@ var EmbedMap = React.createClass({
       }, 2500).bind(this);
       debounced();
     });
-  },
+  }
 
   componentDidMount(){
     $('.embed-tooltips').tooltip();
 
-
     if(this.props.geoJSONUrl){
       this.loadGeoJSON(this.props.geoJSONUrl);
     }
-  
+  }
 
-  },
-
-  componentDidUpdate(prevState){
+  componentDidUpdate(prevState: Object){
     if(this.state.interactive && !prevState.interactive){
       $(this.refs.mapLayersPanel).sideNav();
     }
-  },
+  }
 
   startInteractive(){
     this.setState({interactive: true});
     $('.embed-tooltips').tooltip('remove');
+  }
 
-  },
-
-
-  loadGeoJSON(url){
+  loadGeoJSON(url: string){
     var _this = this;
     request.get(url)
     .type('json').accept('json')
@@ -170,9 +162,8 @@ var EmbedMap = React.createClass({
         _this.setState({bounds});
       });
     });
-  },
+  }
   
-
   render() {
     var map = '';
 
@@ -280,16 +271,12 @@ var EmbedMap = React.createClass({
             {legend}
           </Map>
         </div>
-
       );
     }
     return (
       <div className="embed-map">
-
         {map}
       </div>
     );
   }
-});
-
-module.exports = EmbedMap;
+}

@@ -1,62 +1,48 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var GroupTag = require('../Groups/GroupTag');
-var Formsy = require('formsy-react');
-var Toggle = require('../../components/forms/toggle');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+import GroupTag from '../Groups/GroupTag';
+import Formsy from 'formsy-react';
+import Toggle from '../../components/forms/toggle';
 var $ = require('jquery');
-var _isEqual = require('lodash.isequal');
-var flow = require('lodash.flow');
+import _isEqual from 'lodash.isequal';
+import flow from 'lodash.flow';
 require('dnd-core/lib/actions/dragDrop');
-var DragSource = require('react-dnd').DragSource;
-var DropTarget = require('react-dnd').DropTarget;
-var DraggleIndicator = require('../../components/UI/DraggableIndicator');
-var DragItemConfig = require('../../components/UI/DragItemConfig');
+import {DragSource, DropTarget} from 'react-dnd';
 
-var LayerListItem = React.createClass({
+import DraggleIndicator from '../../components/UI/DraggableIndicator';
+import DragItemConfig from '../../components/UI/DragItemConfig';
 
-  mixins:[StateMixin.connect(LocaleStore)],
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+class LayerListItem extends MapHubsComponent {
 
   propTypes:  {
-    id: PropTypes.number.isRequired,
-    item: PropTypes.object.isRequired,    
-    moveItem: PropTypes.func.isRequired,
-    showVisibility: PropTypes.bool,
-    showRemove: PropTypes.bool,
-    showDesign: PropTypes.bool,
-    showEdit: PropTypes.bool,
-    toggleVisibility: PropTypes.func,
-    removeFromMap: PropTypes.func,
-    showLayerDesigner: PropTypes.func,
-    editLayer: PropTypes.func,
-    isDragging: PropTypes.bool.isRequired,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    index: PropTypes.number.isRequired,
-  },
+    id: number,
+    item: Object,    
+    moveItem: Function,
+    showVisibility: boolean,
+    showRemove: boolean,
+    showDesign: boolean,
+    showEdit: boolean,
+    toggleVisibility: Function,
+    removeFromMap: Function,
+    showLayerDesigner: Function,
+    editLayer: Function,
+    isDragging: boolean,
+    connectDragSource: Function,
+    connectDropTarget: Function,
+    index: number
+  }
 
   getDefaultProps(){
     return {
       showVisibility: false
     };
-  },
-
-  getInitialState(){
-    return {
-    };
-  },
+  }
 
   componentDidMount(){
     $('.map-layer-tooltipped').tooltip();
-  },
+  }
 
   shouldComponentUpdate(nextProps, nextState){
     //only update if something changes
@@ -67,17 +53,17 @@ var LayerListItem = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  resetTooltips(){
+  resetTooltips = () => {
     $('.map-layer-tooltipped').tooltip('remove');
     $('.map-layer-tooltipped').tooltip();
-  },
+  }
 
-  removeFromMap(layer){
+  removeFromMap = (layer) => {
     $('.map-layer-tooltipped').tooltip('remove');
     this.props.removeFromMap(layer);
-  },
+  }
 
   render() {
     var _this = this;
@@ -219,9 +205,9 @@ var LayerListItem = React.createClass({
     ));
   }
 
-});
+}
 
-module.exports = flow(
+export default flow(
   DropTarget('layer', DragItemConfig.dropTargetConfig, DragItemConfig.connect),
   DragSource('layer', DragItemConfig.dragSourceConfig, DragItemConfig.collect),
 )(LayerListItem);

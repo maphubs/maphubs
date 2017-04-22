@@ -1,45 +1,47 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
-var _centroid = require('@turf/centroid');
-var MapToolButton = require('./MapToolButton'); 
+import _centroid from '@turf/centroid';
+import MapToolButton from './MapToolButton'; 
 
 var mapboxgl = {};
 
 if (typeof window !== 'undefined') {
     mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js");
 }
+export default class InsetMap extends React.Component {
 
-var InsetMap = React.createClass({
+  props: {
+    id: string,
+    bottom:  string,
+    attributionControl: boolean,
+    collapsed: boolean
+  }
 
-  propTypes: {
-    id: PropTypes.string,
-    bottom:  PropTypes.string,
-    attributionControl: PropTypes.bool,
-    collapsed: PropTypes.bool
-  },
+  static defaultProps: {
+    id: 'map',
+    bottom: '30px',
+    attributionControl: false,
+    collapsed: false
+  }
 
-  getDefaultProps(){
-    return {
-      id: 'map',
-      bottom: '30px',
-      attributionControl: false,
-      collapsed: false
-    };
-  },
+  state: {
+    collapsed: boolean
+  }
 
-  getInitialState(){
-    return {
-      collapsed: this.props.collapsed
-    };
-  },
+  constructor(props){
+    super(props);
+    this.state = {
+      collapsed: props.collapsed
+    }
+  }
 
   componentDidMount() {   
     if(this.refs.insetMap){
       $(this.refs.insetMap).show();
     }
-  },
+  }
 
   componentDidUpdate(){
     if(this.insetMap){
@@ -53,7 +55,7 @@ var InsetMap = React.createClass({
          this.insetMapActive = true;
       }
     }
-  },
+  }
 
   createInsetMap(center, bounds, baseMap) {
       var _this = this;
@@ -108,19 +110,19 @@ var InsetMap = React.createClass({
       });
       _this.insetMap = insetMap;
 
-  },
+  }
 
   reloadInset(baseMapUrl){
     if(this.insetMap){
       this.insetMap.setStyle(baseMapUrl);
     } 
-  },
+  }
 
   fitBounds(bounds, options){
     if(this.insetMap){
       this.insetMap.fitBounds(bounds, options);
     }
-  },
+  }
 
   toggleCollapsed(){
     if(this.state.collapsed){
@@ -129,11 +131,11 @@ var InsetMap = React.createClass({
       this.setState({collapsed: true});
       $(this.refs.insetMap).show();
     }
-  },
+  }
 
   getInsetMap(){
     return this.insetMap;
-  },
+  }
 
     getGeoJSONFromBounds(bounds){
     var v1 = bounds.getNorthWest().toArray();
@@ -154,16 +156,16 @@ var InsetMap = React.createClass({
             }
       }]
     };
-  },
+  }
 
-  showInsetAsPoint(zoom){
+  showInsetAsPoint(zoom: number){
     if(zoom && zoom > 9){
       return true;
     }
     return false;
-  },
+  }
 
-   updateInsetGeomFromBounds(bounds, zoom){
+   updateInsetGeomFromBounds(bounds, zoom: number){
      if(this.insetMap){
       var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
       var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");
@@ -194,7 +196,7 @@ var InsetMap = React.createClass({
         }
       }
    }
-  },
+  }
 
   render(){
     if(this.state.collapsed){
@@ -255,7 +257,4 @@ var InsetMap = React.createClass({
       );
     }
   }
-
-});
-
-module.exports = InsetMap;
+}

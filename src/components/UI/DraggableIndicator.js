@@ -1,36 +1,30 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var PureRenderMixin = require('react-addons-pure-render-mixin');
-
 
 //modified from: https://resoundingechoes.net/development/style-draggable-elements-indicate-draggability/  
-var draggableIndicator = React.createClass({
-  mixins: [PureRenderMixin],
+export default class DraggableIndicator extends React.PureComponent {
 
   propTypes:  {
-    width: PropTypes.number,
-    height: PropTypes.number,
-    dotWidth:  PropTypes.number,
-    offset:  PropTypes.number,
-    numX:  PropTypes.number,
-    numY:  PropTypes.number,
-    initialX: PropTypes.number,
-    initialY: PropTypes.number
-  },
+    width: number,
+    height: number,
+    dotWidth: number,
+    offset: number,
+    numX: number,
+    numY: number,
+    initialX: number,
+    initialY: number
+  }
 
-  getDefaultProps() {
-    return {
-      width: 32,
-      height: 32,
-      dotWidth: 2,
-      offset: 4,
-      numX: 4,
-      numY: 4,
-      initialX: 0,
-      initialY: 0
-    };
-  },
+  static defaultProps: {
+    width: 32,
+    height: 32,
+    dotWidth: 2,
+    offset: 4,
+    numX: 4,
+    numY: 4,
+    initialX: 0,
+    initialY: 0
+  }
 
   render(){
     var _this = this;
@@ -55,7 +49,4 @@ var draggableIndicator = React.createClass({
     );
 
   }
-
-});
-
-module.exports = draggableIndicator;
+}

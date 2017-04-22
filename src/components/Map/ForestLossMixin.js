@@ -1,6 +1,6 @@
 var debug = require('../../services/debug')('Map/ForestLossMixin');
 var _assignIn = require('lodash.assignin');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 
 var AnimationActions = require('../../actions/map/AnimationActions');
 

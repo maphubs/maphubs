@@ -1,10 +1,7 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'play': {},
-  'stop': {},
-  'reset': {},
-  'tick': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'play',
+  'stop',
+  'reset',
+  'tick'
+]);

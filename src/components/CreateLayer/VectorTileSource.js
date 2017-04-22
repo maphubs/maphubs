@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 
 var TextInput = require('../forms/textInput');
@@ -28,7 +28,7 @@ var RasterTileSource = React.createClass({
     onPrev: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       onSubmit: null
     };

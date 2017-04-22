@@ -1,72 +1,66 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-//var $ = require('jquery');
-var isEmpty = require('lodash.isempty');
-
-var HubBanner = require('../components/Hub/HubBanner');
-var HubMap = require('../components/Hub/HubMap');
-var HubStories = require('../components/Hub/HubStories');
-var HubNav = require('../components/Hub/HubNav');
-//var HubLinkSection = require('../components/Hub/HubLinkSection');
-var HubEditButton = require('../components/Hub/HubEditButton');
-var HubResources = require('../components/Hub/HubResources');
-var HubDescription = require('../components/Hub/HubDescription');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../stores/HubStore');
-var HubActions = require('../actions/HubActions');
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var Notification = require('../components/Notification');
-var Message = require('../components/message');
-var Confirmation = require('../components/confirmation');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var Footer = require('../components/footer');
-
-
+import isEmpty from 'lodash.isempty';
+import HubBanner from '../components/Hub/HubBanner';
+import HubMap from '../components/Hub/HubMap';
+import HubStories from '../components/Hub/HubStories';
+import HubNav from '../components/Hub/HubNav';
+import HubEditButton from '../components/Hub/HubEditButton';
+import HubResources from '../components/Hub/HubResources';
+import HubDescription from '../components/Hub/HubDescription';
+import HubStore from '../stores/HubStore';
+import HubActions from '../actions/HubActions';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import Notification from '../components/Notification';
+import Message from '../components/message';
+import Confirmation from '../components/confirmation';
+import Footer from '../components/footer';
 import Progress from '../components/Progress';
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var HubInfo = React.createClass({
+export default class HubInfo extends MapHubsComponent {
 
-  mixins:[
-    StateMixin.connect(HubStore, {initWithProps: ['hub', 'map', 'layers', 'stories', 'canEdit']}),
-    StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})
-  ],
+  props: {
+    hub: Object,
+    map: Object,
+    layers: Array<Object>,
+    stories: Array<Object>,
+    canEdit: boolean,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    hub: {
+      name: "Unknown"
+    },
+    layers: [],
+    stories: [],
+    canEdit: false
+  }
 
-  propTypes: {
-    hub: PropTypes.object,
-    map: PropTypes.object,
-    layers: PropTypes.array,
-    stories: PropTypes.array,
-    canEdit: PropTypes.bool,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  state: {
+    editing: false
+  }
 
-  getDefaultProps() {
-    return {
-      hub: {
-        name: "Unknown"
-      },
-      layers: [],
-      stories: [],
-      canEdit: false
-    };
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  getInitialState() {
-    return {
-      editing: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(HubStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    HubActions.rehydrate({hub: this.props.hub, map: this.props.map, layers: this.props.layers, stories: this.props.stories, canEdit: this.props.canEdit});
+  }
 
   componentDidMount() {
     var _this = this;
@@ -75,11 +69,11 @@ var HubInfo = React.createClass({
         return _this.__('You have not saved the edits for your hub, your changes will be lost.');
       }
     };
-  },
+  }
 
   startEditing(){
     this.setState({editing: true});
-  },
+  }
 
   stopEditing(){
     var _this = this;
@@ -92,8 +86,7 @@ var HubInfo = React.createClass({
         window.location.reload(true);
       }
     });
-
-  },
+  }
 
   publish(){
     var _this = this;
@@ -111,7 +104,7 @@ var HubInfo = React.createClass({
         }
       });
     }
-  },
+  }
 
   render() {
 
@@ -189,6 +182,4 @@ var HubInfo = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = HubInfo;
+}

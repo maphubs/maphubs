@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const MapEdit = require('../views/mapedit');
+import MapEdit from '../views/mapedit';
 
 require('babel-polyfill');
 require('jquery');

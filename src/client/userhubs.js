@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const UserHubs = require('../views/userhubs');
+import UserHubs from '../views/userhubs';
 
 require('babel-polyfill');
 require('jquery');

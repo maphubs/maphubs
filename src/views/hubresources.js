@@ -1,57 +1,57 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import isEmpty from 'lodash.isempty';
+import HubBanner from '../components/Hub/HubBanner';
+import HubNav from '../components/Hub/HubNav';
+import HubEditButton from '../components/Hub/HubEditButton';
+import HubResources from '../components/Hub/HubResources';
 
-var isEmpty = require('lodash.isempty');
+import HubStore from '../stores/HubStore';
+import HubActions from '../actions/HubActions';
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import Notification from '../components/Notification';
+import Message from '../components/message';
+import Confirmation from '../components/confirmation';
+import Footer from '../components/footer';
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
+export default class HubResourcesPage extends MapHubsComponent {
 
-var HubBanner = require('../components/Hub/HubBanner');
-var HubNav = require('../components/Hub/HubNav');
-var HubEditButton = require('../components/Hub/HubEditButton');
+  props: {
+    hub: Object,
+    canEdit:boolean,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-var HubResources = require('../components/Hub/HubResources');
+  static defaultProps: {
+    hub: {
+      name: "Unknown"
+    },
+    resources: [],
+    canEdit: false
+  }
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../stores/HubStore');
-var HubActions = require('../actions/HubActions');
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var Notification = require('../components/Notification');
-var Message = require('../components/message');
-var Confirmation = require('../components/confirmation');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var Footer = require('../components/footer');
+  state: {
+    editing: false
+  }
 
-var HubResourcesPage = React.createClass({
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-  propTypes: {
-    hub: PropTypes.object,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  getDefaultProps() {
-    return {
-      hub: {
-        name: "Unknown"
-      },
-      resources: [],
-      canEdit: false
-    };
-  },
-
-  getInitialState() {
-    return {
-      editing: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(HubStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    HubActions.rehydrate({hub: this.props.hub, canEdit: this.props.canEdit});
+  }
 
   componentDidMount() {
     var _this = this;
@@ -60,11 +60,11 @@ var HubResourcesPage = React.createClass({
         return _this.__('You have not saved the edits for your hub, your changes will be lost.');
       }
     };
-  },
+  }
 
   startEditing(){
     this.setState({editing: true});
-  },
+  }
 
   stopEditing(){
     var _this = this;
@@ -76,8 +76,7 @@ var HubResourcesPage = React.createClass({
         _this.setState({editing: false});
       }
     });
-
-  },
+  }
 
   publish(){
     var _this = this;
@@ -95,7 +94,7 @@ var HubResourcesPage = React.createClass({
         }
       });
     }
-  },
+  }
 
   render() {
     var editButton = '';
@@ -136,6 +135,4 @@ var HubResourcesPage = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = HubResourcesPage;
+}

@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const CreateGroup= require('../views/creategroup');
+import CreateGroup from '../views/creategroup';
 
 require('jquery');
 require("materialize-css");

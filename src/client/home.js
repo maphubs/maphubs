@@ -1,5 +1,5 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 if (!global.Intl) {
  require('intl');
@@ -10,7 +10,7 @@ if (!global.Intl) {
 }
 
 require('babel-polyfill');
-var Home = require('../views/home');
+import Home from '../views/home';
 
 
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');

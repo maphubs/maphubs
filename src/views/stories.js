@@ -1,30 +1,33 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import StorySummary from '../components/Story/StorySummary';
+import MessageActions from '../actions/MessageActions';
+import UserStore from '../stores/UserStore';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var StorySummary = require('../components/Story/StorySummary');
-var MessageActions = require('../actions/MessageActions');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-var UserStore = require('../stores/UserStore');
+export default class Stories extends MapHubsComponent {
 
-var Stories = React.createClass({
+  props: {
+    popularStories: Array<Object>,
+    featuredStories: Array<Object>,
+    locale: string,
+    footerConfig: Object
+  }
 
-  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  constructor(props: Object){
+		super(props);
+    this.stores.push(UserStore);
+	}
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    popularStories: PropTypes.array,
-    featuredStories:  PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);   
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   onCreateStory(){
     if(this.state.user.display_name){
@@ -32,7 +35,7 @@ var Stories = React.createClass({
     }else{
       MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')});
     }
-  },
+  }
 
 	render() {
     var featured = '';
@@ -76,7 +79,7 @@ var Stories = React.createClass({
           </div>
         </div>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Story')}>
-          <a onClick={this.onCreateStory} className="btn-floating btn-large red red-text">
+          <a onClick={this.onCreateStory.bind(this)} className="btn-floating btn-large red red-text">
             <i className="large material-icons">add</i>
           </a>
         </div>
@@ -85,6 +88,4 @@ var Stories = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = Stories;
+}

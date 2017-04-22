@@ -1,51 +1,42 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-
-var Step1 = require('../components/CreateGroup/Step1');
-var Step2 = require('../components/CreateGroup/Step2');
+import Header from '../components/header';
+import Step1 from '../components/CreateGroup/Step1';
+import Step2 from '../components/CreateGroup/Step2';
 var classNames = require('classnames');
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var CreateGroup = React.createClass({
+export default class CreateGroup extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    locale: string,
+    _csrf: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  state: {
+    step: 1
+  }
 
-  propTypes: {
-    locale: PropTypes.string.isRequired
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
-  getDefaultProps() {
-    return {
-    };
-  },
+  onComplete (group_id: string) {
+    window.location = '/group/' + group_id;
+  }
 
-  getInitialState() {
-    return {
-      step: 1
-    };
-  },
+  nextStep () {
+    this.setState({step: this.state.step + 1});
+  }
 
-    onComplete (group_id) {
-      window.location = '/group/' + group_id;
-    },
-
-    nextStep () {
-      this.setState({step: this.state.step + 1});
-    },
-
-    prevStep () {
-      this.setState({step: this.state.step - 1});
-    },
+  prevStep () {
+    this.setState({step: this.state.step - 1});
+  }
 
 	render() {
     var stepText = this.__('Step') + ' ' + this.state.step;
@@ -77,12 +68,10 @@ var CreateGroup = React.createClass({
                   <div className={progressClassName}></div>
               </div>
           </div>
-          <Step1 active={step1} onSubmit={this.nextStep}/>
-          <Step2 active={step2} showPrev={true} onPrev={this.prevStep} onSubmit={this.onComplete}/>
+          <Step1 active={step1} onSubmit={this.nextStep.bind(this)}/>
+          <Step2 active={step2} showPrev={true} onPrev={this.prevStep.bind(this)} onSubmit={this.onComplete.bind(this)}/>
 			</div>
       </div>
 		);
 	}
-});
-
-module.exports = CreateGroup;
+}

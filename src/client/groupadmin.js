@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const GroupAdmin = require('../views/groupadmin');
+import GroupAdmin from '../views/groupadmin';
 
 require('jquery');
 require("materialize-css");

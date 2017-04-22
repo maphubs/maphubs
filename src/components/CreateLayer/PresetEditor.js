@@ -1,7 +1,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var PresetForm = require('./PresetForm');
 
 var PresetStore = require('../../stores/preset-store');

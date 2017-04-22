@@ -1,55 +1,41 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
+import EditBaseMapBox from './EditBaseMapBox';
+import BaseMapSelection from './BaseMapSelection';
+import Formsy from 'formsy-react';
+import Toggle from '../forms/toggle';
+import AnimationActions from '../../actions/map/AnimationActions';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var EditBaseMapBox = require('./EditBaseMapBox');
-var BaseMapSelection = require('./BaseMapSelection');
+export default class MapToolPanel extends MapHubsComponent {
 
-var Formsy = require('formsy-react');
-var Toggle = require('../forms/toggle');
+  props: {
+    show: boolean,
+    gpxLink: string,
+    onChangeBaseMap:  Function,
+    toggleMeasurementTools:  Function,
+    toggleForestAlerts: Function,
+    toggleForestLoss:Function,
+    calculateForestAlerts: Function,
+    enableMeasurementTools:  boolean,
+    forestAlerts: Object,
+    forestLoss: Object
+  }
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var AnimationActions = require('../../actions/map/AnimationActions');
-
-var MapToolPanel = React.createClass({
-
-   mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    show: PropTypes.bool,
-    gpxLink: PropTypes.string,
-    onChangeBaseMap:  PropTypes.func.isRequired,
-    toggleMeasurementTools:  PropTypes.func.isRequired,
-    toggleForestAlerts: PropTypes.func.isRequired,
-    toggleForestLoss: PropTypes.func.isRequired,
-    calculateForestAlerts: PropTypes.func.isRequired,
-    enableMeasurementTools:  PropTypes.bool,
-    forestAlerts: PropTypes.object,
-    forestLoss: PropTypes.object
-  },
-
-  getDefaultProps(){
-    return {
-      show: false,
-      buttonTooltipText: '',
-      enableMeasurementTools: false,
-      forestAlerts: {
-        enableGLAD2017: false,
-        result: null
-      },
-      forestLoss: {
-        enableForestLoss: false,
-        result: null
-      }
-    };
-  },
+  static defaultProps: {
+    show: false,
+    buttonTooltipText: '',
+    enableMeasurementTools: false,
+    forestAlerts: {
+      enableGLAD2017: false,
+      result: null
+    },
+    forestLoss: {
+      enableForestLoss: false,
+      result: null
+    }
+  }
 
   componentDidMount(){
     $(this.refs.mapToolButton).tooltip();
@@ -60,32 +46,31 @@ var MapToolPanel = React.createClass({
         draggable: false // Choose whether you can drag to open on touch screens
       });
     $(this.refs.mapToolPanel).collapsible();
-  },
+  }
 
   closePanel(){
     $(this.refs.mapToolButton).sideNav('hide');
-  },
+  }
 
-  onChangeBaseMap(val){
+  onChangeBaseMap(val: string){
     this.closePanel();
     this.props.onChangeBaseMap(val);
-  },
+  }
 
-   toggleMeasurementTools(model){
+   toggleMeasurementTools(model: Object){
     if(model.enableMeasurementTools) this.closePanel();
     this.props.toggleMeasurementTools(model.enableMeasurementTools);
-  },
+  }
 
-   toggleForestAlerts(model){
+   toggleForestAlerts(model: Object){
      //leave panel open for this tool?
     //if(model.enableGLAD2017) this.closePanel();
     this.props.toggleForestAlerts(model);
-  },
+  }
 
-  toggleForestLoss(model){
+  toggleForestLoss(model: Object){
     this.props.toggleForestLoss(model);
-  },
-
+  }
 
   render(){
     var forestAlertsResult = '';
@@ -156,7 +141,7 @@ var MapToolPanel = React.createClass({
               <div className="collapsible-header" style={{borderBottom: '1px solid #ddd'}}><i className="material-icons">layers</i>{this.__('Change Base Map')}</div>
               <div className="collapsible-body">
                 <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>
-                  <BaseMapSelection onChange={this.onChangeBaseMap}/>
+                  <BaseMapSelection onChange={this.onChangeBaseMap.bind(this)}/>
                 </div>
               </div>
             </li>
@@ -164,7 +149,7 @@ var MapToolPanel = React.createClass({
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">straighten</i>{this.__('Measurement Tools')}</div>
               <div className="collapsible-body center">
                 <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
-                  <Formsy.Form onChange={this.toggleMeasurementTools}>
+                  <Formsy.Form onChange={this.toggleMeasurementTools.bind(this)}>
                    <b>{this.__('Show Measurement Tools')}</b>          
                     <Toggle name="enableMeasurementTools"
                         labelOff={this.__('Off')} labelOn={this.__('On')}                       
@@ -179,7 +164,7 @@ var MapToolPanel = React.createClass({
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">warning</i>{this.__('Forest Alerts')}</div>
               <div className="collapsible-body center">
                 <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
-                  <Formsy.Form onChange={this.toggleForestAlerts}>
+                  <Formsy.Form onChange={this.toggleForestAlerts.bind(this)}>
                    <b>{this.__('2017 GLAD Alerts')}</b>          
                     <Toggle name="enableGLAD2017"
                         labelOff={this.__('Off')} labelOn={this.__('On')}                       
@@ -187,9 +172,9 @@ var MapToolPanel = React.createClass({
                         checked={this.props.forestAlerts.enableGLAD2017}
                     />                     
                   </Formsy.Form>             
-                  <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
+                  <button className="btn" onClick={this.props.calculateForestAlerts.bind(this)}>{this.__('Calculate')}</button>     
                   {forestAlertsResult}
-                  <Formsy.Form onChange={this.toggleForestLoss}>
+                  <Formsy.Form onChange={this.toggleForestLoss.bind(this)}>
                    <b>{this.__('2001 - 2014 Forest Loss')}</b>          
                     <Toggle name="enableForestLoss"
                         labelOff={this.__('Off')} labelOn={this.__('On')}                       
@@ -216,7 +201,4 @@ var MapToolPanel = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = MapToolPanel;
+}

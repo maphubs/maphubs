@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const CreateRemoteLayer = require('../views/createremotelayer');
+import CreateRemoteLayer from '../views/createremotelayer';
 
 require('babel-polyfill');
 

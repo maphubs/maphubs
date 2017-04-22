@@ -1,71 +1,61 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var MessageActions = require('../../actions/MessageActions');
-var NotificationActions = require('../../actions/NotificationActions');
+import MessageActions from '../../actions/MessageActions';
+import NotificationActions from '../../actions/NotificationActions';
 var classNames = require('classnames');
-var ImageCrop = require('../ImageCrop');
+import ImageCrop from '../ImageCrop';
+import GroupStore from '../../stores/GroupStore';
+import GroupActions from '../../actions/GroupActions';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var GroupStore = require('../../stores/GroupStore');
-var GroupActions = require('../../actions/GroupActions');
+export default class CreateGroupStep2 extends MapHubsComponent {
 
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  props: {
+    onSubmit: Function,
+    active: boolean,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var CreateGroupStep2 = React.createClass({
+  static defaultProps: {
+    onSubmit: null,
+    active: false
+  }
 
-  mixins:[StateMixin.connect(GroupStore), StateMixin.connect(LocaleStore)],
+  state: {
+    canSubmit: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(GroupStore);
+	}
 
-  propTypes: {
-    onSubmit: PropTypes.func,
-    active: PropTypes.bool.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
+  submit = () => {
+    this.props.onSubmit(this.state.group.group_id);
+  }
 
-  getDefaultProps() {
-    return {
-      onSubmit: null,
-      active: false
-    };
-  },
+  showImageCrop = () => {
+    this.refs.imagecrop.show();
+  }
 
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
-
-    submit () {
-      this.props.onSubmit(this.state.group.group_id);
-    },
-
-    showImageCrop(){
-      this.refs.imagecrop.show();
-    },
-
-    onCrop(data){
-      var _this = this;
-      //send data to server
-      GroupActions.setGroupImage(data, this.state._csrf, function(err){
-        if(err){
-          MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-        }else{
-          NotificationActions.showNotification(
-            {
-              message: _this.__('Image Saved'),
-              position: 'bottomright',
-              dismissAfter: 3000
-          });
-        }
-      });
-      //this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
-    },
+  onCrop = (data: Object) => {
+    var _this = this;
+    //send data to server
+    GroupActions.setGroupImage(data, this.state._csrf, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+      }else{
+        NotificationActions.showNotification(
+          {
+            message: _this.__('Image Saved'),
+            position: 'bottomright',
+            dismissAfter: 3000
+        });
+      }
+    });
+    //this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
+  }
 
 	render() {
 
@@ -124,6 +114,4 @@ var CreateGroupStep2 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = CreateGroupStep2;
+}

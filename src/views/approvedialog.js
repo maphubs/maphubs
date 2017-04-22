@@ -1,34 +1,32 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var urlUtil = require('../services/url-util');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
 
-var OAuthDialog = React.createClass({
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+export default class OAuthDialog extends MapHubsComponent {
 
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    locale: string,
+    _csrf: string,
+    user: string,
+    client: string,
+    transactionID: string
+  }
 
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    user: PropTypes.string,
-    client: PropTypes.string,
-    transactionID: PropTypes.string
-  },
+  static defaultProps: {
+    user: 'Unknown',
+    client: 'Unknown',
+    transactionID: ''
+  }
 
-  getDefaultProps() {
-    return {
-      user: 'Unknown',
-      client: 'Unknown',
-      transactionID: ''
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
     var baseUrl = urlUtil.getBaseUrl();
@@ -51,6 +49,4 @@ var OAuthDialog = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = OAuthDialog;
+}

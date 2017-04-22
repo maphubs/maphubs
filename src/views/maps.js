@@ -1,50 +1,40 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import SearchBox from '../components/SearchBox';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 var cardUtil = require('../services/card-util');
 var debug = require('../services/debug')('views/maps');
 var urlUtil = require('../services/url-util');
-var request = require('superagent');
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+export default class Maps extends MapHubsComponent {
 
-var Maps = React.createClass({
+  props: {
+    featuredMaps: Array<Object>,
+    recentMaps: Array<Object>,
+    popularMaps: Array<Object>,
+    locale: string,
+    footerConfig: Object
+  }
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  state: {
+    searchResults: [],
+    searchActive: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    featuredMaps: PropTypes.array,
-    recentMaps: PropTypes.array,
-    popularMaps: PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {
-    };
-  },
-
-  getInitialState(){
-    return {
-      searchResults: [],
-      searchActive: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   handleSearch(input) {
     var _this = this;
@@ -70,11 +60,11 @@ var Maps = React.createClass({
       }
       );
     });
-  },
+  }
 
   resetSearch(){
     this.setState({searchActive: false, searchResults: []});
-  },
+  }
 
 	render() {
 
@@ -135,7 +125,7 @@ var Maps = React.createClass({
                 <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse maps or create a new map using the respository of open map layers.')}</p>
               </div>
               <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+                <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch.bind(this)} onReset={this.resetSearch.bind(this)}/>
               </div>
             </div>
           </div>
@@ -168,5 +158,4 @@ var Maps = React.createClass({
       </div>
 		);
 	}
-});
-module.exports = Maps;
+}

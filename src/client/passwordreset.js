@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const PasswordReset = require('../views/passwordreset');
+import PasswordReset from '../views/passwordreset';
 
 require('jquery');
 require("materialize-css");

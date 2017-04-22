@@ -1,87 +1,77 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var LayerList = require('./LayerList');
 
 var $ = require('jquery');
-//var _isEmpty = require('lodash.isempty');
-var _isEqual = require('lodash.isequal');
-var _debounce = require('lodash.debounce');
-var _find = require('lodash.find');
-var Map = require('../Map/Map');
+import LayerList from './LayerList';
+import _isEqual from 'lodash.isequal';
+import _debounce from 'lodash.debounce';
+import _find from 'lodash.find';
+import Map from '../Map/Map';
+import MiniLegend from '../Map/MiniLegend';
+import AddLayerPanel from './AddLayerPanel';
+import SaveMapPanel from './SaveMapPanel';
+import MapMakerStore from '../../stores/MapMakerStore';
+import UserStore from '../../stores/UserStore';
+import Actions from '../../actions/MapMakerActions';
+import DataEditorActions from '../../actions/DataEditorActions';
+import ConfirmationActions from '../../actions/ConfirmationActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import EditLayerPanel from './EditLayerPanel';
+import MapLayerDesigner from '../LayerDesigner/MapLayerDesigner';
+import EditorToolButtons from './EditorToolButtons';
+import ForestLossLegendHelper from '../Map/ForestLossLegendHelper';
+import MapHubsComponent from '../MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
 
-var MiniLegend = require('../Map/MiniLegend');
+export default class MapMaker extends MapHubsComponent {
 
-var AddLayerPanel = require('./AddLayerPanel');
-var SaveMapPanel = require('./SaveMapPanel');
+  props:  {
+    edit: boolean,
+    mapLayers: Array<Object>,
+    showVisibility:  boolean,
+    onCreate: Function,
+    onClose: Function,
+    myLayers: Array<Object>,
+    popularLayers: Array<Object>,
+    myGroups: Array<Object>,
+    title: string,
+    position: Object,
+    basemap: string,
+    map_id: number,
+    owned_by_group_id: string,
+    editLayer: Object
+  }
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var MapMakerStore = require('../../stores/MapMakerStore');
-var UserStore = require('../../stores/UserStore');
-var Actions = require('../../actions/MapMakerActions');
-var DataEditorActions = require('../../actions/DataEditorActions');
-var ConfirmationActions = require('../../actions/ConfirmationActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
-var EditLayerPanel = require('./EditLayerPanel');
-var MapLayerDesigner = require('../LayerDesigner/MapLayerDesigner');
-var EditorToolButtons = require('./EditorToolButtons');
-var ForestLossLegendHelper = require('../Map/ForestLossLegendHelper');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  static defaultProps: {
+    edit: false,
+    popularLayers: [],
+    showVisibility: true,
+    mapLayers: null,
+    showTitleEdit: true,
+    map_id: null,
+    owned_by_group_id: null,
+    title: null,
+    basemap: null,
+    editLayer: null
+  }
 
+  state: {
+    showMapLayerDesigner: false,
+    canSave: false,
+    editLayerLoaded: false
+  }
 
-var MapMaker = React.createClass({
-
-  mixins:[StateMixin.connect(MapMakerStore, {initWithProps: ['position', 'title', 'map_id', 'owned_by_group_id']}), StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    edit: PropTypes.bool,
-    mapLayers: PropTypes.array,
-    showVisibility: PropTypes.bool,
-    onCreate: PropTypes.func,
-    onClose: PropTypes.func,
-    myLayers: PropTypes.array,
-    popularLayers: PropTypes.array,
-    myGroups: PropTypes.array,
-    title: PropTypes.string,
-    position: PropTypes.object,
-    basemap: PropTypes.string,
-    map_id: PropTypes.number,
-    owned_by_group_id: PropTypes.string,
-    editLayer: PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {
-      edit: false,
-      popularLayers: [],
-      showVisibility: true,
-      mapLayers: null,
-      showTitleEdit: true,
-      map_id: null,
-      owned_by_group_id: null,
-      title: null,
-      basemap: null,
-      editLayer: null
-    };
-  },
-
-  getInitialState(){
-    return {
-      showMapLayerDesigner: false,
-      canSave: false,
-      editLayerLoaded: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(MapMakerStore);
+    this.stores.push(UserStore);
+  }
 
   componentWillMount(){
     var _this = this;
+    Rehydrate.initStore(MapMakerStore);
+    Actions.rehydrate({position:this.props.position, title:this.props.title, map_id:this.props.map_id, owned_by_group_id:this.props.owned_by_group_id});
     if(this.props.mapLayers){
       Actions.setMapLayers(this.props.mapLayers);
     }
@@ -148,8 +138,7 @@ var MapMaker = React.createClass({
       }, 2500).bind(this);
       debounced();
     });
-
-  },
+  }
 
   componentDidMount(){
     var _this = this;
@@ -159,23 +148,21 @@ var MapMaker = React.createClass({
       this.toggleMapTab();
     }
 
-    
-
     window.onbeforeunload = function(){
       if(!_this.state.saved && _this.state.mapLayers.length > 0){
         return _this.__('Please save your map to avoid losing your work!');
       }
     };
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
 
     if(!_isEqual(nextProps.position, this.props.position)){
       Actions.setMapPosition(nextProps.position);
     }
-  },
+  }
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(prevProps: Object, prevState: Object){
     $('.layer-card-tooltipped').tooltip();
     $('.savebutton-tooltipped').tooltip();
 
@@ -203,16 +190,15 @@ var MapMaker = React.createClass({
      this.editLayer(this.props.editLayer);
      this.setState({editLayerLoaded: true});
     }
+  }
 
-  },
-
-  onClose(){
+  onClose = () => {
     $('.savebutton-tooltipped').tooltip('remove');
     if(this.props.onClose) this.props.onClose();
     Actions.closeMapDesigner();
-  },
+  }
 
-  onCancel(){
+  onCancel = () => {
     $('.savebutton-tooltipped').tooltip('remove');
     var _this = this;
     ConfirmationActions.showConfirmation({
@@ -224,15 +210,14 @@ var MapMaker = React.createClass({
         _this.onClose();
       }
     });
-  },
+  }
 
-  onCreate(){
+  onCreate = () =>{
     this.setState({saved: true});
     if(this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.title);
-  },
+  }
 
-
-   privacyCheck(isPrivate, group_id){
+   privacyCheck = (isPrivate: boolean, group_id: string) => {
     //check if layers meet privacy rules, before sending a request to the server that will fail...
     if(isPrivate){
       if(!group_id){
@@ -262,10 +247,10 @@ var MapMaker = React.createClass({
       }
     }
 
-  },
+  }
 
 
-  onSave(model, cb){
+  onSave = (model, cb) => {
     
     var _this = this;
 
@@ -306,37 +291,37 @@ var MapMaker = React.createClass({
         });
       }
     }
-  },
+  }
 
-  toggleVisibility(layer_id){
+  toggleVisibility = (layer_id: number) => {
     $('.layer-card-tooltipped').tooltip('remove');
     Actions.toggleVisibility(layer_id, function(){
     });
     $('.layer-card-tooltipped').tooltip();
-  },
+  }
 
-  showLayerDesigner(layer_id){
+  showLayerDesigner = (layer_id: number) => {
     var layer = _find(this.state.mapLayers, {layer_id});
     $('.layer-card-tooltipped').tooltip('remove');
     this.setState({showMapLayerDesigner: true, layerDesignerLayer: layer});
     $('.layer-card-tooltipped').tooltip();
-  },
+  }
 
-  onLayerStyleChange(layer_id, style, labels, legend, settings){
+  onLayerStyleChange = (layer_id: number, style: Object, labels: Object, legend: Object, settings: Object) => {
     Actions.updateLayerStyle(layer_id, style, labels, legend, settings);
-  },
+  }
 
-  closeLayerDesigner(){
+  closeLayerDesigner = () => {
     this.setState({showMapLayerDesigner: false});
-  },
+  }
 
-  removeFromMap(layer){
+  removeFromMap = (layer: Object) => {
     $('.layer-card-tooltipped').tooltip('remove');
     Actions.removeFromMap(layer);
     $('.layer-card-tooltipped').tooltip();
-  },
+  }
 
-  addLayer(layer){
+  addLayer = (layer: Object) => {
     var _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
 
@@ -361,43 +346,42 @@ var MapMaker = React.createClass({
       //switch to map tab
       _this.toggleMapTab();
     });
-  },
+  }
 
-  toggleMapTab(){
+  toggleMapTab = () => {
     $(this.refs.tabs).tabs('select_tab', 'maptab');
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
+  }
 
-  },
-
-  toggleAddLayerTab(){
+  toggleAddLayerTab = () => {
     $(this.refs.tabs).tabs('select_tab', 'addlayer');
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
 
-  },
+  }
 
-  editLayer(layer){
+  editLayer = (layer: Object) => {
     Actions.startEditing();
     DataEditorActions.startEditing(layer);
     this.refs.map.startEditingTool(layer);
-  },
+  }
 
-  saveEdits(){
+  saveEdits = () => {
     DataEditorActions.saveEdits(this.state._csrf, function(){
       this.refs.map.stopEditingTool();
     });
-  },
+  }
 
-  stopEditingLayer(){
+  stopEditingLayer = () => {
     Actions.stopEditing();
     DataEditorActions.stopEditing();
     this.refs.map.stopEditingTool();
-  },
+  }
 
-  onToggleForestLoss(enabled){
+  onToggleForestLoss = (enabled: boolean) => {
     var mapLayers = this.state.mapLayers;
     var layers = ForestLossLegendHelper.getLegendLayers();
   
@@ -421,7 +405,7 @@ var MapMaker = React.createClass({
       mapLayers = updatedLayers;
     }
     Actions.setMapLayers(mapLayers, false);
-  },
+  }
 
   render(){
     var _this = this;
@@ -441,7 +425,7 @@ var MapMaker = React.createClass({
           onStyleChange={this.onLayerStyleChange}
           onClose={this.closeLayerDesigner} />
       );
-    }else if (!this.state.mapLayers || this.state.mapLayers.length == 0) {
+    }else if (!this.state.mapLayers || this.state.mapLayers.length === 0) {
       overlayLayerList = (
         <div style={{height: '100%', padding: 0, margin: 0}}>
           <p>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
@@ -552,6 +536,4 @@ var MapMaker = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = MapMaker;
+}

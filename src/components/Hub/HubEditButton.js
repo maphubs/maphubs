@@ -1,23 +1,22 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var _isequal = require('lodash.isequal');
+import _isequal from 'lodash.isequal';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var HubEditButton = React.createClass({
+export default class HubEditButton extends MapHubsComponent {
 
-  propTypes: {
-    editing: PropTypes.bool.isRequired,
-    startEditing: PropTypes.func.isRequired,
-    stopEditing: PropTypes.func.isRequired,
-    style: PropTypes.object
-  },
+  props: {
+    editing: boolean,
+    startEditing: Function,
+    stopEditing: Function,
+    style: Object
+  }
 
-  getDefaultProps(){
-    return {
-      style: {}
-    };
-  },
+  static defaultProps: {
+    style: {}
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -26,7 +25,7 @@ var HubEditButton = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
   render(){var button = '';
   if(this.props.editing){
@@ -48,6 +47,4 @@ var HubEditButton = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = HubEditButton;
+}

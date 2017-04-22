@@ -1,64 +1,50 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Modal, ModalContent} from '../Modal/Modal.js';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
-var CardCarousel = require('../CardCarousel/CardCarousel');
+import CardCarousel from '../CardCarousel/CardCarousel';
 var cardUtil = require('../../services/card-util');
-var SearchBox = require('../SearchBox');
-var NotificationActions = require('../../actions/NotificationActions');
+import SearchBox from '../SearchBox';
+import NotificationActions from '../../actions/NotificationActions';
 var urlUtil = require('../../services/url-util');
 var request = require('superagent');
 var checkClientError = require('../../services/client-error-response').checkClientError;
-var MessageActions = require('../../actions/MessageActions');
+import MessageActions from '../../actions/MessageActions';
 var debug = require('../../services/debug')('AddMapToStory');
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var AddMapModal = React.createClass({
+export default class AddMapModal extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props:  {
+    onAdd:  Function,
+    onClose:  Function,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>,
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    myMaps:[],
+    popularMaps: []
+  }
 
-  propTypes:  {
-    onAdd:  PropTypes.func,
-    onClose:  PropTypes.func,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array
-  },
-
-  getDefaultProps(){
-    return {
-      myMaps:[],
-      popularMaps: []
-    };
-  },
-
-  getInitialState() {
-    return {
-      show: false
-    };
-  },
+  state: {
+    show: false
+  }
 
   show(){
     this.setState({show: true});
-  },
+  }
 
-  onAdd(map){
+  onAdd(map: Object){
     this.setState({show: false});
     this.props.onAdd(map);
-  },
+  }
 
   close(){
     this.setState({show: false});
-  },
+  }
 
-  handleSearch(input) {
+  handleSearch(input: string) {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
@@ -82,15 +68,15 @@ var AddMapModal = React.createClass({
       }
       );
     });
-  },
+  }
 
   resetSearch(){
     this.setState({searchActive: false, searchResults: []});
-  },
+  }
 
   modalReady(){
     this.setState({modalReady: true});
-  },
+  }
 
   render(){
     var _this = this;
@@ -148,14 +134,14 @@ var AddMapModal = React.createClass({
     }
 
     return (
-      <Modal show={this.state.show} ready={this.modalReady} className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
+      <Modal show={this.state.show} ready={this.modalReady.bind(this)} className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden', width: '100%'}}>
-          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
+          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close.bind(this)}>
             <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>
           </a>
           <div className='row' style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
             <div className='col s12'>
-              <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+              <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch.bind(this)}/>
             </div>
           </div>
           <div className='row'style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto'}}>
@@ -176,7 +162,4 @@ var AddMapModal = React.createClass({
       </Modal>
       );
   }
-
-});
-
-module.exports = AddMapModal;
+}

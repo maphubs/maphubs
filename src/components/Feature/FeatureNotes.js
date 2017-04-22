@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Editor from 'react-medium-editor';
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var FeatureNotesStore = require('../../stores/FeatureNotesStore');
 var FeatureNotesActions = require('../../actions/FeatureNotesActions');

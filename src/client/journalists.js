@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Journalists = require('../views/journalists');
+import Journalists from '../views/journalists';
 
 require('jquery');
 require("materialize-css");

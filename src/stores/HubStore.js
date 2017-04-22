@@ -1,19 +1,20 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/HubActions');
+import Reflux from 'reflux';
+import Actions from '../actions/HubActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
-var findIndex = require('lodash.findindex');
-var forEachRight = require('lodash.foreachright');
-var $ = require('jquery');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
 
-  getInitialState() {
-    return  {
+export default class HubStore extends Reflux.Store {
+
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       hub: {},
       map: null,
       layers: [],
@@ -26,22 +27,22 @@ module.exports = Reflux.createStore({
       unsavedChanges: false,
       saving: false
     };
-  },
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState(this.getDefaultState());
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
 
  loadHub(hub){
    debug('load hub');
    this.setState({hub});
- },
+ }
 
  createHub(hub_id, group_id, name, published, isPrivate, _csrf, cb){
    debug('create hub');
@@ -69,7 +70,8 @@ module.exports = Reflux.createStore({
        cb(null);
      });
    });
- },
+ }
+
  saveHub(_csrf, cb){
    debug('save hub');
    var _this = this;
@@ -101,7 +103,7 @@ module.exports = Reflux.createStore({
        cb(null);
      });
    });
- },
+ }
 
  setPrivate(isPrivate, _csrf, cb){
     var _this = this;
@@ -122,7 +124,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   transferOwnership(to_group_id, _csrf, cb){
     var _this = this;
@@ -143,7 +145,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
  deleteHub(_csrf, cb){
    var _this = this;
@@ -160,31 +162,31 @@ module.exports = Reflux.createStore({
        cb(null);
      });
    });
- },
+ }
 
  setMap(map){
    var hub = this.state.hub;
    hub.map_id = map.map_id;
    this.setState({hub, map, unsavedChanges: true});
- },
+ }
 
  setHubLogoImage(data, info){
     var hub = this.state.hub;
     hub.hasLogoImage = true;
    this.setState({logoImage: data, logoImageInfo: info, unsavedChanges: true, hub});
- },
+ }
 
  setHubBannerImage(data, info){
    var hub = this.state.hub;
     hub.hasBannerImage = true;
    this.setState({bannerImage: data, bannerImageInfo: info, unsavedChanges: true, hub});
- },
+ }
 
  setTitle(title){
    var hub = this.state.hub;
    hub.name = title;
    this.setState({hub, unsavedChanges: true});
- },
+ }
 
   publish(_csrf, cb){
    var hub = this.state.hub;
@@ -192,29 +194,29 @@ module.exports = Reflux.createStore({
    this.setState({hub, unsavedChanges: true});
    this.trigger(this.state);
    this.saveHub(_csrf, cb);
- },
+ }
 
  setTagline(tagline){
    var hub = this.state.hub;
    hub.tagline = tagline;
    this.setState({hub, unsavedChanges: true});
- },
+ }
 
  setDescription(description){
    var hub = this.state.hub;
    hub.description = description;
    this.setState({hub, unsavedChanges: true});
- },
+ }
 
  setResources(resources){
    var hub = this.state.hub;
    hub.resources = resources;
    this.setState({hub, unsavedChanges: true});
- },
+ }
 
  setAbout(about){
    var hub = this.state.hub;
    hub.about = about;
    this.setState({hub, unsavedChanges: true});
  }
-});
+}

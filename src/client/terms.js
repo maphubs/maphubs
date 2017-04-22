@@ -1,10 +1,9 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Terms from '../views/terms';
 
-const Terms = require('../views/terms');
-
-require('jquery');
-require("materialize-css");
+import 'jquery';
+import 'materialize-css';
 
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;

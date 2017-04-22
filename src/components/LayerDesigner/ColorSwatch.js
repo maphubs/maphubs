@@ -1,14 +1,12 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var PureRenderMixin = require('react-addons-pure-render-mixin');
 
-var ColorSwatch = React.createClass({
-  mixins:[PureRenderMixin],
+export default class ColorSwatch extends React.PureComponent {
 
-  propTypes: {
-   onClick: PropTypes.func.isRequired,
-   color: PropTypes.string.isRequired
-  },
+  props: {
+   onClick: Function,
+   color: string
+  }
 
   render(){
     var _this = this;
@@ -18,6 +16,4 @@ var ColorSwatch = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = ColorSwatch;
+}

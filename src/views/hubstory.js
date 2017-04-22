@@ -1,45 +1,44 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var HubNav = require('../components/Hub/HubNav');
-var HubBanner = require('../components/Hub/HubBanner');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../stores/HubStore');
-
-var StoryHeader = require('../components/Story/StoryHeader');
-
-var ReactDisqusThread = require('react-disqus-thread');
+import HubNav from '../components/Hub/HubNav';
+import HubBanner from '../components/Hub/HubBanner';
+import HubStore from '../stores/HubStore';
+import HubActions from '../actions/HubActions';
+import StoryHeader from '../components/Story/StoryHeader';
+import ReactDisqusThread from 'react-disqus-thread';
 var slug = require('slug');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+export default class HubStory extends MapHubsComponent {
 
-var HubStory = React.createClass({
+  props: {
+    story: Object,
+    hub: Object,
+    canEdit: boolean,
+    locale: string,
+    _csrf: string
+  }
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-  propTypes: {
-    story: PropTypes.object.isRequired,
-    hub: PropTypes.object.isRequired,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired
-  },
+  static defaultProps: {
+    story: {},
+    hub: {},
+    canEdit: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  getDefaultProps() {
-    return {
-      story: {},
-      hub: {},
-      canEdit: false
-    };
-  },
-
-  getInitialState() {
-    return {};
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(HubStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    HubActions.rehydrate({hub: this.props.hub, canEdit: this.props.canEdit});
+  }
 
   render() {
     var story = this.props.story;
@@ -106,6 +105,4 @@ var HubStory = React.createClass({
     );
       /*eslint-enable react/no-danger*/
   }
-});
-
-module.exports = HubStory;
+}

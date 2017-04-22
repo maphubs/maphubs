@@ -1,30 +1,26 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import SubPageBanner from '../components/Home/SubPageBanner';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
+export default class About extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  props: {
+    locale: string,
+    _csrf: string,
+    version:string,
+    footerConfig: Object
+  }
 
-var SubPageBanner = require('../components/Home/SubPageBanner');
-
-var About = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    version: PropTypes.string,
-    footerConfig: PropTypes.object
-  },
+   componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
 
@@ -137,9 +133,5 @@ var About = React.createClass({
           <Footer {...this.props.footerConfig}/>
         </div>
       );
-
-
   }
-});
-
-module.exports = About;
+}

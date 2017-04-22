@@ -1,142 +1,136 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import Formsy from 'formsy-react';
 var $ = require('jquery');
-var EditList = require('../components/EditList');
-var Header = require('../components/header');
-
-var TextArea = require('../components/forms/textArea');
-var TextInput = require('../components/forms/textInput');
-var Toggle = require('../components/forms/toggle');
-var MessageActions = require('../actions/MessageActions');
-var AddItem = require('../components/AddItem');
+import EditList from '../components/EditList';
+import Header from '../components/header';
+import TextArea from '../components/forms/textArea';
+import TextInput from '../components/forms/textInput';
+import Toggle from '../components/forms/toggle';
+import MessageActions from '../actions/MessageActions';
+import AddItem from '../components/AddItem';
 var slug = require('slug');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var GroupStore = require('../stores/GroupStore');
-var GroupActions = require('../actions/GroupActions');
-
-var NotificationActions = require('../actions/NotificationActions');
-var ConfirmationActions = require('../actions/ConfirmationActions');
-var ImageCrop = require('../components/ImageCrop');
-
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
+import GroupStore from '../stores/GroupStore';
+import GroupActions from '../actions/GroupActions';
+import NotificationActions from '../actions/NotificationActions';
+import ConfirmationActions from '../actions/ConfirmationActions';
+import ImageCrop from '../components/ImageCrop';
 var debug = require('../services/debug')('views/GroupAdmin');
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var GroupAdmin = React.createClass({
+export default class GroupAdmin extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(GroupStore, {initWithProps: ['group', 'layers', 'members']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    group: Object,
+    layers: Array<Object>,
+    maps: Array<Object>,
+    hubs: Array<Object>,
+    members: Array<Object>,
+    locale: string,
+    _csrf: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    layers: [],
+    maps: [],
+    hubs: [],
+    members: []
+  }
 
-  propTypes: {
-    group: PropTypes.object.isRequired,
-    layers: PropTypes.array,
-    maps: PropTypes.array,
-    hubs: PropTypes.array,
-    members: PropTypes.array,
-    locale: PropTypes.string.isRequired
-  },
+  state: {
+    canSubmit: false
+  }
 
-  getDefaultProps() {
-    return {
-      layers: [],
-      maps: [],
-      hubs: [],
-      members: []
-    };
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(GroupStore);
+	}
 
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
+  componentWillMount() {
+    var _this = this;
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(GroupStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    GroupStore.rehydrate({group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members});
+     
+    Formsy.addValidationRule('isAvailable', function (values, value) {
+        return _this.checkGroupIdAvailable(value);
+    });
+  }
 
   componentDidMount(){
     $('.groupadmin-tooltips').tooltip();
-  },
+  }
 
   enableButton () {
-      this.setState({
-        canSubmit: true
-      });
-    },
-    disableButton () {
-      this.setState({
-        canSubmit: false
-      });
-    },
+    this.setState({
+      canSubmit: true
+    });
+  }
 
-    onError(msg){
-      MessageActions.showMessage({title: this.__('Error'), message: msg});
-    },
+  disableButton () {
+    this.setState({
+      canSubmit: false
+    });
+  }
 
-    submit (model) {
-      var _this = this;
-      GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
-        if(err){
-          MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-        }else{
-          NotificationActions.showNotification(
-            {
-              message: _this.__('Group Saved'),
-              position: 'bottomright',
-              dismissAfter: 3000,
-              onDismiss() {
-                window.location = "/group/" + _this.state.group.group_id;
-              }
-          });
-        }
-      });
-    },
+  onError(msg: string){
+    MessageActions.showMessage({title: this.__('Error'), message: msg});
+  }
 
-    checkGroupIdAvailable(id){
-      var _this = this;
-      //if the form is modified but put back to the currently saved ID, just return true
-      if (id == this.props.group.group_id) return true;
-
-      var result = false;
-      //only check if a valid value was provided and we are running in the browser
-      if (id && typeof window !== 'undefined') {
-          $.ajax({
-           type: "POST",
-           url: '/api/group/checkidavailable',
-           contentType : 'application/json;charset=UTF-8',
-           dataType: 'json',
-           data: JSON.stringify({id}),
-            async: false,
-            success(msg){
-              if(msg.available){
-                result = true;
-              }
-            },
-            error(msg){
-              MessageActions.showMessage({title: _this.__('Server Error'), message: msg});
-            },
-            complete(){
+  submit (model: Object) {
+    var _this = this;
+    GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
+      if(err){
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+      }else{
+        NotificationActions.showNotification(
+          {
+            message: _this.__('Group Saved'),
+            position: 'bottomright',
+            dismissAfter: 3000,
+            onDismiss() {
+              window.location = "/group/" + _this.state.group.group_id;
             }
         });
       }
-      return result;
+    });
+  }
 
-      },
+  checkGroupIdAvailable(id){
+    var _this = this;
+    //if the form is modified but put back to the currently saved ID, just return true
+    if (id == this.props.group.group_id) return true;
 
-    componentWillMount() {
-      var _this = this;
-      Formsy.addValidationRule('isAvailable', function (values, value) {
-          return _this.checkGroupIdAvailable(value);
-
+    var result = false;
+    //only check if a valid value was provided and we are running in the browser
+    if (id && typeof window !== 'undefined') {
+        $.ajax({
+          type: "POST",
+          url: '/api/group/checkidavailable',
+          contentType : 'application/json;charset=UTF-8',
+          dataType: 'json',
+          data: JSON.stringify({id}),
+          async: false,
+          success(msg){
+            if(msg.available){
+              result = true;
+            }
+          },
+          error(msg){
+            MessageActions.showMessage({title: _this.__('Server Error'), message: msg});
+          },
+          complete(){
+          }
       });
-    },
+    }
+    return result;
+  }
 
-
-  handleMemberDelete(user){
+  handleMemberDelete(user: Object){
     var _this = this;
     ConfirmationActions.showConfirmation({
       title:  _this.__('Confirm Removal'),
@@ -151,8 +145,7 @@ var GroupAdmin = React.createClass({
         });
       }
     });
-
-  },
+  }
 
   handleGroupDelete(){
     var _this = this;
@@ -174,9 +167,9 @@ var GroupAdmin = React.createClass({
         });
       }
     });
-  },
+  }
 
-  handleMemberMakeAdmin(user){
+  handleMemberMakeAdmin(user: Object){
     var _this = this;
     if(user.type == 'Administrator'){
       this.handleRemoveMemberAdmin(user);
@@ -195,10 +188,9 @@ var GroupAdmin = React.createClass({
         }
       });
     }
+  }
 
-  },
-
-  handleRemoveMemberAdmin(user){
+  handleRemoveMemberAdmin(user: Object){
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Remove Administrator'),
@@ -213,9 +205,9 @@ var GroupAdmin = React.createClass({
         });
       }
     });
-  },
+  }
 
-  handleAddMember(user){
+  handleAddMember(user: Object){
     var _this = this;
     debug(user.value.value + ' as Admin:' + user.option);
     GroupActions.addMember(user.value.value, user.option, _this.state._csrf, function(err){
@@ -225,13 +217,13 @@ var GroupAdmin = React.createClass({
         NotificationActions.showNotification({message: _this.__('Member Added'), dismissAfter: 7000});
       }
     });
-  },
+  }
 
   showImageCrop(){
     this.refs.imagecrop.show();
-  },
+  }
 
-  onCrop(data){
+  onCrop(data: Object){
     var _this = this;
     //send data to server
     GroupActions.setGroupImage(data, _this.state._csrf, function(err){
@@ -247,7 +239,7 @@ var GroupAdmin = React.createClass({
       }
     });
     //this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
-  },
+  }
 
 	render() {
     var _this = this;
@@ -426,6 +418,4 @@ var GroupAdmin = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = GroupAdmin;
+}

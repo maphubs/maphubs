@@ -1,16 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-var Attributes = React.createClass({
+export default class Attributes extends React.Component {
 
-  propTypes: {
-		attributes: PropTypes.object.isRequired,
-    selected: PropTypes.bool.isRequired,
-    multipleSelected: PropTypes.bool.isRequired,
-    presets:  PropTypes.array,
-    children: PropTypes.any
-  },
-
+  props: {
+		attributes: Object,
+    selected: boolean,
+    multipleSelected: boolean,
+    presets:  Array<Object>,
+    children: any
+  }
 
   render() {
     var _this = this;
@@ -111,6 +109,4 @@ var Attributes = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = Attributes;
+}

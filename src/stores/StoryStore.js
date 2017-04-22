@@ -1,41 +1,40 @@
 // @flow
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/StoryActions');
+import Reflux from 'reflux';
+import Actions from '../actions/StoryActions';
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
 //var debug = require('../services/debug')('layer-store');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class StoryStore extends Reflux.Store {
 
-  getInitialState() {   
-    return {
+  constructor(){
+    super();
+    this.state = {
       story: {},
       storyType: 'unknown',
       hub_id: null,
       unsavedChanges: false
     };
-  },
+    this.listenables = Actions;
+  }
 
   handleBodyChange(body: string) {
       var story = this.state.story;
       story.body = body;
       this.setState({story, unsavedChanges: true});      
-  },
+  }
 
   handleTitleChange(title: string) {
     var story = this.state.story;
     story.title = title;
     this.setState({story, unsavedChanges: true});
-  },
+  }
 
   handleAuthorChange(author: string) {
     var story = this.state.story;
     story.author = author;
     this.setState({story, unsavedChanges: true});
-  },
+  }
 
   save(body: string, firstline: string, firstimage: any, _csrf: string, cb){
     var _this = this;
@@ -59,7 +58,7 @@ module.exports = Reflux.createStore({
         cb(null, story);
       });
     });
-  },
+  }
 
   addImage(data: string, info: Object, _csrf: string, cb: Function){
   var _this = this;
@@ -71,7 +70,7 @@ module.exports = Reflux.createStore({
        cb(null, res);
     });
   });
-},
+}
 
 removeImage(image_id: number, _csrf: string, cb: Function){
   var _this = this;
@@ -81,7 +80,7 @@ removeImage(image_id: number, _csrf: string, cb: Function){
     .end(function(err, res){
         checkClientError(res, err, cb, function(cb){cb();});
     });
-},
+}
 
   publish(_csrf: string, cb: Function){
   var _this = this;
@@ -91,7 +90,7 @@ removeImage(image_id: number, _csrf: string, cb: Function){
       .end(function(err, res){
         checkClientError(res, err, cb, function(cb){cb();});
       });
-    },
+  }
 
   delete(_csrf: string, cb: Function){
   var _this = this;
@@ -101,6 +100,6 @@ removeImage(image_id: number, _csrf: string, cb: Function){
       .end(function(err, res){
         checkClientError(res, err, cb, function(cb){cb();});
       });
-    }
+  }
 
-});
+}

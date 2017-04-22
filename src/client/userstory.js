@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const UserStory = require('../views/userstory');
+import UserStory from '../views/userstory';
 if (!global.Intl) {
  require('intl');
  require('intl/locale-data/jsonp/en.js');

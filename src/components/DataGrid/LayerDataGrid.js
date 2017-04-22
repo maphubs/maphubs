@@ -1,51 +1,41 @@
 //@flow
-const React = require('react');
-import PropTypes from 'prop-types';
-var _map = require('lodash.map');
+import React from 'react';
+import _map from 'lodash.map';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
-var LocaleMixin = require('../LocaleMixin');
+export default class LayerDataGrid extends MapHubsPureComponent {
 
-const LayerDataGrid = React.createClass({
+  Selectors: null
 
-  mixins:[LocaleMixin, PureRenderMixin, StateMixin.connect(LocaleStore)],
+  props: {
+    geoJSON: Object,
+    presets: Object,
+    gridHeight: number,
+    onRowSelected: Function,
+    layer_id: number
+  }
 
-  Selectors: null,
-
-  propTypes: {
-    geoJSON: PropTypes.object,
-    presets: PropTypes.object,
-    gridHeight: PropTypes.number,
-    onRowSelected: PropTypes.func.isRequired,
-    layer_id: PropTypes.number.isRequired,
-  },
-
-  getInitialState(){
-    return {
-      geoJSON: undefined,
-      dataMsg: '',
-      gridHeight: 100,
-      gridWidth: 100,
-      gridHeightOffset: 48,
-      editingNotes: false,
-      rows: [],
-      selectedIndexes: [],
-      columns: [],
-      filters: {},
-      rowKey: undefined,
-      sortColumn: undefined,
-      sortDirection: undefined
-    };
-  },
+  state: {
+    geoJSON: Object,
+    dataMsg: '',
+    gridHeight: 100,
+    gridWidth: 100,
+    gridHeightOffset: 48,
+    editingNotes: false,
+    rows: [],
+    selectedIndexes: [],
+    columns: [],
+    filters: {},
+    rowKey: string,
+    sortColumn: string,
+    sortDirection: string
+  }
 
   componentDidMount(){
     if(this.props.geoJSON){
       this.processGeoJSON(this.props.geoJSON, this.props.presets);
     }
-  },
+  }
 
   componentWillReceiveProps(nextProps: Object){
     if(nextProps.geoJSON && !this.state.geoJSON){
@@ -54,7 +44,7 @@ const LayerDataGrid = React.createClass({
     if(nextProps.gridHeight && nextProps.gridHeight !== this.state.gridHeight){
       this.setState({gridHeight: nextProps.gridHeight});
     }
-  },
+  }
 
   processGeoJSON(geoJSON: Object, presets:any=null){
     var _this = this;
@@ -117,30 +107,30 @@ const LayerDataGrid = React.createClass({
     var rows = originalRows.slice(0);
 
     _this.setState({geoJSON, columns, rowKey, rows, filters : {}});
-  },
+  }
 
-   handleGridSort(sortColumn: string, sortDirection: string) {
+  handleGridSort = (sortColumn: string, sortDirection: string) => {
     this.setState({sortColumn, sortDirection});
-  },
+  }
 
-  getRows(): Array<Object> {
+  getRows = (): Array<Object> => {
     if(this.Selectors){
       return this.Selectors.getRows(this.state);
     }else{
       return [];
     }
-  },
+  }
 
-  getSize(): number {
+  getSize = (): number => {
     return this.getRows().length;
-  },
+  }
 
-  rowGetter(rowIdx: number): Object {
+  rowGetter = (rowIdx: number): Object => {
     let rows = this.getRows();
     return rows[rowIdx];
-  },
+  }
 
-  handleFilterChange(filter: Object) {
+  handleFilterChange = (filter: Object) => {
     let newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
@@ -148,14 +138,14 @@ const LayerDataGrid = React.createClass({
       delete newFilters[filter.column.key];
     }
     this.setState({ filters: newFilters });
-  },
+  }
 
-  onClearFilters() {
+  onClearFilters = () => {
     // all filters removed
     this.setState({filters: {}});
-  },
+  }
 
-  onRowsSelected(rows: Array<Object>) {
+  onRowsSelected = (rows: Array<Object>) => {
     if(!rows || rows.length == 0){
       return;
     }
@@ -165,14 +155,14 @@ const LayerDataGrid = React.createClass({
 
     this.props.onRowSelected(idVal,idField);
     this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
-  },
+  }
 
-  onRowsDeselected(rows: Array<Object>) {
+  onRowsDeselected = (rows: Array<Object>) => {
     let rowIndexes = rows.map(r => r.rowIdx);
     this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1 )});
-  },
+  }
 
-  onViewSelectedFeature(){
+  onViewSelectedFeature = () => {
     if(!this.state.selectedIndexes || this.state.selectedIndexes.length == 0){
       return;
     }
@@ -192,7 +182,7 @@ const LayerDataGrid = React.createClass({
     }
     var url = '/feature/' + this.props.layer_id.toString() + '/' + idVal + '/' + featureName;
     window.location = url;
-  },
+  }
 
 
 render() {
@@ -241,7 +231,4 @@ render() {
     
   }
 }
-
-});
-
-module.exports = LayerDataGrid;
+}

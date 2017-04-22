@@ -1,17 +1,20 @@
 import React from 'react';
+import Reflux from 'reflux';
 import {Notification} from 'react-notification';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var NotificationStore = require('../stores/NotificationStore');
-var NotificationActions = require('../actions/NotificationActions');
+import NotificationStore from '../stores/NotificationStore';
+import NotificationActions from '../actions/NotificationActions';
 
-var MapHubsNotification = React.createClass({
 
-  mixins:[StateMixin.connect(NotificationStore)],
+export default class MapHubsNotification extends Reflux.Component {
+
+  constructor(props){
+		super(props);
+		this.stores = [NotificationStore];
+	}
 
   onDismiss(){
     NotificationActions.dismissNotification();
-  },
+  }
 
   render() {
     var position = {};
@@ -38,9 +41,9 @@ var MapHubsNotification = React.createClass({
       isActive={this.state.isActive}
       message={this.state.message}
       action={this.state.action}
-      onClick={this.state.onClick}
+      onClick={this.state.onClick.bind(this)}
       dismissAfter={this.state.dismissAfter}
-      onDismiss={this.onDismiss}
+      onDismiss={this.onDismiss.bind(this)}
       barStyle={{background:this.state.backgroundColor}}
       activeBarStyle={position}
       actionStyle={{color: this.state.color}}
@@ -48,10 +51,4 @@ var MapHubsNotification = React.createClass({
     );
 
   }
-});
-/*
-
-
-*/
-
-module.exports = MapHubsNotification;
+}

@@ -15,7 +15,7 @@ var GithubSource = React.createClass({
     onPrev: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       onSubmit: null,
       active: false

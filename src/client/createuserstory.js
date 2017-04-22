@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const CreateUserStory = require('../views/createuserstory');
+import CreateUserStory from '../views/createuserstory';
 
 require('jquery');
 require("materialize-css");

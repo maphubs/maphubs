@@ -1,42 +1,45 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/GroupActions');
+import Reflux from 'reflux';
+
+import Actions from '../actions/GroupActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/group-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class GroupStore extends Reflux.Store {
 
-
-  getInitialState() {
-    return  {
+  constructor(){
+    super();
+    this.state = {
       group: {},
       members: [],
       layers: []
     };
-  },
+    this.listenables = Actions;
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState({
+      group: {},
+      members: [],
+      layers: []
+    });
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
 
  loadGroup(group){
    debug('load group');
    this.setState({group});
- },
+ }
 
  loadMembers(members){
    debug('load members');
    this.setState({members});
- },
+ }
 
  createGroup(group_id, name, description, location, published, _csrf, cb){
    debug('create group');
@@ -68,7 +71,8 @@ module.exports = Reflux.createStore({
        cb();
      });
    });
- },
+ }
+
  updateGroup(group_id, name, description, location, published, _csrf, cb){
    debug('update group');
    var _this = this;
@@ -97,7 +101,8 @@ module.exports = Reflux.createStore({
        cb();
      });
    });
- },
+ }
+
  deleteGroup(_csrf, cb){
    var _this = this;
    debug('delete group');
@@ -114,7 +119,7 @@ module.exports = Reflux.createStore({
        cb();
      });
    });
- },
+ }
 
  setGroupImage(data, _csrf, cb){
    debug('set group image');
@@ -136,7 +141,8 @@ module.exports = Reflux.createStore({
          cb();
      });
    });
- },
+ }
+
  addMember(display_name, asAdmin, _csrf, cb){
    debug('add member');
    var _this = this;
@@ -153,7 +159,8 @@ module.exports = Reflux.createStore({
         _this.reloadMembers(_csrf, cb);
      });
    });
- },
+ }
+
  removeMember(user_id, _csrf, cb){
    debug('remove member');
    var _this = this;
@@ -169,7 +176,8 @@ module.exports = Reflux.createStore({
         _this.reloadMembers(_csrf, cb);
      });
    });
- },
+ }
+
  setMemberAdmin(user_id, _csrf, cb){
    debug('set member admin');
    var _this = this;
@@ -186,7 +194,8 @@ module.exports = Reflux.createStore({
         _this.reloadMembers(_csrf, cb);
      });
    });
- },
+ }
+
  removeMemberAdmin(user_id, _csrf, cb){
    debug('remove member admin');
    var _this = this;
@@ -203,7 +212,7 @@ module.exports = Reflux.createStore({
          _this.reloadMembers(_csrf, cb);
      });
    });
- },
+ }
 
  reloadMembers(_csrf, cb){
    debug('reload members');
@@ -218,5 +227,4 @@ module.exports = Reflux.createStore({
      });
    });
  }
-
-});
+}

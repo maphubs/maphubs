@@ -1,31 +1,26 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var UserStore = require('../stores/UserStore');
-var LocaleActions = require('../actions/LocaleActions');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import UserStore from '../stores/UserStore';
+import LocaleActions from '../actions/LocaleActions';
+import LocaleStore from '../stores/LocaleStore';
+//var Locales = require('../services/locales');
 var $ = require('jquery');
 
-var LocaleChooser = React.createClass({
+export default class LocaleChooser extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
+  props: {
+    id: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    id: 'locale-dropdown'
+  }
 
-  propTypes:  {
-    id: PropTypes.string
-  },
-
-  getDefaultProps(){
-    return {
-      id: 'locale-dropdown'
-    };
-  },
-
+  constructor(props: Object){
+		super(props);
+		this.stores = [LocaleStore, UserStore];
+	}
 
   componentDidMount() {
      $('.locale-tooltip').tooltip();
@@ -38,19 +33,19 @@ var LocaleChooser = React.createClass({
       belowOrigin: true, // Displays dropdown below the button
       alignment: 'right' // Displays dropdown with edge aligned to the left of button
     });
-  },
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     if(this.state.locale != nextState.locale){
       return true;
     }
     return false;
-  },
+  }
 
-  onChange(locale){
+  onChange(locale: string){
     LocaleActions.changeLocale(locale);
     $(this.refs.dropdownMenu).hide();
-  },
+  }
 
   render() {
 
@@ -80,6 +75,5 @@ var LocaleChooser = React.createClass({
     );
 
   }
-});
+}
 
-module.exports = LocaleChooser;

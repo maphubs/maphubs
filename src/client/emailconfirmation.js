@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const EmailConfirmation = require('../views/emailconfirmation');
+import EmailConfirmation from '../views/emailconfirmation';
 
 require('jquery');
 require("materialize-css");

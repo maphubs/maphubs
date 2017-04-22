@@ -1,41 +1,29 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Formsy = require('formsy-react');
-var FormField =require('./FormField');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
+import Formsy from 'formsy-react';
+import FormField from './FormField';
+import MapHubsComponent from '../MapHubsComponent';
 var Locales = require('../../services/locales');
 
-var DataCollectionForm = React.createClass({
+export default class DataCollectionForm extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+		presets: Array<Object>,
+    values: Object,
+    showSubmit: boolean,
+    onSubmit: Function,
+    onValid: Function,
+    onInValid: Function,
+    onChange:  Function,
+    submitText: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    showSubmit: true
+  }
 
-
-  propTypes: {
-		presets: PropTypes.array.isRequired,
-    values: PropTypes.object,
-    showSubmit: PropTypes.bool,
-    onSubmit: PropTypes.func,
-    onValid: PropTypes.func,
-    onInValid: PropTypes.func,
-    onChange:  PropTypes.func,
-    submitText: PropTypes.string
-  },
-
-  getDefaultProps(){
-    return {
-      showSubmit: true
-    };
-  },
-
-  getInitialState(){
+  constructor(props: Object){
+    super(props);
     var submitText = '';
     if(this.props.submitText){
       submitText = this.props.submitText;
@@ -45,29 +33,29 @@ var DataCollectionForm = React.createClass({
     else{
       submitText = 'Submit';
     }
-    return {
+    this.state = {
       canSubmit: false,
       submitText
     };
-  },
+  }
 
-  onSubmit(model){
+  onSubmit = (model: Object) => {
     this.props.onSubmit(model);
-  },
+  }
 
-  onValid(){
+  onValid = () => {
     this.setState({canSubmit: true});
     if(this.props.onValid) this.props.onValid();
-  },
+  }
 
-  onInValid(){
+  onInValid = () => {
     this.setState({canSubmit: false});
     if(this.props.onValid) this.props.onInValid();
-  },
+  }
 
-  onChange(model){
+  onChange = (model: Object) => {
     if(this.props.onChange) this.props.onChange(model);
-  },
+  }
 
   render() {
     var _this = this;
@@ -89,7 +77,7 @@ var DataCollectionForm = React.createClass({
             if(_this.props.values && _this.props.values[preset.tag]){
               value = _this.props.values[preset.tag];
             }
-            if(preset.tag != 'photo_url'){
+            if(preset.tag !== 'photo_url'){
               return (
                 <FormField key={preset.tag} preset={preset} value={value} />
               );
@@ -100,6 +88,4 @@ var DataCollectionForm = React.createClass({
       </Formsy.Form>
     );
   }
-});
-
-module.exports = DataCollectionForm;
+}

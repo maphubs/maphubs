@@ -1,61 +1,47 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var Toggle = require('../forms/toggle');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+import Formsy from 'formsy-react';
+import Toggle from '../forms/toggle';
 var $ = require('jquery');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
+import styles from '../Map/styles';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var styles = require('../Map/styles');
+export default class AdvancedLayerSettings extends MapHubsPureComponent {
 
-var AdvancedLayerSettings = React.createClass({
+  props: {
+    onChange: Function,
+    layer: Object,
+    style: Object,
+    settings: Object
+  }
 
-  mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    style: null,
+    layer: null,
+    settings: null
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onChange: PropTypes.func.isRequired,
-    layer: PropTypes.object.isRequired,
-    style: PropTypes.object,
-    settings: PropTypes.object
-  },
-
-  getDefaultProps(){
-    return {
-      style: null,
-      layer: null,
-      settings: null
-    };
-  },
-
-  getInitialState(){
-    return {
+  constructor(props: Object){
+    super(props);
+    this.state = {
       style: this.props.style,
       settings: this.props.settings ? this.props.settings : styles.defaultSettings()
     };
-  },
+  }
 
   componentDidMount(){
     $('.tooltip-advanced-layer-settings').tooltip();
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     if(nextProps.settings){
       this.setState({style: nextProps.style, settings: nextProps.settings});
     }else{
       this.setState({style: nextProps.style});
     }
+  }
 
-  },
-
-   onFormChange(values){
+   onFormChange = (values: Object) => {
 
      var style = this.state.style;
      if(values.interactive !== this.state.settings.interactive){
@@ -74,7 +60,7 @@ var AdvancedLayerSettings = React.createClass({
 
      this.setState({style, settings});
      this.props.onChange(style, settings);
-  },
+  }
 
   render(){
     return (
@@ -99,6 +85,4 @@ var AdvancedLayerSettings = React.createClass({
         </div>
     );
   }
-});
-
-module.exports = AdvancedLayerSettings;
+}

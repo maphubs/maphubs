@@ -1,28 +1,28 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header = require('../components/header');
-var StoryEditor = require('../components/Story/StoryEditor');
+import Header from '../components/header';
+import StoryEditor from '../components/Story/StoryEditor';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var CreateUserStory = React.createClass({
+export default class CreateUserStory extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    story_id: number,
+    username: string,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>,
+    locale: string,
+    _csrf: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    story_id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array,
-    locale: PropTypes.string.isRequired
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
     return (
@@ -39,6 +39,4 @@ var CreateUserStory = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = CreateUserStory;
+}

@@ -1,14 +1,9 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 
 var urlUtil = require('../../services/url-util');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
 var moment = require('moment-timezone');
-var Gravatar = require('../user/Gravatar');
+import Gravatar from '../user/Gravatar';
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate} from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -20,28 +15,20 @@ addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
 addLocaleData(it);
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var StoryHeader = React.createClass({
+export default class StoryHeader extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+    story: Object,
+    baseUrl: string,
+    short:  boolean
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    story: PropTypes.object.isRequired,
-    baseUrl: PropTypes.string,
-    short:  PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      baseUrl: '',
-      short: false
-    };
-  },
-
+  static defaultProps: {
+    baseUrl: '',
+    short: false
+  }
 
   render(){
 
@@ -129,15 +116,10 @@ var StoryHeader = React.createClass({
       );
     }
 
-
-
    return (
      <div>
        {author}
      </div>
    );
   }
-
-});
-
-module.exports = StoryHeader;
+}

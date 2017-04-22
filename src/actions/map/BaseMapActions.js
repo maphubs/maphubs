@@ -1,10 +1,7 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'changeBaseMap': {},
-  'getBaseMapFromName': {},
-  'setBaseMap': {},
-  'updateMapPosition': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'changeBaseMap',
+  'getBaseMapFromName',
+  'setBaseMap',
+  'updateMapPosition'
+]);

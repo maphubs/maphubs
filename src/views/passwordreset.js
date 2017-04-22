@@ -1,32 +1,29 @@
+//#flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
+import Password from '../components/forms/Password';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var Password = require('../components/forms/Password');
+export default class PasswordReset extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  props: {
+    passreset: string,
+    locale: string,
+    footerConfig: Object
+  }
 
-var PasswordReset = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    passreset: PropTypes.string.isRequired,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   onSave(){
     window.location = '/login';
-  },
+  }
 
   render() {
     return (
@@ -36,7 +33,7 @@ var PasswordReset = React.createClass({
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
               <h4 className="center">{this.__('Please Enter a New Password')}</h4>
-              <Password passreset={this.props.passreset} csrf={this.state._csrf} onSave={this.onSave}/>
+              <Password passreset={this.props.passreset} csrf={this.state._csrf} onSave={this.onSave.bind(this)}/>
             </div>
           </div>
       </main>
@@ -44,6 +41,4 @@ var PasswordReset = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = PasswordReset;
+}

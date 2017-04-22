@@ -1,79 +1,65 @@
+//@flow
 import React from 'react';
 var debug = require('../../services/debug')('FileUpload');
-import PropTypes from 'prop-types';
-
 import FileUploadProgress from 'react-fileupload-progress';
+import MapHubsComponent from '../MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
-var File = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class File extends MapHubsComponent {
 
   propTypes: {
-    action: PropTypes.string,
-    onUpload: PropTypes.func,
-    onChange: PropTypes.func,
-    onFinishTx: PropTypes.func,
-    onAbort: PropTypes.func,
-    onError: PropTypes.func,
-    inputStyle: PropTypes.object,
-    style: PropTypes.object
-  },
+    action: string,
+    onUpload: Function,
+    onChange: Function,
+    onFinishTx: Function,
+    onAbort: Function,
+    onError: Function,
+    inputStyle: Object,
+    style: Object
+  }
 
+  static defaultProps: {
+      inputStyle: {
+          visibility: 'hidden',
+          width: '1px'
+      },
+      style: {
+          display: 'inline-block'
+      }
+  }
 
-  getDefaultProps() {
-      return {
-          inputStyle: {
-              visibility: 'hidden',
-              width: '1px'
-          },
-          style: {
-              display: 'inline-block'
-          }
-      };
-  },
-
-  onProgress(e, request, progress){
+  onProgress = (e: any, request: any, progress: number) => {
     debug("upload progress: " + progress);
     if (progress === 100){
       if(this.props.onFinishTx){
         this.props.onFinishTx();
       }
     }
-  },
+  }
 
-  onLoad(e){
+  onLoad =(e: any) => {
     var dataTxt = e.target.response;
     var data = JSON.parse(dataTxt);
     this.setState({uploading: false});
     this.props.onUpload(data);
-  },
+  }
 
-  onError(e, request){
+  onError = (e: any, request: any) => {
     if(this.props.onError) this.props.onError(e, request);
-  },
+  }
 
-  onAbort(e, request){
+  onAbort = (e: any, request: any) => {
     if(this.props.onAbort) this.props.onAbort(e, request);
-  },
+  }
 
-  formGetter(){
+  formGetter = () => {
     return new FormData(document.getElementById('customForm'));
-  },
+  }
 
-  onClick(){
+  onClick = () => {
     this.input.click();
-  },
+  }
 
-  customFormRenderer(onSubmit, onFileClick){
+  customFormRenderer = (onSubmit: Function, onFileClick: Function) => {
     var _this = this;
     var onSubmitWrapper = function(val){
       if(_this.props.onChange){
@@ -96,9 +82,9 @@ var File = React.createClass({
       </form>
     </div>
     );
-  },
+  }
 
-  customProgressRenderer(progress, hasError, cancelHandler) {
+  customProgressRenderer = (progress: number, hasError: boolean, cancelHandler: Function) => {
     if (hasError || progress > -1 ) {
       let progressPct = progress + '%';
 
@@ -129,7 +115,7 @@ var File = React.createClass({
     } else {
       return (<div></div>);
     }
-  },
+  }
 
   render() {
       return (
@@ -144,6 +130,4 @@ var File = React.createClass({
       />
       );
     }
-});
-
-module.exports = File;
+}

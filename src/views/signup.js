@@ -1,57 +1,50 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-
-var Formsy = require('formsy-react');
-var TextInput = require('../components/forms/textInput');
-var Toggle = require('../components/forms/toggle');
-
+import Header from '../components/header';
+import Formsy from 'formsy-react';
+import TextInput from '../components/forms/textInput';
+import Toggle from '../components/forms/toggle';
 import Progress from '../components/Progress';
-
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var UserActions = require('../actions/UserActions');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import UserActions from '../actions/UserActions';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
 var debug = require('../services/debug')('views/signup');
 var $ = require('jquery');
 
-var Signup = React.createClass({
+export default class Signup extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    locale: string,
+    email:  string,
+    lockEmail:  boolean,
+    inviteKey: string,
+    _csrf: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    lockEmail: false
+  }
 
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    email:  PropTypes.string,
-    lockEmail:  PropTypes.bool,
-    inviteKey: PropTypes.string
-  },
+  state: {
+    canSubmit: false,
+    saving: false,
+    email: string
+  }
 
-  getDefaultProps() {
-    return {
-      lockEmail: false
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false,
-      saving: false,
-      email: this.props.email
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.state.email = props.email;
+  }
 
   componentWillMount() {
     var _this = this;
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
     Formsy.addValidationRule('isAvailable', function (values, value) {
       if(!this.usernameValue || value !== this.usernameValue){
         this.usernameValue = value;
@@ -64,9 +57,9 @@ var Signup = React.createClass({
       var regexp = /^[A-Z0-9\u00C0-\u017F]+$/i;
       return !(value !== null && value !== undefined) || value === '' || regexp.test(value);
     });
-  },
+  }
 
-  checkUserNameAvailable(username){
+  checkUserNameAvailable(username: string){
       var _this = this;
       var result = false;
       if (username && typeof window !== 'undefined') {
@@ -104,9 +97,9 @@ var Signup = React.createClass({
       }
 
       return result;
-  },
+  }
 
-  onSave(model){
+  onSave(model: Object){
     var _this = this;
     this.setState({saving: true});
     UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, this.props.inviteKey, this.state._csrf, function(err){
@@ -125,18 +118,19 @@ var Signup = React.createClass({
         });
       }
     });
-  },
+  }
 
   enableButton () {
     this.setState({
       canSubmit: true
     });
-  },
+  }
+
   disableButton () {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
   render() {
     var joinList = '';
@@ -162,7 +156,7 @@ var Signup = React.createClass({
       <main>
       <div className="container">
         <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for') + ' ' + MAPHUBS_CONFIG.productName}</h4>
-        <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableButton} onInvalid={this.disableButton}>
+        <Formsy.Form onValidSubmit={this.onSave.bind(this)} onValid={this.enableButton.bind(this)} onInvalid={this.disableButton.bind(this)}>
           <div className="row valign-wrapper" style={{paddingTop: '25px'}}>
             <TextInput name="username" label={this.__('User Name')} icon="perm_identity"
                 className="col s12 m8 l8 valign" style={{margin: 'auto'}}
@@ -233,6 +227,4 @@ var Signup = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = Signup;
+}

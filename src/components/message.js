@@ -1,25 +1,20 @@
+//@flow
 import React from 'react';
-
-
 import {Modal, ModalContent, ModalFooter} from './Modal/Modal';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var MessageStore = require('../stores/MessageStore');
-var MessageActions = require('../actions/MessageActions');
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MessageActions from '../actions/MessageActions';
+import MessageStore from '../stores/MessageStore';
+import MapHubsComponent from './MapHubsComponent';
 
-var Message = React.createClass({
+export default class Message extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(MessageStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+		super(props);
+		this.stores.push(MessageStore);
+	}
 
   onDismiss(){
     MessageActions.dismissMessage();
-  },
+  }
 
   render(){
     /*eslint-disable react/no-danger*/
@@ -36,6 +31,4 @@ var Message = React.createClass({
     );
     /*eslint-enable react/no-danger*/
   }
-});
-
-module.exports = Message;
+}

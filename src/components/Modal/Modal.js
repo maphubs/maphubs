@@ -1,5 +1,6 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Reflux from 'reflux';
 var $ = require('jquery');
 var classNames = require('classnames');
 
@@ -11,19 +12,15 @@ var classNames = require('classnames');
 // </Modal>
 //)}
 
-var ModalContent = React.createClass({
-  propTypes:  {
-    className: PropTypes.string,
-    style:  PropTypes.object,
-    children: PropTypes.any
-  },
-
-  getDefaultProps() {
-    return {
-      style: {}
-    };
-  },
-
+export class ModalContent extends Reflux.Component {
+  props: {
+    className: string,
+    style:  Object,
+    children: any
+  }
+  static defaultProps: {
+    style: {}
+  }
   render(){
     var className = classNames('modal-content', this.props.className);
     return (
@@ -32,13 +29,13 @@ var ModalContent = React.createClass({
       </div>
     );
   }
-});
+}
 
-var ModalFooter = React.createClass({
-  propTypes:  {
-    className: PropTypes.string,
-    children: PropTypes.any
-  },
+export class ModalFooter extends Reflux.Component {
+  props: {
+    className: string,
+    children: any
+  }
   render(){
       var className = classNames('modal-footer', this.props.className);
     return (
@@ -47,39 +44,44 @@ var ModalFooter = React.createClass({
       </div>
     );
   }
-});
+}
 
-var Modal = React.createClass({
 
-  propTypes:  {
-    id: PropTypes.string,
-    show: PropTypes.bool.isRequired,
-    className: PropTypes.string, //additional classname to apply to model
-    fixedFooter: PropTypes.bool,
-    dismissible: PropTypes.bool,
-    in_duration: PropTypes.number,
-    out_duration: PropTypes.number,
-    opacity: PropTypes.number,
-    ready: PropTypes.func,
-    complete: PropTypes.func,
-    children: PropTypes.any
-  },
+export class Modal extends Reflux.Component {
 
-  getDefaultProps() {
-    return {
-      id:'modal',
-      show: false,
-      fixedFooter: false,
-      className: '',
-      //settings from materializeCSS
-      dismissible: true, // Modal can be dismissed by clicking outside of the modal
-      opacity: .5, // Opacity of modal background
-      in_duration: 300, // Transition in duration
-      out_duration: 200, // Transition out duration
-      ready() {}, // Callback for Modal open
-      complete() {} // Callback for Modal close
+  props: {
+    id: string,
+    show: boolean,
+    className: string, //additional classname to apply to model
+    fixedFooter: boolean,
+    dismissible: boolean,
+    in_duration: number,
+    out_duration: number,
+    opacity: number,
+    ready: Function,
+    complete: Function,
+    children: any
+  };
+
+  static defaultProps: {
+    id:'modal',
+    show: false,
+    fixedFooter: false,
+    className: '',
+    //settings from materializeCSS
+    dismissible: true, // Modal can be dismissed by clicking outside of the modal
+    opacity: .5, // Opacity of modal background
+    in_duration: 300, // Transition in duration
+    out_duration: 200 // Transition out duration
+  }
+
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      ready: () => {}, // Callback for Modal open
+      complete: () => {} // Callback for Modal close
     };
-  },
+  }
 
   componentDidMount(){
      $(this.refs.modal).modal({
@@ -90,9 +92,9 @@ var Modal = React.createClass({
         ready: this.props.ready,
         complete: this.props.complete
       });
-  },
+  }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Object) {
     if(this.props.show && !prevProps.show){
       //switch from off to on
       $(this.refs.modal).modal('open');
@@ -106,7 +108,7 @@ var Modal = React.createClass({
       //$('.lean-overlay').remove(); //for some reason materialize isn't clearing the overlay mask possibly related to https://github.com/Dogfalo/materialize/issues/1647
     }
 
-  },
+  }
 
   render() {
     var className = '';
@@ -122,6 +124,5 @@ var Modal = React.createClass({
 
     );
   }
-});
+}
 
-module.exports = {Modal, ModalContent, ModalFooter};

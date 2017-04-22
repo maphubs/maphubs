@@ -2,21 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 var Formsy = require('formsy-react');
 var TextInput = require('../components/forms/textInput');
-var Notification = require('../components/Notification');
-var NotificationActions = require('../actions/NotificationActions');
-var UserActions = require('../actions/UserActions');
+import Notification from '../components/Notification';
+import NotificationActions from '../actions/NotificationActions';
+import UserActions from '../actions/UserActions';
 require('../stores/UserStore'); //needs to be here so webpack knows to load it
-var Message = require('../components/message');
-var MessageActions = require('../actions/MessageActions');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
+import Message from '../components/message';
+import MessageActions from '../actions/MessageActions';
+import Reflux from 'reflux';
+import LocaleActions from '../actions/LocaleActions';
 var Locales = require('../services/locales');
+import LocaleStore from '../stores/LocaleStore';
+//var _assignIn = require('lodash.assignin');
 
 var Login = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -26,10 +24,11 @@ var Login = React.createClass({
     name: PropTypes.string,
     failed: PropTypes.bool,
     locale: PropTypes.string.isRequired,
+    _csrf: PropTypes.string.isRequired,
     showSignup: PropTypes.bool
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       name: 'No name',
       failed: false,
@@ -41,6 +40,25 @@ var Login = React.createClass({
     return {
       canSubmit: false
     };
+  },
+
+  unsubscribe() {},
+
+  componentWillMount() {
+    
+    this.localeStore = Reflux.initStore(LocaleStore);
+    var state = {locale: this.props.locale, _csrf: this.props._csrf};
+    LocaleActions.rehydrate(state);
+    this.setState(state);
+  },
+
+  componentDidMount() {
+    var _this = this;
+    this.unsubscribe = this.localeStore.listen( () => this.setState(_this.localeStore.getData())); 
+  },
+
+  componentWillUnmount() {
+    this.unsubscribe();
   },
 
   enableResetButton() {

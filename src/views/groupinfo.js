@@ -1,53 +1,51 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Header = require('../components/header');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 var cardUtil = require('../services/card-util');
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var GroupInfo = React.createClass({
+export default class GroupInfo extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    group: Object,
+    maps: Array<Object>,
+    layers: Array<Object>,
+    hubs: Array<Object>,
+    members: Array<Object>,
+    canEdit: boolean,
+    locale: string,
+    _csrf: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    group: {
+      name: "Unknown"
+    },
+    maps: [],
+    layers: [],
+    hubs: [],
+    members: [],
+    canEdit: false
+  }
 
-  propTypes: {
-    group: PropTypes.object,
-    maps: PropTypes.array,
-    layers: PropTypes.array,
-    hubs: PropTypes.array,
-    members: PropTypes.array,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      group: {
-        name: "Unknown"
-      },
-      maps: [],
-      layers: [],
-      hubs: [],
-      members: [],
-      canEdit: false
-    };
-  },
-
-  getInitialState(){
-    return {
+  constructor(props: Object){
+		super(props);
+    this.state = {
       mapCards: this.props.maps.map(cardUtil.getMapCard),
       layerCards: this.props.layers.map(cardUtil.getLayerCard),
       hubCards: this.props.hubs.map(cardUtil.getHubCard)
     };
-  },
+	}
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
     var _this = this;
@@ -179,6 +177,4 @@ var GroupInfo = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = GroupInfo;
+}

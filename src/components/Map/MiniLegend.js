@@ -1,55 +1,45 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 var $ = require('jquery');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var BaseMapStore = require('../../stores/map/BaseMapStore');
-var Locales = require('../../services/locales');
-var LegendItem = require('./LegendItem');
+import BaseMapStore from '../../stores/map/BaseMapStore';
+import LegendItem from './LegendItem';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var MiniLegend = React.createClass({
+export default class MiniLegend extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore), StateMixin.connect(BaseMapStore)],
+  props: {
+    title: string,
+    layers: Array<Object>,
+    hideInactive: boolean,
+    collapsible: boolean,
+    collapseToBottom: boolean,
+    showLayersButton: boolean,
+    style: Object
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    layers: [],
+    hideInactive: true,
+    collapsible: true,
+    collapseToBottom: false,
+    showLayersButton: true,
+    style: {}
+  }
 
-  propTypes:  {
-    title: PropTypes.string,
-    layers: PropTypes.array,
-    hideInactive: PropTypes.bool,
-    collapsible: PropTypes.bool,
-    collapseToBottom: PropTypes.bool,
-    showLayersButton: PropTypes.bool,
-    style: PropTypes.object
-  },
+  state: {
+    collapsed: false
+  }
 
-  getDefaultProps() {
-    return {
-      layers: [],
-      hideInactive: true,
-      collapsible: true,
-      collapseToBottom: false,
-      showLayersButton: true,
-      style: {}
-    };
-  },
-
-  getInitialState(){
-    return {
-      collapsed: false
-    };
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(BaseMapStore);
+	}
 
   toggleCollapsed(){
     this.setState({
       collapsed: this.state.collapsed ? false : true
     });
-  },
-
+  }
 
   componentDidMount() {
     if(this.props.collapsible){
@@ -63,7 +53,7 @@ var MiniLegend = React.createClass({
         closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
       });
     }
-  },
+  }
 
   render(){
     var _this = this;
@@ -154,7 +144,7 @@ var MiniLegend = React.createClass({
       allowScroll = false;
     }
 
-    var style = this.props.style;
+    //var style = this.props.style;
     //style.height = '9999px'; //needed for the flex box to work correctly
 
     return (
@@ -167,7 +157,7 @@ var MiniLegend = React.createClass({
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
                   borderLeft: '1px solid #ddd'}}>
-          <div className="collapsible-header active no-padding" style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
+          <div className="collapsible-header active no-padding" style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed.bind(this)}>
             {title}
           </div>
           <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>
@@ -195,7 +185,4 @@ var MiniLegend = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = MiniLegend;
+}

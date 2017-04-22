@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const CreateLayer = require('../views/createlayer');
+import CreateLayer from '../views/createlayer';
 
 require('babel-polyfill');
 require('jquery');

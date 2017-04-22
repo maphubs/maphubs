@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 var GroupTag = require('../Groups/GroupTag');
 var Formsy = require('formsy-react');
 var Toggle = require('../../components/forms/toggle');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');

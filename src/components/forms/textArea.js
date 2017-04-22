@@ -1,49 +1,46 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var TextArea = React.createClass({
-
-  mixins: [PureRenderMixin, Formsy.Mixin],
+class TextArea extends MapHubsPureComponent {
 
   propTypes: {
-    length: PropTypes.number,
-    value: PropTypes.string,
-    icon: PropTypes.string,
-    className: PropTypes.string,
-    dataTooltip: PropTypes.string,
-    dataDelay: PropTypes.number,
-    dataPosition: PropTypes.string,
-    name: PropTypes.string,
-    label: PropTypes.string
-  },
+    length: number,
+    value: string,
+    icon: string,
+    className: string,
+    dataTooltip: string,
+    dataDelay: number,
+    dataPosition: string,
+    name: string,
+    label: string
+  }
 
-  getDefaultProps() {
-    return {
+  static defaultProps: {
       length: 0,
       value: '',
       dataDelay: 100
-    };
-  },
+  }
 
-  getInitialState() {
-    return {
+  constructor(props){
+    super(props);
+    this.state = {
       value: this.props.value,
       charCount: this.props.value ? this.props.value.length: 0
     };
-  },
+  }
 
   componentDidMount(){
     if(this.props.dataTooltip){
       $(this.refs.inputWrapper).tooltip();
     }
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.value != nextProps.value){
+    if(this.props.value !== nextProps.value){
       var charCount = 0;
       if(nextProps.value) charCount = nextProps.value.length;
       this.setState({
@@ -51,16 +48,16 @@ var TextArea = React.createClass({
         charCount
       });
     }
-  },
+  }
 
-  changeValue(event) {
+  changeValue = (event) => {
     event.stopPropagation();
-     this.setValue(event.currentTarget.value);
+     this.props.setValue(event.currentTarget.value);
      this.setState({
        value: event.currentTarget.value,
        charCount: event.currentTarget.value.length
      });
-   },
+   }
 
   render() {
      var className = classNames('input-field', this.props.className);
@@ -81,7 +78,7 @@ var TextArea = React.createClass({
    if(this.state.charCount > this.props.length) countColor = 'red';
 
    var labelClassName = '';
-   if(this.state.value && this.state.value != ''){
+   if(this.state.value && this.state.value !== ''){
      labelClassName = 'active';
    }
 
@@ -96,8 +93,6 @@ var TextArea = React.createClass({
         </span>
       </div>
     );
-
   }
-});
-
-module.exports = TextArea;
+}
+export default HOC(TextArea);

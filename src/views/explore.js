@@ -1,51 +1,47 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import SearchBox from '../components/SearchBox';
+import CardCarousel from '../components/CardCarousel/CardCarousel';
 
 var _shuffle = require('lodash.shuffle');
-var CardFilter = require('../components/Home/CardFilter');
+import CardFilter from '../components/Home/CardFilter';
 var cardUtil = require('../services/card-util');
 
-var SubPageBanner = require('../components/Home/SubPageBanner');
+import SubPageBanner from '../components/Home/SubPageBanner';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var Home = React.createClass({
+export default class Home extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    featuredLayers: Array<Object>,
+    featuredGroups: Array<Object>,
+    featuredHubs: Array<Object>,
+    featuredMaps: Array<Object>,
+    featuredStories: Array<Object>,
+    popularLayers: Array<Object>,
+    popularGroups: Array<Object>,
+    popularHubs: Array<Object>,
+    popularMaps: Array<Object>,
+    popularStories: Array<Object>,
+    recentLayers: Array<Object>,
+    recentGroups: Array<Object>,
+    recentHubs: Array<Object>,
+    recentMaps: Array<Object>,
+    recentStories: Array<Object>,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object,
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    featuredLayers: PropTypes.array,
-    featuredGroups: PropTypes.array,
-    featuredHubs: PropTypes.array,
-    featuredMaps: PropTypes.array,
-    featuredStories: PropTypes.array,
-    popularLayers: PropTypes.array,
-    popularGroups: PropTypes.array,
-    popularHubs: PropTypes.array,
-    popularMaps: PropTypes.array,
-    popularStories: PropTypes.array,
-    recentLayers: PropTypes.array,
-    recentGroups: PropTypes.array,
-    recentHubs: PropTypes.array,
-    recentMaps: PropTypes.array,
-    recentStories: PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  getInitialState(){
-    return {
+  constructor(props: Object){
+		super(props);
+    this.state = {
       storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       mapMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       hubMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
@@ -72,11 +68,16 @@ var Home = React.createClass({
       popularLayerCards: _shuffle(this.props.popularLayers.map(cardUtil.getLayerCard)),
       recentLayerCards: _shuffle(this.props.recentLayers.map(cardUtil.getLayerCard))
     };
-  },
+	}
 
-  handleSearch(input){
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
+  handleSearch(input: string){
     window.location = '/search?q=' + input;
-  },
+  }
 
 	render() {
     var _this = this;
@@ -124,8 +125,6 @@ var Home = React.createClass({
     }else if(this.state.layerMode === 'recent'){
       layerCards =  this.state.recentLayerCards;
     }
-
-
 
 		return (
       <div>
@@ -265,6 +264,4 @@ var Home = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = Home;
+}

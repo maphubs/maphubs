@@ -1,10 +1,31 @@
 {
   "parser": "babel-eslint",
-  parserOptions: {
-    ecmaVersion: 6,
-    sourceType: "module",
-    ecmaFeatures: {
-        jsx: true
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "binaryLiterals": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "generators": true,
+      "modules": true,
+      "objectLiteralComputedProperties": true,
+      "objectLiteralDuplicateProperties": true,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "octalLiterals": true,
+      "regexUFlag": true,
+      "regexYFlag": true,
+      "spread": true,
+      "superInFunctions": true,
+      "templateStrings": true,
+      "unicodeCodePointEscapes": true,
+      "globalReturn": true,
+      "jsx": true
     }
   },
   "extends": ["eslint:recommended", "plugin:react/recommended"],
@@ -17,7 +38,11 @@
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
     "react/wrap-multilines": 1,
-    semi: [2, "always"]
+    "react/prefer-es6-class": 1,
+    "react/jsx-no-bind": 2,
+    "semi": [2, "always"],
+    "eqeqeq": 2 // require the use of === and !==
+
   },
 
   "env": {
@@ -38,7 +63,7 @@
   "settings": {
     "react": {
       "pragma": "React",
-      "version": "14.0"
+      "version": "15.0"
     }
   }
 }

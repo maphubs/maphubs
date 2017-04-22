@@ -4,7 +4,7 @@ var LayerSettings = require('./LayerSettings');
 var LayerActions = require('../../actions/LayerActions');
 var PresetActions = require('../../actions/presetActions');
 var MessageActions = require('../../actions/MessageActions');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LayerStore = require('../../stores/layer-store');
 var LocaleStore = require('../../stores/LocaleStore');
@@ -20,7 +20,7 @@ var Step2 = React.createClass({
     onSubmit: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       groups: [],
       onSubmit: null

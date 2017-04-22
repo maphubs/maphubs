@@ -1,8 +1,7 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header = require('../components/header');
-var Footer = require('../components/footer');
+import Header from '../components/header';
+import Footer from '../components/footer';
 var CardCarousel = require('../components/CardCarousel/CardCarousel');
 var StorySummary = require('../components/Story/StorySummary');
 
@@ -11,49 +10,58 @@ var InteractiveMap = require('../components/InteractiveMap');
 var _shuffle = require('lodash.shuffle');
 var cardUtil = require('../services/card-util');
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
 /**
  * Example of a customized home page configuration
  */
-var HomePro = React.createClass({
+export default class HomePro extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    trendingLayers: Array<Object>,
+    trendingGroups:Array<Object>,
+    trendingHubs: Array<Object>,
+    trendingMaps: Array<Object>,
+    trendingStories: Array<Object>,
+    featuredStories:  Array<Object>,
+    locale: string,
+    _csrf: string,
+    map: Object,
+    pageConfig: Object,
+    layers: Array<Object>,
+    footerConfig: Object
+  }
 
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  state: {
+    trendingStoryCards: Array<Object>,
+    trendingMapCards: Array<Object>,
+    trendingHubCards: Array<Object>,
+    trendingGroupCards: Array<Object>,
+    trendingLayerCards: Array<Object>
+  }
 
-  propTypes: {
-    trendingLayers: PropTypes.array.isRequired,
-    trendingGroups: PropTypes.array.isRequired,
-    trendingHubs: PropTypes.array.isRequired,
-    trendingMaps: PropTypes.array.isRequired,
-    trendingStories: PropTypes.array.isRequired,
-    featuredStories:  PropTypes.array.isRequired,
-    locale: PropTypes.string.isRequired,
-    map: PropTypes.object,
-    pageConfig: PropTypes.object.isRequired,
-    layers: PropTypes.array,
-    footerConfig: PropTypes.object
-  },
-
-  getInitialState(): Object{
-    return {
+  constructor(props: Object) {
+    super(props);
+    this.state = {
       trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
       trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
       trendingHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
       trendingGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
       trendingLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
     };
-  },
+  }
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   handleSearch(input: string){
     window.location = '/search?q=' + input;
-  },
+  }
 
   renderHomePageMap(config: Object, key: string){
     var homepageMap= '';
@@ -68,7 +76,7 @@ var HomePro = React.createClass({
        );
     }
     return homepageMap;   
-  },
+  }
 
   renderLinks(config: Object, key: string){
     var links = '';
@@ -79,7 +87,7 @@ var HomePro = React.createClass({
       </div>
     );
     return links;
-  },
+  }
 
   renderCarousel(config: Object, key: string){
     var trendingCards = cardUtil.combineCards([this.state.trendingLayerCards,
@@ -107,8 +115,7 @@ var HomePro = React.createClass({
            </div>
         </div>
     );
-
-  },
+  }
 
   renderStories(key: string){
     var featured = '';
@@ -134,8 +141,7 @@ var HomePro = React.createClass({
        );
      }
      return featured;
-
-  },
+  }
 
   renderText(config: Object, key: string){
     var text = config.text[this.state.locale];
@@ -147,7 +153,7 @@ var HomePro = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
 	render() {
 
@@ -181,6 +187,4 @@ var HomePro = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = HomePro;
+}

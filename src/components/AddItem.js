@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 var $ = require('jquery');
 var Promise = require('bluebird');
 var Formsy = require('formsy-react');
-var Toggle = require('./forms/toggle');
-var MessageActions = require('../actions/MessageActions');
+import Toggle from './forms/toggle';
+import MessageActions from '../actions/MessageActions';
 import Suggestions from './SearchBar/Suggestions';
+
 
 const KEY_CODES = {
   UP: 38,
@@ -14,55 +15,21 @@ const KEY_CODES = {
   ENTER: 13
 };
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from './MapHubsComponent';
+import LocaleStore from '../stores/LocaleStore';
 
+export default class AddItem extends MapHubsComponent {
 
-
-var AddItem = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  getDefaultProps() {
-    return {
-      id: 'additem',
-      autoFocus: false,
-      autosuggestDelay: 250,
-      inputName: 'query',
-      placeholder: 'Add',
-      addButtonLabel: 'Add',
-      optionLabel: null
-    };
-  },
-
-  propTypes: {
-    id: PropTypes.string,
-    placeholder: PropTypes.string,
-    suggestionUrl: PropTypes.string,
-    onAdd: PropTypes.func.isRequired,
-    autosuggestDelay: PropTypes.number,
-    autoFocus: PropTypes.bool,
-    inputName: PropTypes.string,
-    optionLabel: PropTypes.string,
-    addButtonLabel: PropTypes.string
-  },
-
-  getInitialState() {
-    return {
+  constructor(props){
+		super(props);
+		this.stores = [LocaleStore];
+    this.state = {
       value: '',
       suggestions: [],
       highlightedItem: -1,
       option: false
     };
-  },
-
-
+	}
 
   updateSuggestions(input, resolve) {
     if (typeof window !== 'undefined' && this.props.suggestionUrl) {
@@ -83,13 +50,11 @@ var AddItem = React.createClass({
           }
       });
     }
-
- },
-
+ }
 
  handleAddWithOptionChecked(option){
    this.setState({option});
- },
+ }
 
  componentDidMount() {
    /*eslint-disable react/no-find-dom-node */
@@ -107,13 +72,16 @@ var AddItem = React.createClass({
   });
   $(document.body).on("click", this.hideSuggestions);
   /*eslint-enable react/no-find-dom-node*/
- },
+ }
+
  componentWillUnmount () {
    document.body.removeEventListener('click', this.hideSuggestions);
- },
+ }
+
  handleClick(e){
    e.nativeEvent.stopImmediatePropagation();
- },
+ }
+
  handleKeyDown(e) {
    if(e.which == KEY_CODES.ENTER ){
      e.preventDefault();
@@ -136,7 +104,8 @@ var AddItem = React.createClass({
      highlightedItem,
      value: this.state.suggestions[highlightedItem]
    });
- },
+ }
+
  displaySuggestions(suggestions) {
    this.setState({
      suggestions,
@@ -146,16 +115,17 @@ var AddItem = React.createClass({
    /*eslint-disable react/no-find-dom-node */
    $(ReactDOM.findDOMNode(this.refs.suggestions)).show();
     /*eslint-enable react/no-find-dom-node  */
- },
+ }
+
  hideSuggestions(){
    /*eslint-disable react/no-find-dom-node */
      $(ReactDOM.findDOMNode(this.refs.suggestions)).hide();
       /*eslint-enable react/no-find-dom-node */
- },
+ }
 
  fillInSuggestion(suggestion) {
    this.setState({value: suggestion});
- },
+ }
 
  handleChange(e) {
    clearTimeout(this._timerId);
@@ -171,14 +141,15 @@ var AddItem = React.createClass({
        this.displaySuggestions(suggestions);
      });
    }, this.props.autosuggestDelay);
- },
+ }
+
  submit(e) {
    e.preventDefault();
    if (!this.state.value) return;
    this.props.onAdd({value: this.state.value, option: this.state.option});
    //reset form
    this.setState(this.getInitialState());
- },
+ }
 
  render() {
 
@@ -232,7 +203,26 @@ var AddItem = React.createClass({
       </div>
    );
  }
+}
 
-});
+AddItem.defaultProps = {
+  id: 'additem',
+  autoFocus: false,
+  autosuggestDelay: 250,
+  inputName: 'query',
+  placeholder: 'Add',
+  addButtonLabel: 'Add',
+  optionLabel: null
+};
 
-module.exports = AddItem;
+AddItem.propTypes = {
+  id: PropTypes.string,
+  placeholder: PropTypes.string,
+  suggestionUrl: PropTypes.string,
+  onAdd: PropTypes.func.isRequired,
+  autosuggestDelay: PropTypes.number,
+  autoFocus: PropTypes.bool,
+  inputName: PropTypes.string,
+  optionLabel: PropTypes.string,
+  addButtonLabel: PropTypes.string
+};

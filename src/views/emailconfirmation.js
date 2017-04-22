@@ -1,26 +1,27 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var EmailConfirmation = React.createClass({
+export default class EmailConfirmation extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    valid: boolean,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
-  propTypes: {
-    valid: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
   render() {
     var content = '';
     if(this.props.valid){
@@ -51,6 +52,4 @@ var EmailConfirmation = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = EmailConfirmation;
+}

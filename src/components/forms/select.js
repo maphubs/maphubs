@@ -1,82 +1,79 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var find = require('lodash.find');
-var result = require('lodash.result');
+
+import {HOC} from 'formsy-react';
+import find from 'lodash.find';
+import result from 'lodash.result';
 var classNames = require('classnames');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 import ReactMaterialSelect from 'react-material-select';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var Select = React.createClass({
-
-  mixins: [PureRenderMixin, Formsy.Mixin],
+class Select extends MapHubsPureComponent {
 
   propTypes:  {
-    emptyText: PropTypes.string,
-    defaultValue: PropTypes.string,
-    name: PropTypes.string,
-    className: PropTypes.string,
-    options: PropTypes.array,
-    dataTooltip: PropTypes.string,
-    dataDelay: PropTypes.number,
-    dataPosition: PropTypes.string,
-    label: PropTypes.string,
-    successText: PropTypes.string,
-    id: PropTypes.string,
-    onChange: PropTypes.func,
-    startEmpty: PropTypes.bool,
-    icon: PropTypes.string,
-    note: PropTypes.string //optional note that displays below the select, will be updated on selection if option contains a note
-  },
+    emptyText: string,
+    defaultValue: string,
+    name: string,
+    className: string,
+    options: Array<Object>,
+    dataTooltip: string,
+    dataDelay: number,
+    dataPosition: string,
+    label: string,
+    successText: string,
+    id: string,
+    onChange: Function,
+    startEmpty: boolean,
+    icon: string,
+    note: string //optional note that displays below the select, will be updated on selection if option contains a note
+  }
 
-  getDefaultProps() {
-    return {
-      startEmpty: true,
-      emptyText: 'Choose an Option',
-      name: 'select-box',
-      id: 'select-box',
-      options: [],
-      dataDelay: 100
+  static defaultProps: {
+    startEmpty: true,
+    emptyText: 'Choose an Option',
+    name: 'select-box',
+    id: 'select-box',
+    options: [],
+    dataDelay: 100
+  }
+
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      note: props.note
     };
-  },
+  }
 
-  getInitialState(){
-    return {
-      note: this.props.note
-    };
-  },
+  componentWillMount() {
+    this.setValue(this.props.defaultValue);
+    this.setNote(this.props.defaultValue);
+  }
 
-  setNote(val){
+  componentWillReceiveProps(nextProps){
+    if(!nextProps.startEmpty && this.props.defaultValue !== nextProps.defaultValue) {
+      this.setValue(nextProps.defaultValue);
+      this.setNote(nextProps.defaultValue);
+    }
+  }
+
+  setNote = (val) => {
     var note = result(find(this.props.options, {'value': val}), 'note');
     if(note){
       this.setState({note});
     }
-  },
+  }
 
-  handleSelectChange(selected) {
+  handleSelectChange = (selected) => {
      var val = selected.value;
      this.setValue(val);
      this.setNote(val);
      if(this.props.onChange){
        this.props.onChange(val);
      }
+   }
 
-   },
-
-   componentWillMount() {
-      this.setValue(this.props.defaultValue);
-      this.setNote(this.props.defaultValue);
-  },
-
-  componentWillReceiveProps(nextProps){
-    if(!nextProps.startEmpty && this.props.defaultValue != nextProps.defaultValue) {
-      this.setValue(nextProps.defaultValue);
-      this.setNote(nextProps.defaultValue);
-    }
-  },
-
-   validate() {
+   validate = () => {
      if(this.isRequired()){
        if(this.getValue() && this.getValue() !== ''){
          return true;
@@ -86,8 +83,7 @@ var Select = React.createClass({
      }else{
        return true;
      }
-
-  },
+  }
 
   render() {
     var className = classNames('input-field', {tooltipped: this.props.dataTooltip ? true : false});
@@ -115,7 +111,9 @@ var Select = React.createClass({
                 resetLabel={this.props.emptyText} defaultValue={value}
                  onChange={this.handleSelectChange}>
                 {this.props.options.map(function(option, i){
-                  return (<option key={i} dataValue={option.value}>{option.label}</option>);
+                  return (
+                    <option key={i} dataValue={option.value}>{option.label}</option>
+                  );
                 })}
               </ReactMaterialSelect>
               <label htmlFor={this.props.name}  data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
@@ -124,8 +122,6 @@ var Select = React.createClass({
             {note}
         </div>
     );
-
   }
-});
-
-module.exports = Select;
+}
+export default HOC(Select);

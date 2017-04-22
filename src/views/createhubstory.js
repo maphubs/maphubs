@@ -1,48 +1,45 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var HubNav = require('../components/Hub/HubNav');
-var HubBanner = require('../components/Hub/HubBanner');
-var StoryEditor = require('../components/Story/StoryEditor');
-var Notification = require('../components/Notification');
-var Message = require('../components/message');
-var Confirmation = require('../components/confirmation');
+import HubNav from '../components/Hub/HubNav';
+import HubBanner from '../components/Hub/HubBanner';
+import StoryEditor from '../components/Story/StoryEditor';
+import Notification from '../components/Notification';
+import Message from '../components/message';
+import Confirmation from '../components/confirmation';
+import HubStore from '../stores/HubStore';
+import HubActions from '../actions/HubActions';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../stores/HubStore');
-var HubActions = require('../actions/HubActions');
+export default class CreateHubStory extends MapHubsComponent {
 
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+  props: {
+    story_id: number,
+    hub: Object,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>,
+    locale: string,
+    _csrf: string
+  }
 
-var CreateHubStory = React.createClass({
+  static defaultProps: {
+    hub: {}
+  }
 
-  mixins:[StateMixin.connect(HubStore, {initWithProps: ['hub']}), StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    story_id: PropTypes.number.isRequired,
-    hub: PropTypes.object.isRequired,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array,
-    locale: PropTypes.string.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      hub: {}
-    };
-  },
-
-  getInitialState() {
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(HubStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    HubActions.rehydrate({hub: this.props.hub});
     HubActions.loadHub(this.props.hub);
-    return {
-
-    };
-  },
+  }
 
   render() {
     return (
@@ -66,6 +63,4 @@ var CreateHubStory = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = CreateHubStory;
+}

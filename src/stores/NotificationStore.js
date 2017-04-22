@@ -1,14 +1,17 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/NotificationActions');
+import Reflux from 'reflux';
+import Actions from '../actions/NotificationActions';
 var debug = require('../services/debug')('stores/notification-store');
 var $ = require('jquery');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class NotificationStore extends Reflux.Store {
 
-  getInitialState() {
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
     return {
       isActive: false,
       message: '',
@@ -21,32 +24,30 @@ module.exports = Reflux.createStore({
       onDismiss() {
       }
     };
-  },
+  }
 
   reset() {
-    this.setState(this.getInitialState());
+    this.setState(this.getDefaultState());
     this.trigger(this.state);
-  },
+  }
 
   storeDidUpdate() {
     debug('store updated');
-  },
+  }
 
   //listeners
   showNotification(options) {
     if (options) {
-      var updatedState = $.extend(this.getInitialState(), options);
+      var updatedState = $.extend(this.getDefaultState(), options);
       this.setState(updatedState);
       this.setState({
         isActive: true
       });
     }
-  },
+  }
 
   dismissNotification() {
     this.state.onDismiss();
     this.reset();
   }
-
-
-});
+}

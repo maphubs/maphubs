@@ -1,21 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-var OAuth2Dialog = React.createClass({
+export default class OuthDialog2 extends React.Component {
 
-  propTypes: {
-    user: PropTypes.string,
-    client: PropTypes.string,
-    transactionID: PropTypes.string
-  },
+  props: {
+    user: string,
+    client: string,
+    transactionID: string
+  }
 
-  getDefaultProps() {
-    return {
+  static defaultProps: {
       user: 'Unknown',
       client: 'Unknown',
       transactionID: ''
-    };
-  },
+  }
 
   render() {
     return (
@@ -30,9 +27,7 @@ var OAuth2Dialog = React.createClass({
           <input type="submit" value="Deny" name="cancel" id="deny" />
           </div>
         </form>
-    </div>
-);
+      </div>
+    );
+  }
 }
-});
-
-module.exports = OAuth2Dialog;

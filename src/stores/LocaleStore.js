@@ -1,29 +1,31 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/LocaleActions');
+import Reflux from 'reflux';
+import Actions from '../actions/LocaleActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/local-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
+//var _assignIn = require('lodash.assignin');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class LocaleStore extends Reflux.Store {
 
-
-  getInitialState() {
-    return  {
+  constructor(){
+    super();
+    this.state = {
       locale: 'en',
       _csrf: null
     };
-  },
-
+    this.listenables = Actions;
+  }
+ 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState({
+      locale: 'en',
+      _csrf: null
+    });
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
 
@@ -53,4 +55,4 @@ module.exports = Reflux.createStore({
    });
  }
 
-});
+}

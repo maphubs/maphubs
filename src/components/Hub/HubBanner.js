@@ -1,53 +1,41 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import Editor from 'react-medium-editor';
+import ImageCrop from '../ImageCrop';
+import HubStore from '../../stores/HubStore';
+import HubActions from '../../actions/HubActions';
+import MapHubsComponent from '../../components/MapHubsComponent';
+import _isequal from 'lodash.isequal';
+import urlUtil from '../../services/url-util';
 
-var ImageCrop = require('../ImageCrop');
+export default class HubBanner extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../../stores/HubStore');
-var HubActions = require('../../actions/HubActions');
+  props: {
+    hubid: string,
+    editing: boolean,
+    subPage: boolean
+  }
 
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
-var urlUtil = require('../../services/url-util');
+  static defaultProps: {
+    editing: false,
+    subPage: false
+  }
 
+  state: {
+    imageCropAspectRatio: 1,
+    imageCropResizeWidth: null,
+    imageCropResizeMaxWidth: null,
+    imageCropResizeHeight: null,
+    onCrop: Function
+  }
 
-var HubBanner = React.createClass({
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+    this.state.onCrop = function(){};
+	}
 
-  mixins:[StateMixin.connect(HubStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    hubid: PropTypes.string.isRequired,
-    editing: PropTypes.bool,
-    subPage: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      editing: false,
-      subPage: false
-    };
-  },
-
-  getInitialState(){
-    return {
-      imageCropAspectRatio: 1,
-      imageCropResizeWidth: null,
-      imageCropResizeMaxWidth: null,
-      imageCropResizeHeight: null,
-      onCrop(){}
-    };
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -56,15 +44,15 @@ var HubBanner = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  handleTitleChange(title){
+  handleTitleChange(title: string){
     HubActions.setTitle(title);
-  },
+  }
 
-  handleTaglineChange(tagline){
+  handleTaglineChange(tagline: string){
     HubActions.setTagline(tagline);
-  },
+  }
 
   showLogoEdit(){
     this.setState({
@@ -74,11 +62,11 @@ var HubBanner = React.createClass({
       imageCropResizeMaxWidth: null,
       onCrop: this.onLogoCrop});
     this.refs.imagecrop.show();
-  },
+  }
 
-  onLogoCrop(data, info){
+  onLogoCrop(data: Object, info: Object){
     HubActions.setHubLogoImage(data, info);
-  },
+  }
 
   showBannerEdit(){
     this.setState({
@@ -89,11 +77,11 @@ var HubBanner = React.createClass({
       onCrop: this.onBannerCrop
     });
     this.refs.imagecrop.show();
-  },
+  }
 
-  onBannerCrop(data, info){
+  onBannerCrop(data: Object, info: Object){
     HubActions.setHubBannerImage(data, info);
-  },
+  }
 
   render() {
     var omhBaseUrl = urlUtil.getBaseUrl();
@@ -226,7 +214,4 @@ var HubBanner = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = HubBanner;
+}

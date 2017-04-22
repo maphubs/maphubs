@@ -1,6 +1,5 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../../actions/map/BaseMapActions');
+import Reflux from 'reflux';
+import Actions from '../../actions/map/BaseMapActions';
 var debug = require('../../services/debug')('stores/BaseMapStore');
 var request = require('superagent');
 var _bboxPolygon = require('@turf/bbox-polygon');
@@ -13,26 +12,24 @@ var darkmatter = require('../../components/Map/styles/darkmatter.json');
 var osmLiberty = require('../../components/Map/styles/osm-liberty.json');
 var osmBright = require('../../components/Map/styles/osm-liberty.json');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class BaseMapStore extends Reflux.Store {
 
-  getInitialState() {
-    return {
+  constructor(){
+    super();
+    this.state = {
       baseMap: 'default',
       attribution: '© Mapbox © OpenStreetMap',
       bingImagerySet: null,
       updateWithMapPosition: false
     };
-
-  },
+    this.listenables = Actions;
+  }
 
   setBaseMap(baseMap){
     this.setState({baseMap});
-  },
+  }
 
-
-  debouncedUpdateMapPosition: _debounce(function(position, bbox){
+  debouncedUpdateMapPosition = _debounce(function(position, bbox){
     var _this = this;
 
     if(_this.position){
@@ -103,7 +100,7 @@ module.exports = Reflux.createStore({
       }
     });
 
-  }),
+  });
 
   //Inspired by: https://github.com/gmaclennan/leaflet-bing-layer
   updateMapPosition(position, bbox){
@@ -113,12 +110,7 @@ module.exports = Reflux.createStore({
       this.debouncedUpdateMapPosition(position, bbox);
     }
       
-  },
-
-  initialize: function (options) {
-    if (typeof options === 'string') {
-    }
-  },
+  }
 
  getBingSource(type, cb){
     var url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`;
@@ -132,7 +124,7 @@ module.exports = Reflux.createStore({
         cb(metadata);
       }
     });
-  },
+  }
 
   getBaseMapFromName(mapName, cb){
     var _this = this;
@@ -377,7 +369,6 @@ module.exports = Reflux.createStore({
         this.setState({attribution: '© Mapbox © OpenStreetMap', updateWithMapPosition: false});
         cb(url);
     }
-   
-  },
+  }
 
-  });
+}

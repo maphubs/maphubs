@@ -6,7 +6,7 @@ var UserActions = require('../../actions/UserActions');
 var NotificationActions = require('../../actions/NotificationActions');
 var MessageActions = require('../../actions/MessageActions');
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');

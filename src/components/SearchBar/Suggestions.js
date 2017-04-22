@@ -7,21 +7,22 @@ Modified to support MaterializeCSS and other customizations
 */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-export default React.createClass({
-  displayName: 'Suggestions',
-  getDefaultProps() {
-    return {
+export default class Suggestions extends React.Component {
+  displayName: 'Suggestions'
+
+  props: {
+    suggestions: Array<string>,
+    highlightedItem: number,
+    onSelection: Function
+  }
+
+  static defaultProps: {
       suggestions: [],
       highlightedItem: -1
     }
-  },
-  propTypes: {
-    suggestions: PropTypes.array,
-    highlightedItem: PropTypes.number
-  },
+  
   render() {
     let suggestions = this.props.suggestions.map((match, index) =>
       <li
@@ -35,4 +36,4 @@ export default React.createClass({
     );
     return <ul className="search-bar-suggestions omh-search-bar-suggestions dropdown-content">{suggestions}</ul>;
   }
-});
+}

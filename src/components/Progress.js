@@ -1,37 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import {Modal, ModalContent} from './Modal/Modal';
 
+export default class Progress extends React.Component {
 
-var Progress = React.createClass({
+  props: {
+    id: string,
+    message: string,
+    onClose: Function,
+    show: boolean,
+    title: string,
+    subTitle: string
+  }
 
-  displayName: 'Progress',
+  static defaultProps: {
+    id: 'progress',
+    show: false,
+    message: '',
+    onClose: null
+  }
 
-  propTypes: {
-    id: PropTypes.string,
-    message: PropTypes.string,
-    onClose: PropTypes.func,
-    show: PropTypes.bool,
-    title: PropTypes.string,
-    subTitle: PropTypes.string
-  },
 
-  getDefaultProps() {
-    return {
-      id: 'progress',
-      show: false,
-      message: '',
-      onClose: null
+  constructor(props){
+    super(props);
+    this.state = {
+      show: props.show
     };
-  },
-
-
-  getInitialState() {
-  return {
-    show: this.props.show
-  };
-},
+  }
 
   componentWillReceiveProps(nextProps) {
     if(this.props.show != nextProps.show){
@@ -39,12 +33,12 @@ var Progress = React.createClass({
         show: nextProps.show
       });
     }
-  },
+  }
 
   onClose(){
     this.setState({show: false});
     if(this.props.onClose) this.props.onClose();
-  },
+  }
 
   render(){
 
@@ -74,10 +68,5 @@ var Progress = React.createClass({
 
       </Modal>
     );
-
   }
-});
-
-
-
-module.exports = Progress;
+}

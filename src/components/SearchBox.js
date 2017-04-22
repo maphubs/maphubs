@@ -1,31 +1,26 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var request = require('superagent');
-var SearchBar = require('./SearchBar/SearchBar');
+import SearchBar from './SearchBar/SearchBar';
 var debug = require('../services/debug')('SearchBox');
 
+export default class SearchBox extends React.Component {
 
+  props: {
+    label: string,
+    suggestionUrl: string,
+    onSearch: Function,
+    onError: Function,
+    onReset: Function,
+    style: Object,
+    id: string
+  }
 
-var SearchBox = React.createClass({
-
-  propTypes: {
-    label: PropTypes.string,
-    suggestionUrl: PropTypes.string,
-    onSearch: PropTypes.func.isRequired,
-    onError: PropTypes.func,
-    onReset: PropTypes.func,
-    style: PropTypes.object,
-    id: PropTypes.string
-  },
-
-  getDefaultProps() {
-    return {
-      label: 'Search',
-      style: {},
-      id: 'search'
-    };
-  },
+  static defaultProps: {
+    label: 'Search',
+    style: {},
+    id: 'search'
+  }
 
   onChange(input: string, resolve: Function) {
     var _this = this;
@@ -46,12 +41,12 @@ var SearchBox = React.createClass({
         }
       });
     }
+ }
 
- },
  onSubmit(input: string) {
    if (!input) return;
    this.props.onSearch(input);
- },
+ }
 
 
  render() {
@@ -61,14 +56,11 @@ var SearchBox = React.createClass({
        id={this.props.id}
        style={this.props.style}
        placeholder={this.props.label}
-       onChange={this.onChange}
-       onSubmit={this.onSubmit}
-       onReset={this.props.onReset} />
+       onChange={this.onChange.bind(this)}
+       onSubmit={this.onSubmit.bind(this)}
+       onReset={this.props.onReset.bind(this)} />
    </div>
 
    );
  }
-
-});
-
-module.exports = SearchBox;
+}

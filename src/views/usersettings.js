@@ -1,32 +1,29 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 var $ = require('jquery');
-var Header = require('../components/header');
-var Gravatar = require('../components/user/Gravatar');
-var Password = require('../components/forms/Password');
+import Header from '../components/header';
+import Gravatar from '../components/user/Gravatar';
+import Password from '../components/forms/Password';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+export default class UserSettings extends MapHubsComponent {
 
-var UserSettings = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    user: PropTypes.object.isRequired,
-    locale: PropTypes.string.isRequired
-  },
+  props: {
+    user: Object,
+    locale: string
+  }
 
   componentDidMount(){
     $('ul.tabs').tabs();
-  },
+  }
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
     return (
@@ -62,6 +59,4 @@ var UserSettings = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = UserSettings;
+}

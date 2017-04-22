@@ -1,19 +1,17 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var CardCarousel = require('./CardCarousel');
+import CardCarousel from './CardCarousel';
 
-var CardRow = React.createClass({
+export default class CardCollection extends React.Component {
 
-  propTypes: {
-    cards: PropTypes.array.isRequired,
-    title: PropTypes.string
-  },
+  props: {
+    cards: Array<Object>,
+    title: string
+  }
 
-  getDefaultProps(){
-    return {
-      title: null
-    };
-  },
+  static defaultProps: {
+    title: null
+  }
 
   render(){
     var title = '';
@@ -32,7 +30,4 @@ var CardRow = React.createClass({
         </div>
    );
   }
-
-});
-
-module.exports = CardRow;
+}

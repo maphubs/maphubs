@@ -1,31 +1,29 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 
-var EditList = React.createClass({
+export default class EditList extends React.Component {
 
-  propTypes: {
-    title: PropTypes.string.isRequired,
-    items: PropTypes.array, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
-    onDelete: PropTypes.func.isRequired,
-    onAction: PropTypes.func,
-    onError: PropTypes.func
-  },
+  props: {
+    title: string,
+    items: Array<Object>, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
+    onDelete: Function,
+    onAction: Function,
+    onError: Function
+  }
 
-  getDefaultProps() {
-    return {
-      items: []
-    };
-  },
+  static defaultProps: {    
+    items: []
+  }
 
-  onDelete(key) {
+  onDelete(key: any) {
     this.props
       .onDelete(key);
-  },
+  }
 
-  onAction(key) {
+  onAction(key: any) {
     this.props
       .onAction(key);
-  },
+  }
 
   render() {
     var _this = this;
@@ -91,7 +89,4 @@ var EditList = React.createClass({
       </ul>
     );
   }
-
-});
-
-module.exports = EditList;
+}

@@ -3,7 +3,7 @@ var debug = require('../../services/debug')('Map/DataEditorMixin');
 var DataEditorActions = require('../../actions/DataEditorActions');
 var $ = require('jquery');
 var _assignIn = require('lodash.assignin');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var MapboxDraw = {};
 if (typeof window !== 'undefined') {
     MapboxDraw = require('../../../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');

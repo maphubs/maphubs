@@ -1,52 +1,39 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Attributes = require('./Attributes');
-var classNames = require('classnames');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
+import Attributes from './Attributes';
+import classNames from 'classnames';
 var request = require('superagent');
 var checkClientError = require('../../services/client-error-response').checkClientError;
 var urlUtil = require('../../services/url-util');
-var GroupTag = require('../../components/Groups/GroupTag');
+import GroupTag from '../../components/Groups/GroupTag';
 var $ = require('jquery');
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var FeatureBox = React.createClass({
+export default class FeatureBox extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+		features: Array<Object>,
+    selected: boolean,
+    onUnselected: Function,
+    showButtons: boolean,
+    className: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    showButtons: true,
+    selected: false
+  }
 
-  propTypes: {
-		features: PropTypes.array.isRequired,
-    selected: PropTypes.bool.isRequired,
-    onUnselected: PropTypes.func.isRequired,
-    showButtons: PropTypes.bool,
-    className: PropTypes.string
-  },
-
-  getDefaultProps() {
-    return {
-      showButtons: true,
-      selected: false
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      selectedFeature: 1,
+      selected: this.props.selected,
+      currentFeatures: this.props.features ? this.props.features : [],
+      maxHeight: 'calc(100% - 50px)',
+      layerLoaded: false
     };
-  },
-
-  getInitialState() {
-    return {
-    selectedFeature: 1,
-    selected: this.props.selected,
-    currentFeatures: this.props.features ? this.props.features : [],
-    maxHeight: 'calc(100% - 50px)',
-    layerLoaded: false
-  };
-  },
+  }
 
   componentDidMount(){
     if(this.props.selected && this.props.features){
@@ -57,9 +44,9 @@ var FeatureBox = React.createClass({
         this.setState({layerLoaded: true});
       }
     }  
-  },
+  }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     //only take updates if we are not selected, otherwise data will update when user moves the mouse
     if((!this.state.selected) ){
       if(nextProps.selected){
@@ -86,15 +73,15 @@ var FeatureBox = React.createClass({
       }
 
     }
-  },
+  }
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(prevProps: Object, prevState: Object){
     if(!prevState.layerLoaded && this.state.layerLoaded){
       $('.feature-box-tooltips').tooltip();
     }
-  },
+  }
 
-  getLayer(layer_id, host){
+  getLayer(layer_id: number, host: string){
     var _this = this;
     var baseUrl;
     if(host && host !== 'dev.docker' && host !== window.location.hostname){
@@ -111,24 +98,23 @@ var FeatureBox = React.createClass({
         cb();
       });
     });
-  },
+  }
 
   handleCloseSelected() {
     this.setState({selected: false, currentFeatures: [], selectedFeature: 1});
     this.props.onUnselected();
-  },
+  }
 
-  handleChangeSelectedFeature(selectedFeature){
+  handleChangeSelectedFeature(selectedFeature: Object){
     this.setState({selectedFeature});
     if(selectedFeature.properties.layer_id){
         this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
     }else{
        this.setState({layerLoaded: true});
     }
-  },
+  }
 
   render() {
-    var _this = this;
     var closeButton = '';
     var header = '';
     var infoPanel = '';
@@ -271,9 +257,6 @@ var FeatureBox = React.createClass({
           </div>
         </div>
 
-
     );
   }
-});
-
-module.exports = FeatureBox;
+}

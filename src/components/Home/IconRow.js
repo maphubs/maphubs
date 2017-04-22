@@ -9,7 +9,7 @@ propTypes: {
   children: PropTypes.any
 },
 
-getDefaultProps() {
+static defaultProps: {
   return {
     icon: 'info',
     iconFontSize: '80px'

@@ -4,7 +4,7 @@ var PureRenderMixin = require('react-addons-pure-render-mixin');
 //var _isEqual = require('lodash.isequal');
 var _find = require('lodash.find');
 var LayerListDropDown = require('./LayerListDropDown');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 
@@ -19,7 +19,7 @@ var MapLayerMenu = React.createClass({
     toggleVisibility: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
 
     };

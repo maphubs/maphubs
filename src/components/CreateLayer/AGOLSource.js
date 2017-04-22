@@ -1,66 +1,56 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-//var $ = require('jquery');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import Radio from '../forms/radio';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import LayerStore from '../../stores/layer-store';
+import MapHubsComponent from '../MapHubsComponent';
 
-var TextInput = require('../forms/textInput');
-var Radio = require('../forms/radio');
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class AGOLSource extends MapHubsComponent {
 
-var LayerStore = require('../../stores/layer-store');
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var AGOLSource = React.createClass({
+  static defaultProps: {
+    onSubmit: null
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  state: {
+    canSubmit: false,
+    selectedOption: 'mapserverquery'
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      onSubmit: null
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false,
-      selectedOption: 'mapserverquery'
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentWillMount(){
     Formsy.addValidationRule('isHttps', function (values, value) {
         return value.startsWith('https://');
     });
-  },
+  }
 
-  enableButton () {
-      this.setState({
-        canSubmit: true
-      });
-    },
-  disableButton () {
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
+
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
-  submit (model) {
+  submit = (model: Object) => {
     var _this = this;
     var dataSettings = null;
     if(model.mapServiceUrl){
@@ -110,15 +100,15 @@ var AGOLSource = React.createClass({
       }
 
     });
-  },
+  }
 
-  optionChange(value){
+  optionChange = (value: string) => {
     this.setState({selectedOption: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
     var agolOptions = [
@@ -227,6 +217,4 @@ var AGOLSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = AGOLSource;
+}

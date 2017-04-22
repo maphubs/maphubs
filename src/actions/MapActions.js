@@ -1,9 +1,6 @@
-var Reflux = require('reflux');
-
-var actions = Reflux.createActions({
-  'updateLayers': {},  
-  'changeBaseMap': {},
-  'toggleVisibility': {}
-});
-
-module.exports = actions;
+import Rehydrate from 'reflux-rehydrate';
+export default Rehydrate.createActions([
+  'updateLayers',
+  'changeBaseMap',
+  'toggleVisibility'
+]);

@@ -8,9 +8,9 @@ Modified to support MaterializeCSS and other customizations
 
 //import 'babel-polyfill';
 import React from 'react';
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Suggestions from './Suggestions';
+import Promise from 'bluebird';
 
 var $ = require('jquery');
 
@@ -20,36 +20,34 @@ const KEY_CODES = {
   ENTER: 13
 };
 
-var SearchBar = React.createClass({
-  displayName: 'SearchBar',
+export default class SearchBar extends React.Component {
+  displayName: 'SearchBar'
 
-  propTypes: {
-    autoFocus: PropTypes.bool,
-    autosuggestDelay: PropTypes.number,
-    inputName: PropTypes.string,
-    style: PropTypes.object,
-    placeholder: PropTypes.string,
-    onReset: PropTypes.func,
-    onSubmit: PropTypes.func,
-    onChange: PropTypes.func,
-    id: PropTypes.string
-  },
-  getDefaultProps() {
-    return {
-      autoFocus: false,
-      autosuggestDelay: 250,
-      inputName: 'query',
-      style: {},
-      id: 'search'
-    };
-  },
-  getInitialState() {
-    return {
-      value: '',
-      suggestions: [],
-      highlightedItem: -1
-    };
-  },
+  props: {
+    autoFocus: boolean,
+    autosuggestDelay: number,
+    inputName: string,
+    style: Object,
+    placeholder: string,
+    onReset: Function,
+    onSubmit: Function,
+    onChange: Function,
+    id: string
+  }
+
+  static defaultProps: {
+    autoFocus: false,
+    autosuggestDelay: 250,
+    inputName: 'query',
+    style: {},
+    id: 'search'
+  }
+
+  state: {
+    value: '',
+    suggestions: [],
+    highlightedItem: -1
+  }
 
   componentDidMount() {
     /*eslint-disable react/no-find-dom-node */
@@ -66,13 +64,16 @@ var SearchBar = React.createClass({
    });
    $(document.body).on("click", this.hideSuggestions);
    /*eslint-enable react/no-find-dom-node */
-  },
+  }
+
   componentWillUnmount () {
     document.body.removeEventListener('click', this.hideSuggestions);
-  },
+  }
+
   handleClick(e){
     e.nativeEvent.stopImmediatePropagation();
-  },
+  }
+
   handleKeyDown(e) {
     if(e.which == KEY_CODES.ENTER ){
       e.preventDefault();
@@ -95,7 +96,8 @@ var SearchBar = React.createClass({
       highlightedItem,
       value: this.state.suggestions[highlightedItem]
     });
-  },
+  }
+
   displaySuggestions(suggestions) {
     this.setState({
       suggestions,
@@ -104,16 +106,19 @@ var SearchBar = React.createClass({
     /*eslint-disable react/no-find-dom-node */
     $(ReactDOM.findDOMNode(this.refs.suggestions)).show();
     /*eslint-enable react/no-find-dom-node */
-  },
+  }
+
   hideSuggestions(){
     /*eslint-disable react/no-find-dom-node */
       $(ReactDOM.findDOMNode(this.refs.suggestions)).hide();
     /*eslint-enable react/no-find-dom-node */
-  },
+  }
+
   fillInSuggestion(suggestion) {
     this.setState({value: suggestion.value});
     this.search(suggestion.value);
-  },
+  }
+
   handleChange(e) {
     clearTimeout(this._timerId);
     let input = e.target.value;
@@ -128,12 +133,14 @@ var SearchBar = React.createClass({
         this.displaySuggestions(suggestions);
       });
     }, this.props.autosuggestDelay);
-  },
+  }
+
   submit(e) {
     e.preventDefault();
     if (!this.state.value) return;
     this.search(this.state.value.trim());
-  },
+  }
+
   search(value) {
     clearTimeout(this._timerId);
     let {suggestions, highlightedItem} = this.getInitialState();
@@ -142,7 +149,7 @@ var SearchBar = React.createClass({
       highlightedItem
     });
     this.props.onSubmit(value);
-  },
+  }
 
   reset(){
     clearTimeout(this._timerId);
@@ -153,7 +160,7 @@ var SearchBar = React.createClass({
       highlightedItem
     });
     if(this.props.onReset) this.props.onReset();
-  },
+  }
 
   render() {
     return (
@@ -174,15 +181,15 @@ var SearchBar = React.createClass({
               ref="value"
               value={this.state.value.value}
               placeholder={this.props.placeholder}
-              onChange={this.handleChange}
-              onKeyDown={this.handleKeyDown}
-              onClick={this.handleClick}
+              onChange={this.handleChange.bind(this)}
+              onKeyDown={this.handleKeyDown.bind(this)}
+              onClick={this.handleClick.bind(this)}
               data-beloworigin="true"
               data-activates={this.refs.suggestions}
             required />
 
           <label htmlFor={this.props.id} style={{height: 'inherit', lineHeight: 'inherit'}}><i className="material-icons omh-search-icon" style={{height: 'inherit', lineHeight: 'inherit'}}>search</i></label>
-          <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset}>close</i>
+          <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset.bind(this)}>close</i>
         </div>
       </form>
 
@@ -196,11 +203,9 @@ var SearchBar = React.createClass({
         ref="suggestions"
         suggestions={this.state.suggestions}
         highlightedItem={this.state.highlightedItem}
-        onSelection={this.fillInSuggestion} />}
+        onSelection={this.fillInSuggestion.bind(this)} />}
   </div>
   </div>
     );
   }
-});
-
-module.exports = SearchBar;
+}

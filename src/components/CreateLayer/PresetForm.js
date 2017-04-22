@@ -9,7 +9,7 @@ var Select = require('../forms/select');
 var actions = require('../../actions/presetActions');
 var ConfirmationActions = require('../../actions/ConfirmationActions');
 var _debounce = require('lodash.debounce');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');
@@ -35,7 +35,7 @@ var PresetForm = React.createClass({
 
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       showOnMap: true
     };

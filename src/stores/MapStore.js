@@ -1,31 +1,34 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/MapActions');
+import Reflux from 'reflux';
+import Actions from '../actions/MapActions';
 var debug = require('../services/debug')('stores/map-store');
 var findIndex = require('lodash.findindex');
 var forEachRight = require('lodash.foreachright');
 var $ = require('jquery');
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class LocaleStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       style: {},
       position: {},
       basemap: 'default',
       layers: []
     };
-  },
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState(this.getDefaultState());
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  toggleVisibility(layer_id, cb){
    var layers = this.state.layers;
@@ -39,23 +42,23 @@ module.exports = Reflux.createStore({
 
    this.updateMap(layers);
    cb();
- },
+ }
 
  updateLayers(layers, update=true){
    this.setState({layers});
    if(update){
     this.updateMap(layers);
    }  
- },
+ }
 
  updateMap(layers){
    var style = this.buildMapStyle(layers);
    this.setState({layers, style});
- },
+ }
 
  changeBaseMap(basemap){
   this.setState({basemap});
- },
+ }
 
  buildMapStyle(layers){
    var mapStyle = {
@@ -93,4 +96,4 @@ module.exports = Reflux.createStore({
    });
    return mapStyle;
  }
-});
+}

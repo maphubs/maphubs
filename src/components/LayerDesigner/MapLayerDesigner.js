@@ -5,7 +5,7 @@ var OpacityChooser = require('./OpacityChooser');
 var mapStyles = require('../Map/styles');
 var urlUtil = require('../../services/url-util');
 
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var LocaleStore = require('../../stores/LocaleStore');
 var Locales = require('../../services/locales');

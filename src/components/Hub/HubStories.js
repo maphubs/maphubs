@@ -1,37 +1,26 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var slug = require('slug');
-var StorySummary = require('../Story/StorySummary');
+import StorySummary from '../Story/StorySummary';
+import _isequal from 'lodash.isequal';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
+export default class HubStories extends MapHubsComponent {
 
-var HubStories = React.createClass({
+  props: {
+    hub: Object,
+    stories: Array<Object>,
+    limit: number,
+    editing: boolean
+  }
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    stories: [],
+    limit: 0,
+    editing: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    hub: PropTypes.object.isRequired,
-    stories: PropTypes.array,
-    limit: PropTypes.number,
-    editing: PropTypes.bool
-  },
-  getDefaultProps() {
-    return {
-      stories: [],
-      limit: 0,
-      editing: false
-    };
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -40,7 +29,7 @@ var HubStories = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
   render() {
     var _this = this;
@@ -85,7 +74,4 @@ var HubStories = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = HubStories;
+}

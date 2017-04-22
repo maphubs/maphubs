@@ -1,50 +1,44 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header = require('../components/header');
-var Footer = require('../components/footer');
-var SearchBox = require('../components/SearchBox');
-var CardCollection = require('../components/CardCarousel/CardCollection');
+import Header from '../components/header';
+import Footer from '../components/footer';
+import SearchBox from '../components/SearchBox';
+import CardCollection from '../components/CardCarousel/CardCollection';
 var debug = require('../services/debug')('views/hubs');
 var urlUtil = require('../services/url-util');
 var cardUtil = require('../services/card-util');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var request = require('superagent');
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
+export default class Hubs extends MapHubsComponent {
 
-var Hubs = React.createClass({
+  props: {
+    featuredHubs: Array<Object>,
+    popularHubs: Array<Object>,
+    recentHubs: Array<Object>,
+    allHubs:  Array<Object>,
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  static defaultProps: {
+    featuredHubs: [],
+    popularHubs: [],
+    recentHubs: [],
+    allHubs: []
+  }
 
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    featuredHubs: PropTypes.array,
-    popularHubs: PropTypes.array,
-    recentHubs: PropTypes.array,
-    allHubs:  PropTypes.array,
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
-  getDefaultProps() {
-    return {
-      featuredHubs: [],
-      popularHubs: [],
-      recentHubs: [],
-      allHubs: []
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   handleSearch(input: string) {
     var _this = this;
@@ -70,11 +64,11 @@ var Hubs = React.createClass({
       }
       );
     });
-  },
+  }
 
   resetSearch(){
     this.setState({searchActive: false, searchResults: []});
-  },
+  }
 
 	render() {
 
@@ -121,7 +115,7 @@ var Hubs = React.createClass({
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
               <div className="row">
                 <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                  <SearchBox label={this.__('Search Hubs')} suggestionUrl="/api/hubs/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+                  <SearchBox label={this.__('Search Hubs')} suggestionUrl="/api/hubs/search/suggestions" onSearch={this.handleSearch.bind(this)} onReset={this.resetSearch.bind(this)}/>
                 </div>
               </div>
             </div>
@@ -141,6 +135,4 @@ var Hubs = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Hubs;
+}

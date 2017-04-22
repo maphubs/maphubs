@@ -1,33 +1,22 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from './MapHubsComponent';
 
-var Footer = React.createClass({
+export default class Footer extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+    copyrightText: string,
+    showPoweredByMapHubs: boolean,
+    showMapForEnvironmentMoabiLogo: boolean,
+    showContactUs: boolean,
+    links: Array<Object>
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    copyrightText: PropTypes.string,
-    showPoweredByMapHubs: PropTypes.bool,
-    showMapForEnvironmentMoabiLogo: PropTypes.bool,
-    showContactUs: PropTypes.bool,
-    links: PropTypes.array
-  },
-
-  getDefaultProps(){
-    return {
-      showPoweredByMapHubs: true,
-      showMapForEnvironmentMoabiLogo: false,
-      showContactUs: true
-    };
-  },
+  static defaultProps: {
+    showPoweredByMapHubs: true,
+    showMapForEnvironmentMoabiLogo: false,
+    showContactUs: true
+  }
 
   render() {
     var _this = this;
@@ -133,6 +122,4 @@ var Footer = React.createClass({
       </footer>
     );
   }
-});
-
-module.exports = Footer;
+}

@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Error = require('../views/error');
+import Error from '../views/error';
 
 var $ = require('jquery');
 require("materialize-css");

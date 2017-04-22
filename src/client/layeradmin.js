@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const LayerAdmin = require('../views/layeradmin');
+import LayerAdmin from '../views/layeradmin';
 
 require('babel-polyfill');
 require('jquery');

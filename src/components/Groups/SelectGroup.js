@@ -1,54 +1,47 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var _isequal = require('lodash.isequal');
+import _isequal from 'lodash.isequal';
+import Toggle from '../forms/toggle';
+import Select from '../forms/select';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Toggle = require('../forms/toggle');
-var Select = require('../forms/select');
+export default class SelectGroup extends MapHubsComponent {
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  props: {
+    groups: Array<Object>,
+    type: string,
+    group_id: string,
+    canChangeGroup: boolean,
+    private: boolean,
+    editing: boolean
+  }
 
-var SelectGroup = React.createClass({
+  static defaultProps: {
+    canChangeGroup: true,
+    private: true,
+    editing: false
+  }
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  state: {
+      group_id: string,
+      private: boolean
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    groups: PropTypes.array.isRequired,
-    type: PropTypes.string.isRequired,
-    group_id: PropTypes.string,
-    canChangeGroup: PropTypes.bool,
-    private: PropTypes.bool,
-    editing: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return  {
-      canChangeGroup: true,
-      private: true,
-      editing: false
-    };
-  },
-
-  getInitialState(){
-    return {
+  constructor(props: Object){
+		super(props);
+    this.state = {
       group_id: this.props.group_id,
       private: this.props.private
-    };
-  },
+    }
+	}
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     if(nextProps.group_id !== this.props.group_id) {
       this.setState({group_id: nextProps.group_id});
     }
-  },
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -57,9 +50,9 @@ var SelectGroup = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  getOwnerGroup(group_id){
+  getOwnerGroup(group_id: string){
     var owner;
     this.props.groups.forEach(function(group){
       if(group.group_id === group_id){
@@ -67,11 +60,11 @@ var SelectGroup = React.createClass({
       }
     });
     return owner;
-  },
+  }
 
-  onGroupChange(group_id){
+  onGroupChange(group_id: string){
     this.setState({group_id});
-  },
+  }
 
   render(){
 
@@ -94,7 +87,7 @@ var SelectGroup = React.createClass({
         <div className="row">
           <p style={{padding: '10px'}}>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
           <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
-            value={this.state.group_id} defaultValue={this.state.group_id} onChange={this.onGroupChange}
+            value={this.state.group_id} defaultValue={this.state.group_id} onChange={this.onGroupChange.bind(this)}
             emptyText={this.__('Choose a Group')} options={groupOptions} className="col s12"
               dataPosition="right" dataTooltip={this.__('Owned by Group')}
               required
@@ -189,9 +182,6 @@ var SelectGroup = React.createClass({
         
       }
 
-     
-      
-
     return (
       <div>
       {groups}
@@ -199,7 +189,4 @@ var SelectGroup = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = SelectGroup;
+}

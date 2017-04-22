@@ -1,43 +1,46 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header = require('../components/header');
-var MapMaker = require('../components/MapMaker/MapMaker');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
+import Header from '../components/header';
+import MapMaker from '../components/MapMaker/MapMaker';
 var slug = require('slug');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var MapEdit = React.createClass({
+export default class MapEdit extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+    map: Object,
+    layers: Array<Object>,
+    popularLayers:Array<Object>,
+    myLayers: Array<Object>,
+    myGroups: Array<Object>,
+    locale: string,
+    _csrf: string
+  }
 
-  propTypes: {
-    map: PropTypes.object.isRequired,
-    layers: PropTypes.array.isRequired,
-    popularLayers: PropTypes.array.isRequired,
-    myLayers: PropTypes.array,
-    myGroups: PropTypes.array,
-    locale: PropTypes.string.isRequired
-  },
+  static defaultProps: {
+    popularLayers: [],
+    myLayers: [],
+    user: {}
+  }
 
-  getDefaultProps() {
-    return {
-      popularLayers: [],
-      myLayers: [],
-      user: {}
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   mapCreated(map_id, title){
     window.location = '/map/view/' + map_id + '/'+ slug(title);
-  },
+  }
 
 	render() {
 		return (
       <div>
         <Header />
         <main style={{height: 'calc(100% - 70px)'}}>
-          <MapMaker onCreate={this.mapCreated}
+          <MapMaker onCreate={this.mapCreated.bind(this)}
             mapLayers={this.props.layers}
             basemap={this.props.map.basemap}
             map_id={this.props.map.map_id} title={this.props.map.title}
@@ -51,6 +54,4 @@ var MapEdit = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = MapEdit;
+}

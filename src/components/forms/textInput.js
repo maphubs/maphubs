@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var TextInput= React.createClass({
-
-  mixins: [PureRenderMixin, Formsy.Mixin],
+class TextInput extends MapHubsPureComponent {
 
   propTypes: {
     value: PropTypes.string,
@@ -28,10 +26,9 @@ var TextInput= React.createClass({
     showCharCount: PropTypes.bool,
     useMaterialize: PropTypes.bool,
     onClick: PropTypes.func
-  },
+  }
 
-  getDefaultProps() {
-    return {
+  static defaultProps: {
       length: 100,
       successText: '',
       defaultValue: '',
@@ -42,19 +39,19 @@ var TextInput= React.createClass({
       style: {},
       showCharCount: true,
       useMaterialize: true,
-      onClick(){}
-    };
-  },
+      onClick: Function
+  }
 
-  getInitialState() {
-    return {
-      value: this.props.value,
-      charCount: this.props.value ? this.props.value.length: 0
+  constructor(props: Object) {
+    super(props);
+    this.state = {
+      value: props.value,
+      charCount: props.value ? props.value.length: 0
     };
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.value != nextProps.value){
+    if(this.props.value !== nextProps.value){
       var charCount = 0;
       if(nextProps.value) charCount = nextProps.value.length;
       this.setState({
@@ -62,28 +59,28 @@ var TextInput= React.createClass({
         charCount
       });
     }
-  },
+  }
 
   componentDidMount(){
     if(this.props.dataTooltip){
       $(this.refs.inputWrapper).tooltip();
     }
-  },
+  }
 
   componentDidUpdate(prevProps){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
       $(this.refs.inputWrapper).tooltip();
     }
-  },
+  }
 
-  changeValue(event){
+  changeValue = (event) => {
      event.stopPropagation();
      this.setValue(event.currentTarget.value);
      this.setState({
        value: event.currentTarget.value,
        charCount: event.currentTarget.value.length
      });
-   },
+   }
 
   render() {
     var className, inputClassName = '';
@@ -110,7 +107,7 @@ var TextInput= React.createClass({
    if(this.state.charCount > this.props.length) countColor = 'red';
 
    var labelClassName = '';
-   if(this.state.value && this.state.value != ''){
+   if(this.state.value && this.state.value !== ''){
      labelClassName = 'active';
    }
 
@@ -143,6 +140,5 @@ var TextInput= React.createClass({
     );
 
   }
-});
-
-module.exports = TextInput;
+}
+export default HOC(TextInput);

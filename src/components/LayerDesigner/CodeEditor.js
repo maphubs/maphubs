@@ -1,13 +1,7 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import {Modal, ModalContent, ModalFooter} from '../Modal/Modal';
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
+import _isequal from 'lodash.isequal';
 
 var AceEditor;
 if(process.env.APP_ENV === 'browser'){
@@ -17,47 +11,41 @@ if(process.env.APP_ENV === 'browser'){
    require('brace/mode/html');
    require('brace/theme/monokai');
 }
+import MapHubsComponent from '../MapHubsComponent';
 
-var CodeEditor = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class CodeEditor extends MapHubsComponent {
 
   propTypes: {
-    id:  PropTypes.string,
-    onSave: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
-    code: PropTypes.string,
-    mode: PropTypes.string,
-    theme: PropTypes.string,
-    modal: PropTypes.bool
-  },
+    id:  string,
+    onSave: Function,
+    title: string,
+    code: string,
+    mode: string,
+    theme: string,
+    modal: boolean
+  }
 
-  getDefaultProps() {
-    return {
+  static defaultProps: {
       id: 'code-editor',
       mode: 'json',
       theme: 'monokai',
       modal: true
-    };
-  },
+  }
 
-  getInitialState(){
-    return {
-      code: this.props.code,
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      code: props.code,
       canSave: true,
       show: false
     };
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     this.setState({code: nextProps.code});
-  },
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -66,7 +54,7 @@ var CodeEditor = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
   componentDidUpdate(){
     var _this = this;
@@ -85,33 +73,32 @@ var CodeEditor = React.createClass({
         _this.setState({canSave});
       });
     }
-  },
+  }
 
-  show(){
+  show = () => {
    this.setState({show: true});
-  },
+  }
 
-  hide(){
+  hide = () => {
    this.setState({show: false});
-  },
+  }
 
-  onChange(code){
+  onChange = (code: any) => {
     this.setState({code});
-  },
+  }
 
-  onCancel(){
+  onCancel = () => {
       this.hide();
-  },
+  }
 
-  onSave(){
+  onSave = () => {
     if(this.state.canSave){
       if(this.props.modal){
         this.hide();
       }    
       this.props.onSave(this.state.code);
     }
-
-  },
+  }
 
   render(){
     var editor = '';
@@ -166,6 +153,4 @@ var CodeEditor = React.createClass({
     );
   }
   }
-});
-
-module.exports = CodeEditor;
+}

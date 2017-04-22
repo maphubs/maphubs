@@ -6,7 +6,7 @@ var debug = require('../../services/debug')('map');
 var isEqual = require('lodash.isequal');
 var Promise = require('bluebird');
 var $ = require('jquery');
-var Reflux = require('reflux');
+import Reflux from 'reflux';
 var StateMixin = require('reflux-state-mixin')(Reflux);
 var BaseMapActions = require('../../actions/map/BaseMapActions'); 
 var BaseMapStore = require('../../stores/map/BaseMapStore'); 
@@ -82,7 +82,7 @@ var Map = React.createClass({
     children: PropTypes.any
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
       maxZoom: 18,
       minZoom: 5,

@@ -21,7 +21,7 @@ var LayerListStatic = React.createClass({
     editLayer: PropTypes.func
   },
 
-  getDefaultProps() {
+  static defaultProps: {
     return {
 
     };

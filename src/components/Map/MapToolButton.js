@@ -1,42 +1,39 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
 
-var MapToolButton = React.createClass({
 
-  propTypes: {
-    icon: PropTypes.string,
-    top: PropTypes.string,
-    right: PropTypes.string,
-    bottom: PropTypes.string,
-    left: PropTypes.string,
-    tooltipText: PropTypes.string,
-    color: PropTypes.string,
-    onClick: PropTypes.func.isRequired,
-    show: PropTypes.bool,
-    disabled: PropTypes.bool,
+export default class MapToolButton extends React.Component {
 
-  },
+  props: {
+    icon: string,
+    top: string,
+    right: string,
+    bottom: string,
+    left: string,
+    tooltipText: string,
+    color: string,
+    onClick: Function,
+    show: boolean,
+    disabled: boolean,
+  }
 
-  getDefaultProps(){
-    return {
-      icon: 'edit',
-      top: '10px',
-      color: MAPHUBS_CONFIG.primaryColor,
-      right: '10px',
-      bottom: 'auto',
-      left: 'auto',
-      tooltipText: '',
-      show: true,
-      disabled: false
-    };
-  },
+  static defaultProps: {
+    icon: 'edit',
+    top: '10px',
+    color: MAPHUBS_CONFIG.primaryColor,
+    right: '10px',
+    bottom: 'auto',
+    left: 'auto',
+    tooltipText: '',
+    show: true,
+    disabled: false
+  }
 
   componentDidMount(){
     if(this.props.tooltipText && this.props.tooltipText != ''){
       $(this.refs.mapToolButton).tooltip();
     }  
-  },
+  }
 
   onClick(e){
     if(this.props.disabled) return;
@@ -44,7 +41,7 @@ var MapToolButton = React.createClass({
     $(this.refs.mapToolButton).tooltip('remove');
     $(this.refs.mapToolButton).tooltip();
     this.props.onClick(e);
-  },
+  }
 
   render(){
     if(this.props.show){
@@ -56,7 +53,7 @@ var MapToolButton = React.createClass({
       }
     return (
       <a ref="mapToolButton"
-          onClick={this.onClick}
+          onClick={this.onClick.bind(this)}
           style={{position: 'absolute',
             top: this.props.top,
             right: this.props.right,
@@ -91,7 +88,4 @@ var MapToolButton = React.createClass({
       return null;
     }
   }
-
-});
-
-module.exports = MapToolButton;
+}

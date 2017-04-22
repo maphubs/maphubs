@@ -1,42 +1,35 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header =require('../components/header');
-
-var ReactDisqusThread = require('react-disqus-thread');
+import Header from '../components/header';
+import ReactDisqusThread from 'react-disqus-thread';
 var slug = require('slug');
+import StoryHeader from '../components/Story/StoryHeader';
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var StoryHeader = require('../components/Story/StoryHeader');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
-var UserStory = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class UserStory extends MapHubsComponent {
 
   propTypes: {
-    story: PropTypes.object.isRequired,
-    username: PropTypes.string.isRequired,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired
-  },
+    story: Object,
+    username: string,
+    canEdit: boolean,
+    locale: string
+  }
 
-  getDefaultProps() {
-    return {
-      story: {},
-      canEdit: false
-    };
-  },
+  static defaultProps: {
+    story: {},
+    canEdit: false
+  }
+
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
     var story = this.props.story;
-
 
     var button = '';
     if(this.props.canEdit){
@@ -95,6 +88,4 @@ var UserStory = React.createClass({
     );
       /*eslint-enable react/no-danger*/
   }
-});
-
-module.exports = UserStory;
+}

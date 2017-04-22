@@ -1,35 +1,37 @@
-// @flow
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/UserActions');
+import Reflux from 'reflux';
+import Actions from '../actions/UserActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/user-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class UserStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       user: {},
       loggedIn: false,
       loaded: false
     };
-  },
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState(this.getDefaultState());
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
  login(user){
    this.setState({user, loggedIn: true, loaded: true});
- },
+ }
 
  getUser(cb){
    var _this = this;
@@ -50,17 +52,17 @@ module.exports = Reflux.createStore({
        }
      });
    });
- },
+ }
 
  logout(){
-   this.setState(this.getInitialState());
+   this.setState(this.getDefaultState());
    this.trigger(this.state);
    //Note the server side is handed by redirecting the user to the logout page
- },
+ }
 
  register(){
 
- },
+ }
 
   updatePassword(user_id: number, password: string, pass_reset, _csrf, cb){
     if(this.state.loggedIn && this.state.user.id !== user_id){
@@ -86,7 +88,7 @@ module.exports = Reflux.createStore({
         });
       });
     }
-  },
+  }
 
   forgotPassword(email, _csrf, cb){
     request.post('/api/user/forgotpassword')
@@ -100,7 +102,7 @@ module.exports = Reflux.createStore({
           cb(err);
       });
     });
-  },
+  }
 
   signup(username, name, email, password, joinmailinglist, inviteKey, _csrf, cb){
     request.post('/api/user/signup')
@@ -119,7 +121,7 @@ module.exports = Reflux.createStore({
           cb(err);
       });
     });
-  },
+  }
 
   joinMailingList(email, _csrf, cb){
     request.post('/api/user/mailinglistsignup')
@@ -130,7 +132,7 @@ module.exports = Reflux.createStore({
           cb(err);
       });
     });
-  },
+  }
 
   resendConfirmation(_csrf, cb){
     request.post('/api/user/resendconfirmation')
@@ -141,7 +143,7 @@ module.exports = Reflux.createStore({
           cb(err);
       });
     });
-  },
+  }
 
   checkUserNameAvailable(username, _csrf){
 
@@ -167,4 +169,4 @@ module.exports = Reflux.createStore({
     */
   }
 
-});
+}

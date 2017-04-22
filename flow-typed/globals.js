@@ -1,6 +1,7 @@
 declare class MapHubsConfig {
   productName: string;
   mapHubsPro: bool;
+  contactEmail: string;
   host: string;
   host_internal: string;
   port: number;
@@ -10,9 +11,15 @@ declare class MapHubsConfig {
   primaryColor: string;
   tileServiceUrl: string;
   https: boolean;
+  logoWidth: number;
+  logoHeight: number;
+  logo: string;
+  betaText: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;
+
+declare var HS: Object;
 
 import type ReactComponent from 'react';
 
@@ -23,6 +30,10 @@ type $JSXIntrinsics = {
   p: JSXHelper<{id: string, lang: string, className: string, style: Object}>,
   b: JSXHelper<{id: string, style: Object}>,
   span: JSXHelper<{id: string, style: Object}>,
+  header: JSXHelper<{id: string, style: Object}>,
+  nav: JSXHelper<{id: string, style: Object}>,
+  footer: JSXHelper<{id: string, style: Object}>,
+  small: JSXHelper<{id: string, style: Object}>,
   a:  JSXHelper<{href: string, style: Object}>,
   h2:  JSXHelper<{className: string, style: Object}>,
   h3:  JSXHelper<{className: string, style: Object}>,
@@ -35,10 +46,15 @@ type $JSXIntrinsics = {
   button: JSXHelper<{className: string, type: string, style: Object}>,
   form: JSXHelper<{id: string, style: Object}>,
   input: JSXHelper<{id: string, style: Object}>,
+  textarea: JSXHelper<{id: string, style: Object}>,
+  label: JSXHelper<{id: string, style: Object}>,
+  option: JSXHelper<{id: string, style: Object}>,
   ul: JSXHelper<{id: string, style: Object}>,
   li: JSXHelper<{id: string, style: Object}>,
   ol: JSXHelper<{id: string, style: Object}>,
   table: JSXHelper<{id: string, style: Object}>,
+  br: JSXHelper<{id: string, style: Object}>,
+  hr: JSXHelper<{id: string, style: Object}>,
   svg: JSXHelper<{baseProfile: string, xmlns: string, width: number, height: number, viewBox: string}>,
   path: JSXHelper<{d: string}>,
     g: JSXHelper<{id: string}>,

@@ -1,17 +1,15 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../../actions/map/AnimationActions');
+import Reflux from 'reflux';
+import Actions from '../../actions/map/AnimationActions';
 var debug = require('../../services/debug')('stores/AnimationStore');
 
 /**
  * A store to hold marker objects so we can update them later
  */
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class AnimationStore extends Reflux.Store {
 
-  getInitialState() {
-    return {
+  constructor(){
+    super();
+    this.state = {
       playing: false,
       startVal: 2001,
       endVal: 2014,
@@ -20,11 +18,12 @@ module.exports = Reflux.createStore({
       tickTime: 3000,
       loop: true
     };
-  },
+    this.listenables = Actions;
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
   play(){
     debug('play');
@@ -36,7 +35,7 @@ module.exports = Reflux.createStore({
     }
     _this.setState({playing: true});
     _this.runTick();
-  },
+  }
 
   runTick(){
     var _this = this;
@@ -58,12 +57,12 @@ module.exports = Reflux.createStore({
 
         }, _this.state.tickTime);
     }
-  },
+  }
 
   stop(){
      debug('stop');
     this.setState({playing: false});
-  },
+  }
 
   reset(){
      debug('reset');
@@ -72,5 +71,4 @@ module.exports = Reflux.createStore({
       currentVal: this.state.startVal
     });
   }
-
-  });
+}

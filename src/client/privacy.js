@@ -1,7 +1,7 @@
-const React  = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Privacy = require('../views/privacy');
+import Privacy from '../views/privacy';
 
 require('jquery');
 require("materialize-css");

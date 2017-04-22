@@ -1,65 +1,52 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var Toggle = require('../forms/toggle');
-var Select = require('../forms/select');
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+import Formsy from 'formsy-react';
+import Toggle from '../forms/toggle';
+import Select from '../forms/select';
 var $ = require('jquery');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
+import styles from '../Map/styles';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var styles = require('../Map/styles');
+export default class LabelSettings extends MapHubsPureComponent {
 
-var LabelSettings = React.createClass({
+  props: {
+    onChange: Function,
+    layer: Object,
+    style: Object,
+    labels: Object
+  }
 
-  mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    style: null,
+    layer: null,
+    labels: {}
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onChange: PropTypes.func.isRequired,
-    layer: PropTypes.object.isRequired,
-    style: PropTypes.object,
-    labels: PropTypes.object
-  },
-
-  getDefaultProps(){
-    return {
-      style: null,
-      layer: null,
-      labels: {}
-    };
-  },
-
-  getInitialState(){
+  constructor(props: Object){
+    super(props);
     var enabled = false;
     var field = null;
-    if(this.props.labels){
-      enabled = this.props.labels.enabled ? true : false;
-      field = this.props.labels.field;
+    if(props.labels){
+      enabled = props.labels.enabled ? true : false;
+      field = props.labels.field;
     }
 
-    return {
-      style: this.props.style,
+    this.state = {
+      style: props.style,
       enabled,
       field
     };
-  },
+  }
 
   componentDidMount(){
     $('.tooltip-label-settings').tooltip();
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     this.setState({style: nextProps.style});
-  },
+  }
 
-   onFormChange(values){
+   onFormChange = (values: Object) => {
     if(values.enabled && values.field){
       //add labels to style
       var style = styles.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id, this.props.layer.data_type);
@@ -75,7 +62,7 @@ var LabelSettings = React.createClass({
     }
     $('.tooltip-label-settings').tooltip('remove');
     $('.tooltip-label-settings').tooltip();
-  },
+  }
 
   render(){
 
@@ -121,6 +108,4 @@ var LabelSettings = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = LabelSettings;
+}

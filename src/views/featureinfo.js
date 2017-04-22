@@ -1,32 +1,27 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var Map = require('../components/Map/Map');
-var Header = require('../components/header');
+import Map from '../components/Map/Map';
+import Header from '../components/header';
 var slug = require('slug');
 var urlUtil = require('../services/url-util');
 //var styles = require('../components/Map/styles');
 var $ = require('jquery');
-var ReactDisqusThread = require('react-disqus-thread');
+import ReactDisqusThread from 'react-disqus-thread';
 var Griddle = require('griddle-react');
 
-var FeatureNotes = require('../components/Feature/FeatureNotes');
-var HubEditButton = require('../components/Hub/HubEditButton');
-var ImageCrop = require('../components/ImageCrop');
+import FeatureNotes from '../components/Feature/FeatureNotes';
+import HubEditButton from '../components/Hub/HubEditButton';
+import ImageCrop from '../components/ImageCrop';
 //var request = require('superagent');
 
-var MessageActions = require('../actions/MessageActions');
-var NotificationActions = require('../actions/NotificationActions');
-var ConfirmationActions = require('../actions/ConfirmationActions');
+import MessageActions from '../actions/MessageActions';
+import NotificationActions from '../actions/NotificationActions';
+import ConfirmationActions from '../actions/ConfirmationActions';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var FeatureNotesActions = require('../actions/FeatureNotesActions');
-var FeaturePhotoActions = require('../actions/FeaturePhotoActions');
-var FeatureNotesStore = require('../stores/FeatureNotesStore');
-var FeaturePhotoStore = require('../stores/FeaturePhotoStore');
-var Locales = require('../services/locales');
+import FeatureNotesActions from '../actions/FeatureNotesActions';
+import FeaturePhotoActions from '../actions/FeaturePhotoActions';
+import FeatureNotesStore from '../stores/FeatureNotesStore';
+import FeaturePhotoStore from '../stores/FeaturePhotoStore';
 var turf_area = require('@turf/area');
 
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl';
@@ -40,33 +35,41 @@ addLocaleData(es);
 addLocaleData(fr);
 addLocaleData(it);
 
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var FeatureInfo = React.createClass({
+export default class FeatureInfo extends MapHubsComponent {
 
-  mixins:[
-      StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']}),
-      StateMixin.connect(FeatureNotesStore, {initWithProps: ['notes']}),
-      StateMixin.connect(FeaturePhotoStore, {initWithProps: ['feature', 'photo']})
-    ],
+  props: {
+    feature: Object,
+    notes: string,
+    photo: Object,
+    layer: Object,
+    canEdit: boolean,
+    locale: string,
+    _csrf: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  state: {
+    editingNotes: false
+  }
 
-  propTypes: {
-    feature: PropTypes.object.isRequired,
-    notes: PropTypes.string,
-    photo: PropTypes.object,
-    layer: PropTypes.object,
-    canEdit: PropTypes.bool,
-    locale: PropTypes.string.isRequired
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(FeatureNotesStore);
+    this.stores.push(FeaturePhotoStore);
+	}
 
-  getInitialState() {
-    return {
-      editingNotes: false
-    };
-  },
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    Rehydrate.initStore(FeatureNotesStore);
+    Rehydrate.initStore(FeaturePhotoStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+    FeatureNotesStore.rehydrate({notes: this.props.notes});
+    FeaturePhotoStore.rehydrate({feature: this.props.feature, photo: this.props.photo});
+  }
 
   componentDidMount(){
     $('ul.tabs').tabs();
@@ -76,11 +79,11 @@ var FeatureInfo = React.createClass({
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
-  },
+  }
 
   startEditingNotes(){
     this.setState({editingNotes: true});
-  },
+  }
 
   stopEditingNotes(){
     var _this = this;
@@ -94,14 +97,13 @@ var FeatureInfo = React.createClass({
         _this.setState({editingNotes: false});
       }
     });
-
-  },
+  }
 
   showImageCrop(){
     this.refs.imagecrop.show();
-  },
+  }
 
-  onCrop(data, info){
+  onCrop(data: Object, info: Object){
     var _this = this;
     //send data to server
     FeaturePhotoActions.addPhoto(data, info, this.state._csrf, function(err){
@@ -119,7 +121,7 @@ var FeatureInfo = React.createClass({
         });
       }
     });
-  },
+  }
 
   deletePhoto(){
     var _this = this;
@@ -141,7 +143,7 @@ var FeatureInfo = React.createClass({
         });
       }
     });
-  },
+  }
 
   //Build iD edit link
   getEditLink(){
@@ -151,16 +153,14 @@ var FeatureInfo = React.createClass({
     if(zoom < 10) zoom = 10;
     var baseUrl = urlUtil.getBaseUrl();
     return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
-  },
+  }
 
   openEditor(){
     var editLink = this.getEditLink();
     window.location = editLink;
-  },
-
+  }
 
 	render() {
-
     //var glStyle = null;
     var locationDisplay = '';
 
@@ -173,7 +173,7 @@ var FeatureInfo = React.createClass({
     if(this.props.feature && this.props.layer && this.props.feature.geojson){
       //glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
-      var featureName = "Feature";
+      var featureName: string = "Feature";
       var featureAreaM2, featureAreaKM2, featureAreaHA, areaDisplay;
       if(this.props.feature.geojson.features && this.props.feature.geojson.features.length > 0){
         var geoJSONProps = this.props.feature.geojson.features[0].properties;
@@ -379,7 +379,6 @@ var FeatureInfo = React.createClass({
       }
     }
 
-    var gpxLink; 
     if(this.props.layer.data_type === 'polygon'){
       gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.mhid + '/feature.gpx';
     }
@@ -455,6 +454,4 @@ var FeatureInfo = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = FeatureInfo;
+}

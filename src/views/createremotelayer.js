@@ -1,52 +1,45 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import Formsy from 'formsy-react';
 var slug = require('slug');
 var request = require('superagent');
 var $ = require('jquery');
 
-var Header = require('../components/header');
-var TextInput = require('../components/forms/textInput');
-var Select = require('../components/forms/select');
-var Map = require('../components/Map/Map');
-var MiniLegend = require('../components/Map/MiniLegend');
+import Header from '../components/header';
+import TextInput from '../components/forms/textInput';
+import Select from '../components/forms/select';
+import Map from '../components/Map/Map';
+import MiniLegend from '../components/Map/MiniLegend';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-var CreateRemoteLayer = React.createClass({
+export default class CreateRemoteLayer extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
+  props: {
+		groups: Array,
+    locale: string
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps: {
+    groups: []
+  }
 
-  propTypes: {
-		groups: PropTypes.array,
-    locale: PropTypes.string.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      groups: []
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false,
-      layer: null,
-      remote_host: null,
-      group_id: null,
-      complete: false
-    };
-  },
+  state: {
+    canSubmit: false,
+    layer: null,
+    remote_host: null,
+    group_id: null,
+    complete: false
+  }
 
   componentWillMount(){
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+
     Formsy.addValidationRule('isHttps', function (values, value) {
         return value.startsWith('https://');
     });
@@ -62,7 +55,7 @@ var CreateRemoteLayer = React.createClass({
       }
         return false;
     });
-  },
+  }
 
   componentDidMount(){
     var _this = this;
@@ -71,18 +64,19 @@ var CreateRemoteLayer = React.createClass({
         return _this.__('You have not finished creating your layer.');
       }
     };
-  },
+  }
 
   enableButton () {
       this.setState({
         canSubmit: true
       });
-    },
+  }
+
   disableButton () {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
   loadRemoteUrl(model){
     var _this = this;
@@ -107,7 +101,7 @@ var CreateRemoteLayer = React.createClass({
         });
       });
     }
-  },
+  }
 
   saveLayer(){
     var _this = this;
@@ -126,7 +120,7 @@ var CreateRemoteLayer = React.createClass({
         cb();
       });
     });
-  },
+  }
 
 	render() {
 
@@ -243,6 +237,4 @@ var CreateRemoteLayer = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = CreateRemoteLayer;
+}

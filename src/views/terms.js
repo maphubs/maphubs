@@ -1,27 +1,26 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import Header from '../components/header';
+import Footer from '../components/footer';
 
-var Header = require('../components/header');
-var Footer = require('../components/footer');
+import MapHubsComponent from '../components/MapHubsComponent';
+import LocaleActions from '../actions/LocaleActions';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+export default class Terms extends MapHubsComponent {
 
-var Terms = React.createClass({
+  props: {
+    locale: string,
+    _csrf: string,
+    footerConfig: Object
+  }
 
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    locale: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
-  },
-
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
+ 
   render() {
       return (
         <div>
@@ -179,9 +178,5 @@ The base map as well as map data indicated as sourced from OpenStreetMap is copy
           <Footer {...this.props.footerConfig}/>
         </div>
       );
-
-
   }
-});
-
-module.exports = Terms;
+}

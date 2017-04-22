@@ -1,40 +1,30 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import Editor from 'react-medium-editor';
-
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../../stores/HubStore');
-var HubActions = require('../../actions/HubActions');
-
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+import HubStore from '../../stores/HubStore';
+import HubActions from '../../actions/HubActions';
 var _isequal = require('lodash.isequal');
+import MapHubsComponent from '../../components/MapHubsComponent';
 
+export default class HubDescription extends MapHubsComponent {
 
-var HubDescription = React.createClass({
+  props: {
+    hubid: string,
+    editing: boolean,
+    subPage: boolean
+  }
 
-  mixins:[StateMixin.connect(HubStore), StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    editing: false,
+    subPage: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
-  propTypes: {
-    hubid: PropTypes.string.isRequired,
-    editing: PropTypes.bool,
-    subPage: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      editing: false,
-      subPage: false
-    };
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;
@@ -43,11 +33,11 @@ var HubDescription = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  handleDescriptionChange(desc){
+  handleDescriptionChange(desc: string){
     HubActions.setDescription(desc);
-  },
+  }
 
   render() {   
     var description = '';
@@ -61,7 +51,7 @@ var HubDescription = React.createClass({
               <Editor
                tag="p"
                text={descriptionVal}
-               onChange={this.handleDescriptionChange}
+               onChange={this.handleDescriptionChange.bind(this)}
                options={{toolbar: false, buttonLabels: false,
                  placeholder: {text: this.__('Enter a Description or Intro for Your Hub')},
                  disableReturn: true, buttons: []}}
@@ -90,7 +80,4 @@ var HubDescription = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = HubDescription;
+}

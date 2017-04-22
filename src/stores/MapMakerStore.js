@@ -1,6 +1,5 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/MapMakerActions');
+import Reflux from 'reflux';
+import Actions from '../actions/MapMakerActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/MapMakerStore');
 var _findIndex = require('lodash.findindex');
@@ -11,12 +10,16 @@ var _forEachRight = require('lodash.foreachright');
 //var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class MapMakerStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+  constructor(){
+    super();
+    this.state = this.getDefaultState();
+    this.listenables = Actions;
+  }
+
+  getDefaultState(){
+    return {
       map_id: -1,
       title: null,
       mapLayers: [],
@@ -27,16 +30,16 @@ module.exports = Reflux.createStore({
       basemap: 'default',
       editingLayer: false
     };
-  },
+  }
 
   reset(){
-    this.setState(this.getInitialState());
+    this.setState(this.getDefaultState());
     this.updateMap(this.state.mapLayers);
-  },
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
  //listeners
 
@@ -45,32 +48,32 @@ module.exports = Reflux.createStore({
     if(update){
       this.updateMap(mapLayers);
     } 
-  },
+  }
 
   setMapId(map_id){
     this.setState({map_id});
-  },
+  }
 
   setMapTitle(title){
     title = title.trim();
     this.setState({title});
-  },
+  }
 
   setPrivate(isPrivate){
     this.setState({isPrivate});
-  },
+  }
 
   setOwnedByGroupId(group_id){
     this.setState({owned_by_group_id: group_id});
-  },
+  }
 
   setMapPosition(position){
     this.setState({position});
-  },
+  }
 
   setMapBasemap(basemap){
     this.setState({basemap});
-  },
+  }
 
   addToMap(layer, cb){
     //check if the map already has this layer
@@ -86,13 +89,12 @@ module.exports = Reflux.createStore({
       this.updateMap(layers);
       cb();
     }
-
-  },
+  }
 
   removeFromMap(layer){
     var layers = _reject(this.state.mapLayers, {'layer_id': layer.layer_id});
     this.updateMap(layers);
-  },
+  }
 
   toggleVisibility(layer_id, cb){
     var mapLayers = this.state.mapLayers;
@@ -106,7 +108,7 @@ module.exports = Reflux.createStore({
 
     this.updateMap(mapLayers);
     cb();
-  },
+  }
 
   updateLayerStyle(layer_id, style, labels, legend, settings){
     var index = _findIndex(this.state.mapLayers, {layer_id});
@@ -117,7 +119,7 @@ module.exports = Reflux.createStore({
     layers[index].settings = settings;
     this.updateMap(layers);
     this.setState({mapLayers: layers});
-  },
+  }
 
   saveMap(title, position, basemap, _csrf, cb){
     var _this = this;
@@ -140,7 +142,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   createMap(title, position, basemap, group_id, isPrivate, _csrf, cb){
     var _this = this;
@@ -164,7 +166,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   savePrivate(isPrivate, _csrf, cb){
     var _this = this;
@@ -181,7 +183,7 @@ module.exports = Reflux.createStore({
         cb();
       });
     });
-  },
+  }
 
   //helpers
   updateMap(mapLayers, rebuild=true){
@@ -192,7 +194,7 @@ module.exports = Reflux.createStore({
        mapStyle = this.state.mapStyle;
     }
     this.setState({mapLayers, mapStyle});
-  },
+  }
 
    buildMapStyle(layers){
      var mapStyle = {
@@ -237,15 +239,15 @@ module.exports = Reflux.createStore({
      });
 
      return mapStyle;
-   },
+   }
 
    startEditing(){
     this.setState({editingLayer: true});
-   },
+   }
 
    stopEditing(){
     this.setState({editingLayer: false});
-   },
+   }
 
    deleteMap(map_id, _csrf, cb){
      request.post('/api/map/delete')
@@ -257,4 +259,4 @@ module.exports = Reflux.createStore({
        });
      });
    }
-});
+}

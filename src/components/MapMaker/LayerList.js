@@ -1,51 +1,47 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var PureRenderMixin = require('react-addons-pure-render-mixin');
-var LayerListItem = require('./LayerListItem');
-var _isEqual = require('lodash.isequal');
-var DragDropContext = require('react-dnd').DragDropContext;
-var HTML5Backend = require('react-dnd-html5-backend');
-
+import LayerListItem from './LayerListItem';
+import _isEqual from 'lodash.isequal';
+import DragDropContext from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'react/lib/update';
 
-var LayerList = React.createClass({
-  mixins: [PureRenderMixin],
+class LayerList extends React.PureComponent {
 
-  propTypes:  {
-    layers:  PropTypes.array,
-    showVisibility: PropTypes.bool,
-    showDesign: PropTypes.bool,
-    showRemove: PropTypes.bool,
-    showEdit: PropTypes.bool,
-    showChangeDesign: PropTypes.bool,
-    toggleVisibility: PropTypes.func,
-    removeFromMap: PropTypes.func,
-    showLayerDesigner: PropTypes.func,
-    updateLayers: PropTypes.func.isRequired,
-    editLayer: PropTypes.func
-  },
+  props:  {
+    layers:  Array<Object>,
+    showVisibility: boolean,
+    showDesign: boolean,
+    showRemove: boolean,
+    showEdit: boolean,
+    showChangeDesign: boolean,
+    toggleVisibility: Function,
+    removeFromMap: Function,
+    showLayerDesigner: Function,
+    updateLayers: Function,
+    editLayer: Function
+  }
 
-  getDefaultProps() {
-    return {
+  state: {
+    layers: Array<Object>
+  }
 
-    };
-  },
-
-  getInitialState(){
-    var layers = JSON.parse(JSON.stringify(this.props.layers));
-    return {
+  constructor(props){
+    super(props);
+    var layers = JSON.parse(JSON.stringify(props.layers));
+    this.state = {
       layers
     };
-  },
+  }
 
   componentWillReceiveProps(nextProps){
      if(!_isEqual(nextProps.layers, this.state.layers)){
        var layers = JSON.parse(JSON.stringify(nextProps.layers));
      this.setState({layers});
     }
-  },
+  }
 
-  moveLayer(dragIndex, hoverIndex) {
+  moveLayer = (dragIndex, hoverIndex) => {
     const layers = this.state.layers;
     const dragLayer = layers[dragIndex];
 
@@ -58,7 +54,7 @@ var LayerList = React.createClass({
 
     this.props.updateLayers(updatedLayers);
 
-  },
+  }
 
   render(){
     var _this = this;
@@ -87,9 +83,6 @@ var LayerList = React.createClass({
           }</ul>
         </div>
     );
-
   }
-
-});
-
-module.exports = DragDropContext(HTML5Backend)(LayerList);
+}
+export default DragDropContext(HTML5Backend)(LayerList);

@@ -1,4 +1,4 @@
-var ReactDom = require('react-dom');
+import ReactDom from 'react-dom';
 
 module.exports = {
 

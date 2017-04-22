@@ -1,38 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var UserStore = require('../stores/UserStore');
-var UserActions = require('../actions/UserActions');
-var Gravatar = require('./user/Gravatar');
+import MapHubsComponent from './MapHubsComponent';
+import UserStore from '../stores/UserStore';
+import UserActions from '../actions/UserActions';
+import Gravatar from './user/Gravatar';
+import LocaleStore from '../stores/LocaleStore';
 
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
+export default class UserMenu extends MapHubsComponent {
 
-var UserMenu = React.createClass({
+  props:{
+    id: string,
+    sideNav: boolean
+  }
 
-  mixins:[StateMixin.connect(UserStore), StateMixin.connect(LocaleStore)],
+  static defaultProps: {
+    id: 'user-menu',
+    sideNav: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    id: PropTypes.string,
-    sideNav: PropTypes.bool
-  },
-
-  getDefaultProps() {
-    return {
-      id: 'user-menu',
-      sideNav: false
-    };
-  },
+  constructor(props){
+		super(props);
+		this.stores = [LocaleStore, UserStore];
+	}
 
   componentDidMount() {
     UserActions.getUser(function(){});
-  },
+  }
 
   componentDidUpdate(prevState){
     if(this.state.loggedIn && !prevState.loggedIn){
@@ -46,15 +39,15 @@ var UserMenu = React.createClass({
         alignment: 'right' // Displays dropdown with edge aligned to the left of button
       });
     }
-  },
+  }
 
   loginClick(){
     window.location = "/login?returnTo=" + window.location;
-  },
+  }
 
   logoutClick(){
     window.location = "/logout?returnTo=" + window.location;
-  },
+  }
 
   render() {
     var user = (<div style={{width: '194px'}}></div>);
@@ -120,6 +113,4 @@ var UserMenu = React.createClass({
 
     return user;
   }
-});
-
-module.exports = UserMenu;
+}

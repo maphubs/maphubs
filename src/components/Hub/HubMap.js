@@ -1,43 +1,36 @@
+//#flow
 import React from 'react';
-import PropTypes from 'prop-types';
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
-var InteractiveMap = require('../InteractiveMap');
+import InteractiveMap from '../InteractiveMap';
+import  HubStore from '../../stores/HubStore';
+import  HubActions from '../../actions/HubActions';
+import  AddMapModal from '../Story/AddMapModal';
+import MapHubsComponent from '../../components/MapHubsComponent';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var HubStore = require('../../stores/HubStore');
-var HubActions = require('../../actions/HubActions');
-var AddMapModal = require('../Story/AddMapModal');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class HubMap extends MapHubsComponent {
 
-var HubMap = React.createClass({
-
-  mixins:[StateMixin.connect(HubStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
+  props: {
     hub: PropTypes.object.isRequired,
     editing: PropTypes.bool,
     height: PropTypes.string,
     border: PropTypes.bool,
     myMaps: PropTypes.array,
     popularMaps: PropTypes.array
-  },
+  }
 
-  getDefaultProps(){
-    return {
-      editing: false,
-      height: '300px',
-      border: false,
-      myMaps: [],
-      popularMaps: []
-    };
-  },
+  static defaultProps: {
+    editing: false,
+    height: '300px',
+    border: false,
+    myMaps: [],
+    popularMaps: []
+  }
+
+  constructor(props: Object){
+		super(props);
+    this.stores.push(HubStore);
+	}
 
   componentDidMount() {
     $(this.refs.mapLayersPanel).sideNav({
@@ -45,22 +38,21 @@ var HubMap = React.createClass({
       edge: 'left', // Choose the horizontal origin
       closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
     });
-
-  },
+  }
 
   componentDidUpdate(){
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false, window, 0);
     window.dispatchEvent(evt);
-  },
+  }
 
   onSetMap(map){
     HubActions.setMap(map);
-  },
+  }
 
   showMapSelection(){
     this.refs.addmap.show();
-  },
+  }
 
   render() {
 
@@ -70,19 +62,19 @@ var HubMap = React.createClass({
     if(this.props.editing){
       selectMap = (
          <AddMapModal ref="addmap"
-         onAdd={this.onSetMap} onClose={this.onMapCancel}
+         onAdd={this.onSetMap.bind(this)} onClose={this.onMapCancel.bind(this)}
          myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
       );
       if(this.state.map){
          mapEditButton = (
-          <a className="btn omh-color white-text" onClick={this.showMapSelection}
+          <a className="btn omh-color white-text" onClick={this.showMapSelection.bind(this)}
             style={{position: 'absolute', top: '5px', left: '45%'}}>
             {this.__('Change Map')}
           </a>
         );
       }else{
        mapEditButton = (
-        <a className="btn omh-color white-text" onClick={this.showMapSelection}
+        <a className="btn omh-color white-text" onClick={this.showMapSelection.bind(this)}
           style={{position: 'absolute', top: '45%', left: '45%'}}>
           {this.__('Select a Map')}
         </a>
@@ -106,7 +98,4 @@ var HubMap = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = HubMap;
+}

@@ -1,36 +1,30 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Header = require('../components/header');
-var StoryEditor = require('../components/Story/StoryEditor');
+import Header from '../components/header';
+import StoryEditor from '../components/Story/StoryEditor';
+import MapHubsComponent from '../components/MapHubsComponent';
+import Rehydrate from 'reflux-rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import LocaleActions from '../actions/LocaleActions';
 
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../stores/LocaleStore');
-var Locales = require('../services/locales');
-
-
-var EditUserStory = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore, {initWithProps: ['locale', '_csrf']})],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class EditUserStory extends MapHubsComponent {
 
   propTypes: {
-    story: PropTypes.object.isRequired,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array,
-    username: PropTypes.string.isRequired,
-    locale: PropTypes.string.isRequired
-  },
+    story: Object,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>,
+    username: string,
+    locale: string
+  }
 
-  getDefaultProps() {
-    return {
-      story: {}
-    };
-  },
+  static defaultProps: {
+    story: {}
+  }
 
+  componentWillMount() {
+    Rehydrate.initStore(LocaleStore);   
+    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
   render() {
     return (
@@ -48,6 +42,4 @@ var EditUserStory = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = EditUserStory;
+}

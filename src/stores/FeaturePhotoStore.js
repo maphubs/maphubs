@@ -1,28 +1,30 @@
-var Reflux = require('reflux');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var Actions = require('../actions/FeaturePhotoActions');
+import Reflux from 'reflux';
+import Actions from '../actions/FeaturePhotoActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-module.exports = Reflux.createStore({
-  mixins: [StateMixin],
-  listenables: Actions,
+export default class FeaturePhotoStore extends Reflux.Store {
 
-  getInitialState() {
-    return  {
+constructor(){
+    super();
+    this.state = {
       feature: null,
       photo: null
     };
-  },
+    this.listenables = Actions;
+  }
 
   reset(){
-    this.setState(this.getInitialState());
-  },
+    this.setState({
+      feature: null,
+      photo: null
+    });
+  }
 
   storeDidUpdate(){
     debug('store updated');
-  },
+  }
 
   addPhoto(data, info, _csrf, cb){
     debug('add feature photo');
@@ -52,7 +54,7 @@ module.exports = Reflux.createStore({
           cb();
       });
     });
-  },
+  }
 
   removePhoto(_csrf, cb){
     debug('remove photo');
@@ -76,5 +78,4 @@ module.exports = Reflux.createStore({
       });
     });
   }
-
-});
+}
