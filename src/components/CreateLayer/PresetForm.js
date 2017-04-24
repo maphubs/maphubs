@@ -1,95 +1,83 @@
-
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var TextArea = require('../forms/textArea');
-var TextInput = require('../forms/textInput');
-var Toggle = require('../forms/toggle');
-var Select = require('../forms/select');
-var actions = require('../../actions/presetActions');
-var ConfirmationActions = require('../../actions/ConfirmationActions');
-var _debounce = require('lodash.debounce');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+import Formsy from 'formsy-react';
+import TextArea from '../forms/textArea';
+import TextInput from '../forms/textInput';
+import Toggle from '../forms/toggle';
+import Select from '../forms/select';
+import Actions from '../../actions/presetActions';
+import ConfirmationActions from '../../actions/ConfirmationActions';
+import _debounce from 'lodash.debounce';
+import MapHubsComponent from '../MapHubsComponent';
 
-var PresetForm = React.createClass({
+export default class PresetForm extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+    id: number,
+		tag: string,
+    label: string,
+    type: string,
+    options: Array<Object>, //if type requires a list of options
+    isRequired: boolean,
+    showOnMap: boolean,
+    onValid: Function,
+    onInvalid: Function
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps = {
+    showOnMap: true
+  }
 
-  propTypes: {
-    id: PropTypes.number,
-		tag: PropTypes.string,
-    label: PropTypes.string,
-    type: PropTypes.string,
-    options: PropTypes.array, //if type requires a list of options
-    isRequired: PropTypes.bool,
-    showOnMap: PropTypes.bool,
-    onValid: PropTypes.func,
-    onInvalid: PropTypes.func
-
-  },
-
-  static defaultProps: {
-    return {
-      showOnMap: true
-    };
-  },
-
-  getInitialState() {
+  constructor(props: Object) {
+    super(props);
     //if loading with values from the database, assume they are valid
     let valid = false;
-    if(this.props.tag) valid = true;
-    return {
+    if(props.tag) valid = true;
+    this.state = {
       preset: {
-        id: this.props.id,
-        tag: this.props.tag,
-        label: this.props.label,
-        type: this.props.type,
-        options: this.props.options,
-        isRequired: this.props.isRequired,
-        showOnMap: this.props.showOnMap
+        id: props.id,
+        tag: props.tag,
+        label: props.label,
+        type: props.type,
+        options: props.options,
+        isRequired: props.isRequired,
+        showOnMap: props.showOnMap
       },
       valid
     };
-  },
+  }
 
-  onFormChange(values){
+  onFormChange = (values: Object) => {
     values.id = this.props.id;
     this.setState({preset: values});
-    actions.updatePreset(this.props.id, values);
-  },
+    Actions.updatePreset(this.props.id, values);
+  }
 
-  onValid(){
+  onValid = () => {
     this.setState({valid: true});
     var debounced = _debounce(function(){
       if(this.props.onValid) this.props.onValid();
     }, 2500).bind(this);
     debounced();
-  },
+  }
 
-  onInvalid(){
+  onInvalid =() => {
     this.setState({valid: false});
     var debounced = _debounce(function(){
       if(this.props.onInvalid) this.props.onInvalid();
     }, 2500).bind(this);
     debounced();
-  },
+  }
 
-  isValid(){
+  isValid = () => {
     return this.state.valid;
-  },
+  }
 
-  getData(){
+  getData = () => {
     return this.state.preset;
-  },
+  }
 
-  onRemove(){
+  onRemove = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Removal'),
@@ -97,19 +85,18 @@ var PresetForm = React.createClass({
         + _this.__('Note: this will hide the field, but will not delete the raw data.') + ' '
         + _this.__('The field will still be visible in the edit under "all tags" and will be included in data exports.'),
       onPositiveResponse(){
-        actions.deletePreset(_this.props.id);
+        Actions.deletePreset(_this.props.id);
       }
     });
+  }
 
-  },
+  onMoveUp = () => {
+    Actions.moveUp(this.props.id);
+  }
 
-  onMoveUp(){
-  actions.moveUp(this.props.id);
-  },
-
-  onMoveDown(){
-    actions.moveDown(this.props.id);
-  },
+  onMoveDown = () => {
+    Actions.moveDown(this.props.id);
+  }
 
 	render() {
     var presetOptions = [
@@ -123,7 +110,7 @@ var PresetForm = React.createClass({
     
     var typeOptions = '';
 
-    if(this.state.preset.type == 'combo' || this.state.preset.type == 'radio'){
+    if(this.state.preset.type === 'combo' || this.state.preset.type === 'radio'){
       typeOptions = (
         <TextArea name="options" label={this.__('Options(seperate with commas)')} icon="list" 
         className="col s12" validations="maxLength:500" validationErrors={{
@@ -191,6 +178,4 @@ var PresetForm = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = PresetForm;
+}

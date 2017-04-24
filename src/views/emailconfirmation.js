@@ -2,11 +2,9 @@
 import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class EmailConfirmation extends MapHubsComponent {
 
@@ -17,9 +15,9 @@ export default class EmailConfirmation extends MapHubsComponent {
     footerConfig: Object
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   render() {

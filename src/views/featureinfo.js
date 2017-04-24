@@ -23,22 +23,18 @@ import FeaturePhotoActions from '../actions/FeaturePhotoActions';
 import FeatureNotesStore from '../stores/FeatureNotesStore';
 import FeaturePhotoStore from '../stores/FeaturePhotoStore';
 var turf_area = require('@turf/area');
-
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import es from 'react-intl/locale-data/es';
 import fr from 'react-intl/locale-data/fr';
 import it from 'react-intl/locale-data/it';
-
 addLocaleData(en);
 addLocaleData(es);
 addLocaleData(fr);
 addLocaleData(it);
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class FeatureInfo extends MapHubsComponent {
 
@@ -52,7 +48,7 @@ export default class FeatureInfo extends MapHubsComponent {
     _csrf: string
   }
 
-  state: {
+  state = {
     editingNotes: false
   }
 
@@ -60,16 +56,10 @@ export default class FeatureInfo extends MapHubsComponent {
 		super(props);
     this.stores.push(FeatureNotesStore);
     this.stores.push(FeaturePhotoStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(FeatureNotesStore, {notes: this.props.notes});
+    Reflux.rehydrate(FeaturePhotoStore, {feature: this.props.feature, photo: this.props.photo});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(FeatureNotesStore);
-    Rehydrate.initStore(FeaturePhotoStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    FeatureNotesStore.rehydrate({notes: this.props.notes});
-    FeaturePhotoStore.rehydrate({feature: this.props.feature, photo: this.props.photo});
-  }
 
   componentDidMount(){
     $('ul.tabs').tabs();
@@ -81,11 +71,11 @@ export default class FeatureInfo extends MapHubsComponent {
     };
   }
 
-  startEditingNotes(){
+  startEditingNotes = () =>{
     this.setState({editingNotes: true});
   }
 
-  stopEditingNotes(){
+  stopEditingNotes = () => {
     var _this = this;
     var geoJSONProps = this.props.feature.geojson.features[0].properties;
 
@@ -99,11 +89,11 @@ export default class FeatureInfo extends MapHubsComponent {
     });
   }
 
-  showImageCrop(){
+  showImageCrop = () => {
     this.refs.imagecrop.show();
   }
 
-  onCrop(data: Object, info: Object){
+  onCrop = (data: Object, info: Object) => {
     var _this = this;
     //send data to server
     FeaturePhotoActions.addPhoto(data, info, this.state._csrf, function(err){
@@ -123,7 +113,7 @@ export default class FeatureInfo extends MapHubsComponent {
     });
   }
 
-  deletePhoto(){
+  deletePhoto = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Removal'),
@@ -146,7 +136,7 @@ export default class FeatureInfo extends MapHubsComponent {
   }
 
   //Build iD edit link
-  getEditLink(){
+  getEditLink = () => {
     //get map position
     var position = this.refs.map.getPosition();
     var zoom = Math.ceil(position.zoom);
@@ -155,7 +145,7 @@ export default class FeatureInfo extends MapHubsComponent {
     return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
   }
 
-  openEditor(){
+  openEditor = () => {
     var editLink = this.getEditLink();
     window.location = editLink;
   }

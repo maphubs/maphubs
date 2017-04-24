@@ -8,7 +8,7 @@ export default class OuthDialog2 extends React.Component {
     transactionID: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
       user: 'Unknown',
       client: 'Unknown',
       transactionID: ''

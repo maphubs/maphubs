@@ -1,4 +1,4 @@
-//#flow
+//@flow
 import React from 'react';
 import Map from '../components/Map/Map';
 import Header from '../components/header';
@@ -15,8 +15,7 @@ import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import Progress from '../components/Progress';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Search extends MapHubsComponent {
@@ -24,21 +23,22 @@ export default class Search extends MapHubsComponent {
 
   props: {
     locale: string,
-    footerConfig: Object
+    footerConfig: Object,
+    _csrf: string
   }
 
-  state: {
+  state = {
     searchResult: null,
     searchCards: [],
     searching: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  getParameterByName(name, url) {
+  getParameterByName = (name: string, url: any) => {
     if (!url) url = window.location.href;
     url = url.toLowerCase(); // This is just to avoid case sensitiveness
     name = name.replace(/[\[\]]/g, "\\$&").toLowerCase();// This is just to avoid case sensitiveness for query parameter name
@@ -65,12 +65,12 @@ export default class Search extends MapHubsComponent {
     }
   }
 
-  onResetSearch(){
+  onResetSearch = () =>{
     this.refs.map.resetGeoJSON();
     this.setState({searchResult: null, searchCards: []});
   }
 
-  handleSearch(input){
+  handleSearch = (input: string) => {
     var _this = this;
     this.setState({searching: true});
     var requests = [
@@ -167,7 +167,7 @@ export default class Search extends MapHubsComponent {
     });
   }
 
-  getMixedCardSet(layers, groups, hubs, maps, stories){
+  getMixedCardSet(layers: Array<Object>, groups: Array<Object>, hubs: Array<Object>, maps: Array<Object>, stories: Array<Object>){
     return _shuffle(layers.map(cardUtil.getLayerCard)
       .concat(groups.map(cardUtil.getGroupCard))
       .concat(hubs.map(cardUtil.getHubCard))
@@ -190,7 +190,7 @@ export default class Search extends MapHubsComponent {
       <main style={{margin: 0}}>
         <div ref="search" className="container" style={{height: '55px', paddingTop:'10px'}}>
           <div className="row no-margin">
-            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch.bind(this)} onReset={this.onResetSearch.bind(this)}/>
+            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
           </div>
         </div>
         <div className="row no-margin" style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>

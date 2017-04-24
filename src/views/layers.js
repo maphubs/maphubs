@@ -12,32 +12,32 @@ import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 var cardUtil = require('../services/card-util');
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Layers extends MapHubsComponent {
 
-  propTypes: {
+  props: {
     featuredLayers: Array<Object>,
     recentLayers: Array<Object>,
     popularLayers: Array<Object>,
     locale: string,
-    footerConfig: Object
+    footerConfig: Object,
+    _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     layers: []
   }
 
-  state: {
+  state = {
     searchResults: [],
     searchActive: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   handleSearch(input: string) {

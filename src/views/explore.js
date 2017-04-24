@@ -4,17 +4,13 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
-
-var _shuffle = require('lodash.shuffle');
+import _shuffle from 'lodash.shuffle';
 import CardFilter from '../components/Home/CardFilter';
-var cardUtil = require('../services/card-util');
-
+import cardUtil from '../services/card-util';
 import SubPageBanner from '../components/Home/SubPageBanner';
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class Home extends MapHubsComponent {
 
@@ -41,6 +37,7 @@ export default class Home extends MapHubsComponent {
 
   constructor(props: Object){
 		super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
       storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       mapMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
@@ -70,12 +67,7 @@ export default class Home extends MapHubsComponent {
     };
 	}
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-  }
-
-  handleSearch(input: string){
+  handleSearch = (input: string) => {
     window.location = '/search?q=' + input;
   }
 

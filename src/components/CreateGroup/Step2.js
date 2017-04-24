@@ -17,12 +17,12 @@ export default class CreateGroupStep2 extends MapHubsComponent {
     onPrev: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
     onSubmit: null,
     active: false
   }
 
-  state: {
+  state = {
     canSubmit: false
   }
 

@@ -22,26 +22,30 @@ export default class AddMapModal extends MapHubsComponent {
     popularMaps: Array<Object>,
   }
 
-  static defaultProps: {
+  static defaultProps = {
     myMaps:[],
     popularMaps: []
   }
 
-  state: {
+  state = {
     show: false
   }
 
-  show(){
+  show = () => {
     this.setState({show: true});
   }
 
-  onAdd(map: Object){
+  onAdd = (map: Object) => {
     this.setState({show: false});
     this.props.onAdd(map);
   }
 
-  close(){
+  close = () => {
     this.setState({show: false});
+  }
+
+  hide = () => {
+    this.close();
   }
 
   handleSearch(input: string) {
@@ -70,11 +74,11 @@ export default class AddMapModal extends MapHubsComponent {
     });
   }
 
-  resetSearch(){
+  resetSearch = () => {
     this.setState({searchActive: false, searchResults: []});
   }
 
-  modalReady(){
+  modalReady = () =>{
     this.setState({modalReady: true});
   }
 
@@ -134,14 +138,14 @@ export default class AddMapModal extends MapHubsComponent {
     }
 
     return (
-      <Modal show={this.state.show} ready={this.modalReady.bind(this)} className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
+      <Modal show={this.state.show} ready={this.modalReady} className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden', width: '100%'}}>
-          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close.bind(this)}>
+          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
             <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>
           </a>
           <div className='row' style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
             <div className='col s12'>
-              <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch.bind(this)}/>
+              <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
             </div>
           </div>
           <div className='row'style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto'}}>

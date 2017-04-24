@@ -12,8 +12,7 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Maps extends MapHubsComponent {
@@ -23,20 +22,21 @@ export default class Maps extends MapHubsComponent {
     recentMaps: Array<Object>,
     popularMaps: Array<Object>,
     locale: string,
+    _csrf: string,
     footerConfig: Object
   }
 
-  state: {
+  state = {
     searchResults: [],
     searchActive: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  handleSearch(input) {
+  handleSearch = (input: string) => {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
@@ -62,7 +62,7 @@ export default class Maps extends MapHubsComponent {
     });
   }
 
-  resetSearch(){
+  resetSearch = () => {
     this.setState({searchActive: false, searchResults: []});
   }
 
@@ -125,7 +125,7 @@ export default class Maps extends MapHubsComponent {
                 <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse maps or create a new map using the respository of open map layers.')}</p>
               </div>
               <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch.bind(this)} onReset={this.resetSearch.bind(this)}/>
+                <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
               </div>
             </div>
           </div>

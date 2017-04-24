@@ -6,8 +6,7 @@ import StorySummary from '../components/Story/StorySummary';
 import MessageActions from '../actions/MessageActions';
 import UserStore from '../stores/UserStore';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Stories extends MapHubsComponent {
@@ -16,18 +15,15 @@ export default class Stories extends MapHubsComponent {
     popularStories: Array<Object>,
     featuredStories: Array<Object>,
     locale: string,
+    _csrf: string,
     footerConfig: Object
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(UserStore);
+     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);   
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-  }
 
   onCreateStory(){
     if(this.state.user.display_name){

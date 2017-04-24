@@ -18,7 +18,7 @@ export default class Suggestions extends React.Component {
     onSelection: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
       suggestions: [],
       highlightedItem: -1
     }

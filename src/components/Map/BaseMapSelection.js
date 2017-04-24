@@ -1,31 +1,24 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Radio = require('../forms/radio');
-var Formsy = require('formsy-react');
-//var Actions = require('../../actions/map/BaseMapActions');
+import Radio from '../forms/radio';
+import Formsy from 'formsy-react';
+import BaseMapStore from '../../stores/map/BaseMapStore';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var BaseMapStore = require('../../stores/map/BaseMapStore');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class BaseMapSelection extends MapHubsComponent {
 
+  props: {
+    onChange: Function
+  }
 
-var BaseMapSelection = React.createClass({
+  constructor(props: Object){
+    super(props);
+    this.stores.push(BaseMapStore);
+  }
 
-  mixins:[StateMixin.connect(BaseMapStore), StateMixin.connect(LocaleStore)],
-
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onChange: PropTypes.func.isRequired
-  },
-
-  onChange(val){
+  onChange = (val: string) => {
     this.props.onChange(val);
-  },
+  }
 
   render(){
     var baseMapOptions = [
@@ -57,6 +50,4 @@ var BaseMapSelection = React.createClass({
         </div>
     ); 
   }
-});
-
-module.exports = BaseMapSelection;
+}

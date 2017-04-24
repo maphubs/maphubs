@@ -9,7 +9,7 @@ export default class LegendItem extends React.Component {
     style: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
       style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'},
   }
 

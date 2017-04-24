@@ -1,36 +1,28 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import Editor from 'react-medium-editor';
+import LayerNotesStore from '../../stores/LayerNotesStore';
+import LayerNotesActions from '../../actions/LayerNotesActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LayerNotesStore = require('../../stores/LayerNotesStore');
-var LayerNotesActions = require('../../actions/LayerNotesActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class LayerNotes extends MapHubsComponent {
 
-var LayerNotes = React.createClass({
+  props: {
+    editing: boolean
+  }
 
-  mixins:[StateMixin.connect(LayerNotesStore), StateMixin.connect(LocaleStore)],
+  static defaultProps = {
+    editing: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerNotesStore);
+  }
 
-  propTypes: {
-    editing: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      editing: false
-    };
-  },
-
-  handleNotesChange(notes){
+  handleNotesChange = (notes: string) => {
     LayerNotesActions.setNotes(notes);
-  },
+  }
 
   render(){
     var resources = '';
@@ -73,6 +65,4 @@ var LayerNotes = React.createClass({
       </div>
     );
   }
-
-});
-module.exports = LayerNotes;
+}

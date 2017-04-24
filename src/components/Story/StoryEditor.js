@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-
 var slug = require('slug');
 var $ = require('jquery');
 var debounce = require('lodash.debounce');
@@ -16,7 +15,7 @@ import StoryStore from '../../stores/StoryStore';
 import Progress from '../Progress';
 import Editor from 'react-medium-editor';
 import MapHubsComponent from '../../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../Rehydrate';
 
 export default class StoryEditor extends MapHubsComponent {
 
@@ -29,14 +28,14 @@ export default class StoryEditor extends MapHubsComponent {
     popularMaps: Array<Object>
   }
 
-  static defaultProps: {
+  static defaultProps = {
     story: {},
     hub_id: null,
     username: '',
     storyType: 'unknown'
   }
 
-  state: {
+  state = {
     saving: false,
     addingMap: false
   }
@@ -44,12 +43,8 @@ export default class StoryEditor extends MapHubsComponent {
   constructor(props: Object){
 		super(props);
     this.stores.push(StoryStore);
+    Reflux.rehydrate(StoryStore, {story: this.props.story, storyType: this.props.storyType, hub_id: this.props.hub_id});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(StoryStore);
-    Actions.rehydrate({story: this.props.story, storyType: this.props.storyType, hub_id: this.props.hub_id});
-  }
 
   componentDidMount(){
    var _this = this;
@@ -92,7 +87,7 @@ export default class StoryEditor extends MapHubsComponent {
     return false;
  }
 
-  handleBodyChange(body) {
+  handleBodyChange = (body) => {
     var _this = this;
     this.body = body;
     Actions.handleBodyChange(body);        
@@ -102,7 +97,7 @@ export default class StoryEditor extends MapHubsComponent {
     debounced();
   }
 
-getFirstLine(){
+getFirstLine = () =>{
   var first_line = $('.storybody').find('p')
     .filter( function(){
        return ($.trim($(this).text()).length);
@@ -110,7 +105,7 @@ getFirstLine(){
   return  first_line;
 }
 
-getFirstImage(){
+getFirstImage = () =>{
   //attempt to find the first map or image
   var first_img = null;
   var firstEmbed = $('.storybody').find('img, .embed-map-container').first();
@@ -123,7 +118,7 @@ getFirstImage(){
   return first_img;
 }
 
-save(){
+save = () => {
   var _this = this;
 
   if(!this.state.story.title || this.state.story.title == ''){
@@ -187,7 +182,7 @@ save(){
   });
 }
 
-delete(){
+delete = () => {
   var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Delete'),
@@ -210,7 +205,7 @@ delete(){
   });
 }
 
-getSelectionRange(){
+getSelectionRange = () => {
   var sel, range;
   if (window.getSelection) {
       // IE9 and non-IE
@@ -229,7 +224,7 @@ getSelectionRange(){
   }
 }
 
-pasteHtmlAtCaret(html: any, rangeInput: any=null) {
+pasteHtmlAtCaret = (html: any, rangeInput: any=null) => {
     var sel, savedRange = this.savedSelectionRange;
     var selection = window.getSelection();
     var range = null;
@@ -262,7 +257,7 @@ pasteHtmlAtCaret(html: any, rangeInput: any=null) {
     this.handleBodyChange($('.storybody').html());
 }
 
-onAddMap(map: Object){
+onAddMap = (map: Object) => {
   var _this = this;
   var map_id = map.map_id;
   //this.setState({addingMap: true});
@@ -284,13 +279,13 @@ onAddMap(map: Object){
   _this.handleBodyChange($('.storybody').html());
 }
 
-onMapCancel(){
+onMapCancel = () => {
   this.setState({addingMap: false});
   this.removeMapCloseButtons();
   this.addMapCloseButtons();
 }
 
-removeMap(map_id: number){
+removeMap = (map_id: number) => { 
   var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Map Removal'),
@@ -300,10 +295,9 @@ removeMap(map_id: number){
       _this.handleBodyChange($('.storybody').html());
     }
   });
-
 }
 
-addMapCloseButtons(){
+addMapCloseButtons = () => {
   var _this = this;
   $('.embed-map-container').each(function(i, map){
     var map_id = map.id.split('-')[1];
@@ -323,14 +317,14 @@ addMapCloseButtons(){
   });
 }
 
-removeMapCloseButtons(){
+removeMapCloseButtons = () => {
   $('.edit-map-tooltips').tooltip('remove');
   $('.map-remove-button').each(function(i, button){
     $(button).remove();
   });
 }
 
-addImageButtons(){
+addImageButtons = () => {
   var _this = this;
   $('.embed-image-container').each(function(i, image){
     var image_id = image.id.split('-')[1];
@@ -346,14 +340,14 @@ addImageButtons(){
   });
 }
 
-removeImageButtons(){
+removeImageButtons = () => {
   $('.remove-image-tooltips').tooltip('remove');
   $('.image-remove-button').each(function(i, button){
     $(button).remove();
   });
 }
 
-onAddImage(data: string, info: Object){
+onAddImage = (data: string, info: Object) => {
   var _this = this;
   Actions.addImage(data, info, this.state._csrf, function(err, res){
     if(err || !res.body || !res.body.image_id){
@@ -369,7 +363,7 @@ onAddImage(data: string, info: Object){
   });
 }
 
-onRemoveImage(image_id: number){
+onRemoveImage = (image_id: number) => {
   var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Image Removal'),
@@ -389,7 +383,7 @@ onRemoveImage(image_id: number){
   });
 }
 
-publish(){
+publish = () => {
    var _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Publish story?'),
@@ -451,7 +445,7 @@ publish(){
   });
 }
 
-saveSelectionRange(){
+saveSelectionRange = () => {
   var sel = window.getSelection();
 
   if(sel.anchorNode && sel.anchorNode.parentNode){
@@ -469,7 +463,7 @@ saveSelectionRange(){
   }
 }
 
-showAddMap(){
+showAddMap = () => {
   if(this.savedSelectionRange){
       this.refs.addmap.show();
   }else {
@@ -477,8 +471,8 @@ showAddMap(){
   }
 }
 
-showImageCrop(){
-  if(!this.state.story.story_id || this.state.story.story_id == -1){
+showImageCrop = () => {
+  if(!this.state.story.story_id || this.state.story.story_id === -1){
     NotificationActions.showNotification({message: this.__('Please Save the Story Before Adding in Image'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
@@ -512,7 +506,7 @@ showImageCrop(){
     if(this.state.story.story_id){
       deleteButton = (
         <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
-          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete.bind(this)}
+          <a className="btn-floating btn-large red red-text storyeditor-tooltips" onClick={this.delete}
             data-delay="50" data-position="left" data-tooltip={this.__('Delete')}>
             <i className="large material-icons">delete</i>
           </a>
@@ -524,7 +518,7 @@ showImageCrop(){
     if(!this.state.story.published){
         publishButton = (
           <div className="center center-align" style={{margin: 'auto', position: 'fixed', bottom: '15px', zIndex: '1', right: 'calc(50% - 60px)'}}>
-            <button className="waves-effect waves-light btn" onClick={this.publish.bind(this)}>{this.__('Publish')}</button>
+            <button className="waves-effect waves-light btn" onClick={this.publish}>{this.__('Publish')}</button>
           </div>
         );
         saveButtonText = this.__('Save Draft');
@@ -555,7 +549,7 @@ showImageCrop(){
          <Editor
            className="storybody"
            text={this.state.story.body}
-           onChange={this.handleBodyChange.bind(this)}
+           onChange={this.handleBodyChange}
            options={{
              buttonLabels: 'fontawesome',
              delay: 100,
@@ -579,10 +573,10 @@ showImageCrop(){
        </div>
 
        <AddMapModal ref="addmap"
-         onAdd={this.onAddMap.bind(this)} onClose={this.onMapCancel.bind(this)}
+         onAdd={this.onAddMap} onClose={this.onMapCancel}
          myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
 
-       <ImageCrop ref="imagecrop" onCrop={this.onAddImage.bind(this)} resize_max_width={1200}/>
+       <ImageCrop ref="imagecrop" onCrop={this.onAddImage} resize_max_width={1200}/>
 
        <div className="fixed-action-btn action-button-bottom-right" style={{bottom: '155px'}}>
             <a onMouseDown={function(e){e.stopPropagation();}} className="btn-floating btn-large red red-text">
@@ -590,19 +584,19 @@ showImageCrop(){
             </a>
             <ul>
               <li>
-                <a  onMouseDown={this.showAddMap.bind(this)} className="btn-floating storyeditor-tooltips green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
+                <a  onMouseDown={this.showAddMap} className="btn-floating storyeditor-tooltips green darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Insert Map')}>
                   <i className="material-icons">map</i>
                 </a>
               </li>
               <li>
-                <a onMouseDown={this.showImageCrop.bind(this)} className="btn-floating storyeditor-tooltips yellow" data-delay="50" data-position="left" data-tooltip={this.__('Insert Image')}>
+                <a onMouseDown={this.showImageCrop} className="btn-floating storyeditor-tooltips yellow" data-delay="50" data-position="left" data-tooltip={this.__('Insert Image')}>
                   <i className="material-icons">insert_photo</i>
                 </a>
               </li>
             </ul>
           </div>
           <div className="fixed-action-btn action-button-bottom-right">
-            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save.bind(this)} data-delay="50" data-position="left" data-tooltip={saveButtonText}>
+            <a className="btn-floating btn-large blue storyeditor-tooltips" onClick={this.save} data-delay="50" data-position="left" data-tooltip={saveButtonText}>
               <i className="large material-icons">save</i>
             </a>
           </div>

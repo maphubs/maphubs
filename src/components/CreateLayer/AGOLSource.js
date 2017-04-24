@@ -18,11 +18,7 @@ export default class AGOLSource extends MapHubsComponent {
     onPrev: Function
   }
 
-  static defaultProps: {
-    onSubmit: null
-  }
-
-  state: {
+  state = {
     canSubmit: false,
     selectedOption: 'mapserverquery'
   }
@@ -33,6 +29,7 @@ export default class AGOLSource extends MapHubsComponent {
   }
 
   componentWillMount(){
+    super.componentWillMount();
     Formsy.addValidationRule('isHttps', function (values, value) {
         return value.startsWith('https://');
     });

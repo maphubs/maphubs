@@ -12,7 +12,7 @@ export default class HubEditButton extends MapHubsComponent {
     style: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     style: {}
   }
 

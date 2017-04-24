@@ -2,25 +2,17 @@
 import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
-var CardCarousel = require('../components/CardCarousel/CardCarousel');
-var StorySummary = require('../components/Story/StorySummary');
-
-var PublicOnboardingLinks = require('../components/Home/PublicOnboardingLinks');
-var InteractiveMap = require('../components/InteractiveMap');
-var _shuffle = require('lodash.shuffle');
-var cardUtil = require('../services/card-util');
-
+import CardCarousel from '../components/CardCarousel/CardCarousel';
+import StorySummary from '../components/Story/StorySummary';
+import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks';
+import InteractiveMap from '../components/InteractiveMap';
+import _shuffle from 'lodash.shuffle';
+import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-/**
- * Example of a customized home page configuration
- */
-export default class HomePro extends MapHubsComponent {
-
-  props: {
+type Props = {
     trendingLayers: Array<Object>,
     trendingGroups:Array<Object>,
     trendingHubs: Array<Object>,
@@ -35,7 +27,7 @@ export default class HomePro extends MapHubsComponent {
     footerConfig: Object
   }
 
-  state: {
+  type State = {
     trendingStoryCards: Array<Object>,
     trendingMapCards: Array<Object>,
     trendingHubCards: Array<Object>,
@@ -43,8 +35,17 @@ export default class HomePro extends MapHubsComponent {
     trendingLayerCards: Array<Object>
   }
 
+
+/**
+ * Example of a customized home page configuration
+ */
+export default class HomePro extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
   constructor(props: Object) {
     super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
       trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
       trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
@@ -54,16 +55,11 @@ export default class HomePro extends MapHubsComponent {
     };
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-  }
-
-  handleSearch(input: string){
+  handleSearch = (input: string) => {
     window.location = '/search?q=' + input;
   }
 
-  renderHomePageMap(config: Object, key: string){
+  renderHomePageMap = (config: Object, key: string) => {
     var homepageMap= '';
     if(this.props.map){
       homepageMap = (
@@ -78,7 +74,7 @@ export default class HomePro extends MapHubsComponent {
     return homepageMap;   
   }
 
-  renderLinks(config: Object, key: string){
+  renderLinks = (config: Object, key: string) => {
     var links = '';
     var bgColor = config.bgColor ? config.bgColor : 'inherit';
     links = (
@@ -89,7 +85,7 @@ export default class HomePro extends MapHubsComponent {
     return links;
   }
 
-  renderCarousel(config: Object, key: string){
+  renderCarousel = (config: Object, key: string) => {
     var trendingCards = cardUtil.combineCards([this.state.trendingLayerCards,
     this.state.trendingGroupCards,
     this.state.trendingHubCards,
@@ -117,7 +113,7 @@ export default class HomePro extends MapHubsComponent {
     );
   }
 
-  renderStories(key: string){
+  renderStories = (key: string) => {
     var featured = '';
      if(this.props.featuredStories && this.props.featuredStories.length > 0){
        featured = (
@@ -143,7 +139,7 @@ export default class HomePro extends MapHubsComponent {
      return featured;
   }
 
-  renderText(config: Object, key: string){
+  renderText = (config: Object, key: string) => {
     var text = config.text[this.state.locale];
     if(!text) text = config.text.en;
     return (

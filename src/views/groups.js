@@ -5,17 +5,15 @@ import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
 var debug = require('../services/debug')('views/groups');
-var urlUtil = require('../services/url-util');
-var request = require('superagent');
+import urlUtil from '../services/url-util';
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
-var cardUtil = require('../services/card-util');
-
+import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class Groups extends MapHubsComponent {
 
@@ -28,18 +26,18 @@ export default class Groups extends MapHubsComponent {
     footerConfig: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     groups: []
   }
 
-  state: {
+  state = {
     searchResults: [],
     searchActive: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   handleSearch(input: string) {

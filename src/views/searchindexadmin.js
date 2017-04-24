@@ -1,6 +1,5 @@
 //@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import request from 'superagent';
@@ -9,26 +8,25 @@ import ConfirmationActions from '../actions/ConfirmationActions';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class SearchIndexAdmin extends MapHubsComponent {
 
   props: {
-    locale: PropTypes.string.isRequired,
-    connectionStatus: PropTypes.string.isRequired,
-    indexStatus: PropTypes.string.isRequired,
-    footerConfig: PropTypes.object
+    locale: string,
+    connectionStatus: string,
+    indexStatus: string,
+    footerConfig: Object,
+    _csrf: string
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  createIndex(){
-
+  createIndex = () => {
    var _this = this;
    ConfirmationActions.showConfirmation({
       title: this.__('Confirm'),
@@ -60,7 +58,7 @@ export default class SearchIndexAdmin extends MapHubsComponent {
     });
   }
 
-  rebuildFeatures(){
+  rebuildFeatures = () => {
    var _this = this;
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm'),
@@ -104,10 +102,10 @@ export default class SearchIndexAdmin extends MapHubsComponent {
               <p><b>{this.__('Index Status:')}</b> {this.props.indexStatus}</p>
             </div>
             <div>
-              <button className="btn" onClick={this.createIndex.bind(this)}>{this.__('Create Index')}</button>
+              <button className="btn" onClick={this.createIndex}>{this.__('Create Index')}</button>
             </div>
              <div>
-              <button className="btn" onClick={this.rebuildFeatures.bind(this)}>{this.__('Rebuild Feature Index')}</button>
+              <button className="btn" onClick={this.rebuildFeatures}>{this.__('Rebuild Feature Index')}</button>
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>

@@ -19,7 +19,7 @@ export default class FeatureBox extends MapHubsComponent {
     className: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     showButtons: true,
     selected: false
   }

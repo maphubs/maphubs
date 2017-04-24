@@ -19,8 +19,7 @@ import MapMakerStore from '../stores/MapMakerStore';
 import debounce from 'lodash.debounce';
 import ForestLossLegendHelper from '../components/Map/ForestLossLegendHelper';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class UserMap extends MapHubsComponent {
@@ -33,28 +32,28 @@ export default class UserMap extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     canEdit: false
   }
 
-  state: {
+  state = {
       width: 1024,
       height: 600,
       downloading: false,
-      layers: Array<Object>
+      layers: []
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(UserStore);
     this.stores.push(MapMakerStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state.layers = props.layers;
 	}
 
   componentWillMount(){
+    super.componentWillMount();
     var _this = this;
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
 
     if (typeof window === 'undefined') return; //only run this on the client
 
@@ -84,23 +83,19 @@ export default class UserMap extends MapHubsComponent {
     });
   }
 
-  onMouseEnterMenu(){
-    $('.user-map-tooltip').tooltip();
-  }
-
   componentDidMount() {
-  $(this.refs.mapLayersPanel).sideNav({
-    menuWidth: 240, // Default is 240
-    edge: 'left', // Choose the horizontal origin
-    closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-  });
-}
-
-componentWillReceiveProps(nextProps: Object){
-  if(nextProps.layers && nextProps.layers.length !== this.state.layers.length){
-    this.setState({layers: nextProps.layers});
+    $(this.refs.mapLayersPanel).sideNav({
+      menuWidth: 240, // Default is 240
+      edge: 'left', // Choose the horizontal origin
+      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+    });
   }
-}
+
+  componentWillReceiveProps(nextProps: Object){
+    if(nextProps.layers && nextProps.layers.length !== this.state.layers.length){
+      this.setState({layers: nextProps.layers});
+    }
+  }
 
   componentDidUpdate(){
     debounce(function(){
@@ -110,7 +105,11 @@ componentWillReceiveProps(nextProps: Object){
     }, 300);
   }
 
-  onDelete(){
+  onMouseEnterMenu = () => {
+    $('.user-map-tooltip').tooltip();
+  }
+
+  onDelete = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
@@ -128,12 +127,12 @@ componentWillReceiveProps(nextProps: Object){
     });
   }
 
-  onEdit(){
+  onEdit = () => {
     window.location = '/map/edit/' + this.props.map.map_id;
     //CreateMapActions.showMapDesigner();
   }
 
-  onFullScreen(){
+  onFullScreen = () => {
     var fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`;
     if(window.location.hash){
       fullScreenLink = fullScreenLink += window.location.hash;
@@ -141,15 +140,15 @@ componentWillReceiveProps(nextProps: Object){
     window.location = fullScreenLink;
   }
 
-  onMapChanged(){
+  onMapChanged = () => {
     location.reload();
   }
 
-  postToMedium(){
+  postToMedium = () => {
     alert('coming soon');
   }
 
-  download(){
+  download = () => {
     var _this = this;
     if(!this.props.map.has_screenshot){
       //warn the user if we need to wait for the screenshot to be created
@@ -158,7 +157,7 @@ componentWillReceiveProps(nextProps: Object){
     }
   }
 
-  showEmbedCode(){
+  showEmbedCode = () => {
     var url = urlUtil.getBaseUrl() + '/map/embed/' + this.props.map.map_id + '/static';
     var code = `
       &lt;iframe src="${url}"
@@ -171,7 +170,7 @@ componentWillReceiveProps(nextProps: Object){
     MessageActions.showMessage({title: this.__('Embed Code'), message});
   }
 
-  onCopyMap(){
+  onCopyMap = () => {
     var _this = this;
     request.post('/api/map/copy')
     .type('json').accept('json')
@@ -198,7 +197,7 @@ componentWillReceiveProps(nextProps: Object){
     });
   }
 
-  onToggleForestLoss(enabled: boolean){
+  onToggleForestLoss = (enabled: boolean) => {
     var mapLayers = this.state.layers;
     var layers = ForestLossLegendHelper.getLegendLayers();
   
@@ -230,7 +229,7 @@ componentWillReceiveProps(nextProps: Object){
     if(this.props.canEdit){
       deleteButton = (
           <li>
-            <a onClick={this.onDelete.bind(this)} className="btn-floating user-map-tooltip red"
+            <a onClick={this.onDelete} className="btn-floating user-map-tooltip red"
               data-delay="50" data-position="left" data-tooltip={this.__('Delete Map')}>
               <i className="material-icons">delete</i>
             </a>
@@ -238,7 +237,7 @@ componentWillReceiveProps(nextProps: Object){
         );
       editButton = (
           <li>
-            <a onClick={this.onEdit.bind(this)} className="btn-floating user-map-tooltip blue"
+            <a onClick={this.onEdit} className="btn-floating user-map-tooltip blue"
               data-delay="50" data-position="left" data-tooltip={this.__('Edit Map')}>
               <i className="material-icons">mode_edit</i>
             </a>
@@ -251,7 +250,7 @@ componentWillReceiveProps(nextProps: Object){
     if(this.state.loggedIn && this.state.user){
       copyButton = (
         <li>
-          <a onClick={this.onCopyMap.bind(this)} className="btn-floating user-map-tooltip purple"
+          <a onClick={this.onCopyMap} className="btn-floating user-map-tooltip purple"
             data-delay="50" data-position="left" data-tooltip={this.__('Copy Map')}>
             <i className="material-icons">queue</i>
           </a>
@@ -261,7 +260,7 @@ componentWillReceiveProps(nextProps: Object){
 
     button = (
     <div id="user-map-button" className="fixed-action-btn" style={{bottom: '40px'}}
-      onMouseEnter={this.onMouseEnterMenu.bind(this)}
+      onMouseEnter={this.onMouseEnterMenu}
       >
       <a className="btn-floating btn-large">
         <i className="large material-icons">more_vert</i>
@@ -271,20 +270,20 @@ componentWillReceiveProps(nextProps: Object){
         {editButton}
         {copyButton}
         <li>
-          <a onClick={this.download.bind(this)} download={this.props.map.title + ' - ' + MAPHUBS_CONFIG.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
+          <a onClick={this.download} download={this.props.map.title + ' - ' + MAPHUBS_CONFIG.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
             className="btn-floating user-map-tooltip green"
             data-delay="50" data-position="left" data-tooltip={this.__('Get Map as a PNG Image')}>
             <i className="material-icons">insert_photo</i>
           </a>
         </li>
         <li>
-          <a onClick={this.showEmbedCode.bind(this)} className="btn-floating user-map-tooltip orange"
+          <a onClick={this.showEmbedCode} className="btn-floating user-map-tooltip orange"
             data-delay="50" data-position="left" data-tooltip={this.__('Embed')}>
             <i className="material-icons">code</i>
           </a>
         </li>
          <li>
-          <a onClick={this.onFullScreen.bind(this)} className="btn-floating user-map-tooltip yellow"
+          <a onClick={this.onFullScreen} className="btn-floating user-map-tooltip yellow"
             data-delay="50" data-position="left" data-tooltip={this.__('Full Screen')}>
             <i className="material-icons">fullscreen</i>
           </a>

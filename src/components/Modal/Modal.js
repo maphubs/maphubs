@@ -18,7 +18,7 @@ export class ModalContent extends Reflux.Component {
     style:  Object,
     children: any
   }
-  static defaultProps: {
+  static defaultProps = {
     style: {}
   }
   render(){
@@ -63,7 +63,7 @@ export class Modal extends Reflux.Component {
     children: any
   };
 
-  static defaultProps: {
+  static defaultProps = {
     id:'modal',
     show: false,
     fixedFooter: false,

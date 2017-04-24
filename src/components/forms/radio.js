@@ -15,21 +15,24 @@ class Radio extends MapHubsPureComponent {
     label: string,
     name: string,
     onChange: Function,
-    options: Array<Object>
+    options: Array<Object>,
+    setValue: Function,
+    getValue: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
     options: {},
     defaultValue: null,
     dataDelay: 100
   }
 
   componentWillMount() {
-    this.setValue(this.props.defaultValue);
+    super.componentWillMount();
+    this.props.setValue(this.props.defaultValue);
   }
 
   changeValue = (event) => {
-    this.setValue(event.target.id);
+    this.props.setValue(event.target.id);
     if(this.props.onChange){
       this.props.onChange(event.target.id);
     }
@@ -37,7 +40,7 @@ class Radio extends MapHubsPureComponent {
 
   render() {
      var className = classNames(this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
-     var value = this.getValue();
+     var value = this.props.getValue();
      var name = this.props.name;
      var _this = this;
 

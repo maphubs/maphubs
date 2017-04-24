@@ -22,7 +22,7 @@ import MapLayerDesigner from '../LayerDesigner/MapLayerDesigner';
 import EditorToolButtons from './EditorToolButtons';
 import ForestLossLegendHelper from '../Map/ForestLossLegendHelper';
 import MapHubsComponent from '../MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../Rehydrate';
 
 export default class MapMaker extends MapHubsComponent {
 
@@ -43,7 +43,7 @@ export default class MapMaker extends MapHubsComponent {
     editLayer: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     edit: false,
     popularLayers: [],
     showVisibility: true,
@@ -56,7 +56,7 @@ export default class MapMaker extends MapHubsComponent {
     editLayer: null
   }
 
-  state: {
+  state = {
     showMapLayerDesigner: false,
     canSave: false,
     editLayerLoaded: false
@@ -66,12 +66,13 @@ export default class MapMaker extends MapHubsComponent {
     super(props);
     this.stores.push(MapMakerStore);
     this.stores.push(UserStore);
+    Reflux.rehydrate(MapMakerStore, {position:this.props.position, title:this.props.title, map_id:this.props.map_id, owned_by_group_id:this.props.owned_by_group_id});
+    
   }
 
   componentWillMount(){
+    super.componentWillMount();
     var _this = this;
-    Rehydrate.initStore(MapMakerStore);
-    Actions.rehydrate({position:this.props.position, title:this.props.title, map_id:this.props.map_id, owned_by_group_id:this.props.owned_by_group_id});
     if(this.props.mapLayers){
       Actions.setMapLayers(this.props.mapLayers);
     }
@@ -250,7 +251,7 @@ export default class MapMaker extends MapHubsComponent {
   }
 
 
-  onSave = (model, cb) => {
+  onSave = (model: Object, cb: Function) => {
     
     var _this = this;
 

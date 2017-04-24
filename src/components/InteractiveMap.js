@@ -10,7 +10,7 @@ import MapActions from '../actions/MapActions';
 import ForestLossLegendHelper from './Map/ForestLossLegendHelper';
 import MapLayerMenu from './InteractiveMap/MapLayerMenu';
 import MapHubsComponent from './MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from './Rehydrate';
 
 export default class InteractiveMap extends MapHubsComponent {
 
@@ -29,7 +29,7 @@ export default class InteractiveMap extends MapHubsComponent {
     children: any
   }
 
-  static defaultProps: {
+  static defaultProps = {
       height: '300px',
       border: false,
       disableScrollZoom: true,
@@ -40,12 +40,8 @@ export default class InteractiveMap extends MapHubsComponent {
   constructor(props: Object){
 		super(props);
     this.stores.push(MapStore);
+    Reflux.rehydrate(MapStore, {style: this.props.style, position: this.props.position, layers: this.props.layers});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(MapStore);
-    MapActions.rehydrate({style: this.props.style, position: this.props.position, layers: this.props.layers});
-  }
 
   componentDidMount() {
     $(this.refs.mapLayersPanel).sideNav({
@@ -61,15 +57,15 @@ export default class InteractiveMap extends MapHubsComponent {
     window.dispatchEvent(evt);
   }
 
-  toggleVisibility(layer_id: number){
+  toggleVisibility = (layer_id: number) => {
     MapActions.toggleVisibility(layer_id, function(){});
   }
 
-  onChangeBaseMap(basemap: string){
+  onChangeBaseMap = (basemap: string) => {
      MapActions.changeBaseMap(basemap);
   }
 
-  onToggleForestLoss(enabled: boolean){
+  onToggleForestLoss = (enabled: boolean) => {
     var mapLayers = this.state.layers;
     var layers = ForestLossLegendHelper.getLegendLayers();
   
@@ -140,7 +136,7 @@ export default class InteractiveMap extends MapHubsComponent {
             <div className="side-nav" id="map-layers">
               <LayerList layers={this.state.layers}
                 showDesign={false} showRemove={false} showVisibility={true}
-                toggleVisibility={this.toggleVisibility.bind(this)}
+                toggleVisibility={this.toggleVisibility}
                 updateLayers={MapActions.updateLayers}
                 />
             </div>
@@ -150,8 +146,8 @@ export default class InteractiveMap extends MapHubsComponent {
               style={{width: '100%', height}}
               glStyle={this.state.style}
               baseMap={this.state.basemap}
-              onChangeBaseMap={this.onChangeBaseMap.bind(this)}
-              onToggleForestLoss={this.onToggleForestLoss.bind(this)}
+              onChangeBaseMap={this.onChangeBaseMap}
+              onToggleForestLoss={this.onToggleForestLoss}
               showLogo={this.props.showLogo}
               disableScrollZoom={this.props.disableScrollZoom}>
 

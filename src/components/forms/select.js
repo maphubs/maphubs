@@ -11,7 +11,7 @@ import MapHubsPureComponent from '../MapHubsPureComponent';
 
 class Select extends MapHubsPureComponent {
 
-  propTypes:  {
+  props:  {
     emptyText: string,
     defaultValue: string,
     name: string,
@@ -29,7 +29,7 @@ class Select extends MapHubsPureComponent {
     note: string //optional note that displays below the select, will be updated on selection if option contains a note
   }
 
-  static defaultProps: {
+  static defaultProps = {
     startEmpty: true,
     emptyText: 'Choose an Option',
     name: 'select-box',

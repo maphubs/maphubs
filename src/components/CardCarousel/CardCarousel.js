@@ -17,7 +17,7 @@ export default class CardCarousel extends React.Component {
     responsive: any
   }
 
-  static defaultProps: {
+  static defaultProps = {
     cards: [],
     responsive: [
       {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},

@@ -1,57 +1,42 @@
-
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var ReactDOM = require('react-dom');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-
 var $ = require('jquery');
-var FileUpload = require('../forms/FileUpload');
-var Map = require('../Map/Map');
-var NotificationActions = require('../../actions/NotificationActions');
-var LayerStore = require('../../stores/layer-store');
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
-var MessageActions = require('../../actions/MessageActions');
-var RadioModal = require('../RadioModal');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
+import ReactDOM from 'react-dom';
+import FileUpload from '../forms/FileUpload';
+import Map from '../Map/Map';
+import NotificationActions from '../../actions/NotificationActions';
+import LayerStore from '../../stores/layer-store';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import MessageActions from '../../actions/MessageActions';
+import RadioModal from '../RadioModal';
 import Progress from '../Progress';
+import MapHubsComponent from '../MapHubsComponent';
 
-var UploadLocalSource = React.createClass({
+export default class UploadLocalSource extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  state = {
+    canSubmit: false,
+    geoJSON: null,
+    largeData: false,
+    processing: false,
+    multipleShapefiles: null
+  }
 
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-
-  static defaultProps: {
-    return {
-      onSubmit: null
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false,
-      geoJSON: null,
-      largeData: false,
-      processing: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentDidMount() {
     $('select').material_select();
-  },
+  }
 
   componentDidUpdate() {
     if(this.state.geoJSON){
@@ -63,20 +48,21 @@ var UploadLocalSource = React.createClass({
     if(this.state.multipleShapefiles){
       this.refs.chooseshape.show();
     }
-  },
+  }
 
-  enableButton () {
-      this.setState({
-        canSubmit: true
-      });
-    },
-    disableButton () {
-      this.setState({
-        canSubmit: false
-      });
-    },
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
 
-  onSubmit(){
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
+  }
+
+  onSubmit = () => {
     var _this = this;
     var data = {
       is_external: false,
@@ -92,13 +78,13 @@ var UploadLocalSource = React.createClass({
         NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
       }
     });
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
-  onUpload(result){
+  onUpload = (result: Object) => {
     var _this = this;
     
     if(result.success){
@@ -113,14 +99,13 @@ var UploadLocalSource = React.createClass({
       }
     }
     this.setState({processing: false});
-  },
+  }
 
-  onUploadError(err){
+  onUploadError = (err: string) => {
       MessageActions.showMessage({title: this.__('Error'), message: err});
-  },
+  }
 
-
-  finishUpload(shapefileName){
+  finishUpload = (shapefileName: string) => {
     var _this = this;
     LayerActions.finishUpload(shapefileName, this.state._csrf, function(err, result){
       if(result.success){
@@ -131,11 +116,11 @@ var UploadLocalSource = React.createClass({
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});
       }
     });
-  },
+  }
 
-  onProcessingStart(){
+  onProcessingStart = () => {
     this.setState({processing: true});
-  },
+  }
 
 	render() {
 
@@ -199,6 +184,4 @@ var UploadLocalSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = UploadLocalSource;
+}

@@ -1,94 +1,83 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var CodeEditor = require('./CodeEditor');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var AdvancedLayerSettings = require('./AdvancedLayerSettings');
+import CodeEditor from './CodeEditor';
+import AdvancedLayerSettings from './AdvancedLayerSettings';
+import MapHubsComponent from '../MapHubsComponent';
 
-var OpacityChooser = React.createClass({
+export default class OpacityChooser extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  props: {
+    onChange: Function,
+    value: number,
+    onStyleChange: Function,
+    onLegendChange: Function,
+    onSettingsChange: Function,
+    style: Object,
+    legendCode: string,
+    layer: Object,
+    settings: Object,
+    showAdvanced: boolean
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  static defaultProps = {
+    value: 100,
+    settings: {}
+  }
 
-  propTypes: {
-    onChange: PropTypes.func.isRequired,
-    value: PropTypes.number,
-    onStyleChange: PropTypes.func,
-    onLegendChange: PropTypes.func,
-    onSettingsChange: PropTypes.func,
-    style: PropTypes.object,
-    legendCode: PropTypes.string,
-    layer: PropTypes.object,
-    settings: PropTypes.object,
-    showAdvanced: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      value: 100,
-      settings: {}
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      opacity: props.value,
+      style: props.style,
+      legendCode: props.legendCode,
+      settings: props.settings
     };
-  },
-
-  getInitialState(){
-    return {
-      opacity: this.props.value,
-      style:this.props.style,
-      legendCode: this.props.legendCode,
-      settings: this.props.settings
-    };
-  },
+  }
 
   componentDidMount() {
     $(this.refs.collapsible).collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     this.setState({
       style: nextProps.style,
       legendCode: nextProps.legendCode,
       settings: nextProps.settings
     });
-  },
+  }
 
-  onChange(e){
+  onChange = (e: any) => {
     var opacity = e.target.valueAsNumber;
     this.setState({opacity});
     this.props.onChange(opacity);
-  },
+  }
 
-  onStyleChange(style){
+  onStyleChange = (style: string) => {
     style = JSON.parse(style);
     this.setState({style});
     this.props.onStyleChange(style);
-  },
+  }
 
-  onSettingsChange(style, settings){
+  onSettingsChange = (style: Object, settings: Object) => {
     this.setState({style, settings});
     this.props.onSettingsChange(style, settings);
-  },
+  }
 
-  onLegendChange(legendCode){
+  onLegendChange = (legendCode: string) => {
     this.setState({legendCode});
     this.props.onLegendChange(legendCode);
-  },
+  }
 
-  showStyleEditor(){
+  showStyleEditor = () => {
     this.refs.styleEditor.show();
-  },
+  }
 
-  showLegendEditor(){
+  showLegendEditor = () => {
     this.refs.legendEditor.show();
-  },
-
+  }
 
   render(){
      var advanced = '';
@@ -139,6 +128,4 @@ var OpacityChooser = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = OpacityChooser;
+}

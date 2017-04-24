@@ -24,7 +24,7 @@ export default class Card extends MapHubsComponent {
     onClick: Function
   }
 
-  state: {
+  state = {
     mounted: false
   }
 
@@ -49,7 +49,7 @@ export default class Card extends MapHubsComponent {
      $('.card-tooltip').tooltip();
   }
 
-  onClick(){
+  onClick = () => {
     if(this.props.onClick){
       this.props.onClick(this.props.data);
     }else if(this.props.link){
@@ -85,16 +85,16 @@ export default class Card extends MapHubsComponent {
     mapCardUserTag= '',
     storyTag = '';
     if(this.props.type){
-      if(this.props.type == 'layer'){
+      if(this.props.type === 'layer'){
         iconName = 'layers';
         toolTipText = this.__('Layer');
-      }else if(this.props.type == 'group'){
+      }else if(this.props.type === 'group'){
         iconName = 'supervisor_account';
         toolTipText = this.__('Group');
-      }else if(this.props.type == 'hub'){
+      }else if(this.props.type === 'hub'){
         iconName = 'web';
         toolTipText = 'Hub';
-      }else if(this.props.type == 'story'){
+      }else if(this.props.type === 'story'){
         iconName = 'library_books';
         toolTipText = this.__('Story');
         storyTag = (
@@ -102,7 +102,7 @@ export default class Card extends MapHubsComponent {
             <StoryHeader story={this.props.data} short/>
           </div>
         );
-      }else if(this.props.type == 'map'){
+      }else if(this.props.type === 'map'){
         iconName = 'map';
         toolTipText = this.__('Map');
         if(!this.props.group){
@@ -138,30 +138,30 @@ export default class Card extends MapHubsComponent {
     var cardContents = (<div className="carousel-card small"></div>);
     if(this.state.mounted){
       var image = '';
-      if(this.props.type == 'hub'){
+      if(this.props.type === 'hub'){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', height: '150px'}}>
             <img className="responsive-img" style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
             <img className="valign" width="75" height="75" style={{position: 'relative',width: '75px', borderRadius: '15px', margin: 'auto'}}  src={this.props.image_url} />
           </div>
         );
-      }else if(this.props.type == 'story' && !this.props.image_url){
+      }else if(this.props.type === 'story' && !this.props.image_url){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
             <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
           </div>
         );
-      }else if(this.props.type == 'story' && this.props.image_url){
+      }else if(this.props.type === 'story' && this.props.image_url){
         image = (
           <div style={{height: '150px', width: '200px', backgroundImage: 'url('+ this.props.image_url +')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
         );
-      }else if(this.props.type == 'group' && !this.props.image_url){
+      }else if(this.props.type === 'group' && !this.props.image_url){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
             <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
           </div>
         );
-      }else if(this.props.type == 'group' && this.props.image_url){
+      }else if(this.props.type === 'group' && this.props.image_url){
         image = (
           <div className="card-image" style={{borderBottom: '1px solid #757575'}}>
             <img  className="responsive-img" style={{height: '150px', width: 'auto', margin: 'auto'}} src={this.props.image_url} />

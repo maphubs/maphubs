@@ -15,7 +15,7 @@ import MapHubsComponent from '../MapHubsComponent';
 
 export default class CodeEditor extends MapHubsComponent {
 
-  propTypes: {
+  props: {
     id:  string,
     onSave: Function,
     title: string,
@@ -25,7 +25,7 @@ export default class CodeEditor extends MapHubsComponent {
     modal: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
       id: 'code-editor',
       mode: 'json',
       theme: 'monokai',

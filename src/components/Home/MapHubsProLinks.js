@@ -1,17 +1,8 @@
+//@flow
 import React from 'react';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-
-var MapHubsProLinks = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class MapHubsProLinks extends MapHubsComponent {
 
 render(){
   return (
@@ -51,7 +42,4 @@ render(){
       </div>
   );
 }
-
-});
-
-module.exports = MapHubsProLinks;
+}

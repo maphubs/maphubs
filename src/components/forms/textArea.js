@@ -7,7 +7,7 @@ import MapHubsPureComponent from '../MapHubsPureComponent';
 
 class TextArea extends MapHubsPureComponent {
 
-  propTypes: {
+  props: {
     length: number,
     value: string,
     icon: string,
@@ -16,10 +16,16 @@ class TextArea extends MapHubsPureComponent {
     dataDelay: number,
     dataPosition: string,
     name: string,
-    label: string
+    label: string,
+    //Added by Formsy
+    showRequired: Function,
+    isValid: Function,
+    showError: Function,
+    setValue: Function,
+    getErrorMessage: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
       length: 0,
       value: '',
       dataDelay: 100
@@ -64,9 +70,9 @@ class TextArea extends MapHubsPureComponent {
      var textAreaClassName = classNames(
        'materialize-textarea',
        {
-       required: this.showRequired(),
-       valid: this.isValid(),
-       invalid:  this.showError()
+       required: this.props.showRequired(),
+       valid: this.props.isValid(),
+       invalid:  this.props.showError()
       }
    );
 
@@ -86,7 +92,7 @@ class TextArea extends MapHubsPureComponent {
       <div ref="inputWrapper" className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
         {icon}
         <textarea ref="textarea" id={this.props.name} className={textAreaClassName} value={this.state.value} onChange={this.changeValue}/>
-        <label htmlFor={this.props.name}  className={labelClassName} data-error={this.getErrorMessage()} data-success="">{this.props.label}</label>
+        <label htmlFor={this.props.name}  className={labelClassName} data-error={this.props.getErrorMessage()} data-success="">{this.props.label}</label>
         <span className="character-counter"
             style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
           {this.state.charCount} / {this.props.length}

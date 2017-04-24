@@ -1,63 +1,51 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import LayerStore from '../../stores/layer-store';
+import MapHubsComponent from '../MapHubsComponent';
 
-var TextInput = require('../forms/textInput');
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
+export default class RasterTileSource extends MapHubsComponent {
 
-var LayerStore = require('../../stores/layer-store');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+   props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var RasterTileSource = React.createClass({
+  state = {
+    canSubmit: false
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,   
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-      onSubmit: null
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentWillMount(){
+    super.componentWillMount();
     Formsy.addValidationRule('isHttps', function (values, value) {
         return value.startsWith('https://');
     });
-  },
+  }
 
-  enableButton () {
+  enableButton = () => {
     this.setState({
       canSubmit: true
     });
-  },
-  disableButton () {
+  }
+
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
-  submit (model) {
+  submit = (model: Object) => {
     var _this = this;
     LayerActions.saveDataSettings({
       is_external: true,
@@ -85,16 +73,15 @@ var RasterTileSource = React.createClass({
       }
 
     });
-  },
+  }
 
-
-  sourceChange(value){
+  sourceChange = (value: string) => {
     this.setState({selectedSource: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
 
@@ -130,6 +117,4 @@ var RasterTileSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = RasterTileSource;
+}

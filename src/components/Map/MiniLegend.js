@@ -17,7 +17,7 @@ export default class MiniLegend extends MapHubsComponent {
     style: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     layers: [],
     hideInactive: true,
     collapsible: true,
@@ -26,7 +26,7 @@ export default class MiniLegend extends MapHubsComponent {
     style: {}
   }
 
-  state: {
+  state = {
     collapsed: false
   }
 
@@ -34,12 +34,6 @@ export default class MiniLegend extends MapHubsComponent {
 		super(props);
     this.stores.push(BaseMapStore);
 	}
-
-  toggleCollapsed(){
-    this.setState({
-      collapsed: this.state.collapsed ? false : true
-    });
-  }
 
   componentDidMount() {
     if(this.props.collapsible){
@@ -53,6 +47,12 @@ export default class MiniLegend extends MapHubsComponent {
         closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
       });
     }
+  }
+
+  toggleCollapsed = () => {
+    this.setState({
+      collapsed: this.state.collapsed ? false : true
+    });
   }
 
   render(){
@@ -93,7 +93,7 @@ export default class MiniLegend extends MapHubsComponent {
     }
 
     var titleText = '';
-    if(this.props.title && this.props.title != ''){
+    if(this.props.title && this.props.title !== ''){
       titleText = this.props.title;
     }else{
       titleText = this.__('Legend');
@@ -140,7 +140,7 @@ export default class MiniLegend extends MapHubsComponent {
     }
 
      var allowScroll = true;
-    if(this.state.collapsed || this.props.layers.length==1){
+    if(this.state.collapsed || this.props.layers.length === 1){
       allowScroll = false;
     }
 
@@ -157,7 +157,7 @@ export default class MiniLegend extends MapHubsComponent {
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
                   borderLeft: '1px solid #ddd'}}>
-          <div className="collapsible-header active no-padding" style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed.bind(this)}>
+          <div className="collapsible-header active no-padding" style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
             {title}
           </div>
           <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>

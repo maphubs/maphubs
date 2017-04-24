@@ -15,7 +15,7 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent {
     settings: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     style: null,
     layer: null,
     settings: null

@@ -1,10 +1,8 @@
 // @flow
 import React from 'react';
-var urlUtil = require('../services/url-util');
-
+import urlUtil from '../services/url-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class OAuthDialog extends MapHubsComponent {
@@ -17,15 +15,15 @@ export default class OAuthDialog extends MapHubsComponent {
     transactionID: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     user: 'Unknown',
     client: 'Unknown',
     transactionID: ''
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   render() {

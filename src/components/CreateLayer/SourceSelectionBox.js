@@ -1,44 +1,37 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var LocaleMixin = require('../LocaleMixin');
+export default class SourceSelectionBox extends MapHubsComponent {
+  
+  props: {
+    onSelect: Function,
+    name: string,
+    value: string,
+    icon: string,
+    selected: boolean
+  }
 
-var SourceSelectionBox = React.createClass({
+  static defaultProps = {
+    selected: false
+  }
 
-   mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
-
-  propTypes: {
-    onSelect: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    selected: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      selected: false
+  constructor(props: Object) {
+    super(props);
+    this.state = {
+      selected: props.selected
     };
-  },
+  }
 
-  getInitialState() {
-    return {
-      selected: this.props.selected
-    };
-  },
-
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     if(nextProps.selected !== this.state.selected){
       this.setState({selected: nextProps.selected});
     }
-  },
+  }
 
-  onSelect(){
+  onSelect = () => {
     this.props.onSelect(this.props.value);
-  },
+  }
    
   render() {
 
@@ -62,7 +55,4 @@ var SourceSelectionBox = React.createClass({
       </div>
     );
    }
-
-});
-
-module.exports = SourceSelectionBox;
+}

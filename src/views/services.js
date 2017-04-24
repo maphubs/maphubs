@@ -5,8 +5,7 @@ import Footer from '../components/footer';
 import SubPageBanner from '../components/Home/SubPageBanner';
 import IconRow from '../components/Home/IconRow';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Services extends MapHubsComponent {
@@ -17,9 +16,9 @@ export default class Services extends MapHubsComponent {
     _csrf: string
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   render() {

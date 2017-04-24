@@ -1,64 +1,58 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import LayerStore from '../../stores/layer-store';
+import MapHubsComponent from '../MapHubsComponent';
 
-var TextInput = require('../forms/textInput');
+export default class GithubSource extends MapHubsComponent {
 
-var classNames = require('classnames');
+  propss: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var GithubSource = React.createClass({
+  static defaultProps = {
+    onSubmit: null,
+    active: false
+  }
 
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    active: PropTypes.bool.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
+  state = {
+    canSubmit: false
+  }
 
-  static defaultProps: {
-    return {
-      onSubmit: null,
-      active: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-  getInitialState() {
-    return {
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
+
+  disableButton = () => {
+    this.setState({
       canSubmit: false
-    }
-  },
+    });
+  }
 
-  enableButton () {
-      this.setState({
-        canSubmit: true
-      });
-    },
-    disableButton () {
-      this.setState({
-        canSubmit: false
-      });
-    },
-
-  submit (model) {
+  submit = (model: Object) => {
     //#TODO:180 save step 2 to DB
-    this.props.onSubmit()
-  },
+    this.props.onSubmit(model);
+  }
 
-  sourceChange(value){
+  sourceChange = (value: string) => {
     this.setState({selectedSource: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
-
-    //hide if not active
-    var className = classNames('row');
-    if(!this.props.active) {
-      className = classNames('row', 'hidden');
-    }
 
     var prevButton = '';
     if(this.props.showPrev){
@@ -70,7 +64,7 @@ var GithubSource = React.createClass({
     }
 
 		return (
-        <div className={className}>
+        <div className="row">
           <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
             <div>
@@ -95,6 +89,4 @@ var GithubSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = GithubSource;
+}

@@ -1,34 +1,24 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var Toggle = require('../forms/toggle');
-var Select = require('../forms/select');
-
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
 var $ = require('jquery');
-var _assignIn = require('lodash.assignin');
-var PureRenderMixin = require('react-addons-pure-render-mixin');
+import Formsy from 'formsy-react';
+import Toggle from '../forms/toggle';
+import Select from '../forms/select';
+import _assignIn from 'lodash.assignin';
+import styles from '../Map/styles';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var styles = require('../Map/styles');
+export default class MarkerSettings extends MapHubsPureComponent {
 
-var MarkerSettings = React.createClass({
+  props: {
+    onChange: Function,
+    layer: Object,
+    style: Object
+  }
 
-  mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
+  constructor(props: Object){
+    super(props);
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onChange: PropTypes.func.isRequired,
-    layer: PropTypes.object.isRequired,
-    style: PropTypes.object.isRequired
-  },
-
-  getInitialState(){
     var options = {
       shape: 'MAP_PIN',
       size: "32",
@@ -47,8 +37,8 @@ var MarkerSettings = React.createClass({
     };
 
     //get state from style
-    if(this.props.style.layers && Array.isArray(this.props.style.layers) && this.props.style.layers.length > 0){
-      this.props.style.layers.forEach(function(layer){
+    if(props.style.layers && Array.isArray(props.style.layers) && props.style.layers.length > 0){
+      props.style.layers.forEach(function(layer){
         if(layer.id.startsWith('omh-data-point')){
           if(layer.metadata && layer.metadata['maphubs:markers']){
             _assignIn(options, layer.metadata['maphubs:markers']);
@@ -60,21 +50,21 @@ var MarkerSettings = React.createClass({
       });
     }
 
-    return {
-      style: this.props.style,
+    this.state = {
+      style: props.style,
       options
     };
-  },
+  }
 
   componentDidMount(){
     $('.tooltip-marker-settings').tooltip();
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     this.setState({style: nextProps.style});
-  },
+  }
 
-   onFormChange(model){
+  onFormChange = (model: Object) =>{
      if(model.size){
        model.width = parseInt(model.size);
        model.height = parseInt(model.size);
@@ -111,7 +101,7 @@ var MarkerSettings = React.createClass({
     this.props.onChange(style, options);
     $('.tooltip-marker-settings').tooltip('remove');
     $('.tooltip-marker-settings').tooltip();
-  },
+  }
 
   render(){
     var shapeOptions = [
@@ -216,6 +206,4 @@ var MarkerSettings = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = MarkerSettings;
+}

@@ -14,7 +14,7 @@ export default class HubStories extends MapHubsComponent {
     editing: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     stories: [],
     limit: 0,
     editing: false

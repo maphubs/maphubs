@@ -1,57 +1,43 @@
-
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import Select from '../forms/select';
+import LayerStore from '../../stores/layer-store';
+import LayerActions from '../../actions/LayerActions';
+import MessageActions from '../../actions/MessageActions';
+import Licenses from './licenses';
+import MapHubsComponent from '../MapHubsComponent';
 
-//react components
-var Formsy = require('formsy-react');
-var TextInput = require('../forms/textInput');
-var Select = require('../forms/select');
+export default class LayerSource extends MapHubsComponent {
 
+  props: {
+    onSubmit: Function,
+    onValid: Function,
+    onInValid: Function,
+    showPrev: boolean,
+    prevText: string,
+    onPrev: Function,
+    submitText: string
+  }
 
-var LayerStore = require('../../stores/layer-store');
-var LayerActions = require('../../actions/LayerActions');
-var MessageActions = require('../../actions/MessageActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var Licenses = require('./licenses');
+  static defaultProps = {
+    layer_id: null,
+    onSubmit: null,
+    active: false,
+    submitText: 'Save'
+  }
 
-var LayerSource = React.createClass({
+  state = {
+    canSubmit: false
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func,
-    onValid: PropTypes.func,
-    onInValid: PropTypes.func,
-    showPrev: PropTypes.bool,
-    prevText: PropTypes.string,
-    onPrev: PropTypes.func,
-    submitText: PropTypes.string
-  },
-
-  static defaultProps: {
-    return {
-      layer_id: null,
-      onSubmit: null,
-      active: false,
-      submitText: 'Save'
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
-
-
-  onSubmit(formData) {
+  onSubmit = (formData: Object) => {
     var _this = this;
     //save presets
     LayerActions.saveSource(formData, this.state._csrf, function(err){
@@ -63,30 +49,29 @@ var LayerSource = React.createClass({
         }
       }
     });
+  }
 
-  },
-
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
+  onValid = () => {
+    this.setState({
+      canSubmit: true
+    });
+    if(this.props.onValid){
+      this.props.onValid();
+    }
+  }
 
-  onValid () {
-      this.setState({
-        canSubmit: true
-      });
-      if(this.props.onValid){
-        this.props.onValid();
-      }
-    },
-    onInvalid () {
-      this.setState({
-        canSubmit: false
-      });
-      if(this.props.onInValid){
-        this.props.onInValid();
-      }
-    },
+  onInvalid = () => {
+    this.setState({
+      canSubmit: false
+    });
+    if(this.props.onInValid){
+      this.props.onInValid();
+    }
+  }
 
 	render() {
 
@@ -122,7 +107,7 @@ var LayerSource = React.createClass({
               </div>
               <div  className="row">
                   <Select name="license" id="layer-source-select" label={this.__('License')} startEmpty={false}
-                    value={this.state.layer.license} defaultValue={this.state.layer.license} options={licenseOptions}
+                    value={this.state.layer.license} defaultValue={defaultLicense} options={licenseOptions}
                     note={this.__('Select a license for more information')}
                     className="col s8"
                     dataPosition="top" dataTooltip={this.__('Layer License')}
@@ -135,10 +120,7 @@ var LayerSource = React.createClass({
               </div>
               </Formsy.Form>
 
-
       </div>
 		);
 	}
-});
-
-module.exports = LayerSource;
+}

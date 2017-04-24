@@ -4,21 +4,17 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
 import StorySummary from '../components/Story/StorySummary';
-
 import Carousel from 'nuka-carousel';
 import SliderDecorators from '../components/Home/SliderDecorators';
-
 import OnboardingLinks from '../components/Home/OnboardingLinks';
 import MapHubsProLinks from '../components/Home/MapHubsProLinks';
 import MailingList from '../components/Home/MailingList';
 //var HomePageMap = require('../components/Home/HomePageMap');
-var _shuffle = require('lodash.shuffle');
-var cardUtil = require('../services/card-util');
-
+import _shuffle from 'lodash.shuffle';
+import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class Home extends MapHubsComponent {
 
@@ -38,6 +34,7 @@ export default class Home extends MapHubsComponent {
 
   constructor(props: Object){
 		super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
       trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
       trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
@@ -47,12 +44,7 @@ export default class Home extends MapHubsComponent {
     };
 	}
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-  }
-
-  handleSearch(input: string){
+  handleSearch = (input: string) => {
     window.location = '/search?q=' + input;
   }
 

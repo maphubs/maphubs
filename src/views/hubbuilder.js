@@ -12,10 +12,8 @@ import HubStore from '../stores/HubStore';
 import HubActions from '../actions/HubActions';
 var urlUtil = require('../services/url-util');
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
-
 
 export default class HubBuilder extends MapHubsComponent {
 
@@ -28,12 +26,12 @@ export default class HubBuilder extends MapHubsComponent {
      _csrf: string
    }
 
-   static defaultProps: {
+   static defaultProps = {
     onSubmit: null,
     active: false
    }
 
-   state: {
+   state = {
     canSubmit: false,
     showError: false,
     errorMessage: '',
@@ -42,15 +40,13 @@ export default class HubBuilder extends MapHubsComponent {
 
    constructor(props: Object){
 		super(props);
-    this.stores = [LocaleStore, HubStore];
+    this.stores.push(HubStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
 	}
 
   componentWillMount() {
+    super.componentWillMount();
     var _this = this;
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(HubStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    //HubActions.rehydrate({hub: this.props.hub});
     Formsy.addValidationRule('isAvailable', function (values, value) {
         if(_this.state.hub && _this.state.hub.created) return true;
         if(!this.hubIdValue || value !== this.hubIdValue){
@@ -63,7 +59,7 @@ export default class HubBuilder extends MapHubsComponent {
     });
   }
 
-  checkHubIdAvailable(id: number){
+  checkHubIdAvailable = (id: number) => {
     var result = false;
     var _this = this;
     //only check if a valid value was provided and we are running in the browser
@@ -90,27 +86,27 @@ export default class HubBuilder extends MapHubsComponent {
     return result;
   }
 
-   enableButton () {
+   enableButton = () => {
     this.setState({
       canSubmit: true
     });
   }
 
-  disableButton () {
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
   }
 
-  submit (model: Object) {
+  submit = (model: Object) => {
     this.saveHub(model);
   }
 
-  saveHub(model: Object){
+  saveHub = (model: Object) => {
     var _this = this;
     this.setState({canSubmit: false, saving:true}); //disable submit button
 
-    if(!model.group && this.props.groups.length == 1){
+    if(!model.group && this.props.groups.length === 1){
       //creating a new layer when user is only the member of a single group (not showing the group dropdown)
       model.group = this.props.groups[0].group_id;
     }
@@ -131,7 +127,7 @@ export default class HubBuilder extends MapHubsComponent {
   }
 
 
-  onComplete (hub_id: number) {
+  onComplete = (hub_id: number) => {
     var url = urlUtil.getBaseUrl() + '/hub/' + hub_id;
     window.location = url;
   }
@@ -139,7 +135,7 @@ export default class HubBuilder extends MapHubsComponent {
 
 	render() {
 
-    if(!this.props.groups || this.props.groups.length == 0){
+    if(!this.props.groups || this.props.groups.length === 0){
       return (
         <div className="container">
           <div className="row">
@@ -157,7 +153,7 @@ export default class HubBuilder extends MapHubsComponent {
           <h4>{this.__('Create a Hub')}</h4>
             <div className="row">
               <Progress id="create-hub-progess" title={this.__('Creating Hub')} dismissible={false} show={this.state.saving}/>
-              <Formsy.Form onValidSubmit={this.submit.bind(this)} onValid={this.enableButton.bind(this)} onInvalid={this.disableButton.bind(this)}>
+              <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className="row">
                   <TextInput name="hub_id" label={this.__('Hub ID')} icon="group_work" className="col s6"
                         disabled={this.state.hub && this.state.hub.created}

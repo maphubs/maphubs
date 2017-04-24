@@ -1,4 +1,4 @@
-import Rehydrate from 'reflux-rehydrate';
-export default Rehydrate.createActions([
+import Reflux from 'reflux';
+export default Reflux.createActions([
   'changeLocale'
 ]);

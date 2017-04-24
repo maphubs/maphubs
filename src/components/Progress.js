@@ -12,7 +12,7 @@ export default class Progress extends React.Component {
     subTitle: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     id: 'progress',
     show: false,
     message: '',

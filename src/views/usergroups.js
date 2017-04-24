@@ -4,11 +4,9 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
 //var debug = require('../services/debug')('usermaps');
-var cardUtil = require('../services/card-util');
-
+import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class UserGroups extends MapHubsComponent {
@@ -22,15 +20,15 @@ export default class UserGroups extends MapHubsComponent {
     footerConfig: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     groups: [],
     user: {},
     canEdit: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
 	render() {

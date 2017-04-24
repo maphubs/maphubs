@@ -8,15 +8,13 @@ import Step1 from '../components/CreateLayer/Step1';
 import Step2 from '../components/CreateLayer/Step2';
 import Step5 from '../components/CreateLayer/Step5';
 
-
-var debug = require('../services/debug');
+import debugFactory from '../services/debug';
+let debug = debugFactory('CreateLayer');
 
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 import LayerStore from '../stores/layer-store';
-import LayerActions from '../actions/LayerActions';
 
 export default class CreateLayer extends MapHubsComponent {
 
@@ -30,27 +28,22 @@ export default class CreateLayer extends MapHubsComponent {
     groups: []
   }
 
-  state: {
+  state = {
     step: 1
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(LayerStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(LayerStore, {groups: this.props.groups, layer: this.props.layer});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(LayerStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    LayerActions.rehydrate({groups: this.props.groups, layer: this.props.layer});
-  }
 
   componentDidMount(){
     var _this = this;
 
     window.onunload = function(){
-      if(_this.state.layer.layer_id && _this.state.layer.layer_id != -1 && !_this.state.layer.complete){
+      if(_this.state.layer.layer_id && _this.state.layer.layer_id !== -1 && !_this.state.layer.complete){
         $.ajax({
          type: "POST",
          url: '/api/layer/admin/delete',
@@ -69,29 +62,29 @@ export default class CreateLayer extends MapHubsComponent {
     };
 
     window.onbeforeunload = function(){
-      if(_this.state.layer.layer_id && _this.state.layer.layer_id != -1 && !_this.state.layer.complete){
+      if(_this.state.layer.layer_id && _this.state.layer.layer_id !== -1 && !_this.state.layer.complete){
         return _this.__('You have not finished creating your layer, if you leave now your layer will be deleted.');
-      }else if (!_this.state.layer.layer_id || _this.state.layer.layer_id == -1) {
+      }else if (!_this.state.layer.layer_id || _this.state.layer.layer_id === -1) {
         return _this.__('You have not finished creating your layer.');
       }
     };
   }
 
-  submit(layer_id, name){
+  submit = (layer_id, name) => {
       window.location = '/layer/info/' + layer_id + '/' + slug(name);
   }
 
-  nextStep () {
+  nextStep = () => {
     this.setState({step: this.state.step + 1});
   }
 
-  prevStep () {
+  prevStep = () => {
     this.setState({step: this.state.step - 1});
   }
 
 	render() {
 
-    if(!this.state.groups || this.state.groups.length == 0){
+    if(!this.state.groups || this.state.groups.length === 0){
       return (
         <div>
             <Header />

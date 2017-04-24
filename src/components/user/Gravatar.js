@@ -1,9 +1,18 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var crypto = require('crypto');
+import crypto from 'crypto';
 
 export default class Gravatar extends React.Component {
+
+  props: {
+    email: string,
+    emailHash: string,
+    size: number
+  }
+
+  static defaultProps = {
+    size: 30
+  }
 
   render() {
     var hash = null;
@@ -26,12 +35,3 @@ export default class Gravatar extends React.Component {
     return (<img className="circle" height={this.props.size} width={this.props.size} style={{height: this.props.size + 'px', width: this.props.size + 'px', border: '1px solid #bbbbbb'}} src={gravatarUrl} alt="User Profile Photo" />);
   }
 }
-Gravatar.defaultProps = {
-  size: 30
-};
-
-Gravatar.propTypes = {
-  email: PropTypes.string,
-  emailHash: PropTypes.string,
-  size: PropTypes.number
-};

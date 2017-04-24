@@ -23,7 +23,7 @@ export default class MapToolPanel extends MapHubsComponent {
     forestLoss: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     show: false,
     buttonTooltipText: '',
     enableMeasurementTools: false,
@@ -48,27 +48,27 @@ export default class MapToolPanel extends MapHubsComponent {
     $(this.refs.mapToolPanel).collapsible();
   }
 
-  closePanel(){
+  closePanel = () => {
     $(this.refs.mapToolButton).sideNav('hide');
   }
 
-  onChangeBaseMap(val: string){
+  onChangeBaseMap = (val: string) => {
     this.closePanel();
     this.props.onChangeBaseMap(val);
   }
 
-   toggleMeasurementTools(model: Object){
+   toggleMeasurementTools = (model: Object) => {
     if(model.enableMeasurementTools) this.closePanel();
     this.props.toggleMeasurementTools(model.enableMeasurementTools);
   }
 
-   toggleForestAlerts(model: Object){
+   toggleForestAlerts = (model: Object) => {
      //leave panel open for this tool?
     //if(model.enableGLAD2017) this.closePanel();
     this.props.toggleForestAlerts(model);
   }
 
-  toggleForestLoss(model: Object){
+  toggleForestLoss = (model: Object) => {
     this.props.toggleForestLoss(model);
   }
 
@@ -141,7 +141,7 @@ export default class MapToolPanel extends MapHubsComponent {
               <div className="collapsible-header" style={{borderBottom: '1px solid #ddd'}}><i className="material-icons">layers</i>{this.__('Change Base Map')}</div>
               <div className="collapsible-body">
                 <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>
-                  <BaseMapSelection onChange={this.onChangeBaseMap.bind(this)}/>
+                  <BaseMapSelection onChange={this.onChangeBaseMap}/>
                 </div>
               </div>
             </li>
@@ -149,7 +149,7 @@ export default class MapToolPanel extends MapHubsComponent {
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">straighten</i>{this.__('Measurement Tools')}</div>
               <div className="collapsible-body center">
                 <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
-                  <Formsy.Form onChange={this.toggleMeasurementTools.bind(this)}>
+                  <Formsy.Form onChange={this.toggleMeasurementTools}>
                    <b>{this.__('Show Measurement Tools')}</b>          
                     <Toggle name="enableMeasurementTools"
                         labelOff={this.__('Off')} labelOn={this.__('On')}                       
@@ -164,7 +164,7 @@ export default class MapToolPanel extends MapHubsComponent {
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">warning</i>{this.__('Forest Alerts')}</div>
               <div className="collapsible-body center">
                 <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
-                  <Formsy.Form onChange={this.toggleForestAlerts.bind(this)}>
+                  <Formsy.Form onChange={this.toggleForestAlerts}>
                    <b>{this.__('2017 GLAD Alerts')}</b>          
                     <Toggle name="enableGLAD2017"
                         labelOff={this.__('Off')} labelOn={this.__('On')}                       
@@ -172,9 +172,9 @@ export default class MapToolPanel extends MapHubsComponent {
                         checked={this.props.forestAlerts.enableGLAD2017}
                     />                     
                   </Formsy.Form>             
-                  <button className="btn" onClick={this.props.calculateForestAlerts.bind(this)}>{this.__('Calculate')}</button>     
+                  <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
                   {forestAlertsResult}
-                  <Formsy.Form onChange={this.toggleForestLoss.bind(this)}>
+                  <Formsy.Form onChange={this.toggleForestLoss}>
                    <b>{this.__('2001 - 2014 Forest Loss')}</b>          
                     <Toggle name="enableForestLoss"
                         labelOff={this.__('Off')} labelOn={this.__('On')}                       

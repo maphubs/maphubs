@@ -1,21 +1,19 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 
-var SubPageBanner = React.createClass({
+export default class SubPageBanner extends React.Component {
 
-propTypes: {
-  title: PropTypes.string.isRequired,
-  subTitle: PropTypes.string,
-  img: PropTypes.string,
-  backgroundPosition: PropTypes.string,
-  locale: PropTypes.string.isRequired
-},
+props: {
+  title: string,
+  subTitle: string,
+  img: string,
+  backgroundPosition: string,
+  locale: string,
+}
 
-static defaultProps: {
-  return {
-    backgroundPosition: 'center'
-  };
-},
+static defaultProps = {
+  backgroundPosition: 'center'
+}
 
 render(){
   return (
@@ -45,7 +43,4 @@ render(){
     </div>
   );
 }
-
-});
-
-module.exports = SubPageBanner;
+}

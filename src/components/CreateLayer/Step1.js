@@ -1,54 +1,38 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import NotificationActions from '../../actions/NotificationActions';
+import LayerActions from '../../actions/LayerActions';
+import MessageActions from '../../actions/MessageActions';
+import CreateLayer from './CreateLayer';
+import MapHubsComponent from '../MapHubsComponent';
 
-var NotificationActions = require('../../actions/NotificationActions');
+export default class Step1 extends MapHubsComponent {
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var LocaleMixin = require('../LocaleMixin');
+   props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var LayerActions = require('../../actions/LayerActions');
-var MessageActions = require('../../actions/MessageActions');
-var CreateLayer = require('./CreateLayer');
+  state = {
+    created: false,
+    canSubmit: false,
+    selectedSource: 'local'
+  }
 
-var Step1 = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
-
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-      onSubmit: null
-    };
-  },
-
-  getInitialState() {
-    return {
-      created: false,
-      canSubmit: false,
-      selectedSource: 'local'
-    };
-  },
-
-  sourceChange(value){
+  sourceChange = (value: string) => {
     this.setState({selectedSource: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
-  onSubmit() {
+  onSubmit = () => {
     this.props.onSubmit();
-  },
+  }
 
-  cancelCallback(){
+  cancelCallback = () => {
     this.setState({warnIfUnsaved: false});
     NotificationActions.showNotification({
       message: this.__('Layer Cancelled'),
@@ -56,9 +40,9 @@ var Step1 = React.createClass({
         window.location="/layers";
       }
     });
-  },
+  }
 
-   onCancel(){
+   onCancel = () =>{
     var _this = this;
     if(_this.state.created){
       //delete the layer
@@ -72,11 +56,9 @@ var Step1 = React.createClass({
     }else{
       _this.cancelCallback();
     }
+  }
 
-  },
-
-	render() {
-    
+	render() {  
     return (
         <div className="row">
           <CreateLayer onPrev={this.onPrev} onSubmit={this.onSubmit} 
@@ -85,6 +67,4 @@ var Step1 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Step1;
+}

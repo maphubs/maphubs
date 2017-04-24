@@ -18,9 +18,8 @@ import Confirmation from '../components/confirmation';
 import Footer from '../components/footer';
 import Progress from '../components/Progress';
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class HubInfo extends MapHubsComponent {
 
@@ -37,7 +36,7 @@ export default class HubInfo extends MapHubsComponent {
     footerConfig: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     hub: {
       name: "Unknown"
     },
@@ -46,21 +45,16 @@ export default class HubInfo extends MapHubsComponent {
     canEdit: false
   }
 
-  state: {
+  state = {
     editing: false
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(HubStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(HubStore, {hub: this.props.hub, map: this.props.map, layers: this.props.layers, stories: this.props.stories, canEdit: this.props.canEdit});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(HubStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    HubActions.rehydrate({hub: this.props.hub, map: this.props.map, layers: this.props.layers, stories: this.props.stories, canEdit: this.props.canEdit});
-  }
 
   componentDidMount() {
     var _this = this;
@@ -71,11 +65,11 @@ export default class HubInfo extends MapHubsComponent {
     };
   }
 
-  startEditing(){
+  startEditing = () => {
     this.setState({editing: true});
   }
 
-  stopEditing(){
+  stopEditing = () => {
     var _this = this;
     HubActions.saveHub(this.state._csrf, function(err){
       if(err){
@@ -88,7 +82,7 @@ export default class HubInfo extends MapHubsComponent {
     });
   }
 
-  publish(){
+  publish = () => {
     var _this = this;
     if(this.state.unsavedChanges){
       MessageActions.showMessage({title: _this.__('Unsaved Changes'), message: _this.__('Please save your changes before publishing.')});

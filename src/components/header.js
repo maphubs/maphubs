@@ -8,7 +8,6 @@ import Notification from '../components/Notification';
 import Message from '../components/message';
 import MessageActions from '../actions/MessageActions';
 import Confirmation from '../components/confirmation';
-import LocaleStore from '../stores/LocaleStore';
 //var debug = require('../services/debug')('header');
 import LocaleChooser from './LocaleChooser';
 
@@ -20,7 +19,7 @@ export default class Header extends MapHubsComponent {
 
   constructor(props: Object){
 		super(props);
-		this.stores = [LocaleStore, UserStore];
+		this.stores.push(UserStore);
 	}
 
   componentDidMount() {
@@ -190,7 +189,7 @@ getCookie(cname: string) {
           <ul className="side-nav" id="side-nav-menu">
               <UserMenu id="user-menu-sidenav" sideNav/>
 
-              <LocaleChooser id="locale-sidenav"/>
+              
 
             <li className="nav-link-wrapper">
               <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
@@ -216,3 +215,4 @@ getCookie(cname: string) {
     );
   }
 }
+//<LocaleChooser id="locale-sidenav"/> 

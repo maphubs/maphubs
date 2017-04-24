@@ -1,10 +1,9 @@
 //@flow
 import React from 'react';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
 import Header from '../components/header';
 import Footer from '../components/footer';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Error extends MapHubsComponent {
@@ -18,9 +17,9 @@ export default class Error extends MapHubsComponent {
     footerConfig: Object
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
   
   render() {

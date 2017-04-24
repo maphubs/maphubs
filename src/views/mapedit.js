@@ -4,8 +4,7 @@ import Header from '../components/header';
 import MapMaker from '../components/MapMaker/MapMaker';
 var slug = require('slug');
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class MapEdit extends MapHubsComponent {
@@ -20,18 +19,18 @@ export default class MapEdit extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     popularLayers: [],
     myLayers: [],
     user: {}
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  mapCreated(map_id, title){
+  mapCreated = (map_id: string, title: string) => {
     window.location = '/map/view/' + map_id + '/'+ slug(title);
   }
 
@@ -40,7 +39,7 @@ export default class MapEdit extends MapHubsComponent {
       <div>
         <Header />
         <main style={{height: 'calc(100% - 70px)'}}>
-          <MapMaker onCreate={this.mapCreated.bind(this)}
+          <MapMaker onCreate={this.mapCreated}
             mapLayers={this.props.layers}
             basemap={this.props.map.basemap}
             map_id={this.props.map.map_id} title={this.props.map.title}

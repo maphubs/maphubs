@@ -9,8 +9,7 @@ import Confirmation from '../components/confirmation';
 import HubStore from '../stores/HubStore';
 import HubActions from '../actions/HubActions';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class CreateHubStory extends MapHubsComponent {
@@ -24,22 +23,17 @@ export default class CreateHubStory extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     hub: {}
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(HubStore);
-	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(HubStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    HubActions.rehydrate({hub: this.props.hub});
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(HubStore, {hub: this.props.hub});
     HubActions.loadHub(this.props.hub);
-  }
+	}
 
   render() {
     return (

@@ -1,48 +1,39 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextArea from '../forms/textArea';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import LayerStore from '../../stores/layer-store';
+import MapHubsComponent from '../MapHubsComponent';
 
-var TextArea = require('../forms/textArea');
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
+export default class PlanetLabsSource extends MapHubsComponent {
 
-var LayerStore = require('../../stores/layer-store');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var PlanetLabsSource = React.createClass({
+  static defaultProps = {
+    onSubmit: null
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  state = {
+    canSubmit: false,
+    selectedOption: 'scene',
+    selectedSceneOption: 'ortho'
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-      onSubmit: null
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false,
-      selectedOption: 'scene',
-      selectedSceneOption: 'ortho'
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentWillMount(){
+    super.componentWillMount();
     Formsy.addValidationRule('isNotRapidEye', function (values, value) {
         return !value.startsWith('REOrthoTile');
     });
@@ -54,20 +45,21 @@ var PlanetLabsSource = React.createClass({
     Formsy.addValidationRule('isNotSentinel', function (values, value) {
         return !value.startsWith('Sentinel2L1C');
     });
-  },
+  }
 
-  enableButton () {
+  enableButton = () => {
     this.setState({
       canSubmit: true
     });
-  },
-  disableButton () {
+  }
+
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
-  getAPIUrl(selected){
+  getAPIUrl = (selected: string) => {
     var APIType = 'ortho'; // 'rapideye', 'landsat'
     var selectedArr = selected.split(':');
     var selectedType = selectedArr[0];
@@ -87,9 +79,9 @@ var PlanetLabsSource = React.createClass({
     var url = `https://tiles.planet.com/v0/scenes/${APIType}/${selectedScene}`;
     url += '/{z}/{x}/{y}.png?api_key=' + MAPHUBS_CONFIG.PLANET_LABS_API_KEY;
     return url;
-  },
+  }
 
-  submit (model) {
+  submit = (model: Object) => {
     var _this = this;
     var layers = [];
 
@@ -132,19 +124,19 @@ var PlanetLabsSource = React.createClass({
       }
 
     });
-  },
+  }
 
-  optionChange(value){
+  optionChange = (value: string) => {
     this.setState({selectedOption: value});
-  },
+  }
 
-  sceneOptionChange(value){
+  sceneOptionChange = (value: string) => {
     this.setState({selectedSceneOption: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
     var prevButton = '';
@@ -181,6 +173,4 @@ var PlanetLabsSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = PlanetLabsSource;
+}

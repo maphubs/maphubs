@@ -1,49 +1,42 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import LayerSourceHelper from './LayerSourceHelper';
+import SourceSelectionBox from './SourceSelectionBox';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var LocaleMixin = require('../LocaleMixin');
-var LayerSourceMixin = require('./LayerSourceMixin');
-var SourceSelectionBox = require('./SourceSelectionBox');
+export default class CreateLayer extends MapHubsComponent {
 
-var CreateLayer = React.createClass({
+   props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function,
+    onCancel: Function
+  }
 
-   mixins:[StateMixin.connect(LocaleStore), LocaleMixin, LayerSourceMixin],
+   state = {
+    canSubmit: false,
+    source: ''
+  }
 
-   propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func,
-    onCancel: PropTypes.func
-  },
+  getSource = LayerSourceHelper.getSource.bind(this)
 
-   getInitialState() {
-    return {
-      canSubmit: false,
-      source: ''
-    };
-  },
-
-   selectSource(source){
+  selectSource = (source: string) =>{
     this.setState({source});
-   },
+  }
 
+  onCancel = () => {
+    if(this.props.onCancel) this.props.onCancel();
+  }
 
-   onCancel() {
-      if(this.props.onCancel) this.props.onCancel();
-    },
+  onPrev = () => {
+    if(this.props.onPrev) this.props.onPrev();
+  }
 
-    onPrev() {
-      if(this.props.onPrev) this.props.onPrev();
-    },
+  onSubmit = () => {
+    this.props.onSubmit();
+  }
 
-    onSubmit() {
-      this.props.onSubmit();
-    },
-
-   render() {
+  render() {
     
     var sourceDisplay = this.getSource(this.state.source);
 
@@ -123,7 +116,4 @@ var CreateLayer = React.createClass({
       </div>
     );
    }
-
-});
-
-module.exports = CreateLayer;
+}

@@ -1,18 +1,14 @@
 // @flow
 import React from 'react';
 import Header from '../components/header';
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-
 import Map from '../components/Map/Map';
 import DataCollectionForm from '../components/DataCollection/DataCollectionForm';
 import ImageCrop from '../components/ImageCrop';
 import AddPhotoPointStore from '../stores/AddPhotoPointStore';
 import Actions from '../actions/AddPhotoPointActions';
-
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import ConfirmationActions from '../actions/ConfirmationActions';
@@ -26,21 +22,16 @@ export default class AddPhotoPoint extends MapHubsComponent {
     _csrf: string
   }
 
-  state: {
-      saving: false
+  state = {
+    saving: false
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(AddPhotoPointStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(AddPhotoPointStore, {layer: this.props.layer});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(AddPhotoPointStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    Actions.rehydrate({layer: this.props.layer});
-  }
 
   componentDidMount(){
     var _this = this;
@@ -51,16 +42,16 @@ export default class AddPhotoPoint extends MapHubsComponent {
     };
   }
 
-  showImageCrop(){
+  showImageCrop = () => {
     this.refs.imagecrop.show();
   }
 
-  resetPhoto(){
+  resetPhoto = () => {
     Actions.resetPhoto();
     this.showImageCrop();
   }
 
-  onCrop(data: any, info: Object){
+  onCrop = (data: any, info: Object) => {
     var _this = this;
     Actions.setImage(data, info, function(err){
       if(err){
@@ -74,7 +65,7 @@ export default class AddPhotoPoint extends MapHubsComponent {
     });
   }
 
-  onSubmit(model: Object){
+  onSubmit = (model: Object) => {
     var _this = this;
     this.setState({saving: true});
     Actions.submit(model, this.state._csrf, function(err){

@@ -17,7 +17,7 @@ export default class EmptyLocalSource extends MapHubsComponent {
     onPrev: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
     onSubmit: null
   }
 

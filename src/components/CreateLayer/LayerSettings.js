@@ -1,60 +1,47 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextArea from '../forms/textArea';
+import TextInput from '../forms/textInput';
+import SelectGroup from '../Groups/SelectGroup';
+import Select from '../forms/select';
+import Licenses from './licenses';
+import LayerStore from '../../stores/layer-store';
+import LayerActions from '../../actions/LayerActions';
+import MessageActions from '../../actions/MessageActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-//react components
+export default class LayerSettings extends MapHubsComponent {
 
-var Formsy = require('formsy-react');
-var TextArea = require('../forms/textArea');
-var TextInput = require('../forms/textInput');
-var SelectGroup = require('../Groups/SelectGroup');
-var Select = require('../forms/select');
-var Licenses = require('./licenses');
+  props: {
+    onSubmit: Function,
+    active: boolean,
+    onValid: Function,
+    onInValid: Function,
+    submitText: string,
+    showGroup: boolean,
+    showPrev: boolean,
+    onPrev: Function,
+    prevText: string,
+    warnIfUnsaved: boolean
+  }
 
+  static defaultProps = {
+    onSubmit: null,
+    active: true,
+    showGroup: true,
+    warnIfUnsaved: false,
+    showPrev: false
+  }
 
-var LayerStore = require('../../stores/layer-store');
-var LayerActions = require('../../actions/LayerActions');
-var MessageActions = require('../../actions/MessageActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  state = {
+    canSubmit: false
+  }
 
-var LayerSettings = React.createClass({
-
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func,
-    active: PropTypes.bool,
-    onValid: PropTypes.func,
-    onInValid: PropTypes.func,
-    submitText: PropTypes.string,
-    showGroup: PropTypes.bool,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func,
-    prevText: PropTypes.string,
-    warnIfUnsaved: PropTypes.bool
-  },
-
-  static defaultProps: {
-    return {
-      onSubmit: null,
-      active: true,
-      showGroup: true,
-      warnIfUnsaved: false,
-      showPrev: false
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentDidMount(){
     var _this = this;
@@ -63,31 +50,31 @@ var LayerSettings = React.createClass({
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
-  },
+  }
 
-  onFormChange(){
+  onFormChange = () => {
     this.setState({pendingChanges: true});
-  },
+  }
 
-  onValid () {
-      this.setState({
-        canSubmit: true
-      });
-      if(this.props.onValid){
-        this.props.onValid();
-      }
-    },
-    onInvalid () {
-      this.setState({
-        canSubmit: false
-      });
-      if(this.props.onInValid){
-        this.props.onInValid();
-      }
-    },
+  onValid = () => {
+    this.setState({
+      canSubmit: true
+    });
+    if(this.props.onValid){
+      this.props.onValid();
+    }
+  }
 
+  onInvalid = () => {
+    this.setState({
+      canSubmit: false
+    });
+    if(this.props.onInValid){
+      this.props.onInValid();
+    }
+  }
 
-  onSubmit(model) {
+  onSubmit = (model: Object) => {
     var _this = this;
 
     var initLayer = false;
@@ -115,11 +102,11 @@ var LayerSettings = React.createClass({
         }
       }
     });
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
 
@@ -215,6 +202,4 @@ var LayerSettings = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = LayerSettings;
+}

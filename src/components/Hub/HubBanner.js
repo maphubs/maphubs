@@ -16,17 +16,16 @@ export default class HubBanner extends MapHubsComponent {
     subPage: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     editing: false,
     subPage: false
   }
 
-  state: {
+  state = {
     imageCropAspectRatio: 1,
     imageCropResizeWidth: null,
     imageCropResizeMaxWidth: null,
     imageCropResizeHeight: null,
-    onCrop: Function
   }
 
   constructor(props: Object){
@@ -46,15 +45,15 @@ export default class HubBanner extends MapHubsComponent {
     return false;
   }
 
-  handleTitleChange(title: string){
+  handleTitleChange = (title: string) => {
     HubActions.setTitle(title);
   }
 
-  handleTaglineChange(tagline: string){
+  handleTaglineChange = (tagline: string) => {
     HubActions.setTagline(tagline);
   }
 
-  showLogoEdit(){
+  showLogoEdit = () => {
     this.setState({
       imageCropAspectRatio: 1,
       imageCropResizeWidth: 300,
@@ -64,11 +63,11 @@ export default class HubBanner extends MapHubsComponent {
     this.refs.imagecrop.show();
   }
 
-  onLogoCrop(data: Object, info: Object){
+  onLogoCrop = (data: Object, info: Object) => {
     HubActions.setHubLogoImage(data, info);
   }
 
-  showBannerEdit(){
+  showBannerEdit = () => {
     this.setState({
       imageCropAspectRatio: 4/1,
       imageCropResizeMaxWidth: 2000,
@@ -79,7 +78,7 @@ export default class HubBanner extends MapHubsComponent {
     this.refs.imagecrop.show();
   }
 
-  onBannerCrop(data: Object, info: Object){
+  onBannerCrop = (data: Object, info: Object) => {
     HubActions.setHubBannerImage(data, info);
   }
 

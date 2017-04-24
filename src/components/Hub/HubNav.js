@@ -18,7 +18,7 @@ export default class HubHav extends MapHubsComponent {
     canEdit: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     canEdit: false
   }
 

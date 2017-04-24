@@ -1,42 +1,31 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var AnimationActions = require('../../actions/map/AnimationActions');
+import AnimationActions from '../../actions/map/AnimationActions';
 import Reflux from 'reflux';
 
-var AnimationOverlay = React.createClass({
+export default class AnimationOverlay extends React.Component {
 
-  mixins:[Reflux.listenTo(AnimationActions.tick, 'tick')],
+  props:  {
+    style: Object
+  }
 
-  propTypes:  {
-    style: PropTypes.object.isRequired
-  },
+  state = {
+    val: ''
+  }
 
-  static defaultProps: {
-    return {
-     
-    };
-  },
+  componentDidMount(){
+    Reflux.listenTo(AnimationActions.tick, 'tick');
+  }
 
-  getInitialState(){
-    return {
-      val: ''
-    };
-  },
-
-  tick(val){
+  tick = (val: any) => {
     this.setState({val});
-  },
+  }
 
-  render(){
-    
+  render(){  
     return (
       <div style={this.props.style}>
         <p>{this.state.val}</p>
       </div>
     );
   }
-
-});
-
-module.exports = AnimationOverlay;
+}

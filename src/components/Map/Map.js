@@ -1,34 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-var classNames = require('classnames');
-var FeatureBox = require('./FeatureBox');
-var debug = require('../../services/debug')('map');
-var isEqual = require('lodash.isequal');
-var Promise = require('bluebird');
-var $ = require('jquery');
 import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var BaseMapActions = require('../../actions/map/BaseMapActions'); 
-var BaseMapStore = require('../../stores/map/BaseMapStore'); 
-var urlUtil = require('../../services/url-util');
-var LocaleStore = require('../../stores/LocaleStore');
-var DataEditorStore = require('../../stores/DataEditorStore');
-var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
-var MapToolButton = require('./MapToolButton');
-var MapToolPanel = require('./MapToolPanel');
-var InsetMap = require('./InsetMap');
+import classNames from 'classnames';
+import FeatureBox from './FeatureBox';
+import BaseMapActions from '../../actions/map/BaseMapActions'; 
+import BaseMapStore from '../../stores/map/BaseMapStore'; 
+import urlUtil from '../../services/url-util';
+import LocaleStore from '../../stores/LocaleStore';
+import DataEditorStore from '../../stores/DataEditorStore';
+import Locales from '../../services/locales';
+import _isequal from 'lodash.isequal';
+import MapToolButton from './MapToolButton';
+import MapToolPanel from './MapToolPanel';
+import InsetMap from './InsetMap';
+import LayerSources from './Sources';
+import MarkerSprites from './MarkerSprites';
+import AnimationOverlay from './AnimationOverlay';
+import AnimationStore from '../../stores/map/AnimationStore';
+import isEqual from 'lodash.isequal';
+import Promise from 'bluebird';
+
 var MapboxGLHelperMixin = require('./MapboxGLHelperMixin');
 var MapInteractionMixin = require('./MapInteractionMixin');
 var MeasurementToolMixin = require('./MeasurementToolMixin');
 var ForestAlertMixin = require('./ForestAlertMixin');
 var MapGeoJSONMixin = require('./MapGeoJSONMixin');
 var DataEditorMixin = require('./DataEditorMixin');
-var LayerSources = require('./Sources');
-var MarkerSprites = require('./MarkerSprites');
-var AnimationOverlay = require('./AnimationOverlay');
 var ForestLossMixin = require('./ForestLossMixin');
-var AnimationStore = require('../../stores/map/AnimationStore');
+var debug = require('../../services/debug')('map');
+var $ = require('jquery');
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
@@ -39,10 +39,7 @@ var Map = React.createClass({
 
   mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, 
             MeasurementToolMixin, ForestAlertMixin, DataEditorMixin, ForestLossMixin,
-            StateMixin.connect(DataEditorStore),
-            StateMixin.connect(AnimationStore),
-            StateMixin.connect(BaseMapStore, {initWithProps: ['baseMap']}),          
-            StateMixin.connect(LocaleStore)],
+            ],
 
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
@@ -82,7 +79,7 @@ var Map = React.createClass({
     children: PropTypes.any
   },
 
-  static defaultProps: {
+  getDefaultProps() {
     return {
       maxZoom: 18,
       minZoom: 5,
@@ -129,6 +126,10 @@ var Map = React.createClass({
   },
 
   componentWillMount(){
+    //super.componentWillMount();
+    Reflux.initStore(DataEditorStore);
+    Reflux.initStore(AnimationStore);
+    Reflux.initStore(BaseMapStore).setState({baseMap: this.props.baseMap});
     if(this.state.glStyle){
       var interactiveLayers = this.getInteractiveLayers(this.state.glStyle);
       this.setState({interactiveLayers});
@@ -136,6 +137,11 @@ var Map = React.createClass({
   },
 
   componentDidMount() {
+    var _this = this;
+    //DataEditorStore.listen( () => this.setState(DataEditorStore.getData()));
+    //AnimationStore.listen( () => this.setState(AnimationStore.getData()));
+    //BaseMapStore.listen( () => this.setState(_this.baseMapStore.getData()));
+    //LocaleStore.listen( () => this.setState(LocaleStore.getData()));
     this.createMap();
   },
 
@@ -184,7 +190,7 @@ var Map = React.createClass({
     layers.forEach(function(layer){
     try{
       var source = glStyle.sources[layer.source];
-      if(layer.source != 'osm'  && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+      if(layer.source !== 'osm'  && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
          LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
       }else if(source.type === 'geojson' && source.data){
          LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
@@ -221,7 +227,7 @@ var Map = React.createClass({
       prevStyle.layers.forEach(function(layer){
         try{
           var source = prevStyle.sources[layer.source];
-          if(layer.source != 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+          if(layer.source !== 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
             LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
           }else if(source.type === 'geojson' && source.data){
             LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
@@ -292,7 +298,7 @@ var Map = React.createClass({
         var source = glStyle.sources[key];
         var type = source.type;
         var url = source.url;
-        if(key != 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
+        if(key !== 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
           //MapHubs Vector Source
           sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));   
         }else if(type === 'geojson' && source.data){
@@ -379,7 +385,7 @@ var Map = React.createClass({
         }     
       }
       //set locale
-      if(_this.state.locale != 'en'){
+      if(_this.state.locale !== 'en'){
         _this.changeLocale(_this.state.locale, _this.map);
         if(_this.refs.insetMap){
            _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap());
@@ -436,7 +442,7 @@ var Map = React.createClass({
       $(this.refs.editBaseMapButton).show();
     }
     //change locale
-    if(this.state.locale && (this.state.locale != prevState.locale) ){     
+    if(this.state.locale && (this.state.locale !== prevState.locale) ){     
       this.changeLocale(this.state.locale, this.map);
       if(this.refs.insetMap){
           this.changeLocale(this.state.locale, this.refs.insetMap.__getInsetMap());
@@ -491,7 +497,7 @@ var Map = React.createClass({
           //** Style Changing (also reloads basemap) **/
           if(this.state.mapLoaded && !fitBoundsChanging) {
             //if fitBounds isn't changing, restore the current map position
-            if(this.state.glStyle != null){
+            if(this.state.glStyle !== null){
               debug('(' + this.state.id + ') ' +"restoring current map position");
               allowLayersToMoveMap = false;
             }

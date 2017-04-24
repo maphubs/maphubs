@@ -8,7 +8,7 @@ import MapHubsPureComponent from '../MapHubsPureComponent';
 
 class Toggle extends MapHubsPureComponent {
 
-  propTypes:  {
+  props:  {
     className: string,
     dataTooltip: string,
     dataDelay: number,
@@ -20,10 +20,12 @@ class Toggle extends MapHubsPureComponent {
     disabled: boolean,
     onChange: Function,
     defaultChecked: boolean,
-    checked: boolean
+    checked: boolean,
+    setValue: Function,
+    getValue: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
     style: {},
     defaultChecked: false,
     dataDelay: 100,
@@ -31,10 +33,11 @@ class Toggle extends MapHubsPureComponent {
   }
 
   componentWillMount() {
+    super.componentWillMount();
     if ('checked' in this.props) {
-      this.setValue(this.props.checked);
+      this.props.setValue(this.props.checked);
     }else{
-      this.setValue(this.props.defaultChecked);  
+      this.props.setValue(this.props.defaultChecked);  
     }       
   }
 
@@ -48,7 +51,7 @@ class Toggle extends MapHubsPureComponent {
     var currentValue =  this.props.checked;
     if ('checked' in nextProps 
     && nextProps.checked !== currentValue){
-         this.setValue(nextProps.checked);
+         this.props.setValue(nextProps.checked);
     }   
   }
 
@@ -62,8 +65,8 @@ class Toggle extends MapHubsPureComponent {
     event.stopPropagation();
     var checked = event.currentTarget.checked;
     debug('change value: ' + checked);
-    if(checked !== this.getValue())
-     this.setValue(checked);
+    if(checked !== this.props.getValue())
+     this.props.setValue(checked);
      if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}
    }
 
@@ -76,7 +79,7 @@ class Toggle extends MapHubsPureComponent {
 
     var className = classNames('switch', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
 
-    let checked = this.getValue();
+    let checked = this.props.getValue();
 
     if (typeof checked === 'boolean') {
       checked = checked ? 1 : 0;

@@ -15,6 +15,7 @@ declare class MapHubsConfig {
   logoHeight: number;
   logo: string;
   betaText: string;
+  PLANET_LABS_API_KEY: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;
@@ -39,6 +40,7 @@ type $JSXIntrinsics = {
   h3:  JSXHelper<{className: string, style: Object}>,
   h4:  JSXHelper<{className: string, style: Object}>,
   h5:  JSXHelper<{className: string, style: Object}>,
+  h6:  JSXHelper<{className: string, style: Object}>,
   main: JSXHelper<{className: string, style: Object}>,
   i: JSXHelper<{className: string, style: Object}>,
   img: JSXHelper<{className: string, src: string, style: Object}>,

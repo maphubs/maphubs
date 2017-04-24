@@ -6,7 +6,7 @@ import MapHubsComponent from '../MapHubsComponent';
 
 export default class File extends MapHubsComponent {
 
-  propTypes: {
+  props: {
     action: string,
     onUpload: Function,
     onChange: Function,
@@ -17,7 +17,7 @@ export default class File extends MapHubsComponent {
     style: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
       inputStyle: {
           visibility: 'hidden',
           width: '1px'

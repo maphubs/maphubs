@@ -3,15 +3,13 @@ import React from 'react';
 var $ = require('jquery');
 import MiniLegend from '../components/Map/MiniLegend';
 import Map from '../components/Map/Map';
-var _debounce = require('lodash.debounce');
-var request = require('superagent');
+import _debounce from 'lodash.debounce';
+import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
-var _bbox = require('@turf/bbox');
-
+import _bbox from '@turf/bbox';
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class EmbedMap extends MapHubsComponent {
 
@@ -26,7 +24,7 @@ export default class EmbedMap extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     isStatic: false,
     interactive: false,
     markerColor: '#FF0000'
@@ -34,6 +32,8 @@ export default class EmbedMap extends MapHubsComponent {
 
   constructor(props: Object){
 		super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+
     var glStyle = this.props.map.style;
     if(this.props.geoJSONUrl){
       glStyle.sources['geojson-overlay'] = {
@@ -87,9 +87,8 @@ export default class EmbedMap extends MapHubsComponent {
 	}
 
   componentWillMount(){
+    super.componentWillMount();
     var _this = this;
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
     if (typeof window === 'undefined') return; //only run this on the client
     function isRetinaDisplay() {
         if (window.matchMedia) {

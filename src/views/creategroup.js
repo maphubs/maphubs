@@ -3,11 +3,9 @@ import React from 'react';
 import Header from '../components/header';
 import Step1 from '../components/CreateGroup/Step1';
 import Step2 from '../components/CreateGroup/Step2';
-var classNames = require('classnames');
-
+import classNames from 'classnames';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class CreateGroup extends MapHubsComponent {
@@ -17,24 +15,24 @@ export default class CreateGroup extends MapHubsComponent {
     _csrf: string
   }
 
-  state: {
+  state = {
     step: 1
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  onComplete (group_id: string) {
+  onComplete = (group_id: string) => {
     window.location = '/group/' + group_id;
   }
 
-  nextStep () {
+  nextStep = () => {
     this.setState({step: this.state.step + 1});
   }
 
-  prevStep () {
+  prevStep = () => {
     this.setState({step: this.state.step - 1});
   }
 
@@ -68,8 +66,8 @@ export default class CreateGroup extends MapHubsComponent {
                   <div className={progressClassName}></div>
               </div>
           </div>
-          <Step1 active={step1} onSubmit={this.nextStep.bind(this)}/>
-          <Step2 active={step2} showPrev={true} onPrev={this.prevStep.bind(this)} onSubmit={this.onComplete.bind(this)}/>
+          <Step1 active={step1} onSubmit={this.nextStep}/>
+          <Step2 active={step2} showPrev={true} onPrev={this.prevStep} onSubmit={this.onComplete}/>
 			</div>
       </div>
 		);

@@ -1,72 +1,58 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import Radio from '../forms/radio';
+import LayerActions from '../../actions/LayerActions';
+import PresetActions from '../../actions/presetActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import LayerStore from '../../stores/layer-store';
+import MapHubsComponent from '../MapHubsComponent';
 
-var TextInput = require('../forms/textInput');
-var Radio = require('../forms/radio');
+export default class MapboxSource extends MapHubsComponent {
 
-var classNames = require('classnames');
-var LayerActions = require('../../actions/LayerActions');
-var PresetActions = require('../../actions/presetActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var LayerStore = require('../../stores/layer-store');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  state = {
+    canSubmit: false,
+    selectedOption: 'style'
+  }
 
-var MapboxSource = React.createClass({
-
-  mixins:[StateMixin.connect(LayerStore),StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-      onSubmit: null
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
   componentWillMount(){
+    super.componentWillMount();
     Formsy.addValidationRule('isValidMapboxStyleURL', function (values, value) {
         return value.startsWith('mapbox://styles/');
     });
 
     Formsy.addValidationRule('isValidMapboxMapID', function (values, value) {
         var valArr = value.split('.');
-        return valArr && Array.isArray(valArr) && valArr.length == 2;
+        return valArr && Array.isArray(valArr) && valArr.length === 2;
     });
-  },
+  }
 
-  getInitialState() {
-    return {
-      canSubmit: false,
-      selectedOption: 'style'
-    };
-  },
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
 
-  enableButton () {
-      this.setState({
-        canSubmit: true
-      });
-    },
-    disableButton () {
-      this.setState({
-        canSubmit: false
-      });
-    },
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
+  }
 
-  submit (model) {
+  submit = (model: Object) => {
     var _this = this;
     var dataSettings = null;
     if(model.mapboxStyleID){
@@ -110,15 +96,15 @@ var MapboxSource = React.createClass({
       }
 
     });
-  },
+  }
 
-  optionChange(value){
+  optionChange = (value: string) => {
     this.setState({selectedOption: value});
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
 
@@ -206,6 +192,4 @@ var MapboxSource = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = MapboxSource;
+}

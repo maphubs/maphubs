@@ -3,7 +3,7 @@ import React from 'react';
 
 var debug = require('../services/debug')('ImageCrop');
 import {Modal, ModalContent} from './Modal/Modal.js';
-var Promise = require('bluebird');
+import Promise from 'bluebird';
 
 import MessageActions from '../actions/MessageActions';
 var $ = require('jquery');
@@ -28,7 +28,7 @@ export default class ImageCrop extends MapHubsComponent {
     resize_max_width: number
   }
 
-  static defaultProps: {
+  static defaultProps = {
     lockAspect: false,
     aspectRatio: null,
     autoCropArea: 1,
@@ -42,14 +42,14 @@ export default class ImageCrop extends MapHubsComponent {
     resize_max_width: null
   }
 
-  state: {
+  state = {
     img: null,
     file: null,
     show: false,
     preview: null,
     loading: false,
-    autoCropArea: number,
-    aspectRatio: number,
+    autoCropArea: 1,
+    aspectRatio: 1
   }
 
   constructor(props: Object){
@@ -71,12 +71,12 @@ export default class ImageCrop extends MapHubsComponent {
     this.setState(updateProps);
   }
 
-  show(){
+  show = () => {
     this.setState({show: true});
   }
 
 
-  checkFile(file: Object) {
+  checkFile = (file: Object) => {
      let allowedFileExt = new RegExp('\.(' + this.props.allowedExtensions.join('|') + ')$', 'i');
      let message;
 
@@ -87,7 +87,7 @@ export default class ImageCrop extends MapHubsComponent {
      }
    }
 
-  checkFileSize(file: Object) {
+  checkFileSize = (file: Object) => {
     var _this = this;
     return new Promise(function(fulfill, reject){
       let maxSize =  _this.props.max_size;
@@ -104,7 +104,7 @@ export default class ImageCrop extends MapHubsComponent {
   }
 
 
-resizeImage(sourceCanvas: any){
+resizeImage = (sourceCanvas: any) => {
   var pica = null;
   if (typeof window === 'undefined') {
     return;
@@ -198,7 +198,7 @@ resizeImage(sourceCanvas: any){
 
 }
 
-  _onChange(e: any){
+  _onChange = (e: any) =>{
     var _this = this;
     _this.setState({loading: true});
     let files: Array<Object>;
@@ -301,7 +301,7 @@ resizeImage(sourceCanvas: any){
 
   }
 
-  _crop(e){
+  _crop = (e) =>{
     this.setState({
       cropWidth: e.width,
       cropHeight: e.height,
@@ -310,7 +310,7 @@ resizeImage(sourceCanvas: any){
     });
  }
 
-  onSave(){
+  onSave = () => {
     var _this = this;
     var cropper = this.refs.cropper;
     var canvas = cropper.getCroppedCanvas();
@@ -333,37 +333,37 @@ resizeImage(sourceCanvas: any){
     });
   }
 
-  handleCloseSelected(){
+  handleCloseSelected = () => {
     this.resetImageCrop();
     this.setState({show: false});
   }
 
-  zoomIn(){
+  zoomIn = () => {
     this.refs.cropper.zoom(0.1);
   }
 
-  zoomOut(){
+  zoomOut = () => {
     this.refs.cropper.zoom(-0.1);
   }
 
-   cropOriginal(){
+   cropOriginal = () => {
     this.resetCropPosition();
     this.setState({autoCropArea: 1, aspectRatio: null});
   }
 
-  aspect16by9(){
+  aspect16by9 = () => {
     this.setState({aspectRatio: 16 / 9});
   }
 
-  aspect3by2(){
+  aspect3by2 = () => {
     this.setState({aspectRatio: 3 / 2});
   }
 
-  aspectSquare(){
+  aspectSquare = () =>{
     this.setState({aspectRatio: 1 / 1});
   }
 
-  resetCropPosition(){
+  resetCropPosition = () =>{
     this.setState({
       autoCropArea: 1,
       aspectRatio: NaN
@@ -371,7 +371,7 @@ resizeImage(sourceCanvas: any){
     this.refs.cropper.reset();
   }
 
-  resetImageCrop(){
+  resetImageCrop = () =>{
     if(this.refs.cropper && this.refs.cropper.reset) this.refs.cropper.reset();
     if(this.refs.cropper && this.refs.cropper.clear) this.refs.cropper.clear();
     this.setState({

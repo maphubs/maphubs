@@ -1,4 +1,4 @@
-//#flow
+//@flow
 import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
@@ -6,28 +6,33 @@ import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import UserActions from '../actions/UserActions';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class PendingConfirmation extends MapHubsComponent {
-
-  props: {
+type Props = {
     user: Object,
     locale: string,
-    footerConfig: Object
+    footerConfig: Object,
+    _csrf: string
   }
 
-  state: {
+  type State = {
+    _csrf: string
+  }
+
+export default class PendingConfirmation extends MapHubsComponent<null, Props, State> {
+
+ 
+  state: State = {
     canSubmit: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Props) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  onResend(){
+  onResend = () => {
     var _this = this;
     UserActions.resendConfirmation(this.state._csrf, function(err){
       if(err){
@@ -69,7 +74,7 @@ export default class PendingConfirmation extends MapHubsComponent {
               <p className="center-align">{this.__('We sent you an email at')} {this.props.user.email}</p>
               <p className="center-align">{this.__('Please click the link in the email to confirm your account')}</p>
               <button
-                onClick={this.onResend.bind(this)}
+                onClick={this.onResend}
                 className="waves-effect waves-light btn valign center"
                 style={{marginTop: '25px', marginLeft: 'auto', marginRight: 'auto'}}>
                 {this.__('Resend Email')}

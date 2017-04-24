@@ -15,7 +15,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
     layer_id: number
   }
 
-  state: {
+  state = {
     geoJSON: Object,
     dataMsg: '',
     gridHeight: 100,
@@ -26,9 +26,9 @@ export default class LayerDataGrid extends MapHubsPureComponent {
     selectedIndexes: [],
     columns: [],
     filters: {},
-    rowKey: string,
-    sortColumn: string,
-    sortDirection: string
+    rowKey: null,
+    sortColumn: null,
+    sortDirection: null
   }
 
   componentDidMount(){
@@ -137,7 +137,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
     } else {
       delete newFilters[filter.column.key];
     }
-    this.setState({ filters: newFilters });
+    this.setState({filters: newFilters});
   }
 
   onClearFilters = () => {
@@ -146,7 +146,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
   }
 
   onRowsSelected = (rows: Array<Object>) => {
-    if(!rows || rows.length == 0){
+    if(!rows || rows.length === 0){
       return;
     }
     var row = rows[0];
@@ -163,7 +163,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
   }
 
   onViewSelectedFeature = () => {
-    if(!this.state.selectedIndexes || this.state.selectedIndexes.length == 0){
+    if(!this.state.selectedIndexes || this.state.selectedIndexes.length === 0){
       return;
     }
     var row = this.state.rows[this.state.selectedIndexes[0]];
@@ -173,7 +173,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
     var featureName = 'unknown';
     var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
     nameFields.forEach(function(name){
-      if(featureName == 'unknown' && row[name]){
+      if(featureName === 'unknown' && row[name]){
         featureName = row[name];
       }
     });

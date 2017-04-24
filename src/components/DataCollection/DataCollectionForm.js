@@ -18,7 +18,7 @@ export default class DataCollectionForm extends MapHubsComponent {
     submitText: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     showSubmit: true
   }
 

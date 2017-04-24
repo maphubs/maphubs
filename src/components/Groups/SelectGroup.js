@@ -5,26 +5,28 @@ import Toggle from '../forms/toggle';
 import Select from '../forms/select';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class SelectGroup extends MapHubsComponent {
-
-  props: {
+type Props = {
     groups: Array<Object>,
     type: string,
     group_id: string,
     canChangeGroup: boolean,
     private: boolean,
     editing: boolean
+};
+
+type State = {
+      group_id: string,
+      private: boolean
   }
 
-  static defaultProps: {
+export default class SelectGroup extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  static defaultProps = {
     canChangeGroup: true,
     private: true,
     editing: false
-  }
-
-  state: {
-      group_id: string,
-      private: boolean
   }
 
   constructor(props: Object){
@@ -32,7 +34,7 @@ export default class SelectGroup extends MapHubsComponent {
     this.state = {
       group_id: this.props.group_id,
       private: this.props.private
-    }
+    };
 	}
 
   componentWillReceiveProps(nextProps: Object){
@@ -52,8 +54,8 @@ export default class SelectGroup extends MapHubsComponent {
     return false;
   }
 
-  getOwnerGroup(group_id: string){
-    var owner;
+  getOwnerGroup = (group_id: string): Object => {
+    var owner = {};
     this.props.groups.forEach(function(group){
       if(group.group_id === group_id){
         owner = group;
@@ -62,7 +64,7 @@ export default class SelectGroup extends MapHubsComponent {
     return owner;
   }
 
-  onGroupChange(group_id: string){
+  onGroupChange = (group_id: string) => {
     this.setState({group_id});
   }
 
@@ -87,7 +89,7 @@ export default class SelectGroup extends MapHubsComponent {
         <div className="row">
           <p style={{padding: '10px'}}>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
           <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
-            value={this.state.group_id} defaultValue={this.state.group_id} onChange={this.onGroupChange.bind(this)}
+            value={this.state.group_id} defaultValue={this.state.group_id} onChange={this.onGroupChange}
             emptyText={this.__('Choose a Group')} options={groupOptions} className="col s12"
               dataPosition="right" dataTooltip={this.__('Owned by Group')}
               required

@@ -1,5 +1,5 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
@@ -7,28 +7,34 @@ import MapHubsPureComponent from '../MapHubsPureComponent';
 
 class TextInput extends MapHubsPureComponent {
 
-  propTypes: {
-    value: PropTypes.string,
-    length: PropTypes.number,
-    successText: PropTypes.string,
-    disabled: PropTypes.bool,
-    icon: PropTypes.string,
-    className: PropTypes.string,
-    dataTooltip: PropTypes.string,
-    dataDelay: PropTypes.number,
-    dataPosition: PropTypes.string,
-    name: PropTypes.string,
-    label: PropTypes.string,
-    placeholder: PropTypes.string,
-    id: PropTypes.string,
-    type: PropTypes.string,
-    style: PropTypes.object,
-    showCharCount: PropTypes.bool,
-    useMaterialize: PropTypes.bool,
-    onClick: PropTypes.func
+  props: {
+    value: string,
+    length: number,
+    successText: string,
+    disabled: boolean,
+    icon: string,
+    className: string,
+    dataTooltip: string,
+    dataDelay: number,
+    dataPosition: string,
+    name: string,
+    label: string,
+    placeholder: string,
+    id: string,
+    type: string,
+    style: Object,
+    showCharCount: boolean,
+    useMaterialize: boolean,
+    onClick: Function,
+    //Added by Formsy
+    showRequired: Function,
+    isValid: Function,
+    showError: Function,
+    setValue: Function,
+    getErrorMessage: Function
   }
 
-  static defaultProps: {
+  static defaultProps = {
       length: 100,
       successText: '',
       defaultValue: '',
@@ -75,7 +81,7 @@ class TextInput extends MapHubsPureComponent {
 
   changeValue = (event) => {
      event.stopPropagation();
-     this.setValue(event.currentTarget.value);
+     this.props.setValue(event.currentTarget.value);
      this.setState({
        value: event.currentTarget.value,
        charCount: event.currentTarget.value.length
@@ -88,9 +94,9 @@ class TextInput extends MapHubsPureComponent {
       className = classNames('input-field', this.props.className);
       inputClassName = classNames(
         {
-        required: this.showRequired(),
-        valid: this.isValid(),
-        invalid:  this.showError()
+        required: this.props.showRequired(),
+        valid: this.props.isValid(),
+        invalid:  this.props.showError()
        }
     );
     }else{
@@ -134,7 +140,7 @@ class TextInput extends MapHubsPureComponent {
             disabled={this.props.disabled}
             onClick={this.props.onClick}
             onChange={this.changeValue}/>
-          <label htmlFor={id} className={labelClassName} data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+          <label htmlFor={id} className={labelClassName} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
             {charCount}
       </div>
     );

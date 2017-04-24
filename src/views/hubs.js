@@ -5,15 +5,14 @@ import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
 var debug = require('../services/debug')('views/hubs');
-var urlUtil = require('../services/url-util');
-var cardUtil = require('../services/card-util');
+import urlUtil from '../services/url-util';
+import cardUtil from '../services/card-util';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class Hubs extends MapHubsComponent {
@@ -28,16 +27,16 @@ export default class Hubs extends MapHubsComponent {
     footerConfig: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     featuredHubs: [],
     popularHubs: [],
     recentHubs: [],
     allHubs: []
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   handleSearch(input: string) {

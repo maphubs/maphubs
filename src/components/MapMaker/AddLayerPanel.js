@@ -19,12 +19,12 @@ export default class AddLayerPanel extends MapHubsComponent {
     onAdd: Function
   }
 
-  state: {
+  state = {
     searchResults: [],
     searchActive: false
   }
 
-  handleSearch = (input) => {
+  handleSearch = (input: string) => {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)

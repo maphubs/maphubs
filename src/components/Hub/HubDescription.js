@@ -14,7 +14,7 @@ export default class HubDescription extends MapHubsComponent {
     subPage: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     editing: false,
     subPage: false
   }

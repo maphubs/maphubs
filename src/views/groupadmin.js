@@ -17,9 +17,8 @@ import ConfirmationActions from '../actions/ConfirmationActions';
 import ImageCrop from '../components/ImageCrop';
 var debug = require('../services/debug')('views/GroupAdmin');
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class GroupAdmin extends MapHubsComponent {
 
@@ -33,29 +32,28 @@ export default class GroupAdmin extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     layers: [],
     maps: [],
     hubs: [],
     members: []
   }
 
-  state: {
+  state = {
     canSubmit: false
   }
 
   constructor(props: Object){
 		super(props);
     this.stores.push(GroupStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(GroupStore, {group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members});
 	}
 
+
   componentWillMount() {
-    var _this = this;
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(GroupStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    GroupStore.rehydrate({group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members});
-     
+    super.componentWillMount();
+    var _this = this;     
     Formsy.addValidationRule('isAvailable', function (values, value) {
         return _this.checkGroupIdAvailable(value);
     });
@@ -65,23 +63,23 @@ export default class GroupAdmin extends MapHubsComponent {
     $('.groupadmin-tooltips').tooltip();
   }
 
-  enableButton () {
+  enableButton = () => {
     this.setState({
       canSubmit: true
     });
   }
 
-  disableButton () {
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
   }
 
-  onError(msg: string){
+  onError = (msg: string) => {
     MessageActions.showMessage({title: this.__('Error'), message: msg});
   }
 
-  submit (model: Object) {
+  submit = (model: Object) => {
     var _this = this;
     GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
       if(err){
@@ -100,7 +98,7 @@ export default class GroupAdmin extends MapHubsComponent {
     });
   }
 
-  checkGroupIdAvailable(id){
+  checkGroupIdAvailable = (id: string) => {
     var _this = this;
     //if the form is modified but put back to the currently saved ID, just return true
     if (id == this.props.group.group_id) return true;
@@ -130,7 +128,7 @@ export default class GroupAdmin extends MapHubsComponent {
     return result;
   }
 
-  handleMemberDelete(user: Object){
+  handleMemberDelete = (user: Object) => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title:  _this.__('Confirm Removal'),
@@ -147,7 +145,7 @@ export default class GroupAdmin extends MapHubsComponent {
     });
   }
 
-  handleGroupDelete(){
+  handleGroupDelete = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Deletion'),
@@ -169,9 +167,9 @@ export default class GroupAdmin extends MapHubsComponent {
     });
   }
 
-  handleMemberMakeAdmin(user: Object){
+  handleMemberMakeAdmin = (user: Object) => {
     var _this = this;
-    if(user.type == 'Administrator'){
+    if(user.type === 'Administrator'){
       this.handleRemoveMemberAdmin(user);
     }else{
       ConfirmationActions.showConfirmation({
@@ -190,7 +188,7 @@ export default class GroupAdmin extends MapHubsComponent {
     }
   }
 
-  handleRemoveMemberAdmin(user: Object){
+  handleRemoveMemberAdmin = (user: Object) => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Remove Administrator'),
@@ -207,7 +205,7 @@ export default class GroupAdmin extends MapHubsComponent {
     });
   }
 
-  handleAddMember(user: Object){
+  handleAddMember = (user: Object) => {
     var _this = this;
     debug(user.value.value + ' as Admin:' + user.option);
     GroupActions.addMember(user.value.value, user.option, _this.state._csrf, function(err){
@@ -219,11 +217,11 @@ export default class GroupAdmin extends MapHubsComponent {
     });
   }
 
-  showImageCrop(){
+  showImageCrop = () => {
     this.refs.imagecrop.show();
   }
 
-  onCrop(data: Object){
+  onCrop = (data: Object) => {
     var _this = this;
     //send data to server
     GroupActions.setGroupImage(data, _this.state._csrf, function(err){

@@ -1,39 +1,35 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var LayerSettings = require('./LayerSettings');
-var LayerActions = require('../../actions/LayerActions');
-var PresetActions = require('../../actions/presetActions');
-var MessageActions = require('../../actions/MessageActions');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LayerStore = require('../../stores/layer-store');
-var LocaleStore = require('../../stores/LocaleStore');
-var LocaleMixin = require('../LocaleMixin');
+import LayerSettings from './LayerSettings';
+import LayerActions from '../../actions/LayerActions';
+import PresetActions from '../../actions/presetActions';
+import MessageActions from '../../actions/MessageActions';
+import LayerStore from '../../stores/layer-store';
 import Progress from '../Progress';
+import MapHubsComponent from '../MapHubsComponent';
 
-var Step2 = React.createClass({
+export default class Step2 extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore), LocaleMixin],
+  props: {
+		groups: Array<Object>,
+    onSubmit: Function
+  }
 
-  propTypes: {
-		groups: PropTypes.array,
-    onSubmit: PropTypes.func
-  },
+  static defaultProps = {
+    groups: [],
+    onSubmit: null
+  }
 
-  static defaultProps: {
-    return {
-      groups: [],
-      onSubmit: null
-    };
-  },
+  state = {
+    saving: false
+  }
 
-  getInitialState() {
-    return {
-      saving: false
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-  onSubmit(){
+  onSubmit = () => {
     if(!this.state.layer.is_external && !this.state.layer.is_empty){
       return this.saveDataLoad();
     }else if(this.state.layer.is_empty){
@@ -42,9 +38,9 @@ var Step2 = React.createClass({
     else{
       return this.saveExternal();
     }
-  },
+  }
 
-  initEmptyLayer() {
+  initEmptyLayer = () => {
     var _this = this;
 
     //save presets
@@ -65,9 +61,9 @@ var Step2 = React.createClass({
         });
       }
     });
-  },
+  }
 
-  saveDataLoad() {
+  saveDataLoad = () => {
     var _this = this;
 
     _this.setState({saving: true});
@@ -90,14 +86,14 @@ var Step2 = React.createClass({
         });
       }
     });
-  },
+  }
 
-  saveExternal() {
+  saveExternal = () => {
     LayerActions.tileServiceInitialized();
     if(this.props.onSubmit){
       this.props.onSubmit();
     }
-  },
+  }
 
 	render() {
 		return (
@@ -112,6 +108,4 @@ var Step2 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Step2;
+}

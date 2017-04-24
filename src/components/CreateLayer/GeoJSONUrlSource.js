@@ -18,7 +18,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent {
     onPrev: Function
   }
 
-  state: {
+  state = {
     canSubmit: false
   }
 
@@ -28,6 +28,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent {
   }
 
   componentWillMount(){
+    super.componentWillMount();
     Formsy.addValidationRule('isHttps', function (values, value) {
         return value.startsWith('https://');
     });
@@ -45,7 +46,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent {
     });
   }
 
-  submit = (model) => {
+  submit = (model: Object) => {
     var _this = this;
 
     LayerActions.saveDataSettings({

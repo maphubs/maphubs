@@ -40,28 +40,28 @@ addLocaleData(it);
 import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class LayerInfo extends MapHubsComponent {
 
-  propTypes: {
+  props: {
 		layer: Object,
     notes: string,
     stats: Object,
     canEdit: boolean,
     createdByUser: Object,
     updatedByUser: Object,
-    locale: string
+    locale: string,
+    _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
       stats: {maps: 0, stories: 0, hubs: 0},
       canEdit: false
   }
 
-  state: {
+  state = {
     editingNotes: false,
     gridHeight: 100,
     gridHeightOffset: 48
@@ -70,13 +70,8 @@ export default class LayerInfo extends MapHubsComponent {
   constructor(props: Object){
     super(props);
     this.stores.push(LayerNotesStore);
-  }
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(LayerNotesStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    LayerNotesActions.rehydrate({notes: this.props.notes});
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(LayerNotesStore, {notes: this.props.notes});
   }
 
   componentDidMount(){
@@ -131,7 +126,7 @@ export default class LayerInfo extends MapHubsComponent {
     }
   }
 
-  getGeoJSON(cb){
+  getGeoJSON = (cb: Function) => {
     var _this = this;
       var baseUrl, dataUrl, presetUrl;
     if(this.props.layer.remote){
@@ -163,7 +158,7 @@ export default class LayerInfo extends MapHubsComponent {
     });
   }
 
-  onTabSelect(){
+  onTabSelect = () => {
     var _this = this;
 
     var gridHeight = $(this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
@@ -176,7 +171,7 @@ export default class LayerInfo extends MapHubsComponent {
 
   }
 
-  onRowSelected(idVal: string, idField: string){
+  onRowSelected = (idVal: string, idField: string) => {
     var _this = this;
     if(this.state.geoJSON){
       this.state.geoJSON.features.forEach(function(feature){
@@ -190,7 +185,7 @@ export default class LayerInfo extends MapHubsComponent {
   }
 
   //Build iD edit link
-  getEditLink(){
+  getEditLink = () => {
     //get map position
     var position = this.refs.map.getPosition();
     var zoom = Math.ceil(position.zoom);
@@ -199,20 +194,20 @@ export default class LayerInfo extends MapHubsComponent {
     return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' + position.lng + '/' + position.lat;
   }
 
-  openEditor(){
+  openEditor = () => {
     var editLink = this.getEditLink();
     window.location = editLink;
   }
 
-  handleNewComment(){
+  handleNewComment = () => {
 
   }
 
-  startEditingNotes(){
+  startEditingNotes = () => {
     this.setState({editingNotes: true});
   }
 
-  stopEditingNotes(){
+  stopEditingNotes = () => {
     var _this = this;
 
     LayerNotesActions.saveNotes(this.props.layer.layer_id, this.state._csrf, function(err){
@@ -225,7 +220,7 @@ export default class LayerInfo extends MapHubsComponent {
     });
   }
 
-  copyToClipboard(val: string){
+  copyToClipboard = (val: string) => {
     clipboard.copy(val);
   }
 
@@ -287,14 +282,14 @@ export default class LayerInfo extends MapHubsComponent {
       notesEditButton = (
         <HubEditButton editing={this.state.editingNotes}
           style={{position: 'absolute'}}
-          startEditing={this.startEditingNotes.bind(this)} stopEditing={this.stopEditingNotes.bind(this)} />
+          startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
       );
 
       var idEditButton = '', addPhotoPointButton = '';
       if(!this.props.layer.is_external){
         idEditButton = (
           <li>
-            <a onClick={this.openEditor.bind(this)} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map Data')}>
+            <a onClick={this.openEditor} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map Data')}>
               <i className="material-icons">mode_edit</i>
             </a>
           </li>
@@ -391,16 +386,16 @@ export default class LayerInfo extends MapHubsComponent {
     if(this.props.layer.is_external && !this.props.layer.remote){
       var externalUrl = this.props.layer.external_layer_config.url;
       var type = '';
-      if(this.props.layer.external_layer_type == 'openstreetmap'){
+      if(this.props.layer.external_layer_type === 'openstreetmap'){
         type = 'OpenStreetMap';
         externalUrl = 'http://openstreetmap.org';
-      }else if(this.props.layer.external_layer_config.type == 'raster'){
+      }else if(this.props.layer.external_layer_config.type === 'raster'){
         type = 'Raster';
         externalUrl = this.props.layer.external_layer_config.tiles[0];
-      }else if((!this.props.layer.external_layer_type || this.props.layer.external_layer_type == '')
+      }else if((!this.props.layer.external_layer_type || this.props.layer.external_layer_type === '')
               && this.props.layer.external_layer_config.type){
         type = this.props.layer.external_layer_config.type;
-      }else if(this.props.layer.external_layer_config.type == 'geojson'){
+      }else if(this.props.layer.external_layer_config.type === 'geojson'){
         type = 'GeoJSON';
         externalUrl = this.props.layer.external_layer_config.data;
       }else{
@@ -424,7 +419,7 @@ export default class LayerInfo extends MapHubsComponent {
               shortname="maphubs"
               identifier={'maphubs-layer-' + this.props.layer.layer_id}
               title={this.props.layer.name}
-              onNewComment={this.handleNewComment.bind(this)}
+              onNewComment={this.handleNewComment}
               />
           );
     }else{
@@ -521,7 +516,7 @@ export default class LayerInfo extends MapHubsComponent {
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
                 <div className="row no-margin">                
-                  <LayerDataGrid  layer_id={this.props.layer.layer_id} gridHeight={this.state.gridHeight} geoJSON={this.state.geoJSON} presets={this.state.presets} onRowSelected={this.onRowSelected.bind(this)} />
+                  <LayerDataGrid  layer_id={this.props.layer.layer_id} gridHeight={this.state.gridHeight} geoJSON={this.state.geoJSON} presets={this.state.presets} onRowSelected={this.onRowSelected} />
                 </div>
               </div>
               <div id="export" className="col s12" style={{display: tabContentDisplay}}>

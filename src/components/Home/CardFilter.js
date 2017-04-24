@@ -1,50 +1,39 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class CardFilter extends MapHubsComponent {
 
-var CardFilter = React.createClass({
+  props: {
+    defaultValue: string,
+    onChange: Function
+  }
 
-  mixins:[StateMixin.connect(LocaleStore)],
+  static defaultProps = {
+    defaultValue:'featured'
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    defaultValue: PropTypes.string,
-    onChange: PropTypes.func.isRequired
-  },
-
-  getDefaultProps(){
-    return {
-      defaultValue:'featured'
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      value: props.defaultValue
     };
-  },
+  }
 
-  getInitialState(){
-    return {
-      value: this.props.defaultValue
-    };
-  },
-
-  onFeatured(){
+  onFeatured = () => {
     this.setState({value: 'featured'});
     this.props.onChange('featured');
-  },
+  }
 
-  onPopular(){
+  onPopular = () => {
     this.setState({value: 'popular'});
     this.props.onChange('popular');
-  },
+  }
 
-  onRecent(){
+  onRecent = () => {
     this.setState({value: 'recent'});
     this.props.onChange('recent');
-  },
+  }
 
   render(){
     var activeClass = 'omh-accent-text';
@@ -64,7 +53,4 @@ var CardFilter = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = CardFilter;
+}

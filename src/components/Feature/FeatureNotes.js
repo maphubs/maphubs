@@ -1,36 +1,28 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import Editor from 'react-medium-editor';
+import FeatureNotesStore from '../../stores/FeatureNotesStore';
+import FeatureNotesActions from '../../actions/FeatureNotesActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var FeatureNotesStore = require('../../stores/FeatureNotesStore');
-var FeatureNotesActions = require('../../actions/FeatureNotesActions');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class FeatureNotes extends MapHubsComponent {
 
-var FeatureNotes = React.createClass({
+  props: {
+    editing: boolean
+  }
 
-  mixins:[StateMixin.connect(FeatureNotesStore), StateMixin.connect(LocaleStore)],
+  static defaultProps = {
+    editing: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(FeatureNotesStore);
+  }
 
-  propTypes: {
-    editing: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      editing: false
-    };
-  },
-
-  handleNotesChange(notes){
+  handleNotesChange = (notes: string) => {
     FeatureNotesActions.setNotes(notes);
-  },
+  }
 
   render(){
     var resources = '';
@@ -74,5 +66,4 @@ var FeatureNotes = React.createClass({
     );
   }
 
-});
-module.exports = FeatureNotes;
+}

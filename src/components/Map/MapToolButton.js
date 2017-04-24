@@ -17,7 +17,7 @@ export default class MapToolButton extends React.Component {
     disabled: boolean,
   }
 
-  static defaultProps: {
+  static defaultProps = {
     icon: 'edit',
     top: '10px',
     color: MAPHUBS_CONFIG.primaryColor,

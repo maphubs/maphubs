@@ -12,7 +12,7 @@ export default class Footer extends MapHubsComponent {
     links: Array<Object>
   }
 
-  static defaultProps: {
+  static defaultProps = {
     showPoweredByMapHubs: true,
     showMapForEnvironmentMoabiLogo: false,
     showContactUs: true

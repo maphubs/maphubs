@@ -2,12 +2,10 @@
 import React from 'react';
 import Header from '../components/header';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
-var cardUtil = require('../services/card-util');
-
+import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
 
 export default class GroupInfo extends MapHubsComponent {
 
@@ -22,7 +20,7 @@ export default class GroupInfo extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     group: {
       name: "Unknown"
     },
@@ -35,17 +33,13 @@ export default class GroupInfo extends MapHubsComponent {
 
   constructor(props: Object){
 		super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
       mapCards: this.props.maps.map(cardUtil.getMapCard),
       layerCards: this.props.layers.map(cardUtil.getLayerCard),
       hubCards: this.props.hubs.map(cardUtil.getHubCard)
     };
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-  }
 
   render() {
     var _this = this;

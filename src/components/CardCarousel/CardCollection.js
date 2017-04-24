@@ -9,7 +9,7 @@ export default class CardCollection extends React.Component {
     title: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     title: null
   }
 

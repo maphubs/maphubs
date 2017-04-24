@@ -2,7 +2,7 @@
 import React from 'react';
 import LayerListItem from './LayerListItem';
 import _isEqual from 'lodash.isequal';
-import DragDropContext from 'react-dnd';
+import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'react/lib/update';
 
@@ -22,8 +22,8 @@ class LayerList extends React.PureComponent {
     editLayer: Function
   }
 
-  state: {
-    layers: Array<Object>
+  state = {
+    layers: []
   }
 
   constructor(props){

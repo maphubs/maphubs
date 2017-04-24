@@ -1,13 +1,13 @@
+//@flow
 import React from 'react';
-var ReactDOM = require('react-dom');
-import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
+
 var $ = require('jquery');
-var Promise = require('bluebird');
-var Formsy = require('formsy-react');
+import Promise from 'bluebird';
+import Formsy from 'formsy-react';
 import Toggle from './forms/toggle';
 import MessageActions from '../actions/MessageActions';
 import Suggestions from './SearchBar/Suggestions';
-
 
 const KEY_CODES = {
   UP: 38,
@@ -20,7 +20,29 @@ import LocaleStore from '../stores/LocaleStore';
 
 export default class AddItem extends MapHubsComponent {
 
-  constructor(props){
+  props:{
+    id: string,
+    placeholder: string,
+    suggestionUrl: string,
+    onAdd: Function,
+    autosuggestDelay: number,
+    autoFocus: boolean,
+    inputName: string,
+    optionLabel: string,
+    addButtonLabel: string
+  }
+
+  static defaultProps = {
+    id: 'additem',
+    autoFocus: false,
+    autosuggestDelay: 250,
+    inputName: 'query',
+    placeholder: 'Add',
+    addButtonLabel: 'Add',
+    optionLabel: null
+  }
+
+  constructor(props: Object){
 		super(props);
 		this.stores = [LocaleStore];
     this.state = {
@@ -30,31 +52,6 @@ export default class AddItem extends MapHubsComponent {
       option: false
     };
 	}
-
-  updateSuggestions(input, resolve) {
-    if (typeof window !== 'undefined' && this.props.suggestionUrl) {
-        $.ajax({
-         url: this.props.suggestionUrl + '?q=' + input,
-         contentType : 'application/json;charset=UTF-8',
-         dataType: 'json',
-          async: true,
-          success(msg){
-            if(msg.suggestions){
-              resolve(msg.suggestions);
-            }
-          },
-          error(msg){
-            MessageActions.showMessage({title: 'Error', message: msg});
-          },
-          complete(){
-          }
-      });
-    }
- }
-
- handleAddWithOptionChecked(option){
-   this.setState({option});
- }
 
  componentDidMount() {
    /*eslint-disable react/no-find-dom-node */
@@ -78,25 +75,50 @@ export default class AddItem extends MapHubsComponent {
    document.body.removeEventListener('click', this.hideSuggestions);
  }
 
- handleClick(e){
+ updateSuggestions = (input: string, resolve: Function) => {
+    if (typeof window !== 'undefined' && this.props.suggestionUrl) {
+        $.ajax({
+         url: this.props.suggestionUrl + '?q=' + input,
+         contentType : 'application/json;charset=UTF-8',
+         dataType: 'json',
+          async: true,
+          success(msg){
+            if(msg.suggestions){
+              resolve(msg.suggestions);
+            }
+          },
+          error(msg){
+            MessageActions.showMessage({title: 'Error', message: msg});
+          },
+          complete(){
+          }
+      });
+    }
+ }
+
+ handleAddWithOptionChecked = (option: any) =>{
+   this.setState({option});
+ }
+
+ handleClick = (e: any) => {
    e.nativeEvent.stopImmediatePropagation();
  }
 
- handleKeyDown(e) {
-   if(e.which == KEY_CODES.ENTER ){
+ handleKeyDown = (e: any) => {
+   if(e.which === KEY_CODES.ENTER ){
      e.preventDefault();
      this.submit(e);
    }
-   if (e.which != KEY_CODES.UP && e.which != KEY_CODES.DOWN) return;
+   if (e.which !== KEY_CODES.UP && e.which !== KEY_CODES.DOWN) return;
    e.preventDefault();
    let highlightedItem = this.state.highlightedItem;
 
-   if (e.which == KEY_CODES.UP) {
+   if (e.which === KEY_CODES.UP) {
      if (highlightedItem <= 0) return;
      --highlightedItem;
    }
-   if (e.which == KEY_CODES.DOWN) {
-     if (highlightedItem == this.state.suggestions.length - 1) return;
+   if (e.which === KEY_CODES.DOWN) {
+     if (highlightedItem === this.state.suggestions.length - 1) return;
      ++highlightedItem;
    }
 
@@ -106,7 +128,7 @@ export default class AddItem extends MapHubsComponent {
    });
  }
 
- displaySuggestions(suggestions) {
+ displaySuggestions = (suggestions: any) => {
    this.setState({
      suggestions,
      highlightedItem: -1
@@ -117,17 +139,17 @@ export default class AddItem extends MapHubsComponent {
     /*eslint-enable react/no-find-dom-node  */
  }
 
- hideSuggestions(){
+ hideSuggestions = () => {
    /*eslint-disable react/no-find-dom-node */
      $(ReactDOM.findDOMNode(this.refs.suggestions)).hide();
       /*eslint-enable react/no-find-dom-node */
  }
 
- fillInSuggestion(suggestion) {
+ fillInSuggestion = (suggestion: string) => {
    this.setState({value: suggestion});
  }
 
- handleChange(e) {
+ handleChange = (e: any) => {
    clearTimeout(this._timerId);
    let input = e.target.value;
    if (!input) return this.setState(this.getInitialState());
@@ -143,7 +165,7 @@ export default class AddItem extends MapHubsComponent {
    }, this.props.autosuggestDelay);
  }
 
- submit(e) {
+ submit = (e: any) => {
    e.preventDefault();
    if (!this.state.value) return;
    this.props.onAdd({value: this.state.value, option: this.state.option});
@@ -204,25 +226,3 @@ export default class AddItem extends MapHubsComponent {
    );
  }
 }
-
-AddItem.defaultProps = {
-  id: 'additem',
-  autoFocus: false,
-  autosuggestDelay: 250,
-  inputName: 'query',
-  placeholder: 'Add',
-  addButtonLabel: 'Add',
-  optionLabel: null
-};
-
-AddItem.propTypes = {
-  id: PropTypes.string,
-  placeholder: PropTypes.string,
-  suggestionUrl: PropTypes.string,
-  onAdd: PropTypes.func.isRequired,
-  autosuggestDelay: PropTypes.number,
-  autoFocus: PropTypes.bool,
-  inputName: PropTypes.string,
-  optionLabel: PropTypes.string,
-  addButtonLabel: PropTypes.string
-};

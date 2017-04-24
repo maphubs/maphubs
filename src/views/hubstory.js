@@ -3,13 +3,11 @@ import React from 'react';
 import HubNav from '../components/Hub/HubNav';
 import HubBanner from '../components/Hub/HubBanner';
 import HubStore from '../stores/HubStore';
-import HubActions from '../actions/HubActions';
 import StoryHeader from '../components/Story/StoryHeader';
 import ReactDisqusThread from 'react-disqus-thread';
 var slug = require('slug');
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class HubStory extends MapHubsComponent {
@@ -22,7 +20,7 @@ export default class HubStory extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     story: {},
     hub: {},
     canEdit: false
@@ -31,14 +29,9 @@ export default class HubStory extends MapHubsComponent {
   constructor(props: Object){
 		super(props);
     this.stores.push(HubStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(HubStore, {hub: this.props.hub, canEdit: this.props.canEdit});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(HubStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    HubActions.rehydrate({hub: this.props.hub, canEdit: this.props.canEdit});
-  }
 
   render() {
     var story = this.props.story;

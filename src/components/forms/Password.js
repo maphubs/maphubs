@@ -16,7 +16,7 @@ export default class Password extends MapHubsComponent {
     csrf:  string
   }
 
-  state: {
+  state = {
     canSubmit: false
   }
 

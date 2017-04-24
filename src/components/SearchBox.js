@@ -16,7 +16,7 @@ export default class SearchBox extends React.Component {
     id: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     label: 'Search',
     style: {},
     id: 'search'

@@ -1,47 +1,39 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var PureRenderMixin = require('react-addons-pure-render-mixin');
-var LayerListItemStatic = require('./LayerListItemStatic');
-var _isEqual = require('lodash.isequal');
+import LayerListItemStatic from './LayerListItemStatic';
+import _isEqual from 'lodash.isequal';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var LayerListStatic = React.createClass({
-  mixins: [PureRenderMixin],
+export default class LayerListStatic extends MapHubsPureComponent {
 
-  propTypes:  {
-    layers:  PropTypes.array,
-    showVisibility: PropTypes.bool,
-    showDesign: PropTypes.bool,
-    showRemove: PropTypes.bool,
-    showEdit: PropTypes.bool,
-    showChangeDesign: PropTypes.bool,
-    toggleVisibility: PropTypes.func,
-    removeFromMap: PropTypes.func,
-    showLayerDesigner: PropTypes.func,
-    updateLayers: PropTypes.func,
-    editLayer: PropTypes.func
-  },
+  props: {
+    layers:  Array<Object>,
+    showVisibility: boolean,
+    showDesign: boolean,
+    showRemove: boolean,
+    showEdit: boolean,
+    showChangeDesign: boolean,
+    toggleVisibility: Function,
+    removeFromMap: Function,
+    showLayerDesigner: Function,
+    updateLayers: Function,
+    editLayer: Function
+  }
 
-  static defaultProps: {
-    return {
-
-    };
-  },
-
-  getInitialState(){
-    var layers = JSON.parse(JSON.stringify(this.props.layers));
-    return {
+  constructor(props: Object){
+    super(props);
+    var layers = JSON.parse(JSON.stringify(props.layers));
+    this.state = {
       layers
     };
-  },
+  }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
      if(!_isEqual(nextProps.layers, this.state.layers)){
        var layers = JSON.parse(JSON.stringify(nextProps.layers));
      this.setState({layers});
     }
-  },
-
-
+  }
 
   render(){
     var _this = this;
@@ -69,9 +61,5 @@ var LayerListStatic = React.createClass({
           }</ul>
         </div>
     );
-
   }
-
-});
-
-module.exports = LayerListStatic;
+}

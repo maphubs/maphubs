@@ -17,7 +17,7 @@ export default class GroupTag extends MapHubsComponent {
     className: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     size: 20,
     chipWidth: 100,
     fontSize: 10,

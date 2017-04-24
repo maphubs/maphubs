@@ -1,59 +1,41 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-var GroupTag = require('../Groups/GroupTag');
-var Formsy = require('formsy-react');
-var Toggle = require('../../components/forms/toggle');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
 var $ = require('jquery');
-var _isEqual = require('lodash.isequal');
+import GroupTag from '../Groups/GroupTag';
+import Formsy from 'formsy-react';
+import Toggle from '../../components/forms/toggle';
+import _isEqual from 'lodash.isequal';
+import MapHubsComponent from '../MapHubsComponent';
 
+export default class LayerListItemStatic extends MapHubsComponent {
 
-var LayerListItemStatic = React.createClass({
+  props:  {
+    id: number,
+    item: Object,    
+    moveItem: Function,
+    showVisibility: boolean,
+    showRemove: boolean,
+    showDesign: boolean,
+    showEdit: boolean,
+    toggleVisibility: Function,
+    removeFromMap: Function,
+    showLayerDesigner: Function,
+    editLayer: Function,
+    isDragging: boolean,
+    connectDragSource: Function,
+    connectDropTarget: Function,
+    index: number
+  }
 
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes:  {
-    id: PropTypes.number.isRequired,
-    item: PropTypes.object.isRequired,    
-    moveItem: PropTypes.func,
-    showVisibility: PropTypes.bool,
-    showRemove: PropTypes.bool,
-    showDesign: PropTypes.bool,
-    showEdit: PropTypes.bool,
-    toggleVisibility: PropTypes.func,
-    removeFromMap: PropTypes.func,
-    showLayerDesigner: PropTypes.func,
-    editLayer: PropTypes.func,
-    isDragging: PropTypes.bool,
-    connectDragSource: PropTypes.func,
-    connectDropTarget: PropTypes.func,
-    index: PropTypes.number.isRequired,
-  },
-
-  getDefaultProps(){
-    return {
-      showVisibility: true
-    };
-  },
-
-  getInitialState(){
-    return {
-    };
-  },
+  static defaultProps = {
+    showVisibility: true
+  }
 
   componentDidMount(){
     $('.map-layer-tooltipped').tooltip();
-  },
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isEqual(this.props, nextProps)){
       return true;
@@ -62,17 +44,17 @@ var LayerListItemStatic = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  resetTooltips(){
+  resetTooltips = () => {
     $('.map-layer-tooltipped').tooltip('remove');
     $('.map-layer-tooltipped').tooltip();
-  },
+  }
 
-  removeFromMap(layer){
+  removeFromMap = (layer: Object) => {
     $('.map-layer-tooltipped').tooltip('remove');
     this.props.removeFromMap(layer);
-  },
+  }
 
   render() {
     var _this = this;
@@ -211,7 +193,4 @@ var LayerListItemStatic = React.createClass({
       </div>
     );
   }
-
-});
-
-module.exports = LayerListItemStatic;
+}

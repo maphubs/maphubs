@@ -12,7 +12,7 @@ export default class HubResources extends MapHubsComponent {
     editing: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     editing: false
   }
 

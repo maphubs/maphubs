@@ -1,19 +1,16 @@
 import React from 'react';
-var UploadLocalSource = require('./UploadLocalSource');
-var EmptyLocalSource = require('./EmptyLocalSource');
-var MapboxSource = require('./MapboxSource');
-var RasterTileSource = require('./RasterTileSource');
-var VectorTileSource = require('./VectorTileSource');
-var GeoJSONUrlSource = require('./GeoJSONUrlSource');
-//var GithubSource = require('./GithubSource');
-var AGOLSource = require('./AGOLSource');
-//var OSMSource = require('./OSMSource');
-var PlanetLabsSource = require('./PlanetLabsSource');
+import UploadLocalSource  from './UploadLocalSource';
+import EmptyLocalSource  from './EmptyLocalSource';
+import MapboxSource  from './MapboxSource';
+import RasterTileSource  from './RasterTileSource';
+import VectorTileSource  from './VectorTileSource';
+import GeoJSONUrlSource  from './GeoJSONUrlSource';
+import AGOLSource  from './AGOLSource';
+import PlanetLabsSource  from './PlanetLabsSource';
 
-require('../../stores/preset-store'); //needed to init the store used by the source options
+import '../../stores/preset-store'; //needed to init the store used by the source options
 
-
-var LayerSourceMixin = {
+export default {
 
   getSource(type){
     if(type === 'local'){
@@ -43,7 +40,4 @@ var LayerSourceMixin = {
       return '';
     }
   }
-
 };
-
-module.exports = LayerSourceMixin;

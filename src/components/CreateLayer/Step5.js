@@ -1,31 +1,26 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var LayerStyle = require('./LayerStyle');
-var LayerActions = require('../../actions/LayerActions');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var LocaleMixin = require('../LocaleMixin');
+import LayerStyle from './LayerStyle';
+import LayerActions from '../../actions/LayerActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-var Step5 = React.createClass({
+export default class Step5 extends MapHubsComponent {
 
-  mixins:[StateMixin.connect(LocaleStore), LocaleMixin],
+  props: {
+    onSubmit: Function,
+    onPrev: Function
+  }
 
-  propTypes: {
-    onSubmit: PropTypes.func,
-    onPrev: PropTypes.func
-  },
-
-  onSubmit(layer_id, name) {
+  onSubmit = (layer_id: number, name: string) => {
     var _this = this;
     LayerActions.setComplete(this.state._csrf, function(){
       if(_this.props.onSubmit) _this.props.onSubmit(layer_id, name);
     });
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
 		return (
@@ -36,6 +31,4 @@ var Step5 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Step5;
+}

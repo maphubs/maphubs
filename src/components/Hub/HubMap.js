@@ -1,4 +1,4 @@
-//#flow
+//@flow
 import React from 'react';
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
@@ -11,15 +11,15 @@ import MapHubsComponent from '../../components/MapHubsComponent';
 export default class HubMap extends MapHubsComponent {
 
   props: {
-    hub: PropTypes.object.isRequired,
-    editing: PropTypes.bool,
-    height: PropTypes.string,
-    border: PropTypes.bool,
-    myMaps: PropTypes.array,
-    popularMaps: PropTypes.array
+    hub: Object,
+    editing: boolean,
+    height: string,
+    border: boolean,
+    myMaps: Array<Object>,
+    popularMaps: Array<Object>
   }
 
-  static defaultProps: {
+  static defaultProps = {
     editing: false,
     height: '300px',
     border: false,
@@ -46,12 +46,16 @@ export default class HubMap extends MapHubsComponent {
     window.dispatchEvent(evt);
   }
 
-  onSetMap(map){
+  onSetMap = (map: Object) => {
     HubActions.setMap(map);
   }
 
-  showMapSelection(){
+  showMapSelection = () => {
     this.refs.addmap.show();
+  }
+
+  onMapCancel = () => {
+    this.refs.addmap.hide();
   }
 
   render() {
@@ -62,19 +66,19 @@ export default class HubMap extends MapHubsComponent {
     if(this.props.editing){
       selectMap = (
          <AddMapModal ref="addmap"
-         onAdd={this.onSetMap.bind(this)} onClose={this.onMapCancel.bind(this)}
+         onAdd={this.onSetMap} onClose={this.onMapCancel}
          myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
       );
       if(this.state.map){
          mapEditButton = (
-          <a className="btn omh-color white-text" onClick={this.showMapSelection.bind(this)}
+          <a className="btn omh-color white-text" onClick={this.showMapSelection}
             style={{position: 'absolute', top: '5px', left: '45%'}}>
             {this.__('Change Map')}
           </a>
         );
       }else{
        mapEditButton = (
-        <a className="btn omh-color white-text" onClick={this.showMapSelection.bind(this)}
+        <a className="btn omh-color white-text" onClick={this.showMapSelection}
           style={{position: 'absolute', top: '45%', left: '45%'}}>
           {this.__('Select a Map')}
         </a>

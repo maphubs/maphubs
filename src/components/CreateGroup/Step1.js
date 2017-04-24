@@ -20,12 +20,12 @@ export default class CreateGroupStep1 extends MapHubsComponent {
     active: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     onSubmit: null,
     active: false
   }
 
-  state: {
+  state = {
     canSubmit: false,
     showError: false,
     errorMessage: '',
@@ -38,6 +38,7 @@ export default class CreateGroupStep1 extends MapHubsComponent {
 	}
 
   componentWillMount() {
+    super.componentWillMount();
     var _this = this;
     Formsy.addValidationRule('isAvailable', function (values, value) {
         if(_this.state.group.created) return true;

@@ -1,27 +1,14 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Actions = require('../../actions/map/BaseMapActions');
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class EditBaseMapBox extends MapHubsComponent {
 
+  props: {
+    gpxLink: string
+  }
 
-var EditBaseMapBox = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text: string){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    gpxLink: PropTypes.string
-  },
-
-
-  getLinks(){
+  getLinks = () => {
     var origHash = window.location.hash.replace('#', '');
       var hashParts = origHash.split('/');
       var zoom =  Math.round(hashParts[0]);
@@ -36,18 +23,18 @@ var EditBaseMapBox = React.createClass({
       return {
         osm: osmEditLink,
         loggingroads: loggingRoadsEditLink
-      }
-  },
+      };
+  }
 
-  openOSM(){
+  openOSM = () => {
     var links = this.getLinks();
     window.location = links.osm;
-  },
+  }
 
-  openLogginRoads(){
+  openLogginRoads = () =>{
     var links = this.getLinks();
     window.location = links.loggingroads;
-  },
+  }
 
   render(){
 
@@ -65,6 +52,4 @@ var EditBaseMapBox = React.createClass({
       </div>
     ); 
   }
-});
-
-module.exports = EditBaseMapBox;
+}

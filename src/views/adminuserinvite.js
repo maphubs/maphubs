@@ -4,16 +4,13 @@ import Formsy from 'formsy-react';
 import TextInput from '../components/forms/textInput';
 import Header from '../components/header';
 import Footer from '../components/footer';
-
 import NotificationActions from '../actions/NotificationActions';
 import Progress from '../components/Progress';
 import MessageActions from '../actions/MessageActions';
 import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class AdminUserInvite extends MapHubsComponent {
@@ -24,29 +21,29 @@ export default class AdminUserInvite extends MapHubsComponent {
     footerConfig: Object
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-  }
-
-  state: {
+  state = {
     canSubmit: false,
     saving: false
   }
 
-  enableButton() {
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
+  enableButton = () => {
     this.setState({
       canSubmit: true
     });
   }
 
-  disableButton() {
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
   }
 
-  onSubmit(model: Object){
+  onSubmit = (model: Object) => {
     var _this = this;
     this.setState({saving: true});
     request.post('/admin/invite/send')

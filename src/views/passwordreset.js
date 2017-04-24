@@ -1,11 +1,10 @@
-//#flow
+//@flow
 import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import Password from '../components/forms/Password';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class PasswordReset extends MapHubsComponent {
@@ -13,15 +12,16 @@ export default class PasswordReset extends MapHubsComponent {
   props: {
     passreset: string,
     locale: string,
+    _csrf: string,
     footerConfig: Object
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  onSave(){
+  onSave = () => {
     window.location = '/login';
   }
 
@@ -33,7 +33,7 @@ export default class PasswordReset extends MapHubsComponent {
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
               <h4 className="center">{this.__('Please Enter a New Password')}</h4>
-              <Password passreset={this.props.passreset} csrf={this.state._csrf} onSave={this.onSave.bind(this)}/>
+              <Password passreset={this.props.passreset} csrf={this.state._csrf} onSave={this.onSave}/>
             </div>
           </div>
       </main>

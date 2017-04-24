@@ -19,7 +19,7 @@ export default class Marker extends React.Component {
     iconStrokeWidth: number
   }
 
-  static defaultProps: {
+  static defaultProps = {
     shape: 'MAP_PIN',
     width: 48,
     height: 48,

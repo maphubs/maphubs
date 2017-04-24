@@ -1,33 +1,31 @@
 //@flow
 import React from 'react';
 import MapHubsComponent from '../components/MapHubsComponent';
-import UserStore from '../stores/UserStore';
 import LocaleActions from '../actions/LocaleActions';
-import LocaleStore from '../stores/LocaleStore';
-//var Locales = require('../services/locales');
 var $ = require('jquery');
+import debugFactory from '../services/debug';
+let debug = debugFactory('MapHubsComponent');
 
-export default class LocaleChooser extends MapHubsComponent {
+type props = {
+  id: string
+};
 
-  props: {
-    id: string
-  }
+type state = {
+  locale: string
+}
 
-  static defaultProps: {
+export default class LocaleChooser extends MapHubsComponent<props, props, state> {
+
+  static defaultProps = {
     id: 'locale-dropdown'
   }
 
-  constructor(props: Object){
-		super(props);
-		this.stores = [LocaleStore, UserStore];
-	}
-
   componentDidMount() {
-     $('.locale-tooltip').tooltip();
+    $('.locale-tooltip').tooltip();
     $(this.refs.dropdownButton).dropdown({
       inDuration: 300,
       outDuration: 225,
-      constrain_width: false, // Does not change width of dropdown to that of the activator
+      constrain_width: true, // Does not change width of dropdown to that of the activator
       hover: false, // Activate on hover
       gutter: 0, // Spacing from edge
       belowOrigin: true, // Displays dropdown below the button
@@ -36,15 +34,17 @@ export default class LocaleChooser extends MapHubsComponent {
   }
 
   shouldComponentUpdate(nextProps: Object, nextState: Object){
-    if(this.state.locale != nextState.locale){
+    if(this.state.locale !== nextState.locale){
       return true;
     }
     return false;
   }
 
-  onChange(locale: string){
+
+  onChange = (locale: string) => {
+    debug('LOCALE CHANGE: '+ locale);
     LocaleActions.changeLocale(locale);
-    $(this.refs.dropdownMenu).hide();
+    $(this.refs.dropdownButton).hide();
   }
 
   render() {
@@ -64,16 +64,14 @@ export default class LocaleChooser extends MapHubsComponent {
         <a ref="dropdownButton" className="locale-dropdown-button nav-dropdown-button"
           href="#!" data-activates={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
           <i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
-          <ul ref="dropdownMenu" id={this.props.id} className="dropdown-content">
+          <ul id={this.props.id} className="dropdown-content">
             <li><a href="#!" onClick={function(){_this.onChange('en');}} className="nav-hover-menu-item">English (EN)</a></li>
             <li><a href="#!" onClick={function(){_this.onChange('fr');}} className="nav-hover-menu-item">Français (FR)</a></li>
             <li><a href="#!" onClick={function(){_this.onChange('es');}} className="nav-hover-menu-item">Español (ES)</a></li>
             <li><a href="#!" onClick={function(){_this.onChange('it');}} className="nav-hover-menu-item">Italiano (IT)</a></li>
           </ul>
       </li>
-
     );
-
   }
 }
 

@@ -16,7 +16,7 @@ import MapHubsComponent from '../../components/MapHubsComponent';
 
 class LayerListItem extends MapHubsComponent {
 
-  propTypes:  {
+  props:  {
     id: number,
     item: Object,    
     moveItem: Function,

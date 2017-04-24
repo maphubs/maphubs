@@ -16,7 +16,7 @@ export default class LabelSettings extends MapHubsPureComponent {
     labels: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     style: null,
     layer: null,
     labels: {}

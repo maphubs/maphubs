@@ -1,18 +1,17 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var PureRenderMixin = require('react-addons-pure-render-mixin');
-var LayerListStatic = require('./LayerListStatic');
+import LayerListStatic from './LayerListStatic';
 var $ = require('jquery');
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-var LayerListDropDown = React.createClass({
-  mixins: [PureRenderMixin],
+export default class LayerListDropDown extends MapHubsPureComponent {
 
-  propTypes:  {
-    id: PropTypes.string.isRequired,
-    name:  PropTypes.string.isRequired,
-    layers:  PropTypes.array.isRequired,
-    toggleVisibility: PropTypes.func.isRequired
-  },
+  props:  {
+    id: string,
+    name:  string,
+    layers:  Array<Object>,
+    toggleVisibility: Function
+  }
 
   componentDidMount() {
     $(this.refs.dropdownButton).dropdown({
@@ -24,7 +23,7 @@ var LayerListDropDown = React.createClass({
       belowOrigin: true, // Displays dropdown below the button
       alignment: 'right' // Displays dropdown with edge aligned to the left of button
     });
-  },
+  }
 
   render(){
     return (
@@ -39,9 +38,5 @@ var LayerListDropDown = React.createClass({
           </div>
       </li>
     );
-
   }
-
-});
-
-module.exports = LayerListDropDown;
+}

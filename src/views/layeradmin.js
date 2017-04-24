@@ -14,10 +14,8 @@ import LayerStore from '../stores/layer-store';
 var $ = require('jquery');
 var slug = require('slug');
 var checkClientError = require('../services/client-error-response').checkClientError;
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import PresetStore from '../stores/preset-store';
 
@@ -34,14 +32,11 @@ export default class LayerAdmin extends MapHubsComponent {
   constructor(props: Object){
     super(props);
     this.stores.push(LayerStore);
-  }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(LayerStore);
-    Rehydrate.initStore(PresetStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    LayerActions.rehydrate({layer: this.props.layer, groups: this.props.groups});
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(LayerStore, {layer: this.props.layer, groups: this.props.groups});
+    Reflux.rehydrate(PresetStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.initStore(PresetStore);
     LayerActions.loadLayer(this.props.layer);
     PresetActions.setLayerId(this.props.layer.layer_id);
     PresetActions.loadPresets(this.props.layer.presets);
@@ -52,11 +47,11 @@ export default class LayerAdmin extends MapHubsComponent {
     $('.layeradmin-tooltips').tooltip();
   }
 
-  save(){
+  save = () =>{
     NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000, onDismiss: this.props.onSubmit});
   }
 
-  savePresets(){
+  savePresets = () => {
     var _this = this;
     //save presets
     PresetActions.submitPresets(false, this.state._csrf, function(err){
@@ -68,15 +63,15 @@ export default class LayerAdmin extends MapHubsComponent {
     });
   }
 
-  presetsValid(){
+  presetsValid = () => {
     this.setState({canSavePresets: true});
   }
 
-  presetsInvalid(){
+  presetsInvalid = () => {
     this.setState({canSavePresets: false});
   }
 
-  deleteLayer(){
+  deleteLayer = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
@@ -100,7 +95,7 @@ export default class LayerAdmin extends MapHubsComponent {
     });
   }
 
-  refreshRemoteLayer(){
+  refreshRemoteLayer = () => {
     var _this = this;
     request.post('/api/layer/refresh/remote')
     .type('json').accept('json')
@@ -143,13 +138,13 @@ export default class LayerAdmin extends MapHubsComponent {
                  <h5>{this.__('Unable to modify remote layers.')}</h5>
                   <div className="center-align center">
                     <button className="btn" style={{marginTop: '20px'}}
-                      onClick={this.refreshRemoteLayer.bind(this)}>{this.__('Refresh Remote Layer')}</button>
+                      onClick={this.refreshRemoteLayer}>{this.__('Refresh Remote Layer')}</button>
                   </div>
                   <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
               </div>
               <div className="fixed-action-btn action-button-bottom-right">
                 <a className="btn-floating btn-large tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
-                    onClick={this.deleteLayer.bind(this)}>
+                    onClick={this.deleteLayer}>
                   <i className="material-icons">delete</i>
                 </a>
               </div>
@@ -180,32 +175,32 @@ export default class LayerAdmin extends MapHubsComponent {
                  showCancel={false}
                  showGroup={false}
                  warnIfUnsaved
-                 submitText={this.__('Save')} onSubmit={this.save.bind(this)}
+                 submitText={this.__('Save')} onSubmit={this.save}
              />
            </div>
            <div id="fields" className="col s12" style={{display: tabContentDisplay}}>
              <div className="container" >
                <h5>{this.__('Data Fields')}</h5>
                <div className="right">
-                 <button onClick={this.savePresets.bind(this)} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                 <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
                </div>
-               <PresetEditor onValid={this.presetsValid.bind(this)} onInvalid={this.presetsInvalid.bind(this)}/>
+               <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid}/>
                <div className="right">
-                 <button onClick={this.savePresets.bind(this)} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                 <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
                </div>
              </div>
            </div>
            <div id="style" className="col s12" style={{display: tabContentDisplay}}>
              <LayerStyle
                  showPrev={false}
-                 submitText="Save" onSubmit={this.save.bind(this)}
+                 submitText="Save" onSubmit={this.save}
               />
            </div>
         </div>
       </div>
       <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large layeradmin-tooltips red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
-              onClick={this.deleteLayer.bind(this)}>
+              onClick={this.deleteLayer}>
             <i className="material-icons">delete</i>
           </a>
       </div>

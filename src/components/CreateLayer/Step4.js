@@ -1,67 +1,54 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var classNames = require('classnames');
 var $ = require('jquery');
-
-
-var PresetEditor = require('./PresetEditor');
-var MessageActions = require('../../actions/MessageActions');
+import classNames from 'classnames';
+import PresetEditor from './PresetEditor';
+import MessageActions from '../../actions/MessageActions';
 import Progress from '../Progress';
+import LayerStore from '../../stores/layer-store';
+import LayerActions from '../../actions/LayerActions';
+import PresetActions from '../../actions/presetActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-var LayerStore = require('../../stores/layer-store');
-var LayerActions = require('../../actions/LayerActions');
-var PresetActions = require('../../actions/presetActions');
+export default class Step4 extends MapHubsComponent {
 
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  props: {
+    onSubmit: Function,
+    active: boolean,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var Step4 = React.createClass({
+  static defaultProps = {
+    layer_id: null,
+    onSubmit: null,
+    active: false
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  state = {
+    canSubmit: false,
+    saving: false
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-  propTypes: {
-    onSubmit: PropTypes.func,
-    active: PropTypes.bool.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-      layer_id: null,
-      onSubmit: null,
-      active: false
-    };
-  },
-
-  getInitialState() {
-    return {
-      canSubmit: false,
-      saving: false
-    };
-  },
-
-  save(){
+  save = () => {
     $('body').scrollTop(0);
     if(!this.state.layer.is_external){
       return this.saveDataLoad();
     }else{
       return this.saveExternal();
     }
-  },
+  }
 
-  saveExternal() {
+  saveExternal = () => {
     this.props.onSubmit();
-  },
+  }
 
-  saveDataLoad() {
+  saveDataLoad = () => {
     var _this = this;
 
     _this.setState({saving: true});
@@ -84,23 +71,23 @@ var Step4 = React.createClass({
         });
       }
     });
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
-  enableButton () {
-      this.setState({
-        canSubmit: true
-      });
-    },
-    disableButton () {
-      this.setState({
-        canSubmit: false
-      });
-    },
+  enableButton = () => {
+    this.setState({
+      canSubmit: true
+    });
+  }
 
+  disableButton = () => {
+    this.setState({
+      canSubmit: false
+    });
+  }
 
 	render() {
 
@@ -145,6 +132,4 @@ var Step4 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Step4;
+}

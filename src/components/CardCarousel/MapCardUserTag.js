@@ -22,7 +22,7 @@ export default class MapCardUserTag extends MapHubsComponent {
     map: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     baseUrl: ''
   }
 

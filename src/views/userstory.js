@@ -6,26 +6,27 @@ var slug = require('slug');
 import StoryHeader from '../components/Story/StoryHeader';
 import MapHubsComponent from '../components/MapHubsComponent';
 import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class UserStory extends MapHubsComponent {
 
-  propTypes: {
+  props: {
     story: Object,
     username: string,
     canEdit: boolean,
-    locale: string
+    locale: string,
+    _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     story: {},
     canEdit: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   render() {

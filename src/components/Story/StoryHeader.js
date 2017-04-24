@@ -25,7 +25,7 @@ export default class StoryHeader extends MapHubsComponent {
     short:  boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     baseUrl: '',
     short: false
   }

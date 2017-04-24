@@ -4,7 +4,7 @@ import React from 'react';
 //modified from: https://resoundingechoes.net/development/style-draggable-elements-indicate-draggability/  
 export default class DraggableIndicator extends React.PureComponent {
 
-  propTypes:  {
+  props:  {
     width: number,
     height: number,
     dotWidth: number,
@@ -15,7 +15,7 @@ export default class DraggableIndicator extends React.PureComponent {
     initialY: number
   }
 
-  static defaultProps: {
+  static defaultProps = {
     width: 32,
     height: 32,
     dotWidth: 2,

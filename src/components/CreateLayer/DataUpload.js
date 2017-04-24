@@ -8,7 +8,7 @@ import MapHubsComponent from '../MapHubsComponent';
 
 class DataUpload extends MapHubsComponent {
   
-  propTypes: {
+  props: {
     layerId: string,
     className: string,
     dataTooltip: string,
@@ -16,11 +16,11 @@ class DataUpload extends MapHubsComponent {
     dataPosition: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     layerId: null
   }
 
-  state: {
+  state = {
     value: ''
   }
 

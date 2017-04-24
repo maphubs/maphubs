@@ -35,7 +35,7 @@ export default class SearchBar extends React.Component {
     id: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     autoFocus: false,
     autosuggestDelay: 250,
     inputName: 'query',
@@ -43,7 +43,7 @@ export default class SearchBar extends React.Component {
     id: 'search'
   }
 
-  state: {
+  state = {
     value: '',
     suggestions: [],
     highlightedItem: -1
@@ -70,25 +70,25 @@ export default class SearchBar extends React.Component {
     document.body.removeEventListener('click', this.hideSuggestions);
   }
 
-  handleClick(e){
+  handleClick = (e) => {
     e.nativeEvent.stopImmediatePropagation();
   }
 
-  handleKeyDown(e) {
-    if(e.which == KEY_CODES.ENTER ){
+  handleKeyDown = (e) => {
+    if(e.which === KEY_CODES.ENTER ){
       e.preventDefault();
       this.submit(e);
     }
-    if (e.which != KEY_CODES.UP && e.which != KEY_CODES.DOWN) return;
+    if (e.which !== KEY_CODES.UP && e.which !== KEY_CODES.DOWN) return;
     e.preventDefault();
     let highlightedItem = this.state.highlightedItem;
 
-    if (e.which == KEY_CODES.UP) {
+    if (e.which === KEY_CODES.UP) {
       if (highlightedItem <= 0) return;
       --highlightedItem;
     }
-    if (e.which == KEY_CODES.DOWN) {
-      if (highlightedItem == this.state.suggestions.length - 1) return;
+    if (e.which === KEY_CODES.DOWN) {
+      if (highlightedItem === this.state.suggestions.length - 1) return;
       ++highlightedItem;
     }
 
@@ -98,7 +98,7 @@ export default class SearchBar extends React.Component {
     });
   }
 
-  displaySuggestions(suggestions) {
+  displaySuggestions = (suggestions) => {
     this.setState({
       suggestions,
       highlightedItem: -1
@@ -108,18 +108,18 @@ export default class SearchBar extends React.Component {
     /*eslint-enable react/no-find-dom-node */
   }
 
-  hideSuggestions(){
+  hideSuggestions = () => {
     /*eslint-disable react/no-find-dom-node */
       $(ReactDOM.findDOMNode(this.refs.suggestions)).hide();
     /*eslint-enable react/no-find-dom-node */
   }
 
-  fillInSuggestion(suggestion) {
+  fillInSuggestion = (suggestion) => {
     this.setState({value: suggestion.value});
     this.search(suggestion.value);
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
     clearTimeout(this._timerId);
     let input = e.target.value;
     if (!input) return this.setState(this.getInitialState());
@@ -135,13 +135,13 @@ export default class SearchBar extends React.Component {
     }, this.props.autosuggestDelay);
   }
 
-  submit(e) {
+  submit = (e) => {
     e.preventDefault();
     if (!this.state.value) return;
     this.search(this.state.value.trim());
   }
 
-  search(value) {
+  search = (value) => {
     clearTimeout(this._timerId);
     let {suggestions, highlightedItem} = this.getInitialState();
     this.setState({
@@ -151,7 +151,7 @@ export default class SearchBar extends React.Component {
     this.props.onSubmit(value);
   }
 
-  reset(){
+  reset = () => {
     clearTimeout(this._timerId);
     let {suggestions, highlightedItem} = this.getInitialState();
     this.setState({
@@ -181,15 +181,15 @@ export default class SearchBar extends React.Component {
               ref="value"
               value={this.state.value.value}
               placeholder={this.props.placeholder}
-              onChange={this.handleChange.bind(this)}
-              onKeyDown={this.handleKeyDown.bind(this)}
-              onClick={this.handleClick.bind(this)}
+              onChange={this.handleChange}
+              onKeyDown={this.handleKeyDown}
+              onClick={this.handleClick}
               data-beloworigin="true"
               data-activates={this.refs.suggestions}
             required />
 
           <label htmlFor={this.props.id} style={{height: 'inherit', lineHeight: 'inherit'}}><i className="material-icons omh-search-icon" style={{height: 'inherit', lineHeight: 'inherit'}}>search</i></label>
-          <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset.bind(this)}>close</i>
+          <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset}>close</i>
         </div>
       </form>
 
@@ -203,7 +203,7 @@ export default class SearchBar extends React.Component {
         ref="suggestions"
         suggestions={this.state.suggestions}
         highlightedItem={this.state.highlightedItem}
-        onSelection={this.fillInSuggestion.bind(this)} />}
+        onSelection={this.fillInSuggestion} />}
   </div>
   </div>
     );

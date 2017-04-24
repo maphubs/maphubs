@@ -1,23 +1,21 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 
-var IconRow = React.createClass({
 
-propTypes: {
-  icon: PropTypes.string,
-  iconFontSize: PropTypes.string,
-  children: PropTypes.any
-},
+export default class IconRow extends React.Component {
 
-static defaultProps: {
-  return {
-    icon: 'info',
-    iconFontSize: '80px'
-  };
-},
+  props: {
+    icon: string,
+    iconFontSize: string,
+    children: any
+  }
+
+static defaultProps = {
+  icon: 'info',
+  iconFontSize: '80px'
+}
 
 render(){
-
 
   return (
     <div>
@@ -40,7 +38,4 @@ render(){
     </div>
   );
 }
-
-});
-
-module.exports = IconRow;
+}

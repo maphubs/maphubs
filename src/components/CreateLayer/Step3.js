@@ -1,51 +1,38 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var classNames = require('classnames');
-
-
-var LayerSource = require('./LayerSource');
-var MessageActions = require('../../actions/MessageActions');
+import classNames from 'classnames';
+import LayerSource from './LayerSource';
+import MessageActions from '../../actions/MessageActions';
 import Progress from '../Progress';
+import LayerStore from '../../stores/layer-store';
+import PresetActions from '../../actions/presetActions';
+import LayerActions from '../../actions/LayerActions';
+import MapHubsComponent from '../MapHubsComponent';
 
+export default class Step3 extends MapHubsComponent {
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LayerStore = require('../../stores/layer-store');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  props: {
+    onSubmit: Function,
+    active: boolean,
+    showPrev: boolean,
+    onPrev: Function
+  }
 
-var PresetActions = require('../../actions/presetActions');
-var LayerActions = require('../../actions/LayerActions');
+  static defaultProps = {
+    onSubmit: null,
+    active: false
+  }
 
-var Step3 = React.createClass({
+  state = {
+    saving: false
+  }
 
-  mixins:[StateMixin.connect(LayerStore), StateMixin.connect(LocaleStore)],
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func,
-    active: PropTypes.bool.isRequired,
-    showPrev: PropTypes.bool,
-    onPrev: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-      onSubmit: null,
-      active: false
-    };
-  },
-
-  getInitialState() {
-    return {
-      saving: false
-    };
-  },
-
-  onSubmit(){
+  onSubmit = () => {
     if(!this.state.layer.is_external && !this.state.layer.is_empty){
       return this.saveDataLoad();
     }else if(this.state.layer.is_empty){
@@ -54,9 +41,9 @@ var Step3 = React.createClass({
     else{
       return this.saveExternal();
     }
-  },
+  }
 
-  initEmptyLayer() {
+  initEmptyLayer = () => {
     var _this = this;
 
     //save presets
@@ -77,9 +64,9 @@ var Step3 = React.createClass({
         });
       }
     });
-  },
+  }
 
-  saveDataLoad() {
+  saveDataLoad = () => {
     var _this = this;
 
     _this.setState({saving: true});
@@ -102,15 +89,15 @@ var Step3 = React.createClass({
         });
       }
     });
-  },
+  }
 
-  saveExternal() {
+  saveExternal = () => {
     this.props.onSubmit();
-  },
+  }
 
-  onCancel() {
+  onCancel = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
 	render() {
     //hide if not active
@@ -129,6 +116,4 @@ var Step3 = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = Step3;
+}

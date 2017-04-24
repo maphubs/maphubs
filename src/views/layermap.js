@@ -5,10 +5,8 @@ import Header from '../components/header';
 import Map from '../components/Map/Map';
 import MiniLegend from '../components/Map/MiniLegend';
 import _debounce from 'lodash.debounce';
-
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class LayerMap extends MapHubsComponent {
@@ -19,15 +17,19 @@ export default class LayerMap extends MapHubsComponent {
     _csrf: string
   }
 
-  state: {
+  state = {
     width: 1024,
     height: 600
   }
 
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
   componentWillMount(){
+    super.componentWillMount();
     var _this = this;
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
     if (typeof window === 'undefined') return; //only run this on the client
 
     function getSize(){

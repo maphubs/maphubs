@@ -15,7 +15,7 @@ export default class EditorToolButtons extends MapHubsComponent {
     stopEditingLayer: Function
   }
 
- state: {
+ state = {
     saving: false
   }
 

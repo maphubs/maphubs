@@ -1,34 +1,20 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var PureRenderMixin = require('react-addons-pure-render-mixin');
-//var _isEqual = require('lodash.isequal');
-var _find = require('lodash.find');
-var LayerListDropDown = require('./LayerListDropDown');
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
+import _find from 'lodash.find';
+import LayerListDropDown from './LayerListDropDown';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
+export default class MapLayerMenu extends MapHubsPureComponent {
 
-var MapLayerMenu = React.createClass({
+  props:  {
+    categories:  Array<Object>,
+    layers:  Array<Object>,
+    toggleVisibility: Function
+  }
 
-  mixins:[PureRenderMixin, StateMixin.connect(LocaleStore)],
-
-  propTypes:  {
-    categories:  PropTypes.array,
-    layers:  PropTypes.array,
-    toggleVisibility: PropTypes.func
-  },
-
-  static defaultProps: {
-    return {
-
-    };
-  },
-
-
-  findLayer(layer_id){
+  findLayer = (layer_id: number) => {
     return _find(this.props.layers, {layer_id});
-  },
+  }
 
   render(){
     var _this = this;
@@ -45,7 +31,7 @@ var MapLayerMenu = React.createClass({
           categoriesLayers.push(_this.findLayer(layer_id));
         });
         return (       
-          <LayerListDropDown id={`category-dropdown-${i}`} name={name} layers={categoriesLayers} toggleVisibility={_this.props.toggleVisibility} />
+          <LayerListDropDown key={`category-dropdown-${i}`} id={`category-dropdown-${i}`} name={name} layers={categoriesLayers} toggleVisibility={_this.props.toggleVisibility} />
         );
            
       })
@@ -54,9 +40,5 @@ var MapLayerMenu = React.createClass({
         </div>
       </nav>
     );
-
   }
-
-});
-
-module.exports = MapLayerMenu;
+}

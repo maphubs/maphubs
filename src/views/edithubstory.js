@@ -8,10 +8,8 @@ import Message from '../components/message';
 import Confirmation from '../components/confirmation';
 import HubStore from '../stores/HubStore';
 import MapHubsComponent from '../components/MapHubsComponent';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import LocaleActions from '../actions/LocaleActions';
-import HubActions from '../actions/HubActions';
 
 export default class EditHubStory extends MapHubsComponent {
 
@@ -24,21 +22,16 @@ export default class EditHubStory extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     story: {}
   }
 
    constructor(props: Object){
 		super(props);
     this.stores.push(HubStore);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    Reflux.rehydrate(HubStore, {hub: this.props.hub});
 	}
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    Rehydrate.initStore(HubStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
-    HubActions.rehydrate({hub: this.props.hub});
-  }
 
   render() {
     return (

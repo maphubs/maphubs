@@ -8,8 +8,7 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class PageEdit extends MapHubsComponent {
@@ -18,30 +17,27 @@ export default class PageEdit extends MapHubsComponent {
     locale: string,
     page_id: string,
     pageConfig: Object,
-    footerConfig: Object
+    footerConfig: Object,
+    _csrf: string
   }
 
-  state: {
-    pageConfig: Object
+  state = {
+    pageConfig: null
   }
 
   constructor(props: Object){
     super(props);
+     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
       pageConfig: props.pageConfig
     };
-  }
-
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
   }
 
   componentDidMount(){
     this.refs.pageEditor.show();
   }
 
-  savePageConfig(pageConfig){
+  savePageConfig = (pageConfig: string) => {
    var _this = this;
    request.post('/api/page/save')
    .type('json').accept('json')
@@ -76,7 +72,7 @@ export default class PageEdit extends MapHubsComponent {
             <CodeEditor ref="pageEditor" id="layer-style-editor" mode="json"
                         code={JSON.stringify(this.state.pageConfig, undefined, 2)} 
                         title={this.__('Editing Page Config: ') + this.props.page_id}
-                        onSave={this.savePageConfig.bind(this)} modal={false}/>
+                        onSave={this.savePageConfig} modal={false}/>
           </main>
           <Footer {...this.props.footerConfig}/>
         </div>

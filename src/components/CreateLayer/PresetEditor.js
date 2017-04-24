@@ -1,37 +1,26 @@
-
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-import Reflux from 'reflux';
-var PresetForm = require('./PresetForm');
+import PresetForm from './PresetForm';
+import PresetStore from '../../stores/preset-store';
+import Actions from '../../actions/presetActions';
+import MapHubsComponent from '../MapHubsComponent';
 
-var PresetStore = require('../../stores/preset-store');
-var actions = require('../../actions/presetActions');
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class PresetEditor extends MapHubsComponent {
 
-var PresetEditor = React.createClass({
+  props: {
+    onValid: Function,
+    onInvalid: Function,
+    warnIfUnsaved: boolean
+  }
 
-  mixins: [
-    Reflux.connect(PresetStore, 'store'),
-    StateMixin.connect(LocaleStore)
-  ],
+  static defaultProps = {
+    warnIfUnsaved: true
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onValid: PropTypes.func,
-    onInvalid: PropTypes.func,
-    warnIfUnsaved: PropTypes.bool
-  },
-
-  getDefaultProps(){
-    return {
-      warnIfUnsaved: true
-    };
-  },
+  constructor(props: Object){
+    super(props);
+    this.stores.push(PresetStore);
+  }
 
   componentDidMount(){
     var _this = this;
@@ -40,25 +29,25 @@ var PresetEditor = React.createClass({
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
-  },
+  }
 
-  addPreset(){
-    actions.addPreset();
-  },
+  addPreset = () => {
+    Actions.addPreset();
+  }
 
-  onValid(){
+  onValid = () => {
     if(this.props.onValid) this.props.onValid();
-  },
+  }
 
-  onInvalid(){
+  onInvalid = () => {
     if(this.props.onInvalid) this.props.onInvalid();
-  },
+  }
 
 	render() {
     var _this = this;
     var presets = [];
-    if(this.state.store && Array.isArray(this.state.store.presets)){
-      presets = this.state.store.presets;
+    if(this.state.presets && Array.isArray(this.state.presets)){
+      presets = this.state.presets;
     }
 		return (
         <div>
@@ -84,6 +73,4 @@ var PresetEditor = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = PresetEditor;
+}

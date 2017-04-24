@@ -11,7 +11,7 @@ export default class EditList extends React.Component {
     onError: Function
   }
 
-  static defaultProps: {    
+  static defaultProps = {    
     items: []
   }
 

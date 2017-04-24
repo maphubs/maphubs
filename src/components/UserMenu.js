@@ -4,7 +4,6 @@ import MapHubsComponent from './MapHubsComponent';
 import UserStore from '../stores/UserStore';
 import UserActions from '../actions/UserActions';
 import Gravatar from './user/Gravatar';
-import LocaleStore from '../stores/LocaleStore';
 
 export default class UserMenu extends MapHubsComponent {
 
@@ -13,14 +12,14 @@ export default class UserMenu extends MapHubsComponent {
     sideNav: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     id: 'user-menu',
     sideNav: false
   }
 
   constructor(props){
 		super(props);
-		this.stores = [LocaleStore, UserStore];
+		this.stores.push(UserStore);
 	}
 
   componentDidMount() {

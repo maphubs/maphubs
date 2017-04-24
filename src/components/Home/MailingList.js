@@ -1,34 +1,23 @@
+//@flow
 import React from 'react';
-var Formsy = require('formsy-react');
-var TextInput = require('../forms/textInput');
 
-var UserActions = require('../../actions/UserActions');
-var NotificationActions = require('../../actions/NotificationActions');
-var MessageActions = require('../../actions/MessageActions');
+import Formsy from 'formsy-react';
+import TextInput from '../forms/textInput';
+import UserActions from '../../actions/UserActions';
+import NotificationActions from '../../actions/NotificationActions';
+import MessageActions from '../../actions/MessageActions';
+import _isequal from 'lodash.isequal';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
-var _isequal = require('lodash.isequal');
+export default class MailingList extends MapHubsComponent {
 
-var OnboardingLinks = React.createClass({
+  state = {
+    valid: false,
+    placeholder: null,
+    email: ''
+  }
 
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  getInitialState(){
-    return {
-      valid: false,
-      placeholder: null,
-      email: ''
-    };
-  },
-
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
 
     if(!_isequal(this.props, nextProps)){
@@ -38,21 +27,21 @@ var OnboardingLinks = React.createClass({
       return true;
     }
     return false;
-  },
+  }
 
-  onValid() {
+  onValid = () => {
     this.setState({
       valid: true
     });
-  },
+  }
 
-  onInvalid() {
+  onInvalid = () => {
     this.setState({
       valid: false
     });
-  },
+  }
 
-  onSubmit(model){
+  onSubmit = (model: Object) => {
     var _this = this;
     if(this.state.valid){
       UserActions.joinMailingList(model.email, this.state._csrf, function(err){
@@ -74,7 +63,7 @@ var OnboardingLinks = React.createClass({
           position: 'topright'
       });
     }
-  },
+  }
 
 render(){
   var _this = this;
@@ -116,7 +105,4 @@ render(){
       </div>
   );
 }
-
-});
-
-module.exports = OnboardingLinks;
+}

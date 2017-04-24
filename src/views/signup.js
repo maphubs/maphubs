@@ -9,8 +9,7 @@ import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import UserActions from '../actions/UserActions';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 var debug = require('../services/debug')('views/signup');
@@ -26,25 +25,28 @@ export default class Signup extends MapHubsComponent {
     _csrf: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     lockEmail: false
   }
 
-  state: {
+  state = {
     canSubmit: false,
     saving: false,
-    email: string
+    email: '',
+    created: false
   }
 
   constructor(props: Object){
     super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  
     this.state.email = props.email;
   }
 
   componentWillMount() {
+    super.componentWillMount();
     var _this = this;
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+
     Formsy.addValidationRule('isAvailable', function (values, value) {
       if(!this.usernameValue || value !== this.usernameValue){
         this.usernameValue = value;
@@ -59,7 +61,7 @@ export default class Signup extends MapHubsComponent {
     });
   }
 
-  checkUserNameAvailable(username: string){
+  checkUserNameAvailable = (username: string) => {
       var _this = this;
       var result = false;
       if (username && typeof window !== 'undefined') {
@@ -99,7 +101,7 @@ export default class Signup extends MapHubsComponent {
       return result;
   }
 
-  onSave(model: Object){
+  onSave = (model: Object) => {
     var _this = this;
     this.setState({saving: true});
     UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, this.props.inviteKey, this.state._csrf, function(err){
@@ -120,13 +122,13 @@ export default class Signup extends MapHubsComponent {
     });
   }
 
-  enableButton () {
+  enableButton = () => {
     this.setState({
       canSubmit: true
     });
   }
 
-  disableButton () {
+  disableButton = () => {
     this.setState({
       canSubmit: false
     });
@@ -156,7 +158,7 @@ export default class Signup extends MapHubsComponent {
       <main>
       <div className="container">
         <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for') + ' ' + MAPHUBS_CONFIG.productName}</h4>
-        <Formsy.Form onValidSubmit={this.onSave.bind(this)} onValid={this.enableButton.bind(this)} onInvalid={this.disableButton.bind(this)}>
+        <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div className="row valign-wrapper" style={{paddingTop: '25px'}}>
             <TextInput name="username" label={this.__('User Name')} icon="perm_identity"
                 className="col s12 m8 l8 valign" style={{margin: 'auto'}}

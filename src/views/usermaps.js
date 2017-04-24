@@ -3,10 +3,9 @@ import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
-var cardUtil = require('../services/card-util');
+import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
-import Rehydrate from 'reflux-rehydrate';
+import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 export default class UserMaps extends MapHubsComponent {
@@ -16,18 +15,19 @@ export default class UserMaps extends MapHubsComponent {
     user: Object,
     myMaps: boolean,
     locale: string,
+    _csrf: string,
     footerConfig: Object
   }
 
-  static defaultProps: {
+  static defaultProps = {
     maps: [],
     user: {},
     myMaps: false
   }
 
-  componentWillMount() {
-    Rehydrate.initStore(LocaleStore);
-    LocaleActions.rehydrate({locale: this.props.locale, _csrf: this.props._csrf});
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
 	render() {
@@ -48,7 +48,7 @@ export default class UserMaps extends MapHubsComponent {
   }
 
   var myMaps = '';
-  if(!this.props.maps || this.props.maps.length == 0){
+  if(!this.props.maps || this.props.maps.length === 0){
     myMaps = (
       <div className="row" style={{height: 'calc(100% - 100px)'}}>
         <div className="valign-wrapper" style={{height: '100%'}}>

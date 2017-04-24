@@ -1,79 +1,55 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-var Formsy = require('formsy-react');
-var TextInput = require('../components/forms/textInput');
+import Formsy from 'formsy-react';
+import TextInput from '../components/forms/textInput';
 import Notification from '../components/Notification';
 import NotificationActions from '../actions/NotificationActions';
 import UserActions from '../actions/UserActions';
-require('../stores/UserStore'); //needs to be here so webpack knows to load it
+import '../stores/UserStore'; //needs to be here so webpack knows to load it
 import Message from '../components/message';
 import MessageActions from '../actions/MessageActions';
-import Reflux from 'reflux';
-import LocaleActions from '../actions/LocaleActions';
-var Locales = require('../services/locales');
 import LocaleStore from '../stores/LocaleStore';
-//var _assignIn = require('lodash.assignin');
+import Reflux from '../components/Rehydrate';
+import MapHubsComponent from '../components/MapHubsComponent';
 
-var Login = React.createClass({
+export default class Login extends MapHubsComponent {
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+  props: {
+    name: string,
+    failed: boolean,
+    locale: string,
+    _csrf: string,
+    showSignup: boolean
+  }
 
-  propTypes: {
-    name: PropTypes.string,
-    failed: PropTypes.bool,
-    locale: PropTypes.string.isRequired,
-    _csrf: PropTypes.string.isRequired,
-    showSignup: PropTypes.bool
-  },
+  static defaultProps = {
+    name: 'No name',
+    failed: false,
+    showSignup: true
+  }
 
-  static defaultProps: {
-    return {
-      name: 'No name',
-      failed: false,
-      showSignup: true
-    };
-  },
+  state = {
+    canSubmit: false
+  }
 
-  getInitialState(){
-    return {
-      canSubmit: false
-    };
-  },
+  constructor(props: Object) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  }
 
-  unsubscribe() {},
-
-  componentWillMount() {
-    
-    this.localeStore = Reflux.initStore(LocaleStore);
-    var state = {locale: this.props.locale, _csrf: this.props._csrf};
-    LocaleActions.rehydrate(state);
-    this.setState(state);
-  },
-
-  componentDidMount() {
-    var _this = this;
-    this.unsubscribe = this.localeStore.listen( () => this.setState(_this.localeStore.getData())); 
-  },
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  },
-
-  enableResetButton() {
+  enableResetButton = () => {
     this.setState({
       canSubmit: true
     });
-  },
+  }
 
-  disableResetButton() {
+  disableResetButton = () => {
     this.setState({
       canSubmit: false
     });
-  },
+  }
 
-  onSubmitReset(model){
+  onSubmitReset = (model: Object) => {
     var _this = this;
     UserActions.forgotPassword(model.email, this.state._csrf, function(err){
       if(err){
@@ -90,7 +66,7 @@ var Login = React.createClass({
         });
       }
     });
-  },
+  }
 
   render() {
     var failed = '';
@@ -184,6 +160,4 @@ var Login = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = Login;
+}

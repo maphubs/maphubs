@@ -1,67 +1,55 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 var $ = require('jquery');
-var ColorPicker = require('react-colorpickr');
-var ColorSwatch = require('./ColorSwatch');
-var CodeEditor = require('./CodeEditor');
-var LabelSettings = require('./LabelSettings');
-var MarkerSettings = require('./MarkerSettings');
-var AdvancedLayerSettings = require('./AdvancedLayerSettings');
+import ColorPicker from 'react-colorpickr';
+import ColorSwatch from './ColorSwatch';
+import CodeEditor from './CodeEditor';
+import LabelSettings from './LabelSettings';
+import MarkerSettings from './MarkerSettings';
+import AdvancedLayerSettings from './AdvancedLayerSettings';
+import MapHubsComponent from '../MapHubsComponent';
 
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+export default class LayerDesigner extends MapHubsComponent {
 
+  props: {
+    onColorChange: Function,
+    onStyleChange: Function,
+    onLabelsChange: Function,
+    onMarkersChange: Function,
+    onLegendChange: Function,
+    onSettingsChange: Function,
+    color: string,
+    style: Object,
+    labels: Object,
+    legendCode: string,
+    layer: Object,
+    showAdvanced: boolean,
+    settings: Object
+  }
 
-var LayerDesigner = React.createClass({
-
-  mixins:[StateMixin.connect(LocaleStore)],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onColorChange: PropTypes.func,
-    onStyleChange: PropTypes.func,
-    onLabelsChange: PropTypes.func,
-    onMarkersChange: PropTypes.func,
-    onLegendChange: PropTypes.func,
-    onSettingsChange: PropTypes.func,
-    color: PropTypes.string,
-    style: PropTypes.object,
-    labels: PropTypes.object,
-    legendCode: PropTypes.string,
-    layer: PropTypes.object,
-    showAdvanced: PropTypes.bool,
-    settings: PropTypes.object,
-  },
-
-  getDefaultProps(){
-    return {
-      color: 'red',
-      alpha: 0.5,
-      style: null,
-      labels: null,
-      legendCode: null,
-      layer: null,
-      settings: {},
-      showAdvanced: true
+  static defaultProps = {
+    color: 'red',
+    alpha: 0.5,
+    style: null,
+    labels: null,
+    legendCode: null,
+    layer: null,
+    settings: {},
+    showAdvanced: true
+  }
+  
+  constructor(props: Object){
+    super(props);
+    this.state = {
+      color: props.color,
+      style: props.style,
+      labels: props.labels,
+      legendCode: props.legendCode,
+      settings: props.settings
     };
-  },
+  }
 
-  getInitialState(){
-    return {
-      color: this.props.color,
-      style:this.props.style,
-      labels:this.props.labels,
-      legendCode: this.props.legendCode,
-      settings: this.props.settings
-    };
-  },
-
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Object){
     this.setState({
       color: nextProps.color,
       style: nextProps.style,
@@ -69,65 +57,64 @@ var LayerDesigner = React.createClass({
       legendCode: nextProps.legendCode,
       settings: nextProps.settings ? nextProps.settings : this.state.settings
     });
-  },
+  }
 
   componentDidMount() {
     $(this.refs.collapsible).collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
-  },
+  }
 
-  onColorChange(color){
+  onColorChange = (color: string) => {
     var settings = {};
     if(this.state.settings){
       settings = this.state.settings;
     }
-
     settings.color = color;
     this.setState({color, settings});
     this.props.onColorChange(color, settings);
-  },
+  }
 
-  onColorPickerChange(colorValue){
+  onColorPickerChange = (colorValue: string) => {
     let color = `rgba(${colorValue.r},${colorValue.g},${colorValue.b},${colorValue.a})`;
     this.setState({color});
     this.props.onColorChange(color);
-  },
+  }
 
-  onStyleChange(style){
+  onStyleChange = (style: string) => {
     //TODO: verify JSON for syntax, check for valid style components
     style = JSON.parse(style);
     this.setState({style});
     this.props.onStyleChange(style);
-  },
+  }
 
-  onLabelsChange(style, labels){
+  onLabelsChange = (style: Object, labels: Object) => {
     this.setState({style, labels});
     this.props.onLabelsChange(style, labels);
-  },
+  }
 
-  onMarkersChange(style, markers){
+  onMarkersChange = (style: Object, markers: Object) => {
     this.setState({style, markers});
     this.props.onMarkersChange(style, markers);
-  },
+  }
 
-  onSettingsChange(style, settings){
+  onSettingsChange = (style: Object, settings: Object) => {
     this.setState({style, settings});
     this.props.onSettingsChange(style, settings);
-  },
+  }
 
-  onLegendChange(legendCode){
+  onLegendChange = (legendCode: string) => {
     this.setState({legendCode});
     this.props.onLegendChange(legendCode);
-  },
+  }
 
-  showStyleEditor(){
+  showStyleEditor = () => {
     this.refs.styleEditor.show();
-  },
+  }
 
-  showLegendEditor(){
+  showLegendEditor = () => {
     this.refs.legendEditor.show();
-  },
+  }
 
   render(){
     var markers = '';
@@ -249,7 +236,4 @@ var LayerDesigner = React.createClass({
        </div>
     );
   }
-});
-
-
-module.exports = LayerDesigner;
+}

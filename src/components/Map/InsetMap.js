@@ -12,6 +12,10 @@ if (typeof window !== 'undefined') {
 }
 export default class InsetMap extends React.Component {
 
+
+  insetMap: Object
+  insetMapActive: boolean
+
   props: {
     id: string,
     bottom:  string,
@@ -19,22 +23,24 @@ export default class InsetMap extends React.Component {
     collapsed: boolean
   }
 
-  static defaultProps: {
+  static defaultProps = {
     id: 'map',
     bottom: '30px',
     attributionControl: false,
     collapsed: false
   }
 
-  state: {
-    collapsed: boolean
+  state = {
+    collapsed: false,
+    insetGeoJSONData: null,
+    insetGeoJSONCentroidData: null
   }
 
-  constructor(props){
+  constructor(props: Object){
     super(props);
     this.state = {
       collapsed: props.collapsed
-    }
+    };
   }
 
   componentDidMount() {   
@@ -57,7 +63,7 @@ export default class InsetMap extends React.Component {
     }
   }
 
-  createInsetMap(center, bounds, baseMap) {
+  createInsetMap(center: any, bounds: Object, baseMap: string) {
       var _this = this;
       var insetMap =  new mapboxgl.Map({
         container: this.props.id  + '_inset',
@@ -112,19 +118,19 @@ export default class InsetMap extends React.Component {
 
   }
 
-  reloadInset(baseMapUrl){
+  reloadInset = (baseMapUrl: string) => {
     if(this.insetMap){
       this.insetMap.setStyle(baseMapUrl);
     } 
   }
 
-  fitBounds(bounds, options){
+  fitBounds = (bounds: Object, options: Object) => {
     if(this.insetMap){
       this.insetMap.fitBounds(bounds, options);
     }
   }
 
-  toggleCollapsed(){
+  toggleCollapsed = () => {
     if(this.state.collapsed){
       this.setState({collapsed: false});
     }else{
@@ -133,11 +139,11 @@ export default class InsetMap extends React.Component {
     }
   }
 
-  getInsetMap(){
+  getInsetMap = () => {
     return this.insetMap;
   }
 
-    getGeoJSONFromBounds(bounds){
+    getGeoJSONFromBounds = (bounds: Object) => {
     var v1 = bounds.getNorthWest().toArray();
     var v2 = bounds.getNorthEast().toArray();
     var v3 = bounds.getSouthEast().toArray();
@@ -158,14 +164,14 @@ export default class InsetMap extends React.Component {
     };
   }
 
-  showInsetAsPoint(zoom: number){
+  showInsetAsPoint = (zoom: any) => {
     if(zoom && zoom > 9){
       return true;
     }
     return false;
   }
 
-   updateInsetGeomFromBounds(bounds, zoom: number){
+   updateInsetGeomFromBounds = (bounds: Object, zoom: number) => {
      if(this.insetMap){
       var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
       var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");

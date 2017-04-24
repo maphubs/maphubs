@@ -1,81 +1,58 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
-import Reflux from 'reflux';
-var StateMixin = require('reflux-state-mixin')(Reflux);
-var mapStyles = require('../Map/styles');
 var $ = require('jquery');
-
-
-var Map = require('../Map/Map');
-var MiniLegend = require('../Map/MiniLegend');
-
-
-var LayerStore = require('../../stores/layer-store');
-var LayerActions = require('../../actions/LayerActions');
-var MessageActions = require('../../actions/MessageActions');
-var ConfirmationActions = require('../../actions/ConfirmationActions');
-//var NotificationActions = require('../../actions/NotificationActions');
+import mapStyles from '../Map/styles';
+import Map from '../Map/Map';
+import MiniLegend from '../Map/MiniLegend';
+import LayerStore from '../../stores/layer-store';
+import LayerActions from '../../actions/LayerActions';
+import MessageActions from '../../actions/MessageActions';
+import ConfirmationActions from '../../actions/ConfirmationActions';
 import Progress from '../Progress';
+import urlUtil from '../../services/url-util';
+import OpacityChooser from '../LayerDesigner/OpacityChooser';
+import LayerDesigner from '../LayerDesigner/LayerDesigner';
+import MapHubsComponent from '../MapHubsComponent';
+import Reflux from 'reflux';
 
-var urlUtil = require('../../services/url-util');
+export default class LayerStyle extends MapHubsComponent {
 
-var OpacityChooser = require('../LayerDesigner/OpacityChooser');
-var LayerDesigner = require('../LayerDesigner/LayerDesigner');
-var LocaleStore = require('../../stores/LocaleStore');
-var Locales = require('../../services/locales');
+  props: {
+    onSubmit: Function,
+    showPrev: boolean,
+    prevText: string,
+    onPrev: Function,
+    waitForTileInit: boolean
+  }
 
-//var _isequal = require('lodash.isequal');
+  static defaultProps = {
+    onSubmit: null,
+    waitForTileInit: false //wait for tile service before showing map
+  }
 
-
-var LayerStyle = React.createClass({
-
-  mixins: [
-    StateMixin.connect(LayerStore),
-    StateMixin.connect(LocaleStore),
-    Reflux.listenTo(LayerActions.tileServiceInitialized, 'tileServiceInitialized')
-  ],
-
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
-
-  propTypes: {
-    onSubmit: PropTypes.func,
-    showPrev: PropTypes.bool,
-    prevText: PropTypes.string,
-    onPrev: PropTypes.func,
-    waitForTileInit: PropTypes.bool
-  },
-
-
-
-  static defaultProps: {
-    return {
-      onSubmit: null,
-      waitForTileInit: false //wait for tile service before showing map
-    };
-  },
-
-  getInitialState() {
-    return {      
+  constructor(props: Object){
+    super(props);
+    this.stores.push(LayerStore);
+    this.state = {      
       rasterOpacity: 100,
       saving: false,
-      showMap: !this.props.waitForTileInit
+      showMap: !props.waitForTileInit
     };
-  },
-
-  tileServiceInitialized(){
-    this.setState({showMap: true});
-    //this.refs.map.reload();
-  },
+  }
 
   componentDidMount() {
+    Reflux.listenTo(LayerActions.tileServiceInitialized, 'tileServiceInitialized');
     $('.collapsible').collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
-  },
+  }
 
-  onSubmit() {
+  tileServiceInitialized = () => {
+    this.setState({showMap: true});
+    //this.refs.map.reload();
+  }
+
+  onSubmit = () => {
     var _this = this;
     _this.setState({saving: true});
     var preview_position =  this.refs.map.getPosition();
@@ -97,25 +74,25 @@ var LayerStyle = React.createClass({
         if(_this.props.onSubmit) _this.props.onSubmit(_this.state.layer.layer_id, _this.state.layer.name);
       }
     });
-  },
+  }
 
-  onPrev() {
+  onPrev = () => {
     if(this.props.onPrev) this.props.onPrev();
-  },
+  }
 
   //Color must now be a rgba() formatted string
-  setColor(color, settings){
+  setColor = (color: string, settings: Object) => {
 
     var style = mapStyles.updateStyleColor(this.state.layer.style, color);
     var legend = mapStyles.legendWithColor(this.state.layer, color);
     LayerActions.setStyle(style, this.state.layer.labels, legend, settings, null);
 
-  },
+  }
 
-  setRasterOpacity(opacity){
+  setRasterOpacity = (opacity: number) => {
 
     var style = null;
-    if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'ags-mapserver-tiles'){
+    if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'ags-mapserver-tiles'){
       style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
     }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'multiraster'){
        style = mapStyles.multiRasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.layers, opacity, 'raster');
@@ -128,33 +105,33 @@ var LayerStyle = React.createClass({
     var legend = mapStyles.rasterLegend(this.state.layer);
     LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.settings, this.state.layer.preview_position);
     this.setState({rasterOpacity: opacity});
-  },
+  }
 
-  setStyle(style){
+  setStyle = (style: Object) => {
     LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
-  },
+  }
 
-  setLabels(style, labels){
+  setLabels = (style: Object, labels: Object) => {
     LayerActions.setStyle(style, labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
-  },
+  }
 
-  setMarkers(style){
+  setMarkers = (style: Object) => {
     LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
-  },
+  }
 
-  setSettings(style, settings){
+  setSettings = (style: Object, settings: Object) => {
     LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, settings, this.state.layer.preview_position);
-  },
+  }
 
-  setLegend(legend_html){
+  setLegend = (legend_html: string) => {
     LayerActions.setStyle(this.state.layer.style, this.state.layer.labels, legend_html, this.state.layer.settings, this.state.layer.preview_position);
-  },
+  }
 
-  reloadMap(){
+  reloadMap = () => {
     this.refs.map.reload();
-  },
+  }
 
-  resetStyle(){
+  resetStyle = () => {
 
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm Reset'),
@@ -165,8 +142,7 @@ var LayerStyle = React.createClass({
         LayerActions.resetStyle();
       }
     });
-
-  },
+  }
 
 	render() {
 
@@ -206,9 +182,9 @@ var LayerStyle = React.createClass({
 
     var colorChooser = '';
     if(this.state.layer.is_external
-      && (this.state.layer.external_layer_config.type == 'raster'
-      || this.state.layer.external_layer_config.type == 'multiraster'
-      || this.state.layer.external_layer_config.type == 'ags-mapserver-tiles')) {
+      && (this.state.layer.external_layer_config.type === 'raster'
+      || this.state.layer.external_layer_config.type === 'multiraster'
+      || this.state.layer.external_layer_config.type === 'ags-mapserver-tiles')) {
       colorChooser = (
         <div>
           <h5>{this.__('Choose Style')}</h5>
@@ -218,7 +194,7 @@ var LayerStyle = React.createClass({
             legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend} showAdvanced/>
         </div>
       );
-    }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type == 'mapbox-style') {
+    }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'mapbox-style') {
        colorChooser = (
          <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
             <b>{this.__('Mapbox Studio Style Layer')}</b>
@@ -270,6 +246,4 @@ var LayerStyle = React.createClass({
       </div>
 		);
 	}
-});
-
-module.exports = LayerStyle;
+}

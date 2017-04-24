@@ -12,7 +12,7 @@ export default class StorySummary extends MapHubsComponent {
     baseUrl: string
   }
 
-  static defaultProps: {
+  static defaultProps = {
     baseUrl: ''
   }
 
