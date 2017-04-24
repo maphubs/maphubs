@@ -53,12 +53,12 @@ export default class Step4 extends MapHubsComponent {
 
     _this.setState({saving: true});
     //save presets
-    PresetActions.submitPresets(true, this.state._csrf, function(err){
+    PresetActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
           _this.setState({saving: false});
       }else{
-        LayerActions.loadData(_this.state._csrf, function(err){
+        LayerActions.loadData(_this.state._csrf, (err) => {
           _this.setState({saving: false});
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});

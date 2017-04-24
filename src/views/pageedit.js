@@ -46,8 +46,8 @@ export default class PageEdit extends MapHubsComponent {
      pageConfig,
      _csrf: this.state._csrf
    })
-   .end(function(err, res){
-     checkClientError(res, err, function(){}, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, () => {}, (cb) => {
        _this.setState({pageConfig: JSON.parse(pageConfig)});
        if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});

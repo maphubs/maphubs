@@ -142,7 +142,7 @@ export default class GroupInfo extends MapHubsComponent {
               </li>
               {this.props.members.map(function (user, i) {
                 var icon = '';
-                if (user.role == 'Administrator') {
+                if (user.role === 'Administrator') {
                   icon = (
                     <i className="secondary-content tooltipped material-icons"
                       data-delay="50" data-position="top" data-tooltip={_this.__('Group Administrator')}>

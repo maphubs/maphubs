@@ -24,7 +24,7 @@ module.exports = {
       knex('omh.hub_layers').select(knex.raw('count(hub_id)')).where({layer_id}),
       queryViewsByDay
 
-    ]).then(function(results){
+    ]).then((results) => {
       var stats = {
         maps: results[0][0].count,
         stories: results[1][0].count,
@@ -40,7 +40,7 @@ module.exports = {
       user_id = null;
     }
     return knex('omh.layer_views').select(knex.raw('count(view_id)')).where({layer_id})
-    .then(function(viewsResult){
+    .then((viewsResult) => {
       var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
@@ -49,7 +49,7 @@ module.exports = {
       }
       return knex('omh.layer_views').insert({
         layer_id, user_id, time: knex.raw('now()')
-      }).then(function(){
+      }).then(() => {
         debug("layer: " + layer_id + " now has " + views + " views!");
         return knex('omh.layers').update({views}).where({layer_id});
       });
@@ -61,7 +61,7 @@ module.exports = {
       user_id = null;
     }
     return knex('omh.map_views').select(knex.raw('count(view_id)')).where({map_id})
-    .then(function(viewsResult){
+    .then((viewsResult) => {
       var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
@@ -70,7 +70,7 @@ module.exports = {
       }
       return knex('omh.map_views').insert({
         map_id, user_id, time: knex.raw('now()')
-      }).then(function(){
+      }).then(() => {
         debug("map: " + map_id + " now has " + views + " views!");
         return knex('omh.maps').update({views}).where({map_id});
       });
@@ -82,7 +82,7 @@ module.exports = {
       user_id = null;
     }
     return knex('omh.story_views').select(knex.raw('count(view_id)')).where({story_id})
-    .then(function(viewsResult){
+    .then((viewsResult) => {
       var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
@@ -91,7 +91,7 @@ module.exports = {
       }
       return knex('omh.story_views').insert({
         story_id, user_id, time: knex.raw('now()')
-      }).then(function(){
+      }).then(() => {
         debug("story: " + story_id + " now has " + views + " views!");
         return knex('omh.stories').update({views}).where({story_id});
       });
@@ -103,7 +103,7 @@ module.exports = {
       user_id = null;
     }
     return knex('omh.hub_views').select(knex.raw('count(view_id)')).where({hub_id})
-    .then(function(viewsResult){
+    .then((viewsResult) => {
       var views: number = parseInt(viewsResult[0].count);
       if(views === undefined || isNaN(views)){
         views = 1;
@@ -112,7 +112,7 @@ module.exports = {
       }
       return knex('omh.hub_views').insert({
         hub_id, user_id, time: knex.raw('now()')
-      }).then(function(){
+      }).then(() => {
         debug("hub: " + hub_id + " now has " + views + " views!");
         return knex('omh.hubs').update({views}).where({hub_id});
       });

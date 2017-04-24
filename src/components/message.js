@@ -12,7 +12,7 @@ export default class Message extends MapHubsComponent {
 		this.stores.push(MessageStore);
 	}
 
-  onDismiss(){
+  onDismiss = () => {
     MessageActions.dismissMessage();
   }
 

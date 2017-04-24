@@ -26,7 +26,7 @@ module.exports = {
           knex('user_blocks').where('user_id', id),
           knex('user_preferences').where('user_id', id)
         ])
-        .then(function(resultArr) {
+        .then((resultArr) => {
           user = resultArr[0][0];
           user.roles = resultArr[1];
           user.messages = resultArr[2];
@@ -53,7 +53,7 @@ module.exports = {
 
       return knex('users')
       .where(knex.raw('lower(display_name)'), '=', display_name)
-      .then(function(result){
+      .then((result) => {
         if(result && result.length === 1){
           var user = result[0];
 
@@ -81,7 +81,7 @@ module.exports = {
 
       return knex('users')
       .where(knex.raw('lower(email)'), '=', email)
-      .then(function(result){
+      .then((result) => {
         if(result && result.length === 1){
           var user = result[0];
 
@@ -111,7 +111,7 @@ module.exports = {
       debug('getting user with password reset key');
 
       return knex('users').where({pass_reset: key})
-      .then(function(result){
+      .then((result) => {
         if(result && result.length === 1){
           var user = result[0];
 
@@ -132,7 +132,7 @@ module.exports = {
       debug('getting user with email confirmation key');
 
       return knex('users').where({new_email: key})
-      .then(function(result){
+      .then((result) => {
         if(result && result.length === 1){
           var user = result[0];
 
@@ -161,7 +161,7 @@ module.exports = {
             pass_crypt: '1234', //note, this is immediately replaced, value here is just due to not null constraint
             creation_ip,
             creation_time: knex.raw('now()')
-        }).then(function(user_id){
+        }).then((user_id) => {
           return parseInt(user_id);
         });
     },
@@ -169,7 +169,7 @@ module.exports = {
     sendNewUserAdminEmail(user_id: number){
 
       return this.getUser(user_id)
-      .then(function(user){
+      .then((user) => {
 
         var text = 'New User: ' + user.display_name
         + ' \n Name: ' + user.name
@@ -194,9 +194,9 @@ module.exports = {
       var _this = this;
       var new_email = uuid();
       return knex('users').update({new_email}).where({id: user_id})
-      .then(function(){
+      .then(() => {
         return _this.getUser(user_id)
-          .then(function(user){
+          .then((user) => {
           var baseUrl = urlUtil.getBaseUrl();
           var url = baseUrl + '/user/emailconfirmation/' + new_email;
 
@@ -237,12 +237,12 @@ module.exports = {
     checkEmailConfirmation(key: string){
       debug('checking email confirmation');
       return this.getUserWithConfirmationKey(key)
-      .then(function(user){
+      .then((user) => {
         if(user == null) return false;
         //key matches
         log.info("Email Confirmed for user: " + user.display_name);
         return knex('users').update({new_email: '', email_valid: true}).where({id: user.id})
-        .then(function(){
+        .then(() => {
           return true;
         });
       });
@@ -250,10 +250,10 @@ module.exports = {
 
     checkUserNameAvailable(username: string) {
       return this.getUserByName(username)
-        .then(function(result) {
+        .then((result) => {
           if (result == null) return true;
           return false;
-        }).catch(function() {
+        }).catch(() => {
           //user not found, therefore name is avaliable
           return true;
         });

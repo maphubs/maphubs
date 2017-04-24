@@ -84,7 +84,7 @@ export default class LayerSettings extends MapHubsComponent {
     if(!model.group && this.state.layer.owned_by_group_id){
       //editing settings on an existing layer
       model.group = this.state.layer.owned_by_group_id;
-    }else if(!model.group && this.state.groups.length == 1){
+    }else if(!model.group && this.state.groups.length === 1){
       //creating a new layer when user is only the member of a single group (not showing the group dropdown)
       model.group = this.state.groups[0].group_id;
     }
@@ -92,7 +92,7 @@ export default class LayerSettings extends MapHubsComponent {
       model.private = false;
     }
 
-    LayerActions.saveSettings(model, _this.state._csrf, initLayer, function(err){
+    LayerActions.saveSettings(model, _this.state._csrf, initLayer, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -110,7 +110,7 @@ export default class LayerSettings extends MapHubsComponent {
 
 	render() {
 
-    if(!this.state.groups || this.state.groups.length == 0){
+    if(!this.state.groups || this.state.groups.length === 0){
       return (
         <div className="container">
           <div className="row">

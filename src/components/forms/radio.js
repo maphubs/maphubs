@@ -49,7 +49,7 @@ class Radio extends MapHubsPureComponent {
               data-tooltip={this.props.dataTooltip}>
 
             <label>{this.props.label}</label>
-              {this.props.options.map(function(option){
+              {this.props.options.map((option) => {
                 var checked = false;
                 if(option.value === value){
                   checked = true;

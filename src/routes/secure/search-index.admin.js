@@ -18,7 +18,7 @@ module.exports = app => {
 
     Admin.checkAdmin(user_id).then(isAdmin =>{
       if(isAdmin){ 
-        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+        return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
           var footerConfig = pageConfigs['footer'];
           return SearchIndex.indexExists().then(indexExistsResult => {
             let indexStatus = JSON.stringify(indexExistsResult);

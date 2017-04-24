@@ -20,7 +20,7 @@ exports.find = function(id, done) {
   return knex.select('*')
     .from('users')
     .where('id', id)
-    .then(function(data) {
+    .then((data) => {
       if (data.length == 1) {
         var user = translateUserObject(data[0]);
         return done(null, user);
@@ -29,7 +29,7 @@ exports.find = function(id, done) {
         return done('User Not Found: ' + id, null);
       }
 
-    }).catch(function(err) {
+    }).catch((err) => {
       log.error(err);
       return done(err, null);
     });
@@ -44,7 +44,7 @@ exports.findByUsername = function(username, done) {
   return knex.select('*')
     .from('users')
     .where(knex.raw('lower(display_name)'), '=', username)
-    .then(function(data) {
+    .then((data) => {
       if (data.length == 1) {
         var user = translateUserObject(data[0]);
         return done(null, user);
@@ -53,7 +53,7 @@ exports.findByUsername = function(username, done) {
         return done(null, null);
       }
 
-    }).catch(function(err) {
+    }).catch((err) => {
       log.error(err);
       return done(err, null);
     });

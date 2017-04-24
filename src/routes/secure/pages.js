@@ -8,14 +8,14 @@ var apiDataError = require('../../services/error-response').apiDataError;
 
 module.exports = function(app) {
 
-  app.get('/page/edit/:id', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/page/edit/:id', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = req.session.user.id;
     var page_id = req.params.id.toLowerCase();
 
-    Admin.checkAdmin(user_id).then(function(isAdmin){
+    Admin.checkAdmin(user_id).then((isAdmin) => {
       if(isAdmin){
-        return Page.getPageConfigs([page_id, 'footer']).then(function(pageConfigs){
+        return Page.getPageConfigs([page_id, 'footer']).then((pageConfigs) => {
           var pageConfig = pageConfigs[page_id];
           var footerConfig = pageConfigs.footer;
           res.render('pageedit', {
@@ -28,7 +28,7 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.post('/api/page/save', csrfProtection, function(req, res) {
+  app.post('/api/page/save', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -36,10 +36,10 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     var data = req.body;
     if (data && data.page_id && data.pageConfig) {
-      Admin.checkAdmin(user_id).then(function(isAdmin){
+      Admin.checkAdmin(user_id).then((isAdmin) => {
         if(isAdmin){
           Page.savePageConfig(data.page_id, data.pageConfig)
-            .then(function(result) {
+            .then((result) => {
               if (result && result == 1) {
                 res.send({
                   success: true

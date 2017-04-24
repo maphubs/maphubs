@@ -35,17 +35,17 @@ var MeasurementToolMixin = {
     $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-measure-tool');
     this.map.addControl(draw, 'top-right');
 
-    this.map.on('draw.create', function(e){
+    this.map.on('draw.create', (e) => {
       debug('draw create');
       _this.updateMeasurement(e);
     });
 
-    this.map.on('draw.update', function(e){
+    this.map.on('draw.update', (e) => {
       debug('draw update');
       _this.updateMeasurement(e);
     });
 
-     this.map.on('draw.delete', function(){
+     this.map.on('draw.delete', () => {
        debug('draw delete');
        _this.setState({measurementMessage: _this.__('Use the drawing tools above')});
     });
@@ -77,7 +77,7 @@ var MeasurementToolMixin = {
           "type": "FeatureCollection",
           "features": []
       };
-      data.features.forEach(function(feature){
+      data.features.forEach((feature) => {
         if(feature.geometry.type === 'Polygon'){
           polygons.features.push(feature);
         }else if(feature.geometry.type === 'LineString'){
@@ -102,7 +102,7 @@ var MeasurementToolMixin = {
         this.setState({measurementMessage: areaMessage}); 
       }else if(lines.features.length > 0){
         var distanceKm = 0;
-        lines.features.forEach(function(linestring){
+        lines.features.forEach((linestring) => {
           distanceKm += _lineDistance(linestring);
         });
           var distanceMiles = distanceKm * 0.621371;

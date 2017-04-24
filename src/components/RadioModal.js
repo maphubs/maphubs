@@ -18,9 +18,16 @@ type State = {
   selectedOption: string
 }
 
-export default class RadioModal extends React.Component<void, Props, State> {
+export default class RadioModal extends React.Component<Props, Props, State> {
 
   props: Props
+
+  static defaultProps = {
+    onCancel(){},
+    onSubmit(){},
+    options: [],
+    title: ''
+  }
 
   state = {
     show: false,

@@ -16,14 +16,14 @@ var privateLayerCheck = require('../../services/private-layer-check').middleware
 module.exports = function(app: any) {
 
   //Views
-  app.get('/layers', csrfProtection, function(req, res, next) {
+  app.get('/layers', csrfProtection, (req, res, next) => {
     Promise.all([     
       Layer.getFeaturedLayers(),
       Layer.getRecentLayers(),
       Layer.getPopularLayers(),
       Page.getPageConfigs(['footer'])
     ])
-      .then(function(results){
+      .then((results) => {
         var featuredLayers = results[0];
         var recentLayers = results[1];
         var popularLayers = results[2];
@@ -36,14 +36,14 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = req.session.user.id;
     Layer.createLayer(user_id).then(layer_id =>{
       layer_id = parseInt(layer_id);
       return Layer.getLayerByID(layer_id).then(layer =>{
         return Group.getGroupsForUser(user_id)
-        .then(function(result){
+        .then((result) => {
           res.render('createlayer', {
             title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
             props: {groups: result, layer},
@@ -55,7 +55,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/layer/info/:layer_id/*', privateLayerCheck, csrfProtection, function(req, res, next) {
+  app.get('/layer/info/:layer_id/*', privateLayerCheck, csrfProtection, (req, res, next) => {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
@@ -84,7 +84,7 @@ module.exports = function(app: any) {
         Layer.allowedToModify(layer_id, user_id),
         Layer.getLayerNotes(layer_id)
       ])
-      .then(function(results: Array<any>){
+      .then((results: Array<any>) => {
         var layer: Object = results[0];
         var stats = results[1];
         var canEdit: boolean = results[2];
@@ -94,7 +94,7 @@ module.exports = function(app: any) {
           User.getUser(layer.created_by_user_id),
           User.getUser(layer.updated_by_user_id)
         ])
-        .then(function(userResults: Array<any>){
+        .then((userResults: Array<any>) => {
           var createdByUser = userResults[0];
           var updatedByUser = userResults[1];
           var notes = null;
@@ -130,13 +130,13 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/lyr/:layerid', csrfProtection, function(req, res) {
+  app.get('/lyr/:layerid', csrfProtection, (req, res) => {
     var layerid = req.params.layerid;
     var baseUrl = urlUtil.getBaseUrl();
     res.redirect(baseUrl + '/layer/info/' + layerid + '/');
   });
 
-  app.get('/layer/map/:layer_id/*', privateLayerCheck, csrfProtection, function(req, res, next) {
+  app.get('/layer/map/:layer_id/*', privateLayerCheck, csrfProtection, (req, res, next) => {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
@@ -162,7 +162,7 @@ module.exports = function(app: any) {
       Layer.getLayerByID(layer_id),
       Layer.allowedToModify(layer_id, user_id)
       ])
-    .then(function(results: Array<any>){
+    .then((results: Array<any>) => {
       var layer: Object = results[0];
       var canEdit: boolean = results[1];
       if(layer){
@@ -194,15 +194,15 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/layer/adddata/:id', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/layer/adddata/:id', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var layer_id = parseInt(req.params.id || '', 10);
     var user_id = req.session.user.id;
 
     Layer.allowedToModify(layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
           return Layer.getLayerByID(layer_id)
-          .then(function(layer){
+          .then((layer) => {
             if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
               if(layer.data_type == 'point' && !layer.is_external){
                 res.render('addphotopoint', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
@@ -217,20 +217,20 @@ module.exports = function(app: any) {
         }).catch(nextError(next));
   });
 
-  app.get('/layer/admin/:id/*', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/layer/admin/:id/*', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = req.session.user.id;
     var layer_id = parseInt(req.params.id || '', 10);
 
     //confirm that this user is allowed to administer this layeradmin
     Layer.allowedToModify(layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           return Promise.all([
           Layer.getLayerByID(layer_id),
           Group.getGroupsForUser(user_id)
         ])
-        .then(function(results){
+        .then((results) => {
           var layer = results[0];
           var groups = results[1];
           res.render('layeradmin', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,

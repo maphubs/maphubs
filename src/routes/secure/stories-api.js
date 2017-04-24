@@ -11,7 +11,7 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.post('/api/story/save', csrfProtection, function(req, res) {
+  app.post('/api/story/save', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -21,10 +21,10 @@ module.exports = function(app: any) {
     if (data && data.story_id && data.title && data.body) {
       data.title = data.title.replace('&nbsp;', '');
       Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
-            .then(function(result) {
+            .then((result) => {
               if (result && result == 1) {
                 res.send({
                   success: true
@@ -45,7 +45,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/story/publish', csrfProtection, function(req, res) {
+  app.post('/api/story/publish', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -54,11 +54,11 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.story_id) {
       Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
-          return knex.transaction(function(trx) {
+          return knex.transaction((trx) => {
               return Story.publishStory(data.story_id, trx)
-                .then(function() {
+                .then(() => {
                   res.send({
                     success: true
                   });
@@ -73,7 +73,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/story/delete', csrfProtection, function(req, res) {
+  app.post('/api/story/delete', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -82,13 +82,13 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.story_id) {
       Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
-          return knex.transaction(function(trx) {
+          return knex.transaction((trx) => {
             return Image.removeAllStoryImages(data.story_id, trx)
-              .then(function() {
+              .then(() => {
                 return Story.delete(data.story_id, trx)
-                  .then(function() {
+                  .then(() => {
                     res.send({
                       success: true
                     });
@@ -104,7 +104,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/story/addimage', csrfProtection, function(req, res) {
+  app.post('/api/story/addimage', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -113,10 +113,10 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.story_id && data.image) {
       Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           Image.addStoryImage(data.story_id, data.image, data.info)
-            .then(function(image_id) {
+            .then((image_id) => {
               res.send({
                 success: true, image_id
               });
@@ -130,7 +130,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/story/removeimage', csrfProtection, function(req, res) {
+  app.post('/api/story/removeimage', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -139,10 +139,10 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.story_id && data.image_id) {
       Story.allowedToModify(data.story_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           Image.removeStoryImage(data.story_id, data.image_id)
-            .then(function() {
+            .then(() => {
               res.send({
                 success: true
               });

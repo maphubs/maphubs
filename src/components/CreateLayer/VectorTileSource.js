@@ -28,7 +28,7 @@ export default class RasterTileSource extends MapHubsComponent {
 
   componentWillMount(){
     super.componentWillMount();
-    Formsy.addValidationRule('isHttps', function (values, value) {
+    Formsy.addValidationRule('isHttps', (values, value) => {
         return value.startsWith('https://');
     });
   }
@@ -49,7 +49,7 @@ export default class RasterTileSource extends MapHubsComponent {
     var _this = this;
 
     var boundsArr = model.bounds.split(',');
-    boundsArr.map(function(item){
+    boundsArr.map((item) => {
       return item.trim();
     });
 
@@ -63,7 +63,7 @@ export default class RasterTileSource extends MapHubsComponent {
         bounds: boundsArr,
         tiles: [model.vectorTileUrl]
       }
-    }, _this.state._csrf, function(err){
+    }, _this.state._csrf, (err) => {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

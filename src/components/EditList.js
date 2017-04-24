@@ -15,12 +15,12 @@ export default class EditList extends React.Component {
     items: []
   }
 
-  onDelete(key: any) {
+  onDelete = (key: any) => {
     this.props
       .onDelete(key);
   }
 
-  onAction(key: any) {
+  onAction = (key: any) => {
     this.props
       .onAction(key);
   }
@@ -33,7 +33,7 @@ export default class EditList extends React.Component {
         <li className="collection-header">
           <h5>{this.props.title}</h5>
         </li>
-        {this.props.items.map(function (item) {
+        {this.props.items.map((item) => {
             var icon = '';
             var className = 'collection-item';
             if (item.image) {

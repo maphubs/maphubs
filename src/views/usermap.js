@@ -72,8 +72,8 @@ export default class UserMap extends MapHubsComponent {
       height: size.height
     });
 
-    $(window).resize(function(){
-      debounce(function(){
+    $(window).resize(() => {
+      debounce(() => {
       var size = getSize();
         _this.setState({
           width: size.width,
@@ -98,7 +98,7 @@ export default class UserMap extends MapHubsComponent {
   }
 
   componentDidUpdate(){
-    debounce(function(){
+    debounce(() => {
       var evt = document.createEvent('UIEvents');
       evt.initUIEvent('resize', true, false, window, 0);
       window.dispatchEvent(evt);
@@ -115,7 +115,7 @@ export default class UserMap extends MapHubsComponent {
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of ') + this.props.map.title,
       onPositiveResponse(){
-        MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, function(err){
+        MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {
@@ -153,7 +153,7 @@ export default class UserMap extends MapHubsComponent {
     if(!this.props.map.has_screenshot){
       //warn the user if we need to wait for the screenshot to be created
       this.setState({downloading: true});
-      setTimeout(function(){_this.setState({downloading: false}); }, 15000);
+      setTimeout(() => {_this.setState({downloading: false}); }, 15000);
     }
   }
 
@@ -175,8 +175,8 @@ export default class UserMap extends MapHubsComponent {
     request.post('/api/map/copy')
     .type('json').accept('json')
     .send({map_id: this.props.map.map_id, _csrf: _this.state._csrf})
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
           if(err || !res.body || !res.body.map_id){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -191,7 +191,7 @@ export default class UserMap extends MapHubsComponent {
             });
           }
       },
-      function(cb){
+      (cb) => {
         cb();
       });
     });

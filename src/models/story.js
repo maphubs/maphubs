@@ -94,12 +94,12 @@ module.exports = {
     getStoryByID(story_id: number) {
       var _this = this;
       return _this.getUserStoryById(story_id)
-      .then(function(userStoryResult){
+      .then((userStoryResult) => {
         if(userStoryResult && userStoryResult.length > 0){
           return userStoryResult[0];
         }else{
           return _this.getHubStoryById(story_id)
-          .then(function(hubStoryResult){
+          .then((hubStoryResult) => {
             if(hubStoryResult && hubStoryResult.length > 0){
               return hubStoryResult[0];
             }else{
@@ -200,13 +200,13 @@ module.exports = {
 
     delete(story_id: number, trx: any){
       return trx('omh.story_views').where({story_id}).del()
-      .then(function(){
+      .then(() => {
         return trx('omh.story_maps').where({story_id}).del()
-        .then(function(){
+        .then(() => {
           return trx('omh.hub_stories').where({story_id}).del()
-          .then(function(){
+          .then(() => {
             return trx('omh.user_stories').where({story_id}).del()
-            .then(function(){
+            .then(() => {
                 return trx('omh.stories').where({story_id}).del();
             });
           });
@@ -215,18 +215,18 @@ module.exports = {
     },
 
     createHubStory(hub_id: string, user_id: number) {
-      return knex.transaction(function(trx) {
+      return knex.transaction((trx) => {
         return trx('omh.stories').insert({
           user_id,
           published: false,
           created_at: knex.raw('now()'),
           updated_at: knex.raw('now()')
         }).returning('story_id')
-        .then(function(story_id){
+        .then((story_id) => {
           story_id = parseInt(story_id);
           return trx('omh.hub_stories').insert({hub_id, story_id})
           .returning('story_id')
-          .then(function(result){
+          .then((result) => {
             return result[0];
           });
         });
@@ -234,18 +234,18 @@ module.exports = {
     },
 
     createUserStory(user_id: number) {
-      return knex.transaction(function(trx) {
+      return knex.transaction((trx) => {
         return trx('omh.stories').insert({
           user_id,
           published: false,
           created_at: knex.raw('now()'),
           updated_at: knex.raw('now()')
         }).returning('story_id')
-        .then(function(story_id){
+        .then((story_id) => {
           story_id = parseInt(story_id);
           return trx('omh.user_stories').insert({user_id, story_id})
           .returning('story_id')
-          .then(function(result){
+          .then((result) => {
             return result[0];
           });
         });
@@ -258,7 +258,7 @@ module.exports = {
       return Promise.all([
         knex('omh.hub_stories').where({story_id}),
         knex('omh.user_stories').where({story_id})
-      ]).then(function(results){
+      ]).then((results) => {
         var hubStories = results[0];
         var userStories = results[1];
         if(hubStories && hubStories.length > 0){
@@ -287,7 +287,7 @@ module.exports = {
       debug('get hub: ' + hub_id);
       return knex('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-        .then(function(hubResult) {
+        .then((hubResult) => {
           if (hubResult && hubResult.length == 1) {
               return hubResult[0];
           }
@@ -298,7 +298,7 @@ module.exports = {
 
     allowedToModifyHub(hub_id: string, user_id: number){
       debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
-      return this.getHubByID(hub_id).then(function(hub){
+      return this.getHubByID(hub_id).then((hub) => {
         return Group.allowedToModify(hub.owned_by_group_id, user_id);
       });
     }

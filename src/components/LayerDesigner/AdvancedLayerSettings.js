@@ -54,7 +54,7 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent {
      }
 
      var settings = this.state.settings;
-     Object.keys(values).map(function(key){
+     Object.keys(values).map((key) => {
        settings[key] = values[key];
      });
 

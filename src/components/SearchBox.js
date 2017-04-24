@@ -4,30 +4,36 @@ var request = require('superagent');
 import SearchBar from './SearchBar/SearchBar';
 var debug = require('../services/debug')('SearchBox');
 
-export default class SearchBox extends React.Component {
+type Props = {
+  label: string,
+  suggestionUrl: ?string,
+  onSearch: Function,
+  onError: Function,
+  onReset: Function,
+  style: Object,
+  id: string
+}
 
-  props: {
-    label: string,
-    suggestionUrl: string,
-    onSearch: Function,
-    onError: Function,
-    onReset: Function,
-    style: Object,
-    id: string
-  }
+export default class SearchBox extends React.Component<Props, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     label: 'Search',
     style: {},
-    id: 'search'
+    id: 'search',
+    onSearch(){},
+    onError(){},
+    onReset(){},
+    suggestionUrl: null
   }
 
-  onChange(input: string, resolve: Function) {
+  onChange = (input: string, resolve: Function) => {
     var _this = this;
     if (typeof window !== 'undefined' && this.props.suggestionUrl) {
       request.get(this.props.suggestionUrl + '?q=' + input)
       .type('json').accept('json')
-      .end(function(err, res){
+      .end((err, res) => {
         if (err) {
           debug(err);
           if(_this.props.onError) _this.props.onError(JSON.stringify(err));
@@ -43,7 +49,7 @@ export default class SearchBox extends React.Component {
     }
  }
 
- onSubmit(input: string) {
+ onSubmit = (input: string) => {
    if (!input) return;
    this.props.onSearch(input);
  }
@@ -56,9 +62,9 @@ export default class SearchBox extends React.Component {
        id={this.props.id}
        style={this.props.style}
        placeholder={this.props.label}
-       onChange={this.onChange.bind(this)}
-       onSubmit={this.onSubmit.bind(this)}
-       onReset={this.props.onReset.bind(this)} />
+       onChange={this.onChange}
+       onSubmit={this.onSubmit}
+       onReset={this.props.onReset} />
    </div>
 
    );

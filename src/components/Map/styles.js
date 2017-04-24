@@ -7,7 +7,7 @@ module.exports = {
 
   enableMarkers(style, markerOptions, layer_id){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
-      style.layers.forEach(function(layer){
+      style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           if(!layer.metadata){
             layer.metadata = {};
@@ -43,7 +43,7 @@ module.exports = {
 
   disableMarkers(style){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
-      style.layers.forEach(function(layer){
+      style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
 
           layer.metadata['maphubs:markers'].enabled = false;  
@@ -71,10 +71,10 @@ module.exports = {
   //needed for custom style support
   updateStyleColor(style, newColor){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
-      style.layers.forEach(function(style){
+      style.layers.forEach((style) => {
         if(style.id.startsWith('omh-data-point')){
           //Maphubs Point Layer
-          if(style.type == 'circle'){
+          if(style.type === 'circle'){
             style.paint['circle-color'] = newColor;
           }else{
             debug('unable to update point layer type: ' + style.type);
@@ -83,13 +83,13 @@ module.exports = {
             style.metadata['maphubs:markers'].shapeFill = newColor;
           }
         }else if(style.id.startsWith('omh-data-line')){
-          if(style.type == 'line'){
+          if(style.type === 'line'){
             style.paint['line-color'] = newColor;
           }else{
             debug('unable to update line layer type: ' + style.type);
           }
         }else if(style.id.startsWith('omh-data-polygon')){
-          if(style.type == 'fill'){
+          if(style.type === 'fill'){
             style.paint['fill-color'] = newColor;
             style.paint['fill-outline-color'] = newColor;
             style.paint['fill-opacity'] = 1;
@@ -97,25 +97,25 @@ module.exports = {
             debug('unable to update polygon layer type: ' + style.type);
           }
         }else if(style.id.startsWith('omh-data-doublestroke-polygon')){
-          if(style.type == 'line'){
+          if(style.type === 'line'){
             style.paint['line-color'] = newColor;
           }else{
             debug('unable to update line layer type: ' + style.type);
           }
         }else if(style.id.startsWith('osm') && style.id.endsWith('-polygon')){
-          if(style.type == 'fill'){
+          if(style.type === 'fill'){
             style.paint['fill-color'] = newColor;
           }else{
             debug('unable to update osm polygon layer type: ' + style.type);
           }
         }else if(style.id.startsWith('osm') && style.id.endsWith('-line')){
-          if(style.type == 'line'){
+          if(style.type === 'line'){
             style.paint['line-color'] = newColor;
           }else{
             debug('unable to update osm line layer type: ' + style.type);
           }
-        }else if(style.id == 'osm-buildings-polygon'){
-          if(style.type == 'fill'){
+        }else if(style.id === 'osm-buildings-polygon'){
+          if(style.type === 'fill'){
             style.paint['fill-color'] = newColor;
           }else{
             debug('unable to update osm building layer type: ' + style.type);
@@ -129,7 +129,7 @@ module.exports = {
 
    removeStyleLabels(style){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
-      _remove(style.layers, function(layer) {
+      _remove(style.layers, (layer) => {
         return layer.id.startsWith('omh-label');
       });
     }
@@ -145,12 +145,12 @@ module.exports = {
       var placement = "point";
       var translate =  [0,0];
 
-      if(data_type == 'point'){
+      if(data_type === 'point'){
 
         translate = [0, -14];
 
         //if marker
-        style.layers.forEach(function(layer){
+        style.layers.forEach((layer) => {
           if(layer.id.startsWith('omh-data-point')
               && layer.metadata && layer.metadata['maphubs:markers'] 
               && layer.metadata['maphubs:markers'].enabled){
@@ -163,10 +163,10 @@ module.exports = {
           }
         });
 
-      }else if(data_type == 'line'){
+      }else if(data_type === 'line'){
         placement = "line";
         filter = ["in", "$type", "LineString"];
-      }else if(data_type == 'polygon'){
+      }else if(data_type === 'polygon'){
         sourceLayer = "data-centroids";
       }
       style.layers.push({
@@ -247,7 +247,7 @@ module.exports = {
     ];
 
     if(layer_id !== 'geojson'){
-      layers.forEach(function(layer){
+      layers.forEach((layer) => {
         layer["source-layer"] = "data";
       });
     }
@@ -295,7 +295,7 @@ module.exports = {
     ];
 
     if(layer_id !== 'geojson'){
-      layers.forEach(function(layer){
+      layers.forEach((layer) => {
         layer["source-layer"] = "data";
       });
     }
@@ -402,7 +402,7 @@ module.exports = {
     ];
 
     if(layer_id !== 'geojson'){
-      layers.forEach(function(layer){
+      layers.forEach((layer) => {
         layer["source-layer"] = "data";
       });
     }
@@ -548,7 +548,7 @@ module.exports = {
     legendWithColor(layer, color) {
       var html = '';
       var name = this.htmlEncode(layer.name);
-      if(layer.data_type == 'point'){
+      if(layer.data_type === 'point'){
         html = `<div class="omh-legend">
  <div class="point double-stroke" style="background-color: ` + color + `">
  </div>
@@ -556,14 +556,14 @@ module.exports = {
  </div>
 `;
 
-      }else if(layer.data_type  == 'line'){
+      }else if(layer.data_type  === 'line'){
         html = `<div class="omh-legend">
 <div class="block double-stroke" style="height:  4px; background-color: ` + color + `">
 </div>
 <h3>` + name + `</h3>
 </div>`;
 
-      }else if(layer.data_type  == 'polygon'){
+      }else if(layer.data_type  === 'polygon'){
         html = `<div class="omh-legend">
  <div class="block double-stroke" style="background-color: ` + color + `">
  </div>
@@ -618,7 +618,7 @@ module.exports = {
 
     toggleShowBehindBaseMapLabels(showBehindBaseMapLabels, style){
       //add flag to all layers
-      style.layers.map(function(layer){
+      style.layers.map((layer) => {
         if(!layer.metadata){
           layer.metadata = {};
         }

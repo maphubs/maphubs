@@ -6,10 +6,10 @@ module.exports = {
   getFeatureByID(mhid: string, layer_id: number, trx: any) {
     var _this = this;
     return _this.getGeoJSON([mhid], layer_id, trx)
-      .then(function(geojson){
+      .then((geojson) => {
         var feature = {geojson};
         return _this.getFeatureNotes(mhid, layer_id, trx)
-        .then(function(notes){
+        .then((notes) => {
           var result = {feature, notes};
           return result;
         });
@@ -20,7 +20,7 @@ module.exports = {
     let db = knex; if(trx){db = trx;}
     return db('omh.feature_notes').select('notes')
     .where({mhid, layer_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length == 1){
         return result[0];
       }
@@ -31,7 +31,7 @@ module.exports = {
   saveFeatureNote(mhid: string, layer_id: number, user_id: number, notes: string, trx: any){
     let db = knex; if(trx){db = trx;}
     return db('omh.feature_notes').select('mhid').where({mhid, layer_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length == 1){
         return db('omh.feature_notes')
         .update({
@@ -71,11 +71,11 @@ module.exports = {
       var layerTable = 'layers.data_' + layer_id;  
       return db.select(db.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags')
       .from(layerTable).whereIn('mhid', mhid)
-          .then(function(data){
+          .then((data) => {
             return  db.raw(`select 
             '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
             from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)             
-            .then(function(bbox) {
+            .then((bbox) => {
 
             var feature = {
               type: 'Feature',

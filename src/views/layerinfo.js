@@ -83,20 +83,20 @@ export default class LayerInfo extends MapHubsComponent {
       //retreive geoJSON data for layers
       if(this.props.layer.external_layer_config.type === 'ags-mapserver-query'){
         TerraformerGL.getArcGISGeoJSON(this.props.layer.external_layer_config.url)
-        .then(function(geoJSON){
+        .then((geoJSON) => {
           _this.processGeoJSON(geoJSON);
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
       }else if(this.props.layer.external_layer_config.type === 'ags-featureserver-query'){
         TerraformerGL.getArcGISFeatureServiceGeoJSON(this.props.layer.external_layer_config.url)
-        .then(function(geoJSON){
+        .then((geoJSON) => {
           _this.processGeoJSON(geoJSON);
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
       }else if(this.props.layer.external_layer_config.type === 'geojson'){
           request.get(this.props.layer.external_layer_config.data)
           .type('json').accept('json')
-          .end(function(err, res){
+          .end((err, res) => {
             var geoJSON = res.body;
             _this.processGeoJSON(geoJSON);
           });
@@ -106,7 +106,7 @@ export default class LayerInfo extends MapHubsComponent {
       }
 
     }else{
-      this.getGeoJSON(function(){});
+      this.getGeoJSON(() => {});
       _this.setState({dataMsg: _this.__('Data Loading')});
     }
 
@@ -141,13 +141,13 @@ export default class LayerInfo extends MapHubsComponent {
 
     request.get(dataUrl)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         var geoJSON = res.body;
         request.get(presetUrl)
         .type('json').accept('json')
-        .end(function(err, res){
-          checkClientError(res, err, cb, function(cb){
+        .end((err, res) => {
+          checkClientError(res, err, cb, (cb) => {
             var presets = res.body;
             _this.setState({geoJSON, presets});
             cb();
@@ -164,7 +164,7 @@ export default class LayerInfo extends MapHubsComponent {
     var gridHeight = $(this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
     this.setState({gridHeight});
 
-   $(window).resize(function(){
+   $(window).resize(() => {
       var gridHeight = $(_this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
       _this.setState({gridHeight, userResize: true});
     });
@@ -174,7 +174,7 @@ export default class LayerInfo extends MapHubsComponent {
   onRowSelected = (idVal: string, idField: string) => {
     var _this = this;
     if(this.state.geoJSON){
-      this.state.geoJSON.features.forEach(function(feature){
+      this.state.geoJSON.features.forEach((feature) => {
         if(idVal === feature.properties[idField]){
           var bbox = require('@turf/bbox')(feature);
           _this.refs.map.fitBounds(bbox, 16, 25);
@@ -210,7 +210,7 @@ export default class LayerInfo extends MapHubsComponent {
   stopEditingNotes = () => {
     var _this = this;
 
-    LayerNotesActions.saveNotes(this.props.layer.layer_id, this.state._csrf, function(err){
+    LayerNotesActions.saveNotes(this.props.layer.layer_id, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -294,7 +294,7 @@ export default class LayerInfo extends MapHubsComponent {
             </a>
           </li>
         );
-        if(this.props.layer.data_type == "point"){
+        if(this.props.layer.data_type === "point"){
           addPhotoPointButton = (
             <li>
               <a href={'/layer/adddata/' + this.props.layer.layer_id } className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Add a Photo')}>

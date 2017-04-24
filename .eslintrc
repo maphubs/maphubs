@@ -40,8 +40,9 @@
     "react/wrap-multilines": 1,
     "react/prefer-es6-class": 1,
     "react/jsx-no-bind": 2,
+    "prefer-arrow-callback": 1,
     "semi": [2, "always"],
-    "eqeqeq": 2 // require the use of === and !==
+    "eqeqeq": 1 // require the use of === and !==
 
   },
 

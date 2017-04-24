@@ -11,16 +11,16 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.get('/', csrfProtection, function(req, res, next) {
+  app.get('/', csrfProtection, (req, res, next) => {
 
-    Page.getPageConfigs(['home', 'footer']).then(function(pageConfigs: Object){
+    Page.getPageConfigs(['home', 'footer']).then((pageConfigs: Object) => {
       var pageConfig = pageConfigs['home'];
       var footerConfig = pageConfigs['footer'];
       var dataRequests = [];
       var dataRequestNames = [];
     //use page config to determine data requests
     if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
-      pageConfig.components.forEach(function(component: any){
+      pageConfig.components.forEach((component: any) => {
         if(component.type === 'map'){
           dataRequests.push(Map.getMap(component.map_id));
           dataRequestNames.push('map');
@@ -35,7 +35,7 @@ module.exports = function(app: any) {
 
         }else if(component.type === 'carousel'){
           if(component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0){
-            component.datasets.forEach(function(dataset){
+            component.datasets.forEach((dataset) => {
               if(dataset.type == 'layer' && dataset.filter === 'popular'){
                  dataRequests.push(Layer.getPopularLayers(5));
                   dataRequestNames.push('trendingLayers');
@@ -56,9 +56,9 @@ module.exports = function(app: any) {
     }
     
     Promise.all(dataRequests)
-    .then(function(results){
+    .then((results) => {
       var props = {pageConfig, footerConfig, _csrf: req.csrfToken()};
-      results.forEach(function(result, i){
+      results.forEach((result, i) => {
         props[dataRequestNames[i]] = result;
       });
       var title =  MAPHUBS_CONFIG.productName, description =  MAPHUBS_CONFIG.productName;
@@ -99,7 +99,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/explore', csrfProtection, function(req, res, next) {
+  app.get('/explore', csrfProtection, (req, res, next) => {
     Promise.all([
       Layer.getFeaturedLayers(10),
       Group.getFeaturedGroups(10),
@@ -119,7 +119,7 @@ module.exports = function(app: any) {
       Map.getRecentMaps(10),
       Story.getRecentStories(10),
       Page.getPageConfigs(['footer'])
-    ]).then(function(results){
+    ]).then((results) => {
       var featuredLayers = results[0];
       var featuredGroups = results[1];
       var featuredHubs = results[2];
@@ -150,8 +150,8 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/services', csrfProtection, function(req, res, next) {
-    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+  app.get('/services', csrfProtection, (req, res, next) => {
+    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
       var footerConfig = pageConfigs['footer'];
       res.render('services', {
         title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -161,8 +161,8 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/journalists', csrfProtection, function(req, res, next) {
-    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+  app.get('/journalists', csrfProtection, (req, res, next) => {
+    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
       var footerConfig = pageConfigs['footer'];
       res.render('journalists', {
         title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,

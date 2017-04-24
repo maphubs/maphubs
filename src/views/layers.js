@@ -40,13 +40,13 @@ export default class Layers extends MapHubsComponent {
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  handleSearch(input: string) {
+  handleSearch = (input: string) => {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           MessageActions.showMessage({title: 'Error', message: err});
         }else{
@@ -59,14 +59,14 @@ export default class Layers extends MapHubsComponent {
           }
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );
     });
   }
 
-  resetSearch(){
+  resetSearch = () => {
     this.setState({searchActive: false, searchResults: []});
   }
 
@@ -130,7 +130,7 @@ export default class Layers extends MapHubsComponent {
                 <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse layers or create a new layer.')}</p>
               </div>
               <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch.bind(this)} onReset={this.resetSearch.bind(this)}/>
+                <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
               </div>
             </div>
           </div>

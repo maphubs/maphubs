@@ -36,7 +36,7 @@ export default class EmptyLocalSource extends MapHubsComponent {
       empty_data_type: this.props.type
     };
     
-    LayerActions.saveDataSettings(data, _this.state._csrf, function(err){
+    LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

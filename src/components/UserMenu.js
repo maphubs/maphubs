@@ -1,3 +1,4 @@
+//@flow
 import React from 'react';
 var $ = require('jquery');
 import MapHubsComponent from './MapHubsComponent';
@@ -5,28 +6,42 @@ import UserStore from '../stores/UserStore';
 import UserActions from '../actions/UserActions';
 import Gravatar from './user/Gravatar';
 
-export default class UserMenu extends MapHubsComponent {
-
-  props:{
+type Props = {
     id: string,
     sideNav: boolean
   }
 
-  static defaultProps = {
+type User = {
+  email: string,
+    display_name: string
+}
+
+type State = {
+  user: User,
+  loaded: boolean
+}
+
+export default class UserMenu extends MapHubsComponent<Props, Props, State> {
+
+  props: Props
+
+  static defaultProps: Props = {
     id: 'user-menu',
     sideNav: false
   }
 
-  constructor(props){
+  state: State
+
+  constructor(props: Props){
 		super(props);
 		this.stores.push(UserStore);
 	}
 
   componentDidMount() {
-    UserActions.getUser(function(){});
+    UserActions.getUser(() => {});
   }
 
-  componentDidUpdate(prevState){
+  componentDidUpdate(prevState: State){
     if(this.state.loggedIn && !prevState.loggedIn){
       $(this.refs.userButton).dropdown({
         inDuration: 300,
@@ -40,11 +55,11 @@ export default class UserMenu extends MapHubsComponent {
     }
   }
 
-  loginClick(){
+  loginClick = () => {
     window.location = "/login?returnTo=" + window.location;
   }
 
-  logoutClick(){
+  logoutClick = () => {
     window.location = "/logout?returnTo=" + window.location;
   }
 

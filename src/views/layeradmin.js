@@ -54,7 +54,7 @@ export default class LayerAdmin extends MapHubsComponent {
   savePresets = () => {
     var _this = this;
     //save presets
-    PresetActions.submitPresets(false, this.state._csrf, function(err){
+    PresetActions.submitPresets(false, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -79,7 +79,7 @@ export default class LayerAdmin extends MapHubsComponent {
       + this.props.layer.name + '. '
       + _this.__('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
       onPositiveResponse(){
-        LayerActions.deleteLayer(_this.state._csrf, function(err){
+        LayerActions.deleteLayer(_this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           } else {
@@ -102,8 +102,8 @@ export default class LayerAdmin extends MapHubsComponent {
     .send({
       layer_id: this.props.layer.layer_id
     })
-    .end(function(err, res){
-      checkClientError(res, err, function(){}, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, () => {}, (cb) => {
         if(err){
           MessageActions.showMessage({title: _this.__('Server Error'), message: err});
         } else {

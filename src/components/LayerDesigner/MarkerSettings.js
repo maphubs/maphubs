@@ -38,7 +38,7 @@ export default class MarkerSettings extends MapHubsPureComponent {
 
     //get state from style
     if(props.style.layers && Array.isArray(props.style.layers) && props.style.layers.length > 0){
-      props.style.layers.forEach(function(layer){
+      props.style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           if(layer.metadata && layer.metadata['maphubs:markers']){
             _assignIn(options, layer.metadata['maphubs:markers']);

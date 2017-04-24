@@ -40,7 +40,7 @@ export default class LayerSource extends MapHubsComponent {
   onSubmit = (formData: Object) => {
     var _this = this;
     //save presets
-    LayerActions.saveSource(formData, this.state._csrf, function(err){
+    LayerActions.saveSource(formData, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

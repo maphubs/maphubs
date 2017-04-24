@@ -30,11 +30,11 @@ export default class MapboxSource extends MapHubsComponent {
 
   componentWillMount(){
     super.componentWillMount();
-    Formsy.addValidationRule('isValidMapboxStyleURL', function (values, value) {
+    Formsy.addValidationRule('isValidMapboxStyleURL', (values, value) => {
         return value.startsWith('mapbox://styles/');
     });
 
-    Formsy.addValidationRule('isValidMapboxMapID', function (values, value) {
+    Formsy.addValidationRule('isValidMapboxMapID', (values, value) => {
         var valArr = value.split('.');
         return valArr && Array.isArray(valArr) && valArr.length === 2;
     });
@@ -77,7 +77,7 @@ export default class MapboxSource extends MapHubsComponent {
         }
       };
     }
-    LayerActions.saveDataSettings(dataSettings, _this.state._csrf, function(err){
+    LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

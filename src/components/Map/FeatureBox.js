@@ -81,7 +81,7 @@ export default class FeatureBox extends MapHubsComponent {
     }
   }
 
-  getLayer(layer_id: number, host: string){
+  getLayer = (layer_id: number, host: string) => {
     var _this = this;
     var baseUrl;
     if(host && host !== 'dev.docker' && host !== window.location.hostname){
@@ -91,8 +91,8 @@ export default class FeatureBox extends MapHubsComponent {
     }
     request.get(baseUrl + '/api/layer/info/' + layer_id)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(){}, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, () => {}, (cb) => {
         var layer = res.body.layer;
         _this.setState({layer, layerLoaded: true});
         cb();
@@ -100,12 +100,12 @@ export default class FeatureBox extends MapHubsComponent {
     });
   }
 
-  handleCloseSelected() {
+  handleCloseSelected = () => {
     this.setState({selected: false, currentFeatures: [], selectedFeature: 1});
     this.props.onUnselected();
   }
 
-  handleChangeSelectedFeature(selectedFeature: Object){
+  handleChangeSelectedFeature = (selectedFeature: Object) => {
     this.setState({selectedFeature});
     if(selectedFeature.properties.layer_id){
         this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
@@ -146,8 +146,8 @@ export default class FeatureBox extends MapHubsComponent {
             layer_id = currentFeature.properties.layer_id;
             host = currentFeature.properties.maphubs_host;
             var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-            nameFields.forEach(function(name){
-              if(featureName == 'unknown' && currentFeature.properties[name]){
+            nameFields.forEach((name) => {
+              if(featureName === 'unknown' && currentFeature.properties[name]){
                 featureName = currentFeature.properties[name];
               }
             });

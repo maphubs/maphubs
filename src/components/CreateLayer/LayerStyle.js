@@ -66,7 +66,7 @@ export default class LayerStyle extends MapHubsComponent {
       preview_position
     },
     this.state._csrf,
-    function(err){
+    (err) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

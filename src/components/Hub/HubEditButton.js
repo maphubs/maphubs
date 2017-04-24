@@ -27,20 +27,21 @@ export default class HubEditButton extends MapHubsComponent {
     return false;
   }
 
-  render(){var button = '';
-  if(this.props.editing){
-    button = (
-        <a onClick={this.props.stopEditing} className="btn-floating btn-large omh-accent-text">
-          <i className="large material-icons">save</i>
-        </a>
-    );
-  }else {
-    button = (
-        <a onClick={this.props.startEditing} className="btn-floating btn-large omh-accent-text">
-          <i className="large material-icons">mode_edit</i>
-        </a>
-    );
-  }
+  render(){
+    var button = '';
+    if(this.props.editing){
+      button = (
+          <a onClick={this.props.stopEditing} className="btn-floating btn-large omh-accent-text">
+            <i className="large material-icons">save</i>
+          </a>
+      );
+    }else {
+      button = (
+          <a onClick={this.props.startEditing} className="btn-floating btn-large omh-accent-text">
+            <i className="large material-icons">mode_edit</i>
+          </a>
+      );
+    }
     return (
       <div style={this.props.style} className="fixed-action-btn action-button-bottom-right">
       {button}

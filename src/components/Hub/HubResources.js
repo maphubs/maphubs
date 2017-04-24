@@ -32,7 +32,7 @@ export default class HubResources extends MapHubsComponent {
     return false;
   }
 
-  handleResourcesChange(resources: string){
+  handleResourcesChange = (resources: string) => {
     HubActions.setResources(resources);
   }
 

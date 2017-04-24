@@ -19,9 +19,9 @@ module.exports = {
   checkPassword(user_id: number, password: string, cb: Function){
 
     return User.getUser(user_id, true)
-    .then(function(user){
+    .then((user) => {
       debug('checking password for: ' + user.display_name);
-      bcrypt.compare(password, user.pass_crypt, function(err, res) {
+      bcrypt.compare(password, user.pass_crypt, (err, res) => {
         if(err){
           log.error(err);
         }
@@ -32,7 +32,7 @@ module.exports = {
           cb(false);
         }
       });
-    }).catch(function(err: Error){
+    }).catch((err: Error) => {
       log.error(err);
     });
 
@@ -40,15 +40,15 @@ module.exports = {
 
   updatePassword(user_id: number, password: string, sendEmail: boolean, __: Function){
     return User.getUser(user_id, true)
-    .then(function(user){
+    .then((user) => {
       debug('Updating password for: ' + user.display_name);
-      return bcrypt.genSaltAsync(10).then(function(salt) {
+      return bcrypt.genSaltAsync(10).then((salt) => {
         debug('created salt: ' + salt);
         return bcrypt.hashAsync(password, salt)
-        .then(function(hash){
+        .then((hash) => {
           debug('created hash: ' + hash);
           return knex('users').update({pass_crypt: hash, pass_reset: null}).where({id: user_id})
-          .then(function(){
+          .then(() => {
             debug('database updated');
             if(sendEmail){
               return Email.send({
@@ -69,19 +69,19 @@ module.exports = {
         });
       });
     })
-    .catch(function(err: Error){
+    .catch((err: Error) => {
       log.error(err);
     });
   },
 
   forgotPassword(email: string, __: Function){
     return User.getUserByEmail(email, true)
-    .then(function(user){
+    .then((user) => {
       if(!user) throw new Error('User not found');
       //generate a unique reset link
       var pass_reset = uuid();
       knex('users').update({pass_reset}).where({id: user.id})
-      .then(function(){
+      .then(() => {
         var baseUrl = urlUtil.getBaseUrl();
         var url = baseUrl + '/user/passwordreset/' + pass_reset;
         Email.send({
@@ -94,7 +94,7 @@ module.exports = {
           html: user.display_name + ',<br />' +
             __('Please go to this link in your browser to reset your password:') + ' ' + url
         })
-        .catch(function(err: Error){
+        .catch((err: Error) => {
           log.error(err);
         });
       });

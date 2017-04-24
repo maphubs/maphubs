@@ -187,7 +187,7 @@ var Map = React.createClass({
   addLayers(map, glStyle){
     var _this = this;
     var layers = this.optimizeLayerOrder(glStyle);
-    layers.forEach(function(layer){
+    layers.forEach((layer) => {
     try{
       var source = glStyle.sources[layer.source];
       if(layer.source !== 'osm'  && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
@@ -224,7 +224,7 @@ var Map = React.createClass({
   removeAllLayers(prevStyle){
     var _this = this;
     if(prevStyle && prevStyle.layers){
-      prevStyle.layers.forEach(function(layer){
+      prevStyle.layers.forEach((layer) => {
         try{
           var source = prevStyle.sources[layer.source];
           if(layer.source !== 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
@@ -246,7 +246,7 @@ var Map = React.createClass({
   removeAllSources(prevStyle){
     var _this = this;
       if(prevStyle && prevStyle.sources){
-      Object.keys(prevStyle.sources).forEach(function(key) {
+      Object.keys(prevStyle.sources).forEach((key) => {
           try{
             if(LayerSources[prevStyle.sources[key].type] && LayerSources[prevStyle.sources[key].type].remove){
               LayerSources[prevStyle.sources[key].type].remove(key, _this.map);
@@ -284,7 +284,7 @@ var Map = React.createClass({
       
       //map data is loaded when style.load handler is called
     }else {
-      this.addMapData(this.map, newStyle, this.props.data, function(){
+      this.addMapData(this.map, newStyle, this.props.data, () => {
         debug('(' + _this.state.id + ') ' +'reload: finished adding data');
       });
     }
@@ -294,7 +294,7 @@ var Map = React.createClass({
     var _this = this;
     if(glStyle && glStyle.sources){
       var sources = [];
-      Object.keys(glStyle.sources).forEach(function(key) {
+      Object.keys(glStyle.sources).forEach((key) => {
         var source = glStyle.sources[key];
         var type = source.type;
         var url = source.url;
@@ -317,13 +317,13 @@ var Map = React.createClass({
         }
       });
       //once all sources are loaded then load the layers
-      Promise.all(sources).then(function(){
+      Promise.all(sources).then(() => {
         _this.addLayers(map, glStyle);
          if(geoJSON){
             _this.initGeoJSON(map, geoJSON);
           }
         cb();
-      }).catch(function(err){
+      }).catch((err) => {
         debug('(' + _this.state.id + ') ' +err);
         //try to load the map anyway
         _this.addLayers(map, glStyle);
@@ -345,7 +345,7 @@ var Map = React.createClass({
     var _this = this;
     debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
-    BaseMapActions.getBaseMapFromName(this.state.baseMap, function(baseMap){
+    BaseMapActions.getBaseMapFromName(this.state.baseMap, (baseMap) => {
        
     if (!mapboxgl.supported()) {
     alert('Your browser does not support Mapbox GL');
@@ -363,10 +363,10 @@ var Map = React.createClass({
       attributionControl: _this.props.attributionControl
     });
 
-  map.on('style.load', function() {
+  map.on('style.load', () => {
     debug('(' + _this.state.id + ') ' +'style.load');
     //add the omh data
-    _this.addMapData(map, _this.state.glStyle, _this.props.data, function(){
+    _this.addMapData(map, _this.state.glStyle, _this.props.data, () => {
       //do stuff that needs to happen after data loads
       debug('(' + _this.state.id + ') ' +'finished adding map data');
       //restore map bounds (except for geoJSON maps)
@@ -508,7 +508,7 @@ var Map = React.createClass({
           var styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
           this.setState({allowLayersToMoveMap, glStyle: styleCopy});
           BaseMapActions.setBaseMap(nextProps.baseMap);
-          BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+          BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapUrl) => {
             
             _this.reload(prevStyle, styleCopy, baseMapUrl);
 
@@ -523,7 +523,7 @@ var Map = React.createClass({
         allowLayersToMoveMap = false;    
         this.setState({allowLayersToMoveMap});
         BaseMapActions.setBaseMap(nextProps.baseMap);
-        BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
+        BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapUrl) => {
           _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
         });
 
@@ -605,7 +605,7 @@ var Map = React.createClass({
   changeBaseMap(mapName){
     debug('changing basemap to: ' + mapName);
     var _this = this;
-    BaseMapActions.getBaseMapFromName(mapName, function(baseMapUrl){
+    BaseMapActions.getBaseMapFromName(mapName, (baseMapUrl) => {
       BaseMapActions.setBaseMap(mapName);
       _this.setState({allowLayersToMoveMap: false});
       _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);

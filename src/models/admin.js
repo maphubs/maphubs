@@ -14,7 +14,7 @@ module.exports = {
     debug('sending email invite to: ' + email);
     var key = uuid();
     return knex('omh.account_invites').insert({email, key})
-    .then(function(){
+    .then(() => {
         var baseUrl = urlUtil.getBaseUrl();
         var url = baseUrl + '/signup/invite/' + key;
 
@@ -49,7 +49,7 @@ module.exports = {
   checkInviteKey(key: string){
     debug('checking invite key');
     return knex('omh.account_invites').select('email').where({key, used:false})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length === 1){
         return true;
       }
@@ -60,9 +60,9 @@ module.exports = {
   useInvite(key: string){
     debug('using invite key');
     return knex('omh.account_invites').update({used:true}).where({key})
-    .then(function(){
+    .then(() => {
       return knex('omh.account_invites').select('email').where({key})
-      .then(function(result){
+      .then((result) => {
         if(result && result.length === 1){
           return result[0].email;
         }else{
@@ -74,7 +74,7 @@ module.exports = {
 
   checkAdmin(user_id: number){
     return knex('omh.admins').select('user_id').where({user_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length === 1){
         return true;
       }

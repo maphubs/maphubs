@@ -130,7 +130,7 @@ export default class MapMaker extends MapHubsComponent {
     });
 
     $(window).resize(function(){
-      var debounced = _debounce(function(){
+      var debounced = _debounce(() => {
         var size = getSize();
         _this.setState({
           width: size.width,
@@ -226,7 +226,7 @@ export default class MapMaker extends MapHubsComponent {
       }
       //check all layers are in the same group
       var privateLayerInOtherGroup = false;
-      this.state.mapLayers.forEach(function(layer){
+      this.state.mapLayers.forEach((layer) => {
         if(layer.private && layer.owned_by_group_id !== group_id){
           privateLayerInOtherGroup = true;
         }
@@ -238,7 +238,7 @@ export default class MapMaker extends MapHubsComponent {
     }else{
       //check that no private layers are included
       var privateLayerInPublicMap = false;
-      this.state.mapLayers.forEach(function(layer){
+      this.state.mapLayers.forEach((layer) => {
         if(layer.private){
           privateLayerInPublicMap = true;
         }
@@ -266,7 +266,7 @@ export default class MapMaker extends MapHubsComponent {
     }else{
 
       var basemap = this.refs.map.getBaseMap();
-      if(!this.state.map_id || this.state.map_id == -1){
+      if(!this.state.map_id || this.state.map_id === -1){
         Actions.createMap(model.title, position, basemap, model.group, model.private, _this.state._csrf, err =>{
           cb();
           if(err){
@@ -296,7 +296,7 @@ export default class MapMaker extends MapHubsComponent {
 
   toggleVisibility = (layer_id: number) => {
     $('.layer-card-tooltipped').tooltip('remove');
-    Actions.toggleVisibility(layer_id, function(){
+    Actions.toggleVisibility(layer_id, () => {
     });
     $('.layer-card-tooltipped').tooltip();
   }
@@ -329,7 +329,7 @@ export default class MapMaker extends MapHubsComponent {
     //clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer));
 
-    if(this.state.mapLayers.length == 0 && layer.extent_bbox){
+    if(this.state.mapLayers.length === 0 && layer.extent_bbox){
       _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false);
     }
 
@@ -337,7 +337,7 @@ export default class MapMaker extends MapHubsComponent {
     position.bounds = this.refs.map.getBounds();
 
     Actions.setMapPosition(position);
-    Actions.addToMap(layer, function(err){
+    Actions.addToMap(layer, (err) => {
       if(err){
         NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'});
       }

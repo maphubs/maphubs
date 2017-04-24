@@ -70,7 +70,7 @@ export default class UploadLocalSource extends MapHubsComponent {
       external_layer_config: {}
     };
 
-    LayerActions.saveDataSettings(data, _this.state._csrf, function(err){
+    LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -92,7 +92,7 @@ export default class UploadLocalSource extends MapHubsComponent {
       PresetActions.setImportedTags(result.uniqueProps);
       LayerActions.setDataType(result.data_type);
     }else{
-      if(result.code == 'MULTIPLESHP'){
+      if(result.code === 'MULTIPLESHP'){
         this.setState({multipleShapefiles: result.value});
       }else{
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});
@@ -107,7 +107,7 @@ export default class UploadLocalSource extends MapHubsComponent {
 
   finishUpload = (shapefileName: string) => {
     var _this = this;
-    LayerActions.finishUpload(shapefileName, this.state._csrf, function(err, result){
+    LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
         PresetActions.setImportedTags(result.uniqueProps);
@@ -154,7 +154,7 @@ export default class UploadLocalSource extends MapHubsComponent {
     var multipleShapefiles = '';
     if(this.state.multipleShapefiles){
       var options = [];
-      this.state.multipleShapefiles.forEach(function(shpFile){
+      this.state.multipleShapefiles.forEach((shpFile) => {
         options.push({value: shpFile, label: shpFile});
       });
       multipleShapefiles = (

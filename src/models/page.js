@@ -5,7 +5,7 @@ module.exports = {
 
   getPageConfig(page_id: string): Promise<Array<Object>> {
     return knex.select('config').from('omh.page').where({page_id})
-    .then(function(result) {
+    .then((result) => {
       if (result && result.length == 1) {
         return result[0].config;
       }
@@ -16,7 +16,7 @@ module.exports = {
 
   getPageConfigs(page_ids: Array<string>): Promise<Object> {
     return knex.select('page_id', 'config').from('omh.page').whereIn('page_id', page_ids)
-    .then(function(results) {
+    .then((results) => {
       var configs = {};
       results.forEach(result =>{
         configs[result.page_id] = result.config;

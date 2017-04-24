@@ -45,7 +45,7 @@ export default class UserStories extends MapHubsComponent {
     }
 
     var emptyMessage = '';
-    if(!this.props.stories || this.props.stories.length == 0){
+    if(!this.props.stories || this.props.stories.length === 0){
       emptyMessage = (
         <div className="row" style={{height: 'calc(100% - 100px)'}}>
           <div className="valign-wrapper" style={{height: '100%'}}>
@@ -63,7 +63,7 @@ export default class UserStories extends MapHubsComponent {
         <main style={{minHeight: 'calc(100% - 70px)'}}>
         <div className="container" style={{height: '100%'}}>
            {emptyMessage}
-            {this.props.stories.map(function (story) {
+            {this.props.stories.map((story) => {
               return (
                 <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className="card-content">

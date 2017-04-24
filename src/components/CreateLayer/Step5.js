@@ -13,7 +13,7 @@ export default class Step5 extends MapHubsComponent {
 
   onSubmit = (layer_id: number, name: string) => {
     var _this = this;
-    LayerActions.setComplete(this.state._csrf, function(){
+    LayerActions.setComplete(this.state._csrf, () => {
       if(_this.props.onSubmit) _this.props.onSubmit(layer_id, name);
     });
   }

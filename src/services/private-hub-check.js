@@ -5,7 +5,7 @@ var apiDataError = require('./error-response').apiDataError;
 
 var check = function(hub_id, user_id){
   return Hub.isPrivate(hub_id)
-  .then(function(isPrivate){
+  .then((isPrivate) => {
     if(isPrivate){
       if(user_id <= 0){
         return false; //don't hit the db again if we know the user isn't valid
@@ -45,7 +45,7 @@ var middleware = function(view) {
 
     if(hub_id){
       check(hub_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           next();
         }else{

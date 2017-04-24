@@ -12,7 +12,7 @@ module.exports = {
     debug("replace views for layer: " + layer_id);
     var _this = this;
     return _this.dropLayerViews(layer_id, trx)
-    .then(function(){
+    .then(() => {
       return _this.createLayerViews(layer_id, presets, trx);
     }).catch(logRethrow());
   },
@@ -26,8 +26,8 @@ module.exports = {
       `DROP VIEW IF EXISTS layers.data_full_${layer_id}`
     ];
 
-    return Promise.each(commands, function(command){
-      return db.raw(command).catch(function(err){
+    return Promise.each(commands, (command) => {
+      return db.raw(command).catch((err) => {
         log.error(err.message); //don't propagate errors in case we are recovering from a incomplete layer
       });
     }).catch(logRethrow());
@@ -39,7 +39,7 @@ module.exports = {
     debug("create views for layer: " + layer_id);
     var tagColumns = '';
     if(presets){
-      presets.forEach(function(preset){
+      presets.forEach((preset) => {
         if(preset.type === 'number'){
           tagColumns += `(tags->>'` + preset.tag + `')::real as "` + preset.tag + `",`;
         }else{
@@ -64,7 +64,7 @@ module.exports = {
 
     ];
 
-    return Promise.each(commands, function(command){
+    return Promise.each(commands, (command) => {
       //debug(command);
       return db.raw(command).catch(logRethrow());
     }).catch(logRethrow());

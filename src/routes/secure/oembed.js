@@ -6,7 +6,7 @@ var urlUtil = require('../../services/url-util');
 
 module.exports = function(app) {
 
-  app.get('/api/oembed/map', function(req, res) {
+  app.get('/api/oembed/map', (req, res) => {
 
     var url = req.query.url;
     var format = req.query.format;
@@ -21,8 +21,8 @@ module.exports = function(app) {
 
     var baseUrl = urlUtil.getBaseUrl();
 
-    Map.getMap(map_id).then(function(map){
-      return User.getUser(map.created_by).then(function(user){
+    Map.getMap(map_id).then((map) => {
+      return User.getUser(map.created_by).then((user) => {
 
       var url =baseUrl + '/map/embed/' + map.map_id + '/static';
       var imageUrl = baseUrl + '/api/screenshot/map/' + map.map_id + '.png';

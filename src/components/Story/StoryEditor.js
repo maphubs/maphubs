@@ -49,12 +49,12 @@ export default class StoryEditor extends MapHubsComponent {
   componentDidMount(){
    var _this = this;
 
-   $('.storybody').on('focus', function(){
+   $('.storybody').on('focus', () => {
      NotificationActions.dismissNotification();
    });
 
    $('.storybody').on('click', function(){
-     var debounced = debounce(function(){
+     var debounced = debounce(() => {
        _this.saveSelectionRange();
      }, 500).bind(this);
      debounced();
@@ -91,7 +91,7 @@ export default class StoryEditor extends MapHubsComponent {
     var _this = this;
     this.body = body;
     Actions.handleBodyChange(body);        
-    var debounced = debounce(function(){
+    var debounced = debounce(() => {
         _this.saveSelectionRange();
     }, 500).bind(this);
     debounced();
@@ -121,13 +121,13 @@ getFirstImage = () =>{
 save = () => {
   var _this = this;
 
-  if(!this.state.story.title || this.state.story.title == ''){
+  if(!this.state.story.title || this.state.story.title === ''){
     NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
 
   //if this is a hub story, require an author
-  if(this.props.storyType == 'hub' && !this.state.story.author){
+  if(this.props.storyType === 'hub' && !this.state.story.author){
     NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'});
     return;
   }
@@ -144,7 +144,7 @@ save = () => {
   //get first image
   var firstimage = this.getFirstImage();
 
-  Actions.save(body, firstline, firstimage, this.state._csrf, function(err: Error, story: Object){
+  Actions.save(body, firstline, firstimage, this.state._csrf, (err: Error, story: Object) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -168,7 +168,7 @@ save = () => {
 
           },
           onClick(){
-            if(_this.props.storyType == 'user'){
+            if(_this.props.storyType === 'user'){
               window.location = '/user/' + _this.props.username + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
             }else{
               var baseUrl = '/hub/' + _this.props.hub_id;              
@@ -188,7 +188,7 @@ delete = () => {
     title: _this.__('Confirm Delete'),
     message: _this.__('Please confirm removal of ') + this.state.story.title,
     onPositiveResponse(){
-      Actions.delete(_this.state._csrf, function(err){
+      Actions.delete(_this.state._csrf, (err) => {
         if(err){
               MessageActions.showMessage({title: _this.__('Error'), message: err});
             }else{
@@ -215,7 +215,7 @@ getSelectionRange = () => {
           range = sel.getRangeAt(0);
           return range;
       }
-  } else if ( (sel = document.selection) && sel.type != "Control") {
+  } else if ( (sel = document.selection) && sel.type !== "Control") {
       // IE < 9
       var originalRange = sel.createRange();
       originalRange.collapse(true);
@@ -250,7 +250,7 @@ pasteHtmlAtCaret = (html: any, rangeInput: any=null) => {
         }
         range.insertNode(frag);
 
-    } else if ( (sel = document.selection) && sel.type != "Control") {
+    } else if ( (sel = document.selection) && sel.type !== "Control") {
         // IE < 9
         range.pasteHTML(html);
     }
@@ -299,7 +299,7 @@ removeMap = (map_id: number) => {
 
 addMapCloseButtons = () => {
   var _this = this;
-  $('.embed-map-container').each(function(i, map){
+  $('.embed-map-container').each((i, map) => {
     var map_id = map.id.split('-')[1];
 
     $(map).append(`<div class="map-remove-button" style="position: absolute; top: 10px; right: 80px;">
@@ -309,7 +309,7 @@ addMapCloseButtons = () => {
 
     </div>`);
 
-    $(map).find('i').first().click(function(){
+    $(map).find('i').first().click(() => {
       _this.removeMap(map_id);
     });
 
@@ -319,21 +319,21 @@ addMapCloseButtons = () => {
 
 removeMapCloseButtons = () => {
   $('.edit-map-tooltips').tooltip('remove');
-  $('.map-remove-button').each(function(i, button){
+  $('.map-remove-button').each((i, button) => {
     $(button).remove();
   });
 }
 
 addImageButtons = () => {
   var _this = this;
-  $('.embed-image-container').each(function(i, image){
+  $('.embed-image-container').each((i, image) => {
     var image_id = image.id.split('-')[1];
     $(image).append( `<div class="image-remove-button" style="position: absolute; top: 10px; right: 10px;">
     <i class="material-icons remove-image-tooltips story-media-edit-button"
       data-position="bottom" data-delay="50" data-tooltip="`+ _this.__('Remove Image')+ `"
       >close</i>
     </div>`);
-    $(image).find('i').click(function(){
+    $(image).find('i').click(() => {
       _this.onRemoveImage(image_id);
     });
     $('.remove-image-tooltips').tooltip();
@@ -342,14 +342,14 @@ addImageButtons = () => {
 
 removeImageButtons = () => {
   $('.remove-image-tooltips').tooltip('remove');
-  $('.image-remove-button').each(function(i, button){
+  $('.image-remove-button').each((i, button) => {
     $(button).remove();
   });
 }
 
 onAddImage = (data: string, info: Object) => {
   var _this = this;
-  Actions.addImage(data, info, this.state._csrf, function(err, res){
+  Actions.addImage(data, info, this.state._csrf, (err, res) => {
     if(err || !res.body || !res.body.image_id){
       MessageActions.showMessage({title: _this.__('Error'), message: err});
     }else{
@@ -369,7 +369,7 @@ onRemoveImage = (image_id: number) => {
     title: _this.__('Confirm Image Removal'),
     message: _this.__('Please confirm that you want to remove this image'),
     onPositiveResponse(){
-      Actions.removeImage(image_id, _this.state._csrf, function(err){
+      Actions.removeImage(image_id, _this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -390,13 +390,13 @@ publish = () => {
     message: _this.__('Please confirm that you want to publish this story'),
     onPositiveResponse(){
 
-    if(!_this.state.story.title || _this.state.story.title == ''){
+    if(!_this.state.story.title || _this.state.story.title === ''){
       NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
       return;
     }
 
     //if this is a hub story, require an author
-    if(_this.props.storyType == 'hub' && !_this.state.story.author){
+    if(_this.props.storyType === 'hub' && !_this.state.story.author){
       NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'});
       return;
     }
@@ -413,12 +413,12 @@ publish = () => {
   //get first image
   var firstimage = _this.getFirstImage();
 
-  Actions.save(body, firstline, firstimage, _this.state._csrf, function(err: Error, story: Object){
+  Actions.save(body, firstline, firstimage, _this.state._csrf, (err: Error, story: Object) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{         
-          Actions.publish(_this.state._csrf, function(err){
+          Actions.publish(_this.state._csrf, (err) => {
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
@@ -428,7 +428,7 @@ publish = () => {
 
           },
           onClick(){
-            if(_this.props.storyType == 'user'){
+            if(_this.props.storyType === 'user'){
               window.location = '/user/' + _this.props.username + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
             }else{
               var baseUrl = '/hub/' + _this.props.hub_id;              
@@ -485,7 +485,7 @@ showImageCrop = () => {
 
   render() {
     var author='';
-    if(this.props.storyType == 'hub'){
+    if(this.props.storyType === 'hub'){
       author = (
         <div className="story-author" style={{height: '30px'}}>
           <Editor

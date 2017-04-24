@@ -12,7 +12,7 @@ export default class MapHubsNotification extends Reflux.Component {
 		this.stores = [NotificationStore];
 	}
 
-  onDismiss(){
+  onDismiss = () => {
     NotificationActions.dismissNotification();
   }
 
@@ -41,9 +41,9 @@ export default class MapHubsNotification extends Reflux.Component {
       isActive={this.state.isActive}
       message={this.state.message}
       action={this.state.action}
-      onClick={this.state.onClick.bind(this)}
+      onClick={this.state.onClick}
       dismissAfter={this.state.dismissAfter}
-      onDismiss={this.onDismiss.bind(this)}
+      onDismiss={this.onDismiss}
       barStyle={{background:this.state.backgroundColor}}
       activeBarStyle={position}
       actionStyle={{color: this.state.color}}

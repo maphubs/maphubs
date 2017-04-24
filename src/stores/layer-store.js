@@ -52,17 +52,17 @@ export default class LayerStore extends Reflux.Store {
   resetStyleGL(){
     var layer = this.state.layer;
     var baseUrl = urlUtil.getBaseUrl();
-    if(layer.is_external && layer.external_layer_type == 'mapbox-map'){
+    if(layer.is_external && layer.external_layer_type === 'mapbox-map'){
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url);
-    }else if(layer.is_external && layer.external_layer_config.type == 'raster'){
+    }else if(layer.is_external && layer.external_layer_config.type === 'raster'){
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json');
-    }else if(layer.is_external && layer.external_layer_config.type == 'multiraster'){
+    }else if(layer.is_external && layer.external_layer_config.type === 'multiraster'){
       layer.style = mapStyles.defaultMultiRasterStyle(layer.layer_id, layer.external_layer_config.layers);
-    }else if(layer.is_external && layer.external_layer_config.type == 'mapbox-style'){
+    }else if(layer.is_external && layer.external_layer_config.type === 'mapbox-style'){
         layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
-    }else if(layer.is_external && layer.external_layer_config.type == 'ags-mapserver-tiles'){
+    }else if(layer.is_external && layer.external_layer_config.type === 'ags-mapserver-tiles'){
         layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url + '?f=json', 'arcgisraster');
-    }else if(layer.is_external && layer.external_layer_config.type == 'geojson'){
+    }else if(layer.is_external && layer.external_layer_config.type === 'geojson'){
         layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.external_layer_config.data_type);
     }else if(layer.style.sources.osm){
       alert('Unable to reset OSM layers');
@@ -76,11 +76,11 @@ export default class LayerStore extends Reflux.Store {
   resetLegendHTML(){
     var layer = this.state.layer;
     if(layer.is_external
-      && (layer.external_layer_config.type == 'raster'
-          || layer.external_layer_config.type == 'multiraster'
-          || layer.external_layer_config.type == 'ags-mapserver-tiles')){
+      && (layer.external_layer_config.type === 'raster'
+          || layer.external_layer_config.type === 'multiraster'
+          || layer.external_layer_config.type === 'ags-mapserver-tiles')){
       layer.legend_html = mapStyles.rasterLegend(layer);
-    }else if(layer.is_external && layer.external_layer_config.type == 'mapbox-style'){
+    }else if(layer.is_external && layer.external_layer_config.type === 'mapbox-style'){
       layer.legend_html = mapStyles.rasterLegend(layer);
     }else{
       layer.legend_html = mapStyles.defaultLegend(layer);
@@ -125,8 +125,8 @@ export default class LayerStore extends Reflux.Store {
     .send({
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
           layer.layer_id = res.body.layer_id;
         _this.setState({layer});
         //_this.trigger(_this.state);
@@ -149,8 +149,8 @@ export default class LayerStore extends Reflux.Store {
       license: data.license,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         var layer = _this.state.layer;
         layer.name = data.name;
         layer.description = data.description;
@@ -182,8 +182,8 @@ export default class LayerStore extends Reflux.Store {
       external_layer_config: data.external_layer_config,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         layer.is_external = data.is_external;
         layer.external_layer_type = data.external_layer_type;
         layer.external_layer_config = data.external_layer_config;
@@ -242,8 +242,8 @@ export default class LayerStore extends Reflux.Store {
       layer_id: layer.layer_id,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.setState({layer});
         _this.trigger(_this.state);
         cb();
@@ -265,8 +265,8 @@ export default class LayerStore extends Reflux.Store {
       settings: data.settings,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         layer.style = data.style;
         layer.legend_html = data.legend_html;
         layer.preview_position = data.preview_position;
@@ -283,8 +283,8 @@ export default class LayerStore extends Reflux.Store {
     request.post('/api/layer/create/savedata/' + _this.state.layer.layer_id)
     .type('json').accept('json').timeout(1200000)
     .set('csrf-token', _csrf)
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.trigger(_this.state);
         Actions.dataLoaded();
         cb();
@@ -298,8 +298,8 @@ export default class LayerStore extends Reflux.Store {
     request.post('/api/layer/create/empty/' + _this.state.layer.layer_id)
     .type('json').accept('json')
     .set('csrf-token', _csrf)
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.trigger(_this.state);
         Actions.dataLoaded();
         cb();
@@ -316,8 +316,8 @@ export default class LayerStore extends Reflux.Store {
       requestedShapefile,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         cb(null, res.body);
       });
     });
@@ -328,8 +328,8 @@ export default class LayerStore extends Reflux.Store {
     request.post('/api/layer/deletedata/' + _this.state.layer.layer_id)
     .type('json').accept('json')
     .set('csrf-token', _csrf)
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         cb();
       });
     });
@@ -343,8 +343,8 @@ export default class LayerStore extends Reflux.Store {
       layer_id: _this.state.layer.layer_id,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         cb();
       });
     });
@@ -358,8 +358,8 @@ export default class LayerStore extends Reflux.Store {
       layer_id: _this.state.layer.layer_id,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.setState({layer: emptyLayer});
         _this.trigger(_this.state);
         cb();

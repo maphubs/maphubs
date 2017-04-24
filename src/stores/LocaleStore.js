@@ -38,8 +38,8 @@ export default class LocaleStore extends Reflux.Store {
    .send({
      locale
    })
-   .end(function(err, res){
-     checkClientError(res, err, function(err){
+   .end((err, res) => {
+     checkClientError(res, err, (err) => {
        if(err){
          debug(err);
        }else{
@@ -48,7 +48,7 @@ export default class LocaleStore extends Reflux.Store {
          _this.trigger(_this.state);
        }
      },
-     function(cb){
+     (cb) => {
        cb();
      }
      );

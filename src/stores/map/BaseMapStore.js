@@ -64,7 +64,7 @@ export default class BaseMapStore extends Reflux.Store {
       var url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${MAPHUBS_CONFIG.BING_KEY}`;
       var attributionString = '© Bing Maps';
       request.get(url)
-      .end(function(err, res){
+      .end((err, res) => {
         if(err){
           debug(err);
         }else{
@@ -82,7 +82,7 @@ export default class BaseMapStore extends Reflux.Store {
               imageryTime = '<b class="no-margin no-padding">(' + resource.vintageEnd + ')</b>';
             }
             var imageryProviders = resource.imageryProviders;
-            imageryProviders.forEach(function (provider) {
+            imageryProviders.forEach((provider) => {
             for (var i = 0; i < provider.coverageAreas.length; i++) {
               var providerBboxFeature = _bboxPolygon(provider.coverageAreas[i].bbox);
             
@@ -115,7 +115,7 @@ export default class BaseMapStore extends Reflux.Store {
  getBingSource(type, cb){
     var url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`;
     request.get(url)
-    .end(function(err, res){
+    .end((err, res) => {
       if(err){
         debug(err);
       }else{
@@ -133,7 +133,7 @@ export default class BaseMapStore extends Reflux.Store {
     var optimize = true;
     if(!mapName) mapName = 'default';
 
-    if (mapName == 'default') {
+    if (mapName === 'default') {
       if(MAPHUBS_CONFIG.useMapboxBaseMaps){
         mapboxName = 'light-v9';
         optimize = true;
@@ -146,7 +146,7 @@ export default class BaseMapStore extends Reflux.Store {
       }
         
     }
-    else if(mapName == 'dark'){
+    else if(mapName === 'dark'){
       if(MAPHUBS_CONFIG.useMapboxBaseMaps){
         mapboxName = 'dark-v9';
         optimize = true;
@@ -158,7 +158,7 @@ export default class BaseMapStore extends Reflux.Store {
         cb(darkmatter);
       }
     }
-    else if(mapName == 'outdoors'){
+    else if(mapName === 'outdoors'){
       if(MAPHUBS_CONFIG.useMapboxBaseMaps){
         mapboxName = 'outdoors-v9';
         optimize = true;
@@ -170,7 +170,7 @@ export default class BaseMapStore extends Reflux.Store {
         cb(osmBright);
       } 
     }
-    else if(mapName == 'streets'){
+    else if(mapName === 'streets'){
       if(MAPHUBS_CONFIG.useMapboxBaseMaps){
         mapboxName = 'streets-v9';
         optimize = true;
@@ -182,7 +182,7 @@ export default class BaseMapStore extends Reflux.Store {
         cb(osmLiberty);
       } 
     }
-    else if(mapName == 'mapbox-satellite'){
+    else if(mapName === 'mapbox-satellite'){
       if(MAPHUBS_CONFIG.useMapboxBaseMaps){
         mapboxName = 'satellite-streets-v9';
         optimize = true;
@@ -190,7 +190,7 @@ export default class BaseMapStore extends Reflux.Store {
         return this.getBaseMapFromName('bing-satellite', cb);
       }
     }
-    else if(mapName == 'stamen-toner'){
+    else if(mapName === 'stamen-toner'){
       style={
         "version": 8,
         "sources": {
@@ -219,7 +219,7 @@ export default class BaseMapStore extends Reflux.Store {
     });
      cb(style);
     }
-    else if(mapName == 'stamen-terrain'){
+    else if(mapName === 'stamen-terrain'){
       style={
         "version": 8,
         "sources": {
@@ -248,7 +248,7 @@ export default class BaseMapStore extends Reflux.Store {
     });
      cb(style);
     }
-     else if(mapName == 'stamen-watercolor'){
+     else if(mapName === 'stamen-watercolor'){
       style={
         "version": 8,
         "sources": {
@@ -277,7 +277,7 @@ export default class BaseMapStore extends Reflux.Store {
     });
      cb(style);
     }
-    else if(mapName == 'landsat-2016'){
+    else if(mapName === 'landsat-2016'){
       style={
         "version": 8,
         "sources": {
@@ -303,7 +303,7 @@ export default class BaseMapStore extends Reflux.Store {
     });
      cb(style);
     }
-     else if(mapName == 'landsat-2014'){
+     else if(mapName === 'landsat-2014'){
       style={
         "version": 8,
         "sources": {
@@ -329,7 +329,7 @@ export default class BaseMapStore extends Reflux.Store {
     });
      cb(style);
     }
-    else if(mapName == 'bing-satellite'){
+    else if(mapName === 'bing-satellite'){
       style={
         "version": 8,
         "sources": {
@@ -352,7 +352,7 @@ export default class BaseMapStore extends Reflux.Store {
             "maxzoom": 22
         }]
     };
-    this.getBingSource('Aerial', function(){
+    this.getBingSource('Aerial', () => {
       _this.setState({
         attribution: '© Bing Maps',
         bingImagerySet: 'Aerial',

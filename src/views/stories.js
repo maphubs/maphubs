@@ -25,7 +25,7 @@ export default class Stories extends MapHubsComponent {
      Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
 	}
 
-  onCreateStory(){
+  onCreateStory = () => {
     if(this.state.user.display_name){
       window.location= '/user/' + this.state.user.display_name + '/stories';
     }else{
@@ -39,7 +39,7 @@ export default class Stories extends MapHubsComponent {
       featured = (
         <div className="col s12 m12 l6">
           <h4>{this.__('Featured Stories')}</h4>
-            {this.props.featuredStories.map(function (story) {
+            {this.props.featuredStories.map((story) => {
               return (
                 <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className="card-content">
@@ -62,7 +62,7 @@ export default class Stories extends MapHubsComponent {
             {featured}
             <div className="col s12 m12 l6">
               <h4>{this.__('Popular Stories')}</h4>
-              {this.props.popularStories.map(function (story) {
+              {this.props.popularStories.map((story) => {
                 return (
                   <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                     <div className="card-content">
@@ -75,7 +75,7 @@ export default class Stories extends MapHubsComponent {
           </div>
         </div>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Story')}>
-          <a onClick={this.onCreateStory.bind(this)} className="btn-floating btn-large red red-text">
+          <a onClick={this.onCreateStory} className="btn-floating btn-large red red-text">
             <i className="large material-icons">add</i>
           </a>
         </div>

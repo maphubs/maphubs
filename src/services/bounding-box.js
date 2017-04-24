@@ -108,7 +108,7 @@ Bbox.prototype.isValidBounds = function(bounds: Array<number>) {
 
 var getBbox = {
   FromCoordinates(coordinates: Array<number>) {
-    if (_every(coordinates, function(coordinate) {
+    if (_every(coordinates, (coordinate) => {
       return coordinate && !isNaN(coordinate);
     })) {
       return new Bbox(coordinates);
@@ -120,7 +120,7 @@ var getBbox = {
   FromScaledActions(actions: any) {
     var lat: Array<number> = [];
     var lon: Array<number> = [];
-    var nodes = _filter(actions, function(action) {
+    var nodes = _filter(actions, (action) => {
       return action.model === 'node';
     });
     for(var i = 0, ii = nodes.length; i < ii; ++i) {

@@ -48,11 +48,11 @@ export default class Step3 extends MapHubsComponent {
 
     //save presets
     PresetActions.loadDefaultPresets();
-    PresetActions.submitPresets(true, this.state._csrf, function(err){
+    PresetActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        LayerActions.initEmptyLayer(_this.state._csrf, function(err){
+        LayerActions.initEmptyLayer(_this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -71,12 +71,12 @@ export default class Step3 extends MapHubsComponent {
 
     _this.setState({saving: true});
     //save presets
-    PresetActions.submitPresets(true, this.state._csrf, function(err){
+    PresetActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
           _this.setState({saving: false});
       }else{
-        LayerActions.loadData(_this.state._csrf, function(err){
+        LayerActions.loadData(_this.state._csrf, (err) => {
           _this.setState({saving: false});
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});

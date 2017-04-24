@@ -89,7 +89,7 @@ export default class ImageCrop extends MapHubsComponent {
 
   checkFileSize = (file: Object) => {
     var _this = this;
-    return new Promise(function(fulfill, reject){
+    return new Promise((fulfill, reject) => {
       let maxSize =  _this.props.max_size;
       let message;
 
@@ -117,7 +117,7 @@ resizeImage = (sourceCanvas: any) => {
   }
 
   var _this = this;
-  return new Promise(function(fulfill, reject){
+  return new Promise((fulfill, reject) => {
 
 
   // If image size smaller than 'skip_size' - skip resizing
@@ -185,7 +185,7 @@ resizeImage = (sourceCanvas: any) => {
   dest.width = scaledWidth;
   dest.height = scaledHeight;
   if(pica){
-    pica.resizeCanvas(sourceCanvas, dest, {alpha}, function (err){
+    pica.resizeCanvas(sourceCanvas, dest, {alpha}, (err) => {
     if(err){
       reject(err);
     }
@@ -221,7 +221,7 @@ resizeImage = (sourceCanvas: any) => {
     }
 
     this.checkFileSize(file)
-    .then(function(){
+    .then(() => {
       //read the file
       let img = new Image();
 
@@ -230,7 +230,7 @@ resizeImage = (sourceCanvas: any) => {
         var width = img.width;
         var height = img.height;
         //save exif data and image to state
-        EXIF.getData(img, function() {
+        EXIF.getData(img, () => {
           var exifdata = img.exifdata;
 
           let tempCanvas = document.createElement('canvas');
@@ -294,7 +294,7 @@ resizeImage = (sourceCanvas: any) => {
       };
 
       img.src = window.URL.createObjectURL(file);
-    }).catch(function(err){
+    }).catch((err) => {
       debug(err);
         MessageActions.showMessage({title: 'Error', message: err});
     });
@@ -316,7 +316,7 @@ resizeImage = (sourceCanvas: any) => {
     var canvas = cropper.getCroppedCanvas();
 
     //resize the image
-    this.resizeImage(canvas).then(function(dataURL){
+    this.resizeImage(canvas).then((dataURL) => {
       _this.setState({show: false});
 
       var info = {
@@ -327,7 +327,7 @@ resizeImage = (sourceCanvas: any) => {
       if(_this.props.onCrop) _this.props.onCrop(dataURL, info);
       _this.resetImageCrop();
 
-    }).catch(function(err){
+    }).catch((err) => {
       debug(err);
         MessageActions.showMessage({title: 'Error', message: err});
     });

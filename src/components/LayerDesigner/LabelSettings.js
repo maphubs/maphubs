@@ -69,7 +69,7 @@ export default class LabelSettings extends MapHubsPureComponent {
     var fieldOptions = [];
 
     if(this.props.layer && this.props.layer.presets){
-      this.props.layer.presets.forEach(function(preset){
+      this.props.layer.presets.forEach((preset) => {
         fieldOptions.push({
           value: preset.tag,
           label: preset.label

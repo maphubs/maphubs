@@ -11,9 +11,9 @@ var MapInteractionMixin = {
   setSelectionFilter(features){
     var _this = this;
     if(this.state.glStyle){
-      this.state.glStyle.layers.forEach(function(layer){
+      this.state.glStyle.layers.forEach((layer) => {
         var filter = ['in', "mhid"];
-        features.forEach(function(feature){
+        features.forEach((feature) => {
           filter.push(feature.properties.mhid);
         });
         if(_this.map.getLayer(layer.id)){
@@ -32,7 +32,7 @@ var MapInteractionMixin = {
   clearSelectionFilter(){
     var _this = this;
     if(this.state.glStyle){
-      this.state.glStyle.layers.forEach(function(layer){
+      this.state.glStyle.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-hover')){
           if(_this.map.getLayer(layer.id)){
             _this.map.setFilter(layer.id,  ["==", "mhid", ""]);
@@ -58,7 +58,7 @@ var MapInteractionMixin = {
   getInteractiveLayers(glStyle){
     var interactiveLayers = [];
     if(glStyle){
-      glStyle.layers.forEach(function(layer){
+      glStyle.layers.forEach((layer) => {
         if(layer.metadata && layer.metadata['maphubs:interactive'] &&
           (layer.id.startsWith('omh')
           || layer.id.startsWith('osm'))
@@ -107,7 +107,7 @@ var MapInteractionMixin = {
           _this.setSelectionFilter([features[0]]);
           _this.setState({selectedFeatures:[features[0]], selected:true});
           map.addClass('selected');
-          } else if(_this.state.selectedFeatures != null) {
+          } else if(_this.state.selectedFeatures !== null) {
               _this.clearSelection();
               _this.setState({selected: false});
               $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
@@ -136,7 +136,7 @@ var MapInteractionMixin = {
 
       if(_this.state.showBaseMaps) return;
 
-      var debounced = _debounce(function(){
+      var debounced = _debounce(() => {
         if(_this.state.mapLoaded && _this.state.restoreBounds){
           debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
           _this.setState({restoreBounds:null});
@@ -161,7 +161,7 @@ var MapInteractionMixin = {
           }else{
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
           }
-        } else if(!_this.state.selected && _this.state.selectedFeatures != null) {
+        } else if(!_this.state.selected && _this.state.selectedFeatures !== null) {
             _this.clearSelection();
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
         } else {

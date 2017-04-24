@@ -153,16 +153,16 @@ module.exports = {
       debug('get hub: ' + hub_id);
       return db('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-        .then(function(hubResult) {
+        .then((hubResult) => {
           if (hubResult && hubResult.length == 1) {
             return db('omh.hub_images').select().distinct('type')
             .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-            .then(function(imagesResult){
+            .then((imagesResult) => {
               var hub = hubResult[0];
               var hasLogoImage = false;
               var hasBannerImage = false;
               if(imagesResult && imagesResult.length > 0){
-                imagesResult.forEach(function(result){
+                imagesResult.forEach((result) => {
                   if(result.type == 'logo'){
                     hasLogoImage = true;
                   }else if(result.type == 'banner'){
@@ -226,7 +226,7 @@ module.exports = {
   isPrivate(hub_id: string){
   return knex.select('private').from('omh.hubs')
     .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-    .then(function(result) {
+    .then((result) => {
       if (result && result.length == 1) {
         return result[0].private;
       }
@@ -238,7 +238,7 @@ module.exports = {
     
     allowedToModify(hub_id: string, user_id: number){
       debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
-      return this.getHubByID(hub_id).then(function(hub){
+      return this.getHubByID(hub_id).then((hub) => {
         return Group.allowedToModify(hub.owned_by_group_id, user_id);
       });
     },
@@ -248,7 +248,7 @@ module.exports = {
      */
     checkHubIdAvailable(hub_id: string) {
       return this.getHubByID(hub_id)
-        .then(function(result) {
+        .then((result) => {
           if (result == null) return true;
           return false;
         });
@@ -256,7 +256,7 @@ module.exports = {
 
     createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, user_id: number) {
       hub_id = hub_id.toLowerCase();
-      return knex.transaction(function(trx) {
+      return knex.transaction((trx) => {
       return trx('omh.hubs').insert({
           hub_id, name, published, private: isPrivate,
           owned_by_group_id: group_id,
@@ -311,9 +311,9 @@ module.exports = {
 
     deleteHub(hub_id_input: string) {
       var _this = this;
-      return knex.transaction(function(trx) {
+      return knex.transaction((trx) => {
         return _this.getHubByID(hub_id_input, trx)
-        .then(function(hub){
+        .then((hub) => {
           var hub_id = hub.hub_id;
           return Promise.all([
               trx('omh.hub_images')
@@ -323,17 +323,17 @@ module.exports = {
               trx('omh.hub_stories').select('story_id').where({hub_id})
           ])
 
-          .then(function(results){
+          .then((results) => {
             var imageIdResult = results[0];
             var storyIds = results[1];
-            return Promise.each(storyIds, function(storyResult){
+            return Promise.each(storyIds, (storyResult) => {
               var story_id = storyResult.story_id;
               debug('Deleting Hub Story: '+ story_id);
               return Image.removeAllStoryImages(story_id, trx)
-                .then(function() {
+                .then(() => {
                   return Story.delete(story_id, trx);
                   });
-                }).then(function(){
+                }).then(() => {
               var commands = [];
               if(imageIdResult.length > 0){
                 var imageIds = _map(imageIdResult, 'image_id');
@@ -344,7 +344,7 @@ module.exports = {
               commands.push(trx('omh.hub_layers').where('hub_id', hub_id).delete());
               commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
 
-              return Promise.each(commands, function(command){
+              return Promise.each(commands, (command) => {
                 return command;
               });
             });

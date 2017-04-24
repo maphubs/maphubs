@@ -11,28 +11,28 @@ var csrfProtection = require('csurf')({cookie: false});
 module.exports = function(app: any) {
 
 
-  app.get('/user/settings', csrfProtection, function(req, res, next) {
+  app.get('/user/settings', csrfProtection, (req, res, next) => {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       return res.redirect('/login');
     }
     var user_id = req.session.user.id;
     User.getUser(user_id)
-      .then(function(user){
+      .then((user) => {
         res.render('usersettings', {title: req.__('User Settings') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}, req});
       }).catch(nextError(next));
   });
 
 
-  app.get('/user/pendingconfirmation', csrfProtection, function(req, res, next) {
+  app.get('/user/pendingconfirmation', csrfProtection, (req, res, next) => {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect('/login');
     }
     var user_id = req.session.user.id;
     User.getUser(user_id)
-      .then(function(user){
-        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+      .then((user) => {
+        return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
           var footerConfig = pageConfigs['footer'];
           res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - ' + MAPHUBS_CONFIG.productName, props: {user, footerConfig}, req});
         });
@@ -40,7 +40,7 @@ module.exports = function(app: any) {
   });
 
 
-  app.post('/api/user/resendconfirmation', csrfProtection, function(req, res) {
+  app.post('/api/user/resendconfirmation', csrfProtection, (req, res) => {
 
     //must be logged in
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -50,22 +50,22 @@ module.exports = function(app: any) {
     var uid = req.user.id;
 
     User.sendConfirmationEmail(uid, req.__)
-    .then(function(){
+    .then(() => {
         res.status(200).send({success:true});
     }).catch(apiError(res, 500));
 
   });
 
-  app.get('/api/user/search/suggestions', function(req, res) {
+  app.get('/api/user/search/suggestions', (req, res) => {
     if (!req.query.q) {
       apiDataError(res);
       return;
     }
     var q = req.query.q;
     User.getSearchSuggestions(q)
-      .then(function(result) {
+      .then((result) => {
         var suggestions = [];
-        result.forEach(function(user) {
+        result.forEach((user) => {
           suggestions.push({key: user.id, value:user.display_name});
         });
         res.send({

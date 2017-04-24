@@ -39,8 +39,8 @@ export default class SearchIndexAdmin extends MapHubsComponent {
         .send({
           _csrf: _this.state._csrf
         })
-        .end(function(err, res){
-          checkClientError(res, err, function(){}, function(cb){
+        .end((err, res) => {
+          checkClientError(res, err, () => {}, (cb) => {
             if(err){
                 MessageActions.showMessage({title: _this.__('Server Error'), message: err});
               }else{
@@ -71,8 +71,8 @@ export default class SearchIndexAdmin extends MapHubsComponent {
         .send({
           _csrf: _this.state._csrf
         })
-        .end(function(err, res){
-          checkClientError(res, err, function(){}, function(cb){
+        .end((err, res) => {
+          checkClientError(res, err, () => {}, (cb) => {
             if(err){
                 MessageActions.showMessage({title: _this.__('Server Error'), message: err});
               }else{

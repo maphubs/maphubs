@@ -62,7 +62,7 @@ export default class StaticMap extends MapHubsComponent {
     });
 
     $(window).resize(function(){
-      var debounced = _debounce(function(){
+      var debounced = _debounce(() => {
         var size = getSize();
         _this.setState({
           width: size.width,

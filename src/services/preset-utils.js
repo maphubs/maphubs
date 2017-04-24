@@ -23,7 +23,7 @@ module.exports = {
 
   getIdEditorPresets(layer_id){
     return knex('omh.layers').select('presets', 'data_type', 'name').where({layer_id})
-    .then(function(result){
+    .then((result) => {
       var layer = result[0];
       var data_type = layer.data_type;
 
@@ -36,7 +36,7 @@ module.exports = {
 
       var fieldsList = [];
       var nameFound = false;
-      layer.presets.forEach(function(preset){
+      layer.presets.forEach((preset) => {
         if(preset.tag === 'name') nameFound = true;
         var presetObject = {
           "key": preset.tag,
@@ -48,7 +48,7 @@ module.exports = {
 
         if((preset.type == 'radio' || preset.type == 'combo') && preset.options){
           var optionsArr = preset.options.split(',');
-          optionsArr.map(function(option){
+          optionsArr.map((option) => {
             option = option.trim();
           });
           presetObject.options = optionsArr;
@@ -130,7 +130,7 @@ module.exports = {
     if(trx){db = trx;}
     var _this = this;
     return db('omh.layers').select('presets').where({layer_id})
-    .then(function(result){
+    .then((result) => {
       var presets = result[0].presets;
       return Promise.all([
         db('current_node_tags').distinct('k')
@@ -142,12 +142,12 @@ module.exports = {
         db('current_relation_tags').distinct('k')
         .leftJoin('current_relations', 'current_relation_tags.relation_id', 'current_relations.id')
         .where({layer_id})
-      ]).then(function(results){
+      ]).then((results) => {
         var nodeTags = _map(results[0], 'k');
         var wayTags = _map(results[1], 'k');
         var relationTags = _map(results[2], 'k');
         var allTags = nodeTags.concat(wayTags).concat(relationTags);
-        allTags.forEach(function(tag){
+        allTags.forEach((tag) => {
           if(!_find(presets, {tag})){
             log.info("adding preset: " + tag + " to layer: "+ layer_id);
             presets.push(_this.getDefaultPreset(tag));

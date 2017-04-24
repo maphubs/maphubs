@@ -34,15 +34,15 @@ export default class PlanetLabsSource extends MapHubsComponent {
 
   componentWillMount(){
     super.componentWillMount();
-    Formsy.addValidationRule('isNotRapidEye', function (values, value) {
+    Formsy.addValidationRule('isNotRapidEye', (values, value) => {
         return !value.startsWith('REOrthoTile');
     });
 
-    Formsy.addValidationRule('isNotOrtho', function (values, value) {
+    Formsy.addValidationRule('isNotOrtho', (values, value) => {
         return !value.startsWith('PSOrthoTile');
     });
 
-    Formsy.addValidationRule('isNotSentinel', function (values, value) {
+    Formsy.addValidationRule('isNotSentinel', (values, value) => {
         return !value.startsWith('Sentinel2L1C');
     });
   }
@@ -105,7 +105,7 @@ export default class PlanetLabsSource extends MapHubsComponent {
         layers
       }
       
-    }, _this.state._csrf, function(err){
+    }, _this.state._csrf, (err) => {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{

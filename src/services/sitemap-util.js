@@ -12,8 +12,8 @@ module.exports = {
   addLayersToSiteMap(sm: any){
     var baseUrl = urlUtil.getBaseUrl();
     return Layer.getAllLayers()
-    .then(function(layers){
-      layers.forEach(function(layer){
+    .then((layers) => {
+      layers.forEach((layer) => {
         var lastmodISO = null;
         if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
         sm.add({
@@ -28,8 +28,8 @@ module.exports = {
 
   addStoriesToSiteMap(sm: any){
     return Story.getAllStories()
-    .then(function(stories){
-      stories.forEach(function(story){
+    .then((stories) => {
+      stories.forEach((story) => {
         var title = story.title.replace('&nbsp;', '');
         var story_url = '';
         if(story.display_name){
@@ -53,8 +53,8 @@ module.exports = {
 
   addHubsToSiteMap(sm: any){
     return Hub.getAllHubs()
-    .then(function(hubs){
-      hubs.forEach(function(hub){
+    .then((hubs) => {
+      hubs.forEach((hub) => {
         var baseUrl = urlUtil.getBaseUrl();
         var hubUrl = baseUrl + '/hub/' + hub.hub_id;
         var lastmodISO = null;
@@ -71,8 +71,8 @@ module.exports = {
 
   addMapsToSiteMap(sm: any){
     return Map.getAllMaps()
-    .then(function(maps){
-      maps.forEach(function(map){
+    .then((maps) => {
+      maps.forEach((map) => {
         var mapUrl =  urlUtil.getBaseUrl() + '/user/' + map.username + '/map/' + map.map_id;
         var lastmodISO = null;
         if(map.updated_at) lastmodISO = map.updated_at.toISOString();
@@ -88,8 +88,8 @@ module.exports = {
 
   addGroupsToSiteMap(sm: any){
     return Group.getAllGroups()
-    .then(function(groups){
-      groups.forEach(function(group){
+    .then((groups) => {
+      groups.forEach((group) => {
         var groupUrl =  urlUtil.getBaseUrl() + '/group/' + group.group_id;
         sm.add({
           url: groupUrl,

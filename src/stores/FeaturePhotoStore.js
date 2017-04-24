@@ -39,8 +39,8 @@ constructor(){
       info,
       _csrf
     })
-    .end(function(err, res){
-       checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+       checkClientError(res, err, cb, (cb) => {
           var feature = _this.state.feature;
           feature.hasImage = true;
           _this.setState({
@@ -68,8 +68,8 @@ constructor(){
       photo_id: this.state.photo.photo_id,
       _csrf
     })
-    .end(function(err, res){
-       checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+       checkClientError(res, err, cb, (cb) => {
           var feature = _this.state.feature;
           feature.hasImage = false;
           _this.setState({feature, photo: null});

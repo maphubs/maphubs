@@ -111,7 +111,7 @@ export default class HubBuilder extends MapHubsComponent {
       model.group = this.props.groups[0].group_id;
     }
     
-    HubActions.createHub(model.hub_id, model.group, model.name, false, model.private, this.state._csrf, function(err){
+    HubActions.createHub(model.hub_id, model.group, model.name, false, model.private, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{

@@ -15,7 +15,7 @@ export default class LegendItem extends React.Component {
 
   render(){
     var _this = this;
-    if(this.props.layer == undefined) return (<div></div>);
+    if(this.props.layer === undefined) return (<div></div>);
 
     if(!this.props.layer || ! this.props.layer.layer_id){
       return (
@@ -30,7 +30,7 @@ export default class LegendItem extends React.Component {
         );
     var style = this.props.layer.style;  
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
-      style.layers.forEach(function(layer){
+      style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
             //clone object to avoid changing size of real markers

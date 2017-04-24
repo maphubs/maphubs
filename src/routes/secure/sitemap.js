@@ -13,7 +13,7 @@ var sitemap = require('sitemap'),
 
 module.exports = function(app) {
 
-  app.get('/robots.txt', function (req, res) {
+  app.get('/robots.txt', (req, res) => {
     res.type('text/plain');
     if(local.requireLogin){
       //disallow everything
@@ -24,7 +24,7 @@ module.exports = function(app) {
     }
 });
 
-  app.get('/sitemap.xml', function(req, res, next){
+  app.get('/sitemap.xml', (req, res, next) => {
       if(local.requireLogin){
         return res.status(404).send();
       }
@@ -46,8 +46,8 @@ module.exports = function(app) {
         siteMapUtil.addMapsToSiteMap(sm),
         siteMapUtil.addLayersToSiteMap(sm),
         siteMapUtil.addGroupsToSiteMap(sm)
-      ]).then(function(){
-        sm.toXML(function(err, xml){
+      ]).then(() => {
+        sm.toXML((err, xml) => {
           if(err){
             log.error(err);
             next(err);

@@ -122,7 +122,7 @@ module.exports = function(app) {
             }
 
             q = knex('current_relation_tags');
-            tagKeys.forEach(function(key) {
+            tagKeys.forEach((key) => {
                 q = q.where(function () {
                     this
                         .where('k', key)
@@ -140,22 +140,22 @@ module.exports = function(app) {
 function queryRelations(relationIds, full) {
   return knex('current_relations')
     .whereIn('id', relationIds)
-    .then(function (rels) {
+    .then((rels) => {
       return Promise.all([
         knex('current_relation_tags')
           .whereIn('relation_id', relationIds),
         full ? knex('current_relation_members')
           .whereIn('relation_id', relationIds) : []
       ])
-      .then(function (result) {
+      .then((result) => {
         var tags = result[0];
         var members = result[1];
-        rels.forEach(function (rel) {
-          rel.tags = tags.filter(function (t) {
+        rels.forEach((rel) => {
+          rel.tags = tags.filter((t) => {
             return t.relation_id === rel.id;
           });
           if(full) {
-            rel.members = members.filter(function (m) {
+            rel.members = members.filter((m) => {
               return m.relation_id === rel.id;
             });
           }

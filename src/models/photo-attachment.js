@@ -9,7 +9,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     return db('omh.photo_attachments').where({photo_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length > 0){
         return result[0];
       }
@@ -36,14 +36,14 @@ module.exports = {
   setPhotoAttachment(layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any=null){
     var _this = this;
     return this.getPhotoAttachmentsForFeature(layer_id, mhid, trx)
-    .then(function(results){
+    .then((results) => {
       if(results && results.length > 0){
         var commands = [];
-        results.forEach(function(result){
+        results.forEach((result) => {
           commands.push(_this.deletePhotoAttachment(layer_id, mhid, result.photo_id, trx));
         });
         return Promise.all(commands)
-        .then(function(){
+        .then(() => {
           return _this.addPhotoAttachment(layer_id, mhid, data, info, user_id, trx);
         });
       }else{
@@ -63,10 +63,10 @@ module.exports = {
       created_at: knex.raw('now()')
     })
     .returning('photo_id')
-    .then(function(photo_id){
+    .then((photo_id) => {
       photo_id = parseInt(photo_id);
       return db('omh.feature_photo_attachments').insert({layer_id, mhid, photo_id})
-      .then(function(){
+      .then(() => {
         return photo_id;
       });
     });
@@ -83,7 +83,7 @@ module.exports = {
     if(trx){db = trx;}
     return db('omh.feature_photo_attachments')
     .where({layer_id, mhid, photo_id}).del()
-    .then(function(){
+    .then(() => {
       return db('omh.photo_attachments').where({photo_id}).del();
     });
   },
@@ -94,9 +94,9 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}  
     return db('omh.feature_photo_attachments').where({layer_id})
-    .then(function(featurePhotoAttachments){
+    .then((featurePhotoAttachments) => {
        var commands = [];
-      featurePhotoAttachments.forEach(function(fpa){
+      featurePhotoAttachments.forEach((fpa) => {
         commands.push(
         _this.deletePhotoAttachment(layer_id, fpa.mhid, fpa.photo_id)
       );
@@ -111,7 +111,7 @@ module.exports = {
 
     var maxId = 0;
     var alreadyPresent = false;
-    presets.forEach(function(preset){
+    presets.forEach((preset) => {
       if(preset.tag === 'photo_url'){
         alreadyPresent = true;
       }
@@ -123,7 +123,7 @@ module.exports = {
     });
 
     if(alreadyPresent){
-      return new Promise(function(fulfill) {
+      return new Promise((fulfill) => {
         fulfill(presets);
       });
     }else{
@@ -135,7 +135,7 @@ module.exports = {
         id: maxId + 1
       });
       return Presets.savePresets(layer.layer_id, presets, user_id, false, trx)
-      .then(function(){
+      .then(() => {
         return presets;
       });
     }

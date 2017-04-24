@@ -100,7 +100,7 @@ export default class CreateGroupStep1 extends MapHubsComponent {
     saveGroup = (model: Object) => {
       var _this = this;
       if(this.state.group.created){
-        GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
+        GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{
@@ -114,7 +114,7 @@ export default class CreateGroupStep1 extends MapHubsComponent {
           }
         });
       }else {
-        GroupActions.createGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
+        GroupActions.createGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{
@@ -134,7 +134,7 @@ export default class CreateGroupStep1 extends MapHubsComponent {
     handleCancel = () => {
       var _this = this;
       if(_this.state.group.created){
-        GroupActions.deleteGroup(_this.state._csrf, function(err){
+        GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{

@@ -46,7 +46,7 @@ export default class Step1 extends MapHubsComponent {
     var _this = this;
     if(_this.state.created){
       //delete the layer
-      LayerActions.cancelLayer(this.state._csrf, function(err){
+      LayerActions.cancelLayer(this.state._csrf, (err) => {
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{

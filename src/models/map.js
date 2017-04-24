@@ -20,7 +20,7 @@ module.exports = {
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
     .where({map_id})
-    .then(function(result) {
+    .then((result) => {
       if (result && result.length == 1) {
         return result[0];
       }
@@ -95,7 +95,7 @@ module.exports = {
 
   isPrivate(map_id: number){
   return knex.select('private').from('omh.maps').where({map_id})
-    .then(function(result) {
+    .then((result) => {
       if (result && result.length == 1) {
         return result[0].private;
       }
@@ -106,7 +106,7 @@ module.exports = {
 
   allowedToModify(map_id: number, user_id: number){
     return this.getMap(map_id)
-      .then(function(map){
+      .then((map) => {
         if(map.owned_by_user_id && map.owned_by_user_id === user_id){
           return true;
         }else if(map.owned_by_group_id){
@@ -248,12 +248,12 @@ module.exports = {
    if(layers && Array.isArray(layers) && layers.length > 0){
     if(!isPrivate){
       //confirm no private layers
-      layers.forEach(function(layer){
+      layers.forEach((layer) => {
         if(layer.private) throw new Error('Private layer not allowed in public map');
       });
     }
    }
-    return knex.transaction(function(trx) {
+    return knex.transaction((trx) => {
     return trx('omh.maps')
       .insert({
           position,
@@ -266,13 +266,13 @@ module.exports = {
           updated_by: user_id,
           updated_at: knex.raw('now()')
       }).returning('map_id')
-      .then(function(result){
+      .then((result) => {
         var map_id = result[0];
         debug('Created Map with ID: ' + map_id);
         //insert layers
         var mapLayers = [];
         if(layers && Array.isArray(layers) && layers.length > 0){
-          layers.forEach(function(layer: Object, i: number){
+          layers.forEach((layer: Object, i: number) => {
             mapLayers.push({
               map_id,
               layer_id: layer.layer_id,
@@ -286,7 +286,7 @@ module.exports = {
         }
         return trx('omh.map_layers')
         .insert(mapLayers)
-        .then(function(){
+        .then(() => {
           return map_id;
         });
       });
@@ -302,7 +302,7 @@ module.exports = {
     return Promise.all([
       this.getMap(map_id),
       this.getMapLayers(map_id)
-    ]).then(function(results){
+    ]).then((results) => {
       var map = results[0];
       var layers = results[1];
       var title = map.title + ' - Copy';
@@ -319,7 +319,7 @@ module.exports = {
     return Promise.all([
       this.getMap(map_id),
       this.getMapLayers(map_id)
-    ]).then(function(results){
+    ]).then((results) => {
       var map = results[0];
       var layers = results[1];
       var title = map.title + ' - Copy';
@@ -352,14 +352,14 @@ module.exports = {
   setPrivate(map_id: string, isPrivate: boolean, user_id: number) {
       var _this = this;
       return this.getMap(map_id)
-      .then(function(map){
+      .then((map) => {
         if(map.private && !isPrivate){
           //private to public
-          return _this.getMapLayers(map_id).then(function(layers){
+          return _this.getMapLayers(map_id).then((layers) => {
             if(layers && Array.isArray(layers) && layers.length > 0){
               if(!isPrivate){
                 //confirm no private layers
-                layers.forEach(function(layer){
+                layers.forEach((layer) => {
                   if(layer.private) throw new Error('Private layer not allowed in public map');
                 });
               }
@@ -389,7 +389,7 @@ module.exports = {
     },
 
   updateMap(map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number){
-    return knex.transaction(function(trx) {
+    return knex.transaction((trx) => {
       return trx('omh.maps')
         .update({position, style, basemap, title,
             updated_by: user_id,
@@ -397,14 +397,14 @@ module.exports = {
             screenshot: null,
             thumbnail: null
         }).where({map_id})
-        .then(function(){
+        .then(() => {
           debug('Updated Map with ID: ' + map_id);
           //remove previous layers
           return trx('omh.map_layers').where({map_id}).del()
-          .then(function(){
+          .then(() => {
             //insert layers
             var mapLayers = [];
-            layers.forEach(function(layer, i){
+            layers.forEach((layer, i) => {
               mapLayers.push({
                 map_id,
                 layer_id: layer.layer_id,
@@ -416,7 +416,7 @@ module.exports = {
               });
             });
             return trx('omh.map_layers').insert(mapLayers)
-            .then(function(result){
+            .then((result) => {
               debug('Updated Map Layers with MapID: ' + map_id);
               return result;
             });
@@ -426,15 +426,15 @@ module.exports = {
   },
 
   deleteMap(map_id: number){
-    return knex.transaction(function(trx) {
+    return knex.transaction((trx) => {
       return trx('omh.map_views').where({map_id}).del()
-      .then(function(){
+      .then(() => {
         return trx('omh.user_maps').where({map_id}).del() //keep until all user maps migrated
-        .then(function(){
+        .then(() => {
           return trx('omh.story_maps').where({map_id}).del() //keep until all story maps migrated
-          .then(function(){
+          .then(() => {
             return trx('omh.map_layers').where({map_id}).del()
-            .then(function(){
+            .then(() => {
               return trx('omh.maps').where({map_id}).del();
             });
           });
@@ -445,12 +445,12 @@ module.exports = {
 
   createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number, isPrivate: boolean){
     return this.createMap(layers, style, basemap, position, title, user_id, isPrivate)
-    .then(function(result){
+    .then((result) => {
       debug(result);
       var map_id = result;
       debug('Saving User Map with ID: ' + map_id);
       return knex('omh.maps').update({owned_by_user_id: user_id}).where({map_id})
-      .then(function(){
+      .then(() => {
         return map_id; //pass on the new map_id
       });
     });
@@ -460,18 +460,18 @@ module.exports = {
     if(layers && Array.isArray(layers) && layers.length > 0){
     if(isPrivate){
         //confirm all private layers owned by same group
-        layers.forEach(function(layer){
+        layers.forEach((layer) => {
           if(layer.owned_by_group_id !== group_id) throw new Error('Private layers must be owned by the same group');
         });
       }
    }
     return this.createMap(layers, style, basemap, position, title, user_id, isPrivate)
-    .then(function(result){
+    .then((result) => {
       debug(result);
       var map_id = result;
       debug('Saving User Map with ID: ' + map_id);
       return knex('omh.maps').update({owned_by_group_id: group_id}).where({map_id})
-      .then(function(){
+      .then(() => {
         return map_id; //pass on the new map_id
       });
     });
@@ -485,19 +485,19 @@ module.exports = {
     };
 
     //reverse the order for the styles, since the map draws them in the order received
-    forEachRight(layers, function(layer){
+    forEachRight(layers, (layer) => {
       if(layer.style && layer.style.sources && layer.style.layers){
         //check for active flag and update visibility in style
         if(layer.settings.active != undefined && layer.settings.active == false){
           //hide style layers for this layer
-          layer.style.layers.forEach(function(styleLayer){
+          layer.style.layers.forEach((styleLayer) => {
             styleLayer['layout'] = {
               "visibility": "none"
             };
           });
         } else {
           //reset all the style layers to visible
-          layer.style.layers.forEach(function(styleLayer){
+          layer.style.layers.forEach((styleLayer) => {
             styleLayer['layout'] = {
               "visibility": "visible"
             };

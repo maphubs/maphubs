@@ -60,11 +60,11 @@ export default class CodeEditor extends MapHubsComponent {
     var _this = this;
     if(this.refs.ace){
       this.editor = this.refs.ace.editor;
-      this.editor.getSession().on("changeAnnotation", function(){
+      this.editor.getSession().on("changeAnnotation", () => {
         var annotations = _this.editor.getSession().getAnnotations();
         var canSave = true;
         if(annotations && annotations.length > 0){
-          annotations.forEach(function(anno){
+          annotations.forEach((anno) => {
             if(anno.type === 'error'){
               canSave = false;
             }

@@ -110,7 +110,7 @@ class Select extends MapHubsPureComponent {
               <ReactMaterialSelect label={this.props.emptyText}
                 resetLabel={this.props.emptyText} defaultValue={value}
                  onChange={this.handleSelectChange}>
-                {this.props.options.map(function(option, i){
+                {this.props.options.map((option, i) => {
                   return (
                     <option key={i} dataValue={option.value}>{option.label}</option>
                   );

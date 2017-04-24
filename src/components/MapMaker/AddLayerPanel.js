@@ -29,8 +29,8 @@ export default class AddLayerPanel extends MapHubsComponent {
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           MessageActions.showMessage({title: 'Error', message: err});
         }else{
@@ -43,7 +43,7 @@ export default class AddLayerPanel extends MapHubsComponent {
           }
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );
@@ -71,7 +71,7 @@ export default class AddLayerPanel extends MapHubsComponent {
    ];
 
     if(this.props.myLayers && this.props.myLayers.length > 0){
-      myCards = this.props.myLayers.map(function(layer, i){
+      myCards = this.props.myLayers.map((layer, i) => {
         return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
       });
       myLayers = (
@@ -85,7 +85,7 @@ export default class AddLayerPanel extends MapHubsComponent {
       );
     }
 
-    popularCards = this.props.popularLayers.map(function(layer, i){
+    popularCards = this.props.popularLayers.map((layer, i) => {
       return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
     });
 
@@ -95,7 +95,7 @@ export default class AddLayerPanel extends MapHubsComponent {
       if(this.state.searchResults.length > 0){
 
 
-        searchCards = this.state.searchResults.map(function(layer, i){
+        searchCards = this.state.searchResults.map((layer, i) => {
           return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
         });
         searchResults = (

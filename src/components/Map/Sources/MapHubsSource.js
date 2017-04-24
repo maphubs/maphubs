@@ -9,7 +9,7 @@ var Marker = require('../Marker');
 var $ =require('jquery');
 var MarkerActions = require('../../../actions/map/MarkerActions');
 var GJV = require("geojson-validation");
-GJV.define("Position", function(position){
+GJV.define("Position", (position) => {
     //the postion must be valid point on the earth, x between -180 and 180
     var errors = [];
     if(position[0] < -180 || position[0] > 180){
@@ -32,7 +32,7 @@ var MapHubsSource = {
 
     if(source.type === 'geojson' && source.data){
       return request.get(source.data)
-        .then(function(res) {
+        .then((res) => {
           var geoJSON = res.body;
           if(geoJSON.features){
             geoJSON.features.forEach((feature, i)=>{
@@ -40,18 +40,18 @@ var MapHubsSource = {
             });
           }
           map.addSource(key, {type: 'geojson', data: geoJSON});
-        }, function(error) {
+        }, (error) => {
           debug('(' + mapComponent.state.id + ') ' +error);
         });
     }else{
       //load as tilejson
       var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       return request.get(url)
-        .then(function(res) {
+        .then((res) => {
           var tileJSON = res.body;
           tileJSON.type = 'vector';
 
-          map.on('source.load', function(e) {
+          map.on('source.load', (e) => {
             if (e.source.id === key && mapComponent.state.allowLayersToMoveMap) {
               debug('Zooming map extent of source: ' + e.source.id);
               map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
@@ -59,7 +59,7 @@ var MapHubsSource = {
             }
           });
           map.addSource(key, tileJSON);
-        }, function(error) {
+        }, (error) => {
           debug('(' + mapComponent.state.id + ') ' +error);
         });
     }
@@ -69,7 +69,7 @@ var MapHubsSource = {
     //try to delete any old markers
     if(layer.metadata && layer.metadata['maphubs:markers']){  
       let layer_id = layer.metadata['maphubs:layer_id'];    
-      $('.maphubs-marker-'+layer_id).each(function(i, markerDiv){
+      $('.maphubs-marker-'+layer_id).each((i, markerDiv) => {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
       });
@@ -91,21 +91,21 @@ var MapHubsSource = {
     }
      superagent.get(geojsonUrl)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           debug(err);
         }else{
           var geojson = res.body;        
           // add markers to map
-          geojson.features.forEach(function(marker, i) {
+          geojson.features.forEach((marker, i) => {
           var valid = true;
-          GJV.isFeature(marker, function(valid, errs){
+          GJV.isFeature(marker, (valid, errs) => {
             if(!valid){
               valid = false;
               debug(errs);
             }
-            GJV.isPoint(marker.geometry, function(valid, errs){
+            GJV.isPoint(marker.geometry, (valid, errs) => {
             if(!valid){
               valid = false;
               debug(errs);
@@ -135,7 +135,7 @@ var MapHubsSource = {
           el.style.width = markerConfig.width + 'px';
           el.style.height = markerConfig.height + 'px';
 
-          el.addEventListener('click', function(e){
+          el.addEventListener('click', (e) => {
             e.stopPropagation();
             marker.properties.layer_id = layer_id;
             //
@@ -178,7 +178,7 @@ var MapHubsSource = {
           
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );
@@ -197,7 +197,7 @@ var MapHubsSource = {
   removeLayer(layer, map){
     if(layer.metadata && layer.metadata['maphubs:markers']){  
       let layer_id = layer.metadata['maphubs:layer_id'];    
-      $('.maphubs-marker-'+layer_id).each(function(i, markerDiv){
+      $('.maphubs-marker-'+layer_id).each((i, markerDiv) => {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
       });

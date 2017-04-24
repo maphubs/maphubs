@@ -3,7 +3,7 @@ import React from 'react';
 import Editor from 'react-medium-editor';
 import HubStore from '../../stores/HubStore';
 import HubActions from '../../actions/HubActions';
-var _isequal = require('lodash.isequal');
+import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
 export default class HubDescription extends MapHubsComponent {
@@ -35,7 +35,7 @@ export default class HubDescription extends MapHubsComponent {
     return false;
   }
 
-  handleDescriptionChange(desc: string){
+  handleDescriptionChange = (desc: string) => {
     HubActions.setDescription(desc);
   }
 
@@ -51,7 +51,7 @@ export default class HubDescription extends MapHubsComponent {
               <Editor
                tag="p"
                text={descriptionVal}
-               onChange={this.handleDescriptionChange.bind(this)}
+               onChange={this.handleDescriptionChange}
                options={{toolbar: false, buttonLabels: false,
                  placeholder: {text: this.__('Enter a Description or Intro for Your Hub')},
                  disableReturn: true, buttons: []}}

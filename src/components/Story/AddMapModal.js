@@ -53,8 +53,8 @@ export default class AddMapModal extends MapHubsComponent {
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           MessageActions.showMessage({title: 'Error', message: err});
         }else{
@@ -67,7 +67,7 @@ export default class AddMapModal extends MapHubsComponent {
           }
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );
@@ -87,7 +87,7 @@ export default class AddMapModal extends MapHubsComponent {
 
     var myMaps = '';
     if(this.props.myMaps && this.props.myMaps.length > 0){
-      var myCards = this.props.myMaps.map(function(map, i){
+      var myCards = this.props.myMaps.map((map, i) => {
         return cardUtil.getMapCard(map, i, [], _this.onAdd);
       });
       myMaps = (
@@ -101,7 +101,7 @@ export default class AddMapModal extends MapHubsComponent {
       );
     }
 
-    var popularCards = this.props.popularMaps.map(function(map, i){
+    var popularCards = this.props.popularMaps.map((map, i) => {
       return cardUtil.getMapCard(map, i, [], _this.onAdd);
     });
 
@@ -111,7 +111,7 @@ export default class AddMapModal extends MapHubsComponent {
       if(this.state.searchResults.length > 0){
 
 
-        searchCards = this.state.searchResults.map(function(map, i){
+        searchCards = this.state.searchResults.map((map, i) => {
           return cardUtil.getMapCard(map, i, [], _this.onAdd);
         });
         searchResults = (

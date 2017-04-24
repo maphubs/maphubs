@@ -28,14 +28,14 @@ export default class Progress extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.show != nextProps.show){
+    if(this.props.show !== nextProps.show){
       this.setState({
         show: nextProps.show
       });
     }
   }
 
-  onClose(){
+  onClose = () => {
     this.setState({show: false});
     if(this.props.onClose) this.props.onClose();
   }

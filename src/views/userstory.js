@@ -5,7 +5,6 @@ import ReactDisqusThread from 'react-disqus-thread';
 var slug = require('slug');
 import StoryHeader from '../components/Story/StoryHeader';
 import MapHubsComponent from '../components/MapHubsComponent';
-import LocaleActions from '../actions/LocaleActions';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 

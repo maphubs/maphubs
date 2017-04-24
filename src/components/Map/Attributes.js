@@ -42,7 +42,7 @@ export default class Attributes extends React.Component {
             <ul className="collection" style={{marginTop: 0}}>
               {photo}
               {
-                presets.map(function(preset){
+                presets.map((preset) => {
                   if(typeof preset.showOnMap !== 'undefined' && preset.showOnMap === false) return '';
                   var val = _this.props.attributes[preset.tag];
                   if(!val || (typeof val === 'string' && val === 'null')) return '';
@@ -50,7 +50,7 @@ export default class Attributes extends React.Component {
                     val = (<a target="_blank" href={val}>{val}</a>);
                   }
                   return (
-                     <li key={preset.tag} style={{ paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className="collection-item attribute-collection-item">
+                     <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className="collection-item attribute-collection-item">
                       <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{preset.label}</p>
                        <p className="word-wrap">
                          {val}
@@ -69,7 +69,7 @@ export default class Attributes extends React.Component {
             <ul className="collection" style={{marginTop: 0}}>
               {photo}
               {
-                Object.keys(_this.props.attributes).map(function (key) {
+                Object.keys(_this.props.attributes).map((key) => {
                     if(key !== 'mhid' || key !== 'layer_id'
                     || key !== 'maphubs_host'){
                      var val = _this.props.attributes[key];
@@ -77,7 +77,7 @@ export default class Attributes extends React.Component {
                        val = (<a target="_blank" href={val}>{val}</a>);
                      }
                      return (
-                      <li key={key} style={{ padding: 5}} className="collection-item attribute-collection-item">
+                      <li key={key} style={{padding: 5}} className="collection-item attribute-collection-item">
                       <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{key}</p>
                        <p className="word-wrap">
                          {val}

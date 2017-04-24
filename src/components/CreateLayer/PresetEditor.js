@@ -58,7 +58,7 @@ export default class PresetEditor extends MapHubsComponent {
           </div>
           <ul className="collection">
             {
-                presets.map(function(preset){
+                presets.map((preset) => {
                   return(
                    <li key={preset.id} className="collection-item attribute-collection-item">
                        <PresetForm ref={preset.tag} {...preset}

@@ -7,7 +7,7 @@ module.exports = {
 
   combineCards(cardDataArray: Array<Object>): Array<Object>{
     var output = [];
-    cardDataArray.forEach(function(cardArr){
+    cardDataArray.forEach((cardArr) => {
       output = output.concat(cardArr);
     });
     return output;

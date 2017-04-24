@@ -27,7 +27,7 @@ export default class EditorToolButtons extends MapHubsComponent {
   saveEdits = (cb: Function) => {
     var _this = this;
     this.setState({saving: true});
-    DataEditorActions.saveEdits(this.state._csrf, function(err){
+    DataEditorActions.saveEdits(this.state._csrf, (err) => {
       //TODO: notify user
       _this.setState({saving: false});
       if(err){

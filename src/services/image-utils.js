@@ -55,7 +55,7 @@ module.exports = {
     var _this = this;
     var cmd = null;
 
-    return new Promise(function(fulfill, reject){
+    return new Promise((fulfill, reject) => {
       //decode base64
       var imageBuffer = _this.decodeBase64Image(dataString);
       //save it to a file
@@ -65,7 +65,7 @@ module.exports = {
       var origfilePath = local.tempFilePath + '/' + origFile;
       var resizedFilePath = local.tempFilePath + '/' + resizedFile;
       var convertedFilePath = local.tempFilePath + '/' + convertedFile;
-      fs.writeFile(origfilePath, imageBuffer.data, function(err) {
+      fs.writeFile(origfilePath, imageBuffer.data, (err) => {
         if(err){
           log.error(err);
           reject(err);
@@ -84,13 +84,13 @@ module.exports = {
           });
         }
          cmd.then(
-          function(resizedImage) {
+          (resizedImage) => {
              debug('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
              easyimg.convert({
                src:resizedFilePath, dst:convertedFilePath, quality: 85
               })
               .then(
-              function() {
+              () => {
                 var bitmap = fs.readFileSync(convertedFilePath);
                 var resizedImageBase64String = 'data:image/jpeg;base64,' + new Buffer(bitmap).toString('base64');
                 //debug(resizedImageBase64String);
@@ -101,7 +101,7 @@ module.exports = {
               });
 
           },
-          function (err) {
+          (err) => {
             reject(err);
             fs.unlink(origfilePath);
             fs.unlink(resizedFilePath);

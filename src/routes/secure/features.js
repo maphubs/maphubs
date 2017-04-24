@@ -23,7 +23,7 @@ var privateLayerCheck = require('../../services/private-layer-check');
 
 module.exports = function(app: any) {
 
-  app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, function(req, res, next) {
+  app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, (req, res, next) => {
 
     var id = req.params.id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -37,13 +37,13 @@ module.exports = function(app: any) {
 
     if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
-        .then(function(layer){
+        .then((layer) => {
 
       return Promise.all([
         Feature.getFeatureByID(mhid, layer.layer_id),
         PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid),
       ])
-      .then(function(results){
+      .then((results) => {
         var feature = results[0].feature;
         //only supporting one photo per feature for now...
         var photos = results[1];
@@ -79,7 +79,7 @@ module.exports = function(app: any) {
            });
         }else{
           Layer.allowedToModify(layer_id, user_id)
-          .then(function(allowed){
+          .then((allowed) => {
             if(allowed){
               res.render('featureinfo',
               {
@@ -106,7 +106,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, function(req, res) {
+  app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, (req, res) => {
 
     var id = req.params.id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -115,7 +115,7 @@ module.exports = function(app: any) {
 
     if(mhid && layer_id){
        Feature.getGeoJSON(mhid, layer_id)
-      .then(function(geoJSON){
+      .then((geoJSON) => {
         var resultStr = JSON.stringify(geoJSON);
         var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
         var match = req.get('If-None-Match');
@@ -135,7 +135,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, function(req, res, next) {
+  app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, (req, res, next) => {
 
     var id = req.params.id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -144,9 +144,9 @@ module.exports = function(app: any) {
 
     if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
-        .then(function(layer){
+        .then((layer) => {
           return Feature.getFeatureByID(mhid, layer.layer_id)
-          .then(function(result){
+          .then((result) => {
             var feature = result.feature;
             var geoJSON = feature.geojson;
             geoJSON.features[0].geometry.type = "LineString";
@@ -175,7 +175,7 @@ module.exports = function(app: any) {
                   <name>Feature</name>
                   <trkseg>
                   `;
-                  coordinates.forEach(function(coord){
+                  coordinates.forEach((coord) => {
                      gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`;
                   });
 
@@ -193,19 +193,19 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/feature/photo/:photo_id.jpg', function(req, res) {
+  app.get('/feature/photo/:photo_id.jpg', (req, res) => {
     var photo_id = req.params.photo_id;
     var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.id;
     }
     Layer.getLayerForPhotoAttachment(photo_id)
-    .then(function(layer){
+    .then((layer) => {
       return privateLayerCheck.check(layer.layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           return PhotoAttachment.getPhotoAttachment(photo_id)
-          .then(function(result){
+          .then((result) => {
             imageUtils.processImage(result.data, req, res);
           });
         }else{
@@ -217,7 +217,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.post('/api/feature/notes/save', csrfProtection, function(req, res) {
+  app.post('/api/feature/notes/save', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -226,13 +226,13 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.notes) {
       Layer.allowedToModify(data.layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
-          return knex.transaction(function(trx) {
+          return knex.transaction((trx) => {
           return Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes, trx)
           .then(()=>{
             return SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx)
-            .then(function() {
+            .then(() => {
                 res.send({success: true});
               });
           }).catch(apiError(res, 500));
@@ -248,7 +248,7 @@ module.exports = function(app: any) {
   });
 
 
-  app.post('/api/feature/photo/add', csrfProtection, function(req, res) {
+  app.post('/api/feature/photo/add', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -257,28 +257,28 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.image && data.info) {
       Layer.allowedToModify(data.layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
-          return knex.transaction(function(trx) {
+          return knex.transaction((trx) => {
             //set will replace existing photo
           return PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, user_id, trx)
-            .then(function(photo_id) {
+            .then((photo_id) => {
               return Layer.getLayerByID(data.layer_id, trx)
-              .then(function(layer){
+              .then((layer) => {
                 var baseUrl = urlUtil.getBaseUrl();
                 var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                 //add a tag to the feature
                 return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
-                .then(function(){
+                .then(() => {
                   debug('addPhotoUrlPreset');
                   return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                  .then(function(presets){
+                  .then((presets) => {
                     debug('replaceViews');
                       return layerViews.replaceViews(data.layer_id, presets, trx)
-                    .then(function(){
+                    .then(() => {
                       debug('Layer.setUpdated');
                       return Layer.setUpdated(data.layer_id, user_id, trx)
-                      .then(function(){
+                      .then(() => {
                         return res.send({success: true, photo_id, photo_url});
                       });
                     });
@@ -296,7 +296,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/feature/photo/delete', csrfProtection, function(req, res) {
+  app.post('/api/feature/photo/delete', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -306,21 +306,21 @@ module.exports = function(app: any) {
     if (data && data.layer_id && data.mhid && data.photo_id) {
       
       Layer.allowedToModify(data.layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
-          return knex.transaction(function(trx) {
+          return knex.transaction((trx) => {
             //set will replace existing photo
           return PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, data.photo_id, trx)
-            .then(function() {
+            .then(() => {
               return Layer.getLayerByID(data.layer_id, trx)
-              .then(function(layer){
+              .then((layer) => {
                 //remove the photo URL from feature
                 return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx)
-                .then(function(){
+                .then(() => {
                   return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                  .then(function(){
+                  .then(() => {
                     return Layer.setUpdated(data.layer_id, user_id, trx)
-                    .then(function(){
+                    .then(() => {
                       res.send({success: true});
                     });
                   });

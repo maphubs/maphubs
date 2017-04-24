@@ -21,9 +21,9 @@ html: '<b> Test email text </b>'
 */
 send(data: any){
   debug('Send email to ' + data.to + ' with subject: ' + data.subject);
-  return new Promise(function(fulfill, reject) {
+  return new Promise((fulfill, reject) => {
       var mail = mailcomposer(data);
-      mail.build(function(err, message){
+      mail.build((err, message) => {
         if(err){
           reject(err);
         }
@@ -32,7 +32,7 @@ send(data: any){
             message: message.toString('ascii')
         };
 
-        mailgun.messages().sendMime(dataToSend, function (sendError, body) {
+        mailgun.messages().sendMime(dataToSend, (sendError, body) => {
           if (sendError) {
               log.error(sendError);
               reject(sendError);

@@ -33,12 +33,12 @@ module.exports = function(app: any) {
   };
 
 
-  app.get('/map/new', csrfProtection, function(req, res, next) {
+  app.get('/map/new', csrfProtection, (req, res, next) => {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
             Layer.getPopularLayers()           
-            .then(function(popularLayers){
+            .then((popularLayers) => {
                 res.render('map', {title: 'New Map ', props:{popularLayers}, req});
             }).catch(nextError(next));
     } else {
@@ -72,7 +72,7 @@ module.exports = function(app: any) {
       }
 
       Promise.all(dataRequests)
-        .then(function(results){
+        .then((results) => {
           var popularLayers = results[0];
           var myLayers = results[1];
           var myGroups = results[2];
@@ -86,7 +86,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/maps', csrfProtection, function(req, res, next) {
+  app.get('/maps', csrfProtection, (req, res, next) => {
 
     Promise.all([
       Map.getFeaturedMaps(),
@@ -94,7 +94,7 @@ module.exports = function(app: any) {
       Map.getPopularMaps(),
       Page.getPageConfigs(['footer'])
     ])
-      .then(function(results){
+      .then((results) => {
         var featuredMaps = results[0];
         var recentMaps = results[1];
         var popularMaps = results[2];
@@ -103,7 +103,7 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/user/:username/maps', csrfProtection, function(req, res, next) {
+  app.get('/user/:username/maps', csrfProtection, (req, res, next) => {
 
     var username = req.params.username;
     debug(username);
@@ -112,11 +112,11 @@ module.exports = function(app: any) {
 
     function completeRequest(){
       User.getUserByName(username)
-      .then(function(user){
+      .then((user) => {
         if(user){
           return Map.getUserMaps(user.id)
-          .then(function(maps){
-            return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+          .then((maps) => {
+            return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
               var footerConfig = pageConfigs['footer'];
               res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps, footerConfig}, req});
             });
@@ -136,7 +136,7 @@ module.exports = function(app: any) {
 
       //get user for logged in user
       User.getUser(user_id)
-      .then(function(user){
+      .then((user) => {
         //flag if requested user is logged in user
         if(user.display_name === username){
           myMaps = true;
@@ -146,7 +146,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/view/:map_id/*', csrfProtection, privateMapCheck, function(req, res, next) {
+  app.get('/map/view/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -165,13 +165,13 @@ module.exports = function(app: any) {
     } else {
       //get user id
       Map.allowedToModify(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
       });
     }
   });
 
-  app.get('/user/:username/map/:map_id/*', csrfProtection, privateMapCheck, function(req, res, next) {
+  app.get('/user/:username/map/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -190,13 +190,13 @@ module.exports = function(app: any) {
     } else {
       //get user id
       Map.allowedToModify(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
       });
     }
   });
 
-  app.get('/map/edit/:map_id', csrfProtection, function(req, res, next) {
+  app.get('/map/edit/:map_id', csrfProtection, (req, res, next) => {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -214,7 +214,7 @@ module.exports = function(app: any) {
     } else {
       //get user id
       Map.allowedToModify(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
 
           return Promise.all([
@@ -224,7 +224,7 @@ module.exports = function(app: any) {
           Layer.getUserLayers(user_id, 50, true),
           Group.getGroupsForUser(user_id)
           ])
-          .then(function(results){
+          .then((results) => {
             var map = results[0];
             var layers = results[1];
             var popularLayers = results[2];
@@ -251,7 +251,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/embed/:map_id', csrfProtection, privateMapCheck, function(req, res, next) {
+  app.get('/map/embed/:map_id', csrfProtection, privateMapCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -268,13 +268,13 @@ module.exports = function(app: any) {
           MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false, false);
     } else {
       Map.allowedToModify(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false);
       });
     }
   });
 
-  app.get('/map/embed/:map_id/static', csrfProtection, privateMapCheck, function(req, res, next) {
+  app.get('/map/embed/:map_id/static', csrfProtection, privateMapCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -291,13 +291,13 @@ module.exports = function(app: any) {
           MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, false);
     } else {
       Map.allowedToModify(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false);
       });
     }
   });
 
-  app.get('/map/embed/:map_id/interactive', csrfProtection, privateMapCheck, function(req, res, next) {
+  app.get('/map/embed/:map_id/interactive', csrfProtection, privateMapCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
@@ -314,7 +314,7 @@ module.exports = function(app: any) {
           MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, true);
     } else {
       Map.allowedToModify(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true);
       });
     }

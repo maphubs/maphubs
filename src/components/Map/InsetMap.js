@@ -63,7 +63,7 @@ export default class InsetMap extends React.Component {
     }
   }
 
-  createInsetMap(center: any, bounds: Object, baseMap: string) {
+  createInsetMap = (center: any, bounds: Object, baseMap: string) => {
       var _this = this;
       var insetMap =  new mapboxgl.Map({
         container: this.props.id  + '_inset',
@@ -74,7 +74,7 @@ export default class InsetMap extends React.Component {
         attributionControl: this.props.attributionControl
       });
 
-      insetMap.on('style.load', function() {
+      insetMap.on('style.load', () => {
 
         insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
         //create geojson from bounds

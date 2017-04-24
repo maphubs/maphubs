@@ -11,7 +11,7 @@ function translateClientObject(data){
         consumerKey: data.key,
         consumerSecret: data.secret,
         callbackURL: data.callback_url
-    }
+    };
 
     return client;
 }
@@ -21,7 +21,7 @@ exports.find = function(id, done) {
     knex.select('*')
         .from('client_applications')
         .where('id', id)
-        .then(function (data) {
+        .then((data) => {
             if(data.length == 1){
                 var client = translateClientObject(data[0]);
                 return done(null, client);
@@ -30,7 +30,7 @@ exports.find = function(id, done) {
                 return done('Client Not Found', null);
             }
 
-        }).catch(function (err) {
+        }).catch((err) => {
             log.error(err);
             return done(err, null);
         });
@@ -42,7 +42,7 @@ exports.findByConsumerKey = function(consumerKey, done) {
     knex.select('*')
         .from('client_applications')
         .where('key', consumerKey)
-        .then(function (data) {
+        .then((data) => {
             if(data.length == 1){
                 var client = translateClientObject(data[0]);
                 return done(null, client);
@@ -51,7 +51,7 @@ exports.findByConsumerKey = function(consumerKey, done) {
                 return done('Client Not Found', null);
             }
 
-        }).catch(function (err) {
+        }).catch((err) => {
             log.error(err);
             return done(err, null);
         });

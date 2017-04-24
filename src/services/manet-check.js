@@ -73,7 +73,7 @@ return function(req: any, res: any, next: any){
     }else{
       var parsedUrl: Object = url.parse(manetUrl);
       var manetHost: string = parsedUrl.hostname;
-      return dns.lookup(manetHost, function(err: Error, addresses: any) {
+      return dns.lookup(manetHost, (err: Error, addresses: any) => {
         if(err){
           log.error(err);
           return failure();
@@ -99,13 +99,13 @@ return function(req: any, res: any, next: any){
   if(layer_id){
     //check if the layer is private
     Layer.getLayerByID(layer_id)
-    .then(function(layer){
+    .then((layer) => {
       //if layer is private, 
       if(layer.private){
         if(req.isAuthenticated && req.isAuthenticated()){
           // if there is a user session, the user must be allowed to edit
           layer.allowedToModify(layer_id, user_id)
-          .then(function(allowed){
+          .then((allowed) => {
             if(allowed){
               return success();
             }else{
@@ -129,11 +129,11 @@ return function(req: any, res: any, next: any){
     });
    }else if(map_id){
      Map.getMap(map_id)
-     .then(function(map){
+     .then((map) => {
        if(map.private){
          if(req.isAuthenticated && req.isAuthenticated()){
            map.allowedToModify(map_id, user_id)
-            .then(function(allowed){
+            .then((allowed) => {
               if(allowed){
                 return success();
               }else{

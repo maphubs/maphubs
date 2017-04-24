@@ -48,7 +48,7 @@ export default class HubStories extends MapHubsComponent {
       <div>
         {addButton}
         <div>
-          {this.props.stories.map(function (story, i) {
+          {this.props.stories.map((story, i) => {
             var editButton = '';
             if(_this.props.editing){
               editButton = (

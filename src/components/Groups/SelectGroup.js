@@ -56,7 +56,7 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
 
   getOwnerGroup = (group_id: string): Object => {
     var owner = {};
-    this.props.groups.forEach(function(group){
+    this.props.groups.forEach((group) => {
       if(group.group_id === group_id){
         owner = group;
       }
@@ -78,7 +78,7 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
      if(this.props.groups.length > 1 && this.props.canChangeGroup){
       var groupOptions = [];
 
-      this.props.groups.map(function(group){
+      this.props.groups.map((group) => {
         groupOptions.push({
           value: group.group_id,
           label: group.name

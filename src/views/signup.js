@@ -55,7 +55,7 @@ export default class Signup extends MapHubsComponent {
         return this.usernameAvailable;
     });
 
-    Formsy.addValidationRule('validUserName', function (values, value) {
+    Formsy.addValidationRule('validUserName', (values, value) => {
       var regexp = /^[A-Z0-9\u00C0-\u017F]+$/i;
       return !(value !== null && value !== undefined) || value === '' || regexp.test(value);
     });
@@ -76,7 +76,7 @@ export default class Signup extends MapHubsComponent {
             success(msg){
               if(msg.success && msg.available){
                 result = true;
-              } else if(msg.sucess == false){
+              } else if(msg.sucess === false){
                 _this.setState({
                   showError: true,
                   errorTitle: 'Error',
@@ -104,7 +104,7 @@ export default class Signup extends MapHubsComponent {
   onSave = (model: Object) => {
     var _this = this;
     this.setState({saving: true});
-    UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, this.props.inviteKey, this.state._csrf, function(err){
+    UserActions.signup(model.username, model.name, model.email, model.password, model.joinmailinglist, this.props.inviteKey, this.state._csrf, (err) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

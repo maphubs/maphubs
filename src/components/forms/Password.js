@@ -34,7 +34,7 @@ export default class Password extends MapHubsComponent {
 
   onSave = (model: Object) => {
     var _this = this;
-    UserActions.updatePassword(this.props.userid, model.password, this.props.passreset, this.props.csrf, function(err){
+    UserActions.updatePassword(this.props.userid, model.password, this.props.passreset, this.props.csrf, (err) => {
       if(err){
         MessageActions.showMessage({
           title: _this.__('Failed to Update Password'),

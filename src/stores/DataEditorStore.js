@@ -25,7 +25,7 @@ export default class DataEditorStore extends Reflux.Store {
       edits: [],
       redo: [], //if we undo edits, add them here so we can redo them
       selectedEditFeature: null, //selected feature
-    }
+    };
   }
 
   reset(){
@@ -169,8 +169,8 @@ export default class DataEditorStore extends Reflux.Store {
         edits: editsToSave,
         _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){       
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {       
         if(err){
           cb(err);
         }else{

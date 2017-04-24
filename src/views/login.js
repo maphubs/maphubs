@@ -51,7 +51,7 @@ export default class Login extends MapHubsComponent {
 
   onSubmitReset = (model: Object) => {
     var _this = this;
-    UserActions.forgotPassword(model.email, this.state._csrf, function(err){
+    UserActions.forgotPassword(model.email, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Failed to Submit Password Reset'), message: err});
       }else {

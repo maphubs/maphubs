@@ -39,13 +39,13 @@ export default class Hubs extends MapHubsComponent {
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  handleSearch(input: string) {
+  handleSearch = (input: string) => {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/hubs/search?q=' + input)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           MessageActions.showMessage({title: 'Error', message: err});
         }else{
@@ -58,14 +58,14 @@ export default class Hubs extends MapHubsComponent {
           }
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );
     });
   }
 
-  resetSearch(){
+  resetSearch = () => {
     this.setState({searchActive: false, searchResults: []});
   }
 
@@ -114,7 +114,9 @@ export default class Hubs extends MapHubsComponent {
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
               <div className="row">
                 <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                  <SearchBox label={this.__('Search Hubs')} suggestionUrl="/api/hubs/search/suggestions" onSearch={this.handleSearch.bind(this)} onReset={this.resetSearch.bind(this)}/>
+                  <SearchBox label={this.__('Search Hubs')} 
+                  suggestionUrl="/api/hubs/search/suggestions" 
+                  onSearch={this.handleSearch} onReset={this.resetSearch}/>
                 </div>
               </div>
             </div>

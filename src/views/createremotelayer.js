@@ -41,11 +41,11 @@ export default class CreateRemoteLayer extends MapHubsComponent {
   componentWillMount(){
     super.componentWillMount();
 
-    Formsy.addValidationRule('isHttps', function (values, value) {
+    Formsy.addValidationRule('isHttps', (values, value) => {
         return value.startsWith('https://');
     });
 
-    Formsy.addValidationRule('validMapHubsLayerPath', function (values, value) {
+    Formsy.addValidationRule('validMapHubsLayerPath', (values, value) => {
       if(typeof window !== 'undefined'){
         var pathParts = $('<a>').prop('href', value).prop('pathname').split('/');
         if(pathParts[1] === 'layer'
@@ -95,8 +95,8 @@ export default class CreateRemoteLayer extends MapHubsComponent {
 
       request.get('https://' + remote_host + '/api/layer/metadata/' + remote_layer_id)
       .type('json').accept('json').timeout(1200000)
-      .end(function(err, res){
-        checkClientError(res, err, function(){}, function(cb){
+      .end((err, res) => {
+        checkClientError(res, err, () => {}, (cb) => {
           _this.setState({remote_host, group_id, layer: res.body.layer});
           cb();
         });
@@ -113,8 +113,8 @@ export default class CreateRemoteLayer extends MapHubsComponent {
       layer: this.state.layer,
       host: this.state.remote_host
     })
-    .end(function(err, res){
-      checkClientError(res, err, function(){}, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, () => {}, (cb) => {
         var layer_id = res.body.layer_id;
         _this.setState({complete: true});
         window.location = '/layer/info/' + layer_id + '/' + slug(_this.state.layer.name);
@@ -181,7 +181,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
     if(this.props.groups.length > 1){
     var groupOptions = [];
 
-    this.props.groups.map(function(group){
+    this.props.groups.map((group) => {
       groupOptions.push({
         value: group.group_id,
         label: group.name

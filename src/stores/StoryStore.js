@@ -48,8 +48,8 @@ export default class StoryStore extends Reflux.Store {
     request.post('/api/story/save')
     .type('json').accept('json')
     .send(data)
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         var story = _this.state.story;
         if(res.body.story_id){   
           story.story_id = res.body.story_id;
@@ -65,8 +65,8 @@ export default class StoryStore extends Reflux.Store {
   request.post('/api/story/addimage')
   .type('json').accept('json')
   .send({story_id: _this.state.story.story_id, image: data, info, _csrf})
-  .end(function(err, res){
-    checkClientError(res, err, cb, function(cb){
+  .end((err, res) => {
+    checkClientError(res, err, cb, (cb) => {
        cb(null, res);
     });
   });
@@ -77,8 +77,8 @@ removeImage(image_id: number, _csrf: string, cb: Function){
     request.post('/api/story/removeimage')
     .type('json').accept('json')
     .send({story_id: _this.state.story.story_id, image_id, _csrf})
-    .end(function(err, res){
-        checkClientError(res, err, cb, function(cb){cb();});
+    .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {cb();});
     });
 }
 
@@ -87,8 +87,8 @@ removeImage(image_id: number, _csrf: string, cb: Function){
   request.post('/api/story/publish')
       .type('json').accept('json')
       .send({story_id: _this.state.story.story_id, _csrf})
-      .end(function(err, res){
-        checkClientError(res, err, cb, function(cb){cb();});
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {cb();});
       });
   }
 
@@ -97,8 +97,8 @@ removeImage(image_id: number, _csrf: string, cb: Function){
   request.post('/api/story/delete')
       .type('json').accept('json')
       .send({story_id: _this.state.story.story_id, _csrf})
-      .end(function(err, res){
-        checkClientError(res, err, cb, function(cb){cb();});
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {cb();});
       });
   }
 

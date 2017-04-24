@@ -40,13 +40,13 @@ export default class Groups extends MapHubsComponent {
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }
 
-  handleSearch(input: string) {
+  handleSearch = (input: string) => {
     var _this = this;
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           MessageActions.showMessage({title: _this.__('Error'), message: err});
         }else{
@@ -59,7 +59,7 @@ export default class Groups extends MapHubsComponent {
           }
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );
@@ -67,7 +67,7 @@ export default class Groups extends MapHubsComponent {
     });
   }
 
-  resetSearch(){
+  resetSearch = () => {
     this.setState({searchActive: false, searchResults: []});
   }
 

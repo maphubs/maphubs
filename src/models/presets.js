@@ -23,7 +23,7 @@ module.exports = {
         //1)changed the tag
         //2) have been deleted (if we want to actually delete them??)
 
-        presets.forEach(function(preset){
+        presets.forEach((preset) => {
           if(preset.prevTag !== undefined){
             PresetUtils.renameTag(layer_id, preset.prevTag, preset.tag);
           }

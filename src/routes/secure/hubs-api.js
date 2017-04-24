@@ -15,11 +15,11 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.post('/api/hub/checkidavailable', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
+  app.post('/api/hub/checkidavailable', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
     var data = req.body;
     if (data && data.id) {
       Hub.checkHubIdAvailable(data.id)
-        .then(function(result) {
+        .then((result) => {
           res.send({
             available: result
           });
@@ -29,15 +29,15 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/api/hubs/search/suggestions', function(req, res, next) {
+  app.get('/api/hubs/search/suggestions', (req, res, next) => {
     if (!req.query.q) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
     }
     var q = req.query.q;
     Hub.getSearchSuggestions(q)
-      .then(function(result) {
+      .then((result) => {
         var suggestions = [];
-        result.forEach(function(hub) {
+        result.forEach((hub) => {
           suggestions.push({key: hub.hub_id, value:hub.name});
         });
         res.send({
@@ -46,17 +46,17 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/api/hubs/search', function(req, res) {
+  app.get('/api/hubs/search', (req, res) => {
     if (!req.query.q) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
     }
     Hub.getSearchResults(req.query.q)
-      .then(function(result){
+      .then((result) => {
         res.status(200).send({hubs: result});
       }).catch(apiError(res, 500));
   });
 
-  app.post('/api/hub/create', function(req, res) {
+  app.post('/api/hub/create', (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -65,7 +65,7 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.hub_id && data.group_id && data.name ) {
       Hub.createHub(data.hub_id, data.group_id, data.name, data.published, data.private, user_id)
-        .then(function(result) {
+        .then((result) => {
           if (result) {
             res.send({
               success: true
@@ -85,7 +85,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/hub/:hubid/api/save', csrfProtection, function(req, res) {
+  app.post('/hub/:hubid/api/save', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -94,14 +94,14 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.hub_id) {
       Hub.allowedToModify(data.hub_id, session_user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           if(data.name) data.name = data.name.replace('&nbsp;', '');
           if(data.tagline) data.tagline = data.tagline.replace('&nbsp;', '');
           if(data.description) data.description = data.description.replace('&nbsp;', '');
 
           Hub.updateHub(data.hub_id, data.name, data.description, data.tagline, data.published, data.resources, data.about, data.map_id, session_user_id)
-            .then(function(result) {
+            .then((result) => {
               if (result && result == 1) {
                 var commands = [];
 
@@ -113,7 +113,7 @@ module.exports = function(app: any) {
                 }
 
                 Promise.all(commands)
-                .then(function(){
+                .then(() => {
                   res.send({success: true});
                 }).catch(apiError(res, 500));
 
@@ -137,7 +137,7 @@ module.exports = function(app: any) {
   /**
    * change hub privacy settings
    */
-  app.post('/hub/:hubid/api/privacy', csrfProtection, function(req, res) {
+  app.post('/hub/:hubid/api/privacy', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -146,10 +146,10 @@ module.exports = function(app: any) {
     var data = req.body;
     if(data && data.hub_id && data.isPrivate){
       Hub.allowedToModify(data.hub_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           return Hub.setPrivate(data.hub_id, data.isPrivate, data.user_id)
-          .then(function(){
+          .then(() => {
             res.status(200).send({success: true});
           });
         }else{
@@ -172,7 +172,7 @@ module.exports = function(app: any) {
   });
   */
 
-    app.post('/hub/:hubid/api/delete', csrfProtection, function(req, res) {
+    app.post('/hub/:hubid/api/delete', csrfProtection, (req, res) => {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
@@ -181,10 +181,10 @@ module.exports = function(app: any) {
       var data = req.body;
       if (data && data.hub_id) {
         Hub.allowedToModify(data.hub_id, user_id)
-        .then(function(allowed){
+        .then((allowed) => {
           if(allowed){
             return Hub.deleteHub(data.hub_id)
-              .then(function() {
+              .then(() => {
                 res.send({success: true});
               }).catch(apiError(res, 500));
             }else{

@@ -9,6 +9,8 @@ import MarkerSettings from './MarkerSettings';
 import AdvancedLayerSettings from './AdvancedLayerSettings';
 import MapHubsComponent from '../MapHubsComponent';
 
+type ColorValue = {r: number, g: number, b: number, a: number}
+
 export default class LayerDesigner extends MapHubsComponent {
 
   props: {
@@ -75,7 +77,7 @@ export default class LayerDesigner extends MapHubsComponent {
     this.props.onColorChange(color, settings);
   }
 
-  onColorPickerChange = (colorValue: string) => {
+  onColorPickerChange = (colorValue: ColorValue) => {
     let color = `rgba(${colorValue.r},${colorValue.g},${colorValue.b},${colorValue.a})`;
     this.setState({color});
     this.props.onColorChange(color);
@@ -130,7 +132,6 @@ export default class LayerDesigner extends MapHubsComponent {
          </li>
       );
     }
-
 
     var advanced = '';
     if(this.props.showAdvanced){

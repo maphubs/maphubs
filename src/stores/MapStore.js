@@ -67,20 +67,20 @@ export default class LocaleStore extends Reflux.Store {
    };
 
    //reverse the order for the styles, since the map draws them in the order recieved
-   forEachRight(layers, function(layer){
+   forEachRight(layers, (layer) => {
      var style = layer.style;
      if(style && style.sources && style.layers){
        //check for active flag and update visibility in style
-       if(layer.settings.active != undefined && layer.settings.active == false){
+       if(layer.settings.active !== undefined && layer.settings.active === false){
          //hide style layers for this layer
-         style.layers.forEach(function(styleLayer){
+         style.layers.forEach((styleLayer) => {
            styleLayer['layout'] = {
              "visibility": "none"
            };
          });
        } else {
          //reset all the style layers to visible
-         style.layers.forEach(function(styleLayer){
+         style.layers.forEach((styleLayer) => {
            styleLayer['layout'] = {
              "visibility": "visible"
            };

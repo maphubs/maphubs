@@ -12,7 +12,7 @@ module.exports = {
     debug("replace views for layer: " + layer_id);
     var _this = this;
     return _this.dropLayerViews(layer_id, trx)
-    .then(function(){
+    .then(() => {
       return _this.createLayerViews(layer_id, presets, trx);
     }).catch(logRethrow());
   },
@@ -26,7 +26,7 @@ module.exports = {
       'REFRESH MATERIALIZED VIEW layers.way_geom_' + layer_id,
       'REFRESH MATERIALIZED VIEW layers.polygon_geom_' + layer_id
     ];
-    return Promise.each(commands, function(command){
+    return Promise.each(commands, (command) => {
       return db.raw(command);
     }).catch(logRethrow());
 
@@ -51,8 +51,8 @@ module.exports = {
       'DROP MATERIALIZED VIEW IF EXISTS layers.node_geom_' + layer_id
     ];
 
-    return Promise.each(commands, function(command){
-      return db.raw(command).catch(function(err){
+    return Promise.each(commands, (command) => {
+      return db.raw(command).catch((err) => {
         log.error(err.message); //don't propagate errors in case we are recovering from a incomplete layer
       });
     }).catch(logRethrow());
@@ -64,7 +64,7 @@ module.exports = {
     debug("create views for layer: " + layer_id);
     var tagColumns = '';
     if(presets){
-      presets.forEach(function(preset){
+      presets.forEach((preset) => {
         tagColumns += `(tags->'` + preset.tag + `') as "` + preset.tag + `",`;
       });
     }
@@ -282,7 +282,7 @@ module.exports = {
 
     ];
 
-    return Promise.each(commands, function(command){
+    return Promise.each(commands, (command) => {
       //debug(command);
       return db.raw(command).catch(logRethrow());
     }).catch(logRethrow());

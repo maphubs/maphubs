@@ -2,27 +2,37 @@
 import React from 'react';
 import crypto from 'crypto';
 
-export default class Gravatar extends React.Component {
-
-  props: {
-    email: string,
-    emailHash: string,
+type Props = {
+    email?: string,
+    emailHash?: string,
     size: number
   }
 
-  static defaultProps = {
-    size: 30
+  type DefaultProps = {
+    size: number
+  }
+
+export default class Gravatar extends React.Component<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
+    size: 30,
+    emailHash: null,
+    email: null
   }
 
   render() {
     var hash = null;
+    let email:string = this.props.email ? this.props.email : '';
+    let size: number = this.props.size ? this.props.size: 30;
     if(this.props.emailHash){
       hash = this.props.emailHash;
     }else{
       hash = crypto.createHash('md5')
-         .update(this.props.email.trim().toLowerCase())
+         .update(email.toLowerCase())
          .digest("hex");
-    }
+    } 
 
     var gravatarUrl = 'https://www.gravatar.com/avatar/' + hash;
 
@@ -32,6 +42,6 @@ export default class Gravatar extends React.Component {
       gravatarUrl +='?d=mm';
     }
 
-    return (<img className="circle" height={this.props.size} width={this.props.size} style={{height: this.props.size + 'px', width: this.props.size + 'px', border: '1px solid #bbbbbb'}} src={gravatarUrl} alt="User Profile Photo" />);
+    return (<img className="circle" height={size} width={size} style={{height: this.props.size.toString() + 'px', width: size.toString() + 'px', border: '1px solid #bbbbbb'}} src={gravatarUrl} alt="User Profile Photo" />);
   }
 }

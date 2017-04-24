@@ -44,7 +44,7 @@ export default class MailingList extends MapHubsComponent {
   onSubmit = (model: Object) => {
     var _this = this;
     if(this.state.valid){
-      UserActions.joinMailingList(model.email, this.state._csrf, function(err){
+      UserActions.joinMailingList(model.email, this.state._csrf, (err) => {
         if(err){
           MessageActions.showMessage({title: err.title, message: err.detail});
         }else {

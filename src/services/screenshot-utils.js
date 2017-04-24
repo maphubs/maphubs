@@ -13,7 +13,7 @@ module.exports = {
     .type('json')
     .send(data)
     .timeout(60000)
-    .then(function(res) {
+    .then((res) => {
       return res.body.toString('base64');
     });
   },
@@ -22,7 +22,7 @@ module.exports = {
     var _this = this;
     debug('get thumbnail image for layer: ' + layer_id);
     return knex('omh.layers').select('thumbnail').where({layer_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length == 1 && result[0].thumbnail != null && result[0].thumbnail.length > 0){
         debug('found image in database for layer: ' + layer_id);
         return result[0].thumbnail;
@@ -64,9 +64,9 @@ module.exports = {
     //replace image in database
 
     return this.base64Download(manetUrl, manetData)
-    .then(function(image){
+    .then((image) => {
       return knex('omh.layers').update({thumbnail: image}).where({layer_id})
-      .then(function(){
+      .then(() => {
         log.info('Updated Layer Thumbnail: ' + layer_id);
         return image;
       });
@@ -77,7 +77,7 @@ module.exports = {
   reloadLayerThumbnail(layer_id: number){
     var _this = this;
     return knex('omh.layers').update({thumbnail: null}).where({layer_id})
-    .then(function(){
+    .then(() => {
        //don't return the promise because we want this to run async
        _this.updateLayerThumbnail(layer_id);
        return true;    
@@ -89,7 +89,7 @@ module.exports = {
     var _this = this;
     debug('get image for layer: ' + layer_id);
     return knex('omh.layers').select('screenshot').where({layer_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length == 1 && result[0].screenshot != null && result[0].screenshot.length > 0){
         debug('found image in database for layer: ' + layer_id);
         return result[0].screenshot;
@@ -130,9 +130,9 @@ module.exports = {
     //replace image in database
 
     return this.base64Download(manetUrl, manetData)
-    .then(function(image){
+    .then((image) => {
       return knex('omh.layers').update({screenshot: image}).where({layer_id})
-      .then(function(){
+      .then(() => {
         log.info('Updated Layer Image: ' + layer_id);
         return image;
       });
@@ -143,7 +143,7 @@ module.exports = {
    reloadLayerImage(layer_id: number){
     var _this = this;
     return knex('omh.layers').update({screenshot: null}).where({layer_id})
-    .then(function(){
+    .then(() => {
        //don't return the promise because we want this to run async
        _this.updateLayerImage(layer_id);
        return true;    
@@ -157,7 +157,7 @@ module.exports = {
     var _this = this;
     debug('get screenshot image for map: ' + map_id);
     return knex('omh.maps').select('screenshot').where({map_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length == 1 && result[0].screenshot != null && result[0].screenshot.length > 0){
         debug('found image in database for map: ' + map_id);
         return result[0].screenshot;
@@ -201,9 +201,9 @@ module.exports = {
     debug(JSON.stringify(manetData));
     //replace image in database
     return this.base64Download(manetUrl, manetData)
-    .then(function(image){
+    .then((image) => {
       return knex('omh.maps').update({screenshot: image}).where({map_id})
-      .then(function(){
+      .then(() => {
         log.info('Updated Map Image: ' + map_id);
         return image;
       });
@@ -213,7 +213,7 @@ module.exports = {
   reloadMapImage(map_id: number){
     var _this = this;
     return knex('omh.maps').update({screenshot: null}).where({map_id})
-    .then(function(){
+    .then(() => {
        //don't return the promise because we want this to run async
        _this.updateMapImage(map_id);
        return true;    
@@ -252,9 +252,9 @@ module.exports = {
     //replace image in database
     debug(manetUrl);
     return this.base64Download(manetUrl, manetData)
-    .then(function(image){
+    .then((image) => {
       return knex('omh.maps').update({thumbnail: image}).where({map_id})
-      .then(function(){
+      .then(() => {
         log.info('Updated Map Thumbnail: ' + map_id);
         return image;
       });
@@ -265,7 +265,7 @@ module.exports = {
     var _this = this;
     debug('get thumbnail image for map: ' + map_id);
     return knex('omh.maps').select('thumbnail').where({map_id})
-    .then(function(result){
+    .then((result) => {
       if(result && result.length == 1 && result[0].thumbnail != null && result[0].thumbnail.length > 0){
         debug('found image in database for map: ' + map_id);
         return result[0].thumbnail;
@@ -279,7 +279,7 @@ module.exports = {
   reloadMapThumbnail(map_id: number){
     var _this = this;
     return knex('omh.maps').update({thumbnail: null}).where({map_id})
-    .then(function(){
+    .then(() => {
        //don't return the promise because we want this to run async
        _this.updateMapThumbnail(map_id);
        return true;    

@@ -116,7 +116,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
     //save fields into geoJSON
     var geoJSON = this.state.geoJSON;
 
-    Object.keys(fields).map(function (key) {
+    Object.keys(fields).map((key) => {
          var val = fields[key];
          geoJSON.features[0].properties[key] = val;
      });
@@ -130,8 +130,8 @@ export default class AddPhotoPointStore extends Reflux.Store {
       imageInfo: this.state.imageInfo,
       _csrf
     })
-    .end(function(err, res){
-       checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+       checkClientError(res, err, cb, (cb) => {
           _this.setState({
             mhid: res.body.mhid,
             image_id: res.body.image_id,

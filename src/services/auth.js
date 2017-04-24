@@ -32,8 +32,8 @@ passport.use('consumer', new ConsumerStrategy(
   // as the third argument.  The `ConsumerStrategy` will use this secret to
   // validate the request signature, failing authentication if it does not
   // match.
-  function(consumerKey, done) {
-    db.clients.findByConsumerKey(consumerKey, function(err, client) {
+  (consumerKey, done) => {
+    db.clients.findByConsumerKey(consumerKey, (err, client) => {
       if (err) {
         return done(err);
       }
@@ -59,14 +59,14 @@ passport.use('consumer', new ConsumerStrategy(
   // then be made available by Passport at `req.authInfo` and carried through to
   // other middleware and request handlers, avoiding the need to do additional
   // unnecessary queries to the database.
-  function(requestToken, done) {
-    db.requestTokens.find(requestToken, function(err, token) {
+  (requestToken, done) => {
+    db.requestTokens.find(requestToken, (err, token) => {
       if (err) {
         return done(err);
       }
 
       //get the callbackURL directly from the database
-      db.clients.find(token.clientID, function(err, client) {
+      db.clients.find(token.clientID, (err, client) => {
         if (err) {
           return done(err);
         }
@@ -88,7 +88,7 @@ passport.use('consumer', new ConsumerStrategy(
   // The application can check timestamps and nonces, as a precaution against
   // replay attacks.  In this example, no checking is done and everything is
   // accepted.
-  function(timestamp, nonce, done) {
+  (timestamp, nonce, done) => {
     done(null, true);
   }
 ));
@@ -109,8 +109,8 @@ passport.use('token', new TokenStrategy(
   // as the third argument.  The `TokenStrategy` will use this secret to
   // validate the request signature, failing authentication if it does not
   // match.
-  function(consumerKey, done) {
-    db.clients.findByConsumerKey(consumerKey, function(err, client) {
+  (consumerKey, done) => {
+    db.clients.findByConsumerKey(consumerKey, (err, client) => {
       if (err) {
         return done(err);
       }
@@ -140,12 +140,12 @@ passport.use('token', new TokenStrategy(
   // authorization step that is distinct and separate from authentication.
   // It is an application's responsibility to enforce access control as
   // necessary.
-  function(accessToken, done) {
-    db.accessTokens.find(accessToken, function(err, token) {
+  (accessToken, done) => {
+    db.accessTokens.find(accessToken, (err, token) => {
       if (err) {
         return done(err);
       }
-      db.users.find(token.userID, function(err, user) {
+      db.users.find(token.userID, (err, user) => {
         if (err) {
           return done(err);
         }
@@ -165,7 +165,7 @@ passport.use('token', new TokenStrategy(
   // The application can check timestamps and nonces, as a precaution against
   // replay attacks.  In this example, no checking is done and everything is
   // accepted.
-  function(timestamp, nonce, done) {
+  (timestamp, nonce, done) => {
     done(null, true);
   }
 ));
@@ -179,8 +179,8 @@ passport.use('token', new TokenStrategy(
  * a user is logged in before asking them to approve the request.
  */
 passport.use(new LocalStrategy(
-  function(username, password, done) {
-    db.users.findByUsername(username, function(err, user) {
+  (username, password, done) => {
+    db.users.findByUsername(username, (err, user) => {
       if (err) {
         return done(err, false);
       }
@@ -188,7 +188,7 @@ passport.use(new LocalStrategy(
         return done(null, false);
       }
       //check password against hash from database
-      PasswordUtil.checkPassword(user.id, password, function(valid){
+      PasswordUtil.checkPassword(user.id, password, (valid) => {
         if(valid){
           return done(null, user);
         }else{
@@ -224,13 +224,13 @@ passport.use(new OpenStreetMapStrategy({
 */
 
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user);
 });
 
 
-passport.deserializeUser(function(user, done) {
-  db.users.find(user.id, function(err, user) {
+passport.deserializeUser((user, done) => {
+  db.users.find(user.id, (err, user) => {
     done(err, user);
   });
 });

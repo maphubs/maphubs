@@ -11,7 +11,7 @@ var notAllowedError = require('../../services/error-response').notAllowedError;
 
 module.exports = function(app: any) {
 
- app.post('/api/edits/save', csrfProtection, function(req, res) {
+ app.post('/api/edits/save', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -23,7 +23,7 @@ module.exports = function(app: any) {
     var data = req.body;
     if(data && data.layer_id && data.edits){
        Layer.allowedToModify(data.layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           return knex.transaction(trx => {
             var updates = [];

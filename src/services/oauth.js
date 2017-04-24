@@ -26,12 +26,12 @@ var server = oauthorize.createServer();
 // simple matter of serializing the client's ID, and deserializing by finding
 // the client by ID from the database.
 
-server.serializeClient(function(client, done) {
+server.serializeClient((client, done) => {
     return done(null, client.id);
 });
 
-server.deserializeClient(function(id, done) {
-    db.clients.find(id, function(err, client) {
+server.deserializeClient((id, done) => {
+    db.clients.find(id, (err, client) => {
         if (err) { return done(err); }
         return done(null, client);
     });
@@ -63,19 +63,19 @@ server.deserializeClient(function(id, done) {
 
 exports.requestToken = [
     passport.authenticate('consumer', {session: false}),
-    server.requestToken(function(client, callbackURL, done) {
+    server.requestToken((client, callbackURL, done) => {
         const token: string = utils.uid(8);
         const secret: string = utils.uid(32);
 
         //callbackURL from the OAuth system is ignored because we use the one saved with the client info
         //in order to be on the same page with OSM regarding OAuth 1.0 vs 1.0a
         //see: http://wiki.openstreetmap.org/wiki/OAuth/10a
-        db.requestTokens.save(token, secret, client.id, client.callbackURL, function(err) {
+        db.requestTokens.save(token, secret, client.id, client.callbackURL, (err) => {
             if (err) { return done(err); }
             return done(null, token, secret);
         });
     }),
-    server.errorHandler(function(err: any) {
+    server.errorHandler((err: any) => {
         log.error(err);
     })
 ];
@@ -104,20 +104,20 @@ exports.requestToken = [
 exports.accessToken = [
     passport.authenticate('consumer', {session: true}),
     server.accessToken(
-        function(requestToken, verifier, info, done) {
+        (requestToken, verifier, info, done) => {
             //disabled since OSM (and the iD editor) have not been updated to use OAuth 1.0a
             //see: http://wiki.openstreetmap.org/wiki/OAuth/10a
             //if (verifier != info.verifier) { return done(null, false); }
             return done(null, true);
         },
-        function(client, requestToken, info, done) {
+        (client, requestToken, info, done) => {
             if (!info.approved) { return done(null, false); }
             if (client.id !== info.clientID) { return done(null, false); }
 
             const token: string = utils.uid(16);
             const secret: string = utils.uid(64);
 
-            db.accessTokens.save(token, secret, info.userID, info.clientID, function(err) {
+            db.accessTokens.save(token, secret, info.userID, info.clientID, (err) => {
                 if (err) { return done(err); }
                 return done(null, token, secret);
             });
@@ -153,10 +153,10 @@ exports.accessToken = [
 
 exports.userAuthorization = [
     login.ensureLoggedIn(),
-    server.userAuthorization(function(requestToken, done) {
-        db.requestTokens.find(requestToken, function(err, token) {
+    server.userAuthorization((requestToken, done) => {
+        db.requestTokens.find(requestToken, (err, token) => {
             if (err) { return done(err); }
-            db.clients.find(token.clientID, function(err, client) {
+            db.clients.find(token.clientID, (err, client) => {
                 if (err) { return done(err); }
                 return done(null, client, token.callbackURL);
             });
@@ -183,10 +183,10 @@ exports.userAuthorization = [
 
 exports.userDecision = [
     login.ensureLoggedIn(),
-    server.userDecision(function(requestToken, user, res, done) {
+    server.userDecision((requestToken, user, res, done) => {
         var verifier = utils.uid(8);
         debug('processing user decision, requestToken:' + requestToken);
-        db.requestTokens.approve(requestToken, user.id, verifier, function(err) {
+        db.requestTokens.approve(requestToken, user.id, verifier, (err) => {
             if (err != null) {
               log.error(err);
               return done(err);

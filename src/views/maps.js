@@ -41,8 +41,8 @@ export default class Maps extends MapHubsComponent {
     debug('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         if(err){
           MessageActions.showMessage({title: 'Error', message: err});
         }else{
@@ -55,7 +55,7 @@ export default class Maps extends MapHubsComponent {
           }
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       }
       );

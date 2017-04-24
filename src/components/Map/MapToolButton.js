@@ -30,12 +30,12 @@ export default class MapToolButton extends React.Component {
   }
 
   componentDidMount(){
-    if(this.props.tooltipText && this.props.tooltipText != ''){
+    if(this.props.tooltipText && this.props.tooltipText !== ''){
       $(this.refs.mapToolButton).tooltip();
     }  
   }
 
-  onClick(e){
+  onClick = (e) => {
     if(this.props.disabled) return;
 
     $(this.refs.mapToolButton).tooltip('remove');
@@ -53,7 +53,7 @@ export default class MapToolButton extends React.Component {
       }
     return (
       <a ref="mapToolButton"
-          onClick={this.onClick.bind(this)}
+          onClick={this.onClick}
           style={{position: 'absolute',
             top: this.props.top,
             right: this.props.right,

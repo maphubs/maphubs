@@ -5,7 +5,7 @@ var apiDataError = require('./error-response').apiDataError;
 
 var check = function(map_id, user_id){
   return Map.isPrivate(map_id)
-  .then(function(isPrivate){
+  .then((isPrivate) => {
     if(isPrivate){
       if(user_id <= 0){
         return false; //don't hit the db again if we know the user isn't valid
@@ -39,7 +39,7 @@ var middleware = function(view) {
 
     if(map_id && Number.isInteger(map_id) && map_id > 0){
       check(map_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           next();
         }else{

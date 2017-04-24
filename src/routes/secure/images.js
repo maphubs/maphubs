@@ -8,12 +8,12 @@ var log = require('../../services/log');
 
 module.exports = function(app) {
 
-  app.get('/image/:id.*', function(req, res, next) {
+  app.get('/image/:id.*', (req, res, next) => {
     var image_id = parseInt(req.params.id || '', 10);
     //var ext = req.params.ext;
     debug('getting image: ' + image_id);
     Image.getImageByID(image_id)
-    .then(function(image){
+    .then((image) => {
       var dataArr = image.split(',');
       var dataInfoArr = dataArr[0].split(':')[1].split(';');
       var dataType = dataInfoArr[0];
@@ -28,10 +28,10 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.get('/group/:id/image', function(req, res) {
+  app.get('/group/:id/image', (req, res) => {
     var group_id = req.params.id;
     Image.getGroupImage(group_id)
-    .then(function(result){
+    .then((result) => {
       if(result && result.image){
         imageUtils.processImage(result.image, req, res);
       }else{
@@ -40,33 +40,33 @@ module.exports = function(app) {
     }).catch(apiError(res, 404));
   });
 
-  app.get('/group/:id/thumbnail', function(req, res) {
+  app.get('/group/:id/thumbnail', (req, res) => {
     var group_id = req.params.id;
     Image.getGroupThumbnail(group_id)
-    .then(function(result){
+    .then((result) => {
       if(result && result.thumbnail){
         imageUtils.processImage(result.thumbnail, req, res);
       }else{
         return res.redirect('/assets/missing_group.png');
       }
-    }).catch(function(err){
+    }).catch((err) => {
       log.error(err);
       return res.redirect('/assets/missing_group.png');
     });
   });
 
-  app.get('/hub/:id/images/logo', function(req, res) {
+  app.get('/hub/:id/images/logo', (req, res) => {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'logo')
-    .then(function(result){
+    .then((result) => {
       imageUtils.processImage(result.image, req, res);
     }).catch(apiError(res, 404));
   });
 
-  app.get('/hub/:id/images/logo/thumbnail', function(req, res) {
+  app.get('/hub/:id/images/logo/thumbnail', (req, res) => {
     var hub_id = req.params.id;
     Image.getHubThumbnail(hub_id, 'logo')
-    .then(function(result){
+    .then((result) => {
       if(result && result.thumbnail){
         imageUtils.processImage(result.thumbnail, req, res);
       }else{
@@ -75,18 +75,18 @@ module.exports = function(app) {
     }).catch(apiError(res, 404));
   });
 
-  app.get('/hub/:id/images/banner', function(req, res) {
+  app.get('/hub/:id/images/banner', (req, res) => {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'banner')
-    .then(function(result){
+    .then((result) => {
       imageUtils.processImage(result.image, req, res);
     }).catch(apiError(res, 404));
   });
 
-  app.get('/hub/:id/images/banner/thumbnail', function(req, res) {
+  app.get('/hub/:id/images/banner/thumbnail', (req, res) => {
     var hub_id = req.params.id;
     Image.getHubThumbnail(hub_id, 'banner')
-    .then(function(result){
+    .then((result) => {
       if(result && result.thumbnail){
         imageUtils.processImage(result.thumbnail, req, res);
       }else{
@@ -95,11 +95,11 @@ module.exports = function(app) {
     }).catch(apiError(res, 404));
   });
 
-  app.get('/images/story/:storyid/image/:imageid.jpg', function(req, res) {
+  app.get('/images/story/:storyid/image/:imageid.jpg', (req, res) => {
     var story_id = req.params.storyid;
     var image_id = req.params.imageid;
     Image.getStoryImage(story_id, image_id)
-    .then(function(result){
+    .then((result) => {
       if(result && result.image){
         imageUtils.processImage(result.image, req, res);
       }else{
@@ -108,11 +108,11 @@ module.exports = function(app) {
     }).catch(apiError(res, 404));
   });
 
-  app.get('/images/story/:storyid/thumbnail/:imageid.jpg', function(req, res) {
+  app.get('/images/story/:storyid/thumbnail/:imageid.jpg', (req, res) => {
     var story_id = req.params.storyid;
     var image_id = req.params.imageid;
     Image.getStoryThumbnail(story_id, image_id)
-    .then(function(result){
+    .then((result) => {
       if(result && result.thumbnail){
         imageUtils.processImage(result.thumbnail, req, res);
       }else{

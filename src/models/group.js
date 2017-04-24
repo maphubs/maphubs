@@ -70,7 +70,7 @@ module.exports = {
     getGroupByID(group_id: string) {
       return knex.select().table('omh.groups')
         .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
-        .then(function(result) {
+        .then((result) => {
           if (result && result.length == 1) {
             return result[0];
           }
@@ -112,13 +112,13 @@ module.exports = {
         .leftJoin('omh.groups', 'omh.group_memberships.group_id', 'omh.groups.group_id')
         .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
         .where('omh.group_memberships.user_id', user_id)
-        .then(function(groups){
+        .then((groups) => {
           var commands = [];
-          groups.forEach(function(group){
+          groups.forEach((group) => {
             commands.push(Account.getStatus(group.group_id));
           });
-          return Promise.all(commands).then(function(results){
-            results.forEach(function(status, i){
+          return Promise.all(commands).then((results) => {
+            results.forEach((status, i) => {
               groups[i].account = status;
             });
              return groups;
@@ -131,7 +131,7 @@ module.exports = {
         .where({
           group_id,
           user_id
-        }).then(function(results){
+        }).then((results) => {
           if(results && results.length === 1){
             return results[0].role;
           }
@@ -174,10 +174,10 @@ module.exports = {
 
     allowedToModify(group_id: string, user_id: number){
       if(!group_id || user_id <= 0){
-        return new Promise(function(fulfill){fulfill(false);});
+        return new Promise((fulfill) => {fulfill(false);});
       }
       return this.getGroupMembers(group_id)
-        .then(function(users){
+        .then((users) => {
           if(_find(users, {id: user_id}) !== undefined){
             return true;
           }
@@ -187,14 +187,14 @@ module.exports = {
 
     checkGroupIdAvailable(group_id: string) {
       return this.getGroupByID(group_id)
-        .then(function(result) {
+        .then((result) => {
           if (result == null) return true;
           return false;
         });
     },
 
     createGroup(group_id: string, name: string, description: string, location: string, published: boolean, user_id: number) {
-      return knex.transaction(function(trx) {
+      return knex.transaction((trx) => {
         return Promise.all([
           trx('omh.groups').insert({
             group_id, name, description, location, published, tier_id: 'public'
@@ -217,13 +217,13 @@ module.exports = {
     },
 
     deleteGroup(group_id: string) {
-      return knex.transaction(function(trx) {
+      return knex.transaction((trx) => {
         return trx('omh.group_images').where({group_id}).del()
-        .then(function(){
+        .then(() => {
           return trx('omh.group_memberships').where({group_id}).del()
-          .then(function(){
+          .then(() => {
           return trx('omh.groups').where('group_id', group_id).del()
-            .then(function(){
+            .then(() => {
               return true;
               });
             });

@@ -11,8 +11,8 @@ var nextError = require('../../services/error-response').nextError;
 
 module.exports = function(app: any) {
 
-  app.get('/search', csrfProtection, function(req, res, next) {
-     Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+  app.get('/search', csrfProtection, (req, res, next) => {
+     Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
         var footerConfig = pageConfigs['footer'];
         res.render('search', {
           title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -22,7 +22,7 @@ module.exports = function(app: any) {
   });
 
   //TODO: rewrite
-  app.get('/api/global/search', function(req, res, next) {
+  app.get('/api/global/search', (req, res, next) => {
     if (!req.query.q) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
     }
@@ -74,7 +74,7 @@ module.exports = function(app: any) {
          res.send(featureCollection);
       });
      
-    }).catch(function(err) {
+    }).catch((err) => {
         log.error(err);
         next(err);
       });

@@ -6,13 +6,13 @@ var manetCheck = require('../../services/manet-check')(false,true);
 
 module.exports = function(app) {
 
-app.get('/api/layer/:layer_id/tile.json', manetCheck, function(req, res) {
+app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();
 
     Layer.getLayerByID(layer_id)
-    .then(function(layer){
+    .then((layer) => {
       if(layer.is_external && layer.external_layer_config.type == 'raster'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;

@@ -2,12 +2,12 @@
 var Page = require('../../models/page');
 module.exports = function(app) {
 
-  app.get('/unauthorized', function (req, res) {
+  app.get('/unauthorized', (req, res) => {
     var path = '';
     if(req.query.path){
       path = req.query.path;
     }
-    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
       var footerConfig = pageConfigs['footer'];
       res.status(401);
       res.render('error', {
@@ -22,12 +22,12 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/notfound', function (req, res) {
+  app.get('/notfound', (req, res) => {
     var path = '';
     if(req.query.path){
       path = req.query.path;
     }
-    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
       var footerConfig = pageConfigs['footer'];
       res.status(404);
       res.render('error',{

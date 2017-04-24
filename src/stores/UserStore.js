@@ -37,8 +37,8 @@ export default class UserStore extends Reflux.Store {
    var _this = this;
    request.post('/api/user/details/json')
    .type('json').accept('json')
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        if (err) {
          cb(err);
        }else{
@@ -82,8 +82,8 @@ export default class UserStore extends Reflux.Store {
         pass_reset, //if the user isn't logged in, the one-time code from the password reset email must be provided
         _csrf
       })
-      .end(function(err, res){
-        checkClientError(res, err, cb, function(cb){
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
             cb(err);
         });
       });
@@ -97,8 +97,8 @@ export default class UserStore extends Reflux.Store {
       email, //user_id to reset
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
           cb(err);
       });
     });
@@ -116,8 +116,8 @@ export default class UserStore extends Reflux.Store {
       inviteKey,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
           cb(err);
       });
     });
@@ -127,8 +127,8 @@ export default class UserStore extends Reflux.Store {
     request.post('/api/user/mailinglistsignup')
     .type('json').accept('json')
     .send({email, _csrf})
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
           cb(err);
       });
     });
@@ -138,8 +138,8 @@ export default class UserStore extends Reflux.Store {
     request.post('/api/user/resendconfirmation')
     .type('json').accept('json')
     .send({_csrf})
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
           cb(err);
       });
     });

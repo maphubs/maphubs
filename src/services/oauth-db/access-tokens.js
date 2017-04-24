@@ -7,7 +7,7 @@ exports.find = function(key, done) {
     .from('oauth_tokens')
     .where('type', 'AccessToken')
     .where('token', key)
-    .then(function(data) {
+    .then((data) => {
       if (data.length == 1) {
         var token = {
           token: data[0].token,
@@ -21,7 +21,7 @@ exports.find = function(key, done) {
         return done('Access Token Not Found', null);
       }
 
-    }).catch(function(err) {
+    }).catch((err) => {
       log.error(err);
       return done(err, null);
     });
@@ -38,9 +38,9 @@ exports.save = function(token, secret, userID, clientID, done) {
     user_id: userID,
     created_at: knex.raw("now()"),
     updated_at: knex.raw("now()")
-  }).then(function() {
+  }).then(() => {
     return done(null);
-  }).catch(function(err) {
+  }).catch((err) => {
     log.error(err);
     return done(err, null);
   });

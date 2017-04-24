@@ -9,7 +9,7 @@ exports.find = function(key, done) {
     .from('oauth_tokens')
     .where('type', 'RequestToken')
     .where('token', key)
-    .then(function(data) {
+    .then((data) => {
       if (data.length == 1) {
         var token = {
           token: data[0].token,
@@ -28,7 +28,7 @@ exports.find = function(key, done) {
         return done('Request Token Not Found', null);
       }
 
-    }).catch(function(err) {
+    }).catch((err) => {
       log.error(err);
       return done(err, null);
     });
@@ -46,9 +46,9 @@ exports.save = function(token, secret, clientID, callbackURL, done) {
     callback_url: callbackURL,
     created_at: knex.raw("now()"),
     updated_at: knex.raw("now()")
-  }).then(function() {
+  }).then(() => {
     return done(null);
-  }).catch(function(err) {
+  }).catch((err) => {
     log.error(err);
     return done(err, null);
   });
@@ -64,9 +64,9 @@ exports.approve = function(key, userID, verifier, done) {
       verifier,
       authorized_at: knex.raw("now()"),
       updated_at: knex.raw("now()")
-    }).then(function() {
+    }).then(() => {
       return done(null);
-    }).catch(function(err) {
+    }).catch((err) => {
       log.error(err);
       return done(err, null);
     });

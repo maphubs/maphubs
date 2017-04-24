@@ -9,7 +9,7 @@ module.exports = function(app: any) {
 
   //User login and account endpoints
 
-  app.get('/login', csrfProtection, function(req, res) {
+  app.get('/login', csrfProtection, (req, res) => {
     if(req.query.returnTo) {
       req.session.returnTo = req.query.returnTo;
     }
@@ -27,7 +27,7 @@ module.exports = function(app: any) {
     });
   });
 
-  app.get('/login/failed', csrfProtection, function(req, res) {
+  app.get('/login/failed', csrfProtection, (req, res) => {
     res.render('login', {
       title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {
@@ -36,7 +36,7 @@ module.exports = function(app: any) {
       }, req
     });
   });
-  app.post('/login', csrfProtection, passport.authenticate('local', {failureRedirect: '/login/failed'}), function(req, res) {
+  app.post('/login', csrfProtection, passport.authenticate('local', {failureRedirect: '/login/failed'}), (req, res) => {
 
     //save the user to the session
     req.session.user = {

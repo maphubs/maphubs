@@ -41,8 +41,8 @@ export default class LayerNotesStore extends Reflux.Store {
      notes: this.state.notes,
      _csrf
    })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        _this.setState({saving: false});
        cb(null);
      });

@@ -79,7 +79,7 @@ export default class FeatureInfo extends MapHubsComponent {
     var _this = this;
     var geoJSONProps = this.props.feature.geojson.features[0].properties;
 
-    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, function(err){
+    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -96,7 +96,7 @@ export default class FeatureInfo extends MapHubsComponent {
   onCrop = (data: Object, info: Object) => {
     var _this = this;
     //send data to server
-    FeaturePhotoActions.addPhoto(data, info, this.state._csrf, function(err){
+    FeaturePhotoActions.addPhoto(data, info, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -119,7 +119,7 @@ export default class FeatureInfo extends MapHubsComponent {
       title: _this.__('Confirm Removal'),
       message: _this.__('Are you sure you want to remove this photo?'),
       onPositiveResponse(){
-        FeaturePhotoActions.removePhoto(this.state._csrf, function(err){
+        FeaturePhotoActions.removePhoto(this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Server Error'), message: err});
           }else{

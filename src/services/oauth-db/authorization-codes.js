@@ -18,4 +18,4 @@ exports.save = function(code, clientID, redirectURI, userID, done) {
 exports.delete = function(key, done) {
     delete codes[key];
     return done(null);
-}
+};

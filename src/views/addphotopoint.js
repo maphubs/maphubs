@@ -68,7 +68,7 @@ export default class AddPhotoPoint extends MapHubsComponent {
   onSubmit = (model: Object) => {
     var _this = this;
     this.setState({saving: true});
-    Actions.submit(model, this.state._csrf, function(err){
+    Actions.submit(model, this.state._csrf, (err) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -85,8 +85,8 @@ export default class AddPhotoPoint extends MapHubsComponent {
 
             var featureName = 'unknown';
             var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-            nameFields.forEach(function(name){
-              if(featureName == 'unknown' && _this.state.geoJSON.features[0].properties[name]){
+            nameFields.forEach((name) => {
+              if(featureName === 'unknown' && _this.state.geoJSON.features[0].properties[name]){
                 featureName = _this.state.geoJSON.features[0].properties[name];
               }
             });

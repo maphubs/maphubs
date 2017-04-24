@@ -23,17 +23,17 @@ if(!local.mapHubsPro){
 module.exports = function(app: any) {
 
 
-  app.get('/user/passwordreset/:key', csrfProtection, function(req, res, next) {
+  app.get('/user/passwordreset/:key', csrfProtection, (req, res, next) => {
 
     var passreset = req.params.key;
-    Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
       var footerConfig = pageConfigs['footer'];
       res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName, props: {passreset, footerConfig}, req});
     }).catch(nextError(next));
 
   });
 
-  app.get('/signup', csrfProtection, function(req, res) {
+  app.get('/signup', csrfProtection, (req, res) => {
     if(local.requireLogin || local.requireInvite){
       return res.redirect('/login');
     }else{
@@ -41,15 +41,15 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/signup/invite/:key', csrfProtection, function(req, res, next) {
+  app.get('/signup/invite/:key', csrfProtection, (req, res, next) => {
 
     var inviteKey = req.params.key;
     if(inviteKey){
       Admin.checkInviteKey(inviteKey)
-      .then(function(valid){
+      .then((valid) => {
         if(valid){
           return Admin.useInvite(inviteKey)
-          .then(function(email){
+          .then((email) => {
             return res.render('signup', {title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName, props: {email, lockEmail: true, inviteKey}, req});
           });
         }else{
@@ -70,13 +70,13 @@ module.exports = function(app: any) {
   });
 
 
-  app.get('/user/emailconfirmation/:key', csrfProtection, function(req, res, next) {
+  app.get('/user/emailconfirmation/:key', csrfProtection, (req, res, next) => {
 
     var key = req.params.key;
 
     User.checkEmailConfirmation(key)
-    .then(function(valid){
-      return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+    .then((valid) => {
+      return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
         var footerConfig = pageConfigs['footer'];
         res.render('emailconfirmation', {title: req.__('Email Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, props: {valid, footerConfig}, req});
       });
@@ -85,7 +85,7 @@ module.exports = function(app: any) {
 
   //API endpoints
 
-  app.post('/api/user/updatepassword', csrfProtection, function(req, res) {
+  app.post('/api/user/updatepassword', csrfProtection, (req, res) => {
     var data = req.body;
     if (req.isAuthenticated && req.isAuthenticated()) {
       //logged in, confirm that the requested user matches the session user
@@ -95,15 +95,15 @@ module.exports = function(app: any) {
         return;
       }
       PasswordUtil.updatePassword(data.user_id, data.password, true, req.__)
-      .then(function(){
+      .then(() => {
         res.status(200).send({success:true});
       }).catch(apiError(res, 200));
     }else {
       User.getUserWithResetKey(data.pass_reset)
-      .then(function(user){
+      .then((user) => {
         if(user){
           PasswordUtil.updatePassword(user.id, data.password, true, req.__)
-          .then(function(){
+          .then(() => {
             res.status(200).send({success:true});
           }).catch(apiError(res, 200));
         } else {
@@ -115,7 +115,7 @@ module.exports = function(app: any) {
   });
 
 
-  app.post('/api/user/setlocale', function(req, res) {
+  app.post('/api/user/setlocale', (req, res) => {
     var data = req.body;
     if(data.locale){
       req.session.locale = data.locale;
@@ -125,21 +125,21 @@ module.exports = function(app: any) {
 
   });
 
-  app.post('/api/user/forgotpassword', csrfProtection, function(req, res) {
+  app.post('/api/user/forgotpassword', csrfProtection, (req, res) => {
     var data = req.body;
     PasswordUtil.forgotPassword(data.email, req.__)
-    .then(function(){
+    .then(() => {
       res.status(200).send({success:true});
     }).catch(apiError(res, 200));
 
   });
 
 
-  app.post('/api/user/checkusernameavailable', csrfProtection, function(req, res) {
+  app.post('/api/user/checkusernameavailable', csrfProtection, (req, res) => {
     var data = req.body;
     if (data && data.username) {
       User.checkUserNameAvailable(data.username)
-        .then(function(result) {
+        .then((result) => {
           res.status(200).send({
             success: true,
             available: result
@@ -151,7 +151,7 @@ module.exports = function(app: any) {
   });
 
 
-  app.post('/api/user/signup', csrfProtection, function(req, res, next) {
+  app.post('/api/user/signup', csrfProtection, (req, res, next) => {
     var data = req.body;
 
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -162,26 +162,26 @@ module.exports = function(app: any) {
     }
     if(data.email && data.name && data.username && data.password){
     //create user
-    User.getUserByEmail(data.email).then(function(user){
+    User.getUserByEmail(data.email).then((user) => {
       if(user){
         res.status(200).send({success:false, error: req.__('Email address already exists')});
         return;       
       }else{     
     return User.createUser(data.email, data.name, data.username, ip)
-    .then(function(user_id){
+    .then((user_id) => {
     //set password
       return PasswordUtil.updatePassword(user_id, data.password, false, req.__)
-      .then(function(){
+      .then(() => {
         return User.sendConfirmationEmail(user_id, req.__)
-          .then(function(){
+          .then(() => {
             return User.sendNewUserAdminEmail(user_id)
-            .then(function(){
+            .then(() => {
               //automatically login the user to their new account
-              passport.authenticate('local', function(err, user, info) {
+              passport.authenticate('local', (err, user, info) => {
                 debug(info);
                 if (err) { return next(err); }
                 if (!user) { return res.redirect('/login'); }
-                req.logIn(user, function(err) {
+                req.logIn(user, (err) => {
                   if (err) { return next(err); }
                   //save the user to the session
                   req.session.user = {
@@ -197,7 +197,7 @@ module.exports = function(app: any) {
                           "email_address": data.email,
                           "status": "subscribed"
                         }
-                      }, function (err) {
+                      }, (err) => {
                         if(err){
                           log.error(err);
                           res.status(200).send({success:false, error: err});
@@ -223,7 +223,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.post('/api/user/mailinglistsignup', csrfProtection, function(req, res) {
+  app.post('/api/user/mailinglistsignup', csrfProtection, (req, res) => {
     var data = req.body;
     if(data.email){
       mailchimp.post({
@@ -232,7 +232,7 @@ module.exports = function(app: any) {
             "email_address": data.email,
             "status": "subscribed"
           }
-        }, function (err) {
+        }, (err) => {
           if(err){
             log.error(err);
             res.status(200).send({success:false, error: err});
@@ -247,20 +247,20 @@ module.exports = function(app: any) {
   });
 
   //can be used to dynamically check for login status, so should be public
-  app.all('/api/user/details/json', function(req, res) {
+  app.all('/api/user/details/json', (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(200).send({loggedIn: false, user: null});
       return;
     }else{
       var user_id = req.session.user.id;
       User.getUser(user_id)
-        .then(function(user){
+        .then((user) => {
           //remove sensitive content if present
           delete user.pass_crypt;
           delete user.pass_salt;
           delete user.creation_ip;
           return Admin.checkAdmin(user_id)
-          .then(function(admin){
+          .then((admin) => {
             user.admin = admin;
             res.status(200).send({loggedIn: true, user});
         });

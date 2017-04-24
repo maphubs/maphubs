@@ -136,8 +136,8 @@ export default class MapMakerStore extends Reflux.Store {
         basemap,
         _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.setState({title, position, basemap});
         cb();
       });
@@ -159,8 +159,8 @@ export default class MapMakerStore extends Reflux.Store {
         private: isPrivate,
         _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         var map_id = res.body.map_id;
         _this.setState({title, map_id, position, basemap, owned_by_group_id: group_id, isPrivate});
         cb();
@@ -177,8 +177,8 @@ export default class MapMakerStore extends Reflux.Store {
         private: isPrivate,
         _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.setState({isPrivate});
         cb();
       });
@@ -203,7 +203,7 @@ export default class MapMakerStore extends Reflux.Store {
      };
 
      //reverse the order for the styles, since the map draws them in the order recieved
-     _forEachRight(layers, function(layer){
+     _forEachRight(layers, (layer) => {
        var style = layer.style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style
@@ -213,7 +213,7 @@ export default class MapMakerStore extends Reflux.Store {
          }
          if(!layer.settings.active){
            //hide style layers for this layer
-           style.layers.forEach(function(styleLayer){
+           style.layers.forEach((styleLayer) => {
              if(!styleLayer['layout']){
                styleLayer['layout'] = {};
              }
@@ -221,7 +221,7 @@ export default class MapMakerStore extends Reflux.Store {
            });
          } else {
            //reset all the style layers to visible
-           style.layers.forEach(function(styleLayer){
+           style.layers.forEach((styleLayer) => {
              if(!styleLayer['layout']){
                styleLayer['layout'] = {};
              }
@@ -253,8 +253,8 @@ export default class MapMakerStore extends Reflux.Store {
      request.post('/api/map/delete')
      .type('json').accept('json')
      .send({map_id, _csrf})
-     .end(function(err, res){
-       checkClientError(res, err, cb, function(cb){
+     .end((err, res) => {
+       checkClientError(res, err, cb, (cb) => {
          cb();
        });
      });

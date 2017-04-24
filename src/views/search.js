@@ -81,7 +81,7 @@ export default class Search extends MapHubsComponent {
       request.get('/api/maps/search' + '?q=' + input).type('json').accept('json').promise()
     ];
 
-    Promise.all(requests).then(function(results){
+    Promise.all(requests).then((results) => {
       _this.setState({searching: false});
 
       var totalResults = 0;
@@ -159,7 +159,7 @@ export default class Search extends MapHubsComponent {
 
 
 
-    }).catch(function(err){
+    }).catch((err) => {
       _this.setState({searching: false});
       debug(err);
       MessageActions.showMessage({title: 'Error', message: err.toString()});

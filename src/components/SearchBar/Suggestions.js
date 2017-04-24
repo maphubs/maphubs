@@ -27,7 +27,7 @@ export default class Suggestions extends React.Component {
     let suggestions = this.props.suggestions.map((match, index) =>
       <li
         className={classNames({
-          highlighted: this.props.highlightedItem == index
+          highlighted: this.props.highlightedItem === index
         })}
         key={match.key}
         onClick={this.props.onSelection.bind(null, match)}>

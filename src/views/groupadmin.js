@@ -54,7 +54,7 @@ export default class GroupAdmin extends MapHubsComponent {
   componentWillMount() {
     super.componentWillMount();
     var _this = this;     
-    Formsy.addValidationRule('isAvailable', function (values, value) {
+    Formsy.addValidationRule('isAvailable', (values, value) => {
         return _this.checkGroupIdAvailable(value);
     });
   }
@@ -81,7 +81,7 @@ export default class GroupAdmin extends MapHubsComponent {
 
   submit = (model: Object) => {
     var _this = this;
-    GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, function(err){
+    GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -101,7 +101,7 @@ export default class GroupAdmin extends MapHubsComponent {
   checkGroupIdAvailable = (id: string) => {
     var _this = this;
     //if the form is modified but put back to the currently saved ID, just return true
-    if (id == this.props.group.group_id) return true;
+    if (id === this.props.group.group_id) return true;
 
     var result = false;
     //only check if a valid value was provided and we are running in the browser
@@ -134,7 +134,7 @@ export default class GroupAdmin extends MapHubsComponent {
       title:  _this.__('Confirm Removal'),
       message:  _this.__('Please confirm removal of ') + user.label,
       onPositiveResponse(){
-        GroupActions.removeMember(user.key, _this.state._csrf, function(err){
+        GroupActions.removeMember(user.key, _this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title:  _this.__('Error'), message: err});
           }else{
@@ -151,7 +151,7 @@ export default class GroupAdmin extends MapHubsComponent {
       title: _this.__('Confirm Deletion'),
       message: _this.__('Please confirm removal of group ') + this.state.group.name,
       onPositiveResponse(){
-        GroupActions.deleteGroup(_this.state._csrf, function(err){
+        GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -176,7 +176,7 @@ export default class GroupAdmin extends MapHubsComponent {
         title: _this.__('Confirm Administrator'),
         message: _this.__('Please confirm that you want to make this user an Administrator: ') + user.label,
         onPositiveResponse(){
-          GroupActions.setMemberAdmin(user.key, _this.state._csrf, function(err){
+          GroupActions.setMemberAdmin(user.key, _this.state._csrf, (err) => {
             if(err){
               MessageActions.showMessage({title: _this.__('Error'), message: err});
             }else{
@@ -194,7 +194,7 @@ export default class GroupAdmin extends MapHubsComponent {
       title: _this.__('Confirm Remove Administrator'),
       message: _this.__('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
       onPositiveResponse(){
-        GroupActions.removeMemberAdmin(user.key, _this.state._csrf, function(err){
+        GroupActions.removeMemberAdmin(user.key, _this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
@@ -208,7 +208,7 @@ export default class GroupAdmin extends MapHubsComponent {
   handleAddMember = (user: Object) => {
     var _this = this;
     debug(user.value.value + ' as Admin:' + user.option);
-    GroupActions.addMember(user.value.value, user.option, _this.state._csrf, function(err){
+    GroupActions.addMember(user.value.value, user.option, _this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -224,7 +224,7 @@ export default class GroupAdmin extends MapHubsComponent {
   onCrop = (data: Object) => {
     var _this = this;
     //send data to server
-    GroupActions.setGroupImage(data, _this.state._csrf, function(err){
+    GroupActions.setGroupImage(data, _this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
@@ -242,7 +242,7 @@ export default class GroupAdmin extends MapHubsComponent {
 	render() {
     var _this = this;
     var membersList = [];
-    this.state.members.forEach(function(user){
+    this.state.members.forEach((user) => {
       membersList.push({
         key: user.id,
         label: user.display_name,
@@ -349,7 +349,7 @@ export default class GroupAdmin extends MapHubsComponent {
               <li className="collection-header">
                 <h4>{this.__('Layers')}</h4>
               </li>
-              {this.props.layers.map(function (layer, i) {
+              {this.props.layers.map((layer, i) => {
                 return (
                   <li className="collection-item" key={layer.layer_id}>
                     <div>{layer.name}
@@ -370,7 +370,7 @@ export default class GroupAdmin extends MapHubsComponent {
               <li className="collection-header">
                 <h4>{this.__('Maps')}</h4>
               </li>
-              {this.props.maps.map(function (map, i) {
+              {this.props.maps.map((map, i) => {
                 return (
                   <li className="collection-item" key={map.map_id}>
                     <div>{map.title}
@@ -388,7 +388,7 @@ export default class GroupAdmin extends MapHubsComponent {
               <li className="collection-header">
                 <h4>{this.__('Hubs')}</h4>
               </li>
-              {this.props.hubs.map(function (hub, i) {
+              {this.props.hubs.map((hub, i) => {
                 return (
                   <li className="collection-item" key={hub.hub_id}>
                     <div>{hub.name}                

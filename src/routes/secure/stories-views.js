@@ -15,13 +15,13 @@ var Page = require('../../models/page');
 module.exports = function(app: any) {
 
   //Views
-  app.get('/stories', function(req, res, next) {
+  app.get('/stories', (req, res, next) => {
     Promise.all([
       Story.getPopularStories(10),
       Story.getFeaturedStories(10),
       Page.getPageConfigs(['footer'])
     ])
-      .then(function(results) {
+      .then((results) => {
         var popularStories = results[0];
         var featuredStories = results[1];
         var footerConfig = results[2].footer;
@@ -35,7 +35,7 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/user/:username/stories', function(req, res, next) {
+  app.get('/user/:username/stories', (req, res, next) => {
 
     var username: string = req.params.username;
     if(!username){apiDataError(res);}
@@ -44,11 +44,11 @@ module.exports = function(app: any) {
     function completeRequest(){
 
       User.getUserByName(username)
-      .then(function(user){
+      .then((user) => {
         if(user){
           return Story.getUserStories(user.id, myStories)
-          .then(function(stories){
-            return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+          .then((stories) => {
+            return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
               var footerConfig = pageConfigs['footer'];
               res.render('userstories', {
                 title: 'Stories - ' + username,
@@ -73,7 +73,7 @@ module.exports = function(app: any) {
 
       //get user for logged in user
       User.getUser(user_id)
-      .then(function(user){
+      .then((user) => {
         //flag if requested user is logged in user
         if(user.display_name === username){
           myStories = true;
@@ -83,7 +83,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
+  app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect('/unauthorized');
     }
@@ -91,11 +91,11 @@ module.exports = function(app: any) {
     var username = req.session.user.display_name;
      var user_id = req.session.user.id;
      Story.createUserStory(user_id)
-     .then(function(story_id){
+     .then((story_id) => {
         return Promise.all([
           Map.getUserMaps(req.session.user.id),
           Map.getPopularMaps()
-        ]).then(function(results){
+        ]).then((results) => {
           var myMaps = results[0];
           var popularMaps = results[1];
 
@@ -112,7 +112,7 @@ module.exports = function(app: any) {
 
   });
 
-  app.get('/user/:username/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
+  app.get('/user/:username/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -121,13 +121,13 @@ module.exports = function(app: any) {
     var user_id = req.session.user.id;
     var story_id = parseInt(req.params.story_id || '', 10);
     Story.allowedToModify(story_id, user_id)
-    .then(function(allowed){
+    .then((allowed) => {
       if(allowed){
           Promise.all([
             Story.getStoryByID(story_id),
             Map.getUserMaps(req.session.user.id),
             Map.getPopularMaps()
-          ]).then(function(results) {
+          ]).then((results) => {
             var story = results[0];
             var myMaps = results[1];
             var popularMaps = results[2];
@@ -146,7 +146,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/user/:username/story/:story_id/*', function(req, res, next) {
+  app.get('/user/:username/story/:story_id/*', (req, res, next) => {
 
     var story_id = parseInt(req.params.story_id || '', 10);
     var username = req.params.username;
@@ -173,7 +173,7 @@ module.exports = function(app: any) {
 
     if (user_id === -1) { //don't check permissions if user is not logged in
           Story.getStoryByID(story_id)
-          .then(function(story) {
+          .then((story) => {
              var imageUrl = '';
             if(story.firstimage){
               imageUrl = urlUtil.getBaseUrl() + story.firstimage;
@@ -205,9 +205,9 @@ module.exports = function(app: any) {
           }).catch(nextError(next));
     } else {
       Story.allowedToModify(story_id, user_id)
-      .then(function(canEdit){       
+      .then((canEdit) => {       
         Story.getStoryByID(story_id)
-        .then(function(story) {
+        .then((story) => {
            var imageUrl = '';
             if(story.firstimage){
               imageUrl = story.firstimage;

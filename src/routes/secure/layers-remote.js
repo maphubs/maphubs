@@ -12,18 +12,18 @@ var request = require('superagent-bluebird-promise');
 module.exports = function(app) {
 
 
-  app.get('/createremotelayer', login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/createremotelayer', login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = req.session.user.id;
 
     Group.getGroupsForUser(user_id)
-    .then(function(result){
+    .then((result) => {
       res.render('createremotelayer', {title: req.__('Remote Layer') + ' - ' + MAPHUBS_CONFIG.productName, props: {groups: result}, req});
     }).catch(nextError(next));
 
   });
 
-  app.post('/api/layer/create/remote', function(req, res) {
+  app.post('/api/layer/create/remote', (req, res) => {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
@@ -34,10 +34,10 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     if(req.body.group_id && req.body.layer && req.body.host){
       Group.allowedToModify(req.body.group_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           return Layer.createRemoteLayer(req.body.group_id, req.body.layer, req.body.host, user_id)
-          .then(function(result){
+          .then((result) => {
             if(result){
               res.send({success:true, layer_id: result[0]});
             }else {
@@ -54,7 +54,7 @@ module.exports = function(app) {
 
   });
 
-  app.post('/api/layer/refresh/remote', function(req, res) {
+  app.post('/api/layer/refresh/remote', (req, res) => {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
@@ -65,10 +65,10 @@ module.exports = function(app) {
     var user_id = req.session.user.id;
     if(req.body.layer_id){
       Layer.allowedToModify(req.body.layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           return Layer.getLayerByID(req.body.layer_id)
-          .then(function(layer){
+          .then((layer) => {
             if(layer.remote){
               var url;
               if(layer.remote_host == 'localhost'){
@@ -78,9 +78,9 @@ module.exports = function(app) {
              }
                url = url + layer.remote_host + '/api/layer/metadata/' + layer.remote_layer_id;
               return request.get(url)
-              .then(function(response) {
+              .then((response) => {
                 return Layer.updateRemoteLayer(layer.layer_id, layer.owned_by_group_id, response.body.layer, layer.remote_host, user_id)
-                .then(function(result){
+                .then((result) => {
                   if(result){
                     res.send({success:true});
                   }else {

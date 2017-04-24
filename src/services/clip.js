@@ -8,7 +8,7 @@ var inside = require('@turf/inside');
 // since a single line might get clipped into multiple lines.
 module.exports = function clip(lines, polygon) {
   var result = [];
-  lines.forEach(function (feat) {
+  lines.forEach((feat) => {
     var coords = feat.geometry.coordinates;
 
     // array of coordinate pairs of linestring we're building

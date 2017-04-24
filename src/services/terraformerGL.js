@@ -13,7 +13,7 @@ module.exports= {
   getArcGISGeoJSON(url){
     var _this = this;
     return _this.getArcGISJSON(url)
-      .then(function(data){
+      .then((data) => {
         var geoJSON = _this.convertAGSData(data);
         var bbox = require('@turf/bbox')(geoJSON);
         debug(bbox);
@@ -30,7 +30,7 @@ module.exports= {
     return request.get(url + queryStr)
     .use(jsonp)
     .type('json').accept('json')
-    .then(function(res) {
+    .then((res) => {
       return res.body;
     });
   },
@@ -43,7 +43,7 @@ module.exports= {
     return request.get(url + queryStr)
     .use(jsonp)
     .type('json').accept('json')
-    .then(function(res) {
+    .then((res) => {
       var geoJSON = res.body;
       var bbox = require('@turf/bbox')(geoJSON);
       debug(bbox);

@@ -49,8 +49,8 @@ export default class AdminUserInvite extends MapHubsComponent {
     request.post('/admin/invite/send')
     .type('json').accept('json')
     .send({email: model.email, _csrf: this.state._csrf})
-    .end(function(err, res){
-      checkClientError(res, err, function(err){
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
         _this.setState({saving: false});
         if(err){
           MessageActions.showMessage({title: _this.__('Failed to Send Invite'), message: err});
@@ -66,7 +66,7 @@ export default class AdminUserInvite extends MapHubsComponent {
           });
         }
       },
-      function(cb){
+      (cb) => {
         cb();
       });
     });

@@ -47,7 +47,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     return db('omh.temp_data').where({layer_id}).del()
-    .then(function(){
+    .then(() => {
       return db('omh.temp_data').insert({
         layer_id,
         uploadtmppath
@@ -60,7 +60,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     return db('omh.temp_data').where({layer_id})
-    .then(function(result){
+    .then((result) => {
       return result[0].uploadtmppath;
     });
   },
@@ -69,7 +69,7 @@ module.exports = {
     debug('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}
-    return new Promise(function(fulfill, reject) {
+    return new Promise((fulfill, reject) => {
     var result = {success: false, error: 'Unknown Error'};
     var uniqueProps = [];
 
@@ -112,7 +112,7 @@ module.exports = {
       }
       var cleanedFeatures = [];
       //loop through features
-      geoJSON.features.map(function(feature, i){
+      geoJSON.features.map((feature, i) => {
         //confirm feature is expected type/SRID
         if(feature.crs && feature.crs.properties && feature.crs.properties.name){
           let featureSRID = feature.crs.properties.name.split(':')[1];
@@ -123,7 +123,7 @@ module.exports = {
         }
         //get unique list of properties
         var cleanedFeatureProps = {};
-        Object.keys(feature.properties).map(function (key) {
+        Object.keys(feature.properties).map((key) => {
           //remove chars that can't be in database fields (used in PostGIS views)         
           var val = feature.properties[key];
           
@@ -213,7 +213,7 @@ module.exports = {
       }
 
       if(local.writeDebugData){
-        fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), function(err){
+        fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), (err) => {
           if(err) log.error(err);
           debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
         });
@@ -224,7 +224,7 @@ module.exports = {
       .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
       .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
       .timeout(1200000);
-      ogr.exec(function (er) {
+      ogr.exec((er) => {
         if (er){
           log.error(er);
           reject(new Error("Failed to Insert Data into Temp POSTGIS Table"));
@@ -235,7 +235,7 @@ module.exports = {
       debug('inserting temp geojson into database');
       //insert into the database
       Promise.all(commands)
-        .then(function(dbResult){
+        .then((dbResult) => {
           if(dbResult){
             var largeData = false;
             if(sizeof(geoJSON) > LARGE_DATA_THRESHOLD){
@@ -256,7 +256,7 @@ module.exports = {
             return;
           }
         })
-        .catch(function (err) {
+        .catch((err) => {
           log.error(err);
           reject(err);
           return;

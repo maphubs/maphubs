@@ -119,7 +119,7 @@ export default class EmbedMap extends MapHubsComponent {
     });
 
     $(window).resize(function(){
-      var debounced = _debounce(function(){
+      var debounced = _debounce(() => {
         var size = getSize();
         _this.setState({
           width: size.width,
@@ -144,17 +144,17 @@ export default class EmbedMap extends MapHubsComponent {
     }
   }
 
-  startInteractive(){
+  startInteractive = () => {
     this.setState({interactive: true});
     $('.embed-tooltips').tooltip('remove');
   }
 
-  loadGeoJSON(url: string){
+  loadGeoJSON = (url: string) => {
     var _this = this;
     request.get(url)
     .type('json').accept('json')
-    .end(function(err, res){
-      checkClientError(res, err, ()=>{}, function(){
+    .end((err, res) => {
+      checkClientError(res, err, ()=>{}, () => {
         var geoJSON = res.body;
         var bounds = _bbox(geoJSON);
         //_this.refs.map.fitBounds(bounds, 12, 10, true);

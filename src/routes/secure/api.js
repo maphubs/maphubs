@@ -3,7 +3,7 @@ var libxml = require('libxmljs');
 
 module.exports = function(app) {
 
-  app.get('/api/capabilities', function (req, res) {
+  app.get('/api/capabilities', (req, res) => {
 
     var doc = new libxml.Document();
     doc.node('osm').attr({version: 6, generator: 'MapHubs'})

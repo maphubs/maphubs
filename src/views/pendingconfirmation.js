@@ -34,7 +34,7 @@ export default class PendingConfirmation extends MapHubsComponent<null, Props, S
 
   onResend = () => {
     var _this = this;
-    UserActions.resendConfirmation(this.state._csrf, function(err){
+    UserActions.resendConfirmation(this.state._csrf, (err) => {
       if(err){
           MessageActions.showMessage({title: 'Error', message: err});
       }else {

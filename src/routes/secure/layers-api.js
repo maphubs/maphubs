@@ -18,7 +18,7 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.post('/api/layer/create/savedata/:id', csrfProtection, function(req, res) {
+  app.post('/api/layer/create/savedata/:id', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -29,16 +29,16 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.id || '', 10);
 
     Layer.allowedToModify(layer_id, user_id)
-    .then(function(allowed){
+    .then((allowed) => {
       if(allowed){
         //note: transaction must return promises all the way down, or it won't commit
-        return knex.transaction(function(trx) {
+        return knex.transaction((trx) => {
           return Layer.getLayerByID(layer_id, trx)
-            .then(function(layer){
+            .then((layer) => {
               return DataLoadUtils.loadTempData(layer_id, trx)
-              .then(function(){
+              .then(() => {
                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
-                .then(function(){
+                .then(() => {
                     debug('data load transaction complete');
                     res.status(200).send({success: true});
               });
@@ -51,7 +51,7 @@ module.exports = function(app: any) {
     }).catch(apiError(res, 500));
   });
 
-  app.post('/api/layer/create/empty/:id', csrfProtection, function(req, res) {
+  app.post('/api/layer/create/empty/:id', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
       res.status(401).send("Unauthorized, user not logged in");
@@ -84,7 +84,7 @@ module.exports = function(app: any) {
     }).catch(apiError(res, 500));
   });
 
-  app.post('/api/layer/admin/:action', csrfProtection, function(req, res) {
+  app.post('/api/layer/admin/:action', csrfProtection, (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -169,10 +169,10 @@ module.exports = function(app: any) {
       if(action === 'createLayer'){
         //confirm user is allowed to add a layer to this group
         Group.allowedToModify(data.group_id, user_id)
-        .then(function(allowed){
+        .then((allowed) => {
           if(allowed){
             return Layer[action](...actionData)
-            .then(function(result){
+            .then((result) => {
               if(result){
                 res.send({success:true, action, layer_id: result[0]});
               }else {
@@ -185,7 +185,7 @@ module.exports = function(app: any) {
         }).catch(apiError(res, 500));
       }else{
         Layer[action](...actionData)
-        .then(function(result){
+        .then((result) => {
           if(result){
             res.send({success:true, action});
           }else {
@@ -198,7 +198,7 @@ module.exports = function(app: any) {
     }
   });
 
-app.post('/api/layer/deletedata/:id', csrfProtection, function(req, res) {
+app.post('/api/layer/deletedata/:id', csrfProtection, (req, res) => {
   if (!req.isAuthenticated || !req.isAuthenticated()
       || !req.session || !req.session.user) {
     res.status(401).send("Unauthorized, user not logged in");
@@ -208,10 +208,10 @@ app.post('/api/layer/deletedata/:id', csrfProtection, function(req, res) {
   var user_id = req.session.user.id;
   var layer_id = parseInt(req.params.id || '', 10);
   Layer.allowedToModify(layer_id, user_id)
-  .then(function(allowed){
+  .then((allowed) => {
     if(allowed){
       DataLoadUtils.removeLayerData(layer_id)
-      .then(function(){
+      .then(() => {
         res.status(200).send({success: true});
       }).catch(apiError(res, 500));
     } else {
@@ -220,7 +220,7 @@ app.post('/api/layer/deletedata/:id', csrfProtection, function(req, res) {
   }).catch(apiError(res, 500));
 });
 
-app.post('/api/layer/presets/save', csrfProtection, function(req, res) {
+app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send("Unauthorized, user not logged in");
     return;
@@ -229,20 +229,20 @@ app.post('/api/layer/presets/save', csrfProtection, function(req, res) {
 
   var data = req.body;
   if(data && data.layer_id && data.presets && data.create !== undefined){
-    knex.transaction(function(trx) {
+    knex.transaction((trx) => {
     return Layer.allowedToModify(data.layer_id, user_id, trx)
-    .then(function(allowed: boolean){
+    .then((allowed: boolean) => {
       if(allowed){
         return Layer.savePresets(data.layer_id, data.presets, user_id, data.create, trx)
-        .then(function(){
+        .then(() => {
           if(data.create){
               res.status(200).send({success: true});
           }else{
             //update layer views and timestamp
             return Layer.getLayerByID(data.layer_id, trx)
-              .then(function(layer){
+              .then((layer) => {
                 return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                .then(function(){
+                .then(() => {
                   //Mark layer as updated (tells vector tile service to reload)
                   return trx('omh.layers').update(
                     {
@@ -250,7 +250,7 @@ app.post('/api/layer/presets/save', csrfProtection, function(req, res) {
                       last_updated: knex.raw('now()')
                     }
                   ).where({layer_id: data.layer_id})
-                  .then(function(){
+                  .then(() => {
                     res.status(200).send({success: true});
                   });
                 });
@@ -267,7 +267,7 @@ app.post('/api/layer/presets/save', csrfProtection, function(req, res) {
   }
 });
 
-app.post('/api/layer/notes/save', csrfProtection, function(req, res) {
+app.post('/api/layer/notes/save', csrfProtection, (req, res) => {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send("Unauthorized, user not logged in");
     return;
@@ -276,10 +276,10 @@ app.post('/api/layer/notes/save', csrfProtection, function(req, res) {
   var data = req.body;
   if (data && data.layer_id && data.notes) {
     Layer.allowedToModify(data.layer_id, user_id)
-    .then(function(allowed){
+    .then((allowed) => {
       if(allowed){
         Layer.saveLayerNote(data.layer_id, user_id, data.notes)
-          .then(function() {
+          .then(() => {
             res.send({success: true});
           }).catch(apiError(res, 500));
       }else {
@@ -292,7 +292,7 @@ app.post('/api/layer/notes/save', csrfProtection, function(req, res) {
 });
 
 
-app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
+app.post('/api/layer/addphotopoint', csrfProtection, (req, res) => {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send("Unauthorized, user not logged in");
     return;
@@ -301,26 +301,26 @@ app.post('/api/layer/addphotopoint', csrfProtection, function(req, res) {
   var data = req.body;
   if (data && data.layer_id && data.geoJSON && data.image && data.imageInfo) {
     Layer.allowedToModify(data.layer_id, user_id)
-    .then(function(allowed){
+    .then((allowed) => {
       if(allowed){
-        return knex.transaction(function(trx) {
+        return knex.transaction((trx) => {
           return LayerData.createFeature(data.layer_id, data.geoJSON, trx)
-          .then(function(mhid: string){
+          .then((mhid: string) => {
               //get the mhid for the new feature
               debug('new mhid: ' + mhid);
               return PhotoAttachment.setPhotoAttachment(data.layer_id, mhid, data.image, data.imageInfo, user_id, trx)
-                .then(function(photo_id) {
+                .then((photo_id) => {
                   return Layer.getLayerByID(data.layer_id, trx)
-                  .then(function(layer){
+                  .then((layer) => {
                     var baseUrl = urlUtil.getBaseUrl();
                     var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
                     //add a tag to the feature
                     return LayerData.setStringTag(layer.layer_id, mhid, 'photo_url', photo_url, trx)                                   
-                    .then(function(){
+                    .then(() => {
                       return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                      .then(function(presets){
+                      .then((presets) => {
                           return layerViews.replaceViews(data.layer_id, presets, trx)
-                        .then(function(){
+                        .then(() => {
                           res.send({success: true, photo_id, photo_url, mhid});
                         });
                       });

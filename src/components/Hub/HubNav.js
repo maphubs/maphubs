@@ -26,13 +26,13 @@ export default class HubHav extends MapHubsComponent {
     $(this.refs.hubNav).sideNav({edge: 'right'});
   }
 
-    deleteHub(){
+  deleteHub = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm Hub Deletion'),
       message: this.__('Please confirm that you want to delete this hub and all of its stories.'),
       onPositiveResponse(){
-        HubActions.deleteHub(_this.state._csrf, function(err){
+        HubActions.deleteHub(_this.state._csrf, (err) => {
           if(err){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{

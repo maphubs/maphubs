@@ -46,7 +46,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
     }
   }
 
-  processGeoJSON(geoJSON: Object, presets:any=null){
+  processGeoJSON = (geoJSON: Object, presets:any=null) => {
     var _this = this;
     var originalRows = _map(geoJSON.features, 'properties');
 
@@ -75,7 +75,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
       }
     );
     if(presets){
-      Object.keys(presets.fields).forEach(function(fieldsKey){
+      Object.keys(presets.fields).forEach((fieldsKey) => {
         var field = presets.fields[fieldsKey];
 
         columns.push(
@@ -90,7 +90,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
         );
       });
     }else{
-      Object.keys(firstRow).forEach(function(key){
+      Object.keys(firstRow).forEach((key) => {
         columns.push(
           {
             key,
@@ -172,7 +172,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
 
     var featureName = 'unknown';
     var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-    nameFields.forEach(function(name){
+    nameFields.forEach((name) => {
       if(featureName === 'unknown' && row[name]){
         featureName = row[name];
       }

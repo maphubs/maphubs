@@ -72,7 +72,7 @@ export default class DataCollectionForm extends MapHubsComponent {
     return (
       <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onChange} onValid={this.onValid} onInvalid={this.onInValid}>
         {
-          this.props.presets.map(function(preset){
+          this.props.presets.map((preset) => {
             var value;
             if(_this.props.values && _this.props.values[preset.tag]){
               value = _this.props.values[preset.tag];

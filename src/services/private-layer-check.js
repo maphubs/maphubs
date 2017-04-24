@@ -5,7 +5,7 @@ var apiDataError = require('./error-response').apiDataError;
 
 var check = function(layer_id, user_id){
   return Layer.isPrivate(layer_id)
-  .then(function(isPrivate){
+  .then((isPrivate) => {
     if(isPrivate){
       if(user_id <= 0){
         return false; //don't hit the db again if we know the user isn't valid
@@ -37,7 +37,7 @@ var middleware = function(view) {
 
     if(layer_id && Number.isInteger(layer_id) && layer_id > 0){
       check(layer_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         if(allowed){
           next();
         }else{

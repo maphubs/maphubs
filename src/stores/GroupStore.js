@@ -55,8 +55,8 @@ export default class GroupStore extends Reflux.Store {
      published,
      _csrf
    })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        var group = {
          group_id,
          name,
@@ -86,8 +86,8 @@ export default class GroupStore extends Reflux.Store {
      published,
      _csrf
    })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        var group = {
          group_id,
          name,
@@ -112,8 +112,8 @@ export default class GroupStore extends Reflux.Store {
      group_id: this.state.group.group_id,
     _csrf
   })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        _this.setState({group: {}});
        _this.trigger(_this.state);
        cb();
@@ -132,8 +132,8 @@ export default class GroupStore extends Reflux.Store {
      image: data,
      _csrf
     })
-   .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
          var group = _this.state.group;
          group.hasImage = true;
          _this.setState({group});
@@ -154,8 +154,8 @@ export default class GroupStore extends Reflux.Store {
      asAdmin,
      _csrf
     })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
         _this.reloadMembers(_csrf, cb);
      });
    });
@@ -171,8 +171,8 @@ export default class GroupStore extends Reflux.Store {
      user_id,
      _csrf
     })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
         _this.reloadMembers(_csrf, cb);
      });
    });
@@ -189,8 +189,8 @@ export default class GroupStore extends Reflux.Store {
      role: 'Administrator',
      _csrf
     })
-   .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.reloadMembers(_csrf, cb);
      });
    });
@@ -207,8 +207,8 @@ export default class GroupStore extends Reflux.Store {
      role: 'Member',
      _csrf
     })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
          _this.reloadMembers(_csrf, cb);
      });
    });
@@ -220,8 +220,8 @@ export default class GroupStore extends Reflux.Store {
    request.post('/api/group/' + this.state.group.group_id + '/members')
    .type('json').accept('json')
    .send({_csrf})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        _this.loadMembers(res.body.members);
        cb();
      });

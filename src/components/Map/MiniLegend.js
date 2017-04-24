@@ -163,7 +163,7 @@ export default class MiniLegend extends MapHubsComponent {
           <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>
             <div className="no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden', padding: '5px'}}>
               {
-                this.props.layers.map(function (layer) {
+                this.props.layers.map((layer) => {
                   if(typeof layer.settings.active === 'undefined'){
                     layer.settings.active = true;
                   }

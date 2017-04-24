@@ -58,8 +58,8 @@ export default class HubStore extends Reflux.Store {
      private: isPrivate,
      _csrf
    })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        var hub = {
          hub_id,
          name,
@@ -97,8 +97,8 @@ export default class HubStore extends Reflux.Store {
     _csrf
 
    })
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        _this.setState({saving: false, unsavedChanges: false});
        cb(null);
      });
@@ -116,8 +116,8 @@ export default class HubStore extends Reflux.Store {
         private: isPrivate,
         _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         var hub = _this.state.hub;
         hub.private = isPrivate;
         _this.setState({hub});
@@ -137,8 +137,8 @@ export default class HubStore extends Reflux.Store {
         group_id: to_group_id,
         _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
          var hub = _this.state.hub;
          hub.owned_by_group_id = to_group_id;
         _this.setState({hub});
@@ -155,8 +155,8 @@ export default class HubStore extends Reflux.Store {
    request.post(baseUrl + '/api/delete')
    .type('json').accept('json')
    .send({hub_id: this.state.hub.hub_id, _csrf})
-   .end(function(err, res){
-     checkClientError(res, err, cb, function(cb){
+   .end((err, res) => {
+     checkClientError(res, err, cb, (cb) => {
        _this.setState({hub: {}});
        _this.trigger(_this.state);
        cb(null);

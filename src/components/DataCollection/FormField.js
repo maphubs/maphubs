@@ -38,7 +38,7 @@ export default class FormField extends MapHubsComponent {
 
     //TODO: add localized string support
 
-    if(preset.type == 'number'){
+    if(preset.type === 'number'){
       field = (
         <TextInput
           name={preset.tag}
@@ -51,7 +51,7 @@ export default class FormField extends MapHubsComponent {
           value={this.props.value}
         />
       );
-    }else if(preset.type == 'radio' || preset.type == 'combo'){
+    }else if(preset.type === 'radio' || preset.type === 'combo'){
       var options = {};
       field = (
           <Select
@@ -64,7 +64,7 @@ export default class FormField extends MapHubsComponent {
             value={this.props.value}
          />
      );
-   }else if(preset.type == 'check'){
+   }else if(preset.type === 'check'){
       field = (
         <Toggle name={preset.tag}
           labelOff="" labelOn={preset.label}

@@ -115,7 +115,7 @@ export default class Home extends MapHubsComponent {
          <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
            <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
              decorators={SliderDecorators}>
-             {slides.map(function(slide, i){
+             {slides.map((slide, i) => {
                return (
                  <div key={i} className="homepage-slide responsive-img valign-wrapper"
                    style={{
@@ -164,7 +164,7 @@ export default class Home extends MapHubsComponent {
              <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
                {this.__('Featured Stories')}
              </h5>
-               {this.props.featuredStories.map(function (story) {
+               {this.props.featuredStories.map((story) => {
                  return (
                    <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                      <div className="card-content">

@@ -12,16 +12,16 @@ export default class Confirmation extends Reflux.Component {
 		this.stores = [Store];
 	}
 
-  hide(){
+  hide = () => {
     Actions.reset();
   }
 
-  onNegativeResponse(){
+  onNegativeResponse = () => {
     this.state.onNegativeResponse();
     this.hide();
   }
 
-  onPositiveResponse(){
+  onPositiveResponse = () => {
     this.state.onPositiveResponse();
     this.hide();
   }

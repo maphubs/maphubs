@@ -5,7 +5,7 @@ var apiDataError = require('../../services/error-response').apiDataError;
 
 module.exports = function(app: any) {
 
-app.post('/api/map/info/:map_id', csrfProtection, function(req, res) {   
+app.post('/api/map/info/:map_id', csrfProtection, (req, res) => {   
     if(req.body && req.body.map_id){
       var map_id = req.body.map_id;
       if (!req.isAuthenticated || !req.isAuthenticated()

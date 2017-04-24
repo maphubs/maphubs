@@ -54,7 +54,7 @@ module.exports = function(app: any) {
  };
 
   //Views
-  app.get('/hubs', csrfProtection, function(req, res, next) {
+  app.get('/hubs', csrfProtection, (req, res, next) => {
 
     Promise.all([
       Hub.getFeaturedHubs(),
@@ -62,14 +62,14 @@ module.exports = function(app: any) {
       Hub.getRecentHubs(),
       Page.getPageConfigs(['footer'])
     ])
-      .then(function(results) {
+      .then((results) => {
         var featuredHubs = results[0];
         var popularHubs = results[1];
         var recentHubs = results[2];
         var footerConfig = results[3].footer;
         if(local.mapHubsPro){
           return  Hub.getAllHubs()
-          .then(function(allHubs){
+          .then((allHubs) => {
             res.render('hubs', {
               title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
               props: {
@@ -88,7 +88,7 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/user/:username/hubs', csrfProtection, function(req, res, next) {
+  app.get('/user/:username/hubs', csrfProtection, (req, res, next) => {
 
     var username = req.params.username;
     debug(username);
@@ -97,14 +97,14 @@ module.exports = function(app: any) {
 
     function completeRequest(userCanEdit){
       User.getUserByName(username)
-      .then(function(user){
+      .then((user) => {
         if(user){
             return Promise.all([
               Hub.getPublishedHubsForUser(user.id),
               Hub.getDraftHubsForUser(user.id),
               Page.getPageConfigs(['footer'])
             ])
-          .then(function(results){
+          .then((results) => {
             var publishedHubs = results[0];
             var draftHubs = [];
             if(userCanEdit){
@@ -128,7 +128,7 @@ module.exports = function(app: any) {
 
       //get user for logged in user
       User.getUser(user_id)
-      .then(function(user){
+      .then((user) => {
         //flag if requested user is logged in user
         if(user.display_name === username){
           canEdit = true;
@@ -152,7 +152,7 @@ module.exports = function(app: any) {
         dataQueries.push(Map.getPopularMaps());
       }
     return Promise.all(dataQueries)
-      .then(function(result) {
+      .then((result) => {
         var map = result[0];
         var layers = result[1];
         var stories = result[2];
@@ -188,14 +188,14 @@ module.exports = function(app: any) {
       });
   };
 
-  app.get('/hub/:hubid', csrfProtection, privateHubCheck, function(req, res, next) {
+  app.get('/hub/:hubid', csrfProtection, privateHubCheck, (req, res, next) => {
     var hub_id_input: string = req.params.hubid;
     var user_id: number;
     if(req.session.user){
       user_id = req.session.user.id;
     }
     Hub.getHubByID(hub_id_input)
-      .then(function(hub) {
+      .then((hub) => {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
@@ -205,7 +205,7 @@ module.exports = function(app: any) {
           return renderHubPage(hub, false, req, res);
         } else {
           return Hub.allowedToModify(hub.hub_id, user_id)
-          .then(function(allowed){
+          .then((allowed) => {
             if(allowed){
               return renderHubPage(hub, true, req, res);
             }else{
@@ -218,8 +218,8 @@ module.exports = function(app: any) {
 
   var renderHubStoryPage = function(hub, canEdit, req, res){
       return Hub.getHubStories(hub.hub_id, canEdit)
-      .then(function(stories) {
-        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+      .then((stories) => {
+        return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
           var footerConfig = pageConfigs['footer'];
           res.render('hubstories', {
             title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -233,7 +233,7 @@ module.exports = function(app: any) {
       });
   };
 
-  app.get('/hub/:hubid/stories', csrfProtection, privateHubCheck, function(req, res, next) {
+  app.get('/hub/:hubid/stories', csrfProtection, privateHubCheck, (req, res, next) => {
 
     const hub_id_input: string = req.params.hubid;
     let user_id: number;
@@ -241,7 +241,7 @@ module.exports = function(app: any) {
       user_id = req.session.user.id;
     }
     Hub.getHubByID(hub_id_input)
-      .then(function(hub) {
+      .then((hub) => {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
@@ -251,7 +251,7 @@ module.exports = function(app: any) {
           return renderHubStoryPage(hub, false, req, res);
         } else {
           return Hub.allowedToModify(hub.hub_id, user_id)
-          .then(function(allowed){
+          .then((allowed) => {
             if(allowed){
               return renderHubStoryPage(hub, true, req, res);
             }else{
@@ -263,7 +263,7 @@ module.exports = function(app: any) {
   });
 
   var renderHubResourcesPage = function(hub, canEdit, req, res){
-     return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+     return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
         var footerConfig = pageConfigs['footer'];
         res.render('hubresources', {
           title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -277,7 +277,7 @@ module.exports = function(app: any) {
      });
   };
 
-  app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, function(req, res, next) {
+  app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, (req, res, next) => {
 
     const hub_id_input: string = req.params.hubid;
     let user_id: number;
@@ -285,7 +285,7 @@ module.exports = function(app: any) {
       user_id = req.session.user.id;
     }
     Hub.getHubByID(hub_id_input)
-      .then(function(hub) {
+      .then((hub) => {
         if(hub == null){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
@@ -296,7 +296,7 @@ module.exports = function(app: any) {
           return renderHubResourcesPage(hub, false, req, res);
         } else {
           return Hub.allowedToModify(hub.hub_id, user_id)
-          .then(function(allowed){
+          .then((allowed) => {
             if(allowed){
               return renderHubResourcesPage(hub, true, req, res);
             }else{
@@ -307,12 +307,12 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/createhub', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/createhub', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
     
     var user_id = req.session.user.id;
 
     Group.getGroupsForUser(user_id)
-    .then(function(groups){
+    .then((groups) => {
       res.render('hubbuilder', {
         title: req.__('Create Hub') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {groups}, req
@@ -320,23 +320,23 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), csrfProtection, function(req, res, next) {
+  app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect(baseUrl + '/unauthorized?path='+req.path);
     }
     const user_id: number = req.session.user.id;
     const hub_id_input: string = req.params.hubid;
     Hub.allowedToModify(hub_id_input, user_id)
-    .then(function(allowed: bool){
+    .then((allowed: bool) => {
       if(allowed){
         return Hub.getHubByID(hub_id_input)
-        .then(function(hub) {
+        .then((hub) => {
           return Story.createHubStory(hub.hub_id, user_id)
-          .then(function(story_id){
+          .then((story_id) => {
             return Promise.all([
               Map.getUserMaps(req.session.user.id),
               Map.getPopularMaps()
-            ]).then(function(results: Array<any>) {
+            ]).then((results: Array<any>) => {
               var myMaps = results[0];
               var popularMaps = results[1];
               res.render('createhubstory', {
@@ -356,7 +356,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/hub/:hubid/story/:story_id/edit/*', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/hub/:hubid/story/:story_id/edit/*', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -365,14 +365,14 @@ module.exports = function(app: any) {
     var hub_id = req.params.hubid;
     var story_id = parseInt(req.params.story_id || '', 10);
     Hub.allowedToModify(hub_id, user_id)
-    .then(function(allowed){
+    .then((allowed) => {
       if(allowed){
         Promise.all([
           Hub.getHubByID(hub_id),
           Story.getStoryByID(story_id),
           Map.getUserMaps(req.session.user.id),
           Map.getPopularMaps()
-        ]).then(function(results) {
+        ]).then((results) => {
           var hub = results[0];
           var story = results[1];
           var myMaps = results[2];
@@ -393,7 +393,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, privateHubCheck, function(req, res, next) {
+  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, privateHubCheck, (req, res, next) => {
 
     const hub_id: string = req.params.hubid;
     const story_id: number = parseInt(req.params.story_id || '', 10);
@@ -408,7 +408,7 @@ module.exports = function(app: any) {
           Story.getStoryByID(story_id),
           Hub.getHubByID(hub_id)
         ])
-          .then(function(results) {
+          .then((results) => {
             var story = results[0];
             var hub = results[1];
              var image;
@@ -441,12 +441,12 @@ module.exports = function(app: any) {
           }).catch(nextError(next));
     }else{
       Story.allowedToModify(story_id, user_id)
-      .then(function(canEdit){      
+      .then((canEdit) => {      
         return Promise.all([
           Story.getStoryByID(story_id),
           Hub.getHubByID(hub_id)
         ])
-          .then(function(results) {
+          .then((results) => {
             var story = results[0];
             var hub = results[1];
              var image;
@@ -481,12 +481,12 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/hub/:hub/logout', function(req, res) {
+  app.get('/hub/:hub/logout', (req, res) => {
     req.logout();
     res.redirect('/');
   });
 
-  app.get('/hub/:hub/map/embed/:map_id', privateHubCheck, function(req, res, next) {
+  app.get('/hub/:hub/map/embed/:map_id', privateHubCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     var hub_id = req.params.hub;
     if(!map_id){
@@ -501,7 +501,7 @@ module.exports = function(app: any) {
       var user_id = req.session.user.id;
 
       Hub.allowedToModify(hub_id, user_id)
-      .then(function(allowed){
+      .then((allowed) => {
         MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed);
       }).catch(apiError(res, 500));
     }

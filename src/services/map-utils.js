@@ -11,7 +11,7 @@ module.exports = {
     Map.getMap(map_id),
     Map.getMapLayers(map_id, canEdit)
     ])
-    .then(function(results){
+    .then((results) => {
       var map = results[0];
       var layers = results[1];
       var title = 'Map';
@@ -38,7 +38,7 @@ module.exports = {
     Map.getMap(map_id),
     Map.getMapLayers(map_id, canEdit)
     ])
-    .then(function(results){
+    .then((results) => {
       var map = results[0];
       var layers = results[1];
       var title = 'Map';

@@ -17,14 +17,14 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.get('/groups', csrfProtection, function(req, res, next) {
+  app.get('/groups', csrfProtection, (req, res, next) => {
     Promise.all([
       Group.getFeaturedGroups(),
       Group.getRecentGroups(),
       Group.getPopularGroups(),
       Page.getPageConfigs(['footer'])
     ])
-      .then(function(results) {
+      .then((results) => {
         var featuredGroups = results[0];
         var recentGroups = results[1];
         var popularGroups = results[2];
@@ -38,14 +38,14 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), function(req, res) {
+  app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), (req, res) => {
     res.render('creategroup', {
       title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {}, req
     });
   });
 
-  app.get('/group/:id', csrfProtection, function(req, res, next) {
+  app.get('/group/:id', csrfProtection, (req, res, next) => {
 
     var group_id = req.params.id;
 
@@ -54,7 +54,7 @@ module.exports = function(app: any) {
       user_id = req.session.user.id;
     }
     Group.allowedToModify(group_id, user_id)
-    .then(function(canEdit){
+    .then((canEdit) => {
       return Promise.all([
           Group.getGroupByID(group_id),
           Map.getGroupMaps(group_id, canEdit),
@@ -62,7 +62,7 @@ module.exports = function(app: any) {
           Hub.getGroupHubs(group_id, canEdit),
           Group.getGroupMembers(group_id),
         ])
-      .then(function(result: Array<any>) {
+      .then((result: Array<any>) => {
         var group: Object = result[0];
         var maps = result[1];
         var layers = result[2];
@@ -90,14 +90,14 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), function(req, res, next) {
+  app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = parseInt(req.session.user.id);
     var group_id = req.params.id;
 
     //confirm that this user is allowed to administer this group
     Group.getGroupRole(user_id, group_id)
-      .then(function(role) {
+      .then((role) => {
         if (role == 'Administrator') {
           Promise.all([
               Group.getGroupByID(group_id),
@@ -107,7 +107,7 @@ module.exports = function(app: any) {
               Group.getGroupMembers(group_id),
               Account.getStatus(group_id)
             ])
-            .then(function(result: Array<any>) {
+            .then((result: Array<any>) => {
               var group: Object = result[0];
               var maps: Array<Object> = result[1];
               var layers: Array<Object> = result[2];
@@ -127,7 +127,7 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  app.get('/user/:username/groups', csrfProtection, function(req, res, next) {
+  app.get('/user/:username/groups', csrfProtection, (req, res, next) => {
 
     var username = req.params.username;
     debug(username);
@@ -136,12 +136,12 @@ module.exports = function(app: any) {
 
     function completeRequest(userCanEdit){
       User.getUserByName(username)
-      .then(function(user){
-        return Page.getPageConfigs(['footer']).then(function(pageConfigs: Object){
+      .then((user) => {
+        return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
           var footerConfig = pageConfigs['footer'];
           if(user){
             return Group.getGroupsForUser(user.id)
-            .then(function(groups){
+            .then((groups) => {
               res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit, footerConfig}, req});
             });
           }else{
@@ -160,7 +160,7 @@ module.exports = function(app: any) {
 
       //get user for logged in user
       User.getUser(user_id)
-      .then(function(user){
+      .then((user) => {
         //flag if requested user is logged in user
         if(user.display_name === username){
           canEdit = true;

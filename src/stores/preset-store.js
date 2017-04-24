@@ -27,7 +27,7 @@ export default class PresetStore extends Reflux.Store {
   loadPresets(presets){
     var _this = this;
     if(presets && Array.isArray(presets)){
-      presets.forEach(function(preset){
+      presets.forEach((preset) => {
         preset.id = _this.idSequence++;
       });
       this.setState({presets});
@@ -51,9 +51,9 @@ export default class PresetStore extends Reflux.Store {
     var presets = [];
 
     //convert tags to presets
-    data.forEach(function(tag){
+    data.forEach((tag) => {
       var preset = {};
-      if(tag == 'mhid'){
+      if(tag === 'mhid'){
          preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
       }else{
          preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
@@ -75,8 +75,8 @@ export default class PresetStore extends Reflux.Store {
       create,
       _csrf
     })
-    .end(function(err, res){
-      checkClientError(res, err, cb, function(cb){
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
         _this.setState({pendingChanges: false});
         cb();
       });

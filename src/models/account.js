@@ -26,7 +26,7 @@ module.exports = {
     return db.select('omh.account_tiers.*')
     .from('omh.groups').leftJoin('omh.account_tiers', 'omh.groups.tier_id', 'omh.account_tiers.tier_id')
     .where('omh.groups.group_id', group_id)
-    .then(function(results){
+    .then((results) => {
       if(results && results.length === 1){
         return results[0];
       }
@@ -38,7 +38,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     return db.count('user_id').from('omh.group_memberships').where({group_id})
-    .then(function(result){
+    .then((result) => {
       return parseInt(result[0].count);
     });
   },
@@ -48,7 +48,7 @@ module.exports = {
     if(trx){db = trx;}
     return db.count('layer_id').from('omh.layers')
     .where({owned_by_group_id: group_id, private: true})
-    .then(function(result){
+    .then((result) => {
       return parseInt(result[0].count);
     });
   },
@@ -58,7 +58,7 @@ module.exports = {
     if(trx){db = trx;}
     return db.count('hub_id').from('omh.hubs')
     .where({owned_by_group_id: group_id, private: true})
-    .then(function(result){
+    .then((result) => {
       return parseInt(result[0].count);
     });
   },
@@ -68,7 +68,7 @@ module.exports = {
     if(trx){db = trx;}
     return db.count('map_id').from('omh.maps')
     .where({owned_by_group_id: group_id, private: true})
-    .then(function(result){
+    .then((result) => {
       return parseInt(result[0].count);
     });
   },
@@ -81,7 +81,7 @@ module.exports = {
     this.countGroupPrivateLayers(group_id, trx),
     this.countGroupPrivateHubs(group_id, trx),
     this.countGroupPrivateMaps(group_id, trx)
-  ]).then(function(results){
+  ]).then((results) => {
     return {
       tier: results[0],
       numGroupMembers: results[1],
