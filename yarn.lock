@@ -6173,13 +6173,6 @@ react-ace@^4.2.1:
     lodash.isequal "^4.1.1"
     prop-types "^15.5.8"
 
-react-addons-pure-render-mixin@^15.5.2:
-  version "15.5.2"
-  resolved "https://registry.yarnpkg.com/react-addons-pure-render-mixin/-/react-addons-pure-render-mixin-15.5.2.tgz#ebb846aeb2fd771336c232822923108f87d5bff2"
-  dependencies:
-    fbjs "^0.8.4"
-    object-assign "^4.1.0"
-
 react-addons-test-utils@^15.5.1:
   version "15.5.1"
   resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.5.1.tgz#e0d258cda2a122ad0dff69f838260d0c3958f5f7"
@@ -6471,10 +6464,6 @@ reflux-core@^1.0.0:
 reflux-rehydrate@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/reflux-rehydrate/-/reflux-rehydrate-0.1.2.tgz#59092e2ffb19d33728ad8bf2eed1e55be3986daf"
-
-reflux-state-mixin@openmaphub/Super-Simple-Flux:
-  version "0.6.3"
-  resolved "https://codeload.github.com/openmaphub/Super-Simple-Flux/tar.gz/388278e536d9e35491ca250daee0b3b19e969f0f"
 
 reflux@^6.4.1:
   version "6.4.1"
