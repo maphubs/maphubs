@@ -1,8 +1,8 @@
 import Reflux from 'reflux';
 import Actions from '../actions/presetActions';
-var request = require('superagent');
-var _findIndex = require('lodash.findindex');
-var _remove =  require('lodash.remove');
+import request from 'superagent';
+import _findIndex from 'lodash.findindex';
+import _remove from 'lodash.remove';
 var debug = require('../services/debug')('preset-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
@@ -28,7 +28,7 @@ export default class PresetStore extends Reflux.Store {
     var _this = this;
     if(presets && Array.isArray(presets)){
       presets.forEach((preset) => {
-        preset.id = _this.idSequence++;
+        preset.id = _this.state.idSequence++;
       });
       this.setState({presets});
     }

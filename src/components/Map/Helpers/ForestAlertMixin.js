@@ -1,53 +1,52 @@
-import React from 'react';
 var _area = require('@turf/area');
 
-var ForestAlertMixin = {
-
-  getDefaultForestAlertState(){
+export default function(){
+  var _this = this;
+  this.getDefaultForestAlertState = () => {
     return {
       enableGLAD2017: false,
       result: null
     };
-  },
+  };
 
   //API
-  toggleForestAlerts(config){
+  this.toggleForestAlerts = (config) => {
     var forestAlerts;
-    if(!this.state.forestAlerts){
+    if(!_this.state.forestAlerts){
       forestAlerts = this.getDefaultForestAlertState();
     }else{
-      forestAlerts = JSON.parse(JSON.stringify(this.state.forestAlerts)); 
+      forestAlerts = JSON.parse(JSON.stringify(_this.state.forestAlerts)); 
     }
 
     if(!forestAlerts.enableGLAD2017 && config.enableGLAD2017){
       //layer turning on
-      this.addGLADLayer();
+      _this.addGLADLayer();
       forestAlerts.enableGLAD2017 = config.enableGLAD2017;
-      this.setState({forestAlerts});
+      _this.setState({forestAlerts});
     }else if(forestAlerts.enableGLAD2017 && !config.enableGLAD2017){
       //layer turning off
-      this.removeGLADLayer();
+      _this.removeGLADLayer();
       forestAlerts.enableGLAD2017 = config.enableGLAD2017;
       forestAlerts.result = null;
-      this.setState({forestAlerts});
+      _this.setState({forestAlerts});
     }
-  },
+  };
 
   /**
    * Used to restore alerts if map is reloaded
    */
-  restoreForestAlerts(){
-    if(this.state.forestAlerts.enableGLAD2017){
-      this.addGLADLayer();
+  this.restoreForestAlerts = () => {
+    if(_this.state.forestAlerts.enableGLAD2017){
+      _this.addGLADLayer();
     }
-  },
+  };
 
-  calculateForestAlerts(){
-    if(!this.state.forestAlerts.enableGLAD2017){
+  this.calculateForestAlerts = () => {
+    if(!_this.state.forestAlerts.enableGLAD2017){
       return;
     }
 
-    var features = this.map.queryRenderedFeatures({layers: ['omh-glad-2017-polygon']});
+    var features = _this.map.queryRenderedFeatures({layers: ['omh-glad-2017-polygon']});
 
     var alertCount = features.length;
 
@@ -66,25 +65,25 @@ var ForestAlertMixin = {
         }
         areaMessage = areaMessage + areaHA.toLocaleString() + 'ha';
 
-        var forestAlerts = JSON.parse(JSON.stringify(this.state.forestAlerts)); 
+        var forestAlerts = JSON.parse(JSON.stringify(_this.state.forestAlerts)); 
         forestAlerts.result = {alertCount,areaMessage};
           
-        this.setState({forestAlerts}); 
+        _this.setState({forestAlerts}); 
 
-  },
+  };
 
   //helper functions
 
-  addGLADLayer(){
+  this.addGLADLayer = () => {
     //add map source
-    this.map.addSource('omh-glad-2017', {
+    _this.map.addSource('omh-glad-2017', {
       "type": "vector",
       "url": "https://s3.amazonaws.com/maphubs-forest-alerts/glad/2017.json"
     });
 
     //add map layers
 
-    this.map.addLayer({
+    _this.map.addLayer({
       "id": "omh-glad-2017-point",
       "type": "circle",
       "maxzoom": 13,
@@ -100,7 +99,7 @@ var ForestAlertMixin = {
       "source-layer": "data"
     });
 
-    this.map.addLayer({
+    _this.map.addLayer({
       "id": "omh-glad-2017-polygon",
       "type": "fill",
       "maxzoom": 22,
@@ -124,7 +123,7 @@ var ForestAlertMixin = {
         "visibility": "visible"
       }
     });
-     this.map.addLayer({
+     _this.map.addLayer({
       "id": "omh-glad-2017-outline-polygon",
       "type": "line",
       "maxzoom": 22,
@@ -180,17 +179,14 @@ var ForestAlertMixin = {
         "visibility": "visible"
       }
   });
-  },
+  };
 
-  removeGLADLayer(){
+  this.removeGLADLayer = () => {
 
-    this.map.removeLayer('omh-glad-2017-outline-polygon');
-    this.map.removeLayer('omh-glad-2017-polygon');
-    this.map.removeLayer('omh-glad-2017-point');
-    this.map.removeSource('omh-glad-2017');
+    _this.map.removeLayer('omh-glad-2017-outline-polygon');
+    _this.map.removeLayer('omh-glad-2017-polygon');
+    _this.map.removeLayer('omh-glad-2017-point');
+    _this.map.removeSource('omh-glad-2017');
 
-  }
-
-};
-
-module.exports = ForestAlertMixin;
+  };
+}

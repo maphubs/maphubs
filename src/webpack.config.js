@@ -66,7 +66,7 @@ module.exports = {
     signup: "./src/client/signup",
     pendingconfirmation: "./src/client/pendingconfirmation",
     emailconfirmation: "./src/client/emailconfirmation",
-    vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "reflux-state-mixin", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
+    vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./src/services/locales"],
     mapboxgl: ["./assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js"]
   },
@@ -96,7 +96,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /reflux-state-mixin/, /react-colorpickr/],       
+        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /react-colorpickr/],       
         options: {
           presets: [
             "es2015",

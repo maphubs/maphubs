@@ -29,13 +29,17 @@ export default class LayerAdmin extends MapHubsComponent {
     _csrf: string
   }
 
+  state = {
+    tab: 'settings'
+  }
+
   constructor(props: Object){
     super(props);
     this.stores.push(LayerStore);
 
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.rehydrate(LayerStore, {layer: this.props.layer, groups: this.props.groups});
-    Reflux.rehydrate(PresetStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    //Reflux.rehydrate(PresetStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.initStore(PresetStore);
     LayerActions.loadLayer(this.props.layer);
     PresetActions.setLayerId(this.props.layer.layer_id);
@@ -114,8 +118,12 @@ export default class LayerAdmin extends MapHubsComponent {
     });
   }
 
-	render() {
+  selectTab = (tab: string) => {
+    this.setState({tab});
+  }
 
+	render() {
+    var _this = this;
     var tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit';
@@ -155,6 +163,42 @@ export default class LayerAdmin extends MapHubsComponent {
 
     }else{
 
+      let settingsTabContent = '', fieldsTabContent = '', styleTabContent = '';
+      if(this.state.tab === 'settings'){
+        settingsTabContent = (
+          <LayerSettings
+                 showCancel={false}
+                 showGroup={false}
+                 warnIfUnsaved
+                 submitText={this.__('Save')} onSubmit={this.save}
+             />
+        );
+
+      }else if(this.state.tab === 'fields'){
+        fieldsTabContent = (
+          <div className="container" >
+            <h5>{this.__('Data Fields')}</h5>
+              <div className="right">
+                <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+              </div>
+              <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid}/>
+              <div className="right">
+                <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+              </div>
+          </div>
+          
+        );
+
+      }else if(this.state.tab === 'style'){
+        styleTabContent = (
+          <LayerStyle
+                 showPrev={false}
+                 submitText="Save" onSubmit={this.save}
+              />
+        );
+      }
+
+
 		return (
       <div>
         <Header />
@@ -165,36 +209,25 @@ export default class LayerAdmin extends MapHubsComponent {
            <div className="col s12">
              <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
              <ul className="tabs" style={{overflowX: 'hidden'}}>
-               <li className="tab"><a className="active" href="#info">{this.__('Info/Settings')}</a></li>
-               <li className="tab"><a href="#fields">{this.__('Fields')}</a></li>
-               <li className="tab"><a href="#style">{this.__('Style/Display')}</a></li>
+               <li className="tab">
+                 <a className="active" onClick={function(){_this.selectTab('settings');}} href="#info">{this.__('Info/Settings')}</a>
+                </li>
+               <li className="tab">
+                 <a onClick={function(){_this.selectTab('fields');}} href="#fields">{this.__('Fields')}</a>
+               </li>
+               <li className="tab">
+                 <a onClick={function(){_this.selectTab('style');}} href="#style">{this.__('Style/Display')}</a>
+              </li>
              </ul>
            </div>
            <div id="info" className="col s12">
-             <LayerSettings
-                 showCancel={false}
-                 showGroup={false}
-                 warnIfUnsaved
-                 submitText={this.__('Save')} onSubmit={this.save}
-             />
+             {settingsTabContent}
            </div>
            <div id="fields" className="col s12" style={{display: tabContentDisplay}}>
-             <div className="container" >
-               <h5>{this.__('Data Fields')}</h5>
-               <div className="right">
-                 <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
-               </div>
-               <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid}/>
-               <div className="right">
-                 <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
-               </div>
-             </div>
+             {fieldsTabContent}
            </div>
            <div id="style" className="col s12" style={{display: tabContentDisplay}}>
-             <LayerStyle
-                 showPrev={false}
-                 submitText="Save" onSubmit={this.save}
-              />
+             {styleTabContent}
            </div>
         </div>
       </div>

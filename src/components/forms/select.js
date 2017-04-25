@@ -7,9 +7,9 @@ import result from 'lodash.result';
 var classNames = require('classnames');
 
 import ReactMaterialSelect from 'react-material-select';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 
-class Select extends MapHubsPureComponent {
+class Select extends MapHubsComponent {
 
   props:  {
     emptyText: string,
@@ -26,7 +26,11 @@ class Select extends MapHubsPureComponent {
     onChange: Function,
     startEmpty: boolean,
     icon: string,
-    note: string //optional note that displays below the select, will be updated on selection if option contains a note
+    note: string, //optional note that displays below the select, will be updated on selection if option contains a note
+    setValue: Function,
+    getValue: Function,
+    isRequired: Function,
+    getErrorMessage: Function
   }
 
   static defaultProps = {
@@ -46,13 +50,14 @@ class Select extends MapHubsPureComponent {
   }
 
   componentWillMount() {
-    this.setValue(this.props.defaultValue);
+    super.componentWillMount();
+    this.props.setValue(this.props.defaultValue);
     this.setNote(this.props.defaultValue);
   }
 
   componentWillReceiveProps(nextProps){
     if(!nextProps.startEmpty && this.props.defaultValue !== nextProps.defaultValue) {
-      this.setValue(nextProps.defaultValue);
+      this.props.setValue(nextProps.defaultValue);
       this.setNote(nextProps.defaultValue);
     }
   }
@@ -66,7 +71,7 @@ class Select extends MapHubsPureComponent {
 
   handleSelectChange = (selected) => {
      var val = selected.value;
-     this.setValue(val);
+     this.props.setValue(val);
      this.setNote(val);
      if(this.props.onChange){
        this.props.onChange(val);
@@ -74,8 +79,8 @@ class Select extends MapHubsPureComponent {
    }
 
    validate = () => {
-     if(this.isRequired()){
-       if(this.getValue() && this.getValue() !== ''){
+     if(this.props.isRequired()){
+       if(this.props.getValue() && this.props.getValue() !== ''){
          return true;
        }else{
          return false;
@@ -87,7 +92,7 @@ class Select extends MapHubsPureComponent {
 
   render() {
     var className = classNames('input-field', {tooltipped: this.props.dataTooltip ? true : false});
-    var value = this.getValue();
+    var value = this.props.getValue();
 
     var note = '';
     if(this.state.note){
@@ -116,7 +121,7 @@ class Select extends MapHubsPureComponent {
                   );
                 })}
               </ReactMaterialSelect>
-              <label htmlFor={this.props.name}  data-error={this.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+              <label htmlFor={this.props.name}  data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
 
           </div>
             {note}

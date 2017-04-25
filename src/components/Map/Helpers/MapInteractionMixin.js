@@ -1,17 +1,16 @@
 
 var $ = require('jquery');
-var _debounce = require('lodash.debounce');
-var debug = require('../../services/debug')('MapInteractionMixin');
-var BaseMapActions = require('../../actions/map/BaseMapActions');
+import _debounce from 'lodash.debounce';
+var debug = require('../../../services/debug')('MapInteractionMixin');
+import BaseMapActions from '../../../actions/map/BaseMapActions';
 /**
  * Helper functions for interacting with the map and selecting features
  */
-var MapInteractionMixin = {
-
-  setSelectionFilter(features){
-    var _this = this;
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach((layer) => {
+export default function() {
+  var _this = this;
+  this.setSelectionFilter = (features) => {
+    if(_this.state.glStyle){
+      _this.state.glStyle.layers.forEach((layer) => {
         var filter = ['in', "mhid"];
         features.forEach((feature) => {
           filter.push(feature.properties.mhid);
@@ -27,12 +26,11 @@ var MapInteractionMixin = {
         }
       });
     }
-  },
+  };
 
-  clearSelectionFilter(){
-    var _this = this;
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach((layer) => {
+  this.clearSelectionFilter = () => {
+    if(_this.state.glStyle){
+      _this.state.glStyle.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-hover')){
           if(_this.map.getLayer(layer.id)){
             _this.map.setFilter(layer.id,  ["==", "mhid", ""]);
@@ -40,22 +38,22 @@ var MapInteractionMixin = {
         }
       });
     }
-  },
+  };
 
-  handleUnselectFeature() {
-    this.setState({selected:false});
-    this.clearSelection();
-  },
+  this.handleUnselectFeature = () => {
+    _this.setState({selected:false});
+    _this.clearSelection();
+  };
 
-  clearSelection(){
-    if(this.map.hasClass('selected')){
-      this.map.removeClass('selected');
+  this.clearSelection = () => {
+    if(_this.map.hasClass('selected')){
+      _this.map.removeClass('selected');
     }
-    this.clearSelectionFilter();
-    this.setState({selectedFeatures:null});
-  },
+    _this.clearSelectionFilter();
+    _this.setState({selectedFeatures:null});
+  };
 
-  getInteractiveLayers(glStyle){
+  this.getInteractiveLayers = (glStyle) => {
     var interactiveLayers = [];
     if(glStyle){
       glStyle.layers.forEach((layer) => {
@@ -68,13 +66,12 @@ var MapInteractionMixin = {
       });
     }
     return interactiveLayers;
-  },
+  };
 
-  clickHandler(e){
+  this.clickHandler = (e) => {
     var map = this.map;
-    var _this = this;
 
-    if(this.state.enableMeasurementTools){
+    if(_this.state.enableMeasurementTools){
       return;
     }
     else{
@@ -98,7 +95,7 @@ var MapInteractionMixin = {
           if(_this.state.editing){
             var feature = features[0];
             if(feature.properties.layer_id && 
-              this.state.editingLayer.layer_id === feature.properties.layer_id){
+              _this.state.editingLayer.layer_id === feature.properties.layer_id){
                 _this.editFeature(feature);
               }    
             return; //return here to disable interactation with other layers when editing
@@ -114,22 +111,22 @@ var MapInteractionMixin = {
           }
       }
     }
-  },
+  };
 
-  moveendHandler(e){
+  this.moveendHandler = (e) => {
      debug('mouse up fired');
-     if(this.refs.insetMap){
-       this.refs.insetMap.updateInsetGeomFromBounds(this.map.getBounds(), this.map.getZoom());
+     if(_this.refs.insetMap){
+       _this.refs.insetMap.updateInsetGeomFromBounds(_this.map.getBounds(), _this.map.getZoom());
      }
-    BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds());
-  },
+    BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
+  };
 
   //fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
-  mousemoveHandler(e){
+ this.mousemoveHandler = (e) => {
     var map = this.map;
     var _this = this;
    
-    if(this.state.enableMeasurementTools){
+    if(_this.state.enableMeasurementTools){
       return;
     }
     else{
@@ -171,8 +168,5 @@ var MapInteractionMixin = {
       }, 300).bind(this);
       debounced();
   }
-  }
-
-};
-
-module.exports = MapInteractionMixin;
+  };
+}

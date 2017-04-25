@@ -11,11 +11,15 @@ declare class MapHubsConfig {
   primaryColor: string;
   tileServiceUrl: string;
   https: boolean;
+  logo: string;
   logoWidth: number;
   logoHeight: number;
-  logo: string;
+  logoSmall: string;
+  logoSmallWidth: number;
+  logoSmallHeight: number;
   betaText: string;
   PLANET_LABS_API_KEY: string;
+  MAPBOX_ACCESS_TOKEN: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;

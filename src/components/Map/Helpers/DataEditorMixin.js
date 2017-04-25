@@ -1,21 +1,22 @@
-
-var debug = require('../../services/debug')('Map/DataEditorMixin');
-var DataEditorActions = require('../../actions/DataEditorActions');
+//@flow
+var debug = require('../../../services/debug')('Map/DataEditorMixin');
+import DataEditorActions from '../../../actions/DataEditorActions';
 var $ = require('jquery');
-var _assignIn = require('lodash.assignin');
-import Reflux from 'reflux';
+//var _assignIn = require('lodash.assignin');
+//import Reflux from 'reflux';
 var MapboxDraw = {};
 if (typeof window !== 'undefined') {
-    MapboxDraw = require('../../../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
+    MapboxDraw = require('../../../../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
 }
 
-var DataEditorMixin = {
+export default function(){
+  var _this = this;
 
-  getFirstDrawLayerID(){
-    return this.getEditorStyles()[0].id + '.cold';
-  },
+  this.getFirstDrawLayerID = () => {
+    return _this.getEditorStyles()[0].id + '.cold';
+  };
 
-  getEditorStyles(){
+  this.getEditorStyles = () =>{
     return [
     {
       'id': 'highlight-active-points',
@@ -144,10 +145,9 @@ var DataEditorMixin = {
       }
     }
   ];
-  },
+  };
 
-  editFeature(feature){
-    var _this = this;
+  this.editFeature = (feature: Object) => {
     //get the feature from the database, since features from vector tiles can be incomplete or simplified
     DataEditorActions.selectFeature(feature.properties.mhid, feature =>{      
       if(_this.draw){
@@ -159,11 +159,10 @@ var DataEditorMixin = {
       
     }
     });
-  },
+  };
 
-  startEditingTool(layer){
+  this.startEditingTool = (layer: Object) => {
     
-    var _this = this;
     var draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
@@ -172,15 +171,15 @@ var DataEditorMixin = {
         line_string: layer.data_type === 'line',
         trash: true
     },
-    styles: this.getEditorStyles()
+    styles: _this.getEditorStyles()
     });
-    this.draw = draw;
+    _this.draw = draw;
 
 
     $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-edit-tool');
-    this.map.addControl(draw, 'top-right');
+    _this.map.addControl(draw, 'top-right');
 
-    this.map.on('draw.create', e => {
+    _this.map.on('draw.create', e => {
       debug('draw create');
       var features = e.features;
       if(features && features.length > 0){
@@ -191,13 +190,13 @@ var DataEditorMixin = {
 
     });
 
-    this.map.on('draw.update', e =>{
+    _this.map.on('draw.update', e =>{
       debug('draw update');
       _this.updateEdits(e);
       
     });
 
-     this.map.on('draw.delete', e =>{
+     _this.map.on('draw.delete', e =>{
        debug('draw delete');
       var features = e.features;
       if(features && features.length > 0){
@@ -207,7 +206,7 @@ var DataEditorMixin = {
       }
     });
 
-     this.map.on('draw.selectionchange', e => {
+     _this.map.on('draw.selectionchange', e => {
        debug('draw selection');
        //if in simple mode (e.g. not selecting vertices) then check if selected feature changed
        var mode = _this.draw.getMode();
@@ -220,21 +219,18 @@ var DataEditorMixin = {
         }
        }
     });
+  };
 
-   
-  },
-
-  stopEditingTool(){   
+  this.stopEditingTool = () => {   
     $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-edit-tool');
-    this.map.removeControl(this.draw);
-   
-  },
+    _this.map.removeControl(_this.draw);
+  };
 
-  updateEdits(e){
+  this.updateEdits = (e: Object) => {
      if (e.features.length > 0) {
       DataEditorActions.updateFeatures(e.features);
      }
-  },
+  };
 
   /**
    * Triggered when the store updates a feature
@@ -244,12 +240,12 @@ var DataEditorMixin = {
   
    * 
    */
-  onFeatureUpdate(type, feature){
-    if(this.draw){
+  this.onFeatureUpdate = (type: string, feature: Object) => {
+    if(_this.draw){
       if(type === 'update' || type === 'create'){
-        this.draw.add(feature.geojson);
+        _this.draw.add(feature.geojson);
       }else if(type === 'delete'){
-        this.draw.delete(feature.geojson.id);
+        _this.draw.delete(feature.geojson.id);
       }
     }
   },
@@ -259,22 +255,21 @@ var DataEditorMixin = {
    * Add filter to hide vector tile versions of features active in the drawing tool
    * 
    */
-  updateMapLayerFilters(){
+  this.updateMapLayerFilters = () => {
 
-    var _this = this;
-    var layer_id = this.state.editingLayer.layer_id;
+    var layer_id = _this.state.editingLayer.layer_id;
 
     //build a new filter
     var uniqueIds = [];
 
-    this.state.edits.forEach(edit =>{
+    _this.state.edits.forEach(edit =>{
       var mhid = edit.geojson.id;
       if(mhid && !uniqueIds.includes(mhid)){
         uniqueIds.push(mhid);
       }
     });
 
-    this.state.originals.forEach(orig =>{
+    _this.state.originals.forEach(orig =>{
       var mhid = orig.geojson.id;
       if(mhid && !uniqueIds.includes(mhid)){
         uniqueIds.push(mhid);
@@ -283,8 +278,8 @@ var DataEditorMixin = {
 
     var hideEditingFilter = ['!in', 'mhid'].concat(uniqueIds);
 
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach(layer => {
+    if(_this.state.glStyle){
+      _this.state.glStyle.layers.forEach(layer => {
 
         //check if the layer_id matches
         var foundMatch;
@@ -312,7 +307,5 @@ var DataEditorMixin = {
 
       });
     }
-  },
-};
-
-module.exports = _assignIn(DataEditorMixin,Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate'));
+  };
+}

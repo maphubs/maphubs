@@ -1,12 +1,7 @@
-var debug = require('../../services/debug')('Map/ForestLossMixin');
-var _assignIn = require('lodash.assignin');
-import Reflux from 'reflux';
 
-var AnimationActions = require('../../actions/map/AnimationActions');
-
-var ForestLossMixin = {
-
-  getLayer(type, year){
+export default function() {
+  var _this = this;
+  this.getLayer = (type, year) => {
     return {
       "id": `omh-${type}-${year}`,
       "source": {
@@ -33,27 +28,27 @@ var ForestLossMixin = {
           }
         }
     };
-  },
+  };
 
-  toggleForestLoss(){
-    if(!this.state.showForestLoss){
-      if(this.props.onToggleForestLoss){
-        this.props.onToggleForestLoss(true);
+  this.toggleForestLoss = () =>{
+    if(!_this.state.showForestLoss){
+      if(_this.props.onToggleForestLoss){
+        _this.props.onToggleForestLoss(true);
       }
-      this.addForestLossLayers();
+      _this.addForestLossLayers();
       
     }else{
-      if(this.props.onToggleForestLoss){
-        this.props.onToggleForestLoss(false);
+      if(_this.props.onToggleForestLoss){
+        _this.props.onToggleForestLoss(false);
       }
-      this.removeForestLossLayers();
+      _this.removeForestLossLayers();
       
     }
     
-  },
+  };
 
-  getFirstLabelLayer(){
-    var glStyle = this.state.glStyle;
+  this.getFirstLabelLayer = () =>{
+    var glStyle = _this.state.glStyle;
     var firstLayer;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       glStyle.layers.forEach(layer=>{
@@ -61,19 +56,18 @@ var ForestLossMixin = {
           firstLayer = layer.id;
         }
       });
-    }else if(this.state.baseMap === 'default' ||
-       this.state.baseMap === 'dark' ||
-       this.state.baseMap === 'streets'){
+    }else if(_this.state.baseMap === 'default' ||
+       _this.state.baseMap === 'dark' ||
+       _this.state.baseMap === 'streets'){
       firstLayer = 'place_other';
     }
      return firstLayer;
   },
 
-  addForestLossLayers(){   
-    var _this = this;
+  this.addForestLossLayers = () => {   
     
     var addBefore = 'water';
-    var glStyle = this.state.glStyle;
+    var glStyle = _this.state.glStyle;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       addBefore = glStyle.layers[0].id;
     }
@@ -102,11 +96,10 @@ var ForestLossMixin = {
       }
       
     }
-    this.setState({showForestLoss: true});
+    _this.setState({showForestLoss: true});
   },
 
-  removeForestLossLayers(){
-    var _this = this;
+  this.removeForestLossLayers = () => {
 
      var treecoverLayer = _this.getLayer('treecover', 2001);
        _this.map.removeLayer(treecoverLayer.layer.id);
@@ -123,17 +116,16 @@ var ForestLossMixin = {
         _this.map.removeSource(lossLayer.id);
     }
 
-    this.setState({showForestLoss: false});
+    _this.setState({showForestLoss: false});
   },
 
-  tick(year){
-    var _this = this;
+  this.tick = (year) => {
     //add this year
     if(year === 2001){
-      this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
+      _this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
     }
     //this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
-    this.map.setLayoutProperty(`omh-lossyear-${year}`, 'visibility', 'visible');
+    _this.map.setLayoutProperty(`omh-lossyear-${year}`, 'visibility', 'visible');
 
     setTimeout(()=>{
       if(year > 2001){
@@ -151,8 +143,5 @@ var ForestLossMixin = {
       }
     }, 1000);
 
-  }
-
-};
-
-module.exports = _assignIn(ForestLossMixin,Reflux.listenTo(AnimationActions.tick, 'tick'));
+  };
+}

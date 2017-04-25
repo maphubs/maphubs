@@ -4,9 +4,9 @@ import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
 var debug = require('../../services/debug')('Toggle');
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 
-class Toggle extends MapHubsPureComponent {
+class Toggle extends MapHubsComponent {
 
   props:  {
     className: string,
@@ -48,6 +48,8 @@ class Toggle extends MapHubsPureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
+    
+    //only change if the props value is swapped
     var currentValue =  this.props.checked;
     if ('checked' in nextProps 
     && nextProps.checked !== currentValue){
@@ -58,7 +60,7 @@ class Toggle extends MapHubsPureComponent {
   componentDidUpdate(prevProps){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
       $(this.refs.toggle).tooltip();
-    }
+    } 
   }
 
   changeValue = (event) => {    

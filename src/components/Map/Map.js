@@ -1,14 +1,12 @@
+//@flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import Reflux from 'reflux';
 import classNames from 'classnames';
 import FeatureBox from './FeatureBox';
 import BaseMapActions from '../../actions/map/BaseMapActions'; 
 import BaseMapStore from '../../stores/map/BaseMapStore'; 
 import urlUtil from '../../services/url-util';
-import LocaleStore from '../../stores/LocaleStore';
 import DataEditorStore from '../../stores/DataEditorStore';
-import Locales from '../../services/locales';
 import _isequal from 'lodash.isequal';
 import MapToolButton from './MapToolButton';
 import MapToolPanel from './MapToolPanel';
@@ -19,14 +17,16 @@ import AnimationOverlay from './AnimationOverlay';
 import AnimationStore from '../../stores/map/AnimationStore';
 import isEqual from 'lodash.isequal';
 import Promise from 'bluebird';
-
-var MapboxGLHelperMixin = require('./MapboxGLHelperMixin');
-var MapInteractionMixin = require('./MapInteractionMixin');
-var MeasurementToolMixin = require('./MeasurementToolMixin');
-var ForestAlertMixin = require('./ForestAlertMixin');
-var MapGeoJSONMixin = require('./MapGeoJSONMixin');
-var DataEditorMixin = require('./DataEditorMixin');
-var ForestLossMixin = require('./ForestLossMixin');
+import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin';
+import MapInteractionMixin from './Helpers/MapInteractionMixin';
+import MeasurementToolMixin from './Helpers/MeasurementToolMixin';
+import ForestAlertMixin from './Helpers/ForestAlertMixin';
+import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
+import DataEditorMixin from './Helpers/DataEditorMixin';
+import ForestLossMixin from './Helpers/ForestLossMixin';
+import DataEditorActions from '../../actions/DataEditorActions';
+import AnimationActions from '../../actions/map/AnimationActions';
+import MapHubsComponent from '../MapHubsComponent';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 
@@ -35,117 +35,132 @@ if (typeof window !== 'undefined') {
     mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js");
 }
 
-var Map = React.createClass({
+type Props = {
+    className: string,
+    id: string,
+    maxBounds: Object,
+    maxZoom: number,
+    minZoom: number,
+    height: string,
+    style: Object,
+    glStyle: Object,
+    features:  Array<Object>,
+    tileJSONType: string,
+    tileJSONUrl:  string,
+    data: Object,
+    interactive: boolean,
+    showPlayButton: boolean,
+    showLogo: boolean,
+    showFeatureInfoEditButtons: boolean,
+    fitBounds: Array<Object>,
+    fitBoundsOptions: Object,
+    disableScrollZoom: boolean,
+    enableRotation: boolean,
+    navPosition:  string,
+    baseMap: string,
+    onChangeBaseMap: Function,
+    insetMap: boolean,
+    hoverInteraction: boolean,
+    interactionBufferSize: number,
+    hash: boolean,
+    gpxLink: string,
+    attributionControl:boolean,
+    allowLayerOrderOptimization: boolean,
+    children: any
+  }
 
-  mixins:[MapboxGLHelperMixin, MapInteractionMixin, MapGeoJSONMixin, 
-            MeasurementToolMixin, ForestAlertMixin, DataEditorMixin, ForestLossMixin,
-            ],
+  type State = {
+    id: string,
+    selectedFeatures: Array<Object>,
+    selected: boolean,
+    interactive: boolean,
+    glStyle: Object,
+    interactiveLayers: [],
+    mapLoaded: boolean,
+    restoreBounds: Object,
+    allowLayersToMoveMap: boolean
+  }
 
-  __(text){
-    return Locales.getLocaleString(this.state.locale, text);
-  },
+export default class Map extends MapHubsComponent<void, Props, State> {
 
-  propTypes:  {
-    className: PropTypes.string,
-    id: PropTypes.string,
-    maxBounds: PropTypes.object,
-    maxZoom: PropTypes.number,
-    minZoom: PropTypes.number,
-    height: PropTypes.string,
-    style: PropTypes.object,
-    glStyle: PropTypes.object,
-    features:  PropTypes.array,
-    tileJSONType: PropTypes.string,
-    tileJSONUrl:  PropTypes.string,
-    data: PropTypes.object,
-    interactive: PropTypes.bool,
-    showPlayButton: PropTypes.bool,
-    showLogo: PropTypes.bool,
-    showFeatureInfoEditButtons: PropTypes.bool,
-    fitBounds: PropTypes.array,
-    fitBoundsOptions: PropTypes.object,
-    disableScrollZoom: PropTypes.bool,
-    enableRotation: PropTypes.bool,
-    navPosition:  PropTypes.string,
-    baseMap: PropTypes.string,
-    onChangeBaseMap: PropTypes.func,
-    insetMap: PropTypes.bool,
-    hoverInteraction: PropTypes.bool,
-    interactionBufferSize: PropTypes.number,
-    hash: PropTypes.bool,
-    gpxLink: PropTypes.string,
-    attributionControl: PropTypes.bool,
-    allowLayerOrderOptimization: PropTypes.bool,
-    children: PropTypes.any
-  },
+  props: Props
 
-  getDefaultProps() {
-    return {
-      maxZoom: 18,
-      minZoom: 5,
-      className: '',
-      interactive: true,
-      showFeatureInfoEditButtons: true,
-      showPlayButton: true,
-      navPosition: 'top-right',
-      baseMap: 'default',
-      showLogo: true,
-      insetMap: true,
-      hoverInteraction: false,
-      interactionBufferSize: 10,
-      hash: true,
-      attributionControl: false,
-      style: {},
-      allowLayerOrderOptimization: true,
-      fitBoundsOptions: {animate:false}
-    };
-  },
+  static defaultProps = {
+    maxZoom: 18,
+    minZoom: 5,
+    className: '',
+    interactive: true,
+    showFeatureInfoEditButtons: true,
+    showPlayButton: true,
+    navPosition: 'top-right',
+    baseMap: 'default',
+    showLogo: true,
+    insetMap: true,
+    hoverInteraction: false,
+    interactionBufferSize: 10,
+    hash: true,
+    attributionControl: false,
+    style: {},
+    allowLayerOrderOptimization: true,
+    fitBoundsOptions: {animate:false}
+  }
 
-  getInitialState() {
-    var restoreBounds = null;
-    if(this.props.fitBounds){
-      restoreBounds = this.props.fitBounds;
+  constructor(props: Props){
+        super(props);
+
+        this.stores.push(DataEditorStore);
+        this.stores.push(AnimationStore);
+        this.stores.push(BaseMapStore);
+        Reflux.rehydrate(BaseMapStore, {baseMap: this.props.baseMap});
+
+        MapboxGLHelperMixin.call(this);
+        MapboxGLHelperMixin.call(this);
+        MapInteractionMixin.call(this);
+        MapGeoJSONMixin.call(this);
+        MeasurementToolMixin.call(this); 
+        ForestAlertMixin.call(this);
+        DataEditorMixin.call(this);
+       ForestLossMixin.call(this);
+
+       Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate');
+       Reflux.listenTo(AnimationActions.tick, 'tick');
+
+       var restoreBounds = null;
+      if(this.props.fitBounds){
+        restoreBounds = this.props.fitBounds;
+      }
+      var glStyle = null;
+      var interactiveLayers = [];
+      if(this.props.glStyle){
+        glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
+        interactiveLayers = this.getInteractiveLayers(glStyle);
+      }
+      this.state = {
+        id: this.props.id ? this.props.id : 'map',
+        selectedFeatures: null,
+        selected: false,
+        interactive: this.props.interactive,
+        glStyle,
+        interactiveLayers,
+        mapLoaded: false,
+        restoreBounds,
+        allowLayersToMoveMap: restoreBounds ? false : true
+      };
     }
-    var glStyle = null;
-    var interactiveLayers = [];
-    if(this.props.glStyle){
-       glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
-      interactiveLayers = this.getInteractiveLayers(glStyle);
-    }
-    return {
-      id: this.props.id ? this.props.id : 'map',
-      selectedFeatures: null,
-      selected: false,
-      interactive: this.props.interactive,
-      glStyle,
-      interactiveLayers,
-      mapLoaded: false,
-      restoreBounds,
-      allowLayersToMoveMap: restoreBounds ? false : true
-    };
-  },
 
   componentWillMount(){
-    //super.componentWillMount();
-    Reflux.initStore(DataEditorStore);
-    Reflux.initStore(AnimationStore);
-    Reflux.initStore(BaseMapStore).setState({baseMap: this.props.baseMap});
+    super.componentWillMount();
     if(this.state.glStyle){
       var interactiveLayers = this.getInteractiveLayers(this.state.glStyle);
       this.setState({interactiveLayers});
     }
-  },
+  }
 
   componentDidMount() {
-    var _this = this;
-    //DataEditorStore.listen( () => this.setState(DataEditorStore.getData()));
-    //AnimationStore.listen( () => this.setState(AnimationStore.getData()));
-    //BaseMapStore.listen( () => this.setState(_this.baseMapStore.getData()));
-    //LocaleStore.listen( () => this.setState(LocaleStore.getData()));
     this.createMap();
-  },
+  }
 
-  shouldComponentUpdate(nextProps, nextState){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //always update if there is a selection
     //avoids glitch where feature hover doesn't show
     if(this.state.selected || nextState.selected
@@ -161,13 +176,31 @@ var Map = React.createClass({
       return true;
     }
     return false;
-  },
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State){
+    //switch to interactive
+    if(this.state.interactive && !prevState.interactive){    
+      this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
+      var interaction = this.map.interaction;
+      interaction.enable();
+      $(this.refs.basemapButton).show();
+      $(this.refs.editBaseMapButton).show();
+    }
+    //change locale
+    if(this.state.locale && (this.state.locale !== prevState.locale) ){     
+      this.changeLocale(this.state.locale, this.map);
+      if(this.refs.insetMap){
+          this.changeLocale(this.state.locale, this.refs.insetMap.__getInsetMap());
+      }
+    }
+  }
 
   /**
    * Attempt to optimize layers, put labels on top of other layer types
    * @param {*} glStyle 
    */
-  optimizeLayerOrder(glStyle){
+  optimizeLayerOrder = (glStyle: Object) => {
     var regularLayers = [];
     var labelLayers = [];
     if(this.props.allowLayerOrderOptimization){
@@ -182,9 +215,9 @@ var Map = React.createClass({
     }else{
       return glStyle.layers;
     }
-  },
+  }
 
-  addLayers(map, glStyle){
+  addLayers = (map, glStyle: Object) => {
     var _this = this;
     var layers = this.optimizeLayerOrder(glStyle);
     layers.forEach((layer) => {
@@ -219,9 +252,9 @@ var Map = React.createClass({
       debug('(' + _this.state.id + ') ' +err);
     }
     });
-  },
+  }
 
-  removeAllLayers(prevStyle){
+  removeAllLayers = (prevStyle: Object) => {
     var _this = this;
     if(prevStyle && prevStyle.layers){
       prevStyle.layers.forEach((layer) => {
@@ -241,9 +274,9 @@ var Map = React.createClass({
         }
       });
     }
-  },
+  }
 
-  removeAllSources(prevStyle){
+  removeAllSources = (prevStyle: Object) => {
     var _this = this;
       if(prevStyle && prevStyle.sources){
       Object.keys(prevStyle.sources).forEach((key) => {
@@ -258,9 +291,9 @@ var Map = React.createClass({
           }
       });
     }
-  },
+  }
 
-  reload(prevStyle, newStyle, baseMap=null){
+  reload = (prevStyle: Object, newStyle: Object, baseMap: string=null) => {
     var _this = this;
     debug('(' + _this.state.id + ') ' +'reload: start');
     //clear selected when reloading
@@ -288,9 +321,9 @@ var Map = React.createClass({
         debug('(' + _this.state.id + ') ' +'reload: finished adding data');
       });
     }
-  },
+  }
 
-  addMapData(map, glStyle, geoJSON, cb){
+  addMapData = (map, glStyle: Object, geoJSON: Object, cb: Function) => {
     var _this = this;
     if(glStyle && glStyle.sources){
       var sources = [];
@@ -339,9 +372,9 @@ var Map = React.createClass({
     }else{
       cb();
     }    
-  },
+  }
 
-  createMap() {
+  createMap = () => {
     var _this = this;
     debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
@@ -430,27 +463,11 @@ var Map = React.createClass({
 
   _this.map = map;
   });
-  },
+  }
 
-  componentDidUpdate(prevProps, prevState) {
-    //switch to interactive
-    if(this.state.interactive && !prevState.interactive){    
-      this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
-      var interaction = this.map.interaction;
-      interaction.enable();
-      $(this.refs.basemapButton).show();
-      $(this.refs.editBaseMapButton).show();
-    }
-    //change locale
-    if(this.state.locale && (this.state.locale !== prevState.locale) ){     
-      this.changeLocale(this.state.locale, this.map);
-      if(this.refs.insetMap){
-          this.changeLocale(this.state.locale, this.refs.insetMap.__getInsetMap());
-      }
-    }
-  },
+  
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: Props){
     //debug('(' + this.state.id + ') ' +'componentWillReceiveProps');
     var _this = this;
     if(nextProps.data && this.map){
@@ -584,25 +601,25 @@ var Map = React.createClass({
          this.setState({allowLayersToMoveMap});
       }
    }
-  },
+  }
 
   componentWillUnmount() {
     this.map.remove();
-  },
+  }
 
-  startInteractive(){
+  startInteractive = () => {
     this.setState({interactive: true});
     if(!this.props.enableRotation){
       this.map.dragRotate.disable();
       this.map.touchZoomRotate.disableRotation();
     }
-  },
+  }
 
-  getBaseMap(){
+  getBaseMap = () => {
     return this.state.baseMap;
-  },
+  }
 
-  changeBaseMap(mapName){
+  changeBaseMap = (mapName: string) => {
     debug('changing basemap to: ' + mapName);
     var _this = this;
     BaseMapActions.getBaseMapFromName(mapName, (baseMapUrl) => {
@@ -623,7 +640,7 @@ var Map = React.createClass({
         _this.props.onChangeBaseMap(mapName);
       }
     });
-  },
+  }
 
   render() {
 
@@ -738,5 +755,4 @@ var Map = React.createClass({
         </div>
     );
   }
-});
-module.exports = Map;
+}
