@@ -1,4 +1,4 @@
-/* @flow weak */
+//@flow
 var Image = require('../../models/image');
 var debug = require('../../services/debug')('routes/images');
 var apiError = require('../../services/error-response').apiError;
@@ -6,7 +6,7 @@ var nextError = require('../../services/error-response').nextError;
 var imageUtils = require('../../services/image-utils');
 var log = require('../../services/log');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/image/:id.*', (req, res, next) => {
     var image_id = parseInt(req.params.id || '', 10);

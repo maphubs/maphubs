@@ -1,8 +1,9 @@
+//@flow
 var csrfProtection = require('csurf')({cookie: false});
 var Page = require('../../models/page');
 var nextError = require('../../services/error-response').nextError;
 
-module.exports = function(app) {
+module.exports = function(app: any) {
   app.get('/about', csrfProtection, (req, res, next) => {
     Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
       var footerConfig = pageConfigs['footer'];

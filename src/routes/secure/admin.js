@@ -1,5 +1,4 @@
-/* @flow weak */
-
+//@flow
 var Admin = require('../../models/admin');
 var Page = require('../../models/page');
 var csrfProtection = require('csurf')({cookie: false});
@@ -8,7 +7,7 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 //var log = require('../../services/log');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/admin/invite', csrfProtection, (req, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -50,6 +49,4 @@ module.exports = function(app) {
        res.status(401).send("Unauthorized");
     }
   });
-
-
 };

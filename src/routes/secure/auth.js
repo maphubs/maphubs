@@ -1,6 +1,6 @@
-/* @flow weak */
+//@flow
 var local = require('../../local');
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/logout', (req, res) => {
     req.logout();
@@ -10,7 +10,5 @@ module.exports = function(app) {
     }else{
       res.redirect('/');
     }
-
   });
-
 };

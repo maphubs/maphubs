@@ -1,4 +1,4 @@
-
+//@flow
 var Layer = require('../../models/layer');
 var LayerData = require('../../models/layer-data');
 var csrfProtection = require('csurf')({cookie: false});

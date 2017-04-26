@@ -1,6 +1,6 @@
 // @flow
 var Hub = require('../../models/hub');
-var Map = require('../../models/map');
+//var Map = require('../../models/map');
 var Image = require('../../models/image');
 //var log = require('../../services/log.js');
 //var debug = require('../../services/debug')('routes/hubs');

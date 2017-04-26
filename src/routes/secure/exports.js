@@ -1,3 +1,4 @@
+//@flow
 var Layer = require('../../models/layer');
 var Feature = require('../../models/feature');
 var apiError = require('../../services/error-response').apiError;
@@ -8,7 +9,7 @@ var privateLayerCheck = require('../../services/private-layer-check').middleware
 var knex = require('../../connection.js');
 var Promise = require('bluebird');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/api/layer/:layer_id/export/json/*', privateLayerCheck, (req, res) => {
       var layer_id = parseInt(req.params.layer_id || '', 10);

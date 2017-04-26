@@ -1,3 +1,4 @@
+//@flow
 var Layer = require('../../models/layer');
 var login = require('connect-ensure-login');
 var Group = require('../../models/group');
@@ -9,7 +10,7 @@ var notAllowedError = require('../../services/error-response').notAllowedError;
 
 var request = require('superagent-bluebird-promise');
 
-module.exports = function(app) {
+module.exports = function(app: any) {
 
 
   app.get('/createremotelayer', login.ensureLoggedIn(), (req, res, next) => {

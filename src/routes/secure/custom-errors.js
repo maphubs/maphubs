@@ -1,6 +1,6 @@
-/* @flow weak */
+//@flow
 var Page = require('../../models/page');
-module.exports = function(app) {
+module.exports = function(app: any) {
 
   app.get('/unauthorized', (req, res) => {
     var path = '';
