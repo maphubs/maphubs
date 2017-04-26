@@ -4,11 +4,11 @@ import Editor from 'react-medium-editor';
 import ImageCrop from '../ImageCrop';
 import HubStore from '../../stores/HubStore';
 import HubActions from '../../actions/HubActions';
-import MapHubsComponent from '../../components/MapHubsComponent';
-import _isequal from 'lodash.isequal';
+import MapHubsPureComponent from '../../components/MapHubsPureComponent';
+//import _isequal from 'lodash.isequal';
 import urlUtil from '../../services/url-util';
 
-export default class HubBanner extends MapHubsComponent {
+export default class HubBanner extends MapHubsPureComponent {
 
   props: {
     hubid: string,
@@ -34,6 +34,7 @@ export default class HubBanner extends MapHubsComponent {
     this.state.onCrop = function(){};
 	}
 
+/*
   shouldComponentUpdate(nextProps: Object, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
@@ -44,6 +45,7 @@ export default class HubBanner extends MapHubsComponent {
     }
     return false;
   }
+  */
 
   handleTitleChange = (title: string) => {
     HubActions.setTitle(title);

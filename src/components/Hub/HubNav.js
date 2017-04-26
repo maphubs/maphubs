@@ -9,9 +9,9 @@ import NotificationActions from '../../actions/NotificationActions';
 import ConfirmationActions from '../../actions/ConfirmationActions';
 import MessageActions from '../../actions/MessageActions';
 import HubActions from '../../actions/HubActions';
-import MapHubsComponent from '../../components/MapHubsComponent';
+import MapHubsPureComponent from '../../components/MapHubsPureComponent';
 
-export default class HubHav extends MapHubsComponent {
+export default class HubHav extends MapHubsPureComponent {
 
   props: {
     hubid: string,
