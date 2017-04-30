@@ -7,8 +7,7 @@ var urlUtil = require('../services/url-util');
 //var styles = require('../components/Map/styles');
 var $ = require('jquery');
 import ReactDisqusThread from 'react-disqus-thread';
-var Griddle = require('griddle-react');
-
+import FeatureProps from '../components/Feature/FeatureProps';
 import FeatureNotes from '../components/Feature/FeatureNotes';
 import HubEditButton from '../components/Hub/HubEditButton';
 import ImageCrop from '../components/ImageCrop';
@@ -249,10 +248,12 @@ export default class FeatureInfo extends MapHubsComponent {
 
       }
 
+      /*
       var data = [];
       for (var key in geoJSONProps){
         data.push({tag: key, value: geoJSONProps[key]});
       }
+      */
     }
 
     var notesEditButton = '', photoEditButton = '';
@@ -404,9 +405,7 @@ export default class FeatureInfo extends MapHubsComponent {
 
 
                 <h5>{this.__('Attributes')}</h5>
-                <Griddle results={data} showFilter={true} showSettings={false} resultsPerPage={10}
-                  useFixedLayout={false} tableClassName="responsive-table highlight striped bordered"
-                  useGriddleStyles={false} />
+                <FeatureProps data={geoJSONProps} presets={this.props.layer.presets}/>
               </div>
               <div id="photo" className="col s12" style={{height: 'calc(100% - 48px)', textAlign: 'center'}}>
                 {photo}
