@@ -269,7 +269,7 @@ module.exports = {
         }else if(userStories && userStories.length > 0){
           debug('found a user story');
           // the story must belong to the requesting user
-          if(parseInt(userStories[0].user_id) == parseInt(user_id)){
+          if(parseInt(userStories[0].user_id) === parseInt(user_id)){
             debug('user: ' + user_id + ' is the owner of story: ' + story_id);
             return true;
           }else {
@@ -288,7 +288,7 @@ module.exports = {
       return knex('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
         .then((hubResult) => {
-          if (hubResult && hubResult.length == 1) {
+          if (hubResult && hubResult.length === 1) {
               return hubResult[0];
           }
           //else

@@ -18,18 +18,18 @@ module.exports = function(app: any) {
   app.get('/stories', (req, res, next) => {
     Promise.all([
       Story.getPopularStories(10),
-      Story.getFeaturedStories(10),
+      Story.getRecentStories(10),
       Page.getPageConfigs(['footer'])
     ])
       .then((results) => {
         var popularStories = results[0];
-        var featuredStories = results[1];
+        var recentStories = results[1];
         var footerConfig = results[2].footer;
         res.render('stories', {
           title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           addthis: true,
           props: {
-            popularStories, featuredStories, footerConfig
+            popularStories, recentStories, footerConfig
           }, req
         });
       }).catch(nextError(next));

@@ -13,7 +13,7 @@ export default class Stories extends MapHubsComponent {
 
   props: {
     popularStories: Array<Object>,
-    featuredStories: Array<Object>,
+    recentStories: Array<Object>,
     locale: string,
     _csrf: string,
     footerConfig: Object
@@ -34,12 +34,12 @@ export default class Stories extends MapHubsComponent {
   }
 
 	render() {
-    var featured = '';
-    if(this.props.featuredStories && this.props.featuredStories.length > 0){
-      featured = (
+    var recent = '';
+    if(this.props.recentStories && this.props.recentStories.length > 0){
+      recent = (
         <div className="col s12 m12 l6">
-          <h4>{this.__('Featured Stories')}</h4>
-            {this.props.featuredStories.map((story) => {
+          <h4>{this.__('Recent Stories')}</h4>
+            {this.props.recentStories.map((story) => {
               return (
                 <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className="card-content">
@@ -59,7 +59,7 @@ export default class Stories extends MapHubsComponent {
         <div>
 
           <div className="row">
-            {featured}
+            {recent}
             <div className="col s12 m12 l6">
               <h4>{this.__('Popular Stories')}</h4>
               {this.props.popularStories.map((story) => {
