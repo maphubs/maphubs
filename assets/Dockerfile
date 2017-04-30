@@ -8,7 +8,7 @@ RUN mkdir -p /data && mkdir -p /app
 WORKDIR /data
 
 COPY ./assets /data/assets
-COPY ./public /data/public
+#COPY ./public /data/public
 #update modified timestamps since docker doesn't copy them, needed for last-modified HTTP header
 RUN find . -exec touch {} \;
 

@@ -34,3 +34,4 @@ web-secret.env
 db-pass.env
 css/maphubs.css
 .env
+assets/public

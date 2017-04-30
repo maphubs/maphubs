@@ -18,10 +18,6 @@ http {
 
     root /data;
     
-    location /public/ {
-      access_log off;
-    } 
-
     location /assets/ {
       expires 7d;
       access_log off;
@@ -29,8 +25,5 @@ http {
       add_header Cache-Control "public";
     } 
 
-    location /edit/ {
-      access_log off;
-    } 
   }
 }
