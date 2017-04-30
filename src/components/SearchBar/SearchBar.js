@@ -122,7 +122,11 @@ export default class SearchBar extends React.Component {
   handleChange = (e) => {
     clearTimeout(this._timerId);
     let input = e.target.value;
-    if (!input) return this.setState(this.getInitialState());
+    if (!input) return this.setState({
+      value: '',
+      suggestions: [],
+      highlightedItem: -1
+    });
     this.setState({value: input});
 
     this._timerId = setTimeout(() => {
@@ -143,21 +147,19 @@ export default class SearchBar extends React.Component {
 
   search = (value) => {
     clearTimeout(this._timerId);
-    let {suggestions, highlightedItem} = this.getInitialState();
     this.setState({
-      suggestions,
-      highlightedItem
+      suggestions: [],
+      highlightedItem: -1
     });
     this.props.onSubmit(value);
   }
 
   reset = () => {
     clearTimeout(this._timerId);
-    let {suggestions, highlightedItem} = this.getInitialState();
     this.setState({
       value: {key: '', value: ''},
-      suggestions,
-      highlightedItem
+      suggestions: [],
+      highlightedItem: -1
     });
     if(this.props.onReset) this.props.onReset();
   }

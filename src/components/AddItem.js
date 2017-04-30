@@ -152,7 +152,11 @@ export default class AddItem extends MapHubsComponent {
  handleChange = (e: any) => {
    clearTimeout(this._timerId);
    let input = e.target.value;
-   if (!input) return this.setState(this.getInitialState());
+   if (!input) return this.setState({ 
+      value: '',
+      suggestions: [],
+      highlightedItem: -1,
+      option: false});
    this.setState({value: {key: input, value:input}});
 
    this._timerId = setTimeout(() => {
@@ -170,7 +174,11 @@ export default class AddItem extends MapHubsComponent {
    if (!this.state.value) return;
    this.props.onAdd({value: this.state.value, option: this.state.option});
    //reset form
-   this.setState(this.getInitialState());
+   this.setState({ value: '',
+      suggestions: [],
+      highlightedItem: -1,
+      option: false
+    });
  }
 
  render() {

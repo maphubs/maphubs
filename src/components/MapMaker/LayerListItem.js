@@ -34,10 +34,8 @@ class LayerListItem extends MapHubsComponent {
     index: number
   }
 
-  getDefaultProps(){
-    return {
+  static defaultProps = {
       showVisibility: false
-    };
   }
 
   componentDidMount(){
