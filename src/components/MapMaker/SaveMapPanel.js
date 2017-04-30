@@ -97,7 +97,7 @@ export default class SaveMapPanel extends MapHubsComponent {
         //show group selection
          groups = (
           <div className="row">       
-            <SelectGroup groups={this.props.groups} type="map" canChangeGroup={!editing} editing={editing}/>
+            <SelectGroup groups={this.props.groups} group_id={this.state.owned_by_group_id} type="map" canChangeGroup={!editing} editing={editing}/>
           </div>        
         );
       }

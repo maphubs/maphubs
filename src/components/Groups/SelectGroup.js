@@ -71,6 +71,7 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
   render(){
 
     var startEmpty = true;
+    var owner;
     if(this.state.group_id){
       startEmpty = false;
     }
@@ -97,6 +98,14 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
         </div>
         );
 
+      }else if(this.state.group_id){
+        owner = this.getOwnerGroup(this.state.group_id);
+        groups = (
+          <div className="row">
+            <b>{this.__('Group:')} </b>{owner.name}
+          </div>
+        );
+
       }else{
         groups = (
           <div className="row">
@@ -108,7 +117,6 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
       var privateToggle = '';
 
       if(this.state.group_id){
-        var owner = this.getOwnerGroup(this.state.group_id);
         //check if allowed to have private content
         var privateAllowed = false;
         var overLimit = false;        
