@@ -7,7 +7,7 @@ import Promise from 'bluebird';
 
 import MessageActions from '../actions/MessageActions';
 var $ = require('jquery');
-import Cropper from 'react-cropper';
+//import Cropper from 'react-cropper';
 var EXIF = require('exif-js');
 import MapHubsComponent from './MapHubsComponent';
 
@@ -109,11 +109,7 @@ resizeImage = (sourceCanvas: any) => {
   if (typeof window === 'undefined') {
     return;
   }else{
-    //pica = require('pica');
-    pica = require("../../node_modules/pica/dist/pica.min.js");
-    //require('pica/lib/webgl/fsh-lanczos-1d-covolve-horizontal.frag');
-    //require('pica/lib/webgl/fsh-lanczos-1d-covolve-vertical.frag');
-    //require('pica/lib/webgl/vsh-basic.vert');
+    pica = require("../../node_modules/pica/dist/pica.min.js")();
   }
 
   var _this = this;
@@ -185,6 +181,20 @@ resizeImage = (sourceCanvas: any) => {
   dest.width = scaledWidth;
   dest.height = scaledHeight;
   if(pica){
+
+    return pica.resize(sourceCanvas, dest, {
+      alpha,
+      unsharpAmount: 80,
+      unsharpRadius: 0.6,
+      unsharpThreshold: 2
+    })
+    .then(result => {
+      var data = result.toDataURL(_this.state.file.type, quality);
+      fulfill(data);
+    }).catch(err => {
+      reject(err);
+    });
+/*
     pica.resizeCanvas(sourceCanvas, dest, {alpha}, (err) => {
     if(err){
       reject(err);
@@ -192,6 +202,7 @@ resizeImage = (sourceCanvas: any) => {
     var data = dest.toDataURL(_this.state.file.type, quality);
     fulfill(data);
   });
+  */
   }
 
   });
@@ -389,9 +400,9 @@ resizeImage = (sourceCanvas: any) => {
   render(){
 
     var cropper = '';
-    if (typeof window !== 'undefined') {
-      //var Cropper = require('react-cropper');
-      if(this.state.src){
+    if(this.state.src){
+      if (typeof window !== 'undefined') {
+        const Cropper = require('react-cropper').default;  
         cropper = (
           <Cropper
             style={{height: 'calc(100% - 10px)', paddingBottom: '10px', width: '100%'}}
@@ -402,15 +413,14 @@ resizeImage = (sourceCanvas: any) => {
             ref='cropper'
             crop={this._crop} />
         );
-      } else {
-          cropper = (
-            <div className="valign-wrapper" style={{height: '75%'}}>
-              <h5 className="center-align valign" style={{margin: 'auto'}}>{this.__('Choose an image file')}</h5>
-            </div>
-          );
+      } 
+    }else {
+      cropper = (
+        <div className="valign-wrapper" style={{height: '75%'}}>
+          <h5 className="center-align valign" style={{margin: 'auto'}}>{this.__('Choose an image file')}</h5>
+        </div>
+      );
       }
-
-    }
 
     var toolButtons = '', saveButton = '', cropOriginalBtn = '', crop16by9Btn = '', crop3by2Btn = '', cropSquareBtn = '';
     if(this.state.src){

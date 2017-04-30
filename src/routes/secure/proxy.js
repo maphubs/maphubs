@@ -9,7 +9,7 @@ module.exports = function(app: any) {
   //if tiles requests make it to the web app, proxy them from here
   //needed for generating screenshots on local MapHubs Pro deployments
   app.use('/tiles', proxy(local.tileServiceInternalUrl, {
-  forwardPath(req) {
+  proxyReqPathResolver(req) {
     var url: Object = require('url').parse(req.url); 
     var path = '/tiles' + url.path;
     debug(path);
@@ -18,7 +18,7 @@ module.exports = function(app: any) {
   }));
   
   app.use('/screenshots', proxy(local.manetUrl, {
-  forwardPath(req) {
+  proxyReqPathResolver(req) {
     var url: Object = require('url').parse(req.url); 
     var path = url.path;
     debug(path);
