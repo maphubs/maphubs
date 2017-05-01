@@ -54,4 +54,4 @@ npm start
 
 GPL-v2 see LICENSE.txt
 
-This project contains a fork of Macrocosm https://github.com/developmentseed/macrocosm licensed under GPL-v2
+Previous versions of this code (< v0.8.x) contained a fork of Macrocosm https://github.com/developmentseed/macrocosm licensed under GPL-v2
