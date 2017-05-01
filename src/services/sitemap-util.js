@@ -6,6 +6,8 @@ var Map = require('../models/map');
 var Group = require('../models/group');
 var slug = require('slug');
 var urlUtil = require('./url-util');
+var knex = require('../connection.js');
+var Promise = require('bluebird');
 
 module.exports = {
 
@@ -70,10 +72,11 @@ module.exports = {
   },
 
   addMapsToSiteMap(sm: any){
+    var baseUrl = urlUtil.getBaseUrl();
     return Map.getAllMaps()
     .then((maps) => {
       maps.forEach((map) => {
-        var mapUrl =  urlUtil.getBaseUrl() + '/user/' + map.username + '/map/' + map.map_id;
+        var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slug(map.title)}`;
         var lastmodISO = null;
         if(map.updated_at) lastmodISO = map.updated_at.toISOString();
         sm.add({
@@ -98,5 +101,41 @@ module.exports = {
       });
       return sm;
     });
+  },
+
+  addFeaturesToSiteMap(sm: any){
+    //get all layers
+    var baseUrl = urlUtil.getBaseUrl();
+    return Layer.getAllLayers()
+    .then((layers) => {
+      let featureQueries = [];
+      layers.forEach((layer) => {
+        if(!layer.is_external && !layer.remote && !layer.private){
+          let layer_id = layer.layer_id;
+          var lastmodISO = null;
+          if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
+          featureQueries.push(knex(`layers.data_${layer_id}`).select('mhid')
+            .then(features => {
+              if(features && Array.isArray(features)){
+                features.forEach(feature => {
+                  if(feature && feature.mhid){
+                    let featureId = feature.mhid.split(':')[1];
+                      sm.add({
+                        url: baseUrl + `/feature/${layer_id}/${featureId}/`,
+                        changefreq: 'weekly',
+                        lastmodISO
+                      });
+                  }
+                });
+              }            
+            })
+          );
+        }  
+    });
+    return Promise.all(featureQueries)
+    .then(() => {
+      return sm;
+    });
+  });
   }
 };

@@ -45,7 +45,8 @@ module.exports = function(app) {
         siteMapUtil.addStoriesToSiteMap(sm),
         siteMapUtil.addMapsToSiteMap(sm),
         siteMapUtil.addLayersToSiteMap(sm),
-        siteMapUtil.addGroupsToSiteMap(sm)
+        siteMapUtil.addGroupsToSiteMap(sm),
+        siteMapUtil.addFeaturesToSiteMap(sm)
       ]).then(() => {
         sm.toXML((err, xml) => {
           if(err){
