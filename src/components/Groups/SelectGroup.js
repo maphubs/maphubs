@@ -118,6 +118,7 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
 
       if(this.state.group_id){
         //check if allowed to have private content
+        owner = this.getOwnerGroup(this.state.group_id);
         var privateAllowed = false;
         var overLimit = false;        
         var itemCount, itemLimit, itemName;
