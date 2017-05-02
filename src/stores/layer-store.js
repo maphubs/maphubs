@@ -15,7 +15,8 @@ export default class LayerStore extends Reflux.Store {
     this.state = {
       layer: emptyLayer,
       mapColor: '#FF0000',
-      groups: []
+      groups: [],
+      tileServiceInitialized: false
     };
     this.listenables = Actions;
     this.listenTo(PresetActions.presetsChanged, this.presetsChanged);
@@ -31,7 +32,7 @@ export default class LayerStore extends Reflux.Store {
     return sourceConfig;
   }
 
-  loadLayer(layer){
+  loadLayer(layer: Object){
     var mapColor = this.state.mapColor;
     if(layer.settings && layer.settings.color){
       mapColor = layer.settings.color;
@@ -94,7 +95,7 @@ export default class LayerStore extends Reflux.Store {
     this.trigger(this.state);
   }
 
-  initLayer(layer){
+  initLayer(layer: Object){
     if(!layer.style){
       layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);   
     }
@@ -117,7 +118,7 @@ export default class LayerStore extends Reflux.Store {
     return layer;
   }
 
-  createLayer(_csrf, cb){
+  createLayer(_csrf: string, cb: Function){
     var _this = this;
     var layer = this.state.layer;
     request.post('/api/layer/admin/createLayer')
@@ -135,7 +136,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  saveSettings(data, _csrf, initLayer, cb){
+  saveSettings(data, _csrf, initLayer, cb: Function){
     var _this = this;
     request.post('/api/layer/admin/saveSettings')
     .type('json').accept('json')
@@ -167,7 +168,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  saveDataSettings(data, _csrf, cb){
+  saveDataSettings(data, _csrf, cb: Function){
     debug("saveDataSettings");
     var _this = this;
     var layer = this.state.layer;
@@ -198,7 +199,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  setStyle(style, labels, legend_html, settings, preview_position, cb){
+  setStyle(style, labels, legend_html, settings, preview_position, cb: Function){
     var layer = this.state.layer;
     layer.style = style;
     layer.labels = labels;
@@ -216,7 +217,7 @@ export default class LayerStore extends Reflux.Store {
     if(cb) cb();
   }
 
-  setDataType(data_type){
+  setDataType(data_type: string){
     var layer = this.state.layer;
     layer.data_type = data_type;
 
@@ -224,7 +225,7 @@ export default class LayerStore extends Reflux.Store {
     this.trigger(this.state);
   }
 
-  presetsChanged(presets){
+  presetsChanged(presets: Object){
     var layer = this.state.layer;
     layer.presets = presets;
 
@@ -232,7 +233,7 @@ export default class LayerStore extends Reflux.Store {
     this.trigger(this.state);
   }
 
-  setComplete(_csrf, cb){
+  setComplete(_csrf: string, cb: Function){
     var _this = this;
     var layer = this.state.layer;
     layer.complete = true;
@@ -251,7 +252,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  saveStyle(data, _csrf, cb){
+  saveStyle(data: Object, _csrf: string, cb: Function){
     var _this = this;
     var layer = this.state.layer;
     request.post('/api/layer/admin/saveStyle')
@@ -277,7 +278,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  loadData(_csrf, cb){
+  loadData(_csrf: string, cb: Function){
     debug("loadData");
     var _this = this;
     request.post('/api/layer/create/savedata/' + _this.state.layer.layer_id)
@@ -292,7 +293,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  initEmptyLayer(_csrf, cb){
+  initEmptyLayer(_csrf: string, cb: Function){
     debug("initEmptyLayer");
     var _this = this;
     request.post('/api/layer/create/empty/' + _this.state.layer.layer_id)
@@ -307,7 +308,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  finishUpload(requestedShapefile, _csrf, cb){
+  finishUpload(requestedShapefile: string, _csrf: string, cb: Function){
     var _this = this;
     request.post('/api/layer/finishupload')
     .type('json').accept('json')
@@ -323,7 +324,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  deleteData(data, _csrf, cb){
+  deleteData(data: Object, _csrf: string, cb: Function){
     var _this = this;
     request.post('/api/layer/deletedata/' + _this.state.layer.layer_id)
     .type('json').accept('json')
@@ -335,7 +336,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  deleteLayer(_csrf, cb){
+  deleteLayer(_csrf: string, cb: Function){
     var _this = this;
     request.post('/api/layer/admin/delete')
     .type('json').accept('json')
@@ -350,7 +351,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
   
-  cancelLayer(_csrf, cb){
+  cancelLayer(_csrf: string, cb: Function){
     var _this = this;
     request.post('/api/layer/admin/delete')
     .type('json').accept('json')
@@ -365,5 +366,9 @@ export default class LayerStore extends Reflux.Store {
         cb();
       });
     });
+  }
+
+  tileServiceInitialized(){
+    this.setState({tileServiceInitialized: true});
   }
 }

@@ -78,7 +78,7 @@ export default class CreateLayer extends MapHubsComponent {
           </div>
           <div className="col s6 m3 l2">
             <SourceSelectionBox name={this.__('GeoJSON URL')} value={'geojson'} 
-            selected={this.state.source === 'gejosn'} icon="cloud_download"
+            selected={this.state.source === 'geojson'} icon="cloud_download"
             onSelect={this.selectSource} />
           </div>
           <div className="col s6 m3 l2">
@@ -103,7 +103,7 @@ export default class CreateLayer extends MapHubsComponent {
           </div>
           <div className="col s6 m3 l2">
             <SourceSelectionBox name={this.__('MapHubs Layer')} value={'remote'} 
-            selected={this.state.source === 'ags'} icon="cloud_download"
+            selected={this.state.source === 'maphubs'} icon="cloud_download"
             onSelect={this.selectSource} />
           </div>
           {planetSource}

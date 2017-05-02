@@ -13,7 +13,7 @@ import urlUtil from '../../services/url-util';
 import OpacityChooser from '../LayerDesigner/OpacityChooser';
 import LayerDesigner from '../LayerDesigner/LayerDesigner';
 import MapHubsComponent from '../MapHubsComponent';
-import Reflux from 'reflux';
+//import Reflux from 'reflux';
 
 export default class LayerStyle extends MapHubsComponent {
 
@@ -35,21 +35,15 @@ export default class LayerStyle extends MapHubsComponent {
     this.stores.push(LayerStore);
     this.state = {      
       rasterOpacity: 100,
-      saving: false,
-      showMap: !props.waitForTileInit
+      saving: false
     };
   }
 
   componentDidMount() {
-    Reflux.listenTo(LayerActions.tileServiceInitialized, 'tileServiceInitialized');
+    //Reflux.listenTo(LayerActions.tileServiceInitialized, 'tileServiceInitialized');
     $('.collapsible').collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
-  }
-
-  tileServiceInitialized = () => {
-    this.setState({showMap: true});
-    //this.refs.map.reload();
   }
 
   onSubmit = () => {
@@ -146,6 +140,8 @@ export default class LayerStyle extends MapHubsComponent {
 
 	render() {
 
+    const showMap = this.props.waitForTileInit ? this.state.tileServiceInitialized : true;
+
     var mapExtent = null;
     if(this.state.layer.preview_position && this.state.layer.preview_position.bbox){
       var bbox = this.state.layer.preview_position.bbox;
@@ -155,7 +151,7 @@ export default class LayerStyle extends MapHubsComponent {
     var map = '';
     if(this.state.layer.layer_id !== undefined
       && this.state.layer.layer_id !== -1
-      && this.state.showMap){
+      && showMap){
         map = (
           <div>
             <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
