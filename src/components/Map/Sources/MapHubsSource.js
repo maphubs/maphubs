@@ -24,7 +24,7 @@ GJV.define("Position", (position) => {
 
 var mapboxgl = {};
 if (typeof window !== 'undefined') {
-    mapboxgl = require("../../../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js");
+    mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 }
 
 var MapHubsSource = {

@@ -117,6 +117,8 @@
     "mailchimp-api-v3": "^1.7.0",
     "mailcomposer": "3.12.0",
     "mailgun-js": "^0.10.1",
+    "mapbox-gl": "^0.36.0",
+    "mapbox-gl-arcgis-tiled-map-service": "^0.1.0",
     "materialize-css": "^0.98.2",
     "medium-editor": "^5.23.0",
     "moment": "^2.18.1",

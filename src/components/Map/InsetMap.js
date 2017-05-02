@@ -8,7 +8,7 @@ import MapToolButton from './MapToolButton';
 var mapboxgl = {};
 
 if (typeof window !== 'undefined') {
-    mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js");
+    mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 }
 export default class InsetMap extends React.Component {
 

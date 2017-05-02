@@ -13,7 +13,7 @@ require("materialize-css");
 require("cropperjs/dist/cropper.css");
 import AddPhotoPoint from '../views/addphotopoint';
 
-require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
+require('mapbox-gl/dist/mapbox-gl.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 
 

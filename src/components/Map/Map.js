@@ -30,9 +30,10 @@ import MapHubsComponent from '../MapHubsComponent';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 
-var mapboxgl = {};
+var mapboxgl = {}, ArcGISTiledMapServiceSource;
 if (typeof window !== 'undefined') {
-    mapboxgl = require("../../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js");
+    mapboxgl = require("mapbox-gl/dist/mapbox-gl-dev.js");
+    ArcGISTiledMapServiceSource  = require('mapbox-gl-arcgis-tiled-map-service/dist/mapbox-gl-arcgis-tiled-map-service-dev');
 }
 
 type Props = {
@@ -395,6 +396,12 @@ export default class Map extends MapHubsComponent<void, Props, State> {
       hash: _this.props.hash,
       attributionControl: _this.props.attributionControl
     });
+
+  map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
+    if(err){
+      debug(err);
+    }
+  });
 
   map.on('style.load', () => {
     debug('(' + _this.state.id + ') ' +'style.load');

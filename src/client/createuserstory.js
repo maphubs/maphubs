@@ -10,7 +10,7 @@ require('../../node_modules/react-colorpickr/dist/colorpickr.css');
 
 
 require('./story.css');
-require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
+require('mapbox-gl/dist/mapbox-gl.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');

@@ -6,7 +6,7 @@ require('jquery');
 require("materialize-css");
 import EmbedMap from '../views/embedmap';
 
-require('../../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.css');
+require('mapbox-gl/dist/mapbox-gl.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 
 

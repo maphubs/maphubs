@@ -31,7 +31,7 @@ Promise.config({
 });
 
 require('babel-core/register')({
-  ignore: /assets.*|node_modules\/(?!(react-data-grid|react-disqus-thread|medium-editor|react-colorpickr)).*/
+  ignore: /assets.*|node_modules\/(?!(react-data-grid|react-disqus-thread|medium-editor|react-colorpickr|mapbox-gl)).*/
 });
 require('babel-polyfill');
 

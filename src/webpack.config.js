@@ -3,7 +3,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
-var pathToMapboxGL = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js');
+var pathToMapboxGL = path.resolve(__dirname, '../node_modules/mapbox-gl/dist/mapbox-gl.js');
 var pathToMapboxGLDraw = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
 var pathToPica = path.resolve(__dirname, '../node_modules/pica/dist/pica.min.js');
 var pathToMediumEditor = path.resolve(__dirname, '../node_modules/medium-editor/dist/js/medium-editor.js');
@@ -68,7 +68,7 @@ module.exports = {
     emailconfirmation: "./src/client/emailconfirmation",
     vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
     locales: ["./src/services/locales"],
-    mapboxgl: ["./assets/assets/js/mapbox-gl/mapbox-gl-0-32-1.js"]
+    mapboxgl: ["mapbox-gl"]
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json']
@@ -96,7 +96,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /react-colorpickr/],       
+        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /react-colorpickr/, /mapbox-gl/],       
         options: {
           presets: [
             "es2015",
