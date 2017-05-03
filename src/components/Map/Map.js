@@ -413,9 +413,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
       if(!_this.props.data && _this.state.restoreBounds){
         var fitBounds = _this.state.restoreBounds;
         if(fitBounds.length > 2){
-          var sw = new mapboxgl.LngLat(fitBounds[0], fitBounds[1]);
-          var ne = new mapboxgl.LngLat(fitBounds[2], fitBounds[3]);
-          fitBounds = new mapboxgl.LngLatBounds(sw, ne);
+          fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
         }
         debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
         
@@ -498,7 +496,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     }
 
     var fitBoundsChanging = false;
-    var bounds = null;
+    var bounds: any;
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
 
     if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds) && this.map){
@@ -506,13 +504,11 @@ export default class Map extends MapHubsComponent<void, Props, State> {
       fitBoundsChanging = true;
       allowLayersToMoveMap = false;
       if(nextProps.fitBounds.length > 2){
-        var sw = new mapboxgl.LngLat(nextProps.fitBounds[0], nextProps.fitBounds[1]);
-        var ne = new mapboxgl.LngLat(nextProps.fitBounds[2], nextProps.fitBounds[3]);
-        bounds = new mapboxgl.LngLatBounds(sw, ne);
+        bounds = [[nextProps.fitBounds[0], nextProps.fitBounds[1]], [nextProps.fitBounds[2], nextProps.fitBounds[3]]];
       }else{
         bounds = nextProps.fitBounds;
       }
-      debug('(' + this.state.id + ') ' +'bounds: ' + bounds);
+      debug('(' + this.state.id + ') ' +'bounds: ' + bounds.toString());
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {

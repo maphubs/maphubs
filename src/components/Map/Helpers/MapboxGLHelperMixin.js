@@ -1,9 +1,5 @@
 //var _includes = require('lodash.includes');
 var debug = require('../../../services/debug')('mapboxGLHelperMixin');
-var mapboxgl = {};
-if (typeof window !== 'undefined') {
-    mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
-}
 
 /**
  * Helper functions for interfacing with MapboxGL
@@ -39,16 +35,12 @@ export default function(){
   };
 
   this.getBoundsObject = (bbox) => {
-    var sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
-    var ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
-    return new mapboxgl.LngLatBounds(sw, ne);
+    return [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
   };
 
   this.fitBounds = (bbox, maxZoom, padding = 0, animate = true) => {
-    var sw = new mapboxgl.LngLat(bbox[0], bbox[1]);
-    var ne = new mapboxgl.LngLat(bbox[2], bbox[3]);
-    var llb = new mapboxgl.LngLatBounds(sw, ne);
-    _this.map.fitBounds(llb, {padding, curve: 1, speed:0.6, maxZoom, animate});
+    var bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
+    _this.map.fitBounds(bounds, {padding, curve: 1, speed:0.6, maxZoom, animate});
   };
 
   this.changeLocale = (locale, map) => {

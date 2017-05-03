@@ -74,6 +74,8 @@ type $JSXIntrinsics = {
   rect: JSXHelper<{x: number, y: number, width: number, height: number}>
 };
 
+declare type NestedArray<T> = Array<T | NestedArray<T>>
+
 declare module 'uuid/v4' {
   declare module.exports: any;
 }

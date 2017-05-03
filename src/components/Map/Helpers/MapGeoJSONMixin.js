@@ -1,10 +1,5 @@
 var debug = require('../../../services/debug')('MapGeoJSONMixin');
 var styles = require('../styles');
-
-var mapboxgl = {};
-if (typeof window !== 'undefined') {
-    mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
-}
 var _bbox = require('@turf/bbox');
 
 export default function(){
@@ -56,10 +51,8 @@ export default function(){
       let e = bbox[3];
       if(e > 85) e = 85;
 
-      let sw = new mapboxgl.LngLat(s, w);
-      let ne = new mapboxgl.LngLat(n, e);
-      let llb = new mapboxgl.LngLatBounds(sw, ne);
-      _this.map.fitBounds(llb, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
+      var bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
+      _this.map.fitBounds(bounds, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
     }  
   };
 }
