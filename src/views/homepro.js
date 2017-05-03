@@ -28,11 +28,11 @@ type Props = {
   }
 
   type State = {
-    trendingStoryCards: Array<Object>,
-    trendingMapCards: Array<Object>,
-    trendingHubCards: Array<Object>,
-    trendingGroupCards: Array<Object>,
-    trendingLayerCards: Array<Object>
+    collectionStoryCards: Array<Object>,
+    collectionMapCards: Array<Object>,
+    collectionHubCards: Array<Object>,
+    collectionGroupCards: Array<Object>,
+    collectionLayerCards: Array<Object>
   }
 
 
@@ -43,15 +43,23 @@ export default class HomePro extends MapHubsComponent<void, Props, State> {
 
   props: Props
 
+  static defaultProps = {
+    trendingStories: [],
+    trendingMaps: [],
+    trendingHubs: [],
+    trendingGroups: [],
+    trendingLayers: []
+  }
+
   constructor(props: Object) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
-      trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
-      trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
-      trendingHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
-      trendingGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
-      trendingLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
+      collectionStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
+      collectionMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
+      collectionHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
+      collectionGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
+      collectionLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
     };
   }
 
@@ -86,27 +94,38 @@ export default class HomePro extends MapHubsComponent<void, Props, State> {
   }
 
   renderCarousel = (config: Object, key: string) => {
-    var trendingCards = cardUtil.combineCards([this.state.trendingLayerCards,
-    this.state.trendingGroupCards,
-    this.state.trendingHubCards,
-    this.state.trendingMapCards,
-    this.state.trendingStoryCards]);
+    var collectionCards = cardUtil.combineCards([this.state.collectionLayerCards,
+    this.state.collectionGroupCards,
+    this.state.collectionHubCards,
+    this.state.collectionMapCards,
+    this.state.collectionStoryCards]);
 
      var bgColor = config.bgColor ? config.bgColor : 'inherit';
+
+     var trendingIcon = '';
+     if(config.trendingIcon){
+       trendingIcon = (
+        <i className="material-icons" style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
+                
+       );
+     }
+
+     var title = config.title ? this._o_(config.title) : this.__('Trending');
+     
 
     return (
       <div key={key} className="row" style={{marginBottom: '50px', backgroundColor: bgColor}}>
            <div className="row no-margin" style={{height: '50px'}}>
              <div>
                 <h5 className="no-margin center-align" style={{lineHeight: '50px'}}>
-                  {this.__('Trending')}
-                  <i className="material-icons" style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
+                  {title}
+                  {trendingIcon}
                 </h5>
              </div>
            </div>
            <div className="row">
              <div className="col s12">
-               <CardCarousel cards={trendingCards} infinite={false}/>
+               <CardCarousel cards={collectionCards} infinite={false}/>
              </div>
            </div>
         </div>
