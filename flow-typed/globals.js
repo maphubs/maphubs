@@ -79,3 +79,8 @@ declare type NestedArray<T> = Array<T | NestedArray<T>>
 declare module 'uuid/v4' {
   declare module.exports: any;
 }
+
+
+declare class LocalizedString { 
+  [locale: string]: string 
+}

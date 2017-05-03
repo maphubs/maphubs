@@ -1,10 +1,6 @@
 import Reflux from 'reflux';
 import Locales  from '../services/locales';
 import LocaleStore from '../stores/LocaleStore';
-//import LocaleActions from '../actions/LocaleActions';
-//import Rehydrate from 'reflux-rehydrate';
-//import debugFactory from '../services/debug';
-//let debug = debugFactory('MapHubsComponent');
 
 export default class MapHubsComponent extends Reflux.Component {
 
@@ -22,6 +18,16 @@ export default class MapHubsComponent extends Reflux.Component {
       return Locales.getLocaleString(this.state.locale, text);
     }else{
       return text;
+    }
+  }
+
+   _o_ = (localizedString) => {
+    if(this.state.locale && localizedString[this.state.locale]){
+      return localizedString[this.state.locale];
+    }else if(localizedString['en']){
+      return localizedString['en'];
+    }else{
+      return '';
     }
   }
 }
