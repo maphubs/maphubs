@@ -416,12 +416,8 @@ export default class Map extends MapHubsComponent<void, Props, State> {
         if(fitBounds.length > 2){
           fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
         }
-        debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);
-        
+        debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
         map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
-        if(_this.refs.insetMap){
-          _this.refs.insetMap.fitBounds(fitBounds, {maxZoom: 1.8, padding: 10, animate:false});
-        }     
       }
       //set locale
       if(_this.state.locale !== 'en'){
@@ -443,6 +439,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     if(_this.refs.insetMap){
       if(!_this.refs.insetMap.getInsetMap()){
         _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap);
+        map.on('move', () => {_this.refs.insetMap.sync(map);});
       } 
     }
   });//end style.load
@@ -561,9 +558,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
            }
            debug('(' + this.state.id + ') ' +'calling map fitBounds');
            this.map.fitBounds(bounds, this.props.fitBoundsOptions);
-            if(this.refs.insetMap){
-              this.refs.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate:false});
-            }
+
            this.setState({allowLayersToMoveMap, restoreBounds: bounds});
         }
      }
@@ -636,7 +631,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
 
       if(_this.refs.insetMap){
         _this.refs.insetMap.reloadInset(baseMapUrl);
-        _this.refs.insetMap.fitBounds(_this.map.getBounds(), {maxZoom: 1.8, padding: 10, animate:false});
+         _this.refs.insetMap.sync(_this.map);
       }
 
       if(_this.state.forestAlerts){

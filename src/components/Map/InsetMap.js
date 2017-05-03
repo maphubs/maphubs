@@ -69,6 +69,7 @@ export default class InsetMap extends React.Component {
         container: this.props.id  + '_inset',
         style: baseMap,
         zoom: 0,
+        maxZoom: 1.8,
         interactive: false,
         center,
         attributionControl: this.props.attributionControl
@@ -76,7 +77,6 @@ export default class InsetMap extends React.Component {
 
       insetMap.on('style.load', () => {
 
-        insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10});
         //create geojson from bounds
         var geoJSON = _this.getGeoJSONFromBounds(bounds);
         geoJSON.features[0].properties = {'v': 1};
@@ -115,7 +115,7 @@ export default class InsetMap extends React.Component {
 
       });
       _this.insetMap = insetMap;
-
+      return insetMap;
   }
 
   reloadInset = (baseMapUrl: string) => {
@@ -124,9 +124,9 @@ export default class InsetMap extends React.Component {
     } 
   }
 
-  fitBounds = (bounds: Object, options: Object) => {
+  sync = (map: Object) => {
     if(this.insetMap){
-      this.insetMap.fitBounds(bounds, options);
+      this.updateInsetGeomFromBounds(map);
     }
   }
 
@@ -171,11 +171,14 @@ export default class InsetMap extends React.Component {
     return false;
   }
 
-   updateInsetGeomFromBounds = (bounds: Object, zoom: number) => {
+   updateInsetGeomFromBounds = (map: Object) => {
+     var bounds = map.getBounds();
+     var zoom = map.getZoom();
+     var center = map.getCenter();
      if(this.insetMap){
       var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
       var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");
-      if(insetGeoJSONData){
+      if(insetGeoJSONData || insetGeoJSONCentroidData){
         try{
           var geoJSONBounds = this.getGeoJSONFromBounds(bounds);
           geoJSONBounds.features[0].properties = {'v': 1};
@@ -184,19 +187,21 @@ export default class InsetMap extends React.Component {
           geoJSONCentroid.properties = {'v': 1};
           insetGeoJSONCentroidData.setData(geoJSONCentroid);
           this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
-
+          
           if(zoom < 2.3){
             this.insetMap.setFilter('center', ['==', 'v', 2]);
-            this.insetMap.setFilter('bounds', ['==', 'v', 2]);
+            this.insetMap.setFilter('bounds', ['==', 'v', 2]);       
+            this.insetMap.jumpTo({center}, {maxZoom: 1.5, padding: 10, animate: false});
           }else if(this.showInsetAsPoint(zoom)){
             this.insetMap.setFilter('center', ['==', 'v', 1]);
             this.insetMap.setFilter('bounds', ['==', 'v', 2]);
+            this.insetMap.fitBounds([[bounds.getWest(), bounds.getSouth()],[ bounds.getEast(), bounds.getNorth()]], {maxZoom: 1.5, padding: 10, animate: false});
           } else {
             this.insetMap.setFilter('center', ['==', 'v', 2]);
             this.insetMap.setFilter('bounds', ['==', 'v', 1]);
+            this.insetMap.fitBounds([[bounds.getWest(), bounds.getSouth()],[ bounds.getEast(), bounds.getNorth()]], {maxZoom: 1.5, padding: 10, animate: false});
           }
-
-          this.insetMap.fitBounds(bounds, {maxZoom: 1.8, padding: 10, animate: false});
+     
         }catch(err){
             debug(err);
         }

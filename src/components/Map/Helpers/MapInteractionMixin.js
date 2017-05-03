@@ -115,9 +115,6 @@ export default function() {
 
   this.moveendHandler = (e) => {
      debug('mouse up fired');
-     if(_this.refs.insetMap){
-       _this.refs.insetMap.updateInsetGeomFromBounds(_this.map.getBounds(), _this.map.getZoom());
-     }
     BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
   };
 
