@@ -30,6 +30,9 @@ exports.up = function(knex, Promise) {
                     return knex.raw(`DROP VIEW layers.centroids_${layer_id}`)
                     .then(function(){  
                       return layerViews.createLayerViews(layer_id, layer.presets, knex);
+                     }).catch(function(err){
+                       console.log(err);
+                       return layerViews.createLayerViews(layer_id, layer.presets, knex);
                      });
                   });
               });
