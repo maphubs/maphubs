@@ -183,6 +183,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     //switch to interactive
     if(this.state.interactive && !prevState.interactive){    
       this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
+      this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition);
       var interaction = this.map.interaction;
       interaction.enable();
       $(this.refs.basemapButton).show();
@@ -452,7 +453,10 @@ export default class Map extends MapHubsComponent<void, Props, State> {
 
   if(_this.state.interactive){
     map.addControl(new mapboxgl.NavigationControl(), _this.props.navPosition);
+    map.addControl(new mapboxgl.FullscreenControl());
   }
+
+  
 
   map.addControl(new mapboxgl.ScaleControl({
       maxWidth: 175,
