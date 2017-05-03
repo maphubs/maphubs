@@ -17,7 +17,8 @@ export default class UserGroups extends MapHubsComponent {
     canEdit: boolean,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -77,7 +78,7 @@ export default class UserGroups extends MapHubsComponent {
   }
 		return (
       <div>
-        <Header/>
+        <Header {...this.props.headerConfig}/>
         <main style={{marginLeft: '10px', marginRight:'10px'}}>
           {message}
           {groups}

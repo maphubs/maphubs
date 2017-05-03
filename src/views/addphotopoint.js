@@ -19,7 +19,8 @@ export default class AddPhotoPoint extends MapHubsComponent {
   props: {
 		layer: Object,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   state = {
@@ -138,7 +139,7 @@ export default class AddPhotoPoint extends MapHubsComponent {
 
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <div className="container">
             <div className="row center-align">

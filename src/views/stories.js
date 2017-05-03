@@ -16,7 +16,8 @@ export default class Stories extends MapHubsComponent {
     recentStories: Array<Object>,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object){
@@ -54,7 +55,7 @@ export default class Stories extends MapHubsComponent {
 
 		return (
       <div>
-        <Header activePage="stories"/>
+        <Header activePage="stories" {...this.props.headerConfig}/>
         <main>
         <div>
 

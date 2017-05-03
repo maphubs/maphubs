@@ -13,7 +13,8 @@ export default class UserSettings extends MapHubsComponent {
   props: {
     user: Object,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   componentDidMount(){
@@ -28,7 +29,7 @@ export default class UserSettings extends MapHubsComponent {
   render() {
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main className="container">
           <h5>{this.__('User Settings')}</h5>
             <div className="row">

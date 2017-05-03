@@ -15,12 +15,11 @@ module.exports = function(app) {
 
     Admin.checkAdmin(user_id).then((isAdmin) => {
       if(isAdmin){
-        return Page.getPageConfigs([page_id, 'footer']).then((pageConfigs) => {
+        return Page.getPageConfigs([page_id]).then((pageConfigs) => {
           var pageConfig = pageConfigs[page_id];
-          var footerConfig = pageConfigs.footer;
           res.render('pageedit', {
             title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
-            props: {page_id, pageConfig, footerConfig}, req});
+            props: {page_id, pageConfig}, req});
           });
         }else{
           res.redirect('/unauthorized');

@@ -23,7 +23,8 @@ export default class Maps extends MapHubsComponent {
     popularMaps: Array<Object>,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   state = {
@@ -117,7 +118,7 @@ export default class Maps extends MapHubsComponent {
 
 		return (
       <div>
-        <Header activePage="maps" />
+        <Header activePage="maps" {...this.props.headerConfig}/>
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className="row" style={{marginBottom: '0px'}}>

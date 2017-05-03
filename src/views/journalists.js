@@ -13,6 +13,7 @@ export default class Journalists extends MapHubsComponent {
   props: {
     locale: string,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -24,7 +25,7 @@ export default class Journalists extends MapHubsComponent {
   render() {
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/MapHubs-Map.jpg"
                title={MAPHUBS_CONFIG.productName + ' ' + this.__('for Journalists')} subTitle={this.__(`

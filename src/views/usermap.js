@@ -29,7 +29,8 @@ export default class UserMap extends MapHubsComponent {
     layers: Array<Object>,
     canEdit: boolean,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -315,7 +316,7 @@ export default class UserMap extends MapHubsComponent {
 
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>         
           {map}

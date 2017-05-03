@@ -18,7 +18,8 @@ export default class CreateRemoteLayer extends MapHubsComponent {
 
   props: {
 		groups: Array,
-    locale: string
+    locale: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -128,7 +129,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
     if(!this.props.groups || this.props.groups.length === 0){
       return (
         <div>
-            <Header />
+            <Header {...this.props.headerConfig}/>
           <main>
         <div className="container">
           <div className="row">
@@ -209,7 +210,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
 
 		return (
       <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
         <main>
           <h4>{this.__('Link to a Remote Layer')}</h4>
           <div className="container center">

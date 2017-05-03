@@ -11,7 +11,8 @@ export default class Privacy extends MapHubsComponent {
   props: {
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object) {
@@ -22,7 +23,7 @@ export default class Privacy extends MapHubsComponent {
   render() {
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main className="container" lang="en">
             <div className="row">
               <h4>{MAPHUBS_CONFIG.productName + ' ' + this.__('Privacy Policy')}</h4>

@@ -13,7 +13,8 @@ export default class About extends MapHubsComponent {
     locale: string,
     _csrf: string,
     version:string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object) {
@@ -25,7 +26,7 @@ export default class About extends MapHubsComponent {
 
       return (
         <div>
-          <Header activePage="about"/>
+          <Header activePage="about" {...this.props.headerConfig}/>
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/Moabi-Aerial.jpg"
                title={this.__('About')}

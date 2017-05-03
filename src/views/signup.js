@@ -22,7 +22,8 @@ export default class Signup extends MapHubsComponent {
     email:  string,
     lockEmail:  boolean,
     inviteKey: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -154,7 +155,7 @@ export default class Signup extends MapHubsComponent {
 
     return (
       <div>
-      <Header />
+      <Header {...this.props.headerConfig}/>
       <main>
       <div className="container">
         <h4 className="center" style={{margin: 'auto'}}>{this.__('Signup for') + ' ' + MAPHUBS_CONFIG.productName}</h4>

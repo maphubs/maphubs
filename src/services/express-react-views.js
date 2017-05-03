@@ -14,6 +14,7 @@
  2) Assumes that the client will load its data out of window.__appData and use the query selector id="app"
  */
 import React from 'react';
+var Page = require('../models/page');
 var ReactDOMServer = require('react-dom/server');
 var assign = require('object-assign');
 var log = require('./log');
@@ -79,7 +80,7 @@ function createEngine(engineOptions) {
       //include version number in all pages for debugging
       options.props.version = version;
 
-      var appData = JSON.stringify(options.props, null, 2);
+      
 
       var reactMarkup = ReactDOMServer.renderToString(React.createElement(component, options.props));
 
@@ -248,7 +249,7 @@ function createEngine(engineOptions) {
           </head>
           <body>
           <div id="app">${reactMarkup}</div>
-          <script>window.__appData = ${appData}; </script>
+         
           <script type="text/javascript" src="${assetHost + getAssets('vendor').js}"></script>
           <script type="text/javascript" src="${assetHost + getAssets('locales').js}"></script>
           <script type="text/javascript" src="/clientconfig.js"></script>
@@ -333,10 +334,7 @@ function createEngine(engineOptions) {
         `;
       }
 
-      markup += `
-      </body>
-      </html>
-      `;
+     
 
     } catch (e) {
       return cb(e);
@@ -352,8 +350,27 @@ function createEngine(engineOptions) {
         }
       });
     }
-
-    cb(null, markup);
+    Page.getPageConfigs(['footer', 'header']).then(pageConfigs =>{
+      options.props.headerConfig = pageConfigs.header;
+      options.props.footerConfig = pageConfigs.footer;  
+      var appData = JSON.stringify(options.props, null, 2);
+      markup += `
+       <script>window.__appData = ${appData}; </script>
+      </body>
+      </html>
+      `;
+      cb(null, markup);
+    }).catch(err =>{
+      log.error(err);
+      var appData = JSON.stringify(options.props, null, 2);
+      markup += `
+       <script>window.__appData = ${appData}; </script>
+      </body>
+      </html>
+      `;
+      cb(null, markup);
+    });
+    
   }
 
   return renderFile;

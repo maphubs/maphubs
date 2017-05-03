@@ -18,7 +18,8 @@ export default class AdminUserInvite extends MapHubsComponent {
   props: {
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   state = {
@@ -75,7 +76,7 @@ export default class AdminUserInvite extends MapHubsComponent {
   render() {
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main className="container">
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>

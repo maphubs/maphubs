@@ -23,7 +23,8 @@ export default class HubBuilder extends MapHubsComponent {
      groups: Array<Object>,
      hub: Object,
      locale: string,
-     _csrf: string
+     _csrf: string,
+     headerConfig: Object
    }
 
    static defaultProps = {
@@ -148,7 +149,7 @@ export default class HubBuilder extends MapHubsComponent {
 
 		return (
       <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
         <div className="container">
           <h4>{this.__('Create a Hub')}</h4>
             <div className="row">

@@ -14,7 +14,8 @@ export default class CreateUserStory extends MapHubsComponent {
     myMaps: Array<Object>,
     popularMaps: Array<Object>,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   constructor(props: Object) {
@@ -25,7 +26,7 @@ export default class CreateUserStory extends MapHubsComponent {
   render() {
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig} />
         <main>
           <StoryEditor storyType="user"
             story={{story_id: this.props.story_id, published: false}}

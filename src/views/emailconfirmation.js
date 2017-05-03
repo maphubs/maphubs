@@ -12,7 +12,8 @@ export default class EmailConfirmation extends MapHubsComponent {
     valid: boolean,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object) {
@@ -40,7 +41,7 @@ export default class EmailConfirmation extends MapHubsComponent {
 
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main className="container">
           <div className="row valign-wrapper">
             {content}

@@ -18,6 +18,7 @@ export default class PageEdit extends MapHubsComponent {
     page_id: string,
     pageConfig: Object,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -67,7 +68,7 @@ export default class PageEdit extends MapHubsComponent {
   render() {
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main className="container" style={{height: 'calc(100% - 100px)'}}>
             <CodeEditor ref="pageEditor" id="layer-style-editor" mode="json"
                         code={JSON.stringify(this.state.pageConfig, undefined, 2)} 

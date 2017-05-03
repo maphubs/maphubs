@@ -24,6 +24,7 @@ export default class Search extends MapHubsComponent {
   props: {
     locale: string,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -186,7 +187,7 @@ export default class Search extends MapHubsComponent {
 
 		return (
       <div>
-      <Header />
+      <Header {...this.props.headerConfig}/>
       <main style={{margin: 0}}>
         <div ref="search" className="container" style={{height: '55px', paddingTop:'10px'}}>
           <div className="row no-margin">

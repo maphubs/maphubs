@@ -29,7 +29,8 @@ export default class GroupAdmin extends MapHubsComponent {
     hubs: Array<Object>,
     members: Array<Object>,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -263,7 +264,7 @@ export default class GroupAdmin extends MapHubsComponent {
 
 		return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main>
 
         <div className="container">

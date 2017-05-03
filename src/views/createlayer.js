@@ -21,7 +21,8 @@ export default class CreateLayer extends MapHubsComponent {
   props: {
 		groups: Array,
     layer: Object,
-    locale: string
+    locale: string,
+    headerConfig: Object
   }
 
   static defaultProps:{
@@ -87,7 +88,7 @@ export default class CreateLayer extends MapHubsComponent {
     if(!this.state.groups || this.state.groups.length === 0){
       return (
         <div>
-            <Header />
+            <Header {...this.props.headerConfig}/>
           <main>
         <div className="container">
           <div className="row">
@@ -128,7 +129,7 @@ export default class CreateLayer extends MapHubsComponent {
 
 		return (
       <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
         <main>
           <div style={{marginLeft: '10px', marginRight: '10px'}}>
             <h5>{this.__('Create Layer')}</h5>

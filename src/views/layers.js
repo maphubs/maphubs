@@ -23,6 +23,7 @@ export default class Layers extends MapHubsComponent {
     popularLayers: Array<Object>,
     locale: string,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -122,7 +123,7 @@ export default class Layers extends MapHubsComponent {
 
 		return (
       <div>
-        <Header activePage="layers" />
+        <Header activePage="layers" {...this.props.headerConfig}/>
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className="row" style={{marginBottom: '0px'}}>

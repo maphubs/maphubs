@@ -14,8 +14,8 @@ export default class EditUserStory extends MapHubsComponent {
     popularMaps: Array<Object>,
     username: string,
     locale: string,
-    _csrf: string
-
+    _csrf: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -30,7 +30,7 @@ export default class EditUserStory extends MapHubsComponent {
   render() {
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main>
           <StoryEditor
             story={this.props.story}

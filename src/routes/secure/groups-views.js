@@ -6,7 +6,6 @@ var Layer = require('../../models/layer');
 var Hub = require('../../models/hub');
 var Map = require('../../models/map');
 var Account = require('../../models/account');
-var Page = require('../../models/page');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log');
 var debug = require('../../services/debug')('routes/groups');
@@ -21,18 +20,16 @@ module.exports = function(app: any) {
     Promise.all([
       Group.getFeaturedGroups(),
       Group.getRecentGroups(),
-      Group.getPopularGroups(),
-      Page.getPageConfigs(['footer'])
+      Group.getPopularGroups()
     ])
       .then((results) => {
         var featuredGroups = results[0];
         var recentGroups = results[1];
         var popularGroups = results[2];
-        var footerConfig = results[3].footer;
         res.render('groups', {
           title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
-            featuredGroups, recentGroups, popularGroups, footerConfig
+            featuredGroups, recentGroups, popularGroups
           }, req
         });
       }).catch(nextError(next));
@@ -136,18 +133,15 @@ module.exports = function(app: any) {
 
     function completeRequest(userCanEdit){
       User.getUserByName(username)
-      .then((user) => {
-        return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-          var footerConfig = pageConfigs['footer'];
-          if(user){
-            return Group.getGroupsForUser(user.id)
-            .then((groups) => {
-              res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit, footerConfig}, req});
-            });
-          }else{
-            res.redirect('/notfound?path='+req.path);
-          }
-        });
+      .then((user) => {       
+        if(user){
+          return Group.getGroupsForUser(user.id)
+          .then((groups) => {
+            res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit}, req});
+          });
+        }else{
+          res.redirect('/notfound?path='+req.path);
+        }
       }).catch(nextError(next));
     }
 

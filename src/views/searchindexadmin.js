@@ -18,6 +18,7 @@ export default class SearchIndexAdmin extends MapHubsComponent {
     connectionStatus: string,
     indexStatus: string,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -93,7 +94,7 @@ export default class SearchIndexAdmin extends MapHubsComponent {
   render() {
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main className="container" style={{height: 'calc(100% - 100px)'}}>
             <div>
             <p><b>{this.__('Connection Status:')}</b> {this.props.connectionStatus}</p>

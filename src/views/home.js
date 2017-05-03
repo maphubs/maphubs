@@ -29,7 +29,8 @@ export default class Home extends MapHubsComponent {
     _csrf: string,
     mapHub: Object,
     mapHubLayers: Array<Object>,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object){
@@ -180,7 +181,7 @@ export default class Home extends MapHubsComponent {
 
 		return (
       <div style={{margin: 0, height: '100%'}}>
-      <Header />
+      <Header {...this.props.headerConfig}/>
       <main style={{margin: 0, height: '100%'}}>
         {homePageCarousel}
         {homepageMap}

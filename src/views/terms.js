@@ -13,7 +13,8 @@ export default class Terms extends MapHubsComponent {
   props: {
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object) {
@@ -24,7 +25,7 @@ export default class Terms extends MapHubsComponent {
   render() {
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main className="container">
             <div className="row">
               <h4>{MAPHUBS_CONFIG.productName + ' ' + this.__('Terms of Service')}</h4>

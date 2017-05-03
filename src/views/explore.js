@@ -33,6 +33,7 @@ export default class Home extends MapHubsComponent {
     locale: string,
     _csrf: string,
     footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object){
@@ -120,7 +121,7 @@ export default class Home extends MapHubsComponent {
 
 		return (
       <div>
-      <Header activePage="explore" />
+      <Header activePage="explore" {...this.props.headerConfig}/>
       <main style={{margin: 0}}>
         <SubPageBanner locale={this.props.locale}
           img="/assets/home/Moabi-Canoe.jpg" backgroundPosition="50% 15%"

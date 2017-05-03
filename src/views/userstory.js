@@ -15,7 +15,8 @@ export default class UserStory extends MapHubsComponent {
     username: string,
     canEdit: boolean,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -63,7 +64,7 @@ export default class UserStory extends MapHubsComponent {
     /*eslint-disable react/no-danger*/
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main>
           <div className="container">
             <div className="row" style={{marginTop: '20px'}}>

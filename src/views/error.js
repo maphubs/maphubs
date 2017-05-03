@@ -14,7 +14,8 @@ export default class Error extends MapHubsComponent {
 		url: string,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   constructor(props: Object) {
@@ -25,7 +26,7 @@ export default class Error extends MapHubsComponent {
   render() {
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main>
           <div className="container s12">
             <h3 className="center-align">{this.props.title}</h3>

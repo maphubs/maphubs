@@ -23,7 +23,8 @@ export default class Groups extends MapHubsComponent {
     popularGroups: Array<Object>,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -122,7 +123,7 @@ export default class Groups extends MapHubsComponent {
 
 		return (
       <div>
-          <Header activePage="groups" />
+          <Header activePage="groups" {...this.props.headerConfig} />
           <main>
             <div style={{marginTop: '20px', marginBottom: '10px'}}>
               <div className="row" style={{marginBottom: '0px'}}>

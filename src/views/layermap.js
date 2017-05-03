@@ -14,7 +14,8 @@ export default class LayerMap extends MapHubsComponent {
   props: {
     layer: Object,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   state = {
@@ -94,7 +95,7 @@ export default class LayerMap extends MapHubsComponent {
 
 		return (
       <div>
-      <Header />
+      <Header {...this.props.headerConfig}/>
       <main style={{margin: 0}}>
         <nav className="white hide-on-med-and-up"  style={{height: '0px', position: 'relative'}}>
         <a href="#" ref="mapLayersPanel"

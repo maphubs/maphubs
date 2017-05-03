@@ -5,7 +5,6 @@ var User = require('../../models/user');
 var Group = require('../../models/group');
 var Map = require('../../models/map');
 var Stats = require('../../models/stats');
-var Page = require('../../models/page');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log.js');
 var debug = require('../../services/debug')('routes/hubs');
@@ -59,21 +58,19 @@ module.exports = function(app: any) {
     Promise.all([
       Hub.getFeaturedHubs(),
       Hub.getPopularHubs(),
-      Hub.getRecentHubs(),
-      Page.getPageConfigs(['footer'])
+      Hub.getRecentHubs()
     ])
       .then((results) => {
         var featuredHubs = results[0];
         var popularHubs = results[1];
         var recentHubs = results[2];
-        var footerConfig = results[3].footer;
         if(local.mapHubsPro){
           return  Hub.getAllHubs()
           .then((allHubs) => {
             res.render('hubs', {
               title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
               props: {
-                featuredHubs, popularHubs, recentHubs, allHubs, footerConfig
+                featuredHubs, popularHubs, recentHubs, allHubs
               }, req
             });
           });
@@ -81,7 +78,7 @@ module.exports = function(app: any) {
           res.render('hubs', {
             title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
             props: {
-              featuredHubs, popularHubs, recentHubs, footerConfig
+              featuredHubs, popularHubs, recentHubs
             }, req
           });
         }
@@ -101,8 +98,7 @@ module.exports = function(app: any) {
         if(user){
             return Promise.all([
               Hub.getPublishedHubsForUser(user.id),
-              Hub.getDraftHubsForUser(user.id),
-              Page.getPageConfigs(['footer'])
+              Hub.getDraftHubsForUser(user.id)
             ])
           .then((results) => {
             var publishedHubs = results[0];
@@ -110,8 +106,7 @@ module.exports = function(app: any) {
             if(userCanEdit){
               draftHubs = results[1];
             }
-            var footerConfig = results[2].footer;
-            res.render('userhubs', {title: 'Hubs - ' + username, props:{user, publishedHubs, draftHubs, canEdit: userCanEdit, footerConfig}, req});
+            res.render('userhubs', {title: 'Hubs - ' + username, props:{user, publishedHubs, draftHubs, canEdit: userCanEdit}, req});
           });
         }else{
           res.redirect('/notfound?path='+req.path);
@@ -144,8 +139,7 @@ module.exports = function(app: any) {
     var dataQueries =  [
         Map.getMap(hub.map_id),
         Map.getMapLayers(hub.map_id, canEdit),
-        Hub.getHubStories(hub.hub_id, canEdit),
-        Page.getPageConfigs(['footer'])
+        Hub.getHubStories(hub.hub_id, canEdit)
       ];
       if(canEdit){
         dataQueries.push(Map.getUserMaps(req.session.user.id)),
@@ -156,7 +150,6 @@ module.exports = function(app: any) {
         var map = result[0];
         var layers = result[1];
         var stories = result[2];
-        var footerConfig = result[3].footer;
         var myMaps, popularMaps;
         if(canEdit){
           myMaps = result[4];
@@ -172,7 +165,7 @@ module.exports = function(app: any) {
           fontawesome: true,
           addthis: true,
           props: {
-            hub, map, layers, stories, canEdit, myMaps, popularMaps, footerConfig
+            hub, map, layers, stories, canEdit, myMaps, popularMaps
           },
           twitterCard: {
             card: 'summary',
@@ -219,16 +212,13 @@ module.exports = function(app: any) {
   var renderHubStoryPage = function(hub, canEdit, req, res){
       return Hub.getHubStories(hub.hub_id, canEdit)
       .then((stories) => {
-        return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-          var footerConfig = pageConfigs['footer'];
-          res.render('hubstories', {
-            title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
-            hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
-            addthis: true,
-            props: {
-              hub, stories, canEdit, footerConfig
-            }, req
-          });
+        res.render('hubstories', {
+          title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+          addthis: true,
+          props: {
+            hub, stories, canEdit
+          }, req
         });
       });
   };
@@ -262,19 +252,16 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
-  var renderHubResourcesPage = function(hub, canEdit, req, res){
-     return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-        var footerConfig = pageConfigs['footer'];
-        res.render('hubresources', {
-          title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
-          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
-          fontawesome: true,
-          rangy: true,
-          props: {
-            hub, canEdit, footerConfig
-          }, req
-        });
-     });
+  var renderHubResourcesPage = function(hub, canEdit, req, res){   
+    return res.render('hubresources', {
+      title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
+      hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+      fontawesome: true,
+      rangy: true,
+      props: {
+        hub, canEdit
+      }, req
+    });
   };
 
   app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, (req, res, next) => {

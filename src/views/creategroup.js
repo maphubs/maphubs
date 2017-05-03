@@ -12,7 +12,8 @@ export default class CreateGroup extends MapHubsComponent {
 
   props: {
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   state = {
@@ -56,7 +57,7 @@ export default class CreateGroup extends MapHubsComponent {
 
 		return (
       <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
         <div className="container">
           <h4>{this.__('Create Group')}</h4>
           <div className="row center">

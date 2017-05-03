@@ -24,7 +24,8 @@ type Props = {
     map: Object,
     pageConfig: Object,
     layers: Array<Object>,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   type State = {
@@ -176,7 +177,7 @@ export default class HomePro extends MapHubsComponent<void, Props, State> {
 
 		return (
       <div style={{margin: 0, height: '100%'}}>
-      <Header />
+      <Header {...this.props.headerConfig}/>
       <main style={{margin: 0, height: '100%'}}>
 
        {this.props.pageConfig.components.map((component, i) => {

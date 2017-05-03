@@ -91,15 +91,13 @@ module.exports = function(app: any) {
     Promise.all([
       Map.getFeaturedMaps(),
       Map.getRecentMaps(),
-      Map.getPopularMaps(),
-      Page.getPageConfigs(['footer'])
+      Map.getPopularMaps()
     ])
       .then((results) => {
         var featuredMaps = results[0];
         var recentMaps = results[1];
         var popularMaps = results[2];
-        var footerConfig = results[3].footer;
-        res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps, footerConfig}, req});
+        res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
       }).catch(nextError(next));
   });
 
@@ -116,10 +114,7 @@ module.exports = function(app: any) {
         if(user){
           return Map.getUserMaps(user.id)
           .then((maps) => {
-            return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-              var footerConfig = pageConfigs['footer'];
-              res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps, footerConfig}, req});
-            });
+            return res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps}, req});
           });
         }else{
           res.redirect('/notfound?path='+req.path);

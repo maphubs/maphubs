@@ -10,7 +10,6 @@ var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
 var urlUtil = require('../../services/url-util');
-var Page = require('../../models/page');
 
 module.exports = function(app: any) {
 
@@ -18,18 +17,16 @@ module.exports = function(app: any) {
   app.get('/stories', (req, res, next) => {
     Promise.all([
       Story.getPopularStories(10),
-      Story.getRecentStories(10),
-      Page.getPageConfigs(['footer'])
+      Story.getRecentStories(10)
     ])
       .then((results) => {
         var popularStories = results[0];
         var recentStories = results[1];
-        var footerConfig = results[2].footer;
         res.render('stories', {
           title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           addthis: true,
           props: {
-            popularStories, recentStories, footerConfig
+            popularStories, recentStories
           }, req
         });
       }).catch(nextError(next));
@@ -48,14 +45,11 @@ module.exports = function(app: any) {
         if(user){
           return Story.getUserStories(user.id, myStories)
           .then((stories) => {
-            return Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-              var footerConfig = pageConfigs['footer'];
-              res.render('userstories', {
-                title: 'Stories - ' + username,
-                addthis: true,
-                props:{user, stories, myStories, username, footerConfig}, 
-                req
-              });
+            return res.render('userstories', {
+              title: 'Stories - ' + username,
+              addthis: true,
+              props:{user, stories, myStories, username}, 
+              req
             });
           });
         }else{

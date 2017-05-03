@@ -53,7 +53,8 @@ export default class LayerInfo extends MapHubsComponent {
     createdByUser: Object,
     updatedByUser: Object,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -445,7 +446,7 @@ export default class LayerInfo extends MapHubsComponent {
 		return (
 
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
         <div className="row" style={{height: '100%', margin: 0}}>
           <div className="col s12 m6 l6 no-padding" style={{height: '100%', position: 'relative'}}>

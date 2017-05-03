@@ -15,7 +15,8 @@ export default class UserStories extends MapHubsComponent {
     username: string,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -59,7 +60,7 @@ export default class UserStories extends MapHubsComponent {
 
 		return (
       <div>
-        <Header activePage="mystories"/>
+        <Header activePage="mystories" {...this.props.headerConfig}/>
         <main style={{minHeight: 'calc(100% - 70px)'}}>
         <div className="container" style={{height: '100%'}}>
            {emptyMessage}

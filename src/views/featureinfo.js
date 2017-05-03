@@ -44,7 +44,8 @@ export default class FeatureInfo extends MapHubsComponent {
     layer: Object,
     canEdit: boolean,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   state = {
@@ -375,7 +376,7 @@ export default class FeatureInfo extends MapHubsComponent {
     }
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
         <div className="row" style={{height: '100%', margin: 0}}>
           <div className="col s6 no-padding" style={{height: '100%'}}>

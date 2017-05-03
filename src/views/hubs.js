@@ -24,7 +24,8 @@ export default class Hubs extends MapHubsComponent {
     allHubs:  Array<Object>,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -109,7 +110,7 @@ export default class Hubs extends MapHubsComponent {
 
 		return (
       <div>
-          <Header activePage="hubs" />
+          <Header activePage="hubs" {...this.props.headerConfig}/>
           <main>
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
               <div className="row">

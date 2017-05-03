@@ -26,7 +26,8 @@ export default class LayerAdmin extends MapHubsComponent {
     groups: Array<Object>,
     onSubmit: Function,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    headerConfig: Object
   }
 
   state = {
@@ -134,7 +135,7 @@ export default class LayerAdmin extends MapHubsComponent {
     if(this.props.layer.remote){
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main>
             <div className="container">
               <div className="row">
@@ -201,7 +202,7 @@ export default class LayerAdmin extends MapHubsComponent {
 
 		return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main>
         <div>
 

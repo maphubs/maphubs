@@ -16,7 +16,8 @@ export default class UserMaps extends MapHubsComponent {
     myMaps: boolean,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -71,7 +72,7 @@ export default class UserMaps extends MapHubsComponent {
 
 		return (
       <div>
-        <Header/>
+        <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 70px)'}}>
           {myMaps}
           {createMaps}

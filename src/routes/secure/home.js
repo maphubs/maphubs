@@ -13,9 +13,8 @@ module.exports = function(app: any) {
 
   app.get('/', csrfProtection, (req, res, next) => {
 
-    Page.getPageConfigs(['home', 'footer']).then((pageConfigs: Object) => {
+    Page.getPageConfigs(['home']).then((pageConfigs: Object) => {
       var pageConfig = pageConfigs['home'];
-      var footerConfig = pageConfigs['footer'];
       var dataRequests = [];
       var dataRequestNames = [];
     //use page config to determine data requests
@@ -57,7 +56,7 @@ module.exports = function(app: any) {
     
     Promise.all(dataRequests)
     .then((results) => {
-      var props = {pageConfig, footerConfig, _csrf: req.csrfToken()};
+      var props = {pageConfig, _csrf: req.csrfToken()};
       results.forEach((result, i) => {
         props[dataRequestNames[i]] = result;
       });
@@ -117,8 +116,7 @@ module.exports = function(app: any) {
       Group.getRecentGroups(10),
       Hub.getRecentHubs(10),
       Map.getRecentMaps(10),
-      Story.getRecentStories(10),
-      Page.getPageConfigs(['footer'])
+      Story.getRecentStories(10)
     ]).then((results) => {
       var featuredLayers = results[0];
       var featuredGroups = results[1];
@@ -137,39 +135,31 @@ module.exports = function(app: any) {
       var recentHubs = results[12];
       var recentMaps = results[13];
       var recentStories = results[14];
-      var footerConfig = results[15].footer;
       res.render('explore', {
         title: req.__('Explore') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           featuredLayers, featuredGroups, featuredHubs, featuredMaps, featuredStories,
           popularLayers, popularGroups, popularHubs, popularMaps, popularStories,
-          recentLayers, recentGroups, recentHubs, recentMaps, recentStories,
-          footerConfig
+          recentLayers, recentGroups, recentHubs, recentMaps, recentStories
         }, req
       });
     }).catch(nextError(next));
   });
 
-  app.get('/services', csrfProtection, (req, res, next) => {
-    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-      var footerConfig = pageConfigs['footer'];
-      res.render('services', {
-        title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
-        props:{footerConfig},
-        req
-      });
-    }).catch(nextError(next));
+  app.get('/services', csrfProtection, (req, res) => {   
+    return res.render('services', {
+      title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
+      props:{},
+      req
+    });
   });
 
-  app.get('/journalists', csrfProtection, (req, res, next) => {
-    Page.getPageConfigs(['footer']).then((pageConfigs: Object) => {
-      var footerConfig = pageConfigs['footer'];
-      res.render('journalists', {
-        title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
-        props:{footerConfig},
-        req
-      });
-    }).catch(nextError(next));
+  app.get('/journalists', csrfProtection, (req, res) => {
+   return res.render('journalists', {
+      title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
+      props:{},
+      req
+    });
   });
 
 };

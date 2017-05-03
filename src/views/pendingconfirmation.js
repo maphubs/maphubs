@@ -13,6 +13,7 @@ type Props = {
     user: Object,
     locale: string,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -51,7 +52,7 @@ export default class PendingConfirmation extends MapHubsComponent<null, Props, S
     if(this.props.user.email_valid){
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main className="container">
             <div className="row valign-wrapper">
               <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
@@ -66,7 +67,7 @@ export default class PendingConfirmation extends MapHubsComponent<null, Props, S
 
     return (
       <div>
-        <Header />
+        <Header {...this.props.headerConfig}/>
         <main className="container">
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>

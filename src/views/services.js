@@ -13,6 +13,7 @@ export default class Services extends MapHubsComponent {
   props: {
     locale: string,
     footerConfig: Object,
+    headerConfig: Object,
     _csrf: string
   }
 
@@ -24,7 +25,7 @@ export default class Services extends MapHubsComponent {
   render() {
       return (
         <div>
-          <Header />
+          <Header {...this.props.headerConfig}/>
           <main style={{margin: 0}}>
             <SubPageBanner locale={this.props.locale}
               img="/assets/home/Moabi-Leaves.jpg"

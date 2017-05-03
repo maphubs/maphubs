@@ -18,7 +18,8 @@ export default class UserHubs extends MapHubsComponent {
     canEdit: boolean,
     locale: string,
     _csrf: string,
-    footerConfig: Object
+    footerConfig: Object,
+    headerConfig: Object
   }
 
   static defaultProps = {
@@ -100,7 +101,7 @@ export default class UserHubs extends MapHubsComponent {
   }
 		return (
       <div>
-        <Header/>
+        <Header {...this.props.headerConfig}/>
         <main style={{marginLeft: '10px', marginRight:'10px'}}>
           {hubsMessage}
           {draftHubs}
