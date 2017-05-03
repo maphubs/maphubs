@@ -166,7 +166,6 @@
     "sitemap": "^1.12.0",
     "slick-carousel": "1.6.0",
     "slug": "^0.9.1",
-    "sphericalmercator": "1.0.5",
     "superagent": "^3.5.2",
     "superagent-bluebird-promise": "^4.2.0",
     "superagent-jsonp": "0.1.1",
