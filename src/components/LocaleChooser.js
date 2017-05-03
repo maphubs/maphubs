@@ -25,7 +25,7 @@ export default class LocaleChooser extends MapHubsComponent<props, props, state>
     $(this.refs.dropdownButton).dropdown({
       inDuration: 300,
       outDuration: 225,
-      constrain_width: true, // Does not change width of dropdown to that of the activator
+      constrainWidth: false, // Does not change width of dropdown to that of the activator
       hover: false, // Activate on hover
       gutter: 0, // Spacing from edge
       belowOrigin: true, // Displays dropdown below the button
