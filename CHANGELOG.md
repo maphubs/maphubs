@@ -1,5 +1,30 @@
 # Change Log
 
+## [v0.9.0](https://github.com/maphubs/maphubs/tree/v0.9.0) (2017-05-04)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.17...v0.9.0)
+
+**Implemented enhancements:**
+
+- add recent stories to stories page [\#347](https://github.com/maphubs/maphubs/issues/347)
+- external GeoJSON layer [\#323](https://github.com/maphubs/maphubs/issues/323)
+- add features to the sitemap [\#313](https://github.com/maphubs/maphubs/issues/313)
+- Feature KML export + open in Google Earth Button [\#306](https://github.com/maphubs/maphubs/issues/306)
+- make hub maps embeddable [\#190](https://github.com/maphubs/maphubs/issues/190)
+- add back to maphubs button in iD [\#184](https://github.com/maphubs/maphubs/issues/184)
+- add story map pages [\#165](https://github.com/maphubs/maphubs/issues/165)
+- add hub info page with members [\#116](https://github.com/maphubs/maphubs/issues/116)
+
+**Fixed bugs:**
+
+- remote vector tile feature selection broken in editor [\#360](https://github.com/maphubs/maphubs/issues/360)
+- Editing a map doesn't show the edit buttons on layers [\#359](https://github.com/maphubs/maphubs/issues/359)
+- create layer license drop down validation not working [\#355](https://github.com/maphubs/maphubs/issues/355)
+- wrong group displays when editing a map [\#354](https://github.com/maphubs/maphubs/issues/354)
+- inset map position not always in sync [\#346](https://github.com/maphubs/maphubs/issues/346)
+- update name in iD [\#308](https://github.com/maphubs/maphubs/issues/308)
+- hub map zoom doesn't update until reloaded [\#235](https://github.com/maphubs/maphubs/issues/235)
+- protected planet web service fails to load [\#31](https://github.com/maphubs/maphubs/issues/31)
+
 ## [v0.8.17](https://github.com/maphubs/maphubs/tree/v0.8.17) (2017-04-17)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.8.16...v0.8.17)
 
