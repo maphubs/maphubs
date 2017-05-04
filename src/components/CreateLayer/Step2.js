@@ -5,6 +5,7 @@ import LayerActions from '../../actions/LayerActions';
 import PresetActions from '../../actions/presetActions';
 import MessageActions from '../../actions/MessageActions';
 import LayerStore from '../../stores/layer-store';
+import PresetStore from '../../stores/preset-store';
 import Progress from '../Progress';
 import MapHubsComponent from '../MapHubsComponent';
 
@@ -26,7 +27,7 @@ export default class Step2 extends MapHubsComponent {
 
   constructor(props: Object){
     super(props);
-    this.stores.push(LayerStore);
+    this.stores.push(LayerStore, PresetStore);
   }
 
   onSubmit = () => {
@@ -45,6 +46,7 @@ export default class Step2 extends MapHubsComponent {
 
     //save presets
     PresetActions.loadDefaultPresets();
+    PresetActions.setLayerId(this.state.layer.layer_id);
     PresetActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
