@@ -214,9 +214,12 @@ module.exports = function(app: any) {
 
           return Promise.all([
           Map.getMap(map_id),
-          Map.getMapLayers(map_id, true),
-          Layer.getPopularLayers(),
-          Layer.getUserLayers(user_id, 50, true),
+          Map.getMapLayers(map_id, true)
+          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
+          Layer.getPopularLayers()
+          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
+          Layer.getUserLayers(user_id, 50, true)
+          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
           Group.getGroupsForUser(user_id)
           ])
           .then((results) => {
