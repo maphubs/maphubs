@@ -141,6 +141,8 @@ export default class LayerSettings extends MapHubsComponent {
       );
     }
 
+    var license = this.state.layer.license ? this.state.layer.license : 'none';
+
 		return (
         <div style={{marginRight: '2%', marginLeft: '2%', marginTop:'10px'}}>
             <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
@@ -180,11 +182,12 @@ export default class LayerSettings extends MapHubsComponent {
               </div>
               <div  className="row">
                   <Select name="license" id="layer-source-select" label={this.__('License')} startEmpty={false}
-                    value={this.state.layer.license} defaultValue={this.state.layer.license} options={licenseOptions}
+                    value={license} options={licenseOptions}
                     note={this.__('Select a license for more information')}
                     icon="info"
                     className="col s12"
                     dataPosition="top" dataTooltip={this.__('Layer License')}
+                    required
                     />
                 </div>
               </div>

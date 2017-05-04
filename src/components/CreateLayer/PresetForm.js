@@ -158,7 +158,7 @@ export default class PresetForm extends MapHubsComponent {
                         dataPosition="bottom" dataTooltip={this.__('Option to hide this field in the map popup. It will still display in the data table.')}
                         />
                       <Select name="type" id="preset-type-select" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"
-                    value={this.state.preset.type} defaultValue={this.state.preset.type} startEmpty={typeStartEmpty}
+                    value={this.state.preset.type} startEmpty={typeStartEmpty}
                    dataPosition="top" dataTooltip={this.__('Determines how the field is displayed in forms.')}
                    required/>
                  {typeOptions}

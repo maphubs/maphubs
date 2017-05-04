@@ -177,20 +177,20 @@ export default class MarkerSettings extends MapHubsPureComponent {
             </div>
             <div className="row no-margin">
               <Select name="shape" id="markers-shape-select" label={this.__('Marker Shape')} options={shapeOptions} className="col s12 tooltip-marker-settings no-margin"
-                      value={this.state.options.shape} defaultValue={this.state.options.shape} startEmpty={this.state.options.shape ? false : true}
+                      value={this.state.options.shape} startEmpty={this.state.options.shape ? false : true}
                     dataPosition="right" dataTooltip={this.__('Shape of the map marker')}
                     required/> 
             </div>
             <div className="row no-margin">
               <Select name="size" id="markers-size-select" label={this.__('Marker Size')} options={sizeOptions} className="col s12 tooltip-marker-settings no-margin"
-                    value={this.state.options.size} defaultValue={this.state.options.size} startEmpty={this.state.options.size ? false : true}
+                    value={this.state.options.size} startEmpty={this.state.options.size ? false : true}
                    dataPosition="right" dataTooltip={this.__('Size of the map marker')}
                    required/> 
              
             </div>
             <div className="row no-margin">
               <Select name="icon" id="markers-icon-select" label={this.__('Marker Icon')} options={iconOptions} className="col s12 tooltip-marker-settings no-margin"
-                    value={this.state.options.icon} defaultValue={this.state.options.icon} startEmpty={this.state.options.icon ? false : true}
+                    value={this.state.options.icon} startEmpty={this.state.options.icon ? false : true}
                     dataPosition="right" dataTooltip={this.__('Maker icon overlay')}
                     required/> 
             </div>

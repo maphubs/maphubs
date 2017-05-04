@@ -86,9 +86,9 @@ export default class LayerSource extends MapHubsComponent {
 
     var licenseOptions = Licenses.getLicenses(this.__);
 
-    var defaultLicense = 'none';
+    var license = 'none';
     if(this.state.layer.license){
-      defaultLicense = this.state.layer.license;
+      license = this.state.layer.license;
     }
 
 		return (
@@ -107,7 +107,7 @@ export default class LayerSource extends MapHubsComponent {
               </div>
               <div  className="row">
                   <Select name="license" id="layer-source-select" label={this.__('License')} startEmpty={false}
-                    value={this.state.layer.license} defaultValue={defaultLicense} options={licenseOptions}
+                    value={license} options={licenseOptions}
                     note={this.__('Select a license for more information')}
                     className="col s8"
                     dataPosition="top" dataTooltip={this.__('Layer License')}

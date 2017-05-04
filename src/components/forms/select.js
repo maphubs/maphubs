@@ -13,7 +13,7 @@ class Select extends MapHubsComponent {
 
   props:  {
     emptyText: string,
-    defaultValue: string,
+    value: string,
     name: string,
     className: string,
     options: Array<Object>,
@@ -51,14 +51,14 @@ class Select extends MapHubsComponent {
 
   componentWillMount() {
     super.componentWillMount();
-    this.props.setValue(this.props.defaultValue);
-    this.setNote(this.props.defaultValue);
+    this.props.setValue(this.props.value);
+    this.setNote(this.props.value);
   }
 
   componentWillReceiveProps(nextProps){
-    if(!nextProps.startEmpty && this.props.defaultValue !== nextProps.defaultValue) {
-      this.props.setValue(nextProps.defaultValue);
-      this.setNote(nextProps.defaultValue);
+    if(!nextProps.startEmpty && this.props.value !== nextProps.value) {
+      this.props.setValue(nextProps.value);
+      this.setNote(nextProps.value);
     }
   }
 
