@@ -96,7 +96,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-data-grid/, /react-disqus-thread/, /react-colorpickr/, /mapbox-gl/],       
+        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-disqus-thread/, /react-colorpickr/, /mapbox-gl/],       
         options: {
           presets: [
             "es2015",
