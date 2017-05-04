@@ -1,23 +1,44 @@
 //@flow
 import React from 'react';
 import _map from 'lodash.map';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 
-export default class LayerDataGrid extends MapHubsPureComponent {
-
-  Selectors: null
-
-  props: {
-    geoJSON: Object,
+type Props = {
+   geoJSON: Object,
     presets: Object,
     gridHeight: number,
     onRowSelected: Function,
-    layer_id: number
+    layer_id: number,
+    dataLoadingMsg: string
+}
+
+type State = {
+    geoJSON: ?Object,
+    gridHeight: number,
+    gridWidth: number,
+    gridHeightOffset: number,
+    editingNotes: boolean,
+    rows: Array<Object>,
+    selectedIndexes: Array<number>,
+    columns: Array<string>,
+    filters: Object,
+    rowKey: ?string,
+    sortColumn: ?string,
+    sortDirection: ?string
+}
+
+export default class LayerDataGrid extends MapHubsComponent<void, Props, State> {
+
+  Selectors: null
+
+  props: Props
+
+  static defaultProps = {
+    dataLoadingMsg: 'Data Loading'
   }
 
-  state = {
-    geoJSON: Object,
-    dataMsg: '',
+  state: State = {
+    geoJSON: null,
     gridHeight: 100,
     gridWidth: 100,
     gridHeightOffset: 48,
@@ -37,7 +58,7 @@ export default class LayerDataGrid extends MapHubsPureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     if(nextProps.geoJSON && !this.state.geoJSON){
       this.processGeoJSON(nextProps.geoJSON, nextProps.presets);
     }
@@ -226,7 +247,7 @@ render() {
     );
   }else{
     return(
-      <div><h5>{this.state.dataMsg}</h5></div>
+      <div><h5>{this.__(this.props.dataLoadingMsg)}</h5></div>
     );
     
   }
