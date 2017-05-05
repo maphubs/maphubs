@@ -41,28 +41,44 @@ import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
+import fireResizeEvent from '../services/fire-resize-event';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class LayerInfo extends MapHubsComponent {
 
-  props: {
-		layer: Object,
-    notes: string,
-    stats: Object,
-    canEdit: boolean,
-    createdByUser: Object,
-    updatedByUser: Object,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
-  }
+type Props = {
+  layer: Object,
+  notes: string,
+  stats: Object,
+  canEdit: boolean,
+  createdByUser: Object,
+  updatedByUser: Object,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
+
+type LayerInfoState = {
+  editingNotes: boolean,
+  gridHeight: number,
+  gridHeightOffset: number,
+  userResize?: boolean,
+  geoJSON?: Object,
+  presets?: Object
+}
+
+type State = LocaleStoreState & LayerInfoState
+
+export default class LayerInfo extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
       stats: {maps: 0, stories: 0, hubs: 0},
       canEdit: false
   }
 
-  state = {
+  state: State = {
     editingNotes: false,
     gridHeight: 100,
     gridHeightOffset: 48
@@ -119,11 +135,8 @@ export default class LayerInfo extends MapHubsComponent {
   }
 
   componentDidUpdate(){
-
     if(!this.state.userResize){
-      var evt = document.createEvent('UIEvents');
-      evt.initUIEvent('resize', true, false, window, 0);
-      window.dispatchEvent(evt);
+      fireResizeEvent();
     }
   }
 

@@ -10,18 +10,28 @@ var mapboxgl = {};
 if (typeof window !== 'undefined') {
     mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 }
-export default class InsetMap extends React.Component {
+
+type Props = {
+  id: string,
+  bottom:  string,
+  attributionControl: boolean,
+  collapsed: boolean
+}
+
+type State = {
+  collapsed: boolean,
+  insetGeoJSONData: Object,
+  insetGeoJSONCentroidData: Object
+}
+
+
+export default class InsetMap extends React.Component<void, Props, State> {
 
 
   insetMap: Object
   insetMapActive: boolean
 
-  props: {
-    id: string,
-    bottom:  string,
-    attributionControl: boolean,
-    collapsed: boolean
-  }
+  props: Props
 
   static defaultProps = {
     id: 'map',
@@ -30,7 +40,7 @@ export default class InsetMap extends React.Component {
     collapsed: false
   }
 
-  state = {
+  state: State = {
     collapsed: false,
     insetGeoJSONData: null,
     insetGeoJSONCentroidData: null

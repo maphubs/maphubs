@@ -5,7 +5,19 @@ var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
 //var debug = require('../services/debug')('layer-store');
 
-export default class StoryStore extends Reflux.Store {
+export type StoryStoreState = {
+  story: {
+    title: string,
+    author: string,
+    body: string,
+    story_id: number
+  },
+  storyType?: string,
+  hub_id?: string,
+  unsavedChanges?: boolean
+}
+
+export default class StoryStore extends Reflux.Store<void, void, StoryStoreState> {
 
   constructor(){
     super();
@@ -36,7 +48,7 @@ export default class StoryStore extends Reflux.Store {
     this.setState({story, unsavedChanges: true});
   }
 
-  save(body: string, firstline: string, firstimage: any, _csrf: string, cb){
+  save(body: string, firstline: string, firstimage: any, _csrf: string, cb: Function){
     var _this = this;
 
     var data = this.state.story;

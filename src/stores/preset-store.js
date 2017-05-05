@@ -1,3 +1,4 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/presetActions';
 import request from 'superagent';
@@ -6,7 +7,14 @@ import _remove from 'lodash.remove';
 var debug = require('../services/debug')('preset-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-export default class PresetStore extends Reflux.Store {
+export type PresetStoreState = {
+  layer_id: number,
+  presets: Array<Object>,
+  pendingChanges: boolean,
+  idSequence: number
+}
+
+export default class PresetStore extends Reflux.Store<void, void, PresetStoreState> {
   
   constructor(){
     super();
@@ -19,12 +27,12 @@ export default class PresetStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  setLayerId(layer_id){
+  setLayerId(layer_id: number){
     debug("setLayerId");
     this.setState({layer_id});
   }
 
-  loadPresets(presets){
+  loadPresets(presets: Array<Object>){
     var _this = this;
     if(presets && Array.isArray(presets)){
       presets.forEach((preset) => {
@@ -44,14 +52,14 @@ export default class PresetStore extends Reflux.Store {
     this.setState({presets, pendingChanges: true});
   }
 
-  setImportedTags(data){
+  setImportedTags(data: Object){
     debug("setImportedTags");
     var _this = this;
     //clear default presets
     var presets = [];
 
     //convert tags to presets
-    data.forEach((tag) => {
+    data.forEach((tag: string) => {
       var preset = {};
       if(tag === 'mhid'){
          preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
@@ -64,7 +72,7 @@ export default class PresetStore extends Reflux.Store {
     Actions.presetsChanged(this.state.presets);
   }
 
-  submitPresets(create, _csrf, cb){
+  submitPresets(create: boolean, _csrf: string, cb: Function){
     debug("submitPresets");
     var _this = this;
     request.post('/api/layer/presets/save')
@@ -83,7 +91,7 @@ export default class PresetStore extends Reflux.Store {
     });
   }
 
-  deletePreset(id){
+  deletePreset(id: number){
     debug("delete preset:"+ id);
     _remove(this.state.presets, {id});
     this.state.pendingChanges = true;
@@ -106,7 +114,7 @@ export default class PresetStore extends Reflux.Store {
     Actions.presetsChanged(this.state.presets);
   }
 
- updatePreset(id, preset){
+ updatePreset(id: number, preset: Object){
    debug("update preset:" + id);
    var i = _findIndex(this.state.presets, {id});
    if(i >= 0){
@@ -119,7 +127,7 @@ export default class PresetStore extends Reflux.Store {
    }
  }
 
- moveUp(id){
+ moveUp(id: number){
    var index = _findIndex(this.state.presets, {id});
    if(index === 0) return;
    this.state.presets = this.move(this.state.presets, index, index-1);
@@ -127,7 +135,7 @@ export default class PresetStore extends Reflux.Store {
    Actions.presetsChanged(this.state.presets);
  }
 
- moveDown(id){
+ moveDown(id: number){
    var index = _findIndex(this.state.presets, {id});
    if(index === this.state.presets.length -1) return;
    this.state.presets = this.move(this.state.presets, index, index+1);
@@ -135,7 +143,7 @@ export default class PresetStore extends Reflux.Store {
    Actions.presetsChanged(this.state.presets);
  }
 
- move(array, fromIndex, toIndex) {
+ move(array: Array<Object>, fromIndex: number, toIndex: number) {
     array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
     return array;
  }

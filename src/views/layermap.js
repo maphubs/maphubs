@@ -8,6 +8,7 @@ import _debounce from 'lodash.debounce';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import fireResizeEvent from '../services/fire-resize-event';
 
 export default class LayerMap extends MapHubsComponent {
 
@@ -61,9 +62,7 @@ export default class LayerMap extends MapHubsComponent {
   }
 
   componentDidUpdate(){
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('resize', true, false, window, 0);
-    window.dispatchEvent(evt);
+    fireResizeEvent();
   }
 
 	render() {

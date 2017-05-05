@@ -1,10 +1,17 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/UserActions';
 var request = require('superagent');
 var debug = require('../services/debug')('stores/user-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-export default class UserStore extends Reflux.Store {
+export type UserStoreState = {
+  user?: Object,
+  loggedIn?: boolean,
+  loaded?: boolean
+}
+
+export default class UserStore extends Reflux.Store<void, void, UserStoreState> {
 
   constructor(){
     super();
@@ -12,7 +19,7 @@ export default class UserStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): UserStoreState{
     return {
       user: {},
       loggedIn: false,
@@ -29,11 +36,11 @@ export default class UserStore extends Reflux.Store {
   }
 
  //listeners
- login(user){
+ login(user: string){
    this.setState({user, loggedIn: true, loaded: true});
  }
 
- getUser(cb){
+ getUser(cb: Function){
    var _this = this;
    request.post('/api/user/details/json')
    .type('json').accept('json')
@@ -64,7 +71,7 @@ export default class UserStore extends Reflux.Store {
 
  }
 
-  updatePassword(user_id: number, password: string, pass_reset, _csrf, cb){
+  updatePassword(user_id: number, password: string, pass_reset: string, _csrf: string, cb: Function){
     if(this.state.loggedIn && this.state.user.id !== user_id){
       debug('User ID mismatch, will not send request');
       cb('User session error, please clear browser sessions/cache and try again.');
@@ -90,7 +97,7 @@ export default class UserStore extends Reflux.Store {
     }
   }
 
-  forgotPassword(email, _csrf, cb){
+  forgotPassword(email: string, _csrf: string, cb: Function){
     request.post('/api/user/forgotpassword')
     .type('json').accept('json')
     .send({
@@ -104,7 +111,7 @@ export default class UserStore extends Reflux.Store {
     });
   }
 
-  signup(username, name, email, password, joinmailinglist, inviteKey, _csrf, cb){
+  signup(username: string, name: string, email: string, password: string, joinmailinglist: boolean, inviteKey: string, _csrf: string, cb: Function){
     request.post('/api/user/signup')
     .type('json').accept('json')
     .send({
@@ -123,7 +130,7 @@ export default class UserStore extends Reflux.Store {
     });
   }
 
-  joinMailingList(email, _csrf, cb){
+  joinMailingList(email: string, _csrf: string, cb: Function){
     request.post('/api/user/mailinglistsignup')
     .type('json').accept('json')
     .send({email, _csrf})
@@ -134,7 +141,7 @@ export default class UserStore extends Reflux.Store {
     });
   }
 
-  resendConfirmation(_csrf, cb){
+  resendConfirmation(_csrf: string, cb: Function){
     request.post('/api/user/resendconfirmation')
     .type('json').accept('json')
     .send({_csrf})
@@ -145,7 +152,7 @@ export default class UserStore extends Reflux.Store {
     });
   }
 
-  checkUserNameAvailable(username, _csrf){
+  checkUserNameAvailable(username: string, _csrf: string){
 
     //not used yet since react-formsy can't support async on validation functions...
     /*

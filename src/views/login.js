@@ -11,16 +11,25 @@ import MessageActions from '../actions/MessageActions';
 import LocaleStore from '../stores/LocaleStore';
 import Reflux from '../components/Rehydrate';
 import MapHubsComponent from '../components/MapHubsComponent';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class Login extends MapHubsComponent {
+type Props = {
+  name: string,
+  failed: boolean,
+  locale: string,
+  _csrf: string,
+  showSignup: boolean
+}
 
-  props: {
-    name: string,
-    failed: boolean,
-    locale: string,
-    _csrf: string,
-    showSignup: boolean
-  }
+type LoginState = {
+  canSubmit: boolean
+}
+
+type State = LocaleStoreState & LoginState
+
+export default class Login extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     name: 'No name',

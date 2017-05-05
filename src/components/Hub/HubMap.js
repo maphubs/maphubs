@@ -7,6 +7,7 @@ import  HubStore from '../../stores/HubStore';
 import  HubActions from '../../actions/HubActions';
 import  AddMapModal from '../Story/AddMapModal';
 import MapHubsComponent from '../../components/MapHubsComponent';
+import fireResizeEvent from '../../services/fire-resize-event';
 
 export default class HubMap extends MapHubsComponent {
 
@@ -41,9 +42,7 @@ export default class HubMap extends MapHubsComponent {
   }
 
   componentDidUpdate(){
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('resize', true, false, window, 0);
-    window.dispatchEvent(evt);
+    fireResizeEvent();
   }
 
   onSetMap = (map: Object) => {

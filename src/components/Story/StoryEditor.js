@@ -16,10 +16,10 @@ import Progress from '../Progress';
 import Editor from 'react-medium-editor';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import Reflux from '../Rehydrate';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {StoryStoreState} from '../../stores/StoryStore';
 
-export default class StoryEditor extends MapHubsComponent {
-
-  props: {
+type Props = {
     story: Object,
     hub_id: string,
     storyType: string,
@@ -28,6 +28,17 @@ export default class StoryEditor extends MapHubsComponent {
     popularMaps: Array<Object>
   }
 
+type StoryEditorState = {
+  saving: boolean,
+  addingMap: boolean
+}
+
+type State = LocaleStoreState & StoryStoreState & StoryEditorState
+
+export default class StoryEditor extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
   static defaultProps = {
     story: {},
     hub_id: null,
@@ -35,7 +46,8 @@ export default class StoryEditor extends MapHubsComponent {
     storyType: 'unknown'
   }
 
-  state = {
+  state: State = {
+    story: {},
     saving: false,
     addingMap: false
   }
@@ -144,7 +156,7 @@ save = () => {
   //get first image
   var firstimage = this.getFirstImage();
 
-  Actions.save(body, firstline, firstimage, this.state._csrf, (err: Error, story: Object) => {
+  Actions.save(body, firstline, firstimage, this.state._csrf, (err: Error) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -413,7 +425,7 @@ publish = () => {
   //get first image
   var firstimage = _this.getFirstImage();
 
-  Actions.save(body, firstline, firstimage, _this.state._csrf, (err: Error, story: Object) => {
+  Actions.save(body, firstline, firstimage, _this.state._csrf, (err: Error) => {
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

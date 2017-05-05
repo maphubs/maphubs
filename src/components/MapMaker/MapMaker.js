@@ -23,6 +23,7 @@ import EditorToolButtons from './EditorToolButtons';
 import ForestLossLegendHelper from '../Map/ForestLossLegendHelper';
 import MapHubsComponent from '../MapHubsComponent';
 import Reflux from '../Rehydrate';
+import fireResizeEvent from '../../services/fire-resize-event';
 
 export default class MapMaker extends MapHubsComponent {
 
@@ -351,16 +352,12 @@ export default class MapMaker extends MapHubsComponent {
 
   toggleMapTab = () => {
     $(this.refs.tabs).tabs('select_tab', 'maptab');
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('resize', true, false, window, 0);
-    window.dispatchEvent(evt);
+    fireResizeEvent();
   }
 
   toggleAddLayerTab = () => {
     $(this.refs.tabs).tabs('select_tab', 'addlayer');
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('resize', true, false, window, 0);
-    window.dispatchEvent(evt);
+    fireResizeEvent();
 
   }
 

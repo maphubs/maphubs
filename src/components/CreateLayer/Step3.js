@@ -8,26 +8,36 @@ import LayerStore from '../../stores/layer-store';
 import PresetActions from '../../actions/presetActions';
 import LayerActions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-export default class Step3 extends MapHubsComponent {
+type Props = {
+  onSubmit: Function,
+  active: boolean,
+  showPrev: boolean,
+  onPrev: Function
+}
 
-  props: {
-    onSubmit: Function,
-    active: boolean,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Step3State = {
+  saving: boolean
+}
+
+type State = LocaleStoreState & LayerStoreState & Step3State
+
+export default class Step3 extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     onSubmit: null,
     active: false
   }
 
-  state = {
+  state: State = {
     saving: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

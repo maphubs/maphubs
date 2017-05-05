@@ -1,3 +1,4 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/LocaleActions';
 var request = require('superagent');
@@ -5,7 +6,13 @@ var debug = require('../services/debug')('stores/local-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 //var _assignIn = require('lodash.assignin');
 
-export default class LocaleStore extends Reflux.Store {
+export type LocaleStoreState = {
+  locale?: string,
+  _csrf?: string
+}
+
+
+export default class LocaleStore extends Reflux.Store<void, void, LocaleStoreState> {
 
   constructor(){
     super();
@@ -29,7 +36,7 @@ export default class LocaleStore extends Reflux.Store {
 
  //listeners
 
- changeLocale(locale){
+ changeLocale(locale: string){
    var _this = this;
    //tell the server so the preference can be saved in the user session
    //this allows the react isomorphic rendering to render the correct langauge on the server

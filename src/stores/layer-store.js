@@ -1,3 +1,4 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/LayerActions';
 import PresetActions from '../actions/presetActions';
@@ -8,7 +9,23 @@ var checkClientError = require('../services/client-error-response').checkClientE
 var debug = require('../services/debug')('layer-store');
 var emptyLayer = require('./empty-layer');
 
-export default class LayerStore extends Reflux.Store {
+import type {Group} from './GroupStore';
+
+export type Layer = {
+  layer_id: number,
+  name: string,
+  description: string,
+  source: string
+}
+
+export type LayerStoreState = {
+  layer: Layer,
+  mapColor?: string,
+  groups: Array<Group>,
+  tileServiceInitialized?: boolean
+}
+
+export default class LayerStore extends Reflux.Store<void, void, LayerStoreState> {
 
   constructor(){
     super();
@@ -136,7 +153,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  saveSettings(data, _csrf, initLayer, cb: Function){
+  saveSettings(data: Object, _csrf: string, initLayer: boolean, cb: Function){
     var _this = this;
     request.post('/api/layer/admin/saveSettings')
     .type('json').accept('json')
@@ -168,7 +185,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  saveDataSettings(data, _csrf, cb: Function){
+  saveDataSettings(data: Object, _csrf: string, cb: Function){
     debug("saveDataSettings");
     var _this = this;
     var layer = this.state.layer;
@@ -199,7 +216,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  setStyle(style, labels, legend_html, settings, preview_position, cb: Function){
+  setStyle(style: Object, labels: Object, legend_html: string, settings: Object, preview_position: Object, cb: Function){
     var layer = this.state.layer;
     layer.style = style;
     layer.labels = labels;

@@ -11,22 +11,44 @@ var $ = require('jquery');
 var EXIF = require('exif-js');
 import MapHubsComponent from './MapHubsComponent';
 
-export default class ImageCrop extends MapHubsComponent {
+type Props = {
+  onCrop: Function,
+  lockAspect:  boolean,
+  aspectRatio: number,
+  autoCropArea: number,
+  allowedExtensions: Array<string>,
+  max_size: number,
+  skip_size: number,
+  jpeg_quality: number,
+  resize_height: number,
+  resize_max_height: number,
+  resize_width: number,
+  resize_max_width: number
+}
 
-  props: {
-    onCrop: Function,
-    lockAspect:  boolean,
-    aspectRatio: number,
-    autoCropArea: number,
-    allowedExtensions: Array<string>,
-    max_size: number,
-    skip_size: number,
-    jpeg_quality: number,
-    resize_height: number,
-    resize_max_height: number,
-    resize_width: number,
-    resize_max_width: number
-  }
+type File = {
+  size: number,
+  type: string
+}
+
+type State = {
+  img: ?Object,
+  file: File,
+  show: boolean,
+  preview: ?Object,
+  loading: boolean,
+  autoCropArea: number,
+  aspectRatio: number,
+  cropWidth: number,
+  cropHeight: number,
+  selectedFile: ?string,
+  exif: Object,
+  ext: string
+}
+
+export default class ImageCrop extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     lockAspect: false,
@@ -42,14 +64,18 @@ export default class ImageCrop extends MapHubsComponent {
     resize_max_width: null
   }
 
-  state = {
+  state: State = {
     img: null,
-    file: null,
+    file: {size: 0, type: ''},
     show: false,
     preview: null,
     loading: false,
     autoCropArea: 1,
-    aspectRatio: 1
+    aspectRatio: 1,
+    cropWidth: 0,
+    cropHeight: 0,
+    selectedFile: null,
+    exif: {}
   }
 
   constructor(props: Object){
@@ -104,7 +130,7 @@ export default class ImageCrop extends MapHubsComponent {
   }
 
 
-resizeImage = (sourceCanvas: any) => {
+resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
   var pica = null;
   if (typeof window === 'undefined') {
     return;
@@ -115,10 +141,10 @@ resizeImage = (sourceCanvas: any) => {
   var _this = this;
   return new Promise((fulfill, reject) => {
 
-
+  
   // If image size smaller than 'skip_size' - skip resizing
   if (_this.state.file.size < _this.props.skip_size) {
-    let data = sourceCanvas.toDataURL(_this.state.file.type, quality);
+    let data = sourceCanvas.toDataURL(_this.state.file.type);
     fulfill(data);
     return;
   }
@@ -165,7 +191,7 @@ resizeImage = (sourceCanvas: any) => {
       scaledHeight = (!resize_max_height || resize_max_height > proportionalHeight) ? proportionalHeight : resize_max_height;
     }else{
       //no need to resize
-      let data = sourceCanvas.toDataURL(_this.state.file.type, quality);
+      let data = sourceCanvas.toDataURL(_this.state.file.type);
       fulfill(data);
       return;
     }
@@ -218,8 +244,9 @@ resizeImage = (sourceCanvas: any) => {
     } else if (e.target) {
       files = e.target.files;
     }
+    if(files && files.length > 0){
 
-    var file = files [0];
+    var file = files[0];
 
     let ext = file.name.split('.').pop();
 
@@ -291,7 +318,10 @@ resizeImage = (sourceCanvas: any) => {
                 break;
             }
           }
-          tempCanvas.getContext('2d').drawImage(img, 0, 0,  img.width, img.height);
+          var context = tempCanvas.getContext('2d');
+          if(context){
+            context.drawImage(img, 0, 0,  img.width, img.height);
+          }
           var data = tempCanvas.toDataURL(file.type, 1);
           _this.setState({src: data, exif: exifdata, file, img, ext, loading: false});
           $(tempCanvas).remove();
@@ -309,10 +339,10 @@ resizeImage = (sourceCanvas: any) => {
       debug(err);
         MessageActions.showMessage({title: 'Error', message: err});
     });
-
+    }
   }
 
-  _crop = (e) =>{
+  _crop = (e:{width: number, height: number, scaleX: number, scaleY: number}) =>{
     this.setState({
       cropWidth: e.width,
       cropHeight: e.height,

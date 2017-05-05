@@ -10,11 +10,11 @@ import LayerStore from '../../stores/layer-store';
 import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-export default class LayerSettings extends MapHubsComponent {
-
-  props: {
-    onSubmit: Function,
+type Props = {
+  onSubmit: Function,
     active: boolean,
     onValid: Function,
     onInValid: Function,
@@ -24,7 +24,18 @@ export default class LayerSettings extends MapHubsComponent {
     onPrev: Function,
     prevText: string,
     warnIfUnsaved: boolean
-  }
+}
+
+type LayerSettingsState = {
+  canSubmit: boolean,
+  pendingChanges: boolean
+}
+
+type State = LocaleStoreState & LayerStoreState & LayerSettingsState
+
+export default class LayerSettings extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     onSubmit: null,
@@ -34,8 +45,9 @@ export default class LayerSettings extends MapHubsComponent {
     showPrev: false
   }
 
-  state = {
-    canSubmit: false
+  state: State = {
+    canSubmit: false,
+    pendingChanges: false
   }
 
   constructor(props: Object){

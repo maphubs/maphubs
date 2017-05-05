@@ -34,10 +34,9 @@ addLocaleData(it);
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class FeatureInfo extends MapHubsComponent {
-
-  props: {
+type Props = {
     feature: Object,
     notes: string,
     photo: Object,
@@ -48,7 +47,17 @@ export default class FeatureInfo extends MapHubsComponent {
     headerConfig: Object
   }
 
-  state = {
+  type FeatureInfoState = {
+    editingNotes: boolean
+  }
+
+  type State = LocaleStoreState & FeatureInfoState
+
+export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     editingNotes: false
   }
 

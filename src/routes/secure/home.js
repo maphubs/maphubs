@@ -16,7 +16,7 @@ module.exports = function(app: any) {
     Page.getPageConfigs(['home']).then((pageConfigs: Object) => {
       var pageConfig = pageConfigs['home'];
       var dataRequests = [];
-      var dataRequestNames = [];
+      var dataRequestNames: Array<string> = [];
     //use page config to determine data requests
     if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
       pageConfig.components.forEach((component: any) => {

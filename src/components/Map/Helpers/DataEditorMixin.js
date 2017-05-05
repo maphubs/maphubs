@@ -6,7 +6,7 @@ var $ = require('jquery');
 //import Reflux from 'reflux';
 var MapboxDraw = {};
 if (typeof window !== 'undefined') {
-    MapboxDraw = require('../../../../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
+    MapboxDraw = require('../../../../assets/assets/js/mapbox-gl/mapbox-gl-draw');
 }
 
 export default function(){

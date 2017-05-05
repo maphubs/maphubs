@@ -3,6 +3,7 @@ import React from 'react';
 import Reflux from 'reflux';
 var $ = require('jquery');
 var classNames = require('classnames');
+import fireResizeEvent from '../../services/fire-resize-event';
 
 //Usage: import {Modal, ModalContent, ModalFooter} from 'Modal';
 //render(){return(
@@ -99,9 +100,7 @@ export class Modal extends Reflux.Component {
       //switch from off to on
       $(this.refs.modal).modal('open');
       //fire window resize for maps etc inside the modal
-      var evt = document.createEvent('UIEvents');
-      evt.initUIEvent('resize', true, false, window, 0);
-      window.dispatchEvent(evt);
+      fireResizeEvent();
     } else if(prevProps.show && !this.props.show){
       //switch from on to off
       $(this.refs.modal).modal('close');

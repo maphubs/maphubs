@@ -12,27 +12,40 @@ var classNames = require('classnames');
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import MapHubsComponent from '../../components/MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {GroupStoreState} from '../../stores/GroupStore';
 
-export default class CreateGroupStep1 extends MapHubsComponent {
+type Props = {
+  onSubmit: Function,
+  active: boolean
+}
 
-  props: {
-    onSubmit: Function,
-    active: boolean
-  }
+type CreateGroupStep1State = {
+  canSubmit: boolean,
+  showError: boolean,
+  errorMessage: string,
+  errorTitle: string
+}
+
+type State = LocaleStoreState & GroupStoreState & CreateGroupStep1State
+
+export default class CreateGroupStep1 extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     onSubmit: null,
     active: false
   }
 
-  state = {
+  state: State = {
     canSubmit: false,
     showError: false,
     errorMessage: '',
     errorTitle: ''
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(GroupStore);
 	}

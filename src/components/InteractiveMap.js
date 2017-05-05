@@ -11,6 +11,7 @@ import ForestLossLegendHelper from './Map/ForestLossLegendHelper';
 import MapLayerMenu from './InteractiveMap/MapLayerMenu';
 import MapHubsComponent from './MapHubsComponent';
 import Reflux from './Rehydrate';
+import fireResizeEvent from '../services/fire-resize-event';
 
 export default class InteractiveMap extends MapHubsComponent {
 
@@ -52,9 +53,7 @@ export default class InteractiveMap extends MapHubsComponent {
   }
 
   componentDidUpdate(){
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('resize', true, false, window, 0);
-    window.dispatchEvent(evt);
+    fireResizeEvent();
   }
 
   toggleVisibility = (layer_id: number) => {

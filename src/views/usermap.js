@@ -21,30 +21,44 @@ import ForestLossLegendHelper from '../components/Map/ForestLossLegendHelper';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import fireResizeEvent from '../services/fire-resize-event';
+import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {UserStoreState} from '../stores/UserStore';
 
-export default class UserMap extends MapHubsComponent {
-
-  props: {
-    map: Object,
+type Props = {
+   map: Object,
     layers: Array<Object>,
     canEdit: boolean,
     locale: string,
     _csrf: string,
     headerConfig: Object
-  }
+}
+
+type UserMapState = {
+  width: number,
+  height: number,
+  downloading: boolean,
+  layers: Array<Object>
+}
+
+type State = LocaleStoreState & UserStoreState & UserMapState
+
+export default class UserMap extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     canEdit: false
   }
 
-  state = {
+  state: State = {
       width: 1024,
       height: 600,
       downloading: false,
       layers: []
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(UserStore);
     this.stores.push(MapMakerStore);
@@ -92,7 +106,7 @@ export default class UserMap extends MapHubsComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     if(nextProps.layers && nextProps.layers.length !== this.state.layers.length){
       this.setState({layers: nextProps.layers});
     }
@@ -100,9 +114,7 @@ export default class UserMap extends MapHubsComponent {
 
   componentDidUpdate(){
     debounce(() => {
-      var evt = document.createEvent('UIEvents');
-      evt.initUIEvent('resize', true, false, window, 0);
-      window.dispatchEvent(evt);
+      fireResizeEvent();
     }, 300);
   }
 

@@ -19,19 +19,29 @@ var debug = require('../services/debug')('views/GroupAdmin');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {GroupStoreState} from '../stores/GroupStore';
 
-export default class GroupAdmin extends MapHubsComponent {
+type Props = {
+  group: Object,
+  layers: Array<Object>,
+  maps: Array<Object>,
+  hubs: Array<Object>,
+  members: Array<Object>,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
 
-  props: {
-    group: Object,
-    layers: Array<Object>,
-    maps: Array<Object>,
-    hubs: Array<Object>,
-    members: Array<Object>,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
-  }
+type GroupAdminState = {
+  canSubmit: boolean
+}
+
+type State = LocaleStoreState & GroupStoreState & GroupAdminState
+
+export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     layers: [],
@@ -40,11 +50,11 @@ export default class GroupAdmin extends MapHubsComponent {
     members: []
   }
 
-  state = {
+  state: State = {
     canSubmit: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(GroupStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
