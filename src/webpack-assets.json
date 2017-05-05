@@ -21,12 +21,12 @@
     "css": "/public/createhubstory.7e9ace0ab75029a6ee16.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.d0ccb4f050833573a954.js",
-    "css": "/public/createlayer.d0ccb4f050833573a954.css"
+    "js": "/public/createlayer.3064db78349ac84522fa.js",
+    "css": "/public/createlayer.3064db78349ac84522fa.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.e62856274ee808d61b6d.js",
-    "css": "/public/createremotelayer.e62856274ee808d61b6d.css"
+    "js": "/public/createremotelayer.6f7e07baa093622829d3.js",
+    "css": "/public/createremotelayer.6f7e07baa093622829d3.css"
   },
   "createuserstory": {
     "js": "/public/createuserstory.f3c72f71f58843d511d6.js",
@@ -59,8 +59,8 @@
     "css": "/public/featureinfo.776996b173c9d631de41.css"
   },
   "groupadmin": {
-    "js": "/public/groupadmin.cabdad334dbfbaceb21c.js",
-    "css": "/public/groupadmin.cabdad334dbfbaceb21c.css"
+    "js": "/public/groupadmin.bbe5f6553f0fc42c5b25.js",
+    "css": "/public/groupadmin.bbe5f6553f0fc42c5b25.css"
   },
   "groupinfo": {
     "js": "/public/groupinfo.8d6c560dd95973e421e0.js",
@@ -78,7 +78,7 @@
     "js": "/public/hubadmin.3e296554c67e674af608.js"
   },
   "hubbuilder": {
-    "js": "/public/hubbuilder.3a1d9358386070086f73.js"
+    "js": "/public/hubbuilder.a5beaab56bd88bcf8ee2.js"
   },
   "hubinfo": {
     "js": "/public/hubinfo.6839a3dd956386254544.js",
@@ -161,7 +161,7 @@
     "js": "/public/services.1860fc0a9b8080e35719.js"
   },
   "signup": {
-    "js": "/public/signup.ad47aa078cf944c61a6f.js"
+    "js": "/public/signup.9e9007b7835078116b5e.js"
   },
   "staticmap": {
     "js": "/public/staticmap.04521e024fd687c51c19.js",
@@ -202,10 +202,10 @@
     "css": "/public/userstory.f8e557e1bff92275867a.css"
   },
   "vendor": {
-    "js": "/public/vendor.8ef018ec4fc49230ca93.js"
+    "js": "/public/vendor.093cb6d0e948de980a88.js"
   },
   "metadata": {
-    "version": "0.9.2"
+    "version": "0.9.3"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
