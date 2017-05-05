@@ -35,15 +35,28 @@ export default class PlanetLabsSource extends MapHubsComponent {
   componentWillMount(){
     super.componentWillMount();
     Formsy.addValidationRule('isNotRapidEye', (values, value) => {
-        return !value.startsWith('REOrthoTile');
+        if(value){
+          return !value.startsWith('REOrthoTile');
+        }else{
+          return false;
+        }
+        
     });
 
     Formsy.addValidationRule('isNotOrtho', (values, value) => {
+      if(value){
         return !value.startsWith('PSOrthoTile');
+      }else{
+          return false;
+      }
     });
 
     Formsy.addValidationRule('isNotSentinel', (values, value) => {
+      if(value){
         return !value.startsWith('Sentinel2L1C');
+      }else{
+        return false;
+      }
     });
   }
 

@@ -49,6 +49,7 @@ export default class Signup extends MapHubsComponent {
     var _this = this;
 
     Formsy.addValidationRule('isAvailable', function (values, value) {
+      if(!value) return false;
       if(!this.usernameValue || value !== this.usernameValue){
         this.usernameValue = value;
         this.usernameAvailable = _this.checkUserNameAvailable(value);
@@ -57,6 +58,7 @@ export default class Signup extends MapHubsComponent {
     });
 
     Formsy.addValidationRule('validUserName', (values, value) => {
+      if(!value) return false;
       var regexp = /^[A-Z0-9\u00C0-\u017F]+$/i;
       return !(value !== null && value !== undefined) || value === '' || regexp.test(value);
     });

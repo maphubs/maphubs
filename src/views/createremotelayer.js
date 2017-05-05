@@ -43,11 +43,15 @@ export default class CreateRemoteLayer extends MapHubsComponent {
     super.componentWillMount();
 
     Formsy.addValidationRule('isHttps', (values, value) => {
+      if(value){
         return value.startsWith('https://');
+      }else{
+        return false;
+      }   
     });
 
     Formsy.addValidationRule('validMapHubsLayerPath', (values, value) => {
-      if(typeof window !== 'undefined'){
+      if(typeof window !== 'undefined' && value){
         var pathParts = $('<a>').prop('href', value).prop('pathname').split('/');
         if(pathParts[1] === 'layer'
         && (pathParts[2] === 'info' || pathParts[2] === 'map')

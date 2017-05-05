@@ -49,6 +49,7 @@ export default class HubBuilder extends MapHubsComponent {
     super.componentWillMount();
     var _this = this;
     Formsy.addValidationRule('isAvailable', function (values, value) {
+        if(!value) return false;
         if(_this.state.hub && _this.state.hub.created) return true;
         if(!this.hubIdValue || value !== this.hubIdValue){
           this.hubIdValue = value;

@@ -66,7 +66,11 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
     super.componentWillMount();
     var _this = this;     
     Formsy.addValidationRule('isAvailable', (values, value) => {
+      if(value){
         return _this.checkGroupIdAvailable(value);
+      }else{
+        return false;
+      }      
     });
   }
 

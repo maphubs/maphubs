@@ -31,12 +31,20 @@ export default class MapboxSource extends MapHubsComponent {
   componentWillMount(){
     super.componentWillMount();
     Formsy.addValidationRule('isValidMapboxStyleURL', (values, value) => {
+      if(value){
         return value.startsWith('mapbox://styles/');
+      }else{
+        return false;
+      }
     });
 
     Formsy.addValidationRule('isValidMapboxMapID', (values, value) => {
+      if(value){
         var valArr = value.split('.');
         return valArr && Array.isArray(valArr) && valArr.length === 2;
+      }else{
+        return false;
+      }
     });
   }
 

@@ -30,7 +30,11 @@ export default class GeoJSONUrlSource extends MapHubsComponent {
   componentWillMount(){
     super.componentWillMount();
     Formsy.addValidationRule('isHttps', (values, value) => {
+      if(value){
         return value.startsWith('https://');
+      }else{
+        return false;
+      }   
     });
   }
 

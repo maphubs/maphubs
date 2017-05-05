@@ -31,12 +31,11 @@ export default class AGOLSource extends MapHubsComponent {
   componentWillMount(){
     super.componentWillMount();
     Formsy.addValidationRule('isHttps', (values, value) => {
-        if(value){
-          return value.startsWith('https://');
-        }else{
-          return false;
-        }
-        
+      if(value){
+        return value.startsWith('https://');
+      }else{
+        return false;
+      }   
     });
   }
 
