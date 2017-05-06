@@ -3,7 +3,7 @@ require('dotenv').config();
 var getenv = require('getenv');
 getenv.disableErrors();
 
-module.exports = {
+var local = {
   connection: {
     url: 'postgres://' + getenv('DB_USER') + ':'+ getenv('DB_PASS') +'@' + getenv('DB_HOST') + ':' + getenv('DB_PORT') + '/' + getenv('DB_DATABASE')
   },
@@ -43,10 +43,12 @@ module.exports = {
   requireLogin: getenv.bool('OMH_REQUIRE_LOGIN', false),
   requireInvite: getenv.bool('OMH_REQUIRE_INVITE', false),
   manetAPIKey: getenv('OMH_MANET_API_KEY'),
-  uselocalAssets: getenv.bool('OMH_USE_LOCAL_ASSETS', false),
+  useLocalAssets: getenv.bool('OMH_USE_LOCAL_ASSETS', false),
   elasticSearchIndexName: getenv('OMH_ELASTICSEARCH_INDEXNAME'),
   elasticSearchHost: getenv('OMH_ELASTICSEARCH_HOST'),
   elasticSearchPort: getenv('OMH_ELASTICSEARCH_PORT'),
   elasticSearchUser: getenv('OMH_ELASTICSEARCH_USER'),
   elasticSearchPass: getenv('OMH_ELASTICSEARCH_PASS')
 };
+
+module.exports = local;

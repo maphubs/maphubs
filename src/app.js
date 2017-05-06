@@ -84,8 +84,12 @@ app.use(sassMiddleware({
 }));
 
 //static files
-if(process.env.NODE_ENV !== 'production'){
+if(process.env.NODE_ENV !== 'production' || local.useLocalAssets){
   app.use('/assets', express.static('./assets/assets'));
+}
+
+if(local.useLocalAssets){
+  app.use('/public', express.static('./assets/public'));
 }
 
 app.use('/css', express.static('css'));
