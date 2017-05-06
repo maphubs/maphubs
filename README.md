@@ -2,6 +2,9 @@
 
 MapHubs is a collaborative platform for sharing mapping data, organizing data into hubs, and telling stories with maps.
 
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs?ref=badge_shield)
+
+
 ## Status
 
 Web: [![Docker Repository on Quay](https://quay.io/repository/maphubs/web/status "Docker Repository on Quay")](https://quay.io/repository/maphubs/web)
@@ -53,5 +56,7 @@ npm start
 ### License
 
 GPL-v2 see LICENSE.txt
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs?ref=badge_large)
 
 Previous versions of this code (< v0.8.x) contained a fork of Macrocosm https://github.com/developmentseed/macrocosm licensed under GPL-v2
