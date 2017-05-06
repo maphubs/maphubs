@@ -4,7 +4,6 @@ MapHubs is a collaborative platform for sharing mapping data, organizing data in
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs?ref=badge_shield)
 
-
 ## Status
 
 Web: [![Docker Repository on Quay](https://quay.io/repository/maphubs/web/status "Docker Repository on Quay")](https://quay.io/repository/maphubs/web)
@@ -20,6 +19,7 @@ MapHubs runs as a stack of Docker containers (see list below) using either docke
 ## Development
 
 ### Installing dependencies
+
 ```sh
 git clone git@github.com:maphubs/maphubs.git
 cd maphubs
@@ -39,10 +39,12 @@ MapHubs is made of multiple components: a database, the web application (this pr
 The `db-server` directory contains instructions on running your own postgresql database with the appropriate table schema using Docker.
 
 #### Vector Tile Server
-https://github.com/maphubs/maphubs-tileserver
+
+[https://github.com/maphubs/maphubs-tileserver](https://github.com/maphubs/maphubs-tileserver)
 
 #### Screenshot Service
-https://github.com/openmaphub/manet-dockerfile
+
+[https://github.com/openmaphub/manet-dockerfile](https://github.com/openmaphub/manet-dockerfile)
 
 ### Running
 
@@ -52,11 +54,10 @@ To run the server, use the following command:
 npm start
 ```
 
-
 ### License
 
 GPL-v2 see LICENSE.txt
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs?ref=badge_large)
 
-Previous versions of this code (< v0.8.x) contained a fork of Macrocosm https://github.com/developmentseed/macrocosm licensed under GPL-v2
+Previous versions of this code (< v0.8.x) contained a fork of Macrocosm [https://github.com/developmentseed/macrocosm](https://github.com/developmentseed/macrocosm) licensed under GPL-v2
