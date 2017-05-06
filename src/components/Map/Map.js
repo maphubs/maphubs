@@ -583,8 +583,8 @@ export default class Map extends MapHubsComponent<void, Props, State> {
 
       this.setState({allowLayersToMoveMap});
       BaseMapActions.setBaseMap(nextProps.baseMap);
-      BaseMapActions.getBaseMapFromName(nextProps.baseMap, function(baseMapUrl){
-        _this.reload(this.state.glStyle, this.state.glStyle, baseMapUrl);
+      BaseMapActions.getBaseMapFromName(nextProps.baseMap,(baseMapUrl) => {
+        _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
       });
 
     }else if(fitBoundsChanging) {
