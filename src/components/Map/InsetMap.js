@@ -8,7 +8,7 @@ import MapToolButton from './MapToolButton';
 var mapboxgl = {};
 
 if (typeof window !== 'undefined') {
-    mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
+    mapboxgl = require("mapbox-gl");
 }
 
 type Props = {

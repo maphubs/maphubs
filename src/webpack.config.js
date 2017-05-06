@@ -66,12 +66,14 @@ module.exports = {
     signup: "./src/client/signup",
     pendingconfirmation: "./src/client/pendingconfirmation",
     emailconfirmation: "./src/client/emailconfirmation",
-    vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone"],
-    locales: ["./src/services/locales"],
-    mapboxgl: ["mapbox-gl"]
+    vendor: ["jquery", "slug", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "jsts"],
+    locales: ["./src/services/locales"]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json']
+    extensions: ['.js', '.jsx', '.json'],
+    alias: {
+        "mapbox-gl": "mapbox-gl/dist/mapbox-gl.js"
+    }
   },
 
   output: {

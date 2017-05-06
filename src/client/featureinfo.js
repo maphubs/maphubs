@@ -7,7 +7,7 @@ require("materialize-css");
 require("cropperjs/dist/cropper.css");
 import FeatureInfo from '../views/featureinfo';
 
-require('mapbox-gl/dist/mapbox-gl.css');
+require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');

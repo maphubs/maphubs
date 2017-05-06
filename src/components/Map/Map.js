@@ -32,7 +32,7 @@ var $ = require('jquery');
 
 var mapboxgl = {}, ArcGISTiledMapServiceSource;
 if (typeof window !== 'undefined') {
-    mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
+    mapboxgl = require("mapbox-gl");
     ArcGISTiledMapServiceSource  = require('mapbox-gl-arcgis-tiled-map-service/dist/mapbox-gl-arcgis-tiled-map-service-dev');
 }
 

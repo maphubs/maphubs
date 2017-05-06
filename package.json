@@ -8,7 +8,7 @@
     "dev": "DEBUG=maphubs:* nodejs-dashboard -- node --max-old-space-size=4096 src/app.js",
     "load-dev-env": "/bin/sh ./load-dev-env.sh",
     "webpack": "NODE_ENV=production node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --config src/webpack.config.min.js --progress",
-    "webpack-stats": "NODE_ENV=production node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --profile --json --config src/webpack.config.min.js > stats.json",
+    "webpack-stats": "NODE_ENV=production node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --progress --profile --json --config src/webpack.config.min.js > stats.json",
     "debug": "/bin/sh run-debug.sh",
     "prod-test": "/bin/sh run-prod-test.sh",
     "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -m \"update changelog\" && git push",
