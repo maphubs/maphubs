@@ -13,7 +13,7 @@ var express = require('express'),
   cookieParser = require('cookie-parser'),
   xmlparser = require('express-xml-bodyparser'),
    i18n = require("./i18n"),
-  compression = require('compression');
+  shrinkRay = require('shrink-ray');
 
 
 
@@ -50,7 +50,7 @@ if (app.get('env') !== 'production') {
 }
 
 //use compression
-app.use(compression());
+app.use(shrinkRay());
 
 //CORS
 app.use(cors());
