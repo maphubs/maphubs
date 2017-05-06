@@ -1,6 +1,5 @@
 var local = require('./local');
 require('./services/inject-maphubs-config');
-if(!local.disableTracking) require('newrelic');
 
 var express = require('express'),
   load = require('express-load'),
@@ -13,6 +12,8 @@ var express = require('express'),
   cookieParser = require('cookie-parser'),
   xmlparser = require('express-xml-bodyparser'),
    i18n = require("./i18n"),
+  Raven = require('raven'),
+  version = require('../package.json').version,
   shrinkRay = require('shrink-ray');
 
 
@@ -41,9 +42,14 @@ app.enable('trust proxy');
 app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
 app.disable("x-powered-by");
 
-process.on('uncaughtException', function(err) {
-  log.error('Caught exception: ' + err.stack);
-});
+ Raven.config((process.env.NODE_ENV === 'production' && !local.disableTracking) && local.SENTRY_DSN, {
+      release: version,
+      environment: local.ENV_TAG,
+      tags: {host: local.host},
+      parseUser: ['id', 'display_name', 'email']
+    }).install();
+
+app.use(Raven.requestHandler());
 
 if (app.get('env') !== 'production') {
   require("nodejs-dashboard");
@@ -217,8 +223,7 @@ app.use(function(err, req, res, next) {
   // curl https://localhost:4000/error/403 -vkH "Accept: application/json"
   var statusCode = err.status || 500;
   var statusText = '';
-  //var errorDetail = (process.env.NODE_ENV === 'production') ? '' : err.stack;
-  var errorDetail = err.stack;
+  var errorDetail = (process.env.NODE_ENV === 'production') ? req.__('Looks like we have a problem. A message was automatically sent to our team.') : err.stack;
 
   switch (statusCode) {
     case 400:
@@ -237,13 +242,31 @@ app.use(function(err, req, res, next) {
 
   log.error(err.stack);
 
+  if(req.session.user){
+    Raven.mergeContext({
+    user: {
+      id: req.session.user.id,
+      username: req.session.user.display_name,
+      email: req.session.user.email
+    }
+});
+  }
+  var eventId = Raven.captureException(err, function (sendErr, eventId) {
+    if (sendErr) {
+      log.error('Failed to send captured exception to Sentry');
+    }else{
+      log.info('Sentry Event ID: ' + eventId);
+    }
+  });
+
   if (req.accepts('html')) {
     res.status(statusCode).render('error', {
     title: statusCode + ': ' + statusText,
     props: {
       title: statusCode + ': ' + statusText,
       error: errorDetail,
-      url: req.url
+      url: req.url,
+      eventId: eventId
       }
     });
     return;

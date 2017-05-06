@@ -21,6 +21,7 @@ var log = require('./log');
 var version = require('../../package.json').version;
 var local = require('../local');
 var urlUtil = require('./url-util');
+var Raven = require('raven');
 var webpackAssets = require('../webpack-assets.json');
 var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
@@ -92,7 +93,7 @@ function createEngine(engineOptions) {
       }
 
       var getAssets = function(entryName){
-        if(process.env.NODE_ENV == 'production'){
+        if(process.env.NODE_ENV === 'production'){
           return webpackAssets[entryName];  
         }else{
           return {
@@ -251,6 +252,10 @@ function createEngine(engineOptions) {
           <body>
           <div id="app">${reactMarkup}</div>
          
+          <script src="https://cdn.ravenjs.com/3.15.0/raven.min.js" crossorigin="anonymous"></script>
+          <script type="text/javascript">
+            Raven.config('${MAPHUBS_CONFIG.SENTRY_DSN_PUBLIC}').install()
+          </script>
           <script type="text/javascript" src="${assetHost + getAssets('vendor').js}"></script>
           <script type="text/javascript" src="${assetHost + getAssets('locales').js}"></script>
           <script type="text/javascript" src="/clientconfig.js"></script>
@@ -363,6 +368,7 @@ function createEngine(engineOptions) {
       cb(null, markup);
     }).catch(err =>{
       log.error(err);
+      Raven.captureException(err);
       var appData = JSON.stringify(options.props, null, 2);
       markup += `
        <script>window.__appData = ${appData}; </script>

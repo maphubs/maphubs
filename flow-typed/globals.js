@@ -20,6 +20,7 @@ declare class MapHubsConfig {
   betaText: string;
   PLANET_LABS_API_KEY: string;
   MAPBOX_ACCESS_TOKEN: string;
+  SENTRY_DSN_PUBLIC: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;

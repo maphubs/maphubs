@@ -14,6 +14,7 @@ export default class Error extends MapHubsComponent {
 		url: string,
     locale: string,
     _csrf: string,
+    eventId: string,
     footerConfig: Object,
     headerConfig: Object
   }
@@ -21,6 +22,12 @@ export default class Error extends MapHubsComponent {
   constructor(props: Object) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
+  componentDidMount(){
+    if(Raven.isSetup() && this.props.eventId){
+      Raven.showReportDialog({eventId: this.props.eventId});
+    }
   }
   
   render() {

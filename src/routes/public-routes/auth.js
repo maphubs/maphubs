@@ -41,7 +41,9 @@ module.exports = function(app: any) {
     //save the user to the session
     req.session.user = {
       id: req.user.id,
-      display_name: req.user.display_name
+      display_name: req.user.display_name,
+      username: req.user.display_name,
+      email: req.user.email
     };
 
     //if there is a return page redirect otherwise go to home

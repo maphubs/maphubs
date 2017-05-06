@@ -9,7 +9,8 @@ function translateUserObject(data) {
     id: data.id,
     display_name: data.display_name,
     pass_crypt: data.pass_crypt,
-    description: data.description
+    description: data.description,
+    email: data.email
   };
 
   return user;

@@ -1,9 +1,11 @@
 var log = require('./log');
+var Raven = require('raven');
 module.exports = {
 
   apiError(res, code, userMessage){
     return function(err){
       log.error(err);
+      Raven.captureException(err);
       if(typeof err === 'object'){
         err = JSON.stringify(err);
       }

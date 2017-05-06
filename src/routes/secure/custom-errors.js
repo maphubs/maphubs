@@ -13,7 +13,8 @@ module.exports = function(app: any) {
       props: {
         title: req.__('Unauthorized'),
         error: req.__('You are not authorized to access this page.'),
-        url: path
+        url: path,
+        eventId: req.sentry.id
       },
       req});
   });
@@ -30,7 +31,8 @@ module.exports = function(app: any) {
     props: {
       title: req.__('Page not found'),
       error: req.__('The page you requested was not found.'),
-      url: path
+      url: path,
+      eventId: req.sentry.id
     },
     req});
   });
