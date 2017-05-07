@@ -87,7 +87,7 @@ export default function() {
             [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
           ], {layers: _this.state.interactiveLayers});
 
-        if (features.length) {          
+        if (features && features.length) {          
           if(_this.state.selected){
             _this.clearSelection();
           }
