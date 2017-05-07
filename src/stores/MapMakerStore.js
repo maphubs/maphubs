@@ -9,8 +9,23 @@ var _forEachRight = require('lodash.foreachright');
 //var $ = require('jquery');
 //var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
+import type {Layer} from './layer-store';
 
-export default class MapMakerStore extends Reflux.Store {
+export type MapMakerStoreState = {
+   map_id: number,
+  title: string,
+  mapLayers: Array<Layer>,
+  mapStyle: ?Object,
+  position: ?Object,
+  isPrivate: boolean,
+  owned_by_group_id: string,
+  basemap: string,
+  editingLayer: boolean
+}
+
+export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStoreState>  {
+
+  state: MapMakerStoreState
 
   constructor(){
     super();
@@ -18,7 +33,7 @@ export default class MapMakerStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): MapMakerStoreState{
     return {
       map_id: -1,
       title: null,

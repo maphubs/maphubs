@@ -18,23 +18,34 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import PresetStore from '../stores/preset-store';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class LayerAdmin extends MapHubsComponent {
+type Props = {
+  layer: Object,
+  groups: Array<Object>,
+  onSubmit: Function,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
 
-  props: {
-		layer: Object,
-    groups: Array<Object>,
-    onSubmit: Function,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
+type LayerAdminState = {
+  tab: string,
+  canSavePresets: boolean
+}
+
+type State = LocaleStoreState  & LayerAdminState
+
+export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
+    tab: 'settings',
+    canSavePresets: false
   }
 
-  state = {
-    tab: 'settings'
-  }
-
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
 

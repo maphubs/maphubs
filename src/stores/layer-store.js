@@ -7,25 +7,66 @@ var mapStyles = require('../components/Map/styles');
 var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var debug = require('../services/debug')('layer-store');
-var emptyLayer = require('./empty-layer');
+
 
 import type {Group} from './GroupStore';
 
 export type Layer = {
-  layer_id: number,
-  name: string,
-  description: string,
-  source: string
+  layer_id?: number,
+  name?: string,
+  description?: string,
+  source?: string,  
+  style?: ?Object,
+  labels?: Object,
+  settings?: Object,
+  presets?: Object,
+  preview_position?: Object,
+  data_type?: string,
+  legend_html?: ?string,
+  license?: string,
+  owned_by_group_id?: ?string,
+  private?: boolean,
+  is_external?: boolean,
+  external_layer_type?: string,
+  external_layer_config: Object,
+  is_empty?: boolean,
+  complete?: boolean
 }
+
+let emptyLayer: Layer = {
+    layer_id: -1,
+    name: '',
+    description: '',
+    published: true,
+    owned_by_group_id: null,
+    data_type: '',
+    source: '',
+    license: 'none',
+    preview_position: {
+      zoom: 1,
+      lat: 0,
+      lng: 0,
+      bbox: [[-180,-180],[180,180]]
+    } ,
+    style: null,
+    legend_html: null,
+    is_external: false,
+    external_layer_type: '',
+    external_layer_config: {},
+    complete: false,
+    private: false
+};
 
 export type LayerStoreState = {
   layer: Layer,
   mapColor?: string,
-  groups: Array<Group>,
+  groups?: Array<Group>,
   tileServiceInitialized?: boolean
 }
 
 export default class LayerStore extends Reflux.Store<void, void, LayerStoreState> {
+
+  state: LayerStoreState
 
   constructor(){
     super();
@@ -297,32 +338,37 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
 
   loadData(_csrf: string, cb: Function){
     debug("loadData");
-    var _this = this;
-    request.post('/api/layer/create/savedata/' + _this.state.layer.layer_id)
-    .type('json').accept('json').timeout(1200000)
-    .set('csrf-token', _csrf)
-    .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        _this.trigger(_this.state);
-        Actions.dataLoaded();
-        cb();
+    if(this.state.layer && this.state.layer.layer_id){
+       var _this = this;
+      request.post('/api/layer/create/savedata/' + this.state.layer.layer_id)
+      .type('json').accept('json').timeout(1200000)
+      .set('csrf-token', _csrf)
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          _this.trigger(_this.state);
+          Actions.dataLoaded();
+          cb();
+        });
       });
-    });
+    }
+   
   }
 
   initEmptyLayer(_csrf: string, cb: Function){
     debug("initEmptyLayer");
-    var _this = this;
-    request.post('/api/layer/create/empty/' + _this.state.layer.layer_id)
-    .type('json').accept('json')
-    .set('csrf-token', _csrf)
-    .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        _this.trigger(_this.state);
-        Actions.dataLoaded();
-        cb();
+    if(this.state.layer && this.state.layer.layer_id){
+      var _this = this;
+      request.post('/api/layer/create/empty/' + this.state.layer.layer_id)
+      .type('json').accept('json')
+      .set('csrf-token', _csrf)
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          _this.trigger(_this.state);
+          Actions.dataLoaded();
+          cb();
+        });
       });
-    });
+    }
   }
 
   finishUpload(requestedShapefile: string, _csrf: string, cb: Function){
@@ -342,15 +388,16 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
   }
 
   deleteData(data: Object, _csrf: string, cb: Function){
-    var _this = this;
-    request.post('/api/layer/deletedata/' + _this.state.layer.layer_id)
-    .type('json').accept('json')
-    .set('csrf-token', _csrf)
-    .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        cb();
+     if(this.state.layer && this.state.layer.layer_id){
+      request.post('/api/layer/deletedata/' + this.state.layer.layer_id)
+      .type('json').accept('json')
+      .set('csrf-token', _csrf)
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          cb();
+        });
       });
-    });
+     }
   }
 
   deleteLayer(_csrf: string, cb: Function){

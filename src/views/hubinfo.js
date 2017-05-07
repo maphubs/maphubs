@@ -20,21 +20,28 @@ import Progress from '../components/Progress';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class HubInfo extends MapHubsComponent {
+type Props = {
+  hub: Object,
+  map: Object,
+  layers: Array<Object>,
+  stories: Array<Object>,
+  canEdit: boolean,
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object
+}
 
-  props: {
-    hub: Object,
-    map: Object,
-    layers: Array<Object>,
-    stories: Array<Object>,
-    canEdit: boolean,
-    myMaps: Array<Object>,
-    popularMaps: Array<Object>,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object
-  }
+type State = {
+  editing: boolean
+} & LocaleStoreState
+
+export default class HubInfo extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     hub: {
@@ -45,11 +52,11 @@ export default class HubInfo extends MapHubsComponent {
     canEdit: false
   }
 
-  state = {
+  state: State = {
     editing: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

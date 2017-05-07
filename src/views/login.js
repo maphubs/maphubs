@@ -37,7 +37,7 @@ export default class Login extends MapHubsComponent<void, Props, State> {
     showSignup: true
   }
 
-  state = {
+  state: State = {
     canSubmit: false
   }
 

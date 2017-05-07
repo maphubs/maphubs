@@ -8,10 +8,10 @@ import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
 import Licenses from './licenses';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-export default class LayerSource extends MapHubsComponent {
-
-  props: {
+type Props = {
     onSubmit: Function,
     onValid: Function,
     onInValid: Function,
@@ -21,6 +21,16 @@ export default class LayerSource extends MapHubsComponent {
     submitText: string
   }
 
+type LayerSourceState = {
+  canSubmit: boolean
+}
+
+type State = LocaleStoreState & LayerStoreState & LayerSourceState
+
+export default class LayerSource extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
   static defaultProps = {
     layer_id: null,
     onSubmit: null,
@@ -28,8 +38,9 @@ export default class LayerSource extends MapHubsComponent {
     submitText: 'Save'
   }
 
-  state = {
-    canSubmit: false
+  state: State = {
+    canSubmit: false,
+    layer: {}
   }
 
   constructor(props: Object){

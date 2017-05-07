@@ -7,31 +7,43 @@ import HubActions from '../../actions/HubActions';
 import MapHubsPureComponent from '../../components/MapHubsPureComponent';
 //import _isequal from 'lodash.isequal';
 import urlUtil from '../../services/url-util';
+import type {HubStoreState} from '../../stores/HubStore';
 
-export default class HubBanner extends MapHubsPureComponent {
+type Props = {
+  hubid: string,
+  editing: boolean,
+  subPage: boolean
+}
 
-  props: {
-    hubid: string,
-    editing: boolean,
-    subPage: boolean
-  }
+type State = {
+  imageCropAspectRatio: number,
+  imageCropResizeWidth: number,
+  imageCropResizeMaxWidth: number,
+  imageCropResizeHeight: number,
+  onCrop: Function
+} & HubStoreState
+
+export default class HubBanner extends MapHubsPureComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     editing: false,
     subPage: false
   }
 
-  state = {
+  state: State = {
     imageCropAspectRatio: 1,
-    imageCropResizeWidth: null,
-    imageCropResizeMaxWidth: null,
-    imageCropResizeHeight: null,
+    imageCropResizeWidth: 0,
+    imageCropResizeMaxWidth: 0,
+    imageCropResizeHeight: 0,
+    onCrop(){},
+    hub: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
-    this.state.onCrop = function(){};
 	}
 
 /*

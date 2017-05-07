@@ -12,6 +12,7 @@ import MessageActions from '../../actions/MessageActions';
 import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
+import type {Group} from '../../stores/GroupStore';
 
 type Props = {
   onSubmit: Function,
@@ -23,7 +24,8 @@ type Props = {
     showPrev: boolean,
     onPrev: Function,
     prevText: string,
-    warnIfUnsaved: boolean
+    warnIfUnsaved: boolean,
+    groups: Array<Group>
 }
 
 type LayerSettingsState = {
@@ -47,7 +49,8 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
 
   state: State = {
     canSubmit: false,
-    pendingChanges: false
+    pendingChanges: false,
+    layer: {}
   }
 
   constructor(props: Object){
@@ -96,9 +99,9 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
     if(!model.group && this.state.layer.owned_by_group_id){
       //editing settings on an existing layer
       model.group = this.state.layer.owned_by_group_id;
-    }else if(!model.group && this.state.groups.length === 1){
+    }else if(!model.group && this.props.groups.length === 1){
       //creating a new layer when user is only the member of a single group (not showing the group dropdown)
-      model.group = this.state.groups[0].group_id;
+      model.group = this.props.groups[0].group_id;
     }
     if(!model.private){
       model.private = false;

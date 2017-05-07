@@ -10,16 +10,26 @@ import Radio from '../forms/radio';
 import LayerStore from '../../stores/layer-store';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class GeoJSONUrlSource extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-  props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Props = {
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function
+}
 
-  state = {
-    canSubmit: false
+type State = {
+  canSubmit: boolean
+} & LocaleStoreState & LayerStoreState
+
+export default class GeoJSONUrlSource extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
+    canSubmit: false,
+    layer: {}
   }
 
   constructor(props: Object){

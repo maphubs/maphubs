@@ -1,3 +1,4 @@
+//@flow
 import React from 'react';
 import UploadLocalSource  from './UploadLocalSource';
 import EmptyLocalSource  from './EmptyLocalSource';
@@ -12,7 +13,7 @@ import '../../stores/preset-store'; //needed to init the store used by the sourc
 
 export default {
 
-  getSource(type){
+  getSource(type: string){
     if(type === 'local'){
       return (<UploadLocalSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
     }else if(type === 'geojson'){

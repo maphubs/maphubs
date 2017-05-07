@@ -2,14 +2,17 @@
 import React from 'react';
 import CardCarousel from './CardCarousel';
 
-export default class CardCollection extends React.Component {
-
-  props: {
+type Props =  {
     cards: Array<Object>,
-    title: string
+    title: ?string
   }
 
-  static defaultProps = {
+export default class CardCollection extends React.Component<Props, Props, void> {
+
+  props: Props
+
+  static defaultProps: Props = {
+    cards: [],
     title: null
   }
 

@@ -10,20 +10,31 @@ import MessageActions from '../../actions/MessageActions';
 import LayerStore from '../../stores/layer-store';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class AGOLSource extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-  props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Props = {
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function
+}
 
-  state = {
+type State = {
+  canSubmit: boolean,
+  selectedOption: string
+} & LocaleStoreState & LayerStoreState
+
+export default class AGOLSource extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     canSubmit: false,
-    selectedOption: 'mapserverquery'
+    selectedOption: 'mapserverquery',
+    layer: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

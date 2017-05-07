@@ -25,7 +25,7 @@ type State = {
 }
 
 
-export default class InsetMap extends React.Component<void, Props, State> {
+export default class InsetMap extends React.Component<Props, Props, State> {
 
 
   insetMap: Object
@@ -40,34 +40,35 @@ export default class InsetMap extends React.Component<void, Props, State> {
     collapsed: false
   }
 
-  state: State = {
-    collapsed: false,
-    insetGeoJSONData: null,
-    insetGeoJSONCentroidData: null
-  }
+  insetMapComponent: React$Component<void,void,void>
+  insetMapArrow: React$Component<void,void,void>
+  
+  state: State
 
   constructor(props: Object){
     super(props);
     this.state = {
-      collapsed: props.collapsed
+      collapsed: props.collapsed,
+      insetGeoJSONData: {},
+      insetGeoJSONCentroidData: {}
     };
   }
 
   componentDidMount() {   
-    if(this.refs.insetMap){
-      $(this.refs.insetMap).show();
+    if(this.insetMapComponent){
+      $(this.insetMapComponent).show();
     }
   }
 
   componentDidUpdate(){
     if(this.insetMap){
       if(!this.state.collapsed){
-        $(this.refs.insetMapArrow).show();
+        $(this.insetMapArrow).show();
       }
       if(!this.insetMapActive){
-         $(this.refs.insetMap).addClass('z-depth-1');
+         $(this.insetMapComponent).addClass('z-depth-1');
          // border: '0.5px solid rgba(222,222,222,50)'
-         $(this.refs.insetMap).css('border', '0.5px solid rgba(222,222,222,50)');
+         $(this.insetMapComponent).css('border', '0.5px solid rgba(222,222,222,50)');
          this.insetMapActive = true;
       }
     }
@@ -145,7 +146,7 @@ export default class InsetMap extends React.Component<void, Props, State> {
       this.setState({collapsed: false});
     }else{
       this.setState({collapsed: true});
-      $(this.refs.insetMap).show();
+      $(this.insetMapComponent).show();
     }
   }
 
@@ -163,7 +164,9 @@ export default class InsetMap extends React.Component<void, Props, State> {
       type: 'FeatureCollection',
       features: [{
           type: 'Feature',
-          properties: {name: 'bounds'},
+          properties: {
+            name: 'bounds'
+          },
           geometry: {
               type: "Polygon",
               coordinates: [
@@ -228,7 +231,8 @@ export default class InsetMap extends React.Component<void, Props, State> {
             height: '25vw', width: '25vw'
             }}>
             
-            <div id={this.props.id + '_inset'} ref="insetMap"
+            <div id={this.props.id + '_inset'} 
+              ref= {(c) => { this.insetMapComonent = c; }}
               style={{             
                 display: 'none'
               }}>
@@ -246,7 +250,9 @@ export default class InsetMap extends React.Component<void, Props, State> {
             minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
             height: '25vw', width: '25vw'
             }}>
-            <div id={this.props.id + '_inset'} ref="insetMap" className="map"
+            <div id={this.props.id + '_inset'} 
+            ref= {(c) => { this.insetMapComonent = c; }}
+            className="map"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -257,7 +263,7 @@ export default class InsetMap extends React.Component<void, Props, State> {
                zIndex: 1
               }}></div>
                <i  className="material-icons"
-               ref="insetMapArrow"
+               ref= {(c) => { this.insetMapArrow = c; }}
                onClick={this.toggleCollapsed}
             style={{
                     position: 'absolute',

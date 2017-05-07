@@ -8,25 +8,36 @@ import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class CreateGroupStep2 extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {GroupStoreState} from '../../stores/GroupStore';
 
-  props: {
-    onSubmit: Function,
-    active: boolean,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Props = {
+  onSubmit: Function,
+  active: boolean,
+  showPrev: boolean,
+  onPrev: Function
+}
+
+type State = {
+  canSubmit: boolean
+} & LocaleStoreState & GroupStoreState
+
+export default class CreateGroupStep2 extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     onSubmit: null,
     active: false
   }
 
-  state = {
-    canSubmit: false
+  state: State = {
+    canSubmit: false,
+    group: {}, //replaced by store
+    members: [] //replaced by store
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(GroupStore);
 	}

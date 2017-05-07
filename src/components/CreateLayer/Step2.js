@@ -10,17 +10,16 @@ import Progress from '../Progress';
 import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
+import type {Group} from '../../stores/GroupStore';
 
 type Props = {
-  groups: Array<Object>,
+  groups: Array<Group>,
   onSubmit: Function
 }
 
-type Step2State = {
+type State = {
   saving: boolean
-}
-
-type State = LocaleStoreState & LayerStoreState & Step2State
+} & LocaleStoreState & LayerStoreState
 
 export default class Step2 extends MapHubsComponent<void, Props, State> {
 
@@ -32,7 +31,8 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    saving: false
+    saving: false,
+    layer: {}
   }
 
   constructor(props: Props){

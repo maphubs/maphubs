@@ -15,24 +15,35 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class HubBuilder extends MapHubsComponent {
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-   props: {
-     onSubmit: Function,
-     active: boolean,
-     groups: Array<Object>,
-     hub: Object,
-     locale: string,
-     _csrf: string,
-     headerConfig: Object
-   }
+type Props = {
+   onSubmit: Function,
+  active: boolean,
+  groups: Array<Object>,
+  hub: Object,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
+
+type State = {
+   canSubmit: boolean,
+  showError: boolean,
+  errorMessage: string,
+  errorTitle: string
+} & LocaleStoreState
+
+export default class HubBuilder extends MapHubsComponent<void, Props, State> {
+
+   props: Props
 
    static defaultProps = {
     onSubmit: null,
     active: false
    }
 
-   state = {
+   state: State = {
     canSubmit: false,
     showError: false,
     errorMessage: '',

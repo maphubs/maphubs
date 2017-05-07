@@ -12,22 +12,32 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class AdminUserInvite extends MapHubsComponent {
+type Props = {
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+type AdminUserInviteState = {
+  canSubmit: boolean,
+  saving: boolean
+}
 
-  state = {
+type State = LocaleStoreState & AdminUserInviteState
+
+export default class AdminUserInvite extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     canSubmit: false,
     saving: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

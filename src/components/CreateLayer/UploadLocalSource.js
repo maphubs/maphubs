@@ -12,21 +12,34 @@ import MessageActions from '../../actions/MessageActions';
 import RadioModal from '../RadioModal';
 import Progress from '../Progress';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-export default class UploadLocalSource extends MapHubsComponent {
+type Props = {
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function
+}
 
-  props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type State = {
+  canSubmit: boolean,
+  geoJSON: ?Object,
+  largeData: boolean,
+  processing: boolean,
+  multipleShapefiles: any
+} & LocaleStoreState & LayerStoreState
 
-  state = {
+export default class UploadLocalSource extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     canSubmit: false,
     geoJSON: null,
     largeData: false,
     processing: false,
-    multipleShapefiles: null
+    multipleShapefiles: null,
+    layer: {}
   }
 
   constructor(props: Object){

@@ -18,11 +18,9 @@ type Props = {
   onPrev: Function
 }
 
-type Step3State = {
+type State = {
   saving: boolean
-}
-
-type State = LocaleStoreState & LayerStoreState & Step3State
+} & LocaleStoreState & LayerStoreState
 
 export default class Step3 extends MapHubsComponent<void, Props, State> {
 
@@ -34,7 +32,8 @@ export default class Step3 extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    saving: false
+    saving: false,
+    layer: {}
   }
 
   constructor(props: Props){

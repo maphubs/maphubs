@@ -26,6 +26,7 @@ declare class MapHubsConfig {
 declare var MAPHUBS_CONFIG: MapHubsConfig;
 
 declare var HS: Object;
+declare var Raven: Object;
 
 import type ReactComponent from 'react';
 

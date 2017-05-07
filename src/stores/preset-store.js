@@ -16,6 +16,8 @@ export type PresetStoreState = {
 
 export default class PresetStore extends Reflux.Store<void, void, PresetStoreState> {
   
+  state: PresetStoreState
+
   constructor(){
     super();
     this.state = {

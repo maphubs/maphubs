@@ -52,18 +52,19 @@ return function(req: any, res: any, next: any){
     log.info('x-forwarded-for:' + forwardedIP);
     var manetUrl: string = local.manetUrl;
     if(process.env.OMH_MANET_IP) {
-       if(process.env.OMH_MANET_IP !== ip){
+      const OMH_MANET_IP: string = process.env.OMH_MANET_IP;
+       if(OMH_MANET_IP !== ip){
           //remoteAddress doesn't match
           if(allowForwardedIP && forwardedIP){
             //check forwarded address
             if(process.env.OMH_MANET_IP !== forwardedIP){
               log.error('Unauthenticated screenshot request, manet IP does not match');
-              log.error('Expected IP:' + process.env.OMH_MANET_IP);
+              log.error('Expected IP:' + OMH_MANET_IP);
               return failure();
             }
           }else{
             log.error('Unauthenticated screenshot request, manet IP does not match');
-            log.error(`Expected IP: ${process.env.OMH_MANET_IP}`);
+            log.error(`Expected IP: ${OMH_MANET_IP}`);
             return failure();
           }
         }

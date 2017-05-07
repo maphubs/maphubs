@@ -5,16 +5,26 @@ import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
 import CreateLayer from './CreateLayer';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-export default class Step1 extends MapHubsComponent {
 
-   props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Props = {
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function
+}
 
-  state = {
+type State = {
+  created: boolean,
+  canSubmit: boolean,
+  selectedSource: string
+} & LocaleStoreState
+
+export default class Step1 extends MapHubsComponent<void, Props, State> {
+
+   props: Props
+
+  state: State = {
     created: false,
     canSubmit: false,
     selectedSource: 'local'

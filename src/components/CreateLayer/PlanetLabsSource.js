@@ -9,22 +9,35 @@ import MessageActions from '../../actions/MessageActions';
 import LayerStore from '../../stores/layer-store';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class PlanetLabsSource extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-  props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Props = {
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function
+}
+
+type State = {
+  canSubmit: boolean,
+  selectedOption: string,
+  selectedSceneOption: string
+} & LocaleStoreState & LayerStoreState;
+
+
+export default class PlanetLabsSource extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     onSubmit: null
   }
 
-  state = {
+  state: State = {
     canSubmit: false,
     selectedOption: 'scene',
-    selectedSceneOption: 'ortho'
+    selectedSceneOption: 'ortho',
+    layer: {}
   }
 
   constructor(props: Object){

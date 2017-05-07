@@ -24,27 +24,53 @@ import ForestLossLegendHelper from '../Map/ForestLossLegendHelper';
 import MapHubsComponent from '../MapHubsComponent';
 import Reflux from '../Rehydrate';
 import fireResizeEvent from '../../services/fire-resize-event';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {UserStoreState} from '../../stores/UserStore';
+import type {MapMakerStoreState} from '../../stores/MapMakerStore';
+import type {Layer} from '../../stores/layer-store';
 
-export default class MapMaker extends MapHubsComponent {
-
-  props:  {
+type Props =  {
     edit: boolean,
-    mapLayers: Array<Object>,
+    mapLayers: Array<Layer>,
     showVisibility:  boolean,
     onCreate: Function,
     onClose: Function,
-    myLayers: Array<Object>,
-    popularLayers: Array<Object>,
+    myLayers: Array<Layer>,
+    popularLayers: Array<Layer>,
     myGroups: Array<Object>,
-    title: string,
+    title?: string,
     position: Object,
-    basemap: string,
+    basemap?: string,
     map_id: number,
-    owned_by_group_id: string,
-    editLayer: Object
+    owned_by_group_id?: string,
+    editLayer?: Layer
   }
 
-  static defaultProps = {
+  type DefaultProps = {
+    edit: boolean,
+    popularLayers:  Array<Layer>,
+    showVisibility: boolean,
+    mapLayers: null,
+    showTitleEdit: boolean,
+    map_id: ?number,
+    owned_by_group_id: ?string,
+    title: ?string,
+    basemap: ?string,
+    editLayer: ?Layer
+  }
+
+  type State = {
+    showMapLayerDesigner: boolean,
+    canSave: boolean,
+    editLayerLoaded: boolean
+  } & LocaleStoreState & MapMakerStoreState & UserStoreState
+
+export default class MapMaker extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props:  Props
+
+
+  static defaultProps: DefaultProps = {
     edit: false,
     popularLayers: [],
     showVisibility: true,
@@ -57,13 +83,13 @@ export default class MapMaker extends MapHubsComponent {
     editLayer: null
   }
 
-  state = {
+  state: State = {
     showMapLayerDesigner: false,
     canSave: false,
     editLayerLoaded: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(MapMakerStore);
     this.stores.push(UserStore);
@@ -317,13 +343,13 @@ export default class MapMaker extends MapHubsComponent {
     this.setState({showMapLayerDesigner: false});
   }
 
-  removeFromMap = (layer: Object) => {
+  removeFromMap = (layer: Layer) => {
     $('.layer-card-tooltipped').tooltip('remove');
     Actions.removeFromMap(layer);
     $('.layer-card-tooltipped').tooltip();
   }
 
-  addLayer = (layer: Object) => {
+  addLayer = (layer: Layer) => {
     var _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
 
@@ -361,7 +387,7 @@ export default class MapMaker extends MapHubsComponent {
 
   }
 
-  editLayer = (layer: Object) => {
+  editLayer = (layer: Layer) => {
     Actions.startEditing();
     DataEditorActions.startEditing(layer);
     this.refs.map.startEditingTool(layer);

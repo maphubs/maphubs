@@ -17,10 +17,10 @@ import Editor from 'react-medium-editor';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import Reflux from '../Rehydrate';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
-import type {StoryStoreState} from '../../stores/StoryStore';
+import type {Story, StoryStoreState} from '../../stores/StoryStore';
 
 type Props = {
-    story: Object,
+    story: Story,
     hub_id: string,
     storyType: string,
     username: string,

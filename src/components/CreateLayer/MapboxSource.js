@@ -9,18 +9,29 @@ import NotificationActions from '../../actions/NotificationActions';
 import MessageActions from '../../actions/MessageActions';
 import LayerStore from '../../stores/layer-store';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {LayerStoreState} from '../../stores/layer-store';
 
-export default class MapboxSource extends MapHubsComponent {
-
-  props: {
+type Props = {
     onSubmit: Function,
     showPrev: boolean,
     onPrev: Function
   }
 
-  state = {
+type State = {
+  canSubmit: boolean,
+  selectedOption: string
+} & LocaleStoreState & LayerStoreState;
+
+
+export default class MapboxSource extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     canSubmit: false,
-    selectedOption: 'style'
+    selectedOption: 'style',
+    layer: {}
   }
 
   constructor(props: Object){

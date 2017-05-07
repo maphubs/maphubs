@@ -24,7 +24,9 @@ export default class GroupStore extends Reflux.Store<void, void, GroupStoreState
   constructor(){
     super();
     this.state = {
-      group: {},
+      group: {
+  
+      },
       members: [],
       layers: []
     };

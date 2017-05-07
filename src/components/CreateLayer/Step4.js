@@ -38,7 +38,8 @@ export default class Step4 extends MapHubsComponent<void, Props, State> {
 
   state: State = {
     canSubmit: false,
-    saving: false
+    saving: false,
+    layer: {}
   }
 
   constructor(props: Object){

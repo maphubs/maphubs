@@ -20,14 +20,12 @@ type Props = {
   active: boolean
 }
 
-type CreateGroupStep1State = {
+type State = {
   canSubmit: boolean,
   showError: boolean,
   errorMessage: string,
   errorTitle: string
-}
-
-type State = LocaleStoreState & GroupStoreState & CreateGroupStep1State
+} & LocaleStoreState & GroupStoreState
 
 export default class CreateGroupStep1 extends MapHubsComponent<void, Props, State> {
 
@@ -42,7 +40,9 @@ export default class CreateGroupStep1 extends MapHubsComponent<void, Props, Stat
     canSubmit: false,
     showError: false,
     errorMessage: '',
-    errorTitle: ''
+    errorTitle: '',
+    group: {},
+    members: []
   }
 
   constructor(props: Props){
