@@ -185,7 +185,7 @@ module.exports = function(app: any) {
     var hub_id_input: string = req.params.hubid;
     var user_id: number;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     Hub.getHubByID(hub_id_input)
       .then((hub) => {
@@ -228,7 +228,7 @@ module.exports = function(app: any) {
     const hub_id_input: string = req.params.hubid;
     let user_id: number;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     Hub.getHubByID(hub_id_input)
       .then((hub) => {
@@ -269,7 +269,7 @@ module.exports = function(app: any) {
     const hub_id_input: string = req.params.hubid;
     let user_id: number;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     Hub.getHubByID(hub_id_input)
       .then((hub) => {
@@ -386,7 +386,7 @@ module.exports = function(app: any) {
     const story_id: number = parseInt(req.params.story_id || '', 10);
     let user_id: number;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     recordStoryView(req.session, story_id, user_id, next);
     if (!req.isAuthenticated || !req.isAuthenticated()

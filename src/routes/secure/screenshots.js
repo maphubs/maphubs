@@ -28,7 +28,7 @@ module.exports = function(app: any) {
     var map_id = parseInt(req.params.mapid || '', 10);
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
 
     //record requests for the png as map views

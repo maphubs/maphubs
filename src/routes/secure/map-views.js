@@ -149,7 +149,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     recordMapView(req.session, map_id, user_id, next);
 
@@ -174,7 +174,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     recordMapView(req.session, map_id, user_id, next);
 
@@ -199,7 +199,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
 
     if (!req.isAuthenticated || !req.isAuthenticated()
@@ -257,7 +257,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     recordMapView(req.session, map_id, user_id, next);
 
@@ -280,7 +280,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     recordMapView(req.session, map_id, user_id, next);
 
@@ -303,7 +303,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     recordMapView(req.session, map_id, user_id, next);
 

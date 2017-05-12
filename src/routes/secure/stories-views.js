@@ -148,7 +148,7 @@ module.exports = function(app: any) {
       var user_id = -1;
       if ( (req.isAuthenticated || req.isAuthenticated())
           && req.session && req.session.user) {
-            user_id = req.session.user.id;
+            user_id = req.session.user.maphubsUser.id;
       }
 
       if(!req.session.storyviews){
