@@ -193,6 +193,7 @@ export default class BaseMapStore extends Reflux.Store {
     else if(mapName === 'stamen-toner'){
       style={
         "version": 8,
+        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
         "sources": {
             "stamen-toner-tiles": {
                 "type": "raster",
@@ -222,6 +223,7 @@ export default class BaseMapStore extends Reflux.Store {
     else if(mapName === 'stamen-terrain'){
       style={
         "version": 8,
+        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
         "sources": {
             "stamen-terrain-tiles": {
                 "type": "raster",
@@ -251,6 +253,7 @@ export default class BaseMapStore extends Reflux.Store {
      else if(mapName === 'stamen-watercolor'){
       style={
         "version": 8,
+        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
         "sources": {
             "stamen-watercolor-tiles": {
                 "type": "raster",
@@ -280,6 +283,7 @@ export default class BaseMapStore extends Reflux.Store {
     else if(mapName === 'landsat-2016'){
       style={
         "version": 8,
+        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
         "sources": {
             "landsat-2016": {
                 "type": "raster",
@@ -306,6 +310,7 @@ export default class BaseMapStore extends Reflux.Store {
      else if(mapName === 'landsat-2014'){
       style={
         "version": 8,
+        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
         "sources": {
             "landsat-2014": {
                 "type": "raster",
@@ -332,6 +337,7 @@ export default class BaseMapStore extends Reflux.Store {
     else if(mapName === 'bing-satellite'){
       style={
         "version": 8,
+        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
         "sources": {
             "bing-tiles": {
                 "type": "raster",

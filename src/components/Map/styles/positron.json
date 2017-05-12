@@ -17,9 +17,7 @@
         "collapsed": false
       }
     },
-    "openmaptiles:version": "3.x",
-    "openmaptiles:mapbox:owner": "openmaptiles",
-    "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t"
+    "openmaptiles:version": "3.x"
   },
   "center": [
     10.184401828277089,
