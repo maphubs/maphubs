@@ -3214,10 +3214,6 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@^0.45.0:
-  version "0.45.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.45.0.tgz#009dd0f577a3f665c74ca8be827ae8c2dd8fd6b5"
-
 flow-remove-types@^1.1.2:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/flow-remove-types/-/flow-remove-types-1.2.1.tgz#58e261bf8b842bd234c86cafb982a1213aff0edb"
@@ -5446,10 +5442,6 @@ oauth@0.9.x:
   version "0.9.14"
   resolved "https://registry.yarnpkg.com/oauth/-/oauth-0.9.14.tgz#c5748883a40b53de30ade9cabf2100414b8a0971"
 
-oauthorize@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/oauthorize/-/oauthorize-0.1.0.tgz#41d5078e65801c20b4a621efbe274363d2c581d3"
-
 object-assign@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
@@ -5690,18 +5682,13 @@ parseurl@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.1.tgz#c8ab8c9223ba34888aa64a297b28853bec18da56"
 
-passport-http-oauth@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/passport-http-oauth/-/passport-http-oauth-0.1.3.tgz#54510c93560e2c7138aab4b199f2c61fd489dcb2"
+passport-auth0@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/passport-auth0/-/passport-auth0-0.6.0.tgz#4a5c6d06df427e0aa5b48737dbff9e1fd14935c2"
   dependencies:
-    passport "~0.1.11"
-    pkginfo "0.2.x"
-
-passport-http@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/passport-http/-/passport-http-0.3.0.tgz#8ee53d4380be9c60df2151925029826f77115603"
-  dependencies:
-    passport-strategy "1.x.x"
+    passport-oauth "^1.0.0"
+    request "^2.61.0"
+    xtend "^4.0.0"
 
 passport-local@1.0.0:
   version "1.0.0"
@@ -5709,21 +5696,29 @@ passport-local@1.0.0:
   dependencies:
     passport-strategy "1.x.x"
 
-passport-oauth@0.1.x:
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/passport-oauth/-/passport-oauth-0.1.15.tgz#fb74e0afe84614bfa256c5fc716cc56bbfc8cec0"
+passport-oauth1@1.x.x:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth1/-/passport-oauth1-1.1.0.tgz#a7de988a211f9cf4687377130ea74df32730c918"
   dependencies:
     oauth "0.9.x"
-    passport "~0.1.1"
-    pkginfo "0.2.x"
+    passport-strategy "1.x.x"
+    utils-merge "1.x.x"
 
-passport-openstreetmap@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/passport-openstreetmap/-/passport-openstreetmap-0.1.2.tgz#a8663a50a62e4d84c31e0825bac94a42f99753e5"
+passport-oauth2@1.x.x:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth2/-/passport-oauth2-1.4.0.tgz#f62f81583cbe12609be7ce6f160b9395a27b86ad"
   dependencies:
-    passport-oauth "0.1.x"
-    pkginfo "0.2.x"
-    xml2js "0.1.x"
+    oauth "0.9.x"
+    passport-strategy "1.x.x"
+    uid2 "0.0.x"
+    utils-merge "1.x.x"
+
+passport-oauth@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth/-/passport-oauth-1.0.0.tgz#90aff63387540f02089af28cdad39ea7f80d77df"
+  dependencies:
+    passport-oauth1 "1.x.x"
+    passport-oauth2 "1.x.x"
 
 passport-strategy@1.x.x:
   version "1.0.0"
@@ -5735,13 +5730,6 @@ passport@0.3.2:
   dependencies:
     passport-strategy "1.x.x"
     pause "0.0.1"
-
-passport@~0.1.1, passport@~0.1.11:
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/passport/-/passport-0.1.18.tgz#c8264479dcb6414cadbb66752d12b37e0b6525a1"
-  dependencies:
-    pause "0.0.1"
-    pkginfo "0.2.x"
 
 path-array@^1.0.0:
   version "1.0.1"
@@ -5890,10 +5878,6 @@ pkg-dir@^1.0.0:
   resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-1.0.0.tgz#7a4b508a8d5bb2d629d447056ff4e9c9314cf3d4"
   dependencies:
     find-up "^1.0.0"
-
-pkginfo@0.2.x:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/pkginfo/-/pkginfo-0.2.3.tgz#7239c42a5ef6c30b8f328439d9b9ff71042490f8"
 
 pluralize@^1.2.1:
   version "1.2.1"
@@ -6303,7 +6287,7 @@ querystring-es3@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
 
-querystring@0.2.0:
+querystring@0.2.0, querystring@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
 
@@ -6780,7 +6764,7 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request@2, request@^2.53.0, request@^2.67.0, request@^2.79.0, request@^2.81.0:
+request@2, request@^2.53.0, request@^2.61.0, request@^2.67.0, request@^2.79.0, request@^2.81.0:
   version "2.81.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
@@ -6969,7 +6953,7 @@ sass-loader@^6.0.3:
     lodash.tail "^4.1.1"
     pify "^2.3.0"
 
-sax@>=0.1.1, sax@>=0.6.0, sax@^1.2.1, sax@~1.2.1:
+sax@>=0.6.0, sax@^1.2.1, sax@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
 
@@ -7900,6 +7884,10 @@ uid-safe@~2.1.4:
   dependencies:
     random-bytes "~1.0.0"
 
+uid2@0.0.x:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/uid2/-/uid2-0.0.3.tgz#483126e11774df2f71b8b639dcd799c376162b82"
+
 ultron@1.0.x:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
@@ -8018,7 +8006,7 @@ util@0.10.3, "util@>=0.10.3 <1", util@^0.10.3:
   dependencies:
     inherits "2.0.1"
 
-utils-merge@1.0.0:
+utils-merge@1.0.0, utils-merge@1.x.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
 
@@ -8137,9 +8125,9 @@ webpack-sources@^0.2.3:
     source-list-map "^1.1.1"
     source-map "~0.5.3"
 
-webpack@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.5.0.tgz#5a17089f8d0e43442e606d6cf9b2a146c8ed9911"
+webpack@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.5.1.tgz#61742f0cf8af555b87460a9cd8bba2f1e3ee2fce"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"
@@ -8312,12 +8300,6 @@ x256@>=0.0.1, x256@~0.0.1:
 xml-name-validator@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-2.0.1.tgz#4d8b8f1eccd3419aa362061becef515e1e559635"
-
-xml2js@0.1.x:
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.1.14.tgz#5274e67f5a64c5f92974cd85139e0332adc6b90c"
-  dependencies:
-    sax ">=0.1.1"
 
 xml2js@^0.4.11, xml2js@^0.4.5:
   version "0.4.17"

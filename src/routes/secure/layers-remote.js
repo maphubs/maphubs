@@ -15,7 +15,7 @@ module.exports = function(app: any) {
 
   app.get('/createremotelayer', login.ensureLoggedIn(), (req, res, next) => {
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
 
     Group.getGroupsForUser(user_id)
     .then((result) => {
@@ -32,7 +32,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     if(req.body.group_id && req.body.layer && req.body.host){
       Group.allowedToModify(req.body.group_id, user_id)
       .then((allowed) => {
@@ -63,7 +63,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     if(req.body.layer_id){
       Layer.allowedToModify(req.body.layer_id, user_id)
       .then((allowed) => {

@@ -11,7 +11,7 @@ module.exports = app => {
 
   app.get('/admin/searchindex', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
 
     Admin.checkAdmin(user_id).then(isAdmin =>{
       if(isAdmin){ 
@@ -38,7 +38,7 @@ module.exports = app => {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     Admin.checkAdmin(user_id).then(isAdmin => {
       if(isAdmin){
         return SearchIndex.initIndex().then(() =>{
@@ -55,7 +55,7 @@ module.exports = app => {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     Admin.checkAdmin(user_id).then(isAdmin => {
       if(isAdmin){
         return SearchIndex.rebuildFeatures().then(() =>{

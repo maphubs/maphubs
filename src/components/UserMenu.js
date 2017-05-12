@@ -93,7 +93,7 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/hubs'}>{this.__('My Hubs')}</a></li>
             <li className="divider"></li>
-            <li className="usermenu-wrapper"><a href="/user/settings">{this.__('Settings')}</a></li>
+            <li className="usermenu-wrapper"><a href="/user/profile">{this.__('Settings')}</a></li>
             {adminInvites}
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a href={'/logout'}>{this.__('Logout')}</a></li>

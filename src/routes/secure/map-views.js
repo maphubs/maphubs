@@ -43,7 +43,7 @@ module.exports = function(app: any) {
             }).catch(nextError(next));
     } else {
       //get user id
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
 
@@ -127,7 +127,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)

@@ -1,11 +1,14 @@
+//@flow
 var log = require('./log');
 var Raven = require('raven');
 module.exports = {
 
-  apiError(res, code, userMessage){
-    return function(err){
+  apiError(res: express$Response, code: number, userMessage: string){
+    return function(err: any){
       log.error(err);
-      Raven.captureException(err);
+      if(Raven && Raven.isSetup && Raven.isSetup()){
+        Raven.captureException(err);
+      }
       if(typeof err === 'object'){
         err = JSON.stringify(err);
       }
@@ -23,21 +26,21 @@ module.exports = {
     };
   },
 
-  nextError(next){
-    return function(err){
+  nextError(next: Function){
+    return function(err: Error){
       log.error(err);
       next(err);
     };
   },
 
-  apiDataError(res, msg = "Bad Request: required data not found"){
+  apiDataError(res: express$Response, msg: string = "Bad Request: required data not found"){
     res.status(400).send({
       success: false,
       error: msg
     });
   },
 
-  notAllowedError(res, type = ""){
+  notAllowedError(res: express$Response, type: string = ""){
     res.status(400).send({
       success: false,
       error: "Not allowed to modify " + type
@@ -45,7 +48,7 @@ module.exports = {
   },
 
   logRethrow(){
-    return function(err){
+    return function(err: Error){
       log.error(err);
       throw(err);
     };

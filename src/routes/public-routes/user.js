@@ -22,6 +22,9 @@ if(!local.mapHubsPro){
 module.exports = function(app: any) {
 
 
+
+
+if(local.useLocalAuth) {
   app.get('/user/passwordreset/:key', csrfProtection, (req, res) => {
     var passreset = req.params.key;
     return res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName, props: {passreset}, req});
@@ -80,7 +83,7 @@ module.exports = function(app: any) {
     var data = req.body;
     if (req.isAuthenticated && req.isAuthenticated()) {
       //logged in, confirm that the requested user matches the session user
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
       if(!data.user_id || user_id != data.user_id){
         res.status(401).send("Unauthorized");
         return;
@@ -106,15 +109,9 @@ module.exports = function(app: any) {
   });
 
 
-  app.post('/api/user/setlocale', (req, res) => {
-    var data = req.body;
-    if(data.locale){
-      req.session.locale = data.locale;
-      req.setLocale(data.locale);
-    }
-    res.status(200).send({success: true});
 
-  });
+
+ 
 
   app.post('/api/user/forgotpassword', csrfProtection, (req, res) => {
     var data = req.body;
@@ -216,6 +213,52 @@ module.exports = function(app: any) {
 
   });
 
+}else{
+  //auth0 user actions
+  app.get('/signup', csrfProtection, (req, res) => {
+    if(local.requireLogin || local.requireInvite){
+      return res.redirect('/login');
+    }else{
+      res.render('auth0login', {
+      title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName,
+      auth0: true,
+      allowSignUp: !local.requireInvite,
+      props: {
+        AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
+        AUTH0_DOMAIN: local.AUTH0_DOMAIN,
+        AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
+        initialScreen: 'signUp'
+      }, req
+    });
+    }
+  });
+
+  app.get('/forgotpassword', csrfProtection, (req, res) => {
+    res.render('auth0login', {
+      title: req.__('Forget Password') + ' - ' + MAPHUBS_CONFIG.productName,
+      auth0: true,
+      allowSignUp: !local.requireInvite,
+      props: {
+        AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
+        AUTH0_DOMAIN: local.AUTH0_DOMAIN,
+        AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
+        initialScreen: 'forgotPassword'
+      }, req
+    });
+  });
+}
+
+
+ app.post('/api/user/setlocale', (req, res) => {
+    var data = req.body;
+    if(data.locale){
+      req.session.locale = data.locale;
+      req.setLocale(data.locale);
+    }
+    res.status(200).send({success: true});
+
+  });
+
   app.post('/api/user/mailinglistsignup', csrfProtection, (req, res) => {
     var data = req.body;
     if(data.email){
@@ -245,7 +288,7 @@ module.exports = function(app: any) {
       res.status(200).send({loggedIn: false, user: null});
       return;
     }else{
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
       User.getUser(user_id)
         .then((user) => {
           //remove sensitive content if present

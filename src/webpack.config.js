@@ -12,6 +12,9 @@ var pathToMediumEditor = path.resolve(__dirname, '../node_modules/medium-editor/
 module.exports = {
   devtool: 'eval',
   entry: {
+    auth0login: "./src/client/auth0login",
+    auth0profile: "./src/client/auth0profile",
+    auth0error: "./src/client/auth0error",
     login: "./src/client/login",
     approvedialog: "./src/client/approvedialog",
     adminuserinvite: "./src/client/adminuserinvite",

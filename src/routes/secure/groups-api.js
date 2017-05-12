@@ -63,7 +63,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.group_id) {
       Group.createGroup(data.group_id, data.name, data.description, data.location, data.published, user_id)
@@ -89,7 +89,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.group_id) {
       Group.allowedToModify(data.group_id, user_id)
@@ -114,7 +114,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.group_id) {
       Group.allowedToModify(data.group_id, user_id)
@@ -147,7 +147,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.group_id) {
       //TODO: should be admin, not just a member
@@ -195,7 +195,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
 
     if(data && data.group_id && data.image){
@@ -222,7 +222,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var session_user_id = req.session.user.id;
+    var session_user_id = req.session.user.maphubsUser.id;
     var group_id = req.params.id;
 
     Group.allowedToModify(group_id, session_user_id)
@@ -246,7 +246,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var session_user_id = req.session.user.id;
+    var session_user_id = req.session.user.maphubsUser.id;
     var data = req.body;
 
     if(data && data.group_id && data.display_name && data.asAdmin !== undefined){
@@ -315,7 +315,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var session_user_id = req.session.user.id;
+    var session_user_id = req.session.user.maphubsUser.id;
     var data = req.body;
 
     if(data && data.group_id && data.user_id && data.role){
@@ -347,7 +347,7 @@ module.exports = function(app: any) {
         return;
       }
 
-      var session_user_id = req.session.user.id;
+      var session_user_id = req.session.user.maphubsUser.id;
       var data = req.body;
 
       if(data && data.group_id && data.user_id){

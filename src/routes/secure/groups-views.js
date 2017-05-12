@@ -48,7 +48,7 @@ module.exports = function(app: any) {
 
     var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     Group.allowedToModify(group_id, user_id)
     .then((canEdit) => {
@@ -89,7 +89,7 @@ module.exports = function(app: any) {
 
   app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
-    var user_id = parseInt(req.session.user.id);
+    var user_id = parseInt(req.session.user.maphubsUser.id);
     var group_id = req.params.id;
 
     //confirm that this user is allowed to administer this group
@@ -150,7 +150,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)

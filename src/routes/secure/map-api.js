@@ -16,7 +16,7 @@ module.exports = function(app: any) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
       }
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       var data = req.body;
       if(data && data.basemap && data.position && data.title && data.private !== undefined){
@@ -52,7 +52,7 @@ module.exports = function(app: any) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
       }
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       var data = req.body;
       if(data && data.map_id){
@@ -141,7 +141,7 @@ module.exports = function(app: any) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
       }
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
       var data = req.body;
       if(data && data.map_id && data.isPrivate){
         Map.allowedToModify(data.map_id, user_id)
@@ -167,7 +167,7 @@ module.exports = function(app: any) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
       }
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       var data = req.body;
       if(data && data.layers && data.style && data.basemap && data.position && data.map_id && data.title){
@@ -197,7 +197,7 @@ module.exports = function(app: any) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
       }
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       var data = req.body;
       if(data && data.map_id){

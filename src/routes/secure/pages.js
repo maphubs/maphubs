@@ -10,7 +10,7 @@ module.exports = function(app) {
 
   app.get('/page/edit/:id', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var page_id = req.params.id.toLowerCase();
 
     Admin.checkAdmin(user_id).then((isAdmin) => {
@@ -32,7 +32,7 @@ module.exports = function(app) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.page_id && data.pageConfig) {
       Admin.checkAdmin(user_id).then((isAdmin) => {

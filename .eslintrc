@@ -37,7 +37,6 @@
     "babel/arrow-parens": 1,
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
-    "react/wrap-multilines": 1,
     "react/prefer-es6-class": 1,
     "react/jsx-no-bind": 2,
     "react/no-string-refs": 0,
@@ -55,7 +54,8 @@
   "globals": {
     "L": true,
     "HS": true,
-    "MAPHUBS_CONFIG": true
+    "MAPHUBS_CONFIG": true,
+    "Auth0Lock": true
   },
   "plugins": [
     "babel",

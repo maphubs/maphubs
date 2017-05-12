@@ -1,18 +1,28 @@
 // @flow
 var passport = require('passport');
-var oauth = require('../../services/oauth');
 var local = require('../../local');
 var csrfProtection = require('csurf')({cookie: false});
 var log = require('../../services/log');
+var querystring = require('querystring');
 
 module.exports = function(app: any) {
 
-  //User login and account endpoints
-
-  app.get('/login', csrfProtection, (req, res) => {
-    if(req.query.returnTo) {
-      req.session.returnTo = req.query.returnTo;
+  function checkReturnTo(req, res, next) {
+    var returnTo = req.query['returnTo'];
+    if (returnTo) {
+      // Maybe unnecessary, but just to be sure.
+      req.session = req.session || {};
+      
+      // Set returnTo to the absolute path you want to be redirect to after the authentication succeeds.
+      req.session.returnTo = querystring.unescape(returnTo);
     }
+    next();
+  }
+
+  //User login and account endpoints
+if(local.useLocalAuth){
+  app.get('/login', checkReturnTo, csrfProtection, (req, res) => {
+    
     var showSignup = true;
     if(local.requireLogin || local.requireInvite){
       showSignup = false;
@@ -27,7 +37,7 @@ module.exports = function(app: any) {
     });
   });
 
-  app.get('/login/failed', csrfProtection, (req, res) => {
+  app.get('/login/failed', checkReturnTo, csrfProtection, (req, res) => {
     res.render('login', {
       title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {
@@ -43,56 +53,53 @@ module.exports = function(app: any) {
       id: req.user.id,
       display_name: req.user.display_name,
       username: req.user.display_name,
-      email: req.user.email
+      email: req.user.email,
+      maphubsUser: req.user
     };
 
-    //if there is a return page redirect otherwise go to home
-    var url = '/';
-    if(req.query.returnTo) {
-      url = req.query.returnTo;
-      log.info('query returnTo: ' + url);
-    }
-
-    return res.redirect(url);
+    return res.redirect(req.session.returnTo || '/');
 
   });
-
-/*
-  // GET /auth/openstreetmap
-  //   Use passport.authenticate() as route middleware to authenticate the
-  //   request.  The first step in OpenStreetMap authentication will involve redirecting
-  //   the user to openstreetmap.org.  After authorization, OpenStreetMap will redirect the user
-  //   back to this application at /auth/openstreetmap/callback
-  app.get('/auth/openstreetmap',
-    passport.authenticate('openstreetmap'),
-    function() {
-      // The request will be redirected to OpenStreetMap for authentication, so this
-      // function will not be called.
+}else{
+  //Auth0
+  app.get('/login',
+  (req, res) => {
+    res.render('auth0login', {
+      title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
+      auth0: true,
+      allowSignUp: !local.requireInvite,
+      props: {
+        AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
+        AUTH0_DOMAIN: local.AUTH0_DOMAIN,
+        AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
+      }, req
     });
+  });
 
-  // GET /auth/openstreetmap/callback
-  //   Use passport.authenticate() as route middleware to authenticate the
-  //   request.  If authentication fails, the user will be redirected back to the
-  //   login page.  Otherwise, the primary route function function will be called,
-  //   which, in this example, will redirect the user to the home page.
-  app.get('/auth/openstreetmap/callback',
-    passport.authenticate('openstreetmap', {
-      successReturnToOrRedirect: '/',
-      failureRedirect: '/login'
-    })
-  );
+  app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+  });
 
-  app.get('/oauth2/authorize', oauth2.authorization);
-  app.post('/oauth2/dialog/authorize/decision', oauth2.decision);
-app.post('/oauth2/token', oauth2.token);
+  // Perform the final stage of authentication and redirect to '/user'
+  app.get('/callback',
+  passport.authenticate('auth0', {failureRedirect: '/login/failed'}),
+  (req, res) => {
+
+    req.session.user = req.user;
+
+    res.redirect(req.session.returnTo || '/');
+  });
+
+  app.get('/login/failed', (req, res) => {
+    res.render('auth0error', {
+      title: req.__('Login Failed') + ' - ' + MAPHUBS_CONFIG.productName,
+      props: {
+      }, req
+    });
+  });
 
 
-  app.get('/oauth/authorize', oauth.userAuthorization);
-  app.post('/dialog/authorize/decision', oauth.userDecision);
+}
 
-
-
-  app.post('/oauth/request_token', oauth.requestToken);
-  app.post('/oauth/access_token', oauth.accessToken);
-*/
 };

@@ -27,13 +27,33 @@ var DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
 };
 
+type ViewOptions = {
+  title: string,
+  description: string,
+  props: Object,
+  req: {
+    session: Object,
+    setLocale: Function,
+    __: Function,
+    locale: string,
+    csrfToken: Function,
+    url: string
+  },
+  materialicons: boolean,
+  settings: {
+    views: any
+  },
+  twitterCard: Object
+  
+}
+
 function createEngine(engineOptions) {
   var registered = false;
   var moduleDetectRegEx;
 
   engineOptions = assign({}, DEFAULT_OPTIONS, engineOptions || {});
 
-  function renderFile(filename: string, options: Object, cb: Function) {
+  function renderFile(filename: string, options: ViewOptions, cb: Function) {
 
     var materialicons = options.materialicons ? options.materialicons : true;
     // Defer babel registration until the first request so we can grab the view path.
@@ -47,7 +67,7 @@ function createEngine(engineOptions) {
       });*/
       registered = true;
     }
-      var markup = null;
+      var markup: string = '';
     try {
       markup = engineOptions.doctype;
       var component = require(filename);
@@ -58,7 +78,7 @@ function createEngine(engineOptions) {
         options.props = {};
       }
       var locale = 'en';
-      var req = null;
+      var req = options.req;
       if(options.req){
         req = options.req;
         if(options.req.session.locale){
@@ -87,7 +107,7 @@ function createEngine(engineOptions) {
 
       // assume that there is always client file with the same name as the view
       var clientFileName = this.name;
-      var title = this.name;
+      var title: string = this.name;
       if(options.title){
         title = options.title;
       }
@@ -246,6 +266,12 @@ function createEngine(engineOptions) {
         if(cssFile){
           markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`;
         }
+
+        if(options.auth0  && !local.useLocalAuth){
+          markup += `
+          <script type="text/javascript" src="https://cdn.auth0.com/js/lock/10.15/lock.min.js"></script>
+          `;
+        }
         
          markup += `
           </head>
@@ -278,6 +304,8 @@ function createEngine(engineOptions) {
           <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55d2323271adc34b" async="async"></script>
           `;
         }
+
+        
 
         if(!options.hideFeedback && req && req.__){
         //  var username = null;
@@ -363,7 +391,7 @@ function createEngine(engineOptions) {
     Page.getPageConfigs(['footer', 'header']).then(pageConfigs =>{
       options.props.headerConfig = pageConfigs.header;
       options.props.footerConfig = pageConfigs.footer;  
-      var appData = JSON.stringify(options.props, null, 2);
+      var appData: string = JSON.stringify(options.props, null, 2);
       markup += `
        <script>window.__appData = ${appData}; </script>
       </body>

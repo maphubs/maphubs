@@ -119,7 +119,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)
@@ -296,7 +296,7 @@ module.exports = function(app: any) {
 
   app.get('/createhub', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
     
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
 
     Group.getGroupsForUser(user_id)
     .then((groups) => {
@@ -348,7 +348,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var hub_id = req.params.hubid;
     var story_id = parseInt(req.params.story_id || '', 10);
     Hub.allowedToModify(hub_id, user_id)
@@ -485,7 +485,7 @@ module.exports = function(app: any) {
           MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false);
     } else {
       //get user id
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       Hub.allowedToModify(hub_id, user_id)
       .then((allowed) => {

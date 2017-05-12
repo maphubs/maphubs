@@ -35,7 +35,7 @@ module.exports = function(app: any) {
 
   app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     Layer.createLayer(user_id).then(layer_id =>{
       layer_id = parseInt(layer_id);
       return Layer.getLayerByID(layer_id).then(layer =>{
@@ -194,7 +194,7 @@ module.exports = function(app: any) {
   app.get('/layer/adddata/:id', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var layer_id = parseInt(req.params.id || '', 10);
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
 
     Layer.allowedToModify(layer_id, user_id)
       .then((allowed) => {
@@ -216,7 +216,7 @@ module.exports = function(app: any) {
 
   app.get('/layer/admin/:id/*', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var layer_id = parseInt(req.params.id || '', 10);
 
     //confirm that this user is allowed to administer this layeradmin

@@ -42,14 +42,18 @@ app.enable('trust proxy');
 app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
 app.disable("x-powered-by");
 
- Raven.config((process.env.NODE_ENV === 'production' && !local.disableTracking) && local.SENTRY_DSN, {
+const ravenConfig = (process.env.NODE_ENV === 'production' && !local.disableTracking) && local.SENTRY_DSN;
+if(ravenConfig){
+   Raven.config(ravenConfig, {
       release: version,
       environment: local.ENV_TAG,
       tags: {host: local.host},
       parseUser: ['id', 'display_name', 'email']
     }).install();
 
-app.use(Raven.requestHandler());
+  app.use(Raven.requestHandler());
+}
+
 
 if (app.get('env') !== 'production') {
   require("nodejs-dashboard");
@@ -149,17 +153,16 @@ app.use(session({
     }
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 //load passport auth config
 require('./services/auth');
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
 //load public routes - routes that should always be public, for example login or signup
 load('./src/routes/public-routes').into(app);
-
-//load oauth secured api
-load('./src/routes/secure-oauth').into(app);
 
 //option to require require login for everything after this point
 var checkLogin;
@@ -242,22 +245,26 @@ app.use(function(err, req, res, next) {
 
   log.error(err.stack);
 
-  if(req.session.user){
+  if(req.session.user && Raven.isSetup()){
+    
     Raven.mergeContext({
-    user: {
-      id: req.session.user.id,
-      username: req.session.user.display_name,
-      email: req.session.user.email
-    }
-});
+      user: {
+        id: req.session.user.id,
+        username: req.session.user.display_name,
+        email: req.session.user.email
+      }
+    });
   }
-  var eventId = Raven.captureException(err, function (sendErr, eventId) {
-    if (sendErr) {
-      log.error('Failed to send captured exception to Sentry');
-    }else{
-      log.info('Sentry Event ID: ' + eventId);
-    }
-  });
+  var eventId;
+  if(Raven && ravenConfig && Raven.isSetup && Raven.isSetup()){
+     eventId = Raven.captureException(err, function (sendErr, eventId) {
+      if (sendErr) {
+        log.error('Failed to send captured exception to Sentry');
+      }else{
+        log.info('Sentry Event ID: ' + eventId);
+      }
+    });
+  }
 
   if (req.accepts('html')) {
     res.status(statusCode).render('error', {

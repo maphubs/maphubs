@@ -25,7 +25,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var layer_id = parseInt(req.params.id || '', 10);
 
     Layer.allowedToModify(layer_id, user_id)
@@ -58,7 +58,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var layer_id = parseInt(req.params.id || '', 10);
 
     Layer.allowedToModify(layer_id, user_id)
@@ -89,7 +89,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var action = req.params.action;
 
     var data = req.body;
@@ -205,7 +205,7 @@ app.post('/api/layer/deletedata/:id', csrfProtection, (req, res) => {
     return;
   }
 
-  var user_id = req.session.user.id;
+  var user_id = req.session.user.maphubsUser.id;
   var layer_id = parseInt(req.params.id || '', 10);
   Layer.allowedToModify(layer_id, user_id)
   .then((allowed) => {
@@ -225,7 +225,7 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
     res.status(401).send("Unauthorized, user not logged in");
     return;
   }
-  var user_id: number = req.session.user.id;
+  var user_id: number = req.session.user.maphubsUser.id;
 
   var data = req.body;
   if(data && data.layer_id && data.presets && data.create !== undefined){
@@ -272,7 +272,7 @@ app.post('/api/layer/notes/save', csrfProtection, (req, res) => {
     res.status(401).send("Unauthorized, user not logged in");
     return;
   }
-  var user_id = req.session.user.id;
+  var user_id = req.session.user.maphubsUser.id;
   var data = req.body;
   if (data && data.layer_id && data.notes) {
     Layer.allowedToModify(data.layer_id, user_id)
@@ -297,7 +297,7 @@ app.post('/api/layer/addphotopoint', csrfProtection, (req, res) => {
     res.status(401).send("Unauthorized, user not logged in");
     return;
   }
-  var user_id = req.session.user.id;
+  var user_id = req.session.user.maphubsUser.id;
   var data = req.body;
   if (data && data.layer_id && data.geoJSON && data.image && data.imageInfo) {
     Layer.allowedToModify(data.layer_id, user_id)

@@ -1,236 +1,176 @@
 // @flow
-var passport = require('passport'),
-  //OpenStreetMapStrategy = require('passport-openstreetmap').Strategy,
-  LocalStrategy = require('passport-local').Strategy,
-  //BasicStrategy = require('passport-http').BasicStrategy,
-  ConsumerStrategy = require('passport-http-oauth').ConsumerStrategy,
-  TokenStrategy = require('passport-http-oauth').TokenStrategy,
-  //ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy,
-  //BearerStrategy = require('passport-http-bearer').Strategy,
-  db = require('./oauth-db'),
-  PasswordUtil = require('./password-util');
+var passport = require('passport');
+var local = require('../local');
+var request = require("request");
+var AuthUsers = require('./auth-db/users');
+var _find = require('lodash.find');
+var User = require('../models/user');
 
+if(local.useLocalAuth){
+  var  LocalStrategy = require('passport-local').Strategy;  
+  var PasswordUtil = require('./password-util');
 
-//var OPENSTREETMAP_CONSUMER_KEY = "CdrJjtCvDvys90a3jYdhlLUY8s5N50JkDBai4xDI";
-//var OPENSTREETMAP_CONSUMER_SECRET = "uaB6OoPQnXAc80239Zr3ZuZPQ1kBNLhUYR1MRzPN";
-
-
-/**
- * ConsumerStrategy
- *
- * This strategy is used to authenticate registered OAuth consumers (aka
- * clients).  It is employed to protect the `request_tokens` and `access_token`
- * endpoints, which consumers use to request temporary request tokens and access
- * tokens.
- */
-passport.use('consumer', new ConsumerStrategy(
-  // consumer callback
-  //
-  // This callback finds the registered client associated with `consumerKey`.
-  // The client should be supplied to the `done` callback as the second
-  // argument, and the consumer secret known by the server should be supplied
-  // as the third argument.  The `ConsumerStrategy` will use this secret to
-  // validate the request signature, failing authentication if it does not
-  // match.
-  (consumerKey, done) => {
-    db.clients.findByConsumerKey(consumerKey, (err, client) => {
-      if (err) {
-        return done(err);
-      }
-      if (!client) {
-        return done(null, false);
-      }
-      return done(null, client, client.consumerSecret);
-    });
-  },
-  // token callback
-  //
-  // This callback finds the request token identified by `requestToken`.  This
-  // is typically only invoked when a client is exchanging a request token for
-  // an access token.  The `done` callback accepts the corresponding token
-  // secret as the second argument.  The `ConsumerStrategy` will use this secret to
-  // validate the request signature, failing authentication if it does not
-  // match.
-  //
-  // Furthermore, additional arbitrary `info` can be passed as the third
-  // argument to the callback.  A request token will often have associated
-  // details such as the user who approved it, scope of access, etc.  These
-  // details can be retrieved from the database during this step.  They will
-  // then be made available by Passport at `req.authInfo` and carried through to
-  // other middleware and request handlers, avoiding the need to do additional
-  // unnecessary queries to the database.
-  (requestToken, done) => {
-    db.requestTokens.find(requestToken, (err, token) => {
-      if (err) {
-        return done(err);
-      }
-
-      //get the callbackURL directly from the database
-      db.clients.find(token.clientID, (err, client) => {
+  /**
+   * LocalStrategy
+   *
+   * This strategy is used to authenticate users based on a username and password.
+   * Anytime a request is made to authorize an application, we must ensure that
+   * a user is logged in before asking them to approve the request.
+   */
+  passport.use(new LocalStrategy(
+    (username, password, done) => {
+      AuthUsers.findByUsername(username, (err, user) => {
         if (err) {
-          return done(err);
-        }
-        var info = {
-          verifier: token.verifier,
-          clientID: token.clientID,
-          userID: token.userID,
-          approved: token.approved,
-          oauth_callback: client.callbackURL
-        };
-        done(null, token.secret, info);
-      });
-
-
-    });
-  },
-  // validate callback
-  //
-  // The application can check timestamps and nonces, as a precaution against
-  // replay attacks.  In this example, no checking is done and everything is
-  // accepted.
-  (timestamp, nonce, done) => {
-    done(null, true);
-  }
-));
-
-/**
- * TokenStrategy
- *
- * This strategy is used to authenticate users based on an access token.  The
- * user must have previously authorized a client application, which is issued an
- * access token to make requests on behalf of the authorizing user.
- */
-passport.use('token', new TokenStrategy(
-  // consumer callback
-  //
-  // This callback finds the registered client associated with `consumerKey`.
-  // The client should be supplied to the `done` callback as the second
-  // argument, and the consumer secret known by the server should be supplied
-  // as the third argument.  The `TokenStrategy` will use this secret to
-  // validate the request signature, failing authentication if it does not
-  // match.
-  (consumerKey, done) => {
-    db.clients.findByConsumerKey(consumerKey, (err, client) => {
-      if (err) {
-        return done(err);
-      }
-      if (!client) {
-        return done(null, false);
-      }
-      return done(null, client, client.consumerSecret);
-    });
-  },
-  // verify callback
-  //
-  // This callback finds the user associated with `accessToken`.  The user
-  // should be supplied to the `done` callback as the second argument, and the
-  // token secret known by the server should be supplied as the third argument.
-  // The `TokenStrategy` will use this secret to validate the request signature,
-  // failing authentication if it does not match.
-  //
-  // Furthermore, additional arbitrary `info` can be passed as the fourth
-  // argument to the callback.  An access token will often have associated
-  // details such as scope of access, expiration date, etc.  These details can
-  // be retrieved from the database during this step.  They will then be made
-  // available by Passport at `req.authInfo` and carried through to other
-  // middleware and request handlers, avoiding the need to do additional
-  // unnecessary queries to the database.
-  //
-  // Note that additional access control (such as scope of access), is an
-  // authorization step that is distinct and separate from authentication.
-  // It is an application's responsibility to enforce access control as
-  // necessary.
-  (accessToken, done) => {
-    db.accessTokens.find(accessToken, (err, token) => {
-      if (err) {
-        return done(err);
-      }
-      db.users.find(token.userID, (err, user) => {
-        if (err) {
-          return done(err);
+          return done(err, false);
         }
         if (!user) {
           return done(null, false);
         }
-        // to keep this example simple, restricted scopes are not implemented
-        var info = {
-          scope: '*'
-        };
-        done(null, user, token.secret, info);
+        //check password against hash from database
+        PasswordUtil.checkPassword(user.id, password, (valid) => {
+          if(valid){
+            return done(null, user);
+          }else{
+            return done(null, false);
+          }
+        });
       });
-    });
-  },
-  // validate callback
-  //
-  // The application can check timestamps and nonces, as a precaution against
-  // replay attacks.  In this example, no checking is done and everything is
-  // accepted.
-  (timestamp, nonce, done) => {
-    done(null, true);
-  }
-));
+    }
+  ));
 
-
-/**
- * LocalStrategy
- *
- * This strategy is used to authenticate users based on a username and password.
- * Anytime a request is made to authorize an application, we must ensure that
- * a user is logged in before asking them to approve the request.
- */
-passport.use(new LocalStrategy(
-  (username, password, done) => {
-    db.users.findByUsername(username, (err, user) => {
-      if (err) {
-        return done(err, false);
-      }
-      if (!user) {
-        return done(null, false);
-      }
-      //check password against hash from database
-      PasswordUtil.checkPassword(user.id, password, (valid) => {
-        if(valid){
-          return done(null, user);
-        }else{
-          return done(null, false);
-        }
-      });
-    });
-  }
-));
-
-/*
-passport.use(new OpenStreetMapStrategy({
-    consumerKey: OPENSTREETMAP_CONSUMER_KEY,
-    consumerSecret: OPENSTREETMAP_CONSUMER_SECRET,
-    callbackURL: "http://localhost:4000/auth/openstreetmap/callback"
-  },
-  function(token, tokenSecret, profile, done) {
-    process.nextTick(function() {
-
-      db.users.findByUsername(profile.displayName, function(err, user) {
-        if (err) {
-          return done(err);
-        }
-        if (!user) {
-          return done(null, false);
-        }
-        return done(null, user);
-      });
-
-    });
-  }
-));
-*/
-
-
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-
-passport.deserializeUser((user, done) => {
-  db.users.find(user.id, (err, user) => {
-    done(err, user);
+  passport.serializeUser((user, done) => {
+    done(null, user);
   });
-});
+
+  passport.deserializeUser((user, done) => {
+    AuthUsers.find(user.id, (err, user) => {
+      done(err, user);
+    });
+  });
+
+}else{
+
+  var Auth0Helper = require('../services/auth0-helper');
+
+  var saveMapHubsIDToAuth0 = function(profile, maphubs_user_id, cb){
+    var hosts = [];
+    if(profile._json.app_metadata && profile._json.app_metadata.hosts){
+      hosts = profile._json.app_metadata.hosts;
+    }
+
+    hosts.push({host: local.host, user_id: maphubs_user_id});
+    Auth0Helper.getManagementToken((err, accessToken) => {
+      if (err) {
+        cb(err);
+      }
+      var options = { 
+        method: 'PATCH',
+        url: `https://${local.AUTH0_DOMAIN}/api/v2/users/${profile.id}`,
+        headers: { 
+          'content-type': 'application/json',
+          authorization: 'Bearer ' +  accessToken
+        },
+        body: {app_metadata: {hosts}},
+        json: true
+      };
+
+      request(options, (error, reponse, body) => {
+        cb(error);
+      });
+    });
+    
+  };
+
+  var Auth0Strategy = require('passport-auth0');
+  // Configure Passport to use Auth0
+  var strategy = new Auth0Strategy({
+      domain:       local.AUTH0_DOMAIN,
+      clientID:     local.AUTH0_CLIENT_ID,
+      clientSecret: local.AUTH0_CLIENT_SECRET,
+      callbackURL:  local.AUTH0_CALLBACK_URL || 'http://maphubs.dev:4000/callback'
+    }, (accessToken, refreshToken, extraParams, profile, done) => {
+      // accessToken is the token to call Auth0 API (not needed in the most cases)
+      // extraParams.id_token has the JSON Web Token
+      // profile has all the information from the user
+       
+       //check if user has a local user object
+       var hosts = [];
+
+       if(profile._json.app_metadata && 
+          profile._json.app_metadata.hosts){
+            hosts =  profile._json.app_metadata.hosts;
+        }
+  
+        var host = _find(hosts, {host: local.host});
+        if(host && host.user_id){
+
+            //local user already linked
+            AuthUsers.find(host.user_id, (err, maphubsUser) => {
+              if (err) {
+                return done(err, false);
+              }
+              //attach MapHubs User
+              profile.maphubsUser = maphubsUser;
+              return done(err, profile);
+            });
+        }else {
+          //attempt to lookup user by email
+          AuthUsers.findByEmail(profile._json.email, (err, maphubsUser) => {
+            if (err) {
+              return done(err, false);
+            }
+            if(maphubsUser){
+              //found a user with this email, 
+              //link it back to the Auth0 account
+              saveMapHubsIDToAuth0(profile, maphubsUser.id, (err) =>{
+                profile.maphubsUser = maphubsUser;
+                return done(err, profile);
+              });
+              
+            }else{
+              //local user not found
+              if(!local.requireInvite){
+                //create local user
+                var display_name = profile.displayName ? profile.displayName: profile._json.email;
+                return User.createUser(profile._json.email, display_name, display_name, profile.id)
+                .then((user_id) => {
+                  saveMapHubsIDToAuth0(profile, user_id, (err) =>{
+                    if (err) {
+                      return done(err, false);
+                    }
+                    AuthUsers.find(user_id, (err, maphubsUser) => {
+                      if (err) {
+                        return done(err, false);
+                      }
+                      //attach MapHubs User
+                      profile.maphubsUser = maphubsUser;
+                      return done(err, profile);
+                    });
+                  });
+                });
+              }else{
+                return done(new Error('Unauthorized Access'), false);
+              }
+            }
+          });
+        }
+     
+    });
+
+  passport.use(strategy);
+
+  // This can be used to keep a smaller payload
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
+
+  passport.deserializeUser((user, done) => {
+    done(null, user);
+  });
+
+}
+
+  
+
+
+

@@ -12,7 +12,7 @@ module.exports = function(app: any) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       return res.redirect('/login');
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     Admin.checkAdmin(user_id).then((allowed) => {
       if(allowed){
         return res.render('adminuserinvite', {title: req.__('Invite User') + ' - ' + MAPHUBS_CONFIG.productName, props: {}, req});
@@ -27,7 +27,7 @@ module.exports = function(app: any) {
     //check if logged in use is an admin
     var data = req.body;
     if (req.isAuthenticated && req.isAuthenticated()) {
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
       Admin.checkAdmin(user_id).then((allowed) => {
         if(allowed){
           if (data && data.email) {

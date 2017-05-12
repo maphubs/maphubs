@@ -16,7 +16,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.story_id && data.title && data.body) {
       data.title = data.title.replace('&nbsp;', '');
@@ -50,7 +50,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.story_id) {
       Story.allowedToModify(data.story_id, user_id)
@@ -78,7 +78,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.story_id) {
       Story.allowedToModify(data.story_id, user_id)
@@ -109,7 +109,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.story_id && data.image) {
       Story.allowedToModify(data.story_id, user_id)
@@ -135,7 +135,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.story_id && data.image_id) {
       Story.allowedToModify(data.story_id, user_id)

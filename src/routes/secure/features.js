@@ -32,7 +32,7 @@ module.exports = function(app: any) {
 
     var user_id: number = -1;
     if(req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
 
     if(mhid && layer_id){
@@ -197,7 +197,7 @@ module.exports = function(app: any) {
     var photo_id = req.params.photo_id;
     var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
-      user_id = req.session.user.id;
+      user_id = req.session.user.maphubsUser.id;
     }
     Layer.getLayerForPhotoAttachment(photo_id)
     .then((layer) => {
@@ -222,7 +222,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.notes) {
       Layer.allowedToModify(data.layer_id, user_id)
@@ -253,7 +253,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.image && data.info) {
       Layer.allowedToModify(data.layer_id, user_id)
@@ -301,7 +301,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.photo_id) {
       

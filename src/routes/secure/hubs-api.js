@@ -61,7 +61,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.hub_id && data.group_id && data.name ) {
       Hub.createHub(data.hub_id, data.group_id, data.name, data.published, data.private, user_id)
@@ -142,7 +142,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if(data && data.hub_id && data.isPrivate){
       Hub.allowedToModify(data.hub_id, user_id)
@@ -177,7 +177,7 @@ module.exports = function(app: any) {
         res.status(401).send("Unauthorized, user not logged in");
         return;
       }
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
       var data = req.body;
       if (data && data.hub_id) {
         Hub.allowedToModify(data.hub_id, user_id)

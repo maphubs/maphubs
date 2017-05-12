@@ -63,7 +63,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)
@@ -83,7 +83,7 @@ module.exports = function(app: any) {
     }
 
     var username = req.session.user.display_name;
-     var user_id = req.session.user.id;
+     var user_id = req.session.user.maphubsUser.id;
      Story.createUserStory(user_id)
      .then((story_id) => {
         return Promise.all([
@@ -112,7 +112,7 @@ module.exports = function(app: any) {
       return;
     }
     var username = req.params.username;
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
     var story_id = parseInt(req.params.story_id || '', 10);
     Story.allowedToModify(story_id, user_id)
     .then((allowed) => {

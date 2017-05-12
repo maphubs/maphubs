@@ -26,7 +26,7 @@ app.post('/api/map/info/:map_id', csrfProtection, (req, res) => {
       }).catch(apiError(res, 500));
     }else{
       //logged in
-      var user_id = req.session.user.id;
+      var user_id = req.session.user.maphubsUser.id;
       Map.isPrivate(map_id).then(isPrivate=>{
         return Map.allowedToModify(map_id, user_id)
         .then(allowed=>{

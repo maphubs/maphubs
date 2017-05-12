@@ -18,7 +18,7 @@ module.exports = function(app: any) {
       return;
     }
 
-    var user_id = req.session.user.id;
+    var user_id = req.session.user.maphubsUser.id;
 
     var data = req.body;
     if(data && data.layer_id && data.edits){

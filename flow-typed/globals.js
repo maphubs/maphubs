@@ -1,6 +1,6 @@
 declare class MapHubsConfig {
   productName: string;
-  mapHubsPro: bool;
+  mapHubsPro: boolean;
   contactEmail: string;
   host: string;
   host_internal: string;
@@ -27,6 +27,7 @@ declare var MAPHUBS_CONFIG: MapHubsConfig;
 
 declare var HS: Object;
 declare var Raven: Object;
+declare var Auth0Lock: Class<Object>;
 
 import type ReactComponent from 'react';
 

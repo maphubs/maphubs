@@ -28,7 +28,7 @@ module.exports = function(app: any) {
        res.status(401).send("Unauthorized, user not logged in");
      }
 
-     var user_id = req.session.user.id;
+     var user_id = req.session.user.maphubsUser.id;
      var layer_id = parseInt(req.params.id || '', 10);
      Layer.getLayerByID(layer_id)
      .then((layer) => {
@@ -198,7 +198,7 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
     return;
   }
 
-  var user_id = req.session.user.id;
+  var user_id = req.session.user.maphubsUser.id;
   if(req.body.layer_id && req.body.requestedShapefile){
     debug('finish upload for layer: ' + req.body.layer_id + ' requesting shapefile: ' + req.body.requestedShapefile);
    Layer.getLayerByID(req.body.layer_id)
@@ -249,7 +249,7 @@ app.get('/api/layer/tempdata/:id.geojson', function(req, res) {
     return;
   }
 
-  var user_id = req.session.user.id;
+  var user_id = req.session.user.maphubsUser.id;
   var layer_id = parseInt(req.params.id || '', 10);
   Layer.allowedToModify(layer_id, user_id)
   .then(function(allowed){
