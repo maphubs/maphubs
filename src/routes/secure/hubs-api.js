@@ -90,7 +90,7 @@ module.exports = function(app: any) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var session_user_id = req.session.user.id;
+    var session_user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.hub_id) {
       Hub.allowedToModify(data.hub_id, session_user_id)
