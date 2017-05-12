@@ -232,7 +232,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
             }}>
             
             <div id={this.props.id + '_inset'} 
-              ref= {(c) => { this.insetMapComonent = c; }}
+              ref= {(c) => { this.insetMapComponent = c; }}
               style={{             
                 display: 'none'
               }}>
@@ -251,7 +251,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
             height: '25vw', width: '25vw'
             }}>
             <div id={this.props.id + '_inset'} 
-            ref= {(c) => { this.insetMapComonent = c; }}
+            ref= {(c) => { this.insetMapComponent = c; }}
             className="map"
               style={{
                 position: 'absolute',
