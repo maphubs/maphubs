@@ -45,7 +45,7 @@ export default class About extends MapHubsComponent {
                 </div>
                 <div className="col s12 m12 l7">
                   <div  className="video-container">
-                    <iframe src="https://mapforenvironment.org/map/embed/164/static" frameBorder="0"></iframe>
+                    <iframe src="https://mapforenvironment.org/map/embed/164/static" frameBorder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
                   </div>
                 </div>
               </div>
@@ -74,7 +74,7 @@ export default class About extends MapHubsComponent {
                   <div className="row no-margin">
                     <div className="col s12 m12 l7">
                       <div  className="video-container">
-                        <iframe src="https://mapforenvironment.org/map/embed/158/static" frameBorder="0"></iframe>
+                        <iframe src="https://mapforenvironment.org/map/embed/158/static" frameBorder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
                       </div>
                     </div>
                 </div>

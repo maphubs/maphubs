@@ -281,7 +281,7 @@ onAddMap = (map: Object) => {
   url = url.replace(/http:/, '');
   url = url.replace(/https:/, '');
   this.pasteHtmlAtCaret('<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"><iframe src="' + url
-  + '" style="" frameborder="0"></iframe>'
+  + '" style="" frameborder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>'
   + '</div>'
   + '<br />'
   + '<p></p>',

@@ -174,7 +174,9 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
     var url = urlUtil.getBaseUrl() + '/map/embed/' + this.props.map.map_id + '/static';
     var code = `
       &lt;iframe src="${url}"
-        style="width: 600px; height: 330px;" frameborder="0"&gt;
+        style="width: 600px; height: 330px;" frameborder="0" 
+        allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
+        &gt;
       &lt;/iframe&gt;
     `;
     var messageIntro =  this.__('Paste the following code into your website to embed a map:');

@@ -44,7 +44,7 @@ export default class Journalists extends MapHubsComponent {
                 </div>
                 <div className="col s12 m12 l7">
                   <div className="video-container">
-                    <iframe src="https://mapforenvironment.org/map/embed/158/static" frameBorder="0"></iframe>
+                    <iframe src="https://mapforenvironment.org/map/embed/158/static" frameBorder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
                   </div>
                 </div>
               </div>
@@ -53,7 +53,7 @@ export default class Journalists extends MapHubsComponent {
               <div className="row" style={{marginTop: '25px'}}>
                   <div className="col s12 m12 l7">
                     <div  className="video-container">
-                      <iframe src="https://mapforenvironment.org/map/embed/112/static" frameBorder="0"></iframe>
+                      <iframe src="https://mapforenvironment.org/map/embed/112/static" frameBorder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
                     </div>
                   </div>
                   <div className="col s12 m12 l5">
@@ -74,7 +74,7 @@ export default class Journalists extends MapHubsComponent {
                 </div>
                 <div className="col s12 m12 l7">
                   <div  className="video-container">
-                    <iframe src="https://mapforenvironment.org/map/embed/163/static" frameBorder="0"></iframe>
+                    <iframe src="https://mapforenvironment.org/map/embed/163/static" frameBorder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
                   </div>
                 </div>
               </div>
