@@ -137,7 +137,7 @@ export default class PresetForm extends MapHubsComponent {
                      maxLength: this.__('Name must be 25 characters or less.')
                  }} length={25}
                   value={this.state.preset.tag}
-                  dataPosition="top" dataTooltip={this.__('Short tag for the field')}
+                  
                   required/>
 
                 <TextInput name="label" id={this.props.tag+'-label'} label={this.__('Label')} icon="label_outline" className="col l6 m6 s12"
@@ -145,21 +145,17 @@ export default class PresetForm extends MapHubsComponent {
                         maxLength: this.__('Name must be 50 characters or less.')
                     }} length={50}
                     value={this.state.preset.label}
-                    dataPosition="top" dataTooltip={this.__('Descriptive label for the field that will be shown in editors/forms.')}
                     required/>
                   <Toggle name="isRequired" labelOff="Optional" labelOn="Required" className="col l6 m6 s12"
                        style={{paddingTop: '25px'}}
                        checked={this.state.preset.isRequired}
-                        dataPosition="bottom" dataTooltip={this.__('Editing/collection tools will require the user to submit this field.')}
                         />
                   <Toggle name="showOnMap" labelOff="Hide in Map" labelOn="Show in Map" className="col l6 m6 s12"
                        style={{paddingTop: '25px'}}
                        checked={this.state.preset.showOnMap}
-                        dataPosition="bottom" dataTooltip={this.__('Option to hide this field in the map popup. It will still display in the data table.')}
                         />
                       <Select name="type" id="preset-type-select" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"
                     value={this.state.preset.type} startEmpty={typeStartEmpty}
-                   dataPosition="top" dataTooltip={this.__('Determines how the field is displayed in forms.')}
                    required/>
                  {typeOptions}
 
