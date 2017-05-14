@@ -101,13 +101,13 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       if(this.props.layer.external_layer_config.type === 'ags-mapserver-query'){
         TerraformerGL.getArcGISGeoJSON(this.props.layer.external_layer_config.url)
         .then((geoJSON) => {
-          _this.processGeoJSON(geoJSON);
+          _this.setState({geoJSON});
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
       }else if(this.props.layer.external_layer_config.type === 'ags-featureserver-query'){
         TerraformerGL.getArcGISFeatureServiceGeoJSON(this.props.layer.external_layer_config.url)
         .then((geoJSON) => {
-          _this.processGeoJSON(geoJSON);
+          _this.setState({geoJSON});
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
       }else if(this.props.layer.external_layer_config.type === 'geojson'){
@@ -115,7 +115,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
           .type('json').accept('json')
           .end((err, res) => {
             var geoJSON = res.body;
-            _this.processGeoJSON(geoJSON);
+            _this.setState({geoJSON});
           });
          _this.setState({dataMsg: _this.__('Data Loading')});
       }else{
