@@ -43,16 +43,15 @@ app.disable('view cache'); //cache may be causing weird issues in production, du
 app.disable("x-powered-by");
 
 const ravenConfig = (process.env.NODE_ENV === 'production' && !local.disableTracking) && local.SENTRY_DSN;
-if(ravenConfig){
-   Raven.config(ravenConfig, {
-      release: version,
-      environment: local.ENV_TAG,
-      tags: {host: local.host},
-      parseUser: ['id', 'display_name', 'email']
-    }).install();
+Raven.config(ravenConfig, {
+  release: version,
+  environment: local.ENV_TAG,
+  tags: {host: local.host},
+  parseUser: ['id', 'display_name', 'email']
+}).install();
 
-  app.use(Raven.requestHandler());
-}
+app.use(Raven.requestHandler());
+
 
 
 if (app.get('env') !== 'production') {
@@ -216,6 +215,22 @@ app.use(function(req, res, next) {
 });
 
 
+
+app.use(function onError(err, req, res, next) {
+  if(req.session && req.session.user){
+    Raven.mergeContext({
+      user: {
+        id: req.session.user.id,
+        username: req.session.user.display_name,
+        email: req.session.user.email
+      }
+    });
+  } 
+  next(err);
+});
+
+app.use(Raven.errorHandler());
+
 app.use(function(err, req, res, next) {
 
   //bypass for dynamically created tile URLs
@@ -245,27 +260,6 @@ app.use(function(err, req, res, next) {
 
   log.error(err.stack);
 
-  if(req.session.user && Raven.isSetup()){
-    
-    Raven.mergeContext({
-      user: {
-        id: req.session.user.id,
-        username: req.session.user.display_name,
-        email: req.session.user.email
-      }
-    });
-  }
-  var eventId;
-  if(Raven && ravenConfig && Raven.isSetup && Raven.isSetup()){
-     eventId = Raven.captureException(err, function (sendErr, eventId) {
-      if (sendErr) {
-        log.error('Failed to send captured exception to Sentry');
-      }else{
-        log.info('Sentry Event ID: ' + eventId);
-      }
-    });
-  }
-
   if (req.accepts('html')) {
     res.status(statusCode).render('error', {
     title: statusCode + ': ' + statusText,
@@ -273,7 +267,7 @@ app.use(function(err, req, res, next) {
       title: statusCode + ': ' + statusText,
       error: errorDetail,
       url: req.url,
-      eventId: eventId
+      eventId: res.sentry
       }
     });
     return;
