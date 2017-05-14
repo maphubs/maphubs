@@ -85,7 +85,7 @@ module.exports = {
           if(!layer.settings){
             layer.settings = {};
           }
-          if(typeof layer.settings.active === 'undefined'){
+          if(layer.settings && typeof layer.settings.active === 'undefined'){
             layer.settings.active = true;
           }
         });
@@ -488,7 +488,7 @@ module.exports = {
     forEachRight(layers, (layer) => {
       if(layer.style && layer.style.sources && layer.style.layers){
         //check for active flag and update visibility in style
-        if(layer.settings.active != undefined && layer.settings.active == false){
+        if(layer.settings && typeof layer.settings.active !== 'undefined' && layer.settings.active === false){
           //hide style layers for this layer
           layer.style.layers.forEach((styleLayer) => {
             styleLayer['layout'] = {

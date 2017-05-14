@@ -14,25 +14,29 @@ import DragItemConfig from '../../components/UI/DragItemConfig';
 
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-class LayerListItem extends MapHubsComponent {
+import type {Layer} from '../../stores/layer-store';
 
-  props:  {
-    id: number,
-    item: Object,    
-    moveItem: Function,
-    showVisibility: boolean,
-    showRemove: boolean,
-    showDesign: boolean,
-    showEdit: boolean,
-    toggleVisibility: Function,
-    removeFromMap: Function,
-    showLayerDesigner: Function,
-    editLayer: Function,
-    isDragging: boolean,
-    connectDragSource: Function,
-    connectDropTarget: Function,
-    index: number
-  }
+type Props = {
+  id: number,
+  item: Layer,    
+  moveItem: Function,
+  showVisibility: boolean,
+  showRemove: boolean,
+  showDesign: boolean,
+  showEdit: boolean,
+  toggleVisibility: Function,
+  removeFromMap: Function,
+  showLayerDesigner: Function,
+  editLayer: Function,
+  isDragging: boolean,
+  connectDragSource: Function,
+  connectDropTarget: Function,
+  index: number
+}
+
+class LayerListItem extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   static defaultProps = {
       showVisibility: false
@@ -75,9 +79,9 @@ class LayerListItem extends MapHubsComponent {
     var connectDragSource = this.props.connectDragSource;
     var connectDropTarget = this.props.connectDropTarget;
     var backgroundColor = 'inherit';
-            if(!layer.settings.active){
-               backgroundColor = '#eeeeee';
-            }
+    if(layer.settings && !layer.settings.active){
+        backgroundColor = '#eeeeee';
+    }
 
     var buttonCount = 1;
     if(this.props.showRemove) buttonCount++;
@@ -134,7 +138,7 @@ class LayerListItem extends MapHubsComponent {
         <div className="col s5 no-padding" style={{marginTop: '2px'}}>
           <Formsy.Form>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
-            labelOff="" labelOn="" checked={layer.settings.active}
+            labelOff="" labelOn="" checked={(layer.settings && layer.settings.active)}
             />
           </Formsy.Form>
         </div>

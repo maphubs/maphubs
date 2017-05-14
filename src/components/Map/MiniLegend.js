@@ -164,10 +164,10 @@ export default class MiniLegend extends MapHubsComponent {
             <div className="no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden', padding: '5px'}}>
               {
                 this.props.layers.map((layer) => {
-                  if(typeof layer.settings.active === 'undefined'){
+                  if(layer.settings && typeof layer.settings.active === 'undefined'){
                     layer.settings.active = true;
                   }
-                  if(_this.props.hideInactive && !layer.settings.active){
+                  if(_this.props.hideInactive && layer.settings &&  !layer.settings.active){
                     return null;
                   }
                   return (<LegendItem key={layer.layer_id} layer={layer} />);

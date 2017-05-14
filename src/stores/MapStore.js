@@ -71,7 +71,7 @@ export default class LocaleStore extends Reflux.Store {
      var style = layer.style;
      if(style && style.sources && style.layers){
        //check for active flag and update visibility in style
-       if(layer.settings.active !== undefined && layer.settings.active === false){
+       if(layer.settings && typeof layer.settings.active !== 'undefined' && layer.settings.active === false){
          //hide style layers for this layer
          style.layers.forEach((styleLayer) => {
            styleLayer['layout'] = {

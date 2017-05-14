@@ -66,9 +66,9 @@ export default class LayerListItemStatic extends MapHubsComponent {
 
    
     var backgroundColor = '#FFF';
-            if(!layer.settings.active){
-               backgroundColor = '#eeeeee';
-            }
+    if(layer.settings && !layer.settings.active){
+        backgroundColor = '#eeeeee';
+    }
 
     var buttonCount = 1;
     if(this.props.showRemove) buttonCount++;
@@ -125,7 +125,7 @@ export default class LayerListItemStatic extends MapHubsComponent {
         <div className="col s5 no-padding" style={{marginTop: '2px'}}>
           <Formsy.Form>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
-            labelOff="" labelOn="" checked={layer.settings.active}
+            labelOff="" labelOn="" checked={layer.settings && layer.settings.active}
             />
           </Formsy.Form>
         </div>

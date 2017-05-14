@@ -222,11 +222,11 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
        var style = layer.style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style
-         if(typeof layer.settings.active === 'undefined'){
+         if(layer.settings && typeof layer.settings.active === 'undefined'){
            //default to on if no state provided
            layer.settings.active = true;
          }
-         if(!layer.settings.active){
+         if(layer.settings && !layer.settings.active){
            //hide style layers for this layer
            style.layers.forEach((styleLayer) => {
              if(!styleLayer['layout']){
