@@ -9,12 +9,12 @@ var login = require('connect-ensure-login');
 //var log = require('../../services/log.js');
 var debug = require('../../services/debug')('routes/hubs');
 var Promise = require('bluebird');
-var MapUtils = require('../../services/map-utils');
+//var MapUtils = require('../../services/map-utils');
 var urlUtil = require('../../services/url-util');
 var baseUrl = urlUtil.getBaseUrl();
-var apiError = require('../../services/error-response').apiError;
+//var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
+//var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
 var local = require('../../local');
 var privateHubCheck = require('../../services/private-hub-check').middlewareView;
@@ -189,7 +189,7 @@ module.exports = function(app: any) {
     }
     Hub.getHubByID(hub_id_input)
       .then((hub) => {
-        if(hub == null){
+        if(!hub){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
@@ -232,7 +232,7 @@ module.exports = function(app: any) {
     }
     Hub.getHubByID(hub_id_input)
       .then((hub) => {
-        if(hub == null){
+        if(!hub){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
@@ -273,7 +273,7 @@ module.exports = function(app: any) {
     }
     Hub.getHubByID(hub_id_input)
       .then((hub) => {
-        if(hub == null){
+        if(!hub){
           res.redirect(baseUrl + '/notfound?path='+req.path);
           return;
         }
@@ -384,7 +384,7 @@ module.exports = function(app: any) {
 
     const hub_id: string = req.params.hubid;
     const story_id: number = parseInt(req.params.story_id || '', 10);
-    let user_id: number;
+    let user_id: number = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -473,6 +473,8 @@ module.exports = function(app: any) {
     res.redirect('/');
   });
 
+//not used?
+/*
   app.get('/hub/:hub/map/embed/:map_id', privateHubCheck, (req, res, next) => {
     var map_id = req.params.map_id;
     var hub_id = req.params.hub;
@@ -493,5 +495,6 @@ module.exports = function(app: any) {
       }).catch(apiError(res, 500));
     }
   });
+  */
 
 };

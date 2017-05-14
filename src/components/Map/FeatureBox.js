@@ -136,8 +136,8 @@ export default class FeatureBox extends MapHubsComponent {
       }
       if(this.props.showButtons){
         var mhid = -1;
-        var layer_id = null;
-        var host = null;
+        var layer_id = '';
+        var host = '';
         var featureName = 'unknown';
         if(this.state.currentFeatures.length > 0){
           var currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];

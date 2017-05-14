@@ -20,10 +20,10 @@ export default class FeatureProps extends MapHubsComponent {
        tbody = (
          <tbody>
           {
-            this.props.presets.map(preset => {
+            this.props.presets.map((preset, i) => {
               let val = this.props.data[preset.tag];
               return (
-                <tr>
+                <tr key={`feature-attrib-${i}`}>
                   <td>{preset.label}</td>
                   <td>{val}</td>
                 </tr>
@@ -36,10 +36,10 @@ export default class FeatureProps extends MapHubsComponent {
       tbody = (
          <tbody>
           {
-            Object.keys(this.props.data).map(key => {
+            Object.keys(this.props.data).map((key, i) => {
               let val = this.props.data[key];
               return (
-                <tr>
+                <tr key={`feature-attrib-${i}`}>
                   <td>{key}</td>
                   <td>{val}</td>
                 </tr>

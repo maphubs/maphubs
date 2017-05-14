@@ -13,21 +13,31 @@ import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import ConfirmationActions from '../actions/ConfirmationActions';
 import Progress from '../components/Progress';
+import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore';
 
-export default class AddPhotoPoint extends MapHubsComponent {
+type Props = {
+  layer: Object,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
 
-  props: {
-		layer: Object,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
+type State = {
+  saving: boolean
+} & LocaleStoreState & AddPhotoPointStoreState
+
+export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
+    saving: false,
+    layer: {},
+    geoJSON: {}
   }
 
-  state = {
-    saving: false
-  }
-
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(AddPhotoPointStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

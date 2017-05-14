@@ -72,7 +72,7 @@
     "dotenv": "^4.0.0",
     "easyimage": "2.1.0",
     "elasticsearch": "^12.1.3",
-    "exif-js": "^2.2.1",
+    "exif-js": "2.1.1",
     "express": "^4.15.2",
     "express-http-proxy": "^1.0.3",
     "express-load": "1.1.15",

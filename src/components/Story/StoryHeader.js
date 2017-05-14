@@ -70,15 +70,14 @@ export default class StoryHeader extends MapHubsComponent {
         </p>
       );
     }
-
+    var baseUrl = urlUtil.getBaseUrl();
     if(this.props.story.display_name){
       if(this.props.story.emailhash){
         userImage = (
             <Gravatar size={36} emailHash={this.props.story.emailhash} />
 
         );
-      }
-      var baseUrl = urlUtil.getBaseUrl();
+      }    
       linkUrl = baseUrl + '/user/' + this.props.story.display_name;
       author = (
         <div style={{height: '40px', marginBottom: '10px', width: '100%'}}>

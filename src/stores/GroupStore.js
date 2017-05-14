@@ -6,11 +6,12 @@ var debug = require('../services/debug')('stores/group-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
 export type Group = {
-  group_id: string, 
-  name: string, 
-  description: string,
-  location: string,
-  created: boolean
+  group_id?: string, 
+  name?: string, 
+  description?: string,
+  location?: string,
+  created?: boolean,
+  hasImage?: boolean
 }
 
 export type GroupStoreState = {
@@ -21,11 +22,13 @@ export type GroupStoreState = {
 
 export default class GroupStore extends Reflux.Store<void, void, GroupStoreState> {
 
+  state: GroupStoreState
+
   constructor(){
     super();
     this.state = {
       group: {
-  
+        group_id: ''
       },
       members: [],
       layers: []
@@ -233,7 +236,8 @@ export default class GroupStore extends Reflux.Store<void, void, GroupStoreState
  reloadMembers(_csrf: string, cb: Function){
    debug('reload members');
    var _this = this;
-   request.post('/api/group/' + this.state.group.group_id + '/members')
+   var group_id = this.state.group.group_id? this.state.group.group_id : '';
+   request.post('/api/group/' + group_id + '/members')
    .type('json').accept('json')
    .send({_csrf})
    .end((err, res) => {

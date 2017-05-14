@@ -2949,9 +2949,9 @@ exenv@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/exenv/-/exenv-1.2.1.tgz#75de1c8dee02e952b102aa17f8875973e0df14f9"
 
-exif-js@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/exif-js/-/exif-js-2.2.1.tgz#68589104759cafff97c396fafae4b428e87d2159"
+exif-js@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/exif-js/-/exif-js-2.1.1.tgz#2962e6aa6600340a454b24c52e458b81ccf1e6d6"
 
 exit-hook@^1.0.0:
   version "1.1.1"

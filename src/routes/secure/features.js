@@ -119,7 +119,7 @@ module.exports = function(app: any) {
         var resultStr = JSON.stringify(geoJSON);
         var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
         var match = req.get('If-None-Match');
-        if(hash == match){
+        if(hash === match){
           res.status(304).send();
         }else{
           res.writeHead(200, {
@@ -156,7 +156,7 @@ module.exports = function(app: any) {
             log.info(resultStr);
             var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
             var match = req.get('If-None-Match');
-            if(hash == match){
+            if(hash === match){
               res.status(304).send();
             }else{
               res.writeHead(200, {

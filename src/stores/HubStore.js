@@ -6,38 +6,40 @@ var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
 import type {Layer} from './layer-store';
+
+
 export type Hub = {
   hub_id: string,
-  name: string,
-  description: string,
-  tagline: string,
-  resources: string,
-  about: string,
-  published: boolean,
-  map_id: ?number,
-  owned_by_group_id: ?string,
-  hasBannerImage: boolean,
-  hasLogoImage: boolean,
-  private: boolean
+  name?: string,
+  description?: string,
+  tagline?: string,
+  resources?: string,
+  about?: string,
+  published?: boolean,
+  map_id?: number,
+  owned_by_group_id?: string,
+  hasBannerImage?: boolean,
+  hasLogoImage?: boolean,
+  private?: boolean
 }
 
 export type HubStoreState = {
   hub: Hub,
-  map?: any,
+  map?: Object,
   layers?: Array<Layer>,
-  logoImage?: any,
-  bannerImage?: any,
-  logoImageInfo?: any,
-  bannerImageInfo?: any,
+  logoImage?: Object,
+  bannerImage?: Object,
+  logoImageInfo?: Object,
+  bannerImageInfo?: Object,
   hasLogoImage?: boolean,
   hasBannerImage?: boolean,
   unsavedChanges?: boolean,
   saving?: boolean
 }
 
-export default class HubStore extends Reflux.Store<void, void, HubStoreState> {
+export default class HubStore extends Reflux.Store {
 
-  state: HubStoreState
+  state: HubStoreState 
 
   constructor(){
     super();
@@ -49,7 +51,6 @@ export default class HubStore extends Reflux.Store<void, void, HubStoreState> {
 
     const hub: Hub = {
       hub_id: '',
-      map_id: null,
       name: '',
       description: '',
       tagline:'',
@@ -59,23 +60,19 @@ export default class HubStore extends Reflux.Store<void, void, HubStoreState> {
       hasBannerImage: false,
       published: false,
       private: false,
-      owned_by_group_id: null
 
     };
 
-    return {
+    const defaultState: HubStoreState  = {
       hub,
-      map: null,
       layers: [],
-      logoImage: null,
-      bannerImage: null,
-      logoImageInfo: null,
-      bannerImageInfo: null,
       hasLogoImage: false,
       hasBannerImage: false,
       unsavedChanges: false,
       saving: false
     };
+
+    return defaultState;
   }
 
   reset(){
@@ -87,11 +84,11 @@ export default class HubStore extends Reflux.Store<void, void, HubStoreState> {
   }
 
  //listeners
-
  loadHub(hub: Hub){
    debug('load hub');
    this.setState({hub});
  }
+
 
  createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, _csrf: string, cb: Function){
    debug('create hub');

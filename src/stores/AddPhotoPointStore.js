@@ -7,7 +7,24 @@ var checkClientError = require('../services/client-error-response').checkClientE
 var dms2dec = require('dms2dec');
 var moment = require('moment');
 
+import type {Layer} from './layer-store';
+
+ type GeoJSON = {
+  features: Array<Object>
+}
+
+export type AddPhotoPointStoreState = {
+  layer: Layer,
+  image?: Object,
+  imageInfo?: Object,
+  geoJSON: GeoJSON,
+  submitted?: boolean,
+  mhid?: string
+}
+
 export default class AddPhotoPointStore extends Reflux.Store {
+
+  state: AddPhotoPointStoreState
 
    constructor(){
       super();
@@ -15,14 +32,13 @@ export default class AddPhotoPointStore extends Reflux.Store {
       this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): AddPhotoPointStoreState{
     return {
-      layer: null,
-      image: null,
-      imageInfo: null,
-      geoJSON: null,
+      layer: {},
+      geoJSON: {
+        features: []
+      },
       submitted: false,
-      mhid: null
     };
   }
 
