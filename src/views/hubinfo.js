@@ -21,6 +21,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {HubStoreState} from '../stores/HubStore';
 
 type Props = {
   hub: Object,
@@ -37,7 +38,7 @@ type Props = {
 
 type State = {
   editing: boolean
-} & LocaleStoreState
+} & LocaleStoreState & HubStoreState
 
 export default class HubInfo extends MapHubsComponent<void, Props, State> {
 
@@ -53,7 +54,8 @@ export default class HubInfo extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    editing: false
+    editing: false,
+    hub: {}
   }
 
   constructor(props: Props){

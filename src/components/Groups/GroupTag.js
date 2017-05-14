@@ -63,7 +63,7 @@ export default class GroupTag extends MapHubsComponent {
           marginBottom: '2px',
           border: '0.25pt solid #E4E4E4',
           lineHeight: sizeStr, fontSize: fontSizeStr}}>
-        <a target="_blank" className="no-padding"  href={baseUrl + '/group/' + this.props.group} style={{height: 'initial'}}>
+        <a target="_blank" className="no-padding" rel="noopener noreferrer"  href={baseUrl + '/group/' + this.props.group} style={{height: 'initial'}}>
           <div className="valign-wrapper"
             style={{
               height: sizeStr,
@@ -85,7 +85,7 @@ export default class GroupTag extends MapHubsComponent {
           </div>
 
         </a>
-        <a target="_blank" className="omh-accent-text group-tag-tooltip no-padding"
+        <a target="_blank" rel="noopener noreferrer" className="omh-accent-text group-tag-tooltip no-padding"
           style={{height: sizeStr, width: 'auto', display: 'inherit', lineHeight: sizeStr, fontSize: fontSizeStr}}
           data-position="top" data-delay="50" data-tooltip={this.props.group}
           href={baseUrl + '/group/' + this.props.group}>{this.props.group}</a>

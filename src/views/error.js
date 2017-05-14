@@ -38,7 +38,7 @@ export default class Error extends MapHubsComponent {
           <div className="container s12">
             <h3 className="center-align">{this.props.title}</h3>
             <p className="flow-text center-align">{this.props.error}</p>
-            <p className="flow-text center-align"><a href={this.props.url} target="_blank">{this.props.url}</a></p>
+            <p className="flow-text center-align"><a href={this.props.url} target="_blank" rel="noopener noreferrer">{this.props.url}</a></p>
           </div>
         </main>
         <Footer {...this.props.footerConfig}/>

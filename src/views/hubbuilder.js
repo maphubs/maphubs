@@ -16,6 +16,7 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {HubStoreState} from '../stores/HubStore';
 
 type Props = {
    onSubmit: Function,
@@ -32,7 +33,7 @@ type State = {
   showError: boolean,
   errorMessage: string,
   errorTitle: string
-} & LocaleStoreState
+} & LocaleStoreState & HubStoreState
 
 export default class HubBuilder extends MapHubsComponent<void, Props, State> {
 
@@ -47,7 +48,8 @@ export default class HubBuilder extends MapHubsComponent<void, Props, State> {
     canSubmit: false,
     showError: false,
     errorMessage: '',
-    errorTitle: ''
+    errorTitle: '',
+    hub: {}
    }
 
    constructor(props: Object){

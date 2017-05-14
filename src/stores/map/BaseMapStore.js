@@ -12,7 +12,17 @@ var darkmatter = require('../../components/Map/styles/darkmatter.json');
 var osmLiberty = require('../../components/Map/styles/osm-liberty.json');
 var osmBright = require('../../components/Map/styles/osm-liberty.json');
 
+
+export type  BaseMapStoreState = {
+  baseMap: string,
+  attribution: string,
+  bingImagerySet: ?string,
+  updateWithMapPosition: boolean
+}
+
 export default class BaseMapStore extends Reflux.Store {
+
+  state: BaseMapStoreState
 
   constructor(){
     super();
@@ -139,7 +149,7 @@ export default class BaseMapStore extends Reflux.Store {
         optimize = true;
       }else{
         this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
           updateWithMapPosition: false
         });
         cb(positron);
@@ -152,7 +162,7 @@ export default class BaseMapStore extends Reflux.Store {
         optimize = true;
       }else{
         this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
           updateWithMapPosition: false
         });
         cb(darkmatter);
@@ -164,7 +174,7 @@ export default class BaseMapStore extends Reflux.Store {
         optimize = true;
       }else{
         this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
           updateWithMapPosition: false
         });
         cb(osmBright);
@@ -176,7 +186,7 @@ export default class BaseMapStore extends Reflux.Store {
         optimize = true;
       }else{
         this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>',
+          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
           updateWithMapPosition: false
         });
         cb(osmLiberty);

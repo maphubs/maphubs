@@ -15,7 +15,7 @@ module.exports = {
    * @param {any} trx
    * @returns Promise
    */
-  createFeature(layer_id: number, geojson: Object, trx: any): string{
+  createFeature(layer_id: number, geojson: Object, trx: any): Bluebird$Promise<string>{
     var _this = this;
     debug('creating feature');
     let db = knex; if(trx){db = trx;}

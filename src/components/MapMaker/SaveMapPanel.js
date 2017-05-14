@@ -134,7 +134,7 @@ export default class SaveMapPanel extends MapHubsComponent {
             <p>{this.__('You must login or sign up before saving a map.')}</p>
           </div>
           <div className="row center-align">
-            <a className="btn" href="/login" target="_blank">{this.__('Login')}</a>
+            <a className="btn" href="/login" target="_blank" rel="noopener noreferrer">{this.__('Login')}</a>
           </div>
           <div className="row center-align">
             <a className="btn" onClick={this.recheckLogin}>{this.__('Retry')}</a>

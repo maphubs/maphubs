@@ -158,7 +158,7 @@ export default class FeatureBox extends MapHubsComponent {
         if(this.state.layer){
           layerinfo = (
             <div style={{textAlign: 'left'}}>
-              <b><a className="truncate" target="_blank" href={baseUrl + '/lyr/' + this.state.layer.layer_id}>{this.state.layer.name}</a></b>
+              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={baseUrl + '/lyr/' + this.state.layer.layer_id}>{this.state.layer.name}</a></b>
               <GroupTag className={'left'} group={this.state.layer.owned_by_group_id} size={15} fontSize={8} />
             </div>
           );

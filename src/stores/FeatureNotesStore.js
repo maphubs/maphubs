@@ -4,7 +4,15 @@ var request = require('superagent');
 var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
+export type FeatureNotesStoreState = {
+  notes: ?string,
+  unsavedChanges: boolean,
+  saving: boolean
+}
+
 export default class FeatureNotesStore extends Reflux.Store {
+
+  state: FeatureNotesStoreState
 
    constructor(){
     super();
@@ -12,7 +20,7 @@ export default class FeatureNotesStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): FeatureNotesStoreState{
     return {
       notes: null,
       unsavedChanges: false,

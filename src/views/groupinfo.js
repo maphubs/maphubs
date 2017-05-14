@@ -92,7 +92,7 @@ export default class GroupInfo extends MapHubsComponent {
     if(this.props.group.description){
       // regex for detecting links
       var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
-      descriptionWithLinks = this.props.group.description.replace(regex, "<a href='$1' target='_blank'>$1</a>");
+      descriptionWithLinks = this.props.group.description.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
     }
     var status = this.__('DRAFT');
     if(this.props.group.published){

@@ -47,7 +47,7 @@ export default class Attributes extends React.Component {
                   var val = _this.props.attributes[preset.tag];
                   if(!val || (typeof val === 'string' && val === 'null')) return '';
                   if(typeof val === 'string' && val.startsWith('http')){
-                    val = (<a target="_blank" href={val}>{val}</a>);
+                    val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
                   }
                   return (
                      <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className="collection-item attribute-collection-item">
@@ -74,7 +74,7 @@ export default class Attributes extends React.Component {
                     || key !== 'maphubs_host'){
                      var val = _this.props.attributes[key];
                      if(typeof val === 'string' && val.startsWith('http')){
-                       val = (<a target="_blank" href={val}>{val}</a>);
+                       val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
                      }
                      return (
                       <li key={key} style={{padding: 5}} className="collection-item attribute-collection-item">

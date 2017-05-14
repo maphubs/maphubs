@@ -9,7 +9,20 @@ var _forEachRight = require('lodash.foreachright');
 //var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
+import type {Layer} from './layer-store';
+
+export type  DataEditorStoreState = {
+   editing: boolean,
+  editingLayer: ?Layer,
+  originals: Array<Object>, //store the orginal GeoJSON to support undo
+  edits: Array<Object>,
+  redo: Array<Object>, //if we undo edits, add them here so we can redo them
+  selectedEditFeature: ?Object, //selected feature
+}
+
 export default class DataEditorStore extends Reflux.Store {
+
+  state: DataEditorStoreState
 
   constructor(){
     super();

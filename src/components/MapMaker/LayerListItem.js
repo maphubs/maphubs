@@ -174,7 +174,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
           }}>
           <div className="col s7 no-padding">
            <div className={buttonClass} style={{height: '30px'}}>
-              <a href={'/lyr/'+ layer.layer_id} target="_blank"
+              <a href={'/lyr/'+ layer.layer_id} target="_blank" rel="noopener noreferrer"
                 className="layer-item-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
                 <i className="material-icons omh-accent-text" 

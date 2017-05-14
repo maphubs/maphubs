@@ -28,7 +28,7 @@ export type Layer = {
   private?: boolean,
   is_external?: boolean,
   external_layer_type?: string,
-  external_layer_config: Object,
+  external_layer_config?: Object,
   is_empty?: boolean,
   complete?: boolean
 }
@@ -113,15 +113,15 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     var baseUrl = urlUtil.getBaseUrl();
     if(layer.is_external && layer.external_layer_type === 'mapbox-map'){
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url);
-    }else if(layer.is_external && layer.external_layer_config.type === 'raster'){
+    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'raster'){
       layer.style = mapStyles.defaultRasterStyle(layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json');
-    }else if(layer.is_external && layer.external_layer_config.type === 'multiraster'){
+    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'multiraster'){
       layer.style = mapStyles.defaultMultiRasterStyle(layer.layer_id, layer.external_layer_config.layers);
-    }else if(layer.is_external && layer.external_layer_config.type === 'mapbox-style'){
+    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'mapbox-style'){
         layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
-    }else if(layer.is_external && layer.external_layer_config.type === 'ags-mapserver-tiles'){
+    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'ags-mapserver-tiles'){
         layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url + '?f=json', 'arcgisraster');
-    }else if(layer.is_external && layer.external_layer_config.type === 'geojson'){
+    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'geojson'){
         layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.external_layer_config.data_type);
     }else if(layer.style.sources.osm){
       alert('Unable to reset OSM layers');
@@ -135,11 +135,12 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
   resetLegendHTML(){
     var layer = this.state.layer;
     if(layer.is_external
+      && layer.external_layer_config
       && (layer.external_layer_config.type === 'raster'
           || layer.external_layer_config.type === 'multiraster'
           || layer.external_layer_config.type === 'ags-mapserver-tiles')){
       layer.legend_html = mapStyles.rasterLegend(layer);
-    }else if(layer.is_external && layer.external_layer_config.type === 'mapbox-style'){
+    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'mapbox-style'){
       layer.legend_html = mapStyles.rasterLegend(layer);
     }else{
       layer.legend_html = mapStyles.defaultLegend(layer);

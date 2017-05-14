@@ -8,18 +8,26 @@ import NotificationActions from '../../actions/NotificationActions';
 import ConfirmationActions from '../../actions/ConfirmationActions';
 import Progress from '../Progress';
 import MapHubsComponent from '../MapHubsComponent';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {DataEditorStoreState} from '../../stores/DataEditorStore';
 
-export default class EditorToolButtons extends MapHubsComponent {
+type Props = {
+  stopEditingLayer: Function
+}
 
-  props: {
-    stopEditingLayer: Function
-  }
+type State = {
+   saving: boolean
+} & LocaleStoreState & DataEditorStoreState
 
- state = {
+export default class EditorToolButtons extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+ state: State = {
     saving: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(DataEditorStore);
   }

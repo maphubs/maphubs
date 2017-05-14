@@ -4,18 +4,25 @@ var $ = require('jquery');
 import BaseMapStore from '../../stores/map/BaseMapStore';
 import LegendItem from './LegendItem';
 import MapHubsComponent from '../../components/MapHubsComponent';
+import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
-export default class MiniLegend extends MapHubsComponent {
+type Props = {
+  title: string,
+  layers: Array<Object>,
+  hideInactive: boolean,
+  collapsible: boolean,
+  collapseToBottom: boolean,
+  showLayersButton: boolean,
+  style: Object
+}
 
-  props: {
-    title: string,
-    layers: Array<Object>,
-    hideInactive: boolean,
-    collapsible: boolean,
-    collapseToBottom: boolean,
-    showLayersButton: boolean,
-    style: Object
-  }
+type State = {
+  collapsed: boolean
+} & BaseMapStoreState
+
+export default class MiniLegend extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     layers: [],
@@ -26,11 +33,11 @@ export default class MiniLegend extends MapHubsComponent {
     style: {}
   }
 
-  state = {
+  state: State = {
     collapsed: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(BaseMapStore);
 	}

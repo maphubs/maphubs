@@ -35,6 +35,8 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {FeaturePhotoStoreState} from '../stores/FeaturePhotoStore';
+import type {FeatureNotesStoreState} from '../stores/FeatureNotesStore';
 
 type Props = {
     feature: Object,
@@ -47,11 +49,9 @@ type Props = {
     headerConfig: Object
   }
 
-  type FeatureInfoState = {
+  type State = {
     editingNotes: boolean
-  }
-
-  type State = LocaleStoreState & FeatureInfoState
+  } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState 
 
 export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 
@@ -162,7 +162,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 	render() {
     //var glStyle = null;
     var locationDisplay = '';
-
+    var featureName: string = "Feature";
     var featureAreaDisplay = (
     <div className="row">
         <h5>{this.__('Area')}</h5>
@@ -172,7 +172,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
     if(this.props.feature && this.props.layer && this.props.feature.geojson){
       //glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
-      var featureName: string = "Feature";
+      
       var featureAreaM2, featureAreaKM2, featureAreaHA, areaDisplay;
       if(this.props.feature.geojson.features && this.props.feature.geojson.features.length > 0){
         var geoJSONProps = this.props.feature.geojson.features[0].properties;

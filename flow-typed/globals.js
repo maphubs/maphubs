@@ -71,6 +71,7 @@ type $JSXIntrinsics = {
   hr: JSXHelper<{id: string, style: Object}>,
   svg: JSXHelper<{baseProfile: string, xmlns: string, width: number, height: number, viewBox: string}>,
   path: JSXHelper<{d: string}>,
+  circle: JSXHelper<{id: string}>,
     g: JSXHelper<{id: string}>,
   use: JSXHelper<{xlinkHref: string}>,
   polygon: JSXHelper<{points: string}>,

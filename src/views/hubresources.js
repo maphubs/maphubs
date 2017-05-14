@@ -16,16 +16,24 @@ import Footer from '../components/footer';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {HubStoreState} from '../stores/HubStore';
 
-export default class HubResourcesPage extends MapHubsComponent {
+type Props = {
+  hub: Object,
+  canEdit:boolean,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object
+}
 
-  props: {
-    hub: Object,
-    canEdit:boolean,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object
-  }
+type State = {
+  editing: boolean
+} & LocaleStoreState & HubStoreState
+
+export default class HubResourcesPage extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     hub: {
@@ -35,11 +43,12 @@ export default class HubResourcesPage extends MapHubsComponent {
     canEdit: false
   }
 
-  state = {
-    editing: false
+  state: State = {
+    editing: false,
+    hub: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

@@ -126,7 +126,7 @@ export default class About extends MapHubsComponent {
             <div className="divider"></div>
             <div className="row">
               <p lang={this.props.locale}>{MAPHUBS_CONFIG.productName + ' ' + this.__('Version:')} {this.props.version}</p>
-              <p lang={this.props.locale}>{MAPHUBS_CONFIG.productName + ' ' + this.__('is open source and avaliable on GitHub at')} <a target="_blank" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
+              <p lang={this.props.locale}>{MAPHUBS_CONFIG.productName + ' ' + this.__('is open source and avaliable on GitHub at')} <a target="_blank" rel="noopener noreferrer" href="https://github.com/maphubs/maphubs">https://github.com/maphubs/maphubs</a></p>
               <p lang="en">{MAPHUBS_CONFIG.productName} is possible thanks to many open-source code libraries, fonts, and icons. For a full list see <a href="https://github.com/maphubs/maphubs/blob/master/attritions.md">Attributions</a></p>
             </div>
           </main>

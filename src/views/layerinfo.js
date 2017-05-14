@@ -383,7 +383,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
     if(this.props.layer.description){
       // regex for detecting links
       var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
-      descriptionWithLinks = this.props.layer.description.replace(regex, "<a href='$1' target='_blank'>$1</a>");
+      descriptionWithLinks = this.props.layer.description.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
     }
 
     var remote = '';
@@ -391,7 +391,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slug(this.props.layer.name);
       remote = (
         <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
-          <a href={remoteURL} target="_blank">{remoteURL}</a>
+          <a href={remoteURL} target="_blank" rel="noopener noreferrer">{remoteURL}</a>
         </p>
       );
     }
@@ -419,7 +419,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
         <div>
           <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}
             &nbsp;-&nbsp;
-            <a href={externalUrl} target="_blank">{externalUrl}</a>
+            <a href={externalUrl} target="_blank" rel="noopener noreferrer">{externalUrl}</a>
             <i className="material-icons layer-info-tooltip omh-accent-text" style={{cursor: 'pointer'}} data-delay="50" onClick={function(){_this.copyToClipboard(externalUrl);}} data-position="left" data-tooltip={this.__('Copy to Clipboard')}>launch</i>
           </p>
         </div>

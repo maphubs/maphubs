@@ -45,7 +45,7 @@ export default class UserSettings extends MapHubsComponent {
                <p><b>{this.__('Email')}: </b>{this.props.user.email}</p>
                <div>
                  <Gravatar email={this.props.user.email} size={200} />
-                 <p>{this.__('Please update your photo on')} <a href="http://gravatar.com" target="_blank">gravatar.com</a></p>
+                 <p>{this.__('Please update your photo on')} <a href="http://gravatar.com" target="_blank" rel="noopener noreferrer">gravatar.com</a></p>
                </div>
                <p>{this.__('More user profile settings coming soon!')}</p>
              </div>

@@ -8,6 +8,7 @@ import UserActions from '../actions/UserActions';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
 type Props = {
     user: Object,
@@ -18,8 +19,7 @@ type Props = {
   }
 
   type State = {
-    _csrf: string
-  }
+  } & LocaleStoreState
 
 export default class PendingConfirmation extends MapHubsComponent<null, Props, State> {
 

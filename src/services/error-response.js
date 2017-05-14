@@ -3,7 +3,7 @@ var log = require('./log');
 var Raven = require('raven');
 module.exports = {
 
-  apiError(res: express$Response, code: number, userMessage: string){
+  apiError(res: express$Response, code: number, userMessage?: string){
     return function(err: any){
       log.error(err);
       if(Raven && Raven.isSetup && Raven.isSetup()){

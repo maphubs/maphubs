@@ -10,19 +10,26 @@ import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class PageEdit extends MapHubsComponent {
+type Props = {
+  locale: string,
+  page_id: string,
+  pageConfig: Object,
+  footerConfig: Object,
+  headerConfig: Object,
+  _csrf: string
+}
 
-  props: {
-    locale: string,
-    page_id: string,
-    pageConfig: Object,
-    footerConfig: Object,
-    headerConfig: Object,
-    _csrf: string
-  }
+type State = {
+  pageConfig: ?string
+} & LocaleStoreState
 
-  state = {
+export default class PageEdit extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     pageConfig: null
   }
 

@@ -14,10 +14,9 @@ import LocaleStore from '../stores/LocaleStore';
 
 var debug = require('../services/debug')('views/signup');
 var $ = require('jquery');
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-export default class Signup extends MapHubsComponent {
-
-  props: {
+type Props = {
     locale: string,
     email:  string,
     lockEmail:  boolean,
@@ -26,11 +25,22 @@ export default class Signup extends MapHubsComponent {
     headerConfig: Object
   }
 
+type State = {
+  canSubmit: boolean,
+  saving: boolean,
+  email: string,
+  created: boolean
+} & LocaleStoreState
+
+export default class Signup extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
   static defaultProps = {
     lockEmail: false
   }
 
-  state = {
+  state: State = {
     canSubmit: false,
     saving: false,
     email: '',
@@ -218,7 +228,7 @@ export default class Signup extends MapHubsComponent {
           {joinList}
           <div className="row valign-wrapper" style={{marginBottom: '20px'}}>
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
-              <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" href="/privacy">{this.__('Privacy Policy')}.</a></p>
+              <p>{this.__('By clicking on "Create an account" below, you are agreeing to the')} <a target="_blank" rel="noopener noreferrer" href="/terms">{this.__('Terms of Service')}</a>{this.__(' and the ')}<a target="_blank" rel="noopener noreferrer" href="/privacy">{this.__('Privacy Policy')}.</a></p>
               <button type="submit"
                 className="waves-effect waves-light btn valign center"
                 style={{width: '75%', marginTop: '25px', marginLeft: 'auto', marginRight: 'auto'}}

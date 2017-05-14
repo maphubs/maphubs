@@ -195,7 +195,7 @@ export default class LayerStyle extends MapHubsComponent {
          <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
             <b>{this.__('Mapbox Studio Style Layer')}</b>
             <p>{this.__('If you are the owner of this layer, click here to edit in Mapbox Studio on mapbox.com')}</p>
-            <a target="_blank" className="btn" href={'https://www.mapbox.com/studio/styles/' + this.state.layer.external_layer_config.mapboxid + '/edit'}>{this.__('Edit in Mapbox Studio')}</a>
+            <a target="_blank" rel="noopener noreferrer" className="btn" href={'https://www.mapbox.com/studio/styles/' + this.state.layer.external_layer_config.mapboxid + '/edit'}>{this.__('Edit in Mapbox Studio')}</a>
             <p>{this.__('Once you have published your style on Mapbox,click refresh the preview map.')}
             <b>{this.__('It may take a few minutes for the changes to appear, your layer will update automatically.')}</b>
             </p>
