@@ -15,6 +15,7 @@ import LayerSources from './Sources';
 import MarkerSprites from './MarkerSprites';
 import AnimationOverlay from './AnimationOverlay';
 import AnimationStore from '../../stores/map/AnimationStore';
+import MarkerStore from '../../stores/map/MarkerStore';
 import isEqual from 'lodash.isequal';
 import Promise from 'bluebird';
 import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin';
@@ -112,6 +113,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
         this.stores.push(DataEditorStore);
         this.stores.push(AnimationStore);
         this.stores.push(BaseMapStore);
+        this.stores.push( MarkerStore);
         Reflux.rehydrate(BaseMapStore, {baseMap: this.props.baseMap});
 
         MapboxGLHelperMixin.call(this);

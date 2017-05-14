@@ -1,6 +1,6 @@
 import Reflux from 'reflux';
 import Actions from '../../actions/map/MarkerActions';
-var debug = require('../services/debug')('stores/MarkerStore');
+var debug = require('../../services/debug')('stores/MarkerStore');
 
 /**
  * A store to hold marker objects so we can update them later

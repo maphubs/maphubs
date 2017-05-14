@@ -4,11 +4,12 @@ var superagent = require('superagent');
 var urlUtil = require('../../../services/url-util');
 var checkClientError = require('../../../services/client-error-response').checkClientError;
 import React from 'react';
-var ReactDOM = require('react-dom');
-var Marker = require('../Marker');
+import ReactDOM from 'react-dom';
+import Marker from '../Marker';
 var $ =require('jquery');
-var MarkerActions = require('../../../actions/map/MarkerActions');
+import MarkerActions  from '../../../actions/map/MarkerActions';
 var GJV = require("geojson-validation");
+
 GJV.define("Position", (position) => {
     //the postion must be valid point on the earth, x between -180 and 180
     var errors = [];
@@ -73,7 +74,9 @@ var MapHubsSource = {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
       });
-      MarkerActions.removeLayer(layer_id);     
+      if(MarkerActions.removeLayer){
+        MarkerActions.removeLayer(layer_id);
+      }   
     }
 
     if(layer.metadata 
@@ -168,7 +171,9 @@ var MapHubsSource = {
               .addTo(map);
           
 
-          MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
+            if(MarkerActions.addMarker){
+              MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
+            }
           }else{
             debug('Invalid GeoJSON - Unable to draw marker');
           }
@@ -201,7 +206,9 @@ var MapHubsSource = {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
       });
-      MarkerActions.removeLayer(layer_id);
+      if(MarkerActions.removeLayer){
+        MarkerActions.removeLayer(layer_id);
+      }
     }
     map.removeLayer(layer.id);
   },
