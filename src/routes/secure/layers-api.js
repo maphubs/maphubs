@@ -241,19 +241,33 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
             //update layer views and timestamp
             return Layer.getLayerByID(data.layer_id, trx)
               .then((layer) => {
-                return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                .then(() => {
-                  //Mark layer as updated (tells vector tile service to reload)
-                  return trx('omh.layers').update(
-                    {
-                      updated_by_user_id: user_id,
-                      last_updated: knex.raw('now()')
-                    }
-                  ).where({layer_id: data.layer_id})
+                if(!layer.is_external){
+                  return layerViews.replaceViews(data.layer_id, layer.presets, trx)
                   .then(() => {
-                    res.status(200).send({success: true});
+                    //Mark layer as updated (tells vector tile service to reload)
+                    return trx('omh.layers').update(
+                      {
+                        updated_by_user_id: user_id,
+                        last_updated: knex.raw('now()')
+                      }
+                    ).where({layer_id: data.layer_id})
+                    .then(() => {
+                      res.status(200).send({success: true});
+                    });
                   });
-                });
+                }else{
+                  //Mark layer as updated 
+                  return trx('omh.layers').update(
+                      {
+                        updated_by_user_id: user_id,
+                        last_updated: knex.raw('now()')
+                      }
+                    ).where({layer_id: data.layer_id})
+                    .then(() => {
+                      res.status(200).send({success: true});
+                    });
+                }
+                
               });
             }
           });
