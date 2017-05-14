@@ -11,18 +11,37 @@ import Confirmation from '../components/confirmation';
 //var debug = require('../services/debug')('header');
 import LocaleChooser from './LocaleChooser';
 
-export default class Header extends MapHubsComponent {
+type Link = {
+  href: string,
+  label: LocalizedString
+}
 
-  props: {
-    activePage: string,
-    logoLinkUrl: string,
-  }
+type Props = {
+  activePage: string,
+  logoLinkUrl: string,
+  showSearch: boolean,
+  customSearchLink: string,
+  showMakeAMap: boolean,
+  showExplore: boolean,
+  showOSM: boolean,
+  customLinks: Array<Link>
+
+}
+
+export default class Header extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   static defaultProps = {
-    logoLinkUrl: '/'
+    logoLinkUrl: '/',
+    showSearch: true,
+    showMakeAMap: true,
+    showExplore: true,
+    showOSM: false,
+    customLinks: []
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
 		this.stores.push(UserStore);
 	}
@@ -120,6 +139,69 @@ getCookie = (cname: string) => {
     return "";
 }
 
+  renderSearch(){
+    if(this.props.showSearch){
+      let searchLink = this.props.customSearchLink? this.props.customSearchLink: '/search';
+      return (
+        <li className="nav-link-wrapper nav-tooltip"
+          data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
+          <a  className="nav-link-item" href={searchLink}>
+            <i className="material-icons">search</i>
+          </a>
+        </li>
+      );
+    }else{
+      return '';
+    }
+  }
+
+  renderMakeAMap(mapClasses: any){
+    if(this.props.showMakeAMap){
+      return (
+        <li className="nav-link-wrapper">
+          <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
+        </li>
+      );
+    }else{
+      return '';
+    }
+  }
+
+  renderOSM(mapClasses: any){
+    if(this.props.showOSM){
+      return (
+        <li className="nav-link-wrapper nav-tooltip"
+          data-position="bottom" data-delay="50" data-tooltip={this.__('Help us map in OpenStreetMap')}
+          >
+          <a className={mapClasses} href='https://osm.mapforenvironment.org'>{this.__('OpenStreetMap')}</a>
+        </li>
+      );
+    }else{
+      return '';
+    }
+  }
+
+  renderExplore(exploreClasses: any){
+    if(this.props.showExplore){
+      return (
+        <li className="nav-dropdown-link-wrapper nav-link-wrapper">
+          <a className={exploreClasses} ref="explore" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
+            <ul id="explore-dropdown" className="dropdown-content">
+              <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
+              <li className="divider"></li>
+              <li><a href="/maps" className="nav-hover-menu-item">{this.__('Maps')}</a></li>
+              <li><a href="/stories" className="nav-hover-menu-item">{this.__('Stories')}</a></li>
+              <li><a href="/layers" className="nav-hover-menu-item">{this.__('Layers')}</a></li>
+              <li><a href="/hubs" className="nav-hover-menu-item">{this.__('Hubs')}</a></li>
+              <li><a href="/groups" className="nav-hover-menu-item">{this.__('Groups')}</a></li>
+            </ul>
+        </li>
+      );
+    }else{
+      return '';
+    }
+  }
+
   render() {
 
     var defaultLinkClasses = "nav-link-item";
@@ -136,18 +218,6 @@ getCookie = (cname: string) => {
       }
     }
 
-    var osm = '';
-    if(!MAPHUBS_CONFIG.mapHubsPro){
-      osm = (
-        <li className="nav-link-wrapper nav-tooltip"
-          data-position="bottom" data-delay="50" data-tooltip={this.__('Help us map in OpenStreetMap')}
-          >
-          <a className={mapClasses} href='https://osm.mapforenvironment.org'>{this.__('OpenStreetMap')}</a>
-        </li>
-      );
-
-    }
-
     return (
       <header>
 
@@ -161,56 +231,38 @@ getCookie = (cname: string) => {
 
           <a ref="sideNav" className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
-            <li className="nav-link-wrapper">
-              <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
-            </li>
-            <li className="nav-dropdown-link-wrapper nav-link-wrapper">
-              <a className={exploreClasses} ref="explore" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
-                <ul id="explore-dropdown" className="dropdown-content">
-                  <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
-                  <li className="divider"></li>
-                  <li><a href="/maps" className="nav-hover-menu-item">{this.__('Maps')}</a></li>
-                  <li><a href="/stories" className="nav-hover-menu-item">{this.__('Stories')}</a></li>
-                  <li><a href="/layers" className="nav-hover-menu-item">{this.__('Layers')}</a></li>
-                  <li><a href="/hubs" className="nav-hover-menu-item">{this.__('Hubs')}</a></li>
-                  <li><a href="/groups" className="nav-hover-menu-item">{this.__('Groups')}</a></li>
-                </ul>
-            </li>
-
-
-            {osm}
-
+            {this.renderMakeAMap(mapClasses)}       
+            {this.renderExplore(exploreClasses)}
+            {this.renderOSM(mapClasses)}
+            {
+              this.props.customLinks.map((link, i) =>{
+                return (
+                  <li key={`nav-custom-link-${i}`} className="nav-link-wrapper">
+                    <a className={mapClasses} href={link.href}>{this._o_(link.label)}</a>
+                  </li>
+                );
+              })
+            }
             <LocaleChooser/>
-
-            
-            <li className="nav-link-wrapper nav-tooltip"
-              data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
-              <a  className="nav-link-item" href='/search'>
-                <i className="material-icons">search</i>
-              </a>
-            </li>
+             {this.renderSearch()}
             <UserMenu id="user-menu-header"/>
           </ul>
           <ul className="side-nav" id="side-nav-menu">
-              <UserMenu id="user-menu-sidenav" sideNav/>
-
-              
-
-            <li className="nav-link-wrapper">
-              <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
-            </li>
-            <li className="nav-link-wrapper">
-              <a className={exploreClasses} href='/explore'>{this.__('Explore')}</a>
-            </li>
-            {osm}
-
-            <li className="nav-link-wrapper">
-              <a href='/search' className="nav-link-item">
-                <i className="material-icons">search</i>{this.__('Search')}
-              </a>
-            </li>
+            <UserMenu id="user-menu-sidenav" sideNav/>
+            {this.renderMakeAMap(mapClasses)}
+            {this.renderExplore(exploreClasses)}
+            {this.renderOSM(mapClasses)}
+            {
+              this.props.customLinks.map((link, i) =>{
+                return (
+                  <li key={`nav-custom-link-${i}`} className="nav-link-wrapper">
+                    <a className={mapClasses} href={link.href}>{this._o_(link.label)}</a>
+                  </li>
+                );
+              })
+            }
+            {this.renderSearch()}
           </ul>
-
         </div>
       </nav>
       <Notification />
