@@ -6,15 +6,15 @@ var $ = require('jquery');
 import debugFactory from '../services/debug';
 let debug = debugFactory('MapHubsComponent');
 
-type props = {
+type Props = {
   id: string
 };
 
-type state = {
+type State = {
   locale: string
 }
 
-export default class LocaleChooser extends MapHubsComponent<props, props, state> {
+export default class LocaleChooser extends MapHubsComponent<Props, Props, State> {
 
   static defaultProps = {
     id: 'locale-dropdown'
@@ -33,7 +33,7 @@ export default class LocaleChooser extends MapHubsComponent<props, props, state>
     });
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     if(this.state.locale !== nextState.locale){
       return true;
     }
@@ -44,7 +44,6 @@ export default class LocaleChooser extends MapHubsComponent<props, props, state>
   onChange = (locale: string) => {
     debug('LOCALE CHANGE: '+ locale);
     LocaleActions.changeLocale(locale);
-    $(this.refs.dropdownButton).hide();
   }
 
   render() {
