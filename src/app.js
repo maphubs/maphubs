@@ -218,11 +218,14 @@ app.use(function(req, res, next) {
 
 app.use(function onError(err, req, res, next) {
   if(req.session && req.session.user){
+    let username = req.session.user.username ? req.session.user.username : req.session.user.display_name;
+    let email = req.session.user._json.email? req.session.user._json.email : req.session.user.email;
+
     Raven.mergeContext({
       user: {
         id: req.session.user.id,
-        username: req.session.user.display_name,
-        email: req.session.user.email
+        username,
+        email
       }
     });
   } 

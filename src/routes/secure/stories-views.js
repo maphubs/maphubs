@@ -87,7 +87,7 @@ module.exports = function(app: any) {
      Story.createUserStory(user_id)
      .then((story_id) => {
         return Promise.all([
-          Map.getUserMaps(req.session.user.id),
+          Map.getUserMaps(req.session.user.maphubsUser.id),
           Map.getPopularMaps()
         ]).then((results) => {
           var myMaps = results[0];
@@ -119,7 +119,7 @@ module.exports = function(app: any) {
       if(allowed){
           Promise.all([
             Story.getStoryByID(story_id),
-            Map.getUserMaps(req.session.user.id),
+            Map.getUserMaps(req.session.user.maphubsUser.id),
             Map.getPopularMaps()
           ]).then((results) => {
             var story = results[0];

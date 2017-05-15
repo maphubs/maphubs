@@ -142,7 +142,7 @@ module.exports = function(app: any) {
         Hub.getHubStories(hub.hub_id, canEdit)
       ];
       if(canEdit){
-        dataQueries.push(Map.getUserMaps(req.session.user.id)),
+        dataQueries.push(Map.getUserMaps(req.session.user.maphubsUser.id)),
         dataQueries.push(Map.getPopularMaps());
       }
     return Promise.all(dataQueries)
@@ -311,7 +311,7 @@ module.exports = function(app: any) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.redirect(baseUrl + '/unauthorized?path='+req.path);
     }
-    const user_id: number = req.session.user.id;
+    const user_id: number = req.session.user.maphubsUser.id;
     const hub_id_input: string = req.params.hubid;
     Hub.allowedToModify(hub_id_input, user_id)
     .then((allowed: bool) => {
@@ -321,7 +321,7 @@ module.exports = function(app: any) {
           return Story.createHubStory(hub.hub_id, user_id)
           .then((story_id) => {
             return Promise.all([
-              Map.getUserMaps(req.session.user.id),
+              Map.getUserMaps(req.session.user.maphubsUser.id),
               Map.getPopularMaps()
             ]).then((results: Array<any>) => {
               var myMaps = results[0];
@@ -357,7 +357,7 @@ module.exports = function(app: any) {
         Promise.all([
           Hub.getHubByID(hub_id),
           Story.getStoryByID(story_id),
-          Map.getUserMaps(req.session.user.id),
+          Map.getUserMaps(req.session.user.maphubsUser.id),
           Map.getPopularMaps()
         ]).then((results) => {
           var hub = results[0];
