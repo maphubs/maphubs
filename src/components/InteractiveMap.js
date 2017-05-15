@@ -172,13 +172,14 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       title = this.props.title;
     }
 
-    var categoryMenu = '', height = '100%';
+    var categoryMenu = '', height = '100%', topOffset = 0;
     if(this.props.categories){
       categoryMenu = (
         <MapLayerMenu categories={this.props.categories} 
         toggleVisibility={this.toggleVisibility}
         layers={this.state.layers} />
       );
+      topOffset = 50;
       height = 'calc(100% - 50px)';
     }
 
@@ -207,6 +208,8 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       );
     }
 
+    let mobileLegendButtonTop = `${10 + topOffset}px`;
+
     return (
       <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border, position: 'relative'}}>
 
@@ -214,7 +217,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
             className="button-collapse hide-on-med-and-up"
               data-activates={`mobile-map-legend-${this.props.map_id}`}
               style={{position: 'absolute',
-                top: '10px',
+                top: mobileLegendButtonTop,
                 left: '10px',
                 height:'30px',
                 lineHeight: '30px',
@@ -237,13 +240,15 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
             </a>
          
             <div className="side-nav" id={`mobile-map-legend-${this.props.map_id}`}
-              style={{height: 'auto', paddingBottom: '0', position: 'absolute'}}>
+              style={{height: 'auto', paddingBottom: '0', 
+                position: 'absolute', top: `${topOffset}px`}}>
               {mobileLegend}
             </div>
           
 
             <div className="side-nav" id={`map-layers-${this.props.map_id}`}
-            style={{height: 'auto', paddingBottom: '0', position: 'absolute'}}>
+            style={{height: 'auto', paddingBottom: '0', 
+              position: 'absolute', top: `${topOffset}px`}}>
               <LayerList layers={this.state.layers}
                 showDesign={false} showRemove={false} showVisibility={true}
                 toggleVisibility={this.toggleVisibility}
