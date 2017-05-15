@@ -1,9 +1,7 @@
 //@flow
 import React from 'react';
 var $ = require('jquery');
-import MiniLegend from '../components/Map/MiniLegend';
-import Map from '../components/Map/Map';
-import _debounce from 'lodash.debounce';
+import InteractiveMap from '../components/InteractiveMap';
 import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import _bbox from '@turf/bbox';
@@ -11,26 +9,44 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class EmbedMap extends MapHubsComponent {
+import type {Layer} from '../stores/layer-store';
 
-  props: {
-    map: Object,
-    layers: Array<Object>,
-    isStatic: boolean,
-    interactive: boolean,
-    locale: string,
-    geoJSONUrl: string,
-    markerColor: string,
-    _csrf: string
-  }
+type Props = {
+  map: Object,
+  layers: Array<Layer>,
+  isStatic: boolean,
+  interactive: boolean,
+  locale: string,
+  geoJSONUrl: string,
+  markerColor: string,
+  _csrf: string
+}
 
-  static defaultProps = {
+type DefaultProps = {
+  isStatic: boolean,
+  interactive: boolean,
+  markerColor: string
+}
+
+type State = {
+  interactive: boolean,
+  bounds: ?Object,
+  glStyle: Object
+}
+
+export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     isStatic: false,
     interactive: false,
     markerColor: '#FF0000'
   }
 
-  constructor(props: Object){
+  state: State
+
+  constructor(props: Props){
 		super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
 
@@ -77,59 +93,12 @@ export default class EmbedMap extends MapHubsComponent {
     }
 
     this.state = {
-      retina: false,
-      width: 1024,
-      height: 600,
       interactive: this.props.interactive,
       bounds: null,
       glStyle
     };
 	}
-
-  componentWillMount(){
-    super.componentWillMount();
-    var _this = this;
-    if (typeof window === 'undefined') return; //only run this on the client
-    function isRetinaDisplay() {
-        if (window.matchMedia) {
-            var mq = window.matchMedia("only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)");
-            return (mq && mq.matches || (window.devicePixelRatio > 1));
-        }
-    }
-    //detect retina
-    var retina = false;
-    if (isRetinaDisplay()){
-      retina = true;
-    }
-
-    function getSize(){
-      // Get the dimensions of the viewport
-      var width = Math.floor($(window).width());
-      var height = $(window).height();
-      //var height = Math.floor(width * 0.75); //4:3 aspect ratio
-      //var height = Math.floor((width * 9)/16); //16:9 aspect ratio
-      return {width, height};
-    }
-
-    var size = getSize();
-    this.setState({
-      retina,
-      width: size.width,
-      height: size.height
-    });
-
-    $(window).resize(function(){
-      var debounced = _debounce(() => {
-        var size = getSize();
-        _this.setState({
-          width: size.width,
-          height: size.height
-        });
-      }, 2500).bind(this);
-      debounced();
-    });
-  }
-
+ 
   componentDidMount(){
     $('.embed-tooltips').tooltip();
 
@@ -138,7 +107,7 @@ export default class EmbedMap extends MapHubsComponent {
     }
   }
 
-  componentDidUpdate(prevState: Object){
+  componentDidUpdate(prevState: State){
     if(this.state.interactive && !prevState.interactive){
       $(this.refs.mapLayersPanel).sideNav();
     }
@@ -165,44 +134,9 @@ export default class EmbedMap extends MapHubsComponent {
   
   render() {
     var map = '';
-
-    //var legendHeight = 14 + (this.props.layers.length * 36);
-    var mapHeight = this.state.height;
-
-    var legend = '', bottomLegend = '';
-
     var title = null;
     if(this.props.map.title){
       title = this.props.map.title;
-    }
-
-    if(!this.props.isStatic || this.state.interactive){
-      if(this.state.width < 600){
-        //mapHeight = mapHeight - legendHeight;
-        bottomLegend = (
-          <MiniLegend style={{
-              width: '100%'
-            }}
-              title={title}
-              layers={this.props.layers}/>
-          );
-      }else{
-        legend = (
-          <MiniLegend style={{
-              position: 'absolute',
-              top: '5px',
-              left: '5px',
-              minWidth: '275px',
-              width: '25%',
-              maxWidth: '325px',
-              maxHeight: 'calc(100% - 200px)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-              title={title}
-              layers={this.props.layers}/>
-        );
-      }
     }
  
     var bounds;
@@ -226,54 +160,21 @@ export default class EmbedMap extends MapHubsComponent {
         bounds = this.state.bounds;
       }
       map = (
-        <div>
-          <nav className="hide-on-med-and-up grey-text text-darken-4"  style={{height: '0px', position: 'relative', backgroundColor: 'rgba(0,0,0,0)'}}>
-          <a href="#" ref="mapLayersPanel"
-            data-activates="user-map-layers"
-            style={{position: 'absolute',
-              top: '10px',
-              left: '10px',
-              height:'30px',
-
-              lineHeight: '30px',
-              textAlign: 'center',
-              width: '30px'}}
-            className="button-collapse">
-            <i className="material-icons z-depth-1"
-              style={{height:'30px',
-                      lineHeight: '30px',
-                      width: '30px',
-                      color: MAPHUBS_CONFIG.primaryColor,
-                      borderRadius: '4px',
-                      backgroundColor: 'white',
-                      borderColor: '#ddd',
-                      borderStyle: 'solid',
-                      borderWidth: '1px',
-                      fontSize:'25px'}}
-              >info</i>
-          </a>
-          <div className="side-nav" id="user-map-layers"
-            style={{backgroundColor: 'rgba(0,0,0,0)',
-              height: 'auto', padding: 0,
-              border: 'none', boxShadow: 'none'}}>
-            {bottomLegend}
-
-          </div>
-
-        </nav>
-          <Map ref="map" interactive={this.state.interactive} 
-            fitBounds={bounds} fitBoundsOptions={{animate: false, padding: 200, maxZoom: 8}}
-            style={{width: '100%', height: mapHeight + 'px'}}
-            glStyle={this.state.glStyle}
-            baseMap={this.props.map.basemap}
-            navPosition="top-right" disableScrollZoom>
-            {legend}
-          </Map>
-        </div>
+         <InteractiveMap ref="interactiveMap" height="100%"    
+                  interactive={this.state.interactive}    
+                  fitBounds={bounds}
+                  fitBoundsOptions={{animate: false, padding: 200, maxZoom: 8}}
+                  style={this.state.glStyle} 
+                  layers={this.props.layers}
+                  map_id={this.props.map.map_id}
+                  disableScrollZoom={true}
+                  title={title}
+                  >
+          </InteractiveMap> 
       );
     }
     return (
-      <div className="embed-map">
+      <div className="embed-map" style={{height: '100%'}}>
         {map}
       </div>
     );

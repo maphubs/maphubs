@@ -102,7 +102,7 @@ module.exports = {
     });
   },
 
-  updateFeature(layer_id: number, mhid: string, refreshImmediately: boolean = true, trx: any){
+  updateFeature(layer_id: number, mhid: string, refreshImmediately: boolean = true, trx: any): Bluebird$Promise<Object>{
     
     return Feature.getFeatureByID(mhid, layer_id, trx)
     .then(result => {

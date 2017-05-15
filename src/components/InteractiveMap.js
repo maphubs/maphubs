@@ -11,49 +11,99 @@ import ForestLossLegendHelper from './Map/ForestLossLegendHelper';
 import MapLayerMenu from './InteractiveMap/MapLayerMenu';
 import MapHubsComponent from './MapHubsComponent';
 import Reflux from './Rehydrate';
-import fireResizeEvent from '../services/fire-resize-event';
+import _debounce from 'lodash.debounce';
 
-export default class InteractiveMap extends MapHubsComponent {
+import type MapStoreState from '../stores/MapStore';
 
-  props: {
-    map_id: number,
-    title: string,
-    style: Object,
-    position: Object,
-    layers: Array<Object>,
-    height: string,
-    border: boolean,
-    showLogo: boolean,
-    disableScrollZoom: boolean,
-    showTitle: boolean,
-    categories: Array<Object>,
-    children: any
-  }
+type Props = {
+  map_id: number,
+  title: string,
+  style: Object,
+  position: Object,
+  layers: Array<Object>,
+  height: string,
+  border: boolean,
+  showLogo: boolean,
+  disableScrollZoom: boolean,
+  showTitle: boolean,
+  categories: Array<Object>,
+  fitBounds: Array<Object>,
+  fitBoundsOptions?: Object,
+  interactive: boolean,
+  children: any
+}
 
-  static defaultProps = {
+type DefaultProps = {
+  height: string,
+  border: boolean,
+  disableScrollZoom: boolean,
+  showLogo: boolean,
+  showTitle: boolean,
+  interactive: boolean
+}
+
+type State = {
+  width: number,
+  height: number
+} & MapStoreState
+
+export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
       height: '300px',
       border: false,
       disableScrollZoom: true,
       showLogo: true,
-      showTitle: true
+      showTitle: true,
+      interactive: true
   }
 
-  constructor(props: Object){
+  state: State
+
+  constructor(props: Props){
 		super(props);
     this.stores.push(MapStore);
     Reflux.rehydrate(MapStore, {style: this.props.style, position: this.props.position, layers: this.props.layers});
 	}
 
-  componentDidMount() {
-    $(this.refs.mapLayersPanel).sideNav({
+  componentWillMount(){
+    super.componentWillMount();
+    var _this = this;
+    if (typeof window === 'undefined') return; //only run this on the client
+
+    function getSize(){
+      // Get the dimensions of the viewport
+      var width = Math.floor($(window).width());
+      var height = $(window).height();
+      return {width, height};
+    }
+
+    var size = getSize();
+    this.setState({
+      width: size.width,
+      height: size.height
+    });
+
+    $(window).resize(function(){
+      var debounced = _debounce(() => {
+        var size = getSize();
+        _this.setState({
+          width: size.width,
+          height: size.height
+        });
+      }, 2500).bind(this);
+      debounced();
+    });
+  }
+
+  componentDidMount() {   
+    $(this.refs.mobileLegendPanel).sideNav({
       menuWidth: 240, // Default is 240
       edge: 'left', // Choose the horizontal origin
       closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
     });
-  }
-
-  componentDidUpdate(){
-    fireResizeEvent();
   }
 
   toggleVisibility = (layer_id: number) => {
@@ -90,6 +140,9 @@ export default class InteractiveMap extends MapHubsComponent {
     MapActions.updateLayers(mapLayers, false);
   }
 
+  getMap = () => {
+    return this.refs.map;
+ }
   render() {
 
     var border = 'none';
@@ -98,7 +151,9 @@ export default class InteractiveMap extends MapHubsComponent {
     }
 
     var bounds = null;
-    if(this.state.position){
+    if(this.props.fitBounds){
+      bounds = this.props.fitBounds;
+    } else if(this.state.position){
       if(typeof window === 'undefined' || !window.location.hash){
         //only update position if there isn't absolute hash in the URL
          var bbox = this.state.position.bbox;
@@ -127,12 +182,68 @@ export default class InteractiveMap extends MapHubsComponent {
       height = 'calc(100% - 50px)';
     }
 
+     var legend = '', mobileLegend = '';
+    if(this.state.width < 600){
+      mobileLegend = (
+        <MiniLegend style={{
+            width: '100%'
+          }}
+          title={title}
+          showLayersButton={true} collapsible={false}
+          mapLayersActivatesID={`map-layers-${this.props.map_id}`}
+          layers={this.state.layers}/>
+        );
+    } else {
+      legend = (
+        <MiniLegend style={{
+          position: 'absolute',
+          top: '5px',
+          left: '5px',
+          minWidth: '200px',
+          maxHeight: 'calc(100% - 185px)',
+          width: '20%'
+        }} layers={this.state.layers} title={title} 
+        mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
+      );
+    }
+
     return (
-      <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border}}>
-        <div className="row no-margin" style={{height: '100%'}}>
-          <div className="col s12 no-padding" style={{height: '100%'}}>
-                         
-            <div className="side-nav" id="map-layers">
+      <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border, position: 'relative'}}>
+
+             <a href="#" ref="mobileLegendPanel" 
+            className="button-collapse hide-on-med-and-up"
+              data-activates={`mobile-map-legend-${this.props.map_id}`}
+              style={{position: 'absolute',
+                top: '10px',
+                left: '10px',
+                height:'30px',
+                lineHeight: '30px',
+                zIndex: 1,
+                textAlign: 'center',
+                width: '30px'}}
+              >
+              <i className="material-icons z-depth-1"
+                style={{height:'30px',
+                        lineHeight: '30px',
+                        width: '30px',
+                        color: MAPHUBS_CONFIG.primaryColor,
+                        borderRadius: '4px',
+                        backgroundColor: 'white',
+                        borderColor: '#ddd',
+                        borderStyle: 'solid',
+                        borderWidth: '1px',                        
+                        fontSize:'25px'}}
+                >info</i>
+            </a>
+         
+            <div className="side-nav" id={`mobile-map-legend-${this.props.map_id}`}
+              style={{height: 'auto', paddingBottom: '0', position: 'absolute'}}>
+              {mobileLegend}
+            </div>
+          
+
+            <div className="side-nav" id={`map-layers-${this.props.map_id}`}
+            style={{height: 'auto', paddingBottom: '0', position: 'absolute'}}>
               <LayerList layers={this.state.layers}
                 showDesign={false} showRemove={false} showVisibility={true}
                 toggleVisibility={this.toggleVisibility}
@@ -141,7 +252,9 @@ export default class InteractiveMap extends MapHubsComponent {
             </div>
             {categoryMenu}
       
-            <Map ref="map" id={'map-'+ this.state.map_id} fitBounds={bounds}
+            <Map ref="map" id={'map-'+ this.state.map_id} 
+              fitBounds={bounds} fitBoundsOptions={this.props.fitBoundsOptions}
+              interactive={this.props.interactive} 
               style={{width: '100%', height}}
               glStyle={this.state.style}
               baseMap={this.state.basemap}
@@ -149,19 +262,13 @@ export default class InteractiveMap extends MapHubsComponent {
               onToggleForestLoss={this.onToggleForestLoss}
               showLogo={this.props.showLogo}
               disableScrollZoom={this.props.disableScrollZoom}>
+                
+            
 
-              <MiniLegend style={{
-                  position: 'absolute',
-                  top: '5px',
-                  left: '5px',
-                  minWidth: '200px',
-                  maxHeight: 'calc(100% - 185px)',
-                  width: '20%'
-                }} layers={this.state.layers} title={title} />
-                {children}
+              {legend}
+              {children}
             </Map>
-          </div>
-        </div>
+
       </div>
     );
   }

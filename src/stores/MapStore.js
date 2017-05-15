@@ -1,3 +1,4 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/MapActions';
 var debug = require('../services/debug')('stores/map-store');
@@ -5,7 +6,18 @@ var findIndex = require('lodash.findindex');
 var forEachRight = require('lodash.foreachright');
 var $ = require('jquery');
 
-export default class LocaleStore extends Reflux.Store {
+import type {Layer} from './layer-store';
+
+export type MapStoreState = {
+   style: Object,
+  position: Object,
+  basemap: string,
+  layers: Array<Layer>
+}
+
+export default class MapStore extends Reflux.Store {
+
+  state: MapStoreState
 
   constructor(){
     super();
@@ -13,7 +25,7 @@ export default class LocaleStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): MapStoreState{
     return {
       style: {},
       position: {},
@@ -30,37 +42,38 @@ export default class LocaleStore extends Reflux.Store {
     debug('store updated');
   }
 
- toggleVisibility(layer_id, cb){
+ toggleVisibility(layer_id: number, cb: Function){
    var layers = this.state.layers;
    var index = findIndex(layers, {layer_id});
-
-   if(layers[index].settings.active){
+   if(layers[index] && layers[index].settings){
+    if(layers[index].settings.active){
      layers[index].settings.active = false;
-   }else {
-     layers[index].settings.active = true;
+    }else {
+      layers[index].settings.active = true;
+    }
    }
-
+   
    this.updateMap(layers);
    cb();
  }
 
- updateLayers(layers, update=true){
+ updateLayers(layers: Array<Layer>, update: boolean=true){
    this.setState({layers});
    if(update){
     this.updateMap(layers);
    }  
  }
 
- updateMap(layers){
+ updateMap(layers: Array<Layer>){
    var style = this.buildMapStyle(layers);
    this.setState({layers, style});
  }
 
- changeBaseMap(basemap){
+ changeBaseMap(basemap: string){
   this.setState({basemap});
  }
 
- buildMapStyle(layers){
+ buildMapStyle(layers: Array<Layer>){
    var mapStyle = {
      sources: {},
      layers: []

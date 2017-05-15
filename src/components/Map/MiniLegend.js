@@ -13,6 +13,7 @@ type Props = {
   collapsible: boolean,
   collapseToBottom: boolean,
   showLayersButton: boolean,
+  mapLayersActivatesID: string,
   style: Object
 }
 
@@ -49,7 +50,7 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
    
     if(this.props.showLayersButton){
       $(this.refs.mapLayersButton).sideNav({
-        menuWidth: 240, // Default is 240
+        menuWidth: 260, // Default is 240
         edge: 'left', // Choose the horizontal origin
         closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
       });
@@ -70,10 +71,11 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
       layersButton = (
          <a ref="mapLayersButton"
                 href="#" 
-                data-activates="map-layers"
+                data-activates={this.props.mapLayersActivatesID}
                 style={{
                   position: 'absolute',
                   right: '20px',
+                  top: '0px',
                   display: 'inherit',
                   height:'32px',
                   zIndex: '100',
@@ -168,7 +170,7 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
             {title}
           </div>
           <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>
-            <div className="no-margin"  style={{overflowY: allowScroll ? 'auto': 'hidden', padding: '5px'}}>
+            <div className="no-margin"  style={{overflowX: 'hidden', overflowY: allowScroll ? 'auto': 'hidden', padding: '5px'}}>
               {
                 this.props.layers.map((layer) => {
                   if(layer.settings && typeof layer.settings.active === 'undefined'){

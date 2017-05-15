@@ -1,7 +1,6 @@
 //@flow
 import React from 'react';
-import Map from '../components/Map/Map';
-import MiniLegend from '../components/Map/MiniLegend';
+import InteractiveMap from '../components/InteractiveMap';
 import Header from '../components/header';
 import _find from 'lodash.find';
 import ReactDisqusThread from 'react-disqus-thread';
@@ -191,7 +190,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       this.state.geoJSON.features.forEach((feature) => {
         if(idVal === feature.properties[idField]){
           var bbox = require('@turf/bbox')(feature);
-          _this.refs.map.fitBounds(bbox, 16, 25);
+          _this.refs.interactiveMap.getMap().fitBounds(bbox, 16, 25);
           return;
         }
       });
@@ -324,12 +323,6 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
             <i className="large material-icons">more_vert</i>
           </a>
           <ul>
-            <li>
-              <a className="btn-floating layer-info-tooltip red" data-delay="50" data-position="left" data-tooltip={this.__('View Full Screen Map')}
-                  href={'/layer/map/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name)}>
-                <i className="material-icons">map</i>
-              </a>
-            </li>
             {idEditButton}
             {addPhotoPointButton}
             <li>
@@ -342,8 +335,8 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       );
     }else {
       editButton = (
-        <div className="fixed-action-btn action-button-bottom-right">
-          <a className="btn-floating btn-large layer-info-tooltip red" data-delay="50" data-position="left" data-tooltip={this.__('View Full Screen Map')}
+        <div className="fixed-action-btn action-button-bottom-right hide-on-med-and-up">
+          <a className="btn-floating btn-large layer-info-tooltip red" data-delay="50" data-position="left" data-tooltip={this.__('View Map')}
               href={'/layer/map/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name)}>
             <i className="material-icons">map</i>
           </a>
@@ -539,25 +532,17 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
             </div>
 
           </div>
-            <div className="col hide-on-small-only m6 l6 no-padding">
-              <Map ref="map" className="map-absolute map-with-header width-50"
-                fitBounds={this.props.layer.preview_position.bbox}
-                glStyle={glStyle}>
-                <MiniLegend style={{
-                    position: 'absolute',
-                    top: '5px',
-                    left: '5px',
-                    minWidth: '275px',
-                    width: '25%',
-                    maxWidth: '325px',
-                    maxHeight: 'calc(100% - 200px)',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                  collapsible={true} hideInactive={false} showLayersButton={false}
-                    layers={[this.props.layer]}/>
-                <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>       
-              </Map>
+            <div className="col hide-on-small-only m6 l6 no-padding" style={{height: '100%'}}>
+              <InteractiveMap ref="interactiveMap" height="100%"       
+                  fitBounds={this.props.layer.preview_position.bbox}
+                  style={glStyle} 
+                  layers={[this.props.layer]}
+                  map_id={this.props.layer.layer_id}
+                  disableScrollZoom={false}
+                  >
+              <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
+              </InteractiveMap> 
+              
             </div>
           </div>
           {editButton}
@@ -567,3 +552,5 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 		);
 	}
 }
+
+//map-absolute map-with-header width-50

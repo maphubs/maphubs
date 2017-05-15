@@ -18,7 +18,9 @@ export type Layer = {
   source?: string,  
   style?: ?Object,
   labels?: Object,
-  settings?: Object,
+  settings?: {
+    active: boolean
+  },
   presets?: Object,
   preview_position?: Object,
   data_type?: string,

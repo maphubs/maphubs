@@ -131,9 +131,10 @@ export default class MapToolPanel extends MapHubsComponent {
         <div className="side-nav" id="map-tool-panel"
               style={{
                 backgroundColor: '#FFF',              
-                height: 'calc(100% - 100px)', 
+                height: '100%', 
                 overflow: 'hidden',
-                padding: 0, marginTop: '50px',
+                padding: 0,
+                position: 'absolute',
                 border: '1px solid #d3d3d3'}}>
             
             <ul ref="mapToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>

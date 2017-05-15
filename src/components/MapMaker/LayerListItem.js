@@ -164,7 +164,6 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
             <GroupTag group={layer.owned_by_group_id} />
           </div>
             
-        </div>
         <div className="col s6" style={{
           height: '30px', position: 'absolute', top: '18px', right: '20px', 
           paddingTop: '0px', 
@@ -173,7 +172,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
           paddingRight: '0px'
           }}>
           <div className="col s7 no-padding">
-           <div className={buttonClass} style={{height: '30px'}}>
+           <div className={buttonClass} style={{height: '30px', width: '30px'}}>
               <a href={'/lyr/'+ layer.layer_id} target="_blank" rel="noopener noreferrer"
                 className="layer-item-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
@@ -187,6 +186,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
             </div>
             {visibilityToggle}
           </div>
+           </div>
           <div className="row no-margin">         
             <p className="truncate no-margin no-padding grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
           </div>
