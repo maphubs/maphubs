@@ -163,7 +163,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
          <InteractiveMap ref="interactiveMap" height="100%"    
                   interactive={this.state.interactive}    
                   fitBounds={bounds}
-                  fitBoundsOptions={{animate: false, padding: 200, maxZoom: 8}}
+                  fitBoundsOptions={{animate: false, padding: 200, maxZoom: 14}}
                   style={this.state.glStyle} 
                   layers={this.props.layers}
                   map_id={this.props.map.map_id}
