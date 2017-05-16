@@ -81,7 +81,11 @@ function createEngine(engineOptions) {
       var req = options.req;
       if(options.req){
         req = options.req;
+        //var browserLocale = req.acceptsLanguages('en', 'fr', 'es', 'it');
         if(options.req.session.locale){
+          if(options.req.session.locale !== req.locale){
+            req.session.locale = req.locale;
+          }
           //the user has specified a language from the options on the website
           locale = req.session.locale;
           req.setLocale(locale);
@@ -357,7 +361,7 @@ function createEngine(engineOptions) {
             `;
 
         }
-      if(process.env.NODE_ENV == 'production' && !local.disableTracking && !options.disableGoogleAnalytics){
+      if(process.env.NODE_ENV === 'production' && !local.disableTracking && !options.disableGoogleAnalytics){
         markup += `
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
