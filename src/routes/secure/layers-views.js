@@ -102,7 +102,7 @@ module.exports = function(app: any) {
           res.render('layerinfo', {title: layer.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: layer.description,
           props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
-          fontawesome: true, addthis: true,
+          fontawesome: true, addthis: true, hideFeedback: true,
           twitterCard: {
             title: layer.name,
             description: layer.description,

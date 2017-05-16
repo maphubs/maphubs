@@ -28,6 +28,7 @@ import ForestLossMixin from './Helpers/ForestLossMixin';
 import DataEditorActions from '../../actions/DataEditorActions';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../MapHubsComponent';
+import ScalePositionControl from './ScalePositionControl';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 
@@ -460,9 +461,8 @@ export default class Map extends MapHubsComponent<void, Props, State> {
 
   
 
-  map.addControl(new mapboxgl.ScaleControl({
+  map.addControl(new ScalePositionControl({
       maxWidth: 175,
-      unit: 'metric' //TODO: let scalebar unit be a user preference
   }), 'bottom-right');
 
   if(_this.props.disableScrollZoom){
