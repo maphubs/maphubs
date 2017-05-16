@@ -7,6 +7,7 @@ export default class Attributes extends React.Component {
     selected: boolean,
     multipleSelected: boolean,
     presets:  Array<Object>,
+    locale: string,
     children: any
   }
 
@@ -35,8 +36,14 @@ export default class Attributes extends React.Component {
     }
 
     if(_this.props.attributes && Object.keys(_this.props.attributes).length > 0){
+      var presets;
       if(this.props.presets){
-        var presets = this.props.presets;
+        presets = this.props.presets;
+      }else if( this.props.attributes['maphubs_metadata'] &&  
+          this.props.attributes['maphubs_metadata'].presets){
+        presets = this.props.attributes['maphubs_metadata'].presets;
+      }
+      if(presets){
         //only display presets
         display = (
             <ul className="collection" style={{marginTop: 0}}>
@@ -49,9 +56,23 @@ export default class Attributes extends React.Component {
                   if(typeof val === 'string' && val.startsWith('http')){
                     val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
                   }
+
+                  let label;
+                  if(typeof preset.label === 'object'){
+                    if(this.props.locale){
+                      label = preset.label[this.props.locale];
+                    }else{
+                      label = preset.label.en;
+                    }
+                    
+                  }
+                  if(!label){
+                    label = preset.label;
+                  }
+
                   return (
                      <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className="collection-item attribute-collection-item">
-                      <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{preset.label}</p>
+                      <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{label}</p>
                        <p className="word-wrap">
                          {val}
                        </p>

@@ -230,6 +230,7 @@ export default class FeatureBox extends MapHubsComponent {
               attributes={properties}
               selected={this.state.selected}
               multipleSelected={multipleSelected}
+              locale={this.state.locale}
               presets={presets}>
             <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
               {infoPanel}
