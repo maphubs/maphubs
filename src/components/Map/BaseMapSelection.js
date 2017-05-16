@@ -27,9 +27,11 @@ export default class BaseMapSelection extends MapHubsComponent<void, Props, void
   render(){
 
     var radioOptions:Array<{value: string, label: string}> = [];
-    this.state.baseMapOptions.forEach((baseMapOption: BaseMapOption) =>{
-      radioOptions.push({value: baseMapOption.value, label: baseMapOption.label[this.state.locale]});
-    });
+    if(this.state.baseMapOptions && Array.isArray(this.state.baseMapOptions)){ 
+      this.state.baseMapOptions.forEach((baseMapOption: BaseMapOption) =>{
+        radioOptions.push({value: baseMapOption.value, label: baseMapOption.label[this.state.locale]});
+      }); 
+    }
 
     return (
       <div style={{width: '100%', marginRight: '10px', backgroundColor: 'white', textAlign: 'left'}}>
