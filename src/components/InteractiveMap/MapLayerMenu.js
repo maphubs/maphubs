@@ -20,9 +20,9 @@ export default class MapLayerMenu extends MapHubsPureComponent {
     var _this = this;
 
     return (
-       <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)', borderTop: '1px #444 solid'}}>
+       <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)', borderTop: '1px #444 solid', height: '35px'}}>
           <div className="nav-wrapper z-depth-0">
-          <ul className="left">
+          <ul className="left" style={{height: '35px'}}>
       {this.props.categories.map((category, i) => {
         var name = category.name[_this.state.locale];
         if(!name) name = category.name.en;

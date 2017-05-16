@@ -27,10 +27,10 @@ export default class LayerListDropDown extends MapHubsPureComponent {
 
   render(){
     return (
-       <li>
+       <li style={{height: '35px'}}>
         <a ref="dropdownButton" className="category-dropdown-button"
-          href="#!" data-activates={this.props.id} style={{paddingRight: 0}}>{this.props.name}
-          <i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
+          href="#!" data-activates={this.props.id} style={{paddingRight: 0, height: '35px', lineHeight: '35px'}}>{this.props.name}
+          <i className="material-icons right" style={{marginLeft: 0, lineHeight: '35px'}}>arrow_drop_down</i></a>
           <div ref="dropdownMenu" id={this.props.id} className="dropdown-content" style={{width: '300px'}}>
             <LayerListStatic layers={this.props.layers} toggleVisibility={this.props.toggleVisibility}
               showDesign={false} showRemove={false} showEdit={false} showChangeDesign={false} allowReorder={false}

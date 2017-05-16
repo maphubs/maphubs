@@ -180,8 +180,8 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
         toggleVisibility={this.toggleVisibility}
         layers={this.state.layers} />
       );
-      topOffset = 50;
-      height = 'calc(100% - 50px)';
+      topOffset = 35;
+      height = 'calc(100% - 35px)';
     }
 
      var legend = '', mobileLegend = '';
