@@ -46,6 +46,7 @@ type Props = {
     canEdit: boolean,
     locale: string,
     _csrf: string,
+    mapConfig: Object,
     headerConfig: Object
   }
 
@@ -443,6 +444,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
               <Map ref="map" className="map-absolute map-with-header width-50" 
               fitBounds={this.props.feature.geojson.bbox} 
               data={this.props.feature.geojson} 
+              mapConfig={this.props.mapConfig}
               gpxLink={gpxLink}
               />
             </div>

@@ -30,6 +30,7 @@ type Props = {
   fitBounds: Array<Object>,
   fitBoundsOptions?: Object,
   interactive: boolean,
+  mapConfig: Object,
   children: any
 }
 
@@ -211,7 +212,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
     let mobileLegendButtonTop = `${10 + topOffset}px`;
 
     return (
-      <div style={{width: '100%', height: this.props.height, overflow: 'hidden', border, position: 'relative'}}>
+      <div style={{width: '100%', height: `calc(${this.props.height} - 0px)`, overflow: 'hidden', border, position: 'relative'}}>
 
              <a href="#" ref="mobileLegendPanel" 
             className="button-collapse hide-on-med-and-up"
@@ -240,14 +241,14 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
             </a>
          
             <div className="side-nav" id={`mobile-map-legend-${this.props.map_id}`}
-              style={{height: 'auto', paddingBottom: '0', 
+              style={{height: 'auto', maxHeight: `calc(${this.props.height} - ${topOffset}px)`, paddingBottom: '0', 
                 position: 'absolute', top: `${topOffset}px`}}>
               {mobileLegend}
             </div>
           
 
             <div className="side-nav" id={`map-layers-${this.props.map_id}`}
-            style={{height: 'auto', paddingBottom: '0', 
+            style={{height: 'auto', maxHeight: `calc(${this.props.height} - ${topOffset}px)`, paddingBottom: '0', 
               position: 'absolute', top: `${topOffset}px`}}>
               <LayerList layers={this.state.layers}
                 showDesign={false} showRemove={false} showVisibility={true}
@@ -257,8 +258,9 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
             </div>
             {categoryMenu}
       
-            <Map ref="map" id={'map-'+ this.state.map_id} 
+            <Map ref="map" id={'map-'+ this.props.map_id} 
               fitBounds={bounds} fitBoundsOptions={this.props.fitBoundsOptions}
+              height={this.props.height}
               interactive={this.props.interactive} 
               style={{width: '100%', height}}
               glStyle={this.state.style}
@@ -266,6 +268,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
               onChangeBaseMap={this.onChangeBaseMap}
               onToggleForestLoss={this.onToggleForestLoss}
               showLogo={this.props.showLogo}
+              mapConfig={this.props.mapConfig}
               disableScrollZoom={this.props.disableScrollZoom}>
                 
             

@@ -54,7 +54,8 @@ type Props = {
   updatedByUser: Object,
   locale: string,
   _csrf: string,
-  headerConfig: Object
+  headerConfig: Object,
+  mapConfig: Object
 }
 
 type LayerInfoState = {
@@ -533,11 +534,12 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
           </div>
             <div className="col hide-on-small-only m6 l6 no-padding" style={{height: '100%'}}>
-              <InteractiveMap ref="interactiveMap" height="100%"       
+              <InteractiveMap ref="interactiveMap" height="100vh - 50px"       
                   fitBounds={this.props.layer.preview_position.bbox}
                   style={glStyle} 
                   layers={[this.props.layer]}
                   map_id={this.props.layer.layer_id}
+                  mapConfig={this.props.mapConfig}
                   disableScrollZoom={false}
                   >
               <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>

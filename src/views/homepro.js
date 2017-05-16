@@ -12,9 +12,12 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
+import type {Layer} from '../stores/layer-store';
+import type {Group} from '../stores/GroupStore';
+
 type Props = {
-    trendingLayers: Array<Object>,
-    trendingGroups:Array<Object>,
+    trendingLayers: Array<Layer>,
+    trendingGroups:Array<Group>,
     trendingHubs: Array<Object>,
     trendingMaps: Array<Object>,
     trendingStories: Array<Object>,
@@ -23,9 +26,10 @@ type Props = {
     _csrf: string,
     map: Object,
     pageConfig: Object,
-    layers: Array<Object>,
+    layers: Array<Layer>,
     footerConfig: Object,
-    headerConfig: Object
+    headerConfig: Object,
+    mapConfig: Object
   }
 
   type State = {
@@ -72,9 +76,10 @@ export default class HomePro extends MapHubsComponent<void, Props, State> {
     var homepageMap= '';
     if(this.props.map){
       homepageMap = (
-         <div key={key} className="row" style={{height: 'calc(100vh - 150px)'}}>
-            <InteractiveMap height="100%" 
-             {...this.props.map} categories={config.categories}     
+         <div key={key} className="row">
+            <InteractiveMap height="calc(100vh - 150px)" 
+             {...this.props.map} categories={config.categories} 
+             mapConfig={this.props.mapConfig}    
              layers={this.props.layers} showTitle={false}/>
             <div className="divider" />
           </div>

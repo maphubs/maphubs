@@ -392,9 +392,10 @@ function createEngine(engineOptions) {
         }
       });
     }
-    Page.getPageConfigs(['footer', 'header']).then(pageConfigs =>{
+    Page.getPageConfigs(['footer', 'header', 'map']).then(pageConfigs =>{
       options.props.headerConfig = pageConfigs.header;
-      options.props.footerConfig = pageConfigs.footer;  
+      options.props.footerConfig = pageConfigs.footer; 
+      options.props.mapConfig = pageConfigs.map;  
       var appData: string = JSON.stringify(options.props, null, 2);
       markup += `
        <script>window.__appData = ${appData}; </script>

@@ -17,7 +17,8 @@ export default class HubMap extends MapHubsComponent {
     height: string,
     border: boolean,
     myMaps: Array<Object>,
-    popularMaps: Array<Object>
+    popularMaps: Array<Object>,
+    mapConfig: Object
   }
 
   static defaultProps = {
@@ -91,6 +92,7 @@ export default class HubMap extends MapHubsComponent {
         <div className="row no-margin" style={{height: '100%', position: 'relative'}}>
 
           <InteractiveMap {...this.state.map} 
+            mapConfig={this.props.mapConfig}
             height={this.props.height} showTitle={false}
             layers={this.state.layers} />
           

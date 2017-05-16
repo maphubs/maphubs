@@ -11,7 +11,8 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 type Props = {
   onSubmit: Function,
   showPrev: boolean,
-  onPrev: Function
+  onPrev: Function,
+  mapConfig: Object
 }
 
 type State = {
@@ -72,6 +73,7 @@ export default class Step1 extends MapHubsComponent<void, Props, State> {
     return (
         <div className="row">
           <CreateLayer onPrev={this.onPrev} onSubmit={this.onSubmit} 
+          mapConfig={this.props.mapConfig}
           showCancel={true} cancelText={this.__('Cancel')} onCancel={this.onCancel}
          />      
       </div>

@@ -13,9 +13,9 @@ import '../../stores/preset-store'; //needed to init the store used by the sourc
 
 export default {
 
-  getSource(type: string){
+  getSource(type: string, mapConfig: Object){
     if(type === 'local'){
-      return (<UploadLocalSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
+      return (<UploadLocalSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} mapConfig={mapConfig} />);
     }else if(type === 'geojson'){
       return(<GeoJSONUrlSource showPrev={true} onPrev={this.onPrev} onSubmit={this.onSubmit} />);
     }else if(type === 'mapbox'){

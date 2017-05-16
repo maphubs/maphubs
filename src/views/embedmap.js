@@ -19,6 +19,7 @@ type Props = {
   locale: string,
   geoJSONUrl: string,
   markerColor: string,
+  mapConfig: Object,
   _csrf: string
 }
 
@@ -160,7 +161,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
         bounds = this.state.bounds;
       }
       map = (
-         <InteractiveMap ref="interactiveMap" height="100%"    
+         <InteractiveMap ref="interactiveMap" height="100vh"    
                   interactive={this.state.interactive}    
                   fitBounds={bounds}
                   fitBoundsOptions={{animate: false, padding: 200, maxZoom: 14}}
@@ -168,6 +169,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
                   layers={this.props.layers}
                   map_id={this.props.map.map_id}
                   disableScrollZoom={true}
+                  mapConfig={this.props.mapConfig}
                   title={title}
                   >
           </InteractiveMap> 

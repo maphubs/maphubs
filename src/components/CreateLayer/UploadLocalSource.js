@@ -18,7 +18,8 @@ import type {LayerStoreState} from '../../stores/layer-store';
 type Props = {
   onSubmit: Function,
   showPrev: boolean,
-  onPrev: Function
+  onPrev: Function,
+  mapConfig: Object
 }
 
 type State = {
@@ -159,7 +160,10 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
       map = (
         <div>
           <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
-          <Map ref="map" style={{width: '100%', height: '400px'}} showFeatureInfoEditButtons={false} data={this.state.geoJSON} />
+          <Map ref="map" style={{width: '100%', height: '400px'}} 
+          showFeatureInfoEditButtons={false} 
+          mapConfig={this.props.mapConfig}
+          data={this.state.geoJSON} />
         </div>
       );
     }

@@ -4,14 +4,18 @@ import Radio from '../forms/radio';
 import Formsy from 'formsy-react';
 import BaseMapStore from '../../stores/map/BaseMapStore';
 import MapHubsComponent from '../MapHubsComponent';
+import type {BaseMapOption} from '../../stores/map/BaseMapStore';
 
-export default class BaseMapSelection extends MapHubsComponent {
+type Props = {
+  onChange: Function,
+  baseMapOptions: Array<BaseMapOption>
+}
 
-  props: {
-    onChange: Function
-  }
+export default class BaseMapSelection extends MapHubsComponent<void, Props, void> {
 
-  constructor(props: Object){
+  props: Props
+
+  constructor(props: Props){
     super(props);
     this.stores.push(BaseMapStore);
   }
@@ -21,22 +25,11 @@ export default class BaseMapSelection extends MapHubsComponent {
   }
 
   render(){
-    var baseMapOptions = [
-      {value: 'default', label: this.__('Default (Light)')},
-      {value: 'dark', label: this.__('Dark')},
-      {value: 'streets', label: this.__('Streets')}
-    ];
-    if(MAPHUBS_CONFIG.useMapboxBaseMaps){
-      baseMapOptions.push({value: 'outdoors', label: this.__('Outdoors')});
-      baseMapOptions.push({value: 'mapbox-satellite', label: this.__('Mapbox Satellite')});
-    }
 
-    baseMapOptions.push({value: 'bing-satellite', label: this.__('Bing Aerial')});
-    baseMapOptions.push({value: 'landsat-2016', label: this.__('Landsat - 2016')});
-    baseMapOptions.push({value: 'landsat-2014', label: this.__('Landsat - 2014')});
-    baseMapOptions.push({value: 'stamen-toner', label: this.__('Stamen - Toner')});
-    baseMapOptions.push({value: 'stamen-terrain', label: this.__('Stamen - Terrain')});
-    baseMapOptions.push({value: 'stamen-watercolor', label: this.__('Stamen - Watercolor')});
+    var radioOptions:Array<{value: string, label: string}> = [];
+    this.state.baseMapOptions.forEach((baseMapOption: BaseMapOption) =>{
+      radioOptions.push({value: baseMapOption.value, label: baseMapOption.label[this.state.locale]});
+    });
 
     return (
       <div style={{width: '100%', marginRight: '10px', backgroundColor: 'white', textAlign: 'left'}}>
@@ -44,7 +37,7 @@ export default class BaseMapSelection extends MapHubsComponent {
           <h6>{this.__('Choose a Base Map')}</h6>
           <Radio name="baseMap" label="" className="base-map-selection"
               defaultValue={this.state.baseMap}
-              options={baseMapOptions} onChange={this.onChange}
+              options={radioOptions} onChange={this.onChange}
             />
           </Formsy.Form>
         </div>

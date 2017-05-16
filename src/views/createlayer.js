@@ -1,3 +1,4 @@
+//@flow
 import React from 'react';
 var $ = require('jquery');
 var classNames = require('classnames');
@@ -16,21 +17,38 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import LayerStore from '../stores/layer-store';
 
-export default class CreateLayer extends MapHubsComponent {
+import type {Group} from '../stores/GroupStore';
+import type {Layer, LayerStoreState} from '../stores/layer-store';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
-  props: {
-		groups: Array,
-    layer: Object,
-    locale: string,
-    headerConfig: Object
-  }
+type Props = {
+  groups: Array<Group>,
+  layer: Layer,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object,
+  mapConfig: Object
+}
 
-  static defaultProps:{
+type DefaultProps = {
+   groups: Array<Group>
+}
+
+type State = {
+  step: number
+} & LayerStoreState & LocaleStoreState
+
+export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     groups: []
   }
 
-  state = {
-    step: 1
+  state: State = {
+    step: 1,
+    layer: {}
   }
 
   constructor(props: Object){
@@ -71,7 +89,7 @@ export default class CreateLayer extends MapHubsComponent {
     };
   }
 
-  submit = (layer_id, name) => {
+  submit = (layer_id: number, name: string) => {
       window.location = '/layer/info/' + layer_id + '/' + slug(name);
   }
 
@@ -109,7 +127,7 @@ export default class CreateLayer extends MapHubsComponent {
     if(this.state.step === 1){
       progressWidth = 'width-25';
       step1 = (
-        <Step1 onSubmit={this.nextStep}/>
+        <Step1 onSubmit={this.nextStep} mapConfig={this.props.mapConfig}/>
       );
     }
     var step2 = '';

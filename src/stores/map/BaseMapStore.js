@@ -6,18 +6,30 @@ var _bboxPolygon = require('@turf/bbox-polygon');
 var _intersect = require('@turf/intersect');
 var _debounce = require('lodash.debounce');
 var _distance = require('@turf/distance');
+var _find = require('lodash.find');
 
 var positron = require('../../components/Map/styles/positron.json');
 var darkmatter = require('../../components/Map/styles/darkmatter.json');
 var osmLiberty = require('../../components/Map/styles/osm-liberty.json');
 var osmBright = require('../../components/Map/styles/osm-liberty.json');
+var defaultBaseMapOptions = require('../../components/Map/styles/base-map-options.json');
 
+export type BaseMapOption = {
+  value: string,
+  label: LocalizedString,
+  attribution: string,
+  updateWithMapPosition: boolean,
+  style: Object,
+  loadFromFile: string
+
+}
 
 export type  BaseMapStoreState = {
   baseMap: string,
   attribution: string,
   bingImagerySet: ?string,
-  updateWithMapPosition: boolean
+  updateWithMapPosition: boolean,
+  baseMapOptions: Array<BaseMapOption>
 }
 
 export default class BaseMapStore extends Reflux.Store {
@@ -30,7 +42,8 @@ export default class BaseMapStore extends Reflux.Store {
       baseMap: 'default',
       attribution: '© Mapbox © OpenStreetMap',
       bingImagerySet: null,
-      updateWithMapPosition: false
+      updateWithMapPosition: false,
+      baseMapOptions: defaultBaseMapOptions
     };
     this.listenables = Actions;
   }
@@ -136,255 +149,61 @@ export default class BaseMapStore extends Reflux.Store {
     });
   }
 
-  getBaseMapFromName(mapName, cb){
-    var _this = this;
-    var mapboxName;
-    var style;
-    var optimize = true;
-    if(!mapName) mapName = 'default';
 
-    if (mapName === 'default') {
-      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
-        mapboxName = 'light-v9';
-        optimize = true;
-      }else{
+  loadFromFile(name, cb){
+    if(name === 'positron'){
+      cb(positron);
+    }else if(name === 'darkmatter'){
+      cb(darkmatter);
+    }else if(name === 'osmLiberty'){
+      cb(osmLiberty);
+    }else if(name === 'osmBright'){
+      cb(osmBright);
+    }else{
+      debug(`unknown base map file: ${name}`);
+      cb(positron);
+    }
+  }
+
+  getBaseMapFromName(mapName, cb){
+
+    var config = _find(this.state.baseMapOptions, {value: mapName});
+
+    if(config){
+
+      this.setState({
+        attribution: config.attribution,
+        updateWithMapPosition: config.updateWithMapPosition
+      });
+      if(mapName === 'bing-satellite'){
+        this.getBingSource('Aerial', () => {
         this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
-          updateWithMapPosition: false
+          bingImagerySet: 'Aerial'
         });
-        cb(positron);
+        cb(config.style);
+      });
+      }else if(config.loadFromFile){
+        this.loadFromFile(config.loadFromFile, cb);
+      }else if(config.style){
+        cb(config.style);
+      }else if(config.mapboxUrl){
+        //example: mapbox://styles/mapbox/streets-v8?optimize=true
+        cb(config.mapboxUrl);
       }
-        
+      else{
+          debug(`map style not found for base map: ${mapName}`);
+      }      
+    }else{
+      debug(`unknown base map: ${mapName}`);
+      //load the  default basemap
+      let defaultConfig = _find(defaultBaseMapOptions, {value: 'default'});
+       this.setState({
+        attribution: defaultConfig.attribution,
+        updateWithMapPosition: defaultConfig.updateWithMapPosition
+      });
+      this.loadFromFile(defaultConfig.loadFromFile, cb);
     }
-    else if(mapName === 'dark'){
-      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
-        mapboxName = 'dark-v9';
-        optimize = true;
-      }else{
-        this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
-          updateWithMapPosition: false
-        });
-        cb(darkmatter);
-      }
-    }
-    else if(mapName === 'outdoors'){
-      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
-        mapboxName = 'outdoors-v9';
-        optimize = true;
-      }else{
-        this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
-          updateWithMapPosition: false
-        });
-        cb(osmBright);
-      } 
-    }
-    else if(mapName === 'streets'){
-      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
-        mapboxName = 'streets-v9';
-        optimize = true;
-      }else{
-        this.setState({
-          attribution: '<a href="http://openmaptiles.org/" target="_blank" rel="noopener noreferrer">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank" rel="noopener noreferrer">&copy; OpenStreetMap contributors</a>',
-          updateWithMapPosition: false
-        });
-        cb(osmLiberty);
-      } 
-    }
-    else if(mapName === 'mapbox-satellite'){
-      if(MAPHUBS_CONFIG.useMapboxBaseMaps){
-        mapboxName = 'satellite-streets-v9';
-        optimize = true;
-      }else{
-        return this.getBaseMapFromName('bing-satellite', cb);
-      }
-    }
-    else if(mapName === 'stamen-toner'){
-      style={
-        "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-        "sources": {
-            "stamen-toner-tiles": {
-                "type": "raster",
-                "tiles":[  
-                  "https://stamen-tiles-a.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-b.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-c.a.ssl.fastly.net/toner/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-d.a.ssl.fastly.net/toner/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256
-            }
-        },
-        "layers": [{
-            "id": "stamen-toner-tiles",
-            "type": "raster",
-            "source": "stamen-toner-tiles",
-            "minzoom": 0,
-            "maxzoom": 22
-        }]
-    };
-    this.setState({
-      attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)',
-      updateWithMapPosition: false
-    });
-     cb(style);
-    }
-    else if(mapName === 'stamen-terrain'){
-      style={
-        "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-        "sources": {
-            "stamen-terrain-tiles": {
-                "type": "raster",
-                "tiles":[  
-                  "https://stamen-tiles-a.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-b.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-c.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-d.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256
-            }
-        },
-        "layers": [{
-            "id": "stamen-terrain-tiles",
-            "type": "raster",
-            "source": "stamen-terrain-tiles",
-            "minzoom": 0,
-            "maxzoom": 22
-        }]
-    };
-    this.setState({
-      attribution: 'Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)',
-      updateWithMapPosition: false
-    });
-     cb(style);
-    }
-     else if(mapName === 'stamen-watercolor'){
-      style={
-        "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-        "sources": {
-            "stamen-watercolor-tiles": {
-                "type": "raster",
-                "tiles":[  
-                  "https://stamen-tiles-a.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-b.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-c.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png",
-                  "https://stamen-tiles-d.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256
-            }
-        },
-        "layers": [{
-            "id": "stamen-watercolor-tiles",
-            "type": "raster",
-            "source": "stamen-watercolor-tiles",
-            "minzoom": 0,
-            "maxzoom": 22
-        }]
-    };
-    this.setState({
-      attribution: ' Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)',
-      updateWithMapPosition: false
-    });
-     cb(style);
-    }
-    else if(mapName === 'landsat-2016'){
-      style={
-        "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-        "sources": {
-            "landsat-2016": {
-                "type": "raster",
-                "tiles":[  
-                  "https://mapforenvironment.org/raster/congo-landsat-2016/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256
-            }
-        },
-        "layers": [{
-            "id": "landsat-2016",
-            "type": "raster",
-            "source": "landsat-2016",
-            "minzoom": 3,
-            "maxzoom": 12
-        }]
-    };
-    this.setState({
-      attribution: ' Landsat 7',
-      updateWithMapPosition: false
-    });
-     cb(style);
-    }
-     else if(mapName === 'landsat-2014'){
-      style={
-        "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-        "sources": {
-            "landsat-2014": {
-                "type": "raster",
-                "tiles":[  
-                  "https://mapforenvironment.org/raster/congo-landsat-2014/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256
-            }
-        },
-        "layers": [{
-            "id": "landsat-2014",
-            "type": "raster",
-            "source": "landsat-2014",
-            "minzoom": 3,
-            "maxzoom": 12
-        }]
-    };
-    this.setState({
-      attribution: ' Landsat 7',
-      updateWithMapPosition: false
-    });
-     cb(style);
-    }
-    else if(mapName === 'bing-satellite'){
-      style={
-        "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-        "sources": {
-            "bing-tiles": {
-                "type": "raster",
-                "tiles":[  
-                  "https://ecn.t0.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=5522&mkt=en-us",
-                  "https://ecn.t1.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=5522&mkt=en-us",
-                  "https://ecn.t2.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=5522&mkt=en-us",
-                  "https://ecn.t3.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=5522&mkt=en-us"
-                ],
-                "tileSize": 256
-            }
-        },
-        "layers": [{
-            "id": "bing-tiles",
-            "type": "raster",
-            "source": "bing-tiles",
-            "minzoom": 0,
-            "maxzoom": 22
-        }]
-    };
-    this.getBingSource('Aerial', () => {
-      _this.setState({
-        attribution: '© Bing Maps',
-        bingImagerySet: 'Aerial',
-        updateWithMapPosition: true
-    });
-      cb(style);
-    });
-    }
-    if(mapboxName){
-       var url = 'mapbox://styles/mapbox/' + mapboxName;
-        if(optimize){
-          url += '?optimize=true'; //requires mapbox-gl-js 0.24.0+
-        }
-        this.setState({attribution: '© Mapbox © OpenStreetMap', updateWithMapPosition: false});
-        cb(url);
-    }
+
   }
 
 }

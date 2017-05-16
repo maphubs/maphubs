@@ -21,7 +21,8 @@ export default class StaticMap extends MapHubsComponent {
     showLogo: boolean,
     insetMap:  boolean,
     locale: string,
-    _csrf: string
+    _csrf: string,
+    mapConfig: Object
   }
 
   static defaultProps = {
@@ -118,7 +119,9 @@ export default class StaticMap extends MapHubsComponent {
     map = (
       <Map ref="map" interactive={false} showPlayButton={false} fitBounds={bounds} insetMap={this.props.insetMap}
         showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}
-        glStyle={this.props.style} baseMap={this.props.basemap} navPosition="top-right">
+        glStyle={this.props.style} 
+        mapConfig={this.props.mapConfig}
+        baseMap={this.props.basemap} navPosition="top-right">
         {legend}
       </Map>
     );

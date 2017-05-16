@@ -68,6 +68,7 @@ type Props = {
     gpxLink: string,
     attributionControl:boolean,
     allowLayerOrderOptimization: boolean,
+    mapConfig: Object,
     children: any
   }
 
@@ -104,7 +105,9 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     attributionControl: false,
     style: {},
     allowLayerOrderOptimization: true,
-    fitBoundsOptions: {animate:false}
+    fitBoundsOptions: {animate:false},
+    height: '100%',
+    mapConfig: {}
   }
 
   constructor(props: Props){
@@ -114,7 +117,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
         this.stores.push(AnimationStore);
         this.stores.push(BaseMapStore);
         this.stores.push( MarkerStore);
-        Reflux.rehydrate(BaseMapStore, {baseMap: this.props.baseMap});
+        Reflux.rehydrate(BaseMapStore, {baseMap: props.baseMap, baseMapOptions: props.mapConfig.baseMapOptions});
 
         MapboxGLHelperMixin.call(this);
         MapboxGLHelperMixin.call(this);
@@ -739,6 +742,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
           {insetMap}
           
           <MapToolPanel show={this.state.interactive && this.state.mapLoaded} 
+          height={this.props.height}
           gpxLink={this.props.gpxLink}
           toggleMeasurementTools={this.toggleMeasurementTools}
           enableMeasurementTools={this.state.enableMeasurementTools}

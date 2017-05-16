@@ -20,6 +20,7 @@ type Props = {
   layer: Object,
   locale: string,
   _csrf: string,
+  mapConfig: Object,
   headerConfig: Object
 }
 
@@ -122,7 +123,12 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
           </div>
           <div className="col m6 s12">
             <div style={{width: '400px'}}>
-              <Map ref="map" style={{width: '100%', height: '400px'}} showFeatureInfoEditButtons={false} showLogo={false} data={this.state.geoJSON} />
+              <Map ref="map" 
+                style={{width: '100%', height: '400px'}} 
+                showFeatureInfoEditButtons={false} 
+                showLogo={false} 
+                mapConfig={this.props.mapConfig}
+                data={this.state.geoJSON} />
             </div>
           </div>
           <div className="row no-margin">

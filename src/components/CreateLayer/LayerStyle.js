@@ -22,6 +22,7 @@ export default class LayerStyle extends MapHubsComponent {
     showPrev: boolean,
     prevText: string,
     onPrev: Function,
+    mapConfig: Object,
     waitForTileInit: boolean
   }
 
@@ -157,6 +158,7 @@ export default class LayerStyle extends MapHubsComponent {
             <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
               glStyle={this.state.layer.style}
               showLogo={false}
+              mapConfig={this.props.mapConfig}
               fitBounds={mapExtent}
               />
             <MiniLegend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}

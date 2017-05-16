@@ -26,7 +26,8 @@ type Props = {
   onSubmit: Function,
   locale: string,
   _csrf: string,
-  headerConfig: Object
+  headerConfig: Object,
+  mapConfig: Object
 }
 
 type LayerAdminState = {
@@ -205,6 +206,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
         styleTabContent = (
           <LayerStyle
                  showPrev={false}
+                 mapConfig={this.props.mapConfig}
                  submitText="Save" onSubmit={this.save}
               />
         );

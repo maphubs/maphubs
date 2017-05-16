@@ -19,6 +19,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
   props: {
 		groups: Array,
     locale: string,
+    mapConfig: Object,
     headerConfig: Object
   }
 
@@ -155,6 +156,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
             <div>
               <Map ref="map" style={{width: '100%', height: '400px'}}
                 showFeatureInfoEditButtons={false}
+                mapConfig={this.props.mapConfig}
                 glStyle={this.state.layer.style}
                 fitBounds={this.state.layer.preview_position.bbox}>
                 <MiniLegend

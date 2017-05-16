@@ -43,7 +43,8 @@ type Props =  {
     basemap?: string,
     map_id: number,
     owned_by_group_id?: string,
-    editLayer?: Layer
+    editLayer?: Layer,
+    mapConfig: Object
   }
 
   type DefaultProps = {
@@ -542,6 +543,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
                   onChangeBaseMap={Actions.setMapBasemap}
                   onToggleForestLoss={this.onToggleForestLoss}
                   fitBounds={mapExtent}
+                  mapConfig={this.props.mapConfig}
                   hash={true}
                   >
                   {editingTools}

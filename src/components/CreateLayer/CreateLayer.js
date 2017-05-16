@@ -10,7 +10,8 @@ export default class CreateLayer extends MapHubsComponent {
     onSubmit: Function,
     showPrev: boolean,
     onPrev: Function,
-    onCancel: Function
+    onCancel: Function,
+    mapConfig: Object
   }
 
    state = {
@@ -38,7 +39,7 @@ export default class CreateLayer extends MapHubsComponent {
 
   render() {
     
-    var sourceDisplay = this.getSource(this.state.source);
+    var sourceDisplay = this.getSource(this.state.source, this.props.mapConfig);
 
     var planetSource = '';
     if(MAPHUBS_CONFIG.mapHubsPro){

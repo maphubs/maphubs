@@ -31,7 +31,8 @@ type Props = {
     canEdit: boolean,
     locale: string,
     _csrf: string,
-    headerConfig: Object
+    headerConfig: Object,
+    mapConfig: Object
 }
 
 type UserMapState = {
@@ -321,6 +322,7 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
       <InteractiveMap height="100%" 
              {...this.props.map}         
              layers={this.props.layers}
+             mapConfig={this.props.mapConfig}
              disableScrollZoom={false}
              >
         <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>

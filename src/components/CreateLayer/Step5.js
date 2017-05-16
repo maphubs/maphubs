@@ -8,7 +8,8 @@ export default class Step5 extends MapHubsComponent {
 
   props: {
     onSubmit: Function,
-    onPrev: Function
+    onPrev: Function,
+    mapConfig: Object
   }
 
   onSubmit = (layer_id: number, name: string) => {
@@ -26,6 +27,7 @@ export default class Step5 extends MapHubsComponent {
 		return (
         <div className="row">
           <LayerStyle waitForTileInit
+              mapConfig={this.props.mapConfig}
               showPrev prevText={this.__('Previous')} onPrev={this.onPrev}
               onSubmit={this.onSubmit} />
       </div>

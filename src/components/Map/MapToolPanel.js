@@ -8,20 +8,24 @@ import Toggle from '../forms/toggle';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class MapToolPanel extends MapHubsComponent {
+type Props = {
+  show: boolean,
+  gpxLink: string,
+  onChangeBaseMap:  Function,
+  toggleMeasurementTools:  Function,
+  toggleForestAlerts: Function,
+  toggleForestLoss:Function,
+  calculateForestAlerts: Function,
+  enableMeasurementTools:  boolean,
+  baseMapOptions: Array<Object>,
+  forestAlerts: Object,
+  forestLoss: Object,
+  height: string
+}
 
-  props: {
-    show: boolean,
-    gpxLink: string,
-    onChangeBaseMap:  Function,
-    toggleMeasurementTools:  Function,
-    toggleForestAlerts: Function,
-    toggleForestLoss:Function,
-    calculateForestAlerts: Function,
-    enableMeasurementTools:  boolean,
-    forestAlerts: Object,
-    forestLoss: Object
-  }
+export default class MapToolPanel extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     show: false,
@@ -34,7 +38,8 @@ export default class MapToolPanel extends MapHubsComponent {
     forestLoss: {
       enableForestLoss: false,
       result: null
-    }
+    },
+    baseMapOptions: null
   }
 
   componentDidMount(){
@@ -57,7 +62,7 @@ export default class MapToolPanel extends MapHubsComponent {
     this.props.onChangeBaseMap(val);
   }
 
-   toggleMeasurementTools = (model: Object) => {
+   toggleMeasurementTools = (model: {enableMeasurementTools: boolean}) => {
     if(model.enableMeasurementTools) this.closePanel();
     this.props.toggleMeasurementTools(model.enableMeasurementTools);
   }
@@ -141,15 +146,15 @@ export default class MapToolPanel extends MapHubsComponent {
             <li>
               <div className="collapsible-header" style={{borderBottom: '1px solid #ddd'}}><i className="material-icons">layers</i>{this.__('Change Base Map')}</div>
               <div className="collapsible-body">
-                <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>
-                  <BaseMapSelection onChange={this.onChangeBaseMap}/>
+                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
+                  <BaseMapSelection onChange={this.onChangeBaseMap} options={this.props.baseMapOptions}/>
                 </div>
               </div>
             </li>
             <li>
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">straighten</i>{this.__('Measurement Tools')}</div>
               <div className="collapsible-body center">
-                <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
+                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>              
                   <Formsy.Form onChange={this.toggleMeasurementTools}>
                    <b>{this.__('Show Measurement Tools')}</b>          
                     <Toggle name="enableMeasurementTools"
@@ -164,7 +169,7 @@ export default class MapToolPanel extends MapHubsComponent {
             <li>
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">warning</i>{this.__('Forest Alerts')}</div>
               <div className="collapsible-body center">
-                <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>              
+                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>              
                   <Formsy.Form onChange={this.toggleForestAlerts}>
                    <b>{this.__('2017 GLAD Alerts')}</b>          
                     <Toggle name="enableGLAD2017"
@@ -191,7 +196,7 @@ export default class MapToolPanel extends MapHubsComponent {
             <li>
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">edit</i>{this.__('Edit OpenStreetMap')}</div>
               <div className="collapsible-body">
-                <div style={{height: 'calc(100vh - 250px)', overflow: 'auto'}}>
+                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
                   <EditBaseMapBox gpxLink={this.props.gpxLink}/>
                 </div>
               </div>

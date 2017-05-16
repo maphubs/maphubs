@@ -14,6 +14,8 @@ export default class Map extends MapHubsComponent {
     myLayers: Array<Object>,
     myGroups: Array<Object>,
     editLayer: Object,
+    headerConfig: Object,
+    mapConfig: Object,
     locale: string,
     _csrf: string
   }
@@ -36,9 +38,10 @@ export default class Map extends MapHubsComponent {
 	render() {
 		return (
       <div>
-        <Header activePage="map"/>
+        <Header activePage="map" {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 70px)'}}>
           <MapMaker 
+            mapConfig={this.props.mapConfig}
             onCreate={this.mapCreated} 
             popularLayers={this.props.popularLayers} 
             myLayers={this.props.myLayers} 

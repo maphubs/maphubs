@@ -10,7 +10,8 @@ type Props = {
   layer: Object,
   locale: string,
   _csrf: string,
-  headerConfig: Object
+  headerConfig: Object,
+  mapConfig: Object
 }
 
 export default class LayerMap extends MapHubsComponent<void, Props, void> {
@@ -32,6 +33,7 @@ export default class LayerMap extends MapHubsComponent<void, Props, void> {
                   style={this.props.layer.style} 
                   layers={[this.props.layer]}
                   map_id={this.props.layer.layer_id}
+                  mapConfig={this.props.mapConfig}
                   disableScrollZoom={false}
                   >
               <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
