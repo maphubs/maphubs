@@ -4,21 +4,29 @@ import {HOC} from 'formsy-react';
 import classNames from 'classnames';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
-class Radio extends MapHubsPureComponent {
+type Props = {
+  className: string,
+  dataTooltip: string,
+  dataDelay: number,
+  dataPosition: string,
+  defaultValue: string,
+  label: string,
+  name: string,
+  onChange: Function,
+  options: Array<{value: string, label: string}>,
+  setValue: Function,
+  getValue: Function
+}
 
-  props: {
-    className: string,
-    dataTooltip: string,
-    dataDelay: number,
-    dataPosition: string,
-    defaultValue: string,
-    label: string,
-    name: string,
-    onChange: Function,
-    options: Array<Object>,
-    setValue: Function,
-    getValue: Function
-  }
+type DefaultProps = {
+  options:  Array<{value: string, label: string}>,
+  defaultValue: string,
+  dataDelay: number
+}
+
+class Radio extends MapHubsPureComponent<DefaultProps, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     options: {},
@@ -45,21 +53,21 @@ class Radio extends MapHubsPureComponent {
      var _this = this;
 
     return (
-          <div className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
-              data-tooltip={this.props.dataTooltip}>
+      <div className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
+          data-tooltip={this.props.dataTooltip}>
 
-            <label>{this.props.label}</label>
-              {this.props.options.map((option) => {
-                var checked = false;
-                if(option.value === value){
-                  checked = true;
-                }
-                return (<p key={option.value}>
-                  <input  name={name} type="radio" id={option.value} onChange={_this.changeValue} checked={checked}/>
-                  <label htmlFor={option.value}>{option.label}</label>
-                </p>);
-              })}
-            </div>
+        <label>{this.props.label}</label>
+          {this.props.options.map((option) => {
+            var checked = false;
+            if(option.value === value){
+              checked = true;
+            }
+            return (<p key={option.value}>
+              <input  name={name} type="radio" id={option.value} onChange={_this.changeValue} checked={checked}/>
+              <label htmlFor={option.value}>{option.label}</label>
+            </p>);
+          })}
+        </div>
     );
   }
 }
