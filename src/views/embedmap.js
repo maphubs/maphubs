@@ -171,6 +171,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
                   disableScrollZoom={true}
                   mapConfig={this.props.mapConfig}
                   title={title}
+                  {...this.props.map.settings}
                   >
           </InteractiveMap> 
       );

@@ -46,6 +46,7 @@ export default class MapEdit extends MapHubsComponent {
             map_id={this.props.map.map_id} title={this.props.map.title}
             owned_by_group_id={this.props.map.owned_by_group_id}
             position={this.props.map.position}
+            settings={this.props.map.settings}
             popularLayers={this.props.popularLayers}
             myLayers={this.props.myLayers}
             myGroups={this.props.myGroups}

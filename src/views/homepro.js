@@ -78,9 +78,11 @@ export default class HomePro extends MapHubsComponent<void, Props, State> {
       homepageMap = (
          <div key={key} className="row">
             <InteractiveMap height="calc(100vh - 150px)" 
-             {...this.props.map} categories={config.categories} 
+             {...this.props.map}
              mapConfig={this.props.mapConfig}    
-             layers={this.props.layers} showTitle={false}/>
+             layers={this.props.layers} showTitle={false}
+             {...this.props.map.settings}
+             />
             <div className="divider" />
           </div>
        );

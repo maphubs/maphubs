@@ -324,6 +324,7 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
              layers={this.props.layers}
              mapConfig={this.props.mapConfig}
              disableScrollZoom={false}
+             {...this.props.map.settings}
              >
         <ShareButtons title={this.props.map.title} iconSize={24}
               style={{position: 'absolute', bottom: '5px', left: '150px', zIndex: '1'}} />

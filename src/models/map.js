@@ -15,7 +15,7 @@ module.exports = {
     if(trx){db = trx;}
     return db('omh.maps')
     .select(knex.raw(
-      `map_id, title, position, style, basemap, private, created_by,
+      `map_id, title, position, style, settings, basemap, private, created_by,
       created_at, updated_by, updated_at, views, owned_by_group_id, owned_by_user_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
@@ -244,7 +244,7 @@ module.exports = {
       .orderBy('omh.maps.updated_at', 'desc');
   },
 
-  createMap(layers: Array<Object>, style: any, basemap: string, position: any, title: string, user_id: number, isPrivate: boolean){
+  createMap(layers: Array<Object>, style: any, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean){
    if(layers && Array.isArray(layers) && layers.length > 0){
     if(!isPrivate){
       //confirm no private layers
@@ -260,6 +260,7 @@ module.exports = {
           style,
           basemap,
           title,
+          settings,
           private: isPrivate,
           created_by: user_id,
           created_at: knex.raw('now()'),
@@ -323,7 +324,7 @@ module.exports = {
       var map = results[0];
       var layers = results[1];
       var title = map.title + ' - Copy';
-      return _this.createGroupMap(layers, map.style, map.basemap, map.position, title, user_id, to_group_id, map.private);
+      return _this.createGroupMap(layers, map.style, map.basemap, map.position, title, map.settings, user_id, to_group_id, map.private);
     });
   },
 
@@ -388,10 +389,10 @@ module.exports = {
       });  
     },
 
-  updateMap(map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number){
+  updateMap(map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number){
     return knex.transaction((trx) => {
       return trx('omh.maps')
-        .update({position, style, basemap, title,
+        .update({position, style, basemap, title, settings,
             updated_by: user_id,
             updated_at: knex.raw('now()'),
             screenshot: null,
@@ -443,8 +444,8 @@ module.exports = {
     });
   },
 
-  createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number, isPrivate: boolean){
-    return this.createMap(layers, style, basemap, position, title, user_id, isPrivate)
+  createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean){
+    return this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate)
     .then((result) => {
       debug(result);
       var map_id = result;
@@ -456,7 +457,7 @@ module.exports = {
     });
   },
 
-  createGroupMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, user_id: number, group_id: string, isPrivate: boolean){
+  createGroupMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, group_id: string, isPrivate: boolean){
     if(layers && Array.isArray(layers) && layers.length > 0){
     if(isPrivate){
         //confirm all private layers owned by same group
@@ -465,7 +466,7 @@ module.exports = {
         });
       }
    }
-    return this.createMap(layers, style, basemap, position, title, user_id, isPrivate)
+    return this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate)
     .then((result) => {
       debug(result);
       var map_id = result;

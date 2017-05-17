@@ -21,5 +21,6 @@ export default Reflux.createActions([
   'reset',
   'deleteMap',
   'startEditing',
-  'stopEditing'
+  'stopEditing',
+  'setSettings'
 ]);

@@ -19,19 +19,19 @@ module.exports = function(app: any) {
       var user_id = req.session.user.maphubsUser.id;
 
       var data = req.body;
-      if(data && data.basemap && data.position && data.title && data.private !== undefined){
+      if(data && data.basemap && data.position && data.settings && data.title && data.private !== undefined){
           var createMap;
           if(data.group_id){
             createMap = Group.allowedToModify(data.group_id, user_id)
             .then((allowed) => {
               if(allowed){
-                return Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, user_id, data.group_id, data.private);
+                return Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id, data.group_id, data.private);
               }else{
                 throw new Error('Unauthorized');
               }
             });
           }else{
-            createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, user_id, data.private);
+            createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id, data.private);
           }
          createMap
           .then((map_id) => {
@@ -170,11 +170,11 @@ module.exports = function(app: any) {
       var user_id = req.session.user.maphubsUser.id;
 
       var data = req.body;
-      if(data && data.layers && data.style && data.basemap && data.position && data.map_id && data.title){
+      if(data && data.layers && data.style && data.settings && data.basemap && data.position && data.map_id && data.title){
         Map.allowedToModify(data.map_id, user_id)
         .then((allowed) => {
           if(allowed){
-            return Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, user_id)
+            return Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id)
             .then(() => {
               res.status(200).send({success: true});
               //don't wait for screenshot

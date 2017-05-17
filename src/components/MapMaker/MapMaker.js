@@ -10,6 +10,7 @@ import Map from '../Map/Map';
 import MiniLegend from '../Map/MiniLegend';
 import AddLayerPanel from './AddLayerPanel';
 import SaveMapPanel from './SaveMapPanel';
+import MapSettingsPanel from './MapSettingsPanel';
 import MapMakerStore from '../../stores/MapMakerStore';
 import UserStore from '../../stores/UserStore';
 import Actions from '../../actions/MapMakerActions';
@@ -41,29 +42,31 @@ type Props =  {
     title?: string,
     position: Object,
     basemap?: string,
-    map_id: number,
+    map_id?: number,
     owned_by_group_id?: string,
     editLayer?: Layer,
-    mapConfig: Object
+    mapConfig: Object,
+    settings: Object
   }
 
   type DefaultProps = {
     edit: boolean,
     popularLayers:  Array<Layer>,
     showVisibility: boolean,
-    mapLayers: null,
+    mapLayers: Array<Layer>,
     showTitleEdit: boolean,
-    map_id: ?number,
-    owned_by_group_id: ?string,
-    title: ?string,
-    basemap: ?string,
-    editLayer: ?Layer
+    settings: Object
   }
 
   type State = {
     showMapLayerDesigner: boolean,
+    layerDesignerLayer?: Layer,
     canSave: boolean,
-    editLayerLoaded: boolean
+    editLayerLoaded: boolean,
+    saved: boolean,
+    height: number,
+    width: number,
+    retina: boolean
   } & LocaleStoreState & MapMakerStoreState & UserStoreState
 
 export default class MapMaker extends MapHubsComponent<DefaultProps, Props, State> {
@@ -75,26 +78,31 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     edit: false,
     popularLayers: [],
     showVisibility: true,
-    mapLayers: null,
+    mapLayers: [],
     showTitleEdit: true,
-    map_id: null,
-    owned_by_group_id: null,
-    title: null,
-    basemap: null,
-    editLayer: null
+    settings: {}
   }
 
   state: State = {
     showMapLayerDesigner: false,
     canSave: false,
-    editLayerLoaded: false
+    editLayerLoaded: false,
+    saved: false,
+    width: 800,
+    height: 600,
+    retina: false
   }
 
   constructor(props: Props){
     super(props);
     this.stores.push(MapMakerStore);
     this.stores.push(UserStore);
-    Reflux.rehydrate(MapMakerStore, {position:this.props.position, title:this.props.title, map_id:this.props.map_id, owned_by_group_id:this.props.owned_by_group_id});
+    Reflux.rehydrate(MapMakerStore, {
+      position: this.props.position, 
+      title: this.props.title, 
+      map_id: this.props.map_id, 
+      owned_by_group_id: this.props.owned_by_group_id
+    });
     
   }
 
@@ -108,6 +116,11 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     if(this.props.basemap){
       Actions.setMapBasemap(this.props.basemap);
     }
+
+    if(this.props.settings){
+      Actions.setSettings(this.props.settings);
+    }
+
  /*
     if(this.props.position){
       Actions.setMapPosition(this.props.position);
@@ -513,10 +526,19 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
               </div>
             </li>
             <li  ref="saveMapPanel">
-              <div className="collapsible-header"><i className="material-icons">save</i>{this.__('Save')}</div>
+              <div className="collapsible-header"><i className="material-icons">save</i>{this.__('Save Map')}</div>
               <div className="collapsible-body">
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
                   <SaveMapPanel groups={this.props.myGroups} onSave={this.onSave} />
+                </div>
+                
+              </div>
+            </li>
+            <li  ref="settingsPanel">
+              <div className="collapsible-header"><i className="material-icons">settings</i>{this.__('Map Settings')}</div>
+              <div className="collapsible-body">
+                <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
+                  <MapSettingsPanel />
                 </div>
                 
               </div>

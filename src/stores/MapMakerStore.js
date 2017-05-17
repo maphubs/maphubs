@@ -1,3 +1,4 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/MapMakerActions';
 var request = require('superagent');
@@ -12,15 +13,16 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import type {Layer} from './layer-store';
 
 export type MapMakerStoreState = {
-   map_id: number,
-  title: string,
-  mapLayers: Array<Layer>,
-  mapStyle: ?Object,
-  position: ?Object,
-  isPrivate: boolean,
-  owned_by_group_id: string,
-  basemap: string,
-  editingLayer: boolean
+   map_id?: number,
+  title?: string,
+  mapLayers?: Array<Layer>,
+  mapStyle?: Object,
+  position?: Object,
+  settings?: Object,
+  isPrivate?: boolean,
+  owned_by_group_id?: string,
+  basemap?: string,
+  editingLayer?: boolean
 }
 
 export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStoreState>  {
@@ -36,12 +38,11 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
   getDefaultState(): MapMakerStoreState{
     return {
       map_id: -1,
-      title: null,
       mapLayers: [],
-      mapStyle: null,
-      position: null,
+      settings: {},
+      mapStyle: {},
+      position: {},
       isPrivate: false,
-      owned_by_group_id: null,
       basemap: 'default',
       editingLayer: false
     };
@@ -49,7 +50,9 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
 
   reset(){
     this.setState(this.getDefaultState());
-    this.updateMap(this.state.mapLayers);
+    if(this.state.mapLayers){
+      this.updateMap(this.state.mapLayers);
+    }  
   }
 
   storeDidUpdate(){
@@ -58,39 +61,43 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
 
  //listeners
 
-  setMapLayers(mapLayers, update=true){
+  setMapLayers(mapLayers: Array<Layer>, update: boolean=true){
     this.setState({mapLayers});
     if(update){
       this.updateMap(mapLayers);
     } 
   }
 
-  setMapId(map_id){
+  setMapId(map_id: number){
     this.setState({map_id});
   }
 
-  setMapTitle(title){
+  setMapTitle(title: string){
     title = title.trim();
     this.setState({title});
   }
 
-  setPrivate(isPrivate){
+  setPrivate(isPrivate: boolean){
     this.setState({isPrivate});
   }
 
-  setOwnedByGroupId(group_id){
+  setOwnedByGroupId(group_id: string){
     this.setState({owned_by_group_id: group_id});
   }
 
-  setMapPosition(position){
+  setMapPosition(position: Object){
     this.setState({position});
   }
 
-  setMapBasemap(basemap){
+  setMapBasemap(basemap: string){
     this.setState({basemap});
   }
 
-  addToMap(layer, cb){
+  setSettings(settings: Object){
+    this.setState({settings});
+  }
+
+  addToMap(layer: Layer, cb: Function){
     //check if the map already has this layer
     if(_find(this.state.mapLayers, {layer_id: layer.layer_id})){
       cb(true);
@@ -100,43 +107,51 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
       }
       layer.settings.active = true; //tell the map to make this layer visible
       var layers = this.state.mapLayers;
-      layers.push(layer);
-      this.updateMap(layers);
+      if(layers){
+        layers.push(layer);
+        this.updateMap(layers);
+      }
       cb();
     }
   }
 
-  removeFromMap(layer){
+  removeFromMap(layer: Layer){
     var layers = _reject(this.state.mapLayers, {'layer_id': layer.layer_id});
     this.updateMap(layers);
   }
 
-  toggleVisibility(layer_id, cb){
+  toggleVisibility(layer_id: number, cb: Function){
     var mapLayers = this.state.mapLayers;
     var index = _findIndex(mapLayers, {layer_id});
 
-    if(mapLayers[index].settings.active){
-      mapLayers[index].settings.active = false;
-    }else {
-      mapLayers[index].settings.active = true;
+    if(mapLayers && mapLayers[index].settings) {
+      if(mapLayers[index].settings.active){
+        mapLayers[index].settings.active = false;
+      }else {
+        mapLayers[index].settings.active = true;
+      }
+      this.updateMap(mapLayers);
+    }else{
+      debug('Map layer missing settings object: ' + layer_id);
     }
-
-    this.updateMap(mapLayers);
     cb();
   }
 
-  updateLayerStyle(layer_id, style, labels, legend, settings){
+  updateLayerStyle(layer_id: number, style: Object, labels: Object, legend: string, settings: Object){
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
-    layers[index].style = style;
-    layers[index].labels = labels;
-    layers[index].legend_html = legend;
-    layers[index].settings = settings;
-    this.updateMap(layers);
-    this.setState({mapLayers: layers});
+    if(layers){
+      layers[index].style = style;
+      layers[index].labels = labels;
+      layers[index].legend_html = legend;
+      layers[index].settings = settings;
+      this.updateMap(layers);
+      this.setState({mapLayers: layers});
+    }
+    
   }
 
-  saveMap(title, position, basemap, _csrf, cb){
+  saveMap(title: string, position: Object, basemap: string, _csrf: string, cb: Function){
     var _this = this;
     //resave an existing map
     title = title.trim();
@@ -146,6 +161,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
         map_id: this.state.map_id,
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
+        settings: this.state.settings,
         title: title,
         position,
         basemap,
@@ -159,7 +175,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     });
   }
 
-  createMap(title, position, basemap, group_id, isPrivate, _csrf, cb){
+  createMap(title: string, position: Object, basemap: string, group_id: string, isPrivate: boolean, _csrf: string, cb: Function){
     var _this = this;
     title = title.trim();
     request.post('/api/map/create')
@@ -167,6 +183,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     .send({
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
+        settings: this.state.settings,
         title,
         group_id,
         position,
@@ -183,7 +200,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     });
   }
 
-  savePrivate(isPrivate, _csrf, cb){
+  savePrivate(isPrivate: boolean, _csrf: string, cb: Function){
     var _this = this;
     request.post('/api/map/privacy')
     .type('json').accept('json')
@@ -201,7 +218,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
   }
 
   //helpers
-  updateMap(mapLayers, rebuild=true){
+  updateMap(mapLayers: Array<Layer>, rebuild: boolean =true){
     var mapStyle;
     if(rebuild){
       mapStyle = this.buildMapStyle(mapLayers);
@@ -211,14 +228,14 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     this.setState({mapLayers, mapStyle});
   }
 
-   buildMapStyle(layers){
+   buildMapStyle(layers: Array<Layer>){
      var mapStyle = {
        sources: {},
        layers: []
      };
 
      //reverse the order for the styles, since the map draws them in the order recieved
-     _forEachRight(layers, (layer) => {
+     _forEachRight(layers, (layer: Layer) => {
        var style = layer.style;
        if(style && style.sources && style.layers){
          //check for active flag and update visibility in style
@@ -248,7 +265,8 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
          //add layers
          mapStyle.layers = mapStyle.layers.concat(style.layers);
        } else {
-         debug('Not added to map, incomplete style for layer: ' + layer.layer_id);
+         let id =layer.layer_id ? layer.layer_id : 'unknown';
+         debug('Not added to map, incomplete style for layer: ' +  id);
        }
 
      });
@@ -264,7 +282,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     this.setState({editingLayer: false});
    }
 
-   deleteMap(map_id, _csrf, cb){
+   deleteMap(map_id: number, _csrf: string, cb: Function){
      request.post('/api/map/delete')
      .type('json').accept('json')
      .send({map_id, _csrf})
