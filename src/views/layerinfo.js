@@ -14,6 +14,8 @@ import HubEditButton from '../components/Hub/HubEditButton';
 import LayerNotesActions from '../actions/LayerNotesActions';
 import LayerNotesStore from '../stores/LayerNotesStore';
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid';
+import ShareButtons from '../components/ShareButtons';
+
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
 var styles = require('../components/Map/styles');
@@ -542,7 +544,8 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
                   mapConfig={this.props.mapConfig}
                   disableScrollZoom={false}
                   >
-              <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
+              <ShareButtons title={this.props.layer.name} iconSize={24}
+              style={{position: 'absolute', bottom: '5px', left: '150px', zIndex: '1'}} />
               </InteractiveMap> 
               
             </div>

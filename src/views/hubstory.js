@@ -9,6 +9,7 @@ var slug = require('slug');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ShareButtons from '../components/ShareButtons';
 
 export default class HubStory extends MapHubsComponent {
 
@@ -51,10 +52,13 @@ export default class HubStory extends MapHubsComponent {
       );
     }
 
-    var discuss = '', addthis = '';
+    var discuss = '', shareButtons = '';
     if(!MAPHUBS_CONFIG.mapHubsPro){
-      addthis = (
-        <div className="addthis_sharing_toolbox right"></div>
+      shareButtons = (
+         <ShareButtons 
+            title={story.title} 
+            style={{width: '70px', position: 'absolute', right: '10px'}} 
+         />
       );
       discuss = (
         <div className="row">
@@ -82,7 +86,7 @@ export default class HubStory extends MapHubsComponent {
               <StoryHeader story={story} />
             </div>
             <div className="col s12 m3 l3">
-              {addthis}
+              {shareButtons}
             </div>
           </div>
           <div className="row">

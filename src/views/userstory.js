@@ -7,6 +7,7 @@ import StoryHeader from '../components/Story/StoryHeader';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ShareButtons from '../components/ShareButtons';
 
 export default class UserStory extends MapHubsComponent {
 
@@ -50,13 +51,20 @@ export default class UserStory extends MapHubsComponent {
     var shareAndDiscuss = '';
     if(!MAPHUBS_CONFIG.mapHubsPro){
       shareAndDiscuss = (
-        <div className="row">
-          <div className="addthis_sharing_toolbox"></div>
-          <ReactDisqusThread
-                shortname="maphubs"
-                identifier={'maphubs-story-' + story.story_id}
-                title={title}
-                />
+        <div>
+          <div className="row" style={{height: '32px', position: 'relative'}}>
+          <ShareButtons 
+            title={story.title} 
+            style={{width: '70px', position: 'absolute', left: '0px'}} 
+         />
+         </div>
+          <div className="row">
+            <ReactDisqusThread
+              shortname="maphubs"
+              identifier={'maphubs-story-' + story.story_id}
+              title={title}
+              />
+          </div>
         </div>
       );
     }
@@ -72,7 +80,10 @@ export default class UserStory extends MapHubsComponent {
                 <StoryHeader story={story} />
               </div>
               <div className="col s12 m3 l3">
-                <div className="addthis_sharing_toolbox right"></div>
+                 <ShareButtons 
+                    title={story.title} 
+                    style={{width: '70px', position: 'absolute', right: '10px'}} 
+                />
               </div>
             </div>
             <div className="row">

@@ -52,7 +52,6 @@ module.exports = {
            title,
            props:{map, layers, canEdit},
            hideFeedback: true,
-           addthis: true,
            oembed: 'map',
            twitterCard: {
              title,

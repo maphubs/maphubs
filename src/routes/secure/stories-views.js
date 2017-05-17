@@ -24,7 +24,6 @@ module.exports = function(app: any) {
         var recentStories = results[1];
         res.render('stories', {
           title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
-          addthis: true,
           props: {
             popularStories, recentStories
           }, req
@@ -47,7 +46,6 @@ module.exports = function(app: any) {
           .then((stories) => {
             return res.render('userstories', {
               title: 'Stories - ' + username,
-              addthis: true,
               props:{user, stories, myStories, username}, 
               req
             });
@@ -183,7 +181,6 @@ module.exports = function(app: any) {
               res.render('userstory', {
               title: story.title,
               description,
-              addthis: true,
               props: {
                 story, username, canEdit: false
               },
@@ -217,7 +214,6 @@ module.exports = function(app: any) {
               res.render('userstory', {
                 title: story.title,
                 description,
-                addthis: true,
                 props: {
                   story, username, canEdit
                 },

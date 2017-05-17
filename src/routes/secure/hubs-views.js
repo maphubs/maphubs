@@ -163,7 +163,6 @@ module.exports = function(app: any) {
           description: hub.description,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           fontawesome: true,
-          addthis: true,
           props: {
             hub, map, layers, stories, canEdit, myMaps, popularMaps
           },
@@ -215,7 +214,6 @@ module.exports = function(app: any) {
         res.render('hubstories', {
           title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
-          addthis: true,
           props: {
             hub, stories, canEdit
           }, req
@@ -412,7 +410,6 @@ module.exports = function(app: any) {
               res.render('hubstory', {
                 title: story.title,
                 description,
-                addthis: true,
                 props: {
                   story, hub, canEdit: false
                 },
@@ -450,7 +447,6 @@ module.exports = function(app: any) {
               res.render('hubstory', {
                 title: story.title,
                 description,
-                addthis: true,
                 props: {
                   story, hub, canEdit
                 },

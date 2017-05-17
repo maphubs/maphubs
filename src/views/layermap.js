@@ -5,6 +5,7 @@ import InteractiveMap from '../components/InteractiveMap';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ShareButtons from '../components/ShareButtons';
 
 type Props = {
   layer: Object,
@@ -36,7 +37,9 @@ export default class LayerMap extends MapHubsComponent<void, Props, void> {
                   mapConfig={this.props.mapConfig}
                   disableScrollZoom={false}
                   >
-              <div className="addthis_sharing_toolbox" style={{position: 'absolute', bottom: '0px', left: '155px', zIndex:'1'}}></div>
+              <ShareButtons title={this.props.map.title} iconSize={24}
+              style={{position: 'absolute', bottom: '5px', left: '150px', zIndex: '1'}} />
+        
           </InteractiveMap> 
      </main>
       </div>

@@ -153,6 +153,7 @@
     "react-medium-editor": "^1.8.1",
     "react-notification": "^6.7.0",
     "react-responsive-mixin": "^0.4.0",
+    "react-share": "^1.13.2",
     "react-slick": "^0.14.11",
     "reflux": "^6.4.1",
     "reflux-rehydrate": "^0.1.3",

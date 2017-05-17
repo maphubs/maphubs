@@ -4,6 +4,7 @@ var slug = require('slug');
 var urlUtil = require('../../services/url-util');
 import StoryHeader from './StoryHeader';
 import MapHubsComponent from '../../components/MapHubsComponent';
+import ShareButtons from '../../components/ShareButtons';
 
 export default class StorySummary extends MapHubsComponent {
 
@@ -71,7 +72,10 @@ export default class StorySummary extends MapHubsComponent {
          {this.__('Read more...')}
        </a>
        {draft}
-       <div className="addthis_sharing_toolbox right"  data-url={linkUrl} data-title={this.props.story.title}></div>
+      <ShareButtons 
+            title={this.props.story.title} 
+            style={{width: '70px', position: 'absolute', right: '10px', bottom: '10px'}} 
+         />
      </div>
    );
   }
