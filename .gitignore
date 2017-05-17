@@ -36,3 +36,4 @@ css/maphubs.css
 .env
 assets/public
 stats.json
+sync-to-cdn.sh

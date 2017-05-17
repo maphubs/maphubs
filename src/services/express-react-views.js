@@ -129,7 +129,7 @@ function createEngine(engineOptions) {
 
       var assetHost = '';
      if(process.env.NODE_ENV === 'production' && !local.useLocalAssets){
-      assetHost = 'https://d28qp8lgme8ph4.cloudfront.net';
+      assetHost = 'https://cdn.maphubs.com';
       log.info('using asset CDN: ' + assetHost);
      }
 
