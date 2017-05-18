@@ -179,7 +179,7 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
          border: 'none'}}>
         <li className="z-depth-1" 
           style={{
-                  backgroundColor: '#FFF', height: '100%', 
+                  backgroundColor: '#FFF', height: 'auto', 
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
                   borderLeft: '1px solid #ddd'}}>
@@ -194,7 +194,7 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
               style={{
                 overflowX: 'hidden', 
                 overflowY: allowScroll ? 'auto': 'hidden', 
-                height: contentHeight,
+                maxHeight: contentHeight,
                 padding: '5px'}}>
               {
                 this.props.layers.map((layer) => {
