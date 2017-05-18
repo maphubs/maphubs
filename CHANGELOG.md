@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.10.0](https://github.com/maphubs/maphubs/tree/v0.10.0) (2017-05-18)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.9.5...v0.10.0)
+
+**Fixed bugs:**
+
+- labels disappear after toggling layer on/off [\#371](https://github.com/maphubs/maphubs/issues/371)
+- labels disappear when switching base maps [\#367](https://github.com/maphubs/maphubs/issues/367)
+
 ## [v0.9.5](https://github.com/maphubs/maphubs/tree/v0.9.5) (2017-05-06)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.9.4...v0.9.5)
 
