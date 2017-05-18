@@ -110,7 +110,11 @@ if(local.useLocalAuth){
                 return done(err, false);
               }
               //attach MapHubs User
-              profile.maphubsUser = maphubsUser;
+              profile.maphubsUser = {
+                id: maphubsUser.id,
+                display_name: maphubsUser.display_name,
+                email: maphubsUser.email
+              };
               return done(err, profile);
             });
         }else {
@@ -123,7 +127,11 @@ if(local.useLocalAuth){
               //found a user with this email, 
               //link it back to the Auth0 account
               saveMapHubsIDToAuth0(profile, maphubsUser.id, (err) =>{
-                profile.maphubsUser = maphubsUser;
+                 profile.maphubsUser = {
+                  id: maphubsUser.id,
+                  display_name: maphubsUser.display_name,
+                  email: maphubsUser.email
+                };
                 return done(err, profile);
               });
               
@@ -143,7 +151,11 @@ if(local.useLocalAuth){
                         return done(err, false);
                       }
                       //attach MapHubs User
-                      profile.maphubsUser = maphubsUser;
+                       profile.maphubsUser = {
+                        id: maphubsUser.id,
+                        display_name: maphubsUser.display_name,
+                        email: maphubsUser.email
+                      };
                       return done(err, profile);
                     });
                   });
