@@ -46,7 +46,9 @@ var MapHubsSource = {
         });
     }else{
       //load as tilejson
-      var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+      if(source.url){
+        var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+      }
       return request.get(url)
         .then((res) => {
           var tileJSON = res.body;

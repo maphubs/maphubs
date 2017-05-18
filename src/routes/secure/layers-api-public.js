@@ -68,7 +68,10 @@ module.exports = function(app: any) {
       //inject this site's URL into the style source, to support remote layers
       Object.keys(layer.style.sources).forEach((key) => {
         var source = layer.style.sources[key];
-        source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+        if(source.url){
+          source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+        }
+        
       });
       res.status(200).send({success: true, layer});
     }).catch(apiError(res, 500));
