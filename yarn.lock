@@ -4778,6 +4778,14 @@ mapbox-gl-arcgis-tiled-map-service@^0.1.0:
     gl "^4.0.3"
     jsdom "^9.11.0"
 
+mapbox-gl-dual-scale-control@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/mapbox-gl-dual-scale-control/-/mapbox-gl-dual-scale-control-0.1.1.tgz#6a71460618c4a521d6b742a5ffdbf7a0a9b16694"
+  dependencies:
+    "@mapbox/sphericalmercator" "^1.0.5"
+    gl "^4.0.3"
+    jsdom "^9.11.0"
+
 mapbox-gl-supported@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mapbox-gl-supported/-/mapbox-gl-supported-1.2.0.tgz#cbd34df894206cadda9a33c8d9a4609f26bb1989"

@@ -28,14 +28,14 @@ import ForestLossMixin from './Helpers/ForestLossMixin';
 import DataEditorActions from '../../actions/DataEditorActions';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../MapHubsComponent';
-import ScalePositionControl from './ScalePositionControl';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 
-var mapboxgl = {}, ArcGISTiledMapServiceSource;
+var mapboxgl = {}, ArcGISTiledMapServiceSource, ScalePositionControl;
 if (typeof window !== 'undefined') {
     mapboxgl = require("mapbox-gl");
-    ArcGISTiledMapServiceSource  = require('mapbox-gl-arcgis-tiled-map-service/dist/mapbox-gl-arcgis-tiled-map-service-dev');
+    ArcGISTiledMapServiceSource  = require('mapbox-gl-arcgis-tiled-map-service');
+    ScalePositionControl = require('mapbox-gl-dual-scale-control');
 }
 
 type Props = {
