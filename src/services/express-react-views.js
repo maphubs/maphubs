@@ -284,7 +284,7 @@ function createEngine(engineOptions) {
          
           <script src="https://cdn.ravenjs.com/3.15.0/raven.min.js" crossorigin="anonymous"></script>
           <script type="text/javascript">
-             Raven.config(${(process.env.NODE_ENV === 'production' && !local.disableTracking) && MAPHUBS_CONFIG.SENTRY_DSN_PUBLIC}, {
+             Raven.config('${(process.env.NODE_ENV === 'production' && !local.disableTracking) && MAPHUBS_CONFIG.SENTRY_DSN_PUBLIC}', {
                 release: '${version}',
                 environment: '${local.ENV_TAG}',
                 tags: {host: '${local.host}'}
