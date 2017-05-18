@@ -108,12 +108,6 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
     }
   }
 
-  componentDidUpdate(prevState: State){
-    if(this.state.interactive && !prevState.interactive){
-      $(this.refs.mapLayersPanel).sideNav();
-    }
-  }
-
   startInteractive = () => {
     this.setState({interactive: true});
     $('.embed-tooltips').tooltip('remove');

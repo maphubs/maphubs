@@ -196,15 +196,15 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
           layers={this.state.layers}/>
         );
     } else {
+      let legendMaxHeight = topOffset + 185;
       legend = (
         <MiniLegend style={{
           position: 'absolute',
           top: '5px',
           left: '5px',
           minWidth: '200px',
-          maxHeight: 'calc(100% - 185px)',
           width: '20%'
-        }} layers={this.state.layers} title={title} 
+        }} maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`} layers={this.state.layers} title={title} 
         mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
       );
     }
@@ -241,7 +241,9 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
             </a>
          
             <div className="side-nav" id={`mobile-map-legend-${this.props.map_id}`}
-              style={{height: 'auto', maxHeight: `calc(${this.props.height} - ${topOffset}px)`, paddingBottom: '0', 
+              style={{
+                maxHeight: `calc(${this.props.height} - ${topOffset}px)`, 
+                paddingBottom: '0', 
                 position: 'absolute', top: `${topOffset}px`}}>
               {mobileLegend}
             </div>

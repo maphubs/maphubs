@@ -87,6 +87,11 @@ class Toggle extends MapHubsComponent {
       checked = checked ? 1 : 0;
     }
 
+    let leverClass = "lever";
+    if(!props.labelOn || props.labelOn === ''){
+      leverClass = "lever no-margin";
+    }
+
     return (
       <div ref="toggle" className={className} disabled={props.disabled} data-delay={props.dataDelay} data-position={props.dataPosition}
           style={props.style}
@@ -94,7 +99,7 @@ class Toggle extends MapHubsComponent {
         <label>
           {props.labelOff}
           <input type="checkbox" id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue}/>
-          <span className="lever"></span>
+          <span className={leverClass}></span>
           {props.labelOn}
         </label>
       </div>

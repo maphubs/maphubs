@@ -150,14 +150,12 @@ export default class LayerListItemStatic extends MapHubsComponent {
           <div className="title col no-padding s6">
             <GroupTag group={layer.owned_by_group_id} />
           </div>
-            
-        </div>
-        <div className="col s6" style={{
-          height: '30px', position: 'absolute', top: '18px', right: '20px', 
-          paddingTop: '0px', 
-          paddingBottom: '0px', 
-          paddingLeft: '0px', 
-          paddingRight: '0px'
+          <div className="col s6" style={{
+            height: '30px', position: 'absolute', top: '18px', right: '20px', 
+            paddingTop: '0px', 
+            paddingBottom: '0px', 
+            paddingLeft: '0px', 
+            paddingRight: '0px'
           }}>
           <div className="col s7 no-padding">
            <div className={buttonClass} style={{height: '30px'}}>
@@ -174,6 +172,8 @@ export default class LayerListItemStatic extends MapHubsComponent {
             </div>
             {visibilityToggle}
           </div>
+        </div>
+          
           <div className="row no-margin">         
             <p className="truncate no-margin no-padding grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
           </div>

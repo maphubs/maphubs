@@ -21,7 +21,7 @@ module.exports = {
    ))
     .where({map_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0];
       }
       //else
@@ -96,7 +96,7 @@ module.exports = {
   isPrivate(map_id: number){
   return knex.select('private').from('omh.maps').where({map_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0].private;
       }
       //else

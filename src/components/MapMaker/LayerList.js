@@ -60,7 +60,7 @@ class LayerList extends React.PureComponent {
     var _this = this;
     return (
       <div style={{height: '100%', padding: 0, margin: 0}}>
-          <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{
+          <ul ref="layers" style={{height: '100%', overflowY: 'auto'}} className="collection no-margin custom-scroll-bar">{
             this.state.layers.map((layer, i) => {
               if(layer.layer_id && layer.layer_id > 0){
                 return (

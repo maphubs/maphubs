@@ -9,20 +9,41 @@ import GroupTag from '../../components/Groups/GroupTag';
 var $ = require('jquery');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class FeatureBox extends MapHubsComponent {
+import type {Layer} from '../../stores/layer-store';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-  props: {
-		features: Array<Object>,
-    selected: boolean,
-    onUnselected: Function,
-    showButtons: boolean,
-    className: string
-  }
+type Props = {
+  features: Array<Object>,
+  selected: boolean,
+  onUnselected: Function,
+  showButtons: boolean,
+  className: string
+}
 
-  static defaultProps = {
+type DefaultProps = {
+  showButtons: boolean,
+  selected: boolean
+}
+
+type State = {
+  selectedFeature: number,
+  selected: boolean,
+  currentFeatures: Array<Object>,
+  maxHeight: string,
+  layerLoaded: boolean,
+  layer?: Layer
+} & LocaleStoreState
+
+export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     showButtons: true,
     selected: false
   }
+
+  state: State
 
   constructor(props: Object){
     super(props);

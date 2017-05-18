@@ -60,15 +60,19 @@ export default class InsetMap extends React.Component<Props, Props, State> {
     }
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps: Props, prevState: State){
     if(this.insetMap){
       if(!this.state.collapsed){
         $(this.insetMapArrow).show();
       }
+
+      if(!this.insetMapActive ||
+        (prevState.collapsed && !this.state.collapsed)){
+        $(this.insetMapComponent).addClass('z-depth-1');
+        $(this.insetMapComponent).css('border', '0.5px solid rgba(222,222,222,50)');
+      }
+
       if(!this.insetMapActive){
-         $(this.insetMapComponent).addClass('z-depth-1');
-         // border: '0.5px solid rgba(222,222,222,50)'
-         $(this.insetMapComponent).css('border', '0.5px solid rgba(222,222,222,50)');
          this.insetMapActive = true;
       }
     }
@@ -246,8 +250,11 @@ export default class InsetMap extends React.Component<Props, Props, State> {
      
       return (
         <div style={{
-            position: 'absolute', bottom: this.props.bottom, left: '5px',
-            minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
+            position: 'absolute', 
+            bottom: this.props.bottom, 
+            left: '5px',
+            minHeight: '100px', maxHeight: '145px', 
+            minWidth: '100px', maxWidth: '145px',
             height: '25vw', width: '25vw'
             }}>
             <div id={this.props.id + '_inset'} 

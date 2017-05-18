@@ -14,6 +14,7 @@ type Props = {
   collapseToBottom: boolean,
   showLayersButton: boolean,
   mapLayersActivatesID: string,
+  maxHeight: string,
   style: Object
 }
 
@@ -31,6 +32,7 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
     collapsible: true,
     collapseToBottom: false,
     showLayersButton: true,
+    maxHeight: '100%',
     style: {}
   }
 
@@ -153,24 +155,47 @@ export default class MiniLegend extends MapHubsComponent<void, Props, State> {
       allowScroll = false;
     }
 
+    let contentHeight = `calc(${this.props.maxHeight} - 32px)`;
+    let legendHeight = this.props.maxHeight;
+    if(this.state.collapsed){
+      contentHeight = '0px';
+      legendHeight = '0px';
+    }
+
     //var style = this.props.style;
     //style.height = '9999px'; //needed for the flex box to work correctly
 
     return (
       <div style={this.props.style}>
        <ul ref="legend" className="collapsible" data-collapsible="accordion" 
-       style={{zIndex: 1, display: 'flex', flexDirection: 'column', textAlign: 'left',  margin: 0, maxHeight: '100%', boxShadow: 'none', border: 'none'}}>
+       style={{
+         zIndex: 1, 
+         textAlign: 'left',  
+         margin: 0, 
+         position: 'absolute',
+         height: legendHeight, 
+         width: '100%',
+         boxShadow: 'none', 
+         border: 'none'}}>
         <li className="z-depth-1" 
-          style={{zIndex: 1, display: 'flex', flexDirection: 'column', 
-                  backgroundColor: '#FFF', maxHeight: '100%', 
+          style={{
+                  backgroundColor: '#FFF', height: '100%', 
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
                   borderLeft: '1px solid #ddd'}}>
           <div className="collapsible-header active no-padding" style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
             {title}
           </div>
-          <div className="collapsible-body" style={{display: 'flex', flexDirection: 'column', borderBottom: 'none'}}>
-            <div className="no-margin"  style={{overflowX: 'hidden', overflowY: allowScroll ? 'auto': 'hidden', padding: '5px'}}>
+          <div className="collapsible-body" 
+            style={{
+              display: 'flex', flexDirection: 'column', 
+              borderBottom: 'none'}}>
+            <div className="no-margin"  
+              style={{
+                overflowX: 'hidden', 
+                overflowY: allowScroll ? 'auto': 'hidden', 
+                height: contentHeight,
+                padding: '5px'}}>
               {
                 this.props.layers.map((layer) => {
                   if(layer.settings && typeof layer.settings.active === 'undefined'){

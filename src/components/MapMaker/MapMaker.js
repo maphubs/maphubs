@@ -197,14 +197,14 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     };
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
 
     if(!_isEqual(nextProps.position, this.props.position)){
       Actions.setMapPosition(nextProps.position);
     }
   }
 
-  componentDidUpdate(prevProps: Object, prevState: Object){
+  componentDidUpdate(prevProps: Props, prevState: State){
     $('.layer-card-tooltipped').tooltip();
     $('.savebutton-tooltipped').tooltip();
 
@@ -447,7 +447,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
 
   render(){
     var _this = this;
-    var panelHeight = this.state.height - 155;
+    var panelHeight = this.state.height - 185;
 
     var tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
@@ -486,7 +486,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
 
     var editLayerPanel='', editingTools = '';
     if(this.state.editingLayer){
-      panelHeight = this.state.height - 186;
+      panelHeight = this.state.height - 236;
       editLayerPanel = (
         <li ref="editLayerPanel">
               <div className="collapsible-header"><i className="material-icons">edit</i>{this.__('Editing Layer')}</div>
@@ -577,7 +577,10 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
                         left: '5px',
                         minWidth: '200px',
                         width: '25%'
-                      }} layers={this.state.mapLayers} collapseToBottom={false} hideInactive={true} showLayersButton={false} />
+                      }} 
+                      layers={this.state.mapLayers}
+                      maxHeight="calc(100vh - 300px)"
+                       collapseToBottom={false} hideInactive={true} showLayersButton={false} />
               </div>
             </div>
         </div>

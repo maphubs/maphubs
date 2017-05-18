@@ -41,7 +41,7 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
     UserActions.getUser(() => {});
   }
 
-  componentDidUpdate(prevState: State){
+  componentDidUpdate(prevProps: Props, prevState: State){
     if(this.state.loggedIn && !prevState.loggedIn){
       $(this.refs.userButton).dropdown({
         inDuration: 300,

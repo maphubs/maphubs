@@ -102,7 +102,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
     var removeButton = '', designButton = '', editButton = '', visibilityToggle = '';
     if(this.props.showRemove){
       removeButton = (
-        <div className={buttonClass} style={{height: '30px'}}>
+        <div className={buttonClass} style={{height: '30px', width: '22px'}}>
           <a onClick={function(){_this.removeFromMap(layer);}}
             className="layer-item-btn map-layer-tooltipped"
             data-position="top" data-delay="50" data-tooltip={_this.__('Remove from Map')}>
@@ -113,7 +113,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
     }
     if(this.props.showDesign){
       designButton = (
-        <div className={buttonClass} style={{height: '30px'}}>
+        <div className={buttonClass} style={{height: '30px', width: '22px'}}>
           <a onClick={function(){_this.props.showLayerDesigner(layer.layer_id); _this.resetTooltips();}}
             className="layer-item-btn map-layer-tooltipped"
             data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Style')}>
@@ -124,7 +124,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
     }
     if(canEdit){
       editButton = (
-        <div className={buttonClass} style={{height: '30px'}}>
+        <div className={buttonClass} style={{height: '30px', width: '22px'}}>
           <a onClick={function(){_this.props.editLayer(layer); _this.resetTooltips();}}
             className="layer-item-btn map-layer-tooltipped"
             data-position="top" data-delay="50" data-tooltip={_this.__('Edit Layer Data')}>
@@ -135,7 +135,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
     }
     if(this.props.showVisibility){
       visibilityToggle = (
-        <div className="col s5 no-padding" style={{marginTop: '2px'}}>
+        <div className="col s4 no-padding" style={{marginTop: '2px'}}>
           <Formsy.Form>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
             labelOff="" labelOn="" checked={(layer.settings && layer.settings.active)}
@@ -171,8 +171,8 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
           paddingLeft: '0px', 
           paddingRight: '0px'
           }}>
-          <div className="col s7 no-padding">
-           <div className={buttonClass} style={{height: '30px', width: '30px'}}>
+          <div className="col s8 no-padding">
+           <div className={buttonClass} style={{height: '30px', width: '22px'}}>
               <a href={'/lyr/'+ layer.layer_id} target="_blank" rel="noopener noreferrer"
                 className="layer-item-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>

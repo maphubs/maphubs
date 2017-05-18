@@ -319,7 +319,7 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
   */
 
     map = (
-      <InteractiveMap height="100%" 
+      <InteractiveMap height="calc(100vh - 50px)" 
              {...this.props.map}         
              layers={this.props.layers}
              mapConfig={this.props.mapConfig}
