@@ -124,7 +124,7 @@ export default class Home extends MapHubsComponent {
       <Header activePage="explore" {...this.props.headerConfig}/>
       <main style={{margin: 0}}>
         <SubPageBanner locale={this.props.locale}
-          img="/assets/home/Moabi-Canoe.jpg" backgroundPosition="50% 15%"
+          img="https://cdn.maphubs.com/assets/home/Moabi-Canoe.jpg" backgroundPosition="50% 15%"
            title={this.__('Explore')} subTitle={this.__(`
                Browse Stories, Maps, Groups, Hubs, and Layers
               `)} />

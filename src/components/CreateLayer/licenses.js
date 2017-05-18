@@ -29,37 +29,35 @@ module.exports = {
       }, {
         value: 'cc-pd',
         label: 'Creative Commons Public Domain (CC PD)',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://wiki.creativecommons.org/wiki/Public_domain"><img src="/assets/licenses/publicdomain.png" width="100" height="35"/><br />https://wiki.creativecommons.org/wiki/Public_domain</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://wiki.creativecommons.org/wiki/Public_domain"><img src="https://cdn.maphubs.com/assets/licenses/publicdomain.png" width="100" height="35"/><br />https://wiki.creativecommons.org/wiki/Public_domain</a>'
       },{
         value: 'cc-cc0',
         label: 'Creative Commons Zero - No Copyright Reserved (CC0)',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://wiki.creativecommons.org/wiki/CC0"><img src="/assets/licenses/cc-zero.png" width="100" height="35"/><br />https://wiki.creativecommons.org/wiki/CC0</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://wiki.creativecommons.org/wiki/CC0"><img src="https://cdn.maphubs.com/assets/licenses/cc-zero.png" width="100" height="35"/><br />https://wiki.creativecommons.org/wiki/CC0</a>'
       }, {
         value: 'cc-by',
         label: 'Creative Commons Attribution (CC BY)',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by/4.0/"><img src="/assets/licenses/by.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by/4.0/</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by/4.0/"><img src="https://cdn.maphubs.com/assets/licenses/by.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by/4.0/</a>'
       }, {
         value: 'cc-by-sa',
         label: 'Creative Commons Attribution-ShareAlike (CC BY-SA)',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-sa/4.0"><img src="/assets/licenses/by-sa.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-sa/4.0</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-sa/4.0"><img src="https://cdn.maphubs.com/assets/licenses/by-sa.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-sa/4.0</a>'
       }, {
         value: 'cc-by-nd',
         label: 'Creative Commons Attribution-NoDerivs (CC BY-ND)',
-        image: '/assets/license/by-nd.png',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nd/4.0/"><img src="/assets/licenses/by-nd.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nd/4.0/</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nd/4.0/"><img src="https://cdn.maphubs.com/assets/licenses/by-nd.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nd/4.0/</a>'
       }, {
         value: 'cc-by-nc',
         label: 'Creative Commons Attribution-NonCommercial (CC BY-NC)',
-        image: '/assets/license/by-nc.png',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/assets/licenses/by-nc.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nc/4.0/</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://cdn.maphubs.com/assets/licenses/by-nc.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nc/4.0/</a>'
       }, {
         value: 'cc-by-nc-sa',
         label: 'Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/assets/licenses/by-nc-sa.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nc-sa/4.0/</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://cdn.maphubs.com/assets/licenses/by-nc-sa.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nc-sa/4.0/</a>'
       }, {
         value: 'cc-by-nc-nd',
         label: 'Creative Commons Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)',
-        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="/assets/licenses/by-nc-nd.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nc-nd/4.0/</a>'
+        note: '<a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img src="https://cdn.maphubs.com/assets/licenses/by-nc-nd.png" width="100" height="35"/><br />https://creativecommons.org/licenses/by-nc-nd/4.0/</a>'
       }
 
     ];

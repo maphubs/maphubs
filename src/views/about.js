@@ -28,7 +28,7 @@ export default class About extends MapHubsComponent {
         <div>
           <Header activePage="about" {...this.props.headerConfig}/>
             <SubPageBanner locale={this.props.locale}
-              img="/assets/home/Moabi-Aerial.jpg"
+              img="https://cdn.maphubs.com/assets/home/Moabi-Aerial.jpg"
                title={this.__('About')}
                subTitle={MAPHUBS_CONFIG.productName + ' ' +this.__(`is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.`)} />
           <main className="container">
@@ -56,7 +56,7 @@ export default class About extends MapHubsComponent {
                 <h4 lang="en">Our approach</h4>
                 <div className="row no-margin">
                     <div className="col s12 m12 l6">
-                      <img className="responsive-img" src="/assets/about/community.jpg" style={{width: '100%'}}></img>
+                      <img className="responsive-img" src="https://cdn.maphubs.com/assets/about/community.jpg" style={{width: '100%'}}></img>
                     </div>
                     <div className="col s12 m12 l6">
                       <p lang="en" style={{fontSize: '18px', marginTop: 0}}>
@@ -82,7 +82,7 @@ export default class About extends MapHubsComponent {
                 <h4 lang="en">Our vision</h4>
                   <div className="row no-margin">
                       <div className="col s12 m12 l6">
-                        <img className="responsive-img" src="/assets/home/Moabi-Leaves.jpg" style={{width: '100%'}}></img>
+                        <img className="responsive-img" src="https://cdn.maphubs.com/assets/home/Moabi-Leaves.jpg" style={{width: '100%'}}></img>
                       </div>
                       <div className="col s12 m12 l6">
                         <p lang="en" style={{fontSize: '18px', marginTop: 0}}>

@@ -28,7 +28,7 @@ export default class Services extends MapHubsComponent {
           <Header {...this.props.headerConfig}/>
           <main style={{margin: 0}}>
             <SubPageBanner locale={this.props.locale}
-              img="/assets/home/Moabi-Leaves.jpg"
+              img="https://cdn.maphubs.com/assets/home/Moabi-Leaves.jpg"
                title={this.__('Services')} subTitle={MAPHUBS_CONFIG.productName + this.__(`
                     currently offers a range of service to help you get mapping.
                   `)} />

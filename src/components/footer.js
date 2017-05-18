@@ -27,7 +27,7 @@ export default class Footer extends MapHubsComponent {
         <ul style={{marginTop: '0px'}}>
           <li className="valign-wrapper">
             <a href="http://moabi.org" className="valign" style={{float: 'left', paddingRight: '5px'}}>
-              <img width="75" height="75" style={{marginLeft: '-10px'}} src="/assets/moabi-logo.png" alt="Moabi.org" />
+              <img width="75" height="75" style={{marginLeft: '-10px'}} src="https://cdn.maphubs.com/assets/moabi-logo.png" alt="Moabi.org" />
             </a>
             <span className="valign">{MAPHUBS_CONFIG.productName + this.__(' is a non-profit initiative of the Moabi organization')}</span>
 
@@ -56,7 +56,7 @@ export default class Footer extends MapHubsComponent {
           <li className="valign-wrapper">
             <span className="valign">{this.__('Powered by') + ' '}</span>
             <a href="http://maphubs.com" className="valign" style={{float: 'left'}}>
-                <img width="111" height="30" style={{marginTop: '10px'}} src="/assets/maphubs-logo-small.png" alt="MapHubs.com" />
+                <img width="111" height="30" style={{marginTop: '10px'}} src="https://cdn.maphubs.com/assets/maphubs-logo-small.png" alt="MapHubs.com" />
               </a>
               
             </li>

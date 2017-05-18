@@ -27,7 +27,7 @@ export default class Journalists extends MapHubsComponent {
         <div>
           <Header {...this.props.headerConfig}/>
             <SubPageBanner locale={this.props.locale}
-              img="/assets/home/MapHubs-Map.jpg"
+              img="https://cdn.maphubs.com/assets/home/MapHubs-Map.jpg"
                title={MAPHUBS_CONFIG.productName + ' ' + this.__('for Journalists')} subTitle={this.__(`
                    Maps are incredibly powerful tools for journalism.
                    One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.

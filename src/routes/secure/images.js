@@ -47,11 +47,11 @@ module.exports = function(app: any) {
       if(result && result.thumbnail){
         imageUtils.processImage(result.thumbnail, req, res);
       }else{
-        return res.redirect('/assets/missing_group.png');
+        return res.redirect('https://cdn.maphubs.com/assets/missing_group.png');
       }
     }).catch((err) => {
       log.error(err);
-      return res.redirect('/assets/missing_group.png');
+      return res.redirect('https://cdn.maphubs.com/assets/missing_group.png');
     });
   });
 

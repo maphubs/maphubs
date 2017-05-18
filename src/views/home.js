@@ -64,42 +64,42 @@ export default class Home extends MapHubsComponent {
          text: this.__('We have merged MapHubs with Map for Environment'),
          buttonText: this.__('Learn More'),
          link: 'https://mapforenvironment.org/user/map4env/story/61/MapHubs-is-now-Map-for-Environment',
-         img: '/assets/home/Moabi–Chameleon.jpg'
+         img: 'https://cdn.maphubs.com/assets/home/Moabi–Chameleon.jpg'
        },
        {
          title: this.__('Mapping for Everyone'),
          text: MAPHUBS_CONFIG.productName + ' ' + this.__('is a home for the world\'s open map data and an easy tool for making maps'),
          buttonText: this.__('Learn More'),
          link: '/about',
-         img: '/assets/home/Moabi-Aerial.jpg'
+         img: 'https://cdn.maphubs.com/assets/home/Moabi-Aerial.jpg'
        },
        {
          title: this.__('Maps for Journalists'),
          text: this.__('Tell Your Story with Maps'),
          buttonText: this.__('Learn More'),
          link: '/journalists',
-         img: '/assets/home/Moabi-Canoe.jpg'
+         img: 'https://cdn.maphubs.com/assets/home/Moabi-Canoe.jpg'
        },
        {
          title: this.__('OpenStreetMap'),
          text: this.__('Help us make maps to monitor the world’s natural resources.'),
          buttonText: this.__('Learn More'),
          link: 'https://osm.mapforenvironment.org',
-         img: '/assets/home/m4e_osm_banner.jpg'
+         img: 'https://cdn.maphubs.com/assets/home/m4e_osm_banner.jpg'
        },
        {
          title: this.__('Explore Maps'),
          text: MAPHUBS_CONFIG.productName + ' ' + this.__('has map layers for environment, natural resources, and development'),
          buttonText: this.__('Explore Maps'),
          link: '/explore',
-         img: '/assets/home/MapHubs-Map.jpg'
+         img: 'https://cdn.maphubs.com/assets/home/MapHubs-Map.jpg'
        },
        {
          title: MAPHUBS_CONFIG.productName + ' ' + this.__('Services'),
          text: this.__('We offer a range of service to help you get mapping'),
          buttonText: this.__('Learn More'),
          link: '/services',
-         img: '/assets/home/Moabi-Forest.jpg'
+         img: 'https://cdn.maphubs.com/assets/home/Moabi-Forest.jpg'
        }
      ];
 

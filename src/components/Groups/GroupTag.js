@@ -30,7 +30,7 @@ export default class GroupTag extends MapHubsComponent {
     }
 
      $(this.refs.groupimg).error(function(){
-        $(this).attr('src', '/assets/missing_group.png');
+        $(this).attr('src', 'https://cdn.maphubs.com/assets/missing_group.png');
      });
   }
 
