@@ -11,7 +11,6 @@ import MapMakerActions from '../actions/MapMakerActions';
 import Progress from '../components/Progress';
 import urlUtil from '../services/url-util';
 import UserStore from '../stores/UserStore';
-import ShareButtons from '../components/ShareButtons';
 import request from 'superagent';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MapMakerStore from '../stores/MapMakerStore';
@@ -326,8 +325,6 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
              disableScrollZoom={false}
              {...this.props.map.settings}
              >
-        <ShareButtons title={this.props.map.title} iconSize={24}
-              style={{position: 'absolute', bottom: '5px', left: '150px', zIndex: '1'}} />
         {button}
         </InteractiveMap> 
     );

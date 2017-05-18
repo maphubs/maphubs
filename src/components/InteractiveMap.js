@@ -12,6 +12,7 @@ import MapLayerMenu from './InteractiveMap/MapLayerMenu';
 import MapHubsComponent from './MapHubsComponent';
 import Reflux from './Rehydrate';
 import _debounce from 'lodash.debounce';
+import ShareButtons from './ShareButtons';
 
 import type MapStoreState from '../stores/MapStore';
 
@@ -31,6 +32,7 @@ type Props = {
   fitBoundsOptions?: Object,
   interactive: boolean,
   mapConfig: Object,
+  showShareButtons: boolean,
   children: any
 }
 
@@ -40,7 +42,8 @@ type DefaultProps = {
   disableScrollZoom: boolean,
   showLogo: boolean,
   showTitle: boolean,
-  interactive: boolean
+  interactive: boolean,
+  showShareButtons: boolean
 }
 
 type State = {
@@ -58,7 +61,8 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       disableScrollZoom: true,
       showLogo: true,
       showTitle: true,
-      interactive: true
+      interactive: true,
+      showShareButtons: true
   }
 
   state: State
@@ -209,6 +213,15 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       );
     }
 
+    let shareButtons = '';
+
+    if(this.props.showShareButtons){
+      shareButtons = (
+        <ShareButtons title={this.props.title} iconSize={24}
+              style={{position: 'absolute', bottom: '5px', left: '150px', zIndex: '1'}} />
+      );
+    }
+
     let mobileLegendButtonTop = `${10 + topOffset}px`;
 
     return (
@@ -273,10 +286,9 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
               mapConfig={this.props.mapConfig}
               disableScrollZoom={this.props.disableScrollZoom}>
                 
-            
-
               {legend}
               {children}
+              {shareButtons}
             </Map>
 
       </div>

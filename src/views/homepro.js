@@ -11,7 +11,6 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-
 import type {Layer} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
 
