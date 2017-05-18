@@ -1,10 +1,9 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/MapActions';
+var MapStyleHelper = require('./map/MapStyleHelper');
 var debug = require('../services/debug')('stores/map-store');
 var findIndex = require('lodash.findindex');
-var forEachRight = require('lodash.foreachright');
-var $ = require('jquery');
 
 import type {Layer} from './layer-store';
 
@@ -51,9 +50,11 @@ export default class MapStore extends Reflux.Store {
     }else {
       layers[index].settings.active = true;
     }
-   }
+    this.updateMap(layers);
+   }else{
+      debug('Map layer missing settings object: ' + layer_id);
+    }
    
-   this.updateMap(layers);
    cb();
  }
 
@@ -74,39 +75,7 @@ export default class MapStore extends Reflux.Store {
  }
 
  buildMapStyle(layers: Array<Layer>){
-   var mapStyle = {
-     sources: {},
-     layers: []
-   };
-
-   //reverse the order for the styles, since the map draws them in the order recieved
-   forEachRight(layers, (layer) => {
-     var style = layer.style;
-     if(style && style.sources && style.layers){
-       //check for active flag and update visibility in style
-       if(layer.settings && typeof layer.settings.active !== 'undefined' && layer.settings.active === false){
-         //hide style layers for this layer
-         style.layers.forEach((styleLayer) => {
-           styleLayer['layout'] = {
-             "visibility": "none"
-           };
-         });
-       } else {
-         //reset all the style layers to visible
-         style.layers.forEach((styleLayer) => {
-           styleLayer['layout'] = {
-             "visibility": "visible"
-           };
-         });
-       }
-       //add source
-       $.extend(mapStyle.sources, style.sources);
-       //add layers
-       mapStyle.layers = mapStyle.layers.concat(style.layers);
-     } else {
-       debug('Not added to map, incomplete style for layer: ' + layer.layer_id);
-     }
-   });
-   return mapStyle;
+  return MapStyleHelper.buildMapStyle(layers);
  }
+
 }
