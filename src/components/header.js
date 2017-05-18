@@ -229,7 +229,7 @@ getCookie = (cname: string) => {
 
           </a>
 
-          <a ref="sideNav" className="button-collapse grey-text text-darken-4" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
+          <a ref="sideNav" className="button-collapse omh-accent-text" data-activates="side-nav-menu" href="#"><i className="material-icons">menu</i></a>
           <ul className="right hide-on-med-and-down">
             {this.renderMakeAMap(mapClasses)}       
             {this.renderExplore(exploreClasses)}
