@@ -17,7 +17,8 @@ export default class MapEdit extends MapHubsComponent {
     myGroups: Array<Object>,
     locale: string,
     _csrf: string,
-    headerConfig: Object
+    headerConfig: Object,
+    mapConfig: Object,
   }
 
   static defaultProps = {
@@ -41,6 +42,7 @@ export default class MapEdit extends MapHubsComponent {
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 70px)'}}>
           <MapMaker onCreate={this.mapCreated}
+            mapConfig={this.props.mapConfig}
             mapLayers={this.props.layers}
             basemap={this.props.map.basemap}
             map_id={this.props.map.map_id} title={this.props.map.title}
