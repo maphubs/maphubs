@@ -16,6 +16,7 @@ export default class GroupInfo extends MapHubsComponent {
     hubs: Array<Object>,
     members: Array<Object>,
     canEdit: boolean,
+    headerConfig: Object,
     locale: string,
     _csrf: string
   }
@@ -103,7 +104,7 @@ export default class GroupInfo extends MapHubsComponent {
 
     return (
       <div>
-        <Header/>
+        <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
           <h4>{this.props.group.name}</h4>
           <div className="row">
