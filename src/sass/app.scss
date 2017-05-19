@@ -909,6 +909,10 @@ textarea.materialize-textarea+label:after {
   border-right: 1px #ddd solid !important;
 }
 
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}
+
 .mapboxgl-ctrl-top-right {
   transform: rotate(-90deg);
   top: -35px !important;

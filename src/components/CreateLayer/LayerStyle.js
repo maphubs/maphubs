@@ -155,15 +155,19 @@ export default class LayerStyle extends MapHubsComponent {
       && showMap){
         map = (
           <div>
-            <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
+            <div className="row no-margin">
+              <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
               glStyle={this.state.layer.style}
               showLogo={false}
               mapConfig={this.props.mapConfig}
               fitBounds={mapExtent}
               />
-            <MiniLegend style={{height: 'calc(100% - 300px)', width: '400px', margin: 'auto', overflow: 'auto'}}
+            </div>
+            <div className="row" style={{width: '400px', position: 'relative'}}>
+              <MiniLegend style={{height: 'auto', width: '400px', margin: 'auto', overflow: 'auto'}}
                 collapsible={true} hideInactive={false} showLayersButton={false}
                 layers={[this.state.layer]}/>
+            </div>  
           </div>
         );
     }
@@ -227,7 +231,6 @@ export default class LayerStyle extends MapHubsComponent {
                  <div className="col s12 m6 l6">
                    <h5>{this.__('Choose Preview')}</h5>
                    {map}
-                   <p>{this.__('The map preview is how your map will look in search results and other listings.')}</p>
                  </div>
                  <div className="col s12 m6 l6" style={{width: '425px'}}>
                    {colorChooser}
