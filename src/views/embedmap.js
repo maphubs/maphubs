@@ -19,6 +19,7 @@ type Props = {
   locale: string,
   geoJSONUrl: string,
   markerColor: string,
+  overlayName: string,
   mapConfig: Object,
   _csrf: string
 }
@@ -26,13 +27,15 @@ type Props = {
 type DefaultProps = {
   isStatic: boolean,
   interactive: boolean,
-  markerColor: string
+  markerColor: string,
+  overlayName: string
 }
 
 type State = {
   interactive: boolean,
   bounds: ?Object,
-  glStyle: Object
+  glStyle: Object,
+  layers: Array<Layer>
 }
 
 export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, State> {
@@ -42,7 +45,8 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
   static defaultProps: DefaultProps = {
     isStatic: false,
     interactive: false,
-    markerColor: '#FF0000'
+    markerColor: '#FF0000',
+    overlayName: 'Locations'
   }
 
   state: State
@@ -52,14 +56,55 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
 
     var glStyle = this.props.map.style;
+    let layers = this.props.layers;
     if(this.props.geoJSONUrl){
       glStyle.sources['geojson-overlay'] = {
         type: 'geojson',
         data: this.props.geoJSONUrl
       };
 
-      glStyle.layers.push({
-      "id": "geojson-overlay",
+      glStyle.layers.push(this.getStyleLayer());
+      layers.push(this.getLayerConfig());
+    }
+
+    this.state = {
+      interactive: this.props.interactive,
+      bounds: null,
+      layers,
+      glStyle
+    };
+	}
+ 
+  componentDidMount(){
+    $('.embed-tooltips').tooltip();
+
+    if(this.props.geoJSONUrl){
+      this.loadGeoJSON(this.props.geoJSONUrl);
+    }
+  }
+
+  startInteractive = () => {
+    this.setState({interactive: true});
+    $('.embed-tooltips').tooltip('remove');
+  }
+
+  loadGeoJSON = (url: string) => {
+    var _this = this;
+    request.get(url)
+    .type('json').accept('json')
+    .end((err, res) => {
+      checkClientError(res, err, ()=>{}, () => {
+        var geoJSON = res.body;
+        var bounds = _bbox(geoJSON);
+        //_this.refs.map.fitBounds(bounds, 12, 10, true);
+        _this.setState({bounds});
+      });
+    });
+  }
+
+  getStyleLayer = () => {
+    return {
+      "id": "omh-data-point-geojson-overlay",
       "type": "circle",
       "metadata": {
         "maphubs:layer_id": 0,
@@ -90,41 +135,33 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
         "circle-color": this.props.markerColor,
         "circle-opacity": 0.5
       }
-    });
-    }
-
-    this.state = {
-      interactive: this.props.interactive,
-      bounds: null,
-      glStyle
     };
-	}
- 
-  componentDidMount(){
-    $('.embed-tooltips').tooltip();
-
-    if(this.props.geoJSONUrl){
-      this.loadGeoJSON(this.props.geoJSONUrl);
-    }
   }
 
-  startInteractive = () => {
-    this.setState({interactive: true});
-    $('.embed-tooltips').tooltip('remove');
-  }
-
-  loadGeoJSON = (url: string) => {
-    var _this = this;
-    request.get(url)
-    .type('json').accept('json')
-    .end((err, res) => {
-      checkClientError(res, err, ()=>{}, () => {
-        var geoJSON = res.body;
-        var bounds = _bbox(geoJSON);
-        //_this.refs.map.fitBounds(bounds, 12, 10, true);
-        _this.setState({bounds});
-      });
-    });
+  getLayerConfig = () => {
+    return {
+        active: true,
+        layer_id: -2,
+        name: this.props.overlayName,
+        source: '',
+        description: '',
+        owned_by_group_id: '',
+        remote: true,
+        is_external: true,
+        external_layer_config: {},
+        style: {
+          sources: {
+            "geojson-overlay":{
+              type: 'geojson',
+              data: this.props.geoJSONUrl
+            }
+          },
+          layers:[this.getStyleLayer()]
+        },
+        legend_html: `
+        
+        `
+    };
   }
   
   render() {
@@ -160,7 +197,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
                   fitBounds={bounds}
                   fitBoundsOptions={{animate: false, padding: 200, maxZoom: 14}}
                   style={this.state.glStyle} 
-                  layers={this.props.layers}
+                  layers={this.state.layers}
                   map_id={this.props.map.map_id}
                   disableScrollZoom={true}
                   mapConfig={this.props.mapConfig}

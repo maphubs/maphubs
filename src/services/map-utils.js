@@ -20,6 +20,10 @@ module.exports = {
       if(req.query.color){
         markerColor = '#' + req.query.color;
       }
+      var overlayName = req.__('Locations');
+      if(req.query.overlayName){
+        overlayName = req.query.overlayName;
+       }
       
       if(map.title){
         title = map.title;
@@ -27,7 +31,7 @@ module.exports = {
       title += ' - ' + MAPHUBS_CONFIG.productName;
         res.render('embedmap', {
           title,
-          props:{map, layers, canEdit, isStatic, interactive, geoJSONUrl, markerColor},
+          props:{map, layers, canEdit, isStatic, interactive, geoJSONUrl, markerColor, overlayName},
           hideFeedback: true, req});
     }).catch(nextError(next));
   },
