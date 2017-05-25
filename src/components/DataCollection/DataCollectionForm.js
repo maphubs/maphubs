@@ -62,6 +62,7 @@ export default class DataCollectionForm extends MapHubsComponent {
 
     var submit = '';
     if(this.props.showSubmit){
+
       submit = (
         <div className="right">
           <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.state.submitText}</button>
@@ -70,7 +71,10 @@ export default class DataCollectionForm extends MapHubsComponent {
     }
 
     return (
-      <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onChange} onValid={this.onValid} onInvalid={this.onInValid}>
+      <Formsy.Form 
+        onValidSubmit={this.onSubmit} 
+        onChange={this.onChange} 
+        onValid={this.onValid} onInvalid={this.onInValid}>
         {
           this.props.presets.map((preset) => {
             var value;

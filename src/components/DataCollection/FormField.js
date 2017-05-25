@@ -52,7 +52,13 @@ export default class FormField extends MapHubsComponent {
         />
       );
     }else if(preset.type === 'radio' || preset.type === 'combo'){
-      var options = {};
+      var options = [];
+      if(preset.options){
+        preset.options.forEach(option => {
+          option = option.trim();
+          options.push({value: option, label: option});
+        });
+      }
       field = (
           <Select
             name={preset.tag} id={'select-' + preset.tag}
