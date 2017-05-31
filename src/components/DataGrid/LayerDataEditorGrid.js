@@ -4,6 +4,8 @@ import _map from 'lodash.map';
 import MapHubsComponent from '../MapHubsComponent';
 import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
+import update from 'immutability-helper';
+
 
 type Props = {
   geoJSON: Object,
@@ -12,7 +14,6 @@ type Props = {
   onRowSelected: Function,
   layer_id: number,
   dataLoadingMsg: string,
-  canEdit: boolean,
   onSave: Function
 }
 
@@ -31,7 +32,7 @@ type State = {
   selectedFeature?: Object
 }
 
-export default class LayerDataGrid extends MapHubsComponent<void, Props, State> {
+export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, State> {
 
   Selectors: null
 
@@ -55,6 +56,12 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
     sortDirection: null
   }
 
+  componentWillMount(){
+    if(typeof window !== 'undefined'){
+      this.initReactDataGrid();
+    }
+  }
+
   componentDidMount(){
     if(this.props.geoJSON){
       this.processGeoJSON(this.props.geoJSON, this.props.presets);
@@ -68,6 +75,18 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
     if(nextProps.gridHeight && nextProps.gridHeight !== this.state.gridHeight){
       this.setState({gridHeight: nextProps.gridHeight});
     }
+  }
+
+  initReactDataGrid = () => {
+      this.ReactDataGrid = require('react-data-grid');
+      const {Toolbar, Editors, Formatters, Data: {Selectors}} = require('react-data-grid-addons');
+      this.Toolbar = Toolbar;
+      this.Selectors = Selectors;
+      const {DropDownEditor, CheckboxEditor} = Editors;
+      this.DropDownEditor = DropDownEditor;
+      this.CheckboxEditor = CheckboxEditor;
+      const {DropDownFormatter } = Formatters;   
+      this.DropDownFormatter = DropDownFormatter;
   }
 
   processGeoJSON = (geoJSON: Object, presets:any=null) => {
@@ -104,27 +123,61 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
     if(presets){
         presets.forEach((preset) => {
         if(preset.type === 'check'){
-           columns.push(
-          {
-            key: preset.key,
-            name: preset.label,
-            width : 120,
-            formatter: CheckboxFormatter,
-            resizable: true,
-            sortable : true,
-            filterable: true
-          });
+
+          columns.push(
+            {
+              key: preset.key,
+              name: preset.label,
+              width : 120,
+              resizable: true,
+              sortable : true,
+              filterable: true,
+              editor: <this.CheckboxEditor />,
+              formatter: CheckboxFormatter
+            }
+          );
+          
+        }else if(preset.type === 'combo' || preset.type === 'radio'){
+
+
+          columns.push(
+            {
+              key: preset.key,
+              name: preset.label,
+              width : 120,
+              resizable: true,
+              sortable : true,
+              filterable: true,
+              editor: <this.DropDownEditor options={preset.options}/>,
+              formatter: <this.DropDownFormatter options={preset.options}/>
+            }
+          );
+          
+        }else if(preset.type === 'number'){
+          columns.push(
+            {
+              key: preset.key,
+              name: preset.label,
+              width : 120,
+              resizable: true,
+              sortable : true,
+              filterable: true,
+              editable: true
+            }
+          );
+          
         }else{
            columns.push(
-          {
-            key: preset.key,
-            name: preset.label,
-            width : 120,
-            resizable: true,
-            sortable : true,
-            filterable: true
-          }
-        );
+            {
+              key: preset.key,
+              name: preset.label,
+              width : 120,
+              resizable: true,
+              sortable : true,
+              filterable: true,
+              editable: true
+            }
+          );
         }
        
       });
@@ -163,6 +216,7 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
   getSize = (): number => {
     return this.getRows().length;
   }
+
 
   rowGetter = (rowIdx: number): Object => {
     let rows = this.getRows();
@@ -245,13 +299,24 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
   }
 
 
+   handleGridRowsUpdated = (fromRow: number, toRow: number, updated: Object) => {
+    let rows = this.state.rows.slice();
+
+    for (let i = fromRow; i <= toRow; i++) {
+      let rowToUpdate = rows[i];
+      //TODO: create edit record in store
+      let updatedRow = update(rowToUpdate, {$merge: updated});
+      rows[i] = updatedRow;
+    }
+
+    this.setState({rows});
+  }
+
+
 render() {
   var _this = this;
 
    if(this.state.rows.length > 0 && typeof window !== 'undefined'){
-      var ReactDataGrid = require('react-data-grid');
-      const {Toolbar, Data: {Selectors}} = require('react-data-grid-addons');
-      this.Selectors = Selectors;
 
       let editButton = '', editModal;
       if(this.props.canEdit){
@@ -275,7 +340,7 @@ render() {
       }
 
   return (
-    <ReactDataGrid
+    <this.ReactDataGrid
            ref="grid"
            columns={this.state.columns}
            rowKey={this.state.rowKey}
@@ -284,6 +349,8 @@ render() {
             minHeight={this.state.gridHeight}
             onGridSort={this.handleGridSort}
             onRowSelect={this.onRowSelect}
+            enableCellSelect={true}
+            onGridRowsUpdated={this.handleGridRowsUpdated}
             rowSelection={{
               showCheckbox: true,
               enableShiftSelect: false,
@@ -293,7 +360,7 @@ render() {
                 indexes: this.state.selectedIndexes
               }
             }}
-            toolbar={<Toolbar
+            toolbar={<this.Toolbar
               enableFilter={true}
               filterRowsButtonText={this.__('Filter Data')}
               >
@@ -302,7 +369,7 @@ render() {
                 {this.__('View Selected')}
               </button>
               {editModal}
-              </Toolbar>
+              </this.Toolbar>
             }
             onAddFilter={this.handleFilterChange}
             onClearFilters={this.onClearFilters}

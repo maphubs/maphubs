@@ -14,6 +14,7 @@ import HubEditButton from '../components/Hub/HubEditButton';
 import LayerNotesActions from '../actions/LayerNotesActions';
 import LayerNotesStore from '../stores/LayerNotesStore';
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid';
+import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid';
 
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
@@ -59,16 +60,15 @@ type Props = {
   mapConfig: Object
 }
 
-type LayerInfoState = {
+type State = {
   editingNotes: boolean,
+  editingData: boolean,
   gridHeight: number,
   gridHeightOffset: number,
   userResize?: boolean,
   geoJSON?: Object,
   presets?: Object
-}
-
-type State = LocaleStoreState & LayerInfoState
+} & LocaleStoreState & LayerInfoState
 
 export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
@@ -81,6 +81,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
   state: State = {
     editingNotes: false,
+    editingData: false,
     gridHeight: 100,
     gridHeightOffset: 48
   }
@@ -129,15 +130,18 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
     }
 
     window.onbeforeunload = function(){
-      if(_this.state.editingNotes){
+      if(_this.state.editingNotes || _this.state.editingData){
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState){
     if(!this.state.userResize){
       fireResizeEvent();
+    }
+    if(this.state.editingData && !prevState.editingData){
+       fireResizeEvent();
     }
   }
 
@@ -164,7 +168,16 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {
             var presets = res.body;
-            _this.setState({geoJSON, presets});
+            var presetArr = [];
+            //convert iD formatted presets to simple format
+
+            Object.keys(res.body.fields).forEach((fieldsKey) => {
+              var field = presets.fields[fieldsKey];
+              field.tag = field.key;
+              presetArr.push(field);
+            });
+
+            _this.setState({geoJSON, presets: presetArr});
             cb();
           });
         });
@@ -235,6 +248,16 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
     });
   }
 
+  startEditingData = () => {
+    this.setState({editingData: true});
+  }
+
+  stopEditingData = () => {
+    var _this = this;
+    _this.setState({editingNotes: false});
+    //TODO: tell store to save
+  }
+
   copyToClipboard = (val: string) => {
     clipboard.copy(val);
   }
@@ -291,13 +314,19 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       tabContentDisplay = 'inherit';
     }
 
-    var editButton = '', notesEditButton;
+    var editButton = '', notesEditButton, dataEditButton;
 
     if(this.props.canEdit){
       notesEditButton = (
         <HubEditButton editing={this.state.editingNotes}
           style={{position: 'absolute'}}
           startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
+      );
+
+      dataEditButton = (
+        <HubEditButton editing={this.state.editingData}
+          style={{position: 'absolute'}}
+          startEditing={this.startEditingData} stopEditing={this.stopEditingData} />
       );
 
       var idEditButton = '', addPhotoPointButton = '';
@@ -451,6 +480,30 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       );
     }
 
+    var dataGrid = '';
+    if(this.state.editingData){
+      dataGrid = (
+        <LayerDataEditorGrid  
+          layer_id={this.props.layer.layer_id} 
+          gridHeight={this.state.gridHeight} 
+          geoJSON={this.state.geoJSON} 
+          presets={this.state.presets} 
+          onRowSelected={this.onRowSelected}
+          canEdit={true}
+          />
+      );
+    }else{
+      dataGrid = (
+        <LayerDataGrid  
+          layer_id={this.props.layer.layer_id} 
+          gridHeight={this.state.gridHeight} 
+          geoJSON={this.state.geoJSON} 
+          presets={this.state.presets} 
+          onRowSelected={this.onRowSelected}
+          canEdit={this.props.canEdit} />
+      );
+    }
+
 		return (
 
       <div>
@@ -524,9 +577,11 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
                 {disqus}
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
-                <div className="row no-margin">                
-                  <LayerDataGrid  layer_id={this.props.layer.layer_id} gridHeight={this.state.gridHeight} geoJSON={this.state.geoJSON} presets={this.state.presets} onRowSelected={this.onRowSelected} />
+                <div className="row no-margin"> 
+                  {dataGrid}               
+                  
                 </div>
+                {dataEditButton}
               </div>
               <div id="export" className="col s12" style={{display: tabContentDisplay}}>
                 {exportTabContent}

@@ -84,6 +84,7 @@
     "getenv": "0.7.0",
     "i18n": "0.8.3",
     "iconv-lite": "^0.4.17",
+    "immutability-helper": "^2.2.0",
     "intl": "1.2.5",
     "jschardet": "^1.4.2",
     "json2mq": "0.2.0",
