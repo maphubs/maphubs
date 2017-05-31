@@ -80,7 +80,7 @@ export default class RasterTileSource extends MapHubsComponent<void, Props, Stat
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer.layer_id);
+        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
           dismissAfter: 1000,

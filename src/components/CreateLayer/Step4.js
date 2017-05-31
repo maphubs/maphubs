@@ -49,7 +49,7 @@ export default class Step4 extends MapHubsComponent<void, Props, State> {
 
   save = () => {
     $('body').scrollTop(0);
-    if(!this.state.layer.is_external){
+    if(!this.state.is_external){
       return this.saveDataLoad();
     }else{
       return this.saveExternal();
@@ -118,7 +118,7 @@ export default class Step4 extends MapHubsComponent<void, Props, State> {
       );
     }
     var presetEditor = '';
-    if(!this.state.layer.is_external){
+    if(!this.state.is_external){
       presetEditor = (
         <div>
           <h5>Data Fields</h5>
@@ -139,7 +139,7 @@ export default class Step4 extends MapHubsComponent<void, Props, State> {
             {presetEditor}
             {prevButton}
             <div className="right">
-              <button onClick={this.save} className="waves-effect waves-light btn" disabled={!this.state.layer.is_external && !this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
+              <button onClick={this.save} className="waves-effect waves-light btn" disabled={!this.state.is_external && !this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
             </div>
       </div>
 		);

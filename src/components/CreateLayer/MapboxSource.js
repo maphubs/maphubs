@@ -30,8 +30,7 @@ export default class MapboxSource extends MapHubsComponent<void, Props, State> {
 
   state: State = {
     canSubmit: false,
-    selectedOption: 'style',
-    layer: {}
+    selectedOption: 'style'
   }
 
   constructor(props: Object){
@@ -100,7 +99,7 @@ export default class MapboxSource extends MapHubsComponent<void, Props, State> {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer.layer_id);
+        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
           dismissAfter: 1000,

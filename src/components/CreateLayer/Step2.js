@@ -31,8 +31,7 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    saving: false,
-    layer: {}
+    saving: false
   }
 
   constructor(props: Props){
@@ -41,9 +40,9 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
   }
 
   onSubmit = () => {
-    if(!this.state.layer.is_external && !this.state.layer.is_empty){
+    if(!this.state.is_external && !this.state.is_empty){
       return this.saveDataLoad();
-    }else if(this.state.layer.is_empty){
+    }else if(this.state.is_empty){
       return this.initEmptyLayer();
     }
     else{
@@ -56,7 +55,7 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
 
     //save presets
     PresetActions.loadDefaultPresets();
-    PresetActions.setLayerId(this.state.layer.layer_id);
+    PresetActions.setLayerId(this.state.layer_id);
     PresetActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

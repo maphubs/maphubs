@@ -3,7 +3,6 @@ import Reflux from 'reflux';
 import Actions from '../actions/StoryActions';
 var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
-//var debug = require('../services/debug')('layer-store');
 
 export type Story ={
   title: ?string,

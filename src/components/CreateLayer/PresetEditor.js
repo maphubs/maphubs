@@ -5,19 +5,21 @@ import PresetStore from '../../stores/preset-store';
 import Actions from '../../actions/presetActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class PresetEditor extends MapHubsComponent {
+type Props = {
+  onValid: Function,
+  onInvalid: Function,
+  warnIfUnsaved: boolean
+}
 
-  props: {
-    onValid: Function,
-    onInvalid: Function,
-    warnIfUnsaved: boolean
-  }
+export default class PresetEditor extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     warnIfUnsaved: true
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(PresetStore);
   }
@@ -25,7 +27,7 @@ export default class PresetEditor extends MapHubsComponent {
   componentDidMount(){
     var _this = this;
     window.onbeforeunload = function(){
-      if(_this.props.warnIfUnsaved && _this.state.store.pendingChanges){
+      if(_this.props.warnIfUnsaved && _this.state.pendingChanges){
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };

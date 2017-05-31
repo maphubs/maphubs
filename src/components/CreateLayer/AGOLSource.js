@@ -30,8 +30,7 @@ export default class AGOLSource extends MapHubsComponent<void, Props, State> {
 
   state: State = {
     canSubmit: false,
-    selectedOption: 'mapserverquery',
-    layer: {}
+    selectedOption: 'mapserverquery'
   }
 
   constructor(props: Props){
@@ -97,7 +96,7 @@ export default class AGOLSource extends MapHubsComponent<void, Props, State> {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer.layer_id);
+        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
           dismissAfter: 1000,

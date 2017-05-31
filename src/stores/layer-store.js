@@ -7,9 +7,8 @@ var mapStyles = require('../components/Map/styles');
 var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var debug = require('../services/debug')('layer-store');
+import _findIndex from 'lodash.findindex';
 
-
-import type {Group} from './GroupStore';
 
 export type Layer = {
   layer_id?: number,
@@ -32,7 +31,11 @@ export type Layer = {
   external_layer_type?: string,
   external_layer_config?: Object,
   is_empty?: boolean,
-  complete?: boolean
+  complete?: boolean,
+  status?: string,
+  mapColor?: string,
+  tileServiceInitialized?: boolean,
+  pendingChanges?: boolean
 }
 
 let emptyLayer: Layer = {
@@ -56,28 +59,21 @@ let emptyLayer: Layer = {
     external_layer_type: '',
     external_layer_config: {},
     complete: false,
-    private: false
+    private: false,
+    mapColor: '#FF0000',
+    tileServiceInitialized: false,
+    pendingChanges: false
 };
 
-export type LayerStoreState = {
-  layer: Layer,
-  mapColor?: string,
-  groups?: Array<Group>,
-  tileServiceInitialized?: boolean
-}
+export type LayerStoreState =  Layer
 
-export default class LayerStore extends Reflux.Store<void, void, LayerStoreState> {
+export default class LayerStore extends Reflux.Store<void, void, Layer> {
 
   state: LayerStoreState
 
   constructor(){
     super();
-    this.state = {
-      layer: emptyLayer,
-      mapColor: '#FF0000',
-      groups: [],
-      tileServiceInitialized: false
-    };
+    this.state = emptyLayer;
     this.listenables = Actions;
     this.listenTo(PresetActions.presetsChanged, this.presetsChanged);
   }
@@ -86,68 +82,71 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     var sourceConfig = {
       type: 'vector'
     };
-    if(this.state.layer.is_external){
-      sourceConfig = this.state.layer.external_layer_config;
+    if(this.state.is_external){
+      sourceConfig = this.state.external_layer_config;
     }
     return sourceConfig;
   }
 
   loadLayer(layer: Object){
-    var mapColor = this.state.mapColor;
+    layer.mapColor = this.state.mapColor;
     if(layer.settings && layer.settings.color){
-      mapColor = layer.settings.color;
+      layer.mapColor = layer.settings.color;
     }
-    this.setState({layer, mapColor});
+    this.setState(layer);
 
-    if(!this.state.layer.style){
+    if(!this.state.style){
       this.resetStyleGL();
     }
 
-    if(!this.state.layer.legend_html){
+    if(!this.state.legend_html){
       this.resetLegendHTML();
     }
-
-    this.trigger(this.state);
   }
 
   resetStyleGL(){
-    var layer = this.state.layer;
+    var style = this.state.style ? this.state.style : {"sources": {}};
+    var layer_id = this.state.layer_id ? this.state.layer_id: -1;
+    var isExternal = this.state.is_external;
+    var externalLayerConfig = this.state.external_layer_config ? this.state.external_layer_config : {};
+    var externalType = externalLayerConfig.type;
     var baseUrl = urlUtil.getBaseUrl();
-    if(layer.is_external && layer.external_layer_type === 'mapbox-map'){
-      layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url);
-    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'raster'){
-      layer.style = mapStyles.defaultRasterStyle(layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json');
-    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'multiraster'){
-      layer.style = mapStyles.defaultMultiRasterStyle(layer.layer_id, layer.external_layer_config.layers);
-    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'mapbox-style'){
-        layer.style = mapStyles.getMapboxStyle(layer.external_layer_config.mapboxid);
-    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'ags-mapserver-tiles'){
-        layer.style = mapStyles.defaultRasterStyle(layer.layer_id, layer.external_layer_config.url + '?f=json', 'arcgisraster');
-    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'geojson'){
-        layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.external_layer_config.data_type);
-    }else if(layer.style.sources.osm){
+    if(isExternal && this.state.external_layer_type === 'mapbox-map'){
+      style = mapStyles.defaultRasterStyle(this.state.layer_id, externalLayerConfig.url);
+    }else if(isExternal && externalType === 'raster'){
+      style = mapStyles.defaultRasterStyle(layer_id, baseUrl + '/api/layer/' + layer_id.toString() +'/tile.json');
+    }else if(isExternal && externalType === 'multiraster'){
+      style = mapStyles.defaultMultiRasterStyle(layer_id, externalLayerConfig.layers);
+    }else if(isExternal && externalType === 'mapbox-style'){
+        style = mapStyles.getMapboxStyle(externalLayerConfig.mapboxid);
+    }else if(isExternal && externalType === 'ags-mapserver-tiles'){
+        style = mapStyles.defaultRasterStyle(layer_id, externalLayerConfig.url + '?f=json', 'arcgisraster');
+    }else if(isExternal && externalType === 'geojson'){
+        style = mapStyles.defaultStyle(layer_id, this.getSourceConfig(), externalLayerConfig.data_type);
+    }else if(style.sources.osm){
       alert('Unable to reset OSM layers');
       return;
     }else{
-      layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);
+      style = mapStyles.defaultStyle(layer_id, this.getSourceConfig(), this.state.data_type);
     }
-    this.setState({layer});
+    this.setState({style});
   }
 
   resetLegendHTML(){
-    var layer = this.state.layer;
-    if(layer.is_external
-      && layer.external_layer_config
-      && (layer.external_layer_config.type === 'raster'
-          || layer.external_layer_config.type === 'multiraster'
-          || layer.external_layer_config.type === 'ags-mapserver-tiles')){
-      layer.legend_html = mapStyles.rasterLegend(layer);
-    }else if(layer.is_external && layer.external_layer_config && layer.external_layer_config.type === 'mapbox-style'){
-      layer.legend_html = mapStyles.rasterLegend(layer);
+    var legend_html;
+    var externalLayerConfig = this.state.external_layer_config;
+    if(this.state.is_external
+      && externalLayerConfig
+      && (externalLayerConfig.type === 'raster'
+          || externalLayerConfig.type === 'multiraster'
+          || externalLayerConfig.type === 'ags-mapserver-tiles')){
+      legend_html = mapStyles.rasterLegend(this.state);
+    }else if(this.state.is_external && externalLayerConfig && externalLayerConfig.type === 'mapbox-style'){
+      legend_html = mapStyles.rasterLegend(this.state);
     }else{
-      layer.legend_html = mapStyles.defaultLegend(layer);
+      legend_html = mapStyles.defaultLegend(this.state);
     }
-    this.setState({layer});
+    this.setState({legend_html});
   }
 
   resetStyle(){
@@ -181,7 +180,6 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
 
   createLayer(_csrf: string, cb: Function){
     var _this = this;
-    var layer = this.state.layer;
     request.post('/api/layer/admin/createLayer')
     .type('json').accept('json')
     .send({
@@ -189,9 +187,8 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-          layer.layer_id = res.body.layer_id;
-        _this.setState({layer});
-        //_this.trigger(_this.state);
+        const layer_id = res.body.layer_id;
+        _this.setState({layer_id});
         cb();
       });
     });
@@ -202,7 +199,7 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     request.post('/api/layer/admin/saveSettings')
     .type('json').accept('json')
     .send({
-      layer_id: _this.state.layer.layer_id,
+      layer_id: _this.state.layer_id,
       name: data.name,
       description: data.description,
       group_id: data.group,
@@ -213,7 +210,7 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-        var layer = _this.state.layer;
+        var layer = _this.state;
         layer.name = data.name;
         layer.description = data.description;
         layer.owned_by_group_id = data.group;
@@ -223,7 +220,7 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
         if(initLayer){
           layer = _this.initLayer(layer);
         }
-        _this.setState({layer});
+        _this.setState(layer);
         cb();
       });
     });
@@ -232,11 +229,10 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
   saveDataSettings(data: Object, _csrf: string, cb: Function){
     debug("saveDataSettings");
     var _this = this;
-    var layer = this.state.layer;
     request.post('/api/layer/admin/saveDataSettings')
     .type('json').accept('json')
     .send({
-      layer_id: layer.layer_id,
+      layer_id: this.state.layer_id,
       is_empty: data.is_empty,
       empty_data_type: data.empty_data_type,
       is_external: data.is_external,
@@ -245,68 +241,63 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
       _csrf
     })
     .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        layer.is_external = data.is_external;
-        layer.external_layer_type = data.external_layer_type;
-        layer.external_layer_config = data.external_layer_config;
-        layer.is_empty = data.is_empty;
+      checkClientError(res, err, cb, (cb) => {       
+        let data_type = _this.state.data_type;
         if(data.is_empty){
-          layer.data_type = data.empty_data_type;
+          data_type = data.empty_data_type;
         }
-        _this.setState({layer});
-        _this.trigger(_this.state);
+        _this.setState({
+          is_external: data.is_external,
+          external_layer_type: data.external_layer_type,
+          external_layer_config: data.external_layer_config,
+          is_empty: data.is_empty,
+          data_type
+        });
         cb();
       });
     });
   }
 
   setStyle(style: Object, labels: Object, legend_html: string, settings: Object, preview_position: Object, cb: Function){
-    var layer = this.state.layer;
-    layer.style = style;
-    layer.labels = labels;
-    layer.legend_html = legend_html;
-    layer.preview_position = preview_position;
-    layer.settings = settings;
 
     var mapColor = this.state.mapColor;
     if(settings && settings.color){
       mapColor = settings.color;
     }
 
-    this.setState({layer, mapColor});
+    this.setState({
+       style,
+      labels,
+      legend_html,
+      preview_position,
+      settings,
+      mapColor
+    });
     this.trigger(this.state);
     if(cb) cb();
   }
 
   setDataType(data_type: string){
-    var layer = this.state.layer;
-    layer.data_type = data_type;
-
-    this.setState({layer});
-    this.trigger(this.state);
+    this.setState({data_type});
   }
 
   presetsChanged(presets: Object){
-    var layer = this.state.layer;
-    layer.presets = presets;
-
-    this.setState({layer});
-    this.trigger(this.state);
+    //TODO: make presets part of style object
+    this.setState({presets});
   }
 
   setComplete(_csrf: string, cb: Function){
     var _this = this;
-    var layer = this.state.layer;
-    layer.complete = true;
+    const complete = true;
     request.post('/api/layer/admin/setComplete')
     .type('json').accept('json')
     .send({
-      layer_id: layer.layer_id,
+      layer_id: _this.state.layer_id,
       _csrf
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-        _this.setState({layer});
+        _this.setState({complete});
         _this.trigger(_this.state);
         cb();
       });
@@ -315,11 +306,10 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
 
   saveStyle(data: Object, _csrf: string, cb: Function){
     var _this = this;
-    var layer = this.state.layer;
     request.post('/api/layer/admin/saveStyle')
     .type('json').accept('json')
     .send({
-      layer_id: layer.layer_id,
+      layer_id: _this.state.layer_id,
       style: data.style,
       labels: data.labels,
       legend_html: data.legend_html,
@@ -329,11 +319,11 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-        layer.style = data.style;
-        layer.legend_html = data.legend_html;
-        layer.preview_position = data.preview_position;
-        _this.setState({layer});
-        _this.trigger(_this.state);
+        _this.setState({
+          style: data.style,
+          legend_html: data.legend_html,
+          preview_position: data.preview_position
+        });
         cb();
       });
     });
@@ -341,9 +331,9 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
 
   loadData(_csrf: string, cb: Function){
     debug("loadData");
-    if(this.state.layer && this.state.layer.layer_id){
+    if(this.state.layer_id){
        var _this = this;
-      request.post('/api/layer/create/savedata/' + this.state.layer.layer_id)
+      request.post('/api/layer/create/savedata/' + this.state.layer_id)
       .type('json').accept('json').timeout(1200000)
       .set('csrf-token', _csrf)
       .end((err, res) => {
@@ -359,9 +349,9 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
 
   initEmptyLayer(_csrf: string, cb: Function){
     debug("initEmptyLayer");
-    if(this.state.layer && this.state.layer.layer_id){
+    if(this.state.layer_id){
       var _this = this;
-      request.post('/api/layer/create/empty/' + this.state.layer.layer_id)
+      request.post('/api/layer/create/empty/' + this.state.layer_id)
       .type('json').accept('json')
       .set('csrf-token', _csrf)
       .end((err, res) => {
@@ -379,7 +369,7 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     request.post('/api/layer/finishupload')
     .type('json').accept('json')
     .send({
-      layer_id: _this.state.layer.layer_id,
+      layer_id: _this.state.layer_id,
       requestedShapefile,
       _csrf
     })
@@ -391,8 +381,8 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
   }
 
   deleteData(data: Object, _csrf: string, cb: Function){
-     if(this.state.layer && this.state.layer.layer_id){
-      request.post('/api/layer/deletedata/' + this.state.layer.layer_id)
+     if(this.state.layer_id){
+      request.post('/api/layer/deletedata/' + this.state.layer_id)
       .type('json').accept('json')
       .set('csrf-token', _csrf)
       .end((err, res) => {
@@ -408,7 +398,7 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     request.post('/api/layer/admin/delete')
     .type('json').accept('json')
     .send({
-      layer_id: _this.state.layer.layer_id,
+      layer_id: _this.state.layer_id,
       _csrf
     })
     .end((err, res) => {
@@ -423,7 +413,7 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     request.post('/api/layer/admin/delete')
     .type('json').accept('json')
     .send({
-      layer_id: _this.state.layer.layer_id,
+      layer_id: _this.state.layer_id,
       _csrf
     })
     .end((err, res) => {
@@ -438,4 +428,98 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
   tileServiceInitialized(){
     this.setState({tileServiceInitialized: true});
   }
+
+  //
+  //preset methods
+
+
+  loadDefaultPresets(){
+    //called when setting up a new empty layer
+    var presets = [
+      {tag: 'name', label: 'Name', type: 'text', isRequired: true, showOnMap: true, id: this.idSequence++},
+      {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.idSequence++},
+      {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.idSequence++}
+    ];
+    this.setState({presets, pendingChanges: true});
+  }
+
+  setImportedTags(data: Object){
+    debug("setImportedTags");
+    var _this = this;
+    //clear default presets
+    var presets = [];
+
+    //convert tags to presets
+    data.forEach((tag: string) => {
+      var preset = {};
+      if(tag === 'mhid'){
+         preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
+      }else{
+         preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.idSequence++};
+      }
+      presets.push(preset);
+    });
+    this.setState({presets, pendingChanges: true});
+    Actions.presetsChanged(this.state.presets);
+  }
+
+
+  deletePreset(id: number){
+    debug("delete preset:"+ id);
+    _remove(this.state.presets, {id});
+    this.state.pendingChanges = true;
+    this.trigger(this.state);
+    Actions.presetsChanged(this.state.presets);
+  }
+
+  addPreset(){
+      debug("adding new preset");
+      this.state.presets.push({
+      tag: '',
+      label: '',
+      type: 'text',
+      isRequired: false,
+      showOnMap: true,
+      id: this.idSequence++
+    });
+    this.state.pendingChanges = true;
+    this.trigger(this.state);
+    Actions.presetsChanged(this.state.presets);
+  }
+
+ updatePreset(id: number, preset: Object){
+   debug("update preset:" + id);
+   var i = _findIndex(this.state.presets, {id});
+   if(i >= 0){
+     this.state.presets[i] = preset;
+     this.state.pendingChanges = true;
+     this.trigger(this.state);
+   }else{
+     debug("Can't find preset with id: "+ id);
+   }
+ }
+
+ movePresetUp(id: number){
+   var index = _findIndex(this.state.presets, {id});
+   if(index === 0) return;
+   this.state.presets = this.move(this.state.presets, index, index-1);
+   this.trigger(this.state);
+   this.presetsChanged(this.state.presets);
+ }
+
+ movePresetDown(id: number){
+   var index = _findIndex(this.state.presets, {id});
+   if(index === this.state.presets.length -1) return;
+   this.state.presets = this.move(this.state.presets, index, index+1);
+   this.trigger(this.state);
+   this.presetsChanged(this.state.presets);
+ }
+
+ move(array: Array<Object>, fromIndex: number, toIndex: number) {
+    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
+    return array;
+ }
+
+
+
 }

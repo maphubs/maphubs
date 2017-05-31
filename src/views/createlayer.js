@@ -47,8 +47,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
   }
 
   state: State = {
-    step: 1,
-    layer: {}
+    step: 1
   }
 
   constructor(props: Object){
@@ -62,13 +61,13 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
     var _this = this;
 
     window.onunload = function(){
-      if(_this.state.layer.layer_id && _this.state.layer.layer_id !== -1 && !_this.state.layer.complete){
+      if(_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete){
         $.ajax({
          type: "POST",
          url: '/api/layer/admin/delete',
          contentType : 'application/json;charset=UTF-8',
          dataType: 'json',
-         data: JSON.stringify({layer_id: _this.state.layer.layer_id, _csrf: _this.state._csrf}),
+         data: JSON.stringify({layer_id: _this.state.layer_id, _csrf: _this.state._csrf}),
           async: false,
           success(){
 
@@ -81,9 +80,9 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
     };
 
     window.onbeforeunload = function(){
-      if(_this.state.layer.layer_id && _this.state.layer.layer_id !== -1 && !_this.state.layer.complete){
+      if(_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete){
         return _this.__('You have not finished creating your layer, if you leave now your layer will be deleted.');
-      }else if (!_this.state.layer.layer_id || _this.state.layer.layer_id === -1) {
+      }else if (!_this.state.layer_id || _this.state.layer_id === -1) {
         return _this.__('You have not finished creating your layer.');
       }
     };

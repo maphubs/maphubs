@@ -88,7 +88,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer.layer_id);
+        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
       }
     });
@@ -148,7 +148,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     }
 
     
-    var url = "/api/layer/" + this.state.layer.layer_id + "/upload";
+    var url = "/api/layer/" + this.state.layer_id + "/upload";
     var largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (

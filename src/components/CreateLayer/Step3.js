@@ -32,8 +32,7 @@ export default class Step3 extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    saving: false,
-    layer: {}
+    saving: false
   }
 
   constructor(props: Props){
@@ -42,9 +41,9 @@ export default class Step3 extends MapHubsComponent<void, Props, State> {
   }
 
   onSubmit = () => {
-    if(!this.state.layer.is_external && !this.state.layer.is_empty){
+    if(!this.state.is_external && !this.state.is_empty){
       return this.saveDataLoad();
-    }else if(this.state.layer.is_empty){
+    }else if(this.state.is_empty){
       return this.initEmptyLayer();
     }
     else{

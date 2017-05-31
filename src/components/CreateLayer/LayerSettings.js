@@ -93,12 +93,12 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
     var _this = this;
 
     var initLayer = false;
-    if(!this.state.layer.owned_by_group_id){
+    if(!this.state.owned_by_group_id){
       initLayer = true;
     }
-    if(!model.group && this.state.layer.owned_by_group_id){
+    if(!model.group && this.state.owned_by_group_id){
       //editing settings on an existing layer
-      model.group = this.state.layer.owned_by_group_id;
+      model.group = this.state.owned_by_group_id;
     }else if(!model.group && this.props.groups.length === 1){
       //creating a new layer when user is only the member of a single group (not showing the group dropdown)
       model.group = this.props.groups[0].group_id;
@@ -125,7 +125,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
 
 	render() {
 
-    if(!this.state.groups || this.state.groups.length === 0){
+    if(!this.props.groups || this.props.groups.length === 0){
       return (
         <div className="container">
           <div className="row">
@@ -136,7 +136,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
       );
     }
     var canChangeGroup = true;
-    if(this.state.layer.status === 'published'){
+    if(this.state.status === 'published'){
       canChangeGroup = false;
     }
     
@@ -156,7 +156,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
       );
     }
 
-    var license = this.state.layer.license ? this.state.layer.license : 'none';
+    var license = this.state.license ? this.state.license : 'none';
 
 		return (
         <div style={{marginRight: '2%', marginLeft: '2%', marginTop:'10px'}}>
@@ -165,7 +165,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
               <div className="col s12 m6">
                 <div className="row">
                   <TextInput name="name" label={this.__('Name')} icon="info" className="col s12"
-                      value={this.state.layer.name}
+                      value={this.state.name}
                       validations="maxLength:100" validationErrors={{
                         maxLength: this.__('Name must be 100 characters or less.')
                       }} length={100}
@@ -174,7 +174,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
                 </div>
                 <div className="row">
                   <TextArea name="description" label={this.__('Description')} icon="description" className="col s12"
-                      value={this.state.layer.description}
+                      value={this.state.description}
                       validations="maxLength:1000" validationErrors={{
                         maxLength: this.__('Description must be 1000 characters or less.')
                       }} length={1000}
@@ -182,13 +182,13 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
                       required/>
                 </div>             
                 <div  className="row">
-                  <SelectGroup groups={this.state.groups} type="layer" canChangeGroup={canChangeGroup} editing={!canChangeGroup}/>
+                  <SelectGroup groups={this.props.groups} type="layer" canChangeGroup={canChangeGroup} editing={!canChangeGroup}/>
                 </div>
               </div>
               <div className="col s12 m6">
               <div className="row">
                 <TextInput name="source" label={this.__('Source Description')} icon="explore" className="col s12"
-                  value={this.state.layer.source}
+                  value={this.state.source}
                   validations="maxLength:300" validationErrors={{
                        maxLength: this.__('Name must be 300 characters or less.')
                    }} length={300}

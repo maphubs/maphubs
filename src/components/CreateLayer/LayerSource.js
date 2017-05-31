@@ -39,8 +39,7 @@ export default class LayerSource extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    canSubmit: false,
-    layer: {}
+    canSubmit: false
   }
 
   constructor(props: Object){
@@ -97,11 +96,8 @@ export default class LayerSource extends MapHubsComponent<void, Props, State> {
 
     var licenseOptions = Licenses.getLicenses(this.__);
 
-    var license = 'none';
-    if(this.state.layer.license){
-      license = this.state.layer.license;
-    }
-
+    var license = this.state.license ? this.state.license : 'none';
+    
 		return (
         <div className="container">
 
@@ -109,7 +105,7 @@ export default class LayerSource extends MapHubsComponent<void, Props, State> {
               <h5>{this.__('Source Information')}</h5>
               <div className="row">
                 <TextInput name="source" label={this.__('Source Description')} icon="explore" className="col s12"
-                  value={this.state.layer.source}
+                  value={this.state.source}
                   validations="maxLength:300" validationErrors={{
                        maxLength: this.__('Name must be 300 characters or less.')
                    }} length={300}

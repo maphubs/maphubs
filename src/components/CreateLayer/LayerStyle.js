@@ -52,12 +52,13 @@ export default class LayerStyle extends MapHubsComponent {
     _this.setState({saving: true});
     var preview_position =  this.refs.map.getPosition();
     preview_position.bbox = this.refs.map.getBounds();
+    //TODO: add set preview posistion action
     LayerActions.saveStyle({
-      layer_id: this.state.layer.layer_id,
-      style: this.state.layer.style,
-      labels: this.state.layer.labels,
-      settings: this.state.layer.settings,
-      legend_html: this.state.layer.legend_html,
+      layer_id: this.state.layer_id,
+      style: this.state.style,
+      labels: this.state.labels,
+      settings: this.state.settings,
+      legend_html: this.state.legend_html,
       preview_position
     },
     this.state._csrf,
@@ -66,7 +67,7 @@ export default class LayerStyle extends MapHubsComponent {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        if(_this.props.onSubmit) _this.props.onSubmit(_this.state.layer.layer_id, _this.state.layer.name);
+        if(_this.props.onSubmit) _this.props.onSubmit(_this.state.layer_id, _this.state.name);
       }
     });
   }
@@ -78,48 +79,48 @@ export default class LayerStyle extends MapHubsComponent {
   //Color must now be a rgba() formatted string
   setColor = (color: string, settings: Object) => {
 
-    var style = mapStyles.updateStyleColor(this.state.layer.style, color);
-    var legend = mapStyles.legendWithColor(this.state.layer, color);
-    LayerActions.setStyle(style, this.state.layer.labels, legend, settings, null);
+    var style = mapStyles.updateStyleColor(this.state.style, color);
+    var legend = mapStyles.legendWithColor(this.state, color);
+    LayerActions.setStyle(style, this.state.labels, legend, settings, null);
 
   }
 
   setRasterOpacity = (opacity: number) => {
 
     var style = null;
-    if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'ags-mapserver-tiles'){
-      style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
-    }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'multiraster'){
-       style = mapStyles.multiRasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.layers, opacity, 'raster');
+    if(this.state.is_external && this.state.external_layer_config.type === 'ags-mapserver-tiles'){
+      style = mapStyles.rasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
+    }else if(this.state.is_external && this.state.external_layer_config.type === 'multiraster'){
+       style = mapStyles.multiRasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.layers, opacity, 'raster');
     }
     else{
       var baseUrl = urlUtil.getBaseUrl();
-      style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
+      style = mapStyles.rasterStyleWithOpacity(this.state.layer_id, baseUrl + '/api/layer/' + this.state.layer_id +'/tile.json', opacity);
     }
 
-    var legend = mapStyles.rasterLegend(this.state.layer);
-    LayerActions.setStyle(style,  this.state.layer.labels, legend, this.state.layer.settings, this.state.layer.preview_position);
+    var legend = mapStyles.rasterLegend(this.state);
+    LayerActions.setStyle(style,  this.state.labels, legend, this.layer.settings, this.state.preview_position);
     this.setState({rasterOpacity: opacity});
   }
 
   setStyle = (style: Object) => {
-    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
+    LayerActions.setStyle(style, this.state.labels, this.state.legend_html, this.state.settings, this.state.preview_position);
   }
 
   setLabels = (style: Object, labels: Object) => {
-    LayerActions.setStyle(style, labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
+    LayerActions.setStyle(style, labels, this.state.legend_html, this.state.settings, this.state.preview_position);
   }
 
   setMarkers = (style: Object) => {
-    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, this.state.layer.settings, this.state.layer.preview_position);
+    LayerActions.setStyle(style, this.state.labels, this.state.legend_html, this.state.settings, this.state.preview_position);
   }
 
   setSettings = (style: Object, settings: Object) => {
-    LayerActions.setStyle(style, this.state.layer.labels, this.state.layer.legend_html, settings, this.state.layer.preview_position);
+    LayerActions.setStyle(style, this.state.labels, this.state.legend_html, settings, this.state.preview_position);
   }
 
   setLegend = (legend_html: string) => {
-    LayerActions.setStyle(this.state.layer.style, this.state.layer.labels, legend_html, this.state.layer.settings, this.state.layer.preview_position);
+    LayerActions.setStyle(this.state.style, this.state.labels, legend_html, this.state.settings, this.state.preview_position);
   }
 
   reloadMap = () => {
@@ -144,20 +145,20 @@ export default class LayerStyle extends MapHubsComponent {
     const showMap = this.props.waitForTileInit ? this.state.tileServiceInitialized : true;
 
     var mapExtent = null;
-    if(this.state.layer.preview_position && this.state.layer.preview_position.bbox){
-      var bbox = this.state.layer.preview_position.bbox;
+    if(this.state.preview_position && this.state.preview_position.bbox){
+      var bbox = this.state.preview_position.bbox;
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];
     }
 
     var map = '';
-    if(this.state.layer.layer_id !== undefined
-      && this.state.layer.layer_id !== -1
+    if(this.state.layer_id !== undefined
+      && this.state.layer_id !== -1
       && showMap){
         map = (
           <div>
             <div className="row no-margin">
               <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
-              glStyle={this.state.layer.style}
+              glStyle={this.state.style}
               showLogo={false}
               mapConfig={this.props.mapConfig}
               fitBounds={mapExtent}
@@ -166,7 +167,7 @@ export default class LayerStyle extends MapHubsComponent {
             <div className="row" style={{width: '400px', position: 'relative'}}>
               <MiniLegend style={{height: 'auto', width: '400px', margin: 'auto', overflow: 'auto'}}
                 collapsible={true} hideInactive={false} showLayersButton={false}
-                layers={[this.state.layer]}/>
+                layers={[this.state]}/>
             </div>  
           </div>
         );
@@ -183,25 +184,25 @@ export default class LayerStyle extends MapHubsComponent {
     }
 
     var colorChooser = '';
-    if(this.state.layer.is_external
-      && (this.state.layer.external_layer_config.type === 'raster'
-      || this.state.layer.external_layer_config.type === 'multiraster'
-      || this.state.layer.external_layer_config.type === 'ags-mapserver-tiles')) {
+    if(this.state.is_external
+      && (this.state.external_layer_config.type === 'raster'
+      || this.state.external_layer_config.type === 'multiraster'
+      || this.state.external_layer_config.type === 'ags-mapserver-tiles')) {
       colorChooser = (
         <div>
           <h5>{this.__('Choose Style')}</h5>
           <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-            style={this.state.layer.style} onStyleChange={this.setStyle}
-            layer={this.state.layer}
-            legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend} showAdvanced/>
+            style={this.state.style} onStyleChange={this.setStyle}
+            layer={this.state}
+            legendCode={this.state.legend_html} onLegendChange={this.setLegend} showAdvanced/>
         </div>
       );
-    }else if(this.state.layer.is_external && this.state.layer.external_layer_config.type === 'mapbox-style') {
+    }else if(this.state.is_external && this.state.external_layer_config.type === 'mapbox-style') {
        colorChooser = (
          <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
             <b>{this.__('Mapbox Studio Style Layer')}</b>
             <p>{this.__('If you are the owner of this layer, click here to edit in Mapbox Studio on mapbox.com')}</p>
-            <a target="_blank" rel="noopener noreferrer" className="btn" href={'https://www.mapbox.com/studio/styles/' + this.state.layer.external_layer_config.mapboxid + '/edit'}>{this.__('Edit in Mapbox Studio')}</a>
+            <a target="_blank" rel="noopener noreferrer" className="btn" href={'https://www.mapbox.com/studio/styles/' + this.state.external_layer_config.mapboxid + '/edit'}>{this.__('Edit in Mapbox Studio')}</a>
             <p>{this.__('Once you have published your style on Mapbox,click refresh the preview map.')}
             <b>{this.__('It may take a few minutes for the changes to appear, your layer will update automatically.')}</b>
             </p>
@@ -213,11 +214,11 @@ export default class LayerStyle extends MapHubsComponent {
       <div>
         <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-            style={this.state.layer.style} onStyleChange={this.setStyle}
-            labels={this.state.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
-            settings={this.state.layer.settings} onSettingsChange={this.setSettings}
-            layer={this.state.layer}
-            legendCode={this.state.layer.legend_html} onLegendChange={this.setLegend}/>
+            style={this.state.style} onStyleChange={this.setStyle}
+            labels={this.state.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
+            settings={this.state.settings} onSettingsChange={this.setSettings}
+            layer={this.state}
+            legendCode={this.state.legend_html} onLegendChange={this.setLegend}/>
       </div>
     );
   }
