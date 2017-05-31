@@ -25,6 +25,7 @@ import ForestAlertMixin from './Helpers/ForestAlertMixin';
 import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
 import DataEditorMixin from './Helpers/DataEditorMixin';
 import ForestLossMixin from './Helpers/ForestLossMixin';
+import MapSearchMixin from './Helpers/MapSearchMixin';
 import DataEditorActions from '../../actions/DataEditorActions';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../MapHubsComponent';
@@ -128,6 +129,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
         ForestAlertMixin.call(this);
         DataEditorMixin.call(this);
        ForestLossMixin.call(this);
+       MapSearchMixin.call(this);
 
        Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate');
        Reflux.listenTo(AnimationActions.tick, 'tick');
@@ -758,6 +760,8 @@ export default class Map extends MapHubsComponent<void, Props, State> {
           {children}
           {logo}
           {animationOverlay}
+          <MapToolButton  top="80px" right="10px" icon="search" show={true} color="#000"
+            onClick={this.onSearch} tooltipText={this.__('Search')} />
         </div>
         <MarkerSprites />
         </div>
