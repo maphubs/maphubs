@@ -403,7 +403,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
       touchZoomRotate: _this.props.enableRotation ? true : false,
       center: [0,0],
       hash: _this.props.hash,
-      attributionControl: _this.props.attributionControl
+      attributionControl: false
     });
 
   map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
@@ -461,8 +461,11 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     map.addControl(new mapboxgl.FullscreenControl());
   }
 
-  
+  if(_this.props.attributionControl){
+    map.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
+  }
 
+  
   map.addControl(new ScalePositionControl({
       maxWidth: 175,
   }), 'bottom-right');
@@ -688,7 +691,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
 
     var insetMap = '';
     if(this.props.insetMap){
-      var bottom='5px';
+      var bottom='25px';
       if(this.props.showLogo){
          bottom='30px';
       }
