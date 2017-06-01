@@ -174,7 +174,8 @@ export default class AddItem extends MapHubsComponent {
    if (!this.state.value) return;
    this.props.onAdd({value: this.state.value, option: this.state.option});
    //reset form
-   this.setState({ value: '',
+   this.setState({ 
+      value: '',
       suggestions: [],
       highlightedItem: -1,
       option: false
@@ -185,14 +186,19 @@ export default class AddItem extends MapHubsComponent {
 
    return (
      <div>
-       <nav className="omh-search-bar white">
-      <div className="nav-wrapper omh-search-bar-wrapper no-margin row">
-
+       <div className="white no-margin">
           <form>
             <div className="input-field">
-              <input id={this.props.id} className="omh-search"
+              <input id={this.props.id}
                 type="search"
-                  style = {{margin: 0}}
+                  style = {{
+                    margin: 0,
+                    color: '#212121',
+                    borderRadius: '25px',
+                    height: '2.2pc',
+                    lineHeight: '2.2pc',
+                    fontSize: '1rem'
+                    }}
                   name={this.props.inputName}
                   maxLength="100"
                   autoComplete="off"
@@ -206,7 +212,7 @@ export default class AddItem extends MapHubsComponent {
                   data-activates={this.refs.suggestions}
                 required />
 
-              <label htmlFor={this.props.id}><i className="material-icons omh-search-icon">search</i></label>
+              <label htmlFor={this.props.id}><i className="material-icons">search</i></label>
             </div>
           </form>
             <Formsy.Form >
@@ -217,19 +223,15 @@ export default class AddItem extends MapHubsComponent {
 
             <a className="btn waves-effect waves-light right" onClick={this.submit}>{this.props.addButtonLabel}</a>
 
-
-
       </div>
-      </nav>
-      <div className="row no-margin">
-        {!!this.state.suggestions.length &&
-          <Suggestions
-            ref="suggestions"
-            suggestions={this.state.suggestions}
-            highlightedItem={this.state.highlightedItem}
-            onSelection={this.fillInSuggestion} />}
-      </div>
-
+        <div className="row no-margin">
+          {!!this.state.suggestions.length &&
+            <Suggestions
+              ref="suggestions"
+              suggestions={this.state.suggestions}
+              highlightedItem={this.state.highlightedItem}
+              onSelection={this.fillInSuggestion} />}
+        </div>
       </div>
    );
  }

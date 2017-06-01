@@ -27,7 +27,6 @@ export default class SearchBar extends React.Component {
     autoFocus: boolean,
     autosuggestDelay: number,
     inputName: string,
-    style: Object,
     placeholder: string,
     onReset: Function,
     onSubmit: Function,
@@ -166,17 +165,31 @@ export default class SearchBar extends React.Component {
 
   render() {
     return (
-      <div style={this.props.style}>
-      <nav className="omh-search-bar no-margin">
-    <div className="nav-wrapper omh-search-bar-wrapper row white no-margin">
-
+      <div className="white no-margin"
+      style={{
+        borderRadius: '25px',
+        border: '1px solid #212121',
+        boxSizing: 'content-box',
+        height: '2.2pc',
+        lineHeight: '2.2pc' 
+      }}
+      >
+     
       <form style={{boxSizing: 'content-box'}}>
 
-        <div className="input-field">
+        <div className="input-field no-margin" style={{position: 'relative'}}>
           <input id={this.props.id}
-            className="omh-search truncate"
+            className="truncate"
             type="search"
-              style = {{margin: 0}}
+              style = {{
+                margin: 0, 
+                border: 'none',
+                color: '#212121',                   
+                height: '2.2pc',
+                lineHeight: '2.2pc',
+                fontSize: '1rem',
+                background: 'transparent'
+                }}
               name={this.props.inputName}
               maxLength="100"
               autoComplete="off"
@@ -190,24 +203,30 @@ export default class SearchBar extends React.Component {
               data-activates={this.refs.suggestions}
             required />
 
-          <label htmlFor={this.props.id} style={{height: 'inherit', lineHeight: 'inherit'}}><i className="material-icons omh-search-icon" style={{height: 'inherit', lineHeight: 'inherit'}}>search</i></label>
+          <label htmlFor={this.props.id} 
+            style={{
+              height: 'inherit', 
+              lineHeight: 'inherit',
+              position: 'absolute', 
+              top: '0px', left: '0px', 
+              marginLeft: '5px',
+              marginRight: '5px',
+              transform: 'inherit'}}>
+            <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}}>search</i>
+          </label>
           <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset}>close</i>
         </div>
       </form>
 
-
+      <div className="row no-margin">
+        {!!this.state.suggestions.length &&
+          <Suggestions
+            ref="suggestions"
+            suggestions={this.state.suggestions}
+            highlightedItem={this.state.highlightedItem}
+            onSelection={this.fillInSuggestion} />}
+      </div>
     </div>
-
-  </nav>
-  <div className="row no-margin">
-    {!!this.state.suggestions.length &&
-      <Suggestions
-        ref="suggestions"
-        suggestions={this.state.suggestions}
-        highlightedItem={this.state.highlightedItem}
-        onSelection={this.fillInSuggestion} />}
-  </div>
-  </div>
     );
   }
 }

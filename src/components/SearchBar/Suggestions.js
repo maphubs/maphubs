@@ -34,6 +34,6 @@ export default class Suggestions extends React.Component {
         <a href="#!">{match.value}</a>
       </li>
     );
-    return <ul className="search-bar-suggestions omh-search-bar-suggestions dropdown-content">{suggestions}</ul>;
+    return <ul className="search-bar-suggestions dropdown-content" style={{opacity: 1}}>{suggestions}</ul>;
   }
 }

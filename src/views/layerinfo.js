@@ -612,5 +612,3 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 		);
 	}
 }
-
-//map-absolute map-with-header width-50

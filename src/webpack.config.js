@@ -104,7 +104,7 @@ module.exports = {
         include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-disqus-thread/, /react-colorpickr/],       
         options: {
           presets: [
-           ["es2015", { "modules": false }],
+           ["es2015", {"modules": false}],
             "react",
             "stage-0"
           ],

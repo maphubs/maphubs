@@ -56,17 +56,13 @@ export default class SearchBox extends React.Component<Props, Props, void> {
 
 
  render() {
-   return (<div>
+   return (
      <SearchBar
-       ref="searchBox"
        id={this.props.id}
-       style={this.props.style}
        placeholder={this.props.label}
        onChange={this.onChange}
        onSubmit={this.onSubmit}
        onReset={this.props.onReset} />
-   </div>
-
    );
  }
 }
