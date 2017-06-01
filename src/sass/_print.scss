@@ -1,0 +1,30 @@
+@media print {
+  nav {
+    display: none;
+    height: 0px;
+  }
+
+  #user-map-button{
+    display: none;
+  }
+
+  .mapboxgl-ctrl {
+    display: none;
+  }
+
+  .z-depth-1, .z-depth-2, .z-depth-3, .z-depth-4 {
+    box-shadow: none;
+  }
+
+  #disqus_thread {
+    display: none;
+  }
+
+  .story-title {
+    font-size: 28px;
+  }
+
+  .embed-map-container {
+    page-break-inside: avoid;
+  }
+}

@@ -1,0 +1,61 @@
+
+.hub-banner {
+  height: 250px;
+}
+
+.hub-banner-subpage {
+  height: 200px;
+}
+
+.hub-description {
+  font-family: 'Raleway', sans-serif;
+}
+
+.hub-section {
+  color: #212121;
+}
+
+.hub-section:hover {
+  color: $primary-color;
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  /* ...and now for the proper property */
+  transition:.5s;
+}
+
+.hub-tagline p {
+  margin: 0;
+}
+
+.hub-title p {
+  margin: 0;
+}
+
+.hub-icon-wrapper{
+  border-radius: 25px;
+}
+
+.hub-icon-wrapper i {
+  color: $primary-color;
+}
+
+.hub-icon-wrapper h5 {
+  color: #212121;
+}
+
+
+.hub-icon-wrapper:hover {
+  color: #FFF;
+  background-color: $primary-color;
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  transition:.5s;
+}
+
+.hub-icon-wrapper:hover i, .hub-icon-wrapper:hover h5 {
+  color: #FFF;
+}

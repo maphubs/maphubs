@@ -1,0 +1,20 @@
+.mailing-list-text-input {
+  width: 75%;
+}
+
+.mailing-list-text-input input {
+  margin: 0;
+  height: 38px;
+  border: 1px solid #aaa;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 0px;
+  padding-left: 10px;
+  width: 100%;
+  }
+
+.mailing-list-text-input input:focus {
+  border: 1px solid #aaa !important;
+  box-shadow: none !important;
+}

@@ -11,5 +11,14 @@ $roboto-font-path: "./node_modules/materialize-css/fonts/roboto/";
 
 @import "./node_modules/react-material-select/lib/css/reactMaterialSelect";
 
-//load our application-wide css
+//load our component css
+@import "./sass/components/_all.scss";
+
+//layout helper classes
+@import "./sass/_layout.scss";
+
+//load OLD application-wide css
 @import "./sass/app.scss";
+
+//print css
+@import "./sass/_print.scss";

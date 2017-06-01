@@ -1,0 +1,44 @@
+
+
+.map-search input[type=search] {
+  outline: none;
+	
+	padding: 0px;
+	width: 25px;
+	cursor: pointer;
+
+	box-sizing: content-box;
+  -webkit-appearance: textfield;
+	-webkit-box-sizing: content-box;
+	
+	-webkit-transition: all .5s;
+	-moz-transition: all .5s;
+	transition: all .5s;
+}
+
+
+.map-search input[type=search]:hover {
+	background-color: #fff;
+}
+
+.map-search input[type=search]:focus {
+	min-width: 150px;
+  width: 50%;
+	padding-left: 32px;
+	color: #000;
+	cursor: auto;
+	background-color: #fff;
+	border-color: #66CC75;
+	
+	-webkit-box-shadow: 0 0 5px rgba(109,207,246,.5);
+	-moz-box-shadow: 0 0 5px rgba(109,207,246,.5);
+	box-shadow: 0 0 5px rgba(109,207,246,.5);
+}
+
+
+.map-search input[type=search]:-moz-placeholder {
+	color: transparent;
+}
+.map-search input[type=search]::-webkit-input-placeholder {
+	color: transparent;
+}

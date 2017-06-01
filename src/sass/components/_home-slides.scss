@@ -1,0 +1,44 @@
+.slide-text {
+  position: absolute;
+  display: block;
+  margin-left: 5%;
+  max-width: 80%;
+  padding: 0;
+  top: 50%;
+  bottom: auto;
+  width: auto;
+  background: none;
+  -webkit-transform: translate(0, -50%);
+  transform: translate(0, -50%);
+}
+
+.slide-text h2 {
+  background: rgba(0,0,0,0.55);
+    font-size: 61px;
+    padding: 10px 5px 5px;
+    color: rgba(255,255,255,0.85);
+    border: none;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.slide-text h3 {
+  display: inline-block;
+  float: left;
+  clear: both;
+  background: rgba(0,0,0,0.55);
+  font-size: 31px;
+  padding: 5px;
+  overflow: hidden;
+  color: rgba(255,255,255,0.85);
+  border: none;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+.slide-button {
+  position: absolute;
+  width: 100%;
+  margin: auto;
+  bottom: 50px;
+}

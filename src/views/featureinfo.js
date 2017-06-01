@@ -441,7 +441,12 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 
           </div>
             <div className="col s6 no-padding">
-              <Map ref="map" className="map-absolute map-with-header width-50" 
+              <Map ref="map" className="width-50" 
+              style={{
+                position: 'absolute',
+                top: '51px',
+                bottom:0
+              }}
               fitBounds={this.props.feature.geojson.bbox} 
               data={this.props.feature.geojson} 
               mapConfig={this.props.mapConfig}
