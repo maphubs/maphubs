@@ -44,8 +44,7 @@ class TextInput extends MapHubsPureComponent {
       type: 'text',
       style: {},
       showCharCount: true,
-      useMaterialize: true,
-      onClick: Function
+      useMaterialize: true
   }
 
   constructor(props: Object) {

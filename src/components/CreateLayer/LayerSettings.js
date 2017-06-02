@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 import Formsy from 'formsy-react';
-import TextArea from '../forms/textArea';
-import TextInput from '../forms/textInput';
+import MultiTextArea from '../forms/MultiTextArea';
+import MultiTextInput from '../forms/MultiTextInput';
 import SelectGroup from '../Groups/SelectGroup';
 import Select from '../forms/select';
 import Licenses from './licenses';
@@ -44,7 +44,8 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
     active: true,
     showGroup: true,
     warnIfUnsaved: false,
-    showPrev: false
+    showPrev: false,
+    groups: []
   }
 
   state: State = {
@@ -125,7 +126,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
 
 	render() {
 
-    if(!this.props.groups || this.props.groups.length === 0){
+    if(this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)){
       return (
         <div className="container">
           <div className="row">
@@ -139,6 +140,8 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
     if(this.state.status === 'published'){
       canChangeGroup = false;
     }
+
+   
     
     var licenseOptions = Licenses.getLicenses(this.__);
 
@@ -158,13 +161,26 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
 
     var license = this.state.license ? this.state.license : 'none';
 
+     var selectGroup = '';
+    if(this.props.showGroup){
+      selectGroup = (
+        <div  className="row">
+          <SelectGroup groups={this.props.groups} type="layer" canChangeGroup={canChangeGroup} editing={!canChangeGroup}/>
+        </div>
+      );
+    }
+
 		return (
         <div style={{marginRight: '2%', marginLeft: '2%', marginTop:'10px'}}>
             <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
               <div className="row">
               <div className="col s12 m6">
                 <div className="row">
-                  <TextInput name="name" label={this.__('Name')} icon="info" className="col s12"
+                  <MultiTextInput name="name"
+                  label={{
+                    en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
+                  }}
+                 className="col s12"
                       value={this.state.name}
                       validations="maxLength:100" validationErrors={{
                         maxLength: this.__('Name must be 100 characters or less.')
@@ -173,7 +189,14 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
                       required/>
                 </div>
                 <div className="row">
-                  <TextArea name="description" label={this.__('Description')} icon="description" className="col s12"
+                  <MultiTextArea name="description" 
+                    label={{
+                      en: 'Description',
+                      fr: 'Description',
+                      es: 'Descripción',
+                      it: 'Descrizione'
+                    }} 
+                    className="col s12"
                       value={this.state.description}
                       validations="maxLength:1000" validationErrors={{
                         maxLength: this.__('Description must be 1000 characters or less.')
@@ -181,13 +204,13 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
                       dataPosition="top" dataTooltip={this.__('Brief Description of the Layer')}
                       required/>
                 </div>             
-                <div  className="row">
-                  <SelectGroup groups={this.props.groups} type="layer" canChangeGroup={canChangeGroup} editing={!canChangeGroup}/>
-                </div>
+                {selectGroup}
               </div>
               <div className="col s12 m6">
               <div className="row">
-                <TextInput name="source" label={this.__('Source Description')} icon="explore" className="col s12"
+                <MultiTextInput name="source" label={{
+                  en: 'Source', fr: 'Source', es: 'Source', it: 'Source'
+                }}  className="col s12"
                   value={this.state.source}
                   validations="maxLength:300" validationErrors={{
                        maxLength: this.__('Name must be 300 characters or less.')
@@ -199,7 +222,6 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
                   <Select name="license" id="layer-source-select" label={this.__('License')} startEmpty={false}
                     value={license} options={licenseOptions}
                     note={this.__('Select a license for more information')}
-                    icon="info"
                     className="col s12"
                     dataPosition="top" dataTooltip={this.__('Layer License')}
                     required
