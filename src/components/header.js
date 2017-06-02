@@ -48,16 +48,8 @@ export default class Header extends MapHubsComponent<void, Props, void> {
 
   componentDidMount() {
     $(this.refs.sideNav).sideNav();
-     $('.nav-tooltip').tooltip();
-    $(this.refs.explore).dropdown({
-      inDuration: 300,
-      outDuration: 225,
-      constrainWidth: true, // Does not change width of dropdown to that of the activator
-      hover: false, // Activate on hover
-      gutter: 0, // Spacing from edge
-      belowOrigin: true, // Displays dropdown below the button
-      alignment: 'right' // Displays dropdown with edge aligned to the left of button
-    });
+    $('.nav-tooltip').tooltip();
+    this.initExploreDropDown();
 
     if(this.detectIE()){
       MessageActions.showMessage({
@@ -66,6 +58,24 @@ export default class Header extends MapHubsComponent<void, Props, void> {
       });
     }
   }
+
+  componentDidUpdate(prevProps: Props){
+    if(this.props.showExplore && !prevProps.showExplore){
+      this.initExploreDropDown();
+    }
+  }
+
+initExploreDropDown = () => {
+  $('#header-explore-menu').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrainWidth: true, // Does not change width of dropdown to that of the activator
+      hover: false, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    });
+}
 
 /**
  * detect IE
@@ -139,7 +149,7 @@ getCookie = (cname: string) => {
     return "";
 }
 
-  renderSearch(){
+  renderSearch = () => {
     if(this.props.showSearch){
       let searchLink = this.props.customSearchLink? this.props.customSearchLink: '/search';
       return (
@@ -155,7 +165,7 @@ getCookie = (cname: string) => {
     }
   }
 
-  renderMakeAMap(mapClasses: any){
+  renderMakeAMap = (mapClasses: any) => {
     if(this.props.showMakeAMap){
       return (
         <li className="nav-link-wrapper">
@@ -167,7 +177,7 @@ getCookie = (cname: string) => {
     }
   }
 
-  renderOSM(mapClasses: any){
+  renderOSM = (mapClasses: any) => {
     if(this.props.showOSM){
       return (
         <li className="nav-link-wrapper nav-tooltip"
@@ -181,11 +191,11 @@ getCookie = (cname: string) => {
     }
   }
 
-  renderExplore(exploreClasses: any){
+  renderExplore = (exploreClasses: any) => {
     if(this.props.showExplore){
       return (
         <li className="nav-dropdown-link-wrapper nav-link-wrapper">
-          <a className={exploreClasses} ref="explore" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
+          <a className={exploreClasses} id="header-explore-menu" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
             <ul id="explore-dropdown" className="dropdown-content">
               <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
               <li className="divider"></li>
