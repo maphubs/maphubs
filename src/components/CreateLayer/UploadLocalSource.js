@@ -6,6 +6,7 @@ import FileUpload from '../forms/FileUpload';
 import Map from '../Map/Map';
 import NotificationActions from '../../actions/NotificationActions';
 import LayerStore from '../../stores/layer-store';
+import PresetStore from '../../stores/preset-store';
 import PresetActions from '../../actions/presetActions';
 import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
@@ -46,6 +47,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
   constructor(props: Object){
     super(props);
     this.stores.push(LayerStore);
+    this.stores.push(PresetStore);
   }
 
   componentDidMount() {
