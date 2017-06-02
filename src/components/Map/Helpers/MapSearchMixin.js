@@ -37,7 +37,6 @@ export default function() {
   };
 
   this.onSearch = (queryText: string) => {
-    queryText = 'Kat';
     var results = [];
     this.getSearchFilters(queryText).forEach(query => {
       let queryResults = MapboxGLRegexSearch.querySourceFeatures(

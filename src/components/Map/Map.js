@@ -9,6 +9,7 @@ import urlUtil from '../../services/url-util';
 import DataEditorStore from '../../stores/DataEditorStore';
 import _isequal from 'lodash.isequal';
 import MapToolButton from './MapToolButton';
+import MapSearchPanel from './MapSearchPanel';
 import MapToolPanel from './MapToolPanel';
 import InsetMap from './InsetMap';
 import LayerSources from './Sources';
@@ -762,9 +763,12 @@ export default class Map extends MapHubsComponent<void, Props, State> {
           {interactiveButton}
           {children}
           {logo}
-          {animationOverlay}
-          <MapToolButton  top="80px" right="10px" icon="search" show={true} color="#000"
-            onClick={this.onSearch} tooltipText={this.__('Search')} />
+          {animationOverlay}         
+          <MapSearchPanel 
+            show={this.state.interactive && this.state.mapLoaded}
+            height={this.props.height} 
+            onSearch={this.onSearch}
+            />
         </div>
         <MarkerSprites />
         </div>
