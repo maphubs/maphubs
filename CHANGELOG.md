@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.10.5](https://github.com/maphubs/maphubs/tree/v0.10.5) (2017-06-02)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.10.4...v0.10.5)
+
+**Fixed bugs:**
+
+- explore drop-down in nav not working [\#373](https://github.com/maphubs/maphubs/issues/373)
+
 ## [v0.10.4](https://github.com/maphubs/maphubs/tree/v0.10.4) (2017-05-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.10.3...v0.10.4)
 
