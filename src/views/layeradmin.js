@@ -180,6 +180,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
       if(this.state.tab === 'settings'){
         settingsTabContent = (
           <LayerSettings
+                groups={this.props.groups} 
                  showCancel={false}
                  showGroup={false}
                  warnIfUnsaved
@@ -234,13 +235,13 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
               </li>
              </ul>
            </div>
-           <div id="info" className="col s12">
+           <div id="info" className="col s12" style={{borderTop: '1px solid #ddd'}}>
              {settingsTabContent}
            </div>
-           <div id="fields" className="col s12" style={{display: tabContentDisplay}}>
+           <div id="fields" className="col s12" style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
              {fieldsTabContent}
            </div>
-           <div id="style" className="col s12" style={{display: tabContentDisplay}}>
+           <div id="style" className="col s12" style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
              {styleTabContent}
            </div>
         </div>
