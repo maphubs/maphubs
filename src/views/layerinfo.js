@@ -215,7 +215,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
   //Build iD edit link
   getEditLink = () => {
     //get map position
-    var position = this.refs.map.getPosition();
+    var position = this.refs.interactiveMap.getMap().getPosition();
     var zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
     var baseUrl = urlUtil.getBaseUrl();
