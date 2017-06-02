@@ -184,7 +184,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
 
   componentDidMount(){
     var _this = this;
-    $('ul.tabs').tabs();
+    $(this.refs.tabs).tabs();
     $(this.refs.mapMakerToolPanel).collapsible();
     if(this.props.edit){
       this.toggleMapTab();

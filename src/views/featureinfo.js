@@ -72,7 +72,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 	}
 
   componentDidMount(){
-    $('ul.tabs').tabs();
+    $(this.refs.tabs).tabs();
     var _this = this;
     window.onbeforeunload = function(){
       if(_this.state.editingNotes){
@@ -396,7 +396,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
             </div>
 
             <div className="row no-margin" style={{height: 'calc(100% - 67px)'}}>
-              <ul className="tabs" style={{overflowX: 'hidden'}}>
+              <ul ref="tabs" className="tabs" style={{overflowX: 'hidden'}}>
                 <li className="tab"><a className="active" href="#data">{this.__('Data')}</a></li>
                 <li className="tab"><a href="#photo">{this.__('Photo')}</a></li>
                 <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>

@@ -95,7 +95,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
   componentDidMount(){
     var _this = this;
-    $('ul.tabs').tabs();
+    $(this.refs.tabs).tabs();
     $('.layer-info-tooltip').tooltip();
 
     if(this.props.layer.is_external){
@@ -517,7 +517,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
             </div>
 
             <div className="row no-margin" style={{height: 'calc(100% - 72px)'}}>
-              <ul className="tabs" style={{overflowX: 'auto'}}>
+              <ul ref="tabs" className="tabs" style={{overflowX: 'auto'}}>
                 <li className="tab"><a className="active" href="#info">{this.__('Info')}</a></li>
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
                 <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>

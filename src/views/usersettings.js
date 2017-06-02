@@ -18,7 +18,7 @@ export default class UserSettings extends MapHubsComponent {
   }
 
   componentDidMount(){
-    $('ul.tabs').tabs();
+    $(this.refs.tabs).tabs();
   }
 
   constructor(props: Object) {
@@ -34,7 +34,7 @@ export default class UserSettings extends MapHubsComponent {
           <h5>{this.__('User Settings')}</h5>
             <div className="row">
              <div className="col s12">
-               <ul className="tabs">
+               <ul ref="tabs" className="tabs">
                  <li className="tab col s3"><a className="active" href="#profile">{this.__('Profile')}</a></li>
                  <li className="tab col s3"><a href="#password">{this.__('Password')}</a></li>
                </ul>

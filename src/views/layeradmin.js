@@ -60,7 +60,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
   }
 
   componentDidMount(){
-    $('ul.tabs').tabs();
+    $(this.refs.tabs).tabs();
     $('.layeradmin-tooltips').tooltip();
   }
 
@@ -222,7 +222,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
           <div className="row">
            <div className="col s12">
              <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
-             <ul className="tabs" style={{overflowX: 'hidden'}}>
+             <ul ref="tabs" className="tabs" style={{overflowX: 'hidden'}}>
                <li className="tab">
                  <a className="active" onClick={function(){_this.selectTab('settings');}} href="#info">{this.__('Info/Settings')}</a>
                 </li>

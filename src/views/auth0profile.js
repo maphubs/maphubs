@@ -18,7 +18,7 @@ export default class Auth0Profile extends MapHubsComponent {
   }
 
   componentDidMount(){
-    $('ul.tabs').tabs();
+    //$(this.refs.tabs).tabs();
   }
 
   constructor(props: Object) {
