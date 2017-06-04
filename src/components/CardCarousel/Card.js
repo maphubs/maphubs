@@ -21,7 +21,8 @@ export default class Card extends MapHubsComponent {
     data: Object,
     type: string,
     private: boolean,
-    onClick: Function
+    onClick: Function,
+    showAddButton: boolean
   }
 
   state = {
@@ -117,7 +118,7 @@ export default class Card extends MapHubsComponent {
 
       typeIcon = (
         <i className="material-icons grey-text text-darken-3 card-tooltip"
-          style={{position: 'absolute', bottom:1, right: 1}}
+          style={{position: 'absolute', bottom: '6px', right: '6px'}}
           data-position="bottom" data-delay="50" data-tooltip={toolTipText}>
           {iconName}
         </i>
@@ -137,51 +138,72 @@ export default class Card extends MapHubsComponent {
 
     var cardContents = (<div className="carousel-card small"></div>);
     if(this.state.mounted){
+      let addButton = '';
+      if(this.props.showAddButton){
+        addButton = (
+          <a className="btn-floating halfway-fab waves-effect waves-light red" 
+            style={{bottom: '5px', right: '10px'}}>
+            <i className="material-icons">add</i>
+          </a>
+        );
+      }
       var image = '';
       if(this.props.type === 'hub'){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', height: '150px'}}>
             <img className="responsive-img" style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
             <img className="valign" width="75" height="75" style={{position: 'relative',width: '75px', borderRadius: '15px', margin: 'auto'}}  src={this.props.image_url} />
+            {addButton}
           </div>
         );
       }else if(this.props.type === 'story' && !this.props.image_url){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
             <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
+            {addButton}
           </div>
         );
       }else if(this.props.type === 'story' && this.props.image_url){
         image = (
-          <div style={{height: '150px', width: '200px', backgroundImage: 'url('+ this.props.image_url +')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
+          <div style={{height: '150px', width: '200px', backgroundImage: 'url('+ this.props.image_url +')', backgroundSize: 'cover', backgroundPosition: 'center'}} >
+            {addButton}
+          </div>
+
         );
       }else if(this.props.type === 'group' && !this.props.image_url){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
             <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
+            {addButton}
           </div>
         );
       }else if(this.props.type === 'group' && this.props.image_url){
         image = (
           <div className="card-image" style={{borderBottom: '1px solid #757575'}}>
             <img  className="responsive-img" style={{height: '150px', width: 'auto', margin: 'auto'}} src={this.props.image_url} />
+            {addButton}
           </div>
         );
       }else{
         image = (
           <div className="card-image">
             <img width="200" height="150" style={{borderBottom: '1px solid #757575'}} src={this.props.image_url} />
+            {addButton}
           </div>
         );
       }
+
+      
+
       cardContents = (  
         <div ref="card" className='hoverable margin5 small carousel-card card' onClick={this.onClick}>
           {image}
+          
           {privateIcon}
-        <div className="card-content no-padding word-wrap" style={{margin: '5px'}}>
+        <div className="card-content word-wrap" style={{padding: '5px'}}>
 
           <b>{this.props.title}</b> <br />
-
+          
           <p className="fade" style={{fontSize: '12px'}}> {this.props.description}</p>
             {mapCardUserTag}
             {storyTag}

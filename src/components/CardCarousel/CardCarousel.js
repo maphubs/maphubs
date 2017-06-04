@@ -14,7 +14,7 @@ type Props = {
     speed: number,
     slidesToShow: number,
     slidesToScroll: number,
-   
+    showAddButton: boolean
   };
 
 export default class CardCarousel extends React.Component<Props, Props, void> {
@@ -62,7 +62,7 @@ export default class CardCarousel extends React.Component<Props, Props, void> {
            {this.props.cards.map((card) => {
              return (
                <div key={card.id}>
-                 <Card {...card} />
+                 <Card showAddButton={this.props.showAddButton} {...card} />
               </div>
             );
            })}

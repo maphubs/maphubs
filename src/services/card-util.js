@@ -16,7 +16,7 @@ module.exports = {
   getLayerCard(layer: Object, id: number, arr: Array<Object>, onClick?: Function){
     var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
     return {
-      id: layer.layer_id.toString(),
+      id: `layer-${layer.layer_id.toString()}`,
       title: layer.name,
       description: layer.description,
       image_url,
@@ -34,7 +34,7 @@ module.exports = {
     var title = hub.name.replace('&nbsp;', '');
     var hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
     return {
-      id: hub.hub_id,
+      id: `hub-${hub.hub_id}`,
       title,
       description: hub.description,
       group: hub.owned_by_group_id,
@@ -51,7 +51,7 @@ module.exports = {
   getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function){
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
-      id: map.map_id.toString(),
+      id: `map-${map.map_id.toString()}`,
       title: map.title ? map.title : '',
       group: map.owned_by_group_id,
       image_url,
@@ -69,7 +69,7 @@ module.exports = {
       image_url = '/group/' + group.group_id + '/image';
     }
     return {
-      id: group.group_id,
+      id: `group-${group.group_id}`,
       title: group.name,
       description: group.description,
       image_url,
@@ -100,7 +100,7 @@ module.exports = {
     }
 
     return {
-      id: story.story_id.toString(),
+      id: `story-${story.story_id.toString()}`,
       title,
       image_url,
       link: story_url,

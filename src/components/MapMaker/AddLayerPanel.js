@@ -79,7 +79,7 @@ export default class AddLayerPanel extends MapHubsComponent {
           <div className="col s12">
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Layers')}</h5>
             <div className="divider"></div>
-            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops}/>
+            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops} showAddButton/>
           </div>
         </div>
       );
@@ -103,7 +103,7 @@ export default class AddLayerPanel extends MapHubsComponent {
             <div className="col s12">
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
             <div className="divider"></div>
-            <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops}/>
+            <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops} showAddButton/>
           </div>
           </div>
         );
@@ -133,7 +133,7 @@ export default class AddLayerPanel extends MapHubsComponent {
               <div className="col s12">
                 <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Layers')}</h5>
                 <div className="divider"></div>
-                <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops}/>
+                <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops} showAddButton/>
               </div>
             </div>
           </div>
