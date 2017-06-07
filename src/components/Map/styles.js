@@ -222,7 +222,7 @@ module.exports = {
         "filter": ["in", "$type", "Point"],
         "paint": {
           "circle-color": color,
-          "circle-opacity": 0.5
+          "circle-opacity": 1
         }
       },
       {

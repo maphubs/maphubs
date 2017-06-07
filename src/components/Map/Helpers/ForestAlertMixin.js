@@ -93,8 +93,7 @@ export default function(){
       },
       "source": "omh-glad-2017",
       "paint": {
-        "circle-color": "red",
-        "circle-opacity": 0.5
+        "circle-color": "red"
       },
       "source-layer": "data"
     });

@@ -132,8 +132,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
         "Point"
       ],
       "paint": {
-        "circle-color": this.props.markerColor,
-        "circle-opacity": 0.5
+        "circle-color": this.props.markerColor
       }
     };
   }
