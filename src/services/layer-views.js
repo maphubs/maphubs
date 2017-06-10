@@ -1,9 +1,8 @@
 /* @flow weak */
+//Note: do not enable flow so we can use this in knex migrations for now without involving babel
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 var debug = require('./debug')('layer-views');
-var logRethrow = require('./error-response').logRethrow;
-//var GlobalViews = require('./global-views');
 var log = require('./log');
 
 module.exports = {
@@ -14,7 +13,10 @@ module.exports = {
     return _this.dropLayerViews(layer_id, trx)
     .then(() => {
       return _this.createLayerViews(layer_id, presets, trx);
-    }).catch(logRethrow());
+    }).catch((err) =>{
+       log.error(err.message);
+       throw err;
+    });
   },
 
   dropLayerViews(layer_id, trx = null){
@@ -30,27 +32,30 @@ module.exports = {
       return db.raw(command).catch((err) => {
         log.error(err.message); //don't propagate errors in case we are recovering from a incomplete layer
       });
-    }).catch(logRethrow());
+    }).catch((err) =>{
+       log.error(err.message);
+       throw err;
+    });
   },
 
   createLayerViews(layer_id, presets, trx = null){
     let db = knex;
     if(trx){db = trx;}
-    debug("create views for layer: " + layer_id);
+    debug(`create views for layer: ${layer_id}`);
     var tagColumns = '';
     if(presets){
       presets.forEach((preset) => {
         if(preset.type === 'number'){
-          tagColumns += `(tags->>'` + preset.tag + `')::real as "` + preset.tag + `",`;
+          tagColumns += `CASE WHEN isnumeric(tags->>'${preset.tag}') THEN (tags->>'${preset.tag}')::double precision ELSE NULL END as "${preset.tag}",`;
         }else{
-          tagColumns += `(tags->>'` + preset.tag + `')::text as "` + preset.tag + `",`;
+          tagColumns += `(tags->>'${preset.tag}')::text as "${preset.tag}",`;
         }
       });
     }
 
     var commands = [
       
-      `CREATE OR REPLACE VIEW layers.data_full_` + layer_id + ` AS
+      `CREATE OR REPLACE VIEW layers.data_full_${layer_id} AS
       SELECT
       mhid, ${layer_id}::integer as layer_id, ST_Transform(wkb_geometry, 900913)::geometry(Geometry, 900913) as geom,`
       + tagColumns +
@@ -65,8 +70,10 @@ module.exports = {
     ];
 
     return Promise.each(commands, (command) => {
-      //debug(command);
-      return db.raw(command).catch(logRethrow());
-    }).catch(logRethrow());
+      return db.raw(command);
+    }).catch((err) =>{
+       log.error(err.message);
+       throw err;
+    });
   }
 };
