@@ -11,6 +11,7 @@ var debug = require('../../services/debug')('routes/groups');
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var local = require('../../local');
+var Locales = require('../../services/locales');
 
 var csrfProtection = require('csurf')({cookie: false});
 
@@ -40,7 +41,8 @@ module.exports = function(app: any) {
       .then((result) => {
         var suggestions = [];
         result.forEach((group) => {
-          suggestions.push({key: group.group_id, value:group.name});
+          let name = Locales.getLocaleStringObject(req.locale, group.name);
+          suggestions.push({key: group.group_id, value:name});
         });
         res.send({
           suggestions

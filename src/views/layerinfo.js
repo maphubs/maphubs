@@ -271,15 +271,19 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
     if(this.props.layer.is_external){
       exportTabContent = (
         <div>
-          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this.props.layer.source}</p>
+          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this._o_(this.props.layer.source)}</p>
         </div>
       );
     }else {
-      var geoJSONURL = '/api/layer/' + this.props.layer.layer_id + '/export/json/' + slug(this.props.layer.name) + '.geojson';
-      var shpURL = '/api/layer/' + this.props.layer.layer_id + '/export/shp/' + slug(this.props.layer.name) + '.zip';
-      var kmlURL = '/api/layer/' + this.props.layer.layer_id + '/export/kml/' + slug(this.props.layer.name) + '.kml';
-      var csvURL = '/api/layer/' + this.props.layer.layer_id + '/export/csv/' + slug(this.props.layer.name) + '.csv';
-      var gpxURL = '/api/layer/' + this.props.layer.layer_id + '/export/gpx/' + slug(this.props.layer.name) + '.gpx';
+
+      let name = slug(this._o_(this.props.layer.name));
+      let layer_id = this.props.layer.layer_id;
+
+      var geoJSONURL = `/api/layer/${layer_id}/export/json/${name}.geojson`;
+      var shpURL = `/api/layer/${layer_id}/export/shp/${name}.zip`;
+      var kmlURL = `/api/layer/${layer_id}/export/kml/${name}.kml`;
+      var csvURL = `/api/layer/${layer_id}/export/csv/${name}.csv`;
+      var gpxURL = `/api/layer/${layer_id}/export/gpx/${name}.gpx`;
 
       if(!this.props.layer.disable_export){
         var gpxExport = '';
@@ -357,7 +361,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
             {idEditButton}
             {addPhotoPointButton}
             <li>
-              <a className="btn-floating layer-info-tooltip yellow" href={'/layer/admin/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name)}data-delay="50" data-position="left" data-tooltip={this.__('Manage Layer')}>
+              <a className="btn-floating layer-info-tooltip yellow" href={'/layer/admin/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name))}data-delay="50" data-position="left" data-tooltip={this.__('Manage Layer')}>
                 <i className="material-icons">settings</i>
               </a>
             </li>
@@ -368,7 +372,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       editButton = (
         <div className="fixed-action-btn action-button-bottom-right hide-on-med-and-up">
           <a className="btn-floating btn-large layer-info-tooltip red" data-delay="50" data-position="left" data-tooltip={this.__('View Map')}
-              href={'/layer/map/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name)}>
+              href={'/layer/map/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name))}>
             <i className="material-icons">map</i>
           </a>
         </div>
@@ -406,13 +410,14 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
     if(this.props.layer.description){
       // regex for detecting links
+      let localizedDescription = this._o_(this.props.layer.description);
       var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
-      descriptionWithLinks = this.props.layer.description.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
+      descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
     }
 
     var remote = '';
     if(this.props.layer.remote){
-      var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slug(this.props.layer.name);
+      var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slug(this._o_(this.props.layer.name));
       remote = (
         <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
           <a href={remoteURL} target="_blank" rel="noopener noreferrer">{remoteURL}</a>
@@ -456,7 +461,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
         <ReactDisqusThread
               shortname="maphubs"
               identifier={'maphubs-layer-' + this.props.layer.layer_id}
-              title={this.props.layer.name}
+              title={this._o_(this.props.layer.name)}
               onNewComment={this.handleNewComment}
               />
           );
@@ -513,7 +518,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
           <div className="col s12 m6 l6 no-padding" style={{height: '100%', position: 'relative'}}>
           {privateIcon}
             <div style={{margin: '10px', height: '50px'}}>
-              <h5 className="word-wrap">{this.props.layer.name}</h5>
+              <h5 className="word-wrap">{this._o_(this.props.layer.name)}</h5>
             </div>
 
             <div className="row no-margin" style={{height: 'calc(100% - 72px)'}}>
@@ -544,7 +549,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
                     {this.__('by') + ' ' + this.props.updatedByUser.display_name}
                     </p>
                 {updatedTime}
-                <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this.props.layer.source}</p>
+                <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
                 <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}}></div>
                 <p className="word-wrap" style={{fontSize: '16px', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}}></div>
 
@@ -596,7 +601,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
                   layers={[this.props.layer]}
                   map_id={this.props.layer.layer_id}
                   mapConfig={this.props.mapConfig}
-                  title={this.props.layer.name}
+                  title={this._o_(this.props.layer.name)}
                   showTitle={false}
                   disableScrollZoom={false}
                   >

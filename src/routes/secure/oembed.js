@@ -3,6 +3,7 @@ var User = require('../../models/user');
 var libxml = require('libxmljs');
 var debug = require('../../services/debug')('oembed');
 var urlUtil = require('../../services/url-util');
+var Locales = require('../../services/locales');
 
 module.exports = function(app) {
 
@@ -13,8 +14,6 @@ module.exports = function(app) {
 
     var urlArr = url.split('/');
 
-
-
     var map_id = urlArr[urlArr.length-1];
 
     debug(map_id);
@@ -24,8 +23,10 @@ module.exports = function(app) {
     Map.getMap(map_id).then((map) => {
       return User.getUser(map.created_by).then((user) => {
 
-      var url =baseUrl + '/map/embed/' + map.map_id + '/static';
-      var imageUrl = baseUrl + '/api/screenshot/map/' + map.map_id + '.png';
+      var url = `${baseUrl}/map/embed/${map.map_id}/static`;
+      var imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`;
+
+      let title = title = Locales.getLocaleStringObject(req.locale, map.title);
 
       var oembed = {
         type: "rich",
@@ -35,17 +36,17 @@ module.exports = function(app) {
         author_name: user.display_name,
         author_url: '',
         author_id: parseInt(map.created_by),
-        title: map.title,
+        title: title,
         height: 630,
         width: 1200,
-        html: '<iframe src="' + url + '" width="1200" height="630" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" frameborder="0"></iframe>',
+        html: `<iframe src="${url}" width="1200" height="630" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" frameborder="0"></iframe>`,
         thumbnail: imageUrl,
         thumbnail_height: 600,
         thumbnail_width: 315,
         map_id: map.map_id
       };
 
-      if(format == 'xml'){
+      if(format === 'xml'){
         var doc = new libxml.Document();
         doc.node('oembed')
         .node('type', oembed.type).parent()
@@ -73,5 +74,4 @@ module.exports = function(app) {
     });
     });
   });
-
 };

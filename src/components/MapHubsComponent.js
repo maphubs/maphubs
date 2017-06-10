@@ -22,12 +22,6 @@ export default class MapHubsComponent<DefaultProps,Props,State> extends Reflux.C
   }
 
    _o_ = (localizedString) => {
-    if(this.state.locale && localizedString[this.state.locale]){
-      return localizedString[this.state.locale];
-    }else if(localizedString['en']){
-      return localizedString['en'];
-    }else{
-      return '';
-    }
+    return Locales.getLocaleStringObject(this.state.locale, localizedString);
   }
 }

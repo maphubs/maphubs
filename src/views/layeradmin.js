@@ -93,7 +93,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of') + ' '
-      + this.props.layer.name + '. '
+      + _this._o_(this.props.layer.name) + '. '
       + _this.__('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
       onPositiveResponse(){
         LayerActions.deleteLayer(_this.state._csrf, (err) => {
@@ -142,7 +142,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
       tabContentDisplay = 'inherit';
     }
 
-    var layerInfoUrl = '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
+    var layerInfoUrl = '/layer/info/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name));
 
     if(this.props.layer.remote){
       return (

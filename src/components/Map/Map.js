@@ -202,7 +202,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     if(this.state.locale && (this.state.locale !== prevState.locale) ){     
       this.changeLocale(this.state.locale, this.map);
       if(this.refs.insetMap){
-          this.changeLocale(this.state.locale, this.refs.insetMap.__getInsetMap());
+          this.changeLocale(this.state.locale, this.refs.insetMap.getInsetMap());
       }
     }
   }

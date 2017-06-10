@@ -11,6 +11,7 @@ var login = require('connect-ensure-login');
 var debug = require('../../services/debug')('routes/groups');
 var nextError = require('../../services/error-response').nextError;
 var urlUtil = require('../../services/url-util');
+var Locales = require('../../services/locales');
 
 var csrfProtection = require('csurf')({cookie: false});
 
@@ -66,16 +67,18 @@ module.exports = function(app: any) {
         var hubs = result[3];
         var members = result[4];
         var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
+        let name = Locales.getLocaleStringObject(req.locale, group.name);
+        let description = Locales.getLocaleStringObject(req.locale, group.description);
         res.render('groupinfo', {
-          title: group.name + ' - ' + MAPHUBS_CONFIG.productName,
-          description: group.description,
+          title: name + ' - ' + MAPHUBS_CONFIG.productName,
+          description,
           props: {
             group, maps, layers, hubs, members, canEdit
           },
            twitterCard: {
             card: 'summary',
-            title: group.name,
-            description: group.description,
+            title: name,
+            description,
             image,
             imageType: 'image/png',
             imageWidth: 600,
@@ -95,7 +98,7 @@ module.exports = function(app: any) {
     //confirm that this user is allowed to administer this group
     Group.getGroupRole(user_id, group_id)
       .then((role) => {
-        if (role == 'Administrator') {
+        if (role === 'Administrator') {
           Promise.all([
               Group.getGroupByID(group_id),
               Map.getGroupMaps(group_id, true),
@@ -111,8 +114,9 @@ module.exports = function(app: any) {
               var hubs: Array<Object> = result[3];
               var members: Array<Object> = result[4];
               var account: Object = result[5];
+              let name = Locales.getLocaleStringObject(req.locale, group.name);
               res.render('groupadmin', {
-                title: group.name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
+                title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
                 props: {
                   group, maps, layers, hubs, members, account
                 }, req

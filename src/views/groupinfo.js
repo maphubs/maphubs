@@ -91,9 +91,10 @@ export default class GroupInfo extends MapHubsComponent {
     var descriptionWithLinks = '';
 
     if(this.props.group.description){
+      let localizedDescription = this._o_(this.props.group.description);
       // regex for detecting links
       var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
-      descriptionWithLinks = this.props.group.description.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
+      descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
     }
     var status = this.__('DRAFT');
     if(this.props.group.published){
@@ -106,7 +107,7 @@ export default class GroupInfo extends MapHubsComponent {
       <div>
         <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
-          <h4>{this.props.group.name}</h4>
+          <h4>{this._o_(this.props.group.name)}</h4>
           <div className="row">
             <div className="col s6">
               <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.props.group.group_id + '/image'}/>

@@ -4,6 +4,7 @@ var Map = require('../models/map');
 var nextError = require('./error-response').nextError;
 var urlUtil = require('../services/url-util');
 var debug = require('./debug')('map-utils');
+var Locales = require('../services/locales');
 
 module.exports = {
   completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean){
@@ -26,7 +27,7 @@ module.exports = {
        }
       
       if(map.title){
-        title = map.title;
+        title = Locales.getLocaleStringObject(req.locale, map.title);
       }
       title += ' - ' + MAPHUBS_CONFIG.productName;
         res.render('embedmap', {
@@ -47,13 +48,13 @@ module.exports = {
       var layers = results[1];
       var title = 'Map';
       if(map.title){
-        title = map.title;
+        title = Locales.getLocaleStringObject(req.locale, map.title);
       }
       title += ' - ' + MAPHUBS_CONFIG.productName;
       var baseUrl = urlUtil.getBaseUrl();
         res.render('usermap',
          {
-           title,
+           title: `${title} - ${MAPHUBS_CONFIG.productName}`,
            props:{map, layers, canEdit},
            hideFeedback: true,
            oembed: 'map',

@@ -2,6 +2,8 @@
 var urlUtil = require('./url-util');
 var slug = require('slug');
 
+import type {Layer} from '../stores/layer-store';
+
 module.exports = {
 
 
@@ -13,17 +15,21 @@ module.exports = {
     return output;
   },
 
-  getLayerCard(layer: Object, id: number, arr: Array<Object>, onClick?: Function){
-    var image_url = '/api/screenshot/layer/thumbnail/' + layer.layer_id + '.jpg';
+  getLayerCard(layer: Layer, id: number, arr: Array<Object>, onClick?: Function){
+
+    let layer_id: number = layer.layer_id ? layer.layer_id: -1;
+
+    var image_url = '/api/screenshot/layer/thumbnail/' + layer_id + '.jpg';
+    
     return {
-      id: `layer-${layer.layer_id.toString()}`,
-      title: layer.name,
-      description: layer.description,
+      id: `layer-${layer_id.toString()}`,
+      title: layer.name, //LocalizedString
+      description: layer.description, //LocalizedString
       image_url,
       source: layer.source,
       group: layer.owned_by_group_id,
       type: 'layer',
-      link: '/layer/info/' + layer.layer_id + '/' + slug(layer.name),
+      link: '/lyr/' + layer_id,
       data: layer,
       private: layer.private,
       onClick
@@ -52,10 +58,10 @@ module.exports = {
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
       id: `map-${map.map_id.toString()}`,
-      title: map.title ? map.title : '',
+      title: map.title,//LocalizedString
       group: map.owned_by_group_id,
       image_url,
-      link: '/map/view/' + map.map_id + '/' + slug(map.title),
+      link: '/map/view/' + map.map_id + '/',
       type: 'map',
       data: map,
       private: map.private,
@@ -70,8 +76,8 @@ module.exports = {
     }
     return {
       id: `group-${group.group_id}`,
-      title: group.name,
-      description: group.description,
+      title: group.name, //LocalizedString
+      description: group.description, //LocalizedString
       image_url,
       link: '/group/' + group.group_id,
       group: group.group_id,

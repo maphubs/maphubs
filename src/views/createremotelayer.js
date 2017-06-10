@@ -123,7 +123,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
       checkClientError(res, err, () => {}, (cb) => {
         var layer_id = res.body.layer_id;
         _this.setState({complete: true});
-        window.location = '/layer/info/' + layer_id + '/' + slug(_this.state.layer.name);
+        window.location = '/layer/info/' + layer_id + '/' + slug(_this._o_(_this.state.layer.name));
         cb();
       });
     });
@@ -172,7 +172,7 @@ export default class CreateRemoteLayer extends MapHubsComponent {
                     flexDirection: 'column'
                   }}
                   collapsible={true} hideInactive={false} showLayersButton={false}
-                  title={this.state.layer.name}
+                  title={this._o_(this.state.layer.name)}
                     layers={[this.state.layer]}/>
                 </Map>
             </div>
@@ -187,11 +187,11 @@ export default class CreateRemoteLayer extends MapHubsComponent {
     var groups = '';
     if(this.props.groups.length > 1){
     var groupOptions = [];
-
+    var _this = this;
     this.props.groups.map((group) => {
       groupOptions.push({
         value: group.group_id,
-        label: group.name
+        label: _this._o_(group.name)
       });
     });
 

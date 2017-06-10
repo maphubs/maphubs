@@ -28,13 +28,7 @@ type Props = {
   useMaterialize: boolean,
   onClick: Function,
   validations: string,
-  validationErrors: Object,
-  //Added by Formsy
-  showRequired: Function,
-  isValid: Function,
-  showError: Function,
-  setValue: Function,
-  getErrorMessage: Function
+  validationErrors: Object
 }
 
 type DefaultProps = {
@@ -79,7 +73,7 @@ export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Pr
 
   constructor(props: Props) {
     super(props);
-    let value: LocalizedString = {};
+    let value: LocalizedString = {en: ''};
     if(typeof props.value === 'string'){
       value['en'] = props.value;
     }else{
@@ -96,7 +90,6 @@ export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Pr
 
   componentWillReceiveProps(nextProps: Props) {
     if(!_isequal(this.props.value, nextProps.value)){
-      this.props.setValue(nextProps.value);
       this.setState({
         value: nextProps.value
       });
@@ -104,7 +97,6 @@ export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Pr
   }
 
   changeValue = (model: Object) => {
-    this.props.setValue(model);
     this.setState({
       value: model
     });

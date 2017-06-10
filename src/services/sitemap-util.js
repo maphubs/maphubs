@@ -19,7 +19,7 @@ module.exports = {
         var lastmodISO = null;
         if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
         sm.add({
-          url: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name),
+          url: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name.en),
           changefreq: 'weekly',
           lastmodISO
         });
@@ -76,7 +76,7 @@ module.exports = {
     return Map.getAllMaps()
     .then((maps) => {
       maps.forEach((map) => {
-        var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slug(map.title)}`;
+        var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slug(map.title.en)}`;
         var lastmodISO = null;
         if(map.updated_at) lastmodISO = map.updated_at.toISOString();
         sm.add({

@@ -6,6 +6,7 @@ var Presets = require('../../services/preset-utils');
 var urlUtil = require('../../services/url-util');
 var apiError = require('../../services/error-response').apiError;
 var privateLayerCheck = require('../../services/private-layer-check').middleware;
+var Locales = require('../../services/locales');
 //Layer API Endpoints that do not require authentication
 
 module.exports = function(app: any) {
@@ -20,7 +21,8 @@ module.exports = function(app: any) {
       .then((result) => {
         var suggestions = [];
           result.forEach((layer) => {
-            suggestions.push({key: layer.layer_id, value:layer.name});
+            let name = Locales.getLocaleStringObject(req.locale, layer.name);
+            suggestions.push({key: layer.layer_id, value:name});
           });
           res.send({suggestions});
       }).catch(apiError(res, 500));

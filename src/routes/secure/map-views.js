@@ -11,8 +11,8 @@ var MapUtils = require('../../services/map-utils');
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var privateMapCheck = require('../../services/private-map-check').middlewareView;
-var Page = require('../../models/page');
 var csrfProtection = require('csurf')({cookie: false});
+var Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
 
@@ -230,12 +230,11 @@ module.exports = function(app: any) {
             var myGroups = results[4];
             var title: string = 'Map';
             if(map.title){
-              title = map.title;
+              title = Locales.getLocaleStringObject(req.locale, map.title);
             }
-            title += ' - ' + MAPHUBS_CONFIG.productName;
               res.render('mapedit',
                {
-                 title,
+                 title: title +' - ' + MAPHUBS_CONFIG.productName,
                  props:{map, layers, popularLayers, myLayers, myGroups},
                  hideFeedback: true,
                  req

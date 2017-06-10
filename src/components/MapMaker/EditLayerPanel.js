@@ -34,7 +34,7 @@ export default class EditLayerPanel extends MapHubsComponent {
     if(this.state.editingLayer){
       layerTitle = (
         <p className="word-wrap" style={{paddingTop: '2px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '5px'}}>
-          <b>{this.__('Editing:')}</b> {this.state.editingLayer.name}
+          <b>{this.__('Editing:')}</b> {this._o_(this.state.editingLayer.name)}
         </p>
       );
     }

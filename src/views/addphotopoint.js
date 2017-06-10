@@ -159,7 +159,7 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <div className="container">
             <div className="row center-align">
-              <h5>{this.__('Add data to:') + ' ' + this.props.layer.name}</h5>
+              <h5>{this.__('Add data to:') + ' ' + this._o_(this.props.layer.name)}</h5>
               {addPhotoButton}
             </div>
             {dataReview}

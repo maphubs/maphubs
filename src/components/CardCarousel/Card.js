@@ -11,13 +11,13 @@ export default class Card extends MapHubsComponent {
 
   props:  {
     id: string,
-    title: string,
-    description: string,
+    title: LocalizedString,
+    description: LocalizedString,
     image_url: string,
     background_image_url: string,
     link: string,
     group: string,
-    source: string,
+    source: LocalizedString,
     data: Object,
     type: string,
     private: boolean,
@@ -77,7 +77,7 @@ export default class Card extends MapHubsComponent {
 
     if(this.props.source){
       source = (
-        <p className="truncate right no-margin grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{this.props.source}</p>
+        <p className="truncate right no-margin grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{this._o_(this.props.source)}</p>
       );
     }
     */
@@ -202,9 +202,9 @@ export default class Card extends MapHubsComponent {
           {privateIcon}
         <div className="card-content word-wrap" style={{padding: '5px'}}>
 
-          <b>{this.props.title}</b> <br />
+          <b>{this._o_(this.props.title)}</b> <br />
           
-          <p className="fade" style={{fontSize: '12px'}}> {this.props.description}</p>
+          <p className="fade" style={{fontSize: '12px'}}> {this._o_(this.props.description)}</p>
             {mapCardUserTag}
             {storyTag}
             {group}

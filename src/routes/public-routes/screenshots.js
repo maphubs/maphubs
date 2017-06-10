@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 //var debug = require('../../services/debug')('routes/screenshots-public');
 var nextError = require('../../services/error-response').nextError;
 var manetCheck = require('../../services/manet-check')(false,true);
+var Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
   //create a map view that we will use to screenshot the layer
@@ -13,11 +14,12 @@ module.exports = function(app: any) {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getLayerByID(layer_id).then((layer) => {
-    var title = layer.name + ' - ' + MAPHUBS_CONFIG.productName;
+      let name = Locales.getLocaleStringObject(req.locale, layer.name);
+      let title = name + ' - ' + MAPHUBS_CONFIG.productName;
       res.render('staticmap', {title, hideFeedback: true, 
         disableGoogleAnalytics: true,
         props:{
-          name: layer.name,
+          name: name,
           layers: [layer],
           position: layer.preview_position,
           basemap: 'default',
@@ -40,15 +42,16 @@ module.exports = function(app: any) {
       .then((results) => {
         var map = results[0];
         var layers = results[1];
-        var title = 'Map';
+        var title = req.__('Map');
         if(map.title){
-          title = map.title;
+          title = Locales.getLocaleStringObject(req.locale, map.title);
         }
-        title += ' - ' + MAPHUBS_CONFIG.productName;
-        res.render('staticmap', {title, hideFeedback: true,
+        res.render('staticmap', {
+          title: title + ' - ' + MAPHUBS_CONFIG.productName, 
+          hideFeedback: true,
           disableGoogleAnalytics: true,
            props:{
-             name: map.title,
+             name: title,
              layers,
              position: map.position,
              basemap: map.basemap,
@@ -69,13 +72,14 @@ module.exports = function(app: any) {
         var layers = results[1];
         var title = 'Map';
         if(map.title){
-          title = map.title;
+          title = Locales.getLocaleStringObject(req.locale, map.title);
         }
-        title += ' - ' + MAPHUBS_CONFIG.productName;
-        res.render('staticmap', {title, hideFeedback: true,
+        res.render('staticmap', {
+          title: title + ' - ' + MAPHUBS_CONFIG.productName,
+          hideFeedback: true,
           disableGoogleAnalytics: true,
            props:{
-             name: map.title,
+             name: title,
              layers,
              position: map.position,
              basemap: map.basemap,

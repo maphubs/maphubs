@@ -8,6 +8,7 @@ var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 var csrfProtection = require('csurf')({cookie: false});
+var Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
 
@@ -227,7 +228,8 @@ module.exports = function(app: any) {
         .then((result) => {
           var suggestions = [];
             result.forEach((map) => {
-              suggestions.push({key: map.map_id, value:map.title});
+              let title = Locales.getLocaleStringObject(req.locale, map.title);
+              suggestions.push({key: map.map_id, value: title});
             });
             res.send({suggestions});
         }).catch(apiError(res, 500));

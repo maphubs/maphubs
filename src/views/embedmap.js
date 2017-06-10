@@ -167,7 +167,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
     var map = '';
     var title = null;
     if(this.props.map.title){
-      title = this.props.map.title;
+      title = this._o_(this.props.map.title);
     }
  
     var bounds;

@@ -28,14 +28,14 @@ module.exports = {
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html','labels', 'settings', 'extent_bbox', 'preview_position')
-      .table('omh.layers').where({private: false, status: 'published'}).orderBy('name');
+      .table('omh.layers').where({private: false, status: 'published'}).orderBy(knex.raw(`name -> 'en'`));
     }else{
       return knex.select('layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-      .table('omh.layers').where({private: false, status: 'published'}).orderBy('name');
+      .table('omh.layers').where({private: false, status: 'published'}).orderBy(knex.raw(`name -> 'en'`));
     }
 
   },
@@ -83,7 +83,7 @@ module.exports = {
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .where({private: false, status: 'published', featured: true})
-    .orderBy('name')
+    .orderBy(knex.raw(`name -> 'en'`))
     .limit(number);
   },
 
@@ -111,24 +111,24 @@ module.exports = {
     .where(knex.raw(`
       private = false AND status = 'published'
       AND (
-      to_tsvector('english', name
+      to_tsvector('english', name -> 'en'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('spanish', name
+      to_tsvector('spanish', name -> 'es'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('french', name
+      to_tsvector('french', name -> 'fr'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('italian', name
+      to_tsvector('italian', name -> 'it'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       )
       `))
-    .orderBy('name');
+    .orderBy(knex.raw(`name -> 'en'`));
 
     return query;
   },
@@ -147,24 +147,24 @@ module.exports = {
     .where(knex.raw(`
       private = false AND status = 'published'
       AND (
-      to_tsvector('english', name
+      to_tsvector('english', name -> 'en'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('spanish', name
+      to_tsvector('spanish', name -> 'es'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('french', name
+      to_tsvector('french', name -> 'fr'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('italian', name
+      to_tsvector('italian', name -> 'it'
       || ' ' || COALESCE(description, '')
       || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
       )
       `))    
-    .orderBy('name');
+    .orderBy(knex.raw(`name -> 'en'`));
 
     return query;
   },
@@ -177,7 +177,7 @@ module.exports = {
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-    .table('omh.layers').orderBy('name');
+    .table('omh.layers').orderBy(knex.raw(`name -> 'en'`));
 
     if (includePrivate) {
       query.where({

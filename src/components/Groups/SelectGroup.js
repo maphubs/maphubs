@@ -78,11 +78,11 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
     var groups = '';
      if(this.props.groups.length > 1 && this.props.canChangeGroup){
       var groupOptions = [];
-
+      var _this = this;
       this.props.groups.map((group) => {
         groupOptions.push({
           value: group.group_id,
-          label: group.name
+          label: _this._o_(group.name)
         });
       });
 

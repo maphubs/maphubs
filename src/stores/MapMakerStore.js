@@ -14,7 +14,7 @@ import type {Layer} from './layer-store';
 
 export type MapMakerStoreState = {
    map_id?: number,
-  title?: string,
+  title?: LocalizedString,
   mapLayers?: Array<Layer>,
   mapStyle?: Object,
   position?: Object,
@@ -72,8 +72,10 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     this.setState({map_id});
   }
 
-  setMapTitle(title: string){
-    title = title.trim();
+  setMapTitle(title: LocalizedString){
+    Object.keys(title).forEach(key =>{
+      title[key] = title[key].trim();
+    });
     this.setState({title});
   }
 
@@ -151,10 +153,12 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     
   }
 
-  saveMap(title: string, position: Object, basemap: string, _csrf: string, cb: Function){
+  saveMap(title: LocalizedString, position: Object, basemap: string, _csrf: string, cb: Function){
     var _this = this;
     //resave an existing map
-    title = title.trim();
+    Object.keys(title).forEach(key =>{
+      title[key] = title[key].trim();
+    });
     request.post('/api/map/save')
     .type('json').accept('json')
     .send({
@@ -162,7 +166,7 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
         layers: this.state.mapLayers,
         style: this.state.mapStyle,
         settings: this.state.settings,
-        title: title,
+        title,
         position,
         basemap,
         _csrf
@@ -175,9 +179,11 @@ export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStor
     });
   }
 
-  createMap(title: string, position: Object, basemap: string, group_id: string, isPrivate: boolean, _csrf: string, cb: Function){
+  createMap(title: LocalizedString, position: Object, basemap: string, group_id: string, isPrivate: boolean, _csrf: string, cb: Function){
     var _this = this;
-    title = title.trim();
+    Object.keys(title).forEach(key =>{
+      title[key] = title[key].trim();
+    });
     request.post('/api/map/create')
     .type('json').accept('json')
     .send({

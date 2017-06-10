@@ -144,7 +144,7 @@ export default class LayerListItemStatic extends MapHubsComponent {
           backgroundColor}}>
           
         <div className="row no-margin">
-          <b className="title grey-text text-darken-4 truncate" style={{fontSize: '12px'}}>{layer.name}</b>        
+          <b className="title grey-text text-darken-4 truncate" style={{fontSize: '12px'}}>{this._o_(layer.name)}</b>        
         </div>
         <div className="row no-margin">
           <div className="title col no-padding s6">
@@ -175,7 +175,7 @@ export default class LayerListItemStatic extends MapHubsComponent {
         </div>
           
           <div className="row no-margin">         
-            <p className="truncate no-margin no-padding grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{layer.source}</p>
+            <p className="truncate no-margin no-padding grey-text text-darken-1" style={{fontSize: '8px', lineHeight: '10px'}}>{this._o_(layer.source)}</p>
           </div>
         <div className="draggable-indicator"
             style={{

@@ -4,8 +4,9 @@ import Formsy from 'formsy-react';
 var $ = require('jquery');
 import EditList from '../components/EditList';
 import Header from '../components/header';
-import TextArea from '../components/forms/textArea';
+import MultiTextArea from '../components/forms/MultiTextArea';
 import TextInput from '../components/forms/textInput';
+import MultiTextInput from '../components/forms/MultiTextInput';
 import Toggle from '../components/forms/toggle';
 import MessageActions from '../actions/MessageActions';
 import AddItem from '../components/AddItem';
@@ -20,10 +21,11 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
-import type {GroupStoreState} from '../stores/GroupStore';
+import type {Group, GroupStoreState} from '../stores/GroupStore';
+import Locales from '../services/locales';
 
 type Props = {
-  group: Object,
+  group: Group,
   layers: Array<Object>,
   maps: Array<Object>,
   hubs: Array<Object>,
@@ -33,11 +35,9 @@ type Props = {
   headerConfig: Object
 }
 
-type GroupAdminState = {
+type State = {
   canSubmit: boolean
-}
-
-type State = LocaleStoreState & GroupStoreState & GroupAdminState
+} & LocaleStoreState & GroupStoreState
 
 export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
 
@@ -51,7 +51,9 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
   }
 
   state: State = {
-    canSubmit: false
+    canSubmit: false,
+    group: {},
+    members: []
   }
 
   constructor(props: Props){
@@ -96,6 +98,10 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
 
   submit = (model: Object) => {
     var _this = this;
+
+    model.name = Locales.formModelToLocalizedString(model, 'name');
+    model.description = Locales.formModelToLocalizedString(model, 'description');
+
     GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -164,7 +170,7 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Deletion'),
-      message: _this.__('Please confirm removal of group ') + this.state.group.name,
+      message: _this.__('Please confirm removal of group ') + this._o_(this.state.group.name),
       onPositiveResponse(){
         GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if(err){
@@ -297,7 +303,7 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
 
           </div>
           <div className="row">
-            <h4>{this.props.group.name}</h4>
+            <h4>{this._o_(this.props.group.name)}</h4>
           </div>
           <div className="divider"></div>
           <div className="row">
@@ -315,7 +321,12 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
                     required/>
               </div>
               <div className="row">
-                <TextInput name="name" label={this.__('Name')} icon="info" className="col s12" validations="maxLength:100" validationErrors={{
+                <MultiTextInput name="name" 
+                  label={{
+                      en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
+                    }}
+                  icon="info" 
+                className="col s12" validations="maxLength:100" validationErrors={{
                        maxLength: this.__('Name must be 100 characters or less.')
                    }} length={100}
                     dataPosition="top" dataTooltip={this.__('Short Descriptive Name for the Group')}
@@ -323,7 +334,14 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
                     required/>
               </div>
               <div className="row">
-                <TextArea name="description" label={this.__('Description')} icon="description" className="col s12" validations="maxLength:500" validationErrors={{
+                <MultiTextArea name="description" 
+                  label={{
+                      en: 'Description',
+                      fr: 'Description',
+                      es: 'Descripción',
+                      it: 'Descrizione'
+                    }} 
+                  icon="description" className="col s12" validations="maxLength:500" validationErrors={{
                        maxLength: this.__('Description must be 500 characters or less.')
                    }} length={500}
                     dataPosition="top" dataTooltip={this.__('Brief Description of the Group')}
@@ -367,11 +385,11 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
               {this.props.layers.map((layer, i) => {
                 return (
                   <li className="collection-item" key={layer.layer_id}>
-                    <div>{layer.name}
-                      <a className="secondary-content" href={'/layer/map/' + layer.layer_id + '/' + slug(layer.name)}>
+                    <div>{this._o_(layer.name)}
+                      <a className="secondary-content" href={'/layer/map/' + layer.layer_id + '/' + slug(this._o_(layer.name))}>
                         <i className="material-icons">map</i>
                       </a>
-                      <a className="secondary-content" href={'/layer/info/' + layer.layer_id + '/' + slug(layer.name)}>
+                      <a className="secondary-content" href={'/layer/info/' + layer.layer_id + '/' + slug(this._o_(layer.name))}>
                         <i className="material-icons">info</i>
                       </a>
                     </div>
@@ -388,8 +406,8 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
               {this.props.maps.map((map, i) => {
                 return (
                   <li className="collection-item" key={map.map_id}>
-                    <div>{map.title}
-                      <a className="secondary-content" href={'/map/view/' + map.map_id + '/' + slug(map.title)}>
+                    <div>{this._o_(map.title)}
+                      <a className="secondary-content" href={'/map/view/' + map.map_id + '/' + slug(this._o_(map.title))}>
                         <i className="material-icons">map</i>
                       </a>                     
                     </div>

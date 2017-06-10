@@ -2,18 +2,19 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 var $ = require('jquery');
-import TextArea from '../forms/textArea';
+import MultiTextArea from '../forms/MultiTextArea';
 import TextInput from '../forms/textInput';
+import MultiTextInput from '../forms/MultiTextInput';
 import Toggle from '../forms/toggle';
 import MessageActions from '../../actions/MessageActions';
 import NotificationActions from '../../actions/NotificationActions';
 var classNames = require('classnames');
-
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {GroupStoreState} from '../../stores/GroupStore';
+import Locales from '../../services/locales';
 
 type Props = {
   onSubmit: Function,
@@ -112,6 +113,9 @@ export default class CreateGroupStep1 extends MapHubsComponent<void, Props, Stat
 
     saveGroup = (model: Object) => {
       var _this = this;
+      model.name = Locales.formModelToLocalizedString(model, 'name');
+      model.description = Locales.formModelToLocalizedString(model, 'description');
+
       if(this.state.group.created){
         GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
           if(err){
@@ -202,14 +206,25 @@ export default class CreateGroupStep1 extends MapHubsComponent<void, Props, Stat
                    required/>
               </div>
               <div className="row">
-                <TextInput name="name" label={this.__('Name')} icon="info" className="col s12" validations="maxLength:100" validationErrors={{
+                <MultiTextInput name="name" 
+                   label={{
+                      en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
+                    }}
+                  icon="info" className="col s12" validations="maxLength:100" validationErrors={{
                        maxLength: this.__('Name must be 100 characters or less.')
                    }} length={100}
                    dataPosition="top" dataTooltip={this.__('Short Descriptive Name for the Group')}
                    required/>
               </div>
               <div className="row">
-                <TextArea name="description" label={this.__('Description')} icon="description" className="col s12" validations="maxLength:500" validationErrors={{
+                <MultiTextArea name="description" 
+                  label={{
+                    en: 'Description',
+                    fr: 'Description',
+                    es: 'Descripción',
+                    it: 'Descrizione'
+                  }} 
+                icon="description" className="col s12" validations="maxLength:500" validationErrors={{
                        maxLength: this.__('Description must be 500 characters or less.')
                    }} length={500}
                    dataPosition="top" dataTooltip={this.__('Brief Description of the Group')}

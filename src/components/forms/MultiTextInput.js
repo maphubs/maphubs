@@ -28,13 +28,7 @@ type Props = {
   useMaterialize: boolean,
   onClick: Function,
   validations: string,
-  validationErrors: Object,
-  //Added by Formsy
-  showRequired: Function,
-  isValid: Function,
-  showError: Function,
-  setValue: Function,
-  getErrorMessage: Function
+  validationErrors: Object
 }
 
 type DefaultProps = {
@@ -79,7 +73,7 @@ export default class MultiTextInput extends MapHubsPureComponent<DefaultProps, P
 
   constructor(props: Props) {
     super(props);
-    let value: LocalizedString = {};
+    let value: LocalizedString = {en: ''};
     if(typeof props.value === 'string'){
       value['en'] = props.value;
     }else{
@@ -96,15 +90,13 @@ export default class MultiTextInput extends MapHubsPureComponent<DefaultProps, P
 
   componentWillReceiveProps(nextProps: Props) {
     if(!_isequal(this.props.value, nextProps.value)){
-      this.props.setValue(nextProps.value);
       this.setState({
         value: nextProps.value
       });
     }
   }
 
-  changeValue = (model: Object) => {
-    this.props.setValue(model);
+  changeValue = (model: Object) => {  
     this.setState({
       value: model
     });
@@ -138,8 +130,8 @@ render(){
 
   return (
     <div className="row">
-     <div className="col s12">
-       <ul ref="tabs" className="tabs" style={{height: '35px'}}>
+     <div className="col s12 no-padding">
+       <ul ref="tabs" className="tabs">
           <li className="tab" style={{height: '35px'}}><a className="active" style={{lineHeight: '35px'}} href={`#${id}-en`}>EN</a></li>
           <li className="tab" style={{height: '35px'}}><a style={{lineHeight: '35px'}} href={`#${id}-fr`}>FR</a></li>
           <li className="tab" style={{height: '35px'}}><a style={{lineHeight: '35px'}} href={`#${id}-es`}>ES</a></li>

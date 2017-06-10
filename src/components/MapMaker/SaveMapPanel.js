@@ -4,11 +4,12 @@ import MapMakerStore from '../../stores/MapMakerStore';
 import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
 import Formsy from 'formsy-react';
-import TextInput from '../forms/textInput';
+import MultiTextInput from '../forms/MultiTextInput';
 import NotificationActions from '../../actions/NotificationActions';
 import SelectGroup from '../Groups/SelectGroup';
 import Toggle from '../forms/toggle';
 import MapHubsComponent from '../MapHubsComponent';
+import Locales from '../../services/locales';
 
 export default class SaveMapPanel extends MapHubsComponent {
 
@@ -54,7 +55,8 @@ export default class SaveMapPanel extends MapHubsComponent {
 
   onSave = (model: Object) => {
     var _this = this;
-    if(!model.title || model.title === ''){
+    model.title = Locales.formModelToLocalizedString(model, 'title');
+    if(!model.title || this._o_(model.title) === ''){
       NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'});
       return;
     }
@@ -110,10 +112,15 @@ export default class SaveMapPanel extends MapHubsComponent {
      return (
         <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row">
-            <TextInput name="title"
+            <MultiTextInput name="title"
               defaultValue={this.state.title} value={this.state.title}
-              label={this.__('Map Title')}
-              className="col s12" length={200}
+              label={{
+                en: 'Map Title', fr: 'Titre de la carte', es: 'Título del mapa', it: 'Titolo della mappa'
+              }}
+              className="col s12" 
+              validations="maxLength:200" validationErrors={{
+                        maxLength: this.__('Name must be 200 characters or less.')
+               }} length={200}
                required/>
           </div>
           {groupToggle}

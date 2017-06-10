@@ -126,7 +126,7 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
     var _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
-      message: _this.__('Please confirm removal of ') + this.props.map.title,
+      message: _this.__('Please confirm removal of ') + this._o_(this.props.map.title),
       onPositiveResponse(){
         MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, (err) => {
           if(err){
@@ -273,6 +273,9 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
       );
     }
 
+    let download= `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`; 
+    let downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`;
+
     button = (
     <div id="user-map-button" className="fixed-action-btn" style={{bottom: '40px'}}
       onMouseEnter={this.onMouseEnterMenu}
@@ -285,7 +288,8 @@ export default class UserMap extends MapHubsComponent<void, Props, State> {
         {editButton}
         {copyButton}
         <li>
-          <a onClick={this.download} download={this.props.map.title + ' - ' + MAPHUBS_CONFIG.productName + '.png'} href={'/api/screenshot/map/' + this.props.map.map_id + '.png'}
+          <a onClick={this.download} 
+            download={download} href={downloadHREF}
             className="btn-floating user-map-tooltip green"
             data-delay="50" data-position="left" data-tooltip={this.__('Get Map as a PNG Image')}>
             <i className="material-icons">insert_photo</i>

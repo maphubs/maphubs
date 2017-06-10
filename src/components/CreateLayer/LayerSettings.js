@@ -13,6 +13,7 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 import type {Group} from '../../stores/GroupStore';
+import Locales from '../../services/locales';
 
 type Props = {
   onSubmit: Function,
@@ -92,6 +93,9 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
 
   onSubmit = (model: Object) => {
     var _this = this;
+    model.name = Locales.formModelToLocalizedString(model, 'name');
+    model.description = Locales.formModelToLocalizedString(model, 'description');
+    model.source = Locales.formModelToLocalizedString(model, 'source');
 
     var initLayer = false;
     if(!this.state.owned_by_group_id){

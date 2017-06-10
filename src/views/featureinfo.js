@@ -336,7 +336,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
       );
     }
 
-    var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this.props.layer.name);
+    var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name));
 
     var exportTabContent = '';
 
@@ -347,12 +347,12 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
     if(this.props.layer.is_external){
       exportTabContent = (
         <div>
-          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this.props.layer.source}</p>
+          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this._o_(this.props.layer.source)}</p>
         </div>
       );
     }else {
-      var geoJSONURL = '/api/feature/json/' + this.props.layer.layer_id + '/' + mhid + '/' + slug(this.props.layer.name) + '.geojson';
-      var kmlURL = '/api/feature/' + this.props.layer.layer_id + '/' + mhid + '/export/kml/' + slug(this.props.layer.name) + '.kml';
+      var geoJSONURL = '/api/feature/json/' + this.props.layer.layer_id + '/' + mhid + '/' + slug(this._o_(this.props.layer.name)) + '.geojson';
+      var kmlURL = '/api/feature/' + this.props.layer.layer_id + '/' + mhid + '/export/kml/' + slug(this._o_(this.props.layer.name)) + '.kml';
       
       if(!this.props.layer.disable_export){
         var gpxExport = '';
@@ -404,7 +404,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
               <div id="data" className="col s12" style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
-                <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this.props.layer.name}</a></p>
+                <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this._o_(this.props.layer.name)}</a></p>
                 <div className="row no-margin">
                   <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
                     {locationDisplay}

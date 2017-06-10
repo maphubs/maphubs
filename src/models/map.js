@@ -306,7 +306,7 @@ module.exports = {
     ]).then((results) => {
       var map = results[0];
       var layers = results[1];
-      var title = map.title + ' - Copy';
+      var title = map.title;
       return _this.createUserMap(layers, map.style, map.basemap, map.position, title, to_user_id);
     });
   },
@@ -323,7 +323,7 @@ module.exports = {
     ]).then((results) => {
       var map = results[0];
       var layers = results[1];
-      var title = map.title + ' - Copy';
+      var title = map.title;
       return _this.createGroupMap(layers, map.style, map.basemap, map.position, title, map.settings, user_id, to_group_id, map.private);
     });
   },

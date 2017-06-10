@@ -39,7 +39,7 @@ type Props =  {
     myLayers: Array<Layer>,
     popularLayers: Array<Layer>,
     myGroups: Array<Object>,
-    title?: string,
+    title?: LocalizedString,
     position: Object,
     basemap?: string,
     map_id?: number,
@@ -120,28 +120,6 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     if(this.props.settings){
       Actions.setSettings(this.props.settings);
     }
-
- /*
-    if(this.props.position){
-      Actions.setMapPosition(this.props.position);
-    }
-
-    
-
-    
-
-    if(this.props.title){
-      Actions.setMapTitle(this.props.title);
-    }
-
-    if(this.props.map_id){
-      Actions.setMapId(this.props.map_id);
-    }
-
-     if(this.props.owned_by_group_id){
-      Actions.setOwnedByGroupId(this.props.owned_by_group_id);
-    }
-    */
 
     if (typeof window === 'undefined') return; //only run this on the client
     function isRetinaDisplay() {

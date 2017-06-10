@@ -8,6 +8,7 @@ var debug = require('../../services/debug')('exports');
 var privateLayerCheck = require('../../services/private-layer-check').middleware;
 var knex = require('../../connection.js');
 var Promise = require('bluebird');
+var Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
 
@@ -127,11 +128,13 @@ module.exports = function(app: any) {
             }
           });
 
+          let name = Locales.getLocaleStringObject(req.locale, layer.name);
+          let description = Locales.getLocaleStringObject(req.locale, layer.description);
           var kml = tokml(geoJSON, {
               name: 'name',
               description: 'description',
-              documentName: layer.name,
-              documentDescription: layer.description,
+              documentName: name,
+              documentDescription: description,
               simplestyle: true
           });
 
@@ -183,11 +186,13 @@ module.exports = function(app: any) {
             }
           });
 
+          let name = Locales.getLocaleStringObject(req.locale, layer.name);
+          let description = Locales.getLocaleStringObject(req.locale, layer.description);         
           var kml = tokml(geoJSON, {
               name: 'name',
               description: 'description',
-              documentName: layer.name,
-              documentDescription: layer.description,
+              documentName: name,
+              documentDescription: description,
               simplestyle: true
           });
 
