@@ -3,7 +3,7 @@ import Reflux from 'reflux';
 import Actions from '../actions/LayerActions';
 import PresetActions from '../actions/presetActions';
 var request = require('superagent');
-var mapStyles = require('../components/Map/styles');
+var MapStyles = require('../components/Map/Styles');
 var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var debug = require('../services/debug')('layer-store');
@@ -112,22 +112,22 @@ export default class LayerStore extends Reflux.Store<void, void, Layer> {
     var externalType = externalLayerConfig.type;
     var baseUrl = urlUtil.getBaseUrl();
     if(isExternal && this.state.external_layer_type === 'mapbox-map'){
-      style = mapStyles.defaultRasterStyle(this.state.layer_id, externalLayerConfig.url);
+      style = MapStyles.raster.defaultRasterStyle(this.state.layer_id, externalLayerConfig.url);
     }else if(isExternal && externalType === 'raster'){
-      style = mapStyles.defaultRasterStyle(layer_id, baseUrl + '/api/layer/' + layer_id.toString() +'/tile.json');
+      style = MapStyles.raster.defaultRasterStyle(layer_id, baseUrl + '/api/layer/' + layer_id.toString() +'/tile.json');
     }else if(isExternal && externalType === 'multiraster'){
-      style = mapStyles.defaultMultiRasterStyle(layer_id, externalLayerConfig.layers);
+      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, externalLayerConfig.layers);
     }else if(isExternal && externalType === 'mapbox-style'){
-        style = mapStyles.getMapboxStyle(externalLayerConfig.mapboxid);
+        style = MapStyles.style.getMapboxStyle(externalLayerConfig.mapboxid);
     }else if(isExternal && externalType === 'ags-mapserver-tiles'){
-        style = mapStyles.defaultRasterStyle(layer_id, externalLayerConfig.url + '?f=json', 'arcgisraster');
+        style = MapStyles.raster.defaultRasterStyle(layer_id, externalLayerConfig.url + '?f=json', 'arcgisraster');
     }else if(isExternal && externalType === 'geojson'){
-        style = mapStyles.defaultStyle(layer_id, this.getSourceConfig(), externalLayerConfig.data_type);
+        style = MapStyles.style.defaultStyle(layer_id, this.getSourceConfig(), externalLayerConfig.data_type);
     }else if(style.sources.osm){
       alert('Unable to reset OSM layers');
       return;
     }else{
-      style = mapStyles.defaultStyle(layer_id, this.getSourceConfig(), this.state.data_type);
+      style = MapStyles.style.defaultStyle(layer_id, this.getSourceConfig(), this.state.data_type);
     }
     this.setState({style});
   }
@@ -140,11 +140,11 @@ export default class LayerStore extends Reflux.Store<void, void, Layer> {
       && (externalLayerConfig.type === 'raster'
           || externalLayerConfig.type === 'multiraster'
           || externalLayerConfig.type === 'ags-mapserver-tiles')){
-      legend_html = mapStyles.rasterLegend(this.state);
+      legend_html = MapStyles.legend.rasterLegend(this.state);
     }else if(this.state.is_external && externalLayerConfig && externalLayerConfig.type === 'mapbox-style'){
-      legend_html = mapStyles.rasterLegend(this.state);
+      legend_html = MapStyles.legend.rasterLegend(this.state);
     }else{
-      legend_html = mapStyles.defaultLegend(this.state);
+      legend_html = MapStyles.legend.defaultLegend(this.state);
     }
     this.setState({legend_html});
   }
@@ -157,16 +157,14 @@ export default class LayerStore extends Reflux.Store<void, void, Layer> {
 
   initLayer(layer: Object){
     if(!layer.style){
-      layer.style = mapStyles.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);   
+      layer.style = MapStyles.style.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);   
     }
     if(!layer.legend_html){
-      layer.legend_html = mapStyles.defaultLegend(layer);
+      layer.legend_html = MapStyles.legend.defaultLegend(layer);
     }else{
       this.resetLegendHTML();
     }
-    if(!layer.settings){
-      layer.settings = mapStyles.defaultSettings();
-    }
+   
     if(!layer.preview_position){
       layer.preview_position = {
       zoom: 1,
@@ -314,7 +312,6 @@ export default class LayerStore extends Reflux.Store<void, void, Layer> {
       labels: data.labels,
       legend_html: data.legend_html,
       preview_position: data.preview_position,
-      settings: data.settings,
       _csrf
     })
     .end((err, res) => {

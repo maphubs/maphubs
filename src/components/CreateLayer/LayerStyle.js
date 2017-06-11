@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 var $ = require('jquery');
-import mapStyles from '../Map/styles';
+import MapStyles from '../Map/Styles';
 import Map from '../Map/Map';
 import MiniLegend from '../Map/MiniLegend';
 import LayerStore from '../../stores/layer-store';
@@ -79,8 +79,8 @@ export default class LayerStyle extends MapHubsComponent {
   //Color must now be a rgba() formatted string
   setColor = (color: string, settings: Object) => {
 
-    var style = mapStyles.updateStyleColor(this.state.style, color);
-    var legend = mapStyles.legendWithColor(this.state, color);
+    var style = MapStyles.color.updateStyleColor(this.state.style, color);
+    var legend = MapStyles.legend.legendWithColor(this.state, color);
     LayerActions.setStyle(style, this.state.labels, legend, settings, null);
 
   }
@@ -89,16 +89,16 @@ export default class LayerStyle extends MapHubsComponent {
 
     var style = null;
     if(this.state.is_external && this.state.external_layer_config.type === 'ags-mapserver-tiles'){
-      style = mapStyles.rasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
+      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
     }else if(this.state.is_external && this.state.external_layer_config.type === 'multiraster'){
-       style = mapStyles.multiRasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.layers, opacity, 'raster');
+       style = MapStyles.raster.multiRasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.layers, opacity, 'raster');
     }
     else{
       var baseUrl = urlUtil.getBaseUrl();
-      style = mapStyles.rasterStyleWithOpacity(this.state.layer_id, baseUrl + '/api/layer/' + this.state.layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer_id, baseUrl + '/api/layer/' + this.state.layer_id +'/tile.json', opacity);
     }
 
-    var legend = mapStyles.rasterLegend(this.state);
+    var legend = MapStyles.legend.rasterLegend(this.state);
     LayerActions.setStyle(style,  this.state.labels, legend, this.layer.settings, this.state.preview_position);
     this.setState({rasterOpacity: opacity});
   }

@@ -5,7 +5,7 @@ import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
 import Select from '../forms/select';
 import _assignIn from 'lodash.assignin';
-import styles from '../Map/styles';
+import MapStyles from '../Map/Styles';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
 export default class MarkerSettings extends MapHubsPureComponent {
@@ -93,9 +93,9 @@ export default class MarkerSettings extends MapHubsPureComponent {
 
     var style;
     if(options.enabled){
-      style = styles.enableMarkers(this.state.style, options, this.props.layer.layer_id);    
+      style = MapStyles.markers.enableMarkers(this.state.style, options, this.props.layer.layer_id);    
     }else{
-      style = styles.disableMarkers(this.state.style);
+      style = MapStyles.markers.disableMarkers(this.state.style);
     }
     this.setState({style, options});
     this.props.onChange(style, options);

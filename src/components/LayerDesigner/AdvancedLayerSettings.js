@@ -3,29 +3,61 @@ import React from 'react';
 import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
 var $ = require('jquery');
-import styles from '../Map/styles';
+import MapStyles from '../Map/Styles';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
-export default class AdvancedLayerSettings extends MapHubsPureComponent {
-
-  props: {
-    onChange: Function,
+type Props = {
+   onChange: Function,
     layer: Object,
-    style: Object,
-    settings: Object
-  }
+    style: Object
+}
 
-  static defaultProps = {
+type DefaultProps = {
+
+}
+
+type State = {
+  style: Object,
+  interactive: boolean,
+  showBehindBaseMapLabels: boolean
+}
+
+export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     style: null,
-    layer: null,
-    settings: null
+    layer: null
   }
 
-  constructor(props: Object){
+  state: State
+
+  constructor(props: Props){
     super(props);
+    this.getStateFromStyleProp(props);
+    
+  }
+
+  getStateFromStyleProp(props: Props){
+    let defaults = MapStyles.settings.defaultLayerSettings();
+    let glLayerId = `omh-data-${props.layer.data_type}-${props.layer.layer_id}`;
+    
+    let interactive = defaults.interactive;
+    let interactiveSetting: any = MapStyles.settings.getLayerSetting(props.style,glLayerId, 'interactive');
+    if(typeof interactiveSetting !== 'undefined'){
+      interactive = interactiveSetting;
+    }
+    
+    let showBehindBaseMapLabels = defaults.showBehindBaseMapLabels;
+    let showBehindBaseMapLabelsSetting = MapStyles.settings.getLayerSetting(props.style,glLayerId, 'showBehindBaseMapLabels');
+    if(typeof showBehindBaseMapLabels !== 'undefined'){
+      showBehindBaseMapLabels = showBehindBaseMapLabelsSetting;
+    }
     this.state = {
-      style: this.props.style,
-      settings: this.props.settings ? this.props.settings : styles.defaultSettings()
+      style: props.style,
+      interactive,
+      showBehindBaseMapLabels
     };
   }
 
@@ -34,20 +66,17 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent {
   }
 
   componentWillReceiveProps(nextProps: Object){
-    if(nextProps.settings){
-      this.setState({style: nextProps.style, settings: nextProps.settings});
-    }else{
-      this.setState({style: nextProps.style});
-    }
+    this.getStateFromStyleProp(nextProps);
   }
 
    onFormChange = (values: Object) => {
 
      var style = this.state.style;
      if(values.interactive !== this.state.settings.interactive){
-        style = styles.toggleInteractive(values.interactive, this.state.style, this.props.layer.layer_id, this.props.layer.data_type);
+       let glLayerId = `omh-data-${this.props.layer.data_type}-${this.props.layer.layer_id}`;
+       style = MapStyles.settings.setLayerSetting(this.state.style, glLayerId ,'interactive', values.interactive);       
      }else if(values.showBehindBaseMapLabels !== this.state.settings.showBehindBaseMapLabels){
-        style = styles.toggleShowBehindBaseMapLabels(values.showBehindBaseMapLabels, this.state.style);
+        style = MapStyles.settings.setLayerSettingAll(this.state.style, 'showBehindBaseMapLabels', values.showBehindBaseMapLabels, 'symbol');
      }else{
        //nochange
        return;

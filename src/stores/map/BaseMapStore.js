@@ -8,11 +8,11 @@ var _debounce = require('lodash.debounce');
 var _distance = require('@turf/distance');
 var _find = require('lodash.find');
 
-var positron = require('../../components/Map/styles/positron.json');
-var darkmatter = require('../../components/Map/styles/darkmatter.json');
-var osmLiberty = require('../../components/Map/styles/osm-liberty.json');
-var osmBright = require('../../components/Map/styles/osm-liberty.json');
-var defaultBaseMapOptions = require('../../components/Map/styles/base-map-options.json');
+var positron = require('../../components/Map/BaseMaps/positron.json');
+var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json');
+var osmLiberty = require('../../components/Map/BaseMaps/osm-liberty.json');
+var osmBright = require('../../components/Map/BaseMaps/osm-liberty.json');
+var defaultBaseMapOptions = require('../../components/Map/BaseMaps/base-map-options.json');
 
 export type BaseMapOption = {
   value: string,

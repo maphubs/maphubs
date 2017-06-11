@@ -2,7 +2,7 @@
 import React from 'react';
 import LayerDesigner from './LayerDesigner';
 import OpacityChooser from './OpacityChooser';
-import mapStyles from '../Map/styles';
+import MapStyles from '../Map/Styles';
 import urlUtil from '../../services/url-util';
 import MapHubsComponent from '../MapHubsComponent';
 
@@ -42,8 +42,8 @@ export default class MapLayerDesigner extends MapHubsComponent {
 
   setColor = (color: string, settings: Object) => {
     //var sourceConfig = this.getSourceConfig();
-    var style = mapStyles.updateStyleColor(this.state.layer.style, color);
-    var legend = mapStyles.legendWithColor(this.state.layer, color);
+    var style = MapStyles.color.updateStyleColor(this.state.layer.style, color);
+    var legend = MapStyles.legend.legendWithColor(this.state.layer, color);
     this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, legend, settings);
     this.setState({style, legend, mapColor: color});
   }
@@ -62,14 +62,14 @@ export default class MapLayerDesigner extends MapHubsComponent {
     var baseUrl = urlUtil.getBaseUrl();
     var style; 
     if(this.state.layer.external_layer_config.type === 'ags-mapserver-tiles'){
-      style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
+      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
     }else if(this.state.layer.external_layer_config.type === 'multiraster'){
-      style = mapStyles.multiRasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.layers, opacity, 'raster');
+      style = MapStyles.raster.multiRasterStyleWithOpacity(this.state.layer.layer_id, this.state.layer.external_layer_config.layers, opacity, 'raster');
     }else{
-      style = mapStyles.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer.layer_id, baseUrl + '/api/layer/' + this.state.layer.layer_id +'/tile.json', opacity);
     }
 
-    var legend = mapStyles.rasterLegend(this.state.layer);
+    var legend = MapStyles.legend.rasterLegend(this.state.layer);
     this.props.onStyleChange(this.state.layer.layer_id, style, this.state.layer.labels, legend, this.state.layer.settings);
     this.setState({style, legend, rasterOpacity: opacity});
   }
