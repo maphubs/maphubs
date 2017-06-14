@@ -1,6 +1,7 @@
 //@flow
+import type {GLStyle} from '../../../types/mapbox-gl-style';
 module.exports = {
- enableMarkers(style, markerOptions, layer_id){
+ enableMarkers(style: GLStyle, markerOptions: Object, layer_id: number){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
@@ -36,7 +37,7 @@ module.exports = {
     return style;
   },
 
-  disableMarkers(style){
+  disableMarkers(style: GLStyle){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){

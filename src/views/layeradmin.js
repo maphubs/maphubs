@@ -8,8 +8,9 @@ import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import ConfirmationActions from '../actions/ConfirmationActions';
 import request from 'superagent';
+import _uniq from 'lodash.uniq';
+import _mapvalues from 'lodash.mapvalues';
 import LayerActions from '../actions/LayerActions';
-import PresetActions from '../actions/presetActions';
 import LayerStore from '../stores/layer-store';
 var $ = require('jquery');
 var slug = require('slug');
@@ -17,8 +18,8 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-import PresetStore from '../stores/preset-store';
 import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {LayerStoreState} from '../stores/layer-store';
 
 type Props = {
   layer: Object,
@@ -30,12 +31,10 @@ type Props = {
   mapConfig: Object
 }
 
-type LayerAdminState = {
+type State = {
   tab: string,
   canSavePresets: boolean
-}
-
-type State = LocaleStoreState  & LayerAdminState
+} & LocaleStoreState & LayerStoreState
 
 export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
 
@@ -51,12 +50,9 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
     this.stores.push(LayerStore);
 
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
-    Reflux.rehydrate(LayerStore, {layer: this.props.layer, groups: this.props.groups});
-    //Reflux.rehydrate(PresetStore, {locale: this.props.locale, _csrf: this.props._csrf});
-    Reflux.initStore(PresetStore);
-    LayerActions.loadLayer(this.props.layer);
-    PresetActions.setLayerId(this.props.layer.layer_id);
-    PresetActions.loadPresets(this.props.layer.presets);
+    Reflux.rehydrate(LayerStore, this.props.layer);
+  
+    LayerActions.loadLayer();
   }
 
   componentDidMount(){
@@ -64,20 +60,35 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
     $('.layeradmin-tooltips').tooltip();
   }
 
-  save = () =>{
-    NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000, onDismiss: this.props.onSubmit});
+  saveStyle = () => {
+    var _this = this;
+    LayerActions.saveStyle(this.state, this.state._csrf,  (err) => {
+      if(err){
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+      }else{
+        NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000, onDismiss: this.props.onSubmit});
+      }
+    });
   }
 
   savePresets = () => {
     var _this = this;
-    //save presets
-    PresetActions.submitPresets(false, this.state._csrf, (err) => {
-      if(err){
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-      }else{
-        _this.save();
-      }
-    });
+    //check for duplicate presets
+    let presets = this.state.presets;
+    let tags = _mapvalues(presets, 'tag');
+    let uniqTags = _uniq(tags);
+    if(tags.length > uniqTags.length){
+      MessageActions.showMessage({title: _this.__('Data Error'), message: this.__('Duplicate tag, please choose a unique tag for each field')});
+    }else{
+      //save presets
+      LayerActions.submitPresets(false, this.state._csrf, (err) => {
+        if(err){
+          MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+        }else{
+          _this.saveStyle();
+        }
+      });
+    }
   }
 
   presetsValid = () => {

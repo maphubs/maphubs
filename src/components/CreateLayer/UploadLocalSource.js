@@ -6,8 +6,6 @@ import FileUpload from '../forms/FileUpload';
 import Map from '../Map/Map';
 import NotificationActions from '../../actions/NotificationActions';
 import LayerStore from '../../stores/layer-store';
-import PresetStore from '../../stores/preset-store';
-import PresetActions from '../../actions/presetActions';
 import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
 import RadioModal from '../RadioModal';
@@ -47,7 +45,6 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
   constructor(props: Object){
     super(props);
     this.stores.push(LayerStore);
-    this.stores.push(PresetStore);
   }
 
   componentDidMount() {
@@ -90,7 +87,6 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
       }
     });
@@ -105,7 +101,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});
-      PresetActions.setImportedTags(result.uniqueProps);
+      LayerActions.setImportedTags(result.uniqueProps);
       LayerActions.setDataType(result.data_type);
     }else{
       if(result.code === 'MULTIPLESHP'){
@@ -126,7 +122,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
-        PresetActions.setImportedTags(result.uniqueProps);
+        LayerActions.setImportedTags(result.uniqueProps);
         LayerActions.setDataType(result.data_type);
       } else {
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});

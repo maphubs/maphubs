@@ -4,10 +4,10 @@ import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
 import Select from '../forms/select';
 var $ = require('jquery');
-import styles from '../Map/styles';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapStyles from '../Map/Styles';
+import MapHubsComponent from '../MapHubsComponent';
 
-export default class LabelSettings extends MapHubsPureComponent {
+export default class LabelSettings extends MapHubsComponent {
 
   props: {
     onChange: Function,
@@ -49,14 +49,14 @@ export default class LabelSettings extends MapHubsPureComponent {
    onFormChange = (values: Object) => {
     if(values.enabled && values.field){
       //add labels to style
-      var style = styles.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id, this.props.layer.data_type);
+      var style = MapStyles.labels.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id, this.props.layer.data_type);
       this.setState({style, enabled: true, field: values.field});
       this.props.onChange(style, values);
     } else if(values.enabled && !values.field){
       this.setState({enabled: true});
     } else{
       //remove labels from style
-      style = styles.removeStyleLabels(this.state.style);
+      style = MapStyles.labels.removeStyleLabels(this.state.style);
       this.setState({style, enabled: false});
       this.props.onChange(style, values);
     }
@@ -65,14 +65,14 @@ export default class LabelSettings extends MapHubsPureComponent {
   }
 
   render(){
-
+    var _this = this;
     var fieldOptions = [];
 
     if(this.props.layer && this.props.layer.presets){
       this.props.layer.presets.forEach((preset) => {
         fieldOptions.push({
           value: preset.tag,
-          label: preset.label
+          label: _this._o_(preset.label)
           });
       });
 

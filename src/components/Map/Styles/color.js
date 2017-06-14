@@ -1,10 +1,11 @@
 //@flow
 var debug = require('../../../services/debug')('map-styles-color');
+import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {
 //attempt to update a style color without recreating other parts of the style
   //needed for custom style support
-  updateStyleColor(style: Object, newColor: string){
+  updateStyleColor(style: GLStyle, newColor: string){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       style.layers.forEach((style) => {
         if(style.id.startsWith('omh-data-point')){

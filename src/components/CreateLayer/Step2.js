@@ -2,10 +2,8 @@
 import React from 'react';
 import LayerSettings from './LayerSettings';
 import LayerActions from '../../actions/LayerActions';
-import PresetActions from '../../actions/presetActions';
 import MessageActions from '../../actions/MessageActions';
 import LayerStore from '../../stores/layer-store';
-import PresetStore from '../../stores/preset-store';
 import Progress from '../Progress';
 import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
@@ -36,7 +34,7 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
 
   constructor(props: Props){
     super(props);
-    this.stores.push(LayerStore, PresetStore);
+    this.stores.push(LayerStore);
   }
 
   onSubmit = () => {
@@ -54,9 +52,8 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
     var _this = this;
 
     //save presets
-    PresetActions.loadDefaultPresets();
-    PresetActions.setLayerId(this.state.layer_id);
-    PresetActions.submitPresets(true, this.state._csrf, (err) => {
+    LayerActions.loadDefaultPresets();
+    LayerActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
@@ -79,7 +76,7 @@ export default class Step2 extends MapHubsComponent<void, Props, State> {
 
     _this.setState({saving: true});
     //save presets
-    PresetActions.submitPresets(true, this.state._csrf, (err) => {
+    LayerActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
           _this.setState({saving: false});

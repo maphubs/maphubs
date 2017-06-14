@@ -1,5 +1,5 @@
 var debug = require('../../../services/debug')('MapGeoJSONMixin');
-var styles = require('../styles');
+var MapStyles = require('../Styles');
 var _bbox = require('@turf/bbox');
 
 export default function(){
@@ -8,7 +8,7 @@ export default function(){
     
     if(data && data.features && data.features.length > 0){
       map.addSource("omh-geojson", {"type": "geojson", data});
-      var glStyle = styles.defaultStyle('geojson', null, null);
+      var glStyle = MapStyles.style.defaultStyle('geojson', null, null);
       glStyle.sources["omh-geojson"] = {"type": "geojson", data: {}}; //just a placeholder
       _this.addLayers(map, glStyle);
 

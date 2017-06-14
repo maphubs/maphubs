@@ -1,6 +1,11 @@
 //@flow
+
+import type {GLLayer} from '../../../types/mapbox-gl-style';
+
 module.exports = {
-getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels){
+getLineLayers(layer_id: number, 
+  color: string, hoverColor: string, 
+  interactive: boolean, showBehindBaseMapLabels: boolean): Array<GLLayer>{
     var layers = [
       {
         "id": "omh-data-line-" + layer_id,

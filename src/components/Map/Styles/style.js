@@ -1,29 +1,38 @@
 //@flow
+import type {GLStyle} from '../../../types/mapbox-gl-style';
+import Settings from './settings';
+import Line from './line';
+import Point from './point';
+import Polygon from './polygon';
 module.exports = {
-  defaultStyle(layer_id: number, source: string, dataType: string) {
-    var settings = this.settings.defaultLayerSettings();
+  defaultStyle(layer_id: number, source: string, dataType: string): GLStyle {
+    var settings = Settings.defaultLayerSettings();
     return this.styleWithColor(layer_id, source, "red", dataType, settings.interactive, settings.showBehindBaseMapLabels);
   },
 
-  styleWithColor(layer_id: number, source: string, color: string, dataType: string, interactive: boolean, showBehindBaseMapLabels: boolean) {
+  styleWithColor(
+    layer_id: number, 
+    source: string, color: string, dataType: string, 
+    interactive: boolean, showBehindBaseMapLabels: boolean): GLStyle {
     //TODO: make default selected colors better match user color
     var hoverColor = "yellow";
     var hoverOutlineColor = "black";
 
     var layers = [];
     if(dataType === 'point'){
-      layers = this.point.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
+      layers = Point.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
     }else if(dataType === 'point'){
-      layers = this.line.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
+      layers = Line.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
     }else if(dataType === 'polygon'){
-      layers = this.polygon.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels);
+      layers = Polygon.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels);
     }else{
-      layers = this.point.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels)
-      .concat(this.line.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels))
-      .concat(this.polygon.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels));
+      layers = Point.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels)
+      .concat(Line.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels))
+      .concat(Polygon.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels));
     }
 
     var styles = {
+        version: 8,
         sources: {},
         layers
     };
@@ -50,7 +59,7 @@ module.exports = {
       }else if(source.type === 'geojson'){
         styles.sources['omh-' + layer_id] = {
           "type": "geojson",
-            "data": source.data
+          "data": source.data
         };
         styles.layers.map(layer =>{
           delete layer['source-layer'];
@@ -60,12 +69,14 @@ module.exports = {
     return styles;
   },
 
-  getMapboxStyle(mapboxid: string){
+  getMapboxStyle(mapboxid: string): GLStyle{
 
       //Note: we are treating a mapbox style as a special type of "source"
       //it will be converted to sources and layers when the map loads by downloading the style json from the Mapbox API
-      var style = {
-          sources: {},
+      var style: GLStyle = {
+          version: 8,
+          sources: {
+          },
           layers: [{
             id: 'mapbox-style-placeholder',
             type: 'mapbox-style-placeholder'

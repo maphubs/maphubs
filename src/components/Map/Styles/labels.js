@@ -1,8 +1,9 @@
 //@flow
 var _remove = require('lodash.remove');
+import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {
-   removeStyleLabels(style){
+   removeStyleLabels(style: GLStyle){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       _remove(style.layers, (layer) => {
         return layer.id.startsWith('omh-label');
@@ -11,7 +12,7 @@ module.exports = {
     return style;
   },
 
-  addStyleLabels(style, field, layer_id, data_type){
+  addStyleLabels(style: GLStyle, field: string, layer_id: number, data_type: string){
     style = this.removeStyleLabels(style);
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
 

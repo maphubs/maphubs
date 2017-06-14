@@ -1,17 +1,18 @@
 //@flow
+import type {GLLayer} from '../../../types/mapbox-gl-style';
 module.exports = {
-  defaultRasterStyle(layer_id: number, sourceUrl, type="raster"){
+  defaultRasterStyle(layer_id: number, sourceUrl: string, type: string="raster"){
     return this.rasterStyleWithOpacity(layer_id, sourceUrl, 100, type);
   },
 
-  defaultMultiRasterStyle(layer_id: number, layers, type="raster"){
+  defaultMultiRasterStyle(layer_id: number, layers: Array<GLLayer>, type: string="raster"){
       return this.multiRasterStyleWithOpacity(layer_id, layers, 100, type);
   },
 
-  rasterStyleWithOpacity(layer_id: number, sourceUrl, opacity, type="raster"){
+  rasterStyleWithOpacity(layer_id: number, sourceUrl: string, opacity: number, type: string="raster"){
 
       opacity = opacity / 100;
-      var styles = {
+      var style = {
           sources: {},
           layers: [
             {
@@ -27,27 +28,27 @@ module.exports = {
           ]
       };
 
-      styles.sources['omh-' + layer_id] = {
+      style.sources['omh-' + layer_id] = {
           type,
           url: sourceUrl,
           "tileSize": 256
 
       };
 
-      return styles;
+      return style;
     },
 
-  multiRasterStyleWithOpacity(layer_id: number, layers, opacity, type="raster"){
+  multiRasterStyleWithOpacity(layer_id: number, layers: Array<GLLayer>, opacity: number, type: string="raster"){
   
       opacity = opacity / 100;
-      var styles = {
+      var style = {
           sources: {},
           layers: []
       };
 
       layers.forEach((raster, i) => {
         var id = `omh-raster-${i}-${layer_id}`;
-        styles.layers.push(
+        style.layers.push(
           {
             "id": id,
             "type": "raster",
@@ -59,7 +60,7 @@ module.exports = {
             }
             }
         );
-        styles.sources[id] = {
+        style.sources[id] = {
           type,
           tiles: raster.tiles,
           "tileSize": 256
@@ -67,6 +68,6 @@ module.exports = {
       };
       });
 
-      return styles;
+      return style;
     },
 };

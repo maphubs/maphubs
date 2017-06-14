@@ -16,5 +16,17 @@ export default Reflux.createActions([
   'setDataType',
   'resetStyle',
   'setComplete',
-  'finishUpload'
+  'finishUpload',
+
+  //presets
+  'setImportedTags',
+  'submitPresets',
+  'addPreset',
+  'deletePreset',
+  'updatePreset',
+  'setLayerId',
+  'movePresetUp',
+  'movePresetDown',
+  'loadPresets',
+  'loadDefaultPresets'
 ]);

@@ -175,11 +175,11 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
         }
 
         var layerinfo = '';
-        if(this.state.layer_id){
+        if(this.state.layer){
           layerinfo = (
             <div style={{textAlign: 'left'}}>
-              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={baseUrl + '/lyr/' + this.state.layer_id}>{this.state.name}</a></b>
-              <GroupTag className={'left'} group={this.state.owned_by_group_id} size={15} fontSize={8} />
+              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={baseUrl + '/lyr/' + this.state.layer.layer_id}>{this._o_(this.state.layer.name)}</a></b>
+              <GroupTag className={'left'} group={this.state.layer.owned_by_group_id} size={15} fontSize={8} />
             </div>
           );
         }
@@ -241,17 +241,14 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
       if(currentFeature && currentFeature.properties){
         properties = currentFeature.properties;
       }
-      var presets;
-      if(this.state.layer_id){
-        presets = this.state.presets;
-      }
+
         attributes = (
           <Attributes
               attributes={properties}
               selected={this.state.selected}
               multipleSelected={multipleSelected}
               locale={this.state.locale}
-              presets={presets}>
+              >
             <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
               {infoPanel}
               {pager}

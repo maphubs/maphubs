@@ -15,10 +15,10 @@ import LayerNotesActions from '../actions/LayerNotesActions';
 import LayerNotesStore from '../stores/LayerNotesStore';
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid';
 import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid';
+import MapStyles from '../components/Map/Styles';
 
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
-var styles = require('../components/Map/styles');
 var $ = require('jquery');
 var moment = require('moment-timezone');
 var clipboard;
@@ -60,6 +60,11 @@ type Props = {
   mapConfig: Object
 }
 
+type DefaultProps = {
+  stats: Object,
+  canEdit: boolean,
+}
+
 type State = {
   editingNotes: boolean,
   editingData: boolean,
@@ -67,14 +72,14 @@ type State = {
   gridHeightOffset: number,
   userResize?: boolean,
   geoJSON?: Object,
-  presets?: Object
-} & LocaleStoreState & LayerInfoState
+  dataMsg?: string
+} & LocaleStoreState
 
-export default class LayerInfo extends MapHubsComponent<void, Props, State> {
+export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
       stats: {maps: 0, stories: 0, hubs: 0},
       canEdit: false
   }
@@ -136,7 +141,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
     };
   }
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(prevProps: Props, prevState: State){
     if(!this.state.userResize){
       fireResizeEvent();
     }
@@ -147,15 +152,13 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
   getGeoJSON = (cb: Function) => {
     var _this = this;
-      var baseUrl, dataUrl, presetUrl;
+      var baseUrl, dataUrl;
     if(this.props.layer.remote){
       baseUrl = 'https://' + this.props.layer.remote_host;
       dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/json/data.geojson';
-      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.remote_layer_id;
     }else{
       baseUrl = urlUtil.getBaseUrl();
       dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson';
-      presetUrl = baseUrl + '/api/layer/presets/' + _this.props.layer.layer_id;
     }
 
     request.get(dataUrl)
@@ -163,24 +166,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
         var geoJSON = res.body;
-        request.get(presetUrl)
-        .type('json').accept('json')
-        .end((err, res) => {
-          checkClientError(res, err, cb, (cb) => {
-            var presets = res.body;
-            var presetArr = [];
-            //convert iD formatted presets to simple format
-
-            Object.keys(res.body.fields).forEach((fieldsKey) => {
-              var field = presets.fields[fieldsKey];
-              field.tag = field.key;
-              presetArr.push(field);
-            });
-
-            _this.setState({geoJSON, presets: presetArr});
-            cb();
-          });
-        });
+        _this.setState({geoJSON});
         cb();
       });
     });
@@ -264,7 +250,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
 
 	render() {
     var _this = this;
-    var glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.layer.data_type];
+    var glStyle = this.props.layer.style;
 
     var exportTabContent = '';
 
@@ -485,6 +471,9 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
       );
     }
 
+    let firstSource = Object.keys(this.props.layer.style.sources)[0];
+    var presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
+
     var dataGrid = '';
     if(this.state.editingData){
       dataGrid = (
@@ -492,7 +481,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
           layer_id={this.props.layer.layer_id} 
           gridHeight={this.state.gridHeight} 
           geoJSON={this.state.geoJSON} 
-          presets={this.state.presets} 
+          presets={presets} 
           onRowSelected={this.onRowSelected}
           canEdit={true}
           />
@@ -503,7 +492,7 @@ export default class LayerInfo extends MapHubsComponent<void, Props, State> {
           layer_id={this.props.layer.layer_id} 
           gridHeight={this.state.gridHeight} 
           geoJSON={this.state.geoJSON} 
-          presets={this.state.presets} 
+          presets={presets} 
           onRowSelected={this.onRowSelected}
           canEdit={this.props.canEdit} />
       );

@@ -1,6 +1,9 @@
 //@flow
 module.exports = {
-getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels){
+getPolygonLayers(
+  layer_id: number, 
+  color: string, hoverColor: string, hoverOutlineColor: string, 
+  interactive: boolean, showBehindBaseMapLabels: boolean){
 
     var layers = [
       {

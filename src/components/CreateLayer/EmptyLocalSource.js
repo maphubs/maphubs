@@ -3,7 +3,6 @@ import React from 'react';
 
 import NotificationActions from '../../actions/NotificationActions';
 import LayerStore from '../../stores/layer-store';
-import PresetActions from '../../actions/presetActions';
 import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
 import MapHubsComponent from '../MapHubsComponent';
@@ -40,7 +39,6 @@ export default class EmptyLocalSource extends MapHubsComponent {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer.layer_id);
         NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
       }
     });

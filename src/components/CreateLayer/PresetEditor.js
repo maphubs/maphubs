@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 import PresetForm from './PresetForm';
-import PresetStore from '../../stores/preset-store';
-import Actions from '../../actions/presetActions';
+import LayerStore from '../../stores/layer-store';
+import Actions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
 
 type Props = {
@@ -21,13 +21,13 @@ export default class PresetEditor extends MapHubsComponent<void, Props, void> {
 
   constructor(props: Props){
     super(props);
-    this.stores.push(PresetStore);
+    this.stores.push(LayerStore);
   }
 
   componentDidMount(){
     var _this = this;
     window.onbeforeunload = function(){
-      if(_this.props.warnIfUnsaved && _this.state.pendingChanges){
+      if(_this.props.warnIfUnsaved && _this.state.pendingPresetChanges){
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };

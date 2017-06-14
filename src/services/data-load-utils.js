@@ -11,7 +11,7 @@ var fs = require('fs');
 var LayerViews = require('./layer-views');
 var Promise = require('bluebird');
 var sizeof = require('object-sizeof');
-var styles = require('../components/Map/styles');
+var MapStyles = require('../components/Map/Styles');
 //var fileEncodingUtils = require('./file-encoding-utils');
 var ogr2ogr = require('ogr2ogr');
 var SearchIndex = require('../models/search-index');
@@ -81,7 +81,7 @@ module.exports = {
     if(geoJSON.type === "FeatureCollection"){
 
       //Error if the FeatureCollection is empty
-      if(!geoJSON.features || geoJSON.features.length ==0){
+      if(!geoJSON.features || geoJSON.features.length === 0){
         reject(new Error("Dataset appears to be empty. Zero features found in FeatureCollection"));
         return;
       }
@@ -116,7 +116,7 @@ module.exports = {
         //confirm feature is expected type/SRID
         if(feature.crs && feature.crs.properties && feature.crs.properties.name){
           let featureSRID = feature.crs.properties.name.split(':')[1];
-          if(srid != featureSRID){
+          if(srid !== featureSRID){
             reject(new Error('SRID mis-match found in geoJSON'));
             return;
           }
@@ -179,7 +179,7 @@ module.exports = {
     
 
       //now that we know the data type, update the style to clear uneeded default styles
-      var style = styles.defaultStyle(layer_id, 'vector', geomType);
+      var style = MapStyles.style.defaultStyle(layer_id, 'vector', geomType);
 
       var commands = [
         db('omh.layers').where({

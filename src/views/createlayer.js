@@ -54,7 +54,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
 		super(props);
     this.stores.push(LayerStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
-    Reflux.rehydrate(LayerStore, {groups: this.props.groups, layer: this.props.layer});
+    Reflux.rehydrate(LayerStore, this.props.layer);
 	}
 
   componentDidMount(){

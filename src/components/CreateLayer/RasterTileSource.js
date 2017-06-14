@@ -2,7 +2,6 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 import TextInput from '../forms/textInput';
-import PresetActions from '../../actions/presetActions';
 import LayerActions from '../../actions/LayerActions';
 import NotificationActions from '../../actions/NotificationActions';
 import MessageActions from '../../actions/MessageActions';
@@ -72,7 +71,6 @@ export default class RasterTileSource extends MapHubsComponent<void, Props, Stat
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
           dismissAfter: 1000,

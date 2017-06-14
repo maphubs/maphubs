@@ -1,7 +1,6 @@
 // @flow
 var Layer = require('../../models/layer');
 //var log = require('../../services/log');
-var Presets = require('../../services/preset-utils');
 //var debug = require('../../services/debug')('routes/layers');
 var urlUtil = require('../../services/url-util');
 var apiError = require('../../services/error-response').apiError;
@@ -39,21 +38,6 @@ module.exports = function(app: any) {
       }).catch(apiError(res, 500));
   });
 
-  app.get('/api/layers/all', (req, res) => {
-    Layer.getAllLayers(true)
-      .then((result) => {
-        res.status(200).send({success: true, layers: result});
-      }).catch(apiError(res, 500));
-  });
-
-  //layers recommend for this hub (for use in user maps, etc.)
-  //TODO: actually filter this for the hub
-  app.get('/api/layers/recommended/hub/:hubid', (req, res) => {
-    Layer.getAllLayers(true)
-      .then((result) => {
-        res.status(200).send({success: true, layers: result});
-      }).catch(apiError(res, 500));
-  });
 
   app.get('/api/layer/info/:layer_id', privateLayerCheck, (req, res) => {
     var layer_id = parseInt(req.params.layer_id || '', 10);

@@ -7,7 +7,6 @@ import MessageActions from '../../actions/MessageActions';
 import Progress from '../Progress';
 import LayerStore from '../../stores/layer-store';
 import LayerActions from '../../actions/LayerActions';
-import PresetActions from '../../actions/presetActions';
 import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
@@ -65,7 +64,7 @@ export default class Step4 extends MapHubsComponent<void, Props, State> {
 
     _this.setState({saving: true});
     //save presets
-    PresetActions.submitPresets(true, this.state._csrf, (err) => {
+    LayerActions.submitPresets(true, this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
           _this.setState({saving: false});

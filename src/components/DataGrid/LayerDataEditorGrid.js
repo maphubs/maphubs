@@ -126,8 +126,8 @@ export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, S
 
           columns.push(
             {
-              key: preset.key,
-              name: preset.label,
+              key: preset.tag,
+              name: _this._o_(preset.label),
               width : 120,
               resizable: true,
               sortable : true,
@@ -138,26 +138,28 @@ export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, S
           );
           
         }else if(preset.type === 'combo' || preset.type === 'radio'){
-
+          let options = preset.options.split(',').map(option => {
+            return option.trim();
+          });
 
           columns.push(
             {
-              key: preset.key,
-              name: preset.label,
+              key: preset.tag,
+              name: _this._o_(preset.label),
               width : 120,
               resizable: true,
               sortable : true,
               filterable: true,
-              editor: <this.DropDownEditor options={preset.options}/>,
-              formatter: <this.DropDownFormatter options={preset.options}/>
+              editor: <this.DropDownEditor options={options}/>,
+              formatter: <this.DropDownFormatter options={options}/>
             }
           );
           
         }else if(preset.type === 'number'){
           columns.push(
             {
-              key: preset.key,
-              name: preset.label,
+              key: preset.tag,
+              name: _this._o_(preset.label),
               width : 120,
               resizable: true,
               sortable : true,
@@ -169,8 +171,8 @@ export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, S
         }else{
            columns.push(
             {
-              key: preset.key,
-              name: preset.label,
+              key: preset.tag,
+              name: _this._o_(preset.label),
               width : 120,
               resizable: true,
               sortable : true,

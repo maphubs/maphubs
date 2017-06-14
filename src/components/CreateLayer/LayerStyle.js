@@ -15,19 +15,31 @@ import LayerDesigner from '../LayerDesigner/LayerDesigner';
 import MapHubsComponent from '../MapHubsComponent';
 //import Reflux from 'reflux';
 
-export default class LayerStyle extends MapHubsComponent {
+import type {LayerStoreState} from '../../stores/layer-store';
 
-  props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    prevText: string,
-    onPrev: Function,
-    mapConfig: Object,
-    waitForTileInit: boolean
-  }
+type Props = {
+  onSubmit: Function,
+  showPrev: boolean,
+  prevText: string,
+  onPrev: Function,
+  mapConfig: Object,
+  waitForTileInit: boolean
+}
 
-  static defaultProps = {
-    onSubmit: null,
+type DefaultProps = {
+  waitForTileInit: boolean
+}
+
+type State = {
+  rasterOpacity: number,
+  saving: boolean
+} & LayerStoreState
+
+export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     waitForTileInit: false //wait for tile service before showing map
   }
 
@@ -78,11 +90,9 @@ export default class LayerStyle extends MapHubsComponent {
 
   //Color must now be a rgba() formatted string
   setColor = (color: string, settings: Object) => {
-
     var style = MapStyles.color.updateStyleColor(this.state.style, color);
     var legend = MapStyles.legend.legendWithColor(this.state, color);
     LayerActions.setStyle(style, this.state.labels, legend, settings, null);
-
   }
 
   setRasterOpacity = (opacity: number) => {

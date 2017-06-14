@@ -9,8 +9,6 @@ import GeoJSONUrlSource  from './GeoJSONUrlSource';
 import AGOLSource  from './AGOLSource';
 import PlanetLabsSource  from './PlanetLabsSource';
 
-import '../../stores/preset-store'; //needed to init the store used by the source options
-
 export default {
 
   getSource(type: string, mapConfig: Object){

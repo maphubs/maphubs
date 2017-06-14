@@ -1,8 +1,9 @@
-
+//@flow
 var $ = require('jquery');
 import _debounce from 'lodash.debounce';
 var debug = require('../../../services/debug')('MapInteractionMixin');
 import BaseMapActions from '../../../actions/map/BaseMapActions';
+import MapStyles from '../Styles';
 /**
  * Helper functions for interacting with the map and selecting features
  */
@@ -92,14 +93,25 @@ export default function() {
             _this.clearSelection();
           }
 
+           var feature = features[0];
+           //find presets and add to props
+           if(feature.layer && feature.layer.source){
+             let presets = MapStyles.settings.getSourceSetting(_this.state.glStyle, feature.layer.source, 'presets');
+             if(!feature.properties['maphubs_metadata']){
+               feature.properties['maphubs_metadata'] = {};
+             }
+             feature.properties['maphubs_metadata'].presets = presets;
+           }
+        
+
           if(_this.state.editing){
-            var feature = features[0];
             if(feature.properties.layer_id && 
               _this.state.editingLayer.layer_id === feature.properties.layer_id){
                 _this.editFeature(feature);
               }    
             return; //return here to disable interactation with other layers when editing
           }
+          
 
           _this.setSelectionFilter([features[0]]);
           _this.setState({selectedFeatures:[features[0]], selected:true});

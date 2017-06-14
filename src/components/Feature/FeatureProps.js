@@ -14,7 +14,7 @@ export default class FeatureProps extends MapHubsComponent {
   }
 
   render(){
-
+    var _this = this;
     let tbody = '';
     if(this.props.presets){
        tbody = (
@@ -24,7 +24,7 @@ export default class FeatureProps extends MapHubsComponent {
               let val = this.props.data[preset.tag];
               return (
                 <tr key={`feature-attrib-${i}`}>
-                  <td>{preset.label}</td>
+                  <td>{_this._o_(preset.label)}</td>
                   <td>{val}</td>
                 </tr>
               );

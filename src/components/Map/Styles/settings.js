@@ -1,5 +1,6 @@
 //@flow
 var _findIndex = require('lodash.findindex');
+import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {
 
@@ -27,6 +28,8 @@ module.exports = {
     },
 
     set(object: Object, key: string, value: any){
+      if(!object) return;
+
       if(!object.metadata){
         object.metadata = {};
       }
@@ -34,6 +37,8 @@ module.exports = {
     },
 
     get(object: Object, key: string): any{
+      if(!object) return;
+      
       if(object.metadata){
         return object.metadata[`maphubs:${key}`];
       }else{
@@ -41,31 +46,31 @@ module.exports = {
       }
     },
 
-    getLayerSetting(style: Object, id: string, key: string){
+    getLayerSetting(style: GLStyle, id: string, key: string){
       let index = _findIndex(style.layers, {id});
       let layer = style.layers[index];
       return this.get(layer, key);
     },
 
-    getSourceSetting(style: Object, id: string, key: string){
-      let source = style[id];
+    getSourceSetting(style: GLStyle, id: string, key: string){
+      let source = style.sources[id];
       return this.get(source, key);
     },
 
-    setLayerSetting(style: Object, id: string, key: string, value: any){
+    setLayerSetting(style: GLStyle, id: string, key: string, value: any){
       let index = _findIndex(style.layers, {id});
       let layer = style.layers[index];
       this.set(layer, key, value);
       return style;
     },
 
-    setSourceSetting(style: Object, id: string, key: string, value: any){
-      let source = style[id];
+    setSourceSetting(style: GLStyle, id: string, key: string, value: any){
+      let source = style.sources[id];
       this.set(source, key, value);
       return style;
     },
 
-    setLayerSettingAll(style: Object, key: string, value: any, excludeType: string){
+    setLayerSettingAll(style: GLStyle, key: string, value: any, excludeType: string){
       style.layers.forEach(layer => {
         if(layer.type !== excludeType){
           this.set(layer, key, value);

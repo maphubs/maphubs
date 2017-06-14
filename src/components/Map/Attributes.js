@@ -1,15 +1,17 @@
+//@flow
 import React from 'react';
 
-export default class Attributes extends React.Component {
+type Props = {|
+  attributes: Object,
+  selected: boolean,
+  multipleSelected: boolean,
+  locale: string,
+  children: any
+|}
 
-  props: {
-		attributes: Object,
-    selected: boolean,
-    multipleSelected: boolean,
-    presets:  Array<Object>,
-    locale: string,
-    children: any
-  }
+export default class Attributes extends React.Component<void, Props, void> {
+
+  props: Props
 
   render() {
     var _this = this;
@@ -37,9 +39,7 @@ export default class Attributes extends React.Component {
 
     if(_this.props.attributes && Object.keys(_this.props.attributes).length > 0){
       var presets;
-      if(this.props.presets){
-        presets = this.props.presets;
-      }else if( this.props.attributes['maphubs_metadata'] &&  
+      if( this.props.attributes['maphubs_metadata'] &&  
           this.props.attributes['maphubs_metadata'].presets){
         presets = this.props.attributes['maphubs_metadata'].presets;
       }

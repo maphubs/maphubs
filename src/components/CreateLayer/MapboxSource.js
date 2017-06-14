@@ -4,7 +4,6 @@ import Formsy from 'formsy-react';
 import TextInput from '../forms/textInput';
 import Radio from '../forms/radio';
 import LayerActions from '../../actions/LayerActions';
-import PresetActions from '../../actions/presetActions';
 import NotificationActions from '../../actions/NotificationActions';
 import MessageActions from '../../actions/MessageActions';
 import LayerStore from '../../stores/layer-store';
@@ -99,7 +98,6 @@ export default class MapboxSource extends MapHubsComponent<void, Props, State> {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        PresetActions.setLayerId(_this.state.layer_id);
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
           dismissAfter: 1000,

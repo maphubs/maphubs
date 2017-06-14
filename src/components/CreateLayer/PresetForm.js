@@ -3,54 +3,77 @@ import React from 'react';
 import Formsy from 'formsy-react';
 import TextArea from '../forms/textArea';
 import TextInput from '../forms/textInput';
+import MultiTextInput from '../forms/MultiTextInput';
 import Toggle from '../forms/toggle';
 import Select from '../forms/select';
-import Actions from '../../actions/presetActions';
+import Actions from '../../actions/LayerActions';
 import ConfirmationActions from '../../actions/ConfirmationActions';
 import _debounce from 'lodash.debounce';
+import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
+import Locales from '../../services/locales';
 
-export default class PresetForm extends MapHubsComponent {
+type Props = {
+  id: number,
+  tag: string,
+  label: string,
+  type: string,
+  options: Array<Object>, //if type requires a list of options
+  isRequired: boolean,
+  showOnMap: boolean,
+  isName: boolean,
+  onValid: Function,
+  onInvalid: Function
+}
 
-  props: {
-    id: number,
-		tag: string,
-    label: string,
-    type: string,
-    options: Array<Object>, //if type requires a list of options
-    isRequired: boolean,
-    showOnMap: boolean,
-    onValid: Function,
-    onInvalid: Function
+type DefaultProps = {
+  showOnMap: boolean,
+  isRequired: boolean,
+  isName: boolean,
+}
+
+type State = {
+  valid: boolean
+}
+
+export default class PresetForm extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
+    showOnMap: true,
+    isRequired: false,
+    isName: false
   }
 
-  static defaultProps = {
-    showOnMap: true
-  }
+  state: State
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     //if loading with values from the database, assume they are valid
     let valid = false;
     if(props.tag) valid = true;
     this.state = {
-      preset: {
-        id: props.id,
-        tag: props.tag,
-        label: props.label,
-        type: props.type,
-        options: props.options,
-        isRequired: props.isRequired,
-        showOnMap: props.showOnMap
-      },
       valid
     };
   }
 
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
+
   onFormChange = (values: Object) => {
+    var _this = this;
     values.id = this.props.id;
-    this.setState({preset: values});
-    Actions.updatePreset(this.props.id, values);
+    values.label = Locales.formModelToLocalizedString(values, 'label');
+    Actions.updatePreset(_this.props.id, values);
   }
 
   onValid = () => {
@@ -73,10 +96,6 @@ export default class PresetForm extends MapHubsComponent {
     return this.state.valid;
   }
 
-  getData = () => {
-    return this.state.preset;
-  }
-
   onRemove = () => {
     var _this = this;
     ConfirmationActions.showConfirmation({
@@ -91,11 +110,11 @@ export default class PresetForm extends MapHubsComponent {
   }
 
   onMoveUp = () => {
-    Actions.moveUp(this.props.id);
+    Actions.movePresetUp(this.props.id);
   }
 
   onMoveDown = () => {
-    Actions.moveDown(this.props.id);
+    Actions.movePresetDown(this.props.id);
   }
 
 	render() {
@@ -110,13 +129,13 @@ export default class PresetForm extends MapHubsComponent {
     
     var typeOptions = '';
 
-    if(this.state.preset.type === 'combo' || this.state.preset.type === 'radio'){
+    if(this.props.type === 'combo' || this.props.type === 'radio'){
       typeOptions = (
         <TextArea name="options" label={this.__('Options(seperate with commas)')} icon="list" 
-        className="col s12" validations="maxLength:500" validationErrors={{
+        className="row no-margin" validations="maxLength:500" validationErrors={{
                  maxLength: this.__('Description must be 500 characters or less.')
              }} length={500}
-            value={this.state.preset.options}
+            value={this.props.options}
             dataPosition="top" dataTooltip={this.__('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
            />
       );
@@ -124,40 +143,88 @@ export default class PresetForm extends MapHubsComponent {
 
 
     var typeStartEmpty = true;
-    if(this.state.preset.type) typeStartEmpty = false;
+    if(this.props.type) typeStartEmpty = false;
 
 		return (
         <div>
           <div className="row">
             <Formsy.Form ref="form" onChange={this.onFormChange}
                 onValid={this.onValid} onInvalid={this.onInvalid}>
-              <TextInput name="tag" id={this.props.tag+'-tag'} label={this.__('Tag')} icon="code" 
-                  className="col l6 m6 s12"
-                  validations="maxLength:25" validationErrors={{
-                     maxLength: this.__('Name must be 25 characters or less.')
-                 }} length={25}
-                  value={this.state.preset.tag}
-                  
-                  required/>
+                <div className="row">
+                  <div className="col s12 m6">
+                    <TextInput 
+                      name="tag" 
+                      id={this.props.tag+'-tag'} 
+                      label={this.__('Tag')} 
+                      validations="maxLength:25" validationErrors={{
+                          maxLength: this.__('Name must be 25 characters or less.')
+                      }} length={25}
+                      value={this.props.tag}                 
+                      required
+                    />
+                  </div>
+                  <div className="col s12 m6">
+                     <Select 
+                      name="type" 
+                      id="preset-type-select" 
+                      label={this.__('Field Type')} 
+                      options={presetOptions}
+                      value={this.props.type} 
+                      startEmpty={typeStartEmpty}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col s12 m6">
+                    <MultiTextInput 
+                      name="label" 
+                      id={this.props.tag+'-label'} 
+                      label={{
+                        en: 'Label', fr: 'Étiquette', es: 'Etiqueta', it: 'Etichetta'
+                      }} 
+                      validations="maxLength:50" validationErrors={{
+                          maxLength: this.__('Name must be 50 characters or less.')
+                      }} length={50}
+                      value={this.props.label}
+                      required
+                    />
+                   
+                  </div>
+                   <div className="col s12 m6" style={{textAlign: 'center'}}>
+                    <Toggle 
+                      name="isRequired" 
+                      labelOff="Optional" 
+                      labelOn="Required" 
+                      className="row no-margin"
+                      style={{paddingTop: '25px'}}
+                      checked={this.props.isRequired}
+                    />
+                    <Toggle 
+                      name="showOnMap" 
+                      labelOff="Hide in Map" 
+                      labelOn="Show in Map" 
+                      className="row no-margin"
+                      style={{paddingTop: '25px'}}
+                      checked={this.props.showOnMap}
+                    />
+                    <Toggle 
+                      name="isName" 
+                      labelOff="Regular Field" 
+                      labelOn="Name Field" 
+                      className="row no-margin"
+                      style={{paddingTop: '25px'}}
+                      checked={this.props.isName}
+                    />
+                  </div>
+                </div>
+                {typeOptions}
+             
 
-                <TextInput name="label" id={this.props.tag+'-label'} label={this.__('Label')} icon="label_outline" className="col l6 m6 s12"
-                   validations="maxLength:50" validationErrors={{
-                        maxLength: this.__('Name must be 50 characters or less.')
-                    }} length={50}
-                    value={this.state.preset.label}
-                    required/>
-                  <Toggle name="isRequired" labelOff="Optional" labelOn="Required" className="col l6 m6 s12"
-                       style={{paddingTop: '25px'}}
-                       checked={this.state.preset.isRequired}
-                        />
-                  <Toggle name="showOnMap" labelOff="Hide in Map" labelOn="Show in Map" className="col l6 m6 s12"
-                       style={{paddingTop: '25px'}}
-                       checked={this.state.preset.showOnMap}
-                        />
-                      <Select name="type" id="preset-type-select" label={this.__('Field Type')} options={presetOptions} className="col l6 m6 s12"
-                    value={this.state.preset.type} startEmpty={typeStartEmpty}
-                   required/>
-                 {typeOptions}
+                
+                  
+                     
+                 
 
 
             </Formsy.Form>

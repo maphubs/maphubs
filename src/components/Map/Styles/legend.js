@@ -1,6 +1,7 @@
 //@flow
+import type {Layer} from '../../../stores/layer-store';
 module.exports = {
-  defaultLegend(layer: Object) {
+  defaultLegend(layer: Layer) {
     return this.legendWithColor(layer, "red");
   },
 
@@ -10,7 +11,7 @@ module.exports = {
     return html;
   },
 
-  legendWithColor(layer, color) {
+  legendWithColor(layer: Layer, color: string) {
       var html = '';
       //var name = this.htmlEncode(layer.name);
       if(layer.data_type === 'point'){

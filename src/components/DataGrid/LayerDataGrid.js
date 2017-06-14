@@ -106,8 +106,8 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
         if(preset.type === 'check'){
            columns.push(
           {
-            key: preset.key,
-            name: preset.label,
+            key: preset.tag,
+            name: _this._o_(preset.label),
             width : 120,
             formatter: CheckboxFormatter,
             resizable: true,
@@ -117,8 +117,8 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
         }else{
            columns.push(
           {
-            key: preset.key,
-            name: preset.label,
+            key: preset.tag,
+            name: _this._o_(preset.label),
             width : 120,
             resizable: true,
             sortable : true,
