@@ -40,6 +40,9 @@ if (typeof window !== 'undefined') {
     ScalePositionControl = require('mapbox-gl-dual-scale-control');
 }
 
+import type {GLStyle} from '../../types/mapbox-gl-style';
+import type {GeoJSONObject} from 'geojson-flow';
+
 type Props = {
     className: string,
     id: string,
@@ -48,11 +51,11 @@ type Props = {
     minZoom: number,
     height: string,
     style: Object,
-    glStyle: Object,
+    glStyle: GLStyle,
     features:  Array<Object>,
     tileJSONType: string,
     tileJSONUrl:  string,
-    data: Object,
+    data: GeoJSONObject,
     interactive: boolean,
     showPlayButton: boolean,
     showLogo: boolean,
@@ -112,6 +115,10 @@ export default class Map extends MapHubsComponent<void, Props, State> {
     height: '100%',
     mapConfig: {}
   }
+
+  state: State
+
+  map: Object
 
   constructor(props: Props){
         super(props);

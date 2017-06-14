@@ -1,23 +1,36 @@
 import React from 'react';
 var $ = require('jquery');
 
+type Props = {|
+  icon: string,
+  top: string,
+  right: string,
+  bottom: string,
+  left: string,
+  tooltipText: string,
+  color: string,
+  onClick: Function,
+  show: boolean,
+  disabled: boolean
+|}
 
-export default class MapToolButton extends React.Component {
+type DefaultProps = {
+  icon: string,
+  top: string,
+  right: string,
+  bottom: string,
+  left: string,
+  tooltipText: string,
+  color: string,
+  show: boolean,
+  disabled: boolean
+}
 
-  props: {
-    icon: string,
-    top: string,
-    right: string,
-    bottom: string,
-    left: string,
-    tooltipText: string,
-    color: string,
-    onClick: Function,
-    show: boolean,
-    disabled: boolean,
-  }
+export default class MapToolButton extends React.Component<DefaultProps, Props, void> {
 
-  static defaultProps = {
+  props: Props
+
+  static defaultProps: DefaultProps = {
     icon: 'edit',
     top: '10px',
     color: MAPHUBS_CONFIG.primaryColor,

@@ -3,14 +3,22 @@ import React from 'react';
 import Marker from './Marker';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class LegendItem extends MapHubsComponent {
+import type {Layer} from '../../stores/layer-store';
 
-  props: {
-    layer: Object,
-    style: Object
-  }
+type Props = {
+  layer: Layer,
+  style: Object
+}
 
-  static defaultProps = {
+type DefaultProps = {
+  style: Object
+}
+
+export default class LegendItem extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
       style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'},
   }
 

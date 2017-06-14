@@ -6,27 +6,37 @@ import LegendItem from './LegendItem';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
-type Props = {
-  title: string,
+type Props = {|
+  title?: string,
   layers: Array<Object>,
   hideInactive: boolean,
   collapsible: boolean,
   collapseToBottom: boolean,
   showLayersButton: boolean,
-  mapLayersActivatesID: string,
+  mapLayersActivatesID?: string,
+  maxHeight: string,
+  style: Object
+|}
+
+type DefaultProps = {
+  layers: Array<Object>,
+  hideInactive: boolean,
+  collapsible: boolean,
+  collapseToBottom: boolean,
+  showLayersButton: boolean,
   maxHeight: string,
   style: Object
 }
 
-type State = {
+type State = {|
   collapsed: boolean
-} & BaseMapStoreState
+|} & BaseMapStoreState
 
-export default class MiniLegend extends MapHubsComponent<void, Props, State> {
+export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     layers: [],
     hideInactive: true,
     collapsible: true,
