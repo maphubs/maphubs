@@ -19,7 +19,7 @@ type Props = {
   locale: string,
   geoJSONUrl: string,
   markerColor: string,
-  overlayName: string,
+  overlayName: LocalizedString,
   mapConfig: Object,
   _csrf: string
 }
@@ -137,13 +137,14 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
     };
   }
 
-  getLayerConfig = () => {
+  getLayerConfig = (): Layer => {
+    let emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''};
     return {
         active: true,
         layer_id: -2,
         name: this.props.overlayName,
-        source: '',
-        description: '',
+        source: emptyLocalizedString,
+        description: emptyLocalizedString,
         owned_by_group_id: '',
         remote: true,
         is_external: true,

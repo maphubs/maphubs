@@ -35,7 +35,7 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
   state: State = {
     saving: false,
     layer: {},
-    geoJSON: {}
+    geoJSON: {type: 'FeatureCollection', features: []}
   }
 
   constructor(props: Props){

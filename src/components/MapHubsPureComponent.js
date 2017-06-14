@@ -1,9 +1,10 @@
+//@flow
 import Reflux from 'reflux';
 import Locales  from '../services/locales';
 import LocaleStore from '../stores/LocaleStore';
-export default class MapHubsComponent extends Reflux.PureComponent {
+export default class MapHubsComponent<DefaultProps,Props,State> extends Reflux.PureComponent<DefaultProps,Props,State> {
 
-   constructor(props){
+   constructor(props: Props){
 		super(props);
     this.stores = [LocaleStore];
 	}
@@ -12,7 +13,7 @@ export default class MapHubsComponent extends Reflux.PureComponent {
      super.componentWillMount();
   }
 
-  __(text){
+  __(text: string){
     if(this.state.locale){
       return Locales.getLocaleString(this.state.locale, text);
     }else{
@@ -20,7 +21,7 @@ export default class MapHubsComponent extends Reflux.PureComponent {
     }
   }
 
-  _o_ = (localizedString) => {
+  _o_ = (localizedString: LocalizedString) => {
     if(this.state.locale && localizedString[this.state.locale]){
       return localizedString[this.state.locale];
     }else if(localizedString['en']){

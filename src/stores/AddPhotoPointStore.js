@@ -6,18 +6,14 @@ var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 var dms2dec = require('dms2dec');
 var moment = require('moment');
-
+import type {GeoJSONObject} from 'geojson-flow';
 import type {Layer} from './layer-store';
-
- type GeoJSON = {
-  features: Array<Object>
-}
 
 export type AddPhotoPointStoreState = {
   layer: Layer,
   image?: Object,
   imageInfo?: Object,
-  geoJSON: GeoJSON,
+  geoJSON: GeoJSONObject,
   submitted?: boolean,
   mhid?: string
 }

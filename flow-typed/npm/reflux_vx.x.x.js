@@ -13,8 +13,27 @@
  * https://github.com/flowtype/flow-typed
  */
 
+declare class RefluxComponent<D, P, S> extends React$Component<D, P, S> {
+  static defaultProps: D;
+  props: P;
+  state: S;
+  stores: Array<any>
+}
+
+declare class RefluxStore {
+  state: Object;
+  listenables: any;
+  setState(Object): void;
+  trigger(Object): void;
+  listenTo(Object): void;
+}
+
 declare module 'reflux' {
-  declare module.exports: any;
+  declare module.exports: {
+    Component: typeof RefluxComponent,
+    init(): Function,
+    Store: typeof RefluxStore
+  };
 }
 
 /**
@@ -22,12 +41,13 @@ declare module 'reflux' {
  * require those files directly. Feel free to delete any files that aren't
  * needed.
  */
+
 declare module 'reflux/dist/reflux' {
-  declare module.exports: any;
+  declare module.exports: any
 }
 
 declare module 'reflux/dist/reflux.min' {
-  declare module.exports: any;
+  declare module.exports: any
 }
 
 declare module 'reflux/Gruntfile' {

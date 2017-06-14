@@ -4,7 +4,6 @@ import Map from '../components/Map/Map';
 import Header from '../components/header';
 var slug = require('slug');
 var urlUtil = require('../services/url-util');
-//var styles = require('../components/Map/styles');
 var $ = require('jquery');
 import ReactDisqusThread from 'react-disqus-thread';
 import FeatureProps from '../components/Feature/FeatureProps';

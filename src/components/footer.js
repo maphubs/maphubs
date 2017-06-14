@@ -2,17 +2,25 @@
 import React from 'react';
 import MapHubsComponent from './MapHubsComponent';
 
-export default class Footer extends MapHubsComponent {
+type Props = {
+  copyrightText: string,
+  showPoweredByMapHubs: boolean,
+  showMapForEnvironmentMoabiLogo: boolean,
+  showContactUs: boolean,
+  links: Array<Object>
+}
 
-  props: {
-    copyrightText: string,
-    showPoweredByMapHubs: boolean,
-    showMapForEnvironmentMoabiLogo: boolean,
-    showContactUs: boolean,
-    links: Array<Object>
-  }
+type DefaultProps = {
+  showPoweredByMapHubs: boolean,
+  showMapForEnvironmentMoabiLogo: boolean,
+  showContactUs: boolean,
+}
 
-  static defaultProps = {
+export default class Footer extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     showPoweredByMapHubs: true,
     showMapForEnvironmentMoabiLogo: false,
     showContactUs: true

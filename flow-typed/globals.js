@@ -31,6 +31,7 @@ declare var Auth0Lock: Class<Object>;
 
 import type ReactComponent from 'react';
 
+
 type JSXHelper<T> = Class<ReactComponent<T,T,mixed>>;
 
 type $JSXIntrinsics = {
@@ -84,7 +85,11 @@ declare module 'uuid/v4' {
   declare module.exports: any;
 }
 
-
-declare class LocalizedString { 
-  [locale: string]: string 
+type LocalizedString = { 
+  en: string,
+  fr: string,
+  it: string,
+  es: string
 }
+
+declare type LocalizedString = LocalizedString;

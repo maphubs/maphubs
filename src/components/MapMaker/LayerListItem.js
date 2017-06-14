@@ -34,11 +34,15 @@ type Props = {
   index: number
 }
 
-class LayerListItem extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {
+  showVisibility: boolean
+}
+
+class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
       showVisibility: false
   }
 
@@ -69,7 +73,7 @@ class LayerListItem extends MapHubsComponent<void, Props, void> {
 
   render() {
     var _this = this;
-    var layer = this.props.item;
+    var layer: Layer = this.props.item;
     var canEdit = (this.props.showEdit 
                     && layer.canEdit 
                     && !layer.remote 

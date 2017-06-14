@@ -12,7 +12,7 @@ export type LocaleStoreState = {
 }
 
 
-export default class LocaleStore extends Reflux.Store<void, void, LocaleStoreState> {
+export default class LocaleStore extends Reflux.Store {
 
   constructor(){
     super();

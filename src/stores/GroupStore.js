@@ -7,8 +7,8 @@ var checkClientError = require('../services/client-error-response').checkClientE
 
 export type Group = {
   group_id?: string, 
-  name?: string, 
-  description?: string,
+  name?: LocalizedString, 
+  description?: LocalizedString,
   location?: string,
   created?: boolean,
   hasImage?: boolean
@@ -20,7 +20,7 @@ export type GroupStoreState = {
   layers?: Array<Object>
 }
 
-export default class GroupStore extends Reflux.Store<void, void, GroupStoreState> {
+export default class GroupStore extends Reflux.Store {
 
   state: GroupStoreState
 
