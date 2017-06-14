@@ -9,7 +9,7 @@ import urlUtil from '../../services/url-util';
 import DataEditorStore from '../../stores/DataEditorStore';
 import _isequal from 'lodash.isequal';
 import MapToolButton from './MapToolButton';
-import MapSearchPanel from './MapSearchPanel';
+import MapSearchPanel from './Search/MapSearchPanel';
 import MapToolPanel from './MapToolPanel';
 import InsetMap from './InsetMap';
 import LayerSources from './Sources';
@@ -26,7 +26,7 @@ import ForestAlertMixin from './Helpers/ForestAlertMixin';
 import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
 import DataEditorMixin from './Helpers/DataEditorMixin';
 import ForestLossMixin from './Helpers/ForestLossMixin';
-import MapSearchMixin from './Helpers/MapSearchMixin';
+import MapSearchMixin from './Search/MapSearchMixin';
 import DataEditorActions from '../../actions/DataEditorActions';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../MapHubsComponent';
@@ -768,6 +768,7 @@ export default class Map extends MapHubsComponent<void, Props, State> {
             show={this.state.interactive && this.state.mapLoaded}
             height={this.props.height} 
             onSearch={this.onSearch}
+            onSearchResultClick={this.onSearchResultClick}
             />
         </div>
         <MarkerSprites />

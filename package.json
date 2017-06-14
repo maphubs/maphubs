@@ -122,7 +122,7 @@
     "mapbox-gl": "^0.37.0",
     "mapbox-gl-arcgis-tiled-map-service": "^0.1.0",
     "mapbox-gl-dual-scale-control": "^0.1.1",
-    "mapbox-gl-regex-query": "^0.1.1",
+    "mapbox-gl-regex-query": "^0.1.2",
     "materialize-css": "^0.98.2",
     "medium-editor": "^5.23.0",
     "moment": "^2.18.1",

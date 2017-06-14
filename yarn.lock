@@ -4851,9 +4851,9 @@ mapbox-gl-dual-scale-control@^0.1.1:
     gl "^4.0.3"
     jsdom "^9.11.0"
 
-mapbox-gl-regex-query@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/mapbox-gl-regex-query/-/mapbox-gl-regex-query-0.1.1.tgz#898aaa6e5bf41e76a001df1e45017407d8032d75"
+mapbox-gl-regex-query@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/mapbox-gl-regex-query/-/mapbox-gl-regex-query-0.1.2.tgz#f28bb715b98544a356ec4cb138ceab8e9983ef2f"
   dependencies:
     gl "^4.0.3"
     jsdom "^9.11.0"
