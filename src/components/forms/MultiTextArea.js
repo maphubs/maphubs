@@ -131,11 +131,11 @@ render(){
   return (
     <div className="row">
      <div className="col s12">
-       <ul ref="tabs" className="tabs" style={{height: '35px'}}>
-          <li className="tab" style={{height: '35px'}}><a className="active" style={{lineHeight: '35px'}} href={`#${id}-en`}>EN</a></li>
-          <li className="tab" style={{height: '35px'}}><a style={{lineHeight: '35px'}} href={`#${id}-fr`}>FR</a></li>
-          <li className="tab" style={{height: '35px'}}><a style={{lineHeight: '35px'}} href={`#${id}-es`}>ES</a></li>
-          <li className="tab" style={{height: '35px'}}><a style={{lineHeight: '35px'}} href={`#${id}-it`}>IT</a></li>
+       <ul ref="tabs" className="tabs">
+          <li className="tab"><a className="active" href={`#${id}-en`}>EN</a></li>
+          <li className="tab"><a href={`#${id}-fr`}>FR</a></li>
+          <li className="tab"><a href={`#${id}-es`}>ES</a></li>
+          <li className="tab"><a href={`#${id}-it`}>IT</a></li>
        </ul>
      </div>
             
