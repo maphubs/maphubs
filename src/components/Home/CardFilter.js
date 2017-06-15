@@ -2,18 +2,28 @@
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class CardFilter extends MapHubsComponent {
+type Props = {|
+  defaultValue: string,
+  onChange: Function
+|}
 
-  props: {
-    defaultValue: string,
-    onChange: Function
-  }
+type DefaultProps = {
+  defaultValue: string
+}
 
-  static defaultProps = {
+type State = {
+  value: string
+}
+
+export default class CardFilter extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     defaultValue:'featured'
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.state = {
       value: props.defaultValue

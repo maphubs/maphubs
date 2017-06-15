@@ -18,7 +18,8 @@ type Props = {
 }
 
 type State = {
-  canSubmit: boolean
+  canSubmit: boolean,
+  selectedSource?: string
 } & LocaleStoreState & LayerStoreState;
 
 

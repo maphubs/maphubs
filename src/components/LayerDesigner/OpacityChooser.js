@@ -5,27 +5,41 @@ import CodeEditor from './CodeEditor';
 import AdvancedLayerSettings from './AdvancedLayerSettings';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class OpacityChooser extends MapHubsComponent {
+type Props = {|
+  onChange: Function,
+  value: number,
+  onStyleChange: Function,
+  onLegendChange: Function,
+  onSettingsChange: Function,
+  style: Object,
+  legendCode: string,
+  layer: Object,
+  settings: Object,
+  showAdvanced: boolean
+|}
 
-  props: {
-    onChange: Function,
-    value: number,
-    onStyleChange: Function,
-    onLegendChange: Function,
-    onSettingsChange: Function,
-    style: Object,
-    legendCode: string,
-    layer: Object,
-    settings: Object,
-    showAdvanced: boolean
-  }
+type DefaultProps = {
+  value: number,
+  settings: Object
+}
 
-  static defaultProps = {
+type State = {
+  opacity: number,
+  style: Object,
+  legendCode: string,
+  settings: Object
+}
+
+export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     value: 100,
     settings: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.state = {
       opacity: props.value,
@@ -41,7 +55,7 @@ export default class OpacityChooser extends MapHubsComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     this.setState({
       style: nextProps.style,
       legendCode: nextProps.legendCode,

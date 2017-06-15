@@ -5,6 +5,8 @@ import MapHubsComponent from '../MapHubsComponent';
 import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
 
+import type {MapHubsField} from '../../types/maphubs-field';
+
 type Props = {
   geoJSON: Object,
   presets: Object,
@@ -13,7 +15,21 @@ type Props = {
   layer_id: number,
   dataLoadingMsg: string,
   canEdit: boolean,
-  onSave: Function
+  onSave?: Function,
+  presets: Array<MapHubsField>
+}
+
+type DefaultProps = {
+  dataLoadingMsg: string
+}
+
+type Column = {
+  key: string,
+  name: string,
+  width : number,
+  resizable: boolean,
+  sortable : boolean,
+  filterable: boolean
 }
 
 type State = {
@@ -23,7 +39,7 @@ type State = {
   gridHeightOffset: number,
   rows: Array<Object>,
   selectedIndexes: Array<number>,
-  columns: Array<string>,
+  columns: Array<Column>,
   filters: Object,
   rowKey: ?string,
   sortColumn: ?string,
@@ -31,13 +47,13 @@ type State = {
   selectedFeature?: Object
 }
 
-export default class LayerDataGrid extends MapHubsComponent<void, Props, State> {
+export default class LayerDataGrid extends MapHubsComponent<DefaultProps, Props, State> {
 
   Selectors: null
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     dataLoadingMsg: 'Data Loading'
   }
 
@@ -90,7 +106,7 @@ export default class LayerDataGrid extends MapHubsComponent<void, Props, State> 
       rowKey = 'OBJECTID';
     }
 
-    var columns = [];
+    var columns: Array<Column> = [];
     columns.push(
       {
         key: rowKey,
@@ -285,7 +301,6 @@ render() {
             rowsCount={this.getSize()}
             minHeight={this.state.gridHeight}
             onGridSort={this.handleGridSort}
-            onRowSelect={this.onRowSelect}
             rowSelection={{
               showCheckbox: true,
               enableShiftSelect: false,

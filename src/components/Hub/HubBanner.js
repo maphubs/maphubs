@@ -47,7 +47,7 @@ export default class HubBanner extends MapHubsPureComponent<void, Props, State> 
 	}
 
 /*
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

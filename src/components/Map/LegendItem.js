@@ -38,8 +38,11 @@ export default class LegendItem extends MapHubsComponent<DefaultProps, Props, vo
     let name = this.htmlEncode(this._o_(this.props.layer.name));
     let source = this.htmlEncode(this._o_(this.props.layer.source));
 
-    let html = this.props.layer.legend_html.replace(/\{NAME\}/i, name);
-
+    let html = '';
+    if( this.props.layer.legend_html){
+      html = this.props.layer.legend_html.replace(/\{NAME\}/i, name);
+    }
+    
     var legendItem = (
         <div style={this.props.style}>
           <span className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: html}} />
@@ -47,7 +50,7 @@ export default class LegendItem extends MapHubsComponent<DefaultProps, Props, vo
         </div>      
         );
     var style = this.props.layer.style;  
-    if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+    if(style && style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){

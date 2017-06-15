@@ -5,9 +5,9 @@ var request = require('superagent');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
 export type Story ={
-  title: ?string,
-  author: ?string,
-  body: ?string,
+  title?: string,
+  author?: string,
+  body?: string,
   story_id: number
 }
 
@@ -18,7 +18,7 @@ export type StoryStoreState = {
   unsavedChanges?: boolean
 }
 
-export default class StoryStore extends Reflux.Store<void, void, StoryStoreState> {
+export default class StoryStore extends Reflux.Store {
 
   state: StoryStoreState = {
       story: {

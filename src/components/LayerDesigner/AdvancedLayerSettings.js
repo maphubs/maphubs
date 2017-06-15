@@ -71,15 +71,18 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultP
     $('.tooltip-advanced-layer-settings').tooltip();
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     this.getStateFromStyleProp(nextProps);
   }
 
    onFormChange = (values: Object) => {
 
+     let dataType = this.props.layer.data_type? this.props.layer.data_type : '';
+     let layer_id = this.props.layer.layer_id? this.props.layer.layer_id: 0;
+
      var style = this.state.style;
      if(values.interactive !== this.state.interactive){
-       let glLayerId = `omh-data-${this.props.layer.data_type}-${this.props.layer.layer_id}`;
+       let glLayerId = `omh-data-${dataType}-${layer_id}`;
        style = MapStyles.settings.setLayerSetting(this.state.style, glLayerId ,'interactive', values.interactive);       
      }else if(values.showBehindBaseMapLabels !== this.state.showBehindBaseMapLabels){
         style = MapStyles.settings.setLayerSettingAll(this.state.style, 'showBehindBaseMapLabels', values.showBehindBaseMapLabels, 'symbol');

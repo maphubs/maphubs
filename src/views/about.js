@@ -7,17 +7,19 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import SubPageBanner from '../components/Home/SubPageBanner';
 
-export default class About extends MapHubsComponent {
+type Props = {
+  locale: string,
+  _csrf: string,
+  version:string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-    locale: string,
-    _csrf: string,
-    version:string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+export default class About extends MapHubsComponent<void, Props, void> {
 
-  constructor(props: Object) {
+  props: Props
+
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

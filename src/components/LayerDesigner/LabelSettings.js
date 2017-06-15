@@ -7,25 +7,45 @@ var $ = require('jquery');
 import MapStyles from '../Map/Styles';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class LabelSettings extends MapHubsComponent {
+type Labels = {
+  enabled: boolean,
+  field: string
+}
 
-  props: {
-    onChange: Function,
-    layer: Object,
-    style: Object,
-    labels: Object
+type Props = {|
+  onChange: Function,
+  layer: Object,
+  style: Object,
+  labels: Labels
+|}
+
+type DefaultProps = {
+  labels: Labels
+}
+
+type State = {
+  style: Object,
+  enabled: boolean,
+  field: string
+}
+
+export default class LabelSettings extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
+    labels: {
+      enabled: false,
+      field: ''
+    }
   }
 
-  static defaultProps = {
-    style: null,
-    layer: null,
-    labels: {}
-  }
+  state: State
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
-    var enabled = false;
-    var field = null;
+    let enabled = false;
+    let field: string = '';
     if(props.labels){
       enabled = props.labels.enabled ? true : false;
       field = props.labels.field;
@@ -42,7 +62,7 @@ export default class LabelSettings extends MapHubsComponent {
     $('.tooltip-label-settings').tooltip();
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     this.setState({style: nextProps.style});
   }
 

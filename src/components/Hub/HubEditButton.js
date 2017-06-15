@@ -3,20 +3,30 @@ import React from 'react';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class HubEditButton extends MapHubsComponent {
+type Props = {
+  editing: boolean,
+  startEditing: Function,
+  stopEditing: Function,
+  style: Object
+}
 
-  props: {
-    editing: boolean,
-    startEditing: Function,
-    stopEditing: Function,
-    style: Object
-  }
+type DefaultProps = {
+  style: Object
+}
 
-  static defaultProps = {
+type State = {
+
+}
+
+export default class HubEditButton extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     style: {}
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

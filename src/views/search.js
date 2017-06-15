@@ -18,24 +18,33 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Search extends MapHubsComponent {
+type Props = {
+  locale: string,
+  footerConfig: Object,
+  headerConfig: Object,
+  mapConfig: Object,
+  _csrf: string
+}
 
+import type {CardConfig} from '../components/CardCarousel/Card';
 
-  props: {
-    locale: string,
-    footerConfig: Object,
-    headerConfig: Object,
-    mapConfig: Object,
-    _csrf: string
-  }
+type State = {
+  searchResult: any,
+  searchCards: Array<CardConfig>,
+  searching: boolean
+}
 
-  state = {
+export default class Search extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     searchResult: null,
     searchCards: [],
     searching: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

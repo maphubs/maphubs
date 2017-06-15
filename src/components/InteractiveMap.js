@@ -14,26 +14,26 @@ import Reflux from './Rehydrate';
 import _debounce from 'lodash.debounce';
 import ShareButtons from './ShareButtons';
 
-import type MapStoreState from '../stores/MapStore';
+import type {MapStoreState} from '../stores/MapStore';
 
 type Props = {
   map_id: number,
   title: string,
   style: Object,
-  position: Object,
-  layers: Array<Object>,
+  position?: Object,
+  layers?: Array<Object>,
   height: string,
   border: boolean,
   showLogo: boolean,
   disableScrollZoom: boolean,
   showTitle: boolean,
-  categories: Array<Object>,
-  fitBounds: Array<Object>,
+  categories?: Array<Object>,
+  fitBounds: Array<number>,
   fitBoundsOptions?: Object,
   interactive: boolean,
   mapConfig: Object,
   showShareButtons: boolean,
-  children: any
+  children?: any
 }
 
 type DefaultProps = {
@@ -120,7 +120,10 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
   }
 
   onToggleForestLoss = (enabled: boolean) => {
-    var mapLayers = this.state.layers;
+    var mapLayers = [];
+    if(this.state.layers){
+      mapLayers = this.state.layers;
+    }
     var layers = ForestLossLegendHelper.getLegendLayers();
   
     if(enabled){
@@ -155,7 +158,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       border = '1px solid #212121';
     }
 
-    var bounds = null;
+    let bounds;
     if(this.props.fitBounds){
       bounds = this.props.fitBounds;
     } else if(this.state.position){

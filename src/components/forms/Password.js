@@ -7,16 +7,22 @@ import NotificationActions from '../../actions/NotificationActions';
 import UserActions from '../../actions/UserActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class Password extends MapHubsComponent {
+type Props = {
+  onSave: Function,
+  userid: number,
+  passreset: string,
+  csrf:  string
+}
 
-  props: {
-    onSave: Function,
-    userid: number,
-    passreset:  string,
-    csrf:  string
-  }
+type State = {
+  canSubmit: boolean
+}
 
-  state = {
+export default class Password extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     canSubmit: false
   }
 

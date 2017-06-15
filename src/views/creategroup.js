@@ -8,19 +8,25 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class CreateGroup extends MapHubsComponent {
+type Props = {
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
 
-  props: {
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
-  }
+type State = {
+  step: number
+}
 
-  state = {
+export default class CreateGroup extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  state: State = {
     step: 1
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

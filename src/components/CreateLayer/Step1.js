@@ -10,15 +10,14 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type Props = {
   onSubmit: Function,
-  showPrev: boolean,
-  onPrev: Function,
   mapConfig: Object
 }
 
 type State = {
   created: boolean,
   canSubmit: boolean,
-  selectedSource: string
+  selectedSource: string,
+  warnIfUnsaved: boolean
 } & LocaleStoreState
 
 export default class Step1 extends MapHubsComponent<void, Props, State> {
@@ -28,15 +27,12 @@ export default class Step1 extends MapHubsComponent<void, Props, State> {
   state: State = {
     created: false,
     canSubmit: false,
-    selectedSource: 'local'
+    selectedSource: 'local',
+    warnIfUnsaved: false
   }
 
   sourceChange = (value: string) => {
     this.setState({selectedSource: value});
-  }
-
-  onPrev = () => {
-    if(this.props.onPrev) this.props.onPrev();
   }
 
   onSubmit = () => {
@@ -72,7 +68,7 @@ export default class Step1 extends MapHubsComponent<void, Props, State> {
 	render() {  
     return (
         <div className="row">
-          <CreateLayer onPrev={this.onPrev} onSubmit={this.onSubmit} 
+          <CreateLayer onSubmit={this.onSubmit} 
           mapConfig={this.props.mapConfig}
           showCancel={true} cancelText={this.__('Cancel')} onCancel={this.onCancel}
          />      

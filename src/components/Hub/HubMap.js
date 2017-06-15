@@ -9,17 +9,29 @@ import  AddMapModal from '../Story/AddMapModal';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import fireResizeEvent from '../../services/fire-resize-event';
 
-export default class HubMap extends MapHubsComponent {
+type Props = {|
+  hub: Object,
+  editing: boolean,
+  height: string,
+  border: boolean,
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>,
+  mapConfig: Object
+|}
 
-  props: {
-    hub: Object,
-    editing: boolean,
-    height: string,
-    border: boolean,
-    myMaps: Array<Object>,
-    popularMaps: Array<Object>,
-    mapConfig: Object
-  }
+type DefaultProps = {
+  editing: boolean,
+  height: string,
+  border: boolean,
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>
+}
+
+import type {HubStoreState} from '../../stores/HubStore';
+
+export default class HubMap extends MapHubsComponent<DefaultProps, Props, HubStoreState> {
+
+  props: Props
 
   static defaultProps = {
     editing: false,
@@ -29,7 +41,7 @@ export default class HubMap extends MapHubsComponent {
     popularMaps: []
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
 	}

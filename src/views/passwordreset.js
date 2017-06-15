@@ -7,17 +7,22 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class PasswordReset extends MapHubsComponent {
+type Props = {
+  passreset: string,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
+  
+import type {LocaleStoreState} from '../stores/LocaleStore';
+type State = LocaleStoreState
 
-  props: {
-    passreset: string,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+export default class PasswordReset extends MapHubsComponent<void, Props, State> {
 
-  constructor(props: Object) {
+  props: Props
+
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

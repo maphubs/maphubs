@@ -15,17 +15,20 @@ type Props = {
   onSubmit: Function
 }
 
+type DefaultProps = {
+  groups: Array<Group>
+}
+
 type State = {
   saving: boolean
 } & LocaleStoreState & LayerStoreState
 
-export default class Step2 extends MapHubsComponent<void, Props, State> {
+export default class Step2 extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
-    groups: [],
-    onSubmit: null
+  static defaultProps: DefaultProps = {
+    groups: []
   }
 
   state: State = {

@@ -25,7 +25,7 @@ export type MapMakerStoreState = {
   editingLayer?: boolean
 }
 
-export default class MapMakerStore extends Reflux.Store<void, void, MapMakerStoreState>  {
+export default class MapMakerStore extends Reflux.Store  {
 
   state: MapMakerStoreState
 

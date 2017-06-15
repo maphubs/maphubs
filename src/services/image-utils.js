@@ -25,7 +25,7 @@ module.exports = {
     var img = new Buffer(data, 'base64');
     var hash = require('crypto').createHash('md5').update(img).digest("hex");
     var match = req.get('If-None-Match');
-    if(hash == match){
+    if(hash === match){
       res.status(304).send();
     }else{
       res.writeHead(200, {

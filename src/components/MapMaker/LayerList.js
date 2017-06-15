@@ -6,23 +6,45 @@ import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'react/lib/update';
 
-class LayerList extends React.PureComponent {
+type Props = {
+  layers:  Array<Object>,
+  showVisibility: boolean,
+  showDesign: boolean,
+  showRemove: boolean,
+  showEdit: boolean,
+  showChangeDesign: boolean,
+  toggleVisibility?: Function,
+  removeFromMap?: Function,
+  showLayerDesigner?: Function,
+  updateLayers: Function,
+  editLayer?: Function
+}
 
-  props:  {
-    layers:  Array<Object>,
-    showVisibility: boolean,
-    showDesign: boolean,
-    showRemove: boolean,
-    showEdit: boolean,
-    showChangeDesign: boolean,
-    toggleVisibility: Function,
-    removeFromMap: Function,
-    showLayerDesigner: Function,
-    updateLayers: Function,
-    editLayer: Function
+type DefaultProps = {
+  showVisibility: boolean,
+  showDesign: boolean,
+  showRemove: boolean,
+  showEdit: boolean,
+  showChangeDesign: boolean
+}
+
+type State = {
+  layers: Array<Object>
+}
+
+class LayerList extends React.PureComponent<DefaultProps, Props, State> {
+
+  props:  Props
+
+  static defaultProps: DefaultProps = {
+    showVisibility: false,
+    showDesign: false,
+    showRemove: false,
+    showEdit: false,
+    showChangeDesign: false
   }
 
-  state = {
+  state: State = {
     layers: []
   }
 

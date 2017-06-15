@@ -25,13 +25,17 @@ import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {UserStoreState} from '../stores/UserStore';
 
 type Props = {
-   map: Object,
-    layers: Array<Object>,
-    canEdit: boolean,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object,
-    mapConfig: Object
+  map: Object,
+  layers: Array<Object>,
+  canEdit: boolean,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object,
+  mapConfig: Object
+}
+
+type DefaultProps = {
+  canEdit: boolean
 }
 
 type UserMapState = {
@@ -41,21 +45,23 @@ type UserMapState = {
   layers: Array<Object>
 }
 
+
+
 type State = LocaleStoreState & UserStoreState & UserMapState
 
-export default class UserMap extends MapHubsComponent<void, Props, State> {
+export default class UserMap extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     canEdit: false
   }
 
   state: State = {
-      width: 1024,
-      height: 600,
-      downloading: false,
-      layers: []
+    width: 1024,
+    height: 600,
+    downloading: false,
+    layers: []
   }
 
   constructor(props: Props){

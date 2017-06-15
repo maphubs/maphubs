@@ -7,27 +7,37 @@ import Toggle from '../../components/forms/toggle';
 import _isEqual from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class LayerListItemStatic extends MapHubsComponent {
+type Props = {|
+  id: number,
+  item: Object,    
+  moveItem: Function,
+  showVisibility: boolean,
+  showRemove: boolean,
+  showDesign: boolean,
+  showEdit: boolean,
+  toggleVisibility: Function,
+  removeFromMap: Function,
+  showLayerDesigner: Function,
+  editLayer: Function,
+  isDragging: boolean,
+  connectDragSource: Function,
+  connectDropTarget: Function,
+  index: number
+|}
 
-  props:  {
-    id: number,
-    item: Object,    
-    moveItem: Function,
-    showVisibility: boolean,
-    showRemove: boolean,
-    showDesign: boolean,
-    showEdit: boolean,
-    toggleVisibility: Function,
-    removeFromMap: Function,
-    showLayerDesigner: Function,
-    editLayer: Function,
-    isDragging: boolean,
-    connectDragSource: Function,
-    connectDropTarget: Function,
-    index: number
-  }
+type DefaultProps = {
+  showVisibility: boolean
+}
 
-  static defaultProps = {
+type State = {
+
+}
+
+export default class LayerListItemStatic extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     showVisibility: true
   }
 
@@ -35,7 +45,7 @@ export default class LayerListItemStatic extends MapHubsComponent {
     $('.map-layer-tooltipped').tooltip();
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isEqual(this.props, nextProps)){
       return true;

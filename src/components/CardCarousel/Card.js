@@ -7,25 +7,34 @@ var $ = require('jquery');
 var _isequal = require('lodash.isequal');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class Card extends MapHubsComponent {
 
-  props:  {
-    id: string,
-    title: LocalizedString,
-    description: LocalizedString,
-    image_url: string,
-    background_image_url: string,
-    link: string,
-    group: string,
-    source: LocalizedString,
-    data: Object,
-    type: string,
-    private: boolean,
-    onClick: Function,
-    showAddButton: boolean
-  }
+export type CardConfig = {|
+  id: string,
+  title?: LocalizedString,
+  description?: LocalizedString,
+  image_url?: string,
+  background_image_url?: string,
+  link: string,
+  group?: string,
+  source?: LocalizedString,
+  data: Object,
+  type: string,
+  private?: boolean,
+  onClick?: Function,
+  showAddButton?: boolean
+|}
 
-  state = {
+type Props = CardConfig
+
+type State = {
+  mounted: boolean
+}
+
+export default class Card extends MapHubsComponent<void, Props, State> {
+
+  props:  Props
+
+  state: State = {
     mounted: false
   }
 
@@ -35,7 +44,7 @@ export default class Card extends MapHubsComponent {
     }
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: Object){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

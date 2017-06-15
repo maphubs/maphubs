@@ -13,22 +13,39 @@ import MessageActions from '../../actions/MessageActions';
 var debug = require('../../services/debug')('AddMapToStory');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class AddMapModal extends MapHubsComponent {
+type Props = {
+   onAdd:  Function,
+  onClose:  Function,
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>
+}
 
-  props:  {
-    onAdd:  Function,
-    onClose:  Function,
-    myMaps: Array<Object>,
-    popularMaps: Array<Object>,
-  }
+type DefaultProps = {
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>
+}
 
-  static defaultProps = {
+type State = {
+  show: boolean,
+  searchActive: boolean,
+  searchResults: Array<Object>,
+  modalReady: boolean
+}
+
+export default class AddMapModal extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props:  Props
+
+  static defaultProps: DefaultProps = {
     myMaps:[],
     popularMaps: []
   }
 
-  state = {
-    show: false
+  state: State = {
+    show: false,
+    searchActive: false,
+    modalReady: false,
+    searchResults: []
   }
 
   show = () => {
@@ -138,7 +155,7 @@ export default class AddMapModal extends MapHubsComponent {
     }
 
     return (
-      <Modal show={this.state.show} ready={this.modalReady} className="create-map-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
+      <Modal show={this.state.show} ready={this.modalReady} className="create-map-modal" dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden', width: '100%'}}>
           <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
             <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>

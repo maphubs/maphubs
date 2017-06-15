@@ -13,12 +13,19 @@ import fireResizeEvent from '../../services/fire-resize-event';
 // </Modal>
 //)}
 
-export class ModalContent extends Reflux.Component {
-  props: {
-    className: string,
-    style:  Object,
-    children: any
-  }
+type ModalContentProps = {|
+  className?: string,
+  style:  Object,
+  children: any
+|}
+
+type ModalContentDefaultProps = {
+  style:  Object
+}
+
+export class ModalContent extends Reflux.Component<ModalContentDefaultProps, ModalContentProps, void>  {
+  props: ModalContentProps
+
   static defaultProps = {
     style: {}
   }
@@ -32,11 +39,13 @@ export class ModalContent extends Reflux.Component {
   }
 }
 
-export class ModalFooter extends Reflux.Component {
-  props: {
-    className: string,
-    children: any
-  }
+type ModalFooterProps = {|
+  className?: string,
+  children: any
+|}
+
+export class ModalFooter extends Reflux.Component<void, ModalFooterProps, void> {
+  props: ModalFooterProps
   render(){
       var className = classNames('modal-footer', this.props.className);
     return (
@@ -47,24 +56,37 @@ export class ModalFooter extends Reflux.Component {
   }
 }
 
+type ModalProps = {|
+  id: string,
+  show: boolean,
+  className: string, //additional classname to apply to model
+  fixedFooter: boolean,
+  dismissible: boolean,
+  in_duration: number,
+  out_duration: number,
+  opacity: number,
+  ready?: Function,
+  complete?: Function,
+  children: any
+|}
 
-export class Modal extends Reflux.Component {
+type ModalDefaultProps = {
+   id: string,
+   show: boolean,
+   className: string,
+   fixedFooter: boolean,
+   dismissible: boolean,
+   opacity: number,
+   in_duration: number,
+   out_duration: number
+}
 
-  props: {
-    id: string,
-    show: boolean,
-    className: string, //additional classname to apply to model
-    fixedFooter: boolean,
-    dismissible: boolean,
-    in_duration: number,
-    out_duration: number,
-    opacity: number,
-    ready: Function,
-    complete: Function,
-    children: any
-  };
 
-  static defaultProps = {
+export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void> {
+
+  props: ModalProps;
+
+  static defaultProps: ModalDefaultProps = {
     id:'modal',
     show: false,
     fixedFooter: false,
@@ -76,12 +98,8 @@ export class Modal extends Reflux.Component {
     out_duration: 200 // Transition out duration
   }
 
-  constructor(props: Object){
+  constructor(props: ModalProps){
     super(props);
-    this.state = {
-      ready: () => {}, // Callback for Modal open
-      complete: () => {} // Callback for Modal close
-    };
   }
 
   componentDidMount(){
@@ -95,7 +113,7 @@ export class Modal extends Reflux.Component {
       });
   }
 
-  componentDidUpdate(prevProps: Object) {
+  componentDidUpdate(prevProps: ModalProps) {
     if(this.props.show && !prevProps.show){
       //switch from off to on
       $(this.refs.modal).modal('open');

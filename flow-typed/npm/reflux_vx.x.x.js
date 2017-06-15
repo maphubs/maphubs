@@ -17,7 +17,8 @@ declare class RefluxComponent<D, P, S> extends React$Component<D, P, S> {
   static defaultProps: D;
   props: P;
   state: S;
-  stores: Array<any>
+  stores: Array<any>;
+  listenTo(Object): void;
 }
 
 declare class RefluxStore {

@@ -8,22 +8,36 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-//A reponsive full window map used to render screenshots
-export default class StaticMap extends MapHubsComponent {
+type Props = {
+  name: LocalizedString,
+  layers: Array<Object>,
+  style: Object,
+  position: Object,
+  basemap: string,
+  showLegend: boolean,
+  showLogo: boolean,
+  insetMap:  boolean,
+  locale: string,
+  _csrf: string,
+  mapConfig: Object
+}
 
-  props: {
-    name: string,
-    layers: Array<Object>,
-    style: Object,
-    position: Object,
-    basemap: string,
-    showLegend: boolean,
-    showLogo: boolean,
-    insetMap:  boolean,
-    locale: string,
-    _csrf: string,
-    mapConfig: Object
-  }
+type DefaultProps = {
+  showLegend: boolean,
+  showLogo: boolean,
+  insetMap:  boolean
+}
+
+type State = {
+  retina: boolean,
+  width: number,
+  height: number
+}
+
+//A reponsive full window map used to render screenshots
+export default class StaticMap extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     showLegend: true,
@@ -76,10 +90,10 @@ export default class StaticMap extends MapHubsComponent {
 
   render() {
     var map = '';
-    var title = null;
+    var title = '';
 
-    if(this.props.name && this.props.name !== ''){
-      title = this.props.name;
+    if(this.props.name){
+      title = this._o_(this.props.name);
     }
 
     var legend = '', bottomLegend = '';

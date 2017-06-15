@@ -5,17 +5,24 @@ import LayerNotesStore from '../../stores/LayerNotesStore';
 import LayerNotesActions from '../../actions/LayerNotesActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class LayerNotes extends MapHubsComponent {
+type Props = {|
+  editing: boolean
+|}
 
-  props: {
-    editing: boolean
-  }
+type DefaultProps = {
+  editing: boolean
+}
 
-  static defaultProps = {
+import type {LayerNotesStoreState} from '../../stores/LayerNotesStore';
+
+
+export default class LayerNotes extends MapHubsComponent<DefaultProps, Props, LayerNotesStoreState> {
+
+  static defaultProps: DefaultProps = {
     editing: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerNotesStore);
   }

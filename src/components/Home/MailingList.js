@@ -9,15 +9,26 @@ import MessageActions from '../../actions/MessageActions';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class MailingList extends MapHubsComponent {
+import type {LocaleStoreType} from '../../stores/LocaleStore';
 
-  state = {
+type Props = {
+
+}
+
+type State = {
+  valid: boolean,
+  placeholder?: string,
+  email: string
+} & LocaleStoreType
+
+export default class MailingList extends MapHubsComponent<void, Props, State> {
+
+  state: State = {
     valid: false,
-    placeholder: null,
     email: ''
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
 
     if(!_isequal(this.props, nextProps)){

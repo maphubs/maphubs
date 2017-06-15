@@ -9,25 +9,35 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class UserGroups extends MapHubsComponent {
+import type {Group} from '../stores/GroupStore';
 
-  props: {
-		groups: Array<Object>,
-    user: Object,
-    canEdit: boolean,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+type Props = {|
+  groups: Array<Group>,
+  user: Object,
+  canEdit: boolean,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+|}
 
-  static defaultProps = {
+type DefaultProps = {
+  groups: Array<Object>,
+  user: Object,
+  canEdit: boolean,
+}
+
+export default class UserGroups extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     groups: [],
     user: {},
     canEdit: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

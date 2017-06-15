@@ -2,8 +2,10 @@
 import React from 'react';
 import CardCarousel from './CardCarousel';
 
+import type {CardConfig} from './Card';
+
 type Props =  {
-    cards: Array<Object>,
+    cards: Array<CardConfig>,
     title: ?string
   }
 

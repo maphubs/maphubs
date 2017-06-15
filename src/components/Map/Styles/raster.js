@@ -38,7 +38,7 @@ module.exports = {
       return style;
     },
 
-  multiRasterStyleWithOpacity(layer_id: number, layers: Array<GLLayer>, opacity: number, type: string="raster"){
+  multiRasterStyleWithOpacity(layer_id: number, layers: Array<Object>, opacity: number, type: string="raster"){
   
       opacity = opacity / 100;
       var style = {

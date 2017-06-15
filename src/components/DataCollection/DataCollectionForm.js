@@ -5,24 +5,37 @@ import FormField from './FormField';
 import MapHubsComponent from '../MapHubsComponent';
 var Locales = require('../../services/locales');
 
-export default class DataCollectionForm extends MapHubsComponent {
+type Props = {|
+  presets: Array<Object>,
+  values: Object,
+  showSubmit: boolean,
+  onSubmit: Function,
+  onValid: Function,
+  onInValid: Function,
+  onChange:  Function,
+  submitText: string
+|}
 
-  props: {
-		presets: Array<Object>,
-    values: Object,
-    showSubmit: boolean,
-    onSubmit: Function,
-    onValid: Function,
-    onInValid: Function,
-    onChange:  Function,
-    submitText: string
-  }
+type DefaultProps = {
+  showSubmit: boolean
+}
 
-  static defaultProps = {
+type State = {
+  canSubmit: boolean,
+  submitText: string
+}
+
+export default class DataCollectionForm extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     showSubmit: true
   }
 
-  constructor(props: Object){
+  state: State
+
+  constructor(props: Props){
     super(props);
     var submitText = '';
     if(this.props.submitText){

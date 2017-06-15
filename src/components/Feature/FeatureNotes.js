@@ -5,17 +5,21 @@ import FeatureNotesStore from '../../stores/FeatureNotesStore';
 import FeatureNotesActions from '../../actions/FeatureNotesActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class FeatureNotes extends MapHubsComponent {
+type Props = {|
+  editing: boolean
+|}
 
-  props: {
-    editing: boolean
-  }
+import type {FeatureNotesStoreState} from '../../stores/FeatureNotesStore';
+
+export default class FeatureNotes extends MapHubsComponent<Props, Props, FeatureNotesStoreState> {
+
+  props: Props
 
   static defaultProps = {
     editing: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(FeatureNotesStore);
   }

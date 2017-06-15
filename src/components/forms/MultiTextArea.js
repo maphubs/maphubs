@@ -73,7 +73,7 @@ export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Pr
 
   constructor(props: Props) {
     super(props);
-    let value: LocalizedString = {en: ''};
+    let value: LocalizedString = {en: '', fr: '', es: '', it: ''};
     if(typeof props.value === 'string'){
       value['en'] = props.value;
     }else{

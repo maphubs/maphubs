@@ -19,7 +19,8 @@ type Props = {
 }
 
 type State = {
-  canSubmit: boolean
+  canSubmit: boolean,
+  selectedSource?: string
 } & LocaleStoreState & LayerStoreState
 
 export default class GeoJSONUrlSource extends MapHubsComponent<void, Props, State> {
@@ -30,7 +31,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<void, Props, Stat
     canSubmit: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

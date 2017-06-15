@@ -8,15 +8,22 @@ import _assignIn from 'lodash.assignin';
 import MapStyles from '../Map/Styles';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
-export default class MarkerSettings extends MapHubsPureComponent {
+type Props = {|
+  onChange: Function,
+  layer: Object,
+  style: Object
+|}
 
-  props: {
-    onChange: Function,
-    layer: Object,
-    style: Object
-  }
+type State = {
+  style: Object,
+  options: Object
+}
 
-  constructor(props: Object){
+export default class MarkerSettings extends MapHubsPureComponent<void, Props, State> {
+
+  props: Props
+
+  constructor(props: Props){
     super(props);
 
     var options = {
@@ -60,7 +67,7 @@ export default class MarkerSettings extends MapHubsPureComponent {
     $('.tooltip-marker-settings').tooltip();
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     this.setState({style: nextProps.style});
   }
 

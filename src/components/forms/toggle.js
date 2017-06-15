@@ -6,24 +6,33 @@ var $ = require('jquery');
 var debug = require('../../services/debug')('Toggle');
 import MapHubsComponent from '../MapHubsComponent';
 
-class Toggle extends MapHubsComponent {
+type Props = {|
+  className: string,
+  dataTooltip: string,
+  dataDelay: number,
+  dataPosition: string,
+  labelOn: string,
+  labelOff: string,
+  name: string,
+  style: Object,
+  disabled: boolean,
+  onChange: Function,
+  defaultChecked: boolean,
+  checked: boolean,
+  setValue: Function,
+  getValue: Function
+|}
 
-  props:  {
-    className: string,
-    dataTooltip: string,
-    dataDelay: number,
-    dataPosition: string,
-    labelOn: string,
-    labelOff: string,
-    name: string,
-    style: Object,
-    disabled: boolean,
-    onChange: Function,
-    defaultChecked: boolean,
-    checked: boolean,
-    setValue: Function,
-    getValue: Function
-  }
+type DefaultProps = {
+  style: Object,
+  defaultChecked: boolean,
+  dataDelay: number,
+  disabled: boolean
+}
+
+class Toggle extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props:  Props
 
   static defaultProps = {
     style: {},
@@ -47,7 +56,7 @@ class Toggle extends MapHubsComponent {
     }   
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     
     //only change if the props value is swapped
     var currentValue =  this.props.checked;
@@ -57,7 +66,7 @@ class Toggle extends MapHubsComponent {
     }   
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps: Props){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
       $(this.refs.toggle).tooltip();
     } 

@@ -3,6 +3,7 @@ import React from 'react';
 import MapHubsComponent from '../components/MapHubsComponent';
 import LocaleStore from '../stores/LocaleStore';
 import Reflux from '../components/Rehydrate';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 
 type Props = {
   locale: string,
@@ -13,7 +14,14 @@ type Props = {
   allowSignUp: boolean
 }
 
-export default class Login extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {
+  initialScreen: string,
+  allowSignUp: boolean
+}
+
+type State = LocaleStoreState
+
+export default class Login extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
@@ -21,7 +29,6 @@ export default class Login extends MapHubsComponent<void, Props, void> {
     initialScreen: 'login',
     allowSignUp: true
   }
-
 
   constructor(props: Props) {
     super(props);

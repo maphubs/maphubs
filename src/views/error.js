@@ -6,20 +6,22 @@ import Footer from '../components/footer';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Error extends MapHubsComponent {
+type Props = {
+  title: string,
+  error: string,
+  url: string,
+  locale: string,
+  _csrf: string,
+  eventId: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-    title: string,
-		error: string,
-		url: string,
-    locale: string,
-    _csrf: string,
-    eventId: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+export default class Error extends MapHubsComponent<void, Props, void> {
 
-  constructor(props: Object) {
+  props: Props
+
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

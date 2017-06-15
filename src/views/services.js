@@ -8,16 +8,18 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Services extends MapHubsComponent {
+type Props = {
+  locale: string,
+  footerConfig: Object,
+  headerConfig: Object,
+  _csrf: string
+}
 
-  props: {
-    locale: string,
-    footerConfig: Object,
-    headerConfig: Object,
-    _csrf: string
-  }
+export default class Services extends MapHubsComponent<void, Props, void> {
 
-  constructor(props: Object) {
+  props: Props
+
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

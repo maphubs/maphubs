@@ -1,7 +1,6 @@
 //@flow
 import React from 'react';
 import Attributes from './Attributes';
-import classNames from 'classnames';
 var request = require('superagent');
 var checkClientError = require('../../services/client-error-response').checkClientError;
 var urlUtil = require('../../services/url-util');
@@ -12,26 +11,26 @@ import MapHubsComponent from '../../components/MapHubsComponent';
 import type {Layer} from '../../stores/layer-store';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-type Props = {
+type Props = {|
   features: Array<Object>,
   selected: boolean,
   onUnselected: Function,
-  showButtons: boolean,
-  className: string
-}
+  showButtons: boolean
+|}
 
-type DefaultProps = {
+type DefaultProps = {|
   showButtons: boolean,
   selected: boolean
-}
+|}
 
 type State = {
   selectedFeature: number,
   selected: boolean,
   currentFeatures: Array<Object>,
   maxHeight: string,
-  layerLoaded: boolean
-} & Layer & LocaleStoreState
+  layerLoaded: boolean,
+  layer?: Layer
+} & LocaleStoreState
 
 export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, State> {
 
@@ -44,7 +43,7 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
 
   state: State
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.state = {
       selectedFeature: 1,
@@ -66,7 +65,7 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
     }  
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Props) {
     //only take updates if we are not selected, otherwise data will update when user moves the mouse
     if((!this.state.selected) ){
       if(nextProps.selected){
@@ -95,7 +94,7 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
     }
   }
 
-  componentDidUpdate(prevProps: Object, prevState: Object){
+  componentDidUpdate(prevProps: Props, prevState: State){
     if(!prevState.layerLoaded && this.state.layerLoaded){
       $('.feature-box-tooltips').tooltip();
     }
@@ -234,7 +233,7 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
     //only show the panel if there is at least one feature active
     var display = 'none';
     var attributes = '';
-    var properties = [];
+    var properties: Object = {};
     if(this.state.currentFeatures.length > 0 && this.state.layerLoaded){
       display = 'flex';     
       currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
@@ -258,11 +257,8 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
         );
     }
 
-
-    var className = classNames('features', 'card', this.props.className);
-
     return (
-        <div className={className} style={{display, maxHeight: this.state.maxHeight}}>
+        <div className="features card" style={{display, maxHeight: this.state.maxHeight}}>
           <div className="features-container">
             {closeButton}
             {header}

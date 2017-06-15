@@ -11,7 +11,7 @@ export type UserStoreState = {
   loaded?: boolean
 }
 
-export default class UserStore extends Reflux.Store<void, void, UserStoreState> {
+export default class UserStore extends Reflux.Store {
 
   constructor(){
     super();
@@ -151,29 +151,4 @@ export default class UserStore extends Reflux.Store<void, void, UserStoreState> 
       });
     });
   }
-
-  checkUserNameAvailable(username: string, _csrf: string){
-
-    //not used yet since react-formsy can't support async on validation functions...
-    /*
-    request.post('/api/user/checkusernameavailable')
-    .type('json').accept('json')
-    .send({
-      username, //user_id to reset
-      _csrf
-    })
-    .end(function(err, res){
-      if (err) {
-        cb(JSON.stringify(err), false);
-      }else{
-        if(res.body && res.body.success == true && res.body.available){
-          cb(null, res.body.available);
-        }else{
-          cb(res.body, false);
-        }
-      }
-    });
-    */
-  }
-
 }

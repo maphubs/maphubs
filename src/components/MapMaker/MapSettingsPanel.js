@@ -9,11 +9,13 @@ type Props = {
 
 }
 
-export default class MapSettingsPanel extends MapHubsComponent<void, Props, void> {
+import type {MapMakerStoreState} from '../../stores/MapMakerStore';
+
+export default class MapSettingsPanel extends MapHubsComponent<void, Props, MapMakerStoreState> {
 
   props: Props
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(MapMakerStore);
   }

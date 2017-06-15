@@ -9,17 +9,20 @@ var checkClientError = require('../../services/client-error-response').checkClie
 var debug = require('../../services/debug')('EditAttributeModal');
 var _assignIn = require('lodash.assignin');
 
-type Props = {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+import type {MapHubsField} from '../../types/maphubs-field';
+
+type Props = {|
   feature: Object,
-  presets: Array<Object>,
+  presets: Array<MapHubsField>,
   layer_id: number,
-  onSave: Function
-}
+  onSave?: Function
+|}
 
 type State = {
   show: boolean,
   values: Object
-}
+} & LocaleStoreState
 
 export default class EditAttributesModal extends MapHubsComponent<void, Props, State> {
 
@@ -27,11 +30,12 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
     super(props);
     let values = props.feature ? props.feature.properties : {};
     this.state = {
+      show: false,
       values
     };
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     if(!this.props.feature && nextProps.feature){
       this.setState({values: nextProps.feature.properties});
     }

@@ -14,12 +14,18 @@ type Props = {
     editing: boolean
 };
 
-type State = {
-      group_id: string,
-      private: boolean
-  }
+type DefaultProps = {
+  canChangeGroup: boolean,
+  private: boolean,
+  editing: boolean
+}
 
-export default class SelectGroup extends MapHubsComponent<void, Props, State> {
+type State = {
+  group_id: string,
+  private: boolean
+}
+
+export default class SelectGroup extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
@@ -29,7 +35,7 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
     editing: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.state = {
       group_id: this.props.group_id,
@@ -37,13 +43,13 @@ export default class SelectGroup extends MapHubsComponent<void, Props, State> {
     };
 	}
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     if(nextProps.group_id !== this.props.group_id) {
       this.setState({group_id: nextProps.group_id});
     }
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

@@ -21,6 +21,10 @@ type Props = {
   active: boolean
 }
 
+type DefaultProps = {
+  active: boolean
+}
+
 type State = {
   canSubmit: boolean,
   showError: boolean,
@@ -28,12 +32,11 @@ type State = {
   errorTitle: string
 } & LocaleStoreState & GroupStoreState
 
-export default class CreateGroupStep1 extends MapHubsComponent<void, Props, State> {
+export default class CreateGroupStep1 extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
-    onSubmit: null,
+  static defaultProps: DefaultProps = {
     active: false
   }
 

@@ -11,6 +11,12 @@ import _remove from 'lodash.remove';
 
 import type {MapHubsField} from '../types/maphubs-field';
 
+export type ExternalLayerConfig = {|
+  type: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query',
+  url?: string,
+  layers: Array<Object>
+|}
+
 export type Layer = {
   layer_id?: number,
   name?: LocalizedString,
@@ -26,11 +32,11 @@ export type Layer = {
   data_type?: string,
   legend_html?: ?string,
   license?: string,
-  owned_by_group_id?: ?string,
+  owned_by_group_id?: string,
   private?: boolean,
   is_external?: boolean,
   external_layer_type?: string,
-  external_layer_config?: Object,
+  external_layer_config?: ExternalLayerConfig,
   is_empty?: boolean,
   complete?: boolean
 }
@@ -49,12 +55,12 @@ export type LayerStoreState =  {
 
 let defaultState: LayerStoreState = {
     layer_id: -1,
-    name: '',
-    description: '',
+    name: {en: '', fr: '', es: '', it: ''},
+    description: {en: '', fr: '', es: '', it: ''},
     published: true,
     owned_by_group_id: null,
     data_type: '',
-    source: '',
+    source: {en: '', fr: '', es: '', it: ''},
     license: 'none',
     preview_position: {
       zoom: 1,
@@ -66,7 +72,6 @@ let defaultState: LayerStoreState = {
     legend_html: null,
     is_external: false,
     external_layer_type: '',
-    external_layer_config: {},
     complete: false,
     private: false,
     mapColor: '#FF0000',
@@ -77,9 +82,9 @@ let defaultState: LayerStoreState = {
     presets: []
 };
 
-export default class LayerStore extends Reflux.Store<void, void, LayerStoreState> {
+export default class LayerStore extends Reflux.Store {
 
-  state: LayerStoreState
+  state: LayerStoreState 
 
   constructor(){
     super();
@@ -529,15 +534,15 @@ export default class LayerStore extends Reflux.Store<void, void, LayerStoreState
     this.updatePresets(this.state.presets);
   }
 
- updatePreset(id: number, preset: Object){
+ updatePreset(id: number, preset: MapHubsField){
    debug("update preset:" + id);
    var i = _findIndex(this.state.presets, {id});
    if(i >= 0){
      if(this.state.presets){
       this.state.presets[i] = preset;
-     }  
-     this.state.pendingPresetChanges = true;
-     this.updatePresets(this.state.presets);
+      this.state.pendingPresetChanges = true;
+      this.updatePresets(this.state.presets);
+     }      
    }else{
      debug("Can't find preset with id: "+ id);
    }

@@ -14,18 +14,22 @@ type Props = {
   height: string
 }
 
+type DefaultProps = {
+  show: boolean
+}
+
 type State = {
-  results?: Object,
-  locationSearchResults?: Object,
+  results?: ?Object,
+  locationSearchResults?: ?Object,
   tab: string,
   query?: string
 }
 
-export default class MapSearchPanel extends MapHubsComponent<void, Props, State> {
+export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     show: false
   }
 

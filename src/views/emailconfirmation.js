@@ -6,17 +6,19 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class EmailConfirmation extends MapHubsComponent {
+type Props = {
+  valid: boolean,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-    valid: boolean,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+export default class EmailConfirmation extends MapHubsComponent<void, Props, void> {
 
-  constructor(props: Object) {
+  props: Props
+
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

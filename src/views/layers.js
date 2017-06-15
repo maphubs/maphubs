@@ -15,28 +15,30 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Layers extends MapHubsComponent {
+type Props = {
+  featuredLayers: Array<Object>,
+  recentLayers: Array<Object>,
+  popularLayers: Array<Object>,
+  locale: string,
+  footerConfig: Object,
+  headerConfig: Object,
+  _csrf: string
+}
 
-  props: {
-    featuredLayers: Array<Object>,
-    recentLayers: Array<Object>,
-    popularLayers: Array<Object>,
-    locale: string,
-    footerConfig: Object,
-    headerConfig: Object,
-    _csrf: string
-  }
+type State = {
+  searchResults: Array<Object>,
+  searchActive: boolean
+}
+export default class Layers extends MapHubsComponent<void, Props, State> {
 
-  static defaultProps = {
-    layers: []
-  }
+  props: Props
 
   state = {
     searchResults: [],
     searchActive: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

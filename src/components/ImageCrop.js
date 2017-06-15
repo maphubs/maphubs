@@ -14,16 +14,16 @@ import MapHubsComponent from './MapHubsComponent';
 type Props = {
   onCrop: Function,
   lockAspect:  boolean,
-  aspectRatio: number,
+  aspectRatio?: number,
   autoCropArea: number,
   allowedExtensions: Array<string>,
   max_size: number,
   skip_size: number,
   jpeg_quality: number,
-  resize_height: number,
-  resize_max_height: number,
-  resize_width: number,
-  resize_max_width: number
+  resize_height?: number,
+  resize_max_height?: number,
+  resize_width?: number,
+  resize_max_width?: number
 }
 
 type File = {
@@ -33,7 +33,7 @@ type File = {
 
 type State = {
   img: ?Object,
-  file: File,
+  file: ?File,
   show: boolean,
   preview: ?Object,
   loading: boolean,
@@ -41,27 +41,34 @@ type State = {
   aspectRatio: number,
   cropWidth: number,
   cropHeight: number,
+  cropScaleX?: number,
+  cropScaleY?: number,
   selectedFile: ?string,
   exif: Object,
-  ext: string
+  ext?: string,
+  src?: any
 }
 
-export default class ImageCrop extends MapHubsComponent<void, Props, State> {
+type DefaultProps = {
+  lockAspect:  boolean,
+  autoCropArea: number,
+  allowedExtensions: Array<string>,
+  max_size: number,
+  skip_size: number,
+  jpeg_quality: number
+}
+
+export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     lockAspect: false,
-    aspectRatio: null,
     autoCropArea: 1,
     allowedExtensions: ['jpg', 'jpeg', 'png'],
     max_size: 5242880, //5MB
     skip_size: 10000, //10kb
-    jpeg_quality: 75,
-    resize_height: null,
-    resize_max_height: null,
-    resize_width: null,
-    resize_max_width: null
+    jpeg_quality: 75
   }
 
   state: State = {
@@ -78,13 +85,13 @@ export default class ImageCrop extends MapHubsComponent<void, Props, State> {
     exif: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.state.autoCropArea = props.autoCropArea;
     this.state.aspectRatio = props.aspectRatio;
 	}
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Props) {
     var updateProps = {};
     if(nextProps.aspectRatio) {
       debug('update aspectratio to: ' + nextProps.aspectRatio);
@@ -143,7 +150,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
   
   // If image size smaller than 'skip_size' - skip resizing
-  if (_this.state.file.size < _this.props.skip_size) {
+  if (_this.state.file && _this.state.file.size < _this.props.skip_size) {
     let data = sourceCanvas.toDataURL(_this.state.file.type);
     fulfill(data);
     return;
@@ -152,8 +159,8 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
   let scaledHeight: number, scaledWidth: number;
 
 
-  let resize_height: number = _this.props.resize_height;
-  let resize_width: number = _this.props.resize_width;
+  let resize_height = _this.props.resize_height;
+  let resize_width = _this.props.resize_width;
   let resize_max_height: number = _this.props.resize_max_height;
   let resize_max_width: number = _this.props.resize_max_width;
 
@@ -488,7 +495,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     }
 
     return (
-      <Modal show={this.state.show} id="image-crop-modal" className="image-crop-modal" style={{overflow: 'hidden'}} dismissible={false} fixedFooter={false}>
+      <Modal show={this.state.show} id="image-crop-modal" className="image-crop-modal" dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
           <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.handleCloseSelected}>
             <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>

@@ -15,17 +15,28 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Groups extends MapHubsComponent {
+type Props = {
+  featuredGroups: Array<Object>,
+  recentGroups: Array<Object>,
+  popularGroups: Array<Object>,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-    featuredGroups: Array<Object>,
-    recentGroups: Array<Object>,
-    popularGroups: Array<Object>,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+type DefaultProps = {
+  groups: []
+}
+
+type State = {
+  searchResults: Array<Object>,
+  searchActive: boolean
+}
+
+export default class Groups extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     groups: []
@@ -36,7 +47,7 @@ export default class Groups extends MapHubsComponent {
     searchActive: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

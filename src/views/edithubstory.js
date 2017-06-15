@@ -11,22 +11,28 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class EditHubStory extends MapHubsComponent {
+type Props = {
+  story: Object,
+  hub: Object,
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>,
+  locale: string,
+  _csrf: string
+}
 
-  props: {
-    story: Object,
-    hub: Object,
-    myMaps: Array<Object>,
-    popularMaps: Array<Object>,
-    locale: string,
-    _csrf: string
-  }
+type DefaultProps = {
+  story: Object
+}
+
+export default class EditHubStory extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     story: {}
   }
 
-   constructor(props: Object){
+   constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

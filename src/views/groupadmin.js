@@ -35,15 +35,22 @@ type Props = {
   headerConfig: Object
 }
 
+type DefaultProps = {
+  layers: Array<Object>,
+  maps: Array<Object>,
+  hubs: Array<Object>,
+  members: Array<Object>
+}
+
 type State = {
   canSubmit: boolean
 } & LocaleStoreState & GroupStoreState
 
-export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
+export default class GroupAdmin extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     layers: [],
     maps: [],
     hubs: [],
@@ -112,7 +119,7 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
             position: 'bottomright',
             dismissAfter: 3000,
             onDismiss() {
-              window.location = "/group/" + _this.state.group.group_id;
+              window.location = "/group/" + model.group_id;
             }
         });
       }
@@ -263,6 +270,7 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
 	render() {
     var _this = this;
     var membersList = [];
+    let group_id = this.props.group.group_id ? this.props.group.group_id : '';
     this.state.members.forEach((user) => {
       membersList.push({
         key: user.id,
@@ -280,7 +288,7 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
       isPublished = true;
     }
 
-    var  groupUrl = '/group/' + this.props.group.group_id;
+    var  groupUrl = '/group/' + group_id;
 
 		return (
       <div>
@@ -295,7 +303,7 @@ export default class GroupAdmin extends MapHubsComponent<void, Props, State> {
            </div>
           <div className="row" style={{marginTop: '20px'}}>
             <div className="col s12 m6 l6">
-              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()}/>
+              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + group_id + '/image?' + new Date().getTime()}/>
             </div>
             <div className="col s12 m6 l6">
               <button className="waves-effect waves-light btn" onClick={this.showImageCrop}>{this.__('Change Image')}</button>

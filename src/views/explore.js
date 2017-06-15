@@ -12,31 +12,58 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Home extends MapHubsComponent {
+type Props = {
+  featuredLayers: Array<Object>,
+  featuredGroups: Array<Object>,
+  featuredHubs: Array<Object>,
+  featuredMaps: Array<Object>,
+  featuredStories: Array<Object>,
+  popularLayers: Array<Object>,
+  popularGroups: Array<Object>,
+  popularHubs: Array<Object>,
+  popularMaps: Array<Object>,
+  popularStories: Array<Object>,
+  recentLayers: Array<Object>,
+  recentGroups: Array<Object>,
+  recentHubs: Array<Object>,
+  recentMaps: Array<Object>,
+  recentStories: Array<Object>,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-    featuredLayers: Array<Object>,
-    featuredGroups: Array<Object>,
-    featuredHubs: Array<Object>,
-    featuredMaps: Array<Object>,
-    featuredStories: Array<Object>,
-    popularLayers: Array<Object>,
-    popularGroups: Array<Object>,
-    popularHubs: Array<Object>,
-    popularMaps: Array<Object>,
-    popularStories: Array<Object>,
-    recentLayers: Array<Object>,
-    recentGroups: Array<Object>,
-    recentHubs: Array<Object>,
-    recentMaps: Array<Object>,
-    recentStories: Array<Object>,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
-  }
+import type {CardConfig} from '../components/CardCarousel/Card';
 
-  constructor(props: Object){
+type State = {
+  storyMode: string,
+  mapMode: string,
+  hubMode: string,
+  groupMode: string,
+  layerMode: string,
+  featuredStoryCards: Array<CardConfig>,
+  popularStoryCards: Array<CardConfig>,
+  recentStoryCards: Array<CardConfig>,
+  featuredMapCards: Array<CardConfig>,
+  popularMapCards: Array<CardConfig>,
+  recentMapCards: Array<CardConfig>,
+  featuredHubCards: Array<CardConfig>,
+  popularHubCards: Array<CardConfig>,
+  recentHubCards: Array<CardConfig>,
+  featuredGroupCards: Array<CardConfig>,
+  popularGroupCards: Array<CardConfig>,
+  recentGroupCards: Array<CardConfig>,
+  featuredLayerCards: Array<CardConfig>,
+  popularLayerCards: Array<CardConfig>,
+  recentLayerCards: Array<CardConfig>
+}
+
+export default class Home extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  constructor(props: Props){
 		super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
@@ -130,7 +157,7 @@ export default class Home extends MapHubsComponent {
               `)} />
             <div className="row" style={{marginTop: '20px', marginBottom: 0, marginRight: '5px'}}>
           <div className="col s12" style={{paddingLeft: '25%', paddingRight: '25%'}}>
-            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch}/>
+            <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch}/>
           </div>
         </div>
          <div className="row no-margin">

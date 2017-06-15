@@ -11,11 +11,11 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
-type Props = {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type Props = {|
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function
+|}
 
 type State = {
   canSubmit: boolean,
@@ -32,7 +32,7 @@ export default class MapboxSource extends MapHubsComponent<void, Props, State> {
     selectedOption: 'style'
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

@@ -5,9 +5,13 @@ import MessageActions from '../actions/MessageActions';
 import MessageStore from '../stores/MessageStore';
 import MapHubsComponent from './MapHubsComponent';
 
-export default class Message extends MapHubsComponent {
+type Props = {}
 
-  constructor(props: Object){
+import {MessageStoreState} from '../stores/MessageStore';
+
+export default class Message extends MapHubsComponent<void, Props, MessageStoreState> {
+
+  constructor(props: Props){
 		super(props);
 		this.stores.push(MessageStore);
 	}

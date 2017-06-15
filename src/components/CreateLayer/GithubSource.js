@@ -5,24 +5,35 @@ import TextInput from '../forms/textInput';
 import LayerStore from '../../stores/layer-store';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class GithubSource extends MapHubsComponent {
+type Props = {|
+  onSubmit: Function,
+  showPrev: boolean,
+  onPrev: Function,
+  active: boolean
+|}
 
-  propss: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
-  }
+type DefaultProps = {
+  active: boolean
+}
 
-  static defaultProps = {
-    onSubmit: null,
+type State = {
+  canSubmit: boolean,
+  selectedSource?: string
+}
+
+export default class GithubSource extends MapHubsComponent<DefaultProps, Props, State> {
+
+  propss: Props
+
+  static defaultProps: DefaultProps = {
     active: false
   }
 
-  state = {
+  state: State = {
     canSubmit: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

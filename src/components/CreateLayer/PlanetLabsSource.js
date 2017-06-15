@@ -11,11 +11,11 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
-type Props = {
+type Props = {|
   onSubmit: Function,
   showPrev: boolean,
   onPrev: Function
-}
+|}
 
 type State = {
   canSubmit: boolean,
@@ -28,17 +28,13 @@ export default class PlanetLabsSource extends MapHubsComponent<void, Props, Stat
 
   props: Props
 
-  static defaultProps = {
-    onSubmit: null
-  }
-
   state: State = {
     canSubmit: false,
     selectedOption: 'scene',
     selectedSceneOption: 'ortho'
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

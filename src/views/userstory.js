@@ -9,16 +9,23 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import ShareButtons from '../components/ShareButtons';
 
-export default class UserStory extends MapHubsComponent {
+type Props = {
+  story: Object,
+  username: string,
+  canEdit: boolean,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
 
-  props: {
-    story: Object,
-    username: string,
-    canEdit: boolean,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
-  }
+type DefaultProps = {
+  story: Object,
+  canEdit: boolean
+}
+
+export default class UserStory extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     story: {},

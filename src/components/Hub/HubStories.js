@@ -5,22 +5,32 @@ import StorySummary from '../Story/StorySummary';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class HubStories extends MapHubsComponent {
+type Props = {|
+  hub: Object,
+  stories: Array<Object>,
+  limit: number,
+  editing: boolean
+|}
 
-  props: {
-    hub: Object,
-    stories: Array<Object>,
-    limit: number,
-    editing: boolean
-  }
+type DefaultProps = {
+  stories: Array<Object>,
+  limit: number,
+  editing: boolean
+}
 
-  static defaultProps = {
+type State = {}
+
+export default class HubStories extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     stories: [],
     limit: 0,
     editing: false
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

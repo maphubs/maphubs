@@ -2,11 +2,13 @@
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class EditBaseMapBox extends MapHubsComponent {
+type Props = {|
+  gpxLink: string
+|}
 
-  props: {
-    gpxLink: string
-  }
+export default class EditBaseMapBox extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   getLinks = () => {
     var origHash = window.location.hash.replace('#', '');

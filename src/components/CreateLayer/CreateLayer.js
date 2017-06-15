@@ -4,15 +4,22 @@ import LayerSourceHelper from './LayerSourceHelper';
 import SourceSelectionBox from './SourceSelectionBox';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class CreateLayer extends MapHubsComponent {
+type Props = {|
+  onSubmit: Function,
+  showPrev?: boolean,
+  onPrev?: Function,
+  onCancel?: Function,
+  mapConfig: Object
+|}
 
-   props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function,
-    onCancel: Function,
-    mapConfig: Object
-  }
+type State = {
+  canSubmit: boolean,
+  source: string
+}
+
+export default class CreateLayer extends MapHubsComponent<void, Props, State> {
+
+   props: Props
 
    state = {
     canSubmit: false,

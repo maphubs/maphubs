@@ -16,7 +16,7 @@ module.exports = function(app: any) {
       return;
     }
     var q = req.query.q;
-    Layer.getSearchSuggestions(q, false)
+    Layer.getSearchSuggestions(q)
       .then((result) => {
         var suggestions = [];
           result.forEach((layer) => {
@@ -32,7 +32,7 @@ module.exports = function(app: any) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
       return;
     }
-    Layer.getSearchResults(req.query.q, false)
+    Layer.getSearchResults(req.query.q)
       .then((result) => {
         res.status(200).send({layers: result});
       }).catch(apiError(res, 500));
@@ -60,14 +60,6 @@ module.exports = function(app: any) {
         
       });
       res.status(200).send({success: true, layer});
-    }).catch(apiError(res, 500));
-  });
-
-  app.get('/api/layer/presets/:layer_id', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
-    Presets.getIdEditorPresets(layer_id)
-    .then((preset) => {
-      res.status(200).send(preset);
     }).catch(apiError(res, 500));
   });
 

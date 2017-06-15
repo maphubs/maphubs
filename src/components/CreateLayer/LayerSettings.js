@@ -15,18 +15,24 @@ import type {LayerStoreState} from '../../stores/layer-store';
 import type {Group} from '../../stores/GroupStore';
 import Locales from '../../services/locales';
 
-type Props = {
-  onSubmit: Function,
-    active: boolean,
-    onValid: Function,
-    onInValid: Function,
-    submitText: string,
-    showGroup: boolean,
-    showPrev: boolean,
-    onPrev: Function,
-    prevText: string,
-    warnIfUnsaved: boolean,
-    groups: Array<Group>
+type Props = {|
+  onSubmit?: Function,
+  onValid?: Function,
+  onInValid?: Function,
+  submitText: string,
+  showGroup: boolean,
+  showPrev?: boolean,
+  onPrev?: Function,
+  prevText?: string,
+  warnIfUnsaved: boolean,
+  groups: Array<Group>
+|}
+
+type DefaultProps = {
+  showGroup: boolean,
+  warnIfUnsaved: boolean,
+  showPrev: boolean,
+  groups: Array<Group>
 }
 
 type LayerSettingsState = {
@@ -36,13 +42,11 @@ type LayerSettingsState = {
 
 type State = LocaleStoreState & LayerStoreState & LayerSettingsState
 
-export default class LayerSettings extends MapHubsComponent<void, Props, State> {
+export default class LayerSettings extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
-    onSubmit: null,
-    active: true,
+  static defaultProps: DefaultProps = {
     showGroup: true,
     warnIfUnsaved: false,
     showPrev: false,
@@ -55,7 +59,7 @@ export default class LayerSettings extends MapHubsComponent<void, Props, State> 
     layer: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

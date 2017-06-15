@@ -95,7 +95,7 @@ module.exports = {
     .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
     .where({layer_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0];
       }
       return null;
@@ -258,7 +258,7 @@ module.exports = {
       'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
     ).table('omh.layers').where('layer_id', layer_id)
       .then((result) => {
-        if (result && result.length == 1) {
+        if (result && result.length === 1) {
           return result[0];
         }
         //else
@@ -273,7 +273,7 @@ module.exports = {
       return knex('omh.layer_notes').select('notes')
       .where({layer_id})
       .then((result) => {
-        if(result && result.length == 1){
+        if(result && result.length === 1){
           return result[0];
         }
         return null;
@@ -318,7 +318,7 @@ module.exports = {
   isPrivate(layer_id: number){
   return knex.select('private').from('omh.layers').where({layer_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0].private;
       }
       //else
@@ -738,7 +738,7 @@ module.exports = {
     saveLayerNote(layer_id: number, user_id: number, notes: string){
       return knex('omh.layer_notes').select('layer_id').where({layer_id})
       .then((result) => {
-        if(result && result.length == 1){
+        if(result && result.length === 1){
           return knex('omh.layer_notes')
           .update({
             notes,

@@ -6,22 +6,26 @@ import HubStore from '../../stores/HubStore';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class HubResources extends MapHubsComponent {
+type Props = {
+  editing: boolean
+}
 
-  props: {
-    editing: boolean
-  }
+import type {HubStoreState} from '../../stores/HubStore';
 
-  static defaultProps = {
+export default class HubResources extends MapHubsComponent<Props, Props, HubStoreState> {
+
+  props: Props
+
+  static defaultProps: Props = {
     editing: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
 	}
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: HubStoreState){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

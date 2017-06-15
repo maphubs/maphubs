@@ -11,11 +11,15 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
-type Props = {
+type Props = {|
   onSubmit: Function,
   active: boolean,
   showPrev: boolean,
   onPrev: Function
+|}
+
+type DefaultProps = {
+  active: boolean
 }
 
 type Step4State = {
@@ -25,13 +29,11 @@ type Step4State = {
 
 type State = LocaleStoreState & LayerStoreState & Step4State
 
-export default class Step4 extends MapHubsComponent<void, Props, State> {
+export default class Step4 extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
-    layer_id: null,
-    onSubmit: null,
+  static defaultProps: DefaultProps = {
     active: false
   }
 
@@ -41,7 +43,7 @@ export default class Step4 extends MapHubsComponent<void, Props, State> {
     layer: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

@@ -16,15 +16,16 @@ import MapHubsComponent from '../MapHubsComponent';
 //import Reflux from 'reflux';
 
 import type {LayerStoreState} from '../../stores/layer-store';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-type Props = {
-  onSubmit: Function,
-  showPrev: boolean,
-  prevText: string,
-  onPrev: Function,
+type Props = {|
+  onSubmit?: Function,
+  showPrev?: boolean,
+  prevText?: string,
+  onPrev?: Function,
   mapConfig: Object,
   waitForTileInit: boolean
-}
+|}
 
 type DefaultProps = {
   waitForTileInit: boolean
@@ -33,7 +34,7 @@ type DefaultProps = {
 type State = {
   rasterOpacity: number,
   saving: boolean
-} & LayerStoreState
+} & LayerStoreState & LocaleStoreState
 
 export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, State> {
 
@@ -43,7 +44,7 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
     waitForTileInit: false //wait for tile service before showing map
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
     this.state = {      
@@ -96,12 +97,12 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
   }
 
   setRasterOpacity = (opacity: number) => {
-
+    let elc = this.state.external_layer_config? this.state.external_layer_config: {};
     var style = null;
-    if(this.state.is_external && this.state.external_layer_config.type === 'ags-mapserver-tiles'){
-      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.url + '?f=json', opacity, 'arcgisraster');
-    }else if(this.state.is_external && this.state.external_layer_config.type === 'multiraster'){
-       style = MapStyles.raster.multiRasterStyleWithOpacity(this.state.layer_id, this.state.external_layer_config.layers, opacity, 'raster');
+    if(this.state.is_external && elc.type === 'ags-mapserver-tiles'){
+      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer_id, elc.url + '?f=json', opacity, 'arcgisraster');
+    }else if(this.state.is_external && elc.type === 'multiraster'){
+       style = MapStyles.raster.multiRasterStyleWithOpacity(this.state.layer_id, elc.layers, opacity, 'raster');
     }
     else{
       var baseUrl = urlUtil.getBaseUrl();
@@ -193,21 +194,29 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
       );
     }
 
+    let externalLayerConfig: Object = this.state.external_layer_config? this.state.external_layer_config: {};
+    let legendCode: string = this.state.legend_html? this.state.legend_html : '';
+    let style: Object = this.state.style? this.state.style: {};
+    let settings: Object = this.state.settings? this.state.settings: {};
+
     var colorChooser = '';
     if(this.state.is_external
-      && (this.state.external_layer_config.type === 'raster'
-      || this.state.external_layer_config.type === 'multiraster'
-      || this.state.external_layer_config.type === 'ags-mapserver-tiles')) {
+      && (externalLayerConfig.type === 'raster'
+      || externalLayerConfig.type === 'multiraster'
+      || externalLayerConfig.type === 'ags-mapserver-tiles')) {
+
+        
       colorChooser = (
         <div>
           <h5>{this.__('Choose Style')}</h5>
           <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-            style={this.state.style} onStyleChange={this.setStyle}
+            style={style} onStyleChange={this.setStyle}
             layer={this.state}
-            legendCode={this.state.legend_html} onLegendChange={this.setLegend} showAdvanced/>
+            settings={settings} onSettingsChange={this.setSettings}
+            legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced/>
         </div>
       );
-    }else if(this.state.is_external && this.state.external_layer_config.type === 'mapbox-style') {
+    }else if(this.state.is_external && externalLayerConfig.type === 'mapbox-style') {
        colorChooser = (
          <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
             <b>{this.__('Mapbox Studio Style Layer')}</b>
@@ -224,11 +233,11 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
       <div>
         <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner color={this.state.mapColor} onColorChange={this.setColor}
-            style={this.state.style} onStyleChange={this.setStyle}
+            style={style} onStyleChange={this.setStyle}
             labels={this.state.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
-            settings={this.state.settings} onSettingsChange={this.setSettings}
+            settings={settings} onSettingsChange={this.setSettings}
             layer={this.state}
-            legendCode={this.state.legend_html} onLegendChange={this.setLegend}/>
+            legendCode={legendCode} onLegendChange={this.setLegend}/>
       </div>
     );
   }

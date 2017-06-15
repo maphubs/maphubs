@@ -50,7 +50,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
     step: 1
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(LayerStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
@@ -140,7 +140,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
     if(this.state.step === 3){
        progressWidth = 'width-75';
       step3 = (
-        <Step5 showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} />         
+        <Step5 showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} mapConfig={this.props.mapConfig} />         
       );
     }
 

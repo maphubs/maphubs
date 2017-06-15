@@ -7,20 +7,20 @@ import LayerActions from '../../actions/LayerActions';
 import MessageActions from '../../actions/MessageActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class EmptyLocalSource extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-  props: {
-    onSubmit: Function,
-    showPrev: boolean,
-    type: string,
-    onPrev: Function
-  }
+type Props = {|
+  onSubmit: Function,
+  showPrev: boolean,
+  type: string,
+  onPrev: Function
+|}
 
-  static defaultProps = {
-    onSubmit: null
-  }
+export default class EmptyLocalSource extends MapHubsComponent<void, Props, LocaleStoreState> {
 
-  constructor(props: Object){
+  props: Props
+
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

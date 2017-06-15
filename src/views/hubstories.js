@@ -28,15 +28,21 @@ type Props = {
   _csrf: string
 }
 
+type DefaultProps = {
+  hub: Object,
+  stories: Array<Object>,
+  canEdit: boolean
+}
+
 type State = {
    editing: boolean
 } & LocaleStoreState & HubStoreState
 
-export default class HubStoriesPage extends MapHubsComponent<void, Props, State> {
+export default class HubStoriesPage extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     hub: {
       name: "Unknown"
     },
@@ -74,10 +80,14 @@ export default class HubStoriesPage extends MapHubsComponent<void, Props, State>
 
   publish = () => {
     var _this = this;
+    let hub = this.state.hub ? this.state.hub: {};
     if(this.state.unsavedChanges){
-      MessageActions.showMessage({title: _this.__('Unsaved Changes'), message: _this.__('Please save your changes before publishing.')});
-    }else if(isEmpty(this.state.hub.title) || isEmpty(this.state.hub.description)
-            || !this.state.hub.hasLogoImage || !this.state.hub.hasBannerImage){
+      MessageActions.showMessage({
+        title: _this.__('Unsaved Changes'), 
+        message: _this.__('Please save your changes before publishing.')
+      });
+    }else if(isEmpty(hub.title) || isEmpty(hub.description)
+            || !hub.hasLogoImage || !hub.hasBannerImage){
       MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')});
     }else {
       HubActions.publish(this.state._csrf, (err) => {

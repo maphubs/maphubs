@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import Reflux from 'reflux';
+import Reflux from '../Rehydrate';
 import classNames from 'classnames';
 import FeatureBox from './FeatureBox';
 import BaseMapActions from '../../actions/map/BaseMapActions'; 
@@ -42,59 +42,83 @@ if (typeof window !== 'undefined') {
 
 import type {GLStyle} from '../../types/mapbox-gl-style';
 import type {GeoJSONObject} from 'geojson-flow';
+import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
-type Props = {
+type Props = {|
     className: string,
     id: string,
-    maxBounds: Object,
-    maxZoom: number,
-    minZoom: number,
+    maxBounds?: Object,
+    maxZoom?: number,
+    minZoom?: number,
     height: string,
     style: Object,
-    glStyle: GLStyle,
-    features:  Array<Object>,
-    tileJSONType: string,
-    tileJSONUrl:  string,
-    data: GeoJSONObject,
+    glStyle?: GLStyle,
+    features?:  Array<Object>,
+    tileJSONType?: string,
+    tileJSONUrl?:  string,
+    data?: GeoJSONObject,
     interactive: boolean,
     showPlayButton: boolean,
     showLogo: boolean,
     showFeatureInfoEditButtons: boolean,
-    fitBounds: Array<Object>,
+    fitBounds?: Array<number>,
     fitBoundsOptions: Object,
-    disableScrollZoom: boolean,
-    enableRotation: boolean,
+    disableScrollZoom?: boolean,
+    enableRotation?: boolean,
     navPosition:  string,
     baseMap: string,
-    onChangeBaseMap: Function,
+    onChangeBaseMap?: Function,
     insetMap: boolean,
     hoverInteraction: boolean,
     interactionBufferSize: number,
     hash: boolean,
-    gpxLink: string,
+    gpxLink?: string,
     attributionControl:boolean,
     allowLayerOrderOptimization: boolean,
     mapConfig: Object,
-    children: any
+    onToggleForestLoss?: Function,
+    children?: any
+  |}
+
+  type DefaultProps = {
+    maxZoom: number,
+    minZoom: number,
+    className: string,
+    interactive: boolean,
+    showFeatureInfoEditButtons: boolean,
+    showPlayButton: boolean,
+    navPosition: string,
+    baseMap: string,
+    showLogo: boolean,
+    insetMap: boolean,
+    hoverInteraction: boolean,
+    interactionBufferSize: number,
+    hash: boolean,
+    attributionControl: boolean,
+    style: Object,
+    allowLayerOrderOptimization: boolean,
+    fitBoundsOptions: Object,
+    height: string,
+    mapConfig: Object
   }
 
   type State = {
     id: string,
-    selectedFeatures: Array<Object>,
+    selectedFeatures?: Array<Object>,
     selected: boolean,
     interactive: boolean,
-    glStyle: Object,
+    glStyle: GLStyle,
     interactiveLayers: [],
     mapLoaded: boolean,
-    restoreBounds: Object,
+    restoreBounds?: Array<number>,
     allowLayersToMoveMap: boolean
-  }
+  } & BaseMapStoreState
 
-export default class Map extends MapHubsComponent<void, Props, State> {
+export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     maxZoom: 18,
     minZoom: 5,
     className: '',
@@ -142,11 +166,11 @@ export default class Map extends MapHubsComponent<void, Props, State> {
        Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate');
        Reflux.listenTo(AnimationActions.tick, 'tick');
 
-       var restoreBounds = null;
+      let restoreBounds;
       if(this.props.fitBounds){
         restoreBounds = this.props.fitBounds;
       }
-      var glStyle = null;
+      let glStyle: GLStyle;
       var interactiveLayers = [];
       if(this.props.glStyle){
         glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
@@ -154,7 +178,6 @@ export default class Map extends MapHubsComponent<void, Props, State> {
       }
       this.state = {
         id: this.props.id ? this.props.id : 'map',
-        selectedFeatures: null,
         selected: false,
         interactive: this.props.interactive,
         glStyle,
@@ -522,12 +545,14 @@ export default class Map extends MapHubsComponent<void, Props, State> {
       debug('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
       fitBoundsChanging = true;
       allowLayersToMoveMap = false;
-      if(nextProps.fitBounds.length > 2){
+      if(nextProps.fitBounds && nextProps.fitBounds.length > 2){
         bounds = [[nextProps.fitBounds[0], nextProps.fitBounds[1]], [nextProps.fitBounds[2], nextProps.fitBounds[3]]];
       }else{
         bounds = nextProps.fitBounds;
       }
-      debug('(' + this.state.id + ') ' +'bounds: ' + bounds.toString());
+      if(bounds){
+        debug('(' + this.state.id + ') ' +'bounds: ' + bounds.toString());
+      }  
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
@@ -674,7 +699,6 @@ export default class Map extends MapHubsComponent<void, Props, State> {
             selected={this.state.selected}
             onUnselected={this.handleUnselectFeature}
             showButtons={this.props.showFeatureInfoEditButtons}
-            style={{}}
         />
       );
     }

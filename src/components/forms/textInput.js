@@ -5,34 +5,54 @@ var classNames = require('classnames');
 var $ = require('jquery');
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
-class TextInput extends MapHubsPureComponent {
+type Props = {|
+  value: string,
+  length: number,
+  successText: string,
+  disabled: boolean,
+  icon: string,
+  className: string,
+  dataTooltip: string,
+  dataDelay: number,
+  dataPosition: string,
+  name: string,
+  label: string,
+  placeholder: string,
+  id: string,
+  type: string,
+  style: Object,
+  showCharCount: boolean,
+  useMaterialize: boolean,
+  onClick: Function,
+  //Added by Formsy
+  showRequired: Function,
+  isValid: Function,
+  showError: Function,
+  setValue: Function,
+  getErrorMessage: Function
+|}
 
-  props: {
-    value: string,
-    length: number,
-    successText: string,
-    disabled: boolean,
-    icon: string,
-    className: string,
-    dataTooltip: string,
-    dataDelay: number,
-    dataPosition: string,
-    name: string,
-    label: string,
-    placeholder: string,
-    id: string,
-    type: string,
-    style: Object,
-    showCharCount: boolean,
-    useMaterialize: boolean,
-    onClick: Function,
-    //Added by Formsy
-    showRequired: Function,
-    isValid: Function,
-    showError: Function,
-    setValue: Function,
-    getErrorMessage: Function
-  }
+type DefaultProps = {
+  length: number,
+  successText: string,
+  defaultValue: string,
+  disabled: false,
+  value: string,
+  dataDelay: number,
+  type: string,
+  style: Object,
+  showCharCount: boolean,
+  useMaterialize: boolean
+}
+
+type State = {
+  value: string,
+  charCount: number
+}
+
+class TextInput extends MapHubsPureComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
       length: 100,
@@ -47,7 +67,7 @@ class TextInput extends MapHubsPureComponent {
       useMaterialize: true
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       value: props.value,
@@ -55,7 +75,7 @@ class TextInput extends MapHubsPureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     if(this.props.value !== nextProps.value){
       var charCount = 0;
       if(nextProps.value) charCount = nextProps.value.length;
@@ -72,7 +92,7 @@ class TextInput extends MapHubsPureComponent {
     }
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps: Props){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
       $(this.refs.inputWrapper).tooltip();
     }

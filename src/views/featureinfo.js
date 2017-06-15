@@ -61,7 +61,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
     editingNotes: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(FeatureNotesStore);
     this.stores.push(FeaturePhotoStore);
@@ -86,7 +86,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 
   stopEditingNotes = () => {
     var _this = this;
-    var geoJSONProps = this.props.feature.geojson.features[0].properties;
+    var geoJSONProps: Object = this.props.feature.geojson.features[0].properties;
 
     FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, (err) => {
       if(err){

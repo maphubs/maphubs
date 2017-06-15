@@ -8,14 +8,16 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class UserSettings extends MapHubsComponent {
+type Props = {
+  user: Object,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object
+}
 
-  props: {
-    user: Object,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object
-  }
+export default class UserSettings extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   componentDidMount(){
     $(this.refs.tabs).tabs();

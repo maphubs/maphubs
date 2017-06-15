@@ -4,23 +4,25 @@ import LayerListItemStatic from './LayerListItemStatic';
 import _isEqual from 'lodash.isequal';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
-export default class LayerListStatic extends MapHubsPureComponent {
+type Props = {|
+  layers:  Array<Object>,
+  showVisibility: boolean,
+  showDesign: boolean,
+  showRemove: boolean,
+  showEdit: boolean,
+  showChangeDesign: boolean,
+  toggleVisibility: Function,
+  removeFromMap: Function,
+  showLayerDesigner: Function,
+  updateLayers: Function,
+  editLayer: Function
+|}
 
-  props: {
-    layers:  Array<Object>,
-    showVisibility: boolean,
-    showDesign: boolean,
-    showRemove: boolean,
-    showEdit: boolean,
-    showChangeDesign: boolean,
-    toggleVisibility: Function,
-    removeFromMap: Function,
-    showLayerDesigner: Function,
-    updateLayers: Function,
-    editLayer: Function
-  }
+export default class LayerListStatic extends MapHubsPureComponent<void, Props, void> {
 
-  constructor(props: Object){
+  props: Props
+
+  constructor(props: Props){
     super(props);
     var layers = JSON.parse(JSON.stringify(props.layers));
     this.state = {
@@ -28,7 +30,7 @@ export default class LayerListStatic extends MapHubsPureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
      if(!_isEqual(nextProps.layers, this.state.layers)){
        var layers = JSON.parse(JSON.stringify(nextProps.layers));
      this.setState({layers});

@@ -7,24 +7,30 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class MapEdit extends MapHubsComponent {
+type Props = {
+  map: Object,
+  layers: Array<Object>,
+  popularLayers:Array<Object>,
+  myLayers: Array<Object>,
+  myGroups: Array<Object>,
+  locale: string,
+  _csrf: string,
+  headerConfig: Object,
+  mapConfig: Object
+}
 
-  props: {
-    map: Object,
-    layers: Array<Object>,
-    popularLayers:Array<Object>,
-    myLayers: Array<Object>,
-    myGroups: Array<Object>,
-    locale: string,
-    _csrf: string,
-    headerConfig: Object,
-    mapConfig: Object,
-  }
+type DefaultProps = {
+  popularLayers:Array<Object>,
+  myLayers: Array<Object>
+}
+
+export default class MapEdit extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     popularLayers: [],
-    myLayers: [],
-    user: {}
+    myLayers: []
   }
 
   constructor(props: Object) {

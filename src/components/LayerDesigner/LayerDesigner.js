@@ -11,36 +11,51 @@ import MapHubsComponent from '../MapHubsComponent';
 
 type ColorValue = {r: number, g: number, b: number, a: number}
 
-export default class LayerDesigner extends MapHubsComponent {
+type Props = {|
+  onColorChange: Function,
+  onStyleChange: Function,
+  onLabelsChange: Function,
+  onMarkersChange: Function,
+  onLegendChange: Function,
+  onSettingsChange: Function,
+  color: string,
+  alpha: number,
+  style: Object,
+  labels: Object,
+  legendCode: string,
+  layer: Object,
+  showAdvanced: boolean,
+  settings: Object
+|}
 
-  props: {
-    onColorChange: Function,
-    onStyleChange: Function,
-    onLabelsChange: Function,
-    onMarkersChange: Function,
-    onLegendChange: Function,
-    onSettingsChange: Function,
-    color: string,
-    style: Object,
-    labels: Object,
-    legendCode: string,
-    layer: Object,
-    showAdvanced: boolean,
-    settings: Object
-  }
+type DefaultProps = {
+  color: string,
+  alpha: number,
+  settings: Object,
+  showAdvanced: boolean
+}
 
-  static defaultProps = {
+type State = {
+  color: string,
+  style: Object,
+  labels: Object,
+  legendCode: string,
+  settings: Object,
+  markers?: Object
+}
+
+export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     color: 'red',
     alpha: 0.5,
-    style: null,
-    labels: null,
-    legendCode: null,
-    layer: null,
     settings: {},
     showAdvanced: true
   }
   
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.state = {
       color: props.color,
@@ -51,7 +66,7 @@ export default class LayerDesigner extends MapHubsComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     this.setState({
       color: nextProps.color,
       style: nextProps.style,

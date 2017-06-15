@@ -5,7 +5,7 @@ import MapHubsComponent from '../MapHubsComponent';
 import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
 import update from 'immutability-helper';
-
+import type {MapHubsField} from '../../types/maphubs-field';
 
 type Props = {
   geoJSON: Object,
@@ -14,7 +14,21 @@ type Props = {
   onRowSelected: Function,
   layer_id: number,
   dataLoadingMsg: string,
-  onSave: Function
+  onSave?: Function,
+  presets: Array<MapHubsField>
+}
+
+type DefaultProps = {
+  dataLoadingMsg: string
+}
+
+type Column = {
+  key: string,
+  name: string,
+  width : number,
+  resizable: boolean,
+  sortable : boolean,
+  filterable: boolean
 }
 
 type State = {
@@ -24,7 +38,7 @@ type State = {
   gridHeightOffset: number,
   rows: Array<Object>,
   selectedIndexes: Array<number>,
-  columns: Array<string>,
+  columns: Array<Column>,
   filters: Object,
   rowKey: ?string,
   sortColumn: ?string,
@@ -32,13 +46,18 @@ type State = {
   selectedFeature?: Object
 }
 
-export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, State> {
+export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, Props, State> {
 
   Selectors: null
+  ReactDataGrid: any
+  Toolbar: any
+  DropDownEditor: any
+  CheckboxEditor: any
+  DropDownFormatter: any
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     dataLoadingMsg: 'Data Loading'
   }
 
@@ -85,7 +104,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, S
       const {DropDownEditor, CheckboxEditor} = Editors;
       this.DropDownEditor = DropDownEditor;
       this.CheckboxEditor = CheckboxEditor;
-      const {DropDownFormatter } = Formatters;   
+      const {DropDownFormatter} = Formatters;   
       this.DropDownFormatter = DropDownFormatter;
   }
 
@@ -109,7 +128,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<void, Props, S
       rowKey = 'OBJECTID';
     }
 
-    var columns = [];
+    var columns: Array<Column> = [];
     columns.push(
       {
         key: rowKey,

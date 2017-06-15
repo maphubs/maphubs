@@ -21,26 +21,28 @@ import type {HubStoreState} from '../stores/HubStore';
 
 type Props = {
   hub: Object,
-  canEdit:boolean,
+  canEdit?: boolean,
   locale: string,
   _csrf: string,
   footerConfig: Object
+}
+
+type DefaultProps = {
+  hub: Object
 }
 
 type State = {
   editing: boolean
 } & LocaleStoreState & HubStoreState
 
-export default class HubResourcesPage extends MapHubsComponent<void, Props, State> {
+export default class HubResourcesPage extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
   static defaultProps = {
     hub: {
       name: "Unknown"
-    },
-    resources: [],
-    canEdit: false
+    }
   }
 
   state: State = {

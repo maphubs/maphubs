@@ -19,29 +19,35 @@ import Reflux from '../Rehydrate';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {Story, StoryStoreState} from '../../stores/StoryStore';
 
-type Props = {
-    story: Story,
-    hub_id: string,
-    storyType: string,
-    username: string,
-    myMaps: Array<Object>,
-    popularMaps: Array<Object>
-  }
+type Props = {|
+  story: Story,
+  hub_id?: string,
+  storyType: string,
+  username: string,
+  myMaps: Array<Object>,
+  popularMaps: Array<Object>
+|}
 
-type StoryEditorState = {
+type DefaultProps = {
+  story: Object,
+  username: string,
+  storyType: string
+}
+
+type StoryEditorState = {|
+  story: Object,
   saving: boolean,
   addingMap: boolean
-}
+|}
 
 type State = LocaleStoreState & StoryStoreState & StoryEditorState
 
-export default class StoryEditor extends MapHubsComponent<void, Props, State> {
+export default class StoryEditor extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     story: {},
-    hub_id: null,
     username: '',
     storyType: 'unknown'
   }
@@ -52,7 +58,10 @@ export default class StoryEditor extends MapHubsComponent<void, Props, State> {
     addingMap: false
   }
 
-  constructor(props: Object){
+  savedSelectionRange: any
+  body: any
+
+  constructor(props: Props){
 		super(props);
     this.stores.push(StoryStore);
     Reflux.rehydrate(StoryStore, {story: this.props.story, storyType: this.props.storyType, hub_id: this.props.hub_id});
@@ -83,7 +92,7 @@ export default class StoryEditor extends MapHubsComponent<void, Props, State> {
    $('.storyeditor-tooltips').tooltip();
  }
 
- shouldComponentUpdate(nextProps: Object, nextState: Object) {
+ shouldComponentUpdate(nextProps: Props, nextState: State) {
    if(nextState.addingMap) return true;
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
@@ -180,11 +189,14 @@ save = () => {
 
           },
           onClick(){
-            if(_this.props.storyType === 'user'){
-              window.location = '/user/' + _this.props.username + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
-            }else{
-              var baseUrl = '/hub/' + _this.props.hub_id;              
-              window.location = baseUrl + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+            let title = '';
+            if(_this.state.story.title){
+              title = slug(_this.state.story.title);
+            }
+            if(_this.props.storyType === 'user'){            
+              window.location = `/user/${_this.props.username}/story/${_this.state.story.story_id}/${title}`;
+            }else if(_this.props.hub_id){           
+              window.location = `/hub/${_this.props.hub_id}/story/${_this.state.story.story_id}/${title}`;
             }
           }
         });

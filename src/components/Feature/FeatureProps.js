@@ -2,16 +2,16 @@
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class FeatureProps extends MapHubsComponent {
+import type {MapHubsField} from '../../types/maphubs-field';
 
-  props: {
-    data: Object,
-    presets: Object
-  }
+type Props = {
+  data: Object,
+  presets: Array<MapHubsField>
+}
 
-  static defaultProps = {
-    data: null
-  }
+export default class FeatureProps extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   render(){
     var _this = this;

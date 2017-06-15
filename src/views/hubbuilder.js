@@ -28,6 +28,10 @@ type Props = {
   headerConfig: Object
 }
 
+type DefaultProps = {
+  active: boolean
+}
+
 type State = {
    canSubmit: boolean,
   showError: boolean,
@@ -35,12 +39,11 @@ type State = {
   errorTitle: string
 } & LocaleStoreState & HubStoreState
 
-export default class HubBuilder extends MapHubsComponent<void, Props, State> {
+export default class HubBuilder extends MapHubsComponent<DefaultProps, Props, State> {
 
    props: Props
 
    static defaultProps = {
-    onSubmit: null,
     active: false
    }
 
@@ -52,7 +55,7 @@ export default class HubBuilder extends MapHubsComponent<void, Props, State> {
     hub: {}
    }
 
-   constructor(props: Object){
+   constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

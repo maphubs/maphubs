@@ -11,8 +11,10 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Layer} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
+import type {CardConfig} from '../components/CardCarousel/Card';
 
 type Props = {
     trendingLayers: Array<Layer>,
@@ -31,23 +33,28 @@ type Props = {
     mapConfig: Object
   }
 
-  type State = {
-    collectionStoryCards: Array<Object>,
-    collectionMapCards: Array<Object>,
-    collectionHubCards: Array<Object>,
-    collectionGroupCards: Array<Object>,
-    collectionLayerCards: Array<Object>
+  type DefaultProps = {
+    trendingLayers: Array<Layer>,
+    trendingGroups:Array<Group>,
+    trendingHubs: Array<Object>,
+    trendingMaps: Array<Object>,
+    trendingStories: Array<Object>
   }
 
+  type State = {
+    collectionStoryCards: Array<CardConfig>,
+    collectionMapCards: Array<CardConfig>,
+    collectionHubCards: Array<CardConfig>,
+    collectionGroupCards: Array<CardConfig>,
+    collectionLayerCards: Array<CardConfig>
+  } & LocaleStoreState
 
-/**
- * Example of a customized home page configuration
- */
-export default class HomePro extends MapHubsComponent<void, Props, State> {
+
+export default class HomePro extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     trendingStories: [],
     trendingMaps: [],
     trendingHubs: [],
@@ -55,7 +62,7 @@ export default class HomePro extends MapHubsComponent<void, Props, State> {
     trendingLayers: []
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {

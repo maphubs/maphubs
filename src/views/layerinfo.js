@@ -91,7 +91,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
     gridHeightOffset: 48
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerNotesStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

@@ -6,22 +6,37 @@ var _isequal = require('lodash.isequal');
 var classNames = require('classnames');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class GroupTag extends MapHubsComponent {
+type Props = {|
+  group: string,
+  size: number,
+  chipWidth: number,
+  fontSize: number,
+  showTooltip: boolean,
+  className: string
+|}
 
-  props: {
-    group: string,
-    size: number,
-    chipWidth: number,
-    fontSize: number,
-    showTooltip: boolean,
-    className: string
-  }
+type DefaultProps = {
+  size: number,
+  chipWidth: number,
+  fontSize: number,
+  showTooltip: boolean,
+  className: string
+}
 
-  static defaultProps = {
+type State = {
+
+}
+
+export default class GroupTag extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     size: 20,
     chipWidth: 100,
     fontSize: 10,
-    showTooltip: false
+    showTooltip: false,
+    className: ''
   }
 
   componentDidMount(){
@@ -34,7 +49,7 @@ export default class GroupTag extends MapHubsComponent {
      });
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

@@ -5,7 +5,7 @@ var debug = require('../services/debug')('stores/hub-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
 export type FeatureNotesStoreState = {
-  notes: ?string,
+  notes?: string,
   unsavedChanges: boolean,
   saving: boolean
 }

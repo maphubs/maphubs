@@ -1,12 +1,14 @@
 //@flow
 import React from 'react';
-import MapHubsComponent from '../MapHubsComponent';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-export default class PublicOnboardingLinks extends MapHubsComponent {
+type Props = {
+  demo: boolean
+}
 
-  props:  {
-    demo: boolean
-  }
+export default class PublicOnboardingLinks extends MapHubsPureComponent<void, Props, void> {
+
+  props:  Props
 
   render(){
     var mapDemoText = '', storyDemoText = '', hubDemoText = '', searchDemoText = '';

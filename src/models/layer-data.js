@@ -75,7 +75,7 @@ module.exports = {
    * * @param {any} trx
    * @returns {Bluebird$Promise<Object>}
    */
-  setStringTag(layer_id: number, mhid: string, tag: string, val: string, trx: any): Bluebird$Promise<Object>{
+  setStringTag(layer_id: number, mhid: string, tag: string, val: ?string, trx: any): Bluebird$Promise<Object>{
     debug('updating tag: ' + mhid);
     let db = knex; if(trx){db = trx;}
     var valStr;

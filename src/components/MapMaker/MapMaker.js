@@ -35,12 +35,11 @@ type Props =  {
     mapLayers: Array<Layer>,
     showVisibility:  boolean,
     onCreate: Function,
-    onClose: Function,
     myLayers: Array<Layer>,
     popularLayers: Array<Layer>,
     myGroups: Array<Object>,
     title?: LocalizedString,
-    position: Object,
+    position?: Object,
     basemap?: string,
     map_id?: number,
     owned_by_group_id?: string,
@@ -169,7 +168,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     }
 
     window.onbeforeunload = function(){
-      if(!_this.state.saved && _this.state.mapLayers.length > 0){
+      if(!_this.state.saved && _this.state.mapLayers && _this.state.mapLayers.length > 0){
         return _this.__('Please save your map to avoid losing your work!');
       }
     };
@@ -214,7 +213,6 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
 
   onClose = () => {
     $('.savebutton-tooltipped').tooltip('remove');
-    if(this.props.onClose) this.props.onClose();
     Actions.closeMapDesigner();
   }
 
@@ -245,11 +243,13 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
       }
       //check all layers are in the same group
       var privateLayerInOtherGroup = false;
-      this.state.mapLayers.forEach((layer) => {
-        if(layer.private && layer.owned_by_group_id !== group_id){
-          privateLayerInOtherGroup = true;
-        }
-      });
+      if(this.state.mapLayers){
+        this.state.mapLayers.forEach((layer) => {
+          if(layer.private && layer.owned_by_group_id !== group_id){
+            privateLayerInOtherGroup = true;
+          }
+        });
+      }
       if(privateLayerInOtherGroup){
         return this.__('Private layers must belong to the same group that owns the map. Change the group where you are saving the map or remove the private layer.');
       }
@@ -257,11 +257,13 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     }else{
       //check that no private layers are included
       var privateLayerInPublicMap = false;
-      this.state.mapLayers.forEach((layer) => {
-        if(layer.private){
-          privateLayerInPublicMap = true;
-        }
-      });
+      if(this.state.mapLayers){
+        this.state.mapLayers.forEach((layer) => {
+          if(layer.private){
+            privateLayerInPublicMap = true;
+          }
+        });
+      }     
       if(privateLayerInPublicMap){
         return this.__('A public map cannot contain private layers. Please save as a private map owned by your group, or remove the private layer');
       }
@@ -348,7 +350,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     //clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer));
 
-    if(this.state.mapLayers.length === 0 && layer.extent_bbox){
+    if(this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox){
       _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false);
     }
 
@@ -398,7 +400,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
   }
 
   onToggleForestLoss = (enabled: boolean) => {
-    var mapLayers = this.state.mapLayers;
+    var mapLayers = this.state.mapLayers ? this.state.mapLayers: [];
     var layers = ForestLossLegendHelper.getLegendLayers();
   
     if(enabled){
@@ -483,7 +485,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
      
     }
 
-    var mapExtent = null;
+    let mapExtent;
     if(this.state.position && this.state.position.bbox){
       var bbox = this.state.position.bbox;
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];

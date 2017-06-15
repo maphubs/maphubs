@@ -13,17 +13,32 @@ if(process.env.APP_ENV === 'browser'){
 }
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class CodeEditor extends MapHubsComponent {
+type Props = {|
+  id:  string,
+  onSave: Function,
+  title: string,
+  code: string,
+  mode: string,
+  theme: string,
+  modal: boolean
+|}
 
-  props: {
-    id:  string,
-    onSave: Function,
-    title: string,
-    code: string,
-    mode: string,
-    theme: string,
-    modal: boolean
-  }
+type DefaultProps = {
+  id:  string,
+  mode: string,
+  theme: string,
+  modal: boolean
+}
+
+type State = {
+  code: string,
+  canSave: boolean,
+  show: boolean
+}
+
+export default class CodeEditor extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
       id: 'code-editor',
@@ -32,7 +47,9 @@ export default class CodeEditor extends MapHubsComponent {
       modal: true
   }
 
-  constructor(props: Object){
+  editor: any
+
+  constructor(props: Props){
     super(props);
     this.state = {
       code: props.code,
@@ -41,11 +58,11 @@ export default class CodeEditor extends MapHubsComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     this.setState({code: nextProps.code});
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

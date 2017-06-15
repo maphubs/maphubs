@@ -4,15 +4,18 @@ import Settings from './settings';
 import Line from './line';
 import Point from './point';
 import Polygon from './polygon';
+
+import type {GLSource} from '../../../types/mapbox-gl-style';
+
 module.exports = {
-  defaultStyle(layer_id: number, source: string, dataType: string): GLStyle {
+  defaultStyle(layer_id: number, source: GLSource, dataType: string): GLStyle {
     var settings = Settings.defaultLayerSettings();
     return this.styleWithColor(layer_id, source, "red", dataType, settings.interactive, settings.showBehindBaseMapLabels);
   },
 
   styleWithColor(
     layer_id: number, 
-    source: string, color: string, dataType: string, 
+    source: GLSource, color: string, dataType: string, 
     interactive: boolean, showBehindBaseMapLabels: boolean): GLStyle {
     //TODO: make default selected colors better match user color
     var hoverColor = "yellow";

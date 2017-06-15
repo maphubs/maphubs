@@ -73,7 +73,8 @@ class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
 
   render() {
     var _this = this;
-    var layer: Layer = this.props.item;
+    let layer: Layer = this.props.item;
+    let layer_id = layer.layer_id ? layer.layer_id : 0;
     var canEdit = (this.props.showEdit 
                     && layer.canEdit 
                     && !layer.remote 
@@ -166,6 +167,7 @@ class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
         <div className="row no-margin">
           <div className="title col no-padding s6">
             <GroupTag group={layer.owned_by_group_id} />
+
           </div>
             
         <div className="col s6" style={{
@@ -177,7 +179,7 @@ class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
           }}>
           <div className="col s8 no-padding">
            <div className={buttonClass} style={{height: '30px', width: '22px'}}>
-              <a href={'/lyr/'+ layer.layer_id} target="_blank" rel="noopener noreferrer"
+              <a href={'/lyr/'+ layer_id} target="_blank" rel="noopener noreferrer"
                 className="layer-item-btn map-layer-tooltipped"
                 data-position="top" data-delay="50" data-tooltip={_this.__('Layer Info')}>
                 <i className="material-icons omh-accent-text" 

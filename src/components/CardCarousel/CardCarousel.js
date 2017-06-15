@@ -3,9 +3,10 @@ import React from 'react';
 import Slider from 'react-slick';
 import Card  from './Card';
 
+import type {CardConfig} from './Card';
 
 type Props = {
-    cards: Array<Object>,
+    cards: Array<CardConfig>,
     responsive: Array<Object>,
     autoplay: boolean,
     arrows: boolean,
@@ -17,12 +18,23 @@ type Props = {
     showAddButton: boolean
   };
 
-export default class CardCarousel extends React.Component<Props, Props, void> {
+  type DefaultProps = {
+    responsive: Array<Object>,
+    autoplay: boolean,
+    arrows: boolean,
+    dots: boolean,
+    infinite: boolean,
+    speed: number,
+    slidesToShow: number,
+    slidesToScroll: number,
+    showAddButton: boolean
+  }
+
+export default class CardCarousel extends React.Component<DefaultProps, Props, void> {
 
   props: Props
 
-  static defaultProps: Props = {
-    cards: [],
+  static defaultProps: DefaultProps = {
     responsive: [
       {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
       {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},
@@ -39,7 +51,8 @@ export default class CardCarousel extends React.Component<Props, Props, void> {
     infinite: true,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 3
+    slidesToScroll: 3,
+    showAddButton: false
   }
 
   render() {

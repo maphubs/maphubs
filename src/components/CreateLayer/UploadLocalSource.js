@@ -14,12 +14,12 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
-type Props = {
+type Props = {|
   onSubmit: Function,
   showPrev: boolean,
   onPrev: Function,
   mapConfig: Object
-}
+|}
 
 type State = {
   canSubmit: boolean,
@@ -42,7 +42,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     layer: {}
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

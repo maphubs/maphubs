@@ -6,9 +6,17 @@ import DataCollectionForm from '../DataCollection/DataCollectionForm';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class EditLayerPanel extends MapHubsComponent {
+type Props = {
 
-  constructor(props: Object){
+}
+
+import type {DataEditorStoreState} from '../../stores/DataEditorStore';
+
+type State = DataEditorStoreState;
+
+export default class EditLayerPanel extends MapHubsComponent<void, Props, State> {
+
+  constructor(props: Props){
     super(props);
     this.stores.push(DataEditorStore);
   }

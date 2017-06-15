@@ -11,14 +11,25 @@ import Toggle from '../forms/toggle';
 import MapHubsComponent from '../MapHubsComponent';
 import Locales from '../../services/locales';
 
-export default class SaveMapPanel extends MapHubsComponent {
+import type {MapMakerStoreState} from '../../stores/MapMakerStore';
+import type {UserStoreState} from '../../stores/UserStore';
 
-  props: {
-    onSave: Function,
-    groups: Array<Object>
-  }
+type Props = {|
+  onSave: Function,
+  groups: Array<Object>
+|}
 
-  constructor(props: Object){
+type State = {
+  canSave: boolean,
+  ownedByGroup: boolean,
+  saving?: boolean
+} & MapMakerStoreState & UserStoreState
+
+export default class SaveMapPanel extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  constructor(props: Props){
     super(props);
     this.stores.push(MapMakerStore);
     this.stores.push(UserStore);
@@ -71,7 +82,7 @@ export default class SaveMapPanel extends MapHubsComponent {
     });
   }
 
-  onOwnedByGroup = (ownedByGroup: string) =>{
+  onOwnedByGroup = (ownedByGroup: boolean) =>{
     this.setState({ownedByGroup});
   }
 

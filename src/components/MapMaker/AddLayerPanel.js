@@ -11,13 +11,20 @@ import MessageActions from '../../actions/MessageActions';
 import NotificationActions from '../../actions/NotificationActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class AddLayerPanel extends MapHubsComponent {
+type Props = {
+  myLayers: Array<Object>,
+  popularLayers: Array<Object>,
+  onAdd: Function
+}
 
-  props:  {
-    myLayers: Array<Object>,
-    popularLayers: Array<Object>,
-    onAdd: Function
-  }
+type State = {
+  searchResults: Array<Object>,
+  searchActive: boolean
+}
+
+export default class AddLayerPanel extends MapHubsComponent<void, Props, State> {
+
+  props:  Props
 
   state = {
     searchResults: [],

@@ -3,7 +3,16 @@ import Actions from '../actions/MessageActions';
 var debug = require('../services/debug')('stores/message-store');
 var $ = require('jquery');
 
+export type MessageStoreState = {
+  show: boolean,
+  title: string,
+  message: string,
+  onDismiss?: Function
+}
+
 export default class MessageStore extends Reflux.Store {
+
+  state: MessageStoreState
 
   constructor(){
     super();
@@ -11,7 +20,7 @@ export default class MessageStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): MessageStoreState{
     return {
       show: false,
       title: 'Message',

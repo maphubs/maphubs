@@ -17,22 +17,29 @@ var $ = require('jquery');
 import type {LocaleStoreState} from '../stores/LocaleStore';
 
 type Props = {
-    locale: string,
-    email:  string,
-    lockEmail:  boolean,
-    inviteKey: string,
-    _csrf: string,
-    headerConfig: Object
-  }
+  locale: string,
+  email:  string,
+  lockEmail:  boolean,
+  inviteKey: string,
+  _csrf: string,
+  headerConfig: Object
+}
+
+type DefaultState ={
+  lockEmail:  boolean
+}
 
 type State = {
   canSubmit: boolean,
   saving: boolean,
   email: string,
-  created: boolean
+  created: boolean,
+  showError?: boolean,
+  errorMessage?: string,
+  errorTitle?: string
 } & LocaleStoreState
 
-export default class Signup extends MapHubsComponent<void, Props, State> {
+export default class Signup extends MapHubsComponent<DefaultState, Props, State> {
 
   props: Props
 
@@ -47,7 +54,7 @@ export default class Signup extends MapHubsComponent<void, Props, State> {
     created: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   

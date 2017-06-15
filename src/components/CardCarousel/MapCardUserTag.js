@@ -16,15 +16,17 @@ addLocaleData(fr);
 
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class MapCardUserTag extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-  props: {
-    map: Object
-  }
+type Props = {
+  map: Object
+}
 
-  static defaultProps = {
-    baseUrl: ''
-  }
+type State = LocaleStoreState;
+
+export default class MapCardUserTag extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   render(){
 

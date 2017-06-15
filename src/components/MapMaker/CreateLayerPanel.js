@@ -5,9 +5,19 @@ import LayerStore from '../../stores/layer-store';
 import MessageActions from '../../actions/MessageActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class CreateLayerPanel extends MapHubsComponent {
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
-  constructor(props: Object){
+type Props = {|
+  onSubmit?: Function
+|}
+
+type State = {
+  pendingChanges: boolean
+} & LocaleStoreState
+
+export default class CreateLayerPanel extends MapHubsComponent<void, Props, State> {
+
+  constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
   }

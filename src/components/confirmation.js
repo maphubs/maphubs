@@ -5,9 +5,11 @@ import Reflux from 'reflux';
 import Store from '../stores/ConfirmationStore';
 import Actions from '../actions/ConfirmationActions';
 
-export default class Confirmation extends Reflux.Component {
+type Props = {}
 
-  constructor(props: Object){
+export default class Confirmation extends Reflux.Component<void, Props, void> {
+
+  constructor(props: Props){
 		super(props);
 		this.stores = [Store];
 	}

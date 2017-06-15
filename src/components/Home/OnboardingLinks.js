@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
-import MapHubsComponent from '../MapHubsComponent';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
-export default class OnboardingLinks extends MapHubsComponent {
+export default class OnboardingLinks extends MapHubsPureComponent {
 
   render(){
     return (

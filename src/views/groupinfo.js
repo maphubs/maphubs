@@ -7,24 +7,40 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class GroupInfo extends MapHubsComponent {
+import type {CardConfig} from '../components/CardCarousel/Card';
+import type {Group} from '../stores/GroupStore';
 
-  props: {
-    group: Object,
-    maps: Array<Object>,
-    layers: Array<Object>,
-    hubs: Array<Object>,
-    members: Array<Object>,
-    canEdit: boolean,
-    headerConfig: Object,
-    locale: string,
-    _csrf: string
-  }
+type Props = {
+  group: Group,
+  maps: Array<Object>,
+  layers: Array<Object>,
+  hubs: Array<Object>,
+  members: Array<Object>,
+  canEdit: boolean,
+  headerConfig: Object,
+  locale: string,
+  _csrf: string
+}
 
-  static defaultProps = {
-    group: {
-      name: "Unknown"
-    },
+type DefaultProps = {
+  maps: Array<Object>,
+  layers: Array<Object>,
+  hubs: Array<Object>,
+  members: Array<Object>,
+  canEdit: boolean
+}
+
+type State = {
+  mapCards: Array<CardConfig>,
+  layerCards: Array<CardConfig>,
+  hubCards: Array<CardConfig>
+}
+
+export default class GroupInfo extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     maps: [],
     layers: [],
     hubs: [],
@@ -32,7 +48,7 @@ export default class GroupInfo extends MapHubsComponent {
     canEdit: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {
@@ -44,7 +60,7 @@ export default class GroupInfo extends MapHubsComponent {
 
   render() {
     var _this = this;
-
+    let group_id = this.props.group.group_id? this.props.group.group_id : '';
     var editButton = '';
 
     if(this.props.canEdit){
@@ -61,7 +77,7 @@ export default class GroupInfo extends MapHubsComponent {
                 </a>
               </li>
               <li>
-                <a className="btn-floating tooltipped blue" href={'/group/' + this.props.group.group_id + '/admin'}data-delay="50" data-position="left" data-tooltip={this.__('Manage Group')}>
+                <a className="btn-floating tooltipped blue" href={'/group/' + group_id + '/admin'}data-delay="50" data-position="left" data-tooltip={this.__('Manage Group')}>
                   <i className="material-icons">settings</i>
                 </a>
               </li>
@@ -71,9 +87,9 @@ export default class GroupInfo extends MapHubsComponent {
 
       var addButtons = (
          <div className="valign-wrapper">
-          <a className="btn valign" style={{margin: 'auto'}} href={'/map/new?group_id=' + this.props.group.group_id}>{this.__('Make a Map')}</a>
-          <a className="btn valign" style={{margin: 'auto'}} href={'/createlayer?group_id=' + this.props.group.group_id}>{this.__('Add a Layer')}</a>
-          <a className="btn valign" style={{margin: 'auto'}} href={'/createhub?group_id=' + this.props.group.group_id}>{this.__('Create a Hub')}</a>
+          <a className="btn valign" style={{margin: 'auto'}} href={'/map/new?group_id=' + group_id}>{this.__('Make a Map')}</a>
+          <a className="btn valign" style={{margin: 'auto'}} href={'/createlayer?group_id=' + group_id}>{this.__('Add a Layer')}</a>
+          <a className="btn valign" style={{margin: 'auto'}} href={'/createhub?group_id=' + group_id}>{this.__('Create a Hub')}</a>
         </div>
       );
 
@@ -110,7 +126,7 @@ export default class GroupInfo extends MapHubsComponent {
           <h4>{this._o_(this.props.group.name)}</h4>
           <div className="row">
             <div className="col s6">
-              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + this.props.group.group_id + '/image'}/>
+              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + group_id + '/image'}/>
             </div>
             <div className="col s6">
               <div className="row">

@@ -14,28 +14,39 @@ import LocaleStore from '../stores/LocaleStore';
 
 var checkClientError = require('../services/client-error-response').checkClientError;
 
-export default class CreateRemoteLayer extends MapHubsComponent {
+type Props = {|
+  groups: Array,
+  locale: string,
+  mapConfig: Object,
+  headerConfig: Object
+|}
 
-  props: {
-		groups: Array,
-    locale: string,
-    mapConfig: Object,
-    headerConfig: Object
-  }
+type DefaultProps = {
+  groups: Array
+}
+
+type State = {
+  canSubmit: boolean,
+  layer?: Object,
+  remote_host?: string,
+  group_id?: string,
+  complete: boolean
+}
+
+export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     groups: []
   }
 
-  state = {
+  state: State = {
     canSubmit: false,
-    layer: null,
-    remote_host: null,
-    group_id: null,
     complete: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

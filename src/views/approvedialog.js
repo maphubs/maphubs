@@ -5,23 +5,31 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class OAuthDialog extends MapHubsComponent {
+type Props = {|
+  locale: string,
+  _csrf: string,
+  user: string,
+  client: string,
+  transactionID: string
+|}
 
-  props: {
-    locale: string,
-    _csrf: string,
-    user: string,
-    client: string,
-    transactionID: string
-  }
+type DefaultProps = {
+  user: string,
+  client: string,
+  transactionID: string
+}
 
-  static defaultProps = {
+export default class OAuthDialog extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     user: 'Unknown',
     client: 'Unknown',
     transactionID: ''
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

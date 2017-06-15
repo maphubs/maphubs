@@ -11,15 +11,23 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import ShareButtons from '../components/ShareButtons';
 
-export default class HubStory extends MapHubsComponent {
+type Props = {
+  story: Object,
+  hub: Object,
+  canEdit: boolean,
+  locale: string,
+  _csrf: string
+}
 
-  props: {
-    story: Object,
-    hub: Object,
-    canEdit: boolean,
-    locale: string,
-    _csrf: string
-  }
+type DefaultProps = {
+  story: Object,
+  hub: Object,
+  canEdit: boolean
+}
+
+export default class HubStory extends MapHubsComponent<DefaultProps, Props, void>  {
+
+  props: Props
 
   static defaultProps = {
     story: {},
@@ -27,7 +35,7 @@ export default class HubStory extends MapHubsComponent {
     canEdit: false
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
 		super(props);
     this.stores.push(HubStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

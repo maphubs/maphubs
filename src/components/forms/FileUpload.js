@@ -4,18 +4,29 @@ var debug = require('../../services/debug')('FileUpload');
 import FileUploadProgress from 'react-fileupload-progress';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class File extends MapHubsComponent {
+type Props = {|
+  action: string,
+  onUpload: Function,
+  onChange?: Function,
+  onFinishTx: Function,
+  onAbort?: Function,
+  onError: Function,
+  inputStyle: Object,
+  style: Object
+|}
 
-  props: {
-    action: string,
-    onUpload: Function,
-    onChange: Function,
-    onFinishTx: Function,
-    onAbort: Function,
-    onError: Function,
-    inputStyle: Object,
-    style: Object
-  }
+type DefaultProps = {
+  inputStyle: Object,
+  style: Object
+}
+
+type State = {
+  uploading?: boolean
+}
+
+export default class File extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
       inputStyle: {

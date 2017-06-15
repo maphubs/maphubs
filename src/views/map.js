@@ -7,26 +7,32 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class Map extends MapHubsComponent {
+type Props = {
+  popularLayers: Array<Object>,
+  myLayers: Array<Object>,
+  myGroups: Array<Object>,
+  editLayer: Object,
+  headerConfig: Object,
+  mapConfig: Object,
+  locale: string,
+  _csrf: string
+}
 
-  props: {
-    popularLayers: Array<Object>,
-    myLayers: Array<Object>,
-    myGroups: Array<Object>,
-    editLayer: Object,
-    headerConfig: Object,
-    mapConfig: Object,
-    locale: string,
-    _csrf: string
-  }
+type DefaultProps = {
+  popularLayers: Array<Object>,
+  myLayers: Array<Object>
+}
 
-  static defaultProps = {
+export default class Map extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
     popularLayers: [],
-    myLayers: [],
-    user: {}
+    myLayers: []
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

@@ -8,7 +8,7 @@ import Toggle from '../forms/toggle';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-type Props = {
+type Props = {|
   show: boolean,
   gpxLink: string,
   onChangeBaseMap:  Function,
@@ -17,19 +17,24 @@ type Props = {
   toggleForestLoss:Function,
   calculateForestAlerts: Function,
   enableMeasurementTools:  boolean,
-  baseMapOptions: Array<Object>,
   forestAlerts: Object,
   forestLoss: Object,
   height: string
-}
+|}
 
-export default class MapToolPanel extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {|
+   show: boolean,
+  enableMeasurementTools: boolean,
+  forestAlerts: Object,
+  forestLoss: Object
+|}
+
+export default class MapToolPanel extends MapHubsComponent<DefaultProps, Props, void> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     show: false,
-    buttonTooltipText: '',
     enableMeasurementTools: false,
     forestAlerts: {
       enableGLAD2017: false,
@@ -38,8 +43,7 @@ export default class MapToolPanel extends MapHubsComponent<void, Props, void> {
     forestLoss: {
       enableForestLoss: false,
       result: null
-    },
-    baseMapOptions: null
+    }
   }
 
   componentDidMount(){
@@ -147,7 +151,7 @@ export default class MapToolPanel extends MapHubsComponent<void, Props, void> {
               <div className="collapsible-header" style={{borderBottom: '1px solid #ddd'}}><i className="material-icons">layers</i>{this.__('Change Base Map')}</div>
               <div className="collapsible-body">
                 <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
-                  <BaseMapSelection onChange={this.onChangeBaseMap} options={this.props.baseMapOptions}/>
+                  <BaseMapSelection onChange={this.onChangeBaseMap}/>
                 </div>
               </div>
             </li>

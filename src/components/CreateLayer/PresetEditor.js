@@ -5,13 +5,21 @@ import LayerStore from '../../stores/layer-store';
 import Actions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
 
+import type {LayerStoreState} from '../../stores/layer-store';
+
 type Props = {
   onValid: Function,
   onInvalid: Function,
   warnIfUnsaved: boolean
 }
 
-export default class PresetEditor extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {
+  warnIfUnsaved: boolean
+}
+
+type State = LayerStoreState;
+
+export default class PresetEditor extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 

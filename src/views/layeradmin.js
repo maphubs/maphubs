@@ -192,10 +192,9 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
         settingsTabContent = (
           <LayerSettings
                 groups={this.props.groups} 
-                 showCancel={false}
                  showGroup={false}
                  warnIfUnsaved
-                 submitText={this.__('Save')} onSubmit={this.save}
+                 submitText={this.__('Save')}
              />
         );
 
@@ -217,10 +216,9 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
       }else if(this.state.tab === 'style'){
         styleTabContent = (
           <LayerStyle
-                 showPrev={false}
-                 mapConfig={this.props.mapConfig}
-                 submitText="Save" onSubmit={this.save}
-              />
+            showPrev={false}
+            mapConfig={this.props.mapConfig}
+          />
         );
       }
 

@@ -5,22 +5,38 @@ module.exports = {
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
-          if(!layer.metadata){
-            layer.metadata = {};
+          let metadata = {};
+          if(layer.metadata){
+            metadata = layer.metadata;
+          }
+
+          if(!metadata['maphubs:markers']){
+            metadata['maphubs:markers'] = {};
           }
           
-          layer.metadata['maphubs:markers'] = markerOptions;
-          layer.metadata['maphubs:markers'].enabled = true;
-          layer.metadata['maphubs:markers'].dataUrl = '{MAPHUBS_DOMAIN}/api/layer/'+ layer_id + '/export/json/'+ layer_id + '.json';
-          layer.metadata['maphubs:layer_id'] = layer_id;
-          if(layer.metadata["maphubs:interactive"]){
-            layer.metadata['maphubs:markers'].interactive = true;
+          metadata['maphubs:markers'] = markerOptions;
+          metadata['maphubs:markers'].enabled = true;
+          metadata['maphubs:markers'].dataUrl = '{MAPHUBS_DOMAIN}/api/layer/'+ layer_id + '/export/json/'+ layer_id + '.json';
+          metadata['maphubs:layer_id'] = layer_id;
+          if(metadata["maphubs:interactive"]){
+            metadata['maphubs:markers'].interactive = true;
           }
-          layer.metadata["maphubs:interactive"] = false; //disable regular mapbox-gl interaction
+          metadata["maphubs:interactive"] = false; //disable regular mapbox-gl interaction
 
+          layer.metadata = metadata;
 
         }else if(layer.id.startsWith('omh-label')){
           //move label below marker
+          if(!layer.layout){
+            layer.layout = {};
+          }
+          if(!layer.paint){
+            layer.paint = {};
+          }
+          if(!layer.layout['text-size']){
+            layer.layout['text-size'] = {};
+          }
+
            var offset = (layer.layout['text-size'].base / 2) + layer.paint['text-halo-width'];
           if(markerOptions.shape === 'MAP_PIN' || markerOptions.shape === 'SQUARE_PIN'){         
              layer.paint['text-translate'][1] = offset;
@@ -42,6 +58,14 @@ module.exports = {
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
 
+          if(!layer.metadata){
+             layer.metadata = {};
+          }
+
+          if(!layer.metadata['maphubs:markers']){
+            layer.metadata['maphubs:markers'] = {};
+          }
+
           layer.metadata['maphubs:markers'].enabled = false;  
 
           //re-enable mapbox-gl interaction
@@ -51,6 +75,18 @@ module.exports = {
 
         }else if(layer.id.startsWith('omh-label')){
           //restore label offset
+          if(!layer.paint){
+            layer.paint = {};
+          }
+          if(!layer.layout){
+            layer.layout = {};
+          }
+          if(!layer.paint['text-translate']){
+            layer.paint['text-translate'] = [0,0];
+          }
+          if(!layer.layout['text-size']){
+            layer.layout['text-size'] = {};
+          }
           layer.paint['text-translate'][1] = 0 - layer.layout['text-size'].base;
         }else{
           //re-enable other layers

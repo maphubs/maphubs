@@ -21,17 +21,23 @@ type Props = {
   showSignup: boolean
 }
 
+type DefaultProps = {
+  name: string,
+  failed: boolean,
+  showSignup: boolean
+}
+
 type LoginState = {
   canSubmit: boolean
 }
 
 type State = LocaleStoreState & LoginState
 
-export default class Login extends MapHubsComponent<void, Props, State> {
+export default class Login extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     name: 'No name',
     failed: false,
     showSignup: true

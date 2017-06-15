@@ -29,11 +29,12 @@ export type GLSource = {
 export type GLFilter = Array<any>
 
 export type GLLayerLayout = {
-  visibility?: 'visible' | 'none'
+  visibility?: 'visible' | 'none',
+  [value: string]: any
 }
 
 export type GLLayerPaint = {
-
+  [value: string]: any
 }
 
 declare class GLSources { 
@@ -50,7 +51,8 @@ export type GLLayer = {
  maxzoom?: number,
  filter?: GLFilter,
  layout?: GLLayerLayout,
- paint?: GLLayerPaint
+ paint?: GLLayerPaint,
+ [value: string]: any
 }
 
 export type GLLight = {

@@ -4,13 +4,19 @@ import LayerStyle from './LayerStyle';
 import LayerActions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class Step5 extends MapHubsComponent {
+type Props = {|
+  onSubmit: Function,
+  onPrev: Function,
+  mapConfig: Object
+|}
 
-  props: {
-    onSubmit: Function,
-    onPrev: Function,
-    mapConfig: Object
-  }
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+
+type State = LocaleStoreState
+
+export default class Step5 extends MapHubsComponent<void, Props, State> {
+
+  props: Props
 
   onSubmit = (layer_id: number, name: string) => {
     var _this = this;

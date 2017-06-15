@@ -4,14 +4,15 @@ import Radio from '../forms/radio';
 import Formsy from 'formsy-react';
 import BaseMapStore from '../../stores/map/BaseMapStore';
 import MapHubsComponent from '../MapHubsComponent';
-import type {BaseMapOption} from '../../stores/map/BaseMapStore';
+import type {BaseMapOption, BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
 type Props = {
-  onChange: Function,
-  baseMapOptions: Array<BaseMapOption>
+  onChange: Function
 }
 
-export default class BaseMapSelection extends MapHubsComponent<void, Props, void> {
+type State = BaseMapStoreState;
+
+export default class BaseMapSelection extends MapHubsComponent<void, Props, State> {
 
   props: Props
 

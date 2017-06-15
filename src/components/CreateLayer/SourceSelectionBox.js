@@ -2,28 +2,36 @@
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class SourceSelectionBox extends MapHubsComponent {
-  
-  props: {
-    onSelect: Function,
-    name: string,
-    value: string,
-    icon: string,
-    selected: boolean
-  }
+type Props = {|
+  onSelect: Function,
+  name: string,
+  value: string,
+  icon: string,
+  selected: boolean
+|}
 
-  static defaultProps = {
+type DefaultProps = {
+  selected: boolean
+}
+
+type State = {
+  selected: boolean
+}
+
+export default class SourceSelectionBox extends MapHubsComponent<DefaultProps, Props, State> {
+  
+  static defaultProps:DefaultProps  = {
     selected: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       selected: props.selected
     };
   }
 
-  componentWillReceiveProps(nextProps: Object){
+  componentWillReceiveProps(nextProps: Props){
     if(nextProps.selected !== this.state.selected){
       this.setState({selected: nextProps.selected});
     }

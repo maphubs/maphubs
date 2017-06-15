@@ -17,13 +17,24 @@ addLocaleData(fr);
 addLocaleData(it);
 import MapHubsComponent from '../../components/MapHubsComponent';
 
-export default class StoryHeader extends MapHubsComponent {
+type Props = {
+  story: Object,
+  baseUrl: string,
+  short:  boolean
+}
 
-  props: {
-    story: Object,
-    baseUrl: string,
-    short:  boolean
-  }
+type DefaultProps = {
+  baseUrl: string,
+  short:  boolean
+}
+
+import type {LocaleStoreState} from '../../stores/LocaleStore';
+
+type State = LocaleStoreState;
+
+export default class StoryHeader extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
     baseUrl: '',

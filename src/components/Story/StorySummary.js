@@ -6,12 +6,18 @@ import StoryHeader from './StoryHeader';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import ShareButtons from '../../components/ShareButtons';
 
-export default class StorySummary extends MapHubsComponent {
+type Props = {|
+  story: Object,
+  baseUrl: string
+|}
 
-  props: {
-    story: Object,
-    baseUrl: string
-  }
+type DefaultProps = {
+  baseUrl: string
+}
+
+export default class StorySummary extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
 
   static defaultProps = {
     baseUrl: ''

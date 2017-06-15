@@ -11,23 +11,26 @@ import MapHubsComponent from '../../components/MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {GroupStoreState} from '../../stores/GroupStore';
 
-type Props = {
+type Props = {|
   onSubmit: Function,
   active: boolean,
   showPrev: boolean,
   onPrev: Function
+|}
+
+type DefaultProps = {
+  active: boolean
 }
 
 type State = {
   canSubmit: boolean
 } & LocaleStoreState & GroupStoreState
 
-export default class CreateGroupStep2 extends MapHubsComponent<void, Props, State> {
+export default class CreateGroupStep2 extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
-    onSubmit: null,
+  static defaultProps: DefaultProps = {
     active: false
   }
 
@@ -87,7 +90,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<void, Props, Stat
 
     var groupImage = '';
     //if group has an image use link,
-    if(this.state.group.hasImage){
+    if(this.state.group && this.state.group.hasImage){
       groupImage = (
             <img className="responsive-img" width={200} height={200} src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()} />
       );

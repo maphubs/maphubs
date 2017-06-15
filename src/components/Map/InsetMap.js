@@ -11,19 +11,18 @@ if (typeof window !== 'undefined') {
     mapboxgl = require("mapbox-gl");
 }
 
-type Props = {
+type Props = {|
   id: string,
   bottom:  string,
   attributionControl: boolean,
   collapsed: boolean
-}
+|}
 
-type State = {
+type State = {|
   collapsed: boolean,
   insetGeoJSONData: Object,
   insetGeoJSONCentroidData: Object
-}
-
+|}
 
 export default class InsetMap extends React.Component<Props, Props, State> {
 
@@ -45,7 +44,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
   
   state: State
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.state = {
       collapsed: props.collapsed,

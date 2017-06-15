@@ -9,31 +9,46 @@ var classNames = require('classnames');
 import ReactMaterialSelect from 'react-material-select';
 import MapHubsComponent from '../MapHubsComponent';
 
-class Select extends MapHubsComponent {
+type Props = {|
+  emptyText: string,
+  value: string,
+  name: string,
+  className: string,
+  options: Array<Object>,
+  dataTooltip: string,
+  dataDelay: number,
+  dataPosition: string,
+  label: string,
+  successText: string,
+  id: string,
+  onChange: Function,
+  startEmpty: boolean,
+  icon: string,
+  note: string, //optional note that displays below the select, will be updated on selection if option contains a note
+  setValue: Function,
+  getValue: Function,
+  isRequired: Function,
+  getErrorMessage: Function
+|}
 
-  props:  {
-    emptyText: string,
-    value: string,
-    name: string,
-    className: string,
-    options: Array<Object>,
-    dataTooltip: string,
-    dataDelay: number,
-    dataPosition: string,
-    label: string,
-    successText: string,
-    id: string,
-    onChange: Function,
-    startEmpty: boolean,
-    icon: string,
-    note: string, //optional note that displays below the select, will be updated on selection if option contains a note
-    setValue: Function,
-    getValue: Function,
-    isRequired: Function,
-    getErrorMessage: Function
-  }
+type DefaultProps = {
+  startEmpty: boolean,
+  emptyText: string,
+  name: string,
+  id: string,
+  options: Array<Object>,
+  dataDelay: number
+}
 
-  static defaultProps = {
+type State = {
+  note: string
+}
+
+class Select extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props:  Props
+
+  static defaultProps: DefaultProps = {
     startEmpty: true,
     emptyText: 'Choose an Option',
     name: 'select-box',
@@ -42,7 +57,7 @@ class Select extends MapHubsComponent {
     dataDelay: 100
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
     this.state = {
       note: props.note

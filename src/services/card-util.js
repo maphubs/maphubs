@@ -3,19 +3,22 @@ var urlUtil = require('./url-util');
 var slug = require('slug');
 
 import type {Layer} from '../stores/layer-store';
+import type {CardConfig} from '../components/CardCarousel/Card';
+
+type CardConfigArray = Array<CardConfig>
 
 module.exports = {
 
 
-  combineCards(cardDataArray: Array<Object>): Array<Object>{
+  combineCards(cardDataArray: Array<CardConfigArray>): Array<CardConfig>{
     var output = [];
-    cardDataArray.forEach((cardArr) => {
+    cardDataArray.forEach((cardArr: Array<CardConfig>) => {
       output = output.concat(cardArr);
     });
     return output;
   },
 
-  getLayerCard(layer: Layer, id: number, arr: Array<Object>, onClick?: Function){
+  getLayerCard(layer: Layer, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
 
     let layer_id: number = layer.layer_id ? layer.layer_id: -1;
 
@@ -36,7 +39,7 @@ module.exports = {
     };
   },
 
-  getHubCard(hub: Object, id: number, arr: Array<Object>, onClick?: Function){
+  getHubCard(hub: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
     var title = hub.name.replace('&nbsp;', '');
     var hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
     return {
@@ -54,7 +57,7 @@ module.exports = {
     };
   },
 
-  getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function){
+  getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
     var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
     return {
       id: `map-${map.map_id.toString()}`,
@@ -69,8 +72,8 @@ module.exports = {
     };
   },
 
-  getGroupCard(group: Object, id: number, arr: Array<Object>, onClick?: Function){
-    var image_url = null;
+  getGroupCard(group: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
+    let image_url;
     if(group.hasimage){
       image_url = '/group/' + group.group_id + '/image';
     }

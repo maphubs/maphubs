@@ -11,18 +11,23 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class SearchIndexAdmin extends MapHubsComponent {
+type Props = {
+  locale: string,
+  connectionStatus: string,
+  indexStatus: string,
+  footerConfig: Object,
+  headerConfig: Object,
+  _csrf: string
+}
 
-  props: {
-    locale: string,
-    connectionStatus: string,
-    indexStatus: string,
-    footerConfig: Object,
-    headerConfig: Object,
-    _csrf: string
-  }
+import type {LocaleStoreState} from '../stores/LocaleStore';
+type State = LocaleStoreState
 
-  constructor(props: Object) {
+export default class SearchIndexAdmin extends MapHubsComponent<void, Props, State> {
+
+  props: Props
+
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

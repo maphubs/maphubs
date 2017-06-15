@@ -18,35 +18,61 @@ const KEY_CODES = {
 import MapHubsComponent from './MapHubsComponent';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class AddItem extends MapHubsComponent {
+type Props = {
+  id: string,
+  placeholder: string,
+  suggestionUrl: string,
+  onAdd: Function,
+  autosuggestDelay: number,
+  autoFocus: boolean,
+  inputName: string,
+  optionLabel: string,
+  addButtonLabel: string
+}
 
-  props:{
-    id: string,
-    placeholder: string,
-    suggestionUrl: string,
-    onAdd: Function,
-    autosuggestDelay: number,
-    autoFocus: boolean,
-    inputName: string,
-    optionLabel: string,
-    addButtonLabel: string
-  }
+type DefaultProps = {
+  id: string,
+  autoFocus: boolean,
+  autosuggestDelay: number,
+  inputName: string,
+  placeholder: string,
+  addButtonLabel: string
+}
 
-  static defaultProps = {
+type Value = {|
+  key: string, 
+  value: string
+|}
+
+type State = {
+  value?: Value,
+  suggestions: Array<string>,
+  highlightedItem: number,
+  option: boolean
+}
+
+
+export default class AddItem extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props:  Props
+
+  static defaultProps: DefaultProps = {
     id: 'additem',
     autoFocus: false,
     autosuggestDelay: 250,
     inputName: 'query',
     placeholder: 'Add',
-    addButtonLabel: 'Add',
-    optionLabel: null
+    addButtonLabel: 'Add'
   }
 
-  constructor(props: Object){
+  state: State
+
+  _timerId: any
+
+  constructor(props: Props){
 		super(props);
 		this.stores = [LocaleStore];
     this.state = {
-      value: '',
       suggestions: [],
       highlightedItem: -1,
       option: false
@@ -128,7 +154,7 @@ export default class AddItem extends MapHubsComponent {
    });
  }
 
- displaySuggestions = (suggestions: any) => {
+ displaySuggestions = (suggestions: Array<string>) => {
    this.setState({
      suggestions,
      highlightedItem: -1
@@ -146,14 +172,13 @@ export default class AddItem extends MapHubsComponent {
  }
 
  fillInSuggestion = (suggestion: string) => {
-   this.setState({value: suggestion});
+   this.setState({value: {key: suggestion, value: suggestion}});
  }
 
  handleChange = (e: any) => {
    clearTimeout(this._timerId);
    let input = e.target.value;
    if (!input) return this.setState({ 
-      value: '',
       suggestions: [],
       highlightedItem: -1,
       option: false});
@@ -175,7 +200,6 @@ export default class AddItem extends MapHubsComponent {
    this.props.onAdd({value: this.state.value, option: this.state.option});
    //reset form
    this.setState({ 
-      value: '',
       suggestions: [],
       highlightedItem: -1,
       option: false
@@ -183,7 +207,10 @@ export default class AddItem extends MapHubsComponent {
  }
 
  render() {
-
+   let value;
+   if(this.state.value && this.state.value.value){
+     value = this.state.value.value;
+   }
    return (
      <div>
        <div className="white no-margin">
@@ -203,7 +230,7 @@ export default class AddItem extends MapHubsComponent {
                   maxLength="100"
                   autoComplete="off"
                   ref="value"
-                  value={this.state.value.value}
+                  value={value}
                   placeholder={this.props.placeholder}
                   onChange={this.handleChange}
                   onKeyDown={this.handleKeyDown}

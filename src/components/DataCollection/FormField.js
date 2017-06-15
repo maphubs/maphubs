@@ -5,12 +5,14 @@ import Toggle from '../forms/toggle';
 import Select from '../forms/select';
 import MapHubsComponent from '../MapHubsComponent';
 
-export default class FormField extends MapHubsComponent {
+type Props = {|
+  preset: Object,
+  value: any
+|}
 
-  props: {
-		preset: Object,
-    value: any
-  }
+export default class FormField extends MapHubsComponent<void, Props, void> {
+
+  props: Props
 
   render() {
     var preset = this.props.preset;

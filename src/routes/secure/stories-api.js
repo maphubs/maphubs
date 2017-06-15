@@ -25,7 +25,7 @@ module.exports = function(app: any) {
         if(allowed){
           Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
             .then((result) => {
-              if (result && result == 1) {
+              if (result && result === 1) {
                 res.send({
                   success: true
                 });
