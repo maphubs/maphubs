@@ -100,9 +100,9 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     var _this = this;
     
     if(result.success){
-      this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});
-      LayerActions.setImportedTags(result.uniqueProps,  true);
+      this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
       LayerActions.setDataType(result.data_type);
+      LayerActions.setImportedTags(result.uniqueProps,  true);
     }else{
       if(result.code === 'MULTIPLESHP'){
         this.setState({multipleShapefiles: result.value});
@@ -122,8 +122,8 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
-        LayerActions.setImportedTags(result.uniqueProps, true);
         LayerActions.setDataType(result.data_type);
+        LayerActions.setImportedTags(result.uniqueProps, true);    
       } else {
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});
       }
