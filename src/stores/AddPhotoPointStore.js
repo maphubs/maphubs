@@ -13,7 +13,7 @@ export type AddPhotoPointStoreState = {
   layer: Layer,
   image?: Object,
   imageInfo?: Object,
-  geoJSON: GeoJSONObject,
+  geoJSON?: GeoJSONObject,
   submitted?: boolean,
   mhid?: string
 }
@@ -31,9 +31,6 @@ export default class AddPhotoPointStore extends Reflux.Store {
   getDefaultState(): AddPhotoPointStoreState{
     return {
       layer: {},
-      geoJSON: {
-        features: []
-      },
       submitted: false,
     };
   }
@@ -127,8 +124,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
 
     //save fields into geoJSON
     var geoJSON = this.state.geoJSON;
-
-    Object.keys(fields).map((key) => {
+      Object.keys(fields).map((key) => {
          var val = fields[key];
          geoJSON.features[0].properties[key] = val;
      });

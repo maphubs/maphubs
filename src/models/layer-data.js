@@ -2,6 +2,7 @@
 var debug = require('../services/debug')('layer-data');
 var knex = require('../connection.js');
 var SearchIndex = require('./search-index');
+var log = require('../services/log');
 /**
  * Provides CRUD methods for updating layer data in PostGIS
  */
@@ -88,7 +89,9 @@ module.exports = {
     SET tags = jsonb_set(tags, '{${tag}}', '${valStr}'::jsonb)
     WHERE mhid = '${mhid}';
     `).then(()=>{
-      return SearchIndex.updateFeature(layer_id, mhid, true);
+      return SearchIndex.updateFeature(layer_id, mhid, true).catch(err =>{
+        log.error(err);
+      });
     });
   },
 

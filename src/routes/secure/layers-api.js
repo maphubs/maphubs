@@ -314,11 +314,16 @@ app.post('/api/layer/addphotopoint', csrfProtection, (req, res) => {
   var user_id = req.session.user.maphubsUser.id;
   var data = req.body;
   if (data && data.layer_id && data.geoJSON && data.image && data.imageInfo) {
+    let geoJSON = data.geoJSON;
+    if(data.geoJSON.type === 'FeatureCollection'){
+      let firstFeature = data.geoJSON.features[0];
+      geoJSON = firstFeature;
+    }
     Layer.allowedToModify(data.layer_id, user_id)
     .then((allowed) => {
       if(allowed){
         return knex.transaction((trx) => {
-          return LayerData.createFeature(data.layer_id, data.geoJSON, trx)
+          return LayerData.createFeature(data.layer_id, geoJSON, trx)
           .then((mhid: string) => {
               //get the mhid for the new feature
               debug('new mhid: ' + mhid);

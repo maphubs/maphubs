@@ -35,8 +35,7 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
 
   state: State = {
     saving: false,
-    layer: {},
-    geoJSON: {type: 'FeatureCollection', features: []}
+    layer: {}
   }
 
   constructor(props: Props){
@@ -102,12 +101,15 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
 
             var featureName = 'unknown';
             var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
+            let geoJSON = _this.state.geoJSON;
+            let layer_id = _this.state.layer ? _this.state.layer.layer_id : 0;
+
             nameFields.forEach((name) => {
-              if(featureName === 'unknown' && _this.state.geoJSON.features[0].properties[name]){
-                featureName = _this.state.geoJSON.features[0].properties[name];
+              if(featureName === 'unknown' && geoJSON.features[0].properties[name]){
+                featureName = geoJSON.features[0].properties[name];
               }
             });
-            var featurePageUrl = '/feature/' + _this.state.layer.layer_id + '/' + _this.state.mhid + '/' + featureName;
+            var featurePageUrl = `/feature/${layer_id}/${this.state.mhid}/${featureName}`;
             window.location = featurePageUrl;
           }
         });

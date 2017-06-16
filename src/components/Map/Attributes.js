@@ -96,12 +96,15 @@ export default class Attributes extends React.Component<void, Props, void> {
                         key !== 'maphubs_metadata' &&
                         key !== 'maphubs_host'){
                      var val = _this.props.attributes[key];
-                     if(typeof val === 'string' && val.startsWith('http')){
-                       val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
-                     }
+
                      if(typeof val !== 'string'){
                        val = val.toString();
                      }
+                     
+                     if(typeof val === 'string' && val.startsWith('http')){
+                       val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
+                     }
+                     
                      return (
                       <li key={key} style={{padding: 5}} className="collection-item attribute-collection-item">
                       <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{key}</p>
