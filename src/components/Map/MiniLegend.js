@@ -190,10 +190,12 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
          height: legendHeight, 
          width: '100%',
          boxShadow: 'none', 
+         pointerEvents: 'none',
          border: 'none'}}>
         <li className="z-depth-1" 
           style={{
                   backgroundColor: '#FFF', height: 'auto', 
+                  pointerEvents: 'auto',
                   borderTop: '1px solid #ddd',
                   borderRight: '1px solid #ddd',
                   borderLeft: '1px solid #ddd'}}>
