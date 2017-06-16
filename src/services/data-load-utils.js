@@ -139,7 +139,7 @@ module.exports = {
           }
 
           if(typeof val === 'object'){
-            log.info('converting nested object to string: ' + key);
+            //log.info('converting nested object to string: ' + key);
             val = JSON.stringify(val);
           }
           

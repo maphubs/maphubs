@@ -590,7 +590,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
                   layers={[this.props.layer]}
                   map_id={this.props.layer.layer_id}
                   mapConfig={this.props.mapConfig}
-                  title={this._o_(this.props.layer.name)}
+                  title={this.props.layer.name}
                   showTitle={false}
                   disableScrollZoom={false}
                   >

@@ -545,7 +545,6 @@ module.exports = {
           return command;
         }).then(() => {
           //TODO: notify group owners that a layer has been removed
-          //TODO: notify hub owners that a layer has been removed
           //TODO: notify map owners that a layer has been removed
           return true;
         })

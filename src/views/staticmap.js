@@ -89,21 +89,14 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
   }
 
   render() {
-    var map = '';
-    var title = '';
-
-    if(this.props.name){
-      title = this._o_(this.props.name);
-    }
-
-    var legend = '', bottomLegend = '';
+    var map = '', legend = '', bottomLegend = '';
     if(this.props.showLegend){
       if(this.state.width < 600){
         bottomLegend = (
           <MiniLegend style={{
               width: '100%'
             }}
-            title={title}
+            title={this.props.name}
             hideInactive={false} showLayersButton={false}
               layers={this.props.layers}/>
           );
@@ -116,7 +109,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
               minWidth: '275px',
               width: '25%'
             }}
-            title={title}
+            title={this.props.name}
             hideInactive={false} showLayersButton={false}
               layers={this.props.layers}/>
         );
@@ -131,7 +124,12 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
           bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
       }
     map = (
-      <Map ref="map" interactive={false} showPlayButton={false} fitBounds={bounds} insetMap={this.props.insetMap}
+      <Map ref="map" 
+        id="static-map"
+        interactive={false} 
+        showPlayButton={false} 
+        fitBounds={bounds} 
+        insetMap={this.props.insetMap}
         showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}
         glStyle={this.props.style} 
         mapConfig={this.props.mapConfig}

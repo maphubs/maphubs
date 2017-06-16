@@ -7,13 +7,13 @@ var Locales = require('../../services/locales');
 
 type Props = {|
   presets: Array<Object>,
-  values: Object,
+  values?: Object,
   showSubmit: boolean,
-  onSubmit: Function,
-  onValid: Function,
-  onInValid: Function,
-  onChange:  Function,
-  submitText: string
+  onSubmit?: Function,
+  onValid?: Function,
+  onInValid?: Function,
+  onChange?:  Function,
+  submitText?: string
 |}
 
 type DefaultProps = {
@@ -53,7 +53,7 @@ export default class DataCollectionForm extends MapHubsComponent<DefaultProps, P
   }
 
   onSubmit = (model: Object) => {
-    this.props.onSubmit(model);
+    if(this.props.onSubmit) this.props.onSubmit(model);
   }
 
   onValid = () => {
@@ -63,7 +63,7 @@ export default class DataCollectionForm extends MapHubsComponent<DefaultProps, P
 
   onInValid = () => {
     this.setState({canSubmit: false});
-    if(this.props.onValid) this.props.onInValid();
+    if(this.props.onInValid) this.props.onInValid();
   }
 
   onChange = (model: Object) => {

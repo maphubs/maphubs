@@ -13,6 +13,7 @@ import Progress from '../Progress';
 import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
+import type {GeoJSONObject} from 'geojson-flow';
 
 type Props = {|
   onSubmit: Function,
@@ -23,7 +24,7 @@ type Props = {|
 
 type State = {
   canSubmit: boolean,
-  geoJSON: ?Object,
+  geoJSON?: GeoJSONObject,
   largeData: boolean,
   processing: boolean,
   multipleShapefiles: any
@@ -35,7 +36,6 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
 
   state: State = {
     canSubmit: false,
-    geoJSON: null,
     largeData: false,
     processing: false,
     multipleShapefiles: null,
@@ -101,7 +101,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});
-      LayerActions.setImportedTags(result.uniqueProps);
+      LayerActions.setImportedTags(result.uniqueProps,  true);
       LayerActions.setDataType(result.data_type);
     }else{
       if(result.code === 'MULTIPLESHP'){
@@ -122,7 +122,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
-        LayerActions.setImportedTags(result.uniqueProps);
+        LayerActions.setImportedTags(result.uniqueProps, true);
         LayerActions.setDataType(result.data_type);
       } else {
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});
@@ -145,8 +145,8 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
       );
     }
 
-    
-    var url = "/api/layer/" + this.state.layer_id + "/upload";
+    let layer_id = this.state.layer_id ? this.state.layer_id : 0;
+    let url = `/api/layer/${layer_id}/upload`;
     var largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (
@@ -159,6 +159,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
         <div>
           <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
           <Map ref="map" style={{width: '100%', height: '400px'}} 
+          id="upload-preview-map"
           showFeatureInfoEditButtons={false} 
           mapConfig={this.props.mapConfig}
           data={this.state.geoJSON} />

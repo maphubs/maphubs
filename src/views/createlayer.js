@@ -102,7 +102,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
 
 	render() {
 
-    if(!this.state.groups || this.state.groups.length === 0){
+    if(!this.props.groups || this.props.groups.length === 0){
       return (
         <div>
             <Header {...this.props.headerConfig}/>
@@ -140,7 +140,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
     if(this.state.step === 3){
        progressWidth = 'width-75';
       step3 = (
-        <Step5 showPrev={true} onPrev={this.prevStep} onSubmit={this.submit} mapConfig={this.props.mapConfig} />         
+        <Step5 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={this.props.mapConfig} />         
       );
     }
 

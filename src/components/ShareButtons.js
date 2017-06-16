@@ -1,4 +1,5 @@
 import React from 'react';
+import MapHubsComponent from './MapHubsComponent';
 import {
   ShareButtons,
   generateShareIcon,
@@ -14,7 +15,7 @@ import {
 
 type Props = {
   style: Object,
-  title: string,
+  title: LocalizedString,
   url: string,
   photoUrl: string,
   iconSize: number
@@ -24,7 +25,7 @@ type State = {
   url: string
 }
 
-export default class MapHubsShareButtons extends React.Component<void, Props, State> {
+export default class MapHubsShareButtons extends MapHubsComponent<void, Props, State> {
 
   props: Props
 
@@ -50,13 +51,13 @@ export default class MapHubsShareButtons extends React.Component<void, Props, St
   }
 
   render(){
-
+    let title = this._o_(this.props.title);
     return (
       <div style={this.props.style}>
         <div style={{float: 'left'}}>
            <FacebookShareButton
             url={this.state.url}
-            title={this.props.title}
+            title={title}
             picture={this.props.photoUrl}
             >
             <FacebookIcon
@@ -67,7 +68,7 @@ export default class MapHubsShareButtons extends React.Component<void, Props, St
         <div style={{float: 'right', marginLeft: '3px'}}>
            <TwitterShareButton
             url={this.state.url}
-            title={this.props.title}
+            title={title}
             >
             <TwitterIcon
               size={this.props.iconSize}

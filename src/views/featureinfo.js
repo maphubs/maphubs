@@ -441,6 +441,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
           </div>
             <div className="col s6 no-padding">
               <Map ref="map" className="width-50" 
+              id="feature-map"
               style={{
                 position: 'absolute',
                 top: '51px',

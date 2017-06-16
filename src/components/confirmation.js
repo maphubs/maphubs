@@ -7,7 +7,9 @@ import Actions from '../actions/ConfirmationActions';
 
 type Props = {}
 
-export default class Confirmation extends Reflux.Component<void, Props, void> {
+import type {ConfirmationStoreState} from '../stores/ConfirmationStore';
+
+export default class Confirmation extends Reflux.Component<void, Props, ConfirmationStoreState> {
 
   constructor(props: Props){
 		super(props);

@@ -35,7 +35,7 @@ export default class LayerMap extends MapHubsComponent<void, Props, void> {
                   map_id={this.props.layer.layer_id}
                   mapConfig={this.props.mapConfig}
                   disableScrollZoom={false}
-                  title={this._o_(this.props.layer.name)}
+                  title={this.props.layer.name}
                   showTitle={false}
                   >
         

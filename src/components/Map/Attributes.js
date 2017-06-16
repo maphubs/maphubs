@@ -91,11 +91,16 @@ export default class Attributes extends React.Component<void, Props, void> {
               {photo}
               {
                 Object.keys(_this.props.attributes).map((key) => {
-                    if(key !== 'mhid' || key !== 'layer_id'
-                    || key !== 'maphubs_host'){
+                    if(key !== 'mhid' && 
+                        key !== 'layer_id' &&
+                        key !== 'maphubs_metadata' &&
+                        key !== 'maphubs_host'){
                      var val = _this.props.attributes[key];
                      if(typeof val === 'string' && val.startsWith('http')){
                        val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
+                     }
+                     if(typeof val !== 'string'){
+                       val = val.toString();
                      }
                      return (
                       <li key={key} style={{padding: 5}} className="collection-item attribute-collection-item">

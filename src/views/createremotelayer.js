@@ -166,6 +166,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Pr
           <div className="col s12">
             <div>
               <Map ref="map" style={{width: '100%', height: '400px'}}
+                id="remote-layer-preview-map"
                 showFeatureInfoEditButtons={false}
                 mapConfig={this.props.mapConfig}
                 glStyle={this.state.layer.style}
@@ -183,7 +184,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Pr
                     flexDirection: 'column'
                   }}
                   collapsible={true} hideInactive={false} showLayersButton={false}
-                  title={this._o_(this.state.layer.name)}
+                  title={this.state.layer.name}
                     layers={[this.state.layer]}/>
                 </Map>
             </div>

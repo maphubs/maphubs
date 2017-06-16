@@ -6,8 +6,21 @@ var $ = require('jquery');
 import LocaleActions from '../actions/LocaleActions';
 var Locales = require('../services/locales');
 
+export type ConfirmationStoreState = {
+  show: boolean,
+  locale: string,
+  title: string,
+  message: string,
+  postitiveButtonText: string,
+  negativeButtonText: string,
+  onPositiveResponse: Function,
+  onNegativeResponse: Function
+}
+
 export default class ConfirmationStore extends Reflux.Store {
  
+  state: ConfirmationStoreState
+
   constructor(){
     super();
     this.state = this.getEmptyState();
@@ -23,7 +36,7 @@ export default class ConfirmationStore extends Reflux.Store {
     return Locales.getLocaleString(locale, text);
   }
 
-  getEmptyState(){
+  getEmptyState(): ConfirmationStoreState{
     return  {
       show: false,
       locale: 'en',

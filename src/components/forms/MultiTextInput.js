@@ -9,7 +9,7 @@ var $ = require('jquery');
 
 type Props = {
   id: string,
-  value: LocalizedString,
+  value?: LocalizedString,
   label: LocalizedString,
   length: number,
   successText: string,
@@ -76,7 +76,7 @@ export default class MultiTextInput extends MapHubsPureComponent<DefaultProps, P
     let value: LocalizedString = {en: '', fr: '', es: '', it: ''};
     if(typeof props.value === 'string'){
       value['en'] = props.value;
-    }else{
+    }else if(props.value){
       value = props.value;
     }
     this.state = {

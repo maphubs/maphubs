@@ -124,6 +124,7 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
           <div className="col m6 s12">
             <div style={{width: '400px'}}>
               <Map ref="map" 
+                id="add-photo-point-map"
                 style={{width: '100%', height: '400px'}} 
                 showFeatureInfoEditButtons={false} 
                 showLogo={false} 

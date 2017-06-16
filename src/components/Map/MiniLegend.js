@@ -7,7 +7,7 @@ import MapHubsComponent from '../../components/MapHubsComponent';
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
 type Props = {|
-  title?: string,
+  title?: LocalizedString,
   layers: Array<Object>,
   hideInactive: boolean,
   collapsible: boolean,
@@ -114,8 +114,12 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
     }
 
     var titleText = '';
-    if(this.props.title && this.props.title !== ''){
-      titleText = this.props.title;
+    if(this.props.title){
+      titleText = this._o_(this.props.title);
+      if(!titleText){
+        // if localized text is empty
+        titleText = this.__('Legend');
+      }
     }else{
       titleText = this.__('Legend');
     }

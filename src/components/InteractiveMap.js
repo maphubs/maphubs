@@ -18,7 +18,7 @@ import type {MapStoreState} from '../stores/MapStore';
 
 type Props = {
   map_id: number,
-  title: string,
+  title: LocalizedString,
   style: Object,
   position?: Object,
   layers?: Array<Object>,
@@ -198,7 +198,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
             width: '100%'
           }}
           title={title}
-          showLayersButton={true} collapsible={false}
+          collapsible={false}
           mapLayersActivatesID={`map-layers-${this.props.map_id}`}
           layers={this.state.layers}/>
         );
@@ -211,7 +211,10 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
           left: '5px',
           minWidth: '200px',
           width: '20%'
-        }} maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`} layers={this.state.layers} title={title} 
+        }} 
+        maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`} 
+        layers={this.state.layers} 
+        title={title} 
         mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
       );
     }

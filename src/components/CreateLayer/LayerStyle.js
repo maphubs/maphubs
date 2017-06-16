@@ -54,7 +54,6 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
   }
 
   componentDidMount() {
-    //Reflux.listenTo(LayerActions.tileServiceInitialized, 'tileServiceInitialized');
     $('.collapsible').collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
@@ -98,19 +97,20 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
 
   setRasterOpacity = (opacity: number) => {
     let elc = this.state.external_layer_config? this.state.external_layer_config: {};
+    let layer_id = this.state.layer_id ? this.state.layer_id: 0;
     var style = null;
     if(this.state.is_external && elc.type === 'ags-mapserver-tiles'){
-      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer_id, elc.url + '?f=json', opacity, 'arcgisraster');
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, elc.url + '?f=json', opacity, 'arcgisraster');
     }else if(this.state.is_external && elc.type === 'multiraster'){
-       style = MapStyles.raster.multiRasterStyleWithOpacity(this.state.layer_id, elc.layers, opacity, 'raster');
+       style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, elc.layers, opacity, 'raster');
     }
     else{
       var baseUrl = urlUtil.getBaseUrl();
-      style = MapStyles.raster.rasterStyleWithOpacity(this.state.layer_id, baseUrl + '/api/layer/' + this.state.layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
     }
 
     var legend = MapStyles.legend.rasterLegend(this.state);
-    LayerActions.setStyle(style,  this.state.labels, legend, this.layer.settings, this.state.preview_position);
+    LayerActions.setStyle(style,  this.state.labels, legend, this.state.settings, this.state.preview_position);
     this.setState({rasterOpacity: opacity});
   }
 
@@ -155,7 +155,7 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
 
     const showMap = this.props.waitForTileInit ? this.state.tileServiceInitialized : true;
 
-    var mapExtent = null;
+    let mapExtent;
     if(this.state.preview_position && this.state.preview_position.bbox){
       var bbox = this.state.preview_position.bbox;
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];
@@ -165,11 +165,15 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
     if(this.state.layer_id !== undefined
       && this.state.layer_id !== -1
       && showMap){
+        let glStyle;
+        if(this.state.style){
+          glStyle = this.state.style;
+        }
         map = (
           <div>
             <div className="row no-margin">
               <Map ref="map" id="layer-style-map" className="z-depth-2" insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
-              glStyle={this.state.style}
+              glStyle={glStyle}
               showLogo={false}
               mapConfig={this.props.mapConfig}
               fitBounds={mapExtent}
@@ -221,7 +225,7 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
          <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
             <b>{this.__('Mapbox Studio Style Layer')}</b>
             <p>{this.__('If you are the owner of this layer, click here to edit in Mapbox Studio on mapbox.com')}</p>
-            <a target="_blank" rel="noopener noreferrer" className="btn" href={'https://www.mapbox.com/studio/styles/' + this.state.external_layer_config.mapboxid + '/edit'}>{this.__('Edit in Mapbox Studio')}</a>
+            <a target="_blank" rel="noopener noreferrer" className="btn" href={'https://www.mapbox.com/studio/styles/' + externalLayerConfig.mapboxid + '/edit'}>{this.__('Edit in Mapbox Studio')}</a>
             <p>{this.__('Once you have published your style on Mapbox,click refresh the preview map.')}
             <b>{this.__('It may take a few minutes for the changes to appear, your layer will update automatically.')}</b>
             </p>

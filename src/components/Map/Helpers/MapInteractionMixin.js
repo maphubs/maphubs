@@ -16,7 +16,9 @@ export default function() {
         features.forEach((feature) => {
           filter.push(feature.properties.mhid);
         });
-        if(_this.map.getLayer(layer.id)){
+        if(_this.map.getLayer(layer.id) && 
+          filter[2] //found a mhid
+          ){
           if(layer.id.startsWith('omh-hover-point')){
             _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
           }else if(layer.id.startsWith('omh-hover-line')){

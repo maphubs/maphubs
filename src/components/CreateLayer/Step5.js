@@ -34,7 +34,6 @@ export default class Step5 extends MapHubsComponent<void, Props, State> {
         <div className="row">
           <LayerStyle waitForTileInit
               mapConfig={this.props.mapConfig}
-              showPrev prevText={this.__('Previous')} onPrev={this.onPrev}
               onSubmit={this.onSubmit} />
       </div>
 		);

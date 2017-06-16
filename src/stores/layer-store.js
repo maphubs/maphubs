@@ -9,6 +9,7 @@ var debug = require('../services/debug')('layer-store');
 import _findIndex from 'lodash.findindex';
 import _remove from 'lodash.remove';
 
+import type {GLStyle} from '../types/mapbox-gl-style';
 import type {MapHubsField} from '../types/maphubs-field';
 
 export type ExternalLayerConfig = {|
@@ -22,7 +23,7 @@ export type Layer = {
   name?: LocalizedString,
   description?: LocalizedString,
   source?: LocalizedString,  
-  style?: ?Object,
+  style?: ?GLStyle,
   labels?: Object,
   settings?: {
     active: boolean
@@ -58,7 +59,6 @@ let defaultState: LayerStoreState = {
     name: {en: '', fr: '', es: '', it: ''},
     description: {en: '', fr: '', es: '', it: ''},
     published: true,
-    owned_by_group_id: null,
     data_type: '',
     source: {en: '', fr: '', es: '', it: ''},
     license: 'none',
@@ -116,24 +116,34 @@ export default class LayerStore extends Reflux.Store {
     if(!this.state.legend_html){
       this.resetLegendHTML();
     }
-    let firstSource = Object.keys(this.state.style.sources)[0];
-    var presets = MapStyles.settings.getSourceSetting(this.state.style, firstSource, 'presets');
+    let style = this.state.style;
+    if(style){
+      let firstSource = Object.keys(style.sources)[0];
+      var presets = MapStyles.settings.getSourceSetting(style, firstSource, 'presets');
 
-     if(presets && Array.isArray(presets)){
-      presets.forEach((preset) => {
-        preset.id = _this.state.presetIDSequence++;
-      });
-      this.updatePresets(presets);
+      if(presets && Array.isArray(presets)){
+        presets.forEach((preset) => {
+          preset.id = _this.state.presetIDSequence++;
+        });
+        this.updatePresets(presets);
+      }
+    }else{
+      debug('Missing style');
     }
+    
   }
 
-    updatePresets(presets: Array<MapHubsField>){
-      let style = this.state.style;
+  updatePresets(presets: Array<MapHubsField>){
+    let style = this.state.style;
+    if(style){
       Object.keys(style.sources).forEach(key =>{
         //our layers normally only have one source, but just in case...
         MapStyles.settings.setSourceSetting(style, key, 'presets', presets);
       });
       this.setState({style, presets});
+    }else{
+      debug('Missing style');
+    }
   } 
 
   resetStyleGL(){
@@ -208,6 +218,13 @@ export default class LayerStore extends Reflux.Store {
     return layer;
   }
 
+  /**
+   * Create a layer
+   * Note: not called in regular createLayer page since creation happens on the server
+   * Used by create layer panel in Map Maker
+   * @param {*} _csrf 
+   * @param {*} cb 
+   */
   createLayer(_csrf: string, cb: Function){
     var _this = this;
     request.post('/api/layer/admin/createLayer')
@@ -218,7 +235,10 @@ export default class LayerStore extends Reflux.Store {
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
         const layer_id = res.body.layer_id;
-        _this.setState({layer_id});
+        let layer = _this.state;
+        layer.layer_id = layer_id;
+        layer = _this.initLayer(layer);
+        _this.setState(layer);
         cb();
       });
     });
@@ -240,17 +260,18 @@ export default class LayerStore extends Reflux.Store {
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-        var layer = _this.state;
-        layer.name = data.name;
-        layer.description = data.description;
-        layer.owned_by_group_id = data.group;
-        layer.private = data.private;
-        layer.source = data.source;
-        layer.license = data.license;
-        if(initLayer){
-          layer = _this.initLayer(layer);
-        }
-        _this.setState(layer);
+
+        //if(initLayer){
+        //  layer = _this.initLayer(layer);
+        //}
+        _this.setState({
+          name: data.name,
+          description: data.description,
+          owned_by_group_id: data.group,
+          private: data.private,
+          source: data.source,
+          license: data.license
+        });
         cb();
       });
     });
@@ -470,7 +491,7 @@ export default class LayerStore extends Reflux.Store {
     this.updatePresets(presets);
   }
 
-  setImportedTags(data: Object){
+  setImportedTags(data: Object, initLayer: boolean){
     debug("setImportedTags");
     var _this = this;
     //clear default presets
@@ -486,6 +507,10 @@ export default class LayerStore extends Reflux.Store {
       }
       presets.push(preset);
     });
+    if(initLayer){
+      let layer = _this.initLayer(this.state);
+      this.setState(layer);
+    }
     this.setState({pendingPresetChanges: true});
     this.updatePresets(presets);
   }
@@ -551,17 +576,27 @@ export default class LayerStore extends Reflux.Store {
  movePresetUp(id: number){
    var index = _findIndex(this.state.presets, {id});
    if(index === 0) return;
-   this.state.presets = this.move(this.state.presets, index, index-1);
-   this.state.pendingPresetChanges = true;
-   this.updatePresets(this.state.presets);
+   let presets = this.state.presets;
+   if(presets){
+    presets = this.move(presets, index, index-1);
+    this.state.pendingPresetChanges = true;
+    this.updatePresets(presets);
+   }else{
+    debug('Missing presets');
+  }
  }
 
- movePresetDown(id: number){
-   var index = _findIndex(this.state.presets, {id});
-   if(index === this.state.presets.length -1) return;
-   this.state.presets = this.move(this.state.presets, index, index+1);
-   this.state.pendingPresetChanges = true;
-   this.updatePresets(this.state.presets);
+  movePresetDown(id: number){
+    var index = _findIndex(this.state.presets, {id});
+    let presets = this.state.presets;
+    if(presets){
+      if(index === presets.length -1) return;
+      presets = this.move(presets, index, index+1);
+      this.state.pendingPresetChanges = true;
+      this.updatePresets(presets);
+    }else{
+      debug('Missing presets');
+    }
  }
 
  move(array: Array<Object>, fromIndex: number, toIndex: number) {

@@ -10,6 +10,7 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
 import type {Layer} from '../stores/layer-store';
+import type {GLStyle} from '../types/mapbox-gl-style';
 
 type Props = {
   map: Object,
@@ -139,6 +140,18 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
 
   getLayerConfig = (): Layer => {
     let emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''};
+
+    let style: GLStyle = {
+      version: 8,
+      sources: {
+        "geojson-overlay": {
+          type: 'geojson',
+          data: this.props.geoJSONUrl
+      }
+      },
+      layers:[this.getStyleLayer()]
+    };
+
     return {
         active: true,
         layer_id: -2,
@@ -149,15 +162,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
         remote: true,
         is_external: true,
         external_layer_config: {},
-        style: {
-          sources: {
-            "geojson-overlay":{
-              type: 'geojson',
-              data: this.props.geoJSONUrl
-            }
-          },
-          layers:[this.getStyleLayer()]
-        },
+        style,
         legend_html: `
         
         `
@@ -166,14 +171,9 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
   
   render() {
     var map = '';
-    var title = null;
-    if(this.props.map.title){
-      title = this._o_(this.props.map.title);
-    }
- 
+    
     var bounds;
     
-
     if(this.props.isStatic && !this.state.interactive){
       var url = '/api/screenshot/map/' + this.props.map.map_id + '.png';
       map = (
@@ -201,7 +201,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
                   map_id={this.props.map.map_id}
                   disableScrollZoom={true}
                   mapConfig={this.props.mapConfig}
-                  title={title}
+                  title={this.props.map.title}
                   {...this.props.map.settings}
                   >
           </InteractiveMap> 

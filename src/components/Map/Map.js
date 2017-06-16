@@ -173,6 +173,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       let glStyle: GLStyle;
       var interactiveLayers = [];
       if(this.props.glStyle){
+        //TODO: why are we cloning the GLStyle?
         glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
         interactiveLayers = this.getInteractiveLayers(glStyle);
       }
@@ -334,7 +335,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
   }
 
-  reload = (prevStyle: Object, newStyle: Object, baseMap: string=null) => {
+  reload = (prevStyle: Object, newStyle: Object, baseMap: string) => {
     var _this = this;
     debug('(' + _this.state.id + ') ' +'reload: start');
     //clear selected when reloading

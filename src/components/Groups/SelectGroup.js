@@ -5,10 +5,12 @@ import Toggle from '../forms/toggle';
 import Select from '../forms/select';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
+import type {Group} from '../../stores/GroupStore';
+
 type Props = {
-    groups: Array<Object>,
+    groups: Array<Group>,
     type: string,
-    group_id: string,
+    group_id?: string,
     canChangeGroup: boolean,
     private: boolean,
     editing: boolean
@@ -21,7 +23,7 @@ type DefaultProps = {
 }
 
 type State = {
-  group_id: string,
+  group_id?: string,
   private: boolean
 }
 
@@ -108,14 +110,14 @@ export default class SelectGroup extends MapHubsComponent<DefaultProps, Props, S
         owner = this.getOwnerGroup(this.state.group_id);
         groups = (
           <div className="row">
-            <b>{this.__('Group:')} </b>{owner.name}
+            <b>{this.__('Group:')} </b>{this._o_(owner.name)}
           </div>
         );
 
       }else{
         groups = (
           <div className="row">
-            <b>{this.__('Group:')} </b>{this.props.groups[0].name}
+            <b>{this.__('Group:')} </b>{this._o_(this.props.groups[0].name)}
           </div>
         );
       }

@@ -11,7 +11,7 @@ export type GLSource = {
   //type: raster 
   tileSize?: number, 
   //type: geojson
-  data?: GeoJSONObject,
+  data?: GeoJSONObject | string,
   buffer?: number,
   tolerance?: number,
   cluster?: boolean,
@@ -37,7 +37,7 @@ export type GLLayerPaint = {
   [value: string]: any
 }
 
-declare class GLSources { 
+export type GLSources = { 
   [source: string]: GLSource 
 }
 
