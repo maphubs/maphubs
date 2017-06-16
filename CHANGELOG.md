@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.10.6](https://github.com/maphubs/maphubs/tree/v0.10.6) (2017-06-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.10.5...v0.10.6)
+
+**Implemented enhancements:**
+
+- add button to cards in map maker [\#374](https://github.com/maphubs/maphubs/issues/374)
+
 ## [v0.10.5](https://github.com/maphubs/maphubs/tree/v0.10.5) (2017-06-02)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.10.4...v0.10.5)
 
