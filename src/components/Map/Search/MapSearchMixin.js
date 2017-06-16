@@ -60,22 +60,45 @@ export default function() {
 
         let source = _this.state.glStyle.sources[query.source];
         let presets = source.metadata['maphubs:presets'];
-        let nameField = _find(presets, {isName: true}).tag;
+        let nameFieldPreset = _find(presets, {isName: true});
+        let nameField; 
+        if(nameFieldPreset){
+          nameField = nameFieldPreset.tag;
+        }
 
-        if(!nameField && queryResults.length > 0){
-          let propNames = Object.keys(queryResults[0].properties);
+        if(!nameField){
           let matchNameArr = [];
-          propNames.forEach(propName =>{
-            if(propName.matches(/.*[N,n]ame.*/g)){
+          if(presets && presets.length > 0){
+             presets.forEach(preset =>{
+              if(preset && preset.label ){
+                let label = _this._o_(preset.label).toString();
+                if(label.match(/.*[N,n]ame.*/g)){
+                  matchNameArr.push(preset.tag);
+                }
+              }
+              });
+             if(matchNameArr.length > 0){
+              //found something that matches Name
+              nameField = matchNameArr[0];
+            }else{
+              //otherwise just take the first preset
+              nameField = presets[0].tag;
+            }
+          }else if(queryResults.length > 0){
+            //use props of first feature
+            let propNames = Object.keys(queryResults[0].properties);
+            propNames.forEach(propName =>{
+            if(propName.match(/.*[N,n]ame.*/g)){
               matchNameArr.push(propName);
             }
-          });
-          if(matchNameArr.length > 0){
-            //found something that matches Name
-            nameField = matchNameArr[0];
-          }else{
-            //otherwise just take the first prop
-            nameField = propNames[0];
+            });
+            if(matchNameArr.length > 0){
+              //found something that matches Name
+              nameField = matchNameArr[0];
+            }else{
+              //otherwise just take the first prop
+              nameField = propNames[0];
+            }
           }
         }
 
