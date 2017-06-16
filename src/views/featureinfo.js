@@ -11,7 +11,7 @@ import FeatureNotes from '../components/Feature/FeatureNotes';
 import HubEditButton from '../components/Hub/HubEditButton';
 import ImageCrop from '../components/ImageCrop';
 //var request = require('superagent');
-
+import BaseMapStore from '../stores/map/BaseMapStore';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import ConfirmationActions from '../actions/ConfirmationActions';
@@ -65,9 +65,13 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 		super(props);
     this.stores.push(FeatureNotesStore);
     this.stores.push(FeaturePhotoStore);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.rehydrate(FeatureNotesStore, {notes: this.props.notes});
     Reflux.rehydrate(FeaturePhotoStore, {feature: this.props.feature, photo: this.props.photo});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
 	}
 
   componentDidMount(){

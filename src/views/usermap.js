@@ -23,6 +23,7 @@ import LocaleStore from '../stores/LocaleStore';
 import fireResizeEvent from '../services/fire-resize-event';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {UserStoreState} from '../stores/UserStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
 
 type Props = {
   map: Object,
@@ -68,7 +69,11 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
 		super(props);
     this.stores.push(UserStore);
     this.stores.push(MapMakerStore);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
     this.state.layers = props.layers;
 	}
 

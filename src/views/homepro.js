@@ -11,6 +11,7 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Layer} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
@@ -64,7 +65,11 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
 
   constructor(props: Props) {
     super(props);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
     this.state = {
       collectionStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
       collectionMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),

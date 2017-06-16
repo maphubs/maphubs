@@ -5,6 +5,7 @@ import InteractiveMap from '../components/InteractiveMap';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
 
 type Props = {
   layer: Object,
@@ -20,7 +21,11 @@ export default class LayerMap extends MapHubsComponent<void, Props, void> {
 
   constructor(props: Props) {
     super(props);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
   }
 
 	render() {

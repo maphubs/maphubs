@@ -7,6 +7,7 @@ import _debounce from 'lodash.debounce';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
 
 type Props = {
   name: LocalizedString,
@@ -53,7 +54,11 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
 
   constructor(props: Object) {
     super(props);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
   }
 
   componentWillMount(){

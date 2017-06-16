@@ -17,6 +17,7 @@ import Progress from '../components/Progress';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
 
 type Props = {
   locale: string,
@@ -46,7 +47,11 @@ export default class Search extends MapHubsComponent<void, Props, State> {
 
   constructor(props: Props) {
     super(props);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
   }
 
   getParameterByName = (name: string, url: any) => {

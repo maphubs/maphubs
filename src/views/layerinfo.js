@@ -16,6 +16,7 @@ import LayerNotesStore from '../stores/LayerNotesStore';
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid';
 import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid';
 import MapStyles from '../components/Map/Styles';
+import BaseMapStore from '../stores/map/BaseMapStore';
 
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
@@ -94,8 +95,12 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
   constructor(props: Props){
     super(props);
     this.stores.push(LayerNotesStore);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.rehydrate(LayerNotesStore, {notes: this.props.notes});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
   }
 
   componentDidMount(){

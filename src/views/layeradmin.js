@@ -12,6 +12,7 @@ import _uniq from 'lodash.uniq';
 import _mapvalues from 'lodash.mapvalues';
 import LayerActions from '../actions/LayerActions';
 import LayerStore from '../stores/layer-store';
+import BaseMapStore from '../stores/map/BaseMapStore';
 var $ = require('jquery');
 var slug = require('slug');
 var checkClientError = require('../services/client-error-response').checkClientError;
@@ -48,9 +49,12 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
   constructor(props: Props){
     super(props);
     this.stores.push(LayerStore);
-
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.rehydrate(LayerStore, this.props.layer);
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
   
     LayerActions.loadLayer();
   }

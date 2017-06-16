@@ -151,8 +151,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         this.stores.push(AnimationStore);
         this.stores.push(BaseMapStore);
         this.stores.push( MarkerStore);
-        Reflux.rehydrate(BaseMapStore, {baseMap: props.baseMap, baseMapOptions: props.mapConfig.baseMapOptions});
-
+        
         MapboxGLHelperMixin.call(this);
         MapboxGLHelperMixin.call(this);
         MapInteractionMixin.call(this);
@@ -191,6 +190,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   componentWillMount(){
     super.componentWillMount();
+    BaseMapActions.setBaseMap(this.props.baseMap);
     if(this.state.glStyle){
       var interactiveLayers = this.getInteractiveLayers(this.state.glStyle);
       this.setState({interactiveLayers});
@@ -420,7 +420,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     var _this = this;
     debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
-    BaseMapActions.getBaseMapFromName(this.state.baseMap, (baseMap) => {
+    BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
        
     if (!mapboxgl.supported()) {
     alert('Your browser does not support Mapbox GL');

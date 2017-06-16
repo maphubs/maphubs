@@ -1,7 +1,13 @@
 import Reflux from 'reflux';
 
 Reflux.rehydrate = (str, data) => {
-    return Reflux.initStore(str).setState(data);
+  let store = Reflux.initStore(str);
+  if(!store.hydrated){
+    store.setState(data);
+    store.hydrated = true;
+    return store;
+  }
+  
 };
 
 export default Reflux;

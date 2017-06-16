@@ -16,7 +16,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import LayerStore from '../stores/layer-store';
-
+import BaseMapStore from '../stores/map/BaseMapStore';
 import type {Group} from '../stores/GroupStore';
 import type {Layer, LayerStoreState} from '../stores/layer-store';
 import type {LocaleStoreState} from '../stores/LocaleStore';
@@ -53,7 +53,12 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
   constructor(props: Props){
 		super(props);
     this.stores.push(LayerStore);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
+   
     Reflux.rehydrate(LayerStore, this.props.layer);
 	}
 
@@ -88,8 +93,8 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
     };
   }
 
-  submit = (layer_id: number, name: string) => {
-      window.location = '/layer/info/' + layer_id + '/' + slug(name);
+  submit = (layer_id: number, name: LocalizedString) => {
+      window.location = '/layer/info/' + layer_id + '/' + slug(this._o_(name));
   }
 
   nextStep = () => {

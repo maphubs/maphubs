@@ -8,6 +8,7 @@ import Map from '../components/Map/Map';
 import DataCollectionForm from '../components/DataCollection/DataCollectionForm';
 import ImageCrop from '../components/ImageCrop';
 import AddPhotoPointStore from '../stores/AddPhotoPointStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
 import Actions from '../actions/AddPhotoPointActions';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
@@ -41,8 +42,12 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
   constructor(props: Props){
 		super(props);
     this.stores.push(AddPhotoPointStore);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.rehydrate(AddPhotoPointStore, {layer: this.props.layer});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
 	}
 
   componentDidMount(){
