@@ -4,8 +4,13 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import CardCarousel from '../components/CardCarousel/CardCarousel';
 import StorySummary from '../components/Story/StorySummary';
+import Carousel from 'nuka-carousel';
+import SliderDecorators from '../components/Home/SliderDecorators';
 import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks';
+import OnboardingLinks from '../components/Home/OnboardingLinks';
+import MapHubsProLinks from '../components/Home/MapHubsProLinks';
 import InteractiveMap from '../components/InteractiveMap';
+import MailingList from '../components/Home/MailingList';
 import _shuffle from 'lodash.shuffle';
 import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
@@ -101,12 +106,71 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
     return homepageMap;   
   }
 
+  renderSlides = (config: Object, key: string) => {
+    let slides = (
+      <div key={key} className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
+           <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
+             decorators={SliderDecorators}>
+             {config.slides.map((slide, i) => {
+               return (
+                 <div key={i} className="homepage-slide responsive-img valign-wrapper"
+                   style={{
+                     height: '100%',
+                     backgroundSize: 'cover',
+                     backgroundImage: 'url('+ slide.img + ')'
+                   }}>
+                   <div className="slide-text">
+                     <h2 className="no-margin">{this._o_(slide.title)}</h2>
+                     <h3 className="no-margin">{this._o_(slide.text)}</h3>
+                   </div>
+                   <div className="slide-button center">
+                     <a className="btn waves-effect z-depth-3" style={{borderRadius: '25px'}} href={slide.link}>{this._o_(slide.buttonText)}</a>
+                   </div>
+                </div>
+              );
+             })}
+           </Carousel>
+
+         </div>
+    );
+    return slides;
+  }
+
+  renderMailingList = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let mailingList = (
+      <div key={key} className="row no-margin" style={{backgroundColor: bgColor}}>
+        <MailingList text={config.text} />
+      </div> 
+    );
+    return mailingList;
+  }
+
   renderLinks = (config: Object, key: string) => {
-    var links = '';
-    var bgColor = config.bgColor ? config.bgColor : 'inherit';
-    links = (
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let links = (
       <div key={key} className="row" style={{backgroundColor: bgColor}}>
         <PublicOnboardingLinks />
+      </div>
+    );
+    return links;
+  }
+
+  renderOnboardingLinks = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let links = (
+      <div key={key} className="row" style={{backgroundColor: bgColor}}>
+        <OnboardingLinks />
+      </div>
+    );
+    return links;
+  }
+
+  renderProLinks = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let links = (
+      <div key={key} className="row" style={{backgroundColor: bgColor}}>
+        <MapHubsProLinks />
       </div>
     );
     return links;
@@ -132,7 +196,7 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
      var title = config.title ? this._o_(config.title) : this.__('Trending');
      
 
-    return (
+    let carousel = (
       <div key={key} className="row" style={{marginBottom: '50px', backgroundColor: bgColor}}>
            <div className="row no-margin" style={{height: '50px'}}>
              <div>
@@ -149,6 +213,7 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
            </div>
         </div>
     );
+    return carousel;
   }
 
   renderStories = (key: string) => {
@@ -180,13 +245,15 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
   renderText = (config: Object, key: string) => {
     var text = config.text[this.state.locale];
     if(!text) text = config.text.en;
-    return (
+    let textPanel =(
       <div key={key} className="row">
         <div className="flow-text center align-center">
           {text}
         </div>
       </div>
     );
+
+    return textPanel;
   }
 
 	render() {
@@ -200,6 +267,7 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
 
        {this.props.pageConfig.components.map((component, i) => {
          var key = `homepro-component-${i}`;
+         if(!component.disabled){
           if(component.type === 'map'){
             return _this.renderHomePageMap(component, key);
           }else if(component.type === 'carousel'){
@@ -210,9 +278,19 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
             return _this.renderText(component, key);
           }else if(component.type === 'links'){
             return _this.renderLinks(component, key);
+          }else if(component.type === 'onboarding-links'){
+            return _this.renderOnboardingLinks(component, key);
+          }else if(component.type === 'pro-links'){
+            return _this.renderProLinks(component, key);
+          }else if(component.type === 'slides'){
+            return _this.renderSlides(component, key);
+          }else if(component.type === 'mailinglist'){
+            return _this.renderMailingList(component, key);
           }else{
             return '';
           }
+         }
+          
           
         })
        }

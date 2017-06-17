@@ -27,7 +27,7 @@ export default class PublicOnboardingLinks extends MapHubsPureComponent<void, Pr
       );
     }
     return (
-      <div className="row no-margin">
+      <div className="row no-margin" style={{padding: '20px'}}>
           <div className="col s12 m3 l3 home-onboarding-icon-wrapper" style={{margin: 'auto'}}>
             <a href="/maps" style={{margin: 'auto'}}>
               <div className="valign-wrapper" style={{height: '125px', position: 'relative', margin: 'auto'}}>

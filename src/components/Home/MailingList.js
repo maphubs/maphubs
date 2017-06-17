@@ -9,23 +9,27 @@ import MessageActions from '../../actions/MessageActions';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
 
-import type {LocaleStoreType} from '../../stores/LocaleStore';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type Props = {
-
+  text: LocalizedString
 }
 
 type State = {
   valid: boolean,
   placeholder?: string,
   email: string
-} & LocaleStoreType
+} & LocaleStoreState
 
-export default class MailingList extends MapHubsComponent<void, Props, State> {
+export default class MailingList extends MapHubsComponent<Props, Props, State> {
 
   state: State = {
     valid: false,
     email: ''
+  }
+
+  static defaultProps: Props = {
+    text: {en:'', fr: '', es: '', it: ''}
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State){
@@ -81,10 +85,13 @@ render(){
 
   var placeholder = this.state.placeholder ? this.state.placeholder : _this.__('Sign up for our mailing list');
   return (
-    <div className="row" style={{margin: '20px'}}>
-
+    <div className="container valign-wrapper" style={{height: '62px'}}>
+      <div className="col s6 valign right-align">
+        <b style={{fontSize: '14px'}}>{this._o_(this.props.text)}</b>
+      </div>
+      <div className="col s6 valign">
       <Formsy.Form onSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInvalid}>
-        <div className="col s12 m4 offset-m4">
+        <div>
             <TextInput name="email" label={null} placeholder={placeholder}
               className="left no-margin no-padding mailing-list-text-input"
                   validations={{isEmail:true}} validationErrors={{
@@ -112,7 +119,7 @@ render(){
               }}>{this.__('Sign up')}</button>
           </div>
       </Formsy.Form>
-
+       </div>
       </div>
   );
 }

@@ -57,7 +57,6 @@ export default class Home extends MapHubsComponent {
     this.state.trendingMapCards,
     this.state.trendingStoryCards]);
 
-     //TODO: move this to a config inside the theme
      var slides = [
        {
          title: this.__('MapHubs is now Map for Environment'),
