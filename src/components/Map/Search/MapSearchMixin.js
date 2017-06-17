@@ -10,7 +10,7 @@ export default function() {
   var _this = this;
 
   this.getSearchFilters = (query: string) => {
-    query = `/.*${query}.*/g`;
+    query = `/.*${query}.*/ig`;
     let sourceIDs = [];
     let queries = [];
     if(_this.state.glStyle){
