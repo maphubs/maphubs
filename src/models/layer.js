@@ -111,24 +111,24 @@ module.exports = {
     .where(knex.raw(`
       private = false AND status = 'published'
       AND (
-      to_tsvector('english', name -> 'en'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('english', COALESCE((name -> 'en')::text, '')
+      || ' ' || COALESCE((description -> 'en')::text, '')
+      || ' ' || COALESCE((source -> 'en')::text, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('spanish', name -> 'es'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('spanish', COALESCE((name -> 'es')::text, '')
+      || ' ' || COALESCE((description -> 'es')::text, '')
+      || ' ' || COALESCE((source -> 'es')::text, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('french', name -> 'fr'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('french', COALESCE((name -> 'fr')::text, '')
+      || ' ' || COALESCE((description -> 'fr')::text, '')
+      || ' ' || COALESCE((source -> 'fr')::text, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('italian', name -> 'it'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('italian', COALESCE((name -> 'it')::text, '')
+      || ' ' || COALESCE((description -> 'it')::text, '')
+      || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery('` + input + `')
       )
       `))
-    .orderBy(knex.raw(`name -> 'en'`));
+    .orderByRaw(`name -> 'en'`);
 
     return query;
   },
@@ -147,24 +147,24 @@ module.exports = {
     .where(knex.raw(`
       private = false AND status = 'published'
       AND (
-      to_tsvector('english', name -> 'en'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('english',  COALESCE((name -> 'en')::text, '')
+      || ' ' || COALESCE((description -> 'en')::text, '')
+      || ' ' || COALESCE((source -> 'en')::text, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('spanish', name -> 'es'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('spanish',  COALESCE((name -> 'es')::text, '')
+      || ' ' || COALESCE((description -> 'es')::text, '')
+      || ' ' || COALESCE((source -> 'es')::text, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('french', name -> 'fr'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('french',  COALESCE((name -> 'fr')::text, '')
+      || ' ' || COALESCE((description -> 'fr')::text, '')
+      || ' ' || COALESCE((source -> 'fr')::text, '')) @@ plainto_tsquery('` + input + `')
       OR
-      to_tsvector('italian', name -> 'it'
-      || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(source, '')) @@ plainto_tsquery('` + input + `')
+      to_tsvector('italian',  COALESCE((name -> 'it')::text, '')
+      || ' ' || COALESCE((description -> 'it')::text, '')
+      || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery('` + input + `')
       )
       `))    
-    .orderBy(knex.raw(`name -> 'en'`));
+    .orderByRaw(`name -> 'en'`);
 
     return query;
   },

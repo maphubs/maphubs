@@ -209,10 +209,10 @@ module.exports = {
     .where(knex.raw(`
     private = false
     AND (
-    to_tsvector('english', title) @@ plainto_tsquery('` + input + `')
-    OR to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')
-    OR to_tsvector('french', title) @@ plainto_tsquery('` + input + `')
-    OR to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')
+    to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery('` + input + `')
+    OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery('` + input + `')
+    OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery('` + input + `')
+    OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery('` + input + `')
     )
     `))
     .orderBy('title');
@@ -234,10 +234,10 @@ module.exports = {
       .where(knex.raw(`
       omh.maps.private = false
       AND ( 
-      to_tsvector('english', title) @@ plainto_tsquery('` + input + `')
-      OR to_tsvector('spanish', title) @@ plainto_tsquery('` + input + `')
-      OR to_tsvector('french', title) @@ plainto_tsquery('` + input + `')
-      OR to_tsvector('italian', title) @@ plainto_tsquery('` + input + `')
+      to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery('` + input + `')
+      OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery('` + input + `')
+      OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery('` + input + `')
+      OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery('` + input + `')
       )
       `))
       .orderBy('omh.maps.title')
