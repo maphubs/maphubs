@@ -6,116 +6,112 @@ import CardCarousel from '../components/CardCarousel/CardCarousel';
 import StorySummary from '../components/Story/StorySummary';
 import Carousel from 'nuka-carousel';
 import SliderDecorators from '../components/Home/SliderDecorators';
+import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks';
 import OnboardingLinks from '../components/Home/OnboardingLinks';
 import MapHubsProLinks from '../components/Home/MapHubsProLinks';
+import InteractiveMap from '../components/InteractiveMap';
 import MailingList from '../components/Home/MailingList';
-//var HomePageMap = require('../components/Home/HomePageMap');
 import _shuffle from 'lodash.shuffle';
 import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import BaseMapStore from '../stores/map/BaseMapStore';
+import type {LocaleStoreState} from '../stores/LocaleStore';
+import type {Layer} from '../stores/layer-store';
+import type {Group} from '../stores/GroupStore';
+import type {CardConfig} from '../components/CardCarousel/Card';
 
-export default class Home extends MapHubsComponent {
-
-  props: {
-    trendingLayers: Array<Object>,
-    trendingGroups: Array<Object>,
+type Props = {
+    trendingLayers: Array<Layer>,
+    trendingGroups:Array<Group>,
     trendingHubs: Array<Object>,
     trendingMaps: Array<Object>,
     trendingStories: Array<Object>,
     featuredStories:  Array<Object>,
     locale: string,
     _csrf: string,
-    mapHub: Object,
-    mapHubLayers: Array<Object>,
+    map: Object,
+    pageConfig: Object,
+    layers: Array<Layer>,
     footerConfig: Object,
-    headerConfig: Object
+    headerConfig: Object,
+    mapConfig: Object
   }
 
-  constructor(props: Object){
-		super(props);
+  type DefaultProps = {
+    trendingLayers: Array<Layer>,
+    trendingGroups:Array<Group>,
+    trendingHubs: Array<Object>,
+    trendingMaps: Array<Object>,
+    trendingStories: Array<Object>
+  }
+
+  type State = {
+    collectionStoryCards: Array<CardConfig>,
+    collectionMapCards: Array<CardConfig>,
+    collectionHubCards: Array<CardConfig>,
+    collectionGroupCards: Array<CardConfig>,
+    collectionLayerCards: Array<CardConfig>
+  } & LocaleStoreState
+
+
+export default class HomePro extends MapHubsComponent<DefaultProps, Props, State> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
+    trendingStories: [],
+    trendingMaps: [],
+    trendingHubs: [],
+    trendingGroups: [],
+    trendingLayers: []
+  }
+
+  constructor(props: Props) {
+    super(props);
+    this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+    if(props.mapConfig && props.mapConfig.baseMapOptions){
+       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+    }
     this.state = {
-      trendingStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
-      trendingMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
-      trendingHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
-      trendingGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
-      trendingLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
+      collectionStoryCards: _shuffle(this.props.trendingStories.map(cardUtil.getStoryCard)),
+      collectionMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
+      collectionHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
+      collectionGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
+      collectionLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
     };
-	}
+  }
 
   handleSearch = (input: string) => {
     window.location = '/search?q=' + input;
   }
 
-	render() {
-
-    var trendingCards = cardUtil.combineCards([this.state.trendingLayerCards,
-    this.state.trendingGroupCards,
-    this.state.trendingHubCards,
-    this.state.trendingMapCards,
-    this.state.trendingStoryCards]);
-
-     var slides = [
-       {
-         title: this.__('MapHubs is now Map for Environment'),
-         text: this.__('We have merged MapHubs with Map for Environment'),
-         buttonText: this.__('Learn More'),
-         link: 'https://mapforenvironment.org/user/map4env/story/61/MapHubs-is-now-Map-for-Environment',
-         img: 'https://cdn.maphubs.com/assets/home/Moabi–Chameleon.jpg'
-       },
-       {
-         title: this.__('Mapping for Everyone'),
-         text: MAPHUBS_CONFIG.productName + ' ' + this.__('is a home for the world\'s open map data and an easy tool for making maps'),
-         buttonText: this.__('Learn More'),
-         link: '/about',
-         img: 'https://cdn.maphubs.com/assets/home/Moabi-Aerial.jpg'
-       },
-       {
-         title: this.__('Maps for Journalists'),
-         text: this.__('Tell Your Story with Maps'),
-         buttonText: this.__('Learn More'),
-         link: '/journalists',
-         img: 'https://cdn.maphubs.com/assets/home/Moabi-Canoe.jpg'
-       },
-       {
-         title: this.__('OpenStreetMap'),
-         text: this.__('Help us make maps to monitor the world’s natural resources.'),
-         buttonText: this.__('Learn More'),
-         link: 'https://osm.mapforenvironment.org',
-         img: 'https://cdn.maphubs.com/assets/home/m4e_osm_banner.jpg'
-       },
-       {
-         title: this.__('Explore Maps'),
-         text: MAPHUBS_CONFIG.productName + ' ' + this.__('has map layers for environment, natural resources, and development'),
-         buttonText: this.__('Explore Maps'),
-         link: '/explore',
-         img: 'https://cdn.maphubs.com/assets/home/MapHubs-Map.jpg'
-       },
-       {
-         title: MAPHUBS_CONFIG.productName + ' ' + this.__('Services'),
-         text: this.__('We offer a range of service to help you get mapping'),
-         buttonText: this.__('Learn More'),
-         link: '/services',
-         img: 'https://cdn.maphubs.com/assets/home/Moabi-Forest.jpg'
-       }
-     ];
-
-     var homePageCarousel = '', proLinks = '', mailingList = '', homepageMap= '';
-     if(MAPHUBS_CONFIG.homepageProLinks){
-       proLinks = (
-         <div className="row">
-          <MapHubsProLinks />
-        </div>
+  renderHomePageMap = (config: Object, key: string) => {
+    var homepageMap= '';
+    if(this.props.map){
+      homepageMap = (
+         <div key={key} className="row">
+            <InteractiveMap height="calc(100vh - 150px)" 
+             {...this.props.map}
+             mapConfig={this.props.mapConfig}    
+             layers={this.props.layers} showTitle={false}
+             {...this.props.map.settings}
+             />
+            <div className="divider" />
+          </div>
        );
-     }
-     if(MAPHUBS_CONFIG.homepageSlides){
-       homePageCarousel = (
-         <div className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
+    }
+    return homepageMap;   
+  }
+
+  renderSlides = (config: Object, key: string) => {
+    let slides = (
+      <div key={key} className="row" style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight:'600px'}}>
            <Carousel autoplay={true} slidesToShow={1} autoplayInterval={5000} wrapAround={true}
              decorators={SliderDecorators}>
-             {slides.map((slide, i) => {
+             {config.slides.map((slide, i) => {
                return (
                  <div key={i} className="homepage-slide responsive-img valign-wrapper"
                    style={{
@@ -124,11 +120,11 @@ export default class Home extends MapHubsComponent {
                      backgroundImage: 'url('+ slide.img + ')'
                    }}>
                    <div className="slide-text">
-                     <h2 className="no-margin">{slide.title}</h2>
-                     <h3 className="no-margin">{slide.text}</h3>
+                     <h2 className="no-margin">{this._o_(slide.title)}</h2>
+                     <h3 className="no-margin">{this._o_(slide.text)}</h3>
                    </div>
                    <div className="slide-button center">
-                     <a className="btn waves-effect z-depth-3" style={{borderRadius: '25px'}} href={slide.link}>{slide.buttonText}</a>
+                     <a className="btn waves-effect z-depth-3" style={{borderRadius: '25px'}} href={slide.link}>{this._o_(slide.buttonText)}</a>
                    </div>
                 </div>
               );
@@ -136,35 +132,101 @@ export default class Home extends MapHubsComponent {
            </Carousel>
 
          </div>
-       );
-     
-     }
-     if(MAPHUBS_CONFIG.homepageMailingList){
-        mailingList = (
-         <MailingList />
-       );
-     }
-     /*
-     if(MAPHUBS_CONFIG.homepageMapHubId && this.props.mapHub){
-       homepageMap = (
-         <div className="row no-margin" style={{height: 'calc(100vh - 150px)'}}>
-            <HomePageMap height="100%" hub={this.props.mapHub} layers={this.props.mapHubLayers}/>
-            <div className="divider" />
-          </div>
-       );
-     }
-     */
+    );
+    return slides;
+  }
 
-     var featured = '';
+  renderMailingList = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let mailingList = (
+      <div key={key} className="row no-margin" style={{backgroundColor: bgColor}}>
+        <MailingList text={config.text} />
+      </div> 
+    );
+    return mailingList;
+  }
+
+  renderLinks = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let links = (
+      <div key={key} className="row" style={{backgroundColor: bgColor}}>
+        <PublicOnboardingLinks />
+      </div>
+    );
+    return links;
+  }
+
+  renderOnboardingLinks = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let links = (
+      <div key={key} className="row" style={{backgroundColor: bgColor}}>
+        <OnboardingLinks />
+      </div>
+    );
+    return links;
+  }
+
+  renderProLinks = (config: Object, key: string) => {
+    let bgColor = config.bgColor ? config.bgColor : 'inherit';
+    let links = (
+      <div key={key} className="row" style={{backgroundColor: bgColor}}>
+        <MapHubsProLinks />
+      </div>
+    );
+    return links;
+  }
+
+  renderCarousel = (config: Object, key: string) => {
+    var collectionCards = cardUtil.combineCards([this.state.collectionLayerCards,
+    this.state.collectionGroupCards,
+    this.state.collectionHubCards,
+    this.state.collectionMapCards,
+    this.state.collectionStoryCards]);
+
+     var bgColor = config.bgColor ? config.bgColor : 'inherit';
+
+     var trendingIcon = '';
+     if(config.trendingIcon){
+       trendingIcon = (
+        <i className="material-icons" style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
+                
+       );
+     }
+
+     var title = config.title ? this._o_(config.title) : this.__('Trending');
+     
+
+    let carousel = (
+      <div key={key} className="row" style={{marginBottom: '50px', backgroundColor: bgColor}}>
+           <div className="row no-margin" style={{height: '50px'}}>
+             <div>
+                <h5 className="no-margin center-align" style={{lineHeight: '50px'}}>
+                  {title}
+                  {trendingIcon}
+                </h5>
+             </div>
+           </div>
+           <div className="row">
+             <div className="col s12">
+               <CardCarousel cards={collectionCards} infinite={false}/>
+             </div>
+           </div>
+        </div>
+    );
+    return carousel;
+  }
+
+  renderStories = (key: string) => {
+    var featured = '';
      if(this.props.featuredStories && this.props.featuredStories.length > 0){
        featured = (
-         <div>
+         <div key={key}>
            <div className="divider" />
            <div className="row">
              <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
                {this.__('Featured Stories')}
              </h5>
-               {this.props.featuredStories.map((story) => {
+               {this.props.featuredStories.map(story => {
                  return (
                    <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                      <div className="card-content">
@@ -177,38 +239,63 @@ export default class Home extends MapHubsComponent {
          </div>
        );
      }
+     return featured;
+  }
+
+  renderText = (config: Object, key: string) => {
+    var text = config.text[this.state.locale];
+    if(!text) text = config.text.en;
+    let textPanel =(
+      <div key={key} className="row">
+        <div className="flow-text center align-center">
+          {text}
+        </div>
+      </div>
+    );
+
+    return textPanel;
+  }
+
+	render() {
+
+    var _this = this;
 
 		return (
       <div style={{margin: 0, height: '100%'}}>
       <Header {...this.props.headerConfig}/>
       <main style={{margin: 0, height: '100%'}}>
-        {homePageCarousel}
-        {homepageMap}
-        {mailingList}
-         <div className="row">
-          <OnboardingLinks />
-        </div>
-        {proLinks}
-        <div className="divider" />
-         <div className="row" style={{marginBottom: '50px'}}>
-           <div className="row no-margin" style={{height: '50px'}}>
-             <div>
-                <h5 className="no-margin center-align" style={{lineHeight: '50px', color: '#212121'}}>
-                  {this.__('Trending')}
-                  <i className="material-icons" style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize:'40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
-                </h5>
-             </div>
-           </div>
-           <div className="row">
-             <div className="col s12">
-               <CardCarousel cards={trendingCards} infinite={false}/>
-             </div>
-           </div>
-          </div>
-            {featured}
-          <Footer {...this.props.footerConfig}/>
-       </main>
 
+       {this.props.pageConfig.components.map((component, i) => {
+         var key = `homepro-component-${i}`;
+         if(!component.disabled){
+          if(component.type === 'map'){
+            return _this.renderHomePageMap(component, key);
+          }else if(component.type === 'carousel'){
+            return _this.renderCarousel(component, key);
+          }else if(component.type === 'storyfeed'){
+            return _this.renderStories(key);
+          }else if(component.type === 'text'){
+            return _this.renderText(component, key);
+          }else if(component.type === 'links'){
+            return _this.renderLinks(component, key);
+          }else if(component.type === 'onboarding-links'){
+            return _this.renderOnboardingLinks(component, key);
+          }else if(component.type === 'pro-links'){
+            return _this.renderProLinks(component, key);
+          }else if(component.type === 'slides'){
+            return _this.renderSlides(component, key);
+          }else if(component.type === 'mailinglist'){
+            return _this.renderMailingList(component, key);
+          }else{
+            return '';
+          }
+         }
+          
+          
+        })
+       }
+        <Footer {...this.props.footerConfig}/>
+       </main>
 			</div>
 		);
 	}
