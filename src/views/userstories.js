@@ -7,24 +7,29 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
-export default class UserStories extends MapHubsComponent {
+type Props = {
+  stories: Array<Object>,
+  myStories?: boolean,
+  username: string,
+  locale: string,
+  _csrf: string,
+  footerConfig: Object,
+  headerConfig: Object
+}
 
-  props: {
-		stories: Array<Object>,
-    myStories: boolean,
-    username: string,
-    locale: string,
-    _csrf: string,
-    footerConfig: Object,
-    headerConfig: Object
+type DefaultProps = {
+  stories: Array<Object>
+}
+
+export default class UserStories extends MapHubsComponent<DefaultProps, Props, void> {
+
+  props: Props
+
+  static defaultProps: DefaultProps = {
+    stories: []
   }
 
-  static defaultProps = {
-    stories: [],
-    myStories: false
-  }
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

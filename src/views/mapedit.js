@@ -34,7 +34,7 @@ export default class MapEdit extends MapHubsComponent<DefaultProps, Props, void>
     myLayers: []
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});

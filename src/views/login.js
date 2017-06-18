@@ -47,7 +47,7 @@ export default class Login extends MapHubsComponent<DefaultProps, Props, State> 
     canSubmit: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

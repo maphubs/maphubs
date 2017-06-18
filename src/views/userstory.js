@@ -32,7 +32,7 @@ export default class UserStory extends MapHubsComponent<DefaultProps, Props, voi
     canEdit: false
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
   }

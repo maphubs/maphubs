@@ -44,7 +44,7 @@ export default class Card extends MapHubsComponent<void, Props, State> {
     }
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: Object){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
       return true;

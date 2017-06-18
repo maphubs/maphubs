@@ -33,7 +33,7 @@ export default class PageEdit extends MapHubsComponent<void, Props, State> {
     pageConfig: null
   }
 
-  constructor(props: Object){
+  constructor(props: Props){
     super(props);
      Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     this.state = {

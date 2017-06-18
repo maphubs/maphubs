@@ -52,7 +52,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
     height: 600
   }
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.stores.push(BaseMapStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
