@@ -1,7 +1,7 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/MapActions';
-var MapStyleHelper = require('./map/MapStyleHelper');
+var MapStyles = require('../components/Map/Styles');
 var debug = require('../services/debug')('stores/map-store');
 var findIndex = require('lodash.findindex');
 
@@ -42,21 +42,37 @@ export default class MapStore extends Reflux.Store {
   }
 
  toggleVisibility(layer_id: number, cb: Function){
-   var layers = this.state.layers;
-   var index = findIndex(layers, {layer_id});
-   if(layers[index] && layers[index].settings){
-    if(layers[index].settings.active){
-     layers[index].settings.active = false;
-    }else {
-      layers[index].settings.active = true;
+    let mapLayers = this.state.layers;
+    let index = findIndex(mapLayers, {layer_id});
+    if(mapLayers){
+      let layer = mapLayers[index];
+      let active = MapStyles.settings.get(layer.style, 'active');
+
+      if(active){
+        MapStyles.settings.set(layer.style, 'active', false);
+        active = false;
+      }else {
+        MapStyles.settings.set(layer.style, 'active', true);
+        active = true;
+      }
+
+      if(layer && layer.style && layer.style.layers){
+         layer.style.layers.forEach((styleLayer) => {
+          if(!styleLayer.layout){
+            styleLayer.layout = {};       
+          }
+          if(active){
+            styleLayer.layout.visibility = 'visible';
+          }else{
+            styleLayer.layout.visibility = 'none';
+          }
+        });
+      }
+     
+      this.updateMap(mapLayers);
     }
-    this.updateMap(layers);
-   }else{
-      debug('Map layer missing settings object: ' + layer_id);
-    }
-   
-   cb();
- }
+    cb();
+  }
 
  updateLayers(layers: Array<Layer>, update: boolean=true){
    this.setState({layers});
@@ -75,7 +91,7 @@ export default class MapStore extends Reflux.Store {
  }
 
  buildMapStyle(layers: Array<Layer>){
-  return MapStyleHelper.buildMapStyle(layers);
+  return MapStyles.style.buildMapStyle(layers);
  }
 
 }

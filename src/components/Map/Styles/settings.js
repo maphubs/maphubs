@@ -4,18 +4,6 @@ import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {
 
-  /**
-   * Settings on every gl-style source
-   * Also used for shared MapHubs "layer" settings like color
-   * that may apply to all gl-style layers
-   */
-  defaultSourceSettings(){
-      return {
-        mapColor: 'red',
-        presets: []
-      };
-  },
-
    /**
     * settings set on every gl-style layer
     */
@@ -48,8 +36,13 @@ module.exports = {
 
     getLayerSetting(style: GLStyle, id: string, key: string){
       let index = _findIndex(style.layers, {id});
-      let layer = style.layers[index];
-      return this.get(layer, key);
+      if(index){
+        let layer = style.layers[index];
+        return this.get(layer, key);
+      }else{
+        return null;
+      }
+      
     },
 
     getSourceSetting(style: GLStyle, id: string, key: string){
@@ -70,9 +63,9 @@ module.exports = {
       return style;
     },
 
-    setLayerSettingAll(style: GLStyle, key: string, value: any, excludeType: string){
+    setLayerSettingAll(style: GLStyle, key: string, value: any, excludeType?: string){
       style.layers.forEach(layer => {
-        if(layer.type !== excludeType){
+        if(!excludeType || layer.type !== excludeType){
           this.set(layer, key, value);
         }    
       });

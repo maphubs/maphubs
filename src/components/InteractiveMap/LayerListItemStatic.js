@@ -6,11 +6,11 @@ import Formsy from 'formsy-react';
 import Toggle from '../../components/forms/toggle';
 import _isEqual from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
+import MapStyles from '../Map/Styles';
 
 type Props = {|
   id: number,
   item: Object,    
-  moveItem: Function,
   showVisibility: boolean,
   showRemove: boolean,
   showDesign: boolean,
@@ -18,11 +18,7 @@ type Props = {|
   toggleVisibility: Function,
   removeFromMap: Function,
   showLayerDesigner: Function,
-  editLayer: Function,
-  isDragging: boolean,
-  connectDragSource: Function,
-  connectDropTarget: Function,
-  index: number
+  editLayer: Function
 |}
 
 type DefaultProps = {
@@ -76,7 +72,8 @@ export default class LayerListItemStatic extends MapHubsComponent<DefaultProps, 
 
    
     var backgroundColor = '#FFF';
-    if(layer.settings && !layer.settings.active){
+    let active = MapStyles.settings.get(layer.style, 'active');
+    if(!active){
         backgroundColor = '#eeeeee';
     }
 
@@ -135,7 +132,7 @@ export default class LayerListItemStatic extends MapHubsComponent<DefaultProps, 
         <div className="col s5 no-padding" style={{marginTop: '2px'}}>
           <Formsy.Form>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
-            labelOff="" labelOn="" checked={layer.settings && layer.settings.active}
+            labelOff="" labelOn="" checked={active}
             />
           </Formsy.Form>
         </div>

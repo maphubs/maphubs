@@ -12,12 +12,6 @@ import _remove from 'lodash.remove';
 import type {GLStyle} from '../types/mapbox-gl-style';
 import type {MapHubsField} from '../types/maphubs-field';
 
-export type ExternalLayerConfig = {|
-  type: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query',
-  url?: string,
-  layers: Array<Object>
-|}
-
 export type Layer = {
   layer_id?: number,
   name?: LocalizedString,
@@ -28,7 +22,6 @@ export type Layer = {
   settings?: {
     active: boolean
   },
-  
   preview_position?: Object,
   data_type?: string,
   legend_html?: ?string,
@@ -37,7 +30,11 @@ export type Layer = {
   private?: boolean,
   is_external?: boolean,
   external_layer_type?: string,
-  external_layer_config?: ExternalLayerConfig,
+  external_layer_config?: {
+    type?: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query',
+    url?: string,
+    layers?: Array<Object>
+    },
   is_empty?: boolean,
   complete?: boolean
 }
@@ -46,7 +43,6 @@ export type Layer = {
 
 export type LayerStoreState =  {
   status?: string,
-  mapColor?: string,
   tileServiceInitialized?: boolean,
   pendingChanges?: boolean,
   pendingPresetChanges?: boolean,
@@ -72,9 +68,9 @@ let defaultState: LayerStoreState = {
     legend_html: null,
     is_external: false,
     external_layer_type: '',
+    external_layer_config: {},
     complete: false,
     private: false,
-    mapColor: '#FF0000',
     tileServiceInitialized: false,
     pendingChanges: false,
     pendingPresetChanges: false,
@@ -106,11 +102,6 @@ export default class LayerStore extends Reflux.Store {
     var _this = this;
     if(!this.state.style){
       this.resetStyleGL();
-    }else{
-      let mapColor = MapStyles.settings.get(this.state.style, 'mapColor');
-      if(mapColor){
-        this.setState({mapColor});
-      } 
     }
 
     if(!this.state.legend_html){
@@ -123,7 +114,9 @@ export default class LayerStore extends Reflux.Store {
 
       if(presets && Array.isArray(presets)){
         presets.forEach((preset) => {
-          preset.id = _this.state.presetIDSequence++;
+          if(_this.state.presetIDSequence){
+             preset.id = _this.state.presetIDSequence++;
+          }    
         });
         this.updatePresets(presets);
       }
@@ -150,21 +143,21 @@ export default class LayerStore extends Reflux.Store {
     var style = this.state.style ? this.state.style : {"sources": {}};
     var layer_id = this.state.layer_id ? this.state.layer_id: -1;
     var isExternal = this.state.is_external;
-    var externalLayerConfig = this.state.external_layer_config ? this.state.external_layer_config : {};
-    var externalType = externalLayerConfig.type;
+    var elc = this.state.external_layer_config ? this.state.external_layer_config : {};
+
     var baseUrl = urlUtil.getBaseUrl();
-    if(isExternal && this.state.external_layer_type === 'mapbox-map'){
-      style = MapStyles.raster.defaultRasterStyle(this.state.layer_id, externalLayerConfig.url);
-    }else if(isExternal && externalType === 'raster'){
+    if(isExternal && this.state.external_layer_type === 'mapbox-map' && elc.url){
+      style = MapStyles.raster.defaultRasterStyle(this.state.layer_id, elc.url);
+    }else if(isExternal && elc.type === 'raster'){
       style = MapStyles.raster.defaultRasterStyle(layer_id, baseUrl + '/api/layer/' + layer_id.toString() +'/tile.json');
-    }else if(isExternal && externalType === 'multiraster'){
-      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, externalLayerConfig.layers);
-    }else if(isExternal && externalType === 'mapbox-style'){
-        style = MapStyles.style.getMapboxStyle(externalLayerConfig.mapboxid);
-    }else if(isExternal && externalType === 'ags-mapserver-tiles'){
-        style = MapStyles.raster.defaultRasterStyle(layer_id, externalLayerConfig.url + '?f=json', 'arcgisraster');
-    }else if(isExternal && externalType === 'geojson'){
-        style = MapStyles.style.defaultStyle(layer_id, this.getSourceConfig(), externalLayerConfig.data_type);
+    }else if(isExternal && elc.type === 'multiraster' && elc.layers){
+      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, elc.layers);
+    }else if(isExternal && elc.type === 'mapbox-style' && elc.mapboxid){
+        style = MapStyles.style.getMapboxStyle(elc.mapboxid);
+    }else if(isExternal && elc.type === 'ags-mapserver-tiles' && elc.url){
+        style = MapStyles.raster.defaultRasterStyle(layer_id, elc.url + '?f=json', 'arcgisraster');
+    }else if(isExternal && elc.type === 'geojson' && elc.data_type){
+        style = MapStyles.style.defaultStyle(layer_id, this.getSourceConfig(), elc.data_type);
     }else if(style.sources.osm){
       alert('Unable to reset OSM layers');
       return;
@@ -311,20 +304,13 @@ export default class LayerStore extends Reflux.Store {
 
 
 
-  setStyle(style: Object, labels: Object, legend_html: string, settings: Object, preview_position: Object, cb: Function){
-
-    var mapColor = this.state.mapColor;
-    if(settings && settings.color){
-      mapColor = settings.color;
-    }
+  setStyle(style: Object, labels: Object, legend_html: string, preview_position: Object, cb: Function){
 
     this.setState({
       style,
       labels,
       legend_html,
-      preview_position,
-      settings,
-      mapColor
+      preview_position
     });
     this.trigger(this.state);
     if(cb) cb();
@@ -482,13 +468,15 @@ export default class LayerStore extends Reflux.Store {
 
   loadDefaultPresets(){
     //called when setting up a new empty layer
-    var presets = [
-      {tag: 'name', label: 'Name', type: 'text', isRequired: true, showOnMap: true, id: this.state.presetIDSequence++},
-      {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.state.presetIDSequence++},
-      {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.state.presetIDSequence++}
-    ];
-    this.setState({pendingPresetChanges: true});
-    this.updatePresets(presets);
+    if(this.state.presetIDSequence){
+      var presets = [
+        {tag: 'name', label: 'Name', type: 'text', isRequired: true, showOnMap: true, id: this.state.presetIDSequence++},
+        {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.state.presetIDSequence++},
+        {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.state.presetIDSequence++}
+      ];
+      this.setState({pendingPresetChanges: true});
+      this.updatePresets(presets);
+    }
   }
 
   setImportedTags(data: Object, initLayer: boolean){
@@ -500,10 +488,12 @@ export default class LayerStore extends Reflux.Store {
     //convert tags to presets
     data.forEach((tag: string) => {
       var preset = {};
-      if(tag === 'mhid'){
-         preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.state.presetIDSequence++};
-      }else{
-         preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.state.presetIDSequence++};
+      if(_this.state.presetIDSequence){
+        if(tag === 'mhid'){
+          preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.state.presetIDSequence++};
+        }else{
+          preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.state.presetIDSequence++};
+        }
       }
       presets.push(preset);
     });
@@ -547,14 +537,16 @@ export default class LayerStore extends Reflux.Store {
       if(!this.state.presets){
         this.state.presets = [];
       }
-      this.state.presets.push({
-      tag: '',
-      label: '',
-      type: 'text',
-      isRequired: false,
-      showOnMap: true,
-      id: this.state.presetIDSequence++
-    });
+      if(this.state.presetIDSequence){
+        this.state.presets.push({
+          tag: '',
+          label: '',
+          type: 'text',
+          isRequired: false,
+          showOnMap: true,
+          id: this.state.presetIDSequence++
+        });
+      }
     this.state.pendingPresetChanges = true;
     this.updatePresets(this.state.presets);
   }

@@ -1,11 +1,12 @@
 //@flow
-import type {GLStyle} from '../../../types/mapbox-gl-style';
 import Settings from './settings';
 import Line from './line';
 import Point from './point';
 import Polygon from './polygon';
-
-import type {GLSource} from '../../../types/mapbox-gl-style';
+var _forEachRight = require('lodash.foreachright');
+var debug = require('../../../services/debug')('MapStyles/style');
+import type {Layer} from '../../../stores/layer-store';
+import type {GLStyle, GLSource} from '../../../types/mapbox-gl-style';
 
 module.exports = {
   defaultStyle(layer_id: number, source: GLSource, dataType: string): GLStyle {
@@ -93,7 +94,29 @@ module.exports = {
       };
 
       return style;
-    }
+    },
 
-    
+    buildMapStyle(layers: Array<Layer>){
+     var mapStyle: GLStyle = {
+       version: 8,
+       sources: {},
+       layers: []
+     };
+
+     //reverse the order for the styles, since the map draws them in the order recieved
+     _forEachRight(layers, (layer: Layer) => {
+       let style = layer.style;
+       if(style && style.sources && style.layers){
+        //add source
+        mapStyle.sources = Object.assign(mapStyle.sources, style.sources);
+        //add layers
+        mapStyle.layers = mapStyle.layers.concat(style.layers);
+      } else {
+        if(layer && layer.layer_id){
+          debug(`Not added to map, incomplete style for layer: ${layer.layer_id}`);
+        }       
+      }
+    });
+    return mapStyle;
+   }
 };

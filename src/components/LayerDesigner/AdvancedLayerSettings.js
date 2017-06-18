@@ -9,11 +9,11 @@ import MapHubsPureComponent from '../MapHubsPureComponent';
 import type {GLStyle} from '../../types/mapbox-gl-style';
 import type {Layer} from '../../stores/layer-store'; 
 
-type Props = {
+type Props = {|
    onChange: Function,
     layer: Layer,
     style: GLStyle
-}
+|}
 
 type DefaultProps = {
 
@@ -29,11 +29,6 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultP
 
   props: Props
 
-  static defaultProps: DefaultProps = {
-    style: {},
-    layer: {}
-  }
-
   state: State
 
   constructor(props: Props){
@@ -44,7 +39,7 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultP
 
   getStateFromStyleProp(props: Props){
     let defaults = MapStyles.settings.defaultLayerSettings();
-    if(props.layer.layer_id && props.layer.data_type){
+    if(props.layer.layer_id && props.layer.data_type && props.style){
       let glLayerId = `omh-data-${props.layer.data_type}-${props.layer.layer_id}`;
     
       let interactive = defaults.interactive;

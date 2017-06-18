@@ -10,24 +10,20 @@ type Props = {|
   value: number,
   onStyleChange: Function,
   onLegendChange: Function,
-  onSettingsChange: Function,
   style: Object,
   legendCode: string,
   layer: Object,
-  settings: Object,
   showAdvanced: boolean
 |}
 
 type DefaultProps = {
-  value: number,
-  settings: Object
+  value: number
 }
 
 type State = {
   opacity: number,
   style: Object,
-  legendCode: string,
-  settings: Object
+  legendCode: string
 }
 
 export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props, State> {
@@ -35,8 +31,7 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
   props: Props
 
   static defaultProps: DefaultProps = {
-    value: 100,
-    settings: {}
+    value: 100
   }
 
   constructor(props: Props){
@@ -44,8 +39,7 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
     this.state = {
       opacity: props.value,
       style: props.style,
-      legendCode: props.legendCode,
-      settings: props.settings
+      legendCode: props.legendCode
     };
   }
 
@@ -58,8 +52,7 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
   componentWillReceiveProps(nextProps: Props){
     this.setState({
       style: nextProps.style,
-      legendCode: nextProps.legendCode,
-      settings: nextProps.settings
+      legendCode: nextProps.legendCode
     });
   }
 
@@ -73,11 +66,6 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
     style = JSON.parse(style);
     this.setState({style});
     this.props.onStyleChange(style);
-  }
-
-  onSettingsChange = (style: Object, settings: Object) => {
-    this.setState({style, settings});
-    this.props.onSettingsChange(style, settings);
   }
 
   onLegendChange = (legendCode: string) => {
@@ -105,7 +93,7 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
             <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
             <br />
             <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
-              <AdvancedLayerSettings layer={this.props.layer} style={this.state.style} settings={this.state.settings} onChange={this.onSettingsChange}/>
+              <AdvancedLayerSettings layer={this.props.layer} style={this.state.style} onChange={this.onStyleChange}/>
           </div>
         </li>
       );

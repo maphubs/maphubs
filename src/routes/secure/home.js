@@ -13,13 +13,15 @@ module.exports = function(app: any) {
 
   app.get('/', csrfProtection, (req, res, next) => {
 
+    let useMailChimp = false;
+
     Page.getPageConfigs(['home']).then((pageConfigs: Object) => {
       var pageConfig = pageConfigs['home'];
       var dataRequests = [];
       var dataRequestNames: Array<string> = [];
     //use page config to determine data requests
     if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
-      pageConfig.components.forEach((component: any) => {
+      pageConfig.components.forEach((component: Object) => {
         if(component.type === 'map'){
           dataRequests.push(Map.getMap(component.map_id));
           dataRequestNames.push('map');
@@ -50,6 +52,8 @@ module.exports = function(app: any) {
               }
             });
           }
+        }else if(component.type === 'mailinglist'){
+          useMailChimp = true;
         }
       });
     }
@@ -73,25 +77,14 @@ module.exports = function(app: any) {
         description = pageConfig.description.en;
       }
 
-      if(MAPHUBS_CONFIG.mapHubsPro){
-        res.render('homepro', {
+      res.render('home', {
         title,
         description,
-        mailchimp: false,
+        mailchimp: useMailChimp,
         props, 
         req
       });
-      }else{
-        res.render('home', {
-        title: MAPHUBS_CONFIG.productName + ' | ' + req.__('A home for the world\'s open data and an easy way to make maps.'),
-        description: MAPHUBS_CONFIG.productName + req.__(' is a home for the world\'s open map data and an easy tool for making and sharing maps.'),
-        mailchimp: true,
-        props, 
-        req
-      });
-      }
-
-      
+    
       });
     }).catch(nextError(next));
   });

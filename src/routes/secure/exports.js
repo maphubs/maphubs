@@ -9,6 +9,7 @@ var privateLayerCheck = require('../../services/private-layer-check').middleware
 var knex = require('../../connection.js');
 var Promise = require('bluebird');
 var Locales = require('../../services/locales');
+var MapStyles = require('../../components/Map/Styles');
 
 module.exports = function(app: any) {
 
@@ -33,10 +34,9 @@ module.exports = function(app: any) {
           var featureSVGs = results[0];
           var bounds = results[1].rows[0];
           var paths = '';
-          var color = '#FF0000';
-          if(layer.settings &&  layer.settings.color){
-            color = layer.settings.color;
-          } 
+          
+          let savedColor = MapStyles.settings.get(layer.style, 'color');
+          let color = savedColor ? savedColor : '#FF0000';
           
           if(layer.data_type === 'point'){
             featureSVGs.rows.forEach((row) => {
@@ -78,7 +78,7 @@ module.exports = function(app: any) {
       var resultStr = JSON.stringify(geoJSON);
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
-      if(hash == match){
+      if(hash === match){
         res.status(304).send();
       }else{
         res.writeHead(200, {
@@ -105,7 +105,7 @@ module.exports = function(app: any) {
         var geoJSONStr = JSON.stringify(geoJSON);
         var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
         var match = req.get('If-None-Match');
-        if(hash == match){
+        if(hash === match){
           res.status(304).send();
         }else{
           res.header("Content-Type", "application/vnd.google-earth.kml+xml");
@@ -163,7 +163,7 @@ module.exports = function(app: any) {
             var geoJSONStr = JSON.stringify(geoJSON);
         var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
         var match = req.get('If-None-Match');
-        if(hash == match){
+        if(hash === match){
           res.status(304).send();
         }else{
           res.header("Content-Type", "application/vnd.google-earth.kml+xml");
@@ -215,7 +215,7 @@ module.exports = function(app: any) {
       var resultStr = JSON.stringify(geoJSON);
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
-      if(hash == match){
+      if(hash === match){
         res.status(304).send();
       }else{
         res.writeHead(200, {
@@ -240,7 +240,7 @@ module.exports = function(app: any) {
       var resultStr = JSON.stringify(geoJSON);
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
-      if(hash == match){
+      if(hash === match){
         res.status(304).send();
       }else{
         res.writeHead(200, {

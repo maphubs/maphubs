@@ -2,8 +2,8 @@
 var knex = require('../connection');
 var Promise = require('bluebird');
 var debug = require('../services/debug')('models/map');
-var forEachRight = require('lodash.foreachright');
 var Group = require('./group');
+var MapStyles = require('../components/Map/Styles');
 
 module.exports = {
 
@@ -82,11 +82,9 @@ module.exports = {
       return query.then(layers =>{
          layers.map(layer=>{
           //repair layer settings if not set
-          if(!layer.settings){
-            layer.settings = {};
-          }
-          if(layer.settings && typeof layer.settings.active === 'undefined'){
-            layer.settings.active = true;
+          let active = MapStyles.settings.get(layer.style, 'active');
+          if(typeof active === 'undefined'){
+            MapStyles.settings.set(layer.style, 'active', true);
           }
         });
         return layers;
@@ -280,7 +278,6 @@ module.exports = {
               style: layer.style,
               labels: layer.labels,
               legend_html: layer.legend_html,
-              settings: layer.settings,
               position: i
             });
           });
@@ -412,7 +409,6 @@ module.exports = {
                 style: layer.style,
                 labels: layer.labels,
                 legend_html: layer.legend_html,
-                settings: layer.settings,
                 position: i
               });
             });
@@ -476,45 +472,5 @@ module.exports = {
         return map_id; //pass on the new map_id
       });
     });
-  },
-
-  //TODO: this code is duplicated in MapStore, need to bring then back together
-  buildMapStyle(layers: Array<Object>){
-    var mapStyle = {
-      sources: {},
-      layers: []
-    };
-
-    //reverse the order for the styles, since the map draws them in the order received
-    forEachRight(layers, (layer) => {
-      if(layer.style && layer.style.sources && layer.style.layers){
-        //check for active flag and update visibility in style
-        if(layer.settings && typeof layer.settings.active !== 'undefined' && layer.settings.active === false){
-          //hide style layers for this layer
-          layer.style.layers.forEach((styleLayer) => {
-            styleLayer['layout'] = {
-              "visibility": "none"
-            };
-          });
-        } else {
-          //reset all the style layers to visible
-          layer.style.layers.forEach((styleLayer) => {
-            styleLayer['layout'] = {
-              "visibility": "visible"
-            };
-          });
-        }
-        //add source
-        mapStyle.sources = Object.assign(mapStyle.sources, layer.style.sources);
-        //add layers
-        mapStyle.layers = mapStyle.layers.concat(layer.style.layers);
-      } else {
-        debug('Not added to map, incomplete style for layer: ' + layer.layer_id);
-      }
-
-    });
-
-    return mapStyle;
   }
-
 };

@@ -329,8 +329,8 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     $('.layer-card-tooltipped').tooltip();
   }
 
-  onLayerStyleChange = (layer_id: number, style: Object, labels: Object, legend: Object, settings: Object) => {
-    Actions.updateLayerStyle(layer_id, style, labels, legend, settings);
+  onLayerStyleChange = (layer_id: number, style: Object, labels: Object, legend: Object) => {
+    Actions.updateLayerStyle(layer_id, style, labels, legend);
   }
 
   closeLayerDesigner = () => {

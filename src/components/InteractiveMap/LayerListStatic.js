@@ -46,7 +46,7 @@ export default class LayerListStatic extends MapHubsPureComponent<void, Props, v
               if(layer && layer.layer_id && layer.layer_id > 0){
                 return (
                   <li key={layer.layer_id} >
-                    <LayerListItemStatic id={layer.layer_id} item={layer} index={i}              
+                    <LayerListItemStatic id={layer.layer_id} item={layer}            
                       toggleVisibility={_this.props.toggleVisibility}
                       showVisibility={_this.props.showVisibility}
                       showRemove={_this.props.showRemove}

@@ -6,7 +6,7 @@ var debug = require('../services/debug')('stores/MapMakerStore');
 var _findIndex = require('lodash.findindex');
 var _reject = require('lodash.reject');
 var _find = require('lodash.find');
-var MapStyleHelper = require('./map/MapStyleHelper');
+var MapStyles = require('../components/Map/Styles');
 //var $ = require('jquery');
 //var urlUtil = require('../services/url-util');
 var checkClientError = require('../services/client-error-response').checkClientError;
@@ -104,10 +104,9 @@ export default class MapMakerStore extends Reflux.Store  {
     if(_find(this.state.mapLayers, {layer_id: layer.layer_id})){
       cb(true);
     }else{
-      if(!layer.settings){
-        layer.settings = {};
-      }
-      layer.settings.active = true; //tell the map to make this layer visible
+      //tell the map to make this layer visible
+      MapStyles.settings.set(layer.style, 'active', true);
+    
       var layers = this.state.mapLayers;
       if(layers){
         layers.push(layer);
@@ -123,34 +122,48 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   toggleVisibility(layer_id: number, cb: Function){
-    var mapLayers = this.state.mapLayers;
-    var index = _findIndex(mapLayers, {layer_id});
+    let mapLayers = this.state.mapLayers;
+    let index = _findIndex(mapLayers, {layer_id});
+    if(mapLayers){
+      let layer = mapLayers[index];
+      let active = MapStyles.settings.get(layer.style, 'active');
 
-    if(mapLayers && mapLayers[index].settings) {
-      if(mapLayers[index].settings.active){
-        mapLayers[index].settings.active = false;
+      if(active){
+        MapStyles.settings.set(layer.style, 'active', false);
+        active = false;      
       }else {
-        mapLayers[index].settings.active = true;
+        MapStyles.settings.set(layer.style, 'active', true);
+        active = true;
       }
+
+      if(layer && layer.style && layer.style.layers){
+         layer.style.layers.forEach((styleLayer) => {
+          if(!styleLayer.layout){
+            styleLayer.layout = {};       
+          }
+          if(active){
+            styleLayer.layout.visibility = 'visible';
+          }else{
+            styleLayer.layout.visibility = 'none';
+          }
+        });
+      }
+     
       this.updateMap(mapLayers);
-    }else{
-      debug('Map layer missing settings object: ' + layer_id);
     }
     cb();
   }
 
-  updateLayerStyle(layer_id: number, style: Object, labels: Object, legend: string, settings: Object){
+  updateLayerStyle(layer_id: number, style: Object, labels: Object, legend: string){
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
     if(layers){
       layers[index].style = style;
       layers[index].labels = labels;
       layers[index].legend_html = legend;
-      layers[index].settings = settings;
       this.updateMap(layers);
       this.setState({mapLayers: layers});
     }
-    
   }
 
   saveMap(title: LocalizedString, position: Object, basemap: string, _csrf: string, cb: Function){
@@ -235,7 +248,7 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   buildMapStyle(layers: Array<Layer>){
-  return MapStyleHelper.buildMapStyle(layers);
+  return MapStyles.style.buildMapStyle(layers);
  }
 
    startEditing(){

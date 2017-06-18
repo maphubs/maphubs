@@ -14,6 +14,7 @@ var debug = require('../services/debug')('model/layers');
 var ScreenshotUtils = require('../services/screenshot-utils');
 var geojsonUtils = require('../services/geojson-utils');
 var PhotoAttachment = require('./photo-attachment');
+var MapStyles = require('../components/Map/Styles');
 
 module.exports = {
 
@@ -400,9 +401,7 @@ module.exports = {
       layer.style = JSON.stringify(layer.style);
       layer.external_layer_config = JSON.stringify(layer.external_layer_config);
       layer.labels = JSON.stringify(layer.labels);
-      if(layer.settings){
-        layer.settings = JSON.stringify(layer.settings);
-      }
+
       layer.extent_bbox = JSON.stringify(layer.extent_bbox);
       layer.preview_position = JSON.stringify(layer.preview_position);
 
@@ -429,9 +428,7 @@ module.exports = {
       layer.style = JSON.stringify(layer.style);
       layer.external_layer_config = JSON.stringify(layer.external_layer_config);
       layer.labels = JSON.stringify(layer.labels);
-      if(layer.settings){
-        layer.settings = JSON.stringify(layer.settings);
-      }
+      
       layer.extent_bbox = JSON.stringify(layer.extent_bbox);
       layer.preview_position = JSON.stringify(layer.preview_position);
 
@@ -501,7 +498,7 @@ module.exports = {
               //rebuild map style, excluding the removed layer
               var layers = result;
               var hub_id = result[0].hub_id;
-              var map_style = Map.buildMapStyle(layers);
+              var map_style = MapStyles.style.buildMapStyle(layers);
               saveHubStyleCommands.push(db('omh.hubs').where({hub_id}).update({map_style}));
             });
             return Promise.all(saveHubStyleCommands)

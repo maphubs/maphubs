@@ -8,7 +8,7 @@ import _isEqual from 'lodash.isequal';
 import flow from 'lodash.flow';
 require('dnd-core/lib/actions/dragDrop');
 import {DragSource, DropTarget} from 'react-dnd';
-
+import MapStyles from '../../components/Map/Styles';
 import DraggleIndicator from '../../components/UI/DraggableIndicator';
 import DragItemConfig from '../../components/UI/DragItemConfig';
 
@@ -84,7 +84,9 @@ class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
     var connectDragSource = this.props.connectDragSource;
     var connectDropTarget = this.props.connectDropTarget;
     var backgroundColor = 'inherit';
-    if(layer.settings && !layer.settings.active){
+    let active = MapStyles.settings.get(layer.style, 'active');
+
+    if(!active){
         backgroundColor = '#eeeeee';
     }
 
@@ -143,7 +145,7 @@ class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
         <div className="col s4 no-padding" style={{marginTop: '2px'}}>
           <Formsy.Form>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
-            labelOff="" labelOn="" checked={(layer.settings && layer.settings.active)}
+            labelOff="" labelOn="" checked={active}
             />
           </Formsy.Form>
         </div>

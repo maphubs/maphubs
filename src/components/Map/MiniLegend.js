@@ -3,7 +3,8 @@ import React from 'react';
 var $ = require('jquery');
 import BaseMapStore from '../../stores/map/BaseMapStore';
 import LegendItem from './LegendItem';
-import MapHubsComponent from '../../components/MapHubsComponent';
+import MapHubsComponent from '../MapHubsComponent';
+var MapStyles = require('./Styles');
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
 type Props = {|
@@ -214,10 +215,11 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
                 padding: '5px'}}>
               {
                 this.props.layers.map((layer) => {
-                  if(layer.settings && typeof layer.settings.active === 'undefined'){
-                    layer.settings.active = true;
+                  let active = MapStyles.settings.get(layer.style, 'active');
+                  if(typeof active === 'undefined'){
+                    MapStyles.settings.set(layer.style, 'active', true);
                   }
-                  if(_this.props.hideInactive && layer.settings &&  !layer.settings.active){
+                  if(_this.props.hideInactive && !active){
                     return null;
                   }
                   return (<LegendItem key={layer.layer_id} layer={layer} />);
