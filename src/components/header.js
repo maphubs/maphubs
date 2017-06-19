@@ -25,14 +25,22 @@ type Props = {
   showExplore: boolean,
   showOSM: boolean,
   customLinks: Array<Link>
-
 }
 
-export default class Header extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {
+  logoLinkUrl: string,
+  showSearch: boolean,
+  showMakeAMap: boolean,
+  showExplore: boolean,
+  showOSM: boolean,
+  customLinks: Array<Link>
+}
+
+export default class Header extends MapHubsComponent<DefaultProps, Props, void> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     logoLinkUrl: '/',
     showSearch: true,
     showMakeAMap: true,
@@ -150,9 +158,10 @@ getCookie = (cname: string) => {
 }
 
   renderSearch = () => {
+    let search = '';
     if(this.props.showSearch){
       let searchLink = this.props.customSearchLink? this.props.customSearchLink: '/search';
-      return (
+      search = (
         <li className="nav-link-wrapper nav-tooltip"
           data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
           <a  className="nav-link-item" href={searchLink}>
@@ -160,40 +169,40 @@ getCookie = (cname: string) => {
           </a>
         </li>
       );
-    }else{
-      return '';
     }
+    return search;
   }
 
   renderMakeAMap = (mapClasses: any) => {
+    let makeAMap = '';
     if(this.props.showMakeAMap){
-      return (
+      makeAMap = (
         <li className="nav-link-wrapper">
           <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
         </li>
       );
-    }else{
-      return '';
     }
+    return makeAMap;
   }
 
   renderOSM = (mapClasses: any) => {
+    let osm = '';
     if(this.props.showOSM){
-      return (
+      osm = (
         <li className="nav-link-wrapper nav-tooltip"
           data-position="bottom" data-delay="50" data-tooltip={this.__('Help us map in OpenStreetMap')}
           >
           <a className={mapClasses} href='https://osm.mapforenvironment.org'>{this.__('OpenStreetMap')}</a>
         </li>
       );
-    }else{
-      return '';
     }
+    return osm;
   }
 
   renderExplore = (exploreClasses: any) => {
+    let explore = '';
     if(this.props.showExplore){
-      return (
+      explore = (
         <li className="nav-dropdown-link-wrapper nav-link-wrapper">
           <a className={exploreClasses} id="header-explore-menu" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
             <ul id="explore-dropdown" className="dropdown-content">
@@ -207,9 +216,8 @@ getCookie = (cname: string) => {
             </ul>
         </li>
       );
-    }else{
-      return '';
     }
+    return explore;
   }
 
   render() {

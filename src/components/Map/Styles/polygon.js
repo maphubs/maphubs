@@ -15,6 +15,7 @@ getPolygonLayers(
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
         "source": "omh-" + layer_id,
+        "source-layer": undefined,
         "filter": ["in", "$type", "Polygon"],
         "paint": {
           "fill-color": color,
@@ -28,6 +29,7 @@ getPolygonLayers(
           "maphubs:layer_id": layer_id
         },
         "source": "omh-" + layer_id,
+        "source-layer": undefined,
         "filter": ["in", "$type", "Polygon"],
         "paint": {
           "line-color": color,
@@ -62,6 +64,7 @@ getPolygonLayers(
           "maphubs:layer_id": layer_id
         },
         "source": "omh-" + layer_id,
+        "source-layer": undefined,
         "filter": ["in", "$type", "Polygon"],
         "paint": {
           "line-color": "#222222",
@@ -88,6 +91,7 @@ getPolygonLayers(
           "maphubs:layer_id": layer_id
         },
       "source": "omh-" + layer_id,
+      "source-layer": undefined,
       "filter": ["==", "mhid", ""],
       "paint": {
         "fill-color": hoverColor,

@@ -24,7 +24,10 @@ export default class EditorToolButtons extends MapHubsComponent<void, Props, Sta
   props: Props
 
  state: State = {
-    saving: false
+    saving: false,
+    edits: [],
+    redo: [],
+    originals: []
   }
 
   constructor(props: Props){

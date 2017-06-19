@@ -452,11 +452,14 @@ publish = () => {
 
           },
           onClick(){
+            let storyTitle = (_this.state.story && _this.state.story.title)  ? slug(_this.state.story.title) : '';   
             if(_this.props.storyType === 'user'){
-              window.location = '/user/' + _this.props.username + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+              window.location = `/user/${this.props.username}/story/${this.state.story.story_id}/${storyTitle}`;
             }else{
-              var baseUrl = '/hub/' + _this.props.hub_id;              
-              window.location = baseUrl + '/story/' + _this.state.story.story_id + '/' + slug(_this.state.story.title);
+              let hub_id = _this.props.hub_id ? _this.props.hub_id : 'unknown';
+              let baseUrl = `/hub/${hub_id}`; 
+                        
+              window.location = `${baseUrl}/story/${_this.state.story.story_id}/${storyTitle}`;
             }
           }
         });
@@ -478,7 +481,14 @@ saveSelectionRange = () => {
   
     if($.contains(storyBody, anchorNode) || $(sel.anchorNode).hasClass('storybody')){
       var range = this.getSelectionRange();
-      this.savedSelectionRange = {"startContainer": range.startContainer, "startOffset":range.startOffset,"endContainer":range.endContainer, "endOffset":range.endOffset};
+      if(range){
+        this.savedSelectionRange = {
+          "startContainer": range.startContainer, 
+          "startOffset": range.startOffset,
+          "endContainer": range.endContainer,
+          "endOffset": range.endOffset
+        };
+      }
     }else {
       this.savedSelectionRange = null;
     }

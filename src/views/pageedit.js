@@ -22,16 +22,14 @@ type Props = {
 }
 
 type State = {
-  pageConfig: ?string
+  pageConfig?: Object
 } & LocaleStoreState
 
 export default class PageEdit extends MapHubsComponent<void, Props, State> {
 
   props: Props
 
-  state: State = {
-    pageConfig: null
-  }
+  state: State
 
   constructor(props: Props){
     super(props);

@@ -66,7 +66,7 @@ export default class HubBuilder extends MapHubsComponent<DefaultProps, Props, St
     var _this = this;
     Formsy.addValidationRule('isAvailable', function (values, value) {
         if(!value) return false;
-        if(_this.state.hub && _this.state.hub.created) return true;
+        if(_this.state.hub && _this.state.created) return true;
         if(!this.hubIdValue || value !== this.hubIdValue){
           this.hubIdValue = value;
           this.hubIdAvailable = _this.checkHubIdAvailable(value);
@@ -174,7 +174,7 @@ export default class HubBuilder extends MapHubsComponent<DefaultProps, Props, St
               <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className="row">
                   <TextInput name="hub_id" label={this.__('Hub ID')} icon="group_work" className="col s6"
-                        disabled={this.state.hub && this.state.hub.created}
+                        disabled={this.state.hub && this.state.created}
                         validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength:25, isAvailable:true}} validationErrors={{
                          maxLength: this.__('ID must be 25 characters or less.'),
                          matchRegexp: this.__('Can only contain letters, numbers, or dashes.'),

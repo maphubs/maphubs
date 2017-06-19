@@ -4,59 +4,59 @@ import _debounce from 'lodash.debounce';
 var debug = require('../../../services/debug')('MapInteractionMixin');
 import BaseMapActions from '../../../actions/map/BaseMapActions';
 import MapStyles from '../Styles';
+import type {GLStyle} from '../../../types/mapbox-gl-style';
 /**
  * Helper functions for interacting with the map and selecting features
  */
-export default function() {
-  var _this = this;
-  this.setSelectionFilter = (features) => {
-    if(_this.state.glStyle){
-      _this.state.glStyle.layers.forEach((layer) => {
+module.exports = {
+  setSelectionFilter(features: Array<Object>){
+    if(this.state.glStyle){
+      this.state.glStyle.layers.forEach((layer) => {
         var filter = ['in', "mhid"];
         features.forEach((feature) => {
           filter.push(feature.properties.mhid);
         });
-        if(_this.map.getLayer(layer.id) && 
+        if(this.map.getLayer(layer.id) && 
           filter[2] //found a mhid
           ){
           if(layer.id.startsWith('omh-hover-point')){
-            _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
+            this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
           }else if(layer.id.startsWith('omh-hover-line')){
-            _this.map.setFilter(layer.id,  ["all", ["in", "$type", "LineString"], filter]);
+            this.map.setFilter(layer.id,  ["all", ["in", "$type", "LineString"], filter]);
           }else if(layer.id.startsWith('omh-hover-polygon')){
-            _this.map.setFilter(layer.id,  ["all", ["in", "$type", "Polygon"], filter]);
+            this.map.setFilter(layer.id,  ["all", ["in", "$type", "Polygon"], filter]);
           }
         }
       });
     }
-  };
+  },
 
-  this.clearSelectionFilter = () => {
-    if(_this.state.glStyle){
-      _this.state.glStyle.layers.forEach((layer) => {
+  clearSelectionFilter(){
+    if(this.state.glStyle){
+      this.state.glStyle.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-hover')){
-          if(_this.map.getLayer(layer.id)){
-            _this.map.setFilter(layer.id,  ["==", "mhid", ""]);
+          if(this.map.getLayer(layer.id)){
+            this.map.setFilter(layer.id,  ["==", "mhid", ""]);
           }
         }
       });
     }
-  };
+  },
 
-  this.handleUnselectFeature = () => {
-    _this.setState({selected:false});
-    _this.clearSelection();
-  };
+  handleUnselectFeature(){
+    this.setState({selected:false});
+    this.clearSelection();
+  },
 
-  this.clearSelection = () => {
-    if(_this.map.hasClass('selected')){
-      _this.map.removeClass('selected');
+  clearSelection(){
+    if(this.map.hasClass('selected')){
+      this.map.removeClass('selected');
     }
-    _this.clearSelectionFilter();
-    _this.setState({selectedFeatures:null});
-  };
+    this.clearSelectionFilter();
+    this.setState({selectedFeatures:null});
+  },
 
-  this.getInteractiveLayers = (glStyle) => {
+  getInteractiveLayers(glStyle: GLStyle){
     var interactiveLayers = [];
     if(glStyle){
       glStyle.layers.forEach((layer) => {
@@ -69,36 +69,36 @@ export default function() {
       });
     }
     return interactiveLayers;
-  };
+  },
 
-  this.clickHandler = (e) => {
+  clickHandler(e: any){
     var map = this.map;
 
-    if(_this.state.enableMeasurementTools){
+    if(this.state.enableMeasurementTools){
       return;
     }
     else{
       //feature selection
-      if(!_this.state.selected &&_this.state.selectedFeatures && _this.state.selectedFeatures.length > 0){
-        _this.setState({selected:true});
+      if(!this.state.selected && this.state.selectedFeatures && this.state.selectedFeatures.length > 0){
+        this.setState({selected:true});
       }else{
-        $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+        $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
 
         var features = map.queryRenderedFeatures(
           [
-            [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
-            [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
-          ], {layers: _this.state.interactiveLayers});
+            [e.point.x - this.props.interactionBufferSize / 2, e.point.y - this.props.interactionBufferSize / 2],
+            [e.point.x + this.props.interactionBufferSize / 2, e.point.y + this.props.interactionBufferSize / 2]
+          ], {layers: this.state.interactiveLayers});
 
         if (features && features.length) {          
-          if(_this.state.selected){
-            _this.clearSelection();
+          if(this.state.selected){
+            this.clearSelection();
           }
 
            var feature = features[0];
            //find presets and add to props
            if(feature.layer && feature.layer.source){
-             let presets = MapStyles.settings.getSourceSetting(_this.state.glStyle, feature.layer.source, 'presets');
+             let presets = MapStyles.settings.getSourceSetting(this.state.glStyle, feature.layer.source, 'presets');
              if(!feature.properties['maphubs_metadata']){
                feature.properties['maphubs_metadata'] = {};
              }
@@ -106,34 +106,34 @@ export default function() {
            }
         
 
-          if(_this.state.editing){
+          if(this.state.editing){
             if(feature.properties.layer_id && 
-              _this.state.editingLayer.layer_id === feature.properties.layer_id){
-                _this.editFeature(feature);
+              this.state.editingLayer.layer_id === feature.properties.layer_id){
+                this.editFeature(feature);
               }    
             return; //return here to disable interactation with other layers when editing
           }
           
 
-          _this.setSelectionFilter([features[0]]);
-          _this.setState({selectedFeatures:[features[0]], selected:true});
+          this.setSelectionFilter([features[0]]);
+          this.setState({selectedFeatures:[features[0]], selected:true});
           map.addClass('selected');
-          } else if(_this.state.selectedFeatures !== null) {
-              _this.clearSelection();
-              _this.setState({selected: false});
-              $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+          } else if(this.state.selectedFeatures !== null) {
+              this.clearSelection();
+              this.setState({selected: false});
+              $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
           }
       }
     }
-  };
+  },
 
-  this.moveendHandler = (e) => {
+  moveendHandler(){
      debug('mouse up fired');
-    BaseMapActions.updateMapPosition(_this.getPosition(), _this.getBounds());
-  };
+    BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds());
+  },
 
   //fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
- this.mousemoveHandler = (e) => {
+ mousemoveHandler(e: any){
     var map = this.map;
     var _this = this;
    
@@ -179,5 +179,5 @@ export default function() {
       }, 300).bind(this);
       debounced();
   }
-  };
-}
+  }
+};

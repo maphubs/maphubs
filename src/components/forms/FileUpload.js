@@ -24,7 +24,7 @@ type State = {
   uploading?: boolean
 }
 
-export default class File extends MapHubsComponent<DefaultProps, Props, State> {
+export default class FileUpload extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
@@ -63,11 +63,17 @@ export default class File extends MapHubsComponent<DefaultProps, Props, State> {
   }
 
   formGetter = () => {
-    return new FormData(document.getElementById('customForm'));
+    let element: any = document.getElementById('customForm');
+    if(element){
+      let formElement: HTMLFormElement = ((element: any): HTMLFormElement);
+
+      return new FormData(formElement);
+    }
+    
   }
 
   onClick = () => {
-    this.input.click();
+    this.refs.input.click();
   }
 
   customFormRenderer = (onSubmit: Function, onFileClick: Function) => {
@@ -78,7 +84,7 @@ export default class File extends MapHubsComponent<DefaultProps, Props, State> {
       }
       onSubmit(val);
     };
-    return (
+    let formRenderer = (
       <div className="col s12 m4 l3" onClick={onFileClick} style={this.props.style}>
       <form id='customForm' ref="form" method="post" style={{marginBottom: '15px'}}>
         <div className="row file-field input-field">
@@ -93,9 +99,11 @@ export default class File extends MapHubsComponent<DefaultProps, Props, State> {
       </form>
     </div>
     );
+    return formRenderer;
   }
 
   customProgressRenderer = (progress: number, hasError: boolean, cancelHandler: Function) => {
+     let progressRenderer;
     if (hasError || progress > -1 ) {
       let progressPct = progress + '%';
 
@@ -107,7 +115,7 @@ export default class File extends MapHubsComponent<DefaultProps, Props, State> {
         message = (<span>{this.__('Done')}</span>);
       }
 
-      return (
+      progressRenderer = (
         <div className="col s12 m8 l9">
           <div className="progress col s10" style={{marginTop: '18px'}}>
               <div className="determinate" style={{width: progressPct}}></div>
@@ -124,8 +132,9 @@ export default class File extends MapHubsComponent<DefaultProps, Props, State> {
         </div>
       );
     } else {
-      return (<div></div>);
+      progressRenderer = (<div></div>);
     }
+    return progressRenderer;
   }
 
   render() {

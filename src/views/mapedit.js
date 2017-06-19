@@ -43,8 +43,8 @@ export default class MapEdit extends MapHubsComponent<DefaultProps, Props, void>
     }
   }
 
-  mapCreated = (map_id: string, title: string) => {
-    window.location = '/map/view/' + map_id + '/'+ slug(title);
+  mapCreated = (map_id: string, title: LocalizedString) => {
+    window.location = '/map/view/' + map_id + '/'+ slug(this._o_(title));
   }
 
 	render() {

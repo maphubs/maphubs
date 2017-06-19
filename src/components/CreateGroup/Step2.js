@@ -90,7 +90,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<DefaultProps, Pro
 
     var groupImage = '';
     //if group has an image use link,
-    if(this.state.group && this.state.group.hasImage){
+    if(this.state.group && this.state.group.group_id && this.state.group.hasImage){
       groupImage = (
             <img className="responsive-img" width={200} height={200} src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()} />
       );

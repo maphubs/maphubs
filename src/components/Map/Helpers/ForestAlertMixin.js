@@ -1,52 +1,53 @@
+//@flow
 var _area = require('@turf/area');
 
-export default function(){
-  var _this = this;
-  this.getDefaultForestAlertState = () => {
+module.exports = {
+
+  getDefaultForestAlertState(){
     return {
       enableGLAD2017: false,
       result: null
     };
-  };
+  },
 
   //API
-  this.toggleForestAlerts = (config) => {
+  toggleForestAlerts(config: Object){
     var forestAlerts;
-    if(!_this.state.forestAlerts){
+    if(!this.state.forestAlerts){
       forestAlerts = this.getDefaultForestAlertState();
     }else{
-      forestAlerts = JSON.parse(JSON.stringify(_this.state.forestAlerts)); 
+      forestAlerts = JSON.parse(JSON.stringify(this.state.forestAlerts)); 
     }
 
     if(!forestAlerts.enableGLAD2017 && config.enableGLAD2017){
       //layer turning on
-      _this.addGLADLayer();
+      this.addGLADLayer();
       forestAlerts.enableGLAD2017 = config.enableGLAD2017;
-      _this.setState({forestAlerts});
+      this.setState({forestAlerts});
     }else if(forestAlerts.enableGLAD2017 && !config.enableGLAD2017){
       //layer turning off
-      _this.removeGLADLayer();
+      this.removeGLADLayer();
       forestAlerts.enableGLAD2017 = config.enableGLAD2017;
       forestAlerts.result = null;
-      _this.setState({forestAlerts});
+      this.setState({forestAlerts});
     }
-  };
+  },
 
   /**
    * Used to restore alerts if map is reloaded
    */
-  this.restoreForestAlerts = () => {
-    if(_this.state.forestAlerts.enableGLAD2017){
-      _this.addGLADLayer();
+  restoreForestAlerts(){
+    if(this.state.forestAlerts.enableGLAD2017){
+      this.addGLADLayer();
     }
-  };
+  },
 
-  this.calculateForestAlerts = () => {
-    if(!_this.state.forestAlerts.enableGLAD2017){
+  calculateForestAlerts(){
+    if(!this.state.forestAlerts.enableGLAD2017){
       return;
     }
 
-    var features = _this.map.queryRenderedFeatures({layers: ['omh-glad-2017-polygon']});
+    var features = this.map.queryRenderedFeatures({layers: ['omh-glad-2017-polygon']});
 
     var alertCount = features.length;
 
@@ -65,25 +66,25 @@ export default function(){
         }
         areaMessage = areaMessage + areaHA.toLocaleString() + 'ha';
 
-        var forestAlerts = JSON.parse(JSON.stringify(_this.state.forestAlerts)); 
+        var forestAlerts = JSON.parse(JSON.stringify(this.state.forestAlerts)); 
         forestAlerts.result = {alertCount,areaMessage};
           
-        _this.setState({forestAlerts}); 
+        this.setState({forestAlerts}); 
 
-  };
+  },
 
   //helper functions
 
-  this.addGLADLayer = () => {
+  addGLADLayer(){
     //add map source
-    _this.map.addSource('omh-glad-2017', {
+    this.map.addSource('omh-glad-2017', {
       "type": "vector",
       "url": "https://s3.amazonaws.com/maphubs-forest-alerts/glad/2017.json"
     });
 
     //add map layers
 
-    _this.map.addLayer({
+    this.map.addLayer({
       "id": "omh-glad-2017-point",
       "type": "circle",
       "maxzoom": 13,
@@ -98,7 +99,7 @@ export default function(){
       "source-layer": "data"
     });
 
-    _this.map.addLayer({
+    this.map.addLayer({
       "id": "omh-glad-2017-polygon",
       "type": "fill",
       "maxzoom": 22,
@@ -122,7 +123,7 @@ export default function(){
         "visibility": "visible"
       }
     });
-     _this.map.addLayer({
+     this.map.addLayer({
       "id": "omh-glad-2017-outline-polygon",
       "type": "line",
       "maxzoom": 22,
@@ -178,14 +179,12 @@ export default function(){
         "visibility": "visible"
       }
   });
-  };
+  },
 
-  this.removeGLADLayer = () => {
-
-    _this.map.removeLayer('omh-glad-2017-outline-polygon');
-    _this.map.removeLayer('omh-glad-2017-polygon');
-    _this.map.removeLayer('omh-glad-2017-point');
-    _this.map.removeSource('omh-glad-2017');
-
-  };
-}
+  removeGLADLayer(){
+    this.map.removeLayer('omh-glad-2017-outline-polygon');
+    this.map.removeLayer('omh-glad-2017-polygon');
+    this.map.removeLayer('omh-glad-2017-point');
+    this.map.removeSource('omh-glad-2017');
+  }
+};

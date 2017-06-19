@@ -179,7 +179,7 @@ export default class HubBanner extends MapHubsPureComponent<void, Props, State> 
     } else if (this.state.hub.hasLogoImage) { //otherwise if there is an image from the server use that
       logoImage = (
         <a href={hubBaseUrl}>
-          <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={'/hub/' + this.state.hub.hub_id + '/images/logo'} />
+          <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={`/hub/${this.props.hubid}/images/logo`} />
         </a>
       );
     }else{ //show placeholder
@@ -192,10 +192,10 @@ export default class HubBanner extends MapHubsPureComponent<void, Props, State> 
     }
     if(this.state.bannerImage){
       bannerImage = (<div className={bannerClass}
-        style={{width: '100%', position: 'absolute', top: 0, backgroundImage: 'url('+this.state.bannerImage +')', backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
+        style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url(${this.state.bannerImage.toString()})`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
     } else if (this.state.hub.hasBannerImage) {
       bannerImage = (<div className={bannerClass}
-      style={{width: '100%', position: 'absolute', top: 0, backgroundImage: 'url("/hub/' + this.state.hub.hub_id + '/images/banner")', backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
+      style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url("/hub/${this.props.hubid}/images/banner")`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
     } else{ //show placeholder
       bannerImage = (
         <div className="center center-align" style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '100%', position: 'absolute', top: 0, borderColor:'#bdbdbd',  borderStyle: 'dashed', borderWidth: '3px'}}>

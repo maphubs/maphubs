@@ -26,7 +26,7 @@ declare class RefluxStore {
   listenables: any;
   setState(Object): void;
   trigger(Object): void;
-  listenTo(Object): void;
+  listenTo(Object, Object): void;
 }
 
 declare module 'reflux' {

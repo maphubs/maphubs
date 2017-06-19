@@ -1,4 +1,4 @@
-
+//@flow
 var debug = require('../../../services/debug')('Map/MeasureArea');
 import _area from '@turf/area';
 import _lineDistance from '@turf/line-distance';
@@ -8,20 +8,19 @@ if (typeof window !== 'undefined') {
     MapboxDraw = require('../../../../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
 }
 
-export default function() {
-  var _this = this;
+module.exports = {
 
-  this.toggleMeasurementTools = (enable) => {
-    if(enable && !_this.state.enableMeasurementTools){
+  toggleMeasurementTools(enable: boolean){
+    if(enable && !this.state.enableMeasurementTools){
       //start
-      _this.startMeasurementTool();
-    }else if(_this.state.enableMeasurementTools && !enable){
+      this.startMeasurementTool();
+    }else if(this.state.enableMeasurementTools && !enable){
       //stop
-      _this.stopMeasurementTool();
+      this.stopMeasurementTool();
     }
   },
 
-  this.startMeasurementTool = () => {
+  startMeasurementTool(){
     var draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
@@ -30,41 +29,41 @@ export default function() {
         trash: true
     }
     });
-    _this.draw = draw;
+    this.draw = draw;
     $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-measure-tool');
-    _this.map.addControl(draw, 'top-right');
+    this.map.addControl(draw, 'top-right');
 
-    _this.map.on('draw.create', (e) => {
+    this.map.on('draw.create', (e) => {
       debug('draw create');
-      _this.updateMeasurement(e);
+      this.updateMeasurement(e);
     });
 
-    _this.map.on('draw.update', (e) => {
+    this.map.on('draw.update', (e) => {
       debug('draw update');
-      _this.updateMeasurement(e);
+      this.updateMeasurement(e);
     });
 
-     _this.map.on('draw.delete', () => {
+     this.map.on('draw.delete', () => {
        debug('draw delete');
-       _this.setState({measurementMessage: _this.__('Use the drawing tools above')});
+       this.setState({measurementMessage: this.__('Use the drawing tools above')});
     });
 
-    _this.setState({enableMeasurementTools: true, 
-      measurementMessage: _this.__('Use the drawing tools above')
+    this.setState({enableMeasurementTools: true, 
+      measurementMessage: this.__('Use the drawing tools above')
     });
   },
 
-  this.stopMeasurementTool = () => {   
+  stopMeasurementTool(){   
     $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-measure-tool');
-    _this.map.removeControl(_this.draw);
-    _this.setState({
+    this.map.removeControl(this.draw);
+    this.setState({
       enableMeasurementTools: false, 
       measurementMessage: ''
     });
   },
 
-  this.updateMeasurement = () => {
-    var data = _this.draw.getAll();
+  updateMeasurement(){
+    var data = this.draw.getAll();
     if (data.features.length > 0) {
       var lines = {
         "type": "FeatureCollection",
@@ -96,7 +95,7 @@ export default function() {
           areaMessage = areaMessage + areaKM2.toLocaleString() + 'km2 ';
         }
         areaMessage = areaMessage + areaHA.toLocaleString() + 'ha';
-        _this.setState({measurementMessage: areaMessage}); 
+        this.setState({measurementMessage: areaMessage}); 
       }else if(lines.features.length > 0){
         var distanceKm = 0;
         lines.features.forEach((linestring) => {
@@ -104,9 +103,9 @@ export default function() {
         });
           var distanceMiles = distanceKm * 0.621371;
         var distanceMessage= 'Total distance: ' + distanceKm.toLocaleString() + 'km ' + distanceMiles.toLocaleString() + 'mi';
-        _this.setState({measurementMessage: distanceMessage}); 
+        this.setState({measurementMessage: distanceMessage}); 
       }
      
     } 
-  };
-}
+  }
+};

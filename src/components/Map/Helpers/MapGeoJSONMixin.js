@@ -1,43 +1,45 @@
+//@flow
 var debug = require('../../../services/debug')('MapGeoJSONMixin');
 var MapStyles = require('../Styles');
 var _bbox = require('@turf/bbox');
 
-export default function(){
-  var _this = this;
-  this.initGeoJSON = (map, data) => {
+import type {GeoJSONObject} from 'geojson-flow';
+
+module.exports = {
+  initGeoJSON(map: any, data: GeoJSONObject){
     
     if(data && data.features && data.features.length > 0){
       map.addSource("omh-geojson", {"type": "geojson", data});
       var glStyle = MapStyles.style.defaultStyle('geojson', null, null);
       glStyle.sources["omh-geojson"] = {"type": "geojson", data: {}}; //just a placeholder
-      _this.addLayers(map, glStyle);
+      this.addLayers(map, glStyle);
 
-      var interactiveLayers = _this.getInteractiveLayers(glStyle);
+      var interactiveLayers = this.getInteractiveLayers(glStyle);
 
-      _this.setState({interactiveLayers, glStyle});
-      _this.zoomToData(data);
+      this.setState({interactiveLayers, glStyle});
+      this.zoomToData(data);
     } else {
       //empty data
       debug(`(${this.state.id}) Empty/Missing GeoJSON Data`);
     }
-  };
+  },
 
   /**
    * Called when clearing search
    */
-  this.resetGeoJSON = () => {
-    var geoJSONData = _this.map.getSource("omh-geojson");
+  resetGeoJSON(){
+    var geoJSONData = this.map.getSource("omh-geojson");
     geoJSONData.setData({
       type: 'FeatureCollection',
       features: []
     });
-    _this.map.flyTo({center: [0,0], zoom:0});
-  };
+    this.map.flyTo({center: [0,0], zoom:0});
+  },
 
-  this.zoomToData = (data) => {
-    var bbox;
+  zoomToData(data: GeoJSONObject){
+    var bbox: Array<number>;
     if(data.bbox && data.bbox.length > 0){
-       bbox = data.bbox;      
+       bbox = (data.bbox: Array<number>) ;      
     }else{
        bbox = _bbox(data);
     }
@@ -52,7 +54,7 @@ export default function(){
       if(e > 85) e = 85;
 
       var bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
-      _this.map.fitBounds(bounds, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
+      this.map.fitBounds(bounds, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
     }  
-  };
-}
+  }
+};

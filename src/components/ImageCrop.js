@@ -88,7 +88,9 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
   constructor(props: Props){
 		super(props);
     this.state.autoCropArea = props.autoCropArea;
-    this.state.aspectRatio = props.aspectRatio;
+    if(props.aspectRatio){
+      this.state.aspectRatio = props.aspectRatio;
+    }
 	}
 
   componentWillReceiveProps(nextProps: Props) {
@@ -140,7 +142,7 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
 resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
   var pica = null;
   if (typeof window === 'undefined') {
-    return;
+    return new Promise();
   }else{
     pica = require("../../node_modules/pica/dist/pica.min.js")();
   }
@@ -198,8 +200,12 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       scaledHeight = (!resize_max_height || resize_max_height > proportionalHeight) ? proportionalHeight : resize_max_height;
     }else{
       //no need to resize
-      let data = sourceCanvas.toDataURL(_this.state.file.type);
-      fulfill(data);
+      if(_this.state.file){
+         let data = sourceCanvas.toDataURL(_this.state.file.type);
+        fulfill(data);
+      }else{
+        throw new Error('missing file');
+      }
       return;
     }
 
@@ -222,8 +228,12 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       unsharpThreshold: 2
     })
     .then(result => {
-      var data = result.toDataURL(_this.state.file.type, quality);
-      fulfill(data);
+      if(_this.state.file){
+        var data = result.toDataURL(_this.state.file.type, quality);
+        fulfill(data);
+      }else{
+        throw new Error('missing file');
+      }
     }).catch(err => {
       reject(err);
     });
@@ -396,7 +406,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
    cropOriginal = () => {
     this.resetCropPosition();
-    this.setState({autoCropArea: 1, aspectRatio: null});
+    this.setState({autoCropArea: 1, aspectRatio: NaN});
   }
 
   aspect16by9 = () => {
@@ -481,7 +491,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
             <a className="btn-floating btn waves-effect waves-light" onClick={this.zoomIn}><i className="material-icons">zoom_in</i></a>
             <a className="btn-floating btn waves-effect waves-light" onClick={this.zoomOut}><i className="material-icons">zoom_out</i></a>
             {cropOriginalBtn}{crop16by9Btn}{crop3by2Btn}{cropSquareBtn}
-            <a className="btn-floating btn waves-effect waves-light" onClick={this.reset}><i className="material-icons">restore</i></a>
+            <a className="btn-floating btn waves-effect waves-light" onClick={this.resetCropPosition}><i className="material-icons">restore</i></a>
         </div>
       );
 

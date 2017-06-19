@@ -82,7 +82,10 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
  componentDidMount() {
    /*eslint-disable react/no-find-dom-node */
    if (this.props.autoFocus) {  
-     ReactDOM.findDOMNode(this.refs.value).focus();
+     let domNode = ReactDOM.findDOMNode(this.refs.value);
+     if(domNode){
+       domNode.focus();
+     }
    }
    
    $(ReactDOM.findDOMNode(this.refs.suggestions)).dropdown({
@@ -98,7 +101,9 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
  }
 
  componentWillUnmount () {
-   document.body.removeEventListener('click', this.hideSuggestions);
+   if(document && document.body){
+    document.body.removeEventListener('click', this.hideSuggestions);
+   }
  }
 
  updateSuggestions = (input: string, resolve: Function) => {

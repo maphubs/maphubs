@@ -25,7 +25,7 @@ module.exports = {
         if(err){
           log.error(err);
         }
-        if(res == true){
+        if(res === true){
           cb(true);
         }else{
           log.warn('Invalid Password Attempt for: ' + user.display_name);

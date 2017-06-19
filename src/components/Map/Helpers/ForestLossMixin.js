@@ -1,7 +1,8 @@
 
-export default function() {
-  var _this = this;
-  this.getLayer = (type, year) => {
+//@flow
+module.exports = {
+
+  getForestLossLayer(type: string, year: number){
     return {
       "id": `omh-${type}-${year}`,
       "source": {
@@ -28,27 +29,27 @@ export default function() {
           }
         }
     };
-  };
+  },
 
-  this.toggleForestLoss = () =>{
-    if(!_this.state.showForestLoss){
-      if(_this.props.onToggleForestLoss){
-        _this.props.onToggleForestLoss(true);
+  toggleForestLoss(){
+    if(!this.state.showForestLoss){
+      if(this.props.onToggleForestLoss){
+        this.props.onToggleForestLoss(true);
       }
-      _this.addForestLossLayers();
+      this.addForestLossLayers();
       
     }else{
-      if(_this.props.onToggleForestLoss){
-        _this.props.onToggleForestLoss(false);
+      if(this.props.onToggleForestLoss){
+        this.props.onToggleForestLoss(false);
       }
-      _this.removeForestLossLayers();
+      this.removeForestLossLayers();
       
     }
     
-  };
+  },
 
-  this.getFirstLabelLayer = () =>{
-    var glStyle = _this.state.glStyle;
+  getFirstLabelLayer(){
+    var glStyle = this.state.glStyle;
     var firstLayer;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       glStyle.layers.forEach(layer=>{
@@ -56,29 +57,29 @@ export default function() {
           firstLayer = layer.id;
         }
       });
-    }else if(_this.state.baseMap === 'default' ||
-       _this.state.baseMap === 'dark' ||
-       _this.state.baseMap === 'streets'){
+    }else if(this.state.baseMap === 'default' ||
+       this.state.baseMap === 'dark' ||
+       this.state.baseMap === 'streets'){
       firstLayer = 'place_other';
     }
      return firstLayer;
   },
 
-  this.addForestLossLayers = () => {   
+  addForestLossLayers(){   
     
     var addBefore = 'water';
-    var glStyle = _this.state.glStyle;
+    var glStyle = this.state.glStyle;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       addBefore = glStyle.layers[0].id;
     }
 
-    var treecoverLayer = _this.getLayer('treecover', 2001);
-    _this.map.addSource(treecoverLayer.id, treecoverLayer.source);
-    _this.map.addLayer(treecoverLayer.layer, addBefore);
+    var treecoverLayer = this.getForestLossLayer('treecover', 2001);
+    this.map.addSource(treecoverLayer.id, treecoverLayer.source);
+    this.map.addLayer(treecoverLayer.layer, addBefore);
     
     /*
     for(var i = 2001; i <= 2014; i++){
-      var treecoverLayer = _this.getLayer('treecover', i);
+      var treecoverLayer = _this.getForestLossLayer('treecover', i);
       _this.map.addSource(treecoverLayer.id, treecoverLayer.source);
       _this.map.addLayer(treecoverLayer.layer, addBefore);
             
@@ -87,45 +88,45 @@ export default function() {
     var firstLabelLayer = this.getFirstLabelLayer();
 
     for(var j = 2001; j <= 2014; j++){
-      var lossLayer = _this.getLayer('lossyear', j);
-      _this.map.addSource(lossLayer.id, lossLayer.source);
+      var lossLayer = this.getForestLossLayer('lossyear', j);
+      this.map.addSource(lossLayer.id, lossLayer.source);
       if(firstLabelLayer){
-        _this.map.addLayer(lossLayer.layer, firstLabelLayer);
+        this.map.addLayer(lossLayer.layer, firstLabelLayer);
       }else{
-        _this.map.addLayer(lossLayer.layer);
+        this.map.addLayer(lossLayer.layer);
       }
       
     }
-    _this.setState({showForestLoss: true});
+    this.setState({showForestLoss: true});
   },
 
-  this.removeForestLossLayers = () => {
+  removeForestLossLayers(){
 
-     var treecoverLayer = _this.getLayer('treecover', 2001);
-       _this.map.removeLayer(treecoverLayer.layer.id);
-        _this.map.removeSource(treecoverLayer.id);
+     var treecoverLayer = this.getForestLossLayer('treecover', 2001);
+       this.map.removeLayer(treecoverLayer.layer.id);
+        this.map.removeSource(treecoverLayer.id);
 
     for(var i = 2001; i <= 2014; i++){
       /*
-       var treecoverLayer = _this.getLayer('treecover', i);
+       var treecoverLayer = _this.getForestLossLayer('treecover', i);
        _this.map.removeLayer(treecoverLayer.layer.id);
         _this.map.removeSource(treecoverLayer.id);
 */
-       var lossLayer = _this.getLayer('lossyear', i);
-        _this.map.removeLayer(lossLayer.layer.id);
-        _this.map.removeSource(lossLayer.id);
+       var lossLayer = this.getForestLossLayer('lossyear', i);
+        this.map.removeLayer(lossLayer.layer.id);
+        this.map.removeSource(lossLayer.id);
     }
 
-    _this.setState({showForestLoss: false});
+    this.setState({showForestLoss: false});
   },
 
-  this.tick = (year) => {
+  tick(year: number){
     //add this year
     if(year === 2001){
-      _this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
+      this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
     }
     //this.map.setLayoutProperty(`omh-treecover-${year}`, 'visibility', 'visible');
-    _this.map.setLayoutProperty(`omh-lossyear-${year}`, 'visibility', 'visible');
+    this.map.setLayoutProperty(`omh-lossyear-${year}`, 'visibility', 'visible');
 
     setTimeout(()=>{
       if(year > 2001){
@@ -137,11 +138,11 @@ export default function() {
         //_this.map.setLayoutProperty(`omh-treecover-${2014}`, 'visibility', 'none');
         //reset hide all loss years
         for(var i = 2002; i <= 2014; i++){
-          _this.map.setLayoutProperty(`omh-lossyear-${i}`, 'visibility', 'none');
+          this.map.setLayoutProperty(`omh-lossyear-${i}`, 'visibility', 'none');
         }
         
       }
     }, 1000);
 
-  };
-}
+  }
+};

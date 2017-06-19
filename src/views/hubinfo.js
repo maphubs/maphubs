@@ -33,18 +33,26 @@ type Props = {
   popularMaps: Array<Object>,
   locale: string,
   _csrf: string,
-  footerConfig: Object
+  footerConfig: Object,
+  mapConfig: Object
+}
+
+type DefaultProps = {
+  hub: Object,
+   layers: Array<Object>,
+  stories: Array<Object>,
+  canEdit: boolean
 }
 
 type State = {
   editing: boolean
 } & LocaleStoreState & HubStoreState
 
-export default class HubInfo extends MapHubsComponent<void, Props, State> {
+export default class HubInfo extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     hub: {
       name: "Unknown"
     },
@@ -143,6 +151,7 @@ export default class HubInfo extends MapHubsComponent<void, Props, State> {
           <div className="row" style={{height: 'calc(100vh - 65px)'}}>
             <HubMap editing={this.state.editing} height="calc(100% - 65px)" 
             hub={this.state.hub} myMaps={this.props.myMaps} popularMaps={this.props.popularMaps}
+            mapConfig={this.props.mapConfig}
             border/>          
           </div>
           <div className="row no-margin">

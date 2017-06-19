@@ -154,7 +154,7 @@ module.exports = {
       return db('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
         .then((hubResult) => {
-          if (hubResult && hubResult.length == 1) {
+          if (hubResult && hubResult.length === 1) {
             return db('omh.hub_images').select().distinct('type')
             .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
             .then((imagesResult) => {
@@ -163,9 +163,9 @@ module.exports = {
               var hasBannerImage = false;
               if(imagesResult && imagesResult.length > 0){
                 imagesResult.forEach((result) => {
-                  if(result.type == 'logo'){
+                  if(result.type === 'logo'){
                     hasLogoImage = true;
-                  }else if(result.type == 'banner'){
+                  }else if(result.type === 'banner'){
                     hasBannerImage = true;
                   }
                 });
@@ -227,7 +227,7 @@ module.exports = {
   return knex.select('private').from('omh.hubs')
     .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0].private;
       }
       //else
@@ -249,7 +249,7 @@ module.exports = {
     checkHubIdAvailable(hub_id: string) {
       return this.getHubByID(hub_id)
         .then((result) => {
-          if (result == null) return true;
+          if (result === null) return true;
           return false;
         });
     },

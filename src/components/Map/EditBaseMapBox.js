@@ -33,7 +33,7 @@ export default class EditBaseMapBox extends MapHubsComponent<void, Props, void> 
     window.location = links.osm;
   }
 
-  openLogginRoads = () =>{
+  openLoggingRoads = () =>{
     var links = this.getLinks();
     window.location = links.loggingroads;
   }

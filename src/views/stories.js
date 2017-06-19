@@ -9,6 +9,8 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
+import type {UserStoreState} from '../stores/UserStore';
+
 type Props = {|
   popularStories: Array<Object>,
   recentStories: Array<Object>,
@@ -18,7 +20,9 @@ type Props = {|
   headerConfig: Object
 |}
 
-export default class Stories extends MapHubsComponent<void, Props, void> {
+type State = UserStoreState;
+
+export default class Stories extends MapHubsComponent<void, Props, State> {
 
   props: Props
 
@@ -29,7 +33,7 @@ export default class Stories extends MapHubsComponent<void, Props, void> {
 	}
 
   onCreateStory = () => {
-    if(this.state.user.display_name){
+    if(this.state.user && this.state.user.display_name){
       window.location= '/user/' + this.state.user.display_name + '/stories';
     }else{
       MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')});

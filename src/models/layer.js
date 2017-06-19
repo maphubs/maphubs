@@ -344,7 +344,7 @@ module.exports = {
     /**
    * Can include private?: Yes
    */
-  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null): Bluebird$Promise<boolean>{
+  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null): Bluebird$Promise<boolean> | any{
     if(!layer_id || user_id <= 0){
       return false;
     }
@@ -461,7 +461,7 @@ module.exports = {
               //rebuild map style, excluding the removed layer
               var layers = result;
               var map_id = result[0].map_id;
-              var style = Map.buildMapStyle(layers);
+              var style = MapStyles.style.buildMapStyle(layers);
               saveMapStyleCommands.push(db('omh.maps').where({map_id}).update({style, screenshot: null, thumbnail: null}));
             });
             return Promise.all(saveMapStyleCommands)
@@ -568,7 +568,7 @@ module.exports = {
                   .then(() => {
                     return Map.getMapLayers(map.map_id, trx)
                     .then((layers) => {                    
-                      var style = Map.buildMapStyle(layers);
+                      var style = MapStyles.style.buildMapStyle(layers);
                       return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});
                     });
                   });
@@ -597,7 +597,7 @@ module.exports = {
                   .then(() => {
                     return _this.getHubLayers(hub.hub_id, true, trx)
                     .then((layers) => {
-                      var map_style = Map.buildMapStyle(layers);
+                      var map_style = MapStyles.style.buildMapStyle(layers);
                       return db('omh.hubs').where({hub_id: hub.hub_id}).update({map_style});
                     });
                   });

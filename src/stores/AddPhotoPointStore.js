@@ -123,11 +123,20 @@ export default class AddPhotoPointStore extends Reflux.Store {
     var _this = this;
 
     //save fields into geoJSON
-    var geoJSON = this.state.geoJSON;
-      Object.keys(fields).map((key) => {
-         var val = fields[key];
-         geoJSON.features[0].properties[key] = val;
-     });
+    if(this.state.geoJSON && 
+      this.state.geoJSON.features && 
+      Array.isArray( this.state.geoJSON.features) &&
+      this.state.geoJSON.features.length > 0){
+      let firstFeature: Object = this.state.geoJSON.features[0];
+      if(firstFeature){
+        Object.keys(fields).map((key) => {
+            let val = fields[key];  
+            if(firstFeature.properties){
+              firstFeature.properties[key] = val;
+            }                             
+        });
+      }
+    }
 
     request.post('/api/layer/addphotopoint')
     .type('json').accept('json')

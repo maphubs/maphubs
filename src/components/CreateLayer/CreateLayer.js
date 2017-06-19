@@ -9,7 +9,9 @@ type Props = {|
   showPrev?: boolean,
   onPrev?: Function,
   onCancel?: Function,
-  mapConfig: Object
+  mapConfig: Object,
+  showCancel?: boolean,
+  cancelText?: string
 |}
 
 type State = {
@@ -56,6 +58,15 @@ export default class CreateLayer extends MapHubsComponent<void, Props, State> {
             selected={this.state.source === 'planet'} icon="cloud_download"
             onSelect={this.selectSource} />
           </div>
+      );
+    }
+
+    var cancelButton = '';
+    if(this.props.showCancel){
+      cancelButton = (
+        <div className="left">
+          <button className="waves-effect waves-light btn" onClick={this.props.onCancel}>{this.props.cancelText}</button>
+        </div>
       );
     }
 
@@ -120,6 +131,7 @@ export default class CreateLayer extends MapHubsComponent<void, Props, State> {
         <div className="container">
           {sourceDisplay}
         </div>
+        {cancelButton}
         
       </div>
     );

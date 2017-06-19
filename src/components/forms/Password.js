@@ -8,9 +8,9 @@ import UserActions from '../../actions/UserActions';
 import MapHubsComponent from '../MapHubsComponent';
 
 type Props = {
-  onSave: Function,
-  userid: number,
-  passreset: string,
+  onSave?: Function,
+  userid?: number,
+  passreset?: string,
   csrf:  string
 }
 

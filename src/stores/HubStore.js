@@ -9,7 +9,7 @@ import type {Layer} from './layer-store';
 
 
 export type Hub = {
-  hub_id: string,
+  hub_id?: string,
   name?: string,
   description?: string,
   tagline?: string,
@@ -34,7 +34,8 @@ export type HubStoreState = {
   hasLogoImage?: boolean,
   hasBannerImage?: boolean,
   unsavedChanges?: boolean,
-  saving?: boolean
+  saving?: boolean,
+  created?: boolean
 }
 
 export default class HubStore extends Reflux.Store {
@@ -111,7 +112,7 @@ export default class HubStore extends Reflux.Store {
          name,
          published
        };
-       _this.setState({hub});
+       _this.setState({hub, created: true});
        _this.trigger(_this.state);
        cb(null);
      });
@@ -121,8 +122,8 @@ export default class HubStore extends Reflux.Store {
  saveHub(_csrf: string, cb: Function){
    debug('save hub');
    var _this = this;
-
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
+  let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+   var baseUrl = '/hub/' + hub_id;
 
    this.setState({saving: true});
    request.post(baseUrl + '/api/save')
@@ -154,7 +155,8 @@ export default class HubStore extends Reflux.Store {
  setPrivate(isPrivate: boolean, _csrf: string, cb: Function){
     var _this = this;
     debug('hub privacy');
-    var baseUrl = '/hub/' + this.state.hub.hub_id;
+    let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+    var baseUrl = '/hub/' + hub_id;
     request.post(baseUrl + '/api/privacy')
     .type('json').accept('json')
     .send({
@@ -175,7 +177,8 @@ export default class HubStore extends Reflux.Store {
   transferOwnership(to_group_id: string, _csrf: string, cb: Function){
     var _this = this;
     debug('hub privacy');
-    var baseUrl = '/hub/' + this.state.hub.hub_id;
+    let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+    var baseUrl = '/hub/' + hub_id;
     request.post(baseUrl + '/api/transfer')
     .type('json').accept('json')
     .send({
@@ -196,7 +199,8 @@ export default class HubStore extends Reflux.Store {
  deleteHub(_csrf: string, cb: Function){
    var _this = this;
    debug('delete hub');
-   var baseUrl = '/hub/' + this.state.hub.hub_id;
+   let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+   var baseUrl = '/hub/' + hub_id;
 
    request.post(baseUrl + '/api/delete')
    .type('json').accept('json')

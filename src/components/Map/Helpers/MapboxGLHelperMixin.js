@@ -1,49 +1,52 @@
-//var _includes = require('lodash.includes');
+//@flow
 var debug = require('../../../services/debug')('mapboxGLHelperMixin');
 
 /**
  * Helper functions for interfacing with MapboxGL
  */
-export default function(){
-  var _this = this;
-  this.getBounds = () => {
-    if(_this.map){
-      return _this.map.getBounds().toArray();
-    }
-  };
+module.exports = {
 
-  this.getPosition = () => {
-    if(_this.map){
-      var center =_this.map.getCenter();
-      var zoom = _this.map.getZoom();
+  getBounds(){
+    if(this.map){
+      return this.map.getBounds().toArray();
+    }
+  },
+
+  getPosition(){
+    if(this.map){
+      var center = this.map.getCenter();
+      var zoom = this.map.getZoom();
       return {
           zoom,
           lng: center.lng,
           lat: center.lat
       };
     }
-  };
+  },
 
-  this.updatePosition = () => {
-    debug('(' + _this.state.id + ') ' +'UPDATE POSITION');
-    var map = _this.map;
-    map.setView(_this.state.map.position.center, _this.state.map.position.zoom, {animate: false});
-  };
+  updatePosition(){
+    debug('(' + this.state.id + ') ' +'UPDATE POSITION');
+    var map = this.map;
+    map.setView(this.state.map.position.center, this.state.map.position.zoom, {animate: false});
+  },
 
-  this.flyTo = (center, zoom) => {
-    _this.map.flyTo({center, zoom});
-  };
+  flyTo(center: any, zoom: number){
+    this.map.flyTo({center, zoom});
+  },
 
-  this.getBoundsObject = (bbox) => {
+  getBoundsObject(bbox: Array<number>){
     return [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
-  };
+  },
 
-  this.fitBounds = (bbox, maxZoom, padding = 0, animate = true) => {
+  fitBounds(bbox: Array<number>, maxZoom: number, padding: number = 0, animate: boolean = true){
     var bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
-    _this.map.fitBounds(bounds, {padding, curve: 1, speed:0.6, maxZoom, animate});
-  };
+    this.map.fitBounds(bounds, {padding, curve: 1, speed:0.6, maxZoom, animate});
+  },
 
-  this.changeLocale = (locale, map) => {
+  changeLocale(locale: string, map: any){
+  if(!locale || !map){
+    debug('missing required args');
+  }
   //disable until OpenMapTile has translations;
     /*
     var supportedLangauges = ['en', 'fr', 'es', 'de', 'de', 'ru', 'zh'];
@@ -91,5 +94,5 @@ export default function(){
     }
 */
 
-  };
-}
+  }
+};

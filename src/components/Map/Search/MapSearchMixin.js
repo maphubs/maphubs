@@ -6,10 +6,10 @@ var _find = require('lodash.find');
 var _bbox = require('@turf/bbox');
 var uuid = require('uuid').v1;
 
-export default function() {
-  var _this = this;
+module.exports = {
 
-  this.getSearchFilters = (query: string) => {
+  getSearchFilters(query: string){
+    let _this = this;
     query = `/.*${query}.*/ig`;
     let sourceIDs = [];
     let queries = [];
@@ -40,9 +40,9 @@ export default function() {
       });
     }
     return queries;
-  };
+  },
 
-  this.onSearch = (queryText: string) => {
+  onSearch(queryText: string){
     var _this = this;
     var results = {
       bbox: [],
@@ -143,20 +143,23 @@ export default function() {
     debug(results);
     return results;
     
-  };
+  },
 
-  this.onSearchResultClick = (result: Object) => {
+  onSearchResultClick(result: Object){
     if(result.bbox){
-      _this.map.fitBounds(result.bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
-    }else{
-      let bbox =  _bbox(result);
-      //let bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
-      _this.map.fitBounds(bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
+      this.map.fitBounds(result.bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
+    }else if(result._geometry){
+      if(result._geometry.type === 'Point'){
+         this.map.flyTo({center: result._geometry.coordinates});
+      }else{
+         let bbox =  _bbox(result);
+         this.map.fitBounds(bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 22});
+      }  
     }  
-  };
+  },
 
-  this.onSearchReset = () => {
+  onSearchReset() {
     //TODO: remove display layer from map
-  };
+  }
 
-}
+};

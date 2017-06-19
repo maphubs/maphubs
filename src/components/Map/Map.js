@@ -43,6 +43,7 @@ if (typeof window !== 'undefined') {
 import type {GLStyle} from '../../types/mapbox-gl-style';
 import type {GeoJSONObject} from 'geojson-flow';
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
+import type {Layer} from '../../stores/layer-store';
 
 type Props = {|
     className: string,
@@ -152,16 +153,6 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         this.stores.push(BaseMapStore);
         this.stores.push( MarkerStore);
         
-        MapboxGLHelperMixin.call(this);
-        MapboxGLHelperMixin.call(this);
-        MapInteractionMixin.call(this);
-        MapGeoJSONMixin.call(this);
-        MeasurementToolMixin.call(this); 
-        ForestAlertMixin.call(this);
-        DataEditorMixin.call(this);
-       ForestLossMixin.call(this);
-       MapSearchMixin.call(this);
-
        Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate');
        Reflux.listenTo(AnimationActions.tick, 'tick');
 
@@ -296,18 +287,23 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     });
   }
 
-  removeAllLayers = (prevStyle: Object) => {
+  removeAllLayers = (prevStyle: GLStyle) => {
     var _this = this;
     if(prevStyle && prevStyle.layers){
       prevStyle.layers.forEach((layer) => {
         try{
-          var source = prevStyle.sources[layer.source];
-          if(layer.source !== 'osm' && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
-            LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
-          }else if(source.type === 'geojson' && source.data){
-            LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
-          }else if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
-            LayerSources[source.type].removeLayer(layer, _this.map);
+          let source;
+          if(prevStyle.sources && layer.source){
+            source = prevStyle.sources[layer.source];  
+            if(layer.source !== 'osm' && source.type === 'vector' && (!source.url || !source.url.startsWith('mapbox://'))  ){
+              LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
+            }else if(source.type === 'geojson' && source.data){
+              LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
+            }else if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
+              LayerSources[source.type].removeLayer(layer, _this.map);
+            }else{
+              _this.map.removeLayer(layer.id);
+            }
           }else{
             _this.map.removeLayer(layer.id);
           }
@@ -318,7 +314,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
   }
 
-  removeAllSources = (prevStyle: Object) => {
+  removeAllSources = (prevStyle: GLStyle) => {
     var _this = this;
       if(prevStyle && prevStyle.sources){
       Object.keys(prevStyle.sources).forEach((key) => {
@@ -335,7 +331,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
   }
 
-  reload = (prevStyle: Object, newStyle: Object, baseMap: string) => {
+  reload = (prevStyle: GLStyle, newStyle: GLStyle, baseMap?: string) => {
     var _this = this;
     debug('(' + _this.state.id + ') ' +'reload: start');
     //clear selected when reloading
@@ -346,7 +342,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
 
     //if no style is provided assume we are reloading the active style
-    if(!prevStyle) prevStyle = this.props.glStyle;
+    if(!prevStyle && this.props.glStyle) prevStyle = this.props.glStyle;
     if(!newStyle) newStyle = prevStyle;
     this.removeAllLayers(prevStyle);
     this.removeAllSources(prevStyle);
@@ -365,7 +361,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
   }
 
-  addMapData = (map, glStyle: Object, geoJSON: Object, cb: Function) => {
+  addMapData = (map, glStyle: Object, geoJSON?: GeoJSONObject, cb: Function) => {
     var _this = this;
     if(glStyle && glStyle.sources){
       var sources = [];
@@ -524,12 +520,13 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         debug('(' + this.state.id + ') ' +'update geoJSON data');
         //update existing data
         geoJSONData.setData(nextProps.data);
-        this.zoomToData(nextProps.data);
+        this.zoomToData(nextProps.data);       
+       
       }else if(geoJSONData === undefined && this.props.data){
         //do nothing, still updating from the last prop change...
       }else {
         debug('(' + this.state.id + ') ' +'init geoJSON data');
-        if(this.state.mapLoaded){
+        if(this.state.mapLoaded && nextProps.data){
           this.initGeoJSON(this.map, nextProps.data);
         }else{
           debug(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
@@ -807,4 +804,199 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         </div>
     );
   }
+
+  //GeoJSONMixin
+  initGeoJSON = (map: any, data: GeoJSONObject) => {
+    return MapGeoJSONMixin.initGeoJSON.bind(this)(map, data);
+  }
+
+  resetGeoJSON = () => {
+    return MapGeoJSONMixin.resetGeoJSON.bind(this)();
+  }
+
+  zoomToData = (data: GeoJSONObject) => {
+    return MapGeoJSONMixin.zoomToData.bind(this)(data);
+  }
+
+  //MapInteractionMixin
+
+  setSelectionFilter = (features: Array<Object>) => {
+    return MapInteractionMixin.setSelectionFilter.bind(this)(features);
+  }
+
+  clearSelectionFilter = () => {
+    return MapInteractionMixin.clearSelectionFilter.bind(this)();
+  }
+
+  handleUnselectFeature = () => {
+    return MapInteractionMixin.handleUnselectFeature.bind(this)();
+  }
+
+  clearSelection = () => {
+    return MapInteractionMixin.clearSelection.bind(this)();
+  }
+
+  getInteractiveLayers = (glStyle: GLStyle) => {
+    return MapInteractionMixin.getInteractiveLayers.bind(this)(glStyle);
+  }
+
+  clickHandler = (e: any) => {
+    return MapInteractionMixin.clickHandler.bind(this)(e);
+  }
+
+  moveendHandler = () => {
+    return MapInteractionMixin.moveendHandler.bind(this)();
+  }
+
+  mousemoveHandler = (e: any) => {
+    return MapInteractionMixin.mousemoveHandler.bind(this)(e);
+  }
+
+  //DataEditorMixin
+
+  getFirstDrawLayerID = () => {
+    return DataEditorMixin.getFirstDrawLayerID.bind(this)();
+  }
+
+  getEditorStyles = () =>{
+    return DataEditorMixin.getEditorStyles.bind(this)();
+  }
+
+  startEditingTool = (layer: Layer) =>{
+    return DataEditorMixin.startEditingTool.bind(this)(layer);
+  }
+
+  stopEditingTool = () => {
+    return DataEditorMixin.stopEditingTool.bind(this)();
+  }
+
+  updateEdits = (e: any) => {
+    return DataEditorMixin.updateEdits.bind(this)(e);
+  }
+
+  onFeatureUpdate = (type: string, feature: Object) => {
+    return DataEditorMixin.onFeatureUpdate.bind(this)(type, feature);
+  }
+
+  updateMapLayerFilters = () => {
+    return DataEditorMixin.updateMapLayerFilters.bind(this)();
+  }
+
+  //MeasurementToolMixin
+  toggleMeasurementTools = (enable: boolean) => {
+    return MeasurementToolMixin.toggleMeasurementTools.bind(this)(enable);
+  }
+
+  startMeasurementTool = () => {
+    return MeasurementToolMixin.startMeasurementTool.bind(this)();
+  }
+
+  stopMeasurementTool = () => {
+    return MeasurementToolMixin.stopMeasurementTool.bind(this)();
+  }
+
+  updateMeasurement = () => {
+    return MeasurementToolMixin.updateMeasurement.bind(this)();
+  }
+
+
+  //MapSearchMixin
+  onSearch = (queryText: string) => {
+    return MapSearchMixin.onSearch.bind(this)(queryText);
+  }
+
+  onSearchResultClick = (result: Object) => {
+    return MapSearchMixin.onSearchResultClick.bind(this)(result);
+  }
+
+  onSearchReset = () => {
+    return MapSearchMixin.onSearchReset.bind(this)();
+  }
+
+  getSearchFilters = (query: string) => {
+    return MapSearchMixin.getSearchFilters.bind(this)(query);
+  }
+
+  //MapboxGLHelperMixin
+  getBounds = () => {
+    return MapboxGLHelperMixin.getBounds.bind(this)();
+  }
+
+  getPosition = () => {
+    return MapboxGLHelperMixin.getPosition.bind(this)();
+  }
+
+  updatePosition = () => {
+    return MapboxGLHelperMixin.updatePosition.bind(this)();
+  }
+
+  flyTo = (center: any, zoom: number) => {
+    return MapboxGLHelperMixin.flyTo.bind(this)(center, zoom);
+  }
+
+  getBoundsObject = (bbox: Array<number>) => {
+    return MapboxGLHelperMixin.getBoundsObject.bind(this)(bbox);
+  }
+
+  fitBounds = (bbox: any, maxZoom: number, padding: number = 0, animate: boolean = true) => {
+    return MapboxGLHelperMixin.fitBounds.bind(this)(bbox, maxZoom, padding, animate);
+  }
+
+  changeLocale = (locale: string, map: any) => {
+    return MapboxGLHelperMixin.changeLocale.bind(this)(locale, map);
+  }
+
+  //ForestAlertMixin
+
+  getDefaultForestAlertState = () => {
+    return ForestAlertMixin.getDefaultForestAlertState.bind(this)();
+  }
+
+  toggleForestAlerts = (config: Object) => {
+    return ForestAlertMixin.toggleForestAlerts.bind(this)(config);
+  }
+
+  restoreForestAlerts = () => {
+    return ForestAlertMixin.restoreForestAlerts.bind(this)();
+  }
+
+  calculateForestAlerts = () => {
+    return ForestAlertMixin.calculateForestAlerts.bind(this)();
+  }
+
+  addGLADLayer = () => {
+    return ForestAlertMixin.addGLADLayer.bind(this)();
+  }
+
+  removeGLADLayer = () => {
+    return ForestAlertMixin.removeGLADLayer.bind(this)();
+  }
+
+  //ForestLossMixin
+
+  getForestLossLayer = (type: string, year: number) => {
+    return ForestLossMixin.getForestLossLayer.bind(this)(type, year);
+  }
+
+  toggleForestLoss = () => {
+    return ForestLossMixin.toggleForestLoss.bind(this)();
+  }
+
+  getFirstLabelLayer = () => {
+    return ForestLossMixin.getFirstLabelLayer.bind(this)();
+  }
+
+  addForestLossLayers = () => {
+    return ForestLossMixin.addForestLossLayers.bind(this)();
+  } 
+
+  removeForestLossLayers = () => {
+    return ForestLossMixin.removeForestLossLayers.bind(this)();
+  }
+
+  tick = (year: number) => {
+    return ForestLossMixin.tick.bind(this)(year);
+  }
+
+
 }
