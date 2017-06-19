@@ -62,7 +62,7 @@ type Props = {|
     showPlayButton: boolean,
     showLogo: boolean,
     showFeatureInfoEditButtons: boolean,
-    fitBounds?: Array<number>,
+    fitBounds?: NestedArray<number>,
     fitBoundsOptions: Object,
     disableScrollZoom?: boolean,
     enableRotation?: boolean,
@@ -105,13 +105,13 @@ type Props = {|
 
   type State = {
     id: string,
-    selectedFeatures?: Array<Object>,
+    selectedFeature?: Object,
     selected: boolean,
     interactive: boolean,
     glStyle: GLStyle,
     interactiveLayers: [],
     mapLoaded: boolean,
-    restoreBounds?: Array<number>,
+    restoreBounds?: NestedArray<number>,
     allowLayersToMoveMap: boolean
   } & BaseMapStoreState
 
@@ -164,7 +164,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       var interactiveLayers = [];
       if(this.props.glStyle){
         //TODO: why are we cloning the GLStyle?
-        glStyle = JSON.parse(JSON.stringify(this.props.glStyle));
+        glStyle = (JSON.parse(JSON.stringify(this.props.glStyle)):GLStyle);
         interactiveLayers = this.getInteractiveLayers(glStyle);
       }
       this.state = {
@@ -196,7 +196,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     //always update if there is a selection
     //avoids glitch where feature hover doesn't show
     if(this.state.selected || nextState.selected
-    || this.state.selectedFeatures || nextState.selectedFeatures){
+    || this.state.selectedFeature || nextState.selectedFeature){
       return true;
     }
 
@@ -690,10 +690,10 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     var className = classNames('mode', 'map', 'active');
 
     var featureBox = '';
-    if(this.state.selectedFeatures && this.state.selectedFeatures.length > 0){
+    if(this.state.selectedFeature){
       featureBox = (
         <FeatureBox
-            features={this.state.selectedFeatures}
+            feature={this.state.selectedFeature}
             selected={this.state.selected}
             onUnselected={this.handleUnselectFeature}
             showButtons={this.props.showFeatureInfoEditButtons}
@@ -848,8 +848,8 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     return MapInteractionMixin.moveendHandler.bind(this)();
   }
 
-  mousemoveHandler = (e: any) => {
-    return MapInteractionMixin.mousemoveHandler.bind(this)(e);
+  mousemoveHandler = () => {
+    return MapInteractionMixin.mousemoveHandler.bind(this)();
   }
 
   //DataEditorMixin

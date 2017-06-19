@@ -5,6 +5,7 @@ import DataEditorStore from '../../stores/DataEditorStore';
 import DataCollectionForm from '../DataCollection/DataCollectionForm';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
+import MapStyles from '../Map/Styles';
 
 type Props = {
 
@@ -48,9 +49,13 @@ export default class EditLayerPanel extends MapHubsComponent<void, Props, State>
     }
 
     var featureAttributes = '';
-    if(feature){
+    if(feature && this.state.editingLayer && this.state.editingLayer.style){
+      let firstSource = Object.keys(this.state.editingLayer.style.sources)[0];
+      let presets = MapStyles.settings.getSourceSetting(this.state.editingLayer.style, firstSource, 'presets');
+
+
       featureAttributes = (
-        <DataCollectionForm presets={this.state.editingLayer.presets} 
+        <DataCollectionForm presets={presets} 
           values={feature.geojson.properties}
           onChange={this.onChange}
           showSubmit={false} />

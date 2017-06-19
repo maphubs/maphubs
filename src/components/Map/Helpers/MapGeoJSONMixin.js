@@ -8,7 +8,7 @@ import type {GeoJSONObject} from 'geojson-flow';
 module.exports = {
   initGeoJSON(map: any, data: GeoJSONObject){
     
-    if(data && data.features && data.features.length > 0){
+    if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
       map.addSource("omh-geojson", {"type": "geojson", data});
       var glStyle = MapStyles.style.defaultStyle('geojson', null, null);
       glStyle.sources["omh-geojson"] = {"type": "geojson", data: {}}; //just a placeholder
@@ -38,7 +38,7 @@ module.exports = {
 
   zoomToData(data: GeoJSONObject){
     var bbox: Array<number>;
-    if(data.bbox && data.bbox.length > 0){
+    if(data.bbox && Array.isArray(data.bbox) && data.bbox.length > 0){
        bbox = (data.bbox: Array<number>) ;      
     }else{
        bbox = _bbox(data);

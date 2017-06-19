@@ -53,7 +53,7 @@ module.exports = {
       this.map.removeClass('selected');
     }
     this.clearSelectionFilter();
-    this.setState({selectedFeatures:null});
+    this.setState({selectedFeature: undefined});
   },
 
   getInteractiveLayers(glStyle: GLStyle){
@@ -79,7 +79,7 @@ module.exports = {
     }
     else{
       //feature selection
-      if(!this.state.selected && this.state.selectedFeatures && this.state.selectedFeatures.length > 0){
+      if(!this.state.selected && this.state.selectedFeature){
         this.setState({selected:true});
       }else{
         $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
@@ -105,7 +105,6 @@ module.exports = {
              feature.properties['maphubs_metadata'].presets = presets;
            }
         
-
           if(this.state.editing){
             if(feature.properties.layer_id && 
               this.state.editingLayer.layer_id === feature.properties.layer_id){
@@ -114,14 +113,14 @@ module.exports = {
             return; //return here to disable interactation with other layers when editing
           }
           
-
           this.setSelectionFilter([features[0]]);
-          this.setState({selectedFeatures:[features[0]], selected:true});
+          this.setState({selectedFeature:features[0], selected:true});
           map.addClass('selected');
-          } else if(this.state.selectedFeatures !== null) {
-              this.clearSelection();
-              this.setState({selected: false});
-              $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+        } 
+        else if(this.state.selectedFeature) {
+          this.clearSelection();
+            this.setState({selected: false});
+            $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
           }
       }
     }
@@ -133,47 +132,19 @@ module.exports = {
   },
 
   //fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
- mousemoveHandler(e: any){
-    var map = this.map;
+ mousemoveHandler(){
+    //var map = this.map;
     var _this = this;
    
     if(_this.state.enableMeasurementTools){
       return;
     }
     else{
-
-      if(_this.state.showBaseMaps) return;
-
       var debounced = _debounce(() => {
         if(_this.state.mapLoaded && _this.state.restoreBounds){
           debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
           _this.setState({restoreBounds:null});
           //stop restoring map possition after user has moved the map
-        }
-
-        var features = map.queryRenderedFeatures(
-          [
-            [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
-            [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
-          ],
-        {layers: _this.state.interactiveLayers});
-
-        if (features && features.length) {
-          if(_this.state.selected){
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-          } else if(_this.props.hoverInteraction){
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-            _this.setSelectionFilter(features);
-            _this.setState({selectedFeatures:features});
-            map.addClass('selected');
-          }else{
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
-          }
-        } else if(!_this.state.selected && _this.state.selectedFeatures !== null) {
-            _this.clearSelection();
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
-        } else {
-          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
         }
 
       }, 300).bind(this);

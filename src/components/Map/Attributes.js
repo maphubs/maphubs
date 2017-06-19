@@ -3,8 +3,6 @@ import React from 'react';
 
 type Props = {|
   attributes: Object,
-  selected: boolean,
-  multipleSelected: boolean,
   locale: string,
   children: any
 |}
@@ -18,9 +16,7 @@ export default class Attributes extends React.Component<void, Props, void> {
 
 
     var spacer = (<div style={{height: '50px'}}></div>);
-    if (this.props.multipleSelected){
-      spacer = (<div style={{height: '118px'}}></div>);
-    }
+    
 
     var display = '';
     var photo = '';
@@ -125,10 +121,7 @@ export default class Attributes extends React.Component<void, Props, void> {
 
 
     }
-    var marginTop = '0px';
-    if(this.props.selected){
-       marginTop = '25px';
-    }
+    var marginTop = '25px';
 
     return (
       <div style={{marginTop, width: '100%', overflowY: 'auto', height: 'calc(100% - 85px)', borderTop: '1px solid #DDD'}}>

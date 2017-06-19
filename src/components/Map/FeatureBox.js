@@ -7,12 +7,12 @@ var urlUtil = require('../../services/url-util');
 import GroupTag from '../../components/Groups/GroupTag';
 var $ = require('jquery');
 import MapHubsComponent from '../../components/MapHubsComponent';
-
+import _isequal from 'lodash.isequal';
 import type {Layer} from '../../stores/layer-store';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type Props = {|
-  features: Array<Object>,
+  feature: Object,
   selected: boolean,
   onUnselected: Function,
   showButtons: boolean
@@ -24,9 +24,6 @@ type DefaultProps = {|
 |}
 
 type State = {
-  selectedFeature: number,
-  selected: boolean,
-  currentFeatures: Array<Object>,
   maxHeight: string,
   layerLoaded: boolean,
   layer?: Layer
@@ -46,17 +43,14 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
   constructor(props: Props){
     super(props);
     this.state = {
-      selectedFeature: 1,
-      selected: this.props.selected,
-      currentFeatures: this.props.features ? this.props.features : [],
       maxHeight: 'calc(100% - 50px)',
       layerLoaded: false
     };
   }
 
   componentDidMount(){
-    if(this.props.selected && this.props.features){
-      var selectedFeature = this.props.features[0];
+    if(this.props.feature){
+      var selectedFeature = this.props.feature;
       if(selectedFeature.properties.layer_id){
           this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
       }else{
@@ -66,31 +60,14 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    //only take updates if we are not selected, otherwise data will update when user moves the mouse
-    if((!this.state.selected) ){
-      if(nextProps.selected){
-        //put this component into selected mode
-        //it will ignore all updates from the parent until closed
-        var features = null;
-        if(this.state.currentFeatures && this.state.currentFeatures.length > 0){
-          features = this.state.currentFeatures;
-          this.setState({selected: nextProps.selected, selectedFeature: 1});
-        }else{
-          features = nextProps.features;
-          this.setState({currentFeatures: nextProps.features, selected: nextProps.selected, selectedFeature: 1});
-        }
 
-        var selectedFeature = features[0];
+    if(!_isequal(this.props.feature, nextProps.feature)){
+       var selectedFeature = nextProps.feature;
         if(selectedFeature.properties.layer_id){
             this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
         }else{
           this.setState({layerLoaded: true});
         }
-
-      } else {
-        this.setState({currentFeatures: nextProps.features});
-      }
-
     }
   }
 
@@ -120,17 +97,7 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
   }
 
   handleCloseSelected = () => {
-    this.setState({selected: false, currentFeatures: [], selectedFeature: 1});
     this.props.onUnselected();
-  }
-
-  handleChangeSelectedFeature = (selectedFeature: Object) => {
-    this.setState({selectedFeature});
-    if(selectedFeature.properties.layer_id){
-        this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
-    }else{
-       this.setState({layerLoaded: true});
-    }
   }
 
   render() {
@@ -141,25 +108,23 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
 
     var baseUrl = urlUtil.getBaseUrl();
 
-    if(this.state.selected){
+    if(this.props.feature){
       closeButton = (
         <a style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}}>
           <i className="material-icons selected-feature-close" onClick={this.handleCloseSelected}>close</i>
         </a>
       );
 
-      if(this.state.currentFeatures.length === 1){
-        header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Feature')}</h6>);
-      }else if(this.state.currentFeatures.length > 1){
-        header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Features')}</h6>);
-      }
+    
+      header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Feature')}</h6>);
+      
       if(this.props.showButtons){
         var mhid = -1;
         var layer_id = '';
         var host = '';
         var featureName = 'unknown';
-        if(this.state.currentFeatures.length > 0){
-          var currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
+        if(this.props.feature){
+          var currentFeature = this.props.feature;
           if(currentFeature && currentFeature.properties){
             mhid = currentFeature.properties.mhid;
             layer_id = currentFeature.properties.layer_id;
@@ -175,10 +140,13 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
 
         var layerinfo = '';
         if(this.state.layer){
+          let group_id = this.state.layer.owned_by_group_id;
+          let layer_id = this.state.layer.layer_id ? this.state.layer.layer_id : 0;
+          let layerName = this.state.layer.name;
           layerinfo = (
             <div style={{textAlign: 'left'}}>
-              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={baseUrl + '/lyr/' + this.state.layer.layer_id}>{this._o_(this.state.layer.name)}</a></b>
-              <GroupTag className={'left'} group={this.state.layer.owned_by_group_id} size={15} fontSize={8} />
+              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={baseUrl + '/lyr/' + layer_id.toString()}>{this._o_(layerName)}</a></b>
+              <GroupTag className={'left'} group={group_id} size={15} fontSize={8} />
             </div>
           );
         }
@@ -211,32 +179,16 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
           {featureButton}
         </div>
       </div>);
-      }
-      
-    } else{ //Feature is hovered, but not selected
-      if(this.state.currentFeatures.length > 1){
-        infoPanel = (
-          <div>
-            {this.__('Showing Feature 1 of')} {this.state.currentFeatures.length}
-          <p>{this.__('Click to View All')}</p>
-        </div>
-      );
-      } else {
-        infoPanel = (<h6 className="center-align" style={{margin: 'auto'}}>{this.__('Click to Select')}</h6>);
-      }
+      }    
+    }
 
-    }
-    var multipleSelected = false;
-    if(this.props.showButtons && this.state.selected && this.state.currentFeatures.length > 1){
-      multipleSelected = true;
-    }
     //only show the panel if there is at least one feature active
     var display = 'none';
     var attributes = '';
     var properties: Object = {};
-    if(this.state.currentFeatures.length > 0 && this.state.layerLoaded){
+    if(this.props.feature){
       display = 'flex';     
-      currentFeature = this.state.currentFeatures[this.state.selectedFeature-1];
+      currentFeature = this.props.feature;
       if(currentFeature && currentFeature.properties){
         properties = currentFeature.properties;
       }
@@ -244,8 +196,6 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
         attributes = (
           <Attributes
               attributes={properties}
-              selected={this.state.selected}
-              multipleSelected={multipleSelected}
               locale={this.state.locale}
               >
             <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
@@ -253,7 +203,6 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
               {pager}
             </div>
           </Attributes>
-
         );
     }
 
@@ -263,14 +212,10 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
             {closeButton}
             {header}
             <div style={{width: '100%', display: 'flex'}}>
-
                 {attributes}
             </div>
-
-
           </div>
         </div>
-
     );
   }
 }
