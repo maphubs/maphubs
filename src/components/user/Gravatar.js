@@ -12,7 +12,7 @@ type Props = {
     size: number
   }
 
-export default class Gravatar extends React.Component<DefaultProps, Props, void> {
+export default class Gravatar extends React.PureComponent<DefaultProps, Props, void> {
 
   props: Props
 

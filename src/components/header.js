@@ -10,6 +10,7 @@ import MessageActions from '../actions/MessageActions';
 import Confirmation from '../components/confirmation';
 //var debug = require('../services/debug')('header');
 import LocaleChooser from './LocaleChooser';
+import _isequal from 'lodash.isequal';
 
 type Link = {
   href: string,
@@ -65,6 +66,14 @@ export default class Header extends MapHubsComponent<DefaultProps, Props, void> 
         message: this.__('Unable to support Internet Explorer. Please use Firefox or Chrome.')
       });
     }
+  }
+
+  shouldComponentUpdate(nextProps: Props){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    return false;
   }
 
   componentDidUpdate(prevProps: Props){

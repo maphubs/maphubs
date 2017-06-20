@@ -4,31 +4,45 @@ import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
 import MapHubsPureComponent from '../MapHubsPureComponent';
+import _isequal from 'lodash.isequal';
 
-class TextArea extends MapHubsPureComponent {
+type Props = {
+  length: number,
+  value: string,
+  icon: string,
+  className: string,
+  dataTooltip: string,
+  dataDelay: number,
+  dataPosition: string,
+  name: string,
+  label: string,
+  //Added by Formsy
+  showRequired: Function,
+  isValid: Function,
+  showError: Function,
+  setValue: Function,
+  getErrorMessage: Function
+}
 
-  props: {
-    length: number,
-    value: string,
-    icon: string,
-    className: string,
-    dataTooltip: string,
-    dataDelay: number,
-    dataPosition: string,
-    name: string,
-    label: string,
-    //Added by Formsy
-    showRequired: Function,
-    isValid: Function,
-    showError: Function,
-    setValue: Function,
-    getErrorMessage: Function
-  }
+type DefaultProps = {
+  length: number,
+  value: string,
+  dataDelay: number
+}
+
+type State = {
+   value: string,
+   charCount: number
+}
+
+class TextArea extends MapHubsPureComponent<DefaultProps, Props, State> {
+
+  props: Props
 
   static defaultProps = {
-      length: 0,
-      value: '',
-      dataDelay: 100
+    length: 0,
+    value: '',
+    dataDelay: 100
   }
 
   constructor(props){
@@ -54,6 +68,17 @@ class TextArea extends MapHubsPureComponent {
         charCount
       });
     }
+  }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   }
 
   changeValue = (event) => {

@@ -209,7 +209,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<DefaultProps, Pro
                    required/>
               </div>
               <div className="row">
-                <MultiTextInput name="name" 
+                <MultiTextInput name="name" id="name"
                    label={{
                       en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                     }}

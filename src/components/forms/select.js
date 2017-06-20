@@ -1,13 +1,12 @@
 //@flow
 import React from 'react';
-
 import {HOC} from 'formsy-react';
 import find from 'lodash.find';
 import result from 'lodash.result';
 var classNames = require('classnames');
-
 import ReactMaterialSelect from 'react-material-select';
 import MapHubsComponent from '../MapHubsComponent';
+import _isequal from 'lodash.isequal';
 
 type Props = {|
   emptyText: string,
@@ -76,6 +75,17 @@ class Select extends MapHubsComponent<DefaultProps, Props, State> {
       this.setNote(nextProps.value);
     }
   }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }  
 
   setNote = (val) => {
     var note = result(find(this.props.options, {'value': val}), 'note');

@@ -1,9 +1,24 @@
+//@flow
 import Reflux from 'reflux';
 import Actions from '../actions/NotificationActions';
 var debug = require('../services/debug')('stores/notification-store');
 var $ = require('jquery');
 
+export type NotificationStoreState = {
+  isActive: boolean,
+  message: string,
+  action?: string,
+  onClick: Function,
+  backgroundColor: string,
+  color: string,
+  position: string,
+  dismissAfter: number,
+  onDismiss: Function
+}
+
 export default class NotificationStore extends Reflux.Store {
+
+  state: NotificationStoreState
 
   constructor(){
     super();
@@ -11,11 +26,10 @@ export default class NotificationStore extends Reflux.Store {
     this.listenables = Actions;
   }
 
-  getDefaultState(){
+  getDefaultState(): NotificationStoreState{
     return {
       isActive: false,
       message: '',
-      action: null,
       onClick() {},
       backgroundColor: MAPHUBS_CONFIG.primaryColor,
       color: 'white',

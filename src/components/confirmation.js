@@ -4,6 +4,7 @@ import {Modal, ModalContent, ModalFooter} from './Modal/Modal';
 import Reflux from 'reflux';
 import Store from '../stores/ConfirmationStore';
 import Actions from '../actions/ConfirmationActions';
+import _isequal from 'lodash.isequal';
 
 type Props = {}
 
@@ -15,6 +16,18 @@ export default class Confirmation extends Reflux.Component<void, Props, Confirma
 		super(props);
 		this.stores = [Store];
 	}
+
+  shouldComponentUpdate(nextProps: Props, nextState: ConfirmationStoreState){
+    //only update if something changes
+
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
 
   hide = () => {
     Actions.reset();

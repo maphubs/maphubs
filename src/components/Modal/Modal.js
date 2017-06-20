@@ -4,6 +4,7 @@ import Reflux from 'reflux';
 var $ = require('jquery');
 var classNames = require('classnames');
 import fireResizeEvent from '../../services/fire-resize-event';
+import _isequal from 'lodash.isequal';
 
 //Usage: import {Modal, ModalContent, ModalFooter} from 'Modal';
 //render(){return(
@@ -119,6 +120,14 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
         ready: this.props.ready,
         complete: this.props.complete
       });
+  }
+
+  shouldComponentUpdate(nextProps: ModalProps){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    return false;
   }
 
   componentDidUpdate(prevProps: ModalProps) {

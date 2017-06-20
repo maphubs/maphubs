@@ -1,16 +1,36 @@
+//@flow
 import React from 'react';
 import Reflux from 'reflux';
 import {Notification} from 'react-notification';
 import NotificationStore from '../stores/NotificationStore';
 import NotificationActions from '../actions/NotificationActions';
+import _isequal from 'lodash.isequal';
 
+type Props = {
 
-export default class MapHubsNotification extends Reflux.Component {
+}
 
-  constructor(props){
+import type {NotificationStoreState} from '../stores/NotificationStore';
+type State = NotificationStoreState
+
+export default class MapHubsNotification extends Reflux.Component<void, Props, State> {
+
+  constructor(props: Props){
 		super(props);
 		this.stores = [NotificationStore];
 	}
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
 
   onDismiss = () => {
     NotificationActions.dismissNotification();

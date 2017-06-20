@@ -4,6 +4,7 @@ import PresetForm from './PresetForm';
 import LayerStore from '../../stores/layer-store';
 import Actions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
+import _isequal from 'lodash.isequal';
 
 import type {LayerStoreState} from '../../stores/layer-store';
 
@@ -39,6 +40,14 @@ export default class PresetEditor extends MapHubsComponent<DefaultProps, Props, 
         return _this.__('You have not saved your edits, your changes will be lost.');
       }
     };
+     
+  }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    if(nextState.presets && !this.state.presets){
+      return true;
+    }
+    return !_isequal(nextState.presets, this.state.presets);
   }
 
   addPreset = () => {

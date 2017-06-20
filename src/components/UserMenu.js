@@ -5,6 +5,7 @@ import MapHubsComponent from './MapHubsComponent';
 import UserStore from '../stores/UserStore';
 import UserActions from '../actions/UserActions';
 import Gravatar from './user/Gravatar';
+import _isequal from 'lodash.isequal';
 
 type Props = {
     id: string,
@@ -39,6 +40,18 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
 
   componentDidMount() {
     UserActions.getUser(() => {});
+  }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   }
 
   componentDidUpdate(prevProps: Props, prevState: State){

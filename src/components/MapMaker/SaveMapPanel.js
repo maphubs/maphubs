@@ -123,8 +123,8 @@ export default class SaveMapPanel extends MapHubsComponent<void, Props, State> {
      return (
         <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row">
-            <MultiTextInput name="title"
-              defaultValue={this.state.title} value={this.state.title}
+            <MultiTextInput name="title" id="title"
+              value={this.state.title}
               label={{
                 en: 'Map Title', fr: 'Titre de la carte', es: 'Título del mapa', it: 'Titolo della mappa'
               }}

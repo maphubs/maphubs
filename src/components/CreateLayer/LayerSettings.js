@@ -184,7 +184,7 @@ export default class LayerSettings extends MapHubsComponent<DefaultProps, Props,
               <div className="row">
               <div className="col s12 m6">
                 <div className="row">
-                  <MultiTextInput name="name"
+                  <MultiTextInput name="name" id ="layer-name"
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                   }}
@@ -216,7 +216,7 @@ export default class LayerSettings extends MapHubsComponent<DefaultProps, Props,
               </div>
               <div className="col s12 m6">
               <div className="row">
-                <MultiTextInput name="source" label={{
+                <MultiTextInput name="source" id="layer-source" label={{
                   en: 'Source', fr: 'Source', es: 'Source', it: 'Source'
                 }}  className="col s12"
                   value={this.state.source}

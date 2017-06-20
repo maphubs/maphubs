@@ -4,6 +4,7 @@ import {Modal, ModalContent, ModalFooter} from './Modal/Modal';
 import MessageActions from '../actions/MessageActions';
 import MessageStore from '../stores/MessageStore';
 import MapHubsComponent from './MapHubsComponent';
+import _isequal from 'lodash.isequal';
 
 type Props = {}
 
@@ -15,6 +16,18 @@ export default class Message extends MapHubsComponent<void, Props, MessageStoreS
 		super(props);
 		this.stores.push(MessageStore);
 	}
+
+  shouldComponentUpdate(nextProps: Props, nextState: MessageStoreState){
+    //only update if something changes
+
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
 
   onDismiss = () => {
     MessageActions.dismissMessage();

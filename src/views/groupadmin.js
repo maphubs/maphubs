@@ -329,7 +329,7 @@ export default class GroupAdmin extends MapHubsComponent<DefaultProps, Props, St
                     required/>
               </div>
               <div className="row">
-                <MultiTextInput name="name" 
+                <MultiTextInput name="name" id="name"
                   label={{
                       en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                     }}

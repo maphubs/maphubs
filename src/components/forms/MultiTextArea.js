@@ -96,6 +96,17 @@ export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Pr
     }
   }
 
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
+
   changeValue = (model: Object) => {
     this.setState({
       value: model

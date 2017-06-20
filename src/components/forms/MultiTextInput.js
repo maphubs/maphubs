@@ -1,9 +1,7 @@
 //@flow
 import React from 'react';
-//import Formsy from 'formsy-react';
-//import {HOC} from 'formsy-react';
 import TextInput from './textInput';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 var $ = require('jquery');
 
@@ -14,19 +12,18 @@ type Props = {
   length: number,
   successText: string,
   disabled: boolean,
-  icon: string,
-  className: string,
-  dataTooltip: string,
-  dataDelay: number,
-  dataPosition: string,
+  className?: string,
+  dataTooltip?: string,
+  dataDelay?: number,
+  dataPosition?: string,
   name: string,
   required: boolean,
-  placeholder: string,
+  placeholder?: string,
   type: string,
   style: Object,
   showCharCount: boolean,
   useMaterialize: boolean,
-  onClick: Function,
+  onClick?: Function,
   validations: string,
   validationErrors: Object
 }
@@ -34,9 +31,7 @@ type Props = {
 type DefaultProps = {
   length: number,
   successText: string,
-  defaultValue: string,
   disabled: boolean,
-  value: string,
   dataDelay: number,
   type: string,
   style: Object,
@@ -50,16 +45,14 @@ type State = {
   value: LocalizedString
 }
 
-export default class MultiTextInput extends MapHubsPureComponent<DefaultProps, Props, State> {
+export default class MultiTextInput extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
   static defaultProps: DefaultProps  = {
       length: 100,
       successText: '',
-      defaultValue: '',
       disabled: false,
-      value: '',
       dataDelay: 100,
       type: 'text',
       style: {},
@@ -95,6 +88,17 @@ export default class MultiTextInput extends MapHubsPureComponent<DefaultProps, P
       });
     }
   }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }  
 
   changeValue = (model: Object) => {  
     this.setState({

@@ -9,14 +9,14 @@ import Select from '../forms/select';
 import Actions from '../../actions/LayerActions';
 import ConfirmationActions from '../../actions/ConfirmationActions';
 import _debounce from 'lodash.debounce';
-import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
 import Locales from '../../services/locales';
+import _isequal from 'lodash.isequal';
 
 type Props = {
   id: number,
   tag: string,
-  label: string,
+  label: LocalizedString,
   type: string,
   options: Array<Object>, //if type requires a list of options
   isRequired: boolean,
@@ -179,7 +179,7 @@ export default class PresetForm extends MapHubsComponent<DefaultProps, Props, St
                   <div className="col s12 m6">
                     <MultiTextInput 
                       name="label" 
-                      id={this.props.tag+'-label'} 
+                      id={`preset-${this.props.id}-label`} 
                       label={{
                         en: 'Label', fr: 'Étiquette', es: 'Etiqueta', it: 'Etichetta'
                       }} 
