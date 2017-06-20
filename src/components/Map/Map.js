@@ -848,8 +848,8 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     return MapInteractionMixin.moveendHandler.bind(this)();
   }
 
-  mousemoveHandler = () => {
-    return MapInteractionMixin.mousemoveHandler.bind(this)();
+  mousemoveHandler = (e: any) => {
+    return MapInteractionMixin.mousemoveHandler.bind(this)(e);
   }
 
   //DataEditorMixin
