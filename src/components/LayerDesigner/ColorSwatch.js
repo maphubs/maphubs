@@ -1,11 +1,17 @@
 //@flow
 import React from 'react';
 
-export default class ColorSwatch extends React.PureComponent {
+type Props = {
+  onClick: Function,
+  color: string
+}
 
-  props: {
-   onClick: Function,
-   color: string
+export default class ColorSwatch extends React.Component<void, Props, void> {
+
+  props: Props
+
+  shouldComponentUpdate(){
+    return false;
   }
 
   render(){

@@ -6,6 +6,7 @@ import Select from '../forms/select';
 var $ = require('jquery');
 import MapStyles from '../Map/Styles';
 import MapHubsComponent from '../MapHubsComponent';
+import _isequal from 'lodash.isequal';
 
 type Labels = {
   enabled: boolean,
@@ -66,6 +67,17 @@ export default class LabelSettings extends MapHubsComponent<DefaultProps, Props,
     this.setState({style: nextProps.style});
   }
 
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
+
    onFormChange = (values: Object) => {
     if(values.enabled && values.field){
       //add labels to style
@@ -88,8 +100,11 @@ export default class LabelSettings extends MapHubsComponent<DefaultProps, Props,
     var _this = this;
     var fieldOptions = [];
 
-    if(this.props.layer && this.props.layer.presets){
-      this.props.layer.presets.forEach((preset) => {
+    let firstSource = Object.keys(this.props.layer.style.sources)[0];
+    let presets = MapStyles.settings.getSourceSetting(this.props.style, firstSource, 'presets');
+
+    if(presets){
+      presets.forEach((preset) => {
         fieldOptions.push({
           value: preset.tag,
           label: _this._o_(preset.label)

@@ -5,6 +5,7 @@ import Formsy from 'formsy-react';
 import BaseMapStore from '../../stores/map/BaseMapStore';
 import MapHubsComponent from '../MapHubsComponent';
 import type {BaseMapOption, BaseMapStoreState} from '../../stores/map/BaseMapStore';
+import _isequal from 'lodash.isequal';
 
 type Props = {
   onChange: Function
@@ -19,6 +20,17 @@ export default class BaseMapSelection extends MapHubsComponent<void, Props, Stat
   constructor(props: Props){
     super(props);
     this.stores.push(BaseMapStore);
+  }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   }
 
   onChange = (val: string) => {

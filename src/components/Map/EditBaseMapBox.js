@@ -1,12 +1,12 @@
 //@flow
 import React from 'react';
-import MapHubsComponent from '../MapHubsComponent';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
 type Props = {|
   gpxLink: string
 |}
 
-export default class EditBaseMapBox extends MapHubsComponent<void, Props, void> {
+export default class EditBaseMapBox extends MapHubsPureComponent<void, Props, void> {
 
   props: Props
 

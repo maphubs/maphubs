@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import MapHubsComponent from '../MapHubsComponent';
+import MapHubsPureComponent from '../MapHubsPureComponent';
 
 type Props = {|
   onSelect: Function,
@@ -14,11 +14,7 @@ type DefaultProps = {
   selected: boolean
 }
 
-type State = {
-  selected: boolean
-}
-
-export default class SourceSelectionBox extends MapHubsComponent<DefaultProps, Props, State> {
+export default class SourceSelectionBox extends MapHubsPureComponent<DefaultProps, Props, void> {
   
   static defaultProps:DefaultProps  = {
     selected: false
@@ -26,15 +22,6 @@ export default class SourceSelectionBox extends MapHubsComponent<DefaultProps, P
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      selected: props.selected
-    };
-  }
-
-  componentWillReceiveProps(nextProps: Props){
-    if(nextProps.selected !== this.state.selected){
-      this.setState({selected: nextProps.selected});
-    }
   }
 
   onSelect = () => {
@@ -55,7 +42,7 @@ export default class SourceSelectionBox extends MapHubsComponent<DefaultProps, P
         <form action="#" style={{height: '100%', position: 'relative'}} >
           {icon}
           <p className="no-margin white-text" style={{position: 'absolute', bottom: '0'}}>
-          <input type="checkbox" className="filled-in" id={this.props.name + '-checkbox'} onChange={this.onSelect} checked={this.state.selected ? 'checked' : null} />
+          <input type="checkbox" className="filled-in" id={this.props.name + '-checkbox'} onChange={this.onSelect} checked={this.props.selected ? 'checked' : null} />
           <label className="white-text" htmlFor={this.props.name + '-checkbox'}>{this.props.name}</label>
         </p>
         </form>

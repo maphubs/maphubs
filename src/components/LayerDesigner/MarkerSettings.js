@@ -7,6 +7,7 @@ import Select from '../forms/select';
 import _assignIn from 'lodash.assignin';
 import MapStyles from '../Map/Styles';
 import MapHubsPureComponent from '../MapHubsPureComponent';
+import _isequal from 'lodash.isequal';
 
 type Props = {|
   onChange: Function,
@@ -15,7 +16,6 @@ type Props = {|
 |}
 
 type State = {
-  style: Object,
   options: Object
 }
 
@@ -71,6 +71,17 @@ export default class MarkerSettings extends MapHubsPureComponent<void, Props, St
     this.setState({style: nextProps.style});
   }
 
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
+
   onFormChange = (model: Object) =>{
      if(model.size){
        model.width = parseInt(model.size);
@@ -100,11 +111,11 @@ export default class MarkerSettings extends MapHubsPureComponent<void, Props, St
 
     var style;
     if(options.enabled){
-      style = MapStyles.markers.enableMarkers(this.state.style, options, this.props.layer.layer_id);    
+      style = MapStyles.markers.enableMarkers(this.props.style, options, this.props.layer.layer_id);    
     }else{
-      style = MapStyles.markers.disableMarkers(this.state.style);
+      style = MapStyles.markers.disableMarkers(this.props.style);
     }
-    this.setState({style, options});
+    this.setState({options});
     this.props.onChange(style, options);
     $('.tooltip-marker-settings').tooltip('remove');
     $('.tooltip-marker-settings').tooltip();

@@ -49,10 +49,10 @@ export default class MapStore extends Reflux.Store {
       let active = MapStyles.settings.get(layer.style, 'active');
 
       if(active){
-        MapStyles.settings.set(layer.style, 'active', false);
+        layer.style = MapStyles.settings.set(layer.style, 'active', false);
         active = false;
       }else {
-        MapStyles.settings.set(layer.style, 'active', true);
+        layer.style = MapStyles.settings.set(layer.style, 'active', true);
         active = true;
       }
 
@@ -82,6 +82,8 @@ export default class MapStore extends Reflux.Store {
  }
 
  updateMap(layers: Array<Layer>){
+   //treat as immutable and clone
+   layers = JSON.parse(JSON.stringify(layers));
    var style = this.buildMapStyle(layers);
    this.setState({layers, style});
  }

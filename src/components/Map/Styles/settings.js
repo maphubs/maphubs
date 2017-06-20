@@ -17,15 +17,20 @@ module.exports = {
 
     set(object: Object, key: string, value: any){
       if(!object) return;
+      //treat style as immutable and return a copy
+      object = JSON.parse(JSON.stringify(object));
 
       if(!object.metadata){
         object.metadata = {};
       }
       object.metadata[`maphubs:${key}`] = value;
+      return object;
     },
 
     get(object: Object, key: string): any{
       if(!object) return;
+      //treat style as immutable and return a copy
+      object = JSON.parse(JSON.stringify(object));
       
       if(object.metadata){
         return object.metadata[`maphubs:${key}`];
@@ -46,28 +51,39 @@ module.exports = {
     },
 
     getSourceSetting(style: GLStyle, id: string, key: string){
+      
       let source = style.sources[id];
       return this.get(source, key);
     },
 
     setLayerSetting(style: GLStyle, id: string, key: string, value: any){
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
       let index = _findIndex(style.layers, {id});
       let layer = style.layers[index];
-      this.set(layer, key, value);
+      layer = this.set(layer, key, value);
+      style.layers[index] = layer;
       return style;
     },
 
     setSourceSetting(style: GLStyle, id: string, key: string, value: any){
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
       let source = style.sources[id];
-      this.set(source, key, value);
+      source = this.set(source, key, value);
+      style.sources[id] = source;
       return style;
     },
 
     setLayerSettingAll(style: GLStyle, key: string, value: any, excludeType?: string){
-      style.layers.forEach(layer => {
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
+      style.layers = style.layers.map(layer => {
         if(!excludeType || layer.type !== excludeType){
-          this.set(layer, key, value);
+          layer = this.set(layer, key, value);
         }    
+        return layer;
       });
+      return style;
     }
 };

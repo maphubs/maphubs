@@ -10,6 +10,7 @@ import FeatureProps from '../components/Feature/FeatureProps';
 import FeatureNotes from '../components/Feature/FeatureNotes';
 import HubEditButton from '../components/Hub/HubEditButton';
 import ImageCrop from '../components/ImageCrop';
+import MapStyles from '../components/Map/Styles';
 //var request = require('superagent');
 import BaseMapStore from '../stores/map/BaseMapStore';
 import MessageActions from '../actions/MessageActions';
@@ -387,6 +388,10 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
     if(this.props.layer.data_type === 'polygon'){
       gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.mhid + '/feature.gpx';
     }
+
+    let firstSource = Object.keys(this.props.layer.style.sources)[0];
+    let presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
+
     return (
       <div>
         <Header {...this.props.headerConfig}/>
@@ -419,7 +424,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
 
 
                 <h5>{this.__('Attributes')}</h5>
-                <FeatureProps data={geoJSONProps} presets={this.props.layer.presets}/>
+                <FeatureProps data={geoJSONProps} presets={presets}/>
               </div>
               <div id="photo" className="col s12" style={{height: 'calc(100% - 48px)', textAlign: 'center'}}>
                 {photo}

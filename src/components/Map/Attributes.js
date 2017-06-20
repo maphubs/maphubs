@@ -1,5 +1,6 @@
 //@flow
 import React from 'react';
+import _isequal from 'lodash.isequal';
 
 type Props = {|
   attributes: Object,
@@ -10,6 +11,14 @@ type Props = {|
 export default class Attributes extends React.Component<void, Props, void> {
 
   props: Props
+
+  shouldComponentUpdate(nextProps: Props){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    return false;
+  }
 
   render() {
     var _this = this;

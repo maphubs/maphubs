@@ -4,6 +4,7 @@ var $ = require('jquery');
 import CodeEditor from './CodeEditor';
 import AdvancedLayerSettings from './AdvancedLayerSettings';
 import MapHubsComponent from '../MapHubsComponent';
+import _isequal from 'lodash.isequal';
 
 type Props = {|
   onChange: Function,
@@ -21,9 +22,7 @@ type DefaultProps = {
 }
 
 type State = {
-  opacity: number,
-  style: Object,
-  legendCode: string
+  opacity: number
 }
 
 export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props, State> {
@@ -49,11 +48,15 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
     });
   }
 
-  componentWillReceiveProps(nextProps: Props){
-    this.setState({
-      style: nextProps.style,
-      legendCode: nextProps.legendCode
-    });
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
   }
 
   onChange = (e: any) => {
@@ -64,12 +67,10 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
 
   onStyleChange = (style: string) => {
     style = JSON.parse(style);
-    this.setState({style});
     this.props.onStyleChange(style);
   }
 
   onLegendChange = (legendCode: string) => {
-    this.setState({legendCode});
     this.props.onLegendChange(legendCode);
   }
 
@@ -93,7 +94,7 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
             <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
             <br />
             <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
-              <AdvancedLayerSettings layer={this.props.layer} style={this.state.style} onChange={this.onStyleChange}/>
+              <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onStyleChange}/>
           </div>
         </li>
       );
@@ -124,9 +125,9 @@ export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props
 
        </ul>
         <CodeEditor ref="styleEditor" id="raster-style-editor" mode="json"
-         code={JSON.stringify(this.state.style, undefined, 2)} title="Edit Layer Style" onSave={this.onStyleChange} />
+         code={JSON.stringify(this.props.style, undefined, 2)} title="Edit Layer Style" onSave={this.onStyleChange} />
        <CodeEditor ref="legendEditor" id="raster-legend-editor" mode="html"
-           code={this.state.legendCode} title="Edit Layer Legend" onSave={this.onLegendChange} />
+           code={this.props.legendCode} title="Edit Layer Legend" onSave={this.onLegendChange} />
       </div>
     );
   }

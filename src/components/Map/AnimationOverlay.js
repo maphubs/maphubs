@@ -17,6 +17,8 @@ export default class AnimationOverlay extends React.Component {
     Reflux.listenTo(AnimationActions.tick, 'tick');
   }
 
+  
+
   tick = (val: any) => {
     this.setState({val});
   }

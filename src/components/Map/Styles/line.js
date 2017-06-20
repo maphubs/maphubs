@@ -16,7 +16,7 @@ getLineLayers(layer_id: number,
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
         "source": "omh-" + layer_id,
-        "source-layer": undefined,
+        "source-layer": '',
         "filter": ["in", "$type", "LineString"],
         "paint": {
           "line-color": color,
@@ -31,7 +31,7 @@ getLineLayers(layer_id: number,
           "maphubs:layer_id": layer_id
         },
         "source": "omh-" + layer_id,
-        "source-layer": undefined,
+        "source-layer": '',
         "filter": ["==", "mhid", ""],
         "paint": {
           "line-color": hoverColor,

@@ -5,6 +5,8 @@ import type {GLStyle} from '../../../types/mapbox-gl-style';
 module.exports = {
    removeStyleLabels(style: GLStyle){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
       _remove(style.layers, (layer) => {
         return layer.id.startsWith('omh-label');
       });
@@ -13,6 +15,8 @@ module.exports = {
   },
 
   addStyleLabels(style: GLStyle, field: string, layer_id: number, data_type: string){
+    //treat style as immutable and return a copy
+    style = JSON.parse(JSON.stringify(style));
     style = this.removeStyleLabels(style);
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
 

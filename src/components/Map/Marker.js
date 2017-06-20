@@ -2,7 +2,7 @@
 //Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
 import React from 'react';
 
-export default class Marker extends React.Component {
+export default class Marker extends React.PureComponent {
 
   props: {
     shape: string,

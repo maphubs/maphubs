@@ -62,10 +62,14 @@ export default class MapMakerStore extends Reflux.Store  {
  //listeners
 
   setMapLayers(mapLayers: Array<Layer>, update: boolean=true){
-    this.setState({mapLayers});
+    
     if(update){
       this.updateMap(mapLayers);
-    } 
+    }else{
+      //treat as immutable and clone
+      mapLayers = JSON.parse(JSON.stringify(mapLayers));
+      this.setState({mapLayers});
+    }
   }
 
   setMapId(map_id: number){
@@ -88,6 +92,8 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   setMapPosition(position: Object){
+    //treat as immutable and clone
+    position = JSON.parse(JSON.stringify(position));
     this.setState({position});
   }
 
@@ -96,6 +102,8 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   setSettings(settings: Object){
+    //treat as immutable and clone
+    settings = JSON.parse(JSON.stringify(settings));
     this.setState({settings});
   }
 
@@ -105,7 +113,7 @@ export default class MapMakerStore extends Reflux.Store  {
       cb(true);
     }else{
       //tell the map to make this layer visible
-      MapStyles.settings.set(layer.style, 'active', true);
+      layer.style = MapStyles.settings.set(layer.style, 'active', true);
     
       var layers = this.state.mapLayers;
       if(layers){
@@ -129,10 +137,10 @@ export default class MapMakerStore extends Reflux.Store  {
       let active = MapStyles.settings.get(layer.style, 'active');
 
       if(active){
-        MapStyles.settings.set(layer.style, 'active', false);
+        layer.style = MapStyles.settings.set(layer.style, 'active', false);
         active = false;      
       }else {
-        MapStyles.settings.set(layer.style, 'active', true);
+        layer.style =MapStyles.settings.set(layer.style, 'active', true);
         active = true;
       }
 
@@ -155,6 +163,9 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   updateLayerStyle(layer_id: number, style: Object, labels: Object, legend: string){
+    //treat as immutable and clone
+    style = JSON.parse(JSON.stringify(style));
+    labels = JSON.parse(JSON.stringify(labels));
     var index = _findIndex(this.state.mapLayers, {layer_id});
     var layers = this.state.mapLayers;
     if(layers){
@@ -162,11 +173,13 @@ export default class MapMakerStore extends Reflux.Store  {
       layers[index].labels = labels;
       layers[index].legend_html = legend;
       this.updateMap(layers);
-      this.setState({mapLayers: layers});
     }
   }
 
   saveMap(title: LocalizedString, position: Object, basemap: string, _csrf: string, cb: Function){
+    //treat as immutable and clone
+    title = JSON.parse(JSON.stringify(title));
+    position = JSON.parse(JSON.stringify(position));
     var _this = this;
     //resave an existing map
     Object.keys(title).forEach(key =>{
@@ -193,6 +206,9 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   createMap(title: LocalizedString, position: Object, basemap: string, group_id: string, isPrivate: boolean, _csrf: string, cb: Function){
+    //treat as immutable and clone
+    title = JSON.parse(JSON.stringify(title));
+    position = JSON.parse(JSON.stringify(position));
     var _this = this;
     Object.keys(title).forEach(key =>{
       title[key] = title[key].trim();
@@ -238,6 +254,8 @@ export default class MapMakerStore extends Reflux.Store  {
 
   //helpers
   updateMap(mapLayers: Array<Layer>, rebuild: boolean =true){
+    //treat as immutable and clone
+    mapLayers = JSON.parse(JSON.stringify(mapLayers));
     var mapStyle;
     if(rebuild){
       mapStyle = this.buildMapStyle(mapLayers);

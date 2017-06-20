@@ -20,11 +20,14 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
-import type {LayerStoreState} from '../stores/layer-store';
+import type {Layer, LayerStoreState} from '../stores/layer-store';
+import type {Group} from '../stores/GroupStore';
+
+//import Perf from 'react-addons-perf';
 
 type Props = {
-  layer: Object,
-  groups: Array<Object>,
+  layer: Layer,
+  groups: Array<Group>,
   onSubmit: Function,
   locale: string,
   _csrf: string,
@@ -60,9 +63,17 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
   }
 
   componentDidMount(){
+    //Perf.start();
     $(this.refs.tabs).tabs();
     $('.layeradmin-tooltips').tooltip();
   }
+/*
+  componentDidUpdate(){
+    Perf.stop();
+    Perf.printInclusive();
+    Perf.printWasted();
+  }
+  */
 
   saveStyle = () => {
     var _this = this;
@@ -78,7 +89,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
   savePresets = () => {
     var _this = this;
     //check for duplicate presets
-    let presets = this.state.presets;
+    let presets = this.state.presets.toArray();
     let tags = _mapvalues(presets, 'tag');
     let uniqTags = _uniq(tags);
     if(tags.length > uniqTags.length){

@@ -4,8 +4,8 @@ import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
 var $ = require('jquery');
 import MapStyles from '../Map/Styles';
-import MapHubsPureComponent from '../MapHubsPureComponent';
-
+import MapHubsComponent from '../MapHubsPureComponent';
+import _isequal from 'lodash.isequal';
 import type {GLStyle} from '../../types/mapbox-gl-style';
 import type {Layer} from '../../stores/layer-store'; 
 
@@ -20,12 +20,11 @@ type DefaultProps = {
 }
 
 type State = {
-  style: GLStyle,
   interactive: boolean,
   showBehindBaseMapLabels: boolean
 }
 
-export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultProps, Props, State> {
+export default class AdvancedLayerSettings extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
@@ -70,12 +69,25 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultP
     this.getStateFromStyleProp(nextProps);
   }
 
+
+  shouldComponentUpdate(nextProps: Props, nextState: State){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(!_isequal(this.state, nextState)){
+      return true;
+    }
+    return false;
+  }
+  
+
    onFormChange = (values: Object) => {
 
      let dataType = this.props.layer.data_type? this.props.layer.data_type : '';
      let layer_id = this.props.layer.layer_id? this.props.layer.layer_id: 0;
 
-     var style = this.state.style;
+     var style = this.props.style;
      if(values.interactive !== this.state.interactive){
        let glLayerId = `omh-data-${dataType}-${layer_id}`;
        style = MapStyles.settings.setLayerSetting(this.state.style, glLayerId ,'interactive', values.interactive);       
@@ -85,8 +97,6 @@ export default class AdvancedLayerSettings extends MapHubsPureComponent<DefaultP
        //nochange
        return;
      }
-
-     this.setState({style});
      this.props.onChange(style);
   }
 

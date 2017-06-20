@@ -35,9 +35,6 @@ type DefaultProps = {
 
 type State = {
   color: string,
-  style: Object,
-  labels: Object,
-  legend: string,
   markers?: Object
 }
 
@@ -54,20 +51,14 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
     super(props);
     let color = this.getColorFromStyle(props.style);
     this.state = {
-      color,
-      style: props.style,
-      labels: props.labels,
-      legend: props.legend
+      color
     };
   }
 
   componentWillReceiveProps(nextProps: Props){
     let color = this.getColorFromStyle(nextProps.style);
     this.setState({
-      color,
-      style: nextProps.style,
-      labels: nextProps.labels,
-      legend: nextProps.legend
+      color
     });
   }
 
@@ -87,15 +78,15 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
   }
 
   setColorInStyle = (style: GLStyle, color: string):GLStyle  => {
-    MapStyles.settings.set(style, 'color', color);
+    style = MapStyles.settings.set(style, 'color', color);
     return style;
   }
 
   onColorChange = (color: string) => {
-    let style = this.setColorInStyle(this.state.style, color);
-    style = MapStyles.color.updateStyleColor(this.state.style, color);
-    let legend = MapStyles.legend.legendWithColor(this.state, color);
-    this.setState({color, style, legend});
+    let style = this.setColorInStyle(this.props.style, color);
+    style = MapStyles.color.updateStyleColor(style, color);
+    let legend = MapStyles.legend.legendWithColor(this.props.layer, color);
+    this.setState({color});
     this.props.onColorChange(style, legend);
   }
 
@@ -106,22 +97,18 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
 
   onStyleChange = (style: string) => {
     style = JSON.parse(style);
-    this.setState({style});
     this.props.onStyleChange(style);
   }
 
   onLabelsChange = (style: GLStyle, labels: Object) => {
-    this.setState({style, labels});
     this.props.onLabelsChange(style, labels);
   }
 
   onMarkersChange = (style: GLStyle, markers: Object) => {
-    this.setState({style, markers});
     this.props.onMarkersChange(style, markers);
   }
 
   onLegendChange = (legend: string) => {
-    this.setState({legend});
     this.props.onLegendChange(legend);
   }
 
@@ -142,7 +129,7 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
              <i className="material-icons">place</i>{this.__('Markers')}
              </div>
            <div className="collapsible-body">
-             <MarkerSettings onChange={this.onMarkersChange} style={this.state.style} layer={this.props.layer} />
+             <MarkerSettings onChange={this.onMarkersChange} style={this.props.style} layer={this.props.layer} />
            </div>
          </li>
       );
@@ -159,7 +146,7 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
             <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
             <br />
             <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
-            <AdvancedLayerSettings layer={this.props.layer} style={this.state.style} onChange={this.onStyleChange}/>
+            <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onStyleChange}/>
           </div>
         </li>
       );
@@ -238,7 +225,7 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
              <i className="material-icons">label</i>{this.__('Labels')}
              </div>
            <div className="collapsible-body">
-             <LabelSettings onChange={this.onLabelsChange} style={this.state.style} labels={this.state.labels} layer={this.props.layer} />
+             <LabelSettings onChange={this.onLabelsChange} style={this.props.style} labels={this.props.labels} layer={this.props.layer} />
            </div>
          </li>
          {markers}
@@ -246,9 +233,9 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
 
        </ul>
        <CodeEditor ref="styleEditor" id="layer-style-editor" mode="json"
-         code={JSON.stringify(this.state.style, undefined, 2)} title={this.__('Editing Layer Style')} onSave={this.onStyleChange} />
+         code={JSON.stringify(this.props.style, undefined, 2)} title={this.__('Editing Layer Style')} onSave={this.onStyleChange} />
        <CodeEditor ref="legendEditor" id="layer-legend-editor" mode="html"
-           code={this.state.legend} title={this.__('Edit Layer Legend')} onSave={this.onLegendChange} />
+           code={this.props.legend} title={this.__('Edit Layer Legend')} onSave={this.onLegendChange} />
        </div>
     );
   }

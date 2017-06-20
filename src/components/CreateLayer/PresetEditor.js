@@ -5,7 +5,8 @@ import LayerStore from '../../stores/layer-store';
 import Actions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
-
+import {OrderedSet} from "immutable";
+import type {MapHubsField} from '../../types/maphubs-field';
 import type {LayerStoreState} from '../../stores/layer-store';
 
 type Props = {
@@ -64,9 +65,9 @@ export default class PresetEditor extends MapHubsComponent<DefaultProps, Props, 
 
 	render() {
     var _this = this;
-    var presets = [];
-    if(this.state.presets && Array.isArray(this.state.presets)){
-      presets = this.state.presets;
+    let presets = [];
+    if(this.state.presets){
+      presets = this.state.presets.toArray();
     }
 		return (
         <div>
@@ -77,7 +78,7 @@ export default class PresetEditor extends MapHubsComponent<DefaultProps, Props, 
           </div>
           <ul className="collection">
             {
-                presets.map((preset) => {
+                presets.map((preset: MapHubsField) => {
                   return(
                    <li key={preset.id} className="collection-item attribute-collection-item">
                        <PresetForm ref={preset.tag} {...preset}

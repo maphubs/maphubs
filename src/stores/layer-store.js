@@ -8,9 +8,11 @@ var checkClientError = require('../services/client-error-response').checkClientE
 var debug = require('../services/debug')('layer-store');
 import _findIndex from 'lodash.findindex';
 import _remove from 'lodash.remove';
-
 import type {GLStyle} from '../types/mapbox-gl-style';
 import type {MapHubsField} from '../types/maphubs-field';
+
+import {OrderedSet} from "immutable";
+
 
 export type Layer = {
   layer_id?: number,
@@ -47,7 +49,7 @@ export type LayerStoreState =  {
   pendingChanges?: boolean,
   pendingPresetChanges?: boolean,
   presetIDSequence?: number,
-  presets?: Array<MapHubsField>
+  presets?: OrderedSet<MapHubsField>
 } & Layer
 
 let defaultState: LayerStoreState = {
@@ -75,7 +77,7 @@ let defaultState: LayerStoreState = {
     pendingChanges: false,
     pendingPresetChanges: false,
     presetIDSequence: 1,
-    presets: []
+    presets: OrderedSet()
 };
 
 export default class LayerStore extends Reflux.Store {
@@ -118,7 +120,7 @@ export default class LayerStore extends Reflux.Store {
              preset.id = _this.state.presetIDSequence++;
           }    
         });
-        this.updatePresets(presets);
+        this.updatePresets(this.getImmPresets(presets));
       }
     }else{
       debug('Missing style');
@@ -126,12 +128,12 @@ export default class LayerStore extends Reflux.Store {
     
   }
 
-  updatePresets(presets: Array<MapHubsField>){
-    let style = this.state.style;
+  updatePresets(presets: OrderedSet<MapHubsField>){
+    let style = JSON.parse(JSON.stringify(this.state.style));
     if(style){
       Object.keys(style.sources).forEach(key =>{
         //our layers normally only have one source, but just in case...
-        MapStyles.settings.setSourceSetting(style, key, 'presets', presets);
+        style = MapStyles.settings.setSourceSetting(style, key, 'presets', presets.toArray());
       });
       this.setState({style, presets});
     }else{
@@ -140,7 +142,7 @@ export default class LayerStore extends Reflux.Store {
   } 
 
   resetStyleGL(){
-    var style = this.state.style ? this.state.style : {"sources": {}};
+    var style = this.state.style ? JSON.parse(JSON.stringify(this.state.style)) : {"sources": {}};
     var layer_id = this.state.layer_id ? this.state.layer_id: -1;
     var isExternal = this.state.is_external;
     var elc = this.state.external_layer_config ? this.state.external_layer_config : {};
@@ -187,10 +189,11 @@ export default class LayerStore extends Reflux.Store {
   resetStyle(){
     this.resetStyleGL();
     this.resetLegendHTML();
-    this.trigger(this.state);
   }
 
   initLayer(layer: Object){
+    //treat as immutable and clone
+    layer = JSON.parse(JSON.stringify(layer));
     if(!layer.style){
       layer.style = MapStyles.style.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);   
     }
@@ -238,6 +241,8 @@ export default class LayerStore extends Reflux.Store {
   }
 
   saveSettings(data: Object, _csrf: string, initLayer: boolean, cb: Function){
+    //treat as immutable and clone
+    data = JSON.parse(JSON.stringify(data));
     var _this = this;
     request.post('/api/layer/admin/saveSettings')
     .type('json').accept('json')
@@ -272,6 +277,8 @@ export default class LayerStore extends Reflux.Store {
 
   saveDataSettings(data: Object, _csrf: string, cb: Function){
     debug("saveDataSettings");
+    //treat as immutable and clone
+    data = JSON.parse(JSON.stringify(data));
     var _this = this;
     request.post('/api/layer/admin/saveDataSettings')
     .type('json').accept('json')
@@ -305,7 +312,10 @@ export default class LayerStore extends Reflux.Store {
 
 
   setStyle(style: Object, labels: Object, legend_html: string, preview_position: Object, cb: Function){
-
+    //treat as immutable and clone
+    labels = JSON.parse(JSON.stringify(labels));
+    preview_position = JSON.parse(JSON.stringify(preview_position));
+    style = JSON.parse(JSON.stringify(style));
     this.setState({
       style,
       labels,
@@ -339,6 +349,8 @@ export default class LayerStore extends Reflux.Store {
   }
 
   saveStyle(data: Object, _csrf: string, cb: Function){
+    //treat as immutable and clone
+    data = JSON.parse(JSON.stringify(data));
     var _this = this;
     request.post('/api/layer/admin/saveStyle')
     .type('json').accept('json')
@@ -413,7 +425,7 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-  deleteData(data: Object, _csrf: string, cb: Function){
+  deleteData(_csrf: string, cb: Function){
      if(this.state.layer_id){
       request.post('/api/layer/deletedata/' + this.state.layer_id)
       .type('json').accept('json')
@@ -469,11 +481,12 @@ export default class LayerStore extends Reflux.Store {
   loadDefaultPresets(){
     //called when setting up a new empty layer
     if(this.state.presetIDSequence){
-      var presets = [
+      let presets: OrderedSet<MapHubsField> = OrderedSet.of(
         {tag: 'name', label: 'Name', type: 'text', isRequired: true, showOnMap: true, id: this.state.presetIDSequence++},
         {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.state.presetIDSequence++},
         {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.state.presetIDSequence++}
-      ];
+      ); 
+
       this.setState({pendingPresetChanges: true});
       this.updatePresets(presets);
     }
@@ -481,13 +494,13 @@ export default class LayerStore extends Reflux.Store {
 
   setImportedTags(data: Object, initLayer: boolean){
     debug("setImportedTags");
+    //treat as immutable and clone
+    data = JSON.parse(JSON.stringify(data));
     var _this = this;
-    //clear default presets
-    var presets = [];
 
     //convert tags to presets
-    data.forEach((tag: string) => {
-      var preset = {};
+    let presets = OrderedSet(data.map((tag: string) => {
+      let preset;
       if(_this.state.presetIDSequence){
         if(tag === 'mhid'){
           preset = {tag:'orig_mhid', label: 'orig_mhid', type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.state.presetIDSequence++};
@@ -495,8 +508,8 @@ export default class LayerStore extends Reflux.Store {
           preset = {tag, label: tag, type: 'text', isRequired: false, showOnMap: true, mapTo: tag, id: _this.state.presetIDSequence++};
         }
       }
-      presets.push(preset);
-    });
+      return preset;
+    }));
     if(initLayer){
       let layer = _this.initLayer(this.state);
       this.setState(layer);
@@ -508,11 +521,12 @@ export default class LayerStore extends Reflux.Store {
   submitPresets(create: boolean, _csrf: string, cb: Function){
     debug("submitPresets");
     var _this = this;
+    let presets = this.state.presets.toArray();
     request.post('/api/layer/presets/save')
     .type('json').accept('json')
     .send({
       layer_id: _this.state.layer_id,
-      presets: _this.state.presets,
+      presets,
       create,
       _csrf
     })
@@ -524,21 +538,27 @@ export default class LayerStore extends Reflux.Store {
     });
   }
 
-
   deletePreset(id: number){
-    debug("delete preset:"+ id);
-    _remove(this.state.presets, {id});
-    this.state.pendingPresetChanges = true;
-    this.trigger(this.state);
+    if(this.state.presets){
+      let presets = this.state.presets.toArray();
+      debug("delete preset:"+ id);
+      _remove(presets, {id});
+      this.state.pendingPresetChanges = true;
+      this.updatePresets(this.getImmPresets(presets));
+    }
   }
 
   addPreset(){
       debug("adding new preset");
-      if(!this.state.presets){
-        this.state.presets = [];
-      }
+       let presets;
+       if(this.state.presets){
+         presets = this.state.presets;
+       }else{
+         presets = OrderedSet();
+       }
+
       if(this.state.presetIDSequence){
-        this.state.presets.push({
+        presets = presets.add({
           tag: '',
           label: '',
           type: 'text',
@@ -548,44 +568,51 @@ export default class LayerStore extends Reflux.Store {
         });
       }
     this.state.pendingPresetChanges = true;
-    this.updatePresets(this.state.presets);
+    this.updatePresets(presets);
   }
 
  updatePreset(id: number, preset: MapHubsField){
    debug("update preset:" + id);
-   var i = _findIndex(this.state.presets, {id});
+   if(this.state.presets){
+   let presets = this.state.presets.toArray();
+   var i = _findIndex(presets, {id});
    if(i >= 0){
-     if(this.state.presets){
-      this.state.presets[i] = preset;
+      presets[i] = preset;
       this.state.pendingPresetChanges = true;
-      this.updatePresets(this.state.presets);
+      this.updatePresets(this.getImmPresets(presets));
      }      
    }else{
      debug("Can't find preset with id: "+ id);
    }
  }
 
+ getImmPresets(presets: Array<MapHubsField>): OrderedSet<MapHubsField> {
+  let presetsImm: OrderedSet<MapHubsField> = OrderedSet(presets);
+  return presetsImm;
+ }
+
  movePresetUp(id: number){
-   var index = _findIndex(this.state.presets, {id});
+   if(this.state.presets){
+   let presets: Array<MapHubsField> = this.state.presets.toArray();
+   var index = _findIndex(presets, {id});
    if(index === 0) return;
-   let presets = this.state.presets;
-   if(presets){
     presets = this.move(presets, index, index-1);
     this.state.pendingPresetChanges = true;
-    this.updatePresets(presets);
+
+    this.updatePresets(this.getImmPresets(presets));
    }else{
     debug('Missing presets');
   }
  }
 
   movePresetDown(id: number){
-    var index = _findIndex(this.state.presets, {id});
-    let presets = this.state.presets;
-    if(presets){
+    if(this.state.presets){
+      let presets: Array<MapHubsField> = this.state.presets.toArray();
+      let index = _findIndex(presets, {id});
       if(index === presets.length -1) return;
       presets = this.move(presets, index, index+1);
       this.state.pendingPresetChanges = true;
-      this.updatePresets(presets);
+      this.updatePresets(this.getImmPresets(presets));
     }else{
       debug('Missing presets');
     }

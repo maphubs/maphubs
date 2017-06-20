@@ -3,6 +3,8 @@ import type {GLStyle} from '../../../types/mapbox-gl-style';
 module.exports = {
  enableMarkers(style: GLStyle, markerOptions: Object, layer_id: number){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           let metadata = {};
@@ -55,6 +57,8 @@ module.exports = {
 
   disableMarkers(style: GLStyle){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
 

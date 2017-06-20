@@ -65,6 +65,7 @@ module.exports = {
 
     },
 
+//Not needed?
     updatePresetsInMapStyles(layer_id: number, presets: any){
       return knex.raw(`
         select omh.map_layers.map_id, omh.map_layers .layer_id, 

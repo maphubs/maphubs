@@ -12,7 +12,7 @@ module.exports = {
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
         "source": "omh-" + layer_id,
-        "source-layer": undefined,
+        "source-layer": '',
         "filter": ["in", "$type", "Point"],
         "paint": {
           "circle-color": color,
@@ -26,7 +26,7 @@ module.exports = {
           "maphubs:layer_id": layer_id
         },
         "source": "omh-" + layer_id,
-        "source-layer": undefined,
+        "source-layer": '',
         "filter": ["==", "mhid", ""],
         "paint": {
           "circle-radius": 15,

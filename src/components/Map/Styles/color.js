@@ -7,6 +7,8 @@ module.exports = {
   //needed for custom style support
   updateStyleColor(style: GLStyle, newColor: string){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
+      //treat style as immutable and return a copy
+      style = JSON.parse(JSON.stringify(style));
       style.layers.forEach((style) => {
         if(style.id.startsWith('omh-data-point')){
           //Maphubs Point Layer

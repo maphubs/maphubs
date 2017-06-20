@@ -84,7 +84,7 @@ module.exports = {
           //repair layer settings if not set
           let active = MapStyles.settings.get(layer.style, 'active');
           if(typeof active === 'undefined'){
-            MapStyles.settings.set(layer.style, 'active', true);
+            layer.style = MapStyles.settings.set(layer.style, 'active', true);
           }
         });
         return layers;

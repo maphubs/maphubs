@@ -2,7 +2,7 @@
 import React from 'react';
 import Marker from './Marker';
 import MapHubsComponent from '../MapHubsComponent';
-
+import _isequal from 'lodash.isequal';
 import type {Layer} from '../../stores/layer-store';
 
 type Props = {
@@ -20,6 +20,14 @@ export default class LegendItem extends MapHubsComponent<DefaultProps, Props, vo
 
   static defaultProps: DefaultProps = {
       style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'},
+  }
+
+  shouldComponentUpdate(nextProps: Props){
+    //only update if something changes
+    if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    return false;
   }
 
   htmlEncode = (str: string) => {

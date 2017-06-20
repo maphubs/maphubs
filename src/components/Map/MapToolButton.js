@@ -26,7 +26,7 @@ type DefaultProps = {
   disabled: boolean
 }
 
-export default class MapToolButton extends React.Component<DefaultProps, Props, void> {
+export default class MapToolButton extends React.PureComponent<DefaultProps, Props, void> {
 
   props: Props
 

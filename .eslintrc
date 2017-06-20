@@ -31,7 +31,6 @@
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "rules": {
     "babel/generator-star-spacing": 1,
-    "babel/new-cap": 1,
     "babel/object-curly-spacing": 1,
     "babel/object-shorthand": 1,
     "babel/arrow-parens": 1,

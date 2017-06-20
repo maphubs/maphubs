@@ -14,7 +14,6 @@ if (typeof window !== 'undefined') {
 type Props = {|
   id: string,
   bottom:  string,
-  attributionControl: boolean,
   collapsed: boolean
 |}
 
@@ -35,7 +34,6 @@ export default class InsetMap extends React.Component<Props, Props, State> {
   static defaultProps = {
     id: 'map',
     bottom: '30px',
-    attributionControl: false,
     collapsed: false
   }
 
@@ -86,7 +84,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
         maxZoom: 1.8,
         interactive: false,
         center,
-        attributionControl: this.props.attributionControl
+        attributionControl: false
       });
 
       insetMap.on('style.load', () => {
