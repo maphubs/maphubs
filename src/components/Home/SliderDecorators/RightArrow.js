@@ -1,15 +1,17 @@
 //@flow
 import React from 'react';
 
-export default class SlideRightArrow extends React.Component {
+type Props = {
+  currentSlide: number,
+  slidesToScroll: number,
+  slideCount: number,
+  wrapAround: boolean,
+  nextSlide:  Function
+}
 
-    props:  {
-      currentSlide: number,
-      slidesToScroll: number,
-      slideCount: number,
-      wrapAround: boolean,
-      nextSlide:  Function
-    }
+export default class SlideRightArrow extends React.PureComponent<void, Props, void> {
+
+    props: Props
 
     handleClick = (e: Event) => {
       e.preventDefault();

@@ -23,8 +23,6 @@ import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Layer, LayerStoreState} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
 
-//import Perf from 'react-addons-perf';
-
 type Props = {
   layer: Layer,
   groups: Array<Group>,
@@ -63,17 +61,9 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
   }
 
   componentDidMount(){
-    //Perf.start();
     $(this.refs.tabs).tabs();
     $('.layeradmin-tooltips').tooltip();
   }
-/*
-  componentDidUpdate(){
-    Perf.stop();
-    Perf.printInclusive();
-    Perf.printWasted();
-  }
-  */
 
   saveStyle = () => {
     var _this = this;

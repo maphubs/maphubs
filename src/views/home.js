@@ -22,6 +22,8 @@ import type {Layer} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
 import type {CardConfig} from '../components/CardCarousel/Card';
 
+//import Perf from 'react-addons-perf';
+
 type Props = {
     trendingLayers: Array<Layer>,
     trendingGroups:Array<Group>,
@@ -83,6 +85,19 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
       collectionLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
     };
   }
+
+/*
+  componentDidMount(){
+    Perf.start();
+  }
+
+  componentDidUpdate(){
+    Perf.stop();
+    Perf.printInclusive();
+    Perf.printWasted();
+  }
+  */
+  
 
   handleSearch = (input: string) => {
     window.location = '/search?q=' + input;

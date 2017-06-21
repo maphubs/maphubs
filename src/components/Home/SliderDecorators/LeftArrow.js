@@ -1,13 +1,15 @@
 //@flow
 import React from 'react';
 
-export default class SlideLeftArrow extends React.Component {
+type Props = {
+  currentSlide: number,
+  wrapAround: boolean,
+  previousSlide:  Function
+}
 
-      props:  {
-        currentSlide: number,
-        wrapAround: boolean,
-        previousSlide:  Function
-      }
+export default class SlideLeftArrow extends React.PureComponent<void, Props, void> {
+
+      props:  Props
 
       handleClick = (e: Event) => {
         e.preventDefault();
