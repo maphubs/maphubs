@@ -37,11 +37,6 @@ getLineLayers(layer_id: number,
           "line-color": hoverColor,
           "line-opacity": 0.3,
           "line-width": 1
-        },
-        "paint.selected": {
-          "line-color": hoverColor,
-          "line-opacity": 0.3,
-          "line-width": 1
         }
       }
     ];

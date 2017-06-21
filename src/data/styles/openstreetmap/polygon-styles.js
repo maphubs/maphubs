@@ -62,11 +62,6 @@ module.exports = {
               "fill-color": color,
               "fill-outline-color": "#222222",
               "fill-opacity": 0.5
-            },
-            "paint.selected": {
-              "fill-color": "grey",
-              "fill-outline-color": "red",
-              "fill-opacity": 0.3
             }
           },
           {
@@ -81,11 +76,6 @@ module.exports = {
             ["==", "id", ""]
           ],
           "paint": {
-            "fill-color": "yellow",
-            "fill-outline-color": "black",
-            "fill-opacity": 0.7
-          },
-          "paint.selected": {
             "fill-color": "yellow",
             "fill-outline-color": "black",
             "fill-opacity": 0.7

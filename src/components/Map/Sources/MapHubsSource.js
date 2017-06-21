@@ -151,8 +151,7 @@ var MapHubsSource = {
             return; //return here to disable interactation with other layers when editing
           }
             mapComponent.setSelectionFilter([marker]);
-            mapComponent.setState({selectedFeatures:[marker], selected:true});
-            map.addClass('selected');
+            mapComponent.setState({selectedFeature: marker, selected:true});
           });
 
           ReactDOM.render(

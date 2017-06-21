@@ -97,11 +97,6 @@ getPolygonLayers(
         "fill-color": hoverColor,
         "fill-outline-color": hoverOutlineColor,
         "fill-opacity": 0.7
-      },
-      "paint.selected": {
-        "fill-color": hoverColor,
-        "fill-outline-color": hoverOutlineColor,
-        "fill-opacity": 0.7
       }
     }
     ];

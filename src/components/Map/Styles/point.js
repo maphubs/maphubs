@@ -32,11 +32,6 @@ module.exports = {
           "circle-radius": 15,
           "circle-color": hoverColor,
           "circle-opacity": 0.5
-        },
-        "paint.selected": {
-          "circle-radius": 15,
-          "circle-color": hoverColor,
-          "circle-opacity": 0.5
         }
       }
     ];

@@ -115,7 +115,6 @@ module.exports = {
           
           this.setSelectionFilter([features[0]]);
           this.setState({selectedFeature:features[0], selected:true});
-          map.addClass('selected');
         } 
         else if(this.state.selectedFeature) {
           this.clearSelection();
@@ -161,7 +160,6 @@ module.exports = {
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
             //_this.setSelectionFilter(features);
             //_this.setState({selectedFeatures:features});
-            //map.addClass('selected');
           }else{
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
           }

@@ -46,11 +46,6 @@ module.exports = {
               "line-color": color,
               "line-opacity": 0.5,
               "line-width": width
-            },
-            "paint.selected": {
-              "line-color": "red",
-              "line-opacity": 0.3,
-              "line-width": width
             }
           },
           {
@@ -64,11 +59,6 @@ module.exports = {
             ["==", "id", ""]
           ],
           "paint": {
-            "line-color": "yellow",
-            "line-opacity": 0.3,
-            "line-width": 1
-          },
-          "paint.selected": {
             "line-color": "yellow",
             "line-opacity": 0.3,
             "line-width": 1
