@@ -272,11 +272,9 @@ render() {
       let editButton = '', editModal;
       if(this.props.canEdit){
         editButton = (
-          <a style={{marginLeft: '5px', padding: '0px'}} 
-          className="btn btn-floating" 
-          onClick={_this.onEditSelectedFeature}>
-            <i className="material-icons omh-accent-text">edit</i>
-          </a>
+          <button type="button" style={{marginLeft: '5px'}} className="btn" onClick={this.onEditSelectedFeature}>
+            {this.__('Edit Selected')}
+          </button>
         );
 
         if(this.props.presets){
@@ -315,12 +313,9 @@ render() {
               filterRowsButtonText={this.__('Filter Data')}
               >
               {editButton}
-              <a 
-                style={{marginLeft: '5px', padding: '0px'}} 
-                className="btn btn-floating" 
-                onClick={_this.onViewSelectedFeature}>
-                <i className="material-icons omh-accent-text">info</i>
-              </a>
+              <button type="button" style={{marginLeft: '5px'}} className="btn" onClick={_this.onViewSelectedFeature}>
+                {this.__('View Selected')}
+              </button>
               {editModal}
               </Toolbar>
             }

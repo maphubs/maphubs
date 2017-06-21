@@ -288,11 +288,6 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1 )});
   }
 
-  onEditSelectedFeature = () => {
-    this.setState({selectedFeature: this.getSelectedFeature()});
-    this.refs.editAttributeModal.show();
-  }
-
   getSelectedFeature(){
     const row = this.state.rows[this.state.selectedIndexes[this.state.selectedIndexes.length - 1]];
     const idField = this.state.rowKey;
@@ -360,27 +355,6 @@ render() {
 
    if(this.state.rows.length > 0 && typeof window !== 'undefined'){
 
-      let editButton = '', editModal;
-      if(this.props.canEdit){
-        editButton = (
-          <button type="button" style={{marginLeft: '5px'}} className="btn" onClick={_this.onEditSelectedFeature}>
-            {this.__('Edit Selected')}
-          </button>
-        );
-
-        if(this.props.presets){
-          editModal = (
-            <EditAttributesModal 
-                ref="editAttributeModal"
-                feature={this.state.selectedFeature}
-                presets={this.props.presets}
-                onSave={this.props.onSave}
-                layer_id={this.props.layer.layer_id} />
-          );
-        }
-
-      }
-
   return (
     <this.ReactDataGrid
            ref="grid"
@@ -406,11 +380,9 @@ render() {
               enableFilter={true}
               filterRowsButtonText={this.__('Filter Data')}
               >
-              {editButton}
               <button type="button" style={{marginLeft: '5px'}} className="btn" onClick={_this.onViewSelectedFeature}>
                 {this.__('View Selected')}
               </button>
-              {editModal}
               </this.Toolbar>
             }
             onAddFilter={this.handleFilterChange}
