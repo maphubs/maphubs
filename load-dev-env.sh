@@ -36,11 +36,6 @@ var MAPHUBS_CONFIG = {
   BING_KEY:  "${BING_API_KEY}",
   SENTRY_DSN_PUBLIC:  "${OMH_SENTRY_DSN_PUBLIC}",
   theme: "${OMH_THEME}",
-  homepageProLinks: ${OMH_HOMEPAGE_PRO_LINKS},
-  homepageSlides: ${OMH_HOMEPAGE_SLIDES},
-  homepageMapHubId: "${OMH_HOMEPAGE_MAP_HUB_ID}",
-  homepageMailingList: ${OMH_HOMEPAGE_MAILINGLIST},
-  mapHubsProDemo: ${OMH_MAPHUBS_PRO_DEMO}
 };
 if(typeof module !== 'undefined'){
   module.exports = MAPHUBS_CONFIG;
