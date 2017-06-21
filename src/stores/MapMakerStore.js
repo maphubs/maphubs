@@ -166,8 +166,8 @@ export default class MapMakerStore extends Reflux.Store  {
     //treat as immutable and clone
     style = JSON.parse(JSON.stringify(style));
     labels = JSON.parse(JSON.stringify(labels));
+    let layers = JSON.parse(JSON.stringify(this.state.mapLayers));
     var index = _findIndex(this.state.mapLayers, {layer_id});
-    var layers = this.state.mapLayers;
     if(layers){
       layers[index].style = style;
       layers[index].labels = labels;

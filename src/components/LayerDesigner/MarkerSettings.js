@@ -67,10 +67,6 @@ export default class MarkerSettings extends MapHubsPureComponent<void, Props, St
     $('.tooltip-marker-settings').tooltip();
   }
 
-  componentWillReceiveProps(nextProps: Props){
-    this.setState({style: nextProps.style});
-  }
-
   shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
