@@ -17,6 +17,7 @@ import LayerDataGrid from '../components/DataGrid/LayerDataGrid';
 import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid';
 import MapStyles from '../components/Map/Styles';
 import BaseMapStore from '../stores/map/BaseMapStore';
+import DataEditorActions from '../actions/DataEditorActions';
 
 var urlUtil = require('../services/url-util');
 var slug = require('slug');
@@ -245,8 +246,21 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
 
   stopEditingData = () => {
     var _this = this;
-    _this.setState({editingNotes: false});
-    //TODO: tell store to save
+    DataEditorActions.saveEdits(this.state._csrf, (err) => {
+      if(err){
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+      }else{
+        NotificationActions.showNotification({
+          message: _this.__('Data Saved - Reloading Page...'),
+          dismissAfter: 1000,
+            onDismiss() {
+              location.reload();
+            }
+        });
+        _this.setState({editingData: false});
+        DataEditorActions.stopEditing();
+      }
+    });
   }
 
   copyToClipboard = (val: string) => {
@@ -320,7 +334,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
 
       dataEditButton = (
         <HubEditButton editing={this.state.editingData}
-          style={{position: 'absolute'}}
+          style={{position: 'absolute', bottom: '10px'}}
           startEditing={this.startEditingData} stopEditing={this.stopEditingData} />
       );
 
@@ -483,7 +497,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
     if(this.state.editingData){
       dataGrid = (
         <LayerDataEditorGrid  
-          layer_id={this.props.layer.layer_id} 
+          layer={this.props.layer} 
           gridHeight={this.state.gridHeight} 
           geoJSON={this.state.geoJSON} 
           presets={presets} 

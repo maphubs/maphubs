@@ -6,13 +6,20 @@ import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
 import update from 'immutability-helper';
 import type {MapHubsField} from '../../types/maphubs-field';
+import DataEditorStore from '../../stores/DataEditorStore';
+import DataEditorActions from '../../actions/DataEditorActions';
+import _assignIn from 'lodash.assignin';
+import type {Layer} from '../../stores/layer-store';
+import type {DataEditorStoreState} from '../../stores/DataEditorStore';
+
 
 type Props = {
   geoJSON: Object,
   presets: Object,
   gridHeight: number,
   onRowSelected: Function,
-  layer_id: number,
+  layer: Layer,
+
   dataLoadingMsg: string,
   onSave?: Function,
   presets: Array<MapHubsField>
@@ -32,7 +39,7 @@ type Column = {
 }
 
 type State = {
-  geoJSON: ?Object,
+  geoJSON?: Object,
   gridHeight: number,
   gridWidth: number,
   gridHeightOffset: number,
@@ -40,11 +47,11 @@ type State = {
   selectedIndexes: Array<number>,
   columns: Array<Column>,
   filters: Object,
-  rowKey: ?string,
-  sortColumn: ?string,
-  sortDirection: ?string,
+  rowKey?: string,
+  sortColumn?: string,
+  sortDirection?: string,
   selectedFeature?: Object
-}
+} & DataEditorStoreState
 
 export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, Props, State> {
 
@@ -62,7 +69,6 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
   }
 
   state: State = {
-    geoJSON: null,
     gridHeight: 100,
     gridWidth: 100,
     gridHeightOffset: 48,
@@ -70,9 +76,14 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     selectedIndexes: [],
     columns: [],
     filters: {},
-    rowKey: null,
-    sortColumn: null,
-    sortDirection: null
+    edits: [],
+    originals: [],
+    redo: []
+  }
+
+  constructor(props: Props){
+    super(props);
+    this.stores.push(DataEditorStore);
   }
 
   componentWillMount(){
@@ -84,6 +95,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
   componentDidMount(){
     if(this.props.geoJSON){
       this.processGeoJSON(this.props.geoJSON, this.props.presets);
+      DataEditorActions.startEditing(this.props.layer);
     }
   }
 
@@ -315,17 +327,26 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     if(this.state.rowKey === 'mhid'){
       idVal = idVal.split(':')[1];
     }
-    var url = '/feature/' + this.props.layer_id.toString() + '/' + idVal + '/' + featureName;
+    var url = '/feature/' + this.props.layer.layer_id.toString() + '/' + idVal + '/' + featureName;
     window.location = url;
   }
 
 
-   handleGridRowsUpdated = (fromRow: number, toRow: number, updated: Object) => {
+   handleGridRowsUpdated = (result: Object) => {
+     let fromRow: number = result.fromRow;
+     let toRow: number = result.toRow;
+     let updated: Object = result.updated;
     let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      //TODO: create edit record in store
+      let mhid = rowToUpdate[this.state.rowKey];
+      DataEditorActions.selectFeature(mhid, (featureData) => {
+        //update data
+        let data = featureData.properties;
+        _assignIn(data, updated);
+        DataEditorActions.updateSelectedFeatureTags(data);
+      });
       let updatedRow = update(rowToUpdate, {$merge: updated});
       rows[i] = updatedRow;
     }
@@ -354,7 +375,7 @@ render() {
                 feature={this.state.selectedFeature}
                 presets={this.props.presets}
                 onSave={this.props.onSave}
-                layer_id={this.props.layer_id} />
+                layer_id={this.props.layer.layer_id} />
           );
         }
 
