@@ -27,6 +27,7 @@ var MAPHUBS_CONFIG = {
   SENTRY_DSN_PUBLIC: "${OMH_SENTRY_DSN_PUBLIC}",
   MAPZEN_API_KEY: "${OMH_MAPZEN_API_KEY}",
   theme: "${OMH_THEME}",
+  enableUserExport: "${OMH_ENABLE_USER_EXPORT}"
 };
 if(typeof module !== 'undefined'){
   module.exports = MAPHUBS_CONFIG;

@@ -36,6 +36,7 @@ var MAPHUBS_CONFIG = {
   BING_KEY:  "${BING_API_KEY}",
   SENTRY_DSN_PUBLIC:  "${OMH_SENTRY_DSN_PUBLIC}",
   theme: "${OMH_THEME}",
+  enableUserExport: "${OMH_ENABLE_USER_EXPORT}"
 };
 if(typeof module !== 'undefined'){
   module.exports = MAPHUBS_CONFIG;
