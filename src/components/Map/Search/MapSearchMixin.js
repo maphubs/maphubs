@@ -6,6 +6,8 @@ var _find = require('lodash.find');
 var _bbox = require('@turf/bbox');
 var uuid = require('uuid').v1;
 
+import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style';
+
 module.exports = {
 
   getSearchFilters(query: string){
@@ -15,7 +17,12 @@ module.exports = {
     let queries = [];
     if(_this.state.glStyle){
       _this.state.glStyle.layers.forEach((layer) => {
-        if(layer.metadata && layer.metadata['maphubs:interactive'] &&
+        if(layer.metadata && 
+          (layer.metadata['maphubs:interactive'] 
+            || (layer.metadata['maphubs:markers'] && 
+                layer.metadata['maphubs:markers'].enabled
+                )
+          ) &&
           (layer.id.startsWith('omh') || layer.id.startsWith('osm'))
         ){
           let source = _this.state.glStyle.sources[layer.source];
@@ -44,11 +51,18 @@ module.exports = {
 
   onSearch(queryText: string){
     var _this = this;
+
+    //clear prev display layers
+    this.onSearchReset();
+
     var results = {
       bbox: [],
       geoJSON: {type: 'FeatureCollection', features: []},
       list: []
     };
+
+    let searchDisplayLayers = [];
+
     this.getSearchFilters(queryText).forEach(query => {
       let queryResults = MapboxGLRegexSearch.querySourceFeatures(
         query.source,   
@@ -59,6 +73,10 @@ module.exports = {
         _this.map);
 
         let source = _this.state.glStyle.sources[query.source];
+        
+        
+
+        
         let presets = source.metadata['maphubs:presets'];
         let nameFieldPreset = _find(presets, {isName: true});
         let nameField; 
@@ -124,6 +142,12 @@ module.exports = {
           } 
           results.geoJSON.features.push(result);
         });
+
+        //set display layers
+        if(queryResults && queryResults.length > 0){
+          searchDisplayLayers = searchDisplayLayers.concat(_this.getSearchDisplayLayers(query.source, source, mhids));
+        }
+     
     });
 
     //calculate bounds of results
@@ -133,12 +157,14 @@ module.exports = {
         let bbox =  _bbox(results.geoJSON);
         _this.map.fitBounds(bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
         results.bbox = bbox;
-      }
-      
+      }    
     }
     
-
-    //TODO: add display layer to map
+    this.searchDisplayLayers = searchDisplayLayers;
+    var firstLabelLayer = _this.getFirstLabelLayer();
+    searchDisplayLayers.forEach(layer => {
+      _this.map.addLayer(layer, firstLabelLayer);
+    });
 
     debug(results);
     return results;
@@ -159,7 +185,65 @@ module.exports = {
   },
 
   onSearchReset() {
-    //TODO: remove display layer from map
+    var _this = this;
+    if(this.searchDisplayLayers && this.searchDisplayLayers.length > 0){
+      this.searchDisplayLayers.forEach(layer => {
+        _this.map.removeLayer(layer.id);
+      });
+    }
+  },
+  
+
+  getSearchDisplayLayers(sourceID: string, source: GLSource, mhids: Array<string>): Array<GLLayer>{
+    const searchLayerColor = 'yellow';
+    const mhidFilter = ["in", "mhid"].concat(mhids);
+    return [
+      {
+        "id": `omh-search-result-point-${sourceID}`,
+        "type": "circle",
+        "source": sourceID,
+        "source-layer": source.type === 'geojson' ? '' : 'data',
+        "filter": [ "all",
+          ["in", "$type", "Point"],
+          mhidFilter
+        ],
+        "paint": {
+          "circle-radius": 15,
+          "circle-color": searchLayerColor,
+          "circle-opacity": 0.5
+        }
+      },
+      {
+        "id": `omh-search-result-line-${sourceID}`,
+        "type": "line",
+        "source": sourceID,
+        "source-layer": source.type === 'geojson' ? '' : 'data',
+        "filter": [ "all",
+          ["in", "$type", "LineString"],
+          mhidFilter
+        ],
+        "paint": {
+          "line-color": searchLayerColor,
+          "line-opacity": 0.3,
+          "line-width": 1
+        }
+      },
+      {
+      "id": `omh-search-result-polygon-${sourceID}`,
+      "type": "fill",
+      "source": sourceID,
+      "source-layer": source.type === 'geojson' ? '' : 'data',
+      "filter": [ "all",
+          ["in", "$type", "Polygon"],
+          mhidFilter
+        ],
+      "paint": {
+        "fill-color": searchLayerColor,
+        "fill-outline-color": 'black',
+        "fill-opacity": 0.7
+      }
+    }
+    ];
   }
 
 };

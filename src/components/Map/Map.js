@@ -40,7 +40,7 @@ if (typeof window !== 'undefined') {
     ScalePositionControl = require('mapbox-gl-dual-scale-control');
 }
 
-import type {GLStyle} from '../../types/mapbox-gl-style';
+import type {GLStyle, GLSource} from '../../types/mapbox-gl-style';
 import type {GeoJSONObject} from 'geojson-flow';
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 import type {Layer} from '../../stores/layer-store';
@@ -798,6 +798,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
             height={this.props.height} 
             onSearch={this.onSearch}
             onSearchResultClick={this.onSearchResultClick}
+            onSearchReset={this.onSearchReset}
             />
         </div>
         <MarkerSprites />
@@ -907,6 +908,10 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   onSearchResultClick = (result: Object) => {
     return MapSearchMixin.onSearchResultClick.bind(this)(result);
+  }
+
+  getSearchDisplayLayers = (sourceID: string, source: GLSource, mhids: Array<string>) => {
+    return MapSearchMixin.getSearchDisplayLayers.bind(this)(sourceID, source, mhids);
   }
 
   onSearchReset = () => {

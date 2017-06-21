@@ -11,6 +11,7 @@ type Props = {
   show: boolean,
   onSearch:  Function,
   onSearchResultClick: Function,
+  onSearchReset: Function,
   height: string
 }
 
@@ -77,7 +78,7 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
 
   onReset = () => {
     this.setState({results: null, locationSearchResults: null});
-    //TODO: tell map to update
+    this.props.onSearchReset();
   }
 
   onClickResult = (result: Object) => {
