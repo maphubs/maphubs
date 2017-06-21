@@ -180,8 +180,25 @@ var MapHubsSource = {
           }
           });
           });
-          });
-          
+        });
+        //add marker shadows (hidden for now)
+        //Need to draw something so layer is avaliable for search (otherwise source tiles are not cached)
+          map.addLayer({
+              "id": "omh-data-point-" + layer_id,
+              "type": "circle",
+              "metadata":{
+                "maphubs:layer_id": layer_id,
+                "maphubs:interactive": false,
+                "maphubs:showBehindBaseMapLabels": true
+              },
+              "source": "omh-" + layer_id,
+              "source-layer": 'data',
+              "filter": ["in", "$type", "Point"],
+              "paint": {
+                "circle-color": '#212121',
+                "circle-opacity": 0 //hidden 
+              }
+          },  'water');
         }
       },
       (cb) => {
