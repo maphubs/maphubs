@@ -405,6 +405,18 @@ module.exports = {
       layer.extent_bbox = JSON.stringify(layer.extent_bbox);
       layer.preview_position = JSON.stringify(layer.preview_position);
 
+      //convert older external layers to new format
+      //TODO: include explict version # with remote layers for API compatibility checking
+      if(typeof layer.name === 'string'){
+        layer.name = {en: layer.name, fr: '', es:'', it:''};
+      }
+      if(typeof layer.description === 'string'){
+        layer.description = {en: layer.description, fr: '', es:'', it:''};
+      }
+      if(typeof layer.source === 'string'){
+        layer.source = {en: layer.source, fr: '', es:'', it:''};
+      }
+
       return knex('omh.layers').returning('layer_id')
         .insert(layer);
     },
@@ -431,6 +443,16 @@ module.exports = {
       
       layer.extent_bbox = JSON.stringify(layer.extent_bbox);
       layer.preview_position = JSON.stringify(layer.preview_position);
+
+      if(typeof layer.name === 'string'){
+        layer.name = {en: layer.name, fr: '', es:'', it:''};
+      }
+      if(typeof layer.description === 'string'){
+        layer.description = {en: layer.description, fr: '', es:'', it:''};
+      }
+      if(typeof layer.source === 'string'){
+        layer.source = {en: layer.source, fr: '', es:'', it:''};
+      }
 
       return knex('omh.layers').where({layer_id})
         .update(layer);
