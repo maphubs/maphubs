@@ -57,6 +57,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
 
   static defaultProps: DefaultProps = {
       height: '300px',
+      basemap: 'default',
       border: false,
       disableScrollZoom: true,
       showLogo: true,
@@ -70,7 +71,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
   constructor(props: Props){
 		super(props);
     this.stores.push(MapStore);
-    Reflux.rehydrate(MapStore, {style: this.props.style, position: this.props.position, layers: this.props.layers});
+    Reflux.rehydrate(MapStore, {style: this.props.style, position: this.props.position, basemap: this.props.basemap, layers: this.props.layers});
 	}
 
   componentWillMount(){
