@@ -86,7 +86,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
         let minzoom = 0;
-        let maxzoom = 9;
+        let maxzoom = 19;
 
         let centerZoom = Math.floor((maxzoom - minzoom) / 2);
         let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
