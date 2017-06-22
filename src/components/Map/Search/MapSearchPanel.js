@@ -179,6 +179,7 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
     return (
       <div> 
          <a ref="mapSearchButton"
+         className="map-search-button"
           href="#" 
           data-activates="map-search-panel"
           onMouseDown={this.onPanelOpen}

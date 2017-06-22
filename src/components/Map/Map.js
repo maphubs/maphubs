@@ -863,6 +863,10 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     return DataEditorMixin.getEditorStyles.bind(this)();
   }
 
+  editFeature = (feature: Object) => {
+    return DataEditorMixin.editFeature.bind(this)(feature);
+  }
+
   startEditingTool = (layer: Layer) =>{
     return DataEditorMixin.startEditingTool.bind(this)(layer);
   }

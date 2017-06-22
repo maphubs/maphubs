@@ -178,6 +178,8 @@ module.exports = {
 
 
     $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-edit-tool');
+    $('.map-search-button').addClass('maphubs-edit-tool-search-button');
+    
     this.map.addControl(draw, 'top-right');
 
     this.map.on('draw.create', e => {

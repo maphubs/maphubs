@@ -211,7 +211,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
     var zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
     var baseUrl = urlUtil.getBaseUrl();
-    return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' + position.lng + '/' + position.lat;
+    return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' +  position.lat + '/' + position.lng  ;
   }
 
   openEditor = () => {
