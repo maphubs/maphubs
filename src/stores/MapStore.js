@@ -8,7 +8,7 @@ var findIndex = require('lodash.findindex');
 import type {Layer} from './layer-store';
 
 export type MapStoreState = {
-   style: Object,
+  style: Object,
   position: Object,
   basemap: string,
   layers: Array<Layer>

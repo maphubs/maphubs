@@ -50,7 +50,7 @@ export default class NotificationStore extends Reflux.Store {
   }
 
   //listeners
-  showNotification(options) {
+  showNotification(options: NotificationStoreState) {
     if (options) {
       var updatedState = $.extend(this.getDefaultState(), options);
       this.setState(updatedState);

@@ -79,20 +79,22 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
   savePresets = () => {
     var _this = this;
     //check for duplicate presets
-    let presets = this.state.presets.toArray();
-    let tags = _mapvalues(presets, 'tag');
-    let uniqTags = _uniq(tags);
-    if(tags.length > uniqTags.length){
-      MessageActions.showMessage({title: _this.__('Data Error'), message: this.__('Duplicate tag, please choose a unique tag for each field')});
-    }else{
-      //save presets
-      LayerActions.submitPresets(false, this.state._csrf, (err) => {
-        if(err){
-          MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-        }else{
-          _this.saveStyle();
-        }
-      });
+    if(this.state.presets){
+      let presets = this.state.presets.toArray();
+      let tags = _mapvalues(presets, 'tag');
+      let uniqTags = _uniq(tags);
+      if(tags.length > uniqTags.length){
+        MessageActions.showMessage({title: _this.__('Data Error'), message: this.__('Duplicate tag, please choose a unique tag for each field')});
+      }else{
+        //save presets
+        LayerActions.submitPresets(false, this.state._csrf, (err) => {
+          if(err){
+            MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+          }else{
+            _this.saveStyle();
+          }
+        });
+      }
     }
   }
 
@@ -157,8 +159,8 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit';
     }
-
-    var layerInfoUrl = '/layer/info/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name));
+    let layer_id =  this.props.layer.layer_id ?  this.props.layer.layer_id : 0;
+    var layerInfoUrl = `/layer/info/${layer_id}/${slug(this._o_(this.props.layer.name))}`;
 
     if(this.props.layer.remote){
       return (

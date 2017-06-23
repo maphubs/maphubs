@@ -6,6 +6,7 @@ import DataCollectionForm from '../DataCollection/DataCollectionForm';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../MapHubsComponent';
 import MapStyles from '../Map/Styles';
+var debug = require('../../services/debug')('editLayerPanel');
 
 type Props = {
 
@@ -26,12 +27,17 @@ export default class EditLayerPanel extends MapHubsComponent<void, Props, State>
     //don't fire change if this update came from state (e.g. undo/redo)
     //the geojson may have tags not in the presets so we need to ignore them when checking for changes
     var foundChange;
-    Object.keys(data).map(key =>{
-    if(!_isequal(data[key], this.state.selectedEditFeature.geojson.properties[key]))
-      foundChange = true;
-    });
-    if(foundChange){   
-       DataEditorActions.updateSelectedFeatureTags(data);
+    if(this.state.selectedEditFeature && this.state.selectedEditFeature.geojson){
+      let properties = this.state.selectedEditFeature.geojson.properties;
+      Object.keys(data).map(key =>{
+      if(!_isequal(data[key], properties[key]))
+        foundChange = true;
+      });
+      if(foundChange){   
+        DataEditorActions.updateSelectedFeatureTags(data);
+      }
+    }else{
+      debug('missing geoJSON');
     }
   }
 
@@ -41,9 +47,10 @@ export default class EditLayerPanel extends MapHubsComponent<void, Props, State>
 
     var layerTitle = '';
     if(this.state.editingLayer){
+      let name = this.state.editingLayer.name;
       layerTitle = (
         <p className="word-wrap" style={{paddingTop: '2px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '5px'}}>
-          <b>{this.__('Editing:')}</b> {this._o_(this.state.editingLayer.name)}
+          <b>{this.__('Editing:')}</b> {this._o_(name)}
         </p>
       );
     }

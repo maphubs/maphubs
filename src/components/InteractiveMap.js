@@ -16,7 +16,7 @@ import ShareButtons from './ShareButtons';
 
 import type {MapStoreState} from '../stores/MapStore';
 
-type Props = {
+type Props = {|
   map_id: number,
   title: LocalizedString,
   style: Object,
@@ -34,7 +34,7 @@ type Props = {
   mapConfig: Object,
   showShareButtons: boolean,
   children?: any
-}
+|}
 
 type DefaultProps = {
   height: string,

@@ -142,7 +142,9 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
 resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
   var pica = null;
   if (typeof window === 'undefined') {
-    return new Promise();
+    return new Promise((fulfill) => {
+      fulfill();
+    });
   }else{
     pica = require("../../node_modules/pica/dist/pica.min.js")();
   }

@@ -2,7 +2,6 @@
 import React from 'react';
 import _map from 'lodash.map';
 import MapHubsComponent from '../MapHubsComponent';
-import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
 import update from 'immutability-helper';
 import type {MapHubsField} from '../../types/maphubs-field';
@@ -322,7 +321,8 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     if(this.state.rowKey === 'mhid'){
       idVal = idVal.split(':')[1];
     }
-    var url = '/feature/' + this.props.layer.layer_id.toString() + '/' + idVal + '/' + featureName;
+    let layer_id = this.props.layer.layer_id ? this.props.layer.layer_id : 0;
+    let url = `/feature/${layer_id}/${idVal}/${featureName}`;
     window.location = url;
   }
 

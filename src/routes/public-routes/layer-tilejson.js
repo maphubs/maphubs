@@ -19,7 +19,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
       let source = Locales.getLocaleStringObject(req.locale, layer.source);       
       let legend = layer.legend_html ?  layer.legend_html : name;
 
-      if(layer.is_external && layer.external_layer_config.type == 'raster'){
+      if(layer.is_external && layer.external_layer_config.type === 'raster'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
         let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
@@ -51,7 +51,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(name)
         };
         res.status(200).send(tileJSON);
-      }else if(layer.is_external && layer.external_layer_config.type == 'vector'){
+      }else if(layer.is_external && layer.external_layer_config.type === 'vector'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
         let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
