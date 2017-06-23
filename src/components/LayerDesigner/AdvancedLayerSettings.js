@@ -10,9 +10,9 @@ import type {GLStyle} from '../../types/mapbox-gl-style';
 import type {Layer} from '../../stores/layer-store'; 
 
 type Props = {|
-   onChange: Function,
-    layer: Layer,
-    style: GLStyle
+  onChange: Function,
+  layer: Layer,
+  style: GLStyle
 |}
 
 type DefaultProps = {
@@ -32,8 +32,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<DefaultProps
 
   constructor(props: Props){
     super(props);
-    this.getStateFromStyleProp(props);
-    
+    this.getStateFromStyleProp(props); 
   }
 
   getStateFromStyleProp(props: Props){
@@ -90,9 +89,9 @@ export default class AdvancedLayerSettings extends MapHubsComponent<DefaultProps
      var style = this.props.style;
      if(values.interactive !== this.state.interactive){
        let glLayerId = `omh-data-${dataType}-${layer_id}`;
-       style = MapStyles.settings.setLayerSetting(this.state.style, glLayerId ,'interactive', values.interactive);       
+       style = MapStyles.settings.setLayerSetting(this.props.style, glLayerId ,'interactive', values.interactive);       
      }else if(values.showBehindBaseMapLabels !== this.state.showBehindBaseMapLabels){
-        style = MapStyles.settings.setLayerSettingAll(this.state.style, 'showBehindBaseMapLabels', values.showBehindBaseMapLabels, 'symbol');
+        style = MapStyles.settings.setLayerSettingAll(this.props.style, 'showBehindBaseMapLabels', values.showBehindBaseMapLabels, 'symbol');
      }else{
        //nochange
        return;

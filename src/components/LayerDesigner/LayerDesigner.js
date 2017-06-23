@@ -95,7 +95,11 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
     this.onColorChange(color);
   }
 
-  onStyleChange = (style: string) => {
+  onStyleChange = (style: Object) => {
+    this.props.onStyleChange(style);
+  }
+
+  onCodeStyleChange = (style: string) => {
     style = JSON.parse(style);
     this.props.onStyleChange(style);
   }
@@ -233,7 +237,7 @@ export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props,
 
        </ul>
        <CodeEditor ref="styleEditor" id="layer-style-editor" mode="json"
-         code={JSON.stringify(this.props.style, undefined, 2)} title={this.__('Editing Layer Style')} onSave={this.onStyleChange} />
+         code={JSON.stringify(this.props.style, undefined, 2)} title={this.__('Editing Layer Style')} onSave={this.onCodeStyleChange} />
        <CodeEditor ref="legendEditor" id="layer-legend-editor" mode="html"
            code={this.props.legend} title={this.__('Edit Layer Legend')} onSave={this.onLegendChange} />
        </div>
