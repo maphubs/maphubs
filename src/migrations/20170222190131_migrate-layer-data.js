@@ -25,13 +25,14 @@ exports.up = function(knex, Promise) {
               .then(function(){               
                   return knex.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${max}`)
                   .then(function(){  
-                    return knex.raw(`DROP VIEW layers.centroids_${layer_id}`)
+                    if(layer.data_type === 'polygon'){
+                      return knex.raw(`DROP VIEW layers.centroids_${layer_id}`)
                     .then(function(){  
                       return layerViews.createLayerViews(layer_id, layer.presets, knex);
-                     }).catch(function(err){
-                       console.log(err);
-                       return layerViews.createLayerViews(layer_id, layer.presets, knex);
                      });
+                    }else{
+                      return layerViews.createLayerViews(layer_id, layer.presets, knex);
+                    }
                   });
               });
           })
