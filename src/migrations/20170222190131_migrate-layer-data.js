@@ -18,8 +18,6 @@ exports.up = function(knex, Promise) {
           ((row_to_json(row)::jsonb) - 'geom') - 'tags' as tags 
           FROM layers.${type}s_${layer_id} row;`)
           .then(function(){
-            return knex.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
-            .then(function(){
               return knex.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
                 ON layers.data_${layer_id}
                 USING gist
@@ -36,26 +34,6 @@ exports.up = function(knex, Promise) {
                      });
                   });
               });
-            }).catch(function(err){
-              //failed to set primary key, but try to finish anyway
-              console.log(err);
-              return knex.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
-                ON layers.data_${layer_id}
-                USING gist
-                (wkb_geometry);`)
-              .then(function(){               
-                  return knex.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${max}`)
-                  .then(function(){  
-                    return knex.raw(`DROP VIEW layers.centroids_${layer_id}`)
-                    .then(function(){  
-                      return layerViews.createLayerViews(layer_id, layer.presets, knex);
-                     }).catch(function(err){
-                       console.log(err);
-                       return layerViews.createLayerViews(layer_id, layer.presets, knex);
-                     });
-                  });
-              });
-            });
           })
         );
      });
