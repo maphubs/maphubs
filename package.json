@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "MapHubs",
   "main": "src/app.js",
   "scripts": {
