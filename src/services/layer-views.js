@@ -41,39 +41,47 @@ module.exports = {
   createLayerViews(layer_id, presets, trx = null){
     let db = knex;
     if(trx){db = trx;}
-    debug(`create views for layer: ${layer_id}`);
-    var tagColumns = '';
-    if(presets){
-      presets.forEach((preset) => {
-        if(preset.type === 'number'){
-          tagColumns += `CASE WHEN isnumeric(tags->>'${preset.tag}') THEN (tags->>'${preset.tag}')::double precision ELSE NULL END as "${preset.tag}",`;
-        }else{
-          tagColumns += `(tags->>'${preset.tag}')::text as "${preset.tag}",`;
-        }
-      });
-    }
+    return db('omh.layers').select('data_type').where({layer_id})
+    .then(result => {
+      var dataType = result[0].data_type;
 
-    var commands = [
+      debug(`create views for layer: ${layer_id}`);
+      var tagColumns = '';
+      if(presets){
+        presets.forEach((preset) => {
+          if(preset.type === 'number'){
+            tagColumns += `CASE WHEN isnumeric(tags->>'${preset.tag}') THEN (tags->>'${preset.tag}')::double precision ELSE NULL END as "${preset.tag}",`;
+          }else{
+            tagColumns += `(tags->>'${preset.tag}')::text as "${preset.tag}",`;
+          }
+        });
+      }
+
+      var commands = [
       
-      `CREATE OR REPLACE VIEW layers.data_full_${layer_id} AS
-      SELECT
-      mhid, ${layer_id}::integer as layer_id, ST_Transform(wkb_geometry, 900913)::geometry(Geometry, 900913) as geom,`
-      + tagColumns +
-      ` tags FROM layers.data_${layer_id}
-      ;`,
+        `CREATE OR REPLACE VIEW layers.data_full_${layer_id} AS
+        SELECT
+        mhid, ${layer_id}::integer as layer_id, ST_Transform(wkb_geometry, 900913)::geometry(Geometry, 900913) as geom,`
+        + tagColumns +
+        ` tags FROM layers.data_${layer_id}
+        ;`
+      ];
 
-      `CREATE OR REPLACE VIEW layers.centroids_${layer_id} AS
-      SELECT
-      st_centroid(geom)::geometry(Point,900913) as centroid, * 
-      FROM layers.data_full_${layer_id};`
-
-    ];
+      if(dataType === 'polygon'){
+        commands.push(
+          `CREATE OR REPLACE VIEW layers.centroids_${layer_id} AS
+        SELECT
+        st_centroid(geom)::geometry(Point,900913) as centroid, * 
+        FROM layers.data_full_${layer_id};`
+        );
+      }
 
     return Promise.each(commands, (command) => {
       return db.raw(command);
     }).catch((err) =>{
        log.error(err.message);
        throw err;
+    });
     });
   }
 };
