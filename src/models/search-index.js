@@ -2,7 +2,6 @@
 
 var client = require('../services/elasticsearch').getClient();
 var Feature = require('../models/feature');
-var Layer = require('../models/layer');
 var local = require('../local');
 var log = require('../services/log');
 var _centroid = require('@turf/centroid');
@@ -52,16 +51,16 @@ module.exports = {
     });
   },
 
-  rebuildFeatures(){
+  rebuildFeatures(){  
     var _this = this;
     //delete all existing features
-    return Layer.getAllLayers()
+    return knex('omh.layers').select('layer_id').whereNot({
+      is_external: true, remote: true
+    })
     .then(layers => {
       var commands = [];
       layers.forEach(layer =>{
-        if(!layer.is_external && !layer.remote){
-         commands.push(_this.updateLayer(layer));
-        }
+        commands.push(_this.updateLayer(layer.layer_id));
       }); 
       return Promise.all(commands);
     });
