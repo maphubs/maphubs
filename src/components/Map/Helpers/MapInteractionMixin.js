@@ -49,9 +49,6 @@ module.exports = {
   },
 
   clearSelection(){
-    if(this.map.hasClass('selected')){
-      this.map.removeClass('selected');
-    }
     this.clearSelectionFilter();
     this.setState({selectedFeature: undefined});
   },
