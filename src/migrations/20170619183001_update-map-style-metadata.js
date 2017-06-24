@@ -20,7 +20,7 @@ var rebuildMapStyle = function(layerStyles){
 
 exports.up = function(knex, Promise) {
   
-  return knex.raw(`select omh.map_layers.map_id, omh.map_layers .layer_id, 
+  return knex.raw(`select omh.map_layers.map_id, omh.map_layers.layer_id, 
   omh.map_layers.style as map_layer_style,
   omh.layers.style as orig_layer_style
   from omh.map_layers 
@@ -32,30 +32,31 @@ exports.up = function(knex, Promise) {
     result.rows.forEach(function(mapLayer){
       let mapLayerStyle = mapLayer.map_layer_style;
       let origLayerStyle =  mapLayer.orig_layer_style;
-
-      //update root metadata
-      if(origLayerStyle.metadata){
-        mapLayerStyle.metadata = origLayerStyle.metadata;
-      }
-      //update source metadata
-      Object.keys(origLayerStyle.sources).forEach(function(sourceID){
-        var origSource = origLayerStyle.sources[sourceID];
-        var mapSource =  mapLayerStyle.sources[sourceID];
-        if(origSource.metadata && mapSource){
-          mapSource.metadata = origSource.metadata;
+      if(origLayerStyle){
+        //update root metadata
+        if(origLayerStyle.metadata){
+          mapLayerStyle.metadata = origLayerStyle.metadata;
         }
-      });
-      if(!updatedMapStyles[mapLayer.map_id]){
-        updatedMapStyles[mapLayer.map_id] = [];
-      }
+        //update source metadata
+        Object.keys(origLayerStyle.sources).forEach(function(sourceID){
+          var origSource = origLayerStyle.sources[sourceID];
+          var mapSource =  mapLayerStyle.sources[sourceID];
+          if(origSource.metadata && mapSource){
+            mapSource.metadata = origSource.metadata;
+          }
+        });
+        if(!updatedMapStyles[mapLayer.map_id]){
+          updatedMapStyles[mapLayer.map_id] = [];
+        }
 
-       updatedMapStyles[mapLayer.map_id].push(mapLayerStyle);
-     
-      updateCommands.push(
-        knex('omh.map_layers')
-        .update({style: mapLayerStyle})
-        .where({map_id: mapLayer.map_id, layer_id: mapLayer.layer_id})
-      );
+        updatedMapStyles[mapLayer.map_id].push(mapLayerStyle);
+      
+        updateCommands.push(
+          knex('omh.map_layers')
+          .update({style: mapLayerStyle})
+          .where({map_id: mapLayer.map_id, layer_id: mapLayer.layer_id})
+        );
+      }
     });
 
     //loop through map_ids, build updated styles, and update
