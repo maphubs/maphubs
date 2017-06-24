@@ -16,6 +16,7 @@ import ConfirmationActions from '../actions/ConfirmationActions';
 import Progress from '../components/Progress';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore';
+var debug = require('../services/debug')('addphotopoint');
 
 type Props = {
   layer: Object,
@@ -101,16 +102,26 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
 
             var featureName = 'unknown';
             var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-            let geoJSON = _this.state.geoJSON;
-            let layer_id = _this.state.layer ? _this.state.layer.layer_id : 0;
-
-            nameFields.forEach((name) => {
-              if(featureName === 'unknown' && geoJSON.features[0].properties[name]){
-                featureName = geoJSON.features[0].properties[name];
-              }
-            });
-            var featurePageUrl = `/feature/${layer_id}/${this.state.mhid}/${featureName}`;
-            window.location = featurePageUrl;
+            let geoJSON: any  = _this.state.geoJSON;
+            let layer_id: string = (_this.state.layer && _this.state.layer.layer_id) ? _this.state.layer.layer_id.toString() : '0';
+            if(geoJSON && geoJSON.features){
+              let features = geoJSON.features;
+              //TODO: use name field settings from Props if set
+              nameFields.forEach((name) => {
+                let props = features[0].properties;
+                if(props && featureName === 'unknown' && props[name]){
+                  featureName = props[name];
+                }
+              });
+            } 
+            if(_this.state.mhid){
+              let featureId = _this.state.mhid.split(':')[1];
+              var featurePageUrl = `/feature/${layer_id}/${featureId}/${featureName}`;
+              window.location = featurePageUrl;
+            }else{
+              debug('mhid not found');
+            }       
+            
           }
         });
       }
