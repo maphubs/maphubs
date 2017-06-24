@@ -242,8 +242,8 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   }
 
   .footer-copyright {
-     color: $footer-font-color;
-    background-color: $footer-bg-color;
+     color: $footer-font-color !important;
+    background-color: $footer-bg-color !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
