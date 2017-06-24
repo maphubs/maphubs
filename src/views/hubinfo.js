@@ -149,7 +149,7 @@ export default class HubInfo extends MapHubsComponent<DefaultProps, Props, State
           <div className="row">
               
           <div className="row" style={{height: 'calc(100vh - 65px)'}}>
-            <HubMap editing={this.state.editing} height="calc(100% - 65px)" 
+            <HubMap editing={this.state.editing} height="calc(100vh - 65px)" 
             hub={this.state.hub} myMaps={this.props.myMaps} popularMaps={this.props.popularMaps}
             mapConfig={this.props.mapConfig}
             border/>          
