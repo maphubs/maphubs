@@ -127,7 +127,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
       this.state.geoJSON.features && 
       Array.isArray( this.state.geoJSON.features) &&
       this.state.geoJSON.features.length > 0){
-      let firstFeature: Object = this.state.geoJSON.features[0];
+      let firstFeature: any = this.state.geoJSON.features[0];
       if(firstFeature){
         Object.keys(fields).map((key) => {
             let val = fields[key];  
