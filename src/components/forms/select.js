@@ -3,10 +3,10 @@ import React from 'react';
 import {HOC} from 'formsy-react';
 import find from 'lodash.find';
 import result from 'lodash.result';
-var classNames = require('classnames');
-import ReactMaterialSelect from 'react-material-select';
+import ReactSelect from 'react-select';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
+var $ = require('jquery');
 
 type Props = {|
   emptyText: string,
@@ -69,6 +69,12 @@ class Select extends MapHubsComponent<DefaultProps, Props, State> {
     this.setNote(this.props.value);
   }
 
+  componentDidMount(){
+    if(this.props.dataTooltip){
+      $(this.refs.selectwrapper).tooltip();
+    }
+  }
+
   componentWillReceiveProps(nextProps){
     if(!nextProps.startEmpty && this.props.value !== nextProps.value) {
       this.props.setValue(nextProps.value);
@@ -95,12 +101,15 @@ class Select extends MapHubsComponent<DefaultProps, Props, State> {
   }
 
   handleSelectChange = (selected) => {
-     var val = selected.value;
-     this.props.setValue(val);
-     this.setNote(val);
-     if(this.props.onChange){
-       this.props.onChange(val);
-     }
+    let val;
+    if(selected){
+      val = selected.value;
+    }
+    this.props.setValue(val);
+    this.setNote(val);
+    if(this.props.onChange){
+      this.props.onChange(val);
+    }
    }
 
    validate = () => {
@@ -116,7 +125,6 @@ class Select extends MapHubsComponent<DefaultProps, Props, State> {
   }
 
   render() {
-    var className = classNames('input-field', {tooltipped: this.props.dataTooltip ? true : false});
     var value = this.props.getValue();
 
     var note = '';
@@ -134,20 +142,23 @@ class Select extends MapHubsComponent<DefaultProps, Props, State> {
     return (
       <div className={this.props.className}>
           
-          <div  className={className} id={this.props.id} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
+          <div ref="selectwrapper" className="input-field no-margin" id={this.props.id} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
               data-tooltip={this.props.dataTooltip}>
-              {icon}
-              <ReactMaterialSelect label={this.props.emptyText}
-                resetLabel={this.props.emptyText} defaultValue={value}
-                 onChange={this.handleSelectChange}>
-                {this.props.options.map((option, i) => {
-                  return (
-                    <option key={i} dataValue={option.value}>{option.label}</option>
-                  );
-                })}
-              </ReactMaterialSelect>
-              <label htmlFor={this.props.name}  data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+               {icon}
+              <div className="row" style={{height: '10px'}}>
+               
+                <label htmlFor={this.props.name}  data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
 
+              </div>
+              <div className="row no-margin">
+              <ReactSelect
+                name={this.props.name}
+                value={value}
+                placeholder={this.props.emptyText}
+                options={this.props.options}
+                onChange={this.handleSelectChange}
+              />
+              </div>
           </div>
             {note}
         </div>
