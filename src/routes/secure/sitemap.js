@@ -9,7 +9,10 @@ var sitemap = require('sitemap'),
   sm = sitemap.createSitemap({
       hostname : urlUtil.getBaseUrl(),
       sitemapName: 'Maphubs'
-    });
+    }),
+  smi = sitemap.buildSitemapIndex({
+    urls: []
+  });
 
 module.exports = function(app) {
 
@@ -22,7 +25,44 @@ module.exports = function(app) {
       //don't crawl exports
       res.send('User-agent: *\nDisallow: /*.kml$\nDisallow: /*.zip$\nDisallow: /*.geojson$\nDisallow: /*.csv$\nDisallow: /xml/map/*');
     }
-});
+  });
+
+  app.get('/sitemapindex.xml', (req, res, next) => {
+    if(local.requireLogin){
+      return res.status(404).send();
+    }
+    var baseUrl = urlUtil.getBaseUrl();
+    siteMapUtil.getSiteMapIndexFeatureURLs()
+    .then(layerUrls => {
+      let smi = sitemap.buildSitemapIndex({
+        urls:  [ baseUrl + '/sitemap.xml'].concat(layerUrls)
+      });
+      res.header('Content-Type', 'application/xml');
+      res.send(smi);
+    }).catch(nextError(next));
+  });
+
+  app.get('/sitemap.:layer_id.xml', (req, res, next) => {
+      if(local.requireLogin){
+        return res.status(404).send();
+      }
+      var layer_id = parseInt(req.params.layer_id || '', 10);
+      //clear sitemap
+      sm.urls = [];
+
+      siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm)
+      .then(() => {
+        sm.toXML((err, xml) => {
+          if(err){
+            log.error(err);
+            next(err);
+          }
+            res.header('Content-Type', 'application/xml');
+            res.send(xml);
+        });
+      }).catch(nextError(next));
+
+  });
 
   app.get('/sitemap.xml', (req, res, next) => {
       if(local.requireLogin){
@@ -45,8 +85,7 @@ module.exports = function(app) {
         siteMapUtil.addStoriesToSiteMap(sm),
         siteMapUtil.addMapsToSiteMap(sm),
         siteMapUtil.addLayersToSiteMap(sm),
-        siteMapUtil.addGroupsToSiteMap(sm),
-        siteMapUtil.addFeaturesToSiteMap(sm)
+        siteMapUtil.addGroupsToSiteMap(sm)
       ]).then(() => {
         sm.toXML((err, xml) => {
           if(err){

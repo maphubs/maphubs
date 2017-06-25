@@ -11,6 +11,20 @@ var Promise = require('bluebird');
 
 module.exports = {
 
+
+  getSiteMapIndexFeatureURLs(){
+    var baseUrl = urlUtil.getBaseUrl();
+    return Layer.getAllLayers()
+    .then((layers) => {
+      let urls = [];
+      layers.forEach((layer) => {
+        //ignore if layer feature length > 50,000
+        urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`);
+      });
+      return urls;
+    });
+  },
+
   addLayersToSiteMap(sm: any){
     var baseUrl = urlUtil.getBaseUrl();
     return Layer.getAllLayers()
@@ -103,35 +117,33 @@ module.exports = {
     });
   },
 
-  addFeaturesToSiteMap(sm: any){
+  addLayerFeaturesToSiteMap(layer_id: number, sm: any){
     //get all layers
     var baseUrl = urlUtil.getBaseUrl();
-    return Layer.getAllLayers()
-    .then((layers) => {
+    return Layer.getLayerByID(layer_id)
+    .then((layer) => {
       let featureQueries = [];
-      layers.forEach((layer) => {
-        if(!layer.is_external && !layer.remote && !layer.private){
-          let layer_id = layer.layer_id;
-          var lastmodISO = null;
-          if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
-          featureQueries.push(knex(`layers.data_${layer_id}`).select('mhid')
-            .then(features => {
-              if(features && Array.isArray(features)){
-                features.forEach(feature => {
-                  if(feature && feature.mhid){
-                    let featureId = feature.mhid.split(':')[1];
-                      sm.add({
-                        url: baseUrl + `/feature/${layer_id}/${featureId}/`,
-                        changefreq: 'weekly',
-                        lastmodISO
-                      });
-                  }
-                });
-              }            
-            })
-          );
-        }  
-    });
+      if(!layer.is_external && !layer.remote && !layer.private){
+        let layer_id = layer.layer_id;
+        var lastmodISO = null;
+        if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
+        featureQueries.push(knex(`layers.data_${layer_id}`).select('mhid')
+          .then(features => {
+            if(features && Array.isArray(features)){
+              features.forEach(feature => {
+                if(feature && feature.mhid){
+                  let featureId = feature.mhid.split(':')[1];
+                    sm.add({
+                      url: baseUrl + `/feature/${layer_id}/${featureId}/`,
+                      changefreq: 'weekly',
+                      lastmodISO
+                    });
+                }
+              });
+            }            
+          })
+        );
+      }  
     return Promise.all(featureQueries)
     .then(() => {
       return sm;
