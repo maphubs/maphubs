@@ -93,6 +93,7 @@
     "knex": "^0.13.0",
     "libxmljs": "^0.18.4",
     "lodash.assignin": "4.2.0",
+    "lodash.chunk": "^4.2.0",
     "lodash.debounce": "4.0.8",
     "lodash.endswith": "4.2.1",
     "lodash.every": "4.6.0",

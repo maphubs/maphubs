@@ -829,5 +829,14 @@
 	"Locations": "Locations",
 	"Use the box above to search": "Use the box above to search",
 	"Search Data": "Search Data",
-	"Forget Password": "Forget Password"
+	"Forget Password": "Forget Password",
+	"Grid": "Grid",
+	"List": "List",
+	"Create a group for your organization or browse the content of existing groups.": "Create a group for your organization or browse the content of existing groups.",
+	"Browse map layers or create a new layer.": "Browse map layers or create a new layer.",
+	"View All Stories": "View All Stories",
+	"View All": "View All",
+	"View All Maps": "View All Maps",
+	"View All Groups": "View All Groups",
+	"View All Hubs": "View All Hubs"
 }

@@ -34,6 +34,17 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
+  app.get('/layers/all', csrfProtection, (req, res, next) => {   
+      Layer.getAllLayers()
+      .then((layers) => {
+        res.render('alllayers', {
+          title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {layers},
+          req
+        });
+      }).catch(nextError(next));
+  });
+
   app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = req.session.user.maphubsUser.id;

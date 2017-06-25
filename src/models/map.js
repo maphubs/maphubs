@@ -127,8 +127,7 @@ module.exports = {
         'public.users.display_name as username')
         .from('omh.maps')
         .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
-         .where('omh.maps.private', false)
-        .orderBy('omh.maps.updated_at', 'desc');
+         .where('omh.maps.private', false);
     },
 
     /**

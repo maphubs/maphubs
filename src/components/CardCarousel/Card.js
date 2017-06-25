@@ -205,7 +205,7 @@ export default class Card extends MapHubsComponent<void, Props, State> {
       
 
       cardContents = (  
-        <div ref="card" className='hoverable margin5 small carousel-card card' onClick={this.onClick}>
+        <div ref="card" className='hoverable small carousel-card card' onClick={this.onClick}>
           {image}
           
           {privateIcon}

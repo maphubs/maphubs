@@ -2,27 +2,32 @@
 import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
-import StorySummary from '../components/Story/StorySummary';
 import MessageActions from '../actions/MessageActions';
 import UserStore from '../stores/UserStore';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import StoryList from '../components/Lists/StoryList';
+import Toggle from '../components/forms/toggle';
+import Formsy from 'formsy-react';
+import CardGrid from '../components/CardCarousel/CardGrid';
+import cardUtil from '../services/card-util';
 
 import type {UserStoreState} from '../stores/UserStore';
 
 type Props = {|
-  popularStories: Array<Object>,
-  recentStories: Array<Object>,
+  stories: Array<Object>,
   locale: string,
   _csrf: string,
   footerConfig: Object,
   headerConfig: Object
 |}
 
-type State = UserStoreState;
+type State = {
+  showList?: boolean
+} & UserStoreState;
 
-export default class Stories extends MapHubsComponent<void, Props, State> {
+export default class AllStories extends MapHubsComponent<void, Props, State> {
 
   props: Props
 
@@ -40,22 +45,23 @@ export default class Stories extends MapHubsComponent<void, Props, State> {
     }
   }
 
+  onModeChange = (showList: boolean) => {
+    this.setState({showList});
+  }
+
 	render() {
-    var recent = '';
-    if(this.props.recentStories && this.props.recentStories.length > 0){
-      recent = (
-        <div className="col s12 m12 l6">
-          <h4>{this.__('Recent Stories')}</h4>
-            {this.props.recentStories.map((story) => {
-              return (
-                <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                  <div className="card-content">
-                  <StorySummary story={story} />
-                  </div>
-                </div>
-              );
-            })}
+
+    let stories = '';
+    if(this.state.showList){
+      stories = (
+        <div className="container">
+          <StoryList showTitle={false} stories={this.props.stories} />
         </div>
+      );
+    }else{
+      let cards = this.props.stories.map(cardUtil.getStoryCard);
+      stories = (
+        <CardGrid cards={cards} />
       );
     }
 
@@ -63,31 +69,28 @@ export default class Stories extends MapHubsComponent<void, Props, State> {
       <div>
         <Header activePage="stories" {...this.props.headerConfig}/>
         <main>
-        <div>
+          <div style={{marginTop: '20px', marginBottom: '10px'}}>
+            <div className="row" style={{marginBottom: '0px'}}>
+                <div className="col l8 m7 s12">
+                  <h4 className="no-margin">{this.__('Stories')}</h4>
+                </div>
+            </div>
 
           <div className="row">
-            {recent}
-            <div className="col s12 m12 l6">
-              <h4>{this.__('Popular Stories')}</h4>
-              {this.props.popularStories.map((story) => {
-                return (
-                  <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                    <div className="card-content">
-                    <StorySummary story={story} />
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="left-align" style={{marginLeft: '15px', marginTop: '25px'}}>
+              <Formsy.Form>
+                <Toggle name="mode" onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList}/>
+            </Formsy.Form>
             </div>
+            <div className="row">
+              {stories}
+            </div>        
           </div>
         </div>
         <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Story')}>
           <a onClick={this.onCreateStory} className="btn-floating btn-large red red-text">
             <i className="large material-icons">add</i>
           </a>
-        </div>
-        <div className="row center-align">
-          <a className="btn" href="/stories/all">{this.__('View All Stories')}</a>
         </div>
         </main>
         <Footer {...this.props.footerConfig}/>

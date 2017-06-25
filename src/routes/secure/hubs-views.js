@@ -64,25 +64,27 @@ module.exports = function(app: any) {
         var featuredHubs = results[0];
         var popularHubs = results[1];
         var recentHubs = results[2];
-        if(local.mapHubsPro){
-          return  Hub.getAllHubs()
-          .then((allHubs) => {
-            res.render('hubs', {
-              title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
-              props: {
-                featuredHubs, popularHubs, recentHubs, allHubs
-              }, req
-            });
-          });
-        }else{
-          res.render('hubs', {
-            title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
-            props: {
-              featuredHubs, popularHubs, recentHubs
-            }, req
-          });
-        }
+      
+        res.render('hubs', {
+          title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {
+            featuredHubs, popularHubs, recentHubs
+          }, req
+        });
+        
       }).catch(nextError(next));
+  });
+
+  app.get('/hubs/all', csrfProtection, (req, res, next) => {
+    Hub.getAllHubs().orderBy('omh.hubs.name')
+    .then((hubs) => {
+      res.render('allhubs', {
+        title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {
+          hubs
+        }, req
+      });
+    }).catch(nextError(next));
   });
 
   app.get('/user/:username/hubs', csrfProtection, (req, res, next) => {

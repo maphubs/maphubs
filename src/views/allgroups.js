@@ -14,11 +14,15 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import GroupList from '../components/Lists/GroupList';
+import Toggle from '../components/forms/toggle';
+import Formsy from 'formsy-react';
+import CardGrid from '../components/CardCarousel/CardGrid';
+
+import type {Group} from '../stores/GroupStore';
 
 type Props = {
-  featuredGroups: Array<Object>,
-  recentGroups: Array<Object>,
-  popularGroups: Array<Object>,
+  groups: Array<Group>,
   locale: string,
   _csrf: string,
   footerConfig: Object,
@@ -26,25 +30,23 @@ type Props = {
 }
 
 type DefaultProps = {
-  groups: []
+
 }
 
 type State = {
   searchResults: Array<Object>,
-  searchActive: boolean
+  searchActive: boolean,
+  showList: boolean
 }
 
-export default class Groups extends MapHubsComponent<DefaultProps, Props, State> {
+export default class AllGroups extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
-  static defaultProps = {
-    groups: []
-  }
-
   state = {
     searchResults: [],
-    searchActive: false
+    searchActive: false,
+    showList: false
   }
 
   constructor(props: Props) {
@@ -75,7 +77,6 @@ export default class Groups extends MapHubsComponent<DefaultProps, Props, State>
         cb();
       }
       );
-
     });
   }
 
@@ -83,12 +84,12 @@ export default class Groups extends MapHubsComponent<DefaultProps, Props, State>
     this.setState({searchActive: false, searchResults: []});
   }
 
+  onModeChange = (showList: boolean) => {
+    this.setState({showList});
+  }
+
 	render() {
-
-    var featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard);
-    var popularCards = this.props.popularGroups.map(cardUtil.getGroupCard);
-    var recentCards = this.props.recentGroups.map(cardUtil.getGroupCard);
-
+   
     var searchResults = '';
 
     if(this.state.searchActive){
@@ -96,7 +97,7 @@ export default class Groups extends MapHubsComponent<DefaultProps, Props, State>
 
         var searchCards = this.state.searchResults.map(cardUtil.getGroupCard);
         searchResults = (
-          <CardCollection title={this.__('Search Results')} cards={searchCards} />
+         <CardCollection title={this.__('Search Results')} cards={searchCards} />
         );
       }
       else {
@@ -110,12 +111,19 @@ export default class Groups extends MapHubsComponent<DefaultProps, Props, State>
           </div>
         );
       }
-
     }
-    var featured = '';
-    if(featuredCards.length > 0){
-      featured = (
-        <CardCollection title={this.__('Featured')} cards={featuredCards} />
+
+    let groups = '';
+    if(this.state.showList){
+      groups = (
+        <div className="container">
+          <GroupList showTitle={false} groups={this.props.groups} />
+        </div>
+      );
+    }else{
+      let cards = this.props.groups.map(cardUtil.getGroupCard);
+      groups = (
+        <CardGrid cards={cards} />
       );
     }
 
@@ -138,19 +146,22 @@ export default class Groups extends MapHubsComponent<DefaultProps, Props, State>
 
             {searchResults}
 
-              {featured}
-              <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink="/groups/all" />
-              <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink="/groups/all" />
-         
-             
+              <div className="row">
+                <div className="left-align" style={{marginLeft: '15px', marginTop: '25px'}}>
+                  <Formsy.Form>
+                    <Toggle name="mode" onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList}/>
+                </Formsy.Form>
+                </div>
+                <div className="row">
+                  {groups}
+                </div>
+              </div>
+          
               <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Group')}>
                 <a className="btn-floating btn-large red red-text" href="/creategroup">
                   <i className="large material-icons">add</i>
                 </a>
               </div>
-            </div>
-            <div className="row center-align">
-              <a className="btn" href="/groups/all">{this.__('View All Groups')}</a>
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>

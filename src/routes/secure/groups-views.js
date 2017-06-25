@@ -36,6 +36,19 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
+  app.get('/groups/all', csrfProtection, (req, res, next) => {
+    let locale = req.locale ? req.locale : 'en';
+    Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`)
+    .then((groups) => {
+      res.render('allgroups', {
+        title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {
+          groups
+        }, req
+      });
+    }).catch(nextError(next));
+  });
+
   app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), (req, res) => {
     res.render('creategroup', {
       title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,

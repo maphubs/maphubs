@@ -14,11 +14,13 @@ import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import MapList from '../components/Lists/MapList';
+import Toggle from '../components/forms/toggle';
+import Formsy from 'formsy-react';
+import CardGrid from '../components/CardCarousel/CardGrid';
 
 type Props = {
-  featuredMaps: Array<Object>,
-  recentMaps: Array<Object>,
-  popularMaps: Array<Object>,
+  maps: Array<Object>,
   locale: string,
   _csrf: string,
   footerConfig: Object,
@@ -27,16 +29,18 @@ type Props = {
 
 type State = {
   searchResults: Array<Object>,
-  searchActive: boolean
+  searchActive: boolean,
+  showList: boolean
 }
 
-export default class Maps extends MapHubsComponent<void, Props, State> {
+export default class AllMaps extends MapHubsComponent<void, Props, State> {
 
   props: Props
 
   state: State = {
     searchResults: [],
-    searchActive: false
+    searchActive: false,
+    showList: false
   }
 
   constructor(props: Props) {
@@ -74,12 +78,11 @@ export default class Maps extends MapHubsComponent<void, Props, State> {
     this.setState({searchActive: false, searchResults: []});
   }
 
+  onModeChange = (showList: boolean) => {
+    this.setState({showList});
+  }
+
 	render() {
-
-    var featuredCards = this.props.featuredMaps.map(cardUtil.getMapCard);
-    var recentCards = this.props.recentMaps.map(cardUtil.getMapCard);
-    var popularCards = this.props.popularMaps.map(cardUtil.getMapCard);
-
 
     var searchResults = '';
     if(this.state.searchActive){
@@ -104,10 +107,17 @@ export default class Maps extends MapHubsComponent<void, Props, State> {
       }
     }
 
-    var featured = '';
-    if(!MAPHUBS_CONFIG.mapHubsPro && featuredCards && featuredCards.length > 0){
-      featured = (
-        <CardCollection title={this.__('Featured')} cards={featuredCards} />
+    let maps = '';
+    if(this.state.showList){
+      maps = (
+        <div className="container">
+          <MapList showTitle={false} maps={this.props.maps} />
+        </div>
+      );
+    }else{
+      let cards = this.props.maps.map(cardUtil.getMapCard);
+      maps = (
+        <CardGrid cards={cards} />
       );
     }
 
@@ -118,7 +128,7 @@ export default class Maps extends MapHubsComponent<void, Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className="row" style={{marginBottom: '0px'}}>
               <div className="col l8 m7 s12">
-                <h4 className="no-margin">{this.__('Maps')}</h4>
+                 <h4 className="no-margin">{this.__('Maps')}</h4>
                 <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse maps or create a new map using the respository of open map layers.')}</p>
               </div>
               <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
@@ -127,19 +137,24 @@ export default class Maps extends MapHubsComponent<void, Props, State> {
             </div>
           </div>
           {searchResults}
-          {featured}
-          <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink="/maps/all" />
-          <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink="/maps/all" />
-          
+          <div className="row">
+
+            <div className="left-align" style={{marginLeft: '15px', marginTop: '25px'}}>
+              <Formsy.Form>
+            <Toggle name="mode" onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList}/>
+            </Formsy.Form>
+            </div>
+            <div className="row">
+              {maps}
+            </div>
+            
+          </div>
           <div>
             <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Map')}>
               <a href="/map/new" className="btn-floating btn-large red red-text">
                 <i className="large material-icons">add</i>
               </a>
             </div>
-          </div>
-          <div className="row center-align">
-            <a className="btn" href="/maps/all">{this.__('View All Maps')}</a>
           </div>
         </main>
         <Footer {...this.props.footerConfig}/>

@@ -3,7 +3,7 @@ import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
-import CardCarousel from '../components/CardCarousel/CardCarousel';
+import CardCollection from '../components/CardCarousel/CardCollection';
 var debug = require('../services/debug')('views/layers');
 var urlUtil = require('../services/url-util');
 import request from 'superagent';
@@ -15,10 +15,12 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
+import type {Layer} from '../stores/layer-store';
+
 type Props = {
-  featuredLayers: Array<Object>,
-  recentLayers: Array<Object>,
-  popularLayers: Array<Object>,
+  featuredLayers: Array<Layer>,
+  recentLayers: Array<Layer>,
+  popularLayers: Array<Layer>,
   locale: string,
   footerConfig: Object,
   headerConfig: Object,
@@ -86,13 +88,7 @@ export default class Layers extends MapHubsComponent<void, Props, State> {
 
         var searchCards = this.state.searchResults.map(cardUtil.getLayerCard);
         searchResults = (
-          <div className="row">
-            <div className="col s12">
-            <h5>{this.__('Search Results')}</h5>
-            <div className="divider"></div>
-            <CardCarousel infinite={false} cards={searchCards}/>
-          </div>
-          </div>
+          <CardCollection title={this.__('Search Results')} cards={searchCards} />
         );
       }
       else {
@@ -112,13 +108,7 @@ export default class Layers extends MapHubsComponent<void, Props, State> {
     var featured = '';
     if(featuredCards.length > 0){
       featured= (
-        <div className="row">
-          <div className="col s12">
-            <h5>{this.__('Featured')}</h5>
-            <div className="divider"></div>
-            <CardCarousel cards={featuredCards} infinite={false}/>
-          </div>
-        </div>
+        <CardCollection title={this.__('Featured')} cards={featuredCards} />
       );
     }
 
@@ -130,7 +120,8 @@ export default class Layers extends MapHubsComponent<void, Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className="row" style={{marginBottom: '0px'}}>
               <div className="col l8 m7 s12">
-                <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse layers or create a new layer.')}</p>
+                <h4 className="no-margin">{this.__('Layers')}</h4>
+                <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse map layers or create a new layer.')}</p>
               </div>
               <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
                 <SearchBox label={this.__('Search Layers')} suggestionUrl="/api/layers/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
@@ -139,25 +130,16 @@ export default class Layers extends MapHubsComponent<void, Props, State> {
           </div>
           {searchResults}
           {featured}
-          <div className="row">
-            <div className="col s12">
-              <h5>{this.__('Popular')}</h5>
-              <div className="divider"></div>
-              <CardCarousel cards={popularCards} infinite={false}/>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col s12">
-              <h5>{this.__('Recent')}</h5>
-              <div className="divider"></div>
-              <CardCarousel cards={recentCards} infinite={false}/>
-            </div>
-          </div>
-
+          <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink="/layers/all" />
+          <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink="/layers/all" />
+         
           <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Layer')}>
             <a href="/createlayer" className="btn-floating btn-large red red-text">
               <i className="large material-icons">add</i>
             </a>
+          </div>
+          <div className="row center-align">
+            <a className="btn" href="/layers/all">{this.__('View All Layers')}</a>
           </div>
         </main>
         <Footer {...this.props.footerConfig}/>

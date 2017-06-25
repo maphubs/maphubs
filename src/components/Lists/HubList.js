@@ -4,10 +4,15 @@ import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 
 type Props = {|
-  hubs: Array<Object>
+  hubs: Array<Object>,
+  showTitle: boolean
 |}
 
-export default class HubList extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {
+  showTitle: true;
+}
+
+export default class HubList extends MapHubsComponent<DefaultProps, Props, void> {
 
    shouldComponentUpdate(nextProps: Props){
     //only update if something changes
@@ -18,11 +23,19 @@ export default class HubList extends MapHubsComponent<void, Props, void> {
   }
 
   render(){
-    return (
-      <ul className="collection with-header">
+    let title = '', className = "collection";
+    if(this.props.showTitle){
+      className = "collection with-header";
+      title = (
         <li className="collection-header">
           <h4>{this.__('Hubs')}</h4>
         </li>
+      );
+    }
+    
+    return (
+      <ul className={className}>
+        {title}
         {this.props.hubs.map((hub, i) => {
           return (
             <li className="collection-item" key={hub.hub_id}>

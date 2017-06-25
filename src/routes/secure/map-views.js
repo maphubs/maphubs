@@ -101,6 +101,18 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
+  app.get('/maps/all', csrfProtection, (req, res, next) => {
+    let locale = req.locale ? req.locale : 'en';
+    Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`)
+    .then((maps) => {
+      res.render('allmaps', {
+        title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, 
+        props: {maps}, 
+        req
+      });
+    }).catch(nextError(next));
+  });
+
   app.get('/user/:username/maps', csrfProtection, (req, res, next) => {
 
     var username = req.params.username;

@@ -17,12 +17,12 @@ module.exports = {
         knex.raw('md5(lower(trim(public.users.email))) as emailhash')
         )
       .table('omh.stories')
-      .where('omh.stories.published', true)
+      //.where('omh.stories.published', true)
+      .whereRaw(`omh.stories.published = true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true )`)
       .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
       .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
       .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
-      .orderBy('omh.stories.updated_at', 'desc');
+      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id');
     },
 
   getRecentStories(number: number=10) {

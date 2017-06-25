@@ -7,7 +7,11 @@ var Account = require('./account');
 module.exports = {
 
   getAllGroups() {
-      return knex.select().table('omh.groups').orderBy('name');
+      return knex.select('omh.groups.*',
+      knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
+      )
+      .table('omh.groups')
+      .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id');
     },
 
     getPopularGroups(number: number = 15){

@@ -31,6 +31,18 @@ module.exports = function(app: any) {
       }).catch(nextError(next));
   });
 
+  app.get('/stories/all', (req, res, next) => {
+      Story.getAllStories().orderBy('omh.stories.title')
+      .then((stories) => {    
+        res.render('allstories', {
+          title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {
+            stories
+          }, req
+        });
+      }).catch(nextError(next));
+  });
+
   app.get('/user/:username/stories', (req, res, next) => {
 
     var username: string = req.params.username;

@@ -14,11 +14,13 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import HubList from '../components/Lists/HubList';
+import Toggle from '../components/forms/toggle';
+import Formsy from 'formsy-react';
+import CardGrid from '../components/CardCarousel/CardGrid';
 
 type Props = {
-  featuredHubs: Array<Object>,
-  popularHubs: Array<Object>,
-  recentHubs: Array<Object>,
+  hubs: Array<Object>,
   locale: string,
   _csrf: string,
   footerConfig: Object,
@@ -26,25 +28,18 @@ type Props = {
 }
 
 type DefaultProps = {
-  featuredHubs: Array<Object>,
-  popularHubs: Array<Object>,
-  recentHubs: Array<Object>
+
 }
 
 type State = {
   searchActive: boolean,
-  searchResults: Array<Object>
+  searchResults: Array<Object>,
+  showList?: boolean
 }
 
 export default class Hubs extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
-
-  static defaultProps: DefaultProps = {
-    featuredHubs: [],
-    popularHubs: [],
-    recentHubs: []
-  }
 
   constructor(props: Props) {
     super(props);
@@ -81,12 +76,12 @@ export default class Hubs extends MapHubsComponent<DefaultProps, Props, State> {
     this.setState({searchActive: false, searchResults: []});
   }
 
+  onModeChange = (showList: boolean) => {
+    this.setState({showList});
+  }
+
 	render() {
 
-    var featuredCards = this.props.featuredHubs.map(cardUtil.getHubCard);
-    var recentCards = this.props.recentHubs.map(cardUtil.getHubCard);
-    var popularCards = this.props.popularHubs.map(cardUtil.getHubCard);
-    
     var searchResults = '';
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
@@ -108,9 +103,18 @@ export default class Hubs extends MapHubsComponent<DefaultProps, Props, State> {
       }
     }
 
-    var featured = '';
-    if(featuredCards.length > 0){
-      featured = (<CardCollection cards={featuredCards} title={this.__('Featured')} />);
+    let hubs = '';
+    if(this.state.showList){
+      hubs = (
+        <div className="container">
+          <HubList showTitle={false} hubs={this.props.hubs} />
+        </div>
+      );
+    }else{
+      let cards = this.props.hubs.map(cardUtil.getHubCard);
+      hubs = (
+        <CardGrid cards={cards} />
+      );
     }
 
 		return (
@@ -128,17 +132,22 @@ export default class Hubs extends MapHubsComponent<DefaultProps, Props, State> {
             </div>
 
             {searchResults}
-            {featured}
-            <CardCollection cards={popularCards} title={this.__('Popular')} viewAllLink="/hubs/all" />
-            <CardCollection cards={recentCards} title={this.__('Recent')} viewAllLink="/hubs/all"/>            
+            
+            <div className="row">
+              <div className="left-align" style={{marginLeft: '15px', marginTop: '25px'}}>
+                <Formsy.Form>
+                  <Toggle name="mode" onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList}/>
+              </Formsy.Form>
+              </div>
+              <div className="row">
+                {hubs}
+              </div>
+            </div>
 
             <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Hub')}>
               <a className="btn-floating btn-large red red-text" href="/createhub">
                 <i className="large material-icons">add</i>
               </a>
-            </div>
-            <div className="row center-align">
-              <a className="btn" href="/hubs/all">{this.__('View All Hubs')}</a>
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>

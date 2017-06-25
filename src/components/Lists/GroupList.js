@@ -1,11 +1,10 @@
 //@flow
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
-import slug from 'slug';
 import _isequal from 'lodash.isequal';
 
 type Props = {|
-  maps: Array<Object>,
+  groups: Array<Object>,
   showTitle: boolean
 |}
 
@@ -13,7 +12,7 @@ type DefaultProps = {
   showTitle: true;
 }
 
-export default class MapList extends MapHubsComponent<DefaultProps, Props, void> {
+export default class GroupList extends MapHubsComponent<DefaultProps, Props, void> {
 
    shouldComponentUpdate(nextProps: Props){
     //only update if something changes
@@ -29,7 +28,7 @@ export default class MapList extends MapHubsComponent<DefaultProps, Props, void>
       className = "collection with-header";
       title = (
         <li className="collection-header">
-          <h4>{this.__('Maps')}</h4>
+          <h4>{this.__('Groups')}</h4>
         </li>
       );
     }
@@ -37,15 +36,14 @@ export default class MapList extends MapHubsComponent<DefaultProps, Props, void>
     return (
       <ul className={className}>
         {title}
-        {this.props.maps.map((map, i) => {
-          let mapTitle = this._o_(map.title);
-          let slugTitle = slug(mapTitle);
+        {this.props.groups.map((group, i) => {
+          let groupName = this._o_(group.name);
           return (
-            <li className="collection-item" key={map.map_id}>
-              <div>{mapTitle}
-                <a className="secondary-content" href={`/map/view/${map.map_id}/${slugTitle}`}>
-                  <i className="material-icons">map</i>
-                </a>                     
+            <li className="collection-item" key={group.group_id}>
+              <div>{groupName}                
+                <a className="secondary-content" href={'/group/' + group.group_id}>
+                  <i className="material-icons">info</i>
+                </a>
               </div>
             </li>
           );

@@ -29,7 +29,7 @@ module.exports = {
   },
 
   addStoriesToSiteMap(sm: any){
-    return Story.getAllStories()
+    return Story.getAllStories().orderBy('omh.stories.updated_at', 'desc')
     .then((stories) => {
       stories.forEach((story) => {
         var title = story.title.replace('&nbsp;', '');
@@ -73,7 +73,7 @@ module.exports = {
 
   addMapsToSiteMap(sm: any){
     var baseUrl = urlUtil.getBaseUrl();
-    return Map.getAllMaps()
+    return Map.getAllMaps().orderBy('omh.maps.updated_at', 'desc')
     .then((maps) => {
       maps.forEach((map) => {
         var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slug(map.title.en)}`;

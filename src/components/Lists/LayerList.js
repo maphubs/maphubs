@@ -6,10 +6,15 @@ import type {Layer} from '../../stores/layer-store';
 import _isequal from 'lodash.isequal';
 
 type Props = {|
-  layers: Array<Layer>
+  layers: Array<Layer>,
+  showTitle: boolean
 |}
 
-export default class LayerList extends MapHubsComponent<void, Props, void> {
+type DefaultProps = {
+  showTitle: true;
+}
+
+export default class LayerList extends MapHubsComponent<DefaultProps, Props, void> {
 
    shouldComponentUpdate(nextProps: Props){
     //only update if something changes
@@ -20,11 +25,19 @@ export default class LayerList extends MapHubsComponent<void, Props, void> {
   }
 
   render(){
-    return (
-      <ul className="collection with-header">
+    let title = '', className = "collection";
+    if(this.props.showTitle){
+      className = "collection with-header";
+      title = (
         <li className="collection-header">
           <h4>{this.__('Layers')}</h4>
         </li>
+      );
+    }
+    
+    return (
+      <ul className={className}>
+        {title}
         {this.props.layers.map((layer, i) => {
           let layer_id = layer && layer.layer_id ? layer.layer_id : 0;
           let slugName = slug(this._o_(layer.name));
