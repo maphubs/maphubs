@@ -10,7 +10,6 @@ import MultiTextInput from '../components/forms/MultiTextInput';
 import Toggle from '../components/forms/toggle';
 import MessageActions from '../actions/MessageActions';
 import AddItem from '../components/AddItem';
-var slug = require('slug');
 import GroupStore from '../stores/GroupStore';
 import GroupActions from '../actions/GroupActions';
 import NotificationActions from '../actions/NotificationActions';
@@ -23,6 +22,9 @@ import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Group, GroupStoreState} from '../stores/GroupStore';
 import Locales from '../services/locales';
+import LayerList from '../components/Lists/LayerList';
+import MapList from '../components/Lists/MapList';
+import HubList from '../components/Lists/HubList';
 
 type Props = {
   group: Group,
@@ -386,61 +388,13 @@ export default class GroupAdmin extends MapHubsComponent<DefaultProps, Props, St
                 onAdd={this.handleAddMember} onError={this.onError}/>
           </div>
           <div className="row">
-            <ul className="collection with-header">
-              <li className="collection-header">
-                <h4>{this.__('Layers')}</h4>
-              </li>
-              {this.props.layers.map((layer, i) => {
-                return (
-                  <li className="collection-item" key={layer.layer_id}>
-                    <div>{this._o_(layer.name)}
-                      <a className="secondary-content" href={'/layer/map/' + layer.layer_id + '/' + slug(this._o_(layer.name))}>
-                        <i className="material-icons">map</i>
-                      </a>
-                      <a className="secondary-content" href={'/layer/info/' + layer.layer_id + '/' + slug(this._o_(layer.name))}>
-                        <i className="material-icons">info</i>
-                      </a>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            <LayerList layers={this.props.layers} />
           </div>
           <div className="row">
-            <ul className="collection with-header">
-              <li className="collection-header">
-                <h4>{this.__('Maps')}</h4>
-              </li>
-              {this.props.maps.map((map, i) => {
-                return (
-                  <li className="collection-item" key={map.map_id}>
-                    <div>{this._o_(map.title)}
-                      <a className="secondary-content" href={'/map/view/' + map.map_id + '/' + slug(this._o_(map.title))}>
-                        <i className="material-icons">map</i>
-                      </a>                     
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            <MapList maps={this.props.maps} />
           </div>
           <div className="row">
-            <ul className="collection with-header">
-              <li className="collection-header">
-                <h4>{this.__('Hubs')}</h4>
-              </li>
-              {this.props.hubs.map((hub, i) => {
-                return (
-                  <li className="collection-item" key={hub.hub_id}>
-                    <div>{hub.name}                
-                      <a className="secondary-content" href={'/hub/' + hub.hub_id}>
-                        <i className="material-icons">info</i>
-                      </a>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            <HubList hubs={this.props.hubs} />
           </div>
           <div className="fixed-action-btn action-button-bottom-right">
             <a className="btn-floating btn-large red groupadmin-tooltips"
