@@ -1,6 +1,5 @@
 //@flow
 import React from 'react';
-import Reflux from '../Rehydrate';
 import classNames from 'classnames';
 import FeatureBox from './FeatureBox';
 import BaseMapActions from '../../actions/map/BaseMapActions'; 
@@ -152,9 +151,9 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         this.stores.push(AnimationStore);
         this.stores.push(BaseMapStore);
         this.stores.push( MarkerStore);
-        
-       Reflux.listenTo(DataEditorActions.onFeatureUpdate, 'onFeatureUpdate');
-       Reflux.listenTo(AnimationActions.tick, 'tick');
+    
+       DataEditorActions.onFeatureUpdate.listen(this.onFeatureUpdate);
+       AnimationActions.tick.listen(this.tick);
 
       let restoreBounds;
       if(this.props.fitBounds){
