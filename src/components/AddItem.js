@@ -176,8 +176,8 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
       /*eslint-enable react/no-find-dom-node */
  }
 
- fillInSuggestion = (suggestion: string) => {
-   this.setState({value: {key: suggestion, value: suggestion}});
+ fillInSuggestion = (suggestion: Value) => {
+   this.setState({value: suggestion});
  }
 
  handleChange = (e: any) => {
@@ -218,18 +218,27 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
    }
    return (
      <div>
-       <div className="white no-margin">
+       <div className="white no-margin"
+         style={{
+        borderRadius: '25px',
+        border: '1px solid #212121',
+        boxSizing: 'content-box',
+        height: '2.2pc',
+        lineHeight: '2.2pc' 
+      }}
+       >
           <form>
-            <div className="input-field">
+            <div className="input-field no-margin" style={{position: 'relative'}}>
               <input id={this.props.id}
                 type="search"
                   style = {{
-                    margin: 0,
-                    color: '#212121',
-                    borderRadius: '25px',
+                    margin: 0, 
+                    border: 'none',
+                    color: '#212121',                   
                     height: '2.2pc',
                     lineHeight: '2.2pc',
-                    fontSize: '1rem'
+                    fontSize: '1rem',
+                    background: 'transparent'
                     }}
                   name={this.props.inputName}
                   maxLength="100"
@@ -244,7 +253,17 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
                   data-activates={this.refs.suggestions}
                 required />
 
-              <label htmlFor={this.props.id}><i className="material-icons">search</i></label>
+              <label htmlFor={this.props.id}
+                style={{
+              height: 'inherit', 
+              lineHeight: 'inherit',
+              position: 'absolute', 
+              top: '0px', left: '0px', 
+              marginLeft: '5px',
+              marginRight: '5px',
+              transform: 'inherit'}}
+              >
+                <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}}>search</i></label>
             </div>
           </form>
             <Formsy.Form >
