@@ -6,7 +6,7 @@ var $ = require('jquery');
 //import Reflux from 'reflux';
 var MapboxDraw = {};
 if (typeof window !== 'undefined') {
-    MapboxDraw = require('../../../../assets/assets/js/mapbox-gl/mapbox-gl-draw');
+    MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js');
 }
 
 import type {Layer} from '../../../stores/layer-store';
@@ -226,6 +226,7 @@ module.exports = {
 
   stopEditingTool(){   
     $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-edit-tool');
+    $('.map-search-button').removeClass('maphubs-edit-tool-search-button');
     this.map.removeControl(this.draw);
   },
 

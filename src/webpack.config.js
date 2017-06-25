@@ -4,7 +4,7 @@ var local = require('./local');
 require('babel-polyfill');
 var path = require('path');
 var pathToMapboxGL = path.resolve(__dirname, '../node_modules/mapbox-gl/dist/mapbox-gl.js');
-var pathToMapboxGLDraw = path.resolve(__dirname, '../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
+var pathToMapboxGLDraw = path.resolve(__dirname, '../node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js');
 var pathToPica = path.resolve(__dirname, '../node_modules/pica/dist/pica.min.js');
 var pathToMediumEditor = path.resolve(__dirname, '../node_modules/medium-editor/dist/js/medium-editor.js');
 

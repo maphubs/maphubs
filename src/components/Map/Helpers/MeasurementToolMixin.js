@@ -5,7 +5,7 @@ import _lineDistance from '@turf/line-distance';
 var $ = require('jquery');
 var MapboxDraw = {};
 if (typeof window !== 'undefined') {
-    MapboxDraw = require('../../../../assets/assets/js/mapbox-gl/mapbox-gl-draw.js');
+    MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js');
 }
 
 module.exports = {

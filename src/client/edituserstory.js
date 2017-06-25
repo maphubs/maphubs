@@ -14,7 +14,7 @@ require('../../node_modules/slick-carousel/slick/slick-theme.css');
 
 require('./story.css');
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
-require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
+require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 
 require("cropperjs/dist/cropper.css");
 

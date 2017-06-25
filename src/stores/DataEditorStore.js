@@ -65,6 +65,7 @@ export default class DataEditorStore extends Reflux.Store {
    */
   updateFeatures(features: Array<Object>){
     var _this = this;
+    let edits = JSON.parse(JSON.stringify(this.state.edits));
     features.forEach(feature =>{
       debug('Updating feature: ' + feature.id);
 
@@ -79,11 +80,12 @@ export default class DataEditorStore extends Reflux.Store {
         this.state.selectedEditFeature = edit;
       }
       //edit history gets a different clone from the selection state
-      var editCopy = JSON.parse(JSON.stringify(edit));
-      _this.state.edits.push(editCopy);
-      _this.state.redo = []; //redo resets if use makes an edit
+      var editCopy = JSON.parse(JSON.stringify(edit));   
+      edits.push(editCopy);     
     });
-    this.trigger(this.state);
+    _this.setState({
+      edits, redo: []  //redo resets if user makes an edit
+    });
   }
 
   resetEdits(){
@@ -91,16 +93,19 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   undoEdit(){
-     if(this.state.edits.length > 0){
-      var lastEdit = this.state.edits.pop();
+    let edits = JSON.parse(JSON.stringify(this.state.edits));
+    let redo = JSON.parse(JSON.stringify(this.state.redo));
+    let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
+     if(edits.length > 0){
+      var lastEdit = edits.pop();
       var lastEditCopy = JSON.parse(JSON.stringify(lastEdit));
-      this.state.redo.push(lastEditCopy);
-      var currEdit = this.getLastEditForID(lastEdit.geojson.id);
+      redo.push(lastEditCopy);
+      var currEdit = this.getLastEditForID(lastEdit.geojson.id, edits);
       if(currEdit &&
-        this.state.selectedEditFeature && 
-        lastEdit.geojson.id === this.state.selectedEditFeature.geojson.id){
+        selectedEditFeature && 
+        lastEdit.geojson.id === selectedEditFeature.geojson.id){
         //if popping an edit to the selected feature, updated it
-        this.state.selectedEditFeature = currEdit;
+        selectedEditFeature = currEdit;
       }
       
       if(lastEdit.status === 'create'){
@@ -110,32 +115,35 @@ export default class DataEditorStore extends Reflux.Store {
         //tell mapboxGL to update
         Actions.onFeatureUpdate('update', currEdit);
       }
-     
-      this.trigger(this.state);
+      this.setState({edits, redo, selectedEditFeature});
     }
   }
 
   redoEdit(){
-    if(this.state.redo.length > 0){
-      var prevEdit = this.state.redo.pop();
+    let edits = JSON.parse(JSON.stringify(this.state.edits));
+    let redo = JSON.parse(JSON.stringify(this.state.redo));
+    let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
+    
+    if(redo.length > 0){
+      var prevEdit = redo.pop();
       var prevEditCopy = JSON.parse(JSON.stringify(prevEdit));
       var prevEditCopy2 = JSON.parse(JSON.stringify(prevEdit));
-      this.state.edits.push(prevEditCopy);
-      if(this.state.selectedEditFeature 
-        && prevEdit.geojson.id === this.state.selectedEditFeature.geojson.id){
+      edits.push(prevEditCopy);
+      if(selectedEditFeature &&
+        prevEdit.geojson.id === selectedEditFeature.geojson.id){
         //if popping an edit to the selected feature, updated it
-        this.state.selectedEditFeature = prevEditCopy2;
+        selectedEditFeature = prevEditCopy2;
       }
       //tell mapboxGL to update
       Actions.onFeatureUpdate('update', prevEdit);
-      this.trigger(this.state);
+      this.setState({edits, redo, selectedEditFeature});
     }
     
   }
 
-  getLastEditForID(id: string){
+  getLastEditForID(id: string, edits: any){
     var matchingEdits = [];
-    _forEachRight(this.state.edits, edit => {
+    _forEachRight(edits, edit => {
         if(edit.geojson.id === id){
           matchingEdits.push(edit);
         }
@@ -225,35 +233,36 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   updateSelectedFeatureTags(data: GeoJSONObject){
-    var _this = this;
-    var selected = this.state.selectedEditFeature;
-
-    if(selected){
+    let edits = JSON.parse(JSON.stringify(this.state.edits));
+    let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
+    
+   
+    if(selectedEditFeature){
       //check if selected feature has been edited yet
       var editRecord = {
         status: 'modify',
-        geojson: JSON.parse(JSON.stringify(selected.geojson))
+        geojson: JSON.parse(JSON.stringify(selectedEditFeature.geojson))
       };    
 
       //update the edit record
       _assignIn(editRecord.geojson.properties, data);
       var editRecordCopy = JSON.parse(JSON.stringify(editRecord));
-      _this.state.edits.push(editRecordCopy);
-      _this.state.redo = []; //redo resets if use makes an edit
+      edits.push(editRecordCopy);
 
       //update the selected feature
-      this.state.selectedEditFeature = selected;
-      this.trigger(this.state);
+      this.setState({
+        edits,
+        redo: [],
+        selectedEditFeature});
     }else{
       debug('feature not selected');
     }
-
   }
 
   selectFeature(mhid: string, cb: Function){
     var _this = this;
     //check if this feature is in the created or modified lists
-    var selected = this.getLastEditForID(mhid);
+    var selected = this.getLastEditForID(mhid, this.state.edits);
     
     if(selected){
       this.setState({selectedEditFeature: selected});
@@ -289,24 +298,27 @@ export default class DataEditorStore extends Reflux.Store {
    * 
    */
   createFeature(feature: GeoJSONObject){
+    let edits = JSON.parse(JSON.stringify(this.state.edits));
     var created = {
         status: 'create',
         geojson: JSON.parse(JSON.stringify(feature))
       };
-    this.state.edits.push(created);
+    
+    edits.push(created);
     this.setState({
+      edits,
       selectedEditFeature: created
     });
   }
 
   deleteFeature(feature: GeoJSONObject){
+    let edits = JSON.parse(JSON.stringify(this.state.edits));
     var edit = {
       status: 'delete',
       geojson: JSON.parse(JSON.stringify(feature))
     };
-    this.state.edits.push(edit);
-    this.state.redo = []; //redo resets if use makes an edit
-    this.trigger(this.state);
+    edits.push(edit);
+    this.state.redo = [];
+    this.setState({edits, redo: []});
   }
-  
 }

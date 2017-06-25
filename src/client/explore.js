@@ -16,7 +16,7 @@ require("materialize-css");
 import Explore from '../views/explore';
 
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
-require('../../assets/assets/js/mapbox-gl/mapbox-gl-draw.css');
+require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 require('../../node_modules/slick-carousel/slick/slick.css');
 require('../../node_modules/slick-carousel/slick/slick-theme.css');
 
