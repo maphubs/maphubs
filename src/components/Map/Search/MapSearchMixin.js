@@ -174,11 +174,12 @@ module.exports = {
   onSearchResultClick(result: Object){
     if(result.bbox){
       this.map.fitBounds(result.bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
-    }else if(result._geometry){
-      if(result._geometry.type === 'Point'){
-         this.map.flyTo({center: result._geometry.coordinates});
+    }else if(result._geometry || result.geometry){
+      let geometry = result._geometry ? result._geometry : result.geometry;
+      if(geometry.type === 'Point'){
+         this.map.flyTo({center: geometry.coordinates});
       }else{
-         let bbox =  _bbox(result);
+         let bbox =  _bbox(geometry);
          this.map.fitBounds(bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 22});
       }  
     }  
