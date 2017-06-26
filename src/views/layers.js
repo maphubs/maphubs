@@ -108,7 +108,7 @@ export default class Layers extends MapHubsComponent<void, Props, State> {
     var featured = '';
     if(featuredCards.length > 0){
       featured= (
-        <CardCollection title={this.__('Featured')} cards={featuredCards} />
+        <CardCollection title={this.__('Featured')} cards={featuredCards} viewAllLink="/layers/all" />
       );
     }
 

@@ -110,7 +110,7 @@ export default class Hubs extends MapHubsComponent<DefaultProps, Props, State> {
 
     var featured = '';
     if(featuredCards.length > 0){
-      featured = (<CardCollection cards={featuredCards} title={this.__('Featured')} />);
+      featured = (<CardCollection cards={featuredCards} title={this.__('Featured')} viewAllLink="/hubs/all" />);
     }
 
 		return (
