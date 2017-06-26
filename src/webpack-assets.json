@@ -67,8 +67,8 @@
     "css": "/public/groupinfo.89ac9cadb3e7fc372a88.css"
   },
   "groups": {
-    "js": "/public/groups.ebf5a6ff138a4b047cbf.js",
-    "css": "/public/groups.ebf5a6ff138a4b047cbf.css"
+    "js": "/public/groups.642ffe44ad43b4bef21d.js",
+    "css": "/public/groups.642ffe44ad43b4bef21d.css"
   },
   "home": {
     "js": "/public/home.7cef6956fb97ff6e050e.js",
@@ -93,8 +93,8 @@
     "css": "/public/hubresources.10b5a35a7a01dbf82b20.css"
   },
   "hubs": {
-    "js": "/public/hubs.23e84f38bedf167191fc.js",
-    "css": "/public/hubs.23e84f38bedf167191fc.css"
+    "js": "/public/hubs.7c13ea6eb3c46b7af52b.js",
+    "css": "/public/hubs.7c13ea6eb3c46b7af52b.css"
   },
   "hubstories": {
     "js": "/public/hubstories.6effe6c790aa2d366b64.js",
@@ -120,8 +120,8 @@
     "css": "/public/layermap.1165b9b560a74095f573.css"
   },
   "layers": {
-    "js": "/public/layers.0b32060f8566b4900f45.js",
-    "css": "/public/layers.0b32060f8566b4900f45.css"
+    "js": "/public/layers.9bffed1fe8f048d86db4.js",
+    "css": "/public/layers.9bffed1fe8f048d86db4.css"
   },
   "locales": {
     "js": "/public/locales.84d35466356f171ddb2c.js"
@@ -141,8 +141,8 @@
     "css": "/public/mapedit.3f633dd1057eb6403e23.css"
   },
   "maps": {
-    "js": "/public/maps.744b0cc7dde4025a6bbf.js",
-    "css": "/public/maps.744b0cc7dde4025a6bbf.css"
+    "js": "/public/maps.b984d82db663ff5f752d.js",
+    "css": "/public/maps.b984d82db663ff5f752d.css"
   },
   "passwordreset": {
     "js": "/public/passwordreset.acd75056ff80748325ae.js"
@@ -202,10 +202,10 @@
     "css": "/public/userstory.c0d5df5015a31672cc7d.css"
   },
   "vendor": {
-    "js": "/public/vendor.cfef9e34678fed8ae02e.js"
+    "js": "/public/vendor.0d24568aa99d0abe3bb6.js"
   },
   "metadata": {
-    "version": "0.11.7"
+    "version": "0.11.8"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
