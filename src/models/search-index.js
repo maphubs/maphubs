@@ -55,12 +55,19 @@ module.exports = {
     var _this = this;
     //delete all existing features
     return knex('omh.layers').select('layer_id').whereNot({
-      is_external: true, remote: true
+      is_external: true, remote: true, features_indexed: true
     })
     .then(layers => {
       var commands = [];
       layers.forEach(layer =>{
-        commands.push(_this.updateLayer(layer.layer_id));
+        commands.push(_this.updateLayer(layer.layer_id).then(()=>{
+          return knex('omh.layers')
+          .update({features_indexed: true})
+          .where({layer_id: layer.layer_id});
+        }).catch(err =>{
+          log.error(err);
+        })
+        );
       }); 
       return Promise.all(commands);
     });

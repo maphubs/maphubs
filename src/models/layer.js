@@ -103,6 +103,13 @@ module.exports = {
     });
   },
 
+  /**
+   * Can include private?: If Requested
+   */
+  getLayerFeatureCount(layer_id: number){
+    return knex(`layers.data_${layer_id}`).count('mhid');
+  },
+
    /**
    * Can include private?: No
    */
