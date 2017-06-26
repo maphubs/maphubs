@@ -1,5 +1,36 @@
 # Change Log
 
+## [v0.11.7](https://github.com/maphubs/maphubs/tree/v0.11.7) (2017-06-26)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.6...v0.11.7)
+
+**Implemented enhancements:**
+
+- make all layers/stories/hubs views [\#369](https://github.com/maphubs/maphubs/issues/369)
+- add search option to interactive maps [\#112](https://github.com/maphubs/maphubs/issues/112)
+
+**Fixed bugs:**
+
+- hub map legend height incorrect [\#382](https://github.com/maphubs/maphubs/issues/382)
+- photo uploads not detecting location [\#381](https://github.com/maphubs/maphubs/issues/381)
+- base map not saving with map [\#377](https://github.com/maphubs/maphubs/issues/377)
+- advanced color choose issues in layer settings [\#375](https://github.com/maphubs/maphubs/issues/375)
+- label icon select box draws off screen [\#370](https://github.com/maphubs/maphubs/issues/370)
+- uploaded data not showing in preview map [\#368](https://github.com/maphubs/maphubs/issues/368)
+- label field dropdown has empty tooltip [\#352](https://github.com/maphubs/maphubs/issues/352)
+- label field popup only partially visible in map maker [\#316](https://github.com/maphubs/maphubs/issues/316)
+
+## [v0.11.6](https://github.com/maphubs/maphubs/tree/v0.11.6) (2017-06-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.5...v0.11.6)
+
+## [v0.11.5](https://github.com/maphubs/maphubs/tree/v0.11.5) (2017-06-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.4...v0.11.5)
+
+## [v0.11.4](https://github.com/maphubs/maphubs/tree/v0.11.4) (2017-06-23)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/0.11.3...v0.11.4)
+
+## [0.11.3](https://github.com/maphubs/maphubs/tree/0.11.3) (2017-06-23)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.2...0.11.3)
+
 ## [v0.11.2](https://github.com/maphubs/maphubs/tree/v0.11.2) (2017-06-23)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.1...v0.11.2)
 
