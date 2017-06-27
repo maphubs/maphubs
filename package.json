@@ -179,7 +179,7 @@
     "superagent-bluebird-promise": "^4.2.0",
     "superagent-jsonp": "0.1.1",
     "terraformer-arcgis-parser": "1.0.5",
-    "tokml": "0.4.0",
+    "tokml": "kriscarle/tokml",
     "unzip2": "0.2.5",
     "uuid": "^3.1.0",
     "wgs84-util": "3.0.0",
