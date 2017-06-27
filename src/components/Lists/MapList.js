@@ -10,11 +10,15 @@ type Props = {|
 |}
 
 type DefaultProps = {
-  showTitle: true;
+  showTitle: boolean
 }
 
 export default class MapList extends MapHubsComponent<DefaultProps, Props, void> {
 
+  static defaultProps: DefaultProps = {
+    showTitle: true
+  }
+  
    shouldComponentUpdate(nextProps: Props){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
