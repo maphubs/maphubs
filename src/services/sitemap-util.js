@@ -4,7 +4,7 @@ var Hub = require('../models/hub');
 var Story = require('../models/story');
 var Map = require('../models/map');
 var Group = require('../models/group');
-var slug = require('slug');
+import slugify from 'slugify';
 var urlUtil = require('./url-util');
 var knex = require('../connection.js');
 var Promise = require('bluebird');
@@ -33,7 +33,7 @@ module.exports = {
         var lastmodISO = null;
         if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
         sm.add({
-          url: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(layer.name.en),
+          url: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(layer.name.en),
           changefreq: 'weekly',
           lastmodISO
         });
@@ -54,7 +54,7 @@ module.exports = {
         }else if(story.hub_id){
           story_url ='/hub/' + story.hub_id;
         }
-        story_url += '/story/' + story.story_id + '/' + slug(title);
+        story_url += '/story/' + story.story_id + '/' + slugify(title);
         var lastmodISO = null;
         if(story.updated_at) lastmodISO = story.updated_at.toISOString();
         sm.add({
@@ -90,7 +90,7 @@ module.exports = {
     return Map.getAllMaps().orderBy('omh.maps.updated_at', 'desc')
     .then((maps) => {
       maps.forEach((map) => {
-        var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slug(map.title.en)}`;
+        var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slugify(map.title.en)}`;
         var lastmodISO = null;
         if(map.updated_at) lastmodISO = map.updated_at.toISOString();
         sm.add({

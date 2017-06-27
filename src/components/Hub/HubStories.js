@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var slug = require('slug');
+import slugify from 'slugify';
 import StorySummary from '../Story/StorySummary';
 import _isequal from 'lodash.isequal';
 import MapHubsComponent from '../../components/MapHubsComponent';
@@ -62,7 +62,7 @@ export default class HubStories extends MapHubsComponent<DefaultProps, Props, St
             var editButton = '';
             if(_this.props.editing){
               editButton = (
-                <a className="secondary-content" href={baseUrl + '/story/' + story.story_id + '/edit/' + slug(story.title)}>
+                <a className="secondary-content" href={baseUrl + '/story/' + story.story_id + '/edit/' + slugify(story.title)}>
                   <i className="material-icons">edit</i>
                 </a>
               );

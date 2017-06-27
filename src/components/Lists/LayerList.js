@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
-import slug from 'slug';
+import slugify from 'slugify';
 import type {Layer} from '../../stores/layer-store';
 import _isequal from 'lodash.isequal';
 
@@ -40,7 +40,7 @@ export default class LayerList extends MapHubsComponent<DefaultProps, Props, voi
         {title}
         {this.props.layers.map((layer, i) => {
           let layer_id = layer && layer.layer_id ? layer.layer_id : 0;
-          let slugName = slug(this._o_(layer.name));
+          let slugName = slugify(this._o_(layer.name));
           return (
             <li className="collection-item" key={layer_id}>
               <div>{this._o_(layer.name)}

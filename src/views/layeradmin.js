@@ -14,7 +14,7 @@ import LayerActions from '../actions/LayerActions';
 import LayerStore from '../stores/layer-store';
 import BaseMapStore from '../stores/map/BaseMapStore';
 var $ = require('jquery');
-var slug = require('slug');
+import slugify from 'slugify';
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
@@ -160,7 +160,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
       tabContentDisplay = 'inherit';
     }
     let layer_id =  this.props.layer.layer_id ?  this.props.layer.layer_id : 0;
-    var layerInfoUrl = `/layer/info/${layer_id}/${slug(this._o_(this.props.layer.name))}`;
+    var layerInfoUrl = `/layer/info/${layer_id}/${slugify(this._o_(this.props.layer.name))}`;
 
     if(this.props.layer.remote){
       return (

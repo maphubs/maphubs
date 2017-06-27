@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '../components/header';
 import ReactDisqusThread from 'react-disqus-thread';
-var slug = require('slug');
+import slugify from 'slugify';
 import StoryHeader from '../components/Story/StoryHeader';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
@@ -45,7 +45,7 @@ export default class UserStory extends MapHubsComponent<DefaultProps, Props, voi
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large red red-text tooltipped"
-            href={'/user/'+ this.props.username + '/story/' + this.props.story.story_id + '/edit/' + slug(this.props.story.title)}
+            href={'/user/'+ this.props.username + '/story/' + this.props.story.story_id + '/edit/' + slugify(this.props.story.title)}
             data-delay="50" data-position="left" data-tooltip={this.__('Edit')}>
             <i className="large material-icons">mode_edit</i>
           </a>

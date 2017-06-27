@@ -20,7 +20,7 @@ import BaseMapStore from '../stores/map/BaseMapStore';
 import DataEditorActions from '../actions/DataEditorActions';
 
 var urlUtil = require('../services/url-util');
-var slug = require('slug');
+import slugify from 'slugify';
 var $ = require('jquery');
 var moment = require('moment-timezone');
 var clipboard;
@@ -281,7 +281,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       );
     }else {
 
-      let name = slug(this._o_(this.props.layer.name));
+      let name = slugify(this._o_(this.props.layer.name));
       let layer_id = this.props.layer.layer_id;
 
       var geoJSONURL = `/api/layer/${layer_id}/export/json/${name}.geojson`;
@@ -366,7 +366,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
             {idEditButton}
             {addPhotoPointButton}
             <li>
-              <a className="btn-floating layer-info-tooltip yellow" href={'/layer/admin/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name))}data-delay="50" data-position="left" data-tooltip={this.__('Manage Layer')}>
+              <a className="btn-floating layer-info-tooltip yellow" href={'/layer/admin/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}data-delay="50" data-position="left" data-tooltip={this.__('Manage Layer')}>
                 <i className="material-icons">settings</i>
               </a>
             </li>
@@ -377,7 +377,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       editButton = (
         <div className="fixed-action-btn action-button-bottom-right hide-on-med-and-up">
           <a className="btn-floating btn-large layer-info-tooltip red" data-delay="50" data-position="left" data-tooltip={this.__('View Map')}
-              href={'/layer/map/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name))}>
+              href={'/layer/map/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}>
             <i className="material-icons">map</i>
           </a>
         </div>
@@ -422,7 +422,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
 
     var remote = '';
     if(this.props.layer.remote){
-      var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slug(this._o_(this.props.layer.name));
+      var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slugify(this._o_(this.props.layer.name));
       remote = (
         <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
           <a href={remoteURL} target="_blank" rel="noopener noreferrer">{remoteURL}</a>

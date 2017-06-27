@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '../components/header';
 import MapMaker from '../components/MapMaker/MapMaker';
-var slug = require('slug');
+import slugify from 'slugify';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -44,7 +44,7 @@ export default class MapEdit extends MapHubsComponent<DefaultProps, Props, void>
   }
 
   mapCreated = (map_id: string, title: LocalizedString) => {
-    window.location = '/map/view/' + map_id + '/'+ slug(this._o_(title));
+    window.location = '/map/view/' + map_id + '/'+ slugify(this._o_(title));
   }
 
 	render() {

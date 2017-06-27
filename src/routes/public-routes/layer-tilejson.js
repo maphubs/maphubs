@@ -1,6 +1,6 @@
 var Layer = require('../../models/layer');
 var urlUtil = require('../../services/url-util');
-var slug = require('slug');
+import slugify from 'slugify';
 var apiError = require('../../services/error-response').apiError;
 var manetCheck = require('../../services/manet-check')(false,true);
 var Locales = require('../../services/locales');
@@ -48,7 +48,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           scheme: "xyz",
           tilejson: "2.2.0",
           tiles: layer.external_layer_config.tiles,
-          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(name)
+          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
         res.status(200).send(tileJSON);
       }else if(layer.is_external && layer.external_layer_config.type === 'vector'){
@@ -79,7 +79,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           scheme: "xyz",
           tilejson: "2.2.0",
           tiles: layer.external_layer_config.tiles,
-          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(name)
+          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
         res.status(200).send(tileJSON);
       }else if(!layer.is_external){
@@ -112,8 +112,8 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           scheme: "xyz",
           tilejson: "2.2.0",
           tiles: [uri],
-          data: baseUrl + '/api/layer/' + layer.layer_id + '/export/json/' + + slug(name) + '.geojson',
-          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slug(name)
+          data: baseUrl + '/api/layer/' + layer.layer_id + '/export/json/' + + slugify(name) + '.geojson',
+          webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
         res.status(200).send(tileJSON);
       }else {

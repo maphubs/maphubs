@@ -1,6 +1,6 @@
 // @flow
 var urlUtil = require('./url-util');
-var slug = require('slug');
+import slugify from 'slugify';
 
 import type {Layer} from '../stores/layer-store';
 import type {CardConfig} from '../components/CardCarousel/Card';
@@ -101,9 +101,9 @@ module.exports = {
       var hubUrl = baseUrl + '/hub/' + story.hub_id;
       story_url = hubUrl;
     }
-    story_url += '/story/' + story.story_id + '/' + slug(title);
+    story_url += '/story/' + story.story_id + '/' + slugify(title);
 
-    var image_url = null;
+    var image_url;
     if(story.firstimage){
       image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
     }

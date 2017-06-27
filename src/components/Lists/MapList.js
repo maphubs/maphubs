@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
-import slug from 'slug';
+import slugify from 'slugify';
 import _isequal from 'lodash.isequal';
 
 type Props = {|
@@ -39,7 +39,7 @@ export default class MapList extends MapHubsComponent<DefaultProps, Props, void>
         {title}
         {this.props.maps.map((map, i) => {
           let mapTitle = this._o_(map.title);
-          let slugTitle = slug(mapTitle);
+          let slugTitle = slugify(mapTitle);
           return (
             <li className="collection-item" key={map.map_id}>
               <div>{mapTitle}

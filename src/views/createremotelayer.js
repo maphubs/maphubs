@@ -1,6 +1,6 @@
 import React from 'react';
 import Formsy from 'formsy-react';
-var slug = require('slug');
+import slugify from 'slugify';
 var request = require('superagent');
 var $ = require('jquery');
 import Header from '../components/header';
@@ -134,7 +134,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Pr
       checkClientError(res, err, () => {}, (cb) => {
         var layer_id = res.body.layer_id;
         _this.setState({complete: true});
-        window.location = '/layer/info/' + layer_id + '/' + slug(_this._o_(_this.state.layer.name));
+        window.location = '/layer/info/' + layer_id + '/' + slugify(_this._o_(_this.state.layer.name));
         cb();
       });
     });

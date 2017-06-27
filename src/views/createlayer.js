@@ -2,7 +2,7 @@
 import React from 'react';
 var $ = require('jquery');
 var classNames = require('classnames');
-var slug = require('slug');
+import slugify from 'slugify';
 
 import Header from '../components/header';
 import Step1 from '../components/CreateLayer/Step1';
@@ -94,7 +94,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
   }
 
   submit = (layer_id: number, name: LocalizedString) => {
-      window.location = '/layer/info/' + layer_id + '/' + slug(this._o_(name));
+      window.location = '/layer/info/' + layer_id + '/' + slugify(this._o_(name));
   }
 
   nextStep = () => {

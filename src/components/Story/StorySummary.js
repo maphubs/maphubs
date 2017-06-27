@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var slug = require('slug');
+import slugify from 'slugify';
 var urlUtil = require('../../services/url-util');
 import StoryHeader from './StoryHeader';
 import MapHubsComponent from '../../components/MapHubsComponent';
@@ -37,7 +37,7 @@ export default class StorySummary extends MapHubsComponent<DefaultProps, Props, 
       linkUrl = hubUrl;
     }
 
-    linkUrl += '/story/' + this.props.story.story_id + '/' + slug(title);
+    linkUrl += '/story/' + this.props.story.story_id + '/' + slugify(title);
 
     var image = '';
     if(this.props.story.firstimage){

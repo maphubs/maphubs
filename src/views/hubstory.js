@@ -5,7 +5,7 @@ import HubBanner from '../components/Hub/HubBanner';
 import HubStore from '../stores/HubStore';
 import StoryHeader from '../components/Story/StoryHeader';
 import ReactDisqusThread from 'react-disqus-thread';
-var slug = require('slug');
+import slugify from 'slugify';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -51,7 +51,7 @@ export default class HubStory extends MapHubsComponent<DefaultProps, Props, void
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
           <a className="btn-floating btn-large red red-text tooltipped"
-            href={baseUrl + '/story/' + this.props.story.story_id + '/edit/' + slug(title)}
+            href={baseUrl + '/story/' + this.props.story.story_id + '/edit/' + slugify(title)}
             data-delay="50" data-position="left" data-tooltip={this.__('Edit')}>
             <i className="large material-icons">mode_edit</i>
           </a>

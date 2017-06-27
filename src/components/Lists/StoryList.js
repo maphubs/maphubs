@@ -2,7 +2,7 @@
 import React from 'react';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
-import slug from 'slug';
+import slugify from 'slugify';
 
 type Props = {|
   stories: Array<Object>,
@@ -38,7 +38,7 @@ export default class StoryList extends MapHubsComponent<DefaultProps, Props, voi
         {title}
         {this.props.stories.map((story, i) => {
           let title = story.title;
-          let storyUrl = '/story/' + story.story_id + '/' + slug(title);
+          let storyUrl = '/story/' + story.story_id + '/' + slugify(title);
           return (
             <li className="collection-item" key={story.story_id}>
               <div>{title}                

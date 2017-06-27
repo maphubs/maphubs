@@ -2,7 +2,7 @@
 import React from 'react';
 import Map from '../components/Map/Map';
 import Header from '../components/header';
-var slug = require('slug');
+import slugify from 'slugify';
 var urlUtil = require('../services/url-util');
 var $ = require('jquery');
 import ReactDisqusThread from 'react-disqus-thread';
@@ -340,7 +340,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
       );
     }
 
-    var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slug(this._o_(this.props.layer.name));
+    var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name));
 
     var exportTabContent = '';
 
@@ -355,8 +355,8 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
         </div>
       );
     }else {
-      var geoJSONURL = '/api/feature/json/' + this.props.layer.layer_id + '/' + mhid + '/' + slug(this._o_(this.props.layer.name)) + '.geojson';
-      var kmlURL = '/api/feature/' + this.props.layer.layer_id + '/' + mhid + '/export/kml/' + slug(this._o_(this.props.layer.name)) + '.kml';
+      var geoJSONURL = '/api/feature/json/' + this.props.layer.layer_id + '/' + mhid + '/' + slugify(this._o_(this.props.layer.name)) + '.geojson';
+      var kmlURL = '/api/feature/' + this.props.layer.layer_id + '/' + mhid + '/export/kml/' + slugify(this._o_(this.props.layer.name)) + '.kml';
       
       if(!this.props.layer.disable_export){
         var gpxExport = '';
