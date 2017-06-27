@@ -25,7 +25,7 @@ module.exports = {
   },
 
   updatePosition(){
-    debug('(' + this.state.id + ') ' +'UPDATE POSITION');
+    debug.log('(' + this.state.id + ') ' +'UPDATE POSITION');
     var map = this.map;
     map.setView(this.state.map.position.center, this.state.map.position.zoom, {animate: false});
   },
@@ -45,7 +45,7 @@ module.exports = {
 
   changeLocale(locale: string, map: any){
   if(!locale || !map){
-    debug('missing required args');
+    debug.log('missing required args');
   }
   //disable until OpenMapTile has translations;
     /*
@@ -55,7 +55,7 @@ module.exports = {
       //Mapbox vector tiles currently only have en,es,fr,de,ru,zh
       locale = 'en';
     }
-    debug('(' + this.state.id + ') ' +'changing map language to: ' + locale);
+    debug.log('(' + this.state.id + ') ' +'changing map language to: ' + locale);
     try{
       if(this.state.baseMap === 'streets'){
         map.setLayoutProperty('continent', 'text-field', '{name_' + locale + '}');
@@ -90,7 +90,7 @@ module.exports = {
       }
    
     }catch(err){
-      debug(err);
+      debug.error(error);
     }
 */
 

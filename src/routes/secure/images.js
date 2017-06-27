@@ -11,7 +11,7 @@ module.exports = function(app: any) {
   app.get('/image/:id.*', (req, res, next) => {
     var image_id = parseInt(req.params.id || '', 10);
     //var ext = req.params.ext;
-    debug('getting image: ' + image_id);
+    debug.log('getting image: ' + image_id);
     Image.getImageByID(image_id)
     .then((image) => {
       var dataArr = image.split(',');

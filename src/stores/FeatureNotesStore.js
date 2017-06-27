@@ -33,12 +33,12 @@ export default class FeatureNotesStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
  saveNotes(layer_id, mhid, _csrf, cb){
-   debug('save feature notes');
+   debug.log('save feature notes');
    var _this = this;
    this.setState({saving: true});
    request.post('/api/feature/notes/save')

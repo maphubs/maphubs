@@ -58,7 +58,7 @@ export default class ConfirmationStore extends Reflux.Store {
   }
 
   storeDidUpdate() {
-    debug('store updated');
+    debug.log('store updated');
   }
 
   //listeners

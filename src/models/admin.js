@@ -11,7 +11,7 @@ module.exports = {
 
   sendInviteEmail(email: string, __: Function){
     //create confirm link
-    debug('sending email invite to: ' + email);
+    debug.log('sending email invite to: ' + email);
     var key = uuid();
     return knex('omh.account_invites').insert({email, key})
     .then(() => {
@@ -47,7 +47,7 @@ module.exports = {
   },
 
   checkInviteKey(key: string){
-    debug('checking invite key');
+    debug.log('checking invite key');
     return knex('omh.account_invites').select('email').where({key, used:false})
     .then((result) => {
       if(result && result.length === 1){
@@ -58,7 +58,7 @@ module.exports = {
   },
 
   useInvite(key: string){
-    debug('using invite key');
+    debug.log('using invite key');
     return knex('omh.account_invites').update({used:true}).where({key})
     .then(() => {
       return knex('omh.account_invites').select('email').where({key})

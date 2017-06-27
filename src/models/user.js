@@ -16,7 +16,7 @@ module.exports = {
    * @returns {Promise.<T>}
    */
   getUser(id: number, secure: boolean=false) {
-    debug('getting for id: ' + id);
+    debug.log('getting for id: ' + id);
       var user = {};
 
       return Promise.all([
@@ -47,7 +47,7 @@ module.exports = {
 
     getUserByName(display_name: string, secure: boolean=false) {
 
-      debug('getting user with name: ' + display_name);
+      debug.log('getting user with name: ' + display_name);
 
       display_name = display_name.toLowerCase();
 
@@ -75,7 +75,7 @@ module.exports = {
 
     getUserByEmail(email: string, secure: boolean=false){
 
-      debug('getting user with email: ' + email);
+      debug.log('getting user with email: ' + email);
 
       email = email.toLowerCase();
 
@@ -108,7 +108,7 @@ module.exports = {
 
     getUserWithResetKey(key: string) {
 
-      debug('getting user with password reset key');
+      debug.log('getting user with password reset key');
 
       return knex('users').where({pass_reset: key})
       .then((result) => {
@@ -129,7 +129,7 @@ module.exports = {
 
     getUserWithConfirmationKey(key: string) {
 
-      debug('getting user with email confirmation key');
+      debug.log('getting user with email confirmation key');
 
       return knex('users').where({new_email: key})
       .then((result) => {
@@ -190,7 +190,7 @@ module.exports = {
 
     sendConfirmationEmail(user_id: number, __: Function){
       //create confirm link
-      debug('sending email confirmation for id: ' + user_id);
+      debug.log('sending email confirmation for id: ' + user_id);
       var _this = this;
       var new_email = uuid();
       return knex('users').update({new_email}).where({id: user_id})
@@ -235,7 +235,7 @@ module.exports = {
     },
 
     checkEmailConfirmation(key: string){
-      debug('checking email confirmation');
+      debug.log('checking email confirmation');
       return this.getUserWithConfirmationKey(key)
       .then((user) => {
         if(user === null) return false;

@@ -78,7 +78,7 @@ export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, S
 
           },
           error(msg){
-            debug(msg);
+            debug.log(msg);
           }
         });
       }

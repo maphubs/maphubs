@@ -9,7 +9,7 @@ var AGSMapServerQuery = {
         }
         map.addSource(key, {"type": "geojson", data: geoJSON});
       }, (error) => {
-        debug('(' + mapComponent.state.id + ') ' +error);
+        debug.log('(' + mapComponent.state.id + ') ' +error);
       });
   },
   addLayer(layer, source, map, mapComponent){

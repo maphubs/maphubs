@@ -46,7 +46,7 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
@@ -67,7 +67,7 @@ export default class DataEditorStore extends Reflux.Store {
     var _this = this;
     let edits = JSON.parse(JSON.stringify(this.state.edits));
     features.forEach(feature =>{
-      debug('Updating feature: ' + feature.id);
+      debug.log('Updating feature: ' + feature.id);
 
         var edit = {
             status: 'modify',
@@ -255,7 +255,7 @@ export default class DataEditorStore extends Reflux.Store {
         redo: [],
         selectedEditFeature});
     }else{
-      debug('feature not selected');
+      debug.log('feature not selected');
     }
   }
 

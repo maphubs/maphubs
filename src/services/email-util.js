@@ -20,7 +20,7 @@ html: '<b> Test email text </b>'
 
 */
 send(data: any){
-  debug('Send email to ' + data.to + ' with subject: ' + data.subject);
+  debug.log('Send email to ' + data.to + ' with subject: ' + data.subject);
   return new Promise((fulfill, reject) => {
       var mail = mailcomposer(data);
       mail.build((err, message) => {

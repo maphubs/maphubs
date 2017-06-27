@@ -12,7 +12,7 @@ module.exports = function(app: any) {
   proxyReqPathResolver(req) {
     var url: Object = require('url').parse(req.url); 
     var path = '/tiles' + url.path;
-    debug(path);
+    debug.log(path);
     return path;
   }
   }));
@@ -21,7 +21,7 @@ module.exports = function(app: any) {
   proxyReqPathResolver(req) {
     var url: Object = require('url').parse(req.url); 
     var path = url.path;
-    debug(path);
+    debug.log(path);
     return path;
   }
   }));

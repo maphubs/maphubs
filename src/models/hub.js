@@ -54,7 +54,7 @@ module.exports = {
    * Can include private?: If part of requested hub
    */
   getHubStories(hub_id: string, includeDrafts: boolean = false) {
-    debug('get stories for hub: ' + hub_id);
+    debug.log('get stories for hub: ' + hub_id);
     var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
       'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
@@ -150,7 +150,7 @@ module.exports = {
     getHubByID(hub_id: string, trx: any) {
       let db = knex;
       if(trx){db = trx;}
-      debug('get hub: ' + hub_id);
+      debug.log('get hub: ' + hub_id);
       return db('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
         .then((hubResult) => {
@@ -185,7 +185,7 @@ module.exports = {
      * Can include private?: Yes
      */
     getPublishedHubsForUser(user_id: number) {
-      debug('get hubs for user: ' + user_id);
+      debug.log('get hubs for user: ' + user_id);
       return knex.select().from('omh.hubs')
       .whereIn('owned_by_group_id',
         knex.select('group_id').from('omh.group_memberships').where({user_id}))   
@@ -197,7 +197,7 @@ module.exports = {
      * Can include private?: Yes
      */
     getDraftHubsForUser(user_id: number) {
-      debug('get hubs for user: ' + user_id);
+      debug.log('get hubs for user: ' + user_id);
       return knex.select().from('omh.hubs')
         .whereIn('owned_by_group_id',
           knex.select('group_id').from('omh.group_memberships').where({user_id}))     
@@ -237,7 +237,7 @@ module.exports = {
 
     
     allowedToModify(hub_id: string, user_id: number){
-      debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
+      debug.log("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
       return this.getHubByID(hub_id).then((hub) => {
         return Group.allowedToModify(hub.owned_by_group_id, user_id);
       });
@@ -328,7 +328,7 @@ module.exports = {
             var storyIds = results[1];
             return Promise.each(storyIds, (storyResult) => {
               var story_id = storyResult.story_id;
-              debug('Deleting Hub Story: '+ story_id);
+              debug.log('Deleting Hub Story: '+ story_id);
               return Image.removeAllStoryImages(story_id, trx)
                 .then(() => {
                   return Story.delete(story_id, trx);

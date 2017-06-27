@@ -42,7 +42,7 @@ var MapHubsSource = {
           }
           map.addSource(key, {type: 'geojson', data: geoJSON});
         }, (error) => {
-          debug('(' + mapComponent.state.id + ') ' +error);
+          debug.log('(' + mapComponent.state.id + ') ' +error);
         });
     }else{
       //load as tilejson
@@ -56,14 +56,14 @@ var MapHubsSource = {
 
           map.on('source.load', (e) => {
             if (e.source.id === key && mapComponent.state.allowLayersToMoveMap) {
-              debug('Zooming map extent of source: ' + e.source.id);
+              debug.log('Zooming map extent of source: ' + e.source.id);
               map.fitBounds([[tileJSON.bounds[0], tileJSON.bounds[1]],
                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
             }
           });
           map.addSource(key, tileJSON);
         }, (error) => {
-          debug('(' + mapComponent.state.id + ') ' +error);
+          debug.log('(' + mapComponent.state.id + ') ' +error);
         });
     }
   },
@@ -99,7 +99,7 @@ var MapHubsSource = {
     .end((err, res) => {
       checkClientError(res, err, (err) => {
         if(err){
-          debug(err);
+          debug.error(error);
         }else{
           var geojson = res.body;        
           // add markers to map
@@ -108,12 +108,12 @@ var MapHubsSource = {
           GJV.isFeature(marker, (valid, errs) => {
             if(!valid){
               valid = false;
-              debug(errs);
+              debug.log(errs);
             }
             GJV.isPoint(marker.geometry, (valid, errs) => {
             if(!valid){
               valid = false;
-              debug(errs);
+              debug.log(errs);
             }
          
           
@@ -176,7 +176,7 @@ var MapHubsSource = {
               MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
             }
           }else{
-            debug('Invalid GeoJSON - Unable to draw marker');
+            debug.log('Invalid GeoJSON - Unable to draw marker');
           }
           });
           });

@@ -18,7 +18,7 @@ module.exports = {
    */
   createFeature(layer_id: number, geojson: Object, trx: any): Bluebird$Promise<string>{
     var _this = this;
-    debug('creating feature');
+    debug.log('creating feature');
     let db = knex; if(trx){db = trx;}
     return db.raw(`INSERT INTO layers.data_${layer_id} (mhid, wkb_geometry, tags)
     VALUES ( ${layer_id} || ':' || nextval('layers.mhid_seq_${layer_id}'), 
@@ -50,7 +50,7 @@ module.exports = {
    */
   updateFeature(layer_id: number, mhid: string, geojson: Object, trx: any): Bluebird$Promise<Object>{
     var _this = this;
-    debug('updating feature: ' + mhid);
+    debug.log('updating feature: ' + mhid);
     let db = knex; if(trx){db = trx;}
     return db.raw(`UPDATE layers.data_${layer_id}
     SET wkb_geometry =  ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'), 4326)::geometry(Geometry,4326),
@@ -77,7 +77,7 @@ module.exports = {
    * @returns {Bluebird$Promise<Object>}
    */
   setStringTag(layer_id: number, mhid: string, tag: string, val: ?string, trx: any): Bluebird$Promise<Object>{
-    debug('updating tag: ' + mhid);
+    debug.log('updating tag: ' + mhid);
     let db = knex; if(trx){db = trx;}
     var valStr;
     if(val){
@@ -106,7 +106,7 @@ module.exports = {
    * @returns {Bluebird$Promise<Object>}
    */
   setNumberTag(layer_id: number, mhid: string, tag: string, val: number, trx: any): Bluebird$Promise<Object>{
-    debug('updating tag: ' + mhid);
+    debug.log('updating tag: ' + mhid);
     let db = knex; if(trx){db = trx;}
     var valStr;
     if(val){
@@ -131,7 +131,7 @@ module.exports = {
    * @returns Promise
    */
   deleteFeature(layer_id: number, mhid: string, trx: any): Bluebird$Promise<Object>{
-    debug('deleting feature: ' + mhid);
+    debug.log('deleting feature: ' + mhid);
     let db = knex; if(trx){db = trx;}
     return db.raw(`delete from layers.data_${layer_id} where mhid='${mhid}'`)
     .then(()=>{

@@ -144,7 +144,7 @@ module.exports = function(app: any) {
   app.get('/user/:username/groups', csrfProtection, (req, res, next) => {
 
     var username = req.params.username;
-    debug(username);
+    debug.log(username);
     if(!username){nextError(next);}
     var canEdit = false;
 

@@ -22,7 +22,7 @@ export default class MarkerStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
   addMarker(layer_id, mhid, marker){

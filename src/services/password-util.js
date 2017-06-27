@@ -20,7 +20,7 @@ module.exports = {
 
     return User.getUser(user_id, true)
     .then((user) => {
-      debug('checking password for: ' + user.display_name);
+      debug.log('checking password for: ' + user.display_name);
       bcrypt.compare(password, user.pass_crypt, (err, res) => {
         if(err){
           log.error(err);
@@ -41,15 +41,15 @@ module.exports = {
   updatePassword(user_id: number, password: string, sendEmail: boolean, __: Function){
     return User.getUser(user_id, true)
     .then((user) => {
-      debug('Updating password for: ' + user.display_name);
+      debug.log('Updating password for: ' + user.display_name);
       return bcrypt.genSaltAsync(10).then((salt) => {
-        debug('created salt: ' + salt);
+        debug.log('created salt: ' + salt);
         return bcrypt.hashAsync(password, salt)
         .then((hash) => {
-          debug('created hash: ' + hash);
+          debug.log('created hash: ' + hash);
           return knex('users').update({pass_crypt: hash, pass_reset: null}).where({id: user_id})
           .then(() => {
-            debug('database updated');
+            debug.log('database updated');
             if(sendEmail){
               return Email.send({
                 from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',

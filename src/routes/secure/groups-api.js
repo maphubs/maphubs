@@ -273,7 +273,7 @@ module.exports = function(app: any) {
                 if(!alreadyInGroup){
                   return Group.addGroupMember(data.group_id, user.id, role)
                   .then(() => {
-                    debug('Added ' + data.display_name + ' to ' + data.group_id);
+                    debug.log('Added ' + data.display_name + ' to ' + data.group_id);
                     Email.send({
                       from: MAPHUBS_CONFIG.productName + ' <info@maphub.com>',
                       to: user.email,
@@ -328,7 +328,7 @@ module.exports = function(app: any) {
           if(allowed){
             Group.updateGroupMemberRole(data.group_id, user.id, data.role)
             .then(() => {
-              debug('Added role' + data.role + ' to ' + data.display_name + ' of ' + data.group_id);
+              debug.log('Added role' + data.role + ' to ' + data.display_name + ' of ' + data.group_id);
               res.status(200).send({success: true});
             });
           } else {
@@ -363,12 +363,12 @@ module.exports = function(app: any) {
               .then((result) => {
                 if(result && result.length === 1 && result[0].user_id === session_user_id){
                   //last admin
-                  debug('Attempted to delete last admin ' + data.display_name + ' from ' + data.group_id);
+                  debug.log('Attempted to delete last admin ' + data.display_name + ' from ' + data.group_id);
                   throw new Error('Unable to delete only administrator from the group. Please assign another admin first.');
                 }else{
                   return Group.removeGroupMember(data.group_id, user.id)
                   .then(() => {
-                    debug('Removed ' + data.display_name + ' from ' + data.group_id);
+                    debug.log('Removed ' + data.display_name + ' from ' + data.group_id);
                     Email.send({
                       from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
                       to: user.email,

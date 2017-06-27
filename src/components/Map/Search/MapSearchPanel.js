@@ -116,7 +116,7 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
       let locationSearchResults = res.body;
       _this.setState({locationSearchResults, query});
     }, (error) => {
-      debug(error);
+      debug.log(error);
       MessageActions.showMessage({title: 'Error', message: error.toString()});
     });
   }

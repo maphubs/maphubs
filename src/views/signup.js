@@ -105,7 +105,7 @@ export default class Signup extends MapHubsComponent<DefaultState, Props, State>
               }
             },
             error(msg){
-              debug(msg.statusText +' - ' + msg.responseText);
+              debug.log(msg.statusText +' - ' + msg.responseText);
               _this.setState({
                 showError: true,
                 errorTitle: 'Error',

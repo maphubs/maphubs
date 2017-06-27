@@ -75,7 +75,7 @@ class Toggle extends MapHubsComponent<DefaultProps, Props, void> {
   changeValue = (event) => {    
     event.stopPropagation();
     var checked = event.currentTarget.checked;
-    debug('change value: ' + checked);
+    debug.log('change value: ' + checked);
     if(checked !== this.props.getValue())
      this.props.setValue(checked);
      if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}

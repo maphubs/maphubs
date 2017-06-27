@@ -34,17 +34,17 @@ module.exports = {
     this.map.addControl(draw, 'top-right');
 
     this.map.on('draw.create', (e) => {
-      debug('draw create');
+      debug.log('draw create');
       this.updateMeasurement(e);
     });
 
     this.map.on('draw.update', (e) => {
-      debug('draw update');
+      debug.log('draw update');
       this.updateMeasurement(e);
     });
 
      this.map.on('draw.delete', () => {
-       debug('draw delete');
+       debug.log('draw delete');
        this.setState({measurementMessage: this.__('Use the drawing tools above')});
     });
 

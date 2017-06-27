@@ -113,7 +113,7 @@ module.exports = {
         mapStyle.layers = mapStyle.layers.concat(style.layers);
       } else {
         if(layer && layer.layer_id){
-          debug(`Not added to map, incomplete style for layer: ${layer.layer_id}`);
+          debug.log(`Not added to map, incomplete style for layer: ${layer.layer_id}`);
         }       
       }
     });

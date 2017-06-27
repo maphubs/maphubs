@@ -9,7 +9,7 @@ var log = require('./log');
 module.exports = {
 
   replaceViews(layer_id, presets, trx){
-    debug("replace views for layer: " + layer_id);
+    debug.log("replace views for layer: " + layer_id);
     var _this = this;
     return _this.dropLayerViews(layer_id, trx)
     .then(() => {
@@ -18,7 +18,7 @@ module.exports = {
   },
 
   updateMaterializedViews(layer_id, trx = null){
-    debug("update materialized views for layer: " + layer_id);
+    debug.log("update materialized views for layer: " + layer_id);
     let db = knex;
     if(trx){db = trx;}
     var commands = [
@@ -34,7 +34,7 @@ module.exports = {
   },
 
   dropLayerViews(layer_id, trx = null){
-    debug("drop views for layer: " + layer_id);
+    debug.log("drop views for layer: " + layer_id);
     let db = knex;
     if(trx){db = trx;}
     var commands = [
@@ -61,7 +61,7 @@ module.exports = {
   createLayerViews(layer_id, presets, trx = null){
     let db = knex;
     if(trx){db = trx;}
-    debug("create views for layer: " + layer_id);
+    debug.log("create views for layer: " + layer_id);
     var tagColumns = '';
     if(presets){
       presets.forEach((preset) => {
@@ -283,7 +283,7 @@ module.exports = {
     ];
 
     return Promise.each(commands, (command) => {
-      //debug(command);
+      //debug.log(command);
       return db.raw(command).catch(logRethrow());
     }).catch(logRethrow());
   }

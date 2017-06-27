@@ -123,7 +123,7 @@ export default class LayerStore extends Reflux.Store {
         this.updatePresets(this.getImmPresets(presets));
       }
     }else{
-      debug('Missing style');
+      debug.log('Missing style');
     }
     
   }
@@ -137,7 +137,7 @@ export default class LayerStore extends Reflux.Store {
       });
       this.setState({style, presets});
     }else{
-      debug('Missing style');
+      debug.log('Missing style');
     }
   } 
 
@@ -276,7 +276,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
   saveDataSettings(data: Object, _csrf: string, cb: Function){
-    debug("saveDataSettings");
+    debug.log("saveDataSettings");
     //treat as immutable and clone
     data = JSON.parse(JSON.stringify(data));
     var _this = this;
@@ -375,7 +375,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
   loadData(_csrf: string, cb: Function){
-    debug("loadData");
+    debug.log("loadData");
     if(this.state.layer_id){
        var _this = this;
       request.post('/api/layer/create/savedata/' + this.state.layer_id)
@@ -393,7 +393,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
   initEmptyLayer(_csrf: string, cb: Function){
-    debug("initEmptyLayer");
+    debug.log("initEmptyLayer");
     if(this.state.layer_id){
       var _this = this;
       request.post('/api/layer/create/empty/' + this.state.layer_id)
@@ -493,7 +493,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
   setImportedTags(data: Object, initLayer: boolean){
-    debug("setImportedTags");
+    debug.log("setImportedTags");
     //treat as immutable and clone
     data = JSON.parse(JSON.stringify(data));
     var _this = this;
@@ -519,7 +519,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
   submitPresets(create: boolean, _csrf: string, cb: Function){
-    debug("submitPresets");
+    debug.log("submitPresets");
     var _this = this;
     let presets = this.state.presets.toArray();
     request.post('/api/layer/presets/save')
@@ -541,7 +541,7 @@ export default class LayerStore extends Reflux.Store {
   deletePreset(id: number){
     if(this.state.presets){
       let presets = this.state.presets.toArray();
-      debug("delete preset:"+ id);
+      debug.log("delete preset:"+ id);
       _remove(presets, {id});
       this.state.pendingPresetChanges = true;
       this.updatePresets(this.getImmPresets(presets));
@@ -549,7 +549,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
   addPreset(){
-      debug("adding new preset");
+      debug.log("adding new preset");
        let presets;
        if(this.state.presets){
          presets = this.state.presets;
@@ -572,7 +572,7 @@ export default class LayerStore extends Reflux.Store {
   }
 
  updatePreset(id: number, preset: MapHubsField){
-   debug("update preset:" + id);
+   debug.log("update preset:" + id);
    if(this.state.presets){
    let presets = this.state.presets.toArray();
    var i = _findIndex(presets, {id});
@@ -582,7 +582,7 @@ export default class LayerStore extends Reflux.Store {
       this.updatePresets(this.getImmPresets(presets));
      }      
    }else{
-     debug("Can't find preset with id: "+ id);
+     debug.log("Can't find preset with id: "+ id);
    }
  }
 
@@ -601,7 +601,7 @@ export default class LayerStore extends Reflux.Store {
 
     this.updatePresets(this.getImmPresets(presets));
    }else{
-    debug('Missing presets');
+    debug.log('Missing presets');
   }
  }
 
@@ -614,7 +614,7 @@ export default class LayerStore extends Reflux.Store {
       this.state.pendingPresetChanges = true;
       this.updatePresets(this.getImmPresets(presets));
     }else{
-      debug('Missing presets');
+      debug.log('Missing presets');
     }
  }
 

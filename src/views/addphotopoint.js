@@ -119,7 +119,7 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
               var featurePageUrl = `/feature/${layer_id}/${featureId}/${featureName}`;
               window.location = featurePageUrl;
             }else{
-              debug('mhid not found');
+              debug.log('mhid not found');
             }       
             
           }

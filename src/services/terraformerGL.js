@@ -16,7 +16,7 @@ module.exports= {
       .then((data) => {
         var geoJSON = _this.convertAGSData(data);
         var bbox = require('@turf/bbox')(geoJSON);
-        debug(bbox);
+        debug.log(bbox);
         geoJSON.bbox = bbox;
         return geoJSON;
       });
@@ -46,7 +46,7 @@ module.exports= {
     .then((res) => {
       var geoJSON = res.body;
       var bbox = require('@turf/bbox')(geoJSON);
-      debug(bbox);
+      debug.log(bbox);
       geoJSON.bbox = bbox;
       return geoJSON;
     });

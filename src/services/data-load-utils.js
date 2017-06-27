@@ -22,7 +22,7 @@ const LARGE_DATA_THRESHOLD = 20000000;
 module.exports = {
 
   removeLayerData(layer_id: number, trx: any = null){
-    debug('removeLayerData');
+    debug.log('removeLayerData');
     let db = knex;
     if(trx){db = trx;}
     //remove views
@@ -43,7 +43,7 @@ module.exports = {
   },
 
   storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
-    debug('storeTempShapeUpload');
+    debug.log('storeTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
     return db('omh.temp_data').where({layer_id}).del()
@@ -56,7 +56,7 @@ module.exports = {
   },
 
   getTempShapeUpload(layer_id: number, trx: any = null){
-    debug('getTempShapeUpload');
+    debug.log('getTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
     return db('omh.temp_data').where({layer_id})
@@ -66,7 +66,7 @@ module.exports = {
   },
 
   storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, update: boolean, trx: any = null){
-    debug('storeTempGeoJSON');
+    debug.log('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}
     return new Promise((fulfill, reject) => {
@@ -172,7 +172,7 @@ module.exports = {
       }
 
 
-      debug(bbox);
+      debug.log(bbox);
       geoJSON.bbox = bbox;
 
 
@@ -193,7 +193,7 @@ module.exports = {
       ];
 
       if(update){
-        debug('Update temp geojson');
+        debug.log('Update temp geojson');
         commands.push(
         db('omh.temp_data').update({
           srid,
@@ -215,7 +215,7 @@ module.exports = {
       if(local.writeDebugData){
         fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), (err) => {
           if(err) log.error(err);
-          debug('wrote temp geojson to ' + uploadtmppath + '.geojson');
+          debug.log('wrote temp geojson to ' + uploadtmppath + '.geojson');
         });
         }
            
@@ -232,7 +232,7 @@ module.exports = {
 
       log.info('uniqueProps: ' + JSON.stringify(uniqueProps));    
       
-      debug('inserting temp geojson into database');
+      debug.log('inserting temp geojson into database');
       //insert into the database
       Promise.all(commands)
         .then((dbResult) => {
@@ -309,7 +309,7 @@ module.exports = {
               return trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
               .then(result =>{
                 var maxVal = parseInt(result.rows[0].cnt) + 1;
-                debug('creating sequence starting at: ' + maxVal);
+                debug.log('creating sequence starting at: ' + maxVal);
                 return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
                 .then(()=>{
                   return SearchIndex.updateLayer(layer_id, trx).then(()=>{

@@ -85,7 +85,7 @@ module.exports = {
         }
          cmd.then(
           (resizedImage) => {
-             debug('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
+             debug.log('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
              easyimg.convert({
                src:resizedFilePath, dst:convertedFilePath, quality: 85
               })
@@ -93,7 +93,7 @@ module.exports = {
               () => {
                 var bitmap = fs.readFileSync(convertedFilePath);
                 var resizedImageBase64String = 'data:image/jpeg;base64,' + new Buffer(bitmap).toString('base64');
-                //debug(resizedImageBase64String);
+                //debug.log(resizedImageBase64String);
                 fulfill(resizedImageBase64String);
                 fs.unlink(origfilePath);
                 fs.unlink(resizedFilePath);

@@ -32,7 +32,7 @@ export default class UserStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
@@ -73,12 +73,12 @@ export default class UserStore extends Reflux.Store {
 
   updatePassword(user_id: number, password: string, pass_reset: string, _csrf: string, cb: Function){
     if(this.state.loggedIn && this.state.user.id !== user_id){
-      debug('User ID mismatch, will not send request');
+      debug.log('User ID mismatch, will not send request');
       cb('User session error, please clear browser sessions/cache and try again.');
       //Note: the server endpoint will also check the user_id against the active session, this is just an additional check on the client side
       return;
     } else if(!this.state.loggedIn  && !pass_reset){
-      debug('Pass reset key not found');
+      debug.log('Pass reset key not found');
       cb('User session error, please clear browser sessions/cache and try again.');
     }else {
       request.post('/api/user/updatepassword')

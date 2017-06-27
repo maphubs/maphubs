@@ -6,7 +6,7 @@ i18n.configure({
     defaultLocale: 'en',
     extension: '.json',
     logErrorFn(msg) {
-        debug(msg);
+        debug.log(msg);
     }
 });
 

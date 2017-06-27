@@ -38,7 +38,7 @@ module.exports = {
   },
 
   completeUserMapRequest(req: any, res: any, next: any, map_id: number, canEdit: boolean){
-    debug('completeUserMapRequest');
+    debug.log('completeUserMapRequest');
     return Promise.all([
     Map.getMap(map_id),
     Map.getMapLayers(map_id, canEdit)

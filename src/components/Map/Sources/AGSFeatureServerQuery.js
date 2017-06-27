@@ -13,7 +13,7 @@ var AGSFeatureServerQuery = {
         }
         map.addSource(key, {"type": "geojson", data: geoJSON});
       }, (error) => {
-       debug('(' + mapComponent.state.id + ') ' +error);
+       debug.log('(' + mapComponent.state.id + ') ' +error);
       });
   },
   addLayer(layer: GLLayer, source: GLSource, map: any, mapComponent: any){

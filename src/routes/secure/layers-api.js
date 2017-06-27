@@ -39,7 +39,7 @@ module.exports = function(app: any) {
               .then(() => {
                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
                 .then(() => {
-                    debug('data load transaction complete');
+                    debug.log('data load transaction complete');
                     res.status(200).send({success: true});
               });
             });
@@ -71,7 +71,7 @@ module.exports = function(app: any) {
               .then(()=>{
                  return layerViews.createLayerViews(layer_id, layer.presets, trx)
                 .then(()=>{
-                    debug('init empty transaction complete');
+                    debug.log('init empty transaction complete');
                     res.status(200).send({success: true});
                 });
               });
@@ -326,7 +326,7 @@ app.post('/api/layer/addphotopoint', csrfProtection, (req, res) => {
           return LayerData.createFeature(data.layer_id, geoJSON, trx)
           .then((mhid: string) => {
               //get the mhid for the new feature
-              debug('new mhid: ' + mhid);
+              debug.log('new mhid: ' + mhid);
               return PhotoAttachment.setPhotoAttachment(data.layer_id, mhid, data.image, data.imageInfo, user_id, trx)
                 .then((photo_id) => {
                   return Layer.getLayerByID(data.layer_id, trx)

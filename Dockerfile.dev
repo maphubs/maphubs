@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=development DEBUG=maphubs:*
+ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=development DEBUG="maphubs:*,maphubs-error:*"
 
 #MapHubs Web Server
 MAINTAINER Kristofor Carle - MapHubs <kris@maphubs.com>

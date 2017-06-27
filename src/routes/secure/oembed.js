@@ -16,7 +16,7 @@ module.exports = function(app) {
 
     var map_id = urlArr[urlArr.length-1];
 
-    debug(map_id);
+    debug.log(map_id);
 
     var baseUrl = urlUtil.getBaseUrl();
 

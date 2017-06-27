@@ -33,7 +33,7 @@ export default class AddLayerPanel extends MapHubsComponent<void, Props, State> 
 
   handleSearch = (input: string) => {
     var _this = this;
-    debug('searching for: ' + input);
+    debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
     .end((err, res) => {

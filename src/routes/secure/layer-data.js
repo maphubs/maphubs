@@ -38,7 +38,7 @@ module.exports = function(app: any) {
             });
             return Promise.all(updates).then(()=>{
               return Layer.setUpdated(data.layer_id, user_id, trx).then(()=>{
-                debug('save edits complete');
+                debug.log('save edits complete');
                 res.status(200).send({success: true});
               });
             });

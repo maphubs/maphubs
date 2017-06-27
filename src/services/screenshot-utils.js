@@ -20,21 +20,21 @@ module.exports = {
 
   getLayerThumbnail(layer_id: number){
     var _this = this;
-    debug('get thumbnail image for layer: ' + layer_id);
+    debug.log('get thumbnail image for layer: ' + layer_id);
     return knex('omh.layers').select('thumbnail').where({layer_id})
     .then((result) => {
       if(result && result.length === 1 && result[0].thumbnail !== null && result[0].thumbnail.length > 0){
-        debug('found image in database for layer: ' + layer_id);
+        debug.log('found image in database for layer: ' + layer_id);
         return result[0].thumbnail;
       }else{
-        debug('no image in database for layer: ' + layer_id);
+        debug.log('no image in database for layer: ' + layer_id);
         return _this.updateLayerThumbnail(layer_id);
       }
     });
   },
 
   updateLayerThumbnail(layer_id: number){
-    debug('updating image for layer: ' + layer_id);
+    debug.log('updating image for layer: ' + layer_id);
     //get screenshot from the manet service
     //generate 640x480 and then display at 320x240 for retina
     var width = 400;
@@ -60,7 +60,7 @@ module.exports = {
       }]
     };
 
-    debug(JSON.stringify(manetData));
+    debug.log(JSON.stringify(manetData));
     //replace image in database
 
     return this.base64Download(manetUrl, manetData)
@@ -87,21 +87,21 @@ module.exports = {
   //Layer image
   getLayerImage(layer_id: number){
     var _this = this;
-    debug('get image for layer: ' + layer_id);
+    debug.log('get image for layer: ' + layer_id);
     return knex('omh.layers').select('screenshot').where({layer_id})
     .then((result) => {
       if(result && result.length === 1 && result[0].screenshot !== null && result[0].screenshot.length > 0){
-        debug('found image in database for layer: ' + layer_id);
+        debug.log('found image in database for layer: ' + layer_id);
         return result[0].screenshot;
       }else{
-        debug('no image in database for layer: ' + layer_id);
+        debug.log('no image in database for layer: ' + layer_id);
         return _this.updateLayerImage(layer_id);
       }
     });
   },
 
   updateLayerImage(layer_id: number){
-    debug('updating image for layer: ' + layer_id);
+    debug.log('updating image for layer: ' + layer_id);
     //get screenshot from the manet service
     var width = 1200;
     var height = 630;
@@ -126,7 +126,7 @@ module.exports = {
       }]
     };
 
-    debug(JSON.stringify(manetData));
+    debug.log(JSON.stringify(manetData));
     //replace image in database
 
     return this.base64Download(manetUrl, manetData)
@@ -155,21 +155,21 @@ module.exports = {
 
   getMapImage(map_id: number){
     var _this = this;
-    debug('get screenshot image for map: ' + map_id);
+    debug.log('get screenshot image for map: ' + map_id);
     return knex('omh.maps').select('screenshot').where({map_id})
     .then((result) => {
       if(result && result.length === 1 && result[0].screenshot !== null && result[0].screenshot.length > 0){
-        debug('found image in database for map: ' + map_id);
+        debug.log('found image in database for map: ' + map_id);
         return result[0].screenshot;
       }else{
-        debug('no image in database for map: ' + map_id);
+        debug.log('no image in database for map: ' + map_id);
         return _this.updateMapImage(map_id);
       }
     });
   },
 
   updateMapImage(map_id: number){
-    debug('updating image for map: ' + map_id);
+    debug.log('updating image for map: ' + map_id);
     //get screenshot from the manet service
     var width = 1200;
     var height = 630;
@@ -198,7 +198,7 @@ module.exports = {
       }]
     };
 
-    debug(JSON.stringify(manetData));
+    debug.log(JSON.stringify(manetData));
     //replace image in database
     return this.base64Download(manetUrl, manetData)
     .then((image) => {
@@ -221,7 +221,7 @@ module.exports = {
   },
 
   updateMapThumbnail(map_id: number){
-    debug('updating thumbnail for map: ' + map_id);
+    debug.log('updating thumbnail for map: ' + map_id);
     //get screenshot from the manet service
     var width = 400;
     var height = 300;
@@ -247,10 +247,10 @@ module.exports = {
       }]
     };
 
-    debug(JSON.stringify(manetData));
+    debug.log(JSON.stringify(manetData));
 
     //replace image in database
-    debug(manetUrl);
+    debug.log(manetUrl);
     return this.base64Download(manetUrl, manetData)
     .then((image) => {
       return knex('omh.maps').update({thumbnail: image}).where({map_id})
@@ -263,14 +263,14 @@ module.exports = {
 
   getMapThumbnail(map_id: number){
     var _this = this;
-    debug('get thumbnail image for map: ' + map_id);
+    debug.log('get thumbnail image for map: ' + map_id);
     return knex('omh.maps').select('thumbnail').where({map_id})
     .then((result) => {
       if(result && result.length === 1 && result[0].thumbnail !== null && result[0].thumbnail.length > 0){
-        debug('found image in database for map: ' + map_id);
+        debug.log('found image in database for map: ' + map_id);
         return result[0].thumbnail;
       }else{
-        debug('no image in database for map: ' + map_id);
+        debug.log('no image in database for map: ' + map_id);
         return _this.updateMapThumbnail(map_id);
       }
     });

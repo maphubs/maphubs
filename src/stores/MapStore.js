@@ -38,7 +38,7 @@ export default class MapStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  toggleVisibility(layer_id: number, cb: Function){

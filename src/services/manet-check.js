@@ -39,7 +39,7 @@ return function(req: any, res: any, next: any){
     //determine if this is the manet screenshot service
 
     //first check the cookie
-    if(req.cookies) debug(JSON.stringify(req.cookies));
+    if(req.cookies) debug.log(JSON.stringify(req.cookies));
     if(!req.cookies || !req.cookies.manet || req.cookies.manet !== local.manetAPIKey){
       log.error('Manet Cookie Not Found');
       return failure();

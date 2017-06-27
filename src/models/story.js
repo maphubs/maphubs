@@ -112,7 +112,7 @@ module.exports = {
     },
 
     getHubStoryById(story_id: number) {
-      debug('get hub story: ' + story_id);
+      debug.log('get hub story: ' + story_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.body', 'omh.stories.language',
@@ -132,7 +132,7 @@ module.exports = {
     },
 
     getUserStories(user_id: number, includeDrafts: boolean = false) {
-      debug('get stories for user: ' + user_id);
+      debug.log('get stories for user: ' + user_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
@@ -159,7 +159,7 @@ module.exports = {
     },
 
     getUserStoryById(story_id: number) {
-      debug('get user story: ' + story_id);
+      debug.log('get user story: ' + story_id);
       var query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.body', 'omh.stories.language',
@@ -266,16 +266,16 @@ module.exports = {
         if(hubStories && hubStories.length > 0){
           //check if user is allow to modify the hub
           var hub_id = hubStories[0].hub_id;
-          debug('found a hub story in hub: '+ hub_id);
+          debug.log('found a hub story in hub: '+ hub_id);
           return _this.allowedToModifyHub(hub_id, user_id);
         }else if(userStories && userStories.length > 0){
-          debug('found a user story');
+          debug.log('found a user story');
           // the story must belong to the requesting user
           if(parseInt(userStories[0].user_id) === parseInt(user_id)){
-            debug('user: ' + user_id + ' is the owner of story: ' + story_id);
+            debug.log('user: ' + user_id + ' is the owner of story: ' + story_id);
             return true;
           }else {
-            debug('user: ' + user_id + ' is not the owner of story: ' + story_id);
+            debug.log('user: ' + user_id + ' is not the owner of story: ' + story_id);
             return false;
           }
         }else {
@@ -286,7 +286,7 @@ module.exports = {
     },
 
     getHubByID(hub_id: string) {
-      debug('get hub: ' + hub_id);
+      debug.log('get hub: ' + hub_id);
       return knex('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
         .then((hubResult) => {
@@ -299,7 +299,7 @@ module.exports = {
     },
 
     allowedToModifyHub(hub_id: string, user_id: number){
-      debug("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
+      debug.log("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
       return this.getHubByID(hub_id).then((hub) => {
         return Group.allowedToModify(hub.owned_by_group_id, user_id);
       });

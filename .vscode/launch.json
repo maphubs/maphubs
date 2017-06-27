@@ -26,7 +26,7 @@
 			// Environment variables passed to the program.
 			"env": {
         "NODE_ENV": "development", 
-        "DEBUG": "maphubs:*"       
+        "DEBUG": "maphubs:*, maphubs-error:*"       
         },
 			// Use JavaScript source maps (if they exist).
 			"sourceMaps": true

@@ -251,7 +251,7 @@ module.exports = {
    * Can include private?: If Requested
    */
   getLayerByID(layer_id: number, trx: any = null) {
-    debug('getting layer: ' + layer_id);
+    debug.log('getting layer: ' + layer_id);
     let db = knex;
     if(trx){db = trx;}
     return db.select(
@@ -478,7 +478,7 @@ module.exports = {
         results.forEach((result) => {
           //get layers for map
           var map_id = result.map_id;
-          debug('removing layer: ' + layer_id + ' from map: '+ map_id);
+          debug.log('removing layer: ' + layer_id + ' from map: '+ map_id);
           mapLayerQuerys.push(Map.getMapLayers(map_id, db));
         });
         return db('omh.map_layers').where({layer_id}).del()
@@ -515,7 +515,7 @@ module.exports = {
         results.forEach((result) => {
           //get layers for hub
           var hub_id = result.hub_id;
-          debug('removing layer: ' + layer_id + ' from hub: '+ hub_id);
+          debug.log('removing layer: ' + layer_id + ' from hub: '+ hub_id);
           hubLayerQuerys.push(_this.getHubLayers(hub_id, true, db));
         });
         return db('omh.hub_layers').where({layer_id}).del()
@@ -575,7 +575,7 @@ module.exports = {
           return true;
         })
         .catch((err) => {
-          debug(err);
+          debug.error(error);
           throw err;
         });
     });

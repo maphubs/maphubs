@@ -183,7 +183,7 @@ module.exports = {
     this.map.addControl(draw, 'top-right');
 
     this.map.on('draw.create', e => {
-      debug('draw create');
+      debug.log('draw create');
       var features = e.features;
       if(features && features.length > 0){
         features.forEach( feature => {
@@ -194,13 +194,13 @@ module.exports = {
     });
 
     this.map.on('draw.update', e =>{
-      debug('draw update');
+      debug.log('draw update');
       this.updateEdits(e);
       
     });
 
      this.map.on('draw.delete', e =>{
-       debug('draw delete');
+       debug.log('draw delete');
       var features = e.features;
       if(features && features.length > 0){
         features.forEach(feature => {
@@ -210,7 +210,7 @@ module.exports = {
     });
 
      this.map.on('draw.selectionchange', e => {
-       debug('draw selection');
+       debug.log('draw selection');
        //if in simple mode (e.g. not selecting vertices) then check if selected feature changed
        var mode = this.draw.getMode();
        if(mode === 'simple_select'){

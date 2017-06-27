@@ -138,7 +138,7 @@ module.exports = function(app: any) {
               simplestyle: true
           });
 
-          debug("KML Generated");
+          debug.log("KML Generated");
 
           res.status(200).send(kml);
         }
@@ -196,7 +196,7 @@ module.exports = function(app: any) {
               simplestyle: true
           });
 
-          debug("KML Generated");
+          debug.log("KML Generated");
 
           res.status(200).send(kml);
         }

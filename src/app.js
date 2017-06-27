@@ -52,8 +52,6 @@ Raven.config(ravenConfig, {
 
 app.use(Raven.requestHandler());
 
-
-
 if (app.get('env') !== 'production') {
   require("nodejs-dashboard");
 }

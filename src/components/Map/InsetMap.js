@@ -217,7 +217,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
           }
      
         }catch(err){
-            debug(err);
+            debug.error(error);
         }
       }
    }

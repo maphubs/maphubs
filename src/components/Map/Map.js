@@ -280,8 +280,8 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
           }
       }
     }catch(err){
-      debug('(' + _this.state.id + ') ' +'Failed to add layer: ' + layer.id);
-      debug('(' + _this.state.id + ') ' +err);
+      debug.log('(' + _this.state.id + ') ' +'Failed to add layer: ' + layer.id);
+      debug.log('(' + _this.state.id + ') ' +err);
     }
     });
   }
@@ -307,7 +307,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
             _this.map.removeLayer(layer.id);
           }
         }catch(err){
-          debug('(' + _this.state.id + ') ' +'Failed to remove layer: ' + layer.id);
+          debug.log('(' + _this.state.id + ') ' +'Failed to remove layer: ' + layer.id);
         }
       });
     }
@@ -324,7 +324,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
               _this.map.removeSource(key);
             }           
           }catch(err){
-            debug('(' + _this.state.id + ') ' +'Failed to remove source: ' + key);
+            debug.log('(' + _this.state.id + ') ' +'Failed to remove source: ' + key);
           }
       });
     }
@@ -332,12 +332,12 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   reload = (prevStyle: GLStyle, newStyle: GLStyle, baseMap?: string) => {
     var _this = this;
-    debug('(' + _this.state.id + ') ' +'reload: start');
+    debug.log('(' + _this.state.id + ') ' +'reload: start');
     //clear selected when reloading
     try{
       this.clearSelection();
     }catch(err){
-      debug(err);
+      debug.error(error);
     }
 
     //if no style is provided assume we are reloading the active style
@@ -346,7 +346,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     this.removeAllLayers(prevStyle);
     this.removeAllSources(prevStyle);
     if(baseMap){
-      debug('(' + _this.state.id + ') ' +'reload: base map');
+      debug.log('(' + _this.state.id + ') ' +'reload: base map');
       this.map.setStyle(baseMap, {diff: false}); 
       //TODO: find a way to do this without forcing a full reload
       //the problem is we currently rely on style.load to finish loading the map...
@@ -355,7 +355,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       //map data is loaded when style.load handler is called
     }else {
       this.addMapData(this.map, newStyle, this.props.data, () => {
-        debug('(' + _this.state.id + ') ' +'reload: finished adding data');
+        debug.log('(' + _this.state.id + ') ' +'reload: finished adding data');
       });
     }
   }
@@ -394,7 +394,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
           }
         cb();
       }).catch((err) => {
-        debug('(' + _this.state.id + ') ' +err);
+        debug.log('(' + _this.state.id + ') ' +err);
         //try to load the map anyway
         _this.addLayers(map, glStyle);
         if(geoJSON){
@@ -413,7 +413,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   createMap = () => {
     var _this = this;
-    debug('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
+    debug.log('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
        
@@ -435,23 +435,23 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
     if(err){
-      debug(err);
+      debug.error(error);
     }
   });
 
   map.on('style.load', () => {
-    debug('(' + _this.state.id + ') ' +'style.load');
+    debug.log('(' + _this.state.id + ') ' +'style.load');
     //add the omh data
     _this.addMapData(map, _this.state.glStyle, _this.props.data, () => {
       //do stuff that needs to happen after data loads
-      debug('(' + _this.state.id + ') ' +'finished adding map data');
+      debug.log('(' + _this.state.id + ') ' +'finished adding map data');
       //restore map bounds (except for geoJSON maps)
       if(!_this.props.data && _this.state.restoreBounds){
         var fitBounds = _this.state.restoreBounds;
         if(fitBounds.length > 2){
           fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
         }
-        debug('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
+        debug.log('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
         map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
       }
       //set locale
@@ -466,7 +466,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         _this.restoreForestAlerts();
       }
       
-      debug('(' + _this.state.id + ') ' +'MAP LOADED');
+      debug.log('(' + _this.state.id + ') ' +'MAP LOADED');
       _this.setState({mapLoaded: true});
     });
 
@@ -511,12 +511,12 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
   
 
   componentWillReceiveProps(nextProps: Props){
-    //debug('(' + this.state.id + ') ' +'componentWillReceiveProps');
+    //debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
     var _this = this;
     if(nextProps.data && this.map){
       var geoJSONData = this.map.getSource("omh-geojson");
       if(geoJSONData){
-        debug('(' + this.state.id + ') ' +'update geoJSON data');
+        debug.log('(' + this.state.id + ') ' +'update geoJSON data');
         //update existing data
         geoJSONData.setData(nextProps.data);
         this.zoomToData(nextProps.data);       
@@ -524,11 +524,11 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       }else if(geoJSONData === undefined && this.props.data){
         //do nothing, still updating from the last prop change...
       }else {
-        debug('(' + this.state.id + ') ' +'init geoJSON data');
+        debug.log('(' + this.state.id + ') ' +'init geoJSON data');
         if(this.state.mapLoaded && nextProps.data){
           this.initGeoJSON(this.map, nextProps.data);
         }else{
-          debug(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
+          debug.log(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
         }
         
       }
@@ -539,7 +539,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
 
     if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds) && this.map){
-      debug('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
+      debug.log('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
       fitBoundsChanging = true;
       allowLayersToMoveMap = false;
       if(nextProps.fitBounds && nextProps.fitBounds.length > 2){
@@ -548,18 +548,18 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         bounds = nextProps.fitBounds;
       }
       if(bounds){
-        debug('(' + this.state.id + ') ' +'bounds: ' + bounds.toString());
+        debug.log('(' + this.state.id + ') ' +'bounds: ' + bounds.toString());
       }  
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
       if(!isEqual(this.state.glStyle,nextProps.glStyle)) {
-          debug('(' + this.state.id + ') ' +'glstyle changing from props');
+          debug.log('(' + this.state.id + ') ' +'glstyle changing from props');
           //** Style Changing (also reloads basemap) **/
           if(this.state.mapLoaded && !fitBoundsChanging) {
             //if fitBounds isn't changing, restore the current map position
             if(this.state.glStyle !== null){
-              debug('(' + this.state.id + ') ' +"restoring current map position");
+              debug.log('(' + this.state.id + ') ' +"restoring current map position");
               allowLayersToMoveMap = false;
             }
 
@@ -580,7 +580,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
       }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
-        debug('(' + this.state.id + ') ' +"basemap changing from props");
+        debug.log('(' + this.state.id + ') ' +"basemap changing from props");
         allowLayersToMoveMap = false;    
         this.setState({allowLayersToMoveMap});
         BaseMapActions.setBaseMap(nextProps.baseMap);
@@ -592,11 +592,11 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         //** just changing the fit bounds
         //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
         if(bounds){
-          debug('(' + this.state.id + ') ' +'only bounds changing, bounds: ' + bounds);
+          debug.log('(' + this.state.id + ') ' +'only bounds changing, bounds: ' + bounds);
           if(Array.isArray(bounds) && bounds.length > 2){           
              bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
            }
-           debug('(' + this.state.id + ') ' +'calling map fitBounds');
+           debug.log('(' + this.state.id + ') ' +'calling map fitBounds');
            this.map.fitBounds(bounds, this.props.fitBoundsOptions);
 
            this.setState({allowLayersToMoveMap, restoreBounds: bounds});
@@ -606,7 +606,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }else if(nextProps.glStyle
       && !isEqual(this.state.glStyle,nextProps.glStyle)){
         //** Style Changing (no basemap provided) **/
-        debug('(' + this.state.id + ') ' +'glstyle changing from props (default basemap)');
+        debug.log('(' + this.state.id + ') ' +'glstyle changing from props (default basemap)');
 
         //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
         let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
@@ -619,7 +619,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }else if(nextProps.baseMap
       && !isEqual(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Found, but Base Map is Changing **/
-        debug('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
+        debug.log('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
 
       this.setState({allowLayersToMoveMap});
       BaseMapActions.setBaseMap(nextProps.baseMap);
@@ -631,7 +631,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       //** just changing the fit bounds on a map that does not have styles or basemap settings **/
       //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
       if(bounds){
-        debug('(' + this.state.id + ') ' +'only bounds changing');
+        debug.log('(' + this.state.id + ') ' +'only bounds changing');
         if(bounds._ne && bounds._sw){
          this.map.fitBounds(bounds, this.props.fitBoundsOptions);
          }else if(Array.isArray(bounds) && bounds.length > 2){
@@ -662,7 +662,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
   }
 
   changeBaseMap = (mapName: string) => {
-    debug('changing basemap to: ' + mapName);
+    debug.log('changing basemap to: ' + mapName);
     var _this = this;
     BaseMapActions.getBaseMapFromName(mapName, (baseMapUrl) => {
       BaseMapActions.setBaseMap(mapName);

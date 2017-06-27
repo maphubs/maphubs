@@ -50,7 +50,7 @@ module.exports = {
       return knex('omh.layer_views').insert({
         layer_id, user_id, time: knex.raw('now()')
       }).then(() => {
-        debug("layer: " + layer_id + " now has " + views + " views!");
+        debug.log("layer: " + layer_id + " now has " + views + " views!");
         return knex('omh.layers').update({views}).where({layer_id});
       });
     });
@@ -71,7 +71,7 @@ module.exports = {
       return knex('omh.map_views').insert({
         map_id, user_id, time: knex.raw('now()')
       }).then(() => {
-        debug("map: " + map_id + " now has " + views + " views!");
+        debug.log("map: " + map_id + " now has " + views + " views!");
         return knex('omh.maps').update({views}).where({map_id});
       });
     });
@@ -92,7 +92,7 @@ module.exports = {
       return knex('omh.story_views').insert({
         story_id, user_id, time: knex.raw('now()')
       }).then(() => {
-        debug("story: " + story_id + " now has " + views + " views!");
+        debug.log("story: " + story_id + " now has " + views + " views!");
         return knex('omh.stories').update({views}).where({story_id});
       });
     });
@@ -113,7 +113,7 @@ module.exports = {
       return knex('omh.hub_views').insert({
         hub_id, user_id, time: knex.raw('now()')
       }).then(() => {
-        debug("hub: " + hub_id + " now has " + views + " views!");
+        debug.log("hub: " + hub_id + " now has " + views + " views!");
         return knex('omh.hubs').update({views}).where({hub_id});
       });
     });

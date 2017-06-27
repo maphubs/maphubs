@@ -18,7 +18,7 @@ function translateUserObject(data: Object) {
 }
 
 exports.find = function(id: number, done: Function) {
-  debug('find by id: ' + id);
+  debug.log('find by id: ' + id);
   return knex.select('*')
     .from('users')
     .where('id', id)
@@ -39,7 +39,7 @@ exports.find = function(id: number, done: Function) {
 };
 
 exports.findByEmail = function(email: string, done: Function) {
-  debug('find by email: ' + email);
+  debug.log('find by email: ' + email);
   return knex.select('*')
     .from('users')
     .where('email', email)
@@ -49,7 +49,7 @@ exports.findByEmail = function(email: string, done: Function) {
         return done(null, user);
       } else {
         //not found
-        debug('email not found: ' + email);
+        debug.log('email not found: ' + email);
         return done(null, null);
       }
 
@@ -61,7 +61,7 @@ exports.findByEmail = function(email: string, done: Function) {
 };
 
 exports.findByUsername = function(username: string, done: Function) {
-  debug('find by username: ' + username);
+  debug.log('find by username: ' + username);
 
   username = username.toLowerCase();
 

@@ -20,7 +20,7 @@ module.exports = {
       this.zoomToData(data);
     } else {
       //empty data
-      debug(`(${this.state.id}) Empty/Missing GeoJSON Data`);
+      debug.log(`(${this.state.id}) Empty/Missing GeoJSON Data`);
     }
   },
 

@@ -166,7 +166,7 @@ if(local.useLocalAuth) {
             .then(() => {
               //automatically login the user to their new account
               passport.authenticate('local', (err, user, info) => {
-                debug(info);
+                debug.log(info);
                 if (err) { return next(err); }
                 if (!user) { return res.redirect('/login'); }
                 req.logIn(user, (err) => {

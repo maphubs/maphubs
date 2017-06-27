@@ -73,7 +73,7 @@ export default class BaseMapStore extends Reflux.Store {
         }
       };
       var distance = _distance(from, to, "kilometers");
-      debug('map moved: ' + distance + 'km');     
+      debug.log('map moved: ' + distance + 'km');     
       if(distance < 50 && Math.abs(_this.position.zoom - position.zoom) < 1){
         _this.position = position;
         return;
@@ -89,7 +89,7 @@ export default class BaseMapStore extends Reflux.Store {
       request.get(url)
       .end((err, res) => {
         if(err){
-          debug(err);
+          debug.error(error);
         }else{
           var metadata = res.body;
           var attributions = [];
@@ -140,7 +140,7 @@ export default class BaseMapStore extends Reflux.Store {
     request.get(url)
     .end((err, res) => {
       if(err){
-        debug(err);
+        debug.error(error);
       }else{
         var metadata = res.body;
         //don't actually need anything from bing
@@ -160,7 +160,7 @@ export default class BaseMapStore extends Reflux.Store {
     }else if(name === 'osmBright'){
       cb(osmBright);
     }else{
-      debug(`unknown base map file: ${name}`);
+      debug.log(`unknown base map file: ${name}`);
       cb(positron);
     }
   }
@@ -191,10 +191,10 @@ export default class BaseMapStore extends Reflux.Store {
         cb(config.mapboxUrl);
       }
       else{
-          debug(`map style not found for base map: ${mapName}`);
+          debug.log(`map style not found for base map: ${mapName}`);
       }      
     }else{
-      debug(`unknown base map: ${mapName}`);
+      debug.log(`unknown base map: ${mapName}`);
       //load the  default basemap
       let defaultConfig = _find(defaultBaseMapOptions, {value: 'default'});
        this.setState({

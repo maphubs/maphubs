@@ -37,7 +37,7 @@ export default class EditLayerPanel extends MapHubsComponent<void, Props, State>
         DataEditorActions.updateSelectedFeatureTags(data);
       }
     }else{
-      debug('missing geoJSON');
+      debug.log('missing geoJSON');
     }
   }
 

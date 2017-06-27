@@ -56,7 +56,7 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners

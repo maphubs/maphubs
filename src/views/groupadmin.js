@@ -237,7 +237,7 @@ export default class GroupAdmin extends MapHubsComponent<DefaultProps, Props, St
 
   handleAddMember = (user: Object) => {
     var _this = this;
-    debug(user.value.value + ' as Admin:' + user.option);
+    debug.log(user.value.value + ' as Admin:' + user.option);
     GroupActions.addMember(user.value.value, user.option, _this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

@@ -7,4 +7,4 @@ export $(cat ../env/dev/id-config.env | grep -v ^# | xargs) && \
 export $(cat ../env/dev/secret/db-pass.env | grep -v ^# | xargs) && \
 export $(cat ../env/dev/secret/web-secret.env | grep -v ^# | xargs) && \
 export $(cat ../env/dev/secret/id-secret.env | grep -v ^# | xargs) && \
-DEBUG=maphubs:* node $@
+DEBUG="maphubs:*,maphubs-error:*" node $@

@@ -81,18 +81,18 @@ export default class HubStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
  loadHub(hub: Hub){
-   debug('load hub');
+   debug.log('load hub');
    this.setState({hub});
  }
 
 
  createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, _csrf: string, cb: Function){
-   debug('create hub');
+   debug.log('create hub');
    var _this = this;
 
    request.post('/api/hub/create')
@@ -120,7 +120,7 @@ export default class HubStore extends Reflux.Store {
  }
 
  saveHub(_csrf: string, cb: Function){
-   debug('save hub');
+   debug.log('save hub');
    var _this = this;
   let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
    var baseUrl = '/hub/' + hub_id;
@@ -154,7 +154,7 @@ export default class HubStore extends Reflux.Store {
 
  setPrivate(isPrivate: boolean, _csrf: string, cb: Function){
     var _this = this;
-    debug('hub privacy');
+    debug.log('hub privacy');
     let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
     var baseUrl = '/hub/' + hub_id;
     request.post(baseUrl + '/api/privacy')
@@ -176,7 +176,7 @@ export default class HubStore extends Reflux.Store {
 
   transferOwnership(to_group_id: string, _csrf: string, cb: Function){
     var _this = this;
-    debug('hub privacy');
+    debug.log('hub privacy');
     let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
     var baseUrl = '/hub/' + hub_id;
     request.post(baseUrl + '/api/transfer')
@@ -198,7 +198,7 @@ export default class HubStore extends Reflux.Store {
 
  deleteHub(_csrf: string, cb: Function){
    var _this = this;
-   debug('delete hub');
+   debug.log('delete hub');
    let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
    var baseUrl = '/hub/' + hub_id;
 

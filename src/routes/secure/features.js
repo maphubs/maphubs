@@ -270,13 +270,13 @@ module.exports = function(app: any) {
                 //add a tag to the feature
                 return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
                 .then(() => {
-                  debug('addPhotoUrlPreset');
+                  debug.log('addPhotoUrlPreset');
                   return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
                   .then((presets) => {
-                    debug('replaceViews');
+                    debug.log('replaceViews');
                       return layerViews.replaceViews(data.layer_id, presets, trx)
                     .then(() => {
-                      debug('Layer.setUpdated');
+                      debug.log('Layer.setUpdated');
                       return Layer.setUpdated(data.layer_id, user_id, trx)
                       .then(() => {
                         return res.send({success: true, photo_id, photo_url});

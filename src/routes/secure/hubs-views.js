@@ -86,7 +86,7 @@ module.exports = function(app: any) {
   app.get('/user/:username/hubs', csrfProtection, (req, res, next) => {
 
     var username = req.params.username;
-    debug(username);
+    debug.log(username);
     if(!username){nextError(next);}
     var canEdit = false;
 
@@ -133,7 +133,7 @@ module.exports = function(app: any) {
 
 
   var renderHubPage = function(hub, canEdit: boolean, req, res){
-    debug(`loading hub, canEdit: ${canEdit.toString()}`);
+    debug.log(`loading hub, canEdit: ${canEdit.toString()}`);
     var dataQueries =  [
         Map.getMap(hub.map_id),
         Map.getMapLayers(hub.map_id, canEdit),

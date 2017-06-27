@@ -33,14 +33,14 @@ module.exports = {
   ////////////
 
   getGroupImage(group_id: string){
-    debug('get image for group: ' + group_id);
+    debug.log('get image for group: ' + group_id);
     var _this = this;
     return knex('omh.group_images').select('image_id')
     .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
     .then((result) => {
       if(result.length === 1){
         var id = result[0].image_id;
-        debug('image found: ' + id);
+        debug.log('image found: ' + id);
         return _this.getImageByID(parseInt(id));
       }else{
         //throw new Error('No Image Found for Group: '+ group_id);
@@ -51,14 +51,14 @@ module.exports = {
   },
 
   getGroupThumbnail(group_id: string){
-    debug('get image for group: ' + group_id);
+    debug.log('get image for group: ' + group_id);
     var _this = this;
     return knex('omh.group_images').select('image_id')
     .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
     .then((result) => {
       if(result.length === 1){
         var id = result[0].image_id;
-        debug('image found: ' + id);
+        debug.log('image found: ' + id);
         return _this.getThumbnailImageByID(parseInt(id));
       }else{
         //throw new Error('No Image Found for Group: '+ group_id);
@@ -107,18 +107,18 @@ module.exports = {
   ////////////
 
   getHubImage(hub_id: string, type: string="logo"){
-    debug('get image for hub: ' + hub_id);
+    debug.log('get image for hub: ' + hub_id);
     var _this = this;
     return knex('omh.hub_images').select('image_id')
     .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type])
     .then((result) => {
       if(result.length === 1){
         var id = result[0].image_id;
-        debug('image found: ' + id);
+        debug.log('image found: ' + id);
         return _this.getImageByID(parseInt(id));
       }else if(result.length > 1){
         id = result[0].image_id;
-        debug('multiple images found!');
+        debug.log('multiple images found!');
         return _this.getImageByID(parseInt(id));
       }else{
         throw new Error('No Image Found for Hub: '+ hub_id);
@@ -127,14 +127,14 @@ module.exports = {
   },
 
   getHubThumbnail(hub_id: string, type: string="logo"){
-    debug('get image for hub: ' + hub_id);
+    debug.log('get image for hub: ' + hub_id);
     var _this = this;
     return knex('omh.hub_images').select('image_id')
     .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type])
     .then((result) => {
       if(result.length === 1){
         var id = result[0].image_id;
-        debug('image found: ' + id);
+        debug.log('image found: ' + id);
         return _this.getThumbnailImageByID(parseInt(id));
       }else{
         throw new Error('No Image Found for Hub: '+ hub_id);
@@ -193,12 +193,12 @@ module.exports = {
   ////////////
 
   getStoryImage(story_id: number, image_id: number){
-    debug('get image for story: ' + story_id);
+    debug.log('get image for story: ' + story_id);
     var _this = this;
     return knex('omh.story_images').select('image_id').where({story_id, image_id})
     .then((result) => {
       if(result.length === 1){
-        debug('image found: ' + image_id);
+        debug.log('image found: ' + image_id);
         return _this.getImageByID(image_id);
       }else{
         throw new Error('No Image Found for Story: '+ story_id);
@@ -207,12 +207,12 @@ module.exports = {
   },
 
   getStoryThumbnail(story_id: number, image_id: number){
-    debug('get image for story: ' + story_id);
+    debug.log('get image for story: ' + story_id);
     var _this = this;
     return knex('omh.story_images').select('image_id').where({story_id, image_id})
     .then((result) => {
       if(result.length === 1){
-        debug('image found: ' + image_id);
+        debug.log('image found: ' + image_id);
         return _this.getThumbnailImageByID(image_id);
       }else{
         throw new Error('No Image Found for Story: '+ story_id);

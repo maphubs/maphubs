@@ -42,7 +42,7 @@ export default class LocaleChooser extends MapHubsComponent<Props, Props, State>
 
 
   onChange = (locale: string) => {
-    debug('LOCALE CHANGE: '+ locale);
+    debug.log('LOCALE CHANGE: '+ locale);
     LocaleActions.changeLocale(locale);
   }
 

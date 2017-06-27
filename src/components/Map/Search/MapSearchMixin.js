@@ -39,7 +39,7 @@ module.exports = {
               });
               queries.push({source: sourceId, filter});
             }else{
-              debug('presets not found for source: ' + layer.source);
+              debug.log('presets not found for source: ' + layer.source);
             }
             sourceIDs.push(sourceId);
           }               
@@ -166,7 +166,7 @@ module.exports = {
       _this.map.addLayer(layer, firstLabelLayer);
     });
 
-    debug(results);
+    debug.log(results);
     return results;
     
   },

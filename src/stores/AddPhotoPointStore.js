@@ -40,11 +40,11 @@ export default class AddPhotoPointStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
   setImage(data: any, info: any, cb: any){
-    debug('set image');
+    debug.log('set image');
 
     if(info && info.exif && info.exif['GPSLatitude']){
 
@@ -69,7 +69,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
     };
 
     var bbox = require('@turf/bbox')(geoJSON);
-    debug(bbox);
+    debug.log(bbox);
     geoJSON.bbox = bbox;
 
     var properties = {};
@@ -119,7 +119,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
   }
 
   submit(fields: any, _csrf: any, cb: any){
-    debug('submit photo point');
+    debug.log('submit photo point');
     var _this = this;
 
     //save fields into geoJSON

@@ -96,11 +96,11 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
   componentWillReceiveProps(nextProps: Props) {
     var updateProps = {};
     if(nextProps.aspectRatio) {
-      debug('update aspectratio to: ' + nextProps.aspectRatio);
+      debug.log('update aspectratio to: ' + nextProps.aspectRatio);
       updateProps.aspectRatio = nextProps.aspectRatio;
     }
     if(nextProps.autoCropArea) {
-      debug('update autoCropArea to: ' + nextProps.autoCropArea);
+      debug.log('update autoCropArea to: ' + nextProps.autoCropArea);
       updateProps.autoCropArea = nextProps.autoCropArea;
     }
     this.setState(updateProps);
@@ -130,7 +130,7 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
 
       if (file.size > maxSize) {
         message = _this.__('Maximum Size Exceeded:') + ' ' +  Math.round(maxSize / 1024);
-        debug(message);
+        debug.log(message);
         return reject(new Error(message));
       }
 
@@ -272,7 +272,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     //check if file is supported
     let err = this.checkFile(file);
     if (err){
-      debug(err);
+      debug.error(error);
       MessageActions.showMessage({title: 'Error', message: err});
       return;
     }
@@ -349,13 +349,13 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
       img.onerror = () => {
         let message = _this.__('Bad Image:') + ' ' + file.name;
-        debug(message);
+        debug.log(message);
         MessageActions.showMessage({title: 'Error', message});
       };
 
       img.src = window.URL.createObjectURL(file);
     }).catch((err) => {
-      debug(err);
+      debug.error(error);
         MessageActions.showMessage({title: 'Error', message: err});
     });
     }
@@ -388,7 +388,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       _this.resetImageCrop();
 
     }).catch((err) => {
-      debug(err);
+      debug.error(error);
         MessageActions.showMessage({title: 'Error', message: err});
     });
   }

@@ -31,7 +31,7 @@ export default class LocaleStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
@@ -48,9 +48,9 @@ export default class LocaleStore extends Reflux.Store {
    .end((err, res) => {
      checkClientError(res, err, (err) => {
        if(err){
-         debug(err);
+         debug.error(error);
        }else{
-         debug('changed locale to: ' + locale);
+         debug.log('changed locale to: ' + locale);
          _this.setState({locale});
          _this.trigger(_this.state);
        }

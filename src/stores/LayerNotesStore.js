@@ -33,12 +33,12 @@ export default class LayerNotesStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
  saveNotes(layer_id: number, _csrf: string, cb: Function){
-   debug('save layer notes');
+   debug.log('save layer notes');
    var _this = this;
    this.setState({saving: true});
    request.post('/api/layer/notes/save')

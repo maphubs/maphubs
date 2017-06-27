@@ -54,7 +54,7 @@ export default class Groups extends MapHubsComponent<DefaultProps, Props, State>
 
   handleSearch = (input: string) => {
     var _this = this;
-    debug('searching for: ' + input);
+    debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
     .type('json').accept('json')
     .end((err, res) => {

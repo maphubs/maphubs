@@ -45,23 +45,23 @@ export default class GroupStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
  //listeners
 
  loadGroup(group: Object){
-   debug('load group');
+   debug.log('load group');
    this.setState({group});
  }
 
  loadMembers(members: Array<Object>){
-   debug('load members');
+   debug.log('load members');
    this.setState({members});
  }
 
  createGroup(group_id: string, name: string, description: string, location: string, published: boolean, _csrf: string, cb: Function){
-   debug('create group');
+   debug.log('create group');
    var _this = this;
 
    request.post('/api/group/create')
@@ -93,7 +93,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  updateGroup(group_id: string, name: string, description: string, location: string, published: boolean, _csrf: string, cb: Function){
-   debug('update group');
+   debug.log('update group');
    var _this = this;
    request.post('/api/group/save')
    .type('json').accept('json')
@@ -124,7 +124,7 @@ export default class GroupStore extends Reflux.Store {
 
  deleteGroup(_csrf: string, cb: Function){
    var _this = this;
-   debug('delete group');
+   debug.log('delete group');
    request.post('/api/group/delete')
    .type('json').accept('json')
    .send({
@@ -141,7 +141,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  setGroupImage(data: Object, _csrf: string, cb: Function){
-   debug('set group image');
+   debug.log('set group image');
    var _this = this;
 
    request.post('/api/group/setphoto')
@@ -163,7 +163,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  addMember(display_name: string, asAdmin: boolean, _csrf: string, cb: Function){
-   debug('add member');
+   debug.log('add member');
    var _this = this;
    request.post('/api/group/addmember')
    .type('json').accept('json')
@@ -181,7 +181,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  removeMember(user_id: number, _csrf: string, cb: Function){
-   debug('remove member');
+   debug.log('remove member');
    var _this = this;
    request.post('/api/group/removemember')
    .type('json').accept('json')
@@ -198,7 +198,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  setMemberAdmin(user_id: number, _csrf: string, cb: Function){
-   debug('set member admin');
+   debug.log('set member admin');
    var _this = this;
    request.post('/api/group/updatememberrole')
    .type('json').accept('json')
@@ -216,7 +216,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  removeMemberAdmin(user_id: number, _csrf: string, cb: Function){
-   debug('remove member admin');
+   debug.log('remove member admin');
    var _this = this;
    request.post('/api/group/updatememberrole')
    .type('json').accept('json')
@@ -234,7 +234,7 @@ export default class GroupStore extends Reflux.Store {
  }
 
  reloadMembers(_csrf: string, cb: Function){
-   debug('reload members');
+   debug.log('reload members');
    var _this = this;
    var group_id = this.state.group.group_id? this.state.group.group_id : '';
    request.post('/api/group/' + group_id + '/members')

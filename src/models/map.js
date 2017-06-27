@@ -266,7 +266,7 @@ module.exports = {
       }).returning('map_id')
       .then((result) => {
         var map_id = result[0];
-        debug('Created Map with ID: ' + map_id);
+        debug.log('Created Map with ID: ' + map_id);
         //insert layers
         var mapLayers = [];
         if(layers && Array.isArray(layers) && layers.length > 0){
@@ -395,7 +395,7 @@ module.exports = {
             thumbnail: null
         }).where({map_id})
         .then(() => {
-          debug('Updated Map with ID: ' + map_id);
+          debug.log('Updated Map with ID: ' + map_id);
           //remove previous layers
           return trx('omh.map_layers').where({map_id}).del()
           .then(() => {
@@ -413,7 +413,7 @@ module.exports = {
             });
             return trx('omh.map_layers').insert(mapLayers)
             .then((result) => {
-              debug('Updated Map Layers with MapID: ' + map_id);
+              debug.log('Updated Map Layers with MapID: ' + map_id);
               return result;
             });
             });
@@ -442,9 +442,9 @@ module.exports = {
   createUserMap(layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean){
     return this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate)
     .then((result) => {
-      debug(result);
+      debug.log(result);
       var map_id = result;
-      debug('Saving User Map with ID: ' + map_id);
+      debug.log('Saving User Map with ID: ' + map_id);
       return knex('omh.maps').update({owned_by_user_id: user_id}).where({map_id})
       .then(() => {
         return map_id; //pass on the new map_id
@@ -463,9 +463,9 @@ module.exports = {
    }
     return this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate)
     .then((result) => {
-      debug(result);
+      debug.log(result);
       var map_id = result;
-      debug('Saving User Map with ID: ' + map_id);
+      debug.log('Saving User Map with ID: ' + map_id);
       return knex('omh.maps').update({owned_by_group_id: group_id}).where({map_id})
       .then(() => {
         return map_id; //pass on the new map_id

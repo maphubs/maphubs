@@ -5,21 +5,21 @@ module.exports = {
 
   checkClientError(res: Object, err: Object, cb: Function, onSuccess: Function){
     if(err && res && res.body && res.body.error){
-      debug(res.body.error);
+      debug.log(res.body.error);
       cb(res.body.error);
     }else if(err){
-      debug(err.message);
+      debug.log(err.message);
       cb(err.message);
     }else if (res && res.body && res.body.success !== undefined && res.body.success === false){
       if(res.body.error){
-        debug(res.body.error);
+        debug.log(res.body.error);
         cb(res.body.error);
       } else {
-        debug('unknown error');
+        debug.log('unknown error');
         cb('unknown error');
       }
     }else if(res.body.error){
-      debug(res.body.error);
+      debug.log(res.body.error);
       cb(res.body.error);
     }else if(res.body.success){
       onSuccess(cb);

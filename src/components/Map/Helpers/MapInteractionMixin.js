@@ -123,7 +123,7 @@ module.exports = {
   },
 
   moveendHandler(){
-     debug('mouse up fired');
+     debug.log('mouse up fired');
     BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds());
   },
 
@@ -138,7 +138,7 @@ module.exports = {
     else{
       var debounced = _debounce(() => {
         if(_this.state.mapLoaded && _this.state.restoreBounds){
-          debug('(' + _this.state.id + ') ' +"clearing restoreBounds");
+          debug.log('(' + _this.state.id + ') ' +"clearing restoreBounds");
           _this.setState({restoreBounds:null});
           //stop restoring map possition after user has moved the map
         }

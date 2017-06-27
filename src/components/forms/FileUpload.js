@@ -39,7 +39,7 @@ export default class FileUpload extends MapHubsComponent<DefaultProps, Props, St
   }
 
   onProgress = (e: any, request: any, progress: number) => {
-    debug("upload progress: " + progress);
+    debug.log("upload progress: " + progress);
     if (progress === 100){
       if(this.props.onFinishTx){
         this.props.onFinishTx();

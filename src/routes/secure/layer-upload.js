@@ -33,21 +33,21 @@ module.exports = function(app: any) {
      Layer.getLayerByID(layer_id)
      .then((layer) => {
        if(layer.created_by_user_id === user_id){
-         debug('Mimetype: ' +req.file.mimetype);
+         debug.log('Mimetype: ' +req.file.mimetype);
          if(_endsWith(req.file.originalname, '.zip')){
-           debug('Zip File Detected');
+           debug.log('Zip File Detected');
            fs.createReadStream(req.file.path).pipe(unzip.Extract({path: req.file.path + '_zip'}))
            .on('close', (err) => {
               if (err) throw err;
              //validate
              shapefileFairy(req.file.path, (result) => {
-               debug('ShapefileFairy Result: ' + JSON.stringify(result));
+               debug.log('ShapefileFairy Result: ' + JSON.stringify(result));
                result.success = result.valid;
 
                if(result.valid){
-                 debug('Shapefile Validation Successful');
+                 debug.log('Shapefile Validation Successful');
                  var shpFilePath = req.file.path + '_zip/' + result.value.shp;
-                 debug("shapefile: " + shpFilePath);
+                 debug.log("shapefile: " + shpFilePath);
                   var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(120000);
                   ogr.exec((er, geoJSON) => {
                     if (er){
@@ -62,10 +62,10 @@ module.exports = function(app: any) {
                     }
                   });
                }else{
-                 debug('Shapefile Validation Error: ' + result.error);
+                 debug.log('Shapefile Validation Error: ' + result.error);
                  DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
                  .then(() => {
-                   debug('Finished storing temp path');
+                   debug.log('Finished storing temp path');
                    //tell the client if we were successful
                    res.status(200).send(result);
                  }).catch(apiError(res, 200));
@@ -78,7 +78,7 @@ module.exports = function(app: any) {
 
          } else if(_endsWith(req.file.originalname, '.geojson')
          || _endsWith(req.file.originalname, '.json')){
-           debug('JSON File Detected');
+           debug.log('JSON File Detected');
            let data = fileEncodingUtils.getDecodedFileWithBestGuess(req.file.path);
                let geoJSON = JSON.parse(data);
                DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
@@ -87,7 +87,7 @@ module.exports = function(app: any) {
                }).catch(apiError(res, 200)); //don't want browser to intercept the error, so we can show user a better message
 
          } else if(_endsWith(req.file.originalname, '.csv')){
-           debug('CSV File Detected');
+           debug.log('CSV File Detected');
             let data = fileEncodingUtils.getDecodedFileWithBestGuess(req.file.path);
 
              csv2geojson.csv2geojson(data, (err, geoJSON) => {
@@ -114,14 +114,14 @@ module.exports = function(app: any) {
             });
 
          } else if(_endsWith(req.file.originalname, '.gpx')){
-           debug('GPX File Detected');
+           debug.log('GPX File Detected');
            ogr2ogr(fs.createReadStream(req.file.path), 'GPX')
            .format('GeoJSON').skipfailures()
            .options(['-t_srs', 'EPSG:4326','-sql','SELECT * FROM tracks'])
            .timeout(60000)
            .exec((er, geoJSON) => {
              if(geoJSON.features && geoJSON.features.length === 0){
-               debug('No tracks found, loading waypoints');
+               debug.log('No tracks found, loading waypoints');
                ogr2ogr(fs.createReadStream(req.file.path), 'GPX')
                .format('GeoJSON').skipfailures()
                .options(['-t_srs', 'EPSG:4326','-sql','SELECT * FROM waypoints'])
@@ -164,7 +164,7 @@ module.exports = function(app: any) {
            });
 
          } else if(_endsWith(req.file.originalname, '.kml')){
-           debug('KML File Detected');
+           debug.log('KML File Detected');
            ogr2ogr(fs.createReadStream(req.file.path), 'KML')
            .format('GeoJSON').skipfailures().
            options(['-t_srs', 'EPSG:4326']).timeout(60000)
@@ -182,7 +182,7 @@ module.exports = function(app: any) {
            });
 
          }else {
-           debug('Unsupported File Type: '+ req.file.path);
+           debug.log('Unsupported File Type: '+ req.file.path);
            res.status(200).send({success: false, valid: false, error: "Unsupported File Type"});
          }
        }else {
@@ -200,15 +200,15 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
 
   var user_id = req.session.user.maphubsUser.id;
   if(req.body.layer_id && req.body.requestedShapefile){
-    debug('finish upload for layer: ' + req.body.layer_id + ' requesting shapefile: ' + req.body.requestedShapefile);
+    debug.log('finish upload for layer: ' + req.body.layer_id + ' requesting shapefile: ' + req.body.requestedShapefile);
    Layer.getLayerByID(req.body.layer_id)
      .then((layer) => {
       if(layer.created_by_user_id === user_id){
-      debug('allowed');
+      debug.log('allowed');
       //get file path
       return DataLoadUtils.getTempShapeUpload(req.body.layer_id)
       .then((path) => {
-        debug("finishing upload with file: " + path);
+        debug.log("finishing upload with file: " + path);
         shapefileFairy(path, (result) => {
           result.success = result.valid;
           result.error = result.msg;
@@ -235,7 +235,7 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
     }
   }).catch(apiError(res, 500));
 }else{
-  debug('missing required data');
+  debug.log('missing required data');
   apiDataError(res);
 }
 

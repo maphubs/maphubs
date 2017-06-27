@@ -30,11 +30,11 @@ constructor(){
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
   addPhoto(data, info, _csrf, cb){
-    debug('add feature photo');
+    debug.log('add feature photo');
     var _this = this;
 
     request.post('/api/feature/photo/add')
@@ -64,7 +64,7 @@ constructor(){
   }
 
   removePhoto(_csrf, cb){
-    debug('remove photo');
+    debug.log('remove photo');
     var _this = this;
 
     request.post('/api/feature/photo/delete')

@@ -8,7 +8,7 @@ var log = require('./log');
 module.exports = {
 
   replaceViews(layer_id, presets, trx){
-    debug("replace views for layer: " + layer_id);
+    debug.log("replace views for layer: " + layer_id);
     var _this = this;
     return _this.dropLayerViews(layer_id, trx)
     .then(() => {
@@ -20,7 +20,7 @@ module.exports = {
   },
 
   dropLayerViews(layer_id, trx = null){
-    debug("drop views for layer: " + layer_id);
+    debug.log("drop views for layer: " + layer_id);
     let db = knex;
     if(trx){db = trx;}
     var commands = [
@@ -45,7 +45,7 @@ module.exports = {
     .then(result => {
       var dataType = result[0].data_type;
 
-      debug(`create views for layer: ${layer_id}`);
+      debug.log(`create views for layer: ${layer_id}`);
       var tagColumns = '';
       if(presets){
         presets.forEach((preset) => {

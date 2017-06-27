@@ -22,15 +22,15 @@ export default class AnimationStore extends Reflux.Store {
   }
 
   storeDidUpdate(){
-    debug('store updated');
+    debug.log('store updated');
   }
 
   play(){
-    debug('play');
+    debug.log('play');
     var _this = this;
     if(this.state.playing){
       //already playing
-       debug('already playing');
+       debug.log('already playing');
       return;
     }
     _this.setState({playing: true});
@@ -40,7 +40,7 @@ export default class AnimationStore extends Reflux.Store {
   runTick(){
     var _this = this;
     if(this.state.playing){
-      debug('tick: ' + _this.state.currentVal);
+      debug.log('tick: ' + _this.state.currentVal);
       Actions.tick(_this.state.currentVal);
       //schedule next tick    
       setTimeout(()=>{
@@ -60,12 +60,12 @@ export default class AnimationStore extends Reflux.Store {
   }
 
   stop(){
-     debug('stop');
+     debug.log('stop');
     this.setState({playing: false});
   }
 
   reset(){
-     debug('reset');
+     debug.log('reset');
     this.setState({
       playing: false,
       currentVal: this.state.startVal

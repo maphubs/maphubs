@@ -35,13 +35,13 @@ export default class SearchBox extends React.Component<Props, Props, void> {
       .type('json').accept('json')
       .end((err, res) => {
         if (err) {
-          debug(err);
+          debug.error(error);
           if(_this.props.onError) _this.props.onError(JSON.stringify(err));
         }else{
           if(res.body.suggestions){
             resolve(res.body.suggestions);
           }else{
-            debug(JSON.stringify(res.body));
+            debug.log(JSON.stringify(res.body));
             if(_this.props.onError) _this.props.onError(JSON.stringify(res.body));
           }
         }
