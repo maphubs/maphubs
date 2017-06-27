@@ -100,9 +100,15 @@ export default class LabelSettings extends MapHubsComponent<DefaultProps, Props,
     var _this = this;
     var fieldOptions = [];
 
-    let firstSource = Object.keys(this.props.layer.style.sources)[0];
-    let presets = MapStyles.settings.getSourceSetting(this.props.style, firstSource, 'presets');
-
+    let presets;
+    if(this.props.layer.style && this.props.layer.style.sources){
+      let sourceKeys =  Object.keys(this.props.layer.style.sources);
+      if(sourceKeys && sourceKeys.length > 0){
+        let firstSource = Object.keys(this.props.layer.style.sources)[0];
+        presets = MapStyles.settings.getSourceSetting(this.props.style, firstSource, 'presets');
+      }
+    }
+    
     if(presets){
       presets.forEach((preset) => {
         fieldOptions.push({
@@ -111,6 +117,14 @@ export default class LabelSettings extends MapHubsComponent<DefaultProps, Props,
           });
       });
 
+    }else{
+      return (
+        <div>
+          <div className="row">
+            <p>{this.__('Not available for this layer')}</p>
+          </div>
+        </div>
+      );
     }
 
     var invalidMessage = '';
@@ -132,7 +146,8 @@ export default class LabelSettings extends MapHubsComponent<DefaultProps, Props,
                         />
             </div>
             <div className="row no-margin">
-              <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} className="col s10 label-field no-margin"
+              <Select name="field" id="label-field-select" label={this.__('Label Field')} options={fieldOptions} 
+              className="col s12 label-field no-margin"
                     value={this.state.field} startEmpty={this.state.field ? false : true}
                    dataPosition="right" dataTooltip={this.__('Data field to use in map labels.')}
                    required/>
