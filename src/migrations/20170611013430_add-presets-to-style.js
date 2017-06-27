@@ -1,10 +1,10 @@
 
 exports.up = function(knex, Promise) {
-  return knex('omh.layers').select('layer_id', 'style', 'presets').then(function(layers){
+  return knex('omh.layers').select('layer_id', 'style', 'presets').then((layers) => {
     let commands = [];
-    layers.forEach(function(layer){
+    layers.forEach((layer) => {
       if(layer.style && layer.presets){
-        Object.keys(layer.style.sources).forEach(function(key){
+        Object.keys(layer.style.sources).forEach((key) => {
           if(!layer.style.sources[key].metadata){
             layer.style.sources[key].metadata = {};
           }
@@ -18,6 +18,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

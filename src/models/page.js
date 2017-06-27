@@ -6,7 +6,7 @@ module.exports = {
   getPageConfig(page_id: string): Promise<Array<Object>> {
     return knex.select('config').from('omh.page').where({page_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0].config;
       }
       //else

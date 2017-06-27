@@ -9,7 +9,7 @@ module.exports = {
   getImageByID(image_id: number){
     return knex('omh.images').select('image_id','image').where({image_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0];
       }
       //else
@@ -20,7 +20,7 @@ module.exports = {
   getThumbnailImageByID(image_id: number){
     return knex('omh.images').select('image_id','thumbnail').where({image_id})
     .then((result) => {
-      if (result && result.length == 1) {
+      if (result && result.length === 1) {
         return result[0];
       }
       //else
@@ -38,7 +38,7 @@ module.exports = {
     return knex('omh.group_images').select('image_id')
     .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
     .then((result) => {
-      if(result.length == 1){
+      if(result.length === 1){
         var id = result[0].image_id;
         debug('image found: ' + id);
         return _this.getImageByID(parseInt(id));
@@ -56,7 +56,7 @@ module.exports = {
     return knex('omh.group_images').select('image_id')
     .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
     .then((result) => {
-      if(result.length == 1){
+      if(result.length === 1){
         var id = result[0].image_id;
         debug('image found: ' + id);
         return _this.getThumbnailImageByID(parseInt(id));
@@ -112,7 +112,7 @@ module.exports = {
     return knex('omh.hub_images').select('image_id')
     .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type])
     .then((result) => {
-      if(result.length == 1){
+      if(result.length === 1){
         var id = result[0].image_id;
         debug('image found: ' + id);
         return _this.getImageByID(parseInt(id));
@@ -132,7 +132,7 @@ module.exports = {
     return knex('omh.hub_images').select('image_id')
     .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type])
     .then((result) => {
-      if(result.length == 1){
+      if(result.length === 1){
         var id = result[0].image_id;
         debug('image found: ' + id);
         return _this.getThumbnailImageByID(parseInt(id));
@@ -144,7 +144,7 @@ module.exports = {
   },
 
   insertHubImage(hub_id: string, image: any, info: any, type: string, trx: any){
-    if(type == 'logo'){
+    if(type === 'logo'){
       return ImageUtils.resizeBase64(image, 72, 72) //for @2x story logos shown at 36x36
       .then((thumbnail) => {
         return trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
@@ -153,7 +153,7 @@ module.exports = {
           return trx('omh.hub_images').insert({hub_id, image_id, type});
         });
       });
-    }else if(type == 'banner'){
+    }else if(type === 'banner'){
       return ImageUtils.resizeBase64(image, 400, 300, true)
       .then((thumbnail) => {
         return trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
@@ -197,7 +197,7 @@ module.exports = {
     var _this = this;
     return knex('omh.story_images').select('image_id').where({story_id, image_id})
     .then((result) => {
-      if(result.length == 1){
+      if(result.length === 1){
         debug('image found: ' + image_id);
         return _this.getImageByID(image_id);
       }else{
@@ -211,7 +211,7 @@ module.exports = {
     var _this = this;
     return knex('omh.story_images').select('image_id').where({story_id, image_id})
     .then((result) => {
-      if(result.length == 1){
+      if(result.length === 1){
         debug('image found: ' + image_id);
         return _this.getThumbnailImageByID(image_id);
       }else{

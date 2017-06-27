@@ -10,7 +10,7 @@ module.exports = {
     }else if(err){
       debug(err.message);
       cb(err.message);
-    }else if (res && res.body && res.body.success !== undefined && res.body.success == false){
+    }else if (res && res.body && res.body.success !== undefined && res.body.success === false){
       if(res.body.error){
         debug(res.body.error);
         cb(res.body.error);

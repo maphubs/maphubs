@@ -2,7 +2,7 @@ module.exports = {
 
   getLegend: function(data_type, name, color) {
         var html = '';
-        if(data_type == 'point'){
+        if(data_type === 'point'){
           html = `<div class="omh-legend">
    <div class="point double-stroke" style="background-color: ` + color + `">
    </div>
@@ -10,14 +10,14 @@ module.exports = {
    </div>
   `;
 
-        }else if(data_type  == 'line'){
+        }else if(data_type  === 'line'){
           html = `<div class="omh-legend">
   <div class="block double-stroke" style="height:  4px; background-color: ` + color + `">
   </div>
   <h3>` + name + `</h3>
   </div>`;
 
-        }else if(data_type  == 'polygon'){
+        }else if(data_type  === 'polygon'){
           html = `<div class="omh-legend">
    <div class="block double-stroke" style="background-color: ` + color + `">
    </div>

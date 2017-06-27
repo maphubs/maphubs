@@ -39,7 +39,7 @@ module.exports = function(app) {
         if(isAdmin){
           Page.savePageConfig(data.page_id, data.pageConfig)
             .then((result) => {
-              if (result && result == 1) {
+              if (result && result === 1) {
                 res.send({
                   success: true
                 });

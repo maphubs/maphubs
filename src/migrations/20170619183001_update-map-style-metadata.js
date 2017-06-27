@@ -26,10 +26,10 @@ exports.up = function(knex, Promise) {
   from omh.map_layers 
   left join omh.layers on omh.map_layers.layer_id = omh.layers.layer_id
   order by position`)
-  .then(function(result){
+  .then((result) => {
     let updatedMapStyles = {};
     let updateCommands = [];
-    result.rows.forEach(function(mapLayer){
+    result.rows.forEach((mapLayer) => {
       let mapLayerStyle = mapLayer.map_layer_style;
       let origLayerStyle =  mapLayer.orig_layer_style;
       if(origLayerStyle){
@@ -38,7 +38,7 @@ exports.up = function(knex, Promise) {
           mapLayerStyle.metadata = origLayerStyle.metadata;
         }
         //update source metadata
-        Object.keys(origLayerStyle.sources).forEach(function(sourceID){
+        Object.keys(origLayerStyle.sources).forEach((sourceID) => {
           var origSource = origLayerStyle.sources[sourceID];
           var mapSource =  mapLayerStyle.sources[sourceID];
           if(origSource.metadata && mapSource){
@@ -60,7 +60,7 @@ exports.up = function(knex, Promise) {
     });
 
     //loop through map_ids, build updated styles, and update
-    Object.keys(updatedMapStyles).forEach(function(map_id){
+    Object.keys(updatedMapStyles).forEach((map_id) => {
       let updatedMapStyle = rebuildMapStyle(updatedMapStyles[map_id]);
       updateCommands.push(
         knex('omh.maps').update({style: updatedMapStyle}).where({map_id: map_id})
@@ -71,6 +71,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

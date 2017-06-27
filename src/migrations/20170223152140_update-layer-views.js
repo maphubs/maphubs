@@ -3,9 +3,9 @@ exports.up = function(knex, Promise) {
   return knex('omh.layers')
   .select('layer_id', 'presets', 'data_type')
   .where({status:'published', is_external: false, remote: false})
-  .then(function(layers){
+  .then((layers) => {
      var commands = [];
-     layers.forEach(function(layer){
+     layers.forEach((layer) => {
         var layer_id = layer.layer_id;
         commands.push(
           layerViews.replaceViews(layer_id, layer.presets, knex)      

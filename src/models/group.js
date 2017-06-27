@@ -75,7 +75,7 @@ module.exports = {
       return knex.select().table('omh.groups')
         .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
         .then((result) => {
-          if (result && result.length == 1) {
+          if (result && result.length === 1) {
             return result[0];
           }
           //else
@@ -192,7 +192,7 @@ module.exports = {
     checkGroupIdAvailable(group_id: string) {
       return this.getGroupByID(group_id)
         .then((result) => {
-          if (result == null) return true;
+          if (result === null) return true;
           return false;
         });
     },

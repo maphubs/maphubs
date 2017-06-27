@@ -124,7 +124,7 @@ module.exports = function(app: any) {
         if(allowed){
           Group.updateGroup(data.group_id, data.name, data.description, data.location, data.published)
             .then((result) => {
-              if (result && result == 1) {
+              if (result && result === 1) {
                 res.send({
                   success: true
                 });
@@ -266,7 +266,7 @@ module.exports = function(app: any) {
               .then((members) => {
                 var alreadyInGroup = false;
                 members.forEach((member) => {
-                  if(member.id == user.id){
+                  if(member.id === user.id){
                       alreadyInGroup = true;
                   }
                 });
@@ -361,7 +361,7 @@ module.exports = function(app: any) {
               //don't allow removal of last admin
               Group.getGroupMembersByRole(data.group_id, 'Administrator')
               .then((result) => {
-                if(result && result.length == 1 && result[0].user_id == session_user_id){
+                if(result && result.length === 1 && result[0].user_id === session_user_id){
                   //last admin
                   debug('Attempted to delete last admin ' + data.display_name + ' from ' + data.group_id);
                   throw new Error('Unable to delete only administrator from the group. Please assign another admin first.');

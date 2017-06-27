@@ -238,7 +238,7 @@ module.exports = {
       debug('checking email confirmation');
       return this.getUserWithConfirmationKey(key)
       .then((user) => {
-        if(user == null) return false;
+        if(user === null) return false;
         //key matches
         log.info("Email Confirmed for user: " + user.display_name);
         return knex('users').update({new_email: '', email_valid: true}).where({id: user.id})
@@ -251,7 +251,7 @@ module.exports = {
     checkUserNameAvailable(username: string) {
       return this.getUserByName(username)
         .then((result) => {
-          if (result == null) return true;
+          if (result === null) return true;
           return false;
         }).catch(() => {
           //user not found, therefore name is avaliable

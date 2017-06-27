@@ -2,7 +2,7 @@
 var passport = require('passport');
 var local = require('../../local');
 var csrfProtection = require('csurf')({cookie: false});
-var log = require('../../services/log');
+//var log = require('../../services/log');
 var querystring = require('querystring');
 
 module.exports = function(app: any) {

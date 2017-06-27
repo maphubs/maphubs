@@ -2,7 +2,6 @@
 var knex = require('../../connection.js');
 //var debug = require('../../services/debug')('routes/stories');
 var Story = require('../../models/story');
-var Hub = require('../../models/hub');
 var Image = require('../../models/image');
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;

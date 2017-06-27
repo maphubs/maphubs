@@ -83,7 +83,7 @@ order by position
           let mapLayerStyle = mapLayer.map_layer_style;
 
           //update source metadata
-          Object.keys(mapLayerStyle.sources).forEach(function(sourceID){          
+          Object.keys(mapLayerStyle.sources).forEach((sourceID) => {          
             var mapSource =  mapLayerStyle.sources[sourceID];
             if(!mapSource.metadata){
               mapSource.metadata = {};

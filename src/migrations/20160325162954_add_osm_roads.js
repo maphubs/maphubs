@@ -31,7 +31,7 @@ exports.up = function(knex, Promise) {
 
   var commands = [];
   //Add Road Layers
-  Object.keys(roadDefinitions).forEach(function(key){
+  Object.keys(roadDefinitions).forEach((key) => {
     var stylefDef = roadDefinitions[key];
     var style = lineStyles.getStyle(stylefDef.tag, stylefDef.name, stylefDef.color, stylefDef.layer, stylefDef.filterTag, stylefDef.filterValues, stylefDef.width);
     var legend = lineStyles.getLegend(stylefDef.data_type, stylefDef.name, stylefDef.color);
@@ -42,6 +42,6 @@ exports.up = function(knex, Promise) {
 
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   return true;
 };

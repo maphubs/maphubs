@@ -1,5 +1,3 @@
-import {Record} from "immutable";
-
 export type MapHubsField = {
   type: 'text' | 'number' | 'combo',
   tag: string,
@@ -8,5 +6,3 @@ export type MapHubsField = {
   showOnMap: boolean,
   id: number
 }
-
-//export type MapHubsFieldImm = Record<MapHubsField>

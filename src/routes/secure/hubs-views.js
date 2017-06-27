@@ -9,14 +9,10 @@ var login = require('connect-ensure-login');
 //var log = require('../../services/log.js');
 var debug = require('../../services/debug')('routes/hubs');
 var Promise = require('bluebird');
-//var MapUtils = require('../../services/map-utils');
 var urlUtil = require('../../services/url-util');
 var baseUrl = urlUtil.getBaseUrl();
-//var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
-//var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
-var local = require('../../local');
 var privateHubCheck = require('../../services/private-hub-check').middlewareView;
 
 module.exports = function(app: any) {

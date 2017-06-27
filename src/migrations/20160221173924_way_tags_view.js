@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
 
   return knex.raw(`
     create view global_way_tags as
@@ -15,6 +15,6 @@ exports.up = function(knex, Promise) {
 
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.raw(`drop view global_way_tags;`);
 };

@@ -102,7 +102,7 @@ module.exports = function(app: any) {
 
           Hub.updateHub(data.hub_id, data.name, data.description, data.tagline, data.published, data.resources, data.about, data.map_id, session_user_id)
             .then((result) => {
-              if (result && result == 1) {
+              if (result && result === 1) {
                 var commands = [];
 
                 if(data.logoImage){

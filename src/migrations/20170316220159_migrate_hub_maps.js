@@ -2,9 +2,9 @@
 exports.up = function(knex, Promise) {
   
 return knex.select().from('omh.hubs')
-.then(function(hubs){
+.then((hubs) => {
   var commands = [];
-  hubs.forEach(function(hub){
+  hubs.forEach((hub) => {
      commands.push(
        knex('omh.maps')
       .insert({
@@ -18,10 +18,10 @@ return knex.select().from('omh.hubs')
           updated_by: hub.updated_by,
           updated_at: knex.raw('now()')
       }).returning('map_id')
-      .then(function(result){
+      .then((result) => {
         var map_id = result[0];
          return knex('omh.hubs').update({map_id: map_id}).where({hub_id: hub.hub_id})
-         .then(function(){
+         .then(() => {
           return knex.raw(`
           INSERT INTO omh.map_layers select ${map_id}, layer_id, style, legend_html from omh.hub_layers where hub_id = '${hub.hub_id}';
           `);
@@ -33,6 +33,6 @@ return knex.select().from('omh.hubs')
 
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

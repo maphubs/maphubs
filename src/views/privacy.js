@@ -43,7 +43,7 @@ export default class Privacy extends MapHubsComponent<void, Props, void> {
   We collect the e-mail addresses of those who communicate with us via e-mail, aggregate information on what pages consumers access or visit, and information volunteered by the consumer (such as survey information and/or site registrations). We may collect and store your Internet Protocol address, and information about your computer/mobile device, such as the model, and web browser version.
   </p>
   <p>
-  The information we collect is used to improve the content of our Web pages and the quality of our service, and is not shared with or sold to other organizations for commercial purposes, except to provide products or services you've requested, when we have your permission, or under the following circumstances:
+  The information we collect is used to improve the content of our Web pages and the quality of our service, and is not shared with or sold to other organizations for commercial purposes, except to provide products or services you&#39;ve requested, when we have your permission, or under the following circumstances:
   </p>
   <ol>
   <li>
@@ -62,7 +62,7 @@ export default class Privacy extends MapHubsComponent<void, Props, void> {
 </p>
   <h5>Cookies</h5>
   <p>
-  Cookies are required to use the {MAPHUBS_CONFIG.productName} service. A cookie is a small amount of data, which often includes an anonymous unique identifier, that is sent to your browser from a web site's computers and stored on your computer's hard drive.
+  Cookies are required to use the {MAPHUBS_CONFIG.productName} service. A cookie is a small amount of data, which often includes an anonymous unique identifier, that is sent to your browser from a web site&#39;s computers and stored on your computer&#39;s hard drive.
 </p>
   <p>
   We use cookies to record current session information, but do not use permanent cookies. You are required to re-login to your {MAPHUBS_CONFIG.productName} account after a certain period of time has elapsed to protect you against others accidentally accessing your account contents.
@@ -75,7 +75,7 @@ export default class Privacy extends MapHubsComponent<void, Props, void> {
   Comment and discussion areas of {MAPHUBS_CONFIG.productName} are provided by Disqus https://disqus.com/. Use of these areas is a transaction with Disqus and is not covered by this Privacy Policy. More information on Disqus policies is available at https://help.disqus.com/customer/en/portal/topics/215159-terms-and-policies/articles
 </p>
   <p>
-  The help form (Send a Message button) is provided by HelpScout. Use of the help form is also a transaction with HelpScout. More information on HelpScout's policy is available at https://www.helpscout.net/company/privacy/
+  The help form (Send a Message button) is provided by HelpScout. Use of the help form is also a transaction with HelpScout. More information on HelpScout&#39;s policy is available at https://www.helpscout.net/company/privacy/
 </p>
   <p>
   {MAPHUBS_CONFIG.productName} layers may link to external map services services hosted by other organizations. This Privacy Policy does not cover usage information collected by map services external to {MAPHUBS_CONFIG.productName}.

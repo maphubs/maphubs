@@ -55,11 +55,14 @@ export default class SlideDots extends React.PureComponent<void, Props, void> {
       <ul style={self.getListStyles()}>
         {
           indexes.map((index) => {
+            let goToSlide = function(){
+              self.props.goToSlide(index);
+            };
             return (
               <li style={self.getListItemStyles()} key={index}>
                 <button
                   style={self.getButtonStyles(self.props.currentSlide === index)}
-                  onClick={self.props.goToSlide.bind(null, index)}>
+                  onClick={goToSlide}>
                   &bull;
                 </button>
               </li>

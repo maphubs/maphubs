@@ -9,10 +9,7 @@ var sitemap = require('sitemap'),
   sm = sitemap.createSitemap({
       hostname : urlUtil.getBaseUrl(),
       sitemapName: 'Maphubs'
-    }),
-  smi = sitemap.buildSitemapIndex({
-    urls: []
-  });
+    });
 
 module.exports = function(app) {
 

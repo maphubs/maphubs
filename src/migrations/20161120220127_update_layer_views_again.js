@@ -1,8 +1,8 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function() {
 
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

@@ -23,7 +23,7 @@ module.exports = {
     debug('get thumbnail image for layer: ' + layer_id);
     return knex('omh.layers').select('thumbnail').where({layer_id})
     .then((result) => {
-      if(result && result.length == 1 && result[0].thumbnail != null && result[0].thumbnail.length > 0){
+      if(result && result.length === 1 && result[0].thumbnail !== null && result[0].thumbnail.length > 0){
         debug('found image in database for layer: ' + layer_id);
         return result[0].thumbnail;
       }else{
@@ -90,7 +90,7 @@ module.exports = {
     debug('get image for layer: ' + layer_id);
     return knex('omh.layers').select('screenshot').where({layer_id})
     .then((result) => {
-      if(result && result.length == 1 && result[0].screenshot != null && result[0].screenshot.length > 0){
+      if(result && result.length === 1 && result[0].screenshot !== null && result[0].screenshot.length > 0){
         debug('found image in database for layer: ' + layer_id);
         return result[0].screenshot;
       }else{
@@ -158,7 +158,7 @@ module.exports = {
     debug('get screenshot image for map: ' + map_id);
     return knex('omh.maps').select('screenshot').where({map_id})
     .then((result) => {
-      if(result && result.length == 1 && result[0].screenshot != null && result[0].screenshot.length > 0){
+      if(result && result.length === 1 && result[0].screenshot !== null && result[0].screenshot.length > 0){
         debug('found image in database for map: ' + map_id);
         return result[0].screenshot;
       }else{
@@ -266,7 +266,7 @@ module.exports = {
     debug('get thumbnail image for map: ' + map_id);
     return knex('omh.maps').select('thumbnail').where({map_id})
     .then((result) => {
-      if(result && result.length == 1 && result[0].thumbnail != null && result[0].thumbnail.length > 0){
+      if(result && result.length === 1 && result[0].thumbnail !== null && result[0].thumbnail.length > 0){
         debug('found image in database for map: ' + map_id);
         return result[0].thumbnail;
       }else{
@@ -290,7 +290,7 @@ module.exports = {
     var img = new Buffer(image, 'base64');
     var hash = require('crypto').createHash('md5').update(img).digest("hex");
     var match = req.get('If-None-Match');
-    if(hash == match){
+    if(hash === match){
       res.status(304).send();
     }else{
       res.writeHead(200, {

@@ -1,9 +1,9 @@
-
+/*eslint-disable no-console */
 exports.up = function(knex, Promise) {
   return knex('omh.layers').select('layer_id', 'data_type', 'status').where({status:'published', is_external: false, remote: false})
-      .then(function(results){
+      .then((results) => {
         var updates = [];
-        results.forEach(function(layer){
+        results.forEach((layer) => {
           if(layer.data_type === 'polygon' && layer.status === 'published' ){
             updates.push(knex.raw(`
             CREATE OR REPLACE VIEW layers.centroids_` + layer.layer_id + ` AS
@@ -17,6 +17,6 @@ exports.up = function(knex, Promise) {
       });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

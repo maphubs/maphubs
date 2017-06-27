@@ -55,7 +55,7 @@ if(local.useLocalAuth){
 }else{
   //auth0 config
 
-  app.get('/user/profile', csrfProtection, (req, res, next) => {
+  app.get('/user/profile', csrfProtection, (req, res) => {
 
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       return res.redirect('/login');

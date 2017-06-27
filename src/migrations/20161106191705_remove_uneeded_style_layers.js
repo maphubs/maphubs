@@ -1,7 +1,8 @@
+/*eslint-disable no-console */
 var updateStyle = function(style, maphubsLayer){
   if(style && Array.isArray(style.layers) && style.layers.length > 0){
     var updatedLayers = [];
-    style.layers.map(function(layer){
+    style.layers.map((layer) => {
       if(layer.id === 'omh-data-polygon-' + maphubsLayer.layer_id
       && maphubsLayer.data_type !== 'polygon'){
         console.log("type: " + maphubsLayer.data_type  +" removing: " + layer.id);
@@ -46,12 +47,12 @@ exports.up = function(knex, Promise) {
   return Promise.all([
       knex('omh.layers').select('layer_id', 'style', 'data_type')
    ])
-  .then(function(results){
+  .then((results) => {
     var layers = results[0];
 
     //note, only updating layer styles, maps/hubs/etc combine layers and it would be tricky to split everything back out...
     var updateCommands = [];
-    layers.forEach(function(layer){
+    layers.forEach((layer) => {
       var style = updateStyle(layer.style, layer);
       updateCommands.push(knex('omh.layers').update({style}).where({layer_id: layer.layer_id}));
     });
@@ -59,6 +60,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
 
 };

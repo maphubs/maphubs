@@ -1,7 +1,7 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.raw(`ALTER TABLE omh.maps ADD COLUMN owned_by_user_id bigint;`)
-    .then(function(){
+    .then(() => {
       return  knex.raw(`
         UPDATE omh.maps SET owned_by_user_id = b.user_id
         FROM omh.maps AS a, omh.user_maps AS b
@@ -10,6 +10,6 @@ exports.up = function(knex, Promise) {
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.raw(`ALTER TABLE omh.maps DROP COLUMN owned_by_user_id;`);
 };

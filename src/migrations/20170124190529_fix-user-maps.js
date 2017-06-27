@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.raw(`
         UPDATE omh.maps a SET owned_by_user_id = b.user_id
         FROM omh.user_maps AS b
@@ -7,6 +7,6 @@ exports.up = function(knex, Promise) {
       `);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

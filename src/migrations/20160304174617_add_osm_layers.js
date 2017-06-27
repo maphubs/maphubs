@@ -36,11 +36,11 @@ exports.up = function(knex, Promise) {
         'Global',
     	TRUE
     	);
-    `).then(function(){
+    `).then(() => {
       return knex.raw(`
         INSERT INTO omh.group_memberships (group_id, user_id, role)
         VALUES ('OpenStreetMap', 1, 'Administrator');
-        `).then(function(){
+        `).then(() => {
 
 
           var commands = [];
@@ -50,7 +50,7 @@ exports.up = function(knex, Promise) {
           commands.push(knex('omh.layers').insert(layer));
 
           //Add Landuse Layers
-          Object.keys(landuseDefinitions).forEach(function(key){
+          Object.keys(landuseDefinitions).forEach((key) => {
             var stylefDef = landuseDefinitions[key];
             var style = polygonStyles.getStyle(stylefDef.tag, stylefDef.name, stylefDef.color, stylefDef.outlineColor, stylefDef.layer, stylefDef.kinds);
             var legend = polygonStyles.getLegend(stylefDef.data_type, stylefDef.name, stylefDef.color);
@@ -62,14 +62,14 @@ exports.up = function(knex, Promise) {
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.raw(`DELETE FROM omh.layer_views
     WHERE layer_id IN (select layer_id FROM omh.layers WHERE owned_by_group_id = 'OpenStreetMap')`)
-    .then(function(){
+    .then(() => {
       return knex.raw(`DELETE FROM omh.layers WHERE owned_by_group_id = 'OpenStreetMap'`)
-      .then(function(){
+      .then(() => {
         return knex.raw(`DELETE FROM omh.group_memberships WHERE group_id = 'OpenStreetMap'`)
-        .then(function(){
+        .then(() => {
           return knex.raw(`DELETE FROM omh.groups WHERE group_id = 'OpenStreetMap'`);
         });
       });

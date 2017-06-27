@@ -5,7 +5,6 @@ import LayerStore from '../../stores/layer-store';
 import Actions from '../../actions/LayerActions';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
-import {OrderedSet} from "immutable";
 import type {MapHubsField} from '../../types/maphubs-field';
 import type {LayerStoreState} from '../../stores/layer-store';
 

@@ -189,12 +189,14 @@ module.exports = {
         });
     },
 
-    publishStory(story_id: number) {
-      return knex('omh.stories')
+    publishStory(story_id: number, trx: any=null) {
+      let db = knex;
+      if(trx){db = trx;}
+      return db('omh.stories')
         .where('story_id', story_id)
         .update({
           published: true,
-          updated_at: knex.raw('now()')
+          updated_at: db.raw('now()')
         });
     },
 

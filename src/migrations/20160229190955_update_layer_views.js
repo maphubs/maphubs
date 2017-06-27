@@ -1,6 +1,6 @@
 var replaceViews = function(layer_id, presets, db, Promise){
   return dropLayerViews(layer_id, db, Promise)
-  .then(function(){
+  .then(() => {
     return createLayerViews(layer_id, presets, db, Promise);
   });
 };
@@ -20,7 +20,7 @@ var dropLayerViews = function(layer_id, db, Promise){
     'DROP MATERIALIZED VIEW IF EXISTS layers.node_geom_' + layer_id
   ];
 
-  return Promise.each(commands, function(command){
+  return Promise.each(commands, (command) => {
     return db.raw(command);
   });
 };
@@ -28,7 +28,7 @@ var dropLayerViews = function(layer_id, db, Promise){
 var createLayerViews = function(layer_id, presets, db, Promise){
   var tagColumns = '';
   if(presets){
-    presets.forEach(function(preset){
+    presets.forEach((preset) => {
       tagColumns += `(tags->'` + preset.tag + `') as "` + preset.tag + `",`;
     });
   }
@@ -240,7 +240,7 @@ var createLayerViews = function(layer_id, presets, db, Promise){
 
   ];
 
-  return Promise.each(commands, function(command){
+  return Promise.each(commands, (command) => {
     return db.raw(command);
   });
 };
@@ -248,15 +248,15 @@ var createLayerViews = function(layer_id, presets, db, Promise){
 
 exports.up = function(knex, Promise) {
   return knex('omh.layers').select('layer_id', 'presets')
-  .then(function(layers){
+  .then((layers) => {
     var commands = [];
-    layers.forEach(function(layer){
+    layers.forEach((layer) => {
       commands.push(replaceViews(layer.layer_id, layer.presets, knex, Promise));
     });
     return Promise.all(commands);
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
 
 };

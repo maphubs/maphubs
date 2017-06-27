@@ -34,7 +34,7 @@ export default class Terms extends MapHubsComponent<void, Props, void> {
             </div>
 
 <p>
-By using this web site ("Service"), or any services of {MAPHUBS_CONFIG.productName}, you are agreeing to be bound by the following terms and conditions ("Terms of Service"). IF YOU ARE ENTERING INTO THIS AGREEMENT ON BEHALF OF A COMPANY OR OTHER LEGAL ENTITY, YOU REPRESENT THAT YOU HAVE THE AUTHORITY TO BIND SUCH ENTITY, ITS AFFILIATES AND ALL USERS WHO ACCESS OUR SERVICES THROUGH YOUR ACCOUNT TO THESE TERMS AND CONDITIONS, IN WHICH CASE THE TERMS "YOU" OR "YOUR" SHALL REFER TO SUCH ENTITY, ITS AFFILIATES AND USERS ASSOCIATED WITH IT. IF YOU DO NOT HAVE SUCH AUTHORITY, OR IF YOU DO NOT AGREE WITH THESE TERMS AND CONDITIONS, YOU MUST NOT ACCEPT THIS AGREEMENT AND MAY NOT USE THE SERVICES.
+By using this web site (&quot;Service&quot;), or any services of {MAPHUBS_CONFIG.productName}, you are agreeing to be bound by the following terms and conditions (&quot;Terms of Service&quot;). IF YOU ARE ENTERING INTO THIS AGREEMENT ON BEHALF OF A COMPANY OR OTHER LEGAL ENTITY, YOU REPRESENT THAT YOU HAVE THE AUTHORITY TO BIND SUCH ENTITY, ITS AFFILIATES AND ALL USERS WHO ACCESS OUR SERVICES THROUGH YOUR ACCOUNT TO THESE TERMS AND CONDITIONS, IN WHICH CASE THE TERMS &quot;YOU&quot; OR &quot;YOUR&quot; SHALL REFER TO SUCH ENTITY, ITS AFFILIATES AND USERS ASSOCIATED WITH IT. IF YOU DO NOT HAVE SUCH AUTHORITY, OR IF YOU DO NOT AGREE WITH THESE TERMS AND CONDITIONS, YOU MUST NOT ACCEPT THIS AGREEMENT AND MAY NOT USE THE SERVICES.
 </p>
 <p>
 Please note that if you are accessing any {MAPHUBS_CONFIG.productName} service in your capacity as a government entity, amended Terms of Service may be required. Please contact us at {MAPHUBS_CONFIG.contactEmail}
@@ -51,7 +51,7 @@ Violation of any of the terms below will result in the termination of your Accou
 You must be 13 years or older to use this Service.
 </li>
 <li>
-You must be a human. Accounts registered by "bots" or other automated methods are not permitted.
+You must be a human. Accounts registered by &quot;bots&quot; or other automated methods are not permitted.
 </li>
 <li>
 You must provide your name, a valid email address, and any other information requested in order to complete the signup process.
@@ -119,7 +119,7 @@ The {MAPHUBS_CONFIG.productName} name and the {MAPHUBS_CONFIG.productName} logo 
 <h5>E. General Conditions</h5>
 <ol>
 <li>
-Your use of the Service is at your sole risk. The service is provided on an "as is" and "as available" basis.
+Your use of the Service is at your sole risk. The service is provided on an &quot;as is&quot; and &quot;as available&quot; basis.
 </li>
 <li>
 Support for {MAPHUBS_CONFIG.productName} services is only available in English, via email or via the MapHubs code project on GitHub.  We do not guarantee support for free services.  (CrowdCover LLC also offers additional paid consulting and support services, please contact us at {MAPHUBS_CONFIG.contactEmail})
@@ -137,7 +137,7 @@ You may use the {MAPHUBS_CONFIG.productName} hub and story services solely as pe
 You agree not to reproduce, duplicate, copy, sell, resell or exploit any portion of the Service, use of the Service, or access to the Service without the express written permission by {MAPHUBS_CONFIG.productName}.
 </li>
 <li>
-We may, but have no obligation to, remove Content and Accounts containing Content that we determine in our sole discretion are unlawful, offensive, threatening, libelous, defamatory, pornographic, obscene or otherwise objectionable or violates any party's intellectual property or these Terms of Service.
+We may, but have no obligation to, remove Content and Accounts containing Content that we determine in our sole discretion are unlawful, offensive, threatening, libelous, defamatory, pornographic, obscene or otherwise objectionable or violates any party&#39;s intellectual property or these Terms of Service.
 </li>
 <li>
 We may, but have no obligation to, remove Content and Accounts due to destructive actions, vandalism, or attempts at censorship of public domain or open-licensed data.
@@ -149,7 +149,7 @@ Verbal, physical, written or other abuse (including threats of abuse or retribut
 You understand that the technical processing and transmission of the Service, including your Content, may be transferred unencrypted and involve (a) transmissions over various networks; and (b) changes to conform and adapt to technical requirements of connecting networks or devices.
 </li>
 <li>
-You must not upload, post, host, or transmit unsolicited email, SMSs, or "spam" messages.
+You must not upload, post, host, or transmit unsolicited email, SMSs, or &quot;spam&quot; messages.
 </li>
 <li>
 You must not transmit any worms or viruses or any code of a destructive nature.

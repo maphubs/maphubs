@@ -120,7 +120,7 @@ module.exports = function(app: any) {
            .options(['-t_srs', 'EPSG:4326','-sql','SELECT * FROM tracks'])
            .timeout(60000)
            .exec((er, geoJSON) => {
-             if(geoJSON.features && geoJSON.features.length == 0){
+             if(geoJSON.features && geoJSON.features.length === 0){
                debug('No tracks found, loading waypoints');
                ogr2ogr(fs.createReadStream(req.file.path), 'GPX')
                .format('GeoJSON').skipfailures()

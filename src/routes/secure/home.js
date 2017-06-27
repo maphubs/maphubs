@@ -37,16 +37,16 @@ module.exports = function(app: any) {
         }else if(component.type === 'carousel'){
           if(component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0){
             component.datasets.forEach((dataset) => {
-              if(dataset.type == 'layer' && dataset.filter === 'popular'){
+              if(dataset.type === 'layer' && dataset.filter === 'popular'){
                  dataRequests.push(Layer.getPopularLayers(5));
                   dataRequestNames.push('trendingLayers');
-              }else if(dataset.type == 'group' && dataset.filter === 'popular'){
+              }else if(dataset.type === 'group' && dataset.filter === 'popular'){
                  dataRequests.push(Group.getPopularGroups(5));
                   dataRequestNames.push('trendingGroups');
-              }else if(dataset.type == 'hub' && dataset.filter === 'popular'){
+              }else if(dataset.type === 'hub' && dataset.filter === 'popular'){
                 dataRequests.push(Hub.getPopularHubs(5));
                  dataRequestNames.push('trendingHubs');
-              }else if(dataset.type == 'map' && dataset.filter === 'popular'){
+              }else if(dataset.type === 'map' && dataset.filter === 'popular'){
                 dataRequests.push(Map.getPopularMaps(5));
                  dataRequestNames.push('trendingMaps');
               }

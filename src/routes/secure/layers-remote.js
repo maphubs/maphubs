@@ -72,7 +72,7 @@ module.exports = function(app: any) {
           .then((layer) => {
             if(layer.remote){
               var url;
-              if(layer.remote_host == 'localhost'){
+              if(layer.remote_host === 'localhost'){
                url = 'http://';
              }else{
                 url = 'https://';

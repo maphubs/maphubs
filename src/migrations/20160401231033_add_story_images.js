@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.raw(`
       CREATE TABLE omh.story_images (
         story_id int,
@@ -13,6 +13,6 @@ exports.up = function(knex, Promise) {
   `);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.raw(`DROP TABLE omh.story_images`);
 };

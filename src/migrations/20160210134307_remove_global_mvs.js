@@ -197,14 +197,14 @@ exports.up = function(knex, Promise) {
   ;
   `);
 
-  return Promise.each(commands, function(command){
-    return knex.raw(command).catch(function(err){
+  return Promise.each(commands, (command) => {
+    return knex.raw(command).catch((err) => {
       log.error(err); //don't propagate errors in case we are recovering from a incomplete layer
     });
   });
 
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
 
 };

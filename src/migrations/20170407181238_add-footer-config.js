@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return  knex.raw(`
         INSERT INTO omh.page (page_id, config) VALUES ('footer', '{
   "showPoweredByMapHubs": true,
@@ -33,6 +33,6 @@ exports.up = function(knex, Promise) {
     `);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function() {
   
 };

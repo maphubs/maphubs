@@ -84,7 +84,7 @@ if(local.useLocalAuth) {
     if (req.isAuthenticated && req.isAuthenticated()) {
       //logged in, confirm that the requested user matches the session user
       var user_id = req.session.user.maphubsUser.id;
-      if(!data.user_id || user_id != data.user_id){
+      if(!data.user_id || user_id !== data.user_id){
         res.status(401).send("Unauthorized");
         return;
       }

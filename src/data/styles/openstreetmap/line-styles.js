@@ -2,7 +2,7 @@ module.exports = {
 
   getLegend: function(data_type, name, color) {
         var html = '';
-   if(data_type  == 'line'){
+   if(data_type  === 'line'){
           html = `<div class="omh-legend">
   <div class="block double-stroke" style="height:  4px; background-color: ` + color + `">
   </div>

@@ -180,7 +180,7 @@ load('./src/routes/secure').into(app);
 
 //error handling
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 
   //bypass for dynamically created tile URLs
   if(req.url.includes('/api/tiles/') || req.url.includes('/dialog/authorize/decision')){
@@ -216,7 +216,7 @@ app.use(function(req, res, next) {
 
 
 
-app.use(function onError(err, req, res, next) {
+app.use((err, req, res, next) => {
   if(req.session && req.session.user){
     let username = req.session.user.username ? req.session.user.username : req.session.user.display_name;
     let email = req.session.user._json.email? req.session.user._json.email : req.session.user.email;
@@ -234,7 +234,7 @@ app.use(function onError(err, req, res, next) {
 
 app.use(Raven.errorHandler());
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
 
   //bypass for dynamically created tile URLs
   if(req.url.includes('/api/tiles/')){
@@ -291,7 +291,7 @@ app.use(function(err, req, res, next) {
 var http = require('http');
 var server = http.createServer(app);
 server.setTimeout(10*60*1000); // 10 * 60 seconds * 1000 msecs
-server.listen(local.internal_port, function () {
+server.listen(local.internal_port, () => {
     log.info('**** STARTING SERVER ****');
     log.info('Server Running on port: ' + local.internal_port);
 });
