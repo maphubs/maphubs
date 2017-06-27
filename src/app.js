@@ -195,10 +195,7 @@ app.use((req, res, next) => {
         req: req
         /*eslint-enable*/
       });
-      return;
-    }
-
-    if (req.accepts('json')) {
+    }else if (req.accepts('json')) {
       res.send({
         title: req.__('404: Page not found'),
         error: req.__('404: Page not found'),
