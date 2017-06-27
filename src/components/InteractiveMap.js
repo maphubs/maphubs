@@ -165,8 +165,10 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
     } else if(this.state.position){
       if(typeof window === 'undefined' || !window.location.hash){
         //only update position if there isn't absolute hash in the URL
-         var bbox = this.state.position.bbox;
-         bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+        if(this.state.position && this.state.position.bbox){
+          var bbox = this.state.position.bbox;
+          bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+        }     
       }
      
     }

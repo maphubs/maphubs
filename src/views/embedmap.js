@@ -190,8 +190,10 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
         );
     }else {
        if(!this.state.bounds){
-        var bbox = this.props.map.position.bbox;
-        bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+        if( this.props.map.position && this.props.map.position.bbox){
+          var bbox = this.props.map.position.bbox;
+          bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+        }       
       }else{
         bounds = this.state.bounds;
       }

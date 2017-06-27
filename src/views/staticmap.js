@@ -125,8 +125,10 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
     var bounds;
     if(typeof window === 'undefined' || !window.location.hash){
         //only update position if there isn't absolute hash in the URL
-          var bbox = this.props.position.bbox;
-          bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+          if(this.props.position && this.props.position.bbox){
+            var bbox = this.props.position.bbox;
+            bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+          }        
       }
     map = (
       <Map ref="map" 
