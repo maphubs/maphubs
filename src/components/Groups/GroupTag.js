@@ -44,7 +44,7 @@ export default class GroupTag extends MapHubsComponent<DefaultProps, Props, Stat
       $('.group-tag-tooltip').tooltip();
     }
 
-     $(this.refs.groupimg).error(function(){
+     $(this.refs.groupimg).on('error', function(){
         $(this).attr('src', 'https://cdn.maphubs.com/assets/missing_group.png');
      });
   }
