@@ -77,7 +77,7 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
   }
 
   onReset = () => {
-    this.setState({results: null, locationSearchResults: null});
+    this.setState({results: null, locationSearchResults: null, query: null});
     this.props.onSearchReset();
   }
 
