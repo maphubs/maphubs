@@ -575,7 +575,7 @@ module.exports = {
           return true;
         })
         .catch((err) => {
-          debug.error(error);
+          debug.error(err);
           throw err;
         });
     });

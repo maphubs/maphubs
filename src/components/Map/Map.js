@@ -337,7 +337,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     try{
       this.clearSelection();
     }catch(err){
-      debug.error(error);
+      debug.error(err);
     }
 
     //if no style is provided assume we are reloading the active style
@@ -435,7 +435,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
 
   map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
     if(err){
-      debug.error(error);
+      debug.error(err);
     }
   });
 

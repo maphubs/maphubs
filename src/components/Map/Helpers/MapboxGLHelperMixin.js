@@ -90,7 +90,7 @@ module.exports = {
       }
    
     }catch(err){
-      debug.error(error);
+      debug.error(err);
     }
 */
 

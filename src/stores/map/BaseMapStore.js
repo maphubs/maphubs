@@ -89,7 +89,7 @@ export default class BaseMapStore extends Reflux.Store {
       request.get(url)
       .end((err, res) => {
         if(err){
-          debug.error(error);
+          debug.error(err);
         }else{
           var metadata = res.body;
           var attributions = [];
@@ -140,7 +140,7 @@ export default class BaseMapStore extends Reflux.Store {
     request.get(url)
     .end((err, res) => {
       if(err){
-        debug.error(error);
+        debug.error(err);
       }else{
         var metadata = res.body;
         //don't actually need anything from bing

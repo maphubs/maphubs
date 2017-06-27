@@ -177,7 +177,7 @@ export default class Search extends MapHubsComponent<void, Props, State> {
 
     }).catch((err) => {
       _this.setState({searching: false});
-      debug.error(error);
+      debug.error(err);
       MessageActions.showMessage({title: 'Error', message: err.toString()});
 
     });

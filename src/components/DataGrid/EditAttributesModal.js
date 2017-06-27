@@ -84,7 +84,7 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
       checkClientError(res, err, ()=>{}, () => {       
         if(err){
           //show error message  
-          debug.error(error);
+          debug.error(err);
           MessageActions.showMessage({title: 'Error', message: err});  
           if(this.props.onSave){
             this.props.onSave();

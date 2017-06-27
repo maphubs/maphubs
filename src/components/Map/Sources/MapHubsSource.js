@@ -99,7 +99,7 @@ var MapHubsSource = {
     .end((err, res) => {
       checkClientError(res, err, (err) => {
         if(err){
-          debug.error(error);
+          debug.error(err);
         }else{
           var geojson = res.body;        
           // add markers to map

@@ -272,7 +272,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     //check if file is supported
     let err = this.checkFile(file);
     if (err){
-      debug.error(error);
+      debug.error(err);
       MessageActions.showMessage({title: 'Error', message: err});
       return;
     }
@@ -355,7 +355,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
       img.src = window.URL.createObjectURL(file);
     }).catch((err) => {
-      debug.error(error);
+      debug.error(err);
         MessageActions.showMessage({title: 'Error', message: err});
     });
     }
@@ -388,7 +388,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       _this.resetImageCrop();
 
     }).catch((err) => {
-      debug.error(error);
+      debug.error(err);
         MessageActions.showMessage({title: 'Error', message: err});
     });
   }
