@@ -2,7 +2,6 @@
 import React from 'react';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Header from '../components/header';
-import Footer from '../components/footer';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 
@@ -13,7 +12,6 @@ type Props = {
   locale: string,
   _csrf: string,
   eventId: string,
-  footerConfig: Object,
   headerConfig: Object
 }
 
@@ -43,7 +41,6 @@ export default class Error extends MapHubsComponent<void, Props, void> {
             <p className="flow-text center-align"><a href={this.props.url} target="_blank" rel="noopener noreferrer">{this.props.url}</a></p>
           </div>
         </main>
-        <Footer {...this.props.footerConfig}/>
       </div>
     );
   }

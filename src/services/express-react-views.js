@@ -54,7 +54,6 @@ function createEngine(engineOptions) {
   engineOptions = assign({}, DEFAULT_OPTIONS, engineOptions || {});
 
   function renderFile(filename: string, options: ViewOptions, cb: Function) {
-
     var materialicons = options.materialicons ? options.materialicons : true;
     // Defer babel registration until the first request so we can grab the view path.
     if (!registered) {
@@ -385,7 +384,8 @@ function createEngine(engineOptions) {
         }
       });
     }
-    Page.getPageConfigs(['footer', 'header', 'map']).then(pageConfigs =>{
+    if(!options.props.error){ //don't hit the database on error and 404 pages
+      Page.getPageConfigs(['footer', 'header', 'map']).then(pageConfigs =>{
       options.props.headerConfig = pageConfigs.header;
       options.props.footerConfig = pageConfigs.footer; 
       options.props.mapConfig = pageConfigs.map;  
@@ -407,6 +407,16 @@ function createEngine(engineOptions) {
       `;
       cb(null, markup);
     });
+  }else{
+      var appData: string = JSON.stringify(options.props, null, 2);
+      markup += `
+       <script>window.__appData = ${appData}; </script>
+      </body>
+      </html>
+      `;
+       cb(null, markup);
+    }
+    
     
   }
 
