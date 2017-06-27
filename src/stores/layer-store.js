@@ -486,8 +486,9 @@ export default class LayerStore extends Reflux.Store {
         {tag: 'description', label: 'Description', type: 'text', isRequired: false,  showOnMap: true, id: this.state.presetIDSequence++},
         {tag: 'source', label: 'Source', type: 'text', isRequired: true,  showOnMap: true, id: this.state.presetIDSequence++}
       ); 
-
-      this.setState({pendingPresetChanges: true});
+      let layer = this.initLayer(this.state);
+      layer.pendingPresetChanges = true;
+      this.setState(layer);
       this.updatePresets(presets);
     }
   }
@@ -521,21 +522,27 @@ export default class LayerStore extends Reflux.Store {
   submitPresets(create: boolean, _csrf: string, cb: Function){
     debug.log("submitPresets");
     var _this = this;
-    let presets = this.state.presets.toArray();
-    request.post('/api/layer/presets/save')
-    .type('json').accept('json')
-    .send({
-      layer_id: _this.state.layer_id,
-      presets,
-      create,
-      _csrf
-    })
-    .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        _this.setState({pendingPresetChanges: false});
-        cb();
+    if(this.state.presets){
+      let presets = this.state.presets.toArray();
+      request.post('/api/layer/presets/save')
+      .type('json').accept('json')
+      .send({
+        layer_id: _this.state.layer_id,
+        presets,
+        create,
+        _csrf
+      })
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          _this.setState({pendingPresetChanges: false});
+          cb();
+        });
       });
-    });
+    }else{
+      debug.error('missing presets');
+      throw new Error('missing presets');
+    }
+    
   }
 
   deletePreset(id: number){
