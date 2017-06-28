@@ -1,6 +1,8 @@
 [ignore]
 .*/node_modules/fbjs/.*
 .*/node_modules/mapbox-gl/.*
+.*/node_modules/jsonlint-lines/.*
+.*/node_modules/ambi/.*
 .*/assets/.*
 .*/temp/.*
 .*/db-server/.*
