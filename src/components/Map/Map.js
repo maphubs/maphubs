@@ -439,6 +439,11 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
   });
 
+  //catch generic errors until issue with 404 tile errors is resolved
+  map.on('error', (err) => {
+    debug.error(err.error);
+  });
+
   map.on('style.load', () => {
     debug.log('(' + _this.state.id + ') ' +'style.load');
     //add the omh data
