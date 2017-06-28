@@ -1,5 +1,20 @@
 # Change Log
 
+## [v0.11.9](https://github.com/maphubs/maphubs/tree/v0.11.9) (2017-06-28)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.8...v0.11.9)
+
+**Fixed bugs:**
+
+- error creating empty layer [\#384](https://github.com/maphubs/maphubs/issues/384)
+- error generating thumbnails on empty maps [\#383](https://github.com/maphubs/maphubs/issues/383)
+
+## [v0.11.8](https://github.com/maphubs/maphubs/tree/v0.11.8) (2017-06-26)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.7...v0.11.8)
+
+**Fixed bugs:**
+
+- over simplified lines at higher zooms [\#342](https://github.com/maphubs/maphubs/issues/342)
+
 ## [v0.11.7](https://github.com/maphubs/maphubs/tree/v0.11.7) (2017-06-26)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.6...v0.11.7)
 
