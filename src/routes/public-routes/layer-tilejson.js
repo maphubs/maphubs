@@ -112,7 +112,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           scheme: "xyz",
           tilejson: "2.2.0",
           tiles: [uri],
-          data: baseUrl + '/api/layer/' + layer.layer_id + '/export/json/' + + slugify(name) + '.geojson',
+          data: baseUrl + '/api/layer/' + layer.layer_id + '/export/json/' + slugify(name) + '.geojson',
           webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
         res.status(200).send(tileJSON);
