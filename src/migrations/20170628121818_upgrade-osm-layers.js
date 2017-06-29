@@ -10,10 +10,11 @@ exports.up = function(knex, Promise) {
       let name = layer.name;
 
       style.layers.forEach(styleLayer =>{
-          if(layer.layer_id >= 24){ //roads             
-            styleLayer.filter[1][1] = 'kind_detail';
-            style.sources.osm.tiles = ['https://tile.mapzen.com/mapzen/vector/v1/roads/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo'];
-
+          if(layer.layer_id >= 24){ //roads   
+            if(style.sources.osm){          
+              styleLayer.filter[1][1] = 'kind_detail';
+              style.sources.osm.tiles = ['https://tile.mapzen.com/mapzen/vector/v1/roads/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo'];
+            }
           }else if(layer.layer_id === 1){ //buildings
             style.sources.osm.tiles = ['https://tile.mapzen.com/mapzen/vector/v1/buildings/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo'];
 
@@ -29,8 +30,10 @@ exports.up = function(knex, Promise) {
             style.sources.osm.tiles = ['https://tile.mapzen.com/mapzen/vector/v1/landuse/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo'];
 
           }else{
-            //everything else is landuse
-            style.sources.osm.tiles = ['https://tile.mapzen.com/mapzen/vector/v1/landuse/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo'];
+            if(style.sources.osm){
+              //everything else is landuse
+              style.sources.osm.tiles = ['https://tile.mapzen.com/mapzen/vector/v1/landuse/{z}/{x}/{y}.mvt?api_key=vector-tiles-ltPfkfo'];
+            }
           }
       });
 
