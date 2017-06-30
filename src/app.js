@@ -16,8 +16,6 @@ var express = require('express'),
   version = require('../package.json').version,
   shrinkRay = require('shrink-ray');
 
-
-
 var session = require('express-session');
 var KnexSessionStore = require('connect-session-knex')(session);
 var knex = require('./connection.js');
@@ -41,6 +39,8 @@ var app = express();
 app.enable('trust proxy');
 app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
 app.disable("x-powered-by");
+
+log.info(`Environment: "${app.get('env')}"`);
 
 const ravenConfig = (process.env.NODE_ENV === 'production' && !local.disableTracking) && local.SENTRY_DSN;
 Raven.config(ravenConfig, {

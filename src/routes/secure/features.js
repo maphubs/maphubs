@@ -75,7 +75,8 @@ module.exports = function(app: any) {
             title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
             fontawesome: true,
             props: {feature, notes, photo, layer, canEdit: false},
-             req
+            req,
+            cache: false
            });
         }else{
           Layer.allowedToModify(layer_id, user_id)
