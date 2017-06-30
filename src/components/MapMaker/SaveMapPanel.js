@@ -129,9 +129,9 @@ export default class SaveMapPanel extends MapHubsComponent<void, Props, State> {
                 en: 'Map Title', fr: 'Titre de la carte', es: 'Título del mapa', it: 'Titolo della mappa'
               }}
               className="col s12" 
-              validations="maxLength:200" validationErrors={{
-                        maxLength: this.__('Name must be 200 characters or less.')
-               }} length={200}
+              validations="maxLength:100" validationErrors={{
+                        maxLength: this.__('Name must be 100 characters or less.')
+               }} length={100}
                required/>
           </div>
           {groupToggle}

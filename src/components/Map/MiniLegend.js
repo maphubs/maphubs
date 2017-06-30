@@ -115,9 +115,17 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
     }
 
     var titleText = '';
+    let titleFontSize = '15px';
     if(this.props.title){
       titleText = this._o_(this.props.title);
-      if(!titleText){
+      if(titleText){
+        if(titleText.length > 80) {
+          titleFontSize = '8px';
+        }else if(titleText.length > 60) {
+          titleFontSize = '11px';
+        }
+        
+      }else{
         // if localized text is empty
         titleText = this.__('Legend');
       }
@@ -146,7 +154,11 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
       title = (
         <div className="row no-margin" style={{height: '32px'}}>
           <div className="col s10 no-padding valign-wrapper" style={{height: '32px'}}>
-            <h6 className="black-text valign word-wrap" style={{padding: '0.2rem', marginLeft: '2px', marginTop: '0px', marginBottom: '2px', fontWeight: '500'}}>{titleText}</h6>
+            <h6 className="black-text valign word-wrap" style={{
+              padding: '0.2rem', marginLeft: '2px', marginTop: '0px', marginBottom: '2px', 
+              fontWeight: '500',
+              fontSize: titleFontSize
+              }}>{titleText}</h6>
           </div>
           <div className="col s2 no-padding valign">
             {layersButton}
@@ -157,7 +169,11 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
     }else{
       title = (
         <div className="row no-margin valign-wrapper" style={{height: '44px'}}>
-          <h6 className="black-text valign" style={{padding: '0.2rem',  marginLeft: '2px', fontWeight: '500'}}>{titleText}</h6>
+          <h6 className="black-text valign" style={{
+            padding: '0.2rem',  marginLeft: '2px', 
+            fontWeight: '500',
+            fontSize: titleFontSize
+            }}>{titleText}</h6>
           <div className="col s2 no-padding valign">
             {layersButton}
           </div>
