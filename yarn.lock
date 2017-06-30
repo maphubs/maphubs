@@ -55,110 +55,95 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.0.0.tgz#c1de4293081424da3ac30c23afa850af1019bb54"
 
-"@turf/area@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/area/-/area-4.4.0.tgz#b10ab02c7bf955abb30adefef6585b4f2f4d36d6"
+"@turf/area@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/area/-/area-4.5.2.tgz#e0afad0cb20aacc6a359f2cd5dfb3654b771b735"
   dependencies:
     "@mapbox/geojson-area" "^0.2.2"
-    "@turf/meta" "^4.4.0"
+    "@turf/meta" "^4.5.2"
 
-"@turf/bbox-polygon@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/bbox-polygon/-/bbox-polygon-4.4.0.tgz#40b17ed063f0722e7407dcd6fad03bfce57b5a15"
+"@turf/bbox-polygon@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/bbox-polygon/-/bbox-polygon-4.5.2.tgz#c28ba380394ba218711345afea6a32c20ff8775e"
   dependencies:
-    "@turf/helpers" "^4.4.0"
+    "@turf/helpers" "^4.5.2"
 
-"@turf/bbox@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/bbox/-/bbox-4.4.0.tgz#3149458eb41404427cf786a90fb3680a0e8aab55"
+"@turf/bbox@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/bbox/-/bbox-4.5.2.tgz#1a6c6e7d0ea03b26cbc14d46e6df408ae3ddf87a"
   dependencies:
-    "@turf/meta" "^4.4.0"
+    "@turf/meta" "^4.5.2"
 
-"@turf/buffer@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-4.4.0.tgz#6063db106aa50cd99584c4cea22f5d0c4fbc43cc"
+"@turf/buffer@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-4.5.2.tgz#4c19514d157e4181d2170bcbc8b603411a991363"
   dependencies:
-    "@turf/center" "^4.4.0"
-    "@turf/circle" "^4.4.0"
-    "@turf/helpers" "^4.4.0"
-    "@turf/meta" "^4.4.0"
+    "@turf/center" "^4.5.2"
+    "@turf/helpers" "^4.5.2"
+    "@turf/meta" "^4.5.2"
     d3-geo "^1.6.3"
     jsts "1.3.0"
 
-"@turf/center@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/center/-/center-4.4.0.tgz#5907b4d64faa8b92b6e5446b84f2a150c3e0e09b"
+"@turf/center@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/center/-/center-4.5.2.tgz#f2206e3f85060cf50f5d3fbb24479c15c134f956"
   dependencies:
-    "@turf/bbox" "^4.4.0"
-    "@turf/helpers" "^4.4.0"
+    "@turf/bbox" "^4.5.2"
+    "@turf/helpers" "^4.5.2"
 
-"@turf/centroid@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/centroid/-/centroid-4.4.0.tgz#48c7affdfdf5e6f8ba5782b342d17dc2be57e698"
+"@turf/centroid@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/centroid/-/centroid-4.5.2.tgz#3637ee131d6d984e627cbb79213ab63dd0bd6c14"
   dependencies:
-    "@turf/helpers" "^4.4.0"
-    "@turf/meta" "^4.4.0"
+    "@turf/helpers" "^4.5.2"
+    "@turf/meta" "^4.5.2"
 
-"@turf/circle@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/circle/-/circle-4.4.0.tgz#d0185b0c19ecf7a470bee16603d6e0c101e30ef0"
+"@turf/distance@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-4.5.2.tgz#afc352c44a86e6e1ee69899321992ab941901a8a"
   dependencies:
-    "@turf/destination" "^4.4.0"
-    "@turf/helpers" "^4.4.0"
+    "@turf/helpers" "^4.5.2"
+    "@turf/invariant" "^4.5.2"
 
-"@turf/destination@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/destination/-/destination-4.4.0.tgz#22759e888f60d2fbd111b551be3a4d12e3fa46e8"
+"@turf/flatten@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/flatten/-/flatten-4.5.2.tgz#e93db6736fb4f4b7ac86124871726af23ed3dc8c"
   dependencies:
-    "@turf/helpers" "^4.4.0"
-    "@turf/invariant" "^4.4.0"
+    "@turf/helpers" "^4.5.2"
+    "@turf/meta" "^4.5.2"
 
-"@turf/distance@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-4.4.0.tgz#6101f5951caf4e7ee5c006540900574af2f106bd"
+"@turf/helpers@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-4.5.2.tgz#6fc6772a7b301f277b49732925c354c7fb85d1df"
+
+"@turf/inside@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/inside/-/inside-4.5.2.tgz#9823c1b4c2efe5369e23cbf2c0fa2661bbb06e25"
   dependencies:
-    "@turf/helpers" "^4.4.0"
-    "@turf/invariant" "^4.4.0"
+    "@turf/invariant" "^4.5.2"
 
-"@turf/flatten@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/flatten/-/flatten-4.4.0.tgz#81ecef33e6a7753ae881e057ddad2113c6cddfdc"
-  dependencies:
-    "@turf/helpers" "^4.4.0"
-    "@turf/meta" "^4.4.0"
-
-"@turf/helpers@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-4.4.0.tgz#c83112f7fbe6ed183c7c0c2f776481b94d1cbd01"
-
-"@turf/inside@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/inside/-/inside-4.4.0.tgz#5a78de2c0ed9a68b494508f53ae2f4b73dd770ef"
-  dependencies:
-    "@turf/invariant" "^4.4.0"
-
-"@turf/intersect@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-4.4.0.tgz#a3019c215e46581777fdf1e1971470ff268e821a"
+"@turf/intersect@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-4.5.2.tgz#8fe492cd21ecfb31a79054517fc5748712605200"
   dependencies:
     jsts "1.3.0"
 
-"@turf/invariant@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-4.4.0.tgz#aac0afb840ae40908f9c80393f416222dcf79c32"
+"@turf/invariant@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-4.5.2.tgz#0642ee1e6bca531be3f6f9292d590155f2fb9604"
 
-"@turf/line-distance@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/line-distance/-/line-distance-4.4.0.tgz#d712a420a423409ac1ae61cc6aa2c764aab02049"
+"@turf/line-distance@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/line-distance/-/line-distance-4.5.2.tgz#83396d44a7016301f8b342144e87450e8dc1ba3a"
   dependencies:
-    "@turf/distance" "^4.4.0"
-    "@turf/flatten" "^4.4.0"
-    "@turf/helpers" "^4.4.0"
-    "@turf/meta" "^4.4.0"
+    "@turf/distance" "^4.5.2"
+    "@turf/flatten" "^4.5.2"
+    "@turf/helpers" "^4.5.2"
+    "@turf/meta" "^4.5.2"
 
-"@turf/meta@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-4.4.0.tgz#4fa25d4cc0525bd4cdbaf4ff68a6f8ae81f1975f"
+"@turf/meta@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-4.5.2.tgz#8450fc442d2a59494251a5a52ae520017e2dcf0d"
 
 "JSV@>= 4.0.x":
   version "4.0.2"
@@ -713,9 +698,9 @@ babel-helpers@^6.24.1:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
-babel-loader@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-7.1.0.tgz#3fbf2581f085774bd9642dca9990e6d6c1491144"
+babel-loader@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-7.1.1.tgz#b87134c8b12e3e4c2a94e0546085bc680a2b8488"
   dependencies:
     find-cache-dir "^1.0.0"
     loader-utils "^1.0.2"
@@ -1806,9 +1791,9 @@ cli-width@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.1.0.tgz#b234ca209b29ef66fc518d9b98d5847b00edf00a"
 
-clipboard-js@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/clipboard-js/-/clipboard-js-0.3.3.tgz#62264c17c80ebf84f4022286f032501e890b8922"
+clipboard-js@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/clipboard-js/-/clipboard-js-0.3.5.tgz#df3f8c67f45b3109d4352467232b0de03918b221"
 
 clite@^0.3.0:
   version "0.3.0"
@@ -2387,9 +2372,9 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
 
-dbgeo@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/dbgeo/-/dbgeo-1.0.1.tgz#ff29bced7894ab956fd0b69219ab7e2e09033e71"
+dbgeo@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/dbgeo/-/dbgeo-1.1.0.tgz#9c957b8ca06b750ccbf7178c11c2bed62511228c"
   dependencies:
     geojson-precision "^0.4.0"
     topojson "~1.6.26"
@@ -2854,9 +2839,9 @@ eslint-plugin-babel@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-4.1.1.tgz#ef285c87039b67beb3bbd227f5b0eed4fb376b87"
 
-eslint-plugin-flowtype@^2.34.0:
-  version "2.34.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.34.0.tgz#b9875f314652e5081623c9d2b18a346bbb759c09"
+eslint-plugin-flowtype@^2.34.1:
+  version "2.34.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.34.1.tgz#ea109175645b05d37baeac53b9b65066d79b9446"
   dependencies:
     lodash "^4.15.0"
 
@@ -2875,9 +2860,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.1.0.tgz#bbb55a28220ee08b69da9554d45a6b2ebfd7d913"
+eslint@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.1.1.tgz#facbdfcfe3e0facd3a8b80dc98c4e6c13ae582df"
   dependencies:
     babel-code-frame "^6.22.0"
     chalk "^1.1.3"
@@ -3321,9 +3306,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@^0.48.0:
-  version "0.48.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.48.0.tgz#72d075143524358db8901525e3c784dc13a7c7ee"
+flow-bin@^0.49.1:
+  version "0.49.1"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.49.1.tgz#c9e456b3173a7535a4ffaf28956352c63bb8e3e9"
 
 flow-remove-types@^1.1.2:
   version "1.2.1"
@@ -4616,9 +4601,9 @@ libqp@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/libqp/-/libqp-1.1.0.tgz#f5e6e06ad74b794fb5b5b66988bf728ef1dedbe8"
 
-libxmljs@^0.18.4:
-  version "0.18.4"
-  resolved "https://registry.yarnpkg.com/libxmljs/-/libxmljs-0.18.4.tgz#253028925900e9f8d454418034a25b8af4e1507f"
+libxmljs@^0.18.7:
+  version "0.18.7"
+  resolved "https://registry.yarnpkg.com/libxmljs/-/libxmljs-0.18.7.tgz#3673eb17c74cbaffdef9f33cb83ddd82a25055b7"
   dependencies:
     bindings "1.2.1"
     nan "~2.5.0"
@@ -5177,9 +5162,9 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
 
-medium-editor@^5.10.0, medium-editor@^5.23.0:
-  version "5.23.0"
-  resolved "https://registry.yarnpkg.com/medium-editor/-/medium-editor-5.23.0.tgz#7d16c15cdf152b95ced2a583bf07203e8539a3c6"
+medium-editor@^5.10.0, medium-editor@^5.23.1:
+  version "5.23.1"
+  resolved "https://registry.yarnpkg.com/medium-editor/-/medium-editor-5.23.1.tgz#02e7b6959b8decd9c713d007083e9ef1e2484065"
 
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
@@ -6208,9 +6193,9 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
-pica@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/pica/-/pica-3.0.4.tgz#a88c162c54c3dad2622c406c87f90466d0b720a8"
+pica@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/pica/-/pica-3.0.5.tgz#f5242b026479284045b10383a62ab2beed5baa07"
   dependencies:
     glur "^1.1.2"
     object-assign "^4.1.1"
@@ -6812,15 +6797,15 @@ react-cropper@^0.12.0:
     cropperjs "^0.8.0"
     prop-types "^15.5.8"
 
-react-data-grid-addons@^2.0.49:
-  version "2.0.49"
-  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-2.0.49.tgz#f0b30198c507157d6250749349a505716d7a08fe"
+react-data-grid-addons@^2.0.51:
+  version "2.0.51"
+  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-2.0.51.tgz#c0ab581a90c25e4aa266b1caf2e4d49ac0e244c3"
   dependencies:
-    react-data-grid "^2.0.49"
+    react-data-grid "^2.0.51"
 
-react-data-grid@^2.0.49:
-  version "2.0.49"
-  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.49.tgz#74ff83d1310d36ccc9aaf9a8117416042b2f4d77"
+react-data-grid@^2.0.51:
+  version "2.0.51"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.51.tgz#4ee2a0e037f45d05beded812ac67ff7693c8d305"
 
 react-disqus-thread@maphubs/react-disqus-thread#4114ce406af88bd15b65cc4b7bb0744985a3dd48:
   version "0.4.0"
@@ -7569,9 +7554,9 @@ sinon@^1.17.4:
     samsam "1.1.2"
     util ">=0.10.3 <1"
 
-sitemap@^1.12.1:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/sitemap/-/sitemap-1.12.1.tgz#a491e39ab524793893a38241e7fa65dc2dbb4059"
+sitemap@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/sitemap/-/sitemap-1.13.0.tgz#569cbe2180202926a62a266cd3de09c9ceb43f83"
   dependencies:
     underscore "^1.7.0"
     url-join "^1.1.0"
@@ -7653,9 +7638,9 @@ snyk-policy@1.7.1:
     snyk-try-require "^1.1.1"
     then-fs "^2.0.0"
 
-snyk-python-plugin@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/snyk-python-plugin/-/snyk-python-plugin-1.2.0.tgz#b7ac0310bb2ee92dd8c19d23b76580a3498d4456"
+snyk-python-plugin@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/snyk-python-plugin/-/snyk-python-plugin-1.2.2.tgz#296948cba5ac80d2ce178a5cb7ecfcff88fdf263"
 
 snyk-recursive-readdir@^2.0.0:
   version "2.0.0"
@@ -7709,9 +7694,9 @@ snyk-try-require@^1.1.1, snyk-try-require@^1.2.0:
     lru-cache "^4.0.0"
     then-fs "^2.0.0"
 
-snyk@^1.36.1:
-  version "1.36.1"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.36.1.tgz#05f1f27d7f43be8d782ecb5a38d0025acb08d441"
+snyk@^1.36.2:
+  version "1.36.2"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.36.2.tgz#88be72a8da75a02e920f2be7f5830402b5e0eb41"
   dependencies:
     abbrev "^1.0.7"
     ansi-escapes "^1.3.0"
@@ -7730,7 +7715,7 @@ snyk@^1.36.1:
     snyk-module "1.8.1"
     snyk-mvn-plugin "1.0.0"
     snyk-policy "1.7.1"
-    snyk-python-plugin "1.2.0"
+    snyk-python-plugin "1.2.2"
     snyk-recursive-readdir "^2.0.0"
     snyk-resolve "1.0.0"
     snyk-resolve-deps "1.7.0"
