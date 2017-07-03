@@ -41,11 +41,7 @@ addLocaleData(es);
 addLocaleData(fr);
 addLocaleData(it);
 
-//var debug = require('../services/debug')('layerinfo');
 import request from 'superagent';
-import binaryParser from 'superagent-binary-parser';
-
-var checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import fireResizeEvent from '../services/fire-resize-event';
