@@ -386,7 +386,7 @@ export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
     }
 
     if(this.props.layer.data_type === 'polygon'){
-      gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + this.props.feature.mhid + '/feature.gpx';
+      gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + mhid + '/feature.gpx';
     }
 
     let firstSource = Object.keys(this.props.layer.style.sources)[0];
