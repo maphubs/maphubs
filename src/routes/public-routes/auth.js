@@ -76,11 +76,6 @@ if(local.useLocalAuth){
     });
   });
 
-  app.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
-  });
-
   // Perform the final stage of authentication and redirect to '/user'
   app.get('/callback',
   passport.authenticate('auth0', {failureRedirect: '/login/failed'}),
@@ -98,8 +93,6 @@ if(local.useLocalAuth){
       }, req
     });
   });
-
-
 }
 
 };
