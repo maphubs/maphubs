@@ -10,6 +10,8 @@ var knex = require('../../connection.js');
 var Promise = require('bluebird');
 var Locales = require('../../services/locales');
 var MapStyles = require('../../components/Map/Styles');
+var geobuf = require('geobuf');
+var Pbf = require('pbf');
 
 module.exports = function(app: any) {
 
@@ -93,6 +95,28 @@ module.exports = function(app: any) {
         .timeout(60000)
         .stream()
         .pipe(res);
+      }
+    }).catch(apiError(res, 200));
+  });
+
+  app.get('/api/layer/:layer_id/export/geobuf/*', privateLayerCheck, (req, res) => {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
+
+    Layer.getGeoJSON(layer_id).then((geoJSON) => {
+      var resultStr = JSON.stringify(geoJSON);
+      var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+      var match = req.get('If-None-Match');
+      if(hash === match){
+        res.status(304).send();
+      }else{
+        res.writeHead(200, {
+          'Content-Type': 'application/octet-stream',
+          'ETag': hash
+        });
+
+        let data = geobuf.encode(geoJSON, new Pbf());
+        var buf = Buffer.from(data, 'binary');
+        res.end(buf, 'binary');
       }
     }).catch(apiError(res, 200));
   });

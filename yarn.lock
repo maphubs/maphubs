@@ -395,6 +395,10 @@ array-index@^1.0.0:
     debug "^2.2.0"
     es6-symbol "^3.0.2"
 
+array-source@0.0:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/array-source/-/array-source-0.0.3.tgz#6ee635763c4fb4cd9990f876321cb29e6d7dded1"
+
 array-union@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"
@@ -1910,7 +1914,7 @@ comma-separated-values@^3.6.0:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/comma-separated-values/-/comma-separated-values-3.6.4.tgz#c309ec7024f74b7ae19223372054242617e35bd2"
 
-commander@^2.2.0, commander@^2.4.0, commander@^2.8.1, commander@^2.9.0:
+commander@2, commander@^2.2.0, commander@^2.4.0, commander@^2.8.1, commander@^2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
   dependencies:
@@ -1955,7 +1959,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream@^1.5.0, concat-stream@~1.5.1:
+concat-stream@^1.5.0, concat-stream@^1.5.2, concat-stream@~1.5.1:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.5.2.tgz#708978624d856af41a5a741defdd261da752c266"
   dependencies:
@@ -3221,6 +3225,12 @@ file-loader@^0.11.2:
   dependencies:
     loader-utils "^1.0.2"
 
+file-source@0.6:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/file-source/-/file-source-0.6.1.tgz#ae189d4993766b865a77f83adcf9b9a504cd37dc"
+  dependencies:
+    stream-source "0.3"
+
 file-uri-to-path@0:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-0.0.2.tgz#37cdd1b5b905404b3f05e1b23645be694ff70f82"
@@ -3475,6 +3485,14 @@ generate-object-property@^1.1.0:
 generic-pool@2.4.2, generic-pool@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-2.4.2.tgz#886bc5bf0beb7db96e81bcbba078818de5a62683"
+
+geobuf@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/geobuf/-/geobuf-3.0.0.tgz#275eaa6b60a59f44ed27853c0795a3159dabf0ea"
+  dependencies:
+    concat-stream "^1.5.2"
+    pbf "^3.0.1"
+    shapefile "~0.5.7"
 
 geojson-area@0.1.0:
   version "0.1.0"
@@ -6119,6 +6137,13 @@ path-proxy@~1.0.0:
   dependencies:
     inflection "~1.3.0"
 
+path-source@0.1:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/path-source/-/path-source-0.1.2.tgz#c5a26c44fb92cd32b930e8e49b1fe5750f2ca70b"
+  dependencies:
+    array-source "0.0"
+    file-source "0.6"
+
 path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
@@ -6138,6 +6163,13 @@ pause@0.0.1:
 pbf@^1.3.2:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/pbf/-/pbf-1.3.7.tgz#1e3d047ba3cbe8086ae854a25503ab4537d4335d"
+  dependencies:
+    ieee754 "^1.1.6"
+    resolve-protobuf-schema "^2.0.0"
+
+pbf@^3.0.1, pbf@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/pbf/-/pbf-3.0.5.tgz#24f0fa2cbeb16e5c56a5901bb7e9c2ac0c8059be"
   dependencies:
     ieee754 "^1.1.6"
     resolve-protobuf-schema "^2.0.0"
@@ -7498,6 +7530,17 @@ shapefile@0.3:
     iconv-lite "0.2"
     optimist "0.3"
 
+shapefile@~0.5.7:
+  version "0.5.11"
+  resolved "https://registry.yarnpkg.com/shapefile/-/shapefile-0.5.11.tgz#ae1eaedf3f4e8618505d5d448fe785a4b26cf57d"
+  dependencies:
+    array-source "0.0"
+    commander "2"
+    path-source "0.1"
+    slice-source "0.4"
+    stream-source "0.3"
+    text-encoding "0.6.1"
+
 sharkdown@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/sharkdown/-/sharkdown-0.1.0.tgz#61d4fe529e75d02442127cc9234362265099214f"
@@ -7568,6 +7611,10 @@ slash@^1.0.0:
 slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
+
+slice-source@0.4:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/slice-source/-/slice-source-0.4.1.tgz#40a57ac03c6668b5da200e05378e000bf2a61d79"
 
 "slice-stream@>= 1.0.0 < 2":
   version "1.0.0"
@@ -7956,6 +8003,10 @@ stream-shift@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.0.tgz#d5c752825e5367e786f78e18e445ea223a155952"
 
+stream-source@0.3:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/stream-source/-/stream-source-0.3.4.tgz#0427c1fb128b0bd2d884d868dcc894208f9bda3b"
+
 stream-spigot@~2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/stream-spigot/-/stream-spigot-2.1.2.tgz#7de145e819f8dd0db45090d13dcf73a8ed3cc035"
@@ -8211,6 +8262,10 @@ terraformer-arcgis-parser@1.0.5:
 terraformer@~1.0.4:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/terraformer/-/terraformer-1.0.7.tgz#d8a19a56fbf25966ea062d21f515b93589702d69"
+
+text-encoding@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.1.tgz#4de1130e61d50dd867040428aa15656efddcb1c8"
 
 text-table@~0.2.0:
   version "0.2.0"

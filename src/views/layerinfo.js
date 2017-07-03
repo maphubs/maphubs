@@ -18,7 +18,9 @@ import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid';
 import MapStyles from '../components/Map/Styles';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import DataEditorActions from '../actions/DataEditorActions';
-
+import geobuf from 'geobuf';
+import Pbf from 'pbf';
+var debug = require('../services/debug')('layerinfo');
 var urlUtil = require('../services/url-util');
 import slugify from 'slugify';
 var $ = require('jquery');
@@ -41,6 +43,8 @@ addLocaleData(it);
 
 //var debug = require('../services/debug')('layerinfo');
 import request from 'superagent';
+import binaryParser from 'superagent-binary-parser';
+
 var checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
@@ -161,20 +165,24 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       var baseUrl, dataUrl;
     if(this.props.layer.remote){
       baseUrl = 'https://' + this.props.layer.remote_host;
-      dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/json/data.geojson';
+      dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/geobuf/data.pbf';
     }else{
       baseUrl = urlUtil.getBaseUrl();
-      dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/json/data.geojson';
+      dataUrl =  baseUrl + '/api/layer/' + this.props.layer.layer_id +'/export/geobuf/data.pbf';
     }
 
     request.get(dataUrl)
-    .type('json').accept('json')
+    .buffer(true)
+    .responseType('arraybuffer')
+    .parse(request.parse.image)
     .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        var geoJSON = res.body;
+      if(err){
+        debug(err);
+      }else{
+        //let buffer = new Buffer(res.text, 'binary');
+        let geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
         _this.setState({geoJSON});
-        cb();
-      });
+      }
     });
   }
 
@@ -289,6 +297,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       var kmlURL = `/api/layer/${layer_id}/export/kml/${name}.kml`;
       var csvURL = `/api/layer/${layer_id}/export/csv/${name}.csv`;
       var gpxURL = `/api/layer/${layer_id}/export/gpx/${name}.gpx`;
+      var geobufURL =  `/api/layer/${layer_id}/export/geobuf/${name}.pbf`;
 
       if(!this.props.layer.disable_export){
         var gpxExport = '';
@@ -305,6 +314,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
              <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
              <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
              <li className="collection-item">{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
+             <li className="collection-item">{this.__('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href="https://github.com/mapbox/geobuf">{this.__('Learn More')}</a>)</li>
              {gpxExport}
             </ul>
           </div>
