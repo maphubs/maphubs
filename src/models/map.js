@@ -60,8 +60,8 @@ module.exports = {
       'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
       'omh.layers.is_external', 'omh.layers.external_layer_type', 'omh.layers.external_layer_config', 'omh.layers.disable_export', 'omh.layers.is_empty',
       'omh.layers.owned_by_group_id',
-      knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'),
-      knex.raw('timezone(\'UTC\', omh.layers.creation_time) as creation_time'),
+      knex.raw(`timezone('UTC', omh.layers.last_updated) as last_updated`),
+      knex.raw(`timezone('UTC', omh.layers.creation_time) as creation_time`),
       'omh.layers.views',
       'omh.layers.style as default_style','omh.layers.labels as default_labels', 'omh.layers.settings as default_settings',
       'omh.layers.legend_html as default_legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
@@ -122,8 +122,8 @@ module.exports = {
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at',
         'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+        knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
         .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
@@ -137,8 +137,8 @@ module.exports = {
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at',
         'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+        knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
          'public.users.display_name as username')
         .from('omh.maps')
         .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
@@ -154,8 +154,8 @@ module.exports = {
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at',
         'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+        knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
         .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
@@ -172,8 +172,8 @@ module.exports = {
       return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at',
         'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-        knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-        knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+        knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+        knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
         .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
@@ -189,8 +189,8 @@ module.exports = {
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
       'omh.maps.updated_at',
        'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-      knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+      knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+      knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
       'public.users.display_name as username')
       .from('omh.maps')
       .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
@@ -206,12 +206,12 @@ module.exports = {
     .where(knex.raw(`
     private = false
     AND (
-    to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery('` + input + `')
-    OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery('` + input + `')
-    OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery('` + input + `')
-    OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery('` + input + `')
+    to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery(:input)
+    OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery(:input)
+    OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery(:input)
+    OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery(:input)
     )
-    `))
+    `, {input}))
     .orderBy('title');
   },
 
@@ -223,20 +223,20 @@ module.exports = {
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
       'omh.maps.updated_at',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-      knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'), 'omh.maps.views',
+      knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+      knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
       'public.users.display_name as username')
       .from('omh.maps')
       .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')
       .where(knex.raw(`
       omh.maps.private = false
       AND ( 
-      to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery('` + input + `')
-      OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery('` + input + `')
-      OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery('` + input + `')
-      OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery('` + input + `')
+      to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery(:input)
+      OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery(:input)
+      OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery(:input)
+      OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery(:input)
       )
-      `))
+      `, {input}))
       .orderBy('omh.maps.title')
       .orderBy('omh.maps.updated_at', 'desc');
   },

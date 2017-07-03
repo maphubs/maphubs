@@ -88,24 +88,24 @@ module.exports = {
     to_tsvector('english', hub_id
       || ' ' || name
       || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('spanish', hub_id
       || ' ' || name
       || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('french', hub_id
       || ' ' || name
       || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('italian', hub_id
       || ' ' || name
       || ' ' || COALESCE(description, '')
-      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
       )
-      `))
+      `, {input} ))
     .orderBy('name');
   },
 
@@ -122,24 +122,24 @@ module.exports = {
         to_tsvector('english', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('spanish', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('french', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('italian', hub_id
         || ' ' || name
         || ' ' || COALESCE(description, '')
-        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE(tagline, '')) @@ plainto_tsquery(:input)
         )
-        `))
+        `, {input}))
 
       .orderBy('name');
     },

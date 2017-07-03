@@ -67,7 +67,7 @@ exports.findByUsername = function(username: string, done: Function) {
 
   return knex.select('*')
     .from('users')
-    .where(knex.raw('lower(display_name)'), '=', username)
+    .where(knex.raw(`lower(display_name)`), '=', username)
     .then((data) => {
       if (data.length === 1) {
         var user = translateUserObject(data[0]);

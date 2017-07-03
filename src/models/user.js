@@ -52,7 +52,7 @@ module.exports = {
       display_name = display_name.toLowerCase();
 
       return knex('users')
-      .where(knex.raw('lower(display_name)'), '=', display_name)
+      .where(knex.raw(`lower(display_name)`), '=', display_name)
       .then((result) => {
         if(result && result.length === 1){
           var user = result[0];
@@ -80,7 +80,7 @@ module.exports = {
       email = email.toLowerCase();
 
       return knex('users')
-      .where(knex.raw('lower(email)'), '=', email)
+      .where(knex.raw(`lower(email)`), '=', email)
       .then((result) => {
         if(result && result.length === 1){
           var user = result[0];
@@ -262,7 +262,7 @@ module.exports = {
     getSearchSuggestions(input: string) {
       input = input.toLowerCase();
       return knex.select('display_name', 'id').table('users')
-      .where(knex.raw('lower(display_name)'), 'like', '%' + input + '%');
+      .where(knex.raw(`lower(display_name)`), 'like', '%' + input + '%');
     }
 
 };

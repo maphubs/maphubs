@@ -121,21 +121,21 @@ module.exports = {
       AND (
       to_tsvector('english', COALESCE((name -> 'en')::text, '')
       || ' ' || COALESCE((description -> 'en')::text, '')
-      || ' ' || COALESCE((source -> 'en')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'en')::text, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('spanish', COALESCE((name -> 'es')::text, '')
       || ' ' || COALESCE((description -> 'es')::text, '')
-      || ' ' || COALESCE((source -> 'es')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'es')::text, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('french', COALESCE((name -> 'fr')::text, '')
       || ' ' || COALESCE((description -> 'fr')::text, '')
-      || ' ' || COALESCE((source -> 'fr')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'fr')::text, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('italian', COALESCE((name -> 'it')::text, '')
       || ' ' || COALESCE((description -> 'it')::text, '')
-      || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery(:input)
       )
-      `))
+      `, {input}))
     .orderByRaw(`name -> 'en'`);
 
     return query;
@@ -157,21 +157,21 @@ module.exports = {
       AND (
       to_tsvector('english',  COALESCE((name -> 'en')::text, '')
       || ' ' || COALESCE((description -> 'en')::text, '')
-      || ' ' || COALESCE((source -> 'en')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'en')::text, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('spanish',  COALESCE((name -> 'es')::text, '')
       || ' ' || COALESCE((description -> 'es')::text, '')
-      || ' ' || COALESCE((source -> 'es')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'es')::text, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('french',  COALESCE((name -> 'fr')::text, '')
       || ' ' || COALESCE((description -> 'fr')::text, '')
-      || ' ' || COALESCE((source -> 'fr')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'fr')::text, '')) @@ plainto_tsquery(:input)
       OR
       to_tsvector('italian',  COALESCE((name -> 'it')::text, '')
       || ' ' || COALESCE((description -> 'it')::text, '')
-      || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery('` + input + `')
+      || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery(:input)
       )
-      `))    
+      `, {input}))    
     .orderByRaw(`name -> 'en'`);
 
     return query;
@@ -292,8 +292,8 @@ module.exports = {
         var layerTable = 'layers.data_' + layer_id;
        
       return Promise.all([
-          knex.raw("select mhid, ST_AsGeoJSON(wkb_geometry) as geom, tags from " + layerTable),
-          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from " + layerTable + ") a")
+          knex.raw('select mhid, ST_AsGeoJSON(wkb_geometry) as geom, tags from :layerTable:', {layerTable}),
+          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable})
         ])
         .then((results) => {
           var data = results[0];

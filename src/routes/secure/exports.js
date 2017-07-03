@@ -24,14 +24,15 @@ module.exports = function(app: any) {
 
 
   app.get('/api/layer/:layer_id/export/svg/*', privateLayerCheck, (req, res) => {
-      var layer_id = parseInt(req.params.layer_id || '', 10);
+      var layer_id = parseInt(req.params.layer_id || '', 10);    
       Layer.getLayerByID(layer_id).then((layer) => {
+        let table = `layers.data_${layer.layer_id}`;
         return Promise.all([
-          knex.raw(`select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from layers.data_${layer.layer_id};`),
+          knex.raw(`select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from :table:;`, {table}),
           knex.raw(`select ST_XMin(bbox)::float as xmin, 
             ST_YMin(bbox)::float as ymin, 
             ST_XMax(bbox)::float as xmax, ST_YMax(bbox)::float as ymax 
-            from (select ST_Extent(ST_Transform(wkb_geometry, 900913)) as bbox from layers.data_${layer.layer_id}) a`)
+            from (select ST_Extent(ST_Transform(wkb_geometry, 900913)) as bbox from :table:) a`, {table})
         ]).then((results) => {
           var featureSVGs = results[0];
           var bounds = results[1].rows[0];

@@ -73,9 +73,9 @@ omh.map_layers.style as map_layer_style,
 omh.layers.style as orig_layer_style
 from omh.map_layers 
 left join omh.layers on omh.map_layers.layer_id = omh.layers.layer_id
-where map_id in (SELECT distinct map_id from omh.map_layers where layer_id = ${layer_id})
+where map_id in (SELECT distinct map_id from omh.map_layers where layer_id = :layer_id)
 order by position
-      `)
+      `, {layer_id})
       .then(result => {
         let updatedMapStyles = {};
         let updateCommands = [];

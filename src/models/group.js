@@ -55,20 +55,20 @@ module.exports = {
       .where(knex.raw(`
         to_tsvector('english', group_id
         || ' ' || COALESCE((name -> 'en')::text, '') || ' ' || COALESCE(location, '')
-        || ' ' || COALESCE((description -> 'en')::text, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE((description -> 'en')::text, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('spanish', group_id
         || ' ' || COALESCE((name -> 'es')::text, '') || ' ' || COALESCE(location, '')
-        || ' ' || COALESCE((description -> 'es')::text, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE((description -> 'es')::text, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('french', group_id
         || ' ' || COALESCE((name -> 'fr')::text, '') || ' ' || COALESCE(location, '')
-        || ' ' || COALESCE((description -> 'fr')::text, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE((description -> 'fr')::text, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('italian', group_id
         || ' ' || COALESCE((name -> 'it')::text, '') || ' ' || COALESCE(location, '')
-        || ' ' || COALESCE((description -> 'it')::text, '')) @@ plainto_tsquery('` + input + `')
-        `));
+        || ' ' || COALESCE((description -> 'it')::text, '')) @@ plainto_tsquery(:input)
+        `, {input}));
     },
 
     getGroupByID(group_id: string) {
@@ -93,20 +93,20 @@ module.exports = {
       .where(knex.raw(`
         to_tsvector('english', omh.groups.group_id
         || ' ' || COALESCE((omh.groups.name -> 'en')::text, '') || ' ' || COALESCE(omh.groups.location, '')
-        || ' ' || COALESCE((omh.groups.description -> 'en')::text, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE((omh.groups.description -> 'en')::text, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('spanish', omh.groups.group_id
         || ' ' || COALESCE((omh.groups.name -> 'es')::text, '') || ' ' || COALESCE(omh.groups.location, '')
-        || ' ' || COALESCE((omh.groups.description -> 'es')::text, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE((omh.groups.description -> 'es')::text, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('french', omh.groups.group_id
         || ' ' || COALESCE((omh.groups.name -> 'fr')::text, '') || ' ' || COALESCE(omh.groups.location, '')
-        || ' ' || COALESCE((omh.groups.description -> 'fr')::text, '')) @@ plainto_tsquery('` + input + `')
+        || ' ' || COALESCE((omh.groups.description -> 'fr')::text, '')) @@ plainto_tsquery(:input)
         OR
         to_tsvector('italian', omh.groups.group_id
         || ' ' || COALESCE((omh.groups.name -> 'it')::text, '') || ' ' || COALESCE(omh.groups.location, '')
-        || ' ' || COALESCE((omh.groups.description -> 'it')::text, '')) @@ plainto_tsquery('` + input + `')
-        `));
+        || ' ' || COALESCE((omh.groups.description -> 'it')::text, '')) @@ plainto_tsquery(:input)
+        `, {input}));
     },
 
     getGroupsForUser(user_id: number) {
