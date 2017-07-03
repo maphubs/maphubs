@@ -41,6 +41,8 @@ export default class PlanetLabsSource extends MapHubsComponent<void, Props, Stat
 
   componentWillMount(){
     super.componentWillMount();
+
+  /*
     Formsy.addValidationRule('isNotRapidEye', (values, value) => {
         if(value){
           return !value.startsWith('REOrthoTile');
@@ -65,6 +67,7 @@ export default class PlanetLabsSource extends MapHubsComponent<void, Props, Stat
         return false;
       }
     });
+      */
   }
 
   enableButton = () => {
@@ -80,24 +83,15 @@ export default class PlanetLabsSource extends MapHubsComponent<void, Props, Stat
   }
 
   getAPIUrl = (selected: string) => {
-    var APIType = 'ortho'; // 'rapideye', 'landsat'
+
     var selectedArr = selected.split(':');
-    var selectedType = selectedArr[0];
-    var selectedScene = selectedArr[1];
-    if(selectedType === 'PSScene4Band' || selectedType === 'PSScene3Band' || selectedType === 'PSOrthoTile'){
-       APIType = 'ortho';
-    }else if(selectedType === 'REOrthoTile'){
-      APIType = 'rapideye';
-    }else if(selectedType === 'Landsat8L1G'){
-      APIType = 'landsat';
-    }else if(selectedType === 'Sentinel2L1C'){
-      APIType = 'sentinel';
-    }
+    var selectedType = selectedArr[0].trim();
+    var selectedScene = selectedArr[1].trim();
 
     //build planet labs API URL
-    //https://tiles.planet.com/v0/scenes/ortho/20160909_175231_0c75/{z}/{x}/{y}.png?api_key=9f988728129f45ea9a939b7041686e89
-    var url = `https://tiles.planet.com/v0/scenes/${APIType}/${selectedScene}`;
-    url += '/{z}/{x}/{y}.png?api_key=' + MAPHUBS_CONFIG.PLANET_LABS_API_KEY;
+    //v0 https://tiles.planet.com/v0/scenes/ortho/20160909_175231_0c75/{z}/{x}/{y}.png?api_key=your-api-key
+    //v1 https://tiles.planet.com/data/v1/PSScene3Band/20161221_024131_0e19/14/12915/8124.png?api_key=your-api-key
+    var url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`;
     return url;
   }
 
@@ -167,6 +161,14 @@ export default class PlanetLabsSource extends MapHubsComponent<void, Props, Stat
       );
     }
 
+    /*
+    validations={{isNotRapidEye:true, isNotSentinel:true, isNotOrtho:true}} validationErrors={{
+                   isNotRapidEye: this.__('RapidEye Not Supported: We are currently researching an issue with the RapidEye API, and hope to restore support at a later date.'),
+                   isNotOrtho: this.__('Ortho Not Supported: Try a 3-band or 4-band scene instead. We are investigating an issue with the Planet API support for Ortho scenes.'),
+                   isNotSentinel: this.__('Sentinel 2 tiles are not yet supported by the Planet API')
+                  }}
+    */
+
 		return (
         <div className="row">
           <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -175,11 +177,7 @@ export default class PlanetLabsSource extends MapHubsComponent<void, Props, Stat
               <div className="row">
                 <TextArea name="selectedIDs" label={this.__('Planet Explorer Selected IDs')}
                   length={2000}
-                  validations={{isNotRapidEye:true, isNotSentinel:true, isNotOrtho:true}} validationErrors={{
-                   isNotRapidEye: this.__('RapidEye Not Supported: We are currently researching an issue with the RapidEye API, and hope to restore support at a later date.'),
-                   isNotOrtho: this.__('Ortho Not Supported: Try a 3-band or 4-band scene instead. We are investigating an issue with the Planet API support for Ortho scenes.'),
-                   isNotSentinel: this.__('Sentinel 2 tiles are not yet supported by the Planet API')
-                  }}
+                  
                   icon="info" className="col s12"required/>
               </div>
             </div>
