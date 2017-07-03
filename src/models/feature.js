@@ -69,25 +69,28 @@ module.exports = {
       return db.select(db.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags')
       .from(layerTable).whereIn('mhid', [mhid])
           .then((data) => {
-            return  db.raw(`select 
-            '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
-            from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)             
-            .then((bbox) => {
+            if(!data || data.length === 0){
+              throw new Error(`Data not found for mhid: ${mhid}`);
+            }else{
+              return  db.raw(`select 
+              '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
+              from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)             
+              .then((bbox) => {
+                var feature = {
+                  type: 'Feature',
+                  geometry: JSON.parse(data[0].geom),
+                  properties: data[0].tags
+                };
 
-            var feature = {
-              type: 'Feature',
-              geometry: JSON.parse(data[0].geom),
-              properties: data[0].tags
-            };
+                feature.properties.mhid = mhid;
 
-            feature.properties.mhid = mhid;
-
-            return {
-              type: "FeatureCollection",
-              features: [feature],
-              bbox: JSON.parse(bbox.rows[0].bbox)
-            };
-          });
+                return {
+                  type: "FeatureCollection",
+                  features: [feature],
+                  bbox: JSON.parse(bbox.rows[0].bbox)
+                };
+              });
+            }
       });
     }
 
