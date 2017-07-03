@@ -293,6 +293,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       var kmlURL = `/api/layer/${layer_id}/export/kml/${name}.kml`;
       var csvURL = `/api/layer/${layer_id}/export/csv/${name}.csv`;
       var gpxURL = `/api/layer/${layer_id}/export/gpx/${name}.gpx`;
+      var svgURL = `/api/layer/${layer_id}/export/svg/${name}.svg`;
       var geobufURL =  `/api/layer/${layer_id}/export/geobuf/${name}.pbf`;
 
       if(!this.props.layer.disable_export){
@@ -310,6 +311,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
              <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
              <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
              <li className="collection-item">{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
+             <li className="collection-item">{this.__('SVG:')} <a href={svgURL}>{svgURL}</a></li>
              <li className="collection-item">{this.__('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href="https://github.com/mapbox/geobuf">{this.__('Learn More')}</a>)</li>
              {gpxExport}
             </ul>
