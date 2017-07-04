@@ -17,7 +17,6 @@ var local = {
   tileServiceUrl: getenv('OMH_TILESERVICE_URL'),
   tileServiceInternalUrl: getenv('OMH_TILESERVICE_INTERNAL_URL'),
   MAPBOX_ACCESS_TOKEN: getenv('OMH_MAPBOX_TOKEN'),
-  MAILGUN_API_KEY: getenv('OMH_MAILGUN_API_KEY'),
   MAPZEN_API_KEY: getenv('OMH_MAPZEN_API_KEY'),
   SENTRY_DSN: getenv('OMH_SENTRY_DSN'),
   MAILCHIMP_LIST_ID: getenv('OMH_MAILCHIMP_LIST_ID'),

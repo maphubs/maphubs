@@ -1,9 +1,12 @@
 // @flow
-var local = require('../local');
-var mailgun = require('mailgun-js')({apiKey: local.MAILGUN_API_KEY, domain: 'maphubs.com'});
-var mailcomposer = require('mailcomposer');
 var Promise = require("bluebird");
+const nodemailer = require('nodemailer');
+let aws = require('aws-sdk');
+aws.config.update({region: 'us-east-1'});
 
+let transporter = nodemailer.createTransport({
+    SES: new aws.SES({apiVersion: '2010-12-01'})
+});
 var log = require('./log');
 var debug = require('./debug')('email-util');
 
@@ -22,27 +25,17 @@ html: '<b> Test email text </b>'
 send(data: any){
   debug.log('Send email to ' + data.to + ' with subject: ' + data.subject);
   return new Promise((fulfill, reject) => {
-      var mail = mailcomposer(data);
-      mail.build((err, message) => {
-        if(err){
-          reject(err);
-        }
-        var dataToSend = {
-            to: data.to,
-            message: message.toString('ascii')
-        };
 
-        mailgun.messages().sendMime(dataToSend, (sendError, body) => {
-          if (sendError) {
-              log.error(sendError);
-              reject(sendError);
-          }else {
-            fulfill(body);
-          }
-        });
-      });
+    transporter.sendMail(data, (error, info) => {
+      if (error) {
+        log.error(error);
+        reject(error);
+      }else{
+        log.info(`Message ${info.messageId} sent: ${info.response}`);
+        fulfill(info);
+      }
     });
-
+  });
 }
 
 };
