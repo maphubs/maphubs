@@ -168,7 +168,7 @@ if(local.requireLogin){
 }
 app.use(checkLogin);
 //Public API endpoints, these will be secured if login required
-consign().include('./src/routes/public-api').into(app);
+//consign().include('./src/routes/public-api').into(app);
 //load secure routes
 consign().include('./src/routes/secure').into(app);
 
