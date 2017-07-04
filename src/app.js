@@ -2,7 +2,7 @@ var local = require('./local');
 require('./services/inject-maphubs-config');
 
 var express = require('express'),
-  load = require('express-load'),
+  consign = require('consign'),
   passport = require('passport'),
   //util = require('util'),
   path = require('path'),
@@ -155,7 +155,7 @@ app.use(passport.session());
 
 
 //load public routes - routes that should always be public, for example login or signup
-load('./src/routes/public-routes').into(app);
+consign().include('./src/routes/public-routes').into(app);
 
 //option to require require login for everything after this point
 var checkLogin;
@@ -168,9 +168,9 @@ if(local.requireLogin){
 }
 app.use(checkLogin);
 //Public API endpoints, these will be secured if login required
-load('./src/routes/public-api').into(app);
+consign().include('./src/routes/public-api').into(app);
 //load secure routes
-load('./src/routes/secure').into(app);
+consign().include('./src/routes/secure').into(app);
 
 //error handling
 
