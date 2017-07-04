@@ -2,7 +2,7 @@ var Layer = require('../../models/layer');
 var urlUtil = require('../../services/url-util');
 import slugify from 'slugify';
 var apiError = require('../../services/error-response').apiError;
-var manetCheck = require('../../services/manet-check')(false,true);
+var manetCheck = require('../../services/manet-check')();
 var Locales = require('../../services/locales');
 
 module.exports = function(app) {

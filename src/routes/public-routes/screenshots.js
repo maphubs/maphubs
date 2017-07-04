@@ -5,7 +5,7 @@ var Promise = require('bluebird');
 //var log = require('../../services/log');
 //var debug = require('../../services/debug')('routes/screenshots-public');
 var nextError = require('../../services/error-response').nextError;
-var manetCheck = require('../../services/manet-check')(true);
+var manetCheck = require('../../services/manet-check')();
 var Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
