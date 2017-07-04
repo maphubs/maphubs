@@ -159,7 +159,8 @@ module.exports = {
     }
   }),
   new webpack.BannerPlugin({banner: `MapHubs (https://github.com/maphubs)`, raw: false, entryOnly: true}),
-  new ExtractTextPlugin({filename: "[name].css"})
+  new ExtractTextPlugin({filename: "[name].css"}),
+  new webpack.optimize.ModuleConcatenationPlugin()
   ],
 
   externals: {
