@@ -17,6 +17,7 @@
     "postversion": "git push && git push --tags && npm run sync-cdn && npm run changelog",
     "deploy-patch": "npm version patch --force -m \"version %s\"",
     "deploy-minor": "npm version minor --force -m \"version %s\"",
+    "upgrade-rancher": "/bin/sh  ../maphubs-rancher-catalog/new_version.sh",
     "sync-cdn": "/bin/sh sync-to-cdn.sh",
     "sync-assets": "aws s3 sync assets/ s3://maphubs-assets --acl public-read --profile kris",
     "snyk-protect": "snyk protect",
