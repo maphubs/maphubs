@@ -1,5 +1,23 @@
 # Change Log
 
+## [v0.11.11](https://github.com/maphubs/maphubs/tree/v0.11.11) (2017-07-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.10...v0.11.11)
+
+**Implemented enhancements:**
+
+- allow login with email in addition to username [\#283](https://github.com/maphubs/maphubs/issues/283)
+- show name fields at top of map popup [\#142](https://github.com/maphubs/maphubs/issues/142)
+
+**Fixed bugs:**
+
+- fix text layout for longer map titles [\#386](https://github.com/maphubs/maphubs/issues/386)
+- error with accent char in layer search [\#385](https://github.com/maphubs/maphubs/issues/385)
+- login with Auth0 redirects to 404 [\#380](https://github.com/maphubs/maphubs/issues/380)
+- fix invite user feature to work with auth0 [\#379](https://github.com/maphubs/maphubs/issues/379)
+- check maxzoom supported by Planet API tiles [\#365](https://github.com/maphubs/maphubs/issues/365)
+- Mailgun emails in spam on Office 365 [\#350](https://github.com/maphubs/maphubs/issues/350)
+- layer name saves with legend html [\#210](https://github.com/maphubs/maphubs/issues/210)
+
 ## [v0.11.10](https://github.com/maphubs/maphubs/tree/v0.11.10) (2017-06-29)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.9...v0.11.10)
 
