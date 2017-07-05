@@ -1,4 +1,5 @@
 var local = require('../local');
+var request = require("request");
 
 module.exports = {
 
@@ -25,5 +26,24 @@ module.exports = {
       }
       cb(null, body.access_token);
     });
+  },
+
+  updateAppMetadata(data, token, profile, cb){
+    var options = { 
+        method: 'PATCH',
+        url: `https://${local.AUTH0_DOMAIN}/api/v2/users/${profile.id}`,
+        headers: { 
+          'content-type': 'application/json',
+          authorization: 'Bearer ' +  token
+        },
+        body: {app_metadata: data},
+        json: true
+      };
+
+      request(options, (error) => {
+        cb(error);
+      });
   }
+
+
 };

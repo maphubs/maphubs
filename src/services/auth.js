@@ -1,10 +1,10 @@
 // @flow
 var passport = require('passport');
 var local = require('../local');
-var request = require("request");
 var AuthUsers = require('./auth-db/users');
 var _find = require('lodash.find');
 var User = require('../models/user');
+var Admin = require('../models/admin');
 
 if(local.useLocalAuth){
   var  LocalStrategy = require('passport-local').Strategy;  
@@ -62,23 +62,34 @@ if(local.useLocalAuth){
     Auth0Helper.getManagementToken((err, accessToken) => {
       if (err) {
         cb(err);
+      }else{
+        Auth0Helper.updateAppMetadata({hosts}, accessToken, profile, cb);
       }
-      var options = { 
-        method: 'PATCH',
-        url: `https://${local.AUTH0_DOMAIN}/api/v2/users/${profile.id}`,
-        headers: { 
-          'content-type': 'application/json',
-          authorization: 'Bearer ' +  accessToken
-        },
-        body: {app_metadata: {hosts}},
-        json: true
-      };
+    });
+  };
 
-      request(options, (error, reponse, body) => {
-        cb(error);
+  var createMapHubsUser = function(profile: Object, done: Function){
+    var display_name = profile.displayName ? profile.displayName: profile._json.email;
+    return User.createUser(profile._json.email, display_name, display_name, profile.id)
+    .then((user_id) => {
+      saveMapHubsIDToAuth0(profile, user_id, (err) =>{
+        if (err) {
+          return done(err, false);
+        }
+        AuthUsers.find(user_id, (err, maphubsUser) => {
+          if (err) {
+            return done(err, false);
+          }
+          //attach MapHubs User
+            profile.maphubsUser = {
+            id: maphubsUser.id,
+            display_name: maphubsUser.display_name,
+            email: maphubsUser.email
+          };
+          return done(err, profile);
+        });
       });
     });
-    
   };
 
   var Auth0Strategy = require('passport-auth0');
@@ -133,40 +144,26 @@ if(local.useLocalAuth){
                   email: maphubsUser.email
                 };
                 return done(err, profile);
-              });
-              
+              });        
             }else{
               //local user not found
               if(!local.requireInvite){
                 //create local user
-                var display_name = profile.displayName ? profile.displayName: profile._json.email;
-                return User.createUser(profile._json.email, display_name, display_name, profile.id)
-                .then((user_id) => {
-                  saveMapHubsIDToAuth0(profile, user_id, (err) =>{
-                    if (err) {
-                      return done(err, false);
-                    }
-                    AuthUsers.find(user_id, (err, maphubsUser) => {
-                      if (err) {
-                        return done(err, false);
-                      }
-                      //attach MapHubs User
-                       profile.maphubsUser = {
-                        id: maphubsUser.id,
-                        display_name: maphubsUser.display_name,
-                        email: maphubsUser.email
-                      };
-                      return done(err, profile);
-                    });
-                  });
-                });
+                return createMapHubsUser(profile, done);
               }else{
-                return done(new Error('Unauthorized Access'), false);
+                //check if email is in invite list
+                Admin.checkInviteConfirmed(profile._json.email)
+                .then(confirmed => {
+                  if(confirmed){
+                    return createMapHubsUser(profile, done);
+                  }else{
+                    return done(null, false);
+                  }
+                });             
               }
             }
           });
         }
-     
     });
 
   passport.use(strategy);

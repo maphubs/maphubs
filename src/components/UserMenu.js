@@ -5,22 +5,19 @@ import MapHubsComponent from './MapHubsComponent';
 import UserStore from '../stores/UserStore';
 import UserActions from '../actions/UserActions';
 import Gravatar from './user/Gravatar';
+import UserIcon from './user/UserIcon';
 import _isequal from 'lodash.isequal';
+import querystring from 'querystring';
+import type {UserStoreState} from '../stores/UserStore';
 
 type Props = {
     id: string,
     sideNav: boolean
   }
 
-type User = {
-  email: string,
-    display_name: string
-}
-
 type State = {
-  user: User,
   loaded: boolean
-}
+} & UserStoreState
 
 export default class UserMenu extends MapHubsComponent<Props, Props, State> {
 
@@ -69,11 +66,11 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
   }
 
   loginClick = () => {
-    window.location = "/login?returnTo=" + window.location;
+    window.location = "/login?returnTo=" + querystring.escape(window.location);
   }
 
   logoutClick = () => {
-    window.location = "/logout?returnTo=" + window.location;
+    window.location = "/logout?returnTo=" + querystring.escape(window.location);
   }
 
   render() {
@@ -90,21 +87,34 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
         );
       }
 
+      let picture = '';
+      if(this.state.user.picture){
+        picture = (
+          <UserIcon {...this.state.user} />
+        );
+      }else{
+        picture = (
+          <Gravatar email={this.state.user.email} />
+        );
+      }      
+
+      let display_name = (this.state.user && this.state.user.display_name) ? this.state.user.display_name: '';
+
       user = (
         <li>
           <div ref="userButton" className="chip user-dropdown-button omh-btn" style={{marginRight:'5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
-            <Gravatar email={this.state.user.email} />
-            {this.state.user.display_name}
+            {picture}
+            {display_name}
             <i className="material-icons right" style={{marginLeft: 0, color: '#212121', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
           </div>
           <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
-            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/maps'}>{this.__('My Maps')}</a></li>
+            <li className="usermenu-wrapper"><a href={`/user/${display_name}/maps`}>{this.__('My Maps')}</a></li>
             <li className="divider"></li>
-            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/stories'}>{this.__('My Stories')}</a></li>
+            <li className="usermenu-wrapper"><a href={`/user/${display_name}/stories`}>{this.__('My Stories')}</a></li>
             <li className="divider"></li>
-            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/groups'}>{this.__('My Groups')}</a></li>
+            <li className="usermenu-wrapper"><a href={`/user/${display_name}/groups`}>{this.__('My Groups')}</a></li>
             <li className="divider"></li>
-            <li className="usermenu-wrapper"><a href={'/user/' + this.state.user.display_name + '/hubs'}>{this.__('My Hubs')}</a></li>
+            <li className="usermenu-wrapper"><a href={`/user/${display_name}/hubs`}>{this.__('My Hubs')}</a></li>
             <li className="divider"></li>
             <li className="usermenu-wrapper"><a href="/user/profile">{this.__('Settings')}</a></li>
             {adminInvites}

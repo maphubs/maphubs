@@ -22,23 +22,7 @@ if(!local.mapHubsPro){
 module.exports = function(app: any) {
 
 
-
-
-if(local.useLocalAuth) {
-  app.get('/user/passwordreset/:key', csrfProtection, (req, res) => {
-    var passreset = req.params.key;
-    return res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName, props: {passreset}, req});
-  });
-
-  app.get('/signup', csrfProtection, (req, res) => {
-    if(local.requireLogin || local.requireInvite){
-      return res.redirect('/login');
-    }else{
-      return res.render('signup', {title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName, props: {}, req});
-    }
-  });
-
-  app.get('/signup/invite/:key', csrfProtection, (req, res, next) => {
+ app.get('/signup/invite/:key', csrfProtection, (req, res, next) => {
 
     var inviteKey = req.params.key;
     if(inviteKey){
@@ -47,7 +31,12 @@ if(local.useLocalAuth) {
         if(valid){
           return Admin.useInvite(inviteKey)
           .then((email) => {
-            return res.render('signup', {title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName, props: {email, lockEmail: true, inviteKey}, req});
+            if(local.useLocalAuth){
+               return res.render('signup', {title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName, props: {email, lockEmail: true, inviteKey}, req});
+            }else{
+              return res.render('auth0invite', {title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, props: {email, inviteKey}, req});
+            }
+           
           });
         }else{
           return res.render('error', {
@@ -66,6 +55,20 @@ if(local.useLocalAuth) {
     }
   });
 
+
+if(local.useLocalAuth) {
+  app.get('/user/passwordreset/:key', csrfProtection, (req, res) => {
+    var passreset = req.params.key;
+    return res.render('passwordreset', {title: req.__('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName, props: {passreset}, req});
+  });
+
+  app.get('/signup', csrfProtection, (req, res) => {
+    if(local.requireLogin || local.requireInvite){
+      return res.redirect('/login');
+    }else{
+      return res.render('signup', {title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName, props: {}, req});
+    }
+  });
 
   app.get('/user/emailconfirmation/:key', csrfProtection, (req, res, next) => {
 
@@ -289,12 +292,19 @@ if(local.useLocalAuth) {
       return;
     }else{
       var user_id = req.session.user.maphubsUser.id;
+
       User.getUser(user_id)
         .then((user) => {
           //remove sensitive content if present
           delete user.pass_crypt;
           delete user.pass_salt;
           delete user.creation_ip;
+          //add session content
+          if(req.session.user && req.session.user._json){
+            user.username = req.session.user._json.username;
+            user.picture = req.session.user._json.picture;
+          }
+          
           return Admin.checkAdmin(user_id)
           .then((admin) => {
             user.admin = admin;

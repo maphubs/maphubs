@@ -5,8 +5,15 @@ var request = require('superagent');
 var debug = require('../services/debug')('stores/user-store');
 var checkClientError = require('../services/client-error-response').checkClientError;
 
+export type User = {
+  id: number,
+  email: string,
+  display_name: string,
+  picture?: string
+}
+
 export type UserStoreState = {
-  user?: Object,
+  user?: User,
   loggedIn?: boolean,
   loaded?: boolean
 }

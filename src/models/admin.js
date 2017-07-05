@@ -57,6 +57,21 @@ module.exports = {
     });
   },
 
+  /**
+   * Check if the provide email has been invited and confirmed by the user
+   * @param {*} email 
+   */
+  checkInviteConfirmed(email: string){
+    return knex('omh.account_invites').where({email: email, used: true})
+    .then(results => {
+      if(results && Array.isArray(results) && results.length === 1){
+        return true;
+      }else{
+        return false;
+      }
+    });
+  },
+
   useInvite(key: string){
     debug.log('using invite key');
     return knex('omh.account_invites').update({used:true}).where({key})

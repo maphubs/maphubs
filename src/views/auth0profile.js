@@ -39,7 +39,7 @@ export default class Auth0Profile extends MapHubsComponent<void, Props, void> {
               <p><b>{this.__('User Name')}: </b>{this.props.user.username}</p>
               <p><b>{this.__('Email')}: </b>{this.props.user.email}</p>
               <div>
-                <img src={this.props.user.picture} />  
+                <img className="circle" style={{width: '250px', height: '250px'}} src={this.props.user.picture} />  
               </div>
             <p>{this.__('More user profile settings coming soon!')}</p>
             </div>

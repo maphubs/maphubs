@@ -10,13 +10,11 @@ type Props = {
   AUTH0_CLIENT_ID: string,
   AUTH0_DOMAIN: string,
   AUTH0_CALLBACK_URL: string,
-  initialScreen: string,
-  allowSignUp: boolean
+  initialScreen: string
 }
 
 type DefaultProps = {
-  initialScreen: string,
-  allowSignUp: boolean
+  initialScreen: string
 }
 
 type State = LocaleStoreState
@@ -26,8 +24,7 @@ export default class Login extends MapHubsComponent<DefaultProps, Props, State> 
   props: Props
 
   static defaultProps = {
-    initialScreen: 'login',
-    allowSignUp: true
+    initialScreen: 'login'
   }
 
   constructor(props: Props) {
@@ -46,7 +43,6 @@ export default class Login extends MapHubsComponent<DefaultProps, Props, State> 
           scope: 'openid name email picture'
         }
       },
-      allowSignUp: this.props.allowSignUp,
       language: this.state.locale,
       mustAcceptTerms: true,
       theme: {

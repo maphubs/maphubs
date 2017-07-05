@@ -17,9 +17,7 @@ export default class Gravatar extends React.PureComponent<DefaultProps, Props, v
   props: Props
 
   static defaultProps: DefaultProps = {
-    size: 30,
-    emailHash: null,
-    email: null
+    size: 30
   }
 
   render() {

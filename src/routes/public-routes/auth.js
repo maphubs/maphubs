@@ -62,7 +62,7 @@ if(local.useLocalAuth){
   });
 }else{
   //Auth0
-  app.get('/login',
+  app.get('/login', checkReturnTo,
   (req, res) => {
     res.render('auth0login', {
       title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -82,6 +82,9 @@ if(local.useLocalAuth){
   (req, res) => {
 
     req.session.user = req.user;
+    if(req.session.returnTo === '/public/auth0login.css'){
+      req.session.returnTo = '';
+    }
 
     res.redirect(req.session.returnTo || '/');
   });
@@ -90,6 +93,8 @@ if(local.useLocalAuth){
     res.render('auth0error', {
       title: req.__('Login Failed') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {
+        requireInvite: local.requireInvite,
+        adminEmail: local.adminEmail
       }, req
     });
   });
