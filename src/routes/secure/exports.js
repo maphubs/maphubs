@@ -12,6 +12,7 @@ var Locales = require('../../services/locales');
 var MapStyles = require('../../components/Map/Styles');
 var geobuf = require('geobuf');
 var Pbf = require('pbf');
+var geojson2dsv = require('geojson2dsv');
 
 module.exports = function(app: any) {
 
@@ -83,19 +84,14 @@ module.exports = function(app: any) {
       var match = req.get('If-None-Match');
       if(hash === match){
         res.status(304).send();
-      }else{
-        res.writeHead(200, {
-          'Content-Type': 'text/csv',
-          'ETag': hash
-        });
+      }else{ 
+        res.header("Content-Type", "text/csv");
+        res.header("ETag", hash);
 
-        ogr2ogr(geoJSON)
-        .format('CSV')
-        .skipfailures()
-        .options(['-t_srs', 'EPSG:4326'])
-        .timeout(60000)
-        .stream()
-        .pipe(res);
+        let csvString = geojson2dsv(geoJSON, ",", true);
+
+        res.status(200).send(csvString);
+
       }
     }).catch(apiError(res, 200));
   });

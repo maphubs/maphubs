@@ -86,6 +86,7 @@
     "formsy-react": "^0.19.5",
     "geobuf": "^3.0.0",
     "geojson-validation": "0.1.6",
+    "geojson2dsv": "^0.1.0",
     "getenv": "0.7.0",
     "i18n": "0.8.3",
     "iconv-lite": "^0.4.18",
