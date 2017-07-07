@@ -102,6 +102,10 @@ export default class Attributes extends React.Component<void, Props, void> {
                         key !== 'maphubs_host'){
                      var val = _this.props.attributes[key];
 
+                     if(!val){
+                       return '';
+                     }
+
                      if(typeof val !== 'string'){
                        val = val.toString();
                      }
