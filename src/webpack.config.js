@@ -74,7 +74,7 @@ module.exports = {
     signup: "./src/client/signup",
     pendingconfirmation: "./src/client/pendingconfirmation",
     emailconfirmation: "./src/client/emailconfirmation",
-    vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "jsts"],
+    vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "jsts", "iconv-lite"],
     locales: ["./src/services/locales"]
   },
   resolve: {

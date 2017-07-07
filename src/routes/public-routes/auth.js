@@ -3,7 +3,7 @@ var passport = require('passport');
 var local = require('../../local');
 var csrfProtection = require('csurf')({cookie: false});
 //var log = require('../../services/log');
-var querystring = require('querystring');
+var urlencode = require('urlencode');
 
 module.exports = function(app: any) {
 
@@ -14,7 +14,7 @@ module.exports = function(app: any) {
       req.session = req.session || {};
       
       // Set returnTo to the absolute path you want to be redirect to after the authentication succeeds.
-      req.session.returnTo = querystring.unescape(returnTo);
+      req.session.returnTo = urlencode.decode(returnTo);
     }
     next();
   }

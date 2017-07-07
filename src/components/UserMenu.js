@@ -7,7 +7,7 @@ import UserActions from '../actions/UserActions';
 import Gravatar from './user/Gravatar';
 import UserIcon from './user/UserIcon';
 import _isequal from 'lodash.isequal';
-import querystring from 'querystring';
+import urlencode from 'urlencode';
 import type {UserStoreState} from '../stores/UserStore';
 
 type Props = {
@@ -66,11 +66,7 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
   }
 
   loginClick = () => {
-    window.location = "/login?returnTo=" + querystring.escape(window.location);
-  }
-
-  logoutClick = () => {
-    window.location = "/logout?returnTo=" + querystring.escape(window.location);
+    window.location = "/login?returnTo=" + urlencode(window.location.href);
   }
 
   render() {
