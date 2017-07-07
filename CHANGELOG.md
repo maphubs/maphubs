@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.11.12](https://github.com/maphubs/maphubs/tree/v0.11.12) (2017-07-07)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v11.11.0...v0.11.12)
+
+**Fixed bugs:**
+
+- CSV exports write "null" [\#388](https://github.com/maphubs/maphubs/issues/388)
+
+## [v11.11.0](https://github.com/maphubs/maphubs/tree/v11.11.0) (2017-07-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.11...v11.11.0)
+
 ## [v0.11.11](https://github.com/maphubs/maphubs/tree/v0.11.11) (2017-07-05)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.10...v0.11.11)
 
