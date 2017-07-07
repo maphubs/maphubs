@@ -25,10 +25,15 @@ module.exports = function(app: any) {
 
   app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, (req, res, next) => {
 
-    var id = req.params.id;
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const id = req.params.id;
+    const layer_id = parseInt(req.params.layer_id || '', 10);
 
-    var mhid = `${layer_id}:${id}`;
+    let mhid;
+    if(id.includes(':')){
+      mhid = id;
+    }else{
+      mhid = `${layer_id}:${id}`;
+    }
 
     var user_id: number = -1;
     if(req.session.user){
@@ -109,10 +114,15 @@ module.exports = function(app: any) {
 
   app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, (req, res) => {
 
-    var id = req.params.id;
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const id = req.params.id;
+    const layer_id = parseInt(req.params.layer_id || '', 10);
 
-    var mhid = `${layer_id}:${id}`;
+    let mhid;
+    if(id.includes(':')){
+      mhid = id;
+    }else{
+      mhid = `${layer_id}:${id}`;
+    }
 
     if(mhid && layer_id){
        Feature.getGeoJSON(mhid, layer_id)
