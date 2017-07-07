@@ -458,7 +458,13 @@ module.exports = function(app: any) {
               });
             }
           });
-      }).catch(nextError(next));
+      }).catch(err =>{
+        if(err.message && err.message.startsWith('Story not found')){
+          return res.redirect('/notfound?path='+req.path);
+        }else{
+          next(err);
+        }
+      });
     }
   });
 

@@ -160,24 +160,27 @@ module.exports = function(app: any) {
           && req.session && req.session.user) {
             user_id = req.session.user.maphubsUser.id;
       }
+    Story.getStoryByID(story_id)
+      .then((story) => {
+        if(!story){
+          return res.redirect('/notfound?path='+req.path);
+        }
 
-      if(!req.session.storyviews){
-        req.session.storyviews = {};
-      }
-      if(!req.session.storyviews[story_id]){
-        req.session.storyviews[story_id] = 1;
-        Stats.addStoryView(story_id, user_id).catch(nextError(next));
-      }else{
-        var views = req.session.storyviews[story_id];
+        if(!req.session.storyviews){
+          req.session.storyviews = {};
+        }
+        if(!req.session.storyviews[story_id]){
+          req.session.storyviews[story_id] = 1;
+          Stats.addStoryView(story_id, user_id).catch(nextError(next));
+        }else{
+          var views = req.session.storyviews[story_id];
 
-        req.session.storyviews[story_id] = views + 1;
-      }
+          req.session.storyviews[story_id] = views + 1;
+        }
 
-      req.session.views = (req.session.views || 0) + 1;
+        req.session.views = (req.session.views || 0) + 1;
 
-    if (user_id === -1) { //don't check permissions if user is not logged in
-          Story.getStoryByID(story_id)
-          .then((story) => {
+        if (user_id === -1) { //don't check permissions if user is not logged in
              var imageUrl = '';
             if(story.firstimage){
               imageUrl = urlUtil.getBaseUrl() + story.firstimage;
@@ -205,12 +208,9 @@ module.exports = function(app: any) {
               req
             });
             }          
-          }).catch(nextError(next));
-    } else {
-      Story.allowedToModify(story_id, user_id)
-      .then((canEdit) => {       
-        Story.getStoryByID(story_id)
-        .then((story) => {
+      } else {
+        return Story.allowedToModify(story_id, user_id)
+        .then((canEdit) => {       
            var imageUrl = '';
             if(story.firstimage){
               imageUrl = story.firstimage;
@@ -237,8 +237,8 @@ module.exports = function(app: any) {
                 }, req
               });
             }
-        }).catch(nextError(next));
-      });
-    }
+        });
+      }
+    }).catch(nextError(next));
   });
 };

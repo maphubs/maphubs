@@ -32,7 +32,7 @@ module.exports = function(app: any) {
       title: req.__('Page not found'),
       error: req.__('The page you requested was not found.'),
       url: path,
-      eventId: req.sentry.id
+      eventId: req.sentry ? req.sentry.id : undefined
     },
     req});
   });
