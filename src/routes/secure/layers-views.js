@@ -35,7 +35,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/layers/all', csrfProtection, (req, res, next) => {   
-      Layer.getAllLayers()
+      Layer.getAllLayers(false)
       .then((layers) => {
         res.render('alllayers', {
           title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,

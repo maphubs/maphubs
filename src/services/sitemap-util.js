@@ -6,15 +6,13 @@ var Map = require('../models/map');
 var Group = require('../models/group');
 import slugify from 'slugify';
 var urlUtil = require('./url-util');
-var knex = require('../connection.js');
-var Promise = require('bluebird');
 
 module.exports = {
 
 
-  getSiteMapIndexFeatureURLs(){
+  getSiteMapIndexFeatureURLs(trx: any){
     var baseUrl = urlUtil.getBaseUrl();
-    return Layer.getAllLayers()
+    return Layer.getAllLayers(false, trx)
     .then((layers) => {
       let urls = [];
       layers.forEach((layer) => {
@@ -25,9 +23,9 @@ module.exports = {
     });
   },
 
-  addLayersToSiteMap(sm: any){
+  addLayersToSiteMap(sm: any, trx: any){
     var baseUrl = urlUtil.getBaseUrl();
-    return Layer.getAllLayers()
+    return Layer.getAllLayers(false, trx)
     .then((layers) => {
       layers.forEach((layer) => {
         var lastmodISO = null;
@@ -42,8 +40,8 @@ module.exports = {
     });
   },
 
-  addStoriesToSiteMap(sm: any){
-    return Story.getAllStories().orderBy('omh.stories.updated_at', 'desc')
+  addStoriesToSiteMap(sm: any, trx: any){
+    return Story.getAllStories(trx).orderBy('omh.stories.updated_at', 'desc')
     .then((stories) => {
       stories.forEach((story) => {
         var title = story.title.replace('&nbsp;', '');
@@ -67,8 +65,8 @@ module.exports = {
     });
   },
 
-  addHubsToSiteMap(sm: any){
-    return Hub.getAllHubs()
+  addHubsToSiteMap(sm: any, trx: any){
+    return Hub.getAllHubs(trx)
     .then((hubs) => {
       hubs.forEach((hub) => {
         var baseUrl = urlUtil.getBaseUrl();
@@ -85,9 +83,9 @@ module.exports = {
     });
   },
 
-  addMapsToSiteMap(sm: any){
+  addMapsToSiteMap(sm: any, trx: any){
     var baseUrl = urlUtil.getBaseUrl();
-    return Map.getAllMaps().orderBy('omh.maps.updated_at', 'desc')
+    return Map.getAllMaps(trx).orderBy('omh.maps.updated_at', 'desc')
     .then((maps) => {
       maps.forEach((map) => {
         var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slugify(map.title.en)}`;
@@ -103,8 +101,8 @@ module.exports = {
     });
   },
 
-  addGroupsToSiteMap(sm: any){
-    return Group.getAllGroups()
+  addGroupsToSiteMap(sm: any, trx: any){
+    return Group.getAllGroups(trx)
     .then((groups) => {
       groups.forEach((group) => {
         var groupUrl =  urlUtil.getBaseUrl() + '/group/' + group.group_id;
@@ -117,17 +115,16 @@ module.exports = {
     });
   },
 
-  addLayerFeaturesToSiteMap(layer_id: number, sm: any){
+  addLayerFeaturesToSiteMap(layer_id: number, sm: any, trx: any){
     //get all layers
     var baseUrl = urlUtil.getBaseUrl();
-    return Layer.getLayerByID(layer_id)
+    return Layer.getLayerByID(layer_id, trx)
     .then((layer) => {
-      let featureQueries = [];
       if(!layer.is_external && !layer.remote && !layer.private){
         let layer_id = layer.layer_id;
         var lastmodISO = null;
         if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
-        featureQueries.push(knex(`layers.data_${layer_id}`).select('mhid')
+        return trx(`layers.data_${layer_id}`).select('mhid')
           .then(features => {
             if(features && Array.isArray(features)){
               features.forEach(feature => {
@@ -142,12 +139,12 @@ module.exports = {
               });
             }            
           })
-        );
-      }  
-    return Promise.all(featureQueries)
-    .then(() => {
+          .then(() => {
+            return sm;
+          });
+    }else{
       return sm;
-    });
+    }
   });
   }
 };

@@ -6,13 +6,15 @@ var Account = require('./account');
 
 module.exports = {
 
-  getAllGroups() {
-      return knex.select('omh.groups.*',
-      knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
-      )
-      .table('omh.groups')
-      .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id');
-    },
+  getAllGroups(trx: any) {
+    let db = knex;
+    if(trx){db = trx;}
+    return db.select('omh.groups.*',
+    db.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
+    )
+    .table('omh.groups')
+    .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id');
+  },
 
     getPopularGroups(number: number = 15){
       return knex.select('omh.groups.*',

@@ -118,12 +118,14 @@ module.exports = {
     /**
      * Can include private?: No
      */
-    getAllMaps(){
-      return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
+    getAllMaps(trx: any){
+      let db = knex;
+      if(trx){db = trx;}
+      return db.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
         'omh.maps.updated_at',
         'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
-        knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
-        knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
+        db.raw(`md5(lower(trim(public.users.email))) as emailhash`),
+        db.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
         'public.users.display_name as username')
         .from('omh.maps')
         .leftJoin('public.users', 'public.users.id', 'omh.maps.owned_by_user_id')

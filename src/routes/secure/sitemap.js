@@ -4,6 +4,7 @@ var siteMapUtil = require('../../services/sitemap-util');
 var Promise = require('bluebird');
 var log = require('../../services/log');
 var nextError = require('../../services/error-response').nextError;
+var knex = require('../../connection');
 
 var sitemap = require('sitemap'),
   sm = sitemap.createSitemap({
@@ -29,13 +30,15 @@ module.exports = function(app) {
       return res.status(404).send();
     }
     var baseUrl = urlUtil.getBaseUrl();
-    siteMapUtil.getSiteMapIndexFeatureURLs()
-    .then(layerUrls => {
-      let smi = sitemap.buildSitemapIndex({
-        urls:  [ baseUrl + '/sitemap.xml'].concat(layerUrls)
+    knex.transaction((trx) => {
+      siteMapUtil.getSiteMapIndexFeatureURLs(trx)
+      .then(layerUrls => {
+        let smi = sitemap.buildSitemapIndex({
+          urls:  [ baseUrl + '/sitemap.xml'].concat(layerUrls)
+        });
+        res.header('Content-Type', 'application/xml');
+        res.send(smi);
       });
-      res.header('Content-Type', 'application/xml');
-      res.send(smi);
     }).catch(nextError(next));
   });
 
@@ -46,8 +49,8 @@ module.exports = function(app) {
       var layer_id = parseInt(req.params.layer_id || '', 10);
       //clear sitemap
       sm.urls = [];
-
-      siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm)
+      knex.transaction((trx) => {
+      siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx)
       .then(() => {
         sm.toXML((err, xml) => {
           if(err){
@@ -57,6 +60,7 @@ module.exports = function(app) {
             res.header('Content-Type', 'application/xml');
             res.send(xml);
         });
+      });
       }).catch(nextError(next));
 
   });
@@ -77,20 +81,23 @@ module.exports = function(app) {
 
       ];
 
-      Promise.all([
-        siteMapUtil.addHubsToSiteMap(sm),
-        siteMapUtil.addStoriesToSiteMap(sm),
-        siteMapUtil.addMapsToSiteMap(sm),
-        siteMapUtil.addLayersToSiteMap(sm),
-        siteMapUtil.addGroupsToSiteMap(sm)
-      ]).then(() => {
-        sm.toXML((err, xml) => {
-          if(err){
-            log.error(err);
-            next(err);
-          }
-            res.header('Content-Type', 'application/xml');
-            res.send(xml);
+      knex.transaction((trx) => {
+
+        Promise.all([
+          siteMapUtil.addHubsToSiteMap(sm, trx),
+          siteMapUtil.addStoriesToSiteMap(sm, trx),
+          siteMapUtil.addMapsToSiteMap(sm, trx),
+          siteMapUtil.addLayersToSiteMap(sm, trx),
+          siteMapUtil.addGroupsToSiteMap(sm, trx)
+        ]).then(() => {
+          sm.toXML((err, xml) => {
+            if(err){
+              log.error(err);
+              next(err);
+            }
+              res.header('Content-Type', 'application/xml');
+              res.send(xml);
+          });
         });
       }).catch(nextError(next));
 

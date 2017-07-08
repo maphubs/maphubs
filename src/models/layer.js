@@ -21,22 +21,24 @@ module.exports = {
   /**
    * Can include private?: No
    */
-  getAllLayers(includeMapInfo: boolean = false) {
+  getAllLayers(includeMapInfo: boolean, trx: any) {
+    let db = knex;
+    if(trx){db = trx;}
     if(includeMapInfo){
-      return knex.select('layer_id', 'name', 'description', 'data_type',
+      return db.select('layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
-      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
+      'owned_by_group_id', db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html','labels', 'settings', 'extent_bbox', 'preview_position')
-      .table('omh.layers').where({private: false, status: 'published'}).orderBy(knex.raw(`name -> 'en'`));
+      .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw(`name -> 'en'`));
     }else{
-      return knex.select('layer_id', 'name', 'description', 'data_type',
+      return db.select('layer_id', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'owned_by_group_id',
-      knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-      .table('omh.layers').where({private: false, status: 'published'}).orderBy(knex.raw(`name -> 'en'`));
+      db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+      .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw(`name -> 'en'`));
     }
 
   },

@@ -12,10 +12,12 @@ module.exports = {
   /**
    * Can include private?: No
    */
-  getAllHubs() {
-      return knex.select(
-        'omh.hubs.*',
-         knex.raw('timezone(\'UTC\', omh.hubs.updated_at) as updated_at_withTZ')
+  getAllHubs(trx: any) {
+    let db = knex;
+    if(trx){db = trx;}
+    return  db.select(
+      'omh.hubs.*',
+      db.raw('timezone(\'UTC\', omh.hubs.updated_at) as updated_at_withTZ')
     ).table('omh.hubs').where({published: true, private: false});
     },
 
