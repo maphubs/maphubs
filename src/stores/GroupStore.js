@@ -123,7 +123,6 @@ export default class GroupStore extends Reflux.Store {
  }
 
  deleteGroup(_csrf: string, cb: Function){
-   var _this = this;
    debug.log('delete group');
    request.post('/api/group/delete')
    .type('json').accept('json')
@@ -133,8 +132,7 @@ export default class GroupStore extends Reflux.Store {
   })
    .end((err, res) => {
      checkClientError(res, err, cb, (cb) => {
-       _this.setState({group: {}});
-       _this.trigger(_this.state);
+       //don't trigger updates, the view will redirect to another page
        cb();
      });
    });
