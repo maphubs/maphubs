@@ -4,12 +4,10 @@ var knex = require('knex')({
   connection: connection,
   debug: false,
   pool: {
-
-    // These are the default settings for PG sql that knex sets.
-    // Change these if we get connection pool errors.
     min: 2,
-    max: 10
-  }
+    max: 20
+  },
+  acquireConnectionTimeout: 10000
 });
 
 module.exports = knex;
