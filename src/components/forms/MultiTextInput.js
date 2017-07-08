@@ -83,9 +83,15 @@ export default class MultiTextInput extends MapHubsComponent<DefaultProps, Props
 
   componentWillReceiveProps(nextProps: Props) {
     if(!_isequal(this.props.value, nextProps.value)){
-      this.setState({
-        value: nextProps.value
-      });
+      if(nextProps.value){
+        this.setState({
+          value: nextProps.value
+        });
+      }else{
+        this.setState({
+          value: {en: '', fr: '', es: '', it: ''}
+        });
+      }    
     }
   }
 

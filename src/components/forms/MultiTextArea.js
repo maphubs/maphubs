@@ -90,9 +90,15 @@ export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Pr
 
   componentWillReceiveProps(nextProps: Props) {
     if(!_isequal(this.props.value, nextProps.value)){
-      this.setState({
-        value: nextProps.value
-      });
+      if(nextProps.value){
+        this.setState({
+          value: nextProps.value
+        });
+      }else{
+        this.setState({
+          value: {en: '', fr: '', es: '', it: ''}
+        });
+      }    
     }
   }
 
