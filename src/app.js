@@ -133,6 +133,10 @@ var sessionStore = new KnexSessionStore({
   tablename: 'maphubssessions' // optional. Defaults to 'sessions'
 });
 
+sessionStore.ready = sessionStore.ready.catch(err => {
+  log.error(err.message);
+});
+
 app.use(session({
   key: 'maphubs',
   secret: local.SESSION_SECRET,
@@ -145,6 +149,14 @@ app.use(session({
         domain: local.host
     }
 }));
+
+app.use((err, req, res, next) => {
+  if(err){
+    log.error(err.message);
+  }
+  next();
+});
+
 
 //load passport auth config
 require('./services/auth');
