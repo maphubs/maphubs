@@ -21,7 +21,7 @@ module.exports = function(app) {
       res.send('User-agent: *\nDisallow: /');
     }else{
       //don't crawl exports
-      res.send('User-agent: *\nDisallow: /*.kml$\nDisallow: /*.zip$\nDisallow: /*.geojson$\nDisallow: /*.gpx$\nDisallow: /*.csv$\nDisallow: /xml/map/*');
+      res.send('User-agent: *\nDisallow: /*.kml$\nDisallow: /*.zip$\nDisallow: /*.geojson$\nDisallow: /*.gpx$\nDisallow: /*.csv$\nDisallow: /*.svg$\nDisallow: /*.pbf$\nDisallow: /xml/map/*');
     }
   });
 
