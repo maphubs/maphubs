@@ -51,41 +51,39 @@ module.exports = {
     });
   },
 
-  rebuildFeatures(){  
+  rebuildFeatures(trx: any){  
     var _this = this;
+    let db = knex;
+    if(trx){db = trx;}
     //delete all existing features
-    return knex('omh.layers').select('layer_id').whereNot({
-      is_external: true, remote: true, features_indexed: true
+    return db('omh.layers').select('layer_id').whereNot({
+      is_external: true, remote: true, isPrivate: true, features_indexed: true
     })
     .then(layers => {
-      var commands = [];
-      layers.forEach(layer =>{
-        commands.push(_this.updateLayer(layer.layer_id).then(()=>{
-          return knex('omh.layers')
+      return Promise.mapSeries(layers, layer => {
+       return _this.updateLayer(layer.layer_id, trx)
+       .then(()=>{
+          return db('omh.layers')
           .update({features_indexed: true})
           .where({layer_id: layer.layer_id});
         }).catch(err =>{
           log.error(err);
-        })
-        );
-      }); 
-      return Promise.all(commands);
+        });
+      });
     });
   },
 
   updateLayer(layer_id: number, trx: any){
     var _this = this;
     let db = knex; if(trx){db = trx;}
-    var updateCommands = [];
 
     log.info('Adding layer in search index: ' + layer_id);
     return db(`layers.data_${layer_id}`).select('mhid')
     .then(mhidResults =>{
       log.info('updating ' + mhidResults.length + ' features');
-      mhidResults.forEach(mhidResult =>{
-        updateCommands.push(_this.updateFeature(layer_id, mhidResult.mhid, false, trx));
+      return Promise.mapSeries(mhidResults, mhidResult => {
+        return _this.updateFeature(layer_id, mhidResult.mhid, false, trx);
       });
-      return Promise.all(updateCommands);
     });
   },
 
@@ -93,18 +91,16 @@ module.exports = {
   deleteLayer(layer_id: number, trx: any){
     var _this = this;
     let db = knex; if(trx){db = trx;}
-    var deleteCommands = [];
 
     log.info('Deleting layer form search index: ' + layer_id);
     return db(`layers.data_${layer_id}`).select('mhid')
     .then(mhidResults =>{
       log.info('deleting ' + mhidResults.length + ' features');
-      mhidResults.forEach(mhidResult =>{
-        deleteCommands.push(_this.deleteFeature(mhidResult.mhid));
+      return Promise.mapSeries(mhidResults, mhidResult => {
+        return _this.deleteFeature(mhidResult.mhid);
       }).catch(err =>{
         log.error(err);
       });
-      return Promise.all(deleteCommands);
     });
   },
 
@@ -113,15 +109,23 @@ module.exports = {
     return Feature.getFeatureByID(mhid, layer_id, trx)
     .then(result => {
 
+      let feature = result.feature.geojson.features[0];
+
       //HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
-      delete result.feature.geojson.features[0].properties.timestamp;
+      delete feature.properties.timestamp;
 
       var centroid;
-      if(result.feature.geojson.features[0].geometry.type === 'Point'){
-        centroid = result.feature.geojson.features[0];
+      if(feature.geometry.type === 'Point'){
+        centroid = feature;
       }else{
         centroid = _centroid(result.feature.geojson);
       }
+
+      //convert props to array
+      let props = Object.keys(feature.properties).map(key => {
+        let val = feature.properties[key];
+        return {key, val};
+      });
 
       //update feature
        return client.index({
@@ -136,7 +140,7 @@ module.exports = {
             lat: centroid.geometry.coordinates[1],
             lon: centroid.geometry.coordinates[0]
           },
-          properties: result.feature.geojson.features[0].properties,
+          properties: props,
           notes: result.notes,
           published: true,
           timeout: '60s'

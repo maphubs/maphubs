@@ -87,8 +87,10 @@ module.exports = {
     });
   },
 
-  checkAdmin(user_id: number){
-    return knex('omh.admins').select('user_id').where({user_id})
+  checkAdmin(user_id: number, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.admins').select('user_id').where({user_id})
     .then((result) => {
       if(result && result.length === 1){
         return true;

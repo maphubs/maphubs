@@ -64,6 +64,38 @@ export default class SearchIndexAdmin extends MapHubsComponent<void, Props, Stat
     });
   }
 
+  deleteIndex = () => {
+   var _this = this;
+   ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Delete'),
+      postitiveButtonText: this.__('Confirm'),
+      negativeButtonText: this.__('Cancel'),
+      message: this.__('Warning!'),
+      onPositiveResponse(){
+        request.post('/admin/searchindex/delete')
+        .type('json').accept('json')
+        .send({
+          _csrf: _this.state._csrf
+        })
+        .end((err, res) => {
+          checkClientError(res, err, () => {}, (cb) => {
+            if(err){
+                MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+              }else{
+                NotificationActions.showNotification(
+                  {
+                    message: _this.__('Success'),
+                    position: 'topright',
+                    dismissAfter: 3000
+                });
+              }
+            cb();
+          }, );
+        });
+      }
+    });
+  }
+
   rebuildFeatures = () => {
    var _this = this;
     ConfirmationActions.showConfirmation({
@@ -109,6 +141,9 @@ export default class SearchIndexAdmin extends MapHubsComponent<void, Props, Stat
             </div>
             <div>
               <button className="btn" onClick={this.createIndex}>{this.__('Create Index')}</button>
+            </div>
+            <div>
+              <button className="btn" onClick={this.deleteIndex}>{this.__('Delete Index')}</button>
             </div>
              <div>
               <button className="btn" onClick={this.rebuildFeatures}>{this.__('Rebuild Feature Index')}</button>

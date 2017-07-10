@@ -6,6 +6,7 @@ var SearchIndex = require('../../models/search-index');
 var nextError = require('../../services/error-response').nextError;
 var apiError = require('../../services/error-response').apiError;
 //var apiDataError = require('../../services/error-response').apiDataError;
+var knex = require('../../connection');
 
 module.exports = app => {
 
@@ -50,7 +51,7 @@ module.exports = app => {
     }).catch(apiError(res, 200));
   });
 
-  app.post('/admin/searchindex/rebuild/features', csrfProtection, (req, res) => {  
+  app.post('/admin/searchindex/delete', csrfProtection, (req, res) => {  
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -58,12 +59,31 @@ module.exports = app => {
     var user_id = req.session.user.maphubsUser.id;
     Admin.checkAdmin(user_id).then(isAdmin => {
       if(isAdmin){
-        return SearchIndex.rebuildFeatures().then(() =>{
+        return SearchIndex.deleteIndex().then(() =>{
           res.send({success: true});
         });
       }else{
         res.status(401).send();
       }
+    }).catch(apiError(res, 200));
+  });
+
+  app.post('/admin/searchindex/rebuild/features', csrfProtection, (req, res) => {  
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.maphubsUser.id;
+    knex.transaction((trx) => {
+      return Admin.checkAdmin(user_id, trx).then(isAdmin => {
+        if(isAdmin){
+          return SearchIndex.rebuildFeatures(trx).then(() =>{
+            res.send({success: true});
+          });
+        }else{
+          res.status(401).send();
+        }
+      });
     }).catch(apiError(res, 200));
   });
 
