@@ -67,7 +67,16 @@ app.set('view engine', 'js');
 app.engine('js', require('./services/express-react-views').createEngine());
 
 
-app.use(logger('dev'));
+
+app.use(logger('dev', {
+  skip: function (req) { 
+    //don't log every healthcheck ping
+    if(req.path === '/healthcheck'){
+      return true;
+    }
+    return false;
+  }
+}));
 app.use(cookieParser());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({
@@ -81,7 +90,7 @@ app.use(sassMiddleware({
     /* Options */
     src: __dirname,
     dest: path.join(__dirname, '../css'),
-    debug: true,
+    debug: false,
     outputStyle: 'compressed',
     prefix:  '/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
 }));

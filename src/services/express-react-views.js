@@ -129,7 +129,6 @@ function createEngine(engineOptions) {
       var assetHost = '';
      if(process.env.NODE_ENV === 'production' && !local.useLocalAssets){
       assetHost = 'https://cdn.maphubs.com';
-      log.info('using asset CDN: ' + assetHost);
      }
 
       //#TODO:230 set HTML header meta tags and language tags
