@@ -6,6 +6,7 @@ var Map = require('../models/map');
 var Group = require('../models/group');
 import slugify from 'slugify';
 var urlUtil = require('./url-util');
+var Promise = require('bluebird');
 
 module.exports = {
 
@@ -15,11 +16,16 @@ module.exports = {
     return Layer.getAllLayers(false, trx)
     .then((layers) => {
       let urls = [];
-      layers.forEach((layer) => {
-        //ignore if layer feature length > 50,000
-        urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`);
+      return Promise.map(layers, layer => {
+        return Layer.getLayerFeatureCount(layer.layer_id)
+        .then(count => {
+          //ignore if layer feature length > 10,000
+          if(count < 10000){
+            urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`);
+          }
+          return urls;
+        });
       });
-      return urls;
     });
   },
 

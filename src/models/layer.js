@@ -109,7 +109,14 @@ module.exports = {
    * Can include private?: If Requested
    */
   getLayerFeatureCount(layer_id: number){
-    return knex(`layers.data_${layer_id}`).count('mhid');
+    return knex(`layers.data_${layer_id}`).count('mhid')
+    .then(result => {
+      if(result && Array.isArray(result) && result.length === 1){
+        return result.count;
+      }else{
+        return null;
+      }
+    });
   },
 
    /**
