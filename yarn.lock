@@ -39,6 +39,16 @@
     point-geometry "0.1.0"
     xtend "^4.0.1"
 
+"@mapbox/shapefile-fairy@openmaphub/shapefile-fairy#950cb59adfadc6cbbccac2d33f7bc23c2f2b713e":
+  version "0.4.0"
+  resolved "https://codeload.github.com/openmaphub/shapefile-fairy/tar.gz/950cb59adfadc6cbbccac2d33f7bc23c2f2b713e"
+  dependencies:
+    debug "2.2.0"
+    minimist "^1.1.0"
+    mkdirp "^0.5.0"
+    queue-async "^1.0.7"
+    zipfile "^0.5.11"
+
 "@mapbox/shelf-pack@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@mapbox/shelf-pack/-/shelf-pack-3.0.0.tgz#44e284c8336eeda1e9dbbb1d61954c70e26e5766"
@@ -7004,16 +7014,6 @@ shallow-clone@^0.1.2:
 shallow-copy@~0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/shallow-copy/-/shallow-copy-0.0.1.tgz#415f42702d73d810330292cc5ee86eae1a11a170"
-
-shapefile-fairy@openmaphub/shapefile-fairy#950cb59adfadc6cbbccac2d33f7bc23c2f2b713e:
-  version "0.4.0"
-  resolved "https://codeload.github.com/openmaphub/shapefile-fairy/tar.gz/950cb59adfadc6cbbccac2d33f7bc23c2f2b713e"
-  dependencies:
-    debug "2.2.0"
-    minimist "^1.1.0"
-    mkdirp "^0.5.0"
-    queue-async "^1.0.7"
-    zipfile "^0.5.11"
 
 shapefile@0.3:
   version "0.3.1"
