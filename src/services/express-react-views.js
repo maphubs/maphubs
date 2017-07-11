@@ -77,7 +77,7 @@ function createEngine(engineOptions) {
         options.props = {};
       }
       var locale = 'en';
-      var req = options.req;
+      var req;
       if(options.req){
         req = options.req;
         //var browserLocale = req.acceptsLanguages('en', 'fr', 'es', 'it');
