@@ -6,7 +6,7 @@ var knex = require('knex')({
   debug: false,
   pool: {
     min: 2,
-    max: 20,
+    max: 25,
     afterCreate(conn, done) {
       conn.on("error", connectionError =>{
         if(connectionError){
@@ -16,6 +16,6 @@ var knex = require('knex')({
       done(null, connection);
     }
   },
-  acquireConnectionTimeout: 10000
+  acquireConnectionTimeout: 60000
 });
 module.exports = knex;
