@@ -212,9 +212,7 @@ app.use((req, res, next) => {
           error: req.__('404: Page not found'),
           url: req.url
         },
-        /*eslint-disable*/
         req: req
-        /*eslint-enable*/
       });
     }else if (req.accepts('json')) {
       res.send({
@@ -283,7 +281,8 @@ app.use((err, req, res, next) => {
       error: errorDetail,
       url: req.url,
       eventId: res.sentry
-      }
+    },
+    req: req
     });
     return;
 
