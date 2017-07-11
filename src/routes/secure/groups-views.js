@@ -74,6 +74,9 @@ module.exports = function(app: any) {
           Group.getGroupMembers(group_id),
         ])
       .then((result: Array<any>) => {
+        if(!result[0] || result[0].length === 0){
+          return res.redirect('/notfound?path='+req.path);
+        }
         var group: Object = result[0];
         var maps = result[1];
         var layers = result[2];
