@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.11.14](https://github.com/maphubs/maphubs/tree/v0.11.14) (2017-07-11)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.13...v0.11.14)
+
+**Fixed bugs:**
+
+- bad group URL should 404 not error [\#349](https://github.com/maphubs/maphubs/issues/349)
+- selecting data tab resets base map on layer info page [\#273](https://github.com/maphubs/maphubs/issues/273)
+
 ## [v0.11.13](https://github.com/maphubs/maphubs/tree/v0.11.13) (2017-07-10)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.12...v0.11.13)
 
