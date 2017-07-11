@@ -17,7 +17,6 @@ module.exports = {
     auth0error: "./src/client/auth0error",
     auth0invite: "./src/client/auth0invite",
     login: "./src/client/login",
-    approvedialog: "./src/client/approvedialog",
     adminuserinvite: "./src/client/adminuserinvite",
     groups: "./src/client/groups",
     allgroups: "./src/client/allgroups",
