@@ -33,6 +33,7 @@ type Props = {
   interactive: boolean,
   mapConfig: Object,
   showShareButtons: boolean,
+  hideInactive: boolean,
   children?: any
 }
 
@@ -43,7 +44,8 @@ type DefaultProps = {
   showLogo: boolean,
   showTitle: boolean,
   interactive: boolean,
-  showShareButtons: boolean
+  showShareButtons: boolean,
+  hideInactive: boolean
 }
 
 type State = {
@@ -63,7 +65,8 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       showLogo: true,
       showTitle: true,
       interactive: true,
-      showShareButtons: true
+      showShareButtons: true,
+      hideInactive: true
   }
 
   state: State
@@ -202,6 +205,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
           }}
           title={title}
           collapsible={false}
+          hideInactive={this.props.hideInactive}
           mapLayersActivatesID={`map-layers-${this.props.map_id}`}
           layers={this.state.layers}/>
         );
@@ -216,6 +220,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
           width: '20%'
         }} 
         maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`} 
+        hideInactive={this.props.hideInactive}
         layers={this.state.layers} 
         title={title} 
         mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
