@@ -21,7 +21,7 @@ RUN npm install -g snyk
 
 WORKDIR /app
 
-COPY package.json yarn.lock /app/
+COPY package.json yarn.lock .snyk /app/
 RUN yarn install --production --pure-lockfile
 
 RUN npm run snyk-protect
