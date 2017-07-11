@@ -41,6 +41,7 @@ class Radio extends MapHubsPureComponent<DefaultProps, Props, void> {
 
   changeValue = (event) => {
     this.props.setValue(event.target.id);
+    this.setState({value: event.target.id});
     if(this.props.onChange){
       this.props.onChange(event.target.id);
     }

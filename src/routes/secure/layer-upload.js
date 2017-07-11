@@ -40,13 +40,24 @@ module.exports = function(app: any) {
            .on('close', (err) => {
               if (err) throw err;
              //validate
+             try {
              shapefileFairy(req.file.path, (result) => {
-               debug.log('ShapefileFairy Result: ' + JSON.stringify(result));
-               result.success = result.valid;
-
-               if(result.valid){
+               debug.log('ShapefileFairy Result: ' + JSON.stringify(result));    
+               if(result && result.code === 'MULTIPLESHP'){
+                log.info('Multiple Shapfiles Detected: ' + result.shapefiles.toString());      
+                DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
+                .then(() => {
+                  debug.log('Finished storing temp path');
+                  //tell the client if we were successful
+                  res.status(200).send({
+                    success: false,
+                    code: result.code,
+                    shapefiles: result.shapefiles
+                  });
+                }).catch(apiError(res, 200));
+               }else if(result){
                  debug.log('Shapefile Validation Successful');
-                 var shpFilePath = req.file.path + '_zip/' + result.value.shp;
+                 var shpFilePath = req.file.path + '_zip/' + result.shp;
                  debug.log("shapefile: " + shpFilePath);
                   var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(120000);
                   ogr.exec((er, geoJSON) => {
@@ -62,17 +73,26 @@ module.exports = function(app: any) {
                     }
                   });
                }else{
-                 debug.log('Shapefile Validation Error: ' + result.error);
+                 log.error(`Unknown Shapefile Validation Error`);
                  DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
                  .then(() => {
                    debug.log('Finished storing temp path');
                    //tell the client if we were successful
-                   res.status(200).send(result);
+                   res.status(200).send({
+                    success: false,
+                    value: result
+                  });
                  }).catch(apiError(res, 200));
                }
              },
              {extract: false});
-
+            }catch(err){   
+              res.status(200).send({
+                  success: false,
+                  code: err.code,
+                  error: err.message
+                });   
+            }
           });
 
 
@@ -209,16 +229,17 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
       return DataLoadUtils.getTempShapeUpload(req.body.layer_id)
       .then((path) => {
         debug.log("finishing upload with file: " + path);
+        try{
         shapefileFairy(path, (result) => {
-          result.success = result.valid;
-          result.error = result.msg;
-          if(result.valid){
+          if(result){
             var shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile;
             var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
             ogr.exec((er, geoJSON) => {
               if (er){
-                log.error(er);
-                res.status(200).send({success: false, error: er.toString()});
+                log.error(er.message);
+                res.status(200).send({
+                  success: false, 
+                  error: er.toString()});
               }else{
                 DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, true)
                 .then((result) => {
@@ -227,8 +248,16 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
                 }).catch(apiError(res, 500));
               }
             });
+          }else{
+            res.status(200).send({
+              success: false, 
+              error: 'failed to extract shapefile'});
           }
         }, {shapefileName: req.body.requestedShapefile});
+        }catch(err){
+          log.error(err.message);
+          res.status(200).send({success: false, error: err.toString()});
+        }
       });
     }else {
       notAllowedError(res, 'layer');

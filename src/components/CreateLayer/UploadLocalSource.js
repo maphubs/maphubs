@@ -105,7 +105,7 @@ export default class UploadLocalSource extends MapHubsComponent<void, Props, Sta
       LayerActions.setImportedTags(result.uniqueProps,  true);
     }else{
       if(result.code === 'MULTIPLESHP'){
-        this.setState({multipleShapefiles: result.value});
+        this.setState({multipleShapefiles: result.shapefiles});
       }else{
         MessageActions.showMessage({title: _this.__('Error'), message: result.error});
       }
