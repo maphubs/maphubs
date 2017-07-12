@@ -141,7 +141,6 @@ export default class MapToolPanel extends MapHubsComponent<DefaultProps, Props, 
               style={{
                 backgroundColor: '#FFF',              
                 height: '100%', 
-                overflow: 'hidden',
                 padding: 0,
                 position: 'absolute',
                 border: '1px solid #d3d3d3'}}>

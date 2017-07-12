@@ -427,7 +427,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
 
   render(){
     var _this = this;
-    var panelHeight = this.state.height - 185;
+    var panelHeight = this.state.height - 191;
 
     var tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
@@ -466,7 +466,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
 
     var editLayerPanel='', editingTools = '';
     if(this.state.editingLayer){
-      panelHeight = this.state.height - 236;
+      panelHeight = this.state.height - 241;
       editLayerPanel = (
         <li ref="editLayerPanel">
               <div className="collapsible-header"><i className="material-icons">edit</i>{this.__('Editing Layer')}</div>
@@ -531,12 +531,12 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
             <li className="tab mapmaker-tab"><a href="#maptab" onClick={this.toggleMapTab}>{this.__('View Map')}</a></li>
           </ul>
 
-            <div id="addlayer" style={{height: 'calc(100% - 42px)', overflow: 'scroll', display: tabContentDisplay}}>
+            <div id="addlayer" style={{height: 'calc(100vh - 100px)', overflow: 'scroll', display: tabContentDisplay}}>
               <AddLayerPanel myLayers={this.props.myLayers}
                 popularLayers={this.props.popularLayers}
                 onAdd={this.addLayer} />
             </div>
-            <div id="maptab" className="row no-margin" style={{height: 'calc(100% - 30px)', display: tabContentDisplay}}>
+            <div id="maptab" className="row no-margin" style={{height: 'calc(100vh - 100px)', display: tabContentDisplay}}>
               <div className="row" style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
                 <Map ref="map" id="create-map-map" style={{height: '100%', width: '100%', margin: 'auto'}}
                   glStyle={this.state.mapStyle}

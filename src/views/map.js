@@ -50,7 +50,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, void> {
 		return (
       <div>
         <Header activePage="map" {...this.props.headerConfig}/>
-        <main style={{height: 'calc(100% - 70px)'}}>
+        <main style={{height: 'calc(100% - 58px)'}}>
           <MapMaker 
             mapConfig={this.props.mapConfig}
             onCreate={this.mapCreated} 
