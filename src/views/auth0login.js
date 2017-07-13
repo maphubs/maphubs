@@ -43,6 +43,7 @@ export default class Login extends MapHubsComponent<DefaultProps, Props, State> 
           scope: 'openid name email picture'
         }
       },
+      allowSignUp: true,
       language: this.state.locale,
       mustAcceptTerms: true,
       theme: {
@@ -50,7 +51,8 @@ export default class Login extends MapHubsComponent<DefaultProps, Props, State> 
         primaryColor: MAPHUBS_CONFIG.primaryColor
       },
       languageDictionary: {
-        title: `${this.__('MapHubs Login')}`
+        title: `${this.__('MapHubs Login')}`,
+        signUpTerms: `${this.__('I have read and agree to the ')} <a href="/terms" target="_blank">${this.__('terms')}</a> ${this.__('and')} <a href="/privacy" target="_blank">${this.__('privacy policy')}.</a>`
       }
     });
 
