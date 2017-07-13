@@ -31,6 +31,7 @@ module.exports = {
     });
     this.draw = draw;
     $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-measure-tool');
+    $('.map-search-button').addClass('maphubs-measure-tool-search-button');
     this.map.addControl(draw, 'top-right');
 
     this.map.on('draw.create', (e) => {
@@ -55,6 +56,7 @@ module.exports = {
 
   stopMeasurementTool(){   
     $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-measure-tool');
+    $('.map-search-button').removeClass('maphubs-measure-tool-search-button');
     this.map.removeControl(this.draw);
     this.setState({
       enableMeasurementTools: false, 
