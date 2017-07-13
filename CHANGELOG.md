@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.11.17](https://github.com/maphubs/maphubs/tree/v0.11.17) (2017-07-13)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.16...v0.11.17)
+
+**Fixed bugs:**
+
+- measurement tool buttons overlap with search [\#394](https://github.com/maphubs/maphubs/issues/394)
+- map tool panel not scrolling in map maker [\#393](https://github.com/maphubs/maphubs/issues/393)
+
+## [v0.11.16](https://github.com/maphubs/maphubs/tree/v0.11.16) (2017-07-11)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.15...v0.11.16)
+
 ## [v0.11.15](https://github.com/maphubs/maphubs/tree/v0.11.15) (2017-07-11)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.14...v0.11.15)
 
