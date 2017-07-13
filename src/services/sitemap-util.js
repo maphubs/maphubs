@@ -7,24 +7,31 @@ var Group = require('../models/group');
 import slugify from 'slugify';
 var urlUtil = require('./url-util');
 var Promise = require('bluebird');
+var log = require('./log');
 
 module.exports = {
 
-
   getSiteMapIndexFeatureURLs(trx: any){
     var baseUrl = urlUtil.getBaseUrl();
-    return Layer.getAllLayers(false, trx)
+    return trx('omh.layers').select('layer_id')
+    .whereNot({
+      private: true, is_external: true, remote: true
+    })
     .then((layers) => {
-      let urls = [];
-      return Promise.map(layers, layer => {
-        return Layer.getLayerFeatureCount(layer.layer_id)
-        .then(count => {
-          //ignore if layer feature length > 10,000
-          if(count < 10000){
-            urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`);
-          }
-          return urls;
-        });
+      var urls = [];
+      return Promise.map(layers, layer => {   
+          return Layer.getLayerFeatureCount(layer.layer_id)
+          .then(count => {
+            //ignore if layer feature length > 10,000
+            if(count < 10000){
+              urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`);
+            }
+            return;
+          }).catch(err => {
+            log.error(err.message);
+          });
+      }).then(()=>{
+        return urls;
       });
     });
   },
@@ -142,8 +149,9 @@ module.exports = {
                       lastmodISO
                     });
                 }
-              });
-            }            
+              });         
+            }   
+            return;         
           })
           .then(() => {
             return sm;

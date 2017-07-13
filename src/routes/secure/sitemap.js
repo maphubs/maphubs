@@ -31,13 +31,13 @@ module.exports = function(app) {
     }
     var baseUrl = urlUtil.getBaseUrl();
     knex.transaction((trx) => {
-      siteMapUtil.getSiteMapIndexFeatureURLs(trx)
+      return siteMapUtil.getSiteMapIndexFeatureURLs(trx)
       .then(layerUrls => {
         let smi = sitemap.buildSitemapIndex({
           urls:  [ baseUrl + '/sitemap.xml'].concat(layerUrls)
         });
         res.header('Content-Type', 'application/xml');
-        res.send(smi);
+        return res.send(smi);
       });
     }).catch(nextError(next));
   });
@@ -50,15 +50,15 @@ module.exports = function(app) {
       //clear sitemap
       sm.urls = [];
       knex.transaction((trx) => {
-      siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx)
+      return siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx)
       .then(() => {
-        sm.toXML((err, xml) => {
+        return sm.toXML((err, xml) => {
           if(err){
             log.error(err);
             next(err);
           }
-            res.header('Content-Type', 'application/xml');
-            res.send(xml);
+          res.header('Content-Type', 'application/xml');
+          res.send(xml);
         });
       });
       }).catch(nextError(next));
@@ -82,21 +82,20 @@ module.exports = function(app) {
       ];
 
       knex.transaction((trx) => {
-
-        Promise.all([
+        return Promise.all([
           siteMapUtil.addHubsToSiteMap(sm, trx),
           siteMapUtil.addStoriesToSiteMap(sm, trx),
           siteMapUtil.addMapsToSiteMap(sm, trx),
           siteMapUtil.addLayersToSiteMap(sm, trx),
           siteMapUtil.addGroupsToSiteMap(sm, trx)
         ]).then(() => {
-          sm.toXML((err, xml) => {
+            return sm.toXML((err, xml) => {
             if(err){
               log.error(err);
               next(err);
             }
-              res.header('Content-Type', 'application/xml');
-              res.send(xml);
+            res.header('Content-Type', 'application/xml');
+            res.send(xml);
           });
         });
       }).catch(nextError(next));
