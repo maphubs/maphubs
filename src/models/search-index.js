@@ -57,7 +57,7 @@ module.exports = {
     if(trx){db = trx;}
     //delete all existing features
     return db('omh.layers').select('layer_id').whereNot({
-      is_external: true, remote: true, isPrivate: true, features_indexed: true
+      is_external: true, remote: true, private: true, features_indexed: true
     })
     .then(layers => {
       return Promise.mapSeries(layers, layer => {
