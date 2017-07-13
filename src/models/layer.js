@@ -601,7 +601,7 @@ module.exports = {
       return db.select('map_id').from('omh.map_layers').where({layer_id})
       .then((mapLayers) => {
         if(mapLayers && mapLayers.length > 0){
-          mapLayers.forEach((mapLayer) => {
+          return Promise.map(mapLayers, mapLayer => {
             return Map.getMap(mapLayer.map_id, trx).then((map) => {
               if(!map.private || map.owned_by_group_id !== layer.owned_by_group_id){
                 //delete layer from this map
@@ -614,9 +614,11 @@ module.exports = {
                     });
                   });
               }
+              return;
             });
           });
         }
+        return;
       });
 
     },
@@ -630,7 +632,7 @@ module.exports = {
       return db.select('hub_id').from('omh.hub_layers').where({layer_id})
         .then((hubLayers) => {
           if(hubLayers && hubLayers.length > 0){
-            hubLayers.forEach((hubLayer) => {
+            return Promise.map(hubLayers, hubLayer => {
               return Hub.getHubByID(hubLayer.hub_id, trx).then((hub) => {
                 if(!hub.private || hub.owned_by_group_id !== layer.owned_by_group_id){
                   //delete layer from this hub
@@ -643,9 +645,11 @@ module.exports = {
                     });
                   });
                 }
+                return;
               });
             });
           }
+          return;
       });
     },
 

@@ -5,8 +5,8 @@ module.exports = function(app: any) {
 
   app.get('/healthcheck',  (req, res) => {
     if(knex){
-      knex.select(knex.raw('version()')).then(()=>{
-       res.status(200).send('OK');
+      knex.select(knex.raw('SELECT 1')).then(()=>{
+       return res.status(200).send('OK');
       })
       .catch((err) => {
         log.error(err.message);

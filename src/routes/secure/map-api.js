@@ -42,7 +42,7 @@ module.exports = function(app: any) {
               return ScreenshotUtil.reloadMapImage(map_id);
             })
             .catch((err) => {log.error(err);});
-            res.status(200).send({success: true, map_id});
+            return res.status(200).send({success: true, map_id});
           }).catch(apiError(res, 500));
       }else{
         apiDataError(res);
@@ -75,10 +75,10 @@ module.exports = function(app: any) {
                         .then(() => {
                           return ScreenshotUtil.reloadMapImage(map_id);
                         }).catch((err) => {log.error(err);});
-                        res.status(200).send({success: true, map_id});
+                        return res.status(200).send({success: true, map_id});
                       }).catch(apiError(res, 500));
                     }else{
-                      notAllowedError(res, 'group');
+                      return notAllowedError(res, 'group');
                     }
                   });
                 }else{
@@ -90,11 +90,11 @@ module.exports = function(app: any) {
                     .then(() => {
                       return ScreenshotUtil.reloadMapImage(map_id);
                     }).catch((err) => {log.error(err);});
-                    res.status(200).send({success: true, map_id});
+                    return res.status(200).send({success: true, map_id});
                   }).catch(apiError(res, 500));
                 }
               }else{
-                notAllowedError(res, 'map');
+                return notAllowedError(res, 'map');
               }
             });
           }else{
@@ -110,22 +110,22 @@ module.exports = function(app: any) {
                         .then(() => {
                           return ScreenshotUtil.reloadMapImage(map_id);
                         }).catch((err) => {log.error(err);});
-                        res.status(200).send({success: true, map_id});
+                        return res.status(200).send({success: true, map_id});
                       }).catch(apiError(res, 500));
                     }else{
-                      notAllowedError(res, 'group');
+                      return notAllowedError(res, 'group');
                     }
                   });
                 }else{
                   //copy to the requesting user
-                  Map.copyMapToUser(data.map_id, user_id)
+                  return Map.copyMapToUser(data.map_id, user_id)
                   .then((map_id) => {
                     //don't wait for screenshot
                     ScreenshotUtil.reloadMapThumbnail(map_id)
                     .then(() => {
                       return ScreenshotUtil.reloadMapImage(map_id);
                     }).catch((err) => {log.error(err);});
-                    res.status(200).send({success: true, map_id});
+                    return res.status(200).send({success: true, map_id});
                   }).catch(apiError(res, 500));
                 }
           }
@@ -186,7 +186,7 @@ module.exports = function(app: any) {
               return res.status(200).send({success: true});
             }).catch(apiError(res, 200));
           }else{
-            notAllowedError(res, 'map');
+            return notAllowedError(res, 'map');
           }
         }).catch(apiError(res, 200));
       }else{
