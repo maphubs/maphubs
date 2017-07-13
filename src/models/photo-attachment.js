@@ -97,13 +97,9 @@ module.exports = {
     if(trx){db = trx;}  
     return db('omh.feature_photo_attachments').where({layer_id})
     .then((featurePhotoAttachments) => {
-       var commands = [];
-      featurePhotoAttachments.forEach((fpa) => {
-        commands.push(
-        _this.deletePhotoAttachment(layer_id, fpa.mhid, fpa.photo_id)
-      );
-      return Promise.all(commands);
-      });    
+       return Promise.map(featurePhotoAttachments, fpa => {
+          return _this.deletePhotoAttachment(layer_id, fpa.mhid, fpa.photo_id);
+       });  
     });
   },
 
@@ -130,8 +126,8 @@ module.exports = {
     });
 
     if(alreadyPresent){
-        return new Promise((fulfill) => {
-          fulfill(presets);
+        return new Promise((resolve) => {
+          resolve(presets);
         });
         }else{
           presets.push({

@@ -16,10 +16,10 @@ module.exports = function(app: any) {
     Layer.getLayerByID(layer_id).then((layer) => {
       let name = Locales.getLocaleStringObject(req.locale, layer.name);
       let title = name + ' - ' + MAPHUBS_CONFIG.productName;
-      res.render('staticmap', {title, hideFeedback: true, 
+      return res.render('staticmap', {title, hideFeedback: true, 
         disableGoogleAnalytics: true,
         props:{
-          name: name,
+          name,
           layers: [layer],
           position: layer.preview_position,
           basemap: 'default',
@@ -46,7 +46,7 @@ module.exports = function(app: any) {
         if(map.title){
           title = Locales.getLocaleStringObject(req.locale, map.title);
         }
-        res.render('staticmap', {
+        return res.render('staticmap', {
           title: title + ' - ' + MAPHUBS_CONFIG.productName, 
           hideFeedback: true,
           disableGoogleAnalytics: true,
@@ -74,7 +74,7 @@ module.exports = function(app: any) {
         if(map.title){
           title = Locales.getLocaleStringObject(req.locale, map.title);
         }
-        res.render('staticmap', {
+        return res.render('staticmap', {
           title: title + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: true,
           disableGoogleAnalytics: true,

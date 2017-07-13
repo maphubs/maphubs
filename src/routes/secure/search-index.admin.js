@@ -18,7 +18,7 @@ module.exports = app => {
       if(isAdmin){ 
         return SearchIndex.indexExists().then(indexExistsResult => {
           let indexStatus = JSON.stringify(indexExistsResult);
-          elasticClient.testClient(error =>{
+          return elasticClient.testClient(error =>{
             let connectionStatus = 'Active';
             if(error) connectionStatus = error;
             res.render('searchindexadmin', {
@@ -29,7 +29,7 @@ module.exports = app => {
         });
               
         }else{
-          res.redirect('/unauthorized');
+          return res.redirect('/unauthorized');
         }
     }).catch(nextError(next));
   });
@@ -43,10 +43,10 @@ module.exports = app => {
     Admin.checkAdmin(user_id).then(isAdmin => {
       if(isAdmin){
         return SearchIndex.initIndex().then(() =>{
-          res.send({success: true});
+          return res.send({success: true});
         });
       }else{
-        res.status(401).send();
+        return res.status(401).send();
       }
     }).catch(apiError(res, 200));
   });
@@ -60,10 +60,10 @@ module.exports = app => {
     Admin.checkAdmin(user_id).then(isAdmin => {
       if(isAdmin){
         return SearchIndex.deleteIndex().then(() =>{
-          res.send({success: true});
+          return res.send({success: true});
         });
       }else{
-        res.status(401).send();
+        return res.status(401).send();
       }
     }).catch(apiError(res, 200));
   });
@@ -78,10 +78,10 @@ module.exports = app => {
       return Admin.checkAdmin(user_id, trx).then(isAdmin => {
         if(isAdmin){
           return SearchIndex.rebuildFeatures(trx).then(() =>{
-            res.send({success: true});
+            return res.send({success: true});
           });
         }else{
-          res.status(401).send();
+          return res.status(401).send();
         }
       });
     }).catch(apiError(res, 200));

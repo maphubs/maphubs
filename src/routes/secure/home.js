@@ -58,7 +58,7 @@ module.exports = function(app: any) {
       });
     }
     
-    Promise.all(dataRequests)
+    return Promise.all(dataRequests)
     .then((results) => {
       var props = {pageConfig, _csrf: req.csrfToken()};
       results.forEach((result, i) => {
@@ -77,7 +77,7 @@ module.exports = function(app: any) {
         description = pageConfig.description.en;
       }
 
-      res.render('home', {
+      return res.render('home', {
         title,
         description,
         mailchimp: useMailChimp,
@@ -126,7 +126,7 @@ module.exports = function(app: any) {
       var recentHubs = results[12];
       var recentMaps = results[13];
       var recentStories = results[14];
-      res.render('explore', {
+      return res.render('explore', {
         title: req.__('Explore') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           featuredLayers, featuredGroups, featuredHubs, featuredMaps, featuredStories,

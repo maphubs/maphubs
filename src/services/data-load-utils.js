@@ -69,7 +69,7 @@ module.exports = {
     debug.log('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}
-    return new Promise((fulfill, reject) => {
+    return new Promise((resolve, reject) => {
     var result = {success: false, error: 'Unknown Error'};
     var uniqueProps = [];
 
@@ -250,7 +250,7 @@ module.exports = {
               uniqueProps,
               data_type: geomType
             };
-            fulfill(result);
+            resolve(result);
           }else{
             reject(new Error("Failed to Insert Metadata Database"));
             return;

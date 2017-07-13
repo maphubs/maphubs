@@ -10,7 +10,7 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.layer_id || '', 10);
     ScreenshotUtils.getLayerThumbnail(layer_id)
     .then((image) => {
-      ScreenshotUtils.returnImage(image, 'image/jpeg', req, res);
+      return ScreenshotUtils.returnImage(image, 'image/jpeg', req, res);
     }).catch(apiError(res, 500));
 
   });
@@ -19,7 +19,7 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.layer_id || '', 10);
     ScreenshotUtils.getLayerImage(layer_id)
     .then((image) => {
-      ScreenshotUtils.returnImage(image, 'image/png', req, res);
+      return ScreenshotUtils.returnImage(image, 'image/png', req, res);
     }).catch(apiError(res, 500));
 
   });
@@ -49,7 +49,7 @@ module.exports = function(app: any) {
 
     ScreenshotUtils.getMapImage(map_id)
     .then((image) => {
-      ScreenshotUtils.returnImage(image, 'image/png', req, res);
+      return ScreenshotUtils.returnImage(image, 'image/png', req, res);
     }).catch(apiError(res, 500));
 
   });
@@ -58,7 +58,7 @@ module.exports = function(app: any) {
     var map_id = parseInt(req.params.mapid || '', 10);
     ScreenshotUtils.getMapThumbnail(map_id)
     .then((image) => {
-      ScreenshotUtils.returnImage(image, 'image/jpeg', req, res);
+      return ScreenshotUtils.returnImage(image, 'image/jpeg', req, res);
     }).catch(apiError(res, 500));
 
   });

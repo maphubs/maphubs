@@ -180,7 +180,7 @@ module.exports = {
 
     allowedToModify(group_id: string, user_id: number){
       if(!group_id || user_id <= 0){
-        return new Promise((fulfill) => {fulfill(false);});
+        return new Promise((resolve) => {resolve(false);});
       }
       return this.getGroupMembers(group_id)
         .then((users) => {

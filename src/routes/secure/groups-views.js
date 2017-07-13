@@ -27,7 +27,7 @@ module.exports = function(app: any) {
         var featuredGroups = results[0];
         var recentGroups = results[1];
         var popularGroups = results[2];
-        res.render('groups', {
+        return res.render('groups', {
           title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             featuredGroups, recentGroups, popularGroups
@@ -40,7 +40,7 @@ module.exports = function(app: any) {
     let locale = req.locale ? req.locale : 'en';
     Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`)
     .then((groups) => {
-      res.render('allgroups', {
+      return res.render('allgroups', {
         title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           groups
@@ -85,7 +85,7 @@ module.exports = function(app: any) {
         var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
         let name = Locales.getLocaleStringObject(req.locale, group.name);
         let description = Locales.getLocaleStringObject(req.locale, group.description);
-        res.render('groupinfo', {
+        return res.render('groupinfo', {
           title: name + ' - ' + MAPHUBS_CONFIG.productName,
           description,
           props: {
@@ -114,8 +114,8 @@ module.exports = function(app: any) {
     //confirm that this user is allowed to administer this group
     Group.getGroupRole(user_id, group_id)
       .then((role) => {
-        if (role === 'Administrator') {
-          Promise.all([
+        if(role === 'Administrator') {
+          return Promise.all([
               Group.getGroupByID(group_id),
               Map.getGroupMaps(group_id, true),
               Layer.getGroupLayers(group_id, true),
@@ -131,7 +131,7 @@ module.exports = function(app: any) {
               var members: Array<Object> = result[4];
               var account: Object = result[5];
               let name = Locales.getLocaleStringObject(req.locale, group.name);
-              res.render('groupadmin', {
+              return res.render('groupadmin', {
                 title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
                 props: {
                   group, maps, layers, hubs, members, account
@@ -139,7 +139,7 @@ module.exports = function(app: any) {
               });
             }).catch(nextError(next));
         } else {
-          res.redirect('/unauthorized');
+          return res.redirect('/unauthorized');
         }
       }).catch(nextError(next));
   });
@@ -157,10 +157,10 @@ module.exports = function(app: any) {
         if(user){
           return Group.getGroupsForUser(user.id)
           .then((groups) => {
-            res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit}, req});
+            return res.render('usergroups', {title: 'Groups - ' + username, props:{user, groups, canEdit: userCanEdit}, req});
           });
         }else{
-          res.redirect('/notfound?path='+req.path);
+          return res.redirect('/notfound?path='+req.path);
         }
       }).catch(nextError(next));
     }
@@ -179,7 +179,7 @@ module.exports = function(app: any) {
         if(user.display_name === username){
           canEdit = true;
         }
-        completeRequest(canEdit);
+        return completeRequest(canEdit);
       }).catch(nextError(next));
     }
   });

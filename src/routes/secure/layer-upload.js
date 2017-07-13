@@ -49,7 +49,7 @@ module.exports = function(app: any) {
                 .then(() => {
                   debug.log('Finished storing temp path');
                   //tell the client if we were successful
-                  res.status(200).send({
+                  return res.status(200).send({
                     success: false,
                     code: result.code,
                     shapefiles: result.shapefiles
@@ -68,7 +68,7 @@ module.exports = function(app: any) {
                       DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
                       .then((result) => {
                         //tell the client if we were successful
-                        res.status(200).send(result);
+                        return res.status(200).send(result);
                       }).catch(apiError(res, 200));
                     }
                   });
@@ -78,7 +78,7 @@ module.exports = function(app: any) {
                  .then(() => {
                    debug.log('Finished storing temp path');
                    //tell the client if we were successful
-                   res.status(200).send({
+                   return res.status(200).send({
                     success: false,
                     value: result
                   });
@@ -123,7 +123,7 @@ module.exports = function(app: any) {
                 if(geoJSON){
                   DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
                   .then((result) => {
-                    res.status(200).send(result);
+                    return res.status(200).send(result);
                   }).catch(apiError(res, 200));
                 }else{
                   log.error("Failed to parse CSV");
@@ -149,12 +149,12 @@ module.exports = function(app: any) {
                .exec((er, geoJSON) => {
                  if (er){
                    log.error(er);
-                   res.status(200).send({success: false, error: er.toString()});
+                   return res.status(200).send({success: false, error: er.toString()});
                  }else{
                    DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
                    .then((result) => {
                      //tell the client if we were successful
-                     res.status(200).send(result);
+                     return res.status(200).send(result);
                    }).catch(apiError(res, 200));
                  }
                });
@@ -249,14 +249,14 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
               }
             });
           }else{
-            res.status(200).send({
+            return res.status(200).send({
               success: false, 
               error: 'failed to extract shapefile'});
           }
         }, {shapefileName: req.body.requestedShapefile});
         }catch(err){
           log.error(err.message);
-          res.status(200).send({success: false, error: err.toString()});
+          return res.status(200).send({success: false, error: err.toString()});
         }
       });
     }else {

@@ -17,12 +17,12 @@ module.exports = function(app) {
       if(isAdmin){
         return Page.getPageConfigs([page_id]).then((pageConfigs) => {
           var pageConfig = pageConfigs[page_id];
-          res.render('pageedit', {
+          return res.render('pageedit', {
             title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
             props: {page_id, pageConfig}, req});
           });
         }else{
-          res.redirect('/unauthorized');
+          return res.redirect('/unauthorized');
         }
     }).catch(nextError(next));
   });
@@ -37,23 +37,23 @@ module.exports = function(app) {
     if (data && data.page_id && data.pageConfig) {
       Admin.checkAdmin(user_id).then((isAdmin) => {
         if(isAdmin){
-          Page.savePageConfig(data.page_id, data.pageConfig)
+          return Page.savePageConfig(data.page_id, data.pageConfig)
             .then((result) => {
               if (result && result === 1) {
-                res.send({
+                return res.send({
                   success: true
                 });
               } else {
-                res.send({
+                return res.send({
                   success: false,
                   error: "Failed to Save Page"
                 });
               }
-            }).catch(apiError(res, 200));
+            });
         }else{
-          res.status(401).send();
+          return res.status(401).send();
         }
-      });
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }

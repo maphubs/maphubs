@@ -24,7 +24,7 @@ html: '<b> Test email text </b>'
 */
 send(data: any){
   debug.log('Send email to ' + data.to + ' with subject: ' + data.subject);
-  return new Promise((fulfill, reject) => {
+  return new Promise((resolve, reject) => {
 
     transporter.sendMail(data, (error, info) => {
       if (error) {
@@ -32,7 +32,7 @@ send(data: any){
         reject(error);
       }else{
         log.info(`Message ${info.messageId} sent: ${info.response}`);
-        fulfill(info);
+        resolve(info);
       }
     });
   });

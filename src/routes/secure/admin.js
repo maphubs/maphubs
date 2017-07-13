@@ -33,13 +33,13 @@ module.exports = function(app: any) {
         if(allowed){
           if (data && data.email) {
             return Admin.sendInviteEmail(data.email, req.__).then(() => {
-              res.status(200).send({success:true});
+              return res.status(200).send({success:true});
             });
           }else{
-            apiDataError(res);
+            return apiDataError(res);
           }
         }else{
-            res.status(401).send("Unauthorized");
+          return res.status(401).send("Unauthorized");
         }
       }).catch(apiError(res, 200));
     }else{
@@ -54,7 +54,7 @@ module.exports = function(app: any) {
     var user_id = req.session.user.maphubsUser.id;
     Admin.checkAdmin(user_id).then((allowed) => {
       if(allowed && MAPHUBS_CONFIG.enableUserExport){
-        knex('users').select('id', 'email', 'email_valid', 'display_name')
+        return knex('users').select('id', 'email', 'email_valid', 'display_name')
         .then((users) =>{
           let userExport = [];
           users.forEach(user => {
@@ -75,7 +75,7 @@ module.exports = function(app: any) {
               }
             );
           });
-          res.status(200).send(userExport);
+          return res.status(200).send(userExport);
         });
       }else{
         return res.redirect('/login');

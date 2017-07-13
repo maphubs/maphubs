@@ -112,7 +112,7 @@ module.exports = {
     return knex(`layers.data_${layer_id}`).count('mhid')
     .then(result => {
       if(result && Array.isArray(result) && result.length === 1){
-        return result.count;
+        return result[0].count;
       }else{
         return null;
       }
@@ -307,7 +307,7 @@ module.exports = {
         .then((results) => {
           var data = results[0];
           var bbox = results[1];
-          return new Promise((fulfill, reject) => {
+          return new Promise((resolve, reject) => {
 
             dbgeo.parse(data.rows,{
               "outputFormat": "geojson",
@@ -324,7 +324,7 @@ module.exports = {
               }
 
               result.bbox = JSON.parse(bbox.rows[0].bbox);
-              fulfill(result);
+              resolve(result);
             });
           });
         });
@@ -347,8 +347,11 @@ module.exports = {
     var _this = this;
     var updates = [];
     layers.forEach(layer =>{
-      updates.push(_this.allowedToModify(layer.layer_id, user_id).then(allowed =>{
+      updates.push(
+      _this.allowedToModify(layer.layer_id, user_id)
+      .then(allowed =>{
         layer.canEdit = allowed;
+        return layer;
       }));
     });
 

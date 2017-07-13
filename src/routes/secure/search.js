@@ -47,7 +47,7 @@ module.exports = function(app: any) {
            knex.select(knex.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags', 'mhid')
             .from('layers.data_' + layer_id).whereIn('mhid', layers[layer_id])
             .then(results =>{
-              results.forEach(result =>{
+              return results.forEach(result =>{
                  var feature = {
                     type: 'Feature',
                     geometry: JSON.parse(result.geom),
@@ -66,7 +66,7 @@ module.exports = function(app: any) {
       return Promise.all(commands).then(()=>{
          let bbox = turf_bbox(featureCollection);
          featureCollection.bbox = bbox;
-         res.send(featureCollection);
+         return res.send(featureCollection);
       });
      
     }).catch((err) => {

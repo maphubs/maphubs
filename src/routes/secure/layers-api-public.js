@@ -23,7 +23,7 @@ module.exports = function(app: any) {
             let name = Locales.getLocaleStringObject(req.locale, layer.name);
             suggestions.push({key: layer.layer_id, value:name});
           });
-          res.send({suggestions});
+          return res.send({suggestions});
       }).catch(apiError(res, 500));
   });
 
@@ -34,7 +34,7 @@ module.exports = function(app: any) {
     }
     Layer.getSearchResults(req.query.q)
       .then((result) => {
-        res.status(200).send({layers: result});
+        return res.status(200).send({layers: result});
       }).catch(apiError(res, 500));
   });
 
@@ -43,7 +43,7 @@ module.exports = function(app: any) {
     var layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getLayerInfo(layer_id)
     .then((layer) => {
-      res.status(200).send({success: true, layer});
+      return res.status(200).send({success: true, layer});
     }).catch(apiError(res, 500));
   });
 
@@ -59,7 +59,7 @@ module.exports = function(app: any) {
         }
         
       });
-      res.status(200).send({success: true, layer});
+      return res.status(200).send({success: true, layer});
     }).catch(apiError(res, 500));
   });
 

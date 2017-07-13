@@ -23,7 +23,7 @@ module.exports = function(app: any) {
     if (data && data.id) {
       Group.checkGroupIdAvailable(data.id)
         .then((result) => {
-          res.send({
+          return res.send({
             available: result
           });
         }).catch(apiError(res, 200));
@@ -44,7 +44,7 @@ module.exports = function(app: any) {
           let name = Locales.getLocaleStringObject(req.locale, group.name);
           suggestions.push({key: group.group_id, value:name});
         });
-        res.send({
+        return res.send({
           suggestions
         });
       }).catch(apiError(res, 200));
@@ -56,7 +56,7 @@ module.exports = function(app: any) {
     }
     Group.getSearchResults(req.query.q)
       .then((result) => {
-        res.status(200).send({groups: result});
+        return res.status(200).send({groups: result});
       }).catch(apiError(res, 200));
   });
 
@@ -71,11 +71,11 @@ module.exports = function(app: any) {
       Group.createGroup(data.group_id, data.name, data.description, data.location, data.published, user_id)
         .then((result) => {
           if (result) {
-            res.send({
+            return res.send({
               success: true
             });
           } else {
-            res.send({
+            return res.send({
               success: false,
               error: "Failed to Create Group"
             });
@@ -99,12 +99,12 @@ module.exports = function(app: any) {
         if(allowed){
           return Account.getStatus(data.group_id)
           .then((status) => {
-             res.status(200).send({status});
+             return res.status(200).send({status});
           });
         }else{
-        res.status(401).send();
+        return res.status(401).send();
         }
-      });
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
@@ -122,23 +122,23 @@ module.exports = function(app: any) {
       Group.allowedToModify(data.group_id, user_id)
       .then((allowed) => {
         if(allowed){
-          Group.updateGroup(data.group_id, data.name, data.description, data.location, data.published)
+          return Group.updateGroup(data.group_id, data.name, data.description, data.location, data.published)
             .then((result) => {
               if (result && result === 1) {
-                res.send({
+                return res.send({
                   success: true
                 });
               } else {
-                res.send({
+                return res.send({
                   success: false,
                   error: "Failed to Save Group"
                 });
               }
-            }).catch(apiError(res, 200));
+            });
         }else{
-          res.status(401).send();
+          return res.status(401).send();
         }
-      });
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
@@ -156,34 +156,33 @@ module.exports = function(app: any) {
       Group.allowedToModify(data.group_id, user_id)
       .then((allowed) => {
         if(allowed){
-          Layer.getGroupLayers(data.group_id, true)
+          return Layer.getGroupLayers(data.group_id, true)
           .then((layers) => {
             if(layers && layers.length > 0){
-              res.status(200).send({
+              return res.status(200).send({
                 success: false,
                 error: "Group has layers: You must first delete all the layers in this group"
               });
             }else{
-              Group.deleteGroup(data.group_id)
+              return Group.deleteGroup(data.group_id)
                 .then((result) => {
                   if (result) {
-                    res.status(200).send({
+                    return res.status(200).send({
                       success: true
                     });
                   } else {
-                    res.status(200).send({
+                    return res.status(200).send({
                       success: false,
                       error: "Failed to Delete Group"
                     });
                   }
-                }).catch(apiError(res, 200));
+                });
             }
-          }).catch(apiError(res, 200));
-
+          });
           }else{
-            res.status(401).send();
+            return res.status(401).send();
           }
-      });
+      }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
     }
@@ -204,12 +203,12 @@ module.exports = function(app: any) {
       Group.allowedToModify(data.group_id, user_id)
       .then((allowed) => {
         if(allowed){
-          Image.setGroupImage(data.group_id, data.image, data.info)
+          return Image.setGroupImage(data.group_id, data.image, data.info)
           .then(() => {
-            res.status(200).send({success: true});
+            return res.status(200).send({success: true});
           }).catch(apiError(res, 200));
         } else {
-          res.status(401).send();
+          return res.status(401).send();
         }
 
       }).catch(apiError(res, 200));
@@ -232,10 +231,10 @@ module.exports = function(app: any) {
         if(allowed){
           return Group.getGroupMembers(group_id)
           .then((members) => {
-            res.status(200).send({success: true, members});
+            return res.status(200).send({success: true, members});
           });
         } else {
-          res.status(401).send();
+          return res.status(401).send();
         }
       }).catch(apiError(res, 200));
 
@@ -284,15 +283,14 @@ module.exports = function(app: any) {
                       html: user.display_name + ',<br />' +
                         req.__('You have been added to the group') + ' ' + data.group_id
                       });
-                    res.status(200).send({success: true});
+                    return res.status(200).send({success: true});
                   });
                 }else{
-                  res.status(200).send({success: false, "error": req.__('User is already a member of this group.')});
-                  return;
+                  return res.status(200).send({success: false, "error": req.__('User is already a member of this group.')});
                 }
               });
             } else {
-              res.status(401).send();
+              return res.status(401).send();
             }
           });
       }else{
@@ -323,18 +321,19 @@ module.exports = function(app: any) {
     if(data && data.group_id && data.user_id && data.role){
       User.getUser(data.user_id)
       .then((user) => {
-        Group.allowedToModify(data.group_id, session_user_id)
+        //TODO: wrap in transaction
+        return Group.allowedToModify(data.group_id, session_user_id)
         .then((allowed) => {
           if(allowed){
-            Group.updateGroupMemberRole(data.group_id, user.id, data.role)
+            return Group.updateGroupMemberRole(data.group_id, user.id, data.role)
             .then(() => {
               debug.log('Added role' + data.role + ' to ' + data.display_name + ' of ' + data.group_id);
-              res.status(200).send({success: true});
+              return res.status(200).send({success: true});
             });
           } else {
-            res.status(401).send();
+            return res.status(401).send();
           }
-        }).catch(apiError(res, 200));
+        });
       }).catch(apiError(res, 200));
     } else {
       apiDataError(res);
@@ -355,11 +354,12 @@ module.exports = function(app: any) {
       if(data && data.group_id && data.user_id){
         User.getUser(data.user_id)
         .then((user) => {
-          Group.allowedToModify(data.group_id, session_user_id)
+          //TODO: wrap in transaction
+          return Group.allowedToModify(data.group_id, session_user_id)
           .then((allowed) => {
             if(allowed){
               //don't allow removal of last admin
-              Group.getGroupMembersByRole(data.group_id, 'Administrator')
+              return Group.getGroupMembersByRole(data.group_id, 'Administrator')
               .then((result) => {
                 if(result && result.length === 1 && result[0].user_id === session_user_id){
                   //last admin
@@ -379,13 +379,13 @@ module.exports = function(app: any) {
                       html: user.display_name + ',' +
                         '<br />' + req.__('You have been removed from the group') + ' ' + data.group_id + '\n'
                       });
-                    res.status(200).send({success: true});
+                    return res.status(200).send({success: true});
                   });
                 }
               }).catch(apiError(res, 200));
 
               } else {
-                res.status(401).send();
+                return res.status(401).send();
               }
           }).catch(apiError(res, 200));
       }).catch(apiError(res, 200));

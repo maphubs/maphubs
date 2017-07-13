@@ -19,7 +19,7 @@ app.post('/api/map/info/:map_id', csrfProtection, (req, res) => {
           return Map.getMap(map_id)
           .then(map=>{
             return Map.getMapLayers(map_id, false).then(layers=>{
-              res.status(200).send({success: true, map, layers});
+              return res.status(200).send({success: true, map, layers});
             });
           });
         }
@@ -31,12 +31,12 @@ app.post('/api/map/info/:map_id', csrfProtection, (req, res) => {
         return Map.allowedToModify(map_id, user_id)
         .then(allowed=>{
           if(isPrivate && !allowed){
-            res.status(200).send({success: false});
+            return res.status(200).send({success: false});
           }else{
             return Map.getMap(map_id)
               .then(map=>{
                 return Map.getMapLayers(map_id, allowed).then(layers=>{
-                  res.status(200).send({success: true, map, layers});
+                  return res.status(200).send({success: true, map, layers});
                 });
               });
           }

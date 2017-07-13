@@ -40,13 +40,13 @@ module.exports = function(app: any) {
                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
                 .then(() => {
                     debug.log('data load transaction complete');
-                    res.status(200).send({success: true});
+                    return res.status(200).send({success: true});
               });
             });
           });
         }).catch(apiError(res, 500));
       }else{
-        notAllowedError(res, 'layer');
+        return notAllowedError(res, 'layer');
       }
     }).catch(apiError(res, 500));
   });
@@ -72,14 +72,13 @@ module.exports = function(app: any) {
                  return layerViews.createLayerViews(layer_id, layer.presets, trx)
                 .then(()=>{
                     debug.log('init empty transaction complete');
-                    res.status(200).send({success: true});
+                    return res.status(200).send({success: true});
                 });
-              });
-               
+              });              
           });
         }).catch(apiError(res, 500));
       }else{
-        notAllowedError(res, 'layer');
+        return notAllowedError(res, 'layer');
       }
     }).catch(apiError(res, 500));
   });
@@ -174,22 +173,22 @@ module.exports = function(app: any) {
             return Layer[action](...actionData)
             .then((result) => {
               if(result){
-                res.send({success:true, action, layer_id: result[0]});
+                return res.send({success:true, action, layer_id: result[0]});
               }else {
-                res.send({success:false, error: "Failed to Create Layer"});
+                return res.send({success:false, error: "Failed to Create Layer"});
               }
             }).catch(apiError(res, 500));
           }else{
-            notAllowedError(res, 'layer');
+            return notAllowedError(res, 'layer');
           }
         }).catch(apiError(res, 500));
       }else{
         Layer[action](...actionData)
         .then((result) => {
           if(result){
-            res.send({success:true, action});
+            return res.send({success:true, action});
           }else {
-            res.send({success:false, error: "Failed to Update Layer"});
+            return res.send({success:false, error: "Failed to Update Layer"});
           }
         }).catch(apiError(res, 500));
       }
@@ -210,12 +209,12 @@ app.post('/api/layer/deletedata/:id', csrfProtection, (req, res) => {
   Layer.allowedToModify(layer_id, user_id)
   .then((allowed) => {
     if(allowed){
-      DataLoadUtils.removeLayerData(layer_id)
+      return DataLoadUtils.removeLayerData(layer_id)
       .then(() => {
-        res.status(200).send({success: true});
+        return res.status(200).send({success: true});
       }).catch(apiError(res, 500));
     } else {
-      notAllowedError(res, 'layer');
+      return notAllowedError(res, 'layer');
     }
   }).catch(apiError(res, 500));
 });
@@ -236,7 +235,7 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
         return Layer.savePresets(data.layer_id, data.presets, user_id, data.create, trx)
         .then(() => {
           if(data.create){
-              res.status(200).send({success: true});
+            return res.status(200).send({success: true});
           }else{
             //update layer views and timestamp
             return Layer.getLayerByID(data.layer_id, trx)
@@ -252,7 +251,7 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
                       }
                     ).where({layer_id: data.layer_id})
                     .then(() => {
-                      res.status(200).send({success: true});
+                      return res.status(200).send({success: true});
                     });
                   });
                 }else{
@@ -264,7 +263,7 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
                       }
                     ).where({layer_id: data.layer_id})
                     .then(() => {
-                      res.status(200).send({success: true});
+                      return res.status(200).send({success: true});
                     });
                 }
                 
@@ -272,7 +271,7 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
             }
           });
       } else {
-        notAllowedError(res, 'layer');
+        return notAllowedError(res, 'layer');
       }
     });
     }).catch(apiError(res, 500));
@@ -292,12 +291,12 @@ app.post('/api/layer/notes/save', csrfProtection, (req, res) => {
     Layer.allowedToModify(data.layer_id, user_id)
     .then((allowed) => {
       if(allowed){
-        Layer.saveLayerNote(data.layer_id, user_id, data.notes)
+        return Layer.saveLayerNote(data.layer_id, user_id, data.notes)
           .then(() => {
-            res.send({success: true});
+            return res.send({success: true});
           }).catch(apiError(res, 500));
       }else {
-        notAllowedError(res, 'layer');
+        return notAllowedError(res, 'layer');
       }
     }).catch(apiError(res, 500));
   } else {
@@ -340,7 +339,7 @@ app.post('/api/layer/addphotopoint', csrfProtection, (req, res) => {
                       .then((presets) => {
                           return layerViews.replaceViews(data.layer_id, presets, trx)
                         .then(() => {
-                          res.send({success: true, photo_id, photo_url, mhid});
+                          return res.send({success: true, photo_id, photo_url, mhid});
                         });
                       });
                     });
@@ -349,7 +348,7 @@ app.post('/api/layer/addphotopoint', csrfProtection, (req, res) => {
             });
         }).catch(apiError(res, 500));
       }else {
-        notAllowedError(res, 'layer');
+        return notAllowedError(res, 'layer');
       }
     }).catch(apiError(res, 500));
   } else {

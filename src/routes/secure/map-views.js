@@ -39,7 +39,7 @@ module.exports = function(app: any) {
         || !req.session || !req.session.user) {
             Layer.getPopularLayers()           
             .then((popularLayers) => {
-                res.render('map', {title: 'New Map ', props:{popularLayers}, req});
+                return res.render('map', {title: 'New Map ', props:{popularLayers}, req});
             }).catch(nextError(next));
     } else {
       //get user id
@@ -80,7 +80,7 @@ module.exports = function(app: any) {
           if(results.length === 4){
             editLayer = results[3];
           }
-          res.render('map', {title: 'New Map ', props:{popularLayers, myLayers, myGroups, editLayer}, req});
+           return res.render('map', {title: 'New Map ', props:{popularLayers, myLayers, myGroups, editLayer}, req});
         }).catch(nextError(next));
     }
 
@@ -97,7 +97,7 @@ module.exports = function(app: any) {
         var featuredMaps = results[0];
         var recentMaps = results[1];
         var popularMaps = results[2];
-        res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
+        return res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
       }).catch(nextError(next));
   });
 
@@ -105,7 +105,7 @@ module.exports = function(app: any) {
     let locale = req.locale ? req.locale : 'en';
     Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`)
     .then((maps) => {
-      res.render('allmaps', {
+      return res.render('allmaps', {
         title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, 
         props: {maps}, 
         req
@@ -129,7 +129,7 @@ module.exports = function(app: any) {
             return res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps}, req});
           });
         }else{
-          res.redirect('/notfound?path='+req.path);
+          return res.redirect('/notfound?path='+req.path);
         }
       }).catch(nextError(next));
     }
@@ -148,7 +148,7 @@ module.exports = function(app: any) {
         if(user.display_name === username){
           myMaps = true;
         }
-        completeRequest();
+        return completeRequest();
       }).catch(nextError(next));
     }
   });
@@ -173,8 +173,8 @@ module.exports = function(app: any) {
       //get user id
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
-      });
+        return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
+      }).catch(nextError(next));
     }
   });
 
@@ -198,8 +198,8 @@ module.exports = function(app: any) {
       //get user id
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
-      });
+        return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
+      }).catch(nextError(next));
     }
   });
 
@@ -223,7 +223,6 @@ module.exports = function(app: any) {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
         if(allowed){
-
           return Promise.all([
           Map.getMap(map_id),
           Map.getMapLayers(map_id, true)
@@ -244,7 +243,7 @@ module.exports = function(app: any) {
             if(map.title){
               title = Locales.getLocaleStringObject(req.locale, map.title);
             }
-              res.render('mapedit',
+              return res.render('mapedit',
                {
                  title: title +' - ' + MAPHUBS_CONFIG.productName,
                  props:{map, layers, popularLayers, myLayers, myGroups},
@@ -252,11 +251,11 @@ module.exports = function(app: any) {
                  req
                }
              );
-          }).catch(nextError(next));
+          });
         }else{
-          res.redirect('/unauthorized');
+          return res.redirect('/unauthorized');
         }
-      });
+      }).catch(nextError(next));
     }
   });
 
@@ -278,8 +277,8 @@ module.exports = function(app: any) {
     } else {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false);
-      });
+        return MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false);
+      }).catch(nextError(next));
     }
   });
 
@@ -301,8 +300,8 @@ module.exports = function(app: any) {
     } else {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false);
-      });
+       return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false);
+      }).catch(nextError(next));
     }
   });
 
@@ -324,8 +323,8 @@ module.exports = function(app: any) {
     } else {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true);
-      });
+        return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true);
+      }).catch(nextError(next));
     }
   });
 };

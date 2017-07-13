@@ -55,7 +55,7 @@ module.exports = {
     var _this = this;
     var cmd = null;
 
-    return new Promise((fulfill, reject) => {
+    return new Promise((resolve, reject) => {
       //decode base64
       var imageBuffer = _this.decodeBase64Image(dataString);
       //save it to a file
@@ -94,7 +94,7 @@ module.exports = {
                 var bitmap = fs.readFileSync(convertedFilePath);
                 var resizedImageBase64String = 'data:image/jpeg;base64,' + new Buffer(bitmap).toString('base64');
                 //debug.log(resizedImageBase64String);
-                fulfill(resizedImageBase64String);
+                resolve(resizedImageBase64String);
                 fs.unlink(origfilePath);
                 fs.unlink(resizedFilePath);
                 fs.unlink(convertedFilePath);

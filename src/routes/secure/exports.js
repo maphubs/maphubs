@@ -19,7 +19,7 @@ module.exports = function(app: any) {
   app.get('/api/layer/:layer_id/export/json/*', privateLayerCheck, (req, res) => {
       var layer_id = parseInt(req.params.layer_id || '', 10);
       Layer.getGeoJSON(layer_id).then((geoJSON) => {
-        res.status(200).send(geoJSON);
+        return res.status(200).send(geoJSON);
       }).catch(apiError(res, 200));
   });
 
@@ -70,7 +70,7 @@ module.exports = function(app: any) {
           `;
 
           res.header("Content-Type", "image/svg+xml");
-          res.status(200).send(svg);
+          return res.status(200).send(svg);
         });
       }).catch(apiError(res, 200));
   });
@@ -83,14 +83,14 @@ module.exports = function(app: any) {
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
       if(hash === match){
-        res.status(304).send();
+        return res.status(304).send();
       }else{ 
         res.header("Content-Type", "text/csv");
         res.header("ETag", hash);
 
         let csvString = geojson2dsv(geoJSON, ",", true);
 
-        res.status(200).send(csvString);
+        return res.status(200).send(csvString);
 
       }
     }).catch(apiError(res, 200));
@@ -104,7 +104,7 @@ module.exports = function(app: any) {
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
       if(hash === match){
-        res.status(304).send();
+        return res.status(304).send();
       }else{
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
@@ -113,7 +113,7 @@ module.exports = function(app: any) {
 
         let data = geobuf.encode(geoJSON, new Pbf());
         var buf = Buffer.from(data, 'binary');
-        res.end(buf, 'binary');
+        return res.end(buf, 'binary');
       }
     }).catch(apiError(res, 200));
   });
@@ -127,7 +127,7 @@ module.exports = function(app: any) {
         var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
         var match = req.get('If-None-Match');
         if(hash === match){
-          res.status(304).send();
+          return res.status(304).send();
         }else{
           res.header("Content-Type", "application/vnd.google-earth.kml+xml");
           res.header("ETag", hash);
@@ -161,7 +161,7 @@ module.exports = function(app: any) {
 
           debug.log("KML Generated");
 
-          res.status(200).send(kml);
+          return res.status(200).send(kml);
         }
       });
     }).catch(apiError(res, 200));
@@ -185,7 +185,7 @@ module.exports = function(app: any) {
         var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
         var match = req.get('If-None-Match');
         if(hash === match){
-          res.status(304).send();
+          return res.status(304).send();
         }else{
           res.header("Content-Type", "application/vnd.google-earth.kml+xml");
           res.header("ETag", hash);
@@ -219,7 +219,7 @@ module.exports = function(app: any) {
 
           debug.log("KML Generated");
 
-          res.status(200).send(kml);
+          return res.status(200).send(kml);
         }
           });
         }).catch(apiError(res, 200));
@@ -237,13 +237,13 @@ module.exports = function(app: any) {
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
       if(hash === match){
-        res.status(304).send();
+        return res.status(304).send();
       }else{
         res.writeHead(200, {
           'Content-Type': 'application/gpx+xml',
           'ETag': hash
         });
-        ogr2ogr(geoJSON)
+        return ogr2ogr(geoJSON)
         .format('GPX')
         .skipfailures()
         .options(['-t_srs', 'EPSG:4326','-dsco', 'GPX_USE_EXTENSIONS=YES'])
@@ -262,14 +262,14 @@ module.exports = function(app: any) {
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
       if(hash === match){
-        res.status(304).send();
+        return res.status(304).send();
       }else{
         res.writeHead(200, {
           'Content-Type': 'application/zip',
           'ETag': hash
         });
 
-      ogr2ogr(geoJSON)
+      return ogr2ogr(geoJSON)
       .format('ESRI Shapefile')
       .skipfailures()
       .options(['-t_srs', 'EPSG:4326'])

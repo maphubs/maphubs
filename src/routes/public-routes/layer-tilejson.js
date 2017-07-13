@@ -36,7 +36,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           bounds,
           center: [centerX, centerY, centerZoom],
           created: layer.last_updated,
-          description: description,
+          description,
           legend,
           filesize: 0,
           format: "png8:m=h:c=64",
@@ -50,7 +50,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           tiles: layer.external_layer_config.tiles,
           webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
-        res.status(200).send(tileJSON);
+        return res.status(200).send(tileJSON);
       }else if(layer.is_external && layer.external_layer_config.type === 'vector'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
@@ -81,7 +81,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           tiles: layer.external_layer_config.tiles,
           webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
-        res.status(200).send(tileJSON);
+        return res.status(200).send(tileJSON);
       }else if(!layer.is_external){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
@@ -115,9 +115,9 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           data: baseUrl + '/api/layer/' + layer.layer_id + '/export/json/' + slugify(name) + '.geojson',
           webpage: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(name)
         };
-        res.status(200).send(tileJSON);
+        return res.status(200).send(tileJSON);
       }else {
-        res.status(404).send("TileJSON not supported for this layer");
+        return res.status(404).send("TileJSON not supported for this layer");
       }
     }).catch(apiError(res, 500));
 });

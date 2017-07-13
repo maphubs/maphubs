@@ -22,21 +22,21 @@ module.exports = function(app: any) {
       Story.allowedToModify(data.story_id, user_id)
       .then((allowed) => {
         if(allowed){
-          Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
+          return Story.updateStory(data.story_id, data.title, data.body, data.author, data.firstline, data.firstimage)
             .then((result) => {
               if (result && result === 1) {
-                res.send({
+                return res.send({
                   success: true
                 });
               } else {
-                res.send({
+                return res.send({
                   success: false,
                   error: "Failed to Save Story"
                 });
               }
             }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'story');
+          return notAllowedError(res, 'story');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -58,13 +58,13 @@ module.exports = function(app: any) {
           return knex.transaction((trx) => {
               return Story.publishStory(data.story_id, trx)
                 .then(() => {
-                  res.send({
+                  return res.send({
                     success: true
                   });
               });        
             }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'story');
+          return notAllowedError(res, 'story');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -88,14 +88,14 @@ module.exports = function(app: any) {
               .then(() => {
                 return Story.delete(data.story_id, trx)
                   .then(() => {
-                    res.send({
+                    return res.send({
                       success: true
                     });
                 });
               });
             }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'story');
+          return notAllowedError(res, 'story');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -114,14 +114,14 @@ module.exports = function(app: any) {
       Story.allowedToModify(data.story_id, user_id)
       .then((allowed) => {
         if(allowed){
-          Image.addStoryImage(data.story_id, data.image, data.info)
+          return Image.addStoryImage(data.story_id, data.image, data.info)
             .then((image_id) => {
-              res.send({
+              return res.send({
                 success: true, image_id
               });
             }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'story');
+          return notAllowedError(res, 'story');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -140,14 +140,14 @@ module.exports = function(app: any) {
       Story.allowedToModify(data.story_id, user_id)
       .then((allowed) => {
         if(allowed){
-          Image.removeStoryImage(data.story_id, data.image_id)
+          return Image.removeStoryImage(data.story_id, data.image_id)
             .then(() => {
-              res.send({
+              return res.send({
                 success: true
               });
             }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'story');
+          return notAllowedError(res, 'story');
         }
       }).catch(apiError(res, 500));
     } else {

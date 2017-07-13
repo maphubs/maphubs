@@ -18,7 +18,7 @@ if(local.useLocalAuth){
     var user_id = req.session.user.maphubsUser.id;
     User.getUser(user_id)
       .then((user) => {
-        res.render('usersettings', {title: req.__('User Profile') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}, req});
+        return res.render('usersettings', {title: req.__('User Profile') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}, req});
       }).catch(nextError(next));
   });
 
@@ -31,7 +31,7 @@ if(local.useLocalAuth){
     var user_id = req.session.user.maphubsUser.id;
     User.getUser(user_id)
       .then((user) => {
-        res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}, req});   
+        return res.render('pendingconfirmation', {title: req.__('Pending Confirmation') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}, req});   
       }).catch(nextError(next));
   });
 
@@ -47,7 +47,7 @@ if(local.useLocalAuth){
 
     User.sendConfirmationEmail(uid, req.__)
     .then(() => {
-        res.status(200).send({success:true});
+      return res.status(200).send({success:true});
     }).catch(apiError(res, 500));
 
   });
@@ -84,7 +84,7 @@ if(local.useLocalAuth){
         result.forEach((user) => {
           suggestions.push({key: user.id, value:user.display_name});
         });
-        res.send({
+        return res.send({
           suggestions
         });
       }).catch(apiError(res, 500));

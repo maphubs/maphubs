@@ -24,7 +24,7 @@ module.exports = function(app: any) {
         'Content-Length': img.length,
         'ETag': require('crypto').createHash('md5').update(img).digest("hex")
       });
-      res.end(img);
+      return res.end(img);
     }).catch(nextError(next));
   });
 
@@ -33,9 +33,9 @@ module.exports = function(app: any) {
     Image.getGroupImage(group_id)
     .then((result) => {
       if(result && result.image){
-        imageUtils.processImage(result.image, req, res);
+        return imageUtils.processImage(result.image, req, res);
       }else{
-        res.status(404).send();
+        return res.status(404).send();
       }
     }).catch(apiError(res, 404));
   });
@@ -45,7 +45,7 @@ module.exports = function(app: any) {
     Image.getGroupThumbnail(group_id)
     .then((result) => {
       if(result && result.thumbnail){
-        imageUtils.processImage(result.thumbnail, req, res);
+        return imageUtils.processImage(result.thumbnail, req, res);
       }else{
         return res.redirect('https://cdn.maphubs.com/assets/missing_group.png');
       }
@@ -59,7 +59,7 @@ module.exports = function(app: any) {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'logo')
     .then((result) => {
-      imageUtils.processImage(result.image, req, res);
+      return imageUtils.processImage(result.image, req, res);
     }).catch(apiError(res, 404));
   });
 
@@ -68,9 +68,9 @@ module.exports = function(app: any) {
     Image.getHubThumbnail(hub_id, 'logo')
     .then((result) => {
       if(result && result.thumbnail){
-        imageUtils.processImage(result.thumbnail, req, res);
+        return imageUtils.processImage(result.thumbnail, req, res);
       }else{
-        res.status(404).send();
+        return res.status(404).send();
       }
     }).catch(apiError(res, 404));
   });
@@ -79,7 +79,7 @@ module.exports = function(app: any) {
     var hub_id = req.params.id;
     Image.getHubImage(hub_id, 'banner')
     .then((result) => {
-      imageUtils.processImage(result.image, req, res);
+      return imageUtils.processImage(result.image, req, res);
     }).catch(apiError(res, 404));
   });
 
@@ -88,9 +88,9 @@ module.exports = function(app: any) {
     Image.getHubThumbnail(hub_id, 'banner')
     .then((result) => {
       if(result && result.thumbnail){
-        imageUtils.processImage(result.thumbnail, req, res);
+        return imageUtils.processImage(result.thumbnail, req, res);
       }else{
-        res.status(404).send();
+        return res.status(404).send();
       }
     }).catch(apiError(res, 404));
   });
@@ -101,9 +101,9 @@ module.exports = function(app: any) {
     Image.getStoryImage(story_id, image_id)
     .then((result) => {
       if(result && result.image){
-        imageUtils.processImage(result.image, req, res);
+        return imageUtils.processImage(result.image, req, res);
       }else{
-        res.status(404).send();
+        return res.status(404).send();
       }
     }).catch(apiError(res, 404));
   });
@@ -114,9 +114,9 @@ module.exports = function(app: any) {
     Image.getStoryThumbnail(story_id, image_id)
     .then((result) => {
       if(result && result.thumbnail){
-        imageUtils.processImage(result.thumbnail, req, res);
+        return imageUtils.processImage(result.thumbnail, req, res);
       }else{
-        res.status(404).send();
+        return res.status(404).send();
       }
     }).catch(apiError(res, 404));
   });

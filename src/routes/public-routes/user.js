@@ -93,19 +93,19 @@ if(local.useLocalAuth) {
       }
       PasswordUtil.updatePassword(data.user_id, data.password, true, req.__)
       .then(() => {
-        res.status(200).send({success:true});
+        return res.status(200).send({success:true});
       }).catch(apiError(res, 200));
     }else {
       User.getUserWithResetKey(data.pass_reset)
       .then((user) => {
         if(user){
-          PasswordUtil.updatePassword(user.id, data.password, true, req.__)
+          return PasswordUtil.updatePassword(user.id, data.password, true, req.__)
           .then(() => {
-            res.status(200).send({success:true});
+            return res.status(200).send({success:true});
           }).catch(apiError(res, 200));
         } else {
           log.error('Missing or Invalid Reset Key: ' + data.pass_reset);
-          res.status(200).send({success:false, error: 'The reset link has expired or may have already been used. Please go to Forgot Password and request another reset.'});
+          return res.status(200).send({success:false, error: 'The reset link has expired or may have already been used. Please go to Forgot Password and request another reset.'});
         }
       }).catch(apiError(res, 200));
     }
@@ -120,7 +120,7 @@ if(local.useLocalAuth) {
     var data = req.body;
     PasswordUtil.forgotPassword(data.email, req.__)
     .then(() => {
-      res.status(200).send({success:true});
+      return res.status(200).send({success:true});
     }).catch(apiError(res, 200));
 
   });

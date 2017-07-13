@@ -22,7 +22,7 @@ module.exports = function(app: any) {
       .then((results) => {
         var popularStories = results[0];
         var recentStories = results[1];
-        res.render('stories', {
+        return res.render('stories', {
           title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             popularStories, recentStories
@@ -34,7 +34,7 @@ module.exports = function(app: any) {
   app.get('/stories/all', (req, res, next) => {
       Story.getAllStories().orderBy('omh.stories.title')
       .then((stories) => {    
-        res.render('allstories', {
+        return res.render('allstories', {
           title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             stories
@@ -63,7 +63,7 @@ module.exports = function(app: any) {
             });
           });
         }else{
-          res.redirect('/notfound?path='+req.path);
+          return res.redirect('/notfound?path='+req.path);
         }
       }).catch(nextError(next));
     }
@@ -82,7 +82,7 @@ module.exports = function(app: any) {
         if(user.display_name === username){
           myStories = true;
         }
-        completeRequest();       
+        return completeRequest();       
       }).catch(nextError(next));
     }
   });
@@ -103,7 +103,7 @@ module.exports = function(app: any) {
           var myMaps = results[0];
           var popularMaps = results[1];
 
-          res.render('createuserstory', {
+          return res.render('createuserstory', {
             title: 'Create Story',
             fontawesome: true,
             rangy: true,
@@ -127,7 +127,7 @@ module.exports = function(app: any) {
     Story.allowedToModify(story_id, user_id)
     .then((allowed) => {
       if(allowed){
-          Promise.all([
+          return Promise.all([
             Story.getStoryByID(story_id),
             Map.getUserMaps(req.session.user.maphubsUser.id),
             Map.getPopularMaps()
@@ -135,7 +135,7 @@ module.exports = function(app: any) {
             var story = results[0];
             var myMaps = results[1];
             var popularMaps = results[2];
-            res.render('edituserstory', {
+            return res.render('edituserstory', {
               title: 'Editing: ' + story.title,
               fontawesome: true,
               rangy: true,
@@ -145,7 +145,7 @@ module.exports = function(app: any) {
             });
           }).catch(nextError(next));
       }else{
-        res.redirect('/unauthorized');
+        return res.redirect('/unauthorized');
       }
     }).catch(nextError(next));
   });
@@ -191,9 +191,9 @@ module.exports = function(app: any) {
             }
             if(!story.published){
               //guest users never see draft stories
-              res.status(401).send("Unauthorized");
+              return res.status(401).send("Unauthorized");
             }else{
-              res.render('userstory', {
+              return res.render('userstory', {
               title: story.title,
               description,
               props: {
@@ -221,9 +221,9 @@ module.exports = function(app: any) {
             }
 
           if(!story.published && !canEdit){
-              res.status(401).send("Unauthorized");
+              return res.status(401).send("Unauthorized");
             }else{
-              res.render('userstory', {
+              return res.render('userstory', {
                 title: story.title,
                 description,
                 props: {

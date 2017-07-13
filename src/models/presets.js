@@ -36,6 +36,7 @@ module.exports = {
               }else{
                 log.error(`tag: ${preset.prevTag} already exists`);
               }
+              return;
             })
             );
           }
@@ -111,7 +112,7 @@ order by position
     Object.keys(updatedMapStyles).forEach(map_id => {
       let updatedMapStyle = MapStyles.style.buildMapStyle(updatedMapStyles[map_id]);
       updateCommands.push(
-        knex('omh.maps').update({style: updatedMapStyle}).where({map_id: map_id})
+        knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
       );
     });
 

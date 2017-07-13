@@ -15,9 +15,10 @@ var local = require('../local');
 
 module.exports = {
 
-
   checkPassword(user_id: number, password: string, cb: Function){
-
+    if(!local.useLocalAuth){
+      return undefined;
+    }
     return User.getUser(user_id, true)
     .then((user) => {
       debug.log('checking password for: ' + user.display_name);
@@ -39,6 +40,9 @@ module.exports = {
   },
 
   updatePassword(user_id: number, password: string, sendEmail: boolean, __: Function){
+    if(!local.useLocalAuth){
+      return undefined;
+    }
     return User.getUser(user_id, true)
     .then((user) => {
       debug.log('Updating password for: ' + user.display_name);
@@ -75,16 +79,19 @@ module.exports = {
   },
 
   forgotPassword(email: string, __: Function){
+    if(!local.useLocalAuth){
+      return undefined;
+    }
     return User.getUserByEmail(email, true)
     .then((user) => {
       if(!user) throw new Error('User not found');
       //generate a unique reset link
       var pass_reset = uuid();
-      knex('users').update({pass_reset}).where({id: user.id})
+      return knex('users').update({pass_reset}).where({id: user.id})
       .then(() => {
         var baseUrl = urlUtil.getBaseUrl();
         var url = baseUrl + '/user/passwordreset/' + pass_reset;
-        Email.send({
+        return Email.send({
           from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
           to: user.email,
           subject: __('Password Reset') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -102,5 +109,4 @@ module.exports = {
     });
 
   }
-
 };

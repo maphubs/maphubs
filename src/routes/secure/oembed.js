@@ -4,6 +4,7 @@ var libxml = require('libxmljs');
 var debug = require('../../services/debug')('oembed');
 var urlUtil = require('../../services/url-util');
 var Locales = require('../../services/locales');
+var apiError = require('../../services/error-response').apiError;
 
 module.exports = function(app) {
 
@@ -36,7 +37,7 @@ module.exports = function(app) {
         author_name: user.display_name,
         author_url: '',
         author_id: parseInt(map.created_by),
-        title: title,
+        title,
         height: 630,
         width: 1200,
         html: `<iframe src="${url}" width="1200" height="630" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" frameborder="0"></iframe>`,
@@ -66,12 +67,12 @@ module.exports = function(app) {
         .node('map_id', oembed.map_id.toString()).parent();
 
         res.header("Content-Type", "text/xml");
-        res.send(doc.toString());
+        return res.send(doc.toString());
       }else{
         //just use JSON
-        res.status(200).send(oembed);
+        return res.status(200).send(oembed);
       }
     });
-    });
+    }).catch(apiError(res, 500));
   });
 };

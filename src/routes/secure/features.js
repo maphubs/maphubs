@@ -73,9 +73,8 @@ module.exports = function(app: any) {
 
         feature.mhid = mhid;
 
-
         if (!req.isAuthenticated || !req.isAuthenticated()) {
-          res.render('featureinfo',
+          return res.render('featureinfo',
           {
             title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
             fontawesome: true,
@@ -84,10 +83,10 @@ module.exports = function(app: any) {
             cache: false
            });
         }else{
-          Layer.allowedToModify(layer_id, user_id)
+          return Layer.allowedToModify(layer_id, user_id)
           .then((allowed) => {
             if(allowed){
-              res.render('featureinfo',
+              return res.render('featureinfo',
               {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
@@ -95,7 +94,7 @@ module.exports = function(app: any) {
               });
             }
             else{
-              res.render('featureinfo',
+              return res.render('featureinfo',
               {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
@@ -168,7 +167,7 @@ module.exports = function(app: any) {
             var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
             var match = req.get('If-None-Match');
             if(hash === match){
-              res.status(304).send();
+              return res.status(304).send();
             }else{
               res.writeHead(200, {
                 'Content-Type': 'application/gpx+xml',
@@ -195,7 +194,7 @@ module.exports = function(app: any) {
                 </trk>
                 </gpx>`;
 
-              res.end(gpx);
+              return res.end(gpx);
             }
           });
           }).catch(nextError(next));
@@ -217,7 +216,7 @@ module.exports = function(app: any) {
         if(allowed){
           return PhotoAttachment.getPhotoAttachment(photo_id)
           .then((result) => {
-            imageUtils.processImage(result.data, req, res);
+            return imageUtils.processImage(result.data, req, res);
           });
         }else{
           log.warn('Unauthorized attempt to access layer: ' + layer.layer_id);
@@ -244,12 +243,12 @@ module.exports = function(app: any) {
           .then(()=>{
             return SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx)
             .then(() => {
-                res.send({success: true});
+                return res.send({success: true});
               });
           }).catch(apiError(res, 500));
         });
         }else {
-          notAllowedError(res, 'layer');
+          return notAllowedError(res, 'layer');
         }
         
       }).catch(apiError(res, 500));
@@ -299,7 +298,7 @@ module.exports = function(app: any) {
             });
           }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'layer');
+          return notAllowedError(res, 'layer');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -332,7 +331,7 @@ module.exports = function(app: any) {
                   .then(() => {
                     return Layer.setUpdated(data.layer_id, user_id, trx)
                     .then(() => {
-                      res.send({success: true});
+                      return res.send({success: true});
                     });
                   });
                 });
@@ -340,7 +339,7 @@ module.exports = function(app: any) {
             });
           }).catch(apiError(res, 500));
         }else {
-          notAllowedError(res, 'layer');
+          return notAllowedError(res, 'layer');
         }
       }).catch(apiError(res, 500));
     } else {

@@ -61,7 +61,7 @@ module.exports = function(app: any) {
         var popularHubs = results[1];
         var recentHubs = results[2];
       
-        res.render('hubs', {
+        return res.render('hubs', {
           title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             featuredHubs, popularHubs, recentHubs
@@ -74,7 +74,7 @@ module.exports = function(app: any) {
   app.get('/hubs/all', csrfProtection, (req, res, next) => {
     Hub.getAllHubs().orderBy('omh.hubs.name')
     .then((hubs) => {
-      res.render('allhubs', {
+      return res.render('allhubs', {
         title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           hubs
@@ -104,10 +104,10 @@ module.exports = function(app: any) {
             if(userCanEdit){
               draftHubs = results[1];
             }
-            res.render('userhubs', {title: 'Hubs - ' + username, props:{user, publishedHubs, draftHubs, canEdit: userCanEdit}, req});
+            return res.render('userhubs', {title: 'Hubs - ' + username, props:{user, publishedHubs, draftHubs, canEdit: userCanEdit}, req});
           });
         }else{
-          res.redirect('/notfound?path='+req.path);
+          return res.redirect('/notfound?path='+req.path);
         }
       }).catch(nextError(next));
     }
@@ -126,7 +126,7 @@ module.exports = function(app: any) {
         if(user.display_name === username){
           canEdit = true;
         }
-        completeRequest(canEdit);
+        return completeRequest(canEdit);
       }).catch(nextError(next));
     }
   });
@@ -156,7 +156,7 @@ module.exports = function(app: any) {
 
         var image = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id + '/images/logo';
 
-        res.render('hubinfo', {
+        return res.render('hubinfo', {
           title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
           description: hub.description,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
@@ -209,7 +209,7 @@ module.exports = function(app: any) {
   var renderHubStoryPage = function(hub, canEdit, req, res){
       return Hub.getHubStories(hub.hub_id, canEdit)
       .then((stories) => {
-        res.render('hubstories', {
+        return res.render('hubstories', {
           title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
           props: {
@@ -296,7 +296,7 @@ module.exports = function(app: any) {
 
     Group.getGroupsForUser(user_id)
     .then((groups) => {
-      res.render('hubbuilder', {
+      return res.render('hubbuilder', {
         title: req.__('Create Hub') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {groups}, req
       });
@@ -322,7 +322,7 @@ module.exports = function(app: any) {
             ]).then((results: Array<any>) => {
               var myMaps = results[0];
               var popularMaps = results[1];
-              res.render('createhubstory', {
+              return res.render('createhubstory', {
                 title: 'Create Story',
                 fontawesome: true,
                 rangy: true,
@@ -334,7 +334,7 @@ module.exports = function(app: any) {
           });
         }).catch(nextError(next));
       }else{
-        res.redirect(baseUrl + '/unauthorized?path='+req.path);
+        return res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }
     }).catch(nextError(next));
   });
@@ -350,7 +350,7 @@ module.exports = function(app: any) {
     Hub.allowedToModify(hub_id, user_id)
     .then((allowed) => {
       if(allowed){
-        Promise.all([
+        return Promise.all([
           Hub.getHubByID(hub_id),
           Story.getStoryByID(story_id),
           Map.getUserMaps(req.session.user.maphubsUser.id),
@@ -360,7 +360,7 @@ module.exports = function(app: any) {
           var story = results[1];
           var myMaps = results[2];
           var popularMaps = results[3];
-            res.render('edithubstory', {
+            return res.render('edithubstory', {
               title: 'Editing: ' + story.title,
               fontawesome: true,
               rangy: true,
@@ -371,7 +371,7 @@ module.exports = function(app: any) {
             });
           }).catch(nextError(next));
       }else{
-        res.redirect(baseUrl + '/unauthorized?path='+req.path);
+        return res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }
     }).catch(nextError(next));
   });
@@ -403,9 +403,9 @@ module.exports = function(app: any) {
               description = story.firstline;
             }
             if(!story.published){
-              res.status(401).send("Unauthorized");
+              return res.status(401).send("Unauthorized");
             }else{
-              res.render('hubstory', {
+              return res.render('hubstory', {
                 title: story.title,
                 description,
                 props: {
@@ -440,9 +440,9 @@ module.exports = function(app: any) {
               description = story.firstline;
             }
              if(!story.published && !canEdit){
-              res.status(401).send("Unauthorized");
+              return res.status(401).send("Unauthorized");
             }else{
-              res.render('hubstory', {
+              return res.render('hubstory', {
                 title: story.title,
                 description,
                 props: {

@@ -26,7 +26,7 @@ module.exports = function(app: any) {
         var featuredLayers = results[0];
         var recentLayers = results[1];
         var popularLayers = results[2];
-        res.render('layers', {
+        return res.render('layers', {
           title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {featuredLayers, recentLayers, popularLayers},
           req
@@ -37,7 +37,7 @@ module.exports = function(app: any) {
   app.get('/layers/all', csrfProtection, (req, res, next) => {   
       Layer.getAllLayers(false)
       .then((layers) => {
-        res.render('alllayers', {
+        return res.render('alllayers', {
           title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {layers},
           req
@@ -53,7 +53,7 @@ module.exports = function(app: any) {
       return Layer.getLayerByID(layer_id).then(layer =>{
         return Group.getGroupsForUser(user_id)
         .then((result) => {
-          res.render('createlayer', {
+          return res.render('createlayer', {
             title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
             props: {groups: result, layer},
             req
@@ -113,14 +113,14 @@ module.exports = function(app: any) {
           if(layer){
           let name = Locales.getLocaleStringObject(req.locale, layer.name);
           let description = Locales.getLocaleStringObject(req.locale, layer.description);
-          res.render('layerinfo', {
+          return res.render('layerinfo', {
             title: name + ' - ' + MAPHUBS_CONFIG.productName,
             description,
             props: {layer, notes, stats, canEdit, createdByUser, updatedByUser},
             fontawesome: true, hideFeedback: true,
             twitterCard: {
               title: name,
-              description: description,
+              description,
               image: baseUrl + '/api/screenshot/layer/image/' + layer.layer_id + '.png',
               imageWidth: 1200,
               imageHeight: 630,
@@ -128,7 +128,7 @@ module.exports = function(app: any) {
             },
           req});
         }else{
-          res.render('error', {
+          return res.render('error', {
             title: req.__('Not Found'),
             props: {
               title: req.__('Not Found'),
@@ -180,13 +180,13 @@ module.exports = function(app: any) {
       if(layer){
         let name = Locales.getLocaleStringObject(req.locale, layer.name);
         let description = Locales.getLocaleStringObject(req.locale, layer.description);
-        res.render('layermap', {
+        return res.render('layermap', {
           title: name + ' - ' + MAPHUBS_CONFIG.productName,
           description,
           props: {layer, canEdit}, hideFeedback: true,
           twitterCard: {
             title: name,
-            description: description,
+            description,
             image: baseUrl + '/api/screenshot/layer/image/' + layer.layer_id + '.png',
             imageWidth: 1200,
             imageHeight: 630,
@@ -195,7 +195,7 @@ module.exports = function(app: any) {
           req
         });
        }else{
-          res.render('error', {
+          return res.render('error', {
             title: req.__('Not Found'),
             props: {
               title: req.__('Not Found'),
@@ -219,13 +219,13 @@ module.exports = function(app: any) {
           .then((layer) => {
             if(allowed || layer.allowPublicSubmission){ //placeholder for public submission flag on layers
               if(layer.data_type === 'point' && !layer.is_external){
-                res.render('addphotopoint', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+                return res.render('addphotopoint', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
                 props: {layer}, req});
               }else{
-                res.status(400).send('Bad Request: Feature not support for this layer');
+                return res.status(400).send('Bad Request: Feature not support for this layer');
               }
             }else{
-              res.redirect('/unauthorized');
+              return res.redirect('/unauthorized');
             }
           }).catch(nextError(next));
         }).catch(nextError(next));
@@ -247,11 +247,11 @@ module.exports = function(app: any) {
         .then((results) => {
           var layer = results[0];
           var groups = results[1];
-          res.render('layeradmin', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+          return res.render('layeradmin', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
           props: {layer, groups}, req});
           });
         }else{
-          res.redirect('/unauthorized');
+          return res.redirect('/unauthorized');
         }
       }).catch(nextError(next));
   });

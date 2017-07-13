@@ -19,7 +19,7 @@ module.exports = function(app: any) {
 
     Group.getGroupsForUser(user_id)
     .then((result) => {
-      res.render('createremotelayer', {title: req.__('Remote Layer') + ' - ' + MAPHUBS_CONFIG.productName, props: {groups: result}, req});
+      return res.render('createremotelayer', {title: req.__('Remote Layer') + ' - ' + MAPHUBS_CONFIG.productName, props: {groups: result}, req});
     }).catch(nextError(next));
 
   });
@@ -40,13 +40,13 @@ module.exports = function(app: any) {
           return Layer.createRemoteLayer(req.body.group_id, req.body.layer, req.body.host, user_id)
           .then((result) => {
             if(result){
-              res.send({success:true, layer_id: result[0]});
+              return res.send({success:true, layer_id: result[0]});
             }else {
-              res.send({success:false, error: "Failed to Create Layer"});
+              return res.send({success:false, error: "Failed to Create Layer"});
             }
           });
         }else{
-          notAllowedError(res, 'layer');
+          return notAllowedError(res, 'layer');
         }
       }).catch(apiError(res, 500));
     }else{
@@ -83,20 +83,18 @@ module.exports = function(app: any) {
                 return Layer.updateRemoteLayer(layer.layer_id, layer.owned_by_group_id, response.body.layer, layer.remote_host, user_id)
                 .then((result) => {
                   if(result){
-                    res.send({success:true});
+                    return res.send({success:true});
                   }else {
-                    res.send({success:false, error: "Failed to Update Layer"});
+                    return res.send({success:false, error: "Failed to Update Layer"});
                   }
                 });
               }).catch(apiError(res, 500));
             }else{
-              res.send({success:false, error: "Failed to Update Layer"});
+              return res.send({success:false, error: "Failed to Update Layer"});
             }
-
         });
-
         }else{
-          notAllowedError(res, 'layer');
+          return notAllowedError(res, 'layer');
         }
       }).catch(apiError(res, 500));
     }else{

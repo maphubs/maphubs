@@ -20,7 +20,7 @@ module.exports = function(app: any) {
     if (data && data.id) {
       Hub.checkHubIdAvailable(data.id)
         .then((result) => {
-          res.send({
+          return res.send({
             available: result
           });
         }).catch(nextError(next));
@@ -40,7 +40,7 @@ module.exports = function(app: any) {
         result.forEach((hub) => {
           suggestions.push({key: hub.hub_id, value:hub.name});
         });
-        res.send({
+        return res.send({
           suggestions
         });
       }).catch(nextError(next));
@@ -52,7 +52,7 @@ module.exports = function(app: any) {
     }
     Hub.getSearchResults(req.query.q)
       .then((result) => {
-        res.status(200).send({hubs: result});
+        return res.status(200).send({hubs: result});
       }).catch(apiError(res, 500));
   });
 
@@ -67,11 +67,11 @@ module.exports = function(app: any) {
       Hub.createHub(data.hub_id, data.group_id, data.name, data.published, data.private, user_id)
         .then((result) => {
           if (result) {
-            res.send({
+            return res.send({
               success: true
             });
           } else {
-            res.send({
+            return res.send({
               success: false,
               error: "Failed to Create Hub"
             });
@@ -93,6 +93,7 @@ module.exports = function(app: any) {
     var session_user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.hub_id) {
+      //TODO: wrap in transaction
       Hub.allowedToModify(data.hub_id, session_user_id)
       .then((allowed) => {
         if(allowed){
@@ -100,9 +101,9 @@ module.exports = function(app: any) {
           if(data.tagline) data.tagline = data.tagline.replace('&nbsp;', '');
           if(data.description) data.description = data.description.replace('&nbsp;', '');
 
-          Hub.updateHub(data.hub_id, data.name, data.description, data.tagline, data.published, data.resources, data.about, data.map_id, session_user_id)
+          return Hub.updateHub(data.hub_id, data.name, data.description, data.tagline, data.published, data.resources, data.about, data.map_id, session_user_id)
             .then((result) => {
-              if (result && result === 1) {
+              if(result && result === 1) {
                 var commands = [];
 
                 if(data.logoImage){
@@ -112,20 +113,20 @@ module.exports = function(app: any) {
                     commands.push(Image.setHubImage(data.hub_id, data.bannerImage, data.bannerImageInfo, 'banner'));
                 }
 
-                Promise.all(commands)
+                return Promise.all(commands)
                 .then(() => {
-                  res.send({success: true});
+                  return res.send({success: true});
                 }).catch(apiError(res, 500));
 
               } else {
-                res.send({
+                return res.send({
                   success: false,
                   error: "Failed to Save Hub"
                 });
               }
             }).catch(apiError(res, 500));
         }else{
-          notAllowedError(res, 'hub');
+          return notAllowedError(res, 'hub');
         }
       }).catch(apiError(res, 500));
     } else {
@@ -150,10 +151,10 @@ module.exports = function(app: any) {
         if(allowed){
           return Hub.setPrivate(data.hub_id, data.isPrivate, data.user_id)
           .then(() => {
-            res.status(200).send({success: true});
+            return res.status(200).send({success: true});
           });
         }else{
-          notAllowedError(res, 'hub');
+          return notAllowedError(res, 'hub');
         }
       }).catch(apiError(res, 200));
     }else{
@@ -185,10 +186,10 @@ module.exports = function(app: any) {
           if(allowed){
             return Hub.deleteHub(data.hub_id)
               .then(() => {
-                res.send({success: true});
+                return res.send({success: true});
               }).catch(apiError(res, 500));
             }else{
-              res.status(401).send();
+              return res.status(401).send();
             }
         }).catch(apiError(res, 500));
       } else {

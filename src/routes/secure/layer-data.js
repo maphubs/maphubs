@@ -39,12 +39,12 @@ module.exports = function(app: any) {
             return Promise.all(updates).then(()=>{
               return Layer.setUpdated(data.layer_id, user_id, trx).then(()=>{
                 debug.log('save edits complete');
-                res.status(200).send({success: true});
+                return res.status(200).send({success: true});
               });
             });
           });
           }else{
-            notAllowedError(res, 'layer');
+            return notAllowedError(res, 'layer');
           }
     }).catch(apiError(res, 500));      
   }else{

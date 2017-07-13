@@ -36,6 +36,7 @@ module.exports = function(app: any) {
           }
          createMap
           .then((map_id) => {
+            //intentionally not returning here since we don't want to wait for the reload
             ScreenshotUtil.reloadMapThumbnail(map_id)
             .then(() => {
               return ScreenshotUtil.reloadMapImage(map_id);
@@ -128,7 +129,7 @@ module.exports = function(app: any) {
                   }).catch(apiError(res, 500));
                 }
           }
-        });
+        }).catch(apiError(res, 500));
       }else{
         apiDataError(res);
       }
@@ -150,10 +151,10 @@ module.exports = function(app: any) {
           if(allowed){
             return Map.setPrivate(data.map_id, data.isPrivate, data.user_id)
             .then(() => {
-              res.status(200).send({success: true});
+              return res.status(200).send({success: true});
             });
           }else{
-            notAllowedError(res, 'map');
+            return notAllowedError(res, 'map');
           }
         }).catch(apiError(res, 200));
       }else{
@@ -176,13 +177,13 @@ module.exports = function(app: any) {
         .then((allowed) => {
           if(allowed){
             return Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id)
-            .then(() => {
-              res.status(200).send({success: true});
+            .then(() => {       
               //don't wait for screenshot
               ScreenshotUtil.reloadMapThumbnail(data.map_id)
               .then(() => {
                 return ScreenshotUtil.reloadMapImage(data.map_id);
               }).catch((err) => {log.error(err);});
+              return res.status(200).send({success: true});
             }).catch(apiError(res, 200));
           }else{
             notAllowedError(res, 'map');
@@ -205,12 +206,12 @@ module.exports = function(app: any) {
         Map.allowedToModify(data.map_id, user_id)
         .then((allowed) => {
           if(allowed){
-            Map.deleteMap(data.map_id)
+            return Map.deleteMap(data.map_id)
             .then(() => {
-              res.status(200).send({success: true});
+              return res.status(200).send({success: true});
             }).catch(apiError(res, 500));
           }else{
-            notAllowedError(res, 'map');
+            return notAllowedError(res, 'map');
           }
         }).catch(apiError(res, 500));
       }else{
@@ -231,7 +232,7 @@ module.exports = function(app: any) {
               let title = Locales.getLocaleStringObject(req.locale, map.title);
               suggestions.push({key: map.map_id, value: title});
             });
-            res.send({suggestions});
+            return res.send({suggestions});
         }).catch(apiError(res, 500));
     });
 
@@ -242,7 +243,7 @@ module.exports = function(app: any) {
       }
       Map.getSearchResults(req.query.q)
         .then((result) => {
-          res.status(200).send({maps: result});
+          return res.status(200).send({maps: result});
         }).catch(apiError(res, 500));
     });
 };
