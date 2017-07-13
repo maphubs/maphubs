@@ -28,17 +28,18 @@
       "jsx": true
     }
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:promise/recommended"],
   "rules": {
-    "babel/generator-star-spacing": 1,
+    "generator-star-spacing": 1,
     "babel/object-curly-spacing": 1,
-    "babel/object-shorthand": 1,
-    "babel/arrow-parens": 1,
+    "object-shorthand": 1,
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
     "react/prefer-es6-class": 1,
     "react/jsx-no-bind": 2,
     "react/no-string-refs": 0,
+     "promise/no-nesting": "off",
+     "promise/avoid-new": "off",
     "prefer-arrow-callback": 1,
     "semi": [2, "always"],
     "eqeqeq": 1 // require the use of === and !==
@@ -60,6 +61,7 @@
   "plugins": [
     "babel",
     "react",
+    "promise",
     "flowtype"
   ],
   "settings": {
