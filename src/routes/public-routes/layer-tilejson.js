@@ -21,7 +21,11 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
 
       if(layer.is_external && layer.external_layer_config.type === 'raster'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
-        if(layer.extent_bbox) bounds = layer.extent_bbox;
+        if(layer.external_layer_config.bounds){
+          bounds = layer.external_layer_config.bounds;
+        }else if(layer.extent_bbox){
+          bounds = layer.extent_bbox;
+        } 
         let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
         let maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
 
@@ -39,7 +43,6 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
           description,
           legend,
           filesize: 0,
-          format: "png8:m=h:c=64",
           id: 'omh-' + layer.layer_id,
           maxzoom,
           minzoom,

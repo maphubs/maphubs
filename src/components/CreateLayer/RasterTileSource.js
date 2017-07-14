@@ -61,11 +61,24 @@ export default class RasterTileSource extends MapHubsComponent<void, Props, Stat
 
   submit = (model: Object) => {
     var _this = this;
+    let boundsArr;
+    if(model.bounds){
+      boundsArr = model.bounds.split(',');
+      boundsArr = boundsArr.map((item) => {
+        return item.trim();
+      });
+    }
+   
+
+
     LayerActions.saveDataSettings({
       is_external: true,
       external_layer_type: 'Raster Tile Service',
       external_layer_config: {
         type: 'raster',
+        minzoom: model.minzoom,
+        maxzoom: model.maxzoom,
+        bounds: boundsArr,
         tiles: [model.rasterTileUrl]
       }
     }, _this.state._csrf, (err) => {
@@ -119,6 +132,21 @@ export default class RasterTileSource extends MapHubsComponent<void, Props, Stat
                  }} length={500}
                  dataPosition="top" dataTooltip={this.__('Raster URL for example:') +'http://myserver/tiles/{z}/{x}/{y}.png'}
                  required/>
+            </div>
+            <div className="row">
+              <TextInput name="minzoom" label={this.__('MinZoom (Optional)')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Lowest tile zoom level available in data')}
+                 />
+            </div>
+            <div className="row">
+              <TextInput name="maxzoom" label={this.__('MaxZoom (Optional)')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Highest tile zoom level available in data')}
+                 />
+            </div>
+            <div className="row">
+              <TextInput name="bounds" label={this.__('Bounds (Optional)')} icon="info" className="col s12" 
+                 dataPosition="top" dataTooltip={this.__('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                 />
             </div>
             </div>
 
