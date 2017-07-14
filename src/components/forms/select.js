@@ -101,6 +101,8 @@ class Select extends MapHubsComponent<DefaultProps, Props, State> {
   }
 
   handleSelectChange = (selected) => {
+    //clear toolips so they don't stick
+    $(this.refs.selectwrapper).tooltip('remove');
     let val;
     if(selected){
       val = selected.value;
