@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.11.18](https://github.com/maphubs/maphubs/tree/v0.11.18) (2017-07-14)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.17...v0.11.18)
+
+**Fixed bugs:**
+
+- languages setting not saved after reload [\#404](https://github.com/maphubs/maphubs/issues/404)
+- legend item names not updating when languages changes [\#403](https://github.com/maphubs/maphubs/issues/403)
+- features disappear after stop editing [\#401](https://github.com/maphubs/maphubs/issues/401)
+- layer license tooltip sticks after choosing license [\#399](https://github.com/maphubs/maphubs/issues/399)
+- option set maxzoom on external raster layers [\#390](https://github.com/maphubs/maphubs/issues/390)
+- reload map when user stops editing [\#356](https://github.com/maphubs/maphubs/issues/356)
+
 ## [v0.11.17](https://github.com/maphubs/maphubs/tree/v0.11.17) (2017-07-13)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.16...v0.11.17)
 
