@@ -165,7 +165,7 @@ export default class HomePro extends MapHubsComponent<DefaultProps, Props, State
     let bgColor = config.bgColor ? config.bgColor : 'inherit';
     let links = (
       <div key={key} className="row" style={{backgroundColor: bgColor}}>
-        <PublicOnboardingLinks />
+        <PublicOnboardingLinks {...config} />
       </div>
     );
     return links;
