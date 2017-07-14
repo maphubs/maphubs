@@ -12,6 +12,8 @@ import Confirmation from '../components/confirmation';
 import LocaleChooser from './LocaleChooser';
 import _isequal from 'lodash.isequal';
 
+import type {LocaleStoreState} from '../stores/LocaleStore';
+
 type Link = {
   href: string,
   label: LocalizedString
@@ -37,7 +39,9 @@ type DefaultProps = {
   customLinks: Array<Link>
 }
 
-export default class Header extends MapHubsComponent<DefaultProps, Props, void> {
+type State = LocaleStoreState;
+
+export default class Header extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
@@ -68,9 +72,12 @@ export default class Header extends MapHubsComponent<DefaultProps, Props, void> 
     }
   }
 
-  shouldComponentUpdate(nextProps: Props){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(this.state.locale !== nextState.locale){
       return true;
     }
     return false;

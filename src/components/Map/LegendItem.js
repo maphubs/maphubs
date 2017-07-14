@@ -4,6 +4,7 @@ import Marker from './Marker';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 import type {Layer} from '../../stores/layer-store';
+import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type Props = {
   layer: Layer,
@@ -14,7 +15,9 @@ type DefaultProps = {
   style: Object
 }
 
-export default class LegendItem extends MapHubsComponent<DefaultProps, Props, void> {
+type State = LocaleStoreState;
+
+export default class LegendItem extends MapHubsComponent<DefaultProps, Props, State> {
 
   props: Props
 
@@ -22,9 +25,12 @@ export default class LegendItem extends MapHubsComponent<DefaultProps, Props, vo
       style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'},
   }
 
-  shouldComponentUpdate(nextProps: Props){
+  shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
+      return true;
+    }
+    if(this.state.locale !== nextState.locale){
       return true;
     }
     return false;
