@@ -56,8 +56,15 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   stopEditing(){
-    //TODO: error if unsaved edits?
-    this.setState({editing: false, editingLayer: null});
+    if(this.state.edits.length > 0){
+      debug('stopping with unsaved edits, edits have been deleted');
+    }
+    this.setState( {editing: false,
+      originals: [],
+      edits: [],
+      redo: [],
+      editingLayer: null
+    });
   }
 
   /**

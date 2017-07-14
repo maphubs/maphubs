@@ -891,6 +891,14 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     return DataEditorMixin.updateMapLayerFilters.bind(this)();
   }
 
+  removeMapLayerFilters = () => {
+    return DataEditorMixin.removeMapLayerFilters.bind(this)();
+  }
+
+  reloadEditingSourceCache = () => {
+    return DataEditorMixin.reloadEditingSourceCache.bind(this)();
+  }
+
   //MeasurementToolMixin
   toggleMeasurementTools = (enable: boolean) => {
     return MeasurementToolMixin.toggleMeasurementTools.bind(this)(enable);

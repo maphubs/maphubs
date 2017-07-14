@@ -228,7 +228,12 @@ module.exports = {
     $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-edit-tool');
     $('.map-search-button').removeClass('maphubs-edit-tool-search-button');
     this.map.removeControl(this.draw);
+    this.removeMapLayerFilters();
+    this.reloadEditingSourceCache();
+    this.reload();
   },
+
+  
 
   updateEdits(e: any){
      if (e.features.length > 0) {
@@ -311,5 +316,48 @@ module.exports = {
 
       });
     }
+  },
+
+  removeMapLayerFilters(){
+
+    var layer_id = this.state.editingLayer.layer_id;
+
+
+    if(this.state.glStyle){
+      this.state.glStyle.layers.forEach(layer => {
+
+        //check if the layer_id matches
+        var foundMatch;
+        if(layer.metadata && layer.metadata['maphubs:layer_id']){
+          if(layer.metadata['maphubs:layer_id'] === layer_id){
+            foundMatch = true;
+          }
+        }else if(layer.id.endsWith(layer_id)){
+          foundMatch = true;
+        }
+        if(foundMatch){
+          //get current filter
+          var filter = layer.filter;
+          if(!filter || !Array.isArray(filter) || filter.length === 0 ){
+            //do nothing
+          }else if(filter[0] === "all"){
+            //remove our filter from the end
+             filter = layer.filter.pop();
+          }else{
+            filter = undefined;
+          }
+           this.map.setFilter(layer.id, filter);
+        }
+
+      });
+    }
+
+  },
+
+  reloadEditingSourceCache(){
+    var sourceID = Object.keys(this.state.editingLayer.style.sources)[0];
+    const sourceCache = this.map.style.sourceCaches[sourceID];
+    sourceCache.reload();
   }
+
 };
