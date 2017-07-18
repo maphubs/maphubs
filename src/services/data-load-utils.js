@@ -237,8 +237,11 @@ module.exports = {
       Promise.all(commands)
         .then((dbResult) => {
           if(dbResult){
+            debug.log('db updates complete');
             var largeData = false;
-            if(sizeof(geoJSON) > LARGE_DATA_THRESHOLD){
+            let size = sizeof(geoJSON);
+            debug.log(`GeoJSON size: ${size}`);
+            if(size > LARGE_DATA_THRESHOLD){
               largeData = true;
               geoJSON = null;
             }
@@ -250,6 +253,7 @@ module.exports = {
               uniqueProps,
               data_type: geomType
             };
+            debug.log('Upload Complete!');
             resolve(result);
           }else{
             reject(new Error("Failed to Insert Metadata Database"));
