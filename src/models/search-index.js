@@ -123,7 +123,7 @@ module.exports = {
 
       //convert props to array
       let props = Object.keys(feature.properties).map(key => {
-        let val = feature.properties[key];
+        let val = JSON.stringify(feature.properties[key]);
         return {key, val};
       });
 
