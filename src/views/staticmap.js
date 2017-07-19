@@ -20,13 +20,15 @@ type Props = {
   insetMap:  boolean,
   locale: string,
   _csrf: string,
+  settings: Object,
   mapConfig: Object
 }
 
 type DefaultProps = {
   showLegend: boolean,
   showLogo: boolean,
-  insetMap:  boolean
+  insetMap:  boolean,
+  settings: Object
 }
 
 type State = {
@@ -43,7 +45,8 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
   static defaultProps = {
     showLegend: true,
     showLogo: true,
-    insetMap: true
+    insetMap: true,
+    settings: {}
   }
 
   state = {
@@ -101,6 +104,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
           <MiniLegend style={{
               width: '100%'
             }}
+            collapsible={false}
             title={this.props.name}
             hideInactive={false} showLayersButton={false}
               layers={this.props.layers}/>
@@ -114,6 +118,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
               minWidth: '275px',
               width: '25%'
             }}
+            collapsible={false}
             title={this.props.name}
             hideInactive={false} showLayersButton={false}
               layers={this.props.layers}/>
@@ -130,6 +135,12 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
             bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
           }        
       }
+  let insetConfig = {};
+  if(this.props.settings && this.props.settings.insetConfig){
+    insetConfig = this.props.settings.insetConfig;
+  }
+  insetConfig.collapsible = false;
+
     map = (
       <Map ref="map" 
         id="static-map"
@@ -137,6 +148,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
         showPlayButton={false} 
         fitBounds={bounds} 
         insetMap={this.props.insetMap}
+        insetConfig={this.props.settings.insetConfig}
         showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}
         glStyle={this.props.style} 
         mapConfig={this.props.mapConfig}

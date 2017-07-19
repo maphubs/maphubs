@@ -55,7 +55,8 @@ module.exports = function(app: any) {
              layers,
              position: map.position,
              basemap: map.basemap,
-             style: map.style
+             style: map.style,
+             settings: map.settings
            }, req
          });
       }).catch(nextError(next));

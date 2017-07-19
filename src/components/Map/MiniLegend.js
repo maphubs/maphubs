@@ -168,7 +168,7 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
       );
     }else{
       title = (
-        <div className="row no-margin valign-wrapper" style={{height: '44px'}}>
+        <div className="row no-margin valign-wrapper" style={{height: '32px'}}>
           <h6 className="black-text valign" style={{
             padding: '0.2rem',  marginLeft: '2px', 
             fontWeight: '500',
