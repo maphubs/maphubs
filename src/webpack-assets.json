@@ -3,8 +3,8 @@
     "js": "/public/about.d80a1286a8f6f71d8886.js"
   },
   "addphotopoint": {
-    "js": "/public/addphotopoint.17483fb7cc9b5b3dfb67.js",
-    "css": "/public/addphotopoint.17483fb7cc9b5b3dfb67.css"
+    "js": "/public/addphotopoint.925b767a9d2f50ff58bf.js",
+    "css": "/public/addphotopoint.925b767a9d2f50ff58bf.css"
   },
   "adminuserinvite": {
     "js": "/public/adminuserinvite.07bebe9c10e3775bef43.js"
@@ -13,39 +13,39 @@
     "js": "/public/approvedialog.4e7f8358435732146173.js"
   },
   "creategroup": {
-    "js": "/public/creategroup.59bce4da33651676611a.js",
-    "css": "/public/creategroup.59bce4da33651676611a.css"
+    "js": "/public/creategroup.82152516e3484b656880.js",
+    "css": "/public/creategroup.82152516e3484b656880.css"
   },
   "createhubstory": {
-    "js": "/public/createhubstory.222c7cd451f486e96d9c.js",
-    "css": "/public/createhubstory.222c7cd451f486e96d9c.css"
+    "js": "/public/createhubstory.6a17e97ccfad94b058d2.js",
+    "css": "/public/createhubstory.6a17e97ccfad94b058d2.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.662d31eb104792a78bfc.js",
-    "css": "/public/createlayer.662d31eb104792a78bfc.css"
+    "js": "/public/createlayer.5bb959eb24526d24a389.js",
+    "css": "/public/createlayer.5bb959eb24526d24a389.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.7cd1c6267c5739aede3f.js",
-    "css": "/public/createremotelayer.7cd1c6267c5739aede3f.css"
+    "js": "/public/createremotelayer.e9e7d9b8f843ae2d8d50.js",
+    "css": "/public/createremotelayer.e9e7d9b8f843ae2d8d50.css"
   },
   "createuserstory": {
-    "js": "/public/createuserstory.64ca03b4de5effe80470.js",
-    "css": "/public/createuserstory.64ca03b4de5effe80470.css"
+    "js": "/public/createuserstory.468a17b322769e182187.js",
+    "css": "/public/createuserstory.468a17b322769e182187.css"
   },
   "edithubstory": {
-    "js": "/public/edithubstory.c88c88049734d4178558.js",
-    "css": "/public/edithubstory.c88c88049734d4178558.css"
+    "js": "/public/edithubstory.1690cd51921b1ee30eb1.js",
+    "css": "/public/edithubstory.1690cd51921b1ee30eb1.css"
   },
   "edituserstory": {
-    "js": "/public/edituserstory.fec55773fdab6a2bbdbc.js",
-    "css": "/public/edituserstory.fec55773fdab6a2bbdbc.css"
+    "js": "/public/edituserstory.78ca6b36a133a1835f9f.js",
+    "css": "/public/edituserstory.78ca6b36a133a1835f9f.css"
   },
   "emailconfirmation": {
     "js": "/public/emailconfirmation.2eed77bdaef0c0a75108.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.8206e14bce91ad708b98.js",
-    "css": "/public/embedmap.8206e14bce91ad708b98.css"
+    "js": "/public/embedmap.1b24c7644336cf8ff9ba.js",
+    "css": "/public/embedmap.1b24c7644336cf8ff9ba.css"
   },
   "error": {
     "js": "/public/error.5872ce4b51c305017104.js"
@@ -55,12 +55,12 @@
     "css": "/public/explore.d19236308ccb3489e975.css"
   },
   "featureinfo": {
-    "js": "/public/featureinfo.3fd321a1603704debd05.js",
-    "css": "/public/featureinfo.3fd321a1603704debd05.css"
+    "js": "/public/featureinfo.38d69c621c312d14c802.js",
+    "css": "/public/featureinfo.38d69c621c312d14c802.css"
   },
   "groupadmin": {
-    "js": "/public/groupadmin.1011dde5106656690d9a.js",
-    "css": "/public/groupadmin.1011dde5106656690d9a.css"
+    "js": "/public/groupadmin.85e158f727326f827589.js",
+    "css": "/public/groupadmin.85e158f727326f827589.css"
   },
   "groupinfo": {
     "js": "/public/groupinfo.794e4c3dbce7652f3057.js",
@@ -71,8 +71,8 @@
     "css": "/public/groups.6b412554aeed9bfc7c05.css"
   },
   "home": {
-    "js": "/public/home.73e723c51cb380020fcc.js",
-    "css": "/public/home.73e723c51cb380020fcc.css"
+    "js": "/public/home.2e903a46cb4c7c6706d4.js",
+    "css": "/public/home.2e903a46cb4c7c6706d4.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
@@ -81,43 +81,43 @@
     "js": "/public/hubbuilder.e8d779b7600c513a9089.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.d298edb58fa99a0ab3c2.js",
-    "css": "/public/hubinfo.d298edb58fa99a0ab3c2.css"
+    "js": "/public/hubinfo.4854c73752d05b396ec6.js",
+    "css": "/public/hubinfo.4854c73752d05b396ec6.css"
   },
   "hubmap": {
     "js": "/public/hubmap.64826aba6be7ecc9e4f3.js",
     "css": "/public/hubmap.64826aba6be7ecc9e4f3.css"
   },
   "hubresources": {
-    "js": "/public/hubresources.2fe7d3fb9d3412a05370.js",
-    "css": "/public/hubresources.2fe7d3fb9d3412a05370.css"
+    "js": "/public/hubresources.d7c2bec406af90537db6.js",
+    "css": "/public/hubresources.d7c2bec406af90537db6.css"
   },
   "hubs": {
     "js": "/public/hubs.69aef62c5c32b9a1cdb9.js",
     "css": "/public/hubs.69aef62c5c32b9a1cdb9.css"
   },
   "hubstories": {
-    "js": "/public/hubstories.e5f58a03032c3c8932bf.js",
-    "css": "/public/hubstories.e5f58a03032c3c8932bf.css"
+    "js": "/public/hubstories.f2db070d24edb9354101.js",
+    "css": "/public/hubstories.f2db070d24edb9354101.css"
   },
   "hubstory": {
-    "js": "/public/hubstory.cf9223b6d545bdbdf553.js",
-    "css": "/public/hubstory.cf9223b6d545bdbdf553.css"
+    "js": "/public/hubstory.aedfbbdb03c99e7f40bb.js",
+    "css": "/public/hubstory.aedfbbdb03c99e7f40bb.css"
   },
   "journalists": {
     "js": "/public/journalists.865a20d0534b1ae71870.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.64ab6a9e4c266ce814f3.js",
-    "css": "/public/layeradmin.64ab6a9e4c266ce814f3.css"
+    "js": "/public/layeradmin.ca0731d06dc2db8fc507.js",
+    "css": "/public/layeradmin.ca0731d06dc2db8fc507.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.578b9b93b0e9b1b1f589.js",
-    "css": "/public/layerinfo.578b9b93b0e9b1b1f589.css"
+    "js": "/public/layerinfo.5c83a92f75c6af604b2d.js",
+    "css": "/public/layerinfo.5c83a92f75c6af604b2d.css"
   },
   "layermap": {
-    "js": "/public/layermap.42a55419de4c2e26c744.js",
-    "css": "/public/layermap.42a55419de4c2e26c744.css"
+    "js": "/public/layermap.c99e8ee697b81c9449da.js",
+    "css": "/public/layermap.c99e8ee697b81c9449da.css"
   },
   "layers": {
     "js": "/public/layers.75d428eb19640a2c6e09.js",
@@ -130,15 +130,15 @@
     "js": "/public/login.fb4013c834641ea41bbb.js"
   },
   "map": {
-    "js": "/public/map.bb654aa05600f60f5218.js",
-    "css": "/public/map.bb654aa05600f60f5218.css"
+    "js": "/public/map.a032d0dbc9d2855ce5a8.js",
+    "css": "/public/map.a032d0dbc9d2855ce5a8.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.8f607e3150b76f0035ee.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.99cb1eb03e721ee4eb6a.js",
-    "css": "/public/mapedit.99cb1eb03e721ee4eb6a.css"
+    "js": "/public/mapedit.6b0886540cea49e16c19.js",
+    "css": "/public/mapedit.6b0886540cea49e16c19.css"
   },
   "maps": {
     "js": "/public/maps.91dd37dbdf2d52a569d4.js",
@@ -154,8 +154,8 @@
     "js": "/public/privacy.4d361cbac7836ee059f4.js"
   },
   "search": {
-    "js": "/public/search.5ac76e792b2e753bd96f.js",
-    "css": "/public/search.5ac76e792b2e753bd96f.css"
+    "js": "/public/search.62c891ce905a425a46f3.js",
+    "css": "/public/search.62c891ce905a425a46f3.css"
   },
   "services": {
     "js": "/public/services.2d642dd0eb1210f97303.js"
@@ -164,8 +164,8 @@
     "js": "/public/signup.9d9147ef5034496740eb.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.96e89f4d8c66c42ab6c6.js",
-    "css": "/public/staticmap.96e89f4d8c66c42ab6c6.css"
+    "js": "/public/staticmap.1102febeeccaf8112a19.js",
+    "css": "/public/staticmap.1102febeeccaf8112a19.css"
   },
   "stories": {
     "js": "/public/stories.d39894e32b94174c23f0.js",
@@ -183,8 +183,8 @@
     "css": "/public/userhubs.9bdc1684dad19fe117f8.css"
   },
   "usermap": {
-    "js": "/public/usermap.c7fd1ac57dce7bcade12.js",
-    "css": "/public/usermap.c7fd1ac57dce7bcade12.css"
+    "js": "/public/usermap.240faa1d7b771b001db9.js",
+    "css": "/public/usermap.240faa1d7b771b001db9.css"
   },
   "usermaps": {
     "js": "/public/usermaps.8454f059e56120fcabae.js",
@@ -202,10 +202,10 @@
     "css": "/public/userstory.d1a2f09f2369df4e4ead.css"
   },
   "vendor": {
-    "js": "/public/vendor.d9302a0be1b3514beaaf.js"
+    "js": "/public/vendor.7557b1d7f94acf14fdfb.js"
   },
   "metadata": {
-    "version": "0.11.18"
+    "version": "0.11.19"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
