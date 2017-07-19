@@ -49,7 +49,7 @@ if [ -z ${OMH_REMOTE_THEME} ]
 then
   cp ./src/sass/themes/${OMH_THEME}.scss ./src/theme.scss
 else
-  wget ${OMH_REMOTE_THEME} -o /app/src/theme.scss
+  wget -O /app/src/theme.scss ${OMH_REMOTE_THEME}
 fi
 
 #work-around old babel config included in dnd-core

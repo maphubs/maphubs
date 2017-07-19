@@ -40,7 +40,7 @@ if [ -z ${OMH_REMOTE_THEME} ]
 then
   cp /app/src/sass/themes/${OMH_THEME}.scss /app/src/theme.scss
 else
-  wget ${OMH_REMOTE_THEME} -o /app/src/theme.scss
+  wget -O /app/src/theme.scss ${OMH_REMOTE_THEME}
 fi
 
 mkdir -p /app/css
