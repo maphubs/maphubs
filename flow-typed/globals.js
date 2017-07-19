@@ -7,6 +7,7 @@ declare class MapHubsConfig {
   port: number;
   internal_port: number;
   theme: string;
+  themeUrl: string;
   twitter: string;
   primaryColor: string;
   tileServiceUrl: string;

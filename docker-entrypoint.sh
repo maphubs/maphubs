@@ -27,6 +27,7 @@ var MAPHUBS_CONFIG = {
   SENTRY_DSN_PUBLIC: "${OMH_SENTRY_DSN_PUBLIC}",
   MAPZEN_API_KEY: "${OMH_MAPZEN_API_KEY}",
   theme: "${OMH_THEME}",
+  themeUrl: "${OMH_THEME_URL}",
   enableUserExport: "${OMH_ENABLE_USER_EXPORT}"
 };
 if(typeof module !== 'undefined'){
@@ -37,7 +38,7 @@ EOF
 
 if [ -z ${OMH_REMOTE_THEME} ]
 then
-  cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
+  cp /app/src/sass/themes/${OMH_THEME}.scss /app/src/theme.scss
 else
   wget ${OMH_REMOTE_THEME} -o /app/src/theme.scss
 fi

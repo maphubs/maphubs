@@ -32,7 +32,7 @@ if(typeof module !== 'undefined'){
 
 EOF
 
-cp /app/src/sass/${OMH_THEME}.scss /app/src/theme.scss
+cp /app/src/sass/themes/${OMH_THEME}.scss /app/src/theme.scss
 
 
 node --max-old-space-size=$NODE_MEM_SIZE src/app.js

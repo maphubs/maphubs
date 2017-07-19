@@ -36,6 +36,7 @@ var MAPHUBS_CONFIG = {
   BING_KEY:  "${BING_API_KEY}",
   SENTRY_DSN_PUBLIC:  "${OMH_SENTRY_DSN_PUBLIC}",
   theme: "${OMH_THEME}",
+  themeUrl: "${OMH_THEME_URL}",
   enableUserExport: "${OMH_ENABLE_USER_EXPORT}"
 };
 if(typeof module !== 'undefined'){
@@ -44,7 +45,12 @@ if(typeof module !== 'undefined'){
 
 EOF
 
-cp ./src/sass/${OMH_THEME}.scss ./src/theme.scss
+if [ -z ${OMH_REMOTE_THEME} ]
+then
+  cp ./src/sass/themes/${OMH_THEME}.scss ./src/theme.scss
+else
+  wget ${OMH_REMOTE_THEME} -o /app/src/theme.scss
+fi
 
 #work-around old babel config included in dnd-core
 touch ./node_modules/dnd-core/.babelrc

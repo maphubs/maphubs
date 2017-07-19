@@ -58,12 +58,6 @@ function createEngine(engineOptions) {
     // Defer babel registration until the first request so we can grab the view path.
     if (!registered) {
       moduleDetectRegEx = new RegExp('^' + options.settings.views);
-      // Passing a RegExp to Babel results in an issue on Windows so we'll just
-      // pass the view path.
-      /*require('babel/register')({
-        stage: 0,
-        ignore: false
-      });*/
       registered = true;
     }
       var markup: string = '';
@@ -128,12 +122,11 @@ function createEngine(engineOptions) {
       assetHost = 'https://cdn.maphubs.com';
      }
 
-      //#TODO:230 set HTML header meta tags and language tags
       markup += `
-      <html lang="` + locale + `">
+      <html lang="${locale}">
         <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>` + title +`</title>
+        <title>${title}</title>
         `;
 
         if(options.description){
@@ -146,28 +139,36 @@ function createEngine(engineOptions) {
         if(MAPHUBS_CONFIG.theme === 'maphubs-pro'){
           iconFolder = 'maphubs';
         }
+
+        let themeUrl = '';
+        if(MAPHUBS_CONFIG.themeUrl){
+          themeUrl = MAPHUBS_CONFIG.themeUrl + iconFolder;
+        }else{
+          themeUrl = `${assetHost}/assets/themes/${iconFolder}`;
+        }
+
         //icons
         markup += `
-        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-60x60.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="` + assetHost + `/assets/themes/`+ iconFolder +`/apple-touch-icon-152x152.png" />
-        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-196x196.png" sizes="196x196" />
-        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-32x32.png" sizes="32x32" />
-        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-16x16.png" sizes="16x16" />
-        <link rel="icon" type="image/png" href="` + assetHost + `/assets/themes/`+ iconFolder +`/favicon-128.png" sizes="128x128" />
-        <meta name="application-name" content="` + iconFolder +`"/>
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="${themeUrl}/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="${themeUrl}/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="${themeUrl}/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="${themeUrl}/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="60x60" href="${themeUrl}/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="${themeUrl}/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="${themeUrl}/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="${themeUrl}/apple-touch-icon-152x152.png" />
+        <link rel="icon" type="image/png" href="${themeUrl}/favicon-196x196.png" sizes="196x196" />
+        <link rel="icon" type="image/png" href="${themeUrl}/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/png" href="${themeUrl}/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="${themeUrl}/favicon-16x16.png" sizes="16x16" />
+        <link rel="icon" type="image/png" href="${themeUrl}/favicon-128.png" sizes="128x128" />
+        <meta name="application-name" content="${MAPHUBS_CONFIG.productName}"/>
         <meta name="msapplication-TileColor" content="#FFFFFF" />
-        <meta name="msapplication-TileImage" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-144x144.png" />
-        <meta name="msapplication-square70x70logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-70x70.png" />
-        <meta name="msapplication-square150x150logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-150x150.png" />
-        <meta name="msapplication-wide310x150logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-310x150.png" />
-        <meta name="msapplication-square310x310logo" content="` + assetHost + `/assets/themes/`+ iconFolder +`/mstile-310x310.png" />
+        <meta name="msapplication-TileImage" content="${themeUrl}/mstile-144x144.png" />
+        <meta name="msapplication-square70x70logo" content="${themeUrl}/mstile-70x70.png" />
+        <meta name="msapplication-square150x150logo" content="${themeUrl}/mstile-150x150.png" />
+        <meta name="msapplication-wide310x150logo" content="${themeUrl}/mstile-310x150.png" />
+        <meta name="msapplication-square310x310logo" content="${themeUrl}/mstile-310x310.png" />
         `;
 
         var baseUrl = urlUtil.getBaseUrl();
@@ -246,16 +247,16 @@ function createEngine(engineOptions) {
 
         if(materialicons){
           //https://fonts.googleapis.com/icon?family=Material+Icons
-          markup += '<link href="' + assetHost + '/assets/css/material-icons.css" rel="stylesheet">\n';
+          markup += `<link href="${assetHost}/assets/css/material-icons.css" rel="stylesheet">\n`;
         }
         if(options.fontawesome){
           //https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css
-          markup += '<link href="' + assetHost + '/assets/css/font-awesome.css" rel="stylesheet">\n';
+          markup += `<link href="${assetHost}/assets/css/font-awesome.css" rel="stylesheet">\n`;
         }
         //https://fonts.googleapis.com/css?family=Raleway|Merriweather:400,700,400italic
-        markup += '<link href="' + assetHost + '/assets/css/raleway.css" rel="stylesheet" type="text/css">\n';
+        markup += `<link href="${assetHost}/assets/css/raleway.css" rel="stylesheet" type="text/css">\n`;
         //https://fonts.googleapis.com/css?family=Open+Sans
-        markup += '<link href="' + assetHost + '/assets/css/opensans.css" rel="stylesheet" type="text/css">\n';
+        markup += `<link href="${assetHost}/assets/css/opensans.css" rel="stylesheet" type="text/css">\n`;     
         markup +=
       //  '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
         '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">';
@@ -293,8 +294,8 @@ function createEngine(engineOptions) {
 
         if(options.rangy){
           markup += `
-          <script src="` + assetHost + `/assets/js/rangy-core.js"></script>
-          <script src="` + assetHost + `/assets/js/rangy-cssclassapplier.js"></script>
+          <script src="${assetHost}/assets/js/rangy-core.js"></script>
+          <script src="${assetHost}/assets/js/rangy-cssclassapplier.js"></script>
           `;
         }
 
@@ -381,7 +382,8 @@ function createEngine(engineOptions) {
       });
     }
     if(!options.props.error){ //don't hit the database on error and 404 pages
-      Page.getPageConfigs(['footer', 'header', 'map']).then(pageConfigs =>{
+      Page.getPageConfigs(['footer', 'header', 'map'])
+      .then(pageConfigs =>{
       options.props.headerConfig = pageConfigs.header;
       options.props.footerConfig = pageConfigs.footer; 
       options.props.mapConfig = pageConfigs.map;  
@@ -391,7 +393,7 @@ function createEngine(engineOptions) {
       </body>
       </html>
       `;
-      cb(null, markup);
+      return cb(null, markup);
     }).catch(err =>{
       log.error(err);
       Raven.captureException(err);
