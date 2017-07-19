@@ -233,7 +233,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
     if(this.props.showShareButtons){
       shareButtons = (
         <ShareButtons title={this.props.title} iconSize={24}
-              style={{position: 'absolute', bottom: '5px', left: '150px', zIndex: '1'}} />
+              style={{position: 'absolute', bottom: '5px', left: '155px', zIndex: '1'}} />
       );
     }
 
