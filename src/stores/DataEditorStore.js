@@ -57,7 +57,7 @@ export default class DataEditorStore extends Reflux.Store {
 
   stopEditing(){
     if(this.state.edits.length > 0){
-      debug('stopping with unsaved edits, edits have been deleted');
+      debug.log('stopping with unsaved edits, edits have been deleted');
     }
     this.setState( {editing: false,
       originals: [],
