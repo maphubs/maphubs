@@ -16,7 +16,7 @@ import type {Group} from '../../stores/GroupStore';
 import Locales from '../../services/locales';
 
 type Props = {|
-  onSubmit?: Function,
+  onSubmit: Function,
   onValid?: Function,
   onInValid?: Function,
   submitText: string,
@@ -121,9 +121,7 @@ export default class LayerSettings extends MapHubsComponent<DefaultProps, Props,
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
         _this.setState({pendingChanges: false});
-        if(_this.props.onSubmit){
-          _this.props.onSubmit();
-        }
+        _this.props.onSubmit();
       }
     });
   }

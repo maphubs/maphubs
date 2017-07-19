@@ -20,7 +20,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {GLStyle} from '../../types/mapbox-gl-style';
 
 type Props = {|
-  onSubmit?: Function,
+  onSubmit: Function,
   showPrev?: boolean,
   prevText?: string,
   onPrev?: Function,
@@ -78,7 +78,7 @@ export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, St
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        if(_this.props.onSubmit) _this.props.onSubmit(_this.state.layer_id, _this.state.name);
+        _this.props.onSubmit(_this.state.layer_id, _this.state.name);
       }
     });
   }

@@ -26,7 +26,6 @@ import type {Group} from '../stores/GroupStore';
 type Props = {
   layer: Layer,
   groups: Array<Group>,
-  onSubmit: Function,
   locale: string,
   _csrf: string,
   headerConfig: Object,
@@ -71,9 +70,13 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
       }else{
-        NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000, onDismiss: this.props.onSubmit});
+        NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000});
       }
     });
+  }
+
+  onSave = () => {
+    NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000});
   }
 
   savePresets = () => {
@@ -201,6 +204,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
                 groups={this.props.groups} 
                  showGroup={false}
                  warnIfUnsaved
+                 onSubmit={this.onSave}
                  submitText={this.__('Save')}
              />
         );
@@ -224,6 +228,7 @@ export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
         styleTabContent = (
           <LayerStyle
             showPrev={false}
+            onSubmit={this.onSave}
             mapConfig={this.props.mapConfig}
           />
         );
