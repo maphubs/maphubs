@@ -460,6 +460,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         }
         debug.log('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
         map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
+        _this.refs.insetMap.sync(map);
       }
       //set locale
       if(_this.state.locale !== 'en'){
@@ -476,15 +477,16 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       debug.log('(' + _this.state.id + ') ' +'MAP LOADED');
       _this.setState({mapLoaded: true});
     });
+  });//end style.load
 
-    //Setup inset map
+  //Setup inset map
     if(_this.refs.insetMap){
       if(!_this.refs.insetMap.getInsetMap()){
         _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap);
         map.on('move', () => {_this.refs.insetMap.sync(map);});
+        map.on('load', () => {_this.refs.insetMap.sync(map);});
       } 
     }
-  });//end style.load
 
   map.on('mousemove', _this.mousemoveHandler);
   map.on('moveend', _this.moveendHandler);
