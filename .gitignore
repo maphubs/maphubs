@@ -37,3 +37,4 @@ css/maphubs.css
 assets/public
 stats.json
 sync-to-cdn.sh
+src/sass/themes/clients
