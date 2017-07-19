@@ -76,6 +76,7 @@ type Props = {|
     attributionControl:boolean,
     allowLayerOrderOptimization: boolean,
     mapConfig: Object,
+    insetConfig: Object,
     onToggleForestLoss?: Function,
     children?: any
   |}
@@ -99,7 +100,8 @@ type Props = {|
     allowLayerOrderOptimization: boolean,
     fitBoundsOptions: Object,
     height: string,
-    mapConfig: Object
+    mapConfig: Object,
+    insetConfig: Object
   }
 
   type State = {
@@ -729,7 +731,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
       if(this.props.showLogo){
          bottom='30px';
       }
-      insetMap = (<InsetMap ref="insetMap" id={this.state.id}  bottom={bottom} />);
+      insetMap = (<InsetMap ref="insetMap" id={this.state.id}  bottom={bottom} {...this.props.insetConfig} />);
     }
 
     var measurementTools = '';

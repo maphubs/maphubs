@@ -14,7 +14,31 @@ if (typeof window !== 'undefined') {
 type Props = {|
   id: string,
   bottom:  string,
-  collapsed: boolean
+  collapsible: boolean,
+  collapsed: boolean,
+  maxZoom: number,
+  padding: number,
+  minHeight: string, 
+  maxHeight: string, 
+  minWidth: string, 
+  maxWidth: string,
+  height: string, 
+  width: string
+|}
+
+type DefaultProps = {|
+  id: string,
+  bottom:  string,
+  collapsible: boolean,
+  collapsed: boolean,
+  maxZoom: number,
+  padding: number,
+  minHeight: string, 
+  maxHeight: string, 
+  minWidth: string, 
+  maxWidth: string,
+  height: string, 
+  width: string
 |}
 
 type State = {|
@@ -23,7 +47,7 @@ type State = {|
   insetGeoJSONCentroidData: Object
 |}
 
-export default class InsetMap extends React.Component<Props, Props, State> {
+export default class InsetMap extends React.Component<DefaultProps, Props, State> {
 
 
   insetMap: Object
@@ -34,7 +58,16 @@ export default class InsetMap extends React.Component<Props, Props, State> {
   static defaultProps = {
     id: 'map',
     bottom: '30px',
-    collapsed: false
+    collapsible: true,
+    collapsed: false,
+    maxZoom: 1.5,
+    padding: 10,
+    minHeight: '100px', 
+    maxHeight: '145px',
+    minWidth: '100px',
+    maxWidth: '145px',
+    height: '25vw',
+    width: '25vw'
   }
 
   insetMapComponent: React$Component<void,void,void>
@@ -81,7 +114,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
         container: this.props.id  + '_inset',
         style: baseMap,
         zoom: 0,
-        maxZoom: 1.8,
+        maxZoom: this.props.maxZoom,
         interactive: false,
         center,
         attributionControl: false
@@ -202,18 +235,24 @@ export default class InsetMap extends React.Component<Props, Props, State> {
           insetGeoJSONCentroidData.setData(geoJSONCentroid);
           this.setState({insetGeoJSONData, insetGeoJSONCentroidData});
           
+          var config = {
+            maxZoom: this.props.maxZoom, 
+            padding: this.props.padding, 
+            animate: false
+          };
+
           if(zoom < 2.3){
             this.insetMap.setFilter('center', ['==', 'v', 2]);
             this.insetMap.setFilter('bounds', ['==', 'v', 2]);       
-            this.insetMap.jumpTo({center}, {maxZoom: 1.5, padding: 10, animate: false});
+            this.insetMap.jumpTo({center}, config);
           }else if(this.showInsetAsPoint(zoom)){
             this.insetMap.setFilter('center', ['==', 'v', 1]);
             this.insetMap.setFilter('bounds', ['==', 'v', 2]);
-            this.insetMap.fitBounds([[bounds.getWest(), bounds.getSouth()],[ bounds.getEast(), bounds.getNorth()]], {maxZoom: 1.5, padding: 10, animate: false});
+            this.insetMap.fitBounds([[bounds.getWest(), bounds.getSouth()],[ bounds.getEast(), bounds.getNorth()]], config);
           } else {
             this.insetMap.setFilter('center', ['==', 'v', 2]);
             this.insetMap.setFilter('bounds', ['==', 'v', 1]);
-            this.insetMap.fitBounds([[bounds.getWest(), bounds.getSouth()],[ bounds.getEast(), bounds.getNorth()]], {maxZoom: 1.5, padding: 10, animate: false});
+            this.insetMap.fitBounds([[bounds.getWest(), bounds.getSouth()],[ bounds.getEast(), bounds.getNorth()]], config);
           }
      
         }catch(err){
@@ -227,9 +266,7 @@ export default class InsetMap extends React.Component<Props, Props, State> {
     if(this.state.collapsed){
       return (
          <div style={{
-            position: 'absolute', bottom: this.props.bottom, left: '5px',
-            minHeight: '100px', maxHeight: '145px', minWidth: '100px', maxWidth: '145px',
-            height: '25vw', width: '25vw'
+            position: 'absolute', bottom: this.props.bottom, left: '5px'
             }}>
             
             <div id={this.props.id + '_inset'} 
@@ -244,29 +281,11 @@ export default class InsetMap extends React.Component<Props, Props, State> {
           </div>
       );
     }else{
-     
-      return (
-        <div style={{
-            position: 'absolute', 
-            bottom: this.props.bottom, 
-            left: '5px',
-            minHeight: '100px', maxHeight: '145px', 
-            minWidth: '100px', maxWidth: '145px',
-            height: '25vw', width: '25vw'
-            }}>
-            <div id={this.props.id + '_inset'} 
-            ref= {(c) => { this.insetMapComponent = c; }}
-            className="map"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                display: 'none',
-               zIndex: 1
-              }}></div>
-               <i  className="material-icons"
+
+      let collapseIcon = '';
+      if(this.props.collapsible){
+        collapseIcon = (
+          <i  className="material-icons"
                ref= {(c) => { this.insetMapArrow = c; }}
                onClick={this.toggleCollapsed}
             style={{
@@ -284,6 +303,34 @@ export default class InsetMap extends React.Component<Props, Props, State> {
                     transform: 'rotate(45deg)', 
                     fontSize:'18px'}}          
             >arrow_downward</i>
+        );
+      }
+     
+      return (
+        <div style={{
+            position: 'absolute', 
+            bottom: this.props.bottom, 
+            left: '5px',
+            minHeight: this.props.minHeight, 
+            maxHeight: this.props.maxHeight, 
+            minWidth: this.props.minWidth, 
+            maxWidth: this.props.maxWidth,
+            height: this.props.height, 
+            width: this.props.width
+            }}>
+            <div id={this.props.id + '_inset'} 
+            ref= {(c) => { this.insetMapComponent = c; }}
+            className="map"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                display: 'none',
+               zIndex: 1
+              }}></div>
+               {collapseIcon}
           </div>
       );
     }

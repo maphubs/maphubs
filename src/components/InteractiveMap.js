@@ -32,6 +32,7 @@ type Props = {
   fitBoundsOptions?: Object,
   interactive: boolean,
   mapConfig: Object,
+  insetConfig?: Object,
   showShareButtons: boolean,
   hideInactive: boolean,
   children?: any
@@ -298,6 +299,7 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
               onToggleForestLoss={this.onToggleForestLoss}
               showLogo={this.props.showLogo}
               mapConfig={this.props.mapConfig}
+              insetConfig={this.props.insetConfig}
               disableScrollZoom={this.props.disableScrollZoom}>
                 
               {legend}
