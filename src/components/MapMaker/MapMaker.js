@@ -330,11 +330,13 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
   }
 
   onLayerStyleChange = (layer_id: number, style: Object, labels: Object, legend: Object) => {
-    Actions.updateLayerStyle(layer_id, style, labels, legend);
+    Actions.updateLayerStyle(layer_id, style, labels, legend, (updatedLayer) => {
+       this.setState({showMapLayerDesigner: true, layerDesignerLayer: updatedLayer});
+    });
   }
 
   closeLayerDesigner = () => {
-    this.setState({showMapLayerDesigner: false});
+    this.setState({showMapLayerDesigner: false, layerDesignerLayer: undefined});
   }
 
   removeFromMap = (layer: Layer) => {
@@ -446,7 +448,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
     }else if (!this.state.mapLayers || this.state.mapLayers.length === 0) {
       overlayLayerList = (
         <div style={{height: '100%', padding: 0, margin: 0}}>
-          <p>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
+          <p style={{margin: '20px 10px'}}>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
         </div>
       );
     }else{

@@ -41,7 +41,7 @@ module.exports = {
 
     getLayerSetting(style: GLStyle, id: string, key: string){
       let index = _findIndex(style.layers, {id});
-      if(index){
+      if(typeof index !== 'undefined'){
         let layer = style.layers[index];
         return this.get(layer, key);
       }else{

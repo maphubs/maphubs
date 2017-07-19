@@ -162,7 +162,7 @@ export default class MapMakerStore extends Reflux.Store  {
     cb();
   }
 
-  updateLayerStyle(layer_id: number, style: Object, labels: Object, legend: string){
+  updateLayerStyle(layer_id: number, style: Object, labels: Object, legend: string, cb: Function){
     //treat as immutable and clone
     style = JSON.parse(JSON.stringify(style));
     labels = JSON.parse(JSON.stringify(labels));
@@ -173,6 +173,7 @@ export default class MapMakerStore extends Reflux.Store  {
       layers[index].labels = labels;
       layers[index].legend_html = legend;
       this.updateMap(layers);
+      cb(layers[index]);
     }
   }
 
