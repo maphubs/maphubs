@@ -3,8 +3,8 @@
     "js": "/public/about.d80a1286a8f6f71d8886.js"
   },
   "addphotopoint": {
-    "js": "/public/addphotopoint.925b767a9d2f50ff58bf.js",
-    "css": "/public/addphotopoint.925b767a9d2f50ff58bf.css"
+    "js": "/public/addphotopoint.dde666e7fce11a217bcc.js",
+    "css": "/public/addphotopoint.dde666e7fce11a217bcc.css"
   },
   "adminuserinvite": {
     "js": "/public/adminuserinvite.07bebe9c10e3775bef43.js"
@@ -21,12 +21,12 @@
     "css": "/public/createhubstory.6a17e97ccfad94b058d2.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.5bb959eb24526d24a389.js",
-    "css": "/public/createlayer.5bb959eb24526d24a389.css"
+    "js": "/public/createlayer.fc30e259ca467d09b07f.js",
+    "css": "/public/createlayer.fc30e259ca467d09b07f.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.e9e7d9b8f843ae2d8d50.js",
-    "css": "/public/createremotelayer.e9e7d9b8f843ae2d8d50.css"
+    "js": "/public/createremotelayer.134b1edd41d93ce99538.js",
+    "css": "/public/createremotelayer.134b1edd41d93ce99538.css"
   },
   "createuserstory": {
     "js": "/public/createuserstory.468a17b322769e182187.js",
@@ -44,8 +44,8 @@
     "js": "/public/emailconfirmation.2eed77bdaef0c0a75108.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.1b24c7644336cf8ff9ba.js",
-    "css": "/public/embedmap.1b24c7644336cf8ff9ba.css"
+    "js": "/public/embedmap.645742235191be98360b.js",
+    "css": "/public/embedmap.645742235191be98360b.css"
   },
   "error": {
     "js": "/public/error.5872ce4b51c305017104.js"
@@ -55,8 +55,8 @@
     "css": "/public/explore.d19236308ccb3489e975.css"
   },
   "featureinfo": {
-    "js": "/public/featureinfo.38d69c621c312d14c802.js",
-    "css": "/public/featureinfo.38d69c621c312d14c802.css"
+    "js": "/public/featureinfo.56131f3705b423f158eb.js",
+    "css": "/public/featureinfo.56131f3705b423f158eb.css"
   },
   "groupadmin": {
     "js": "/public/groupadmin.85e158f727326f827589.js",
@@ -71,8 +71,8 @@
     "css": "/public/groups.6b412554aeed9bfc7c05.css"
   },
   "home": {
-    "js": "/public/home.2e903a46cb4c7c6706d4.js",
-    "css": "/public/home.2e903a46cb4c7c6706d4.css"
+    "js": "/public/home.b052c3ae9b4bf34dcc46.js",
+    "css": "/public/home.b052c3ae9b4bf34dcc46.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
@@ -81,8 +81,8 @@
     "js": "/public/hubbuilder.e8d779b7600c513a9089.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.4854c73752d05b396ec6.js",
-    "css": "/public/hubinfo.4854c73752d05b396ec6.css"
+    "js": "/public/hubinfo.3a3d26fe922816161f5a.js",
+    "css": "/public/hubinfo.3a3d26fe922816161f5a.css"
   },
   "hubmap": {
     "js": "/public/hubmap.64826aba6be7ecc9e4f3.js",
@@ -108,16 +108,16 @@
     "js": "/public/journalists.865a20d0534b1ae71870.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.ca0731d06dc2db8fc507.js",
-    "css": "/public/layeradmin.ca0731d06dc2db8fc507.css"
+    "js": "/public/layeradmin.4e1794b9d1fbc9af3c97.js",
+    "css": "/public/layeradmin.4e1794b9d1fbc9af3c97.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.5c83a92f75c6af604b2d.js",
-    "css": "/public/layerinfo.5c83a92f75c6af604b2d.css"
+    "js": "/public/layerinfo.c735655e1f95f2fe79db.js",
+    "css": "/public/layerinfo.c735655e1f95f2fe79db.css"
   },
   "layermap": {
-    "js": "/public/layermap.c99e8ee697b81c9449da.js",
-    "css": "/public/layermap.c99e8ee697b81c9449da.css"
+    "js": "/public/layermap.88a00ca8732b155bcf1c.js",
+    "css": "/public/layermap.88a00ca8732b155bcf1c.css"
   },
   "layers": {
     "js": "/public/layers.75d428eb19640a2c6e09.js",
@@ -130,15 +130,15 @@
     "js": "/public/login.fb4013c834641ea41bbb.js"
   },
   "map": {
-    "js": "/public/map.a032d0dbc9d2855ce5a8.js",
-    "css": "/public/map.a032d0dbc9d2855ce5a8.css"
+    "js": "/public/map.55fea0e1bf06c5e61b25.js",
+    "css": "/public/map.55fea0e1bf06c5e61b25.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.8f607e3150b76f0035ee.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.6b0886540cea49e16c19.js",
-    "css": "/public/mapedit.6b0886540cea49e16c19.css"
+    "js": "/public/mapedit.bba04dc741cfb12f09b6.js",
+    "css": "/public/mapedit.bba04dc741cfb12f09b6.css"
   },
   "maps": {
     "js": "/public/maps.91dd37dbdf2d52a569d4.js",
@@ -154,8 +154,8 @@
     "js": "/public/privacy.4d361cbac7836ee059f4.js"
   },
   "search": {
-    "js": "/public/search.62c891ce905a425a46f3.js",
-    "css": "/public/search.62c891ce905a425a46f3.css"
+    "js": "/public/search.a63b47aa05b706a8f691.js",
+    "css": "/public/search.a63b47aa05b706a8f691.css"
   },
   "services": {
     "js": "/public/services.2d642dd0eb1210f97303.js"
@@ -164,8 +164,8 @@
     "js": "/public/signup.9d9147ef5034496740eb.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.1102febeeccaf8112a19.js",
-    "css": "/public/staticmap.1102febeeccaf8112a19.css"
+    "js": "/public/staticmap.8e2e5ff0189bf64cae07.js",
+    "css": "/public/staticmap.8e2e5ff0189bf64cae07.css"
   },
   "stories": {
     "js": "/public/stories.d39894e32b94174c23f0.js",
@@ -183,8 +183,8 @@
     "css": "/public/userhubs.9bdc1684dad19fe117f8.css"
   },
   "usermap": {
-    "js": "/public/usermap.240faa1d7b771b001db9.js",
-    "css": "/public/usermap.240faa1d7b771b001db9.css"
+    "js": "/public/usermap.643b71ad91a1b22b3c70.js",
+    "css": "/public/usermap.643b71ad91a1b22b3c70.css"
   },
   "usermaps": {
     "js": "/public/usermaps.8454f059e56120fcabae.js",
@@ -202,10 +202,10 @@
     "css": "/public/userstory.d1a2f09f2369df4e4ead.css"
   },
   "vendor": {
-    "js": "/public/vendor.7557b1d7f94acf14fdfb.js"
+    "js": "/public/vendor.a5996a74eb854c40ec52.js"
   },
   "metadata": {
-    "version": "0.11.19"
+    "version": "0.11.20"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
