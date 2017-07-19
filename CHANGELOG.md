@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.11.19](https://github.com/maphubs/maphubs/tree/v0.11.19) (2017-07-19)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.18...v0.11.19)
+
+**Fixed bugs:**
+
+- no notification when saving layer style [\#408](https://github.com/maphubs/maphubs/issues/408)
+- layer legend not updating in map maker [\#407](https://github.com/maphubs/maphubs/issues/407)
+- Show below base map toggle not working on some layers [\#405](https://github.com/maphubs/maphubs/issues/405)
+- advanced legend editor empty in map maker [\#395](https://github.com/maphubs/maphubs/issues/395)
+
 ## [v0.11.18](https://github.com/maphubs/maphubs/tree/v0.11.18) (2017-07-14)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.17...v0.11.18)
 
