@@ -80,7 +80,12 @@ module.exports = function(app: any) {
           if(results.length === 4){
             editLayer = results[3];
           }
-           return res.render('map', {title: 'New Map ', props:{popularLayers, myLayers, myGroups, editLayer}, req});
+           return res.render('map', {
+             title: req.__('New Map'), 
+             props:{popularLayers, myLayers, myGroups, editLayer}, 
+             hideFeedback: true,
+             req
+            });
         }).catch(nextError(next));
     }
 
