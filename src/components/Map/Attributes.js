@@ -48,7 +48,7 @@ export default class Attributes extends React.Component<void, Props, void> {
           this.props.attributes['maphubs_metadata'].presets){
         presets = this.props.attributes['maphubs_metadata'].presets;
       }
-      if(presets){
+      if(presets && Array.isArray(presets) && presets.length > 0){
         //only display presets
         display = (
             <ul className="collection" style={{marginTop: 0}}>
