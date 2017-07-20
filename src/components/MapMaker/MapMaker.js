@@ -544,6 +544,7 @@ export default class MapMaker extends MapHubsComponent<DefaultProps, Props, Stat
                   glStyle={this.state.mapStyle}
                   baseMap={this.state.basemap}
                   insetMap={true}
+                  insetConfig={this.state.settings ? this.state.settings.insetConfig : undefined}
                   onChangeBaseMap={Actions.setMapBasemap}
                   onToggleForestLoss={this.onToggleForestLoss}
                   fitBounds={mapExtent}
