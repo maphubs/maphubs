@@ -107,7 +107,7 @@ export default class MarkerSettings extends MapHubsPureComponent<void, Props, St
 
     var style;
     if(options.enabled){
-      style = MapStyles.markers.enableMarkers(this.props.style, options, this.props.layer.layer_id);    
+      style = MapStyles.markers.enableMarkers(this.props.style, options, this.props.layer);    
     }else{
       style = MapStyles.markers.disableMarkers(this.props.style);
     }

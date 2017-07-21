@@ -17,6 +17,7 @@ import Progress from '../components/Progress';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore';
 var debug = require('../services/debug')('addphotopoint');
+import GetNameField from '../services/get-name-field';
 
 type Props = {
   layer: Object,
@@ -100,19 +101,18 @@ export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> 
           },
           onNegativeResponse(){
 
-            var featureName = 'unknown';
-            var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
+            let featureName = 'unknown';
             let geoJSON: any  = _this.state.geoJSON;
             let layer_id: string = (_this.state.layer && _this.state.layer.layer_id) ? _this.state.layer.layer_id.toString() : '0';
             if(geoJSON && geoJSON.features){
               let features = geoJSON.features;
-              //TODO: use name field settings from Props if set
-              nameFields.forEach((name) => {
-                let props = features[0].properties;
-                if(props && featureName === 'unknown' && props[name]){
-                  featureName = props[name];
-                }
-              });
+              let props = features[0].properties;
+              let style = (_this.state.layer && _this.state.layer.style) ? _this.state.layer.style : undefined;
+              let presets = GetNameField.getPresetsFromStyle(style);
+              let nameField = GetNameField.getNameField(props, presets);
+              if(nameField){
+                featureName = props[nameField];
+              } 
             } 
             if(_this.state.mhid){
               let featureId = _this.state.mhid.split(':')[1];

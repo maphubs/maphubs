@@ -1,10 +1,32 @@
 //@flow
 import type {GLStyle} from '../../../types/mapbox-gl-style';
+import type {Layer} from '../../../stores/layer-store';
 module.exports = {
- enableMarkers(style: GLStyle, markerOptions: Object, layer_id: number){
+ enableMarkers(style: GLStyle, markerOptions: Object, layer: Layer){
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       //treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style));
+      let layer_id = (layer && layer.layer_id) ? layer.layer_id : '';
+      //get host from source
+      let baseUrl: string ='{MAPHUBS_DOMAIN}', remote_host;
+      if(layer.remote && layer.remote_host){
+        remote_host = layer.remote_host;
+        baseUrl = 'https://' + layer.remote_host;
+        //attempt to find remote layer id
+        let keys = Object.keys(style.sources);
+        if(keys && keys.length > 0){
+          let firstSource = keys[0];
+          if(firstSource.startsWith('omh-')){
+            let parts = firstSource.split('-');
+            let remoteLayerId = parts[1];
+            layer_id = remoteLayerId;
+          }
+        }
+      }
+
+      let dataUrl =`${baseUrl}/api/layer/${layer_id}/export/json/${layer_id}.json`;
+      let geobufUrl =`${baseUrl}/api/layer/${layer_id}/export/geobuf/${layer_id}.pbf`;
+
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           let metadata = {};
@@ -18,7 +40,11 @@ module.exports = {
           
           metadata['maphubs:markers'] = markerOptions;
           metadata['maphubs:markers'].enabled = true;
-          metadata['maphubs:markers'].dataUrl = '{MAPHUBS_DOMAIN}/api/layer/'+ layer_id + '/export/json/'+ layer_id + '.json';
+          if(remote_host){
+             metadata['maphubs:markers'].remote_host = remote_host;
+          }
+          metadata['maphubs:markers'].dataUrl = dataUrl;
+          metadata['maphubs:markers'].geobufUrl = geobufUrl;
           metadata['maphubs:layer_id'] = layer_id;
           if(metadata["maphubs:interactive"]){
             metadata['maphubs:markers'].interactive = true;

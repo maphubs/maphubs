@@ -10,6 +10,8 @@ import MapHubsComponent from '../../components/MapHubsComponent';
 import _isequal from 'lodash.isequal';
 import type {Layer} from '../../stores/layer-store';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
+import slugify from 'slugify';
+import GetNameField from '../../services/get-name-field';
 
 type Props = {|
   feature: Object,
@@ -104,7 +106,6 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
     var closeButton = '';
     var header = '';
     var infoPanel = '';
-    var pager = '';
 
     var baseUrl = urlUtil.getBaseUrl();
 
@@ -120,35 +121,42 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
       
       if(this.props.showButtons){
         var mhid = -1;
-        var layer_id = '';
+        var source_layer_id = '';
         var host = '';
         var featureName = 'unknown';
         if(this.props.feature){
           var currentFeature = this.props.feature;
           if(currentFeature && currentFeature.properties){
             mhid = currentFeature.properties.mhid;
-            layer_id = currentFeature.properties.layer_id;
+            source_layer_id = currentFeature.properties.layer_id;
             host = currentFeature.properties.maphubs_host;
-            var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-            nameFields.forEach((name) => {
-              if(featureName === 'unknown' && currentFeature.properties[name]){
-                featureName = currentFeature.properties[name];
-              }
-            });
           }
         }
+
 
         var layerinfo = '';
         if(this.state.layer){
           let group_id = this.state.layer.owned_by_group_id;
-          let layer_id = this.state.layer.layer_id ? this.state.layer.layer_id : 0;
+          let local_layer_id = this.state.layer.layer_id ? this.state.layer.layer_id : 0;
           let layerName = this.state.layer.name;
+          let layerLink;
+          if(host === window.location.hostname || host === 'dev.docker'){      
+            layerLink = `${baseUrl}/lyr/${local_layer_id}`;
+          }else{
+            layerLink = `https://${host}/lyr/${local_layer_id}`;
+          }
           layerinfo = (
             <div style={{textAlign: 'left'}}>
-              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={baseUrl + '/lyr/' + layer_id.toString()}>{this._o_(layerName)}</a></b>
+              <b><a className="truncate" target="_blank" rel="noopener noreferrer" href={layerLink}>{this._o_(layerName)}</a></b>
               <GroupTag className={'left'} group={group_id} size={15} fontSize={8} />
             </div>
           );
+          if(this.props.feature){
+            let nameField = GetNameField.getNameField(this.props.feature.properties, this.state.layer.presets);
+            if(nameField){
+              featureName = currentFeature.properties[nameField];
+            }        
+          }
         }
 
         var featureLink, featureID;
@@ -157,15 +165,16 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
         }else{
           featureID = mhid;
         }
+        featureName = slugify(featureName);
         if(host === window.location.hostname || host === 'dev.docker'){      
-          featureLink = '/feature/' + layer_id + '/' + featureID + '/' + featureName;
+          featureLink = `/feature/${source_layer_id}/${featureID}/${featureName}`;
         }else{
-          featureLink = 'https://' + host + '/feature/' + layer_id + '/' + featureID + '/' + featureName;
+          featureLink = `https://${host}/feature/${source_layer_id}/${featureID}/${featureName}`;
         }
         var featureButton = '';
         if(host && featureLink){
           featureButton = (
-            <a href={featureLink}
+            <a href={featureLink} target="_blank" rel="noopener noreferrer"
               className="feature-box-tooltips" data-delay="50" data-position="bottom" data-tooltip={this.__('More Info')}>
             <i className="material-icons omh-accent-color" style={{fontSize: 32}}>info_outline</i>
           </a>
@@ -200,7 +209,6 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
               >
             <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
               {infoPanel}
-              {pager}
             </div>
           </Attributes>
         );

@@ -9,6 +9,8 @@ import Marker from '../Marker';
 var $ =require('jquery');
 import MarkerActions  from '../../../actions/map/MarkerActions';
 var GJV = require("geojson-validation");
+import geobuf from 'geobuf';
+import Pbf from 'pbf';
 
 GJV.define("Position", (position) => {
     //the postion must be valid point on the earth, x between -180 and 180
@@ -40,7 +42,7 @@ var MapHubsSource = {
               feature.properties.mhid = i;
             });
           }
-          map.addSource(key, {type: 'geojson', data: geoJSON});
+          return map.addSource(key, {type: 'geojson', data: geoJSON});
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' +error);
         });
@@ -61,7 +63,7 @@ var MapHubsSource = {
                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
             }
           });
-          map.addSource(key, tileJSON);
+          return map.addSource(key, tileJSON);
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' +error);
         });
@@ -94,17 +96,11 @@ var MapHubsSource = {
     if(source.type === 'geojson'){
       geojsonUrl = source.data;
     }
-     superagent.get(geojsonUrl)
-    .type('json').accept('json')
-    .end((err, res) => {
-      checkClientError(res, err, (err) => {
-        if(err){
-          debug.error(err);
-        }else{
-          var geojson = res.body;        
-          // add markers to map
+
+    var createMarkersFromGeoJSON = function(geojson){
+      // add markers to map
           geojson.features.forEach((marker, i) => {
-          var valid = true;
+
           GJV.isFeature(marker, (valid, errs) => {
             if(!valid){
               valid = false;
@@ -114,11 +110,7 @@ var MapHubsSource = {
             if(!valid){
               valid = false;
               debug.log(errs);
-            }
-         
-          
-
-          if(valid){
+            }else{
 
           var markerId;
           if(marker.properties.osm_id){
@@ -132,6 +124,13 @@ var MapHubsSource = {
           }else{
             marker.properties.mhid = layer_id + ':' + i;
           }
+
+          if(markerConfig.remote_host){
+             marker.properties.maphubs_host = markerConfig.remote_host;
+          }else{
+            marker.properties.maphubs_host = window.location.hostname;
+          }
+          
           markerId = marker.properties.mhid;
            
           // create a DOM element for the marker
@@ -175,8 +174,6 @@ var MapHubsSource = {
             if(MarkerActions.addMarker){
               MarkerActions.addMarker(layer_id, markerId, mapboxMarker);
             }
-          }else{
-            debug.log('Invalid GeoJSON - Unable to draw marker');
           }
           });
           });
@@ -199,13 +196,42 @@ var MapHubsSource = {
                 "circle-opacity": 0 //hidden 
               }
           },  'water');
+    };
+
+    let geobufUrl = markerConfig.geobufUrl;
+    if(geobufUrl){
+      request.get(geobufUrl)
+    .buffer(true)
+    .responseType('arraybuffer')
+    .parse(request.parse.image)
+    .end((err, res) => {
+      if(err){
+        debug.error(err);
+      }else{
+        //let buffer = new Buffer(res.text, 'binary');
+        let geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
+        createMarkersFromGeoJSON(geoJSON);
+      }
+    });
+    }else{
+      superagent.get(geojsonUrl)
+    .type('json').accept('json')
+    .end((err, res) => {
+      checkClientError(res, err, (err) => {
+        if(err){
+          debug.error(err);
+        }else{
+          var geojson = res.body;        
+          createMarkersFromGeoJSON(geojson);
         }
       },
       (cb) => {
         cb();
       }
       );
-    });    
+    });   
+    }
+
     }else if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
       map.addLayer(layer, 'water');
     }else{

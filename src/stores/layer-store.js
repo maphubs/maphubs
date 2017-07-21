@@ -38,6 +38,8 @@ export type Layer = {
     layers?: Array<Object>
     },
   is_empty?: boolean,
+  remote?: boolean,
+  remote_host?: string,
   complete?: boolean
 }
 

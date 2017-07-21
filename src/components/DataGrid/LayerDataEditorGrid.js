@@ -10,7 +10,7 @@ import DataEditorActions from '../../actions/DataEditorActions';
 import _assignIn from 'lodash.assignin';
 import type {Layer} from '../../stores/layer-store';
 import type {DataEditorStoreState} from '../../stores/DataEditorStore';
-
+import GetNameField from '../../services/get-name-field';
 
 type Props = {
   geoJSON: Object,
@@ -311,13 +311,11 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     var idField = this.state.rowKey;
     var idVal = row[idField];
 
-    var featureName = 'unknown';
-    var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-    nameFields.forEach((name) => {
-      if(featureName === 'unknown' && row[name]){
-        featureName = row[name];
-      }
-    });
+    let featureName = 'unknown';
+    let nameField = GetNameField.getNameField(row, this.props.presets);
+    if(nameField){
+      featureName = row[nameField];
+    } 
     if(this.state.rowKey === 'mhid'){
       idVal = idVal.split(':')[1];
     }

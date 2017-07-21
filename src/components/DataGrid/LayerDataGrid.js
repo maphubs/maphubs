@@ -6,6 +6,7 @@ import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
 
 import type {MapHubsField} from '../../types/maphubs-field';
+import GetNameField from '../../services/get-name-field';
 
 type Props = {
   geoJSON: Object,
@@ -246,13 +247,11 @@ export default class LayerDataGrid extends MapHubsComponent<DefaultProps, Props,
     var idField = this.state.rowKey;
     var idVal = row[idField];
 
-    var featureName = 'unknown';
-    var nameFields = ['name', 'Name', 'NAME', 'nom', 'Nom', 'NOM', 'nombre', 'Nombre', 'NOMBRE'];
-    nameFields.forEach((name) => {
-      if(featureName === 'unknown' && row[name]){
-        featureName = row[name];
-      }
-    });
+    let featureName = 'unknown';
+    let nameField = GetNameField.getNameField(row, this.props.presets);
+    if(nameField){
+      featureName = row[nameField];
+    } 
     if(this.state.rowKey === 'mhid'){
       idVal = idVal.split(':')[1];
     }
