@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.11.23](https://github.com/maphubs/maphubs/tree/v0.11.23) (2017-07-21)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.22...v0.11.23)
+
+**Fixed bugs:**
+
+- markers don't display on remote point layer [\#410](https://github.com/maphubs/maphubs/issues/410)
+- info button missing on marker attribute popups [\#409](https://github.com/maphubs/maphubs/issues/409)
+
 ## [v0.11.22](https://github.com/maphubs/maphubs/tree/v0.11.22) (2017-07-20)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.21...v0.11.22)
 
