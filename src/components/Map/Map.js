@@ -60,6 +60,7 @@ type Props = {|
     interactive: boolean,
     showPlayButton: boolean,
     showLogo: boolean,
+    showScale: boolean,
     showFeatureInfoEditButtons: boolean,
     fitBounds?: NestedArray<number>,
     fitBoundsOptions: Object,
@@ -91,6 +92,7 @@ type Props = {|
     navPosition: string,
     baseMap: string,
     showLogo: boolean,
+    showScale: boolean,
     insetMap: boolean,
     hoverInteraction: boolean,
     interactionBufferSize: number,
@@ -131,6 +133,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     baseMap: 'default',
     showLogo: true,
     insetMap: true,
+    showScale: true,
     hoverInteraction: false,
     interactionBufferSize: 10,
     hash: true,
@@ -501,10 +504,11 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     map.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
   }
 
-  
-  map.addControl(new ScalePositionControl({
-      maxWidth: 175,
-  }), 'bottom-right');
+  if(_this.props.showScale){
+    map.addControl(new ScalePositionControl({
+        maxWidth: 175,
+    }), 'bottom-right');
+  }
 
   if(_this.props.disableScrollZoom){
     map.scrollZoom.disable();

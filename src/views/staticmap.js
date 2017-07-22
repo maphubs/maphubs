@@ -17,6 +17,7 @@ type Props = {
   basemap: string,
   showLegend: boolean,
   showLogo: boolean,
+  showScale: boolean,
   insetMap:  boolean,
   locale: string,
   _csrf: string,
@@ -27,6 +28,7 @@ type Props = {
 type DefaultProps = {
   showLegend: boolean,
   showLogo: boolean,
+  showScale: boolean,
   insetMap:  boolean,
   settings: Object
 }
@@ -45,6 +47,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
   static defaultProps = {
     showLegend: true,
     showLogo: true,
+    showScale: true,
     insetMap: true,
     settings: {}
   }
@@ -149,7 +152,9 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
         fitBounds={bounds} 
         insetMap={this.props.insetMap}
         insetConfig={this.props.settings.insetConfig}
-        showLogo={this.props.showLogo} style={{width: '100%', height: this.state.height + 'px'}}
+        showLogo={this.props.showLogo} 
+        showScale={this.props.showScale} 
+        style={{width: '100%', height: this.state.height + 'px'}}
         glStyle={this.props.style} 
         mapConfig={this.props.mapConfig}
         baseMap={this.props.basemap} navPosition="top-right">

@@ -35,6 +35,26 @@ module.exports = function(app: any) {
   app.get('/api/map/:mapid/static/render/', manetCheck, (req, res, next) => {
     var map_id = parseInt(req.params.mapid || '', 10);
 
+    let showLegend = true;
+    if(req.query.hideLegend){
+      showLegend = false;
+    }
+
+    let showLogo = true;
+    if(req.query.hideLogo){
+      showLogo = false;
+    }
+
+    let showScale = true;
+    if(req.query.hideScale){
+      showScale = false;
+    }
+
+    let showInset = true;
+    if(req.query.hideInset){
+      showInset = false;
+    }
+
     Promise.all([
       Map.getMap(map_id),
       Map.getMapLayers(map_id, true)
@@ -56,7 +76,11 @@ module.exports = function(app: any) {
              position: map.position,
              basemap: map.basemap,
              style: map.style,
-             settings: map.settings
+             settings: map.settings,
+             showLegend,
+             showLogo,
+             showScale,
+             insetMap: showInset
            }, req
          });
       }).catch(nextError(next));
