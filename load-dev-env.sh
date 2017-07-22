@@ -1,10 +1,8 @@
 cat env/dev/db.env > .env
 cat env/dev/web.env >> .env
 cat env/dev/host.env >> .env
-cat env/dev/id-config.env >> .env
 cat env/dev/secret/db-pass.env >> .env
 cat env/dev/secret/web-secret.env >> .env
-cat env/dev/secret/id-secret.env >> .env
 
 source .env
 export $(cut -d= -f1 .env)
