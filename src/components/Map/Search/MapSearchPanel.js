@@ -77,7 +77,7 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
   }
 
   onReset = () => {
-    this.setState({results: null, locationSearchResults: null, query: null});
+    this.setState({results: null, locationSearchResults: null, query: undefined});
     this.props.onSearchReset();
   }
 
@@ -114,7 +114,7 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
      request.get(url)
     .then((res) => {
       let locationSearchResults = res.body;
-      _this.setState({locationSearchResults, query});
+      return _this.setState({locationSearchResults, query});
     }, (error) => {
       debug.log(error);
       MessageActions.showMessage({title: 'Error', message: error.toString()});

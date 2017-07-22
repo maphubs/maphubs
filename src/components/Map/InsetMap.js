@@ -291,8 +291,6 @@ export default class InsetMap extends React.Component<DefaultProps, Props, State
 
   updateInsetFixedPosition = (map: Object) => {
      var bounds = map.getBounds();
-     var zoom = map.getZoom();
-     var center = map.getCenter();
      if(this.insetMap){
       var insetGeoJSONData = this.insetMap.getSource("inset-bounds");
       var insetGeoJSONCentroidData = this.insetMap.getSource("inset-centroid");

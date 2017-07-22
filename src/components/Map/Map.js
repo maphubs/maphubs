@@ -142,7 +142,8 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     allowLayerOrderOptimization: true,
     fitBoundsOptions: {animate:false},
     height: '100%',
-    mapConfig: {}
+    mapConfig: {},
+    insetConfig: {}
   }
 
   state: State

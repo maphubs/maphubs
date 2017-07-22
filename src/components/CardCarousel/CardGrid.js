@@ -31,6 +31,8 @@ export default class CardGrid extends React.Component<DefaultProps, Props, State
     cardsPerPage: 24
   }
 
+  state: State
+
   constructor(props: Props){
     super(props);
     let chunks: NestedArray<CardConfig> = _chunk(props.cards, props.cardsPerPage);

@@ -41,7 +41,9 @@ module.exports = {
 
   updatePassword(user_id: number, password: string, sendEmail: boolean, __: Function){
     if(!local.useLocalAuth){
-      return undefined;
+      return new Promise((resolve, reject) => {
+        reject(new Error('unauthorized'));
+      });
     }
     return User.getUser(user_id, true)
     .then((user) => {

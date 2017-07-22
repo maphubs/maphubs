@@ -35,7 +35,8 @@ type Props = {
   insetConfig?: Object,
   showShareButtons: boolean,
   hideInactive: boolean,
-  children?: any
+  children?: any,
+  basemap: string
 }
 
 type DefaultProps = {
@@ -46,7 +47,8 @@ type DefaultProps = {
   showTitle: boolean,
   interactive: boolean,
   showShareButtons: boolean,
-  hideInactive: boolean
+  hideInactive: boolean,
+  basemap: string
 }
 
 type State = {
