@@ -4,6 +4,7 @@ var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 import _centroid from '@turf/centroid';
 import MapToolButton from './MapToolButton'; 
+import BaseMapActions from '../../actions/map/BaseMapActions'; 
 
 var mapboxgl = {};
 
@@ -11,7 +12,7 @@ if (typeof window !== 'undefined') {
     mapboxgl = require("mapbox-gl");
 }
 
-type Props = {|
+type Props = {
   id: string,
   bottom:  string,
   collapsible: boolean,
@@ -27,8 +28,9 @@ type Props = {|
   fixedPosition?: {
     center: Array<number>,
     zoom: number
-  }
-|}
+  },
+  baseMap?: string
+}
 
 type DefaultProps = {|
   id: string,
@@ -122,6 +124,12 @@ export default class InsetMap extends React.Component<DefaultProps, Props, State
         }
       }
 
+      if(this.props.baseMap){
+        BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMapUrl) => {
+        baseMap = baseMapUrl;
+        });
+      }
+
       var insetMap =  new mapboxgl.Map({
         container: this.props.id  + '_inset',
         style: baseMap,
@@ -177,6 +185,11 @@ export default class InsetMap extends React.Component<DefaultProps, Props, State
 
   reloadInset = (baseMapUrl: string) => {
     if(this.insetMap){
+      if(this.props.baseMap){
+        BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
+        baseMapUrl = baseMap;
+        });
+      }
       this.insetMap.setStyle(baseMapUrl);
     } 
   }
