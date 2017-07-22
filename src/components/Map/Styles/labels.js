@@ -57,7 +57,7 @@ module.exports = {
         "filter": filter,
         "layout": {
           "text-font": [
-            "Arial Unicode MS Regular"
+            "Roboto Bold"
           ],
           "visibility": "visible",
           "symbol-placement": placement,
