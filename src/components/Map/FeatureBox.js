@@ -151,10 +151,10 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
               <GroupTag className={'left'} group={group_id} size={15} fontSize={8} />
             </div>
           );
-          if(this.props.feature){
+          if(this.props.feature && this.state.layer){
             let nameField = GetNameField.getNameField(this.props.feature.properties, this.state.layer.presets);
             if(nameField){
-              featureName = currentFeature.properties[nameField];
+              featureName = this.props.feature.properties[nameField];
             }        
           }
         }
@@ -203,10 +203,7 @@ export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, St
       }
 
         attributes = (
-          <Attributes
-              attributes={properties}
-              locale={this.state.locale}
-              >
+          <Attributes attributes={properties}>
             <div style={{position: 'absolute', bottom: 0, width: '100%',  backgroundColor: '#FFF', borderTop: '1px solid #DDD'}}>
               {infoPanel}
             </div>

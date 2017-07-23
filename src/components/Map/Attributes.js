@@ -1,14 +1,14 @@
 //@flow
 import React from 'react';
 import _isequal from 'lodash.isequal';
+import MapHubsComponent from '../MapHubsComponent';
 
 type Props = {|
   attributes: Object,
-  locale: string,
   children: any
 |}
 
-export default class Attributes extends React.Component<void, Props, void> {
+export default class Attributes extends MapHubsComponent<void, Props, void> {
 
   props: Props
 
@@ -62,22 +62,9 @@ export default class Attributes extends React.Component<void, Props, void> {
                     val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
                   }
 
-                  let label;
-                  if(typeof preset.label === 'object'){
-                    if(this.props.locale){
-                      label = preset.label[this.props.locale];
-                    }else{
-                      label = preset.label.en;
-                    }
-                    
-                  }
-                  if(!label){
-                    label = preset.label;
-                  }
-
                   return (
                      <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className="collection-item attribute-collection-item">
-                      <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{label}</p>
+                      <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{this._o_(preset.label)}</p>
                        <p className="word-wrap">
                          {val}
                        </p>
