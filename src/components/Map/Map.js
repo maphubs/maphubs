@@ -483,6 +483,10 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     });
   });//end style.load
 
+   map.on('load', () => {
+     $( "body" ).append( `<div id="map-load-complete" style="display: none;"></div>` );
+   });
+
   //Setup inset map
     if(_this.refs.insetMap){
       if(!_this.refs.insetMap.getInsetMap()){
