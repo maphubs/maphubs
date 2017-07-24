@@ -21,7 +21,6 @@ export default class LocaleChooser extends MapHubsComponent<Props, Props, State>
   }
 
   componentDidMount() {
-    $('.locale-tooltip').tooltip();
     $(this.refs.dropdownButton).dropdown({
       inDuration: 300,
       outDuration: 225,
@@ -58,8 +57,7 @@ export default class LocaleChooser extends MapHubsComponent<Props, Props, State>
     };
 
     return (
-      <li className="nav-link-wrapper nav-dropdown-link-wrapper locale-tooltip"
-        data-position="bottom" data-delay="50" data-tooltip={this.__('Change Language')}>
+      <li className="nav-link-wrapper nav-dropdown-link-wrapper">
         <a ref="dropdownButton" className="locale-dropdown-button nav-dropdown-button"
           href="#!" data-activates={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
           <i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
