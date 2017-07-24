@@ -238,7 +238,7 @@ if(local.useLocalAuth) {
 
   app.get('/forgotpassword', csrfProtection, (req, res) => {
     res.render('auth0login', {
-      title: req.__('Forget Password') + ' - ' + MAPHUBS_CONFIG.productName,
+      title: req.__('Forgot Password') + ' - ' + MAPHUBS_CONFIG.productName,
       auth0: true,
       allowSignUp: !local.requireInvite,
       props: {
