@@ -151,7 +151,7 @@ export default class StaticMap extends MapHubsComponent<DefaultProps, Props, Sta
         showPlayButton={false} 
         fitBounds={bounds} 
         insetMap={this.props.insetMap}
-        insetConfig={this.props.settings.insetConfig}
+        insetConfig={insetConfig}
         showLogo={this.props.showLogo} 
         showScale={this.props.showScale} 
         style={{width: '100%', height: this.state.height + 'px'}}
