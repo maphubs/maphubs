@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.11.24](https://github.com/maphubs/maphubs/tree/v0.11.24) (2017-07-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.23...v0.11.24)
+
+**Fixed bugs:**
+
+- changing opacity on raster breaks legend [\#392](https://github.com/maphubs/maphubs/issues/392)
+- data table editing out of sync after filter [\#389](https://github.com/maphubs/maphubs/issues/389)
+
 ## [v0.11.23](https://github.com/maphubs/maphubs/tree/v0.11.23) (2017-07-21)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.22...v0.11.23)
 
