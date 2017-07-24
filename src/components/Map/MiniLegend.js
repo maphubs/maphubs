@@ -234,6 +234,7 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
                   let active = MapStyles.settings.get(layer.style, 'active');
                   if(typeof active === 'undefined'){
                     layer.style = MapStyles.settings.set(layer.style, 'active', true);
+                    active = true;
                   }
                   if(_this.props.hideInactive && !active){
                     return null;

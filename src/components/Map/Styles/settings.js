@@ -35,7 +35,7 @@ module.exports = {
       if(object.metadata){
         return object.metadata[`maphubs:${key}`];
       }else{
-        return null;
+        return undefined;
       }
     },
 
@@ -45,7 +45,7 @@ module.exports = {
         let layer = style.layers[index];
         return this.get(layer, key);
       }else{
-        return null;
+        return undefined;
       }
       
     },

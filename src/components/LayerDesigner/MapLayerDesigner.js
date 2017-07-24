@@ -87,8 +87,9 @@ export default class MapLayerDesigner extends MapHubsComponent<DefaultProps, Pro
       style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
     }
 
-    var legend = MapStyles.legend.rasterLegend(this.props.layer);
-    this.props.onStyleChange(this.props.layer.layer_id, style, this.props.layer.labels, legend);
+    //TODO: add legend placeholders for color opacity value?
+    //var legend = MapStyles.legend.rasterLegend(this.props.layer);
+    this.props.onStyleChange(this.props.layer.layer_id, style, this.props.layer.labels, this.props.layer.legend_html);
     this.setState({rasterOpacity: opacity});
   }
 
