@@ -132,18 +132,23 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
 
   componentDidUpdate(prevProps: ModalProps) {
     if(this.props.show && !prevProps.show){
-      //switch from off to on
-      $(this.refs.modal).modal('open');
-      //fire window resize for maps etc inside the modal
-      fireResizeEvent();
+      this.show();
     } else if(prevProps.show && !this.props.show){
-      //switch from on to off
-      $(this.refs.modal).modal('close');
-      //$('.lean-overlay').remove(); //for some reason materialize isn't clearing the overlay mask possibly related to https://github.com/Dogfalo/materialize/issues/1647
+      this.close();
     }
-
   }
 
+  show(){
+    //switch from off to on
+    $(this.refs.modal).modal('open');
+    //fire window resize for maps etc inside the modal
+    fireResizeEvent();
+  }
+
+  close(){
+     $(this.refs.modal).modal('close');
+  }
+  
   render() {
     var className = '';
     if(this.props.fixedFooter) {

@@ -288,7 +288,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
   }
 
   getSelectedFeature(){
-    const row = this.state.rows[this.state.selectedIndexes[this.state.selectedIndexes.length - 1]];
+    const row = this.rowGetter(this.state.selectedIndexes[this.state.selectedIndexes.length - 1]);
     const idField = this.state.rowKey;
     var idVal = row[idField];
     let selectedFeature;
@@ -307,7 +307,8 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     if(!this.state.selectedIndexes || this.state.selectedIndexes.length === 0){
       return;
     }
-    var row = this.state.rows[this.state.selectedIndexes[this.state.selectedIndexes.length - 1]];
+    const lastSelectedIndex: number = this.state.selectedIndexes[this.state.selectedIndexes.length - 1];    
+    var row = this.rowGetter(lastSelectedIndex);
     var idField = this.state.rowKey;
     var idVal = row[idField];
 
@@ -329,10 +330,10 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
      let fromRow: number = result.fromRow;
      let toRow: number = result.toRow;
      let updated: Object = result.updated;
-    let rows = this.state.rows.slice();
+     let rows = this.getRows().slice();
 
     for (let i = fromRow; i <= toRow; i++) {
-      let rowToUpdate = rows[i];
+      let rowToUpdate = this.rowGetter(i);
       let mhid = rowToUpdate[this.state.rowKey];
       DataEditorActions.selectFeature(mhid, (featureData) => {
         //update data

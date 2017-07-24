@@ -4,7 +4,7 @@ import _map from 'lodash.map';
 import MapHubsComponent from '../MapHubsComponent';
 import EditAttributesModal from './EditAttributesModal';
 import CheckboxFormatter from './CheckboxFormatter';
-
+import _assignIn from 'lodash.assignin';
 import type {MapHubsField} from '../../types/maphubs-field';
 import GetNameField from '../../services/get-name-field';
 
@@ -223,8 +223,22 @@ export default class LayerDataGrid extends MapHubsComponent<DefaultProps, Props,
     this.refs.editAttributeModal.show();
   }
 
+  onSaveEdits = (data: Object) => {
+    //find row with this MHID and update it
+    const idField = this.state.rowKey;
+    this.getRows().forEach((row) => {
+      if(row[idField] === data[idField]){
+         _assignIn(row, data);
+      }
+    });
+
+    if(this.props.onSave){
+      this.props.onSave(data);
+    }
+  }
+
   getSelectedFeature(){
-    const row = this.state.rows[this.state.selectedIndexes[this.state.selectedIndexes.length - 1]];
+    const row = this.rowGetter(this.state.selectedIndexes[this.state.selectedIndexes.length - 1]);
     const idField = this.state.rowKey;
     var idVal = row[idField];
     let selectedFeature;
@@ -282,7 +296,7 @@ render() {
                 ref="editAttributeModal"
                 feature={this.state.selectedFeature}
                 presets={this.props.presets}
-                onSave={this.props.onSave}
+                onSave={this.onSaveEdits}
                 layer_id={this.props.layer_id} />
           );
         }

@@ -20,7 +20,6 @@ type Props = {|
 |}
 
 type State = {
-  show: boolean,
   values: Object
 } & LocaleStoreState
 
@@ -30,7 +29,6 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
     super(props);
     let values = props.feature ? props.feature.properties : {};
     this.state = {
-      show: false,
       values
     };
   }
@@ -45,11 +43,11 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
    * Show the Modal
    */
   show = () => {
-    this.setState({show: true});
+    this.refs.modal.show();
   }
 
    close = () => {
-    this.setState({show: false});
+    this.refs.modal.close();
   }
 
   onChange = (data: Object) => {
@@ -85,12 +83,12 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
         if(err){
           //show error message  
           debug.error(err);
-          MessageActions.showMessage({title: 'Error', message: err});  
-          if(this.props.onSave){
-            this.props.onSave();
-          } 
+          MessageActions.showMessage({title: 'Error', message: err});           
         }else{
-          _this.setState({show: false});
+          _this.close();
+          if(_this.props.onSave){
+            _this.props.onSave(_this.state.values);
+          } 
         }      
       });
     });
@@ -98,8 +96,8 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
 
   render(){
     return (
-      <Modal show={this.state.show} className="edit-attributes-modal" dismissible={false} fixedFooter={true}>
-        <ModalContent style={{padding: 0, margin: 0, height: 'calc(100% - 35px)', overflow: 'hidden'}}>
+      <Modal ref="modal" className="edit-attributes-modal" dismissible={false} fixedFooter={true}>
+        <ModalContent style={{padding: 0, margin: 0, height: 'calc(100% - 60px)', overflow: 'hidden'}}>
           <div className="row no-margin" style={{height: '35px'}}>
             <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
               <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>
@@ -112,7 +110,7 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
               showSubmit={false} />
           </div>
         </ModalContent>
-        <ModalFooter style={{height: '35px'}}>
+        <ModalFooter>
           <button className="btn" onClick={this.onSave}>{this.__('Save')}</button>
         </ModalFooter>
       </Modal>
