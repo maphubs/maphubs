@@ -52,7 +52,7 @@ module.exports = {
       zoom: 1,
       format: 'jpg',
       quality: 0.8,
-      selector: '#map-load-complete',
+      //selector: '#map-load-complete',
       cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
@@ -119,7 +119,7 @@ module.exports = {
       zoom: 1.25,
       format: 'png',
       quality: 1,
-      selector: '#map-load-complete',
+      //selector: '#map-load-complete',
       cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
@@ -192,7 +192,7 @@ module.exports = {
       zoom: 1.25,
       format: 'png',
       quality: 1,
-      selector: '#map-load-complete',
+      //selector: '#map-load-complete',
       cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
@@ -242,7 +242,7 @@ module.exports = {
       zoom: 1,
       format: 'jpg',
       quality: 0.8,
-      selector: '#map-load-complete',
+      //selector: '#map-load-complete',
       cookies: [{
         name: 'manet',
         value: local.manetAPIKey,
