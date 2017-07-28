@@ -62,9 +62,9 @@ module.exports = {
    * @param {*} email 
    */
   checkInviteConfirmed(email: string){
-    return knex('omh.account_invites').where({email: email, used: true})
+    return knex('omh.account_invites').where({email, used: true})
     .then(results => {
-      if(results && Array.isArray(results) && results.length === 1){
+      if(results && Array.isArray(results) && results.length >= 1){
         return true;
       }else{
         return false;
