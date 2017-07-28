@@ -1,6 +1,6 @@
 var request = require('superagent-bluebird-promise');
+import superagent from 'superagent';
 var debug = require('../../../services/debug')('MapHubsSource');
-var superagent = require('superagent');
 var urlUtil = require('../../../services/url-util');
 var checkClientError = require('../../../services/client-error-response').checkClientError;
 import React from 'react';
@@ -200,7 +200,8 @@ var MapHubsSource = {
 
     let geobufUrl = markerConfig.geobufUrl;
     if(geobufUrl){
-      request.get(geobufUrl)
+      geobufUrl = geobufUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+      superagent.get(geobufUrl)
     .buffer(true)
     .responseType('arraybuffer')
     .parse(request.parse.image)
@@ -208,7 +209,6 @@ var MapHubsSource = {
       if(err){
         debug.error(err);
       }else{
-        //let buffer = new Buffer(res.text, 'binary');
         let geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
         createMarkersFromGeoJSON(geoJSON);
       }

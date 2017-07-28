@@ -175,7 +175,6 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       if(err){
         debug.error(err);
       }else{
-        //let buffer = new Buffer(res.text, 'binary');
         let geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
         _this.setState({geoJSON});
       }
