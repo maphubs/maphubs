@@ -464,7 +464,9 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         }
         debug.log('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
         map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
-        _this.refs.insetMap.sync(map);
+        if(_this.refs.insetMap){
+          _this.refs.insetMap.sync(map);
+        }
       }
       //set locale
       if(_this.state.locale !== 'en'){
