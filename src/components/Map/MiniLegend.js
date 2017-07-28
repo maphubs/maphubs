@@ -243,9 +243,9 @@ export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, St
                 })
               }
  
-            <div style={{lineHeight: '0.75em', padding: '2px'}}>
+            <div className="base-map-legend" style={{lineHeight: '0.75em', padding: '2px'}}>
               <span style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}} 
-              className="grey-text align-left">Base Map - <span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span></span>
+              className="grey-text align-left">{this.__('Base Map')} - <span className="no-margin no-padding" dangerouslySetInnerHTML={{__html: this.state.attribution}}></span></span>
             </div>           
             </div>
           </div>

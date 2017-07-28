@@ -8,7 +8,12 @@
 
  .omh-legend h3 {
     font-size: 10px;
+    color: #212121;
     margin: 0px;
+}
+
+ .base-map-legend * {
+    color: #212121 !important;
 }
 
 .omh-legend .block {
