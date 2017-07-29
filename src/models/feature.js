@@ -1,11 +1,12 @@
 // @flow
 var knex = require('../connection.js');
+var debug = require('../services/debug')('feature');
 
 module.exports = {
 
   getFeatureByID(mhid: string, layer_id: number, trx: any) {
     var _this = this;
-    return _this.getGeoJSON(mhid, layer_id, trx)
+    return this.getGeoJSON(mhid, layer_id, trx)
       .then((geojson) => {
         var feature = {geojson};
         return _this.getFeatureNotes(mhid, layer_id, trx)
@@ -67,9 +68,10 @@ module.exports = {
      
       var layerTable = 'layers.data_' + layer_id;  
       return db.select(db.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags')
-      .from(layerTable).whereIn('mhid', [mhid])
+      .from(layerTable).where({mhid})
           .then((data) => {
             if(!data || data.length === 0){
+              debug.error(`missing data: ${data}`);
               throw new Error(`Data not found for mhid: ${mhid}`);
             }else{
               return  db.raw(`select 

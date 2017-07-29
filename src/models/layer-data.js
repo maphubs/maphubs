@@ -19,17 +19,24 @@ module.exports = {
   createFeature(layer_id: number, geojson: Object, trx: any): Bluebird$Promise<string>{
     var _this = this;
     debug.log('creating feature');
-    let db = knex; if(trx){db = trx;}
-    return db.raw(`INSERT INTO layers.data_${layer_id} (mhid, wkb_geometry, tags)
-    VALUES ( ${layer_id} || ':' || nextval('layers.mhid_seq_${layer_id}'), 
-     ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'),4326)::geometry(Geometry,4326),
-    '${JSON.stringify(geojson.properties)}'::jsonb) RETURNING mhid;
-    `).then(result => {
-      if(result.rows && result.rows.length === 1){
-        let mhid = result.rows[0].mhid;
-        return _this.updateLayerExtent(layer_id, trx).then(()=>{
+    
+    return trx(`layers.data_${layer_id}`)
+    .insert({
+      mhid: trx.raw(`${layer_id} || ':' || nextval('layers.mhid_seq_${layer_id}')`),
+      wkb_geometry: trx.raw(`ST_SetSRID(ST_GeomFromGeoJSON( :geom ),4326)::geometry(Geometry,4326)`, {geom: JSON.stringify(geojson.geometry)}),
+      tags: JSON.stringify(geojson.properties)
+    }).returning('mhid')
+    .then(result => {
+      if(result && result[0]){
+        let mhid = result[0];
+        debug.log(`created: ${mhid}`);
+        return _this.updateLayerExtent(layer_id, trx)
+        .then(()=>{
           return SearchIndex.updateFeature(layer_id, mhid, true, trx)
           .then(()=>{
+            return mhid;
+          }).catch(err =>{
+            log.error(err);
             return mhid;
           });
         });      
@@ -51,14 +58,18 @@ module.exports = {
   updateFeature(layer_id: number, mhid: string, geojson: Object, trx: any): Bluebird$Promise<Object>{
     var _this = this;
     debug.log('updating feature: ' + mhid);
-    let db = knex; if(trx){db = trx;}
-    return db.raw(`UPDATE layers.data_${layer_id}
-    SET wkb_geometry =  ST_SetSRID(ST_GeomFromGeoJSON('${JSON.stringify(geojson.geometry)}'), 4326)::geometry(Geometry,4326),
-    tags = '${JSON.stringify(geojson.properties)}'::jsonb
-    WHERE mhid = '${mhid}';
-    `).then(()=>{
+
+    return trx(`layers.data_${layer_id}`)
+    .update({
+      wkb_geometry: trx.raw('ST_SetSRID(ST_GeomFromGeoJSON( :geom ), 4326)::geometry(Geometry,4326)', {geom: JSON.stringify(geojson.geometry)}),
+      tags: JSON.stringify(geojson.properties)
+    })
+    .where({mhid})
+    .then(()=>{
       return _this.updateLayerExtent(layer_id, trx).then(()=>{
-        return SearchIndex.updateFeature(layer_id, mhid, true, trx);
+        return SearchIndex.updateFeature(layer_id, mhid, true, trx).catch(err =>{
+        log.error(err);
+      });
       });
     });
   },
@@ -78,18 +89,20 @@ module.exports = {
    */
   setStringTag(layer_id: number, mhid: string, tag: string, val: ?string, trx: any): Bluebird$Promise<Object>{
     debug.log('updating tag: ' + mhid);
-    let db = knex; if(trx){db = trx;}
-    var valStr;
-    if(val){
+    let valStr;
+    if(val){  
       valStr = `"${val}"`;
     }else{
       valStr = 'null';
     }
-    return db.raw(`UPDATE layers.data_${layer_id}
-    SET tags = jsonb_set(tags, '{${tag}}', '${valStr}'::jsonb)
-    WHERE mhid = '${mhid}';
-    `).then(()=>{
-      return SearchIndex.updateFeature(layer_id, mhid, true).catch(err =>{
+    let tagStr = `{${tag}}`;
+    return trx(`layers.data_${layer_id}`)
+    .update({
+      tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
+    })
+    .where({mhid})
+    .then(()=>{
+      return SearchIndex.updateFeature(layer_id, mhid, true, trx).catch(err =>{
         log.error(err);
       });
     });
@@ -107,18 +120,22 @@ module.exports = {
    */
   setNumberTag(layer_id: number, mhid: string, tag: string, val: number, trx: any): Bluebird$Promise<Object>{
     debug.log('updating tag: ' + mhid);
-    let db = knex; if(trx){db = trx;}
     var valStr;
     if(val){
       valStr = `${val}`;
     }else{
       valStr = 'null';
     }
-    return db.raw(`UPDATE layers.data_${layer_id}
-    SET tags = jsonb_set(tags, '{${tag}}', '${valStr}'::jsonb)
-    WHERE mhid = '${mhid}';
-    `).then(()=>{
-      return SearchIndex.updateFeature(layer_id, mhid, true);
+    let tagStr = `{${tag}}`;
+    return trx(`layers.data_${layer_id}`)
+    .update({
+      tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
+    })
+    .where({mhid})
+    .then(()=>{
+      return SearchIndex.updateFeature(layer_id, mhid, true, trx).catch(err =>{
+        log.error(err);
+      });
     });
   },
 
@@ -133,21 +150,22 @@ module.exports = {
   deleteFeature(layer_id: number, mhid: string, trx: any): Bluebird$Promise<Object>{
     debug.log('deleting feature: ' + mhid);
     let db = knex; if(trx){db = trx;}
-    return db.raw(`delete from layers.data_${layer_id} where mhid='${mhid}'`)
+    return db.raw('delete from $$ where mhid=$',
+  [`layers.data_${layer_id}`, mhid])
     .then(()=>{
       return SearchIndex.deleteFeature(mhid);
     });
   },
 
-  updateLayerExtent(layer_id: number, trx: any){
-    let db = knex; if(trx){db = trx;}
+  updateLayerExtent(layer_id: number, trx: any){    
     let layerTable = 'layers.data_' + layer_id; 
-    return db.raw(`select 
+    return trx.raw(`select 
           '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
           from (select ST_Extent(wkb_geometry) as bbox from ${layerTable}) a`)
       .then(bbox => {
          bbox = bbox.rows[0].bbox;
-         return db('omh.layers').where({layer_id}).update({extent_bbox: bbox});
+         debug.log(`updating layer extent: ${layer_id} - ${bbox}`);
+         return trx('omh.layers').where({layer_id}).update({extent_bbox: bbox});
       });
   }
 
