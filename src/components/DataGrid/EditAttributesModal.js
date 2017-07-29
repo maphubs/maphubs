@@ -111,7 +111,7 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
           </div>
         </ModalContent>
         <ModalFooter>
-          <button className="btn" onClick={this.onSave}>{this.__('Save')}</button>
+          <button className="btn omh-color omh-btn-text-color" onClick={this.onSave}>{this.__('Save')}</button>
         </ModalFooter>
       </Modal>
     );
