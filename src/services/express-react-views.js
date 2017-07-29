@@ -75,7 +75,7 @@ function createEngine(engineOptions) {
       if(options.req){
         req = options.req;
         //var browserLocale = req.acceptsLanguages('en', 'fr', 'es', 'it');
-        if(req.session.locale){
+        if(req.session && req.session.locale){
           //the user has specified a language from the options on the website
           locale = req.session.locale;
           req.setLocale(locale);
