@@ -3,11 +3,16 @@ var urlUtil = require('../../services/url-util');
 import slugify from 'slugify';
 var apiError = require('../../services/error-response').apiError;
 var manetCheck = require('../../services/manet-check')();
+var privateLayerCheck = require('../../services/private-layer-check').middleware;
 var Locales = require('../../services/locales');
 
-module.exports = function(app) {
+/*
+Note: this needs to be in public-routes since it is used by the screenshot service and by shared maps
+*/
 
-app.get('/api/layer/:layer_id/tile.json', manetCheck, (req, res) => {
+module.exports = function(app) {
+  
+app.get('/api/layer/:layer_id/tile.json', manetCheck, privateLayerCheck, (req, res) => {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
     var baseUrl = urlUtil.getBaseUrl();

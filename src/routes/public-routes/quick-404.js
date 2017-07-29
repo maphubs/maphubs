@@ -1,3 +1,4 @@
+//@flow
 module.exports = function(app: any) {
 
   //don't bother even rendering the error page for these...

@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var debug = require('../services/debug')('models/map');
 var Group = require('./group');
 var MapStyles = require('../components/Map/Styles');
+var shortid = require('shortid');
 
 module.exports = {
 
@@ -17,6 +18,7 @@ module.exports = {
     .select(knex.raw(
       `map_id, title, position, style, settings, basemap, private, created_by,
       created_at, updated_by, updated_at, views, owned_by_group_id, owned_by_user_id,
+      share_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
    ))
     .where({map_id})
@@ -473,5 +475,42 @@ module.exports = {
         return map_id; //pass on the new map_id
       });
     });
-  }
+  },
+
+    getMapByShareId(share_id: string, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.maps')
+    .select(knex.raw(
+      `map_id, title, position, style, settings, basemap, private, created_by,
+      created_at, updated_by, updated_at, views, owned_by_group_id, owned_by_user_id,
+      share_id,
+     CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
+   ))
+    .where({share_id})
+    .then((result) => {
+      if (result && result.length === 1) {
+        return result[0];
+      }
+      //else
+      return null;
+    });
+  },
+
+  addPublicShareID(map_id: number, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    const share_id = shortid.generate();
+    return db('omh.maps').update({share_id}).where({map_id})
+    .then(() => {
+      return share_id;
+    });
+  },
+
+  removePublicShareID(map_id: number, trx: any){
+    let db = knex;
+    if(trx){db = trx;}
+    return db('omh.maps').update({share_id: null}).where({map_id});
+  },
+
 };

@@ -135,9 +135,8 @@ module.exports = function(app: any) {
       }
     });
 
-    /**
-     * change map privacy settings
-     */
+    /* not used?
+
     app.post('/api/map/privacy', csrfProtection, (req, res) => {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         res.status(401).send("Unauthorized, user not logged in");
@@ -145,7 +144,7 @@ module.exports = function(app: any) {
       }
       var user_id = req.session.user.maphubsUser.id;
       var data = req.body;
-      if(data && data.map_id && data.isPrivate){
+      if(data && data.map_id && typeof data.isPrivate !== 'undefined'){
         Map.allowedToModify(data.map_id, user_id)
         .then((allowed) => {
           if(allowed){
@@ -160,7 +159,38 @@ module.exports = function(app: any) {
       }else{
         apiDataError(res);
       }
+    });
+    */
 
+    app.post('/api/map/public', csrfProtection, (req, res) => {
+      if (!req.isAuthenticated || !req.isAuthenticated()) {
+        res.status(401).send("Unauthorized, user not logged in");
+        return;
+      }
+      var user_id = req.session.user.maphubsUser.id;
+      var data = req.body;
+      if(data && data.map_id && typeof data.isPublic !== 'undefined'){
+        Map.allowedToModify(data.map_id, user_id)
+        .then((allowed) => {
+          if(allowed){
+            if(data.isPublic){
+              return Map.addPublicShareID(data.map_id)
+              .then((share_id) => {
+                return res.status(200).send({success: true, share_id});
+              });
+            }else{
+              return Map.removePublicShareID(data.map_id)
+              .then(() => {
+                return res.status(200).send({success: true});
+              });
+            }
+          }else{
+            return notAllowedError(res, 'map');
+          }
+        }).catch(apiError(res, 200));
+      }else{
+        apiDataError(res);
+      }
     });
     
 

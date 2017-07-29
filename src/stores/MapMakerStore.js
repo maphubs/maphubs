@@ -235,7 +235,8 @@ export default class MapMakerStore extends Reflux.Store  {
       });
     });
   }
-
+  //not used?
+/*
   savePrivate(isPrivate: boolean, _csrf: string, cb: Function){
     var _this = this;
     request.post('/api/map/privacy')
@@ -252,6 +253,23 @@ export default class MapMakerStore extends Reflux.Store  {
       });
     });
   }
+  */
+
+  setPublic(map_id: number, isPublic: boolean, _csrf: string, cb: Function){
+  request.post('/api/map/public')
+  .type('json').accept('json')
+  .send({
+      map_id: map_id,
+      isPublic,
+      _csrf
+  })
+  .end((err, res) => {
+    checkClientError(res, err, cb, (cb) => {
+      let share_id = res.body.share_id;
+      cb(share_id);
+    });
+  });
+}
 
   //helpers
   updateMap(mapLayers: Array<Layer>, rebuild: boolean =true){

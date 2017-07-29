@@ -24,6 +24,7 @@ import fireResizeEvent from '../services/fire-resize-event';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {UserStoreState} from '../stores/UserStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
+import PublicShareModal from '../components/InteractiveMap/PublicShareModal';
 
 type Props = {
   map: Object,
@@ -43,7 +44,8 @@ type UserMapState = {
   width: number,
   height: number,
   downloading: boolean,
-  layers: Array<Object>
+  layers: Array<Object>,
+  share_id: string
 }
 
 
@@ -75,6 +77,9 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
        Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
     }
     this.state.layers = props.layers;
+    if(this.props.map.share_id){
+      this.state.share_id = this.props.map.share_id;
+    }
 	}
 
   componentWillMount(){
@@ -196,6 +201,18 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
     MessageActions.showMessage({title: this.__('Embed Code'), message});
   }
 
+  showSharePublic = () => {
+    //show modal
+    this.refs.publicShareModal.show();
+  } 
+
+  toggleSharePublic = (value: boolean) => {
+    var _this = this;
+    MapMakerActions.setPublic(this.props.map.map_id, value, this.state._csrf, (share_id) => {
+      _this.setState({share_id});
+    });
+  }
+
   onCopyMap = () => {
     var _this = this;
     request.post('/api/map/copy')
@@ -250,8 +267,8 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
   }
 
   render() {
-    var map = '';
-    var button = '',  deleteButton = '', editButton ='';
+    let map = '';
+    let button = '', deleteButton = '', editButton ='', shareButton = '';
     if(this.props.canEdit){
       deleteButton = (
           <li>
@@ -269,6 +286,18 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
             </a>
           </li>
         );
+
+     
+    if(MAPHUBS_CONFIG.mapHubsPro){
+      shareButton = (
+        <li>
+          <a onClick={this.showSharePublic} className="btn-floating user-map-tooltip"
+            data-delay="50" data-position="left" data-tooltip={this.__('Share')}>
+            <i className="material-icons">share</i>
+          </a>
+        </li>
+      );
+    }
 
     }
 
@@ -295,6 +324,7 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
         <i className="large material-icons">more_vert</i>
       </a>
       <ul>
+        {shareButton}
         {deleteButton}
         {editButton}
         {copyButton}
@@ -350,6 +380,7 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>         
           {map}
+          <PublicShareModal ref="publicShareModal" share_id={this.state.share_id} onChange={this.toggleSharePublic} />
         </main>
       </div>
     );

@@ -828,7 +828,6 @@
 	"Locations": "Locations",
 	"Use the box above to search": "Use the box above to search",
 	"Search Data": "Search Data",
-	"Forgot Password": "Forgot Password",
 	"Grid": "Grid",
 	"List": "List",
 	"Create a group for your organization or browse the content of existing groups.": "Create a group for your organization or browse the content of existing groups.",
@@ -844,5 +843,8 @@
 	"Invite Confirmed": "Invite Confirmed",
 	"Signup": "Signup",
 	"Accessing this site requires an invitation. Please contact us at ": "Accessing this site requires an invitation. Please contact us at ",
-	"New Map": "New Map"
+	"New Map": "New Map",
+	"Share": "Share",
+	"Protected": "Protected",
+	"Only authorized users can see this map.": "Only authorized users can see this map."
 }
