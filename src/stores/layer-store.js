@@ -16,6 +16,7 @@ import {OrderedSet} from "immutable";
 
 export type Layer = {
   layer_id?: number,
+  shortid?: string,
   name?: LocalizedString,
   description?: LocalizedString,
   source?: LocalizedString,  
@@ -161,12 +162,12 @@ export default class LayerStore extends Reflux.Store {
     }else if(isExternal && elc.type === 'ags-mapserver-tiles' && elc.url){
         style = MapStyles.raster.defaultRasterStyle(layer_id, elc.url + '?f=json', 'arcgisraster');
     }else if(isExternal && elc.type === 'geojson' && elc.data_type){
-        style = MapStyles.style.defaultStyle(layer_id, this.getSourceConfig(), elc.data_type);
+        style = MapStyles.style.defaultStyle(layer_id, this.state.shortid, this.getSourceConfig(), elc.data_type);
     }else if(style.sources.osm){
       alert('Unable to reset OSM layers');
       return;
     }else{
-      style = MapStyles.style.defaultStyle(layer_id, this.getSourceConfig(), this.state.data_type);
+      style = MapStyles.style.defaultStyle(layer_id, this.state.shortid, this.getSourceConfig(), this.state.data_type);
     }
     this.setState({style});
   }
@@ -197,7 +198,7 @@ export default class LayerStore extends Reflux.Store {
     //treat as immutable and clone
     layer = JSON.parse(JSON.stringify(layer));
     if(!layer.style){
-      layer.style = MapStyles.style.defaultStyle(layer.layer_id, this.getSourceConfig(), layer.data_type);   
+      layer.style = MapStyles.style.defaultStyle(layer.layer_id,  this.state.shortid, this.getSourceConfig(), layer.data_type);   
     }
     if(!layer.legend_html){
       layer.legend_html = MapStyles.legend.defaultLegend(layer);

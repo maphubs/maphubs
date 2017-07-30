@@ -114,13 +114,17 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       if(this.props.layer.external_layer_config.type === 'ags-mapserver-query'){
         TerraformerGL.getArcGISGeoJSON(this.props.layer.external_layer_config.url)
         .then((geoJSON) => {
-          _this.setState({geoJSON});
+          return _this.setState({geoJSON});
+        }).catch(err => {
+          debug.error(err);
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
       }else if(this.props.layer.external_layer_config.type === 'ags-featureserver-query'){
         TerraformerGL.getArcGISFeatureServiceGeoJSON(this.props.layer.external_layer_config.url)
         .then((geoJSON) => {
-          _this.setState({geoJSON});
+          return _this.setState({geoJSON});
+        }).catch(err => {
+          debug.error(err);
         });
           _this.setState({dataMsg: _this.__('Data Loading')});
       }else if(this.props.layer.external_layer_config.type === 'geojson'){
@@ -136,7 +140,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
       }
 
     }else{
-      this.getGeoJSON(() => {});
+      this.getGeoJSON();
       _this.setState({dataMsg: _this.__('Data Loading')});
     }
 
@@ -156,7 +160,7 @@ export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, Sta
     }
   }
 
-  getGeoJSON = (cb: Function) => {
+  getGeoJSON = () => {
     var _this = this;
       var baseUrl, dataUrl;
     if(this.props.layer.remote){

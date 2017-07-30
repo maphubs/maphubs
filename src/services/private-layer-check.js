@@ -24,7 +24,7 @@ var middleware = function(view) {
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
-    var layer_id;
+    var layer_id, shortid;
     if(req.params.layer_id){
       layer_id = parseInt(req.params.layer_id || '', 10);
     }else if(req.body.layer_id){
@@ -32,20 +32,44 @@ var middleware = function(view) {
     }else if(req.params.id){
       layer_id =  parseInt(req.params.id || '', 10);
     }else{
-      apiDataError(res, 'Unable to determine layer_id');
+      if(req.params.shortid){
+        shortid = req.params.shortid;
+      }else{
+        apiDataError(res, 'Unable to determine layer_id');
+      }
+      
     }
-
-    if(layer_id && Number.isInteger(layer_id) && layer_id > 0){
-      check(layer_id, user_id)
+    if(shortid){
+      Layer.getLayerByShortID(shortid)
+    .then((layer) => {
+      return check(layer.layer_id, user_id)
       .then((allowed) => {
         if(allowed){
-          next();
+          return next();
         }else{
           log.warn('Unauthorized attempt to access layer: ' + layer_id);
           if(view){
-            res.redirect('/unauthorized');
+            return res.redirect('/unauthorized');
           }else{
-            res.status(401).send({
+            return res.status(401).send({
+              success: false,
+              error: "Unauthorized"
+            });
+          }
+        }
+      });
+    }).catch(nextError(next));
+    }else if(layer_id && Number.isInteger(layer_id) && layer_id > 0){
+      check(layer_id, user_id)
+      .then((allowed) => {
+        if(allowed){
+          return next();
+        }else{
+          log.warn('Unauthorized attempt to access layer: ' + layer_id);
+          if(view){
+            return res.redirect('/unauthorized');
+          }else{
+            return res.status(401).send({
               success: false,
               error: "Unauthorized"
             });

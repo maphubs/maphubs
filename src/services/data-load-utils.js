@@ -65,7 +65,7 @@ module.exports = {
     });
   },
 
-  storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, update: boolean, trx: any = null){
+  storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, trx: any = null){
     debug.log('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}
@@ -179,7 +179,7 @@ module.exports = {
     
 
       //now that we know the data type, update the style to clear uneeded default styles
-      var style = MapStyles.style.defaultStyle(layer_id, 'vector', geomType);
+      var style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
 
       var commands = [
         db('omh.layers').where({

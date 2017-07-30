@@ -69,7 +69,7 @@ app.engine('js', require('./services/express-react-views').createEngine());
 
 
 app.use(logger('dev', {
-  skip: function (req) { 
+  skip(req) { 
     //don't log every healthcheck ping
     if(req.path === '/healthcheck'){
       return true;
@@ -212,7 +212,7 @@ app.use((req, res, next) => {
           error: req.__('404: Page not found'),
           url: req.url
         },
-        req: req
+        req
       });
     }else if (req.accepts('json')) {
       res.send({
@@ -282,7 +282,7 @@ app.use((err, req, res, next) => {
       url: req.url,
       eventId: res.sentry
     },
-    req: req
+    req
     });
     return;
 

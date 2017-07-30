@@ -9,13 +9,14 @@ import type {Layer} from '../../../stores/layer-store';
 import type {GLStyle, GLSource} from '../../../types/mapbox-gl-style';
 
 module.exports = {
-  defaultStyle(layer_id: number, source: GLSource, dataType: string): GLStyle {
+  defaultStyle(layer_id: number,  shortid: string, source: GLSource, dataType: string): GLStyle {
     var settings = Settings.defaultLayerSettings();
-    return this.styleWithColor(layer_id, source, "red", dataType, settings.interactive, settings.showBehindBaseMapLabels);
+    return this.styleWithColor(layer_id, shortid, source, "red", dataType, settings.interactive, settings.showBehindBaseMapLabels);
   },
 
   styleWithColor(
     layer_id: number, 
+    shortid: string,
     source: GLSource, color: string, dataType: string, 
     interactive: boolean, showBehindBaseMapLabels: boolean): GLStyle {
     //TODO: make default selected colors better match user color
@@ -43,7 +44,7 @@ module.exports = {
 
     if(source){
       if(source.type === 'vector'){
-        var url = '{MAPHUBS_DOMAIN}/api/layer/' + layer_id + '/tile.json';
+        var url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json';
 
         styles.sources['omh-' + layer_id] = {
           "type": "vector",

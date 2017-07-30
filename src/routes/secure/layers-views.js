@@ -12,6 +12,7 @@ var nextError = require('../../services/error-response').nextError;
 var csrfProtection = require('csurf')({cookie: false});
 var privateLayerCheck = require('../../services/private-layer-check').middlewareView;
 var Locales = require('../../services/locales');
+var knex = require('../../connection.js');
 
 module.exports = function(app: any) {
 
@@ -48,10 +49,11 @@ module.exports = function(app: any) {
   app.get('/createlayer', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
 
     var user_id = req.session.user.maphubsUser.id;
-    Layer.createLayer(user_id).then(layer_id =>{
+    return knex.transaction((trx) => {
+    return Layer.createLayer(user_id, trx).then(layer_id =>{
       layer_id = parseInt(layer_id);
-      return Layer.getLayerByID(layer_id).then(layer =>{
-        return Group.getGroupsForUser(user_id)
+      return Layer.getLayerByID(layer_id, trx).then(layer =>{
+        return Group.getGroupsForUser(user_id, trx)
         .then((result) => {
           return res.render('createlayer', {
             title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
@@ -60,6 +62,7 @@ module.exports = function(app: any) {
           });
         });
       });
+     });
     }).catch(nextError(next));
 
   });

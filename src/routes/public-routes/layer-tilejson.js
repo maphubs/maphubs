@@ -11,15 +11,13 @@ Note: this needs to be in public-routes since it is used by the screenshot servi
 */
 
 module.exports = function(app) {
-  
-app.get('/api/layer/:layer_id/tile.json', manetCheck, privateLayerCheck, (req, res) => {
 
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+  let completeLayerTileJSONRequest = function(req, res, layer) {
+    if(!layer){
+      return res.status(404).send("TileJSON not supported for this layer");
+    }
     var baseUrl = urlUtil.getBaseUrl();
-
-    Layer.getLayerByID(layer_id)
-    .then((layer) => {
-      let name = Locales.getLocaleStringObject(req.locale, layer.name);
+    let name = Locales.getLocaleStringObject(req.locale, layer.name);
       let description = Locales.getLocaleStringObject(req.locale, layer.description); 
       let source = Locales.getLocaleStringObject(req.locale, layer.source);       
       let legend = layer.legend_html ?  layer.legend_html : name;
@@ -100,7 +98,7 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, privateLayerCheck, (req, r
         let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
         let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
 
-        let  uri = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/layer/' + layer.layer_id + '/{z}/{x}/{y}.pbf';
+        let  uri = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/lyr/' + layer.shortid + '/{z}/{x}/{y}.pbf';
 
         let tileJSON = {
           attribution: source,
@@ -127,6 +125,25 @@ app.get('/api/layer/:layer_id/tile.json', manetCheck, privateLayerCheck, (req, r
       }else {
         return res.status(404).send("TileJSON not supported for this layer");
       }
+  };
+  
+  app.get('/api/layer/:layer_id/tile.json', manetCheck, privateLayerCheck, (req, res) => {
+
+    var layer_id = parseInt(req.params.layer_id || '', 10);
+    
+    Layer.getLayerByID(layer_id)
+    .then((layer) => {
+      return completeLayerTileJSONRequest(req, res, layer);
     }).catch(apiError(res, 500));
-});
+  });
+
+  app.get('/api/lyr/:shortid/tile.json', manetCheck, privateLayerCheck, (req, res) => {
+
+    let shortid = req.params.shortid;
+    
+    Layer.getLayerByShortID(shortid)
+    .then((layer) => {
+      return completeLayerTileJSONRequest(req, res, layer);
+    }).catch(apiError(res, 500));
+  });
 };

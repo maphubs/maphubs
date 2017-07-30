@@ -10,7 +10,7 @@ module.exports = {
     
     if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
       map.addSource("omh-geojson", {"type": "geojson", data});
-      var glStyle = MapStyles.style.defaultStyle('geojson', null, null);
+      var glStyle = MapStyles.style.defaultStyle('geojson', null, null, null);
       glStyle.sources["omh-geojson"] = {"type": "geojson", data};
       this.addLayers(map, glStyle);
 

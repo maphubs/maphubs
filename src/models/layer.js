@@ -15,6 +15,7 @@ var ScreenshotUtils = require('../services/screenshot-utils');
 var geojsonUtils = require('../services/geojson-utils');
 var PhotoAttachment = require('./photo-attachment');
 var MapStyles = require('../components/Map/Styles');
+var shortid = require('shortid');
 
 module.exports = {
 
@@ -25,7 +26,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     if(includeMapInfo){
-      return db.select('layer_id', 'name', 'description', 'data_type',
+      return db.select('layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
@@ -33,7 +34,7 @@ module.exports = {
       'style', 'legend_html','labels', 'settings', 'extent_bbox', 'preview_position')
       .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw(`name -> 'en'`));
     }else{
-      return db.select('layer_id', 'name', 'description', 'data_type',
+      return db.select('layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'owned_by_group_id',
@@ -47,7 +48,7 @@ module.exports = {
    * Can include private?: No
    */
   getRecentLayers(number: number = 15){
-    return knex.select('layer_id', 'name', 'description', 'data_type',
+    return knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
@@ -62,7 +63,7 @@ module.exports = {
    * Can include private?: No
    */
   getPopularLayers(number: number = 15){
-    return knex.select('layer_id', 'name', 'description', 'data_type',
+    return knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
@@ -79,7 +80,7 @@ module.exports = {
    * Can include private?: No
    */
   getFeaturedLayers(number: number = 15){
-    return knex.select('layer_id', 'name', 'description', 'data_type',
+    return knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
@@ -95,7 +96,7 @@ module.exports = {
    */
   getLayerInfo(layer_id: number){
     return knex('omh.layers')
-    .select('layer_id', 'name', 'description', 'owned_by_group_id', 'presets')
+    .select('layer_id', 'shortid', 'name', 'description', 'owned_by_group_id', 'presets')
     .where({layer_id})
     .then((result) => {
       if (result && result.length === 1) {
@@ -156,7 +157,7 @@ module.exports = {
   getSearchResults(input: string) {
     input = input.toLowerCase();
     var query =  knex('omh.layers')
-    .select('layer_id', 'name', 'description', 'data_type',
+    .select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets', 'style', 'legend_html', 'labels', 'settings',
     'extent_bbox',
@@ -190,7 +191,7 @@ module.exports = {
    * Can include private?: If Requested
    */
   getGroupLayers(group_id: string, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
-    var query: knex = knex.select('layer_id', 'name', 'description', 'data_type',
+    var query: knex = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
@@ -238,7 +239,7 @@ module.exports = {
 
     var subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
 
-    var query = knex.select('layer_id', 'name', 'description', 'data_type',
+    var query = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
     'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
@@ -264,7 +265,7 @@ module.exports = {
     let db = knex;
     if(trx){db = trx;}
     return db.select(
-      'layer_id', 'name', 'description', 'data_type',
+      'layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
@@ -274,6 +275,33 @@ module.exports = {
       'views',
       'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
     ).table('omh.layers').where('layer_id', layer_id)
+      .then((result) => {
+        if (result && result.length === 1) {
+          return result[0];
+        }
+        //else
+        return null;
+      });
+  },
+
+  /**
+   * Can include private?: If Requested
+   */
+  getLayerByShortID(shortid: string, trx: any = null) {
+    debug.log('getting layer shortid: ' + shortid);
+    let db = knex;
+    if(trx){db = trx;}
+    return db.select(
+      'layer_id', 'shortid', 'name', 'description', 'data_type',
+      'remote', 'remote_host', 'remote_layer_id',
+      'status', 'private', 'source', 'license', 'presets',
+      'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
+      'owned_by_group_id',
+      knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
+      knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
+      'views',
+      'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
+    ).table('omh.layers').where('shortid', shortid)
       .then((result) => {
         if (result && result.length === 1) {
           return result[0];
@@ -388,8 +416,8 @@ module.exports = {
     /**
    * Can include private?: Yes
    */
-    createLayer(user_id: number){
-      return knex('omh.layers').returning('layer_id')
+    createLayer(user_id: number, trx:any){
+      return trx('omh.layers').returning('layer_id')
         .insert({
             status: 'incomplete',
             created_by_user_id: user_id,
@@ -397,6 +425,8 @@ module.exports = {
             updated_by_user_id: user_id,
             extent_bbox: '[-175,-85,175,85]', //make sure we always init a default for this
             last_updated: knex.raw('now()')
+        }).then(layer_id => {
+          return trx('omh.layers').update({shortid: shortid.generate()}).where({layer_id});
         });
     },
 

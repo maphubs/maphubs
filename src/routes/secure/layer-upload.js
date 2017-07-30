@@ -32,6 +32,7 @@ module.exports = function(app: any) {
      var layer_id = parseInt(req.params.id || '', 10);
      Layer.getLayerByID(layer_id)
      .then((layer) => {
+       let shortid = layer.shortid;
        if(layer.created_by_user_id === user_id){
          debug.log('Mimetype: ' +req.file.mimetype);
          if(_endsWith(req.file.originalname, '.zip')){
@@ -65,7 +66,7 @@ module.exports = function(app: any) {
                       log.error(er);
                       res.status(200).send({success: false, error: er});
                     }else{
-                      DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                      DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, shortid, false)
                       .then((result) => {
                         //tell the client if we were successful
                         return res.status(200).send(result);
@@ -100,11 +101,11 @@ module.exports = function(app: any) {
          || _endsWith(req.file.originalname, '.json')){
            debug.log('JSON File Detected');
            let data = fileEncodingUtils.getDecodedFileWithBestGuess(req.file.path);
-               let geoJSON = JSON.parse(data);
-               DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
-               .then((result) => {
-                 res.status(200).send(result);
-               }).catch(apiError(res, 200)); //don't want browser to intercept the error, so we can show user a better message
+           let geoJSON = JSON.parse(data);
+           return DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, shortid, false)
+          .then((result) => {
+            return res.status(200).send(result);
+          }).catch(apiError(res, 200)); //don't want browser to intercept the error, so we can show user a better message
 
          } else if(_endsWith(req.file.originalname, '.csv')){
            debug.log('CSV File Detected');
@@ -121,7 +122,7 @@ module.exports = function(app: any) {
                 }
 
                 if(geoJSON){
-                  DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                  DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, shortid, false)
                   .then((result) => {
                     return res.status(200).send(result);
                   }).catch(apiError(res, 200));
@@ -151,7 +152,7 @@ module.exports = function(app: any) {
                    log.error(er);
                    return res.status(200).send({success: false, error: er.toString()});
                  }else{
-                   DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                   DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, shortid, false)
                    .then((result) => {
                      //tell the client if we were successful
                      return res.status(200).send(result);
@@ -172,10 +173,10 @@ module.exports = function(app: any) {
                  log.error(er);
                  res.status(200).send({success: false, error: er.toString()});
                }else{
-                 DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+                 DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, shortid, false)
                  .then((result) => {
                    //tell the client if we were successful
-                   res.status(200).send(result);
+                   return res.status(200).send(result);
                  }).catch(apiError(res, 500));
                }
              }
@@ -193,10 +194,10 @@ module.exports = function(app: any) {
                log.error(er);
                res.status(200).send({success: false, error: er.toString()});
              }else{
-               DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, false)
+               DataLoadUtils.storeTempGeoJSON(geoJSON, req.file.path, layer_id, shortid, false)
                .then((result) => {
                  //tell the client if we were successful
-                 res.status(200).send(result);
+                 return res.status(200).send(result);
                }).catch(apiError(res, 500));
              }
            });
@@ -208,7 +209,7 @@ module.exports = function(app: any) {
        }else {
          notAllowedError(res, 'layer');
        }
-     });
+     }).catch(apiError(res, 500));
 });
 
 app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
@@ -223,6 +224,7 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
     debug.log('finish upload for layer: ' + req.body.layer_id + ' requesting shapefile: ' + req.body.requestedShapefile);
    Layer.getLayerByID(req.body.layer_id)
      .then((layer) => {
+       let shortid = layer.shortid;
       if(layer.created_by_user_id === user_id){
       debug.log('allowed');
       //get file path
@@ -230,7 +232,7 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
       .then((path) => {
         debug.log("finishing upload with file: " + path);
         try{
-        shapefileFairy(path, (result) => {
+        return shapefileFairy(path, (result) => {
           if(result){
             var shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile;
             var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
@@ -241,10 +243,10 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
                   success: false, 
                   error: er.toString()});
               }else{
-                DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, true)
+                return DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, shortid, true)
                 .then((result) => {
                   //tell the client if we were successful
-                  res.status(200).send(result);
+                  return res.status(200).send(result);
                 }).catch(apiError(res, 500));
               }
             });
@@ -258,9 +260,9 @@ app.post('/api/layer/finishupload', csrfProtection, (req, res) => {
           log.error(err.message);
           return res.status(200).send({success: false, error: err.toString()});
         }
-      });
+      }).catch(apiError(res, 500));
     }else {
-      notAllowedError(res, 'layer');
+      return notAllowedError(res, 'layer');
     }
   }).catch(apiError(res, 500));
 }else{
