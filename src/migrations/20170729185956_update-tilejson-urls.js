@@ -13,7 +13,7 @@ var updateStyle = function(style, layer_id, shortid){
 
 
 var _forEachRight = require('lodash.foreachright');
-var buildMapStyle = function (layers){
+var buildMapStyle = function (styles){
      var mapStyle = {
        version: 8,
        sources: {},
@@ -21,8 +21,7 @@ var buildMapStyle = function (layers){
      };
 
      //reverse the order for the styles, since the map draws them in the order recieved
-     _forEachRight(layers, (layer) => {
-       let style = layer.style;
+     _forEachRight(styles, (style) => {
        if(style && style.sources && style.layers){
         //add source
         mapStyle.sources = Object.assign(mapStyle.sources, style.sources);
