@@ -138,6 +138,12 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   font-size: 0.8rem !important;
 }
 
+.input-field input[type=search] {
+  padding-left: 32px;
+  width: calc(100% - 32px);
+  border-radius: 25px;
+}
+
 #sidenav-overlay {
   opacity: 0 !important;
 }
