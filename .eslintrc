@@ -28,7 +28,15 @@
       "jsx": true
     }
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:promise/recommended"],
+  "extends": [
+    "eslint:recommended", 
+    "plugin:react/recommended", 
+    "plugin:promise/recommended",
+    "plugin:security/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
   "rules": {
     "generator-star-spacing": 1,
     "babel/object-curly-spacing": 1,
@@ -48,7 +56,8 @@
 
   "env": {
     "node": true,
-    "browser": true
+    "browser": true,
+    "es6": true
   },
 
   "globals": {
@@ -62,7 +71,10 @@
     "babel",
     "react",
     "promise",
-    "flowtype"
+    "flowtype",
+    "security",
+    "unicorn",
+    "import"
   ],
   "settings": {
     "react": {
