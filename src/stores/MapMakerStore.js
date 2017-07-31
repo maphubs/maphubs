@@ -117,7 +117,7 @@ export default class MapMakerStore extends Reflux.Store  {
     
       var layers = this.state.mapLayers;
       if(layers){
-        layers.push(layer);
+        layers.unshift(layer);
         this.updateMap(layers);
       }
       cb();
