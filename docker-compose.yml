@@ -10,7 +10,6 @@ services:
       - './assets/maphubsnginx_assets.template:/etc/nginx/nginx.conf'
       - './assets/assets:/data/assets'
       - './assets/public:/data/public'
-      - '../iD:/data/iD'
   gateway:
     image: 'nginx:alpine'
     volumes:
@@ -55,7 +54,6 @@ services:
       - ./env/dev/db.env
       - ./env/dev/secret/db-pass.env
       - ./env/dev/secret/db-server-pass.env
-      - ./env/dev/secret/id-secret.env
     volumes:
       - 'db-data:/var/lib/postgresql/data'
     ports:
