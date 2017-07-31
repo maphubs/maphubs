@@ -10,9 +10,8 @@ var knex = require('../../connection.js');
 var Promise = require('bluebird');
 var Locales = require('../../services/locales');
 var MapStyles = require('../../components/Map/Styles');
-var geobuf = require('geobuf');
-var Pbf = require('pbf');
 var geojson2dsv = require('geojson2dsv');
+var exportUtils = require('../../services/export-utils');
 
 module.exports = function(app: any) {
 
@@ -98,24 +97,7 @@ module.exports = function(app: any) {
 
   app.get('/api/layer/:layer_id/export/geobuf/*', privateLayerCheck, (req, res) => {
     var layer_id = parseInt(req.params.layer_id || '', 10);
-
-    Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      var resultStr = JSON.stringify(geoJSON);
-      var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-      var match = req.get('If-None-Match');
-      if(hash === match){
-        return res.status(304).send();
-      }else{
-        res.writeHead(200, {
-          'Content-Type': 'application/octet-stream',
-          'ETag': hash
-        });
-
-        let data = geobuf.encode(geoJSON, new Pbf());
-        var buf = Buffer.from(data, 'binary');
-        return res.end(buf, 'binary');
-      }
-    }).catch(apiError(res, 200));
+    exportUtils.completeGeoBufExport(req, res, layer_id);
   });
 
   app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, (req, res) => {

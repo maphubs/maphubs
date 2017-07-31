@@ -846,5 +846,11 @@
 	"New Map": "New Map",
 	"Share": "Share",
 	"Protected": "Protected",
-	"Only authorized users can see this map.": "Only authorized users can see this map."
+	"Only authorized users can see this map.": "Only authorized users can see this map.",
+	"Share Link: ": "Share Link: ",
+	"Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.": "Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.",
+	"Sharing": "Sharing",
+	"Anyone can use this link to view the map.": "Anyone can use this link to view the map.",
+	"Base Map": "Base Map",
+	"Copy Link": "Copy Link"
 }

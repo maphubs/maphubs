@@ -54,7 +54,7 @@ return function(req: any, res: any, next: any){
       if(layer.private){
         if(req.isAuthenticated && req.isAuthenticated()){
           // if there is a user session, the user must be allowed to edit
-          layer.allowedToModify(layer_id, user_id)
+          return layer.allowedToModify(layer_id, user_id)
           .then((allowed) => {
             if(allowed){
               return success();
@@ -65,7 +65,7 @@ return function(req: any, res: any, next: any){
           });
           }else{
             // else private but no session = check for manet
-            manetCheck();
+            return manetCheck();
           }
       }else{
         // else not private = allow if login not required, or login required and authenticated
@@ -73,16 +73,18 @@ return function(req: any, res: any, next: any){
           return success();
         }else {
           //check for manet
-          manetCheck();
+          return manetCheck();
         }
       }
-    });
+    }).catch(err=>{
+       log.error(err);
+     });
    }else if(map_id){
      Map.getMap(map_id)
      .then((map) => {
        if(map.private){
          if(req.isAuthenticated && req.isAuthenticated()){
-           map.allowedToModify(map_id, user_id)
+           return map.allowedToModify(map_id, user_id)
             .then((allowed) => {
               if(allowed){
                 return success();
@@ -93,7 +95,7 @@ return function(req: any, res: any, next: any){
             });
          }else{
             // else private but no session = check for manet
-            manetCheck();
+            return manetCheck();
           }
        }else{
         // else not private = allow if login not required, or login required and authenticated
@@ -101,9 +103,11 @@ return function(req: any, res: any, next: any){
           return success();
         }else {
           //check for manet
-          manetCheck();
+          return manetCheck();
         }
       }
+     }).catch(err=>{
+       log.error(err);
      });
    }else{
      if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){

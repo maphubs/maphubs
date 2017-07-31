@@ -311,6 +311,21 @@ module.exports = {
       });
   },
 
+  isSharedInPublicMap(shortid: string){
+    return knex.count('omh.layers.layer_id')
+    .from('omh.layers')
+    .leftJoin('omh.map_layers', 'omh.layers.layer_id', 'omh.map_layers.layer_id')
+    .leftJoin('omh.maps', 'omh.map_layers.map_id', 'omh.maps.map_id')
+    .whereNotNull('omh.maps.share_id')
+    .where('omh.layers.shortid', shortid)
+    .then(result=>{
+      if(result[0] && result[0].count && result[0].count > 0){
+        return true;
+      }
+      return false;
+    });
+  },
+
     /**
      * Can include private?: If Requested
      */

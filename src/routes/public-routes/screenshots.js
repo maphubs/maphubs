@@ -32,9 +32,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/api/map/:mapid/static/render/', manetCheck, (req, res, next) => {
-    var map_id = parseInt(req.params.mapid || '', 10);
-
+  let completeMapStaticRender = function(req, res, next, map_id){
     let showLegend = true;
     if(req.query.hideLegend){
       showLegend = false;
@@ -84,7 +82,13 @@ module.exports = function(app: any) {
            }, req
          });
       }).catch(nextError(next));
+  };
+
+  app.get('/api/map/:mapid/static/render/', manetCheck, (req, res, next) => {
+    var map_id = parseInt(req.params.mapid || '', 10);
+    completeMapStaticRender(req, res, next, map_id);
   });
+
 
   app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, (req, res, next) => {
     var map_id = parseInt(req.params.mapid || '', 10);

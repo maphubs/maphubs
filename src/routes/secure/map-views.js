@@ -173,12 +173,12 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-        MapUtils.completeUserMapRequest(req, res, next, map_id, false);
+        MapUtils.completeUserMapRequest(req, res, next, map_id, false, false);
     } else {
       //get user id
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
+        return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed, false);
       }).catch(nextError(next));
     }
   });
@@ -198,12 +198,12 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-        MapUtils.completeUserMapRequest(req, res, next, map_id, false);
+        MapUtils.completeUserMapRequest(req, res, next, map_id, false, false);
     } else {
       //get user id
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed);
+        return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed, false);
       }).catch(nextError(next));
     }
   });

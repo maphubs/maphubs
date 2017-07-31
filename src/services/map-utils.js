@@ -5,9 +5,10 @@ var nextError = require('./error-response').nextError;
 var urlUtil = require('../services/url-util');
 var debug = require('./debug')('map-utils');
 var Locales = require('../services/locales');
+var local = require('../local');
 
 module.exports = {
-  completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean){
+  completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean){
     Promise.all([
     Map.getMap(map_id),
     Map.getMapLayers(map_id, canEdit)
@@ -30,14 +31,33 @@ module.exports = {
         title = Locales.getLocaleStringObject(req.locale, map.title);
       }
       title += ' - ' + MAPHUBS_CONFIG.productName;
-        res.render('embedmap', {
+      
+      var baseUrl = urlUtil.getBaseUrl();
+      let imageUrl;
+      if(shared && map.share_id){
+        imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`;
+      }else{
+        imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`;
+      }
+
+        return res.render('embedmap', {
           title,
-          props:{map, layers, canEdit, isStatic, interactive, geoJSONUrl, markerColor, overlayName},
+          props:{
+            map, 
+            layers, 
+            canEdit, 
+            isStatic, 
+            interactive, 
+            geoJSONUrl, 
+            markerColor, 
+            overlayName,
+            image: imageUrl
+          },
           hideFeedback: true, req});
     }).catch(nextError(next));
   },
 
-  completeUserMapRequest(req: any, res: any, next: any, map_id: number, canEdit: boolean){
+  completeUserMapRequest(req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean){
     debug.log('completeUserMapRequest');
     return Promise.all([
     Map.getMap(map_id),
@@ -52,7 +72,22 @@ module.exports = {
       }
       title += ' - ' + MAPHUBS_CONFIG.productName;
       var baseUrl = urlUtil.getBaseUrl();
-        res.render('usermap',
+
+      let imageUrl;
+      if(shared && map.share_id){
+        imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`;
+      }else{
+        imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`;
+      }
+
+      let showShareButtons = true;
+      if(local.requireLogin && !shared){
+        showShareButtons = false;
+      }
+      //inject into map config
+      map.showShareButtons = showShareButtons;
+
+        return res.render('usermap',
          {
            title: `${title} - ${MAPHUBS_CONFIG.productName}`,
            props:{map, layers, canEdit},
@@ -61,7 +96,7 @@ module.exports = {
            twitterCard: {
              title,
              description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
-             image: baseUrl + '/api/screenshot/map/' + map.map_id + '.png',
+             image: imageUrl,
              imageWidth: 1200,
              imageHeight: 630,
              imageType: 'image/png'

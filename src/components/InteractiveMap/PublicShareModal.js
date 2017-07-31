@@ -3,6 +3,7 @@ import React from 'react';
 import {Modal, ModalContent} from '../Modal/Modal.js';
 import MapHubsComponent from '../MapHubsComponent';
 import Toggle from '../forms/toggle';
+import ConfirmationActions from '../../actions/ConfirmationActions';
 var urlUtil = require('../../services/url-util');
 var clipboard;
 if(process.env.APP_ENV === 'browser'){
@@ -50,10 +51,30 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
   }
 
   onChange = (model: Object) => {
-     this.props.onChange(model.public);
+    var _this = this;
+     if(model.public){
+        ConfirmationActions.showConfirmation({
+          title: this.__('Share Map'),
+          postitiveButtonText: this.__('Create Public Share Link'),
+          negativeButtonText: this.__('Cancel'),
+          message: this.__('Please confirm that you wish to publicly share this map and the data in the associated map layers publicly with anyone who has the link.'),
+          onPositiveResponse(){
+            _this.props.onChange(model.public);
+          }
+        });
+     }else{
+      ConfirmationActions.showConfirmation({
+        title: this.__('Deactivate Map Sharing'),
+        postitiveButtonText: this.__('Stop Sharing'),
+        negativeButtonText: this.__('Cancel'),
+        message: this.__('Warning! The shared link will be destroyed and all shared/embedded maps will no longer work. For security reasons, sharing this map again will generate a new link and will not reactivate the current link.'),
+        onPositiveResponse(){
+          _this.props.onChange(model.public);
+        }
+      });
+    }
   }
 
-  
   render(){
     let shareLink = '', shareMessage = '';
     if(this.props.share_id && this.state.sharing){
@@ -65,6 +86,7 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
           <a href={shareUrl} target="_blank" rel="noopener noreferrer">{shareUrl}</a>
           <i className="material-icons layer-info-tooltip omh-accent-text" style={{cursor: 'pointer'}} data-delay="50" onClick={function(){clipboard.copy(shareUrl);}} data-position="left" data-tooltip={this.__('Copy to Clipboard')}>launch</i>
         </p>
+        <button onClick={function(){clipboard.copy(shareUrl);}} className="btn">{this.__('Copy Link')}</button>
         <p>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
         </div>
       );
@@ -76,10 +98,15 @@ export default class EditAttributesModal extends MapHubsComponent<void, Props, S
       shareMessage = (
         <p style={{fontSize: '16px'}}><b>{this.__('Protected')}</b>&nbsp;-&nbsp;<span>{this.__('Only authorized users can see this map.')}</span></p>
       );
+       shareLink = (
+        <div>
+        <p>{this.__('Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.')}</p>
+        </div>
+      );
     }
    
     return (
-      <Modal ref="modal" dismissible={false} fixedFooter={true}>
+      <Modal ref="modal" id="public-share-modal" dismissible={false} fixedFooter={true}>
         <ModalContent style={{padding: '10px', margin: 0, height: 'calc(100% - 60px)', overflow: 'hidden'}}>
           <div className="row no-margin" style={{height: '35px'}}>
             <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>

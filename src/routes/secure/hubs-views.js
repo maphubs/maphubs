@@ -473,28 +473,4 @@ module.exports = function(app: any) {
     res.redirect('/');
   });
 
-//not used?
-/*
-  app.get('/hub/:hub/map/embed/:map_id', privateHubCheck, (req, res, next) => {
-    var map_id = req.params.map_id;
-    var hub_id = req.params.hub;
-    if(!map_id){
-      apiDataError(res, 'Bad Request: MapId not found');
-    }
-
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-          MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false);
-    } else {
-      //get user id
-      var user_id = req.session.user.maphubsUser.id;
-
-      Hub.allowedToModify(hub_id, user_id)
-      .then((allowed) => {
-        MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed);
-      }).catch(apiError(res, 500));
-    }
-  });
-  */
-
 };

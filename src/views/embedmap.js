@@ -22,6 +22,7 @@ type Props = {
   markerColor: string,
   overlayName: LocalizedString,
   mapConfig: Object,
+  image: string,
   _csrf: string
 }
 
@@ -179,10 +180,10 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
     var bounds;
     
     if(this.props.isStatic && !this.state.interactive){
-      var url = '/api/screenshot/map/' + this.props.map.map_id + '.png';
+
       map = (
           <div style={{position: 'relative'}}>
-            <img src={url} className="responsive-img" alt={MAPHUBS_CONFIG.productName + ' Map'} />
+            <img src={this.props.image} className="responsive-img" alt={MAPHUBS_CONFIG.productName + ' Map'} />
               <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light embed-tooltips"
                 data-delay="50" data-position="right" data-tooltip={this.__('Start Interactive Map')}
                 style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>

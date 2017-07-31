@@ -25,6 +25,10 @@ import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {UserStoreState} from '../stores/UserStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal';
+let clipboard;
+if(process.env.APP_ENV === 'browser'){
+ clipboard = require('clipboard-js');
+}
 
 type Props = {
   map: Object,
@@ -45,7 +49,7 @@ type UserMapState = {
   height: number,
   downloading: boolean,
   layers: Array<Object>,
-  share_id: string
+  share_id?: string
 }
 
 
@@ -186,8 +190,19 @@ export default class UserMap extends MapHubsComponent<DefaultProps, Props, State
     }
   }
 
+  copyToClipboard = (val: string) => {
+    clipboard.copy(val);
+  }
+
   showEmbedCode = () => {
-    var url = urlUtil.getBaseUrl() + '/map/embed/' + this.props.map.map_id + '/static';
+    const baseUrl = urlUtil.getBaseUrl();
+    let url;
+    if(this.props.map.share_id){
+      url = `${baseUrl}/map/public-embed/${this.props.map.share_id}/static`;
+    }else{
+      url = `${baseUrl}/map/embed/${this.props.map.map_id}/static`;
+    }
+
     var code = `
       &lt;iframe src="${url}"
         style="width: 600px; height: 330px;" frameborder="0" 
