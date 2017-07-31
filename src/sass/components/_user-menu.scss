@@ -17,3 +17,15 @@
   color: $navbar-hover-font-color !important;
   background-color: transparent !important;
 }
+
+.login-with-signup:hover {
+  background-color: transparent !important;
+}
+
+.login-with-signup-link {
+  cursor: pointer;
+}
+
+.login-with-signup-link:hover {
+  color: $header-font-color !important;
+}

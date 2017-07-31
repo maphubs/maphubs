@@ -123,25 +123,24 @@ export default class UserMenu extends MapHubsComponent<Props, Props, State> {
       );
     } else {
 
-      var signup = '';
       var style = {};
       if(!this.props.sideNav){
         style={marginLeft: '1px', marginRight: '5px'};
       }
       if(!MAPHUBS_CONFIG.mapHubsPro){
-        signup = (
-          <a className="btn" style={style} href="/signup">{this.__('Sign Up')}</a>
-        );
-      }
-
-      user = (
-        <span>
+         user = (
+          <li className="nav-link-wrapper login-with-signup">
+              <a className="nav-link-item login-with-signup-link" style={{float: !this.props.sideNav ? 'left' : 'inherit'}} href="#" onClick={this.loginClick}>{this.__('Login')}</a>
+               <a className="btn" style={style} href="/signup">{this.__('Sign Up')}</a>
+          </li>
+      );
+      }else{
+         user = (
           <li className="nav-link-wrapper">
               <a className="nav-link-item" style={{float: !this.props.sideNav ? 'left' : 'inherit'}} href="#" onClick={this.loginClick}>{this.__('Login')}</a>
           </li>
-          {signup}
-        </span>
       );
+      }
     }
 
     return user;
