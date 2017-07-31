@@ -112,14 +112,9 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
   }
 
   componentDidMount(){
-     $(this.refs.modal).modal({
-        dismissible: this.props.dismissible,
-        opacity: this.props.opacity,
-        in_duration: this.props.in_duration,
-        out_duration: this.props.out_duration,
-        ready: this.props.ready,
-        complete: this.props.complete
-      });
+    if(this.props.show){
+      this.show();
+    }
   }
 
   shouldComponentUpdate(nextProps: ModalProps){
@@ -140,7 +135,15 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
 
   show(){
     //switch from off to on
-    $(this.refs.modal).modal('open');
+    $(this.refs.modal).modal({
+        dismissible: this.props.dismissible,
+        opacity: this.props.opacity,
+        in_duration: this.props.in_duration,
+        out_duration: this.props.out_duration,
+        ready: this.props.ready,
+        complete: this.props.complete
+      });
+      $(this.refs.modal).modal('open');
     //fire window resize for maps etc inside the modal
     fireResizeEvent();
   }
