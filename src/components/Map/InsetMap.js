@@ -358,7 +358,7 @@ export default class InsetMap extends React.Component<DefaultProps, Props, State
                     color: '#717171',                  
                     cursor: 'pointer',
                     textAlign: 'center',
-                    zIndex: 2,
+                    zIndex: 1,
                     transform: 'rotate(45deg)', 
                     fontSize:'18px'}}          
             >arrow_downward</i>

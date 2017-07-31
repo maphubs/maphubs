@@ -9,6 +9,22 @@ var local = require('../local');
 
 module.exports = {
   completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean){
+    
+    let showLogo = true;
+    if(req.query.hideLogo){
+      showLogo = false;
+    }
+
+    let showScale = true;
+    if(req.query.hideScale){
+      showScale = false;
+    }
+
+    let showInset = true;
+    if(req.query.hideInset){
+      showInset = false;
+    }
+    
     Promise.all([
     Map.getMap(map_id),
     Map.getMapLayers(map_id, canEdit)
@@ -51,6 +67,9 @@ module.exports = {
             geoJSONUrl, 
             markerColor, 
             overlayName,
+            showLogo,
+            showScale,
+            insetMap: showInset,
             image: imageUrl
           },
           hideFeedback: true, req});

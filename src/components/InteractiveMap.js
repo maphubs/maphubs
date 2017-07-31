@@ -35,6 +35,8 @@ type Props = {
   insetConfig?: Object,
   showShareButtons: boolean,
   hideInactive: boolean,
+  showScale: boolean,
+  insetMap: boolean,
   children?: any,
   basemap: string
 }
@@ -48,6 +50,8 @@ type DefaultProps = {
   interactive: boolean,
   showShareButtons: boolean,
   hideInactive: boolean,
+  showScale: boolean,
+  insetMap: boolean,
   basemap: string
 }
 
@@ -69,7 +73,9 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
       showTitle: true,
       interactive: true,
       showShareButtons: true,
-      hideInactive: true
+      hideInactive: true,
+      showScale: true,
+      insetMap: true,
   }
 
   state: State
@@ -213,7 +219,11 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
           layers={this.state.layers}/>
         );
     } else {
-      let legendMaxHeight = topOffset + 185;
+      let insetOffset = 185;
+      if(!this.props.insetMap){
+        insetOffset = 30;
+      }
+      let legendMaxHeight = topOffset + insetOffset;
       legend = (
         <MiniLegend style={{
           position: 'absolute',
@@ -302,6 +312,8 @@ export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props
               showLogo={this.props.showLogo}
               mapConfig={this.props.mapConfig}
               insetConfig={this.props.insetConfig}
+              insetMap={this.props.insetMap}
+              showScale={this.props.showScale}
               disableScrollZoom={this.props.disableScrollZoom}>
                 
               {legend}

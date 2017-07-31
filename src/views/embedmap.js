@@ -22,6 +22,9 @@ type Props = {
   markerColor: string,
   overlayName: LocalizedString,
   mapConfig: Object,
+  showLogo: boolean,
+  showScale: boolean,
+  insetMap:  boolean,
   image: string,
   _csrf: string
 }
@@ -30,7 +33,10 @@ type DefaultProps = {
   isStatic: boolean,
   interactive: boolean,
   markerColor: string,
-  overlayName: string
+  overlayName: string,
+  showLogo: boolean,
+  showScale: boolean,
+  insetMap:  boolean,
 }
 
 type State = {
@@ -48,7 +54,10 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
     isStatic: false,
     interactive: false,
     markerColor: '#FF0000',
-    overlayName: 'Locations'
+    overlayName: 'Locations',
+    showLogo: true,
+    showScale: true,
+    insetMap: true
   }
 
   state: State
@@ -191,24 +200,40 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
         );
     }else {
        if(!this.state.bounds){
-        if( this.props.map.position && this.props.map.position.bbox){
-          var bbox = this.props.map.position.bbox;
-          bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
-        }       
+          if(typeof window === 'undefined' || !window.location.hash){
+              //only update position if there isn't absolute hash in the URL
+                if( this.props.map.position && this.props.map.position.bbox){
+                  var bbox = this.props.map.position.bbox;
+                  bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+                }      
+            }             
       }else{
         bounds = this.state.bounds;
       }
+
+      let insetConfig = {};
+  if(this.props.map.settings && this.props.map.settings.insetConfig){
+    insetConfig = this.props.map.settings.insetConfig;
+  }
+  insetConfig.collapsible = false;
+
+
       map = (
          <InteractiveMap ref="interactiveMap" height="100vh"    
                   interactive={this.state.interactive}    
                   fitBounds={bounds}
-                  fitBoundsOptions={{animate: false, padding: 200, maxZoom: 14}}
+                  fitBoundsOptions={{animate: false, padding: 0, maxZoom: 20}}
                   style={this.state.glStyle} 
                   layers={this.state.layers}
                   map_id={this.props.map.map_id}
                   disableScrollZoom={true}
                   mapConfig={this.props.mapConfig}
                   title={this.props.map.title}
+                  insetConfig={insetConfig}
+                  insetMap={this.props.insetMap}
+                  showLogo={this.props.showLogo} 
+                  showScale={this.props.showScale} 
+
                   {...this.props.map.settings}
                   >
           </InteractiveMap> 
