@@ -2,8 +2,8 @@ var Layer = require('../../models/layer');
 var urlUtil = require('../../services/url-util');
 import slugify from 'slugify';
 var apiError = require('../../services/error-response').apiError;
-var manetCheck = require('../../services/manet-check')();
-var privateLayerCheck = require('../../services/private-layer-check').middleware;
+var manetCheck = require('../../services/manet-check');
+var privateLayerCheck = require('../../services/private-layer-check').check;
 var Locales = require('../../services/locales');
 
 /*
@@ -127,23 +127,49 @@ module.exports = function(app) {
       }
   };
   
-  app.get('/api/layer/:layer_id/tile.json', manetCheck, privateLayerCheck, (req, res) => {
+  app.get('/api/layer/:layer_id/tile.json', (req, res) => {
 
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
+
+     var user_id = -1;
+    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+      user_id = req.session.user.maphubsUser.id;
+    }
     
     Layer.getLayerByID(layer_id)
     .then((layer) => {
-      return completeLayerTileJSONRequest(req, res, layer);
+      if(manetCheck.check(req) || //screenshot service
+        (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+      ){          
+        return completeLayerTileJSONRequest(req, res, layer);
+      }else{
+        return res.status(404).send();
+      } 
     }).catch(apiError(res, 500));
   });
 
-  app.get('/api/lyr/:shortid/tile.json', manetCheck, privateLayerCheck, (req, res) => {
+  app.get('/api/lyr/:shortid/tile.json', (req, res) => {
 
-    let shortid = req.params.shortid;
-    
-    Layer.getLayerByShortID(shortid)
-    .then((layer) => {
-      return completeLayerTileJSONRequest(req, res, layer);
-    }).catch(apiError(res, 500));
+    const shortid = req.params.shortid;
+
+    var user_id = -1;
+    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+      user_id = req.session.user.maphubsUser.id;
+    }
+
+    Layer.isSharedInPublicMap(shortid)
+      .then(isShared =>{
+        return Layer.getLayerByShortID(shortid)
+          .then(layer=>{
+            if(isShared || //in public shared map
+              manetCheck.check(req) || //screenshot service
+              (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+            ){          
+              return completeLayerTileJSONRequest(req, res, layer);
+            }else{
+              return res.status(404).send();
+            }
+        });
+      }).catch(apiError(res, 200));
   });
 };

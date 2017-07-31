@@ -5,9 +5,36 @@ var debug = require('../services/debug')('manet-check');
 var Layer = require('../models/layer');
 var Map = require('../models/map');
 
-module.exports = function(){
+var check = function(req){
+    //determine if this is the manet screenshot service
 
-return function(req: any, res: any, next: any){
+    //first check the cookie
+    if(req.cookies) debug.log(JSON.stringify(req.cookies));
+    if(!req.cookies || !req.cookies.manet || req.cookies.manet !== local.manetAPIKey){
+      log.error('Manet Cookie Not Found');
+      return false;
+    }else{
+      return true;
+    }
+  };
+
+var failure = function(res){   
+    return res.status(401).send("Unauthorized");
+  };
+
+  var success = function(next){
+    next();
+  };
+
+var middlewareCheck = function(req, res, next){
+  if(check(req)){
+    return success(next);
+  }else{
+    return failure(res);
+  }
+};
+
+var middleware = function(req: any, res: any, next: any){
 
 
   var user_id = -1;
@@ -25,27 +52,6 @@ return function(req: any, res: any, next: any){
     map_id = req.body.map_id;
   }
     
-  var failure = function(){   
-    return res.status(401).send("Unauthorized");
-  };
-
-  var success = function(){
-    next();
-  };
-
-  var manetCheck = function(){
-    //determine if this is the manet screenshot service
-
-    //first check the cookie
-    if(req.cookies) debug.log(JSON.stringify(req.cookies));
-    if(!req.cookies || !req.cookies.manet || req.cookies.manet !== local.manetAPIKey){
-      log.error('Manet Cookie Not Found');
-      return failure();
-    }else{
-      return success();
-    }
-  };
-
   if(layer_id){
     //check if the layer is private
     Layer.getLayerByID(layer_id)
@@ -57,23 +63,23 @@ return function(req: any, res: any, next: any){
           return layer.allowedToModify(layer_id, user_id)
           .then((allowed) => {
             if(allowed){
-              return success();
+              return success(next);
             }else{
               log.error('Unauthenticated screenshot request, not authorized to view private layer: ' + layer_id);
-              return failure();
+              return failure(res);
             }
           });
           }else{
             // else private but no session = check for manet
-            return manetCheck();
+            return middlewareCheck(req, res, next);
           }
       }else{
         // else not private = allow if login not required, or login required and authenticated
         if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
-          return success();
+          return success(next);
         }else {
           //check for manet
-          return manetCheck();
+          return middlewareCheck(req, res, next);
         }
       }
     }).catch(err=>{
@@ -95,7 +101,7 @@ return function(req: any, res: any, next: any){
             });
          }else{
             // else private but no session = check for manet
-            return manetCheck();
+            return middlewareCheck(req, res, next);
           }
        }else{
         // else not private = allow if login not required, or login required and authenticated
@@ -103,7 +109,7 @@ return function(req: any, res: any, next: any){
           return success();
         }else {
           //check for manet
-          return manetCheck();
+          return middlewareCheck(req, res, next);
         }
       }
      }).catch(err=>{
@@ -114,9 +120,13 @@ return function(req: any, res: any, next: any){
           return success();
         }else {
           //check for manet
-          manetCheck();
+         middlewareCheck(req, res, next);
         }
    }
   
 };
+
+module.exports = {
+  middleware,
+  check
 };
