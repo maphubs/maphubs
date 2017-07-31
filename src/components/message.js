@@ -8,7 +8,7 @@ import _isequal from 'lodash.isequal';
 
 type Props = {}
 
-import {MessageStoreState} from '../stores/MessageStore';
+import type {MessageStoreState} from '../stores/MessageStore';
 
 export default class Message extends MapHubsComponent<void, Props, MessageStoreState> {
 
