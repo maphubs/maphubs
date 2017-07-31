@@ -1,5 +1,24 @@
 # Change Log
 
+## [v0.11.27](https://github.com/maphubs/maphubs/tree/v0.11.27) (2017-07-31)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.26...v0.11.27)
+
+**Implemented enhancements:**
+
+- add layers to the top of the list in map maker [\#421](https://github.com/maphubs/maphubs/issues/421)
+- share map publicly from protected portal [\#418](https://github.com/maphubs/maphubs/issues/418)
+- legend fonts should always be black [\#415](https://github.com/maphubs/maphubs/issues/415)
+
+**Fixed bugs:**
+
+- Fails to save a feature with a single quote char [\#416](https://github.com/maphubs/maphubs/issues/416)
+- failure to enable markers [\#414](https://github.com/maphubs/maphubs/issues/414)
+- secure site login fails with multiple pending invites [\#413](https://github.com/maphubs/maphubs/issues/413)
+- layer extent not updated when data modified [\#314](https://github.com/maphubs/maphubs/issues/314)
+
+## [v0.11.26](https://github.com/maphubs/maphubs/tree/v0.11.26) (2017-07-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.25...v0.11.26)
+
 ## [v0.11.25](https://github.com/maphubs/maphubs/tree/v0.11.25) (2017-07-24)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.11.24...v0.11.25)
 
