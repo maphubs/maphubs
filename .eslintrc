@@ -46,8 +46,10 @@
     "react/prefer-es6-class": 1,
     "react/jsx-no-bind": 2,
     "react/no-string-refs": 0,
-     "promise/no-nesting": "off",
-     "promise/avoid-new": "off",
+    "promise/no-nesting": "off",
+    "promise/avoid-new": "off",
+    "security/detect-object-injection": "off",
+    "unicorn/filename-case": "off",
     "prefer-arrow-callback": 1,
     "semi": [2, "always"],
     "eqeqeq": 1 // require the use of === and !==
