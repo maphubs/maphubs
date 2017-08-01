@@ -432,7 +432,7 @@ module.exports = {
    * Can include private?: Yes
    */
     createLayer(user_id: number, trx:any){
-      return trx('omh.layers').returning('layer_id')
+      return trx('omh.layers')
         .insert({
             status: 'incomplete',
             created_by_user_id: user_id,
@@ -440,8 +440,13 @@ module.exports = {
             updated_by_user_id: user_id,
             extent_bbox: '[-175,-85,175,85]', //make sure we always init a default for this
             last_updated: knex.raw('now()')
-        }).then(layer_id => {
-          return trx('omh.layers').update({shortid: shortid.generate()}).where({layer_id});
+        }).returning('layer_id')
+          .then(layer_id => {
+          layer_id = parseInt(layer_id);
+          return trx('omh.layers').update({shortid: shortid.generate()}).where({layer_id})
+          .then(()=>{
+            return layer_id;
+          });
         });
     },
 
