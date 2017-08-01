@@ -72,7 +72,17 @@ module.exports = {
             insetMap: showInset,
             image: imageUrl
           },
-          hideFeedback: true, req});
+          hideFeedback: true, 
+          oembed: 'map',
+           twitterCard: {
+             title,
+             description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
+             image: imageUrl,
+             imageWidth: 1200,
+             imageHeight: 630,
+             imageType: 'image/png'
+           },
+          req});
     }).catch(nextError(next));
   },
 
