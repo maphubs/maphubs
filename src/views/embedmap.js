@@ -192,7 +192,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
 
       map = (
           <div style={{position: 'relative'}}>
-            <img src={this.props.image} className="responsive-img" alt={MAPHUBS_CONFIG.productName + ' Map'} />
+            <img src={this.props.image} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />
               <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light embed-tooltips"
                 data-delay="50" data-position="right" data-tooltip={this.__('Start Interactive Map')}
                 style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
@@ -229,6 +229,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
                   disableScrollZoom={true}
                   mapConfig={this.props.mapConfig}
                   title={this.props.map.title}
+                  basemap={this.props.map.basemap}
                   insetConfig={insetConfig}
                   insetMap={this.props.insetMap}
                   showLogo={this.props.showLogo} 
@@ -240,7 +241,7 @@ export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, Stat
       );
     }
     return (
-      <div className="embed-map" style={{height: '100%'}}>
+      <div className="embed-map" style={{height: '100%', width: '100%', display: 'flex', overflow: 'hidden'}}>
         {map}
       </div>
     );
