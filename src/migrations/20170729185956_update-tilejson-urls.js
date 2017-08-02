@@ -51,7 +51,8 @@ exports.up = function(knex, Promise) {
         order by position`)
         .then((result) => {
           let updatedMapStyles = {};
-          return Promise.map(result.rows, mapLayer => {
+          return Promise.mapSeries(result.rows, mapLayer => {
+            console.log(`updating map layer, map:${mapLayer.map_id} layer: ${mapLayer.layer_id}`);
             let mapLayerStyle = updateStyle(mapLayer.map_layer_style, mapLayer.layer_id, mapLayer.shortid);
             if(!updatedMapStyles[mapLayer.map_id]){
               updatedMapStyles[mapLayer.map_id] = [];
@@ -60,17 +61,19 @@ exports.up = function(knex, Promise) {
             return knex('omh.map_layers')
               .update({style: mapLayerStyle})
               .where({map_id: mapLayer.map_id, layer_id: mapLayer.layer_id})
-            .then(()=>{
-              return Promise.map(Object.keys(updatedMapStyles), map_id => {
+              .then(()=>{
+                return updatedMapStyles;
+              });
+          }).then(updatedMapStyles=>{
+              return Promise.mapSeries(Object.keys(updatedMapStyles), map_id => {
+                console.log(`updating map: ${map_id}`);
                 let updatedMapStyle = buildMapStyle(updatedMapStyles[map_id]);
                 return knex('omh.maps').update({style: updatedMapStyle}).where({map_id});
               });
-            });
           });
         });
     });
   });
-
   
 };
 
