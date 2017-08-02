@@ -52,13 +52,13 @@ module.exports = function(app) {
       knex.transaction((trx) => {
       return siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx)
       .then(() => {
-        return sm.toXML((err, xml) => {
-          if(err){
-            log.error(err);
-            next(err);
-          }
+        return Promise.promisify(sm.toXML, {context:sm})()
+        .then((xml) => {
           res.header('Content-Type', 'application/xml');
-          res.send(xml);
+          return res.send(xml);
+        }).catch(err=>{
+           log.error(err);
+           throw err;
         });
       });
       }).catch(nextError(next));
@@ -89,14 +89,14 @@ module.exports = function(app) {
           siteMapUtil.addLayersToSiteMap(sm, trx),
           siteMapUtil.addGroupsToSiteMap(sm, trx)
         ]).then(() => {
-            return sm.toXML((err, xml) => {
-            if(err){
+           return Promise.promisify(sm.toXML, {context:sm})()
+            .then((xml) => {
+              res.header('Content-Type', 'application/xml');
+              return res.send(xml);
+            }).catch(err=>{
               log.error(err);
-              next(err);
-            }
-            res.header('Content-Type', 'application/xml');
-            res.send(xml);
-          });
+              throw err;
+            });
         });
       }).catch(nextError(next));
 
