@@ -1,4 +1,4 @@
-
+/*eslint-disable no-console */
 var updateStyle = function(style, layer_id, shortid){
   if(!style || !style.sources) return style;
   var layerSource = style.sources['omh-'+ layer_id];
