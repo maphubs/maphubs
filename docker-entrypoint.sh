@@ -50,7 +50,7 @@ touch ./node_modules/dnd-core/.babelrc
 rm ./node_modules/dnd-core/.babelrc
 
 #run any pending database migrations
-node node_modules/knex/bin/cli.js --knexfile=src/knexfile.js migrate:latest --env production
+node --max-old-space-size=$NODE_MEM_SIZE node_modules/knex/bin/cli.js --knexfile=src/knexfile.js migrate:latest --env production
 
 #start server
 node --max-old-space-size=$NODE_MEM_SIZE src/app.js
