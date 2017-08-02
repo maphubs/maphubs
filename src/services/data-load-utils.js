@@ -171,12 +171,8 @@ module.exports = {
         bbox = require('@turf/bbox')(geoJSON);
       }
 
-
       debug.log(bbox);
       geoJSON.bbox = bbox;
-
-
-    
 
       //now that we know the data type, update the style to clear uneeded default styles
       var style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
@@ -254,7 +250,7 @@ module.exports = {
               data_type: geomType
             };
             debug.log('Upload Complete!');
-            resolve(result);
+            return resolve(result);
           }else{
             reject(new Error("Failed to Insert Metadata Database"));
             return;
