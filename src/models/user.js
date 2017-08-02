@@ -1,6 +1,5 @@
 // @flow
 var knex = require('../connection');
-var Promise = require('bluebird');
 var log = require('../services/log');
 var debug = require('../services/debug')('models/user');
 var Email = require('../services/email-util.js');
@@ -19,29 +18,21 @@ module.exports = {
     debug.log('getting for id: ' + id);
       var user = {};
 
-      return Promise.all([
-          knex('users').where('id', id),
-          knex('user_roles').where('user_id', id),
-          knex('messages').where('to_user_id', id),
-          knex('user_blocks').where('user_id', id),
-          knex('user_preferences').where('user_id', id)
-        ])
-        .then((resultArr) => {
-          user = resultArr[0][0];
-          user.roles = resultArr[1];
-          user.messages = resultArr[2];
-          user.blocks = resultArr[3];
-          user.preferences = resultArr[4];
-
-          if(!secure){
-            //exclude sensitive info
-            delete user.creation_ip;
-            delete user.new_email;
-            delete user.pass_crypt;
-            delete user.pass_reset;
-          }
-
-          return user;
+      return knex('users').where('id', id)
+        .then((result) => {
+          if(!result || result.length !== 1){
+            throw new Error('User not found');
+          }else{
+            user = result[0];
+            if(!secure){
+              //exclude sensitive info
+              delete user.creation_ip;
+              delete user.new_email;
+              delete user.pass_crypt;
+              delete user.pass_reset;
+            }
+            return user;
+          }    
         });
     },
 
