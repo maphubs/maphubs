@@ -5,6 +5,8 @@ var apiError = require('../../services/error-response').apiError;
 var manetCheck = require('../../services/manet-check');
 var privateLayerCheck = require('../../services/private-layer-check').check;
 var Locales = require('../../services/locales');
+var local = require('../../local');
+
 
 /*
 Note: this needs to be in public-routes since it is used by the screenshot service and by shared maps
@@ -126,6 +128,8 @@ module.exports = function(app) {
         return res.status(404).send("TileJSON not supported for this layer");
       }
   };
+
+  
   
   app.get('/api/layer/:layer_id/tile.json', (req, res) => {
 
@@ -138,13 +142,22 @@ module.exports = function(app) {
     
     Layer.getLayerByID(layer_id)
     .then((layer) => {
-      if(manetCheck.check(req) || //screenshot service
-        (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
-      ){          
-        return completeLayerTileJSONRequest(req, res, layer);
+      if(local.requireLogin){
+        if(manetCheck.check(req) || //screenshot service
+          (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+        ){
+          return completeLayerTileJSONRequest(req, res, layer);
+        }else{
+          return res.status(404).send();
+        }
       }else{
-        return res.status(404).send();
-      } 
+        //only do the private layer check
+        if(privateLayerCheck(layer.layer_id, user_id)){
+          return completeLayerTileJSONRequest(req, res, layer);
+        }else{
+          return res.status(404).send();
+        }
+      }
     }).catch(apiError(res, 500));
   });
 
@@ -161,13 +174,23 @@ module.exports = function(app) {
       .then(isShared =>{
         return Layer.getLayerByShortID(shortid)
           .then(layer=>{
-            if(isShared || //in public shared map
-              manetCheck.check(req) || //screenshot service
-              (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
-            ){          
-              return completeLayerTileJSONRequest(req, res, layer);
+            if(local.requireLogin){
+              if(
+                isShared || //in public shared map
+                manetCheck.check(req) || //screenshot service
+                (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+              ){
+                return completeLayerTileJSONRequest(req, res, layer);
+              }else{
+                return res.status(404).send();
+              }
             }else{
-              return res.status(404).send();
+              //only do the private layer check
+              if(privateLayerCheck(layer.layer_id, user_id)){
+                return completeLayerTileJSONRequest(req, res, layer);
+              }else{
+                return res.status(404).send();
+              }
             }
         });
       }).catch(apiError(res, 200));
