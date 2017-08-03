@@ -5,6 +5,7 @@ import MessageActions from '../actions/MessageActions';
 import MessageStore from '../stores/MessageStore';
 import MapHubsComponent from './MapHubsComponent';
 import _isequal from 'lodash.isequal';
+var debug = require('../services/debug')('message');
 
 type Props = {}
 
@@ -39,7 +40,12 @@ export default class Message extends MapHubsComponent<void, Props, MessageStoreS
     let messageDisplay = '';
     let message;
     if(this.state.message){
-      message = JSON.parse(this.state.message);
+      try{
+        message = JSON.parse(this.state.message);
+      }catch(err){
+        debug.error(err);
+        message = this.state.message;
+      }
     }
     if(typeof message === 'string'){
       messageDisplay = (
