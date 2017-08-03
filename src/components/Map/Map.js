@@ -423,8 +423,8 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
        
-    if (!mapboxgl.supported()) {
-    alert('Your browser does not support Mapbox GL');
+    if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
+    alert(this.__('Your browser does not support Mapbox GL please see: http://help.maphubs.com/category/21-troubleshooting'));
     }
 
     var map = new mapboxgl.Map({
