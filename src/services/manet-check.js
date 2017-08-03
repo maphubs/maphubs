@@ -93,10 +93,10 @@ var middleware = function(req: any, res: any, next: any){
            return map.allowedToModify(map_id, user_id)
             .then((allowed) => {
               if(allowed){
-                return success();
+                return success(next);
               }else{
                 log.error('Unauthenticated screenshot request, not authorized to view private map: ' + map_id);
-                return failure();
+                return failure(res);
               }
             });
          }else{
@@ -106,7 +106,7 @@ var middleware = function(req: any, res: any, next: any){
        }else{
         // else not private = allow if login not required, or login required and authenticated
         if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
-          return success();
+          return success(next);
         }else {
           //check for manet
           return middlewareCheck(req, res, next);
@@ -117,7 +117,7 @@ var middleware = function(req: any, res: any, next: any){
      });
    }else{
      if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
-          return success();
+          return success(next);
         }else {
           //check for manet
          middlewareCheck(req, res, next);
