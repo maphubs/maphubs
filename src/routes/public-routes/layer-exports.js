@@ -4,6 +4,7 @@ var Layer = require('../../models/layer');
 var apiError = require('../../services/error-response').apiError;
 var privateLayerCheck = require('../../services/private-layer-check').check;
 var manetCheck = require('../../services/manet-check');
+var local = require('../../local');
 
 module.exports = function(app: any) {
 
@@ -19,15 +20,27 @@ module.exports = function(app: any) {
       .then(isShared =>{
         return Layer.getLayerByShortID(shortid)
           .then(layer=>{
-            if(isShared || //in public shared map
-              manetCheck.check(req) || //screenshot service
-              (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
-            ){          
+            if(local.requireLogin){
+              if(
+                isShared || //in public shared map
+                manetCheck.check(req) || //screenshot service
+                (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+              ){          
                 return  Layer.getGeoJSON(layer.layer_id).then((geoJSON) => {
                   return res.status(200).send(geoJSON);
                 });
+              }else{
+                return res.status(404).send();
+              }
             }else{
-              return res.status(404).send();
+              //only do the private layer check
+              if(privateLayerCheck(layer.layer_id, user_id)){
+               return  Layer.getGeoJSON(layer.layer_id).then((geoJSON) => {
+                  return res.status(200).send(geoJSON);
+                });
+              }else{
+                return res.status(404).send();
+              }
             }
         });
       }).catch(apiError(res, 200));
@@ -45,13 +58,23 @@ module.exports = function(app: any) {
       .then(isShared =>{
         return Layer.getLayerByShortID(shortid)
           .then(layer=>{
-            if(isShared || //in public shared map
-              manetCheck.check(req) || //screenshot service
-              (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
-            ){          
+             if(local.requireLogin){
+              if(
+                isShared || //in public shared map
+                manetCheck.check(req) || //screenshot service
+                (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+              ){                 
                 return exportUtils.completeGeoBufExport(req, res, layer.layer_id);
+              }else{
+                return res.status(404).send();
+              }
             }else{
-              return res.status(404).send();
+              //only do the private layer check
+              if(privateLayerCheck(layer.layer_id, user_id)){
+                return exportUtils.completeGeoBufExport(req, res, layer.layer_id);
+              }else{
+                return res.status(404).send();
+              }
             }
         });
       }).catch(apiError(res, 200));
