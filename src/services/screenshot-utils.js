@@ -291,9 +291,10 @@ module.exports = {
   },
 
   returnImage(image: any, type: string, req: any, res: any){
-    var img = new Buffer(image, 'base64');
+    var img = Buffer.from(image, 'base64');
     var hash = require('crypto').createHash('md5').update(img).digest("hex");
     var match = req.get('If-None-Match');
+     /*eslint-disable security/detect-possible-timing-attacks */
     if(hash === match){
       res.status(304).send();
     }else{

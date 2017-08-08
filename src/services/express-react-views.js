@@ -172,15 +172,19 @@ function createEngine(engineOptions) {
         `;
 
         var baseUrl = urlUtil.getBaseUrl();
+        let reqUrl = '';
+        if(req && req.url){
+          reqUrl = req.url;
+        }
         if(options.oembed){
           if(options.oembed === 'map'){
-            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
+            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + reqUrl;
             markup += `
             <link rel="alternate" type="application/json+oembed" href="${oembedUrl}&format=json" title="Maphubs Map" />
             <link rel="alternate" type="text/xml+oembed" href="${oembedUrl}&format=xml" title="Maphubs Map" />
             `;
           }else if(options.oembed === 'layer'){
-            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + req.url;
+            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + reqUrl;
             markup += `
             <link rel="alternate" type="application/json+oembed" href="${oembedUrl}&format=json" title="Maphubs Layer" />
             <link rel="alternate" type="text/xml+oembed" href="${oembedUrl}&format=xml" title="Maphubs Layer" />
@@ -221,7 +225,7 @@ function createEngine(engineOptions) {
           if(options.twitterCard.description){
             markup += `<meta property="og:description" content="${options.twitterCard.description}" />`;
           }
-            var openGraphUrl = baseUrl + req.url;
+            var openGraphUrl = baseUrl + reqUrl;
             markup += `
             <meta property="og:type" content="website" />
             <meta property="og:url" content="${openGraphUrl}" />
@@ -367,8 +371,8 @@ function createEngine(engineOptions) {
 
      
 
-    } catch (e) {
-      return cb(e);
+    } catch (err) {
+      return cb(err);
     }
 
 
@@ -382,7 +386,7 @@ function createEngine(engineOptions) {
       });
     }
     if(!options.props.error){ //don't hit the database on error and 404 pages
-      Page.getPageConfigs(['footer', 'header', 'map'])
+      return Page.getPageConfigs(['footer', 'header', 'map'])
       .then(pageConfigs =>{
       options.props.headerConfig = pageConfigs.header;
       options.props.footerConfig = pageConfigs.footer; 
@@ -414,10 +418,7 @@ function createEngine(engineOptions) {
       `;
        cb(null, markup);
     }
-    
-    
   }
-
   return renderFile;
 }
 

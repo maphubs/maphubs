@@ -51,6 +51,7 @@
     "security/detect-object-injection": "off",
     "unicorn/filename-case": "off",
     "prefer-arrow-callback": 1,
+    "import/default": "off",
     "semi": [2, "always"],
     "eqeqeq": 1 // require the use of === and !==
 

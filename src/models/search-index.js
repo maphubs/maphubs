@@ -134,7 +134,7 @@ module.exports = {
         id: mhid,
         refresh: refreshImmediately,
         body: {
-          layer_id: layer_id,
+          layer_id,
           mhid,
           location: {
             lat: centroid.geometry.coordinates[1],
@@ -146,7 +146,7 @@ module.exports = {
           timeout: '60s'
         }
       }).catch(err =>{
-        log.error(err);
+        log.error(err.message);
       });
     });
 
@@ -159,7 +159,7 @@ module.exports = {
       id: mhid,
       timeout: '60s'
     }).catch(err =>{
-      log.error(err);
+      log.error(err.message);
     });
   },
 

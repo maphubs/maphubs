@@ -81,6 +81,8 @@ module.exports = function(app: any) {
       var resultStr = JSON.stringify(geoJSON);
       var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
       var match = req.get('If-None-Match');
+      /*eslint-disable security/detect-possible-timing-attacks */
+      //We freely give out the Etag hash, don't need to protect against someone brute forcing it
       if(hash === match){
         return res.status(304).send();
       }else{ 

@@ -83,9 +83,7 @@ var middleware = function(view) {
 };
 
 module.exports = {
-
-  check: check,
-  middlewareView:  middleware(true),
+  check,
+  middlewareView: middleware(true),
   middleware: middleware(false)
-
 };

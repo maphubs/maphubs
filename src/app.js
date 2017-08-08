@@ -136,9 +136,7 @@ if(process.env.NODE_ENV !== 'production'){
 
 //set sessions (Note: putting this below static files to avoid extra overhead)
 var sessionStore = new KnexSessionStore({
-  /*eslint-disable*/
-  knex: knex,
-  /*eslint-enable*/
+  knex,
   tablename: 'maphubssessions' // optional. Defaults to 'sessions'
 });
 

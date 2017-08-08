@@ -18,7 +18,7 @@ module.exports = function(app: any) {
       var dataInfoArr = dataArr[0].split(':')[1].split(';');
       var dataType = dataInfoArr[0];
       var data = dataArr[1];
-      var img = new Buffer(data, 'base64');
+      var img = Buffer.from(data, 'base64');
       res.writeHead(200, {
         'Content-Type': dataType,
         'Content-Length': img.length,

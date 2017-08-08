@@ -259,7 +259,7 @@ export default class MapMakerStore extends Reflux.Store  {
   request.post('/api/map/public')
   .type('json').accept('json')
   .send({
-      map_id: map_id,
+      map_id,
       isPublic,
       _csrf
   })
