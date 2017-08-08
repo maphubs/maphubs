@@ -387,7 +387,7 @@ module.exports = function(app: any) {
     recordStoryView(req.session, story_id, user_id, next);
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-        Promise.all([
+        return Promise.all([
           Story.getStoryByID(story_id),
           Hub.getHubByID(hub_id)
         ])
@@ -422,7 +422,7 @@ module.exports = function(app: any) {
             }
           }).catch(nextError(next));
     }else{
-      Story.allowedToModify(story_id, user_id)
+      return Story.allowedToModify(story_id, user_id)
       .then((canEdit) => {      
         return Promise.all([
           Story.getStoryByID(story_id),
@@ -458,11 +458,16 @@ module.exports = function(app: any) {
               });
             }
           });
-      }).catch(err =>{
-        if(err.message && err.message.startsWith('Story not found')){
-          return res.redirect('/notfound?path='+req.path);
+      })
+      .asCallback((err, result) => {  
+        if(err){
+          if(err.message && err.message.startsWith('Story not found')){
+            return res.redirect('/notfound?path='+req.path);
+          }else{
+            next(err);
+          }
         }else{
-          next(err);
+          return result;
         }
       });
     }

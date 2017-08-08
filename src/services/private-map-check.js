@@ -41,19 +41,27 @@ var middleware = function(view) {
       check(map_id, user_id)
       .then((allowed) => {
         if(allowed){
-          next();
+          return next;
         }else{
           log.warn('Unauthorized attempt to access hub: ' + map_id);
           if(view){
-            res.redirect('/unauthorized');
+            return res.redirect('/unauthorized');
           }else{
-            res.status(401).send({
+            return res.status(401).send({
               success: false,
               error: "Unauthorized"
             });
           }
         }
-      }).catch(nextError(next));
+      })
+      .asCallback((err, result) => {  
+        if(err){
+          throw err;
+        }else if(typeof result === 'function'){
+          result();
+        }
+      })
+      .catch(nextError(next));
     }else{
       apiDataError(res, 'missing or invalid map_id');
     }

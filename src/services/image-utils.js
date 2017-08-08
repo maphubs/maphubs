@@ -1,9 +1,9 @@
 // @flow
-var fs = require('fs');
 var Promise = require('bluebird');
+var fs: typeof fs = Promise.promisifyAll(require("fs"));
 var uuid = require('uuid').v4;
 var local = require('../local');
-var log = require('./log');
+//var log = require('./log');
 var debug = require('./debug')('image-utils');
 var easyimg = require('easyimage');
 
@@ -22,9 +22,10 @@ module.exports = {
     var dataInfoArr = dataArr[0].split(':')[1].split(';');
     var dataType = dataInfoArr[0];
     var data = dataArr[1];
-    var img = new Buffer(data, 'base64');
+    var img = Buffer.from(data, 'base64');
     var hash = require('crypto').createHash('md5').update(img).digest("hex");
     var match = req.get('If-None-Match');
+     /*eslint-disable security/detect-possible-timing-attacks */
     if(hash === match){
       res.status(304).send();
     }else{
@@ -46,7 +47,7 @@ module.exports = {
   }
 
   response.type = matches[1];
-  response.data = new Buffer(matches[2], 'base64');
+  response.data = Buffer.from(matches[2], 'base64');
 
   return response;
 },
@@ -55,62 +56,59 @@ module.exports = {
     var _this = this;
     var cmd = null;
 
-    return new Promise((resolve, reject) => {
-      //decode base64
-      var imageBuffer = _this.decodeBase64Image(dataString);
-      //save it to a file
-      var origFile = uuid() + '.png';
-      var resizedFile = uuid() + '.png';
-      var convertedFile = uuid() + '.jpg';
-      var origfilePath = local.tempFilePath + '/' + origFile;
-      var resizedFilePath = local.tempFilePath + '/' + resizedFile;
-      var convertedFilePath = local.tempFilePath + '/' + convertedFile;
-      fs.writeFile(origfilePath, imageBuffer.data, (err) => {
-        if(err){
-          log.error(err);
-          reject(err);
-        }
+    //decode base64
+    var imageBuffer = _this.decodeBase64Image(dataString);
+    //save it to a file
+    var origFile = uuid() + '.png';
+    var resizedFile = uuid() + '.png';
+    var convertedFile = uuid() + '.jpg';
+    var origfilePath = local.tempFilePath + '/' + origFile;
+    var resizedFilePath = local.tempFilePath + '/' + resizedFile;
+    var convertedFilePath = local.tempFilePath + '/' + convertedFile;
+ 
+    return fs.writeFileAsync(origfilePath, imageBuffer.data).then(() => {
         if(crop){
+          debug.log('cropping');
           cmd = easyimg.crop({
             src:origfilePath, dst:resizedFilePath,
             cropwidth:targetWidth, cropheight:targetHeight,
             background: 'white'
           });
         }else{
+          debug.log('resizing');
           cmd = easyimg.resize({
             src:origfilePath, dst:resizedFilePath,
             width:targetWidth, height:targetHeight,
             background: 'white'
           });
         }
-         cmd.then(
+         return cmd.then(
           (resizedImage) => {
              debug.log('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
-             easyimg.convert({
+             return easyimg.convert({
                src:resizedFilePath, dst:convertedFilePath, quality: 85
               })
               .then(
               () => {
                 var bitmap = fs.readFileSync(convertedFilePath);
-                var resizedImageBase64String = 'data:image/jpeg;base64,' + new Buffer(bitmap).toString('base64');
+                var resizedImageBase64String = 'data:image/jpeg;base64,' + Buffer.from(bitmap).toString('base64');
                 //debug.log(resizedImageBase64String);
-                resolve(resizedImageBase64String);
+                
                 fs.unlink(origfilePath);
                 fs.unlink(resizedFilePath);
                 fs.unlink(convertedFilePath);
+                return resizedImageBase64String;
               });
-
-          },
-          (err) => {
-            reject(err);
+          })
+          .catch((err) => {
             fs.unlink(origfilePath);
             fs.unlink(resizedFilePath);
             fs.unlink(convertedFilePath);
-          }
-        );
+            if(err){
+              throw err;
+            }
+          });
       });
-    });
-
   }
 
 };

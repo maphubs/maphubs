@@ -45,7 +45,7 @@ var middleware = function(view) {
       return check(layer.layer_id, user_id)
       .then((allowed) => {
         if(allowed){
-          return next();
+          return next;
         }else{
           log.warn('Unauthorized attempt to access layer: ' + layer_id);
           if(view){
@@ -58,12 +58,20 @@ var middleware = function(view) {
           }
         }
       });
-    }).catch(nextError(next));
+    })
+    .asCallback((err, result) => {  
+        if(err){
+          throw err;
+        }else if(typeof result === 'function'){
+          result();
+        }
+      })
+    .catch(nextError(next));
     }else if(layer_id && Number.isInteger(layer_id) && layer_id > 0){
       check(layer_id, user_id)
       .then((allowed) => {
         if(allowed){
-          return next();
+          return next;
         }else{
           log.warn('Unauthorized attempt to access layer: ' + layer_id);
           if(view){
@@ -75,7 +83,15 @@ var middleware = function(view) {
             });
           }
         }
-      }).catch(nextError(next));
+      })
+      .asCallback((err, result) => {  
+        if(err){
+          throw err;
+        }else if(typeof result === 'function'){
+          result();
+        }
+      })
+      .catch(nextError(next));
     }else{
       apiDataError(res, 'missing or invalid layer id');
     }

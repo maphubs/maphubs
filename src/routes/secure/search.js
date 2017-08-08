@@ -16,8 +16,7 @@ module.exports = function(app: any) {
     });
   });
 
-  //TODO: rewrite
-  app.get('/api/global/search', (req, res, next) => {
+  app.get('/api/global/search', (req, res) => {
     if (!req.query.q) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
     }
@@ -71,7 +70,7 @@ module.exports = function(app: any) {
      
     }).catch((err) => {
         log.error(err);
-        next(err);
+        throw err;
       });
   });
 };

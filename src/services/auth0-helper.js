@@ -1,11 +1,12 @@
 var local = require('../local');
+var Promise = require("bluebird");
 var request = require("request");
+Promise.promisifyAll(require("request"));
 
 module.exports = {
 
-  getManagementToken(cb){
-    var request = require("request");
-
+  getManagementToken(){
+    
     var options = {
       method: 'POST',
       url: `https://${local.AUTH0_DOMAIN}/oauth/token`,
@@ -20,15 +21,13 @@ module.exports = {
       json: true 
     };
 
-    request(options, (error, response, body) => {
-      if (error){
-        cb(error, null);
-      }
-      cb(null, body.access_token);
+    return request.getAsync(options)
+    .then((error, response, body) => {
+      return body.access_token;
     });
   },
 
-  updateAppMetadata(data, token, profile, cb){
+  updateAppMetadata(data, token, profile){
     var options = { 
         method: 'PATCH',
         url: `https://${local.AUTH0_DOMAIN}/api/v2/users/${profile.id}`,
@@ -39,11 +38,7 @@ module.exports = {
         body: {app_metadata: data},
         json: true
       };
-
-      request(options, (error) => {
-        cb(error);
-      });
+    return request.getAsync(options);
   }
-
 
 };

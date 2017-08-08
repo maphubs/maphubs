@@ -397,17 +397,21 @@ function createEngine(engineOptions) {
       </body>
       </html>
       `;
-      return cb(null, markup);
-    }).catch(err =>{
-      log.error(err);
-      Raven.captureException(err);
-      var appData = JSON.stringify(options.props, null, 2);
-      markup += `
-       <script>window.__appData = ${appData}; </script>
-      </body>
-      </html>
-      `;
-      cb(null, markup);
+      return markup;
+    }).asCallback((err, result) => {  
+        if (err) {
+          log.error(err);
+          Raven.captureException(err);
+          var appData = JSON.stringify(options.props, null, 2);
+          markup += `
+          <script>window.__appData = ${appData}; </script>
+          </body>
+          </html>
+          `;
+          cb(null, markup); 
+        }else{
+           cb(null, result); 
+        }
     });
   }else{
       var appData: string = JSON.stringify(options.props, null, 2);
