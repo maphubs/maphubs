@@ -108,11 +108,6 @@ app.use('/css', express.static('css'));
 
 app.use('/clientconfig.js', express.static('./src/clientconfig.js'));
 
-if (app.get('env') !== 'production') {
-  app.use('/edit', express.static('../iD'));
-}else{
-  app.use('/edit', express.static('./iD'));
-}
 
 //use webpack middleware in local dev environment
 if(process.env.NODE_ENV !== 'production'){
