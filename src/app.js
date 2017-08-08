@@ -37,7 +37,7 @@ require('babel-polyfill');
 var app = express();
 //settings flags
 app.enable('trust proxy');
-app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
+//app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
 app.disable("x-powered-by");
 
 log.info(`Environment: "${app.get('env')}"`);
@@ -78,9 +78,9 @@ app.use(logger('dev', {
   }
 }));
 app.use(cookieParser());
-app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.json({limit: '250mb'}));
 app.use(bodyParser.urlencoded({
-  limit: '50mb',
+  limit: '250mb',
   extended: false
 }));
 app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
