@@ -1,17 +1,20 @@
-// @flow weak
-var log = require('./log');
-var local = require('../local');
-var debug = require('../services/debug')('manet-check');
-var Layer = require('../models/layer');
-var Map = require('../models/map');
+//@flow
+const log = require('./log');
+const local = require('../local');
+const debug = require('../services/debug')('manet-check');
+const Layer = require('../models/layer');
+const Map = require('../models/map');
+const compare = require('secure-compare');
 
-var check = function(req){
+var check = function(req: any){
     //determine if this is the manet screenshot service
-
     //first check the cookie
     if(req.cookies) debug.log(JSON.stringify(req.cookies));
-    if(!req.cookies || !req.cookies.manet || req.cookies.manet !== local.manetAPIKey){
+    if(!req.cookies || !req.cookies.manet){
       log.error('Manet Cookie Not Found');
+      return false;
+    }else if(!compare(req.cookies.manet, local.manetAPIKey)){
+      log.error('Invalid Manet Key');
       return false;
     }else{
       return true;
