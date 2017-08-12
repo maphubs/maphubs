@@ -106,7 +106,7 @@ module.exports = {
             "react",
             "stage-0"
           ],
-          plugins: ['transform-flow-strip-types']         
+          plugins: ['transform-flow-strip-types', 'transform-object-assign']         
         }  
       },
       {
