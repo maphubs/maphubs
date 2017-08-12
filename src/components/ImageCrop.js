@@ -124,7 +124,7 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
 
   checkFileSize = (file: Object) => {
     var _this = this;
-    return new Promise((fulfill, reject) => {
+    return new Promise((resolve, reject) => {
       let maxSize =  _this.props.max_size;
       let message;
 
@@ -134,7 +134,7 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
         return reject(new Error(message));
       }
 
-      return fulfill();
+      return resolve();
     });
   }
 
@@ -142,21 +142,21 @@ export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, Sta
 resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
   var pica = null;
   if (typeof window === 'undefined') {
-    return new Promise((fulfill) => {
-      fulfill();
+    return new Promise((resolve) => {
+      resolve();
     });
   }else{
     pica = require("../../node_modules/pica/dist/pica.min.js")();
   }
 
   var _this = this;
-  return new Promise((fulfill, reject) => {
+  return new Promise((resolve, reject) => {
 
   
   // If image size smaller than 'skip_size' - skip resizing
   if (_this.state.file && _this.state.file.size < _this.props.skip_size) {
     let data = sourceCanvas.toDataURL(_this.state.file.type);
-    fulfill(data);
+    resolve(data);
     return;
   }
 
@@ -204,7 +204,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       //no need to resize
       if(_this.state.file){
          let data = sourceCanvas.toDataURL(_this.state.file.type);
-        fulfill(data);
+        resolve(data);
       }else{
         throw new Error('missing file');
       }
@@ -232,7 +232,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     .then(result => {
       if(_this.state.file){
         var data = result.toDataURL(_this.state.file.type, quality);
-        fulfill(data);
+        return resolve(data);
       }else{
         throw new Error('missing file');
       }
@@ -386,7 +386,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       };
       if(_this.props.onCrop) _this.props.onCrop(dataURL, info);
       _this.resetImageCrop();
-
+      return;
     }).catch((err) => {
       debug.error(err);
         MessageActions.showMessage({title: 'Error', message: err});
