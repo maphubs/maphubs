@@ -11,7 +11,7 @@ var MapboxSource = {
           //TODO: not sure if it is possible to combine sprites/glyphs sources yet, so this doesn't work with all mapbox styles
 
           //add sources
-          Object.keys(mbstyle.sources).forEach((key) => {
+          return Object.keys(mbstyle.sources).forEach((key) => {
             var source = mbstyle.sources[key];   
             /*        
             map.on('source.load', function(e) {
