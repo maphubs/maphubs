@@ -160,6 +160,7 @@
     "react-dom": "^15.6.1",
     "react-fileupload-progress": "openmaphub/react-fileupload-progress",
     "react-intl": "^2.3.0",
+    "react-map-gl": "^3.0.4",
     "react-medium-editor": "^1.8.1",
     "react-notification": "^6.7.1",
     "react-responsive-mixin": "^0.4.0",
