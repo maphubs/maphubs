@@ -39,7 +39,6 @@ export default class EditorToolButtons extends MapHubsComponent<void, Props, Sta
     var _this = this;
     this.setState({saving: true});
     DataEditorActions.saveEdits(this.state._csrf, (err) => {
-      //TODO: notify user
       _this.setState({saving: false});
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
@@ -47,9 +46,8 @@ export default class EditorToolButtons extends MapHubsComponent<void, Props, Sta
          NotificationActions.showNotification({
           message: _this.__('Edits Saved'),
         });
-        if(cb)cb();
+        if(cb && typeof cb === 'function')cb();
       }
-
     });
   }
 
