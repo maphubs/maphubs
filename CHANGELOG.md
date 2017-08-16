@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.12.3](https://github.com/maphubs/maphubs/tree/v0.12.3) (2017-08-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.2...v0.12.3)
+
+**Fixed bugs:**
+
+- error importing 3d geometry [\#424](https://github.com/maphubs/maphubs/issues/424)
+
 ## [v0.12.2](https://github.com/maphubs/maphubs/tree/v0.12.2) (2017-08-16)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.1...v0.12.2)
 
