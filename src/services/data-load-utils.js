@@ -27,18 +27,21 @@ module.exports = {
     if(trx){db = trx;}
     //remove views
     return db('omh.layers').select('status').where({layer_id}).then(result =>{
-      let status = result[0].status;
-      if(status === 'published ' || status === 'loaded'){
-        return SearchIndex.deleteLayer(layer_id, trx)
-      .then(()=>{
-        return LayerViews.dropLayerViews(layer_id, trx).then(()=>{
-          //delete data from OSM
-        return db.raw(`DROP TABLE layers.data_${layer_id};`);
+      if(result && result.length > 0){
+        let status = result[0].status;
+        if(status === 'published ' || status === 'loaded'){
+          return SearchIndex.deleteLayer(layer_id, trx)
+        .then(()=>{
+          return LayerViews.dropLayerViews(layer_id, trx).then(()=>{
+          return db.raw(`DROP TABLE layers.data_${layer_id};`);
+          });
         });
-      });
+        }else{
+          return null;
+        }
       }else{
         return null;
-      }     
+      }    
     });
   },
 
