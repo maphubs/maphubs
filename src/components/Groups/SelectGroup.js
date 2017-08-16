@@ -97,7 +97,7 @@ export default class SelectGroup extends MapHubsComponent<DefaultProps, Props, S
       groups = (
         <div className="row">
           <p style={{padding: '10px'}}>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
-          <Select name="group" id="layer-settings-select" label={this.__('Group')} startEmpty={startEmpty}
+          <Select name="group" id="group-select" label={this.__('Group')} startEmpty={startEmpty}
             value={this.state.group_id} onChange={this.onGroupChange}
             emptyText={this.__('Choose a Group')} options={groupOptions} className="col s12"
               dataPosition="right" dataTooltip={this.__('Owned by Group')}

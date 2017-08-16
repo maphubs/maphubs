@@ -5,7 +5,7 @@ var request = require('superagent');
 var $ = require('jquery');
 import Header from '../components/header';
 import TextInput from '../components/forms/textInput';
-import Select from '../components/forms/select';
+import SelectGroup from '../components/Groups/SelectGroup';
 import Map from '../components/Map/Map';
 import MiniLegend from '../components/Map/MiniLegend';
 import MapHubsComponent from '../components/MapHubsComponent';
@@ -99,7 +99,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Pr
   loadRemoteUrl = (model) => {
     var _this = this;
     var remoteLayerUrl = model.remoteLayerUrl;
-    var group_id = model.group_id;
+    var group_id = model.group;
 
     var link = $('<a>').prop('href', remoteLayerUrl);
 
@@ -196,36 +196,6 @@ export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Pr
         </div>
       );
     }
-    var groups = '';
-    if(this.props.groups.length > 1){
-    var groupOptions = [];
-    var _this = this;
-    this.props.groups.map((group) => {
-      groupOptions.push({
-        value: group.group_id,
-        label: _this._o_(group.name)
-      });
-    });
-
-    groups = (
-      <div>
-        <p>{this.__('Since you are in multiple groups, please select the group that should own this layer.')}</p>
-        <Select name="group_id" id="layer-settings-select" label={this.__('Group')} startEmpty={true}
-          emptyText={this.__('Choose a Group')} options={groupOptions} className="col s6"
-            dataPosition="right" dataTooltip={this.__('Owned by Group')}
-            required
-            />
-      </div>
-      );
-
-    }else{
-      groups = (
-        <div>
-          <b>{this.__('Group:')} </b>{this.props.groups[0].name}
-        </div>
-      );
-    }
-
 		return (
       <div>
           <Header {...this.props.headerConfig}/>
@@ -242,7 +212,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Pr
                  }} length={250}
                  dataPosition="top" dataTooltip={this.__('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
                  required/>
-               {groups}
+               <SelectGroup groups={this.props.groups} type="layer"/>
                  <div className="right">
                    <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Load Remote Layer')}</button>
                  </div>
