@@ -1,0 +1,13 @@
+{
+  "presets": [
+    "es2015",
+    "react",
+    "stage-0"
+  ],
+  "plugins": ["transform-flow-strip-types", "transform-object-assign"],
+  "ignore": [
+    "mapbox-gl-dev.js", "mapbox-gl.js"
+  ],
+  "sourceMaps": true,
+  "retainLines": true
+}

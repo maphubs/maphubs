@@ -61,7 +61,7 @@ module.exports = {
       
         `CREATE OR REPLACE VIEW layers.data_full_${layer_id} AS
         SELECT
-        mhid, ${layer_id}::integer as layer_id, ST_Transform(wkb_geometry, 900913)::geometry(Geometry, 900913) as geom,`
+        mhid, ${layer_id}::integer as layer_id, ST_Force2D(ST_Transform(wkb_geometry, 900913))::geometry(Geometry, 900913) as geom,`
         + tagColumns +
         ` tags FROM layers.data_${layer_id}
         ;`
