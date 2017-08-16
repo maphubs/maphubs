@@ -86,14 +86,16 @@ app.use(bodyParser.urlencoded({
 app.use(xmlparser({explicitArray: false, mergeAttrs: true}));
 
 //compile scss dynamically
-app.use(sassMiddleware({
-    /* Options */
-    src: __dirname,
-    dest: path.join(__dirname, '../css'),
-    debug: false,
-    outputStyle: 'compressed',
-    prefix:  '/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
-}));
+if(process.env.NODE_ENV !== 'production'){
+  app.use(sassMiddleware({
+      /* Options */
+      src: __dirname,
+      dest: path.join(__dirname, '../css'),
+      debug: false,
+      outputStyle: 'compressed',
+      prefix:  '/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+  }));
+}
 
 //static files
 if(process.env.NODE_ENV !== 'production' || local.useLocalAssets){
