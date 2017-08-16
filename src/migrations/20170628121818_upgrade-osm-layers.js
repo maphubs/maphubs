@@ -4,11 +4,13 @@ exports.up = function(knex, Promise) {
   .select('layer_id', 'name', 'style')
   .where({owned_by_group_id: 'OpenStreetMap'})
   .then(layers => {
+    if(layers && Array.isArray(layers)){
     var updateCommands = [];
     layers.forEach(layer => {
       let style = layer.style;
       let name = layer.name;
 
+      if(style && style.layers){
       style.layers.forEach(styleLayer =>{
           if(layer.layer_id >= 24){ //roads   
             if(style.sources.osm){          
@@ -36,11 +38,14 @@ exports.up = function(knex, Promise) {
             }
           }
       });
-
+      }
       updateCommands.push(knex('omh.layers').update({style, name}).where({layer_id: layer.layer_id}));
-
     });
     return Promise.all(updateCommands);
+    }else{
+      return null;
+    }
+    
   });
 };
 
