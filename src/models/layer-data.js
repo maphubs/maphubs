@@ -149,9 +149,7 @@ module.exports = {
    */
   deleteFeature(layer_id: number, mhid: string, trx: any): Bluebird$Promise<Object>{
     debug.log('deleting feature: ' + mhid);
-    let db = knex; if(trx){db = trx;}
-    return db.raw('delete from $$ where mhid=$',
-  [`layers.data_${layer_id}`, mhid])
+    return trx(`layers.data_${layer_id}`).where({mhid}).del()
     .then(()=>{
       return SearchIndex.deleteFeature(mhid);
     });
