@@ -57,7 +57,7 @@ export default class MapHubsShareButtons extends MapHubsComponent<Props, State> 
         <div style={{float: 'left'}}>
            <FacebookShareButton
             url={this.state.url}
-            title={title}
+            quote={title}
             picture={this.props.photoUrl}
             >
             <FacebookIcon
