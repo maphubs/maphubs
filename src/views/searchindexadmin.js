@@ -23,7 +23,7 @@ type Props = {
 import type {LocaleStoreState} from '../stores/LocaleStore';
 type State = LocaleStoreState
 
-export default class SearchIndexAdmin extends MapHubsComponent<void, Props, State> {
+export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
 
   props: Props
 

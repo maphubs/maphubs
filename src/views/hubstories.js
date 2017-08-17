@@ -38,7 +38,7 @@ type State = {
    editing: boolean
 } & LocaleStoreState & HubStoreState
 
-export default class HubStoriesPage extends MapHubsComponent<DefaultProps, Props, State> {
+export default class HubStoriesPage extends MapHubsComponent<Props, State> {
 
   props: Props
 

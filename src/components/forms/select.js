@@ -43,7 +43,7 @@ type State = {
   note: string
 }
 
-class Select extends MapHubsComponent<DefaultProps, Props, State> {
+class Select extends MapHubsComponent<Props, State> {
 
   props:  Props
 

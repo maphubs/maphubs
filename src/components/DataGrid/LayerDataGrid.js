@@ -48,7 +48,7 @@ type State = {
   selectedFeature?: Object
 }
 
-export default class LayerDataGrid extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LayerDataGrid extends MapHubsComponent<Props, State> {
 
   Selectors: null
 

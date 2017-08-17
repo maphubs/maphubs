@@ -48,7 +48,7 @@ type State = {
   canSubmit: boolean
 } & LocaleStoreState & GroupStoreState
 
-export default class GroupAdmin extends MapHubsComponent<DefaultProps, Props, State> {
+export default class GroupAdmin extends MapHubsComponent<Props, State> {
 
   props: Props
 

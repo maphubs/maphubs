@@ -21,7 +21,7 @@ type State = {
   selectedSource?: string
 }
 
-export default class GithubSource extends MapHubsComponent<DefaultProps, Props, State> {
+export default class GithubSource extends MapHubsComponent<Props, State> {
 
   propss: Props
 

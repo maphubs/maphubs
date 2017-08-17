@@ -1,13 +1,15 @@
 //@flow
 import React from 'react';
 
-export default class IconRow extends React.Component {
+type Props = {
+  icon: string,
+  iconFontSize: string,
+  children: any
+}
 
-  props: {
-    icon: string,
-    iconFontSize: string,
-    children: any
-  }
+export default class IconRow extends React.Component<Props> {
+
+  props: Props
 
   static defaultProps = {
     icon: 'info',

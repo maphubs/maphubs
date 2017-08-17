@@ -38,7 +38,7 @@ type State = {
   step: number
 } & LayerStoreState & LocaleStoreState
 
-export default class CreateLayer extends MapHubsComponent<DefaultProps, Props, State> {
+export default class CreateLayer extends MapHubsComponent<Props, State> {
 
   props: Props
 

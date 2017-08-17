@@ -30,7 +30,7 @@ type State = {
   field: string
 }
 
-export default class LabelSettings extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LabelSettings extends MapHubsComponent<Props, State> {
 
   props: Props
 

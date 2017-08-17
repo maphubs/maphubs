@@ -16,18 +16,12 @@ type Props = {
     editing: boolean
 };
 
-type DefaultProps = {
-  canChangeGroup: boolean,
-  private: boolean,
-  editing: boolean
-}
-
 type State = {
   group_id?: string,
   private: boolean
 }
 
-export default class SelectGroup extends MapHubsComponent<DefaultProps, Props, State> {
+export default class SelectGroup extends MapHubsComponent<Props, State> {
 
   props: Props
 

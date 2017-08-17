@@ -34,7 +34,7 @@ type State = {
   searchActive: boolean,
   showList: boolean
 }
-export default class Layers extends MapHubsComponent<void, Props, State> {
+export default class Layers extends MapHubsComponent<Props, State> {
 
   props: Props
 

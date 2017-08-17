@@ -24,18 +24,12 @@ type Props = {
   getErrorMessage: Function
 }
 
-type DefaultProps = {
-  length: number,
-  value: string,
-  dataDelay: number
-}
-
 type State = {
    value: string,
    charCount: number
 }
 
-class TextArea extends MapHubsPureComponent<DefaultProps, Props, State> {
+class TextArea extends MapHubsPureComponent<Props, State> {
 
   props: Props
 

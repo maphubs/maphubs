@@ -15,7 +15,7 @@ type Props = {
   _csrf: string
 }
 
-export default class Services extends MapHubsComponent<void, Props, void> {
+export default class Services extends MapHubsComponent<Props, void> {
 
   props: Props
 

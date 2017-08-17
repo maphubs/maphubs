@@ -14,13 +14,9 @@ type Props = {
   warnIfUnsaved: boolean
 }
 
-type DefaultProps = {
-  warnIfUnsaved: boolean
-}
-
 type State = LayerStoreState;
 
-export default class PresetEditor extends MapHubsComponent<DefaultProps, Props, State> {
+export default class PresetEditor extends MapHubsComponent<Props, State> {
 
   props: Props
 

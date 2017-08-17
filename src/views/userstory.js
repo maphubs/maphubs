@@ -18,12 +18,7 @@ type Props = {
   headerConfig: Object
 }
 
-type DefaultProps = {
-  story: Object,
-  canEdit: boolean
-}
-
-export default class UserStory extends MapHubsComponent<DefaultProps, Props, void> {
+export default class UserStory extends MapHubsComponent<Props, void> {
 
   props: Props
 

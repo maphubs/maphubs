@@ -56,7 +56,7 @@ type UserMapState = {
 
 type State = LocaleStoreState & UserStoreState & UserMapState
 
-export default class UserMap extends MapHubsComponent<DefaultProps, Props, State> {
+export default class UserMap extends MapHubsComponent<Props, State> {
 
   props: Props
 

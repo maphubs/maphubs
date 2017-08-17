@@ -20,22 +20,17 @@ type Props = {|
   showButtons: boolean
 |}
 
-type DefaultProps = {|
-  showButtons: boolean,
-  selected: boolean
-|}
-
 type State = {
   maxHeight: string,
   layerLoaded: boolean,
   layer?: Layer
 } & LocaleStoreState
 
-export default class FeatureBox extends MapHubsComponent<DefaultProps, Props, State> {
+export default class FeatureBox extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showButtons: true,
     selected: false
   }

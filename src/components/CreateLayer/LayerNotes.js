@@ -16,7 +16,7 @@ type DefaultProps = {
 import type {LayerNotesStoreState} from '../../stores/LayerNotesStore';
 
 
-export default class LayerNotes extends MapHubsComponent<DefaultProps, Props, LayerNotesStoreState> {
+export default class LayerNotes extends MapHubsComponent<Props, LayerNotesStoreState> {
 
   static defaultProps: DefaultProps = {
     editing: false

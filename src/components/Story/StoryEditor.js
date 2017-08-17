@@ -28,12 +28,6 @@ type Props = {|
   popularMaps: Array<Object>
 |}
 
-type DefaultProps = {
-  story: Object,
-  username: string,
-  storyType: string
-}
-
 type StoryEditorState = {|
   story: Object,
   saving: boolean,
@@ -42,11 +36,11 @@ type StoryEditorState = {|
 
 type State = LocaleStoreState & StoryStoreState & StoryEditorState
 
-export default class StoryEditor extends MapHubsComponent<DefaultProps, Props, State> {
+export default class StoryEditor extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     story: {},
     username: '',
     storyType: 'unknown'

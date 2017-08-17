@@ -1,9 +1,7 @@
 //@flow
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 var $ = require('jquery');
-import Promise from 'bluebird';
 import Formsy from 'formsy-react';
 import Toggle from './forms/toggle';
 import MessageActions from '../actions/MessageActions';
@@ -52,7 +50,7 @@ type State = {
 }
 
 
-export default class AddItem extends MapHubsComponent<DefaultProps, Props, State> {
+export default class AddItem extends MapHubsComponent<Props, State> {
 
   props:  Props
 
@@ -106,7 +104,7 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
    }
  }
 
- updateSuggestions = (input: string, resolve: Function) => {
+ updateSuggestions = (input: string, cb: Function) => {
     if (typeof window !== 'undefined' && this.props.suggestionUrl) {
         $.ajax({
          url: this.props.suggestionUrl + '?q=' + input,
@@ -115,7 +113,7 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
           async: true,
           success(msg){
             if(msg.suggestions){
-              resolve(msg.suggestions);
+              cb(msg.suggestions);
             }
           },
           error(msg){
@@ -190,11 +188,9 @@ export default class AddItem extends MapHubsComponent<DefaultProps, Props, State
    this.setState({value: {key: input, value:input}});
 
    this._timerId = setTimeout(() => {
-     new Promise((resolve) => {
-       this.updateSuggestions(input, resolve);
-     }).then((suggestions) => {
-       if (!this.state.value) return;
-       this.displaySuggestions(suggestions);
+    this.updateSuggestions(input, (suggestions)=>{
+      if (!this.state.value) return;
+      this.displaySuggestions(suggestions);
      });
    }, this.props.autosuggestDelay);
  }

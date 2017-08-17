@@ -11,7 +11,7 @@ type Props = {
 
 import type {MapMakerStoreState} from '../../stores/MapMakerStore';
 
-export default class MapSettingsPanel extends MapHubsComponent<void, Props, MapMakerStoreState> {
+export default class MapSettingsPanel extends MapHubsComponent<Props, MapMakerStoreState> {
 
   props: Props
 

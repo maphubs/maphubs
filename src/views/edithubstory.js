@@ -20,11 +20,7 @@ type Props = {
   _csrf: string
 }
 
-type DefaultProps = {
-  story: Object
-}
-
-export default class EditHubStory extends MapHubsComponent<DefaultProps, Props, void> {
+export default class EditHubStory extends MapHubsComponent<Props, void> {
 
   props: Props
 

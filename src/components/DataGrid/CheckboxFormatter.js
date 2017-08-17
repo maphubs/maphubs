@@ -5,7 +5,7 @@ type Props = {
   value: ?boolean
 }
 
-export default class CheckboxFormatter extends React.Component<void, Props, void> {
+export default class CheckboxFormatter extends React.Component<Props, void> {
   props: Props
 
   render(){

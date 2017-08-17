@@ -23,20 +23,13 @@ type Props = {|
   modal: boolean
 |}
 
-type DefaultProps = {
-  id:  string,
-  mode: string,
-  theme: string,
-  modal: boolean
-}
-
 type State = {
   code: string,
   canSave: boolean,
   show: boolean
 }
 
-export default class CodeEditor extends MapHubsComponent<DefaultProps, Props, State> {
+export default class CodeEditor extends MapHubsComponent<Props, State> {
 
   props: Props
 

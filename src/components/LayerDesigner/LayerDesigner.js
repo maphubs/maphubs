@@ -38,7 +38,7 @@ type State = {
   markers?: Object
 }
 
-export default class LayerDesigner extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LayerDesigner extends MapHubsComponent<Props, State> {
 
   props: Props
 

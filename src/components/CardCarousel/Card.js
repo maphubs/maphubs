@@ -30,7 +30,7 @@ type State = {
   mounted: boolean
 }
 
-export default class Card extends MapHubsComponent<void, Props, State> {
+export default class Card extends MapHubsComponent<Props, State> {
 
   props:  Props
 

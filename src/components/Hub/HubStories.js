@@ -20,7 +20,7 @@ type DefaultProps = {
 
 type State = {}
 
-export default class HubStories extends MapHubsComponent<DefaultProps, Props, State> {
+export default class HubStories extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -15,7 +15,7 @@ type State = {
   value: string
 }
 
-export default class CardFilter extends MapHubsComponent<DefaultProps, Props, State> {
+export default class CardFilter extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -26,7 +26,7 @@ type State = {
   rasterOpacity: number
 }
 
-export default class MapLayerDesigner extends MapHubsComponent<DefaultProps, Props, State> {
+export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
 
   props: Props
 

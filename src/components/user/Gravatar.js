@@ -3,20 +3,16 @@ import React from 'react';
 import crypto from 'crypto';
 
 type Props = {
-    email?: string,
-    emailHash?: string,
-    size: number
-  }
+  email?: string,
+  emailHash?: string,
+  size: number
+}
 
-  type DefaultProps = {
-    size: number
-  }
-
-export default class Gravatar extends React.PureComponent<DefaultProps, Props, void> {
+export default class Gravatar extends React.PureComponent<Props, void> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     size: 30
   }
 

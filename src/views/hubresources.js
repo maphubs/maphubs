@@ -27,15 +27,11 @@ type Props = {
   footerConfig: Object
 }
 
-type DefaultProps = {
-  hub: Object
-}
-
 type State = {
   editing: boolean
 } & LocaleStoreState & HubStoreState
 
-export default class HubResourcesPage extends MapHubsComponent<DefaultProps, Props, State> {
+export default class HubResourcesPage extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -29,17 +29,13 @@ type Props = {
   headerConfig: Object
 }
 
-type DefaultProps = {
-
-}
-
 type State = {
   searchResults: Array<Object>,
   searchActive: boolean,
   showList: boolean
 }
 
-export default class AllGroups extends MapHubsComponent<DefaultProps, Props, State> {
+export default class AllGroups extends MapHubsComponent<Props, State> {
 
   props: Props
 

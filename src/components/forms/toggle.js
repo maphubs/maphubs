@@ -23,14 +23,7 @@ type Props = {|
   getValue: Function
 |}
 
-type DefaultProps = {
-  style: Object,
-  defaultChecked: boolean,
-  dataDelay: number,
-  disabled: boolean
-}
-
-class Toggle extends MapHubsComponent<DefaultProps, Props, void> {
+class Toggle extends MapHubsComponent<Props, void> {
 
   props:  Props
 

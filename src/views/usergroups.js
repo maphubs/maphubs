@@ -27,7 +27,7 @@ type DefaultProps = {
   canEdit: boolean,
 }
 
-export default class UserGroups extends MapHubsComponent<DefaultProps, Props, void> {
+export default class UserGroups extends MapHubsComponent<Props, void> {
 
   props: Props
 

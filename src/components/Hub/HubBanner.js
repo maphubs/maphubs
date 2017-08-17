@@ -23,7 +23,7 @@ type State = {
   onCrop: Function
 } & HubStoreState
 
-export default class HubBanner extends MapHubsPureComponent<void, Props, State> {
+export default class HubBanner extends MapHubsPureComponent<Props, State> {
 
   props: Props
 

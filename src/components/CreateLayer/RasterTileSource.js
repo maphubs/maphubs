@@ -23,7 +23,7 @@ type State = {
 } & LocaleStoreState & LayerStoreState;
 
 
-export default class RasterTileSource extends MapHubsComponent<void, Props, State> {
+export default class RasterTileSource extends MapHubsComponent<Props, State> {
 
   props: Props
 

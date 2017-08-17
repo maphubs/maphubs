@@ -26,7 +26,7 @@ type State = {
   canSubmit: boolean
 } & LocaleStoreState & GroupStoreState
 
-export default class CreateGroupStep2 extends MapHubsComponent<DefaultProps, Props, State> {
+export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
 
   props: Props
 

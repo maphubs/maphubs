@@ -15,7 +15,7 @@ type Props = {
   mapConfig: Object
 }
 
-export default class LayerMap extends MapHubsComponent<void, Props, void> {
+export default class LayerMap extends MapHubsComponent<Props, void> {
 
   props: Props
 

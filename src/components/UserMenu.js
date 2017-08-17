@@ -19,7 +19,7 @@ type State = {
   loaded: boolean
 } & UserStoreState
 
-export default class UserMenu extends MapHubsComponent<Props, Props, State> {
+export default class UserMenu extends MapHubsComponent<Props, State> {
 
   props: Props
 

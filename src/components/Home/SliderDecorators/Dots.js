@@ -8,7 +8,7 @@ type Props = {
   currentSlide: number
 }
 
-export default class SlideDots extends React.PureComponent<void, Props, void> {
+export default class SlideDots extends React.PureComponent<Props, void> {
 
   
   getIndexes = (count: number, inc: number) => {

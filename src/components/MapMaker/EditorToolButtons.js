@@ -19,7 +19,7 @@ type State = {
    saving: boolean
 } & LocaleStoreState & DataEditorStoreState
 
-export default class EditorToolButtons extends MapHubsComponent<void, Props, State> {
+export default class EditorToolButtons extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -19,7 +19,7 @@ type State = {
   source: string
 }
 
-export default class CreateLayer extends MapHubsComponent<void, Props, State> {
+export default class CreateLayer extends MapHubsComponent<Props, State> {
 
    props: Props
 

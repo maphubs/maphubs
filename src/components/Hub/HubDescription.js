@@ -19,7 +19,7 @@ type DefaultProps = {
 
 import type {HubStoreState} from '../../stores/HubStore';
 
-export default class HubDescription extends MapHubsComponent<DefaultProps, Props, HubStoreState> {
+export default class HubDescription extends MapHubsComponent<Props, HubStoreState> {
 
   props: Props
 

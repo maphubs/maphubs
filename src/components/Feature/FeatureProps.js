@@ -9,7 +9,7 @@ type Props = {
   presets: Array<MapHubsField>
 }
 
-export default class FeatureProps extends MapHubsComponent<void, Props, void> {
+export default class FeatureProps extends MapHubsComponent<Props, void> {
 
   props: Props
 

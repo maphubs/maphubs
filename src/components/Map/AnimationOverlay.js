@@ -3,11 +3,17 @@ import React from 'react';
 import AnimationActions from '../../actions/map/AnimationActions';
 import Reflux from 'reflux';
 
-export default class AnimationOverlay extends React.Component {
+type Props = {
+  style: Object
+}
 
-  props:  {
-    style: Object
-  }
+type State = {
+  val: string
+}
+
+export default class AnimationOverlay extends React.Component<Props, State> {
+
+  props: Props
 
   state = {
     val: ''
@@ -16,8 +22,6 @@ export default class AnimationOverlay extends React.Component {
   componentDidMount(){
     Reflux.listenTo(AnimationActions.tick, 'tick');
   }
-
-  
 
   tick = (val: any) => {
     this.setState({val});

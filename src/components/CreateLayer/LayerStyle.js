@@ -37,7 +37,7 @@ type State = {
   saving: boolean
 } & LayerStoreState & LocaleStoreState
 
-export default class LayerStyle extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LayerStyle extends MapHubsComponent<Props, State> {
 
   props: Props
 

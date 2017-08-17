@@ -24,7 +24,7 @@ type State = {
 } & LocaleStoreState & LayerStoreState;
 
 
-export default class PlanetLabsSource extends MapHubsComponent<void, Props, State> {
+export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
 
   props: Props
 

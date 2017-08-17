@@ -16,7 +16,7 @@ type DefaultProps = {
   showContactUs: boolean,
 }
 
-export default class Footer extends MapHubsComponent<DefaultProps, Props, void> {
+export default class Footer extends MapHubsComponent<Props, void> {
 
   props: Props
 

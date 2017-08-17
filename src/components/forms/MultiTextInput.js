@@ -45,7 +45,7 @@ type State = {
   value: LocalizedString
 }
 
-export default class MultiTextInput extends MapHubsComponent<DefaultProps, Props, State> {
+export default class MultiTextInput extends MapHubsComponent<Props, State> {
 
   props: Props
 

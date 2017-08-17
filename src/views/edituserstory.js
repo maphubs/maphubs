@@ -16,11 +16,7 @@ type Props = {|
   headerConfig: Object
 |}
 
-type DefaultProps = {
-  story: Object
-}
-
-export default class EditUserStory extends MapHubsComponent<DefaultProps, Props, void> {
+export default class EditUserStory extends MapHubsComponent<Props, void> {
 
   props: Props
 

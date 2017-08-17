@@ -29,7 +29,7 @@ type DefaultProps = {|
   forestLoss: Object
 |}
 
-export default class MapToolPanel extends MapHubsComponent<DefaultProps, Props, void> {
+export default class MapToolPanel extends MapHubsComponent<Props, void> {
 
   props: Props
 

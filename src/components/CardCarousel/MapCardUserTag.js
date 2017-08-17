@@ -24,7 +24,7 @@ type Props = {
 
 type State = LocaleStoreState;
 
-export default class MapCardUserTag extends MapHubsComponent<void, Props, State> {
+export default class MapCardUserTag extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -33,25 +33,12 @@ type Props = {|
   getErrorMessage: Function
 |}
 
-type DefaultProps = {
-  length: number,
-  successText: string,
-  defaultValue: string,
-  disabled: false,
-  value: string,
-  dataDelay: number,
-  type: string,
-  style: Object,
-  showCharCount: boolean,
-  useMaterialize: boolean
-}
-
 type State = {
   value: string,
   charCount: number
 }
 
-class TextInput extends MapHubsPureComponent<DefaultProps, Props, State> {
+class TextInput extends MapHubsPureComponent<Props, State> {
 
   props: Props
 

@@ -28,10 +28,6 @@ type Props = {
   headerConfig: Object
 }
 
-type DefaultProps = {
-  active: boolean
-}
-
 type State = {
    canSubmit: boolean,
   showError: boolean,
@@ -39,7 +35,7 @@ type State = {
   errorTitle: string
 } & LocaleStoreState & HubStoreState
 
-export default class HubBuilder extends MapHubsComponent<DefaultProps, Props, State> {
+export default class HubBuilder extends MapHubsComponent<Props, State> {
 
    props: Props
 

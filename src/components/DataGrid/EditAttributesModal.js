@@ -23,7 +23,7 @@ type State = {
   values: Object
 } & LocaleStoreState
 
-export default class EditAttributesModal extends MapHubsComponent<void, Props, State> {
+export default class EditAttributesModal extends MapHubsComponent<Props, State> {
 
   constructor(props: Props){
     super(props);

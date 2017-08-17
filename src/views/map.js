@@ -24,7 +24,7 @@ type DefaultProps = {
   myLayers: Array<Object>
 }
 
-export default class Map extends MapHubsComponent<DefaultProps, Props, void> {
+export default class Map extends MapHubsComponent<Props, void> {
 
   props: Props
 

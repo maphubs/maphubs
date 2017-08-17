@@ -15,16 +15,12 @@ type Props = {|
   style: GLStyle
 |}
 
-type DefaultProps = {
-
-}
-
 type State = {
   interactive: boolean,
   showBehindBaseMapLabels: boolean
 }
 
-export default class AdvancedLayerSettings extends MapHubsComponent<DefaultProps, Props, State> {
+export default class AdvancedLayerSettings extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -23,7 +23,7 @@ type State = {
   saving: boolean
 } & LocaleStoreState & LayerStoreState
 
-export default class Step2 extends MapHubsComponent<DefaultProps, Props, State> {
+export default class Step2 extends MapHubsComponent<Props, State> {
 
   props: Props
 

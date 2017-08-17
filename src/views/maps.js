@@ -30,7 +30,7 @@ type State = {
   searchActive: boolean
 }
 
-export default class Maps extends MapHubsComponent<void, Props, State> {
+export default class Maps extends MapHubsComponent<Props, State> {
 
   props: Props
 

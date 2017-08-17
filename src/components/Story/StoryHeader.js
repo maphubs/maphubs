@@ -23,16 +23,11 @@ type Props = {
   short:  boolean
 }
 
-type DefaultProps = {
-  baseUrl: string,
-  short:  boolean
-}
-
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type State = LocaleStoreState;
 
-export default class StoryHeader extends MapHubsComponent<DefaultProps, Props, State> {
+export default class StoryHeader extends MapHubsComponent<Props, State> {
 
   props: Props
 

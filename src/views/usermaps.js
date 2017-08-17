@@ -18,13 +18,7 @@ type Props = {
   headerConfig: Object
 }
 
-type DefaultProps = {
-  maps: Array<Object>,
-  user: Object,
-  myMaps: boolean
-}
-
-export default class UserMaps extends MapHubsComponent<DefaultProps, Props, void> {
+export default class UserMaps extends MapHubsComponent<Props, void> {
 
   props: Props
 

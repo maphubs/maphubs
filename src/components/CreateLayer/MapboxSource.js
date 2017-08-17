@@ -23,7 +23,7 @@ type State = {
 } & LocaleStoreState & LayerStoreState;
 
 
-export default class MapboxSource extends MapHubsComponent<void, Props, State> {
+export default class MapboxSource extends MapHubsComponent<Props, State> {
 
   props: Props
 

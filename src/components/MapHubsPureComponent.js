@@ -2,7 +2,7 @@
 import Reflux from 'reflux';
 import Locales  from '../services/locales';
 import LocaleStore from '../stores/LocaleStore';
-export default class MapHubsComponent<DefaultProps,Props,State> extends Reflux.PureComponent<DefaultProps,Props,State> {
+export default class MapHubsComponent<Props,State> extends Reflux.PureComponent<Props,State> {
 
    constructor(props: Props){
 		super(props);

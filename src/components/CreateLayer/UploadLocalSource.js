@@ -30,7 +30,7 @@ type State = {
   multipleShapefiles: any
 } & LocaleStoreState & LayerStoreState
 
-export default class UploadLocalSource extends MapHubsComponent<void, Props, State> {
+export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   props: Props
 

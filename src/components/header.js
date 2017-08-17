@@ -41,7 +41,7 @@ type DefaultProps = {
 
 type State = LocaleStoreState;
 
-export default class Header extends MapHubsComponent<DefaultProps, Props, State> {
+export default class Header extends MapHubsComponent<Props, State> {
 
   props: Props
 

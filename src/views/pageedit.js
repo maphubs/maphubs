@@ -25,7 +25,7 @@ type State = {
   pageConfig?: Object
 } & LocaleStoreState
 
-export default class PageEdit extends MapHubsComponent<void, Props, State> {
+export default class PageEdit extends MapHubsComponent<Props, State> {
 
   props: Props
 

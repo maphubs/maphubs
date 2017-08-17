@@ -15,7 +15,7 @@ type Props = {
   headerConfig: Object
 }
 
-export default class Error extends MapHubsComponent<void, Props, void> {
+export default class Error extends MapHubsComponent<Props, void> {
 
   props: Props
 

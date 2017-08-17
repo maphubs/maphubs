@@ -16,7 +16,7 @@ type Props = {|
   onPrev: Function
 |}
 
-export default class EmptyLocalSource extends MapHubsComponent<void, Props, LocaleStoreState> {
+export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStoreState> {
 
   props: Props
 

@@ -16,7 +16,6 @@ import MarkerSprites from './MarkerSprites';
 import AnimationOverlay from './AnimationOverlay';
 import AnimationStore from '../../stores/map/AnimationStore';
 import MarkerStore from '../../stores/map/MarkerStore';
-import isEqual from 'lodash.isequal';
 import Promise from 'bluebird';
 import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin';
 import MapInteractionMixin from './Helpers/MapInteractionMixin';
@@ -82,30 +81,6 @@ type Props = {|
     children?: any
   |}
 
-  type DefaultProps = {
-    maxZoom: number,
-    minZoom: number,
-    className: string,
-    interactive: boolean,
-    showFeatureInfoEditButtons: boolean,
-    showPlayButton: boolean,
-    navPosition: string,
-    baseMap: string,
-    showLogo: boolean,
-    showScale: boolean,
-    insetMap: boolean,
-    hoverInteraction: boolean,
-    interactionBufferSize: number,
-    hash: boolean,
-    attributionControl: boolean,
-    style: Object,
-    allowLayerOrderOptimization: boolean,
-    fitBoundsOptions: Object,
-    height: string,
-    mapConfig: Object,
-    insetConfig: Object
-  }
-
   type State = {
     id: string,
     selectedFeature?: Object,
@@ -118,11 +93,11 @@ type Props = {|
     allowLayersToMoveMap: boolean
   } & BaseMapStoreState
 
-export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
+export default class Map extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     maxZoom: 18,
     minZoom: 5,
     className: '',
@@ -558,7 +533,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     var bounds: any;
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
 
-    if(nextProps.fitBounds && !isEqual(this.props.fitBounds,nextProps.fitBounds) && this.map){
+    if(nextProps.fitBounds && !_isequal(this.props.fitBounds,nextProps.fitBounds) && this.map){
       debug.log('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
       fitBoundsChanging = true;
       allowLayersToMoveMap = false;
@@ -573,7 +548,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
-      if(!isEqual(this.state.glStyle,nextProps.glStyle)) {
+      if(!_isequal(this.state.glStyle,nextProps.glStyle)) {
           debug.log('(' + this.state.id + ') ' +'glstyle changing from props');
           //** Style Changing (also reloads basemap) **/
           if(this.state.mapLoaded && !fitBoundsChanging) {
@@ -598,7 +573,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
             _this.setState({interactiveLayers});//wait to change state style until after reloaded
           });
 
-      }else if(!isEqual(this.state.baseMap,nextProps.baseMap)) {
+      }else if(!_isequal(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
         debug.log('(' + this.state.id + ') ' +"basemap changing from props");
         allowLayersToMoveMap = false;    
@@ -624,7 +599,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
      }
 
     }else if(nextProps.glStyle
-      && !isEqual(this.state.glStyle,nextProps.glStyle)){
+      && !_isequal(this.state.glStyle,nextProps.glStyle)){
         //** Style Changing (no basemap provided) **/
         debug.log('(' + this.state.id + ') ' +'glstyle changing from props (default basemap)');
 
@@ -637,7 +612,7 @@ export default class Map extends MapHubsComponent<DefaultProps, Props, State> {
         this.setState({glStyle: styleCopy, allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
 
     }else if(nextProps.baseMap
-      && !isEqual(this.state.baseMap,nextProps.baseMap)) {
+      && !_isequal(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Found, but Base Map is Changing **/
         debug.log('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
 

@@ -14,7 +14,7 @@ type Props = {
   id: string
 }
 
-export default class SearchBox extends React.Component<Props, Props, void> {
+export default class SearchBox extends React.Component<Props, void> {
 
   props: Props
 

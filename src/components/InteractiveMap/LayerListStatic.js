@@ -18,7 +18,7 @@ type Props = {|
   editLayer: Function
 |}
 
-export default class LayerListStatic extends MapHubsPureComponent<void, Props, void> {
+export default class LayerListStatic extends MapHubsPureComponent<Props, void> {
 
   props: Props
 

@@ -19,25 +19,15 @@ type Props = {|
   style: Object
 |}
 
-type DefaultProps = {
-  layers: Array<Object>,
-  hideInactive: boolean,
-  collapsible: boolean,
-  collapseToBottom: boolean,
-  showLayersButton: boolean,
-  maxHeight: string,
-  style: Object
-}
-
 type State = {|
   collapsed: boolean
 |} & BaseMapStoreState
 
-export default class MiniLegend extends MapHubsComponent<DefaultProps, Props, State> {
+export default class MiniLegend extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     layers: [],
     hideInactive: true,
     collapsible: true,

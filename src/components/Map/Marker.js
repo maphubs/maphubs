@@ -2,22 +2,24 @@
 //Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
 import React from 'react';
 
-export default class Marker extends React.PureComponent {
+type Props = {
+  shape: string,
+  width: number,
+  height: number,
+  shapeFill: string,
+  shapeFillOpacity: number,
+  shapeStroke: string,
+  shapeStrokeWidth: number,
+  icon:  string,
+  iconFill: string,
+  iconFillOpacity: number,
+  iconStroke: string,
+  iconStrokeWidth: number
+}
 
-  props: {
-    shape: string,
-    width: number,
-    height: number,
-    shapeFill: string,
-    shapeFillOpacity: number,
-    shapeStroke: string,
-    shapeStrokeWidth: number,
-    icon:  string,
-    iconFill: string,
-    iconFillOpacity: number,
-    iconStroke: string,
-    iconStrokeWidth: number
-  }
+export default class Marker extends React.PureComponent<Props> {
+
+  props: Props
 
   static defaultProps = {
     shape: 'MAP_PIN',

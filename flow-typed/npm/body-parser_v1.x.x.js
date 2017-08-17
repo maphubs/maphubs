@@ -1,5 +1,5 @@
-// flow-typed signature: f39e87ae093403a8f3c789273ccddbf6
-// flow-typed version: 7e7c66e29a/body-parser_v1.x.x/flow_>=v0.30.x
+// flow-typed signature: 18dadbe162b608c79b9b31c3d2f1c822
+// flow-typed version: b43dff3e0e/body-parser_v1.x.x/flow_>=v0.17.x
 
 import type { Middleware, $Request, $Response } from 'express';
 
@@ -11,12 +11,12 @@ declare type bodyParser$Options = {
 };
 
 declare type bodyParser$OptionsText = bodyParser$Options & {
-  reviever?: (key: string, value: any) => any;
+  reviver?: (key: string, value: any) => any;
   strict?: boolean;
 };
 
 declare type bodyParser$OptionsJson = bodyParser$Options & {
-  reviever?: (key: string, value: any) => any;
+  reviver?: (key: string, value: any) => any;
   strict?: boolean;
 };
 

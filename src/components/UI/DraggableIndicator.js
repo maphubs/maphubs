@@ -1,19 +1,21 @@
 //@flow
 import React from 'react';
 
-//modified from: https://resoundingechoes.net/development/style-draggable-elements-indicate-draggability/  
-export default class DraggableIndicator extends React.PureComponent {
+type Props = {
+  width: number,
+  height: number,
+  dotWidth: number,
+  offset: number,
+  numX: number,
+  numY: number,
+  initialX: number,
+  initialY: number
+}
 
-  props:  {
-    width: number,
-    height: number,
-    dotWidth: number,
-    offset: number,
-    numX: number,
-    numY: number,
-    initialX: number,
-    initialY: number
-  }
+//modified from: https://resoundingechoes.net/development/style-draggable-elements-indicate-draggability/  
+export default class DraggableIndicator extends React.PureComponent<Props> {
+
+  props: Props
 
   static defaultProps = {
     width: 32,

@@ -1,15 +1,17 @@
 //@flow
 import React from 'react';
 
-export default class EditList extends React.Component {
+type Props = {
+  title: string,
+  items: Array<Object>, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
+  onDelete: Function,
+  onAction: Function,
+  onError: Function
+}
 
-  props: {
-    title: string,
-    items: Array<Object>, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
-    onDelete: Function,
-    onAction: Function,
-    onError: Function
-  }
+export default class EditList extends React.Component<Props> {
+
+  props: Props
 
   static defaultProps = {    
     items: []

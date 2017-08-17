@@ -15,16 +15,11 @@ type Props = {|
   style: Object
 |}
 
-type DefaultProps = {
-  inputStyle: Object,
-  style: Object
-}
-
 type State = {
   uploading?: boolean
 }
 
-export default class FileUpload extends MapHubsComponent<DefaultProps, Props, State> {
+export default class FileUpload extends MapHubsComponent<Props, State> {
 
   props: Props
 

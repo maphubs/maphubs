@@ -41,30 +41,16 @@ type Props = {
   basemap: string
 }
 
-type DefaultProps = {
-  height: string,
-  border: boolean,
-  disableScrollZoom: boolean,
-  showLogo: boolean,
-  showTitle: boolean,
-  interactive: boolean,
-  showShareButtons: boolean,
-  hideInactive: boolean,
-  showScale: boolean,
-  insetMap: boolean,
-  basemap: string
-}
-
 type State = {
   width: number,
   height: number
 } & MapStoreState
 
-export default class InteractiveMap extends MapHubsComponent<DefaultProps, Props, State> {
+export default class InteractiveMap extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
       height: '300px',
       basemap: 'default',
       border: false,

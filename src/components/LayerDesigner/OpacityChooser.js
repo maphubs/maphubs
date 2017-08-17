@@ -25,7 +25,7 @@ type State = {
   opacity: number
 }
 
-export default class OpacityChooser extends MapHubsComponent<DefaultProps, Props, State> {
+export default class OpacityChooser extends MapHubsComponent<Props, State> {
 
   props: Props
 

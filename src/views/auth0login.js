@@ -13,13 +13,9 @@ type Props = {
   initialScreen: string
 }
 
-type DefaultProps = {
-  initialScreen: string
-}
-
 type State = LocaleStoreState
 
-export default class Login extends MapHubsComponent<DefaultProps, Props, State> {
+export default class Login extends MapHubsComponent<Props, State> {
 
   props: Props
 

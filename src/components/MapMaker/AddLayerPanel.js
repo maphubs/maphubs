@@ -22,7 +22,7 @@ type State = {
   searchActive: boolean
 }
 
-export default class AddLayerPanel extends MapHubsComponent<void, Props, State> {
+export default class AddLayerPanel extends MapHubsComponent<Props, State> {
 
   props:  Props
 

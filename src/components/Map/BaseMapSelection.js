@@ -13,7 +13,7 @@ type Props = {
 
 type State = BaseMapStoreState;
 
-export default class BaseMapSelection extends MapHubsComponent<void, Props, State> {
+export default class BaseMapSelection extends MapHubsComponent<Props, State> {
 
   props: Props
 

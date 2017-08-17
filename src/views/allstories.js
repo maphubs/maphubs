@@ -27,7 +27,7 @@ type State = {
   showList?: boolean
 } & UserStoreState;
 
-export default class AllStories extends MapHubsComponent<void, Props, State> {
+export default class AllStories extends MapHubsComponent<Props, State> {
 
   props: Props
 

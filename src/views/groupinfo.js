@@ -36,7 +36,7 @@ type State = {
   hubCards: Array<CardConfig>
 }
 
-export default class GroupInfo extends MapHubsComponent<DefaultProps, Props, State> {
+export default class GroupInfo extends MapHubsComponent<Props, State> {
 
   props: Props
 

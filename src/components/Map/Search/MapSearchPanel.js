@@ -15,10 +15,6 @@ type Props = {
   height: string
 }
 
-type DefaultProps = {
-  show: boolean
-}
-
 type State = {
   results?: ?Object,
   locationSearchResults?: ?Object,
@@ -26,11 +22,11 @@ type State = {
   query?: string
 }
 
-export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props, State> {
+export default class MapSearchPanel extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     show: false
   }
 
@@ -115,9 +111,10 @@ export default class MapSearchPanel extends MapHubsComponent<DefaultProps, Props
     .then((res) => {
       let locationSearchResults = res.body;
       return _this.setState({locationSearchResults, query});
-    }, (error) => {
-      debug.log(error);
-      MessageActions.showMessage({title: 'Error', message: error.toString()});
+    })
+    .catch(err=>{
+      debug.log(err);
+      MessageActions.showMessage({title: 'Error', message: err.toString()});
     });
   }
 

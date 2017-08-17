@@ -23,7 +23,7 @@ type State = {
   selectedOption: string
 } & LocaleStoreState & LayerStoreState
 
-export default class AGOLSource extends MapHubsComponent<void, Props, State> {
+export default class AGOLSource extends MapHubsComponent<Props, State> {
 
   props: Props
 

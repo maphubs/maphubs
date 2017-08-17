@@ -18,23 +18,11 @@ type Props = {
     showAddButton: boolean
   };
 
-  type DefaultProps = {
-    responsive: Array<Object>,
-    autoplay: boolean,
-    arrows: boolean,
-    dots: boolean,
-    infinite: boolean,
-    speed: number,
-    slidesToShow: number,
-    slidesToScroll: number,
-    showAddButton: boolean
-  }
-
-export default class CardCarousel extends React.Component<DefaultProps, Props, void> {
+export default class CardCarousel extends React.Component<Props, void> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     responsive: [
       {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
       {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},

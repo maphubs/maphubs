@@ -6,7 +6,7 @@ type Props = {|
   gpxLink: string
 |}
 
-export default class EditBaseMapBox extends MapHubsPureComponent<void, Props, void> {
+export default class EditBaseMapBox extends MapHubsPureComponent<Props, void> {
 
   props: Props
 

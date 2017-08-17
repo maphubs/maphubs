@@ -18,7 +18,7 @@ type State = {
 
 }
 
-export default class HubEditButton extends MapHubsComponent<DefaultProps, Props, State> {
+export default class HubEditButton extends MapHubsComponent<Props, State> {
 
   props: Props
 

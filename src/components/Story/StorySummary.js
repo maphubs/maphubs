@@ -11,11 +11,7 @@ type Props = {|
   baseUrl: string
 |}
 
-type DefaultProps = {
-  baseUrl: string
-}
-
-export default class StorySummary extends MapHubsComponent<DefaultProps, Props, void> {
+export default class StorySummary extends MapHubsComponent<Props, void> {
 
   props: Props
 

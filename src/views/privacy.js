@@ -13,7 +13,7 @@ type Props = {
   headerConfig: Object
 }
 
-export default class Privacy extends MapHubsComponent<void, Props, void> {
+export default class Privacy extends MapHubsComponent<Props, void> {
 
   props: Props
 

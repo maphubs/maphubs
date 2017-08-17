@@ -16,7 +16,7 @@ import type {DataEditorStoreState} from '../../stores/DataEditorStore';
 
 type State = DataEditorStoreState;
 
-export default class EditLayerPanel extends MapHubsComponent<void, Props, State> {
+export default class EditLayerPanel extends MapHubsComponent<Props, State> {
 
   constructor(props: Props){
     super(props);

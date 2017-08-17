@@ -4,9 +4,8 @@ import Locales  from '../services/locales';
 import LocaleStore from '../stores/LocaleStore';
 
 
-export default class MapHubsComponent<D,P,S> extends Reflux.Component<D,P,S> {
+export default class MapHubsComponent<P,S> extends Reflux.Component<P,S> {
 
-  static defaultProps: D
   props: P
   state: S
 

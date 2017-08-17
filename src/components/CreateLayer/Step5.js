@@ -14,7 +14,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type State = LocaleStoreState
 
-export default class Step5 extends MapHubsComponent<void, Props, State> {
+export default class Step5 extends MapHubsComponent<Props, State> {
 
   props: Props
 

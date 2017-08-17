@@ -2,19 +2,15 @@
 import React from 'react';
 
 type Props = {
-    picture: string,
-    size: number
-  }
+  picture: string,
+  size: number
+}
 
-  type DefaultProps = {
-    size: number
-  }
-
-export default class UserIcon extends React.PureComponent<DefaultProps, Props, void> {
+export default class UserIcon extends React.PureComponent<Props, void> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     size: 30
   }
 

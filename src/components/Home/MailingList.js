@@ -21,7 +21,7 @@ type State = {
   email: string
 } & LocaleStoreState
 
-export default class MailingList extends MapHubsComponent<Props, Props, State> {
+export default class MailingList extends MapHubsComponent<Props, State> {
 
   state: State = {
     valid: false,

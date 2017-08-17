@@ -27,7 +27,7 @@ type State = {
 
 }
 
-export default class GroupTag extends MapHubsComponent<DefaultProps, Props, State> {
+export default class GroupTag extends MapHubsComponent<Props, State> {
 
   props: Props
 

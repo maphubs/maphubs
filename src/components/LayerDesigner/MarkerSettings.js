@@ -19,7 +19,7 @@ type State = {
   options: Object
 }
 
-export default class MarkerSettings extends MapHubsPureComponent<void, Props, State> {
+export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
 
   props: Props
 

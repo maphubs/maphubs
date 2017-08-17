@@ -1,7 +1,6 @@
 //@flow
 import React from 'react';
 var $ = require('jquery');
-import ReactDOM from 'react-dom';
 import FileUpload from '../forms/FileUpload';
 import Map from '../Map/Map';
 import NotificationActions from '../../actions/NotificationActions';
@@ -31,7 +30,7 @@ type State = {
   multipleShapefiles: any
 } & LocaleStoreState & LayerStoreState
 
-export default class UploadLayerReplacement extends MapHubsComponent<void, Props, State> {
+export default class UploadLayerReplacement extends MapHubsComponent<Props, State> {
 
   props: Props
 
@@ -102,8 +101,8 @@ export default class UploadLayerReplacement extends MapHubsComponent<void, Props
     
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
-      LayerActions.setDataType(result.data_type);
-      LayerActions.setImportedTags(result.uniqueProps,  true);
+      //LayerActions.setDataType(result.data_type);
+      //LayerActions.setImportedTags(result.uniqueProps,  true);
     }else{
       if(result.code === 'MULTIPLESHP'){
         this.setState({multipleShapefiles: result.shapefiles});

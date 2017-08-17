@@ -6,7 +6,7 @@ type Props = {
   color: string
 }
 
-export default class ColorSwatch extends React.Component<void, Props, void> {
+export default class ColorSwatch extends React.Component<Props, void> {
 
   props: Props
 

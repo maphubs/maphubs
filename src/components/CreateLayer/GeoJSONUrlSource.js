@@ -23,7 +23,7 @@ type State = {
   selectedSource?: string
 } & LocaleStoreState & LayerStoreState
 
-export default class GeoJSONUrlSource extends MapHubsComponent<void, Props, State> {
+export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
 
   props: Props
 

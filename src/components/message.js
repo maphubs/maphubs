@@ -11,7 +11,7 @@ type Props = {}
 
 import type {MessageStoreState} from '../stores/MessageStore';
 
-export default class Message extends MapHubsComponent<void, Props, MessageStoreState> {
+export default class Message extends MapHubsComponent<Props, MessageStoreState> {
 
   constructor(props: Props){
 		super(props);

@@ -48,15 +48,6 @@ type Props =  {
     settings: Object
   }
 
-  type DefaultProps = {
-    edit: boolean,
-    popularLayers:  Array<Layer>,
-    showVisibility: boolean,
-    mapLayers: Array<Layer>,
-    showTitleEdit: boolean,
-    settings: Object
-  }
-
   type State = {
     showMapLayerDesigner: boolean,
     layerDesignerLayer?: Layer,
@@ -68,12 +59,12 @@ type Props =  {
     retina: boolean
   } & LocaleStoreState & MapMakerStoreState & UserStoreState
 
-export default class MapMaker extends MapHubsComponent<DefaultProps, Props, State> {
+export default class MapMaker extends MapHubsComponent<Props, State> {
 
   props:  Props
 
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     edit: false,
     popularLayers: [],
     showVisibility: true,

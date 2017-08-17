@@ -13,7 +13,7 @@ type DefaultProps = {
   showTitle: boolean
 }
 
-export default class MapList extends MapHubsComponent<DefaultProps, Props, void> {
+export default class MapList extends MapHubsComponent<Props, void> {
 
   static defaultProps: DefaultProps = {
     showTitle: true

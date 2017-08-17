@@ -36,7 +36,7 @@ type State = {
   valid: boolean
 }
 
-export default class PresetForm extends MapHubsComponent<DefaultProps, Props, State> {
+export default class PresetForm extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -31,7 +31,7 @@ type State = {
   saving: boolean
 } & LocaleStoreState & AddPhotoPointStoreState
 
-export default class AddPhotoPoint extends MapHubsComponent<void, Props, State> {
+export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
 
   props: Props
 

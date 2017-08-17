@@ -22,7 +22,7 @@ type Props = {|
 
 type State = UserStoreState;
 
-export default class Stories extends MapHubsComponent<void, Props, State> {
+export default class Stories extends MapHubsComponent<Props, State> {
 
   props: Props
 

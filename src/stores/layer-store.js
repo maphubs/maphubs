@@ -83,7 +83,7 @@ let defaultState: LayerStoreState = {
     presets: OrderedSet()
 };
 
-export default class LayerStore extends Reflux.Store {
+export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
   state: LayerStoreState 
 

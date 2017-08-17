@@ -28,7 +28,7 @@ type AdminUserInviteState = {
 
 type State = LocaleStoreState & AdminUserInviteState
 
-export default class AdminUserInvite extends MapHubsComponent<void, Props, State> {
+export default class AdminUserInvite extends MapHubsComponent<Props, State> {
 
   props: Props
 

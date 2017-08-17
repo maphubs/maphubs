@@ -12,21 +12,16 @@ import type {CardConfig} from './Card';
     cardsPerPage: number
   };
 
-  type DefaultProps = {
-    showAddButton: boolean,
-    cardsPerPage: number
-  }
-
   type State = {
     page: number,
     chunks: NestedArray<CardConfig>
   }
 
-export default class CardGrid extends React.Component<DefaultProps, Props, State> {
+export default class CardGrid extends React.Component<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showAddButton: false,
     cardsPerPage: 24
   }

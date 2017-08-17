@@ -19,17 +19,9 @@ type Props = {|
   mapConfig: Object
 |}
 
-type DefaultProps = {
-  editing: boolean,
-  height: string,
-  border: boolean,
-  myMaps: Array<Object>,
-  popularMaps: Array<Object>
-}
-
 import type {HubStoreState} from '../../stores/HubStore';
 
-export default class HubMap extends MapHubsComponent<DefaultProps, Props, HubStoreState> {
+export default class HubMap extends MapHubsComponent<Props, HubStoreState> {
 
   props: Props
 

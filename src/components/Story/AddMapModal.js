@@ -20,11 +20,6 @@ type Props = {
   popularMaps: Array<Object>
 }
 
-type DefaultProps = {
-  myMaps: Array<Object>,
-  popularMaps: Array<Object>
-}
-
 type State = {
   show: boolean,
   searchActive: boolean,
@@ -32,11 +27,11 @@ type State = {
   modalReady: boolean
 }
 
-export default class AddMapModal extends MapHubsComponent<DefaultProps, Props, State> {
+export default class AddMapModal extends MapHubsComponent<Props, State> {
 
   props:  Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     myMaps:[],
     popularMaps: []
   }

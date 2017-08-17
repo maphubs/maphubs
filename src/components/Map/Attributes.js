@@ -8,7 +8,7 @@ type Props = {|
   children: any
 |}
 
-export default class Attributes extends MapHubsComponent<void, Props, void> {
+export default class Attributes extends MapHubsComponent<Props, void> {
 
   props: Props
 

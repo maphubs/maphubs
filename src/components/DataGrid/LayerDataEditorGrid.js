@@ -52,7 +52,7 @@ type State = {
   selectedFeature?: Object
 } & DataEditorStoreState
 
-export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
 
   Selectors: null
   ReactDataGrid: any
@@ -153,7 +153,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
     if(presets){
         presets.forEach((preset) => {
         if(preset.type === 'check'){
-
+          let CheckboxEditor = this.CheckboxEditor;
           columns.push(
             {
               key: preset.tag,
@@ -162,7 +162,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
               resizable: true,
               sortable : true,
               filterable: true,
-              editor: <this.CheckboxEditor />,
+              editor: <CheckboxEditor />,
               formatter: CheckboxFormatter
             }
           );
@@ -171,7 +171,8 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
           let options = preset.options.split(',').map(option => {
             return option.trim();
           });
-
+          let DropDownEditor = this.DropDownEditor;
+          let DropDownFormatter = this.DropDownFormatter;
           columns.push(
             {
               key: preset.tag,
@@ -180,8 +181,8 @@ export default class LayerDataEditorGrid extends MapHubsComponent<DefaultProps, 
               resizable: true,
               sortable : true,
               filterable: true,
-              editor: <this.DropDownEditor options={options}/>,
-              formatter: <this.DropDownFormatter options={options}/>
+              editor: <DropDownEditor options={options}/>,
+              formatter: <DropDownFormatter options={options}/>
             }
           );
           
@@ -353,9 +354,10 @@ render() {
   var _this = this;
 
    if(this.state.rows.length > 0 && typeof window !== 'undefined'){
-
+    let ReactDataGrid = this.ReactDataGrid;
+    let Toolbar = this.Toolbar;
   return (
-    <this.ReactDataGrid
+    <ReactDataGrid
            ref="grid"
            columns={this.state.columns}
            rowKey={this.state.rowKey}
@@ -375,14 +377,14 @@ render() {
                 indexes: this.state.selectedIndexes
               }
             }}
-            toolbar={<this.Toolbar
+            toolbar={<Toolbar
               enableFilter={true}
               filterRowsButtonText={this.__('Filter Data')}
               >
               <button type="button" style={{marginLeft: '5px'}} className="btn" onClick={_this.onViewSelectedFeature}>
                 {this.__('View Selected')}
               </button>
-              </this.Toolbar>
+              </Toolbar>
             }
             onAddFilter={this.handleFilterChange}
             onClearFilters={this.onClearFilters}

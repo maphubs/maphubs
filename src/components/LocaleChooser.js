@@ -14,7 +14,7 @@ type State = {
   locale: string
 }
 
-export default class LocaleChooser extends MapHubsComponent<Props, Props, State> {
+export default class LocaleChooser extends MapHubsComponent<Props, State> {
 
   static defaultProps = {
     id: 'locale-dropdown'

@@ -20,23 +20,15 @@ type Props = {
   editLayer?: Function
 }
 
-type DefaultProps = {
-  showVisibility: boolean,
-  showDesign: boolean,
-  showRemove: boolean,
-  showEdit: boolean,
-  showChangeDesign: boolean
-}
-
 type State = {
   layers: Array<Object>
 }
 
-class LayerList extends React.PureComponent<DefaultProps, Props, State> {
+class LayerList extends React.PureComponent<Props, State> {
 
   props:  Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showVisibility: false,
     showDesign: false,
     showRemove: false,

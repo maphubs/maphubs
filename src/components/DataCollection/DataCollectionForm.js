@@ -25,7 +25,7 @@ type State = {
   submitText: string
 }
 
-export default class DataCollectionForm extends MapHubsComponent<DefaultProps, Props, State> {
+export default class DataCollectionForm extends MapHubsComponent<Props, State> {
 
   props: Props
 

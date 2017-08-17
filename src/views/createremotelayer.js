@@ -21,10 +21,6 @@ type Props = {|
   headerConfig: Object
 |}
 
-type DefaultProps = {
-  groups: Array
-}
-
 type State = {
   canSubmit: boolean,
   layer?: Object,
@@ -33,7 +29,7 @@ type State = {
   complete: boolean
 }
 
-export default class CreateRemoteLayer extends MapHubsComponent<DefaultProps, Props, State> {
+export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
   props: Props
 

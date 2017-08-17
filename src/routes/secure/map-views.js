@@ -278,11 +278,11 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-          MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false, false);
+          MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false, false, false);
     } else {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        return MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false);
+        return MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false, false);
       }).catch(nextError(next));
     }
   });
@@ -301,11 +301,11 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, false);
+          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, false, false);
     } else {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-       return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false);
+       return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false, false);
       }).catch(nextError(next));
     }
   });
@@ -324,11 +324,11 @@ module.exports = function(app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, true);
+          MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, true, false);
     } else {
       Map.allowedToModify(map_id, user_id)
       .then((allowed) => {
-        return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true);
+        return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true, false);
       }).catch(nextError(next));
     }
   });

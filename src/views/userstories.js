@@ -21,7 +21,7 @@ type DefaultProps = {
   stories: Array<Object>
 }
 
-export default class UserStories extends MapHubsComponent<DefaultProps, Props, void> {
+export default class UserStories extends MapHubsComponent<Props, void> {
 
   props: Props
 

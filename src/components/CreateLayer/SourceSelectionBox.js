@@ -10,13 +10,9 @@ type Props = {|
   selected: boolean
 |}
 
-type DefaultProps = {
-  selected: boolean
-}
-
-export default class SourceSelectionBox extends MapHubsPureComponent<DefaultProps, Props, void> {
+export default class SourceSelectionBox extends MapHubsPureComponent<Props, void> {
   
-  static defaultProps:DefaultProps  = {
+  static defaultProps = {
     selected: false
   }
 

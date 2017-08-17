@@ -58,7 +58,7 @@ type Props = {
   } & LocaleStoreState
 
 
-export default class HomePro extends MapHubsComponent<DefaultProps, Props, State> {
+export default class HomePro extends MapHubsComponent<Props, State> {
 
   props: Props
 

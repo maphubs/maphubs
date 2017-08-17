@@ -29,7 +29,7 @@ type State = {
 
 }
 
-export default class LayerListItemStatic extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LayerListItemStatic extends MapHubsComponent<Props, State> {
 
   props: Props
 

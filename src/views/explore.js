@@ -59,7 +59,7 @@ type State = {
   recentLayerCards: Array<CardConfig>
 }
 
-export default class Home extends MapHubsComponent<void, Props, State> {
+export default class Home extends MapHubsComponent<Props, State> {
 
   props: Props
 

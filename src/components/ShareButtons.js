@@ -25,7 +25,7 @@ type State = {
   url: string
 }
 
-export default class MapHubsShareButtons extends MapHubsComponent<void, Props, State> {
+export default class MapHubsShareButtons extends MapHubsComponent<Props, State> {
 
   props: Props
 

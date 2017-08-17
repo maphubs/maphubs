@@ -36,7 +36,7 @@ type State = {
   searchResults: Array<Object>
 }
 
-export default class Hubs extends MapHubsComponent<DefaultProps, Props, State> {
+export default class Hubs extends MapHubsComponent<Props, State> {
 
   props: Props
 

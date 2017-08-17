@@ -11,7 +11,7 @@ type Props = {|
 
 import type {FeatureNotesStoreState} from '../../stores/FeatureNotesStore';
 
-export default class FeatureNotes extends MapHubsComponent<Props, Props, FeatureNotesStoreState> {
+export default class FeatureNotes extends MapHubsComponent<Props, FeatureNotesStoreState> {
 
   props: Props
 

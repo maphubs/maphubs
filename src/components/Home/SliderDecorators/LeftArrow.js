@@ -7,7 +7,7 @@ type Props = {
   previousSlide:  Function
 }
 
-export default class SlideLeftArrow extends React.PureComponent<void, Props, void> {
+export default class SlideLeftArrow extends React.PureComponent<Props, void> {
 
       props:  Props
 

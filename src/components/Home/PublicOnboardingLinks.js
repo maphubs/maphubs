@@ -6,7 +6,7 @@ type Props = {
   demo: boolean
 }
 
-export default class PublicOnboardingLinks extends MapHubsPureComponent<void, Props, void> {
+export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, void> {
 
   props:  Props
 

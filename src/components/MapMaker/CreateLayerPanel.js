@@ -15,7 +15,7 @@ type State = {
   pendingChanges: boolean
 } & LocaleStoreState
 
-export default class CreateLayerPanel extends MapHubsComponent<void, Props, State> {
+export default class CreateLayerPanel extends MapHubsComponent<Props, State> {
 
   constructor(props: Props){
     super(props);

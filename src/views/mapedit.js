@@ -20,12 +20,7 @@ type Props = {
   mapConfig: Object
 }
 
-type DefaultProps = {
-  popularLayers:Array<Object>,
-  myLayers: Array<Object>
-}
-
-export default class MapEdit extends MapHubsComponent<DefaultProps, Props, void> {
+export default class MapEdit extends MapHubsComponent<Props, void> {
 
   props: Props
 

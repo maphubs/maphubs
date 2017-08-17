@@ -32,28 +32,13 @@ type Props = {
   baseMap?: string
 }
 
-type DefaultProps = {|
-  id: string,
-  bottom:  string,
-  collapsible: boolean,
-  collapsed: boolean,
-  maxZoom: number,
-  padding: number,
-  minHeight: string, 
-  maxHeight: string, 
-  minWidth: string, 
-  maxWidth: string,
-  height: string, 
-  width: string
-|}
-
 type State = {|
   collapsed: boolean,
   insetGeoJSONData: Object,
   insetGeoJSONCentroidData: Object
 |}
 
-export default class InsetMap extends React.Component<DefaultProps, Props, State> {
+export default class InsetMap extends React.Component<Props, State> {
 
 
   insetMap: Object
@@ -76,8 +61,8 @@ export default class InsetMap extends React.Component<DefaultProps, Props, State
     width: '25vw'
   }
 
-  insetMapComponent: React$Component<void,void,void>
-  insetMapArrow: React$Component<void,void,void>
+  insetMapComponent: React$Component<void,void>
+  insetMapArrow: React$Component<void,void>
   
   state: State
 

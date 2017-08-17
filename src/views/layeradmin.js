@@ -37,7 +37,7 @@ type State = {
   canSavePresets: boolean
 } & LocaleStoreState & LayerStoreState
 
-export default class LayerAdmin extends MapHubsComponent<void, Props, State> {
+export default class LayerAdmin extends MapHubsComponent<Props, State> {
 
   props: Props
 

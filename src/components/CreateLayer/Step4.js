@@ -29,7 +29,7 @@ type Step4State = {
 
 type State = LocaleStoreState & LayerStoreState & Step4State
 
-export default class Step4 extends MapHubsComponent<DefaultProps, Props, State> {
+export default class Step4 extends MapHubsComponent<Props, State> {
 
   props: Props
 

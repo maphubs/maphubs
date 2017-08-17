@@ -33,7 +33,7 @@ type State = {
   showList: boolean
 }
 
-export default class AllMaps extends MapHubsComponent<void, Props, State> {
+export default class AllMaps extends MapHubsComponent<Props, State> {
 
   props: Props
 

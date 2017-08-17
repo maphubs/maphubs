@@ -20,7 +20,7 @@ type State = {
   warnIfUnsaved: boolean
 } & LocaleStoreState
 
-export default class Step1 extends MapHubsComponent<void, Props, State> {
+export default class Step1 extends MapHubsComponent<Props, State> {
 
    props: Props
 

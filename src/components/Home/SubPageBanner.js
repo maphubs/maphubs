@@ -1,15 +1,17 @@
 //@flow
 import React from 'react';
 
-export default class SubPageBanner extends React.Component {
-
-props: {
+type Props = {
   title: string,
   subTitle: string,
   img: string,
   backgroundPosition: string,
   locale: string,
 }
+
+export default class SubPageBanner extends React.Component<Props> {
+
+props: Props
 
 static defaultProps = {
   backgroundPosition: 'center'

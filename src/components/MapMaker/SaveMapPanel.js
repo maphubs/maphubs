@@ -25,7 +25,7 @@ type State = {
   saving?: boolean
 } & MapMakerStoreState & UserStoreState
 
-export default class SaveMapPanel extends MapHubsComponent<void, Props, State> {
+export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -77,7 +77,7 @@ type State = {
   dataMsg?: string
 } & LocaleStoreState
 
-export default class LayerInfo extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LayerInfo extends MapHubsComponent<Props, State> {
 
   props: Props
 

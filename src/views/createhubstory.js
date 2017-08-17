@@ -21,15 +21,11 @@ type Props = {
   _csrf: string
 }
 
-type DefaultProps = {
-  hub: Object
-}
-
 import type {HubStoreState} from '../stores/HubStore';
 
 type State = HubStoreState;
 
-export default class CreateHubStory extends MapHubsComponent<DefaultProps, Props, State> {
+export default class CreateHubStory extends MapHubsComponent<Props, State> {
 
   props: Props
 

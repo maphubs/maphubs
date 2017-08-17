@@ -19,13 +19,7 @@ type Props = {
   _csrf: string
 }
 
-type DefaultProps = {
-  story: Object,
-  hub: Object,
-  canEdit: boolean
-}
-
-export default class HubStory extends MapHubsComponent<DefaultProps, Props, void>  {
+export default class HubStory extends MapHubsComponent<Props, void>  {
 
   props: Props
 

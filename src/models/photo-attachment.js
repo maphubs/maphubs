@@ -113,47 +113,53 @@ module.exports = {
         let presets = MapStyles.settings.getSourceSetting(style, firstSource, 'presets');
         if(presets){
           var maxId = 0;
-    var alreadyPresent = false;
-    presets.forEach((preset) => {
-      if(preset.tag === 'photo_url'){
-        alreadyPresent = true;
-      }
-      if(preset.id){
-        if(preset.id > maxId){
-          maxId = preset.id;
-        }
-      }
-    });
+          var alreadyPresent = false;
+          presets.forEach((preset) => {
+            if(preset.tag === 'photo_url'){
+              alreadyPresent = true;
+            }
+            if(preset.id){
+              if(preset.id > maxId){
+                maxId = preset.id;
+              }
+            }
+          });
 
-    if(alreadyPresent){
-        return new Promise((resolve) => {
-          resolve(presets);
-        });
-        }else{
-          presets.push({
-            tag: 'photo_url',
-            label: {en: 'Photo URL'},
-            isRequired: false,
-            type: 'text',
-            id: maxId + 1
-          });
-          let updatedStyle = MapStyles.settings.setSourceSetting(style, firstSource, 'presets', presets);
-          return Presets.savePresets(layer.layer_id, presets, user_id, false, trx)
-          .then(() => {
-            return trx('omh.layers').update({style: updatedStyle}).where({layer_id: layer.layer_id})
-             .then(() => {
-                return presets;
-             });
-          });
-        }
-        }else{
-          log.error('layer missing style presets');
+          if(alreadyPresent){
+            return new Promise((resolve) => {
+              resolve(presets);
+            });
+          }else{
+            presets.push({
+              tag: 'photo_url',
+              label: {en: 'Photo URL'},
+              isRequired: false,
+              type: 'text',
+              id: maxId + 1
+            });
+            let updatedStyle = MapStyles.settings.setSourceSetting(style, firstSource, 'presets', presets);
+            return Presets.savePresets(layer.layer_id, presets, user_id, false, trx)
+            .then(() => {
+              return trx('omh.layers').update({style: updatedStyle}).where({layer_id: layer.layer_id})
+                .then(() => {
+                  return presets;
+                });
+            });
         }
       }else{
-        log.error('layer missing style sources');
+        let msg = 'layer missing style presets';
+        log.error(msg);
+        throw new Error(msg);
+      }
+      }else{
+        let msg = 'layer missing style sources';
+        log.error(msg);
+        throw new Error(msg);
       }
     }else{
-      log.error('layer missing style');
+      let msg = 'layer missing style';
+      log.error(msg);
+      throw new Error(msg);
     }
   }
 

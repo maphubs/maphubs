@@ -10,7 +10,7 @@ type Props = {|
   value: any
 |}
 
-export default class FormField extends MapHubsComponent<void, Props, void> {
+export default class FormField extends MapHubsComponent<Props, void> {
 
   props: Props
 

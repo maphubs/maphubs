@@ -18,7 +18,7 @@ type State = {
   step: number
 }
 
-export default class CreateGroup extends MapHubsComponent<void, Props, State> {
+export default class CreateGroup extends MapHubsComponent<Props, State> {
 
   props: Props
 

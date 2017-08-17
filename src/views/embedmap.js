@@ -46,7 +46,7 @@ type State = {
   layers: Array<Layer>
 }
 
-export default class EmbedMap extends MapHubsComponent<DefaultProps, Props, State> {
+export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -49,20 +49,11 @@ type State = {
   src?: any
 }
 
-type DefaultProps = {
-  lockAspect:  boolean,
-  autoCropArea: number,
-  allowedExtensions: Array<string>,
-  max_size: number,
-  skip_size: number,
-  jpeg_quality: number
-}
-
-export default class ImageCrop extends MapHubsComponent<DefaultProps, Props, State> {
+export default class ImageCrop extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     lockAspect: false,
     autoCropArea: 1,
     allowedExtensions: ['jpg', 'jpeg', 'png'],

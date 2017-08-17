@@ -15,7 +15,7 @@ type DefaultProps = {
   cards: Array<CardConfig>
 }
 
-export default class CardCollection extends MapHubsComponent<DefaultProps, Props, void> {
+export default class CardCollection extends MapHubsComponent<Props, void> {
 
   props: Props
 

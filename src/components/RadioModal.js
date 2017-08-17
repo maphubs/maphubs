@@ -18,7 +18,7 @@ type State = {
   selectedOption: string
 }
 
-export default class RadioModal extends React.Component<Props, Props, State> {
+export default class RadioModal extends React.Component<Props, State> {
 
   props: Props
 

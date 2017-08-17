@@ -18,13 +18,7 @@ type Props = {
   getValue: Function
 }
 
-type DefaultProps = {
-  options:  Array<{value: string, label: string}>,
-  defaultValue: string,
-  dataDelay: number
-}
-
-class Radio extends MapHubsPureComponent<DefaultProps, Props, void> {
+class Radio extends MapHubsPureComponent<Props, void> {
 
   props: Props
 

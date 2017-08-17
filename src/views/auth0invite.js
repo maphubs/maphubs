@@ -14,7 +14,7 @@ type Props = {
   headerConfig: Object
 }
 
-export default class Auth0InviteConfirmation extends MapHubsComponent<void, Props, void> {
+export default class Auth0InviteConfirmation extends MapHubsComponent<Props, void> {
 
   props: Props
 

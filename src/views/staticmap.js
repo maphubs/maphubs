@@ -25,14 +25,6 @@ type Props = {
   mapConfig: Object
 }
 
-type DefaultProps = {
-  showLegend: boolean,
-  showLogo: boolean,
-  showScale: boolean,
-  insetMap:  boolean,
-  settings: Object
-}
-
 type State = {
   retina: boolean,
   width: number,
@@ -40,7 +32,7 @@ type State = {
 }
 
 //A reponsive full window map used to render screenshots
-export default class StaticMap extends MapHubsComponent<DefaultProps, Props, State> {
+export default class StaticMap extends MapHubsComponent<Props, State> {
 
   props: Props
 

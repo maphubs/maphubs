@@ -31,30 +31,15 @@ type Props = {
   validationErrors: Object
 }
 
-type DefaultProps = {
-  length: number,
-  successText: string,
-  defaultValue: string,
-  disabled: boolean,
-  value: string,
-  dataDelay: number,
-  type: string,
-  style: Object,
-  showCharCount: boolean,
-  useMaterialize: boolean,
-  validations: string,
-  validationErrors: Object
-}
-
 type State = {
   value: LocalizedString
 }
 
-export default class MultiTextArea extends MapHubsPureComponent<DefaultProps, Props, State> {
+export default class MultiTextArea extends MapHubsPureComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps  = {
+  static defaultProps = {
       length: 100,
       successText: '',
       defaultValue: '',

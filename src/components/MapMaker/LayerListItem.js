@@ -34,15 +34,11 @@ type Props = {
   index: number
 }
 
-type DefaultProps = {
-  showVisibility: boolean
-}
-
-class LayerListItem extends MapHubsComponent<DefaultProps, Props, void> {
+class LayerListItem extends MapHubsComponent<Props, void> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
       showVisibility: false
   }
 

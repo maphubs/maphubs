@@ -17,7 +17,7 @@ type DefaultProps = {
 
 type State = LocaleStoreState;
 
-export default class LegendItem extends MapHubsComponent<DefaultProps, Props, State> {
+export default class LegendItem extends MapHubsComponent<Props, State> {
 
   props: Props
 

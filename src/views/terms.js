@@ -15,7 +15,7 @@ type Props = {
   headerConfig: Object
 }
 
-export default class Terms extends MapHubsComponent<void, Props, void> {
+export default class Terms extends MapHubsComponent<Props, void> {
 
   props: Props
 

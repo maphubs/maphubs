@@ -54,7 +54,7 @@ type Props = {
     editingNotes: boolean
   } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState 
 
-export default class FeatureInfo extends MapHubsComponent<void, Props, State> {
+export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   props: Props
 

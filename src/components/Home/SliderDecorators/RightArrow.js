@@ -9,7 +9,7 @@ type Props = {
   nextSlide:  Function
 }
 
-export default class SlideRightArrow extends React.PureComponent<void, Props, void> {
+export default class SlideRightArrow extends React.PureComponent<Props, void> {
 
     props: Props
 
