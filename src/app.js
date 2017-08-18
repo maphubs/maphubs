@@ -29,10 +29,25 @@ Promise.config({
     cancellation: true
 });
 
-require('babel-core/register')({
+let babelConfig = {
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": true,
+    }
+    }],
+    "react",
+    "stage-0"
+  ],
   ignore: /assets.*|node_modules\/(?!(react-disqus-thread|medium-editor|react-colorpickr|mapbox-gl)).*/
-});
-require('babel-polyfill');
+};
+
+if(process.env.NODE_ENV !== 'production'){
+  babelConfig.sourceMaps = true;
+  babelConfig.retainLines = true;
+}
+require('babel-core/register')(babelConfig);
+//require('babel-polyfill');
 
 var app = express();
 //settings flags

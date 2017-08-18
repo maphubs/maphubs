@@ -101,12 +101,14 @@ module.exports = {
         loader: 'babel-loader',
         include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-disqus-thread/, /react-colorpickr/],       
         options: {
-          presets: [
-           ["es2015", {"modules": false}],
+          presets: [       
+           ["env", {
+             "browsers": ["> 5%", "not ie <= 11"]
+            }],
             "react",
             "stage-0"
           ],
-          plugins: ['transform-flow-strip-types', 'transform-object-assign']         
+          plugins: ['transform-flow-strip-types']         
         }  
       },
       {

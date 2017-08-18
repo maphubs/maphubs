@@ -2,11 +2,10 @@
 /* eslint-disable unicorn/no-process-exit*/
 require('babel-register')({
   "presets": [
-    "es2015",
-    "react",
-    "stage-0"
+    "env",
+    "react"
   ],
-  "plugins": ["transform-flow-strip-types", "transform-object-assign"],
+  "plugins": ["transform-flow-strip-types"],
 });
 
 var Layer = require('../src/models/layer');
