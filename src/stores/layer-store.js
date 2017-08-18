@@ -8,6 +8,7 @@ var checkClientError = require('../services/client-error-response').checkClientE
 var debug = require('../services/debug')('layer-store');
 import _findIndex from 'lodash.findindex';
 import _remove from 'lodash.remove';
+import _differenceBy from 'lodash.differenceby';
 import type {GLStyle} from '../types/mapbox-gl-style';
 import type {MapHubsField} from '../types/maphubs-field';
 
@@ -108,7 +109,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     if(!this.state.style){
       this.resetStyleGL();
     }
-
     if(!this.state.legend_html){
       this.resetLegendHTML();
     }
@@ -127,8 +127,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       }
     }else{
       debug.log('Missing style');
-    }
-    
+    }  
   }
 
   updatePresets(presets: OrderedSet<MapHubsField>){
@@ -395,6 +394,26 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
    
   }
 
+  replaceData(_csrf: string, cb: Function){
+    debug.log("replaceData");
+    if(this.state.layer_id){
+       var _this = this;
+      request.post('/api/layer/data/replace')
+      .type('json').accept('json').timeout(1200000)
+      .send({
+        layer_id: _this.state.layer_id,
+        _csrf
+      })
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          _this.trigger(_this.state);
+          cb();
+        });
+      });
+    }
+   
+  }
+
   initEmptyLayer(_csrf: string, cb: Function){
     debug.log("initEmptyLayer");
     if(this.state.layer_id){
@@ -520,6 +539,29 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     }
     this.setState({pendingPresetChanges: true});
     this.updatePresets(presets);
+  }
+
+  mergeNewPresetTags(data: Object){
+    if(this.state.presets){
+      let presets = this.state.presets.toArray();
+      let idSeq = presets.length - 1;
+
+      let importedPresets = data.map((tag: string) => {
+        return {
+          tag, 
+          label: tag, 
+          type: 'text', 
+          isRequired: false, 
+          showOnMap: true, 
+          mapTo: tag,
+          id: idSeq++};
+      });
+      
+      let newPresets = _differenceBy(importedPresets, presets, 'tag');
+      presets.concat(newPresets);
+
+      this.updatePresets(this.getImmPresets(presets));
+    }
   }
 
   submitPresets(create: boolean, _csrf: string, cb: Function){

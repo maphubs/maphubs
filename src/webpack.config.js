@@ -30,6 +30,7 @@ module.exports = {
     layerinfo: "./src/client/layerinfo",
     layermap: "./src/client/layermap",
     layeradmin: "./src/client/layeradmin",
+    layerreplace: "./src/client/layerreplace",
     addphotopoint: "./src/client/addphotopoint",
     createlayer: "./src/client/createlayer",
     createremotelayer: "./src/client/createremotelayer",

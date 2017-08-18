@@ -16,8 +16,6 @@ import type {GeoJSONObject} from 'geojson-flow';
 
 type Props = {|
   onSubmit: Function,
-  showPrev: boolean,
-  onPrev: Function,
   layerDataType: string,
   mapConfig: Object
 |}
@@ -38,8 +36,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     canSubmit: false,
     largeData: false,
     processing: false,
-    multipleShapefiles: null,
-    layer: {}
+    multipleShapefiles: null
   }
 
   constructor(props: Props){
@@ -77,23 +74,23 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
   onSubmit = () => {
     var _this = this;
-    var data = {
-      is_external: false,
-      external_layer_type: '',
-      external_layer_config: {}
-    };
-
-    LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
+    
+    LayerActions.submitPresets(false, _this.state._csrf, (err) => {
       if (err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});
       }else{
-        NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
+        LayerActions.replaceData(_this.state._csrf, (err) => {
+          if (err){
+            MessageActions.showMessage({title: _this.__('Error'), message: err});
+          }else{
+            NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
+          }
+        });
       }
     });
-  }
 
-  onPrev = () => {
-    if(this.props.onPrev) this.props.onPrev();
+   
+
   }
 
   onUpload = (result: Object) => {
@@ -102,6 +99,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
       //LayerActions.setDataType(result.data_type);
+      LayerActions.mergeNewPresetTags(result.uniqueProps);
       //LayerActions.setImportedTags(result.uniqueProps,  true);
     }else{
       if(result.code === 'MULTIPLESHP'){
@@ -136,21 +134,12 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
 	render() {
 
-    var prevButton = '';
-    if(this.props.showPrev){
-      prevButton = (
-        <div className="left">
-          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>{this.__('Previous Step')}</a>
-        </div>
-      );
-    }
-
     let layer_id = this.state.layer_id ? this.state.layer_id : 0;
     let url = `/api/layer/${layer_id}/upload`;
     var largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (
-      <p>{this.__('Data Uploaded Successfully. Large dataset detected, you will be able to preview the data in Step 5 after it is loaded.')}</p>
+      <p>{this.__('Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.')}</p>
       );
     }
     var map = '';
@@ -193,9 +182,8 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
           </div>
           {multipleShapefiles}
         </div>
-        {prevButton}
         <div className="right">
-          <button className="waves-effect waves-light btn" disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
+          <button className="waves-effect waves-light btn" disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Replace Layer Data')}</button>
         </div>
       </div>
 		);

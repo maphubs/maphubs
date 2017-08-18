@@ -45,30 +45,26 @@ module.exports = {
     });
   },
 
-  storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
+  async storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
     debug.log('storeTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
-    return db('omh.temp_data').where({layer_id}).del()
-    .then(() => {
-      return db('omh.temp_data').insert({
+    await db('omh.temp_data').where({layer_id}).del();
+    return db('omh.temp_data').insert({
         layer_id,
         uploadtmppath
       });
-    });
   },
 
-  getTempShapeUpload(layer_id: number, trx: any = null){
+  async getTempShapeUpload(layer_id: number, trx: any = null){
     debug.log('getTempShapeUpload');
     let db = knex;
     if(trx){db = trx;}
-    return db('omh.temp_data').where({layer_id})
-    .then((result) => {
-      return result[0].uploadtmppath;
-    });
+    const result = await db('omh.temp_data').where({layer_id});
+    return result[0].uploadtmppath;
   },
 
-  storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, trx: any = null){
+  storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null){
     debug.log('storeTempGeoJSON');
     let db = knex;
     if(trx){db = trx;}

@@ -102,6 +102,11 @@ module.exports = function(app: any) {
     exportUtils.completeGeoBufExport(req, res, layer_id);
   });
 
+  app.get('/api/layer/:layer_id/export/maphubs/*', privateLayerCheck, (req, res) => {
+    var layer_id = parseInt(req.params.layer_id || '', 10);
+    exportUtils.completeMapHubsExport(req, res, layer_id);
+  });
+
   app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, (req, res) => {
     var layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getGeoJSON(layer_id).then((geoJSON) => {

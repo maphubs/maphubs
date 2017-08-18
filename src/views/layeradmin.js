@@ -163,7 +163,8 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       tabContentDisplay = 'inherit';
     }
     let layer_id =  this.props.layer.layer_id ?  this.props.layer.layer_id : 0;
-    var layerInfoUrl = `/layer/info/${layer_id}/${slugify(this._o_(this.props.layer.name))}`;
+    let layerName = slugify(this._o_(this.props.layer.name));
+    var layerInfoUrl = `/layer/info/${layer_id}/${layerName}`;
 
     if(this.props.layer.remote){
       return (
@@ -185,11 +186,11 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
               </div>
               <div className="fixed-action-btn action-button-bottom-right">
-                <a className="btn-floating btn-large tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
+                <a className="btn-floating btn-large layeradmin-tooltips red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
                     onClick={this.deleteLayer}>
                   <i className="material-icons">delete</i>
                 </a>
-              </div>
+            </div>
             </div>
           </main>
         </div>
@@ -266,12 +267,28 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
              {styleTabContent}
            </div>
         </div>
-      </div>
+      </div>     
       <div className="fixed-action-btn action-button-bottom-right">
-          <a className="btn-floating btn-large layeradmin-tooltips red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
-              onClick={this.deleteLayer}>
-            <i className="material-icons">delete</i>
-          </a>
+        <a className="btn-floating red red-text">
+          <i className="large material-icons">settings</i>
+        </a>
+        <ul>
+          <li>
+          <a className="btn-floating tooltipped blue"
+                href={`/layer/replace/${layer_id}/${layerName}`} 
+                data-delay="50" data-position="left" 
+                data-tooltip={this.__('Replace Layer Data')}
+            >
+                <i className="material-icons">file_upload</i>
+              </a>
+          </li>
+          <li>
+          <a className="btn-floating btn-large tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
+            onClick={this.deleteLayer}>
+          <i className="material-icons">delete</i>
+        </a>
+          </li>
+        </ul>
       </div>
     </main>
 		</div>

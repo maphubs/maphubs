@@ -260,11 +260,11 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getLayerByID(layer_id: number, trx: any = null) {
+  async getLayerByID(layer_id: number, trx: any = null) {
     debug.log('getting layer: ' + layer_id);
     let db = knex;
     if(trx){db = trx;}
-    return db.select(
+    let result = await db.select(
       'layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
@@ -274,24 +274,22 @@ module.exports = {
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
       'views',
       'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
-    ).table('omh.layers').where('layer_id', layer_id)
-      .then((result) => {
-        if (result && result.length === 1) {
-          return result[0];
-        }
-        //else
-        return null;
-      });
+    ).table('omh.layers').where('layer_id', layer_id);
+    if (result && result.length === 1) {
+      return result[0];
+    }
+    //else
+    return null;
   },
 
   /**
    * Can include private?: If Requested
    */
-  getLayerByShortID(shortid: string, trx: any = null) {
+  async getLayerByShortID(shortid: string, trx: any = null) {
     debug.log('getting layer shortid: ' + shortid);
     let db = knex;
     if(trx){db = trx;}
-    return db.select(
+    const result = await db.select(
       'layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
@@ -301,89 +299,71 @@ module.exports = {
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
       'views',
       'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
-    ).table('omh.layers').where('shortid', shortid)
-      .then((result) => {
-        if (result && result.length === 1) {
-          return result[0];
-        }
-        //else
-        return null;
-      });
+    ).table('omh.layers').where('shortid', shortid);
+    if (result && result.length === 1) {
+      return result[0];
+    }
+    //else
+    return null;
   },
 
-  isSharedInPublicMap(shortid: string){
-    return knex.count('omh.layers.layer_id')
+  async isSharedInPublicMap(shortid: string){
+    const result = await knex.count('omh.layers.layer_id')
     .from('omh.layers')
     .leftJoin('omh.map_layers', 'omh.layers.layer_id', 'omh.map_layers.layer_id')
     .leftJoin('omh.maps', 'omh.map_layers.map_id', 'omh.maps.map_id')
     .whereNotNull('omh.maps.share_id')
-    .where('omh.layers.shortid', shortid)
-    .then(result=>{
-      if(result[0] && result[0].count && result[0].count > 0){
-        return true;
-      }
-      return false;
-    });
+    .where('omh.layers.shortid', shortid);
+    if(result[0] && result[0].count && result[0].count > 0){
+      return true;
+    }
+    return false;
   },
 
     /**
      * Can include private?: If Requested
      */
-    getLayerNotes(layer_id: number){
-      return knex('omh.layer_notes').select('notes')
-      .where({layer_id})
-      .then((result) => {
-        if(result && result.length === 1){
-          return result[0];
-        }
-        return null;
-      });
+    async getLayerNotes(layer_id: number){
+      const result = await knex('omh.layer_notes').select('notes').where({layer_id});
+      if(result && result.length === 1){
+        return result[0];
+      }
+      return null;
     },
 
-    getGeoJSON(layer_id: number) {
-        var layerTable = 'layers.data_' + layer_id;
-       
-      return Promise.all([
-          knex.raw('select mhid, ST_AsGeoJSON(wkb_geometry) as geom, tags from :layerTable:', {layerTable}),
-          knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable})
-        ])
-        .then((results) => {
-          var data = results[0];
-          var bbox = results[1];
-          return new Promise((resolve, reject) => {
-
-            dbgeo.parse(data.rows,{
-              "outputFormat": "geojson",
-              "geometryColumn": "geom",
-              "geometryType": "geojson"
-            }, (error, result) => {
-              if (error) {
-                log.error(error);
-                reject(error);
-              }
-              //convert tags to properties
-              if(result.features){
-                result.features = geojsonUtils.convertTagsToProps(result.features);
-              }
-
-              result.bbox = JSON.parse(bbox.rows[0].bbox);
-              resolve(result);
-            });
-          });
+    async getGeoJSON(layer_id: number) {
+      const layerTable = 'layers.data_' + layer_id;    
+      const data = await knex.raw('select mhid, ST_AsGeoJSON(wkb_geometry) as geom, tags from :layerTable:', {layerTable});
+      const bbox = await knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable});
+      
+      return new Promise((resolve, reject) => {
+        dbgeo.parse(data.rows,{
+          "outputFormat": "geojson",
+          "geometryColumn": "geom",
+          "geometryType": "geojson"
+        }, (error, result) => {
+          if (error) {
+            log.error(error);
+            reject(error);
+          }
+          //convert tags to properties
+          if(result.features){
+            result.features = geojsonUtils.convertTagsToProps(result.features);
+          }
+          result.bbox = JSON.parse(bbox.rows[0].bbox);
+          resolve(result);
         });
+      });
     },
 
     //Layer Security
 
-  isPrivate(layer_id: number){
-  return knex.select('private').from('omh.layers').where({layer_id})
-    .then((result) => {
-      if (result && result.length === 1) {
-        return result[0].private;
-      }
-      //else
-      return true; //if we don't find the layer, assume it should be private
-    });
+  async isPrivate(layer_id: number){
+    const result = await knex.select('private').from('omh.layers').where({layer_id});
+    if (result && result.length === 1) {
+      return result[0].private;
+    }
+    return true; //if we don't find the layer, assume it should be private
   },
 
   attachPermissionsToLayers(layers: Array<Object>, user_id: number){
@@ -406,48 +386,40 @@ module.exports = {
     /**
    * Can include private?: Yes
    */
-  allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null): Bluebird$Promise<boolean> | any{
+  async allowedToModify(layer_id: number, user_id: number, trx: knex.transtion=null): Bluebird$Promise<boolean> | any{
     if(!layer_id || user_id <= 0){
       return false;
     }
-    return this.getLayerByID(layer_id, trx)
-      .then((layer) => {
-            if(layer){
-             return Group.getGroupMembers(layer.owned_by_group_id)
-            .then((users) => {
-              if(_find(users, {id: user_id}) !== undefined){
-                return true;
-              }
-              return false;
-            });
-          }else{
-            return false;
-          }
-      });
-    },
+    const layer = await this.getLayerByID(layer_id, trx);
+    if(layer){
+      const users = await Group.getGroupMembers(layer.owned_by_group_id);
+      if(_find(users, {id: user_id}) !== undefined){
+        return true;
+      }
+      return false;
+    }else{
+      return false;
+    }
+  },
 
     //Layer creation/modification
 
     /**
    * Can include private?: Yes
    */
-    createLayer(user_id: number, trx:any){
-      return trx('omh.layers')
-        .insert({
-            status: 'incomplete',
-            created_by_user_id: user_id,
-            creation_time: knex.raw('now()'),
-            updated_by_user_id: user_id,
-            extent_bbox: '[-175,-85,175,85]', //make sure we always init a default for this
-            last_updated: knex.raw('now()')
-        }).returning('layer_id')
-          .then(layer_id => {
-          layer_id = parseInt(layer_id);
-          return trx('omh.layers').update({shortid: shortid.generate()}).where({layer_id})
-          .then(()=>{
-            return layer_id;
-          });
-        });
+  async createLayer(user_id: number, trx:any){
+    let layer_id = await trx('omh.layers')
+      .insert({
+          status: 'incomplete',
+          created_by_user_id: user_id,
+          creation_time: knex.raw('now()'),
+          updated_by_user_id: user_id,
+          extent_bbox: '[-175,-85,175,85]', //make sure we always init a default for this
+          last_updated: knex.raw('now()')
+      }).returning('layer_id');
+      layer_id = parseInt(layer_id);
+      await trx('omh.layers').update({shortid: shortid.generate()}).where({layer_id});
+      return layer_id;
     },
 
     /**
@@ -750,11 +722,11 @@ module.exports = {
     setUpdated(layer_id: number, user_id: number, trx: any=null) {
       let db = knex;
       if(trx){db = trx;}
-        return db('omh.layers')
-          .update({
-              updated_by_user_id: user_id,
-              last_updated: db.raw('now()')
-          }).where({layer_id});
+      return db('omh.layers')
+        .update({
+            updated_by_user_id: user_id,
+            last_updated: db.raw('now()')
+        }).where({layer_id});
     },
 
     saveDataSettings(layer_id: number, is_empty: boolean, empty_data_type: string, is_external: boolean, external_layer_type: string, external_layer_config: any, user_id: number){

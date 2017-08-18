@@ -291,6 +291,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       let name = slugify(this._o_(this.props.layer.name));
       let layer_id = this.props.layer.layer_id;
 
+      var maphubsFileURL =  `/api/layer/${layer_id}/export/maphubs/${name}.maphubs`;
       var geoJSONURL = `/api/layer/${layer_id}/export/json/${name}.geojson`;
       var shpURL = `/api/layer/${layer_id}/export/shp/${name}.zip`;
       var kmlURL = `/api/layer/${layer_id}/export/kml/${name}.kml`;
@@ -310,6 +311,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           <div>
             <ul className="collection with-header">
              <li className="collection-header"><h5>{this.__('Export Data')}</h5></li>
+             <li className="collection-item">{this.__('MapHubs Format:')} <a href={maphubsFileURL}>{maphubsFileURL}</a></li>
              <li className="collection-item">{this.__('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
              <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
              <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>

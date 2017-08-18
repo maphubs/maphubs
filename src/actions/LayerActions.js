@@ -5,6 +5,8 @@ export default Reflux.createActions([
   'saveDataSettings',
   'saveStyle',
   'loadData',
+  'replaceData',
+  'mergeNewPresetTags',
   'initEmptyLayer',
   'deleteData',
   'deleteLayer',
