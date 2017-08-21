@@ -69,7 +69,8 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
   }
 
   onDataSubmit = () => {
-
+    this.setState({submitted: true});
+    window.location = '/layer/info/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name));
   }
 
 

@@ -568,7 +568,13 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     debug.log("submitPresets");
     var _this = this;
     if(this.state.presets){
-      let presets = this.state.presets.toArray();
+      let presets;
+      if(Array.isArray(this.state.presets)){
+        //in some cases we still get array instead of immutable
+        presets = this.state.presets;
+      }else{
+        presets = this.state.presets.toArray();
+      }
       request.post('/api/layer/presets/save')
       .type('json').accept('json')
       .send({

@@ -269,7 +269,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
         </div>
       </div>     
       <div className="fixed-action-btn action-button-bottom-right">
-        <a className="btn-floating red red-text">
+        <a className="btn-floating btn-large red red-text">
           <i className="large material-icons">settings</i>
         </a>
         <ul>
@@ -283,7 +283,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
               </a>
           </li>
           <li>
-          <a className="btn-floating btn-large tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
+          <a className="btn-floating tooltipped red" data-delay="50" data-position="left" data-tooltip={this.__('Delete Layer')}
             onClick={this.deleteLayer}>
           <i className="material-icons">delete</i>
         </a>
