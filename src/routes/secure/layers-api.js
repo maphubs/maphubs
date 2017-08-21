@@ -64,18 +64,12 @@ module.exports = function(app: any) {
     Layer.allowedToModify(layer_id, user_id)
     .then(allowed =>{
       if(allowed){
-        return knex.transaction(trx => {
-          return Layer.getLayerByID(layer_id, trx)
-            .then(layer=>{
-              return DataLoadUtils.createEmptyDataTable(layer.layer_id, trx)
-              .then(()=>{
-                 return layerViews.createLayerViews(layer_id, layer.presets, trx)
-                .then(()=>{
-                    debug.log('init empty transaction complete');
-                    return res.status(200).send({success: true});
-                });
-              });              
-          });
+        return knex.transaction(async (trx) => {
+          const layer = await Layer.getLayerByID(layer_id, trx);
+          await DataLoadUtils.createEmptyDataTable(layer.layer_id, trx);
+          await layerViews.createLayerViews(layer_id, layer.presets, trx);
+          debug.log('init empty transaction complete');
+          return res.status(200).send({success: true});    
         }).catch(apiError(res, 500));
       }else{
         return notAllowedError(res, 'layer');

@@ -82,20 +82,20 @@ module.exports = function(app: any) {
 
     function completeRequest(userCanEdit){
       User.getUserByName(username)
-      .then((user) => {
+      .then(async(user) => {
         if(user){
-            return Promise.all([
-              Hub.getPublishedHubsForUser(user.id),
-              Hub.getDraftHubsForUser(user.id)
-            ])
-          .then((results) => {
-            var publishedHubs = results[0];
-            var draftHubs = [];
-            if(userCanEdit){
-              draftHubs = results[1];
-            }
-            return res.render('userhubs', {title: 'Hubs - ' + username, props:{user, publishedHubs, draftHubs, canEdit: userCanEdit}, req});
-          });
+          let draftHubs = [];
+          if(userCanEdit){
+            draftHubs = await Hub.getDraftHubsForUser(user.id);
+          }
+          return res.render('userhubs', {
+            title: 'Hubs - ' + username, 
+            props:{user, 
+              publishedHubs: await Hub.getPublishedHubsForUser(user.id), 
+              draftHubs, 
+              canEdit: userCanEdit
+            }, req});
+
         }else{
           return res.redirect('/notfound?path='+req.path);
         }
@@ -122,7 +122,7 @@ module.exports = function(app: any) {
   });
 
 
-  var renderHubPage = async function(hub, canEdit: boolean, req, res){
+  var renderHubPage = async function(hub: Object, canEdit: boolean, req, res){
     debug.log(`loading hub, canEdit: ${canEdit.toString()}`);
 
     let myMaps, popularMaps;
@@ -283,77 +283,53 @@ module.exports = function(app: any) {
     }catch(err){nextError(next)(err);}
   });
 
-  app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.redirect(baseUrl + '/unauthorized?path='+req.path);
-    }
-    const user_id: number = req.session.user.maphubsUser.id;
-    const hub_id_input: string = req.params.hubid;
-    Hub.allowedToModify(hub_id_input, user_id)
-    .then((allowed: bool) => {
-      if(allowed){
-        return Hub.getHubByID(hub_id_input)
-        .then((hub) => {
-          return Story.createHubStory(hub.hub_id, user_id)
-          .then((story_id) => {
-            return Promise.all([
-              Map.getUserMaps(req.session.user.maphubsUser.id),
-              Map.getPopularMaps()
-            ]).then((results: Array<any>) => {
-              var myMaps = results[0];
-              var popularMaps = results[1];
-              return res.render('createhubstory', {
-                title: 'Create Story',
-                fontawesome: true,
-                rangy: true,
-                props: {
-                  hub, myMaps, popularMaps, story_id
-                }, req
-              });
-            });
-          });
-        }).catch(nextError(next));
+  app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+    try{
+      const user_id: number = req.session.user.maphubsUser.id;
+      const hub_id_input: string = req.params.hubid;
+      if(await Hub.allowedToModify(hub_id_input, user_id)){
+        const hub = await Hub.getHubByID(hub_id_input);
+        const story_id = await Story.createHubStory(hub.hub_id, user_id);        
+        return res.render('createhubstory', {
+          title: 'Create Story',
+          fontawesome: true,
+          rangy: true,
+          props: {
+            hub, 
+            myMaps: await Map.getUserMaps(user_id), 
+            popularMaps: await Map.getPopularMaps(), 
+            story_id
+          }, req
+        });
       }else{
         return res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/hub/:hubid/story/:story_id/edit/*', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.maphubsUser.id;
-    var hub_id = req.params.hubid;
-    var story_id = parseInt(req.params.story_id || '', 10);
-    Hub.allowedToModify(hub_id, user_id)
-    .then((allowed) => {
-      if(allowed){
-        return Promise.all([
-          Hub.getHubByID(hub_id),
-          Story.getStoryByID(story_id),
-          Map.getUserMaps(req.session.user.maphubsUser.id),
-          Map.getPopularMaps()
-        ]).then((results) => {
-          var hub = results[0];
-          var story = results[1];
-          var myMaps = results[2];
-          var popularMaps = results[3];
-            return res.render('edithubstory', {
-              title: 'Editing: ' + story.title,
-              fontawesome: true,
-              rangy: true,
-              props: {
-                story,
-                hub, myMaps, popularMaps
-              }, req
-            });
-          }).catch(nextError(next));
+  app.get('/hub/:hubid/story/:story_id/edit/*', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
+    try{
+      const user_id = req.session.user.maphubsUser.id;
+      const hub_id = req.params.hubid;
+      const story_id = parseInt(req.params.story_id || '', 10);
+
+      if(await Hub.allowedToModify(hub_id, user_id)){
+        const story = await Story.getStoryByID(story_id);
+        return res.render('edithubstory', {
+          title: 'Editing: ' + story.title,
+          fontawesome: true,
+          rangy: true,
+          props: {
+            story,
+            hub: await Hub.getHubByID(hub_id), 
+            myMaps: await Map.getUserMaps(user_id), 
+            popularMaps: await Map.getPopularMaps()
+          }, req
+        });
       }else{
         return res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/hub/:hubid/story/:story_id/*', csrfProtection, privateHubCheck, (req, res, next) => {
@@ -372,7 +348,7 @@ module.exports = function(app: any) {
           Hub.getHubByID(hub_id)
         ])
           .then((results) => {
-            var story = results[0];
+            var story: Object = results[0];
             var hub = results[1];
              var image;
             if(story.firstimage){
@@ -403,41 +379,35 @@ module.exports = function(app: any) {
           }).catch(nextError(next));
     }else{
       return Story.allowedToModify(story_id, user_id)
-      .then((canEdit) => {      
-        return Promise.all([
-          Story.getStoryByID(story_id),
-          Hub.getHubByID(hub_id)
-        ])
-          .then((results) => {
-            var story = results[0];
-            var hub = results[1];
-             var image;
-            if(story.firstimage){
-              image = story.firstimage;
-            }
-            var description = story.title;
-            if(story.firstline){
-              description = story.firstline;
-            }
-             if(!story.published && !canEdit){
-              return res.status(401).send("Unauthorized");
-            }else{
-              return res.render('hubstory', {
-                title: story.title,
-                description,
-                props: {
-                  story, hub, canEdit
-                },
-                twitterCard: {
-                  title: story.title,
-                  description,
-                  image,
-                  imageType: 'image/jpeg'
-                },
-                req
-              });
-            }
+      .then(async (canEdit) => {      
+        const story = await Story.getStoryByID(story_id);
+        const hub = await Hub.getHubByID(hub_id);
+        let image;
+        if(story.firstimage){
+          image = story.firstimage;
+        }
+        let description = story.title;
+        if(story.firstline){
+          description = story.firstline;
+        }
+        if(!story.published && !canEdit){
+          return res.status(401).send("Unauthorized");
+        }else{
+          return res.render('hubstory', {
+            title: story.title,
+            description,
+            props: {
+              story, hub, canEdit
+            },
+            twitterCard: {
+              title: story.title,
+              description,
+              image,
+              imageType: 'image/jpeg'
+            },
+            req
           });
+        }
       })
       .asCallback((err, result) => {  
         if(err){

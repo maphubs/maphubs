@@ -2,7 +2,7 @@ var local = require('../../local');
 var urlUtil = require('../../services/url-util');
 var siteMapUtil = require('../../services/sitemap-util');
 var Promise = require('bluebird');
-var log = require('../../services/log');
+//var log = require('../../services/log');
 var nextError = require('../../services/error-response').nextError;
 var knex = require('../../connection');
 
@@ -42,27 +42,19 @@ module.exports = function(app) {
     }).catch(nextError(next));
   });
 
-  app.get('/sitemap.:layer_id.xml', (req, res, next) => {
+  app.get('/sitemap.:layer_id.xml', async (req, res, next) => {
       if(local.requireLogin){
         return res.status(404).send();
       }
       var layer_id = parseInt(req.params.layer_id || '', 10);
       //clear sitemap
       sm.urls = [];
-      knex.transaction((trx) => {
-      return siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx)
-      .then(() => {
-        return Promise.promisify(sm.toXML, {context:sm})()
-        .then((xml) => {
-          res.header('Content-Type', 'application/xml');
-          return res.send(xml);
-        }).catch(err=>{
-           log.error(err);
-           throw err;
-        });
-      });
+      knex.transaction(async(trx) => {
+        await siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx);
+        const xml = await Promise.promisify(sm.toXML, {context:sm})();
+        res.header('Content-Type', 'application/xml');
+        return res.send(xml);
       }).catch(nextError(next));
-
   });
 
   app.get('/sitemap.xml', (req, res, next) => {
@@ -81,25 +73,16 @@ module.exports = function(app) {
 
       ];
 
-      knex.transaction((trx) => {
-        return Promise.all([
-          siteMapUtil.addHubsToSiteMap(sm, trx),
-          siteMapUtil.addStoriesToSiteMap(sm, trx),
-          siteMapUtil.addMapsToSiteMap(sm, trx),
-          siteMapUtil.addLayersToSiteMap(sm, trx),
-          siteMapUtil.addGroupsToSiteMap(sm, trx)
-        ]).then(() => {
-           return Promise.promisify(sm.toXML, {context:sm})()
-            .then((xml) => {
-              res.header('Content-Type', 'application/xml');
-              return res.send(xml);
-            }).catch(err=>{
-              log.error(err);
-              throw err;
-            });
-        });
-      }).catch(nextError(next));
+      knex.transaction(async (trx) => {
+        await siteMapUtil.addHubsToSiteMap(sm, trx);
+        await siteMapUtil.addStoriesToSiteMap(sm, trx);
+        await siteMapUtil.addMapsToSiteMap(sm, trx);
+        await siteMapUtil.addLayersToSiteMap(sm, trx);
+        await siteMapUtil.addGroupsToSiteMap(sm, trx);
 
+        const xml = await Promise.promisify(sm.toXML, {context:sm})();
+        res.header('Content-Type', 'application/xml');
+        return res.send(xml);
+      }).catch(nextError(next));   
   });
-
 };

@@ -1,5 +1,4 @@
 // @flow
-var Promise = require('bluebird');
 var User = require('../../models/user');
 var Map = require('../../models/map');
 var Layer = require('../../models/layer');
@@ -189,60 +188,57 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/map/edit/:map_id', csrfProtection, (req, res, next) => {
-    var map_id = req.params.map_id;
-    if(!map_id){
-      apiDataError(res);
-    }
+  app.get('/map/edit/:map_id', csrfProtection, async (req, res, next) => {
+    try{
+      const map_id = req.params.map_id;
+      if(!map_id){
+        apiDataError(res);
+      }
 
-    var user_id = -1;
-    if(req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
+      let user_id = -1;
+      if(req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
 
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-        //need to be logged in
-        res.redirect('/unauthorized');
-    } else {
-      //get user id
-      Map.allowedToModify(map_id, user_id)
-      .then((allowed) => {
+      if (!req.isAuthenticated || !req.isAuthenticated()
+          || !req.session || !req.session.user) {
+          //need to be logged in
+          res.redirect('/unauthorized');
+      } else {
+        //get user id
+        const allowed = await Map.allowedToModify(map_id, user_id);
         if(allowed){
-          return Promise.all([
-          Map.getMap(map_id),
-          Map.getMapLayers(map_id, true)
-          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
-          Layer.getPopularLayers()
-          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
-          Layer.getUserLayers(user_id, 50, true)
-          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
-          Group.getGroupsForUser(user_id)
-          ])
-          .then((results) => {
-            var map = results[0];
-            var layers = results[1];
-            var popularLayers = results[2];
-            var myLayers = results[3];
-            var myGroups = results[4];
-            var title: string = 'Map';
-            if(map.title){
+            const map = await Map.getMap(map_id);
+            const layers = await Map.getMapLayers(map_id, true)
+              .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);});
+            const popularLayers = await Layer.getPopularLayers()
+              .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);});
+            var myLayers = await Layer.getUserLayers(user_id, 50, true)
+              .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);});
+
+            let title: string = 'Map';
+            if(map && map.title){
               title = Locales.getLocaleStringObject(req.locale, map.title);
             }
-              return res.render('mapedit',
-               {
-                 title: title +' - ' + MAPHUBS_CONFIG.productName,
-                 props:{map, layers, popularLayers, myLayers, myGroups},
-                 hideFeedback: true,
-                 req
-               }
-             );
-          });
+            return res.render('mapedit',
+              {
+                title: title +' - ' + MAPHUBS_CONFIG.productName,
+                props:{
+                  map, 
+                  layers, 
+                  popularLayers, 
+                  myLayers, 
+                  myGroups: await Group.getGroupsForUser(user_id)
+                },
+                hideFeedback: true,
+                req
+              }
+            );
         }else{
           return res.redirect('/unauthorized');
         }
-      }).catch(nextError(next));
-    }
+      }
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/map/embed/:map_id', csrfProtection, privateMapCheck, (req, res, next) => {

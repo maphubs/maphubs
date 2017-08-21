@@ -51,25 +51,22 @@ module.exports = {
     });
   },
 
-  rebuildFeatures(trx: any){  
+  async rebuildFeatures(trx: any){  
     var _this = this;
-    let db = knex;
-    if(trx){db = trx;}
+    let db = trx ? trx : knex;
     //delete all existing features
-    return db('omh.layers').select('layer_id').whereNot({
+    const layers = await db('omh.layers').select('layer_id').whereNot({
       is_external: true, remote: true, private: true, features_indexed: true
-    })
-    .then(layers => {
-      return Promise.mapSeries(layers, layer => {
-       return _this.updateLayer(layer.layer_id, trx)
-       .then(()=>{
-          return db('omh.layers')
-          .update({features_indexed: true})
-          .where({layer_id: layer.layer_id});
-        }).catch(err =>{
-          log.error(err);
-        });
-      });
+    });
+    return Promise.mapSeries(layers, async (layer) => {
+      try {
+        await _this.updateLayer(layer.layer_id, trx);
+        return db('omh.layers')
+        .update({features_indexed: true})
+        .where({layer_id: layer.layer_id});
+      }catch(err){
+        log.error(err);
+      }
     });
   },
 

@@ -5,7 +5,6 @@ var User = require('../../models/user');
 var Story = require('../../models/story');
 var Stats = require('../../models/stats');
 var Map = require('../../models/map');
-var Promise = require('bluebird');
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var csrfProtection = require('csurf')({cookie: false});
@@ -14,33 +13,27 @@ var urlUtil = require('../../services/url-util');
 module.exports = function(app: any) {
 
   //Views
-  app.get('/stories', (req, res, next) => {
-    Promise.all([
-      Story.getPopularStories(10),
-      Story.getRecentStories(10)
-    ])
-      .then((results) => {
-        var popularStories = results[0];
-        var recentStories = results[1];
-        return res.render('stories', {
-          title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            popularStories, recentStories
-          }, req
-        });
-      }).catch(nextError(next));
+  app.get('/stories', async (req, res, next) => {
+    try{
+      return res.render('stories', {
+        title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {
+          popularStories: await Story.getPopularStories(10),
+          recentStories: await Story.getRecentStories(10)
+        }, req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/stories/all', (req, res, next) => {
-      Story.getAllStories().orderBy('omh.stories.title')
-      .then((stories) => {    
-        return res.render('allstories', {
-          title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            stories
-          }, req
-        });
-      }).catch(nextError(next));
+  app.get('/stories/all', async (req, res, next) => {
+    try{   
+      return res.render('allstories', {
+        title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {
+          stories: await Story.getAllStories().orderBy('omh.stories.title')
+        }, req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/user/:username/stories', (req, res, next) => {
@@ -87,67 +80,50 @@ module.exports = function(app: any) {
     }
   });
 
-  app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.redirect('/unauthorized');
-    }
+  app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+    try{
+      const username = req.session.user.display_name;
+      const user_id = req.session.user.maphubsUser.id;
+      const story_id = await Story.createUserStory(user_id);
 
-    var username = req.session.user.display_name;
-     var user_id = req.session.user.maphubsUser.id;
-     Story.createUserStory(user_id)
-     .then((story_id) => {
-        return Promise.all([
-          Map.getUserMaps(req.session.user.maphubsUser.id),
-          Map.getPopularMaps()
-        ]).then((results) => {
-          var myMaps = results[0];
-          var popularMaps = results[1];
-
-          return res.render('createuserstory', {
-            title: 'Create Story',
-            fontawesome: true,
-            rangy: true,
-            props: {
-              username, myMaps, popularMaps, story_id
-            }, req
-          });
+      return res.render('createuserstory', {
+        title: 'Create Story',
+        fontawesome: true,
+        rangy: true,
+        props: {
+          username, 
+          myMaps: await Map.getUserMaps(req.session.user.maphubsUser.id), 
+          popularMaps: await Map.getPopularMaps(), 
+          story_id
+        }, req
       });
-    }).catch(nextError(next));
-
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/user/:username/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var username = req.params.username;
-    var user_id = req.session.user.maphubsUser.id;
-    var story_id = parseInt(req.params.story_id || '', 10);
-    Story.allowedToModify(story_id, user_id)
-    .then((allowed) => {
-      if(allowed){
-          return Promise.all([
-            Story.getStoryByID(story_id),
-            Map.getUserMaps(req.session.user.maphubsUser.id),
-            Map.getPopularMaps()
-          ]).then((results) => {
-            var story = results[0];
-            var myMaps = results[1];
-            var popularMaps = results[2];
-            return res.render('edituserstory', {
-              title: 'Editing: ' + story.title,
-              fontawesome: true,
-              rangy: true,
-              props: {
-                story, myMaps, popularMaps, username
-              }, req
-            });
-          }).catch(nextError(next));
+  app.get('/user/:username/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+    try{
+      const username = req.params.username;
+      const user_id = req.session.user.maphubsUser.id;
+      const story_id = parseInt(req.params.story_id || '', 10);
+
+      if(await Story.allowedToModify(story_id, user_id)){
+        const story = await Story.getStoryByID(story_id);
+
+        return res.render('edituserstory', {
+          title: 'Editing: ' + story.title,
+          fontawesome: true,
+          rangy: true,
+          props: {
+            story, 
+            myMaps: await Map.getUserMaps(user_id), 
+            popularMaps: await Map.getPopularMaps(), 
+            username
+          }, req
+        });
       }else{
         return res.redirect('/unauthorized');
       }
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/user/:username/story/:story_id/*', (req, res, next) => {

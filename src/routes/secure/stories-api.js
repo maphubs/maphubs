@@ -55,14 +55,12 @@ module.exports = function(app: any) {
       Story.allowedToModify(data.story_id, user_id)
       .then((allowed) => {
         if(allowed){
-          return knex.transaction((trx) => {
-              return Story.publishStory(data.story_id, trx)
-                .then(() => {
-                  return res.send({
-                    success: true
-                  });
-              });        
-            }).catch(apiError(res, 500));
+          return knex.transaction(async(trx) => {
+            await Story.publishStory(data.story_id, trx);
+            return res.send({
+              success: true
+            });       
+          });
         }else {
           return notAllowedError(res, 'story');
         }
@@ -81,19 +79,15 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.story_id) {
       Story.allowedToModify(data.story_id, user_id)
-      .then((allowed) => {
+      .then(async(allowed) => {
         if(allowed){
-          return knex.transaction((trx) => {
-            return Image.removeAllStoryImages(data.story_id, trx)
-              .then(() => {
-                return Story.delete(data.story_id, trx)
-                  .then(() => {
-                    return res.send({
-                      success: true
-                    });
-                });
-              });
-            }).catch(apiError(res, 500));
+          return knex.transaction(async(trx) => {
+            await Image.removeAllStoryImages(data.story_id, trx);
+            await Story.delete(data.story_id, trx);
+            return res.send({
+              success: true
+            });
+          });
         }else {
           return notAllowedError(res, 'story');
         }
@@ -138,14 +132,12 @@ module.exports = function(app: any) {
     var data = req.body;
     if (data && data.story_id && data.image_id) {
       Story.allowedToModify(data.story_id, user_id)
-      .then((allowed) => {
+      .then(async(allowed) => {
         if(allowed){
-          return Image.removeStoryImage(data.story_id, data.image_id)
-            .then(() => {
-              return res.send({
-                success: true
-              });
-            }).catch(apiError(res, 500));
+          await Image.removeStoryImage(data.story_id, data.image_id);
+          return res.send({
+            success: true
+          });
         }else {
           return notAllowedError(res, 'story');
         }
