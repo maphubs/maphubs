@@ -149,38 +149,34 @@ module.exports = {
     /**
      * Can include private?: If Requested
      */
-    getHubByID(hub_id: string, trx: any) {
-      let db = knex;
-      if(trx){db = trx;}
+    async getHubByID(hub_id: string, trx: any) {
+      let db = trx ? trx : knex;
       debug.log('get hub: ' + hub_id);
-      return db('omh.hubs')
-        .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-        .then((hubResult) => {
-          if (hubResult && hubResult.length === 1) {
-            return db('omh.hub_images').select().distinct('type')
-            .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-            .then((imagesResult) => {
-              var hub = hubResult[0];
-              var hasLogoImage = false;
-              var hasBannerImage = false;
-              if(imagesResult && imagesResult.length > 0){
-                imagesResult.forEach((result) => {
-                  if(result.type === 'logo'){
-                    hasLogoImage = true;
-                  }else if(result.type === 'banner'){
-                    hasBannerImage = true;
-                  }
-                });
-              }
+      const hubResult = await db('omh.hubs')
+        .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
 
-              hub.hasLogoImage = hasLogoImage;
-              hub.hasBannerImage = hasBannerImage;
-              return hub;
-            });
-          }
-          //else
-          return null;
-        });
+      if (hubResult && hubResult.length === 1) {
+        const imagesResult = await db('omh.hub_images').select().distinct('type')
+        .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
+
+        var hub = hubResult[0];
+        var hasLogoImage = false;
+        var hasBannerImage = false;
+        if(imagesResult && imagesResult.length > 0){
+          imagesResult.forEach((result) => {
+            if(result.type === 'logo'){
+              hasLogoImage = true;
+            }else if(result.type === 'banner'){
+              hasBannerImage = true;
+            }
+          });
+        }
+
+        hub.hasLogoImage = hasLogoImage;
+        hub.hasBannerImage = hasBannerImage;
+        return hub;
+      }
+      return null;
     },
 
     /**
@@ -225,84 +221,78 @@ module.exports = {
   },
 
 
-  isPrivate(hub_id: string){
-  return knex.select('private').from('omh.hubs')
-    .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-    .then((result) => {
-      if (result && result.length === 1) {
-        return result[0].private;
-      }
-      //else
-      return true; //if we don't find the layer, assume it should be private
-    });
+  async isPrivate(hub_id: string){
+    const result = await knex.select('private').from('omh.hubs')
+    .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
+    if (result && result.length === 1) {
+      return result[0].private;
+    }
+    return true; //if we don't find the layer, assume it should be private
   },
 
     
-    allowedToModify(hub_id: string, user_id: number){
-      debug.log("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
-      return this.getHubByID(hub_id).then((hub) => {
-        return Group.allowedToModify(hub.owned_by_group_id, user_id);
-      });
-    },
+  async allowedToModify(hub_id: string, user_id: number){
+    debug.log("checking if user: " + user_id + " is allowed to modify hub: " + hub_id);
+    const hub = await this.getHubByID(hub_id);
+    return Group.allowedToModify(hub.owned_by_group_id, user_id);
+  },
 
-     /**
-     * Can include private?: Yes
-     */
-    checkHubIdAvailable(hub_id: string) {
-      return this.getHubByID(hub_id)
-        .then((result) => {
-          if (result === null) return true;
-          return false;
-        });
-    },
+  /**
+   * Can include private?: Yes
+   */
+  async checkHubIdAvailable(hub_id: string) {
+    const result = await this.getHubByID(hub_id);
+    if (result === null) return true;
+    return false;
+  },
 
-    createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, user_id: number) {
-      hub_id = hub_id.toLowerCase();
-      return knex.transaction((trx) => {
-      return trx('omh.hubs').insert({
-          hub_id, name, published, private: isPrivate,
-          owned_by_group_id: group_id,
-          created_by: user_id,
-          created_at: knex.raw('now()'),
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        });
-    });
-    },
-
-    updateHub(hub_id: string, name: string, description: string, tagline: string, published: boolean, resources: string, about: string, map_id: number, user_id: number) {
-      //TODO add option to change hub_id
-      return knex('omh.hubs')
-        .where('hub_id', hub_id)
-        .update({
-          name, description, tagline, published, resources, about, map_id,
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        });
-    },
-
-    publishHub(hub_id: string, user_id: number) {
-      return knex('omh.hubs')
-        .where('hub_id', hub_id)
-        .update({
-          published: true,
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        });
-    },
-
-    setPrivate(hub_id: string, isPrivate: boolean, user_id: number) {
-      return knex('omh.hubs')
-      .where('hub_id', hub_id)
-      .update({
-        private: isPrivate,
+  createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, user_id: number) {
+    hub_id = hub_id.toLowerCase();
+    return knex.transaction((trx) => {
+    return trx('omh.hubs').insert({
+        hub_id, name, published, private: isPrivate,
+        owned_by_group_id: group_id,
+        created_by: user_id,
+        created_at: knex.raw('now()'),
         updated_by: user_id,
         updated_at: knex.raw('now()')
       });
-    },
+  });
+  },
 
-    transferHubToGroup(hub_id: string, group_id: string, user_id: number){
-     return knex('omh.hubs')
+  updateHub(hub_id: string, name: string, description: string, tagline: string, published: boolean, resources: string, about: string, map_id: number, user_id: number) {
+    //TODO add option to change hub_id
+    return knex('omh.hubs')
+      .where('hub_id', hub_id)
+      .update({
+        name, description, tagline, published, resources, about, map_id,
+        updated_by: user_id,
+        updated_at: knex.raw('now()')
+      });
+  },
+
+  publishHub(hub_id: string, user_id: number) {
+    return knex('omh.hubs')
+      .where('hub_id', hub_id)
+      .update({
+        published: true,
+        updated_by: user_id,
+        updated_at: knex.raw('now()')
+      });
+  },
+
+  setPrivate(hub_id: string, isPrivate: boolean, user_id: number) {
+    return knex('omh.hubs')
+    .where('hub_id', hub_id)
+    .update({
+      private: isPrivate,
+      updated_by: user_id,
+      updated_at: knex.raw('now()')
+    });
+  },
+
+  transferHubToGroup(hub_id: string, group_id: string, user_id: number){
+    return knex('omh.hubs')
     .update({
       owned_by_group_id: group_id,
       updated_by: user_id,
@@ -311,47 +301,34 @@ module.exports = {
     .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
   },
 
-    deleteHub(hub_id_input: string) {
-      var _this = this;
-      return knex.transaction((trx) => {
-        return _this.getHubByID(hub_id_input, trx)
-        .then((hub) => {
-          var hub_id = hub.hub_id;
-          return Promise.all([
-              trx('omh.hub_images')
-              .leftJoin('omh.group_images', 'omh.hub_images.image_id', 'omh.group_images.image_id')
-              .select('omh.hub_images.image_id')
-              .where({hub_id}).whereNull('omh.group_images.image_id'),
-              trx('omh.hub_stories').select('story_id').where({hub_id})
-          ])
+  async deleteHub(hub_id_input: string) {
+    var _this = this;
+    return knex.transaction(async(trx) => {
+      const hub = await _this.getHubByID(hub_id_input, trx);
+      const hub_id = hub.hub_id;
 
-          .then((results) => {
-            var imageIdResult = results[0];
-            var storyIds = results[1];
-            return Promise.each(storyIds, (storyResult) => {
-              var story_id = storyResult.story_id;
-              debug.log('Deleting Hub Story: '+ story_id);
-              return Image.removeAllStoryImages(story_id, trx)
-                .then(() => {
-                  return Story.delete(story_id, trx);
-                  });
-                }).then(() => {
-              var commands = [];
-              if(imageIdResult.length > 0){
-                var imageIds = _map(imageIdResult, 'image_id');
-                commands.push(trx('omh.hub_images').where('hub_id', hub_id).delete());
-                commands.push(trx('omh.images').whereIn('image_id', imageIds).delete());
-              }
-              commands.push(trx('omh.hub_views').where('hub_id', hub_id).delete());
-              commands.push(trx('omh.hub_layers').where('hub_id', hub_id).delete());
-              commands.push(trx('omh.hubs').where('hub_id', hub_id).delete());
+      const imageIdResult = await trx('omh.hub_images')
+        .leftJoin('omh.group_images', 'omh.hub_images.image_id', 'omh.group_images.image_id')
+        .select('omh.hub_images.image_id')
+        .where({hub_id}).whereNull('omh.group_images.image_id');
 
-              return Promise.each(commands, (command) => {
-                return command;
-              });
-            });
-          });
-        });
+      const storyIds = await trx('omh.hub_stories').select('story_id').where({hub_id});
+
+      return Promise.each(storyIds, async (storyResult) => {
+        const story_id = storyResult.story_id;
+        debug.log('Deleting Hub Story: '+ story_id);
+        await Image.removeAllStoryImages(story_id, trx);
+        await Story.delete(story_id, trx);
+
+        if(imageIdResult.length > 0){
+          var imageIds = _map(imageIdResult, 'image_id');
+          await trx('omh.hub_images').where('hub_id', hub_id).delete();
+          await trx('omh.images').whereIn('image_id', imageIds).delete();
+        }
+        await trx('omh.hub_views').where('hub_id', hub_id).delete();
+        await trx('omh.hub_layers').where('hub_id', hub_id).delete(); //keep until table is removed
+        await trx('omh.hubs').where('hub_id', hub_id).delete();
       });
-    }
+    });
+  }
 };

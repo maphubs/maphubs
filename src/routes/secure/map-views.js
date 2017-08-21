@@ -33,129 +33,110 @@ module.exports = function(app: any) {
   };
 
 
-  app.get('/map/new', csrfProtection, (req, res, next) => {
-
-    if (!req.isAuthenticated || !req.isAuthenticated()
+  app.get('/map/new', csrfProtection, async (req, res, next) => {
+    try{
+      if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
-            Layer.getPopularLayers()           
-            .then((popularLayers) => {
-                return res.render('map', {title: 'New Map ', props:{popularLayers}, req});
-            }).catch(nextError(next));
-    } else {
-      //get user id
-      var user_id = req.session.user.maphubsUser.id;
+        const popularLayers = await Layer.getPopularLayers();           
+        return res.render('map', {title: 'New Map ', props:{popularLayers}, req});
+      } else {
+        //get user id
+        var user_id = req.session.user.maphubsUser.id;
 
-      var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
+        var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
 
-      var dataRequests: any = [
-        Layer.getPopularLayers()
-          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
-        Layer.getUserLayers(user_id, 50, canAddPrivateLayers)
-          .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);}),
-        Group.getGroupsForUser(user_id)
-      ];
+        let popularLayers = await Layer.getPopularLayers();
+        await Layer.attachPermissionsToLayers(popularLayers, user_id);
 
-      var editLayerId = req.query.editlayer;
-      if(editLayerId){
-        dataRequests.push(
-          Layer.allowedToModify(editLayerId, user_id).then(allowed=>{
+        let myLayers = await Layer.getUserLayers(user_id, 50, canAddPrivateLayers);
+        await Layer.attachPermissionsToLayers(myLayers, user_id);
+
+        const myGroups = await  Group.getGroupsForUser(user_id);
+
+        const editLayerId = req.query.editlayer;
+        let editLayer;
+        if(editLayerId){
+            const allowed = await Layer.allowedToModify(editLayerId, user_id);
             if(allowed){
-              return Layer.getLayerByID((editLayerId)).then(layer=>{
-                layer.canEdit = true;
-                return layer;
-              });
-            }else{
-              return null;
+              editLayer = await Layer.getLayerByID((editLayerId));
+              if(editLayer){
+                editLayer.canEdit = true;
+              }
             }
-          })
-        );
-      }
+        }
 
-      Promise.all(dataRequests)
-        .then((results) => {
-          var popularLayers = results[0];
-          var myLayers = results[1];
-          var myGroups = results[2];
-          var editLayer;
-          if(results.length === 4){
-            editLayer = results[3];
-          }
-           return res.render('map', {
-             title: req.__('New Map'), 
-             props:{popularLayers, myLayers, myGroups, editLayer}, 
-             hideFeedback: true,
-             req
-            });
-        }).catch(nextError(next));
+        return res.render('map', {
+          title: req.__('New Map'), 
+          props:{popularLayers, myLayers, myGroups, editLayer}, 
+          hideFeedback: true,
+          req
+        });
+      }
+    }catch(err){
+      nextError(next)(err);
     }
 
   });
 
-  app.get('/maps', csrfProtection, (req, res, next) => {
-
-    Promise.all([
-      Map.getFeaturedMaps(),
-      Map.getRecentMaps(),
-      Map.getPopularMaps()
-    ])
-      .then((results) => {
-        var featuredMaps = results[0];
-        var recentMaps = results[1];
-        var popularMaps = results[2];
-        return res.render('maps', {title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, props: {featuredMaps, recentMaps, popularMaps}, req});
-      }).catch(nextError(next));
+  app.get('/maps', csrfProtection, async (req, res, next) => {
+    try{
+      const featuredMaps = await Map.getFeaturedMaps();
+      const recentMaps = await Map.getRecentMaps();
+      const popularMaps = await Map.getPopularMaps();
+      return res.render('maps', {
+        title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, 
+        props: {featuredMaps, recentMaps, popularMaps}, 
+        req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/maps/all', csrfProtection, (req, res, next) => {
-    let locale = req.locale ? req.locale : 'en';
-    Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`)
-    .then((maps) => {
+  app.get('/maps/all', csrfProtection, async (req, res, next) => {
+    try{
+      let locale = req.locale ? req.locale : 'en';
+      const maps = await Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`);
       return res.render('allmaps', {
         title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, 
         props: {maps}, 
         req
       });
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/user/:username/maps', csrfProtection, (req, res, next) => {
+  app.get('/user/:username/maps', csrfProtection, async (req, res, next) => {
+    try{
+      var username = req.params.username;
+      debug.log(username);
+      if(!username){apiDataError(res);}
+      var myMaps = false;
 
-    var username = req.params.username;
-    debug.log(username);
-    if(!username){apiDataError(res);}
-    var myMaps = false;
-
-    function completeRequest(){
-      User.getUserByName(username)
-      .then((user) => {
+      var completeRequest = async function(){
+        const user = await User.getUserByName(username);
         if(user){
-          return Map.getUserMaps(user.id)
-          .then((maps) => {
-            return res.render('usermaps', {title: 'Maps - ' + username, props:{user, maps, myMaps}, req});
+          const maps = await Map.getUserMaps(user.id);
+          return res.render('usermaps', {
+            title: 'Maps - ' + username, 
+            props:{user, maps, myMaps}, 
+            req
           });
         }else{
           return res.redirect('/notfound?path='+req.path);
         }
-      }).catch(nextError(next));
-    }
+      };
 
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-          completeRequest();
-    } else {
-      //get user id
-      var user_id = req.session.user.maphubsUser.id;
-
-      //get user for logged in user
-      User.getUser(user_id)
-      .then((user) => {
+      if (!req.isAuthenticated || !req.isAuthenticated()
+          || !req.session || !req.session.user) {
+            completeRequest();
+      } else {
+        const user_id = req.session.user.maphubsUser.id;
+        const user = await User.getUser(user_id);
         //flag if requested user is logged in user
         if(user.display_name === username){
           myMaps = true;
         }
-        return completeRequest();
-      }).catch(nextError(next));
-    }
+        completeRequest();
+      }
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/map/view/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {

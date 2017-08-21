@@ -21,18 +21,12 @@ if(process.argv.length !== 3){
   
     console.log(`Recreating views for layer: ${layer_id}`);
 
-    knex.transaction((trx) => {
-      return Layer.getLayerByID(layer_id, trx)
-      .then(layer=>{
-        return LayerViews.replaceViews(layer_id, layer.presets, trx)
-        .then(()=>{
-          return Layer.setUpdated(layer_id, 1, trx)
-          .then(() => {
-            console.log('SUCCESS!');
-            return;
-          });
-        });
-      });
+    knex.transaction( async (trx) => {
+      const layer = await Layer.getLayerByID(layer_id, trx);
+      await LayerViews.replaceViews(layer_id, layer.presets, trx);
+      await Layer.setUpdated(layer_id, 1, trx);
+      console.log('SUCCESS!');
+      return;
     })
     .then(()=>{
       return process.exit();

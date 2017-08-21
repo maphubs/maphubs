@@ -88,68 +88,64 @@ module.exports = {
   },
 
 
-  deleteLayer(layer_id: number, trx: any){
+  async deleteLayer(layer_id: number, trx: any){
     var _this = this;
-    let db = knex; if(trx){db = trx;}
-
-    log.info('Deleting layer form search index: ' + layer_id);
-    return db(`layers.data_${layer_id}`).select('mhid')
-    .then(mhidResults =>{
+    let db = trx ? trx : knex; 
+    try {
+      log.info('Deleting layer form search index: ' + layer_id);
+      const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
       log.info('deleting ' + mhidResults.length + ' features');
-      return Promise.mapSeries(mhidResults, mhidResult => {
+      return Promise.mapSeries(mhidResults, async mhidResult => {
         return _this.deleteFeature(mhidResult.mhid);
-      }).catch(err =>{
-        log.error(err);
       });
-    });
+    }catch(err){
+      log.error(err);
+    }
   },
 
-  updateFeature(layer_id: number, mhid: string, refreshImmediately: boolean, trx: any): Bluebird$Promise<Object>{
+  async updateFeature(layer_id: number, mhid: string, refreshImmediately: boolean, trx: any){
     
-    return Feature.getFeatureByID(mhid, layer_id, trx)
-    .then(result => {
+    const result = await Feature.getFeatureByID(mhid, layer_id, trx);
 
-      let feature = result.feature.geojson.features[0];
+    let feature = result.feature.geojson.features[0];
 
-      //HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
-      delete feature.properties.timestamp;
+    //HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
+    delete feature.properties.timestamp;
 
-      var centroid;
-      if(feature.geometry.type === 'Point'){
-        centroid = feature;
-      }else{
-        centroid = _centroid(result.feature.geojson);
-      }
+    var centroid;
+    if(feature.geometry.type === 'Point'){
+      centroid = feature;
+    }else{
+      centroid = _centroid(result.feature.geojson);
+    }
 
-      //convert props to array
-      let props = Object.keys(feature.properties).map(key => {
-        let val = JSON.stringify(feature.properties[key]);
-        return {key, val};
-      });
-
-      //update feature
-       return client.index({
-        index: this.searchIndexName,
-        type: 'feature',
-        id: mhid,
-        refresh: refreshImmediately,
-        body: {
-          layer_id,
-          mhid,
-          location: {
-            lat: centroid.geometry.coordinates[1],
-            lon: centroid.geometry.coordinates[0]
-          },
-          properties: props,
-          notes: result.notes,
-          published: true,
-          timeout: '60s'
-        }
-      }).catch(err =>{
-        log.error(err.message);
-      });
+    //convert props to array
+    let props = Object.keys(feature.properties).map(key => {
+      let val = JSON.stringify(feature.properties[key]);
+      return {key, val};
     });
 
+    //update feature
+      return client.index({
+      index: this.searchIndexName,
+      type: 'feature',
+      id: mhid,
+      refresh: refreshImmediately,
+      body: {
+        layer_id,
+        mhid,
+        location: {
+          lat: centroid.geometry.coordinates[1],
+          lon: centroid.geometry.coordinates[0]
+        },
+        properties: props,
+        notes: result.notes,
+        published: true,
+        timeout: '60s'
+      }
+    }).catch(err =>{
+      log.error(err.message);
+    });
   },
 
   deleteFeature(mhid: string){
@@ -163,8 +159,8 @@ module.exports = {
     });
   },
 
-  queryFeatures(query: string){
-    return client.search(
+  async queryFeatures(query: string){
+    const results = await client.search(
       {
         index: this.searchIndexName,
         type: 'feature',
@@ -178,12 +174,11 @@ module.exports = {
         },
         timeout: '60s'
       }
-    ).then(results => {
-      if(results && results.hits && results.hits.hits){
-        return results.hits.hits;
-      }
-      return null;
-    });
+    );
+    if(results && results.hits && results.hits.hits){
+      return results.hits.hits;
+    }
+    return null;
   },
 
   updateStory(){

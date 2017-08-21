@@ -21,28 +21,31 @@ const LARGE_DATA_THRESHOLD = 20000000;
 
 module.exports = {
 
-  removeLayerData(layer_id: number, trx: any = null){
+  async removeLayerData(layer_id: number, trx: any = null){
     debug.log('removeLayerData');
     let db = knex;
     if(trx){db = trx;}
     //remove views
-    return db('omh.layers').select('status').where({layer_id}).then(result =>{
-      if(result && result.length > 0){
-        let status = result[0].status;
-        if(status === 'published ' || status === 'loaded'){
-          return SearchIndex.deleteLayer(layer_id, trx)
-        .then(()=>{
-          return LayerViews.dropLayerViews(layer_id, trx).then(()=>{
-          return db.raw(`DROP TABLE layers.data_${layer_id};`);
-          });
-        });
-        }else{
-          return null;
-        }
+    const result = await db('omh.layers').select('status').where({layer_id});
+    
+    if(result && result.length > 0){
+      let status = result[0].status;
+      if(status === 'published' || status === 'loaded'){
+        debug.log('removing from search index');
+        await SearchIndex.deleteLayer(layer_id, trx);
+        debug.log('dropping layer views');
+        await LayerViews.dropLayerViews(layer_id, trx);
+        debug.log('dropping layer data');
+        await db.raw(`DROP TABLE layers.data_${layer_id};`);
+        debug.log('dropping layer sequence');
+        return db.raw(`DROP SEQUENCE layers.mhid_seq_${layer_id};`);
       }else{
         return null;
-      }    
-    });
+      }
+    }else{
+      return null;
+    }    
+
   },
 
   async storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
@@ -173,19 +176,18 @@ module.exports = {
       debug.log(bbox);
       geoJSON.bbox = bbox;
 
-      //now that we know the data type, update the style to clear uneeded default styles
-      var style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
+      let updateData = {
+          data_type: geomType,
+          extent_bbox: JSON.stringify(bbox)
+      };
 
-      var commands = [
-        db('omh.layers').where({
-            layer_id
-          })
-          .update({
-              data_type: geomType,
-              style,
-              extent_bbox: JSON.stringify(bbox)
-          })
-      ];
+      if(setStyle){
+         //now that we know the data type, update the style to clear uneeded default styles
+        var style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
+        updateData.style = style;
+      }
+     
+      var commands = [db('omh.layers').where({layer_id}).update(updateData)];
 
       if(update){
         debug.log('Update temp geojson');
@@ -271,54 +273,45 @@ module.exports = {
   });
   },
 
-  createEmptyDataTable(layer_id: number, trx: any){
-     return trx.raw(`CREATE TABLE layers.data_${layer_id}
+  async createEmptyDataTable(layer_id: number, trx: any){
+    await trx.raw(`CREATE TABLE layers.data_${layer_id}
      (
        mhid text, 
        wkb_geometry geometry(Geometry, 4326),
        tags jsonb
-     )`).then(()=>{
-        return trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
-        .then(()=>{
-          return trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
-            ON layers.data_${layer_id}
-            USING gist
-            (wkb_geometry);`)
-          .then(()=>{
-              return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`);
-            });
-        });
-    });
+     )`);
+    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`);
+    await trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
+      ON layers.data_${layer_id}
+      USING gist
+      (wkb_geometry);`);
+    return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`);
   },
 
-  loadTempData(layer_id: number, trx: any){
+  async loadTempData(layer_id: number, trx: any){
+    debug.log('loadTempData');
+    //create data table
+    await trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
+      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`);
+    //set mhid as primary key
+    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`);
+    //create index
+    await trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
+                    ON layers.data_${layer_id}
+                    USING gist
+                    (wkb_geometry);`);
+    //drop temp data
+    await trx.raw(`DROP TABLE layers.temp_${layer_id};`);
 
-    return trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
-      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
-      .then(()=>{
-        return trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
-        .then(()=>{
-          return trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
-            ON layers.data_${layer_id}
-            USING gist
-            (wkb_geometry);`)
-          .then(()=>{
-            return trx.raw(`DROP TABLE layers.temp_${layer_id};`)
-            .then(()=>{
-              return trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
-              .then(result =>{
-                var maxVal = parseInt(result.rows[0].cnt) + 1;
-                debug.log('creating sequence starting at: ' + maxVal);
-                return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
-                .then(()=>{
-                  return SearchIndex.updateLayer(layer_id, trx).then(()=>{
-                    return trx('omh.layers').update({status: 'loaded'}).where({layer_id});
-                  });
-                });                                
-              });       
-            });       
-          });
-        });
-      });
+    //get count and create sequence
+    const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`);  
+    var maxVal = parseInt(result.rows[0].cnt) + 1;
+    debug.log('creating sequence starting at: ' + maxVal);
+    await trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`);
+    
+    //update search index
+    await SearchIndex.updateLayer(layer_id, trx);
+
+    return trx('omh.layers').update({status: 'loaded'}).where({layer_id});        
   }
 };

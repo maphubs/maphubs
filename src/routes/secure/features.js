@@ -5,15 +5,11 @@ var LayerData = require('../../models/layer-data');
 var PhotoAttachment = require('../../models/photo-attachment');
 var SearchIndex = require('../../models/search-index');
 var knex = require('../../connection.js');
-//var Tag = require('../../models/tag');
 var urlUtil = require('../../services/url-util');
 var imageUtils = require('../../services/image-utils');
-var Promise = require('bluebird');
 var layerViews = require('../../services/layer-views');
-var debug = require('../../services/debug')('routes/features');
-var log = require('../../services/log');
-//var log = require('../../services/log.js');
 //var debug = require('../../services/debug')('routes/features');
+var log = require('../../services/log');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
@@ -23,7 +19,7 @@ var privateLayerCheck = require('../../services/private-layer-check');
 
 module.exports = function(app: any) {
 
-  app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, (req, res, next) => {
+  app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, async (req, res, next) => {
 
     const id = req.params.id;
     const layer_id = parseInt(req.params.layer_id || '', 10);
@@ -41,50 +37,44 @@ module.exports = function(app: any) {
     }
 
     if(mhid && layer_id){
-        Layer.getLayerByID(layer_id)
-        .then((layer) => {
-
-      return Promise.all([
-        Feature.getFeatureByID(mhid, layer.layer_id),
-        PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid),
-      ])
-      .then((results) => {
-        var feature = results[0].feature;
-        //only supporting one photo per feature for now...
-        var photos = results[1];
-        var photo = null;
+      try{
+        const layer = await Layer.getLayerByID(layer_id);
+        const featureResult = await Feature.getFeatureByID(mhid, layer.layer_id);
+        const photos = await PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid);
+        const feature = featureResult.feature;
+        let photo;
         if(photos && Array.isArray(photos)){
           photo = photos[0];
         }
-        var notes = null;
-        if(results[0].notes && results[0].notes.notes){
-          notes = results[0].notes.notes;
+
+        let notes;
+        if(featureResult.notes && featureResult.notes.notes){
+          notes = featureResult.notes.notes;
         }
-        var featureName = "Feature";
+        let featureName = "Feature";
         if(feature.geojson.features.length > 0 && feature.geojson.features[0].properties){
           var geoJSONProps = feature.geojson.features[0].properties;
           if(geoJSONProps.name) {
             featureName = geoJSONProps.name;
           }
-          geoJSONProps.layer_id = layer_id;
-          geoJSONProps.mhid = mhid;
-        }
-        feature.layer_id = layer_id;
+            geoJSONProps.layer_id = layer_id;
+            geoJSONProps.mhid = mhid;
+          }
+          feature.layer_id = layer_id;
 
-        feature.mhid = mhid;
+          feature.mhid = mhid;
 
-        if (!req.isAuthenticated || !req.isAuthenticated()) {
-          return res.render('featureinfo',
-          {
-            title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
-            fontawesome: true,
-            props: {feature, notes, photo, layer, canEdit: false},
-            req,
-            cache: false
-           });
-        }else{
-          return Layer.allowedToModify(layer_id, user_id)
-          .then((allowed) => {
+          if (!req.isAuthenticated || !req.isAuthenticated()) {
+            return res.render('featureinfo',
+            {
+              title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+              fontawesome: true,
+              props: {feature, notes, photo, layer, canEdit: false},
+              req,
+              cache: false
+            });
+          }else{
+            const allowed = await Layer.allowedToModify(layer_id, user_id);
             if(allowed){
               return res.render('featureinfo',
               {
@@ -99,19 +89,18 @@ module.exports = function(app: any) {
                 title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                 fontawesome: true,
                 props: {feature, notes, photo, layer, canEdit: false},
-                 req
-               });
+                  req
+                });
             }
-        });
-      }
-      });
-      }).catch(nextError(next));
+        }
+        
+      }catch(err){nextError(next)(err);}
     }else{
       next(new Error('Missing Required Data'));
     }
   });
 
-  app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, (req, res) => {
+  app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, async (req, res) => {
 
     const id = req.params.id;
     const layer_id = parseInt(req.params.layer_id || '', 10);
@@ -124,11 +113,11 @@ module.exports = function(app: any) {
     }
 
     if(mhid && layer_id){
-       Feature.getGeoJSON(mhid, layer_id)
-      .then((geoJSON) => {
-        var resultStr = JSON.stringify(geoJSON);
-        var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-        var match = req.get('If-None-Match');
+      try{
+        const geoJSON = await Feature.getGeoJSON(mhid, layer_id);
+        const resultStr = JSON.stringify(geoJSON);
+        const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+        const match = req.get('If-None-Match');
          /*eslint-disable security/detect-possible-timing-attacks */
         if(hash === match){
           res.status(304).send();
@@ -140,13 +129,13 @@ module.exports = function(app: any) {
           res.end(resultStr);
         }
         return;
-      }).catch(apiError(res, 500));
+      }catch(err){apiError(res, 500)(err);}
     }else{
       apiDataError(res);
     }
   });
 
-  app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, (req, res, next) => {
+  app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, async (req, res, next) => {
 
     var id = req.params.id;
     var layer_id = parseInt(req.params.layer_id || '', 10);
@@ -154,81 +143,76 @@ module.exports = function(app: any) {
     var mhid = `${layer_id}:${id}`;
 
     if(mhid && layer_id){
-        Layer.getLayerByID(layer_id)
-        .then((layer) => {
-          return Feature.getFeatureByID(mhid, layer.layer_id)
-          .then((result) => {
-            var feature = result.feature;
-            var geoJSON = feature.geojson;
-            geoJSON.features[0].geometry.type = "LineString";
-            var coordinates = geoJSON.features[0].geometry.coordinates[0][0];
-            log.info(coordinates);
-            var resultStr = JSON.stringify(geoJSON);
-            log.info(resultStr);
-            var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-            var match = req.get('If-None-Match');
-            if(hash === match){
-              return res.status(304).send();
-            }else{
-              res.writeHead(200, {
-                'Content-Type': 'application/gpx+xml',
-                'ETag': hash
+      try{
+        const layer = await Layer.getLayerByID(layer_id);
+        const result = await Feature.getFeatureByID(mhid, layer.layer_id);
+
+        const feature = result.feature;
+        let geoJSON = feature.geojson;
+        geoJSON.features[0].geometry.type = "LineString";
+        var coordinates = geoJSON.features[0].geometry.coordinates[0][0];
+        log.info(coordinates);
+        var resultStr = JSON.stringify(geoJSON);
+        log.info(resultStr);
+        const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+        const match = req.get('If-None-Match');
+        if(hash === match){
+          return res.status(304).send();
+        }else{
+          res.writeHead(200, {
+            'Content-Type': 'application/gpx+xml',
+            'ETag': hash
+          });
+
+          var gpx = `
+          <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="MapHubs">
+            <metadata>
+              <link href="https://maphubs.com">
+                <text>MapHubs</text>
+              </link>
+            </metadata>
+            <trk>
+              <name>Feature</name>
+              <trkseg>
+              `;
+              coordinates.forEach((coord) => {
+                  gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`;
               });
 
-              var gpx = `
-              <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="MapHubs">
-                <metadata>
-                  <link href="https://maphubs.com">
-                    <text>MapHubs</text>
-                  </link>
-                </metadata>
-                <trk>
-                  <name>Feature</name>
-                  <trkseg>
-                  `;
-                  coordinates.forEach((coord) => {
-                     gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`;
-                  });
+              gpx += `
+              </trkseg>
+            </trk>
+            </gpx>`;
 
-                 gpx += `
-                  </trkseg>
-                </trk>
-                </gpx>`;
-
-              return res.end(gpx);
-            }
-          });
-          }).catch(nextError(next));
+          return res.end(gpx);
+        }
+      }catch(err){nextError(next)(err);}
     }else{
       next(new Error('Missing Required Data'));
     }
   });
 
-  app.get('/feature/photo/:photo_id.jpg', (req, res) => {
+  app.get('/feature/photo/:photo_id.jpg', async (req, res) => {
     var photo_id = req.params.photo_id;
     var user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
-    Layer.getLayerForPhotoAttachment(photo_id)
-    .then((layer) => {
-      return privateLayerCheck.check(layer.layer_id, user_id)
-      .then((allowed) => {
-        if(allowed){
-          return PhotoAttachment.getPhotoAttachment(photo_id)
-          .then((result) => {
-            return imageUtils.processImage(result.data, req, res);
-          });
-        }else{
-          log.warn('Unauthorized attempt to access layer: ' + layer.layer_id);
-          throw new Error('Unauthorized');
-        }
-      });
-    }).catch(apiError(res, 404));
-
+    try{
+      const layer = await Layer.getLayerForPhotoAttachment(photo_id);
+      const allowed = await privateLayerCheck.check(layer.layer_id, user_id);
+ 
+      if(allowed){
+        const result = await PhotoAttachment.getPhotoAttachment(photo_id);
+        return imageUtils.processImage(result.data, req, res);
+      }else{
+        log.warn('Unauthorized attempt to access layer: ' + layer.layer_id);
+        throw new Error('Unauthorized');
+      }
+    }catch(err){apiError(res, 404)(err);}
   });
 
-  app.post('/api/feature/notes/save', csrfProtection, (req, res) => {
+  app.post('/api/feature/notes/save', csrfProtection, async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -236,23 +220,18 @@ module.exports = function(app: any) {
     var user_id = req.session.user.maphubsUser.id;
     var data = req.body;
     if (data && data.layer_id && data.mhid && data.notes) {
-      Layer.allowedToModify(data.layer_id, user_id)
-      .then((allowed) => {
+      try{
+        const allowed = await Layer.allowedToModify(data.layer_id, user_id);
         if(allowed){
-          return knex.transaction((trx) => {
-          return Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes, trx)
-          .then(()=>{
-            return SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx)
-            .then(() => {
-                return res.send({success: true});
-              });
-          }).catch(apiError(res, 500));
-        });
+          return knex.transaction(async (trx) => {
+            await Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes, trx);
+            await SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx);
+            return res.send({success: true});
+          });
         }else {
           return notAllowedError(res, 'layer');
-        }
-        
-      }).catch(apiError(res, 500));
+        }    
+      }catch(err){apiError(res, 500)(err);}
     } else {
       apiDataError(res);
     }
@@ -270,33 +249,20 @@ module.exports = function(app: any) {
       Layer.allowedToModify(data.layer_id, user_id)
       .then((allowed) => {
         if(allowed){
-          return knex.transaction((trx) => {
+          return knex.transaction( async (trx) => {
             //set will replace existing photo
-          return PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, user_id, trx)
-            .then((photo_id) => {
-              return Layer.getLayerByID(data.layer_id, trx)
-              .then((layer) => {
-                var baseUrl = urlUtil.getBaseUrl();
-                var photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
-                //add a tag to the feature
-                return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
-                .then(() => {
-                  debug.log('addPhotoUrlPreset');
-                  return PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx)
-                  .then((presets) => {
-                    debug.log('replaceViews');
-                      return layerViews.replaceViews(data.layer_id, presets, trx)
-                    .then(() => {
-                      debug.log('Layer.setUpdated');
-                      return Layer.setUpdated(data.layer_id, user_id, trx)
-                      .then(() => {
-                        return res.send({success: true, photo_id, photo_url});
-                      });
-                    });
-                  });
-                });
-              });
-            });
+            const photo_id = await PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, user_id, trx);
+            
+            //add a tag to the feature and update the layer
+            const layer = await Layer.getLayerByID(data.layer_id, trx);
+            const baseUrl = urlUtil.getBaseUrl();
+            const photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
+            await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx);
+            const presets = await PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx);
+            await layerViews.replaceViews(data.layer_id, presets, trx);
+            await Layer.setUpdated(data.layer_id, user_id, trx);
+      
+            return res.send({success: true, photo_id, photo_url});
           }).catch(apiError(res, 500));
         }else {
           return notAllowedError(res, 'layer');
@@ -307,7 +273,7 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/feature/photo/delete', csrfProtection, (req, res) => {
+  app.post('/api/feature/photo/delete', csrfProtection, async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
@@ -319,25 +285,16 @@ module.exports = function(app: any) {
       Layer.allowedToModify(data.layer_id, user_id)
       .then((allowed) => {
         if(allowed){
-          return knex.transaction((trx) => {
+          return knex.transaction(async (trx) => {
             //set will replace existing photo
-          return PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, data.photo_id, trx)
-            .then(() => {
-              return Layer.getLayerByID(data.layer_id, trx)
-              .then((layer) => {
-                //remove the photo URL from feature
-                return LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx)
-                .then(() => {
-                  return layerViews.replaceViews(data.layer_id, layer.presets, trx)
-                  .then(() => {
-                    return Layer.setUpdated(data.layer_id, user_id, trx)
-                    .then(() => {
-                      return res.send({success: true});
-                    });
-                  });
-                });
-              });
-            });
+            await PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, data.photo_id, trx);
+            const layer = await Layer.getLayerByID(data.layer_id, trx);
+              
+            //remove the photo URL from feature
+            await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx);
+            await layerViews.replaceViews(data.layer_id, layer.presets, trx);
+            await Layer.setUpdated(data.layer_id, user_id, trx);
+            return res.send({success: true});
           }).catch(apiError(res, 500));
         }else {
           return notAllowedError(res, 'layer');

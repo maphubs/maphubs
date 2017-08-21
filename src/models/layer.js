@@ -5,11 +5,9 @@ var Promise = require('bluebird');
 var log = require('../services/log.js');
 var _find = require('lodash.find');
 var Presets = require('./presets');
-//var LayerViews = require('../services/layer-views');
 var DataLoadUtils = require('../services/data-load-utils');
 var Group = require('./group');
 var Map = require('./map');
-var Hub = require('./hub');
 var debug = require('../services/debug')('model/layers');
 var ScreenshotUtils = require('../services/screenshot-utils');
 var geojsonUtils = require('../services/geojson-utils');
@@ -94,30 +92,27 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getLayerInfo(layer_id: number){
-    return knex('omh.layers')
+  async getLayerInfo(layer_id: number){
+    const result = await knex('omh.layers')
     .select('layer_id', 'shortid', 'name', 'description', 'owned_by_group_id', 'presets')
-    .where({layer_id})
-    .then((result) => {
-      if (result && result.length === 1) {
-        return result[0];
-      }
-      return null;
-    });
+    .where({layer_id});
+
+    if (result && result.length === 1) {
+      return result[0];
+    }
+    return null;
   },
 
   /**
    * Can include private?: If Requested
    */
-  getLayerFeatureCount(layer_id: number){
-    return knex(`layers.data_${layer_id}`).count('mhid')
-    .then(result => {
-      if(result && Array.isArray(result) && result.length === 1){
-        return result[0].count;
-      }else{
-        return null;
-      }
-    });
+  async getLayerFeatureCount(layer_id: number){
+    const result = await knex(`layers.data_${layer_id}`).count('mhid');
+    if(result && Array.isArray(result) && result.length === 1){
+      return result[0].count;
+    }else{
+      return null;
+    }
   },
 
    /**
@@ -217,19 +212,18 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getLayerForPhotoAttachment(photo_id: number, trx: any=null){
+  async getLayerForPhotoAttachment(photo_id: number, trx: any=null){
     var _this = this;
-    let db = knex;
+    let db = trx ? trx : knex;
     if(trx){db = trx;}
-    return db('omh.feature_photo_attachments').select('layer_id').where({photo_id})
-    .then((results) => {
-      if(results && results.length > 0 && results[0].layer_id){
-        var layer_id = results[0].layer_id;
-        return _this.getLayerByID(layer_id, trx);
-      }else{
-        throw new Error('Not a layer photo');
-      }
-    });
+    const results = await db('omh.feature_photo_attachments').select('layer_id').where({photo_id});
+
+    if(results && results.length > 0 && results[0].layer_id){
+      var layer_id = results[0].layer_id;
+      return _this.getLayerByID(layer_id, trx);
+    }else{
+      throw new Error('Not a layer photo');
+    }
   },
 
   /**
@@ -366,21 +360,13 @@ module.exports = {
     return true; //if we don't find the layer, assume it should be private
   },
 
-  attachPermissionsToLayers(layers: Array<Object>, user_id: number){
+  async attachPermissionsToLayers(layers: Array<Object>, user_id: number){
     var _this = this;
-    var updates = [];
-    layers.forEach(layer =>{
-      updates.push(
-      _this.allowedToModify(layer.layer_id, user_id)
-      .then(allowed =>{
-        layer.canEdit = allowed;
-        return layer;
-      }));
-    });
-
-    return Promise.all(updates).then(()=>{
-      return layers;
-    });
+    return Promise.all(layers.map(async (layer) => {
+      const allowed = await _this.allowedToModify(layer.layer_id, user_id);
+      layer.canEdit = allowed;
+      return layer;
+    }));
   },
 
     /**
@@ -502,220 +488,114 @@ module.exports = {
     /*
     Used by delete
     */
-    removeLayerFromMaps(layer_id: number, trx: any = null){
+    async removeLayerFromMaps(layer_id: number, trx: any){
       //get maps that use this layer
-      let db = knex;
-      if(trx){db = trx;}
-      return db.select('map_id').from('omh.map_layers').where({layer_id})
-      .then((results) => {
-        var mapLayerQuerys = [];
-        results.forEach((result) => {
-          //get layers for map
-          var map_id = result.map_id;
-          debug.log('removing layer: ' + layer_id + ' from map: '+ map_id);
-          mapLayerQuerys.push(Map.getMapLayers(map_id, db));
-        });
-        return db('omh.map_layers').where({layer_id}).del()
-        .then(() => {
-          return Promise.all(mapLayerQuerys)
-          .then((results) => {
-            var saveMapStyleCommands = [];
-            results.forEach((result) => {
-              //rebuild map style, excluding the removed layer
-              var layers = result;
-              var map_id = result[0].map_id;
-              var style = MapStyles.style.buildMapStyle(layers);
-              saveMapStyleCommands.push(db('omh.maps').where({map_id}).update({style, screenshot: null, thumbnail: null}));
-            });
-            return Promise.all(saveMapStyleCommands)
-            .then((result) => {
-              //TODO: notify map owners that a layer has been removed
+      let db = trx ? trx : knex;
 
-                return result;
-            });
-          });
-        });
+      //get a list of maps that contain the layer
+      const maps = await db.select('map_id').from('omh.map_layers').where({layer_id});
+
+      //remove layers from maps
+      await db('omh.map_layers').where({layer_id}).del();
+
+      //rebuild map styles
+      return Promise.map(maps, async(map)=>{
+        const map_id = map.map_id;
+        debug.log('removing layer: ' + layer_id + ' from map: '+ map_id);
+        //get the remaining map layers
+        const layers = await Map.getMapLayers(map_id, db);
+        const style = MapStyles.style.buildMapStyle(layers);
+        //also clear screenshot & thumbnail images so they will be recreated
+        return db('omh.maps').where({map_id}).update({style, screenshot: null, thumbnail: null});
+        //TODO: initial rebuild of thumbnail
       });
     },
 
-    removeLayerFromHubs(layer_id: number, trx: knex.transtion = null){
-      var _this = this;
-      let db = knex;
-      if(trx){db = trx;}
-      //get hubs that use this layer
-      return db.select('hub_id').from('omh.hub_layers').where({layer_id})
-      .then((results) => {
-        var hubLayerQuerys = [];
-        results.forEach((result) => {
-          //get layers for hub
-          var hub_id = result.hub_id;
-          debug.log('removing layer: ' + layer_id + ' from hub: '+ hub_id);
-          hubLayerQuerys.push(_this.getHubLayers(hub_id, true, db));
-        });
-        return db('omh.hub_layers').where({layer_id}).del()
-        .then(() => {
-          return Promise.all(hubLayerQuerys)
-          .then((results) => {
-            var saveHubStyleCommands = [];
-            results.forEach((result) => {
-              //rebuild map style, excluding the removed layer
-              var layers = result;
-              var hub_id = result[0].hub_id;
-              var map_style = MapStyles.style.buildMapStyle(layers);
-              saveHubStyleCommands.push(db('omh.hubs').where({hub_id}).update({map_style}));
-            });
-            return Promise.all(saveHubStyleCommands)
-            .then((result) => {
-              //TODO: notify hub owners that a layer has been removed
-                return result;
-            });
-          });
-        });
-      });
-    },
-
-    setComplete(layer_id: number){
-      return knex('omh.layers').update({status: 'published'}).where({layer_id});
-    },
-
-    transferLayerToGroup(layer_id: number, group_id: string, user_id: number){
-     return knex('omh.layers')
-      .update({
-        owned_by_group_id: group_id,
-        updated_by_user_id: user_id,
-        last_updated: knex.raw('now()')
-      })
-      .where({layer_id});
+  async setComplete(layer_id: number, trx: any){
+    let db = trx ? trx : knex;
+    return db('omh.layers').update({status: 'published'}).where({layer_id});
   },
 
-    delete(layer_id: number){
-      var _this = this;
-      return knex.transaction((trx) => {
-        var commands = [
-          DataLoadUtils.removeLayerData(layer_id, trx),
-          trx('omh.layer_views').where({layer_id}).del(),
-          _this.removeLayerFromMaps(layer_id, trx),
-          _this.removeLayerFromHubs(layer_id, trx),
-          trx('omh.layer_notes').where({layer_id}).del(),
-          PhotoAttachment.removeAllLayerAttachments(layer_id, trx),
-          trx('omh.layers').where({layer_id}).del()
-        ];
+  async transferLayerToGroup(layer_id: number, group_id: string, user_id: number){
+    return knex('omh.layers')
+    .update({
+      owned_by_group_id: group_id,
+      updated_by_user_id: user_id,
+      last_updated: knex.raw('now()')
+    })
+    .where({layer_id});
+  },
 
-        return Promise.each(commands, (command) => {
-          return command;
-        }).then(() => {
-          //TODO: notify group owners that a layer has been removed
-          //TODO: notify map owners that a layer has been removed
-          return true;
-        })
-        .catch((err) => {
-          debug.error(err);
-          throw err;
-        });
+  async delete(layer_id: number){
+    var _this = this;
+    return knex.transaction(async(trx) => {
+      await DataLoadUtils.removeLayerData(layer_id, trx);
+      await trx('omh.layer_views').where({layer_id}).del();
+      await _this.removeLayerFromMaps(layer_id, trx);
+      await _this.removeLayerFromHubs(layer_id, trx);
+      await trx('omh.layer_notes').where({layer_id}).del();
+      await PhotoAttachment.removeAllLayerAttachments(layer_id, trx);
+      await trx('omh.layers').where({layer_id}).del();
+ 
+      //TODO: notify group owners that a layer has been removed
+      //TODO: notify map owners that a layer has been removed
+      return true;
     });
+  },
 
-    },
+  async removePrivateLayerFromMaps(layer: Object, trx: any){
+    let db = trx ? trx : knex;
 
-    removePrivateLayerFromMaps(layer: Object, trx: any){
-      let db = knex;
-      if(trx){db = trx;}
-      var layer_id = layer.layer_id;
-      return db.select('map_id').from('omh.map_layers').where({layer_id})
-      .then((mapLayers) => {
-        if(mapLayers && mapLayers.length > 0){
-          return Promise.map(mapLayers, mapLayer => {
-            return Map.getMap(mapLayer.map_id, trx).then((map) => {
-              if(!map.private || map.owned_by_group_id !== layer.owned_by_group_id){
-                //delete layer from this map
-                  return db('omh.map_layers').where({layer_id}).del()
-                  .then(() => {
-                    return Map.getMapLayers(map.map_id, trx)
-                    .then((layers) => {                    
-                      var style = MapStyles.style.buildMapStyle(layers);
-                      return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});
-                    });
-                  });
-              }
-              return;
-            });
-          });
+    const layer_id = layer.layer_id;
+    const mapLayers = await db.select('map_id').from('omh.map_layers').where({layer_id});
+
+    if(mapLayers && mapLayers.length > 0){
+      return Promise.map(mapLayers, async (mapLayer) => {
+        const map = await Map.getMap(mapLayer.map_id, trx);
+        if(!map.private || map.owned_by_group_id !== layer.owned_by_group_id){
+          //delete layer from this map
+          await db('omh.map_layers').where({layer_id}).del();
+          const layers = await Map.getMapLayers(map.map_id, trx);  
+          const style = MapStyles.style.buildMapStyle(layers);
+          return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null});
         }
-        return;
       });
+    }
+  },
 
-    },
-
-    removePrivateLayerFromHubs(layer: Object, trx: any){
+  async saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, source: any, license: any, user_id: number) {
       var _this = this;
-      let db = knex;
-      if(trx){db = trx;}
-      var layer_id = layer.layer_id;
-      //remove layer hubs that are not also private or not part of the same group
-      return db.select('hub_id').from('omh.hub_layers').where({layer_id})
-        .then((hubLayers) => {
-          if(hubLayers && hubLayers.length > 0){
-            return Promise.map(hubLayers, hubLayer => {
-              return Hub.getHubByID(hubLayer.hub_id, trx).then((hub) => {
-                if(!hub.private || hub.owned_by_group_id !== layer.owned_by_group_id){
-                  //delete layer from this hub
-                  return db('omh.hub_layers').where({layer_id}).del()
-                  .then(() => {
-                    return _this.getHubLayers(hub.hub_id, true, trx)
-                    .then((layers) => {
-                      var map_style = MapStyles.style.buildMapStyle(layers);
-                      return db('omh.hubs').where({hub_id: hub.hub_id}).update({map_style});
-                    });
-                  });
-                }
-                return;
-              });
-            });
-          }
-          return;
-      });
-    },
+      return knex.transaction(async(trx) => {
+        const layer = await _this.getLayerByID(layer_id, trx);
+        //don't change privacy if request is missing the value
+        if(isPrivate === undefined){
+          isPrivate = layer.private;
+        }
+        var owned_by_group_id = layer.owned_by_group_id;
+        if(!owned_by_group_id){
+          //set for the first time
+          owned_by_group_id = group_id;
+        }else if(group_id !== layer.owned_by_group_id){
+          log.warn('transfering layer ownership not implemented in this method: ' + layer_id);
+        }
 
-    saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, source: any, license: any, user_id: number) {
-      var _this = this;
-      return knex.transaction((trx) => {
-        return _this.getLayerByID(layer_id, trx)
-        .then((layer) => {
-          //don't change privacy if request is missing the value
-          if(isPrivate === undefined){
-            isPrivate = layer.private;
-          }
-          var owned_by_group_id = layer.owned_by_group_id;
-          if(!owned_by_group_id){
-            //set for the first time
-            owned_by_group_id = group_id;
-          }else if(group_id !== layer.owned_by_group_id){
-            log.warn('transfering layer ownership not implemented in this method: ' + layer_id);
-          }
+        var update =  trx('omh.layers')
+          .update({
+            name, description,
+              private: isPrivate,
+              source,
+              license,
+              owned_by_group_id,
+              updated_by_user_id: user_id,
+              last_updated: knex.raw('now()')
+          }).where({layer_id});
 
-          var update =  trx('omh.layers')
-            .update({
-              name, description,
-                private: isPrivate,
-                source,
-                license,
-                owned_by_group_id,
-                updated_by_user_id: user_id,
-                last_updated: knex.raw('now()')
-            }).where({layer_id});
-
-          if(!layer.private && isPrivate){
-            //public layer is switching to private
-            log.info('Public layer switching to private: ' + layer_id);
-            return _this.removePrivateLayerFromMaps(layer_id, trx)
-            .then(() => {
-              return _this.removePrivateLayerFromHubs(layer, trx).then(() => {
-                return update;
-              });
-            });
-          }else{
-            return update;
-          }
-        });
+        if(!layer.private && isPrivate){
+          //public layer is switching to private
+          log.info('Public layer switching to private: ' + layer_id);
+          await _this.removePrivateLayerFromMaps(layer_id, trx);          
+        }
+        return update;
       });
     },
 
@@ -757,71 +637,50 @@ module.exports = {
       }
     },
 
-/*
-    saveSource(layer_id: number, source: any, license: any, user_id: number) {
-      return knex('omh.layers').where({
-          layer_id
-        })
-        .update({
-          source,
-          license,
-            updated_by_user_id: user_id,
-            last_updated: knex.raw('now()')
-        });
-    },
-    */
+  async saveStyle(layer_id: number, style: any, labels: any, legend_html: any, settings: any, preview_position: any, user_id: number) {
+    await knex('omh.layers').where({
+        layer_id
+      })
+      .update({
+        style: JSON.stringify(style),
+        labels: JSON.stringify(labels),
+        settings: JSON.stringify(settings),
+        legend_html,
+        preview_position,
+        updated_by_user_id: user_id,
+        last_updated: knex.raw('now()')
+      });
+    //update the thumbnail
+    await ScreenshotUtils.reloadLayerThumbnail(layer_id);
+    return ScreenshotUtils.reloadLayerImage(layer_id);
+  },
 
-    saveStyle(layer_id: number, style: any, labels: any, legend_html: any, settings: any, preview_position: any, user_id: number) {
-      return knex('omh.layers').where({
-          layer_id
-        })
-        .update({
-          style: JSON.stringify(style),
-          labels: JSON.stringify(labels),
-          settings: JSON.stringify(settings),
-          legend_html,
-          preview_position,
-          updated_by_user_id: user_id,
-          last_updated: knex.raw('now()')
-        }).then(() => {
-          //update the thumbnail
-          return ScreenshotUtils.reloadLayerThumbnail(layer_id)
-          .then(() => {
-            return ScreenshotUtils.reloadLayerImage(layer_id);
-          });
-        });
-    },
+  async savePresets(layer_id: number, presets: any, user_id: number, create: boolean, trx: any) {
+    return Presets.savePresets(layer_id, presets, user_id, create, trx);
+  },
 
-    savePresets(layer_id: number, presets: any, user_id: number, create: boolean, trx: any) {
-      return Presets.savePresets(layer_id, presets, user_id, create, trx);
-    },
-
-
-
-    saveLayerNote(layer_id: number, user_id: number, notes: string){
-      return knex('omh.layer_notes').select('layer_id').where({layer_id})
-      .then((result) => {
-        if(result && result.length === 1){
-          return knex('omh.layer_notes')
-          .update({
-            notes,
-            updated_by: user_id,
-            updated_at: knex.raw('now()')
-          })
-          .where({layer_id});
-        }else{
-          return knex('omh.layer_notes')
-          .insert({
-            layer_id,
-            notes,
-            created_by: user_id,
-            created_at: knex.raw('now()'),
-            updated_by: user_id,
-            updated_at: knex.raw('now()')
-          });
-        }
+  async saveLayerNote(layer_id: number, user_id: number, notes: string){
+    const result  = await knex('omh.layer_notes').select('layer_id').where({layer_id});
+    if(result && result.length === 1){
+      return knex('omh.layer_notes')
+      .update({
+        notes,
+        updated_by: user_id,
+        updated_at: knex.raw('now()')
+      })
+      .where({layer_id});
+    }else{
+      return knex('omh.layer_notes')
+      .insert({
+        layer_id,
+        notes,
+        created_by: user_id,
+        created_at: knex.raw('now()'),
+        updated_by: user_id,
+        updated_at: knex.raw('now()')
       });
     }
+  }
 
 
 

@@ -53,7 +53,7 @@ function createEngine(engineOptions) {
 
   engineOptions = assign({}, DEFAULT_OPTIONS, engineOptions || {});
 
-  function renderFile(filename: string, options: ViewOptions, cb: Function) {
+  async function renderFile(filename: string, options: ViewOptions, cb: Function) {
     var materialicons = options.materialicons ? options.materialicons : true;
     // Defer babel registration until the first request so we can grab the view path.
     if (!registered) {
@@ -386,35 +386,25 @@ function createEngine(engineOptions) {
       });
     }
     if(!options.props.error){ //don't hit the database on error and 404 pages
-      return Page.getPageConfigs(['footer', 'header', 'map'])
-      .then(pageConfigs =>{
-      options.props.headerConfig = pageConfigs.header;
-      options.props.footerConfig = pageConfigs.footer; 
-      options.props.mapConfig = pageConfigs.map;  
-      var appData: string = JSON.stringify(options.props, null, 2);
-      markup += `
-       <script>window.__appData = ${appData}; </script>
-      </body>
-      </html>
-      `;
-      return markup;
-    }).asCallback((err, result) => {  
-        if (err) {
-          log.error(err);
-          Raven.captureException(err);
-          var appData = JSON.stringify(options.props, null, 2);
-          markup += `
-          <script>window.__appData = ${appData}; </script>
-          </body>
-          </html>
-          `;
-          cb(null, markup); 
-        }else{
-           cb(null, result); 
-        }
-    });
+      try{
+        const pageConfigs = await Page.getPageConfigs(['footer', 'header', 'map']);
+        options.props.headerConfig = pageConfigs.header;
+        options.props.footerConfig = pageConfigs.footer; 
+        options.props.mapConfig = pageConfigs.map;  
+      }catch(err){
+        log.error(err);
+        Raven.captureException(err);
+      }finally{
+        let appData = JSON.stringify(options.props, null, 2);
+        markup += `
+        <script>window.__appData = ${appData}; </script>
+        </body>
+        </html>
+        `;
+        cb(null, markup); 
+      }
   }else{
-      var appData: string = JSON.stringify(options.props, null, 2);
+      let appData: string = JSON.stringify(options.props, null, 2);
       markup += `
        <script>window.__appData = ${appData}; </script>
       </body>

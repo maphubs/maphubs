@@ -1,5 +1,4 @@
 // @flow
-var Promise = require('bluebird');
 var Group = require('../../models/group');
 var User = require('../../models/user');
 var Layer = require('../../models/layer');
@@ -17,36 +16,32 @@ var csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
-  app.get('/groups', csrfProtection, (req, res, next) => {
-    Promise.all([
-      Group.getFeaturedGroups(),
-      Group.getRecentGroups(),
-      Group.getPopularGroups()
-    ])
-      .then((results) => {
-        var featuredGroups = results[0];
-        var recentGroups = results[1];
-        var popularGroups = results[2];
-        return res.render('groups', {
-          title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            featuredGroups, recentGroups, popularGroups
-          }, req
-        });
-      }).catch(nextError(next));
+  app.get('/groups', csrfProtection, async (req, res, next) => {
+    try{
+      const featuredGroups = await Group.getFeaturedGroups();
+      const recentGroups = await Group.getRecentGroups();
+      const popularGroups = await Group.getPopularGroups();
+
+      return res.render('groups', {
+        title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {
+          featuredGroups, recentGroups, popularGroups
+        }, req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/groups/all', csrfProtection, (req, res, next) => {
-    let locale = req.locale ? req.locale : 'en';
-    Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`)
-    .then((groups) => {
+  app.get('/groups/all', csrfProtection, async (req, res, next) => {
+    try{
+      const locale = req.locale ? req.locale : 'en';
+      const groups = await Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`);
       return res.render('allgroups', {
         title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           groups
         }, req
       });
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), (req, res) => {
@@ -56,92 +51,74 @@ module.exports = function(app: any) {
     });
   });
 
-  app.get('/group/:id', csrfProtection, (req, res, next) => {
+  app.get('/group/:id', csrfProtection, async (req, res, next) => {
+    try{
+      var group_id = req.params.id;
 
-    var group_id = req.params.id;
-
-    var user_id = -1;
-    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
-    Group.allowedToModify(group_id, user_id)
-    .then((canEdit) => {
-      return Promise.all([
-          Group.getGroupByID(group_id),
-          Map.getGroupMaps(group_id, canEdit),
-          Layer.getGroupLayers(group_id, canEdit),
-          Hub.getGroupHubs(group_id, canEdit),
-          Group.getGroupMembers(group_id),
-        ])
-      .then((result: Array<any>) => {
-        if(!result[0] || result[0].length === 0){
-          return res.redirect('/notfound?path='+req.path);
-        }
-        var group: Object = result[0];
-        var maps = result[1];
-        var layers = result[2];
-        var hubs = result[3];
-        var members = result[4];
-        var image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
-        let name = Locales.getLocaleStringObject(req.locale, group.name);
-        let description = Locales.getLocaleStringObject(req.locale, group.description);
-        return res.render('groupinfo', {
-          title: name + ' - ' + MAPHUBS_CONFIG.productName,
+      var user_id = -1;
+      if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
+      const canEdit = await Group.allowedToModify(group_id, user_id);
+      const group = await Group.getGroupByID(group_id);
+      const maps = await Map.getGroupMaps(group_id, canEdit);
+      const layers = await Layer.getGroupLayers(group_id, canEdit);
+      const hubs = await Hub.getGroupHubs(group_id, canEdit);
+      const members = await Group.getGroupMembers(group_id);
+        
+      if(!group){
+        return res.redirect('/notfound?path='+req.path);
+      }
+        
+      const image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
+      const name = Locales.getLocaleStringObject(req.locale, group.name);
+      const description = Locales.getLocaleStringObject(req.locale, group.description);
+      return res.render('groupinfo', {
+        title: name + ' - ' + MAPHUBS_CONFIG.productName,
+        description,
+        props: {
+          group, maps, layers, hubs, members, canEdit
+        },
+          twitterCard: {
+          card: 'summary',
+          title: name,
           description,
-          props: {
-            group, maps, layers, hubs, members, canEdit
-          },
-           twitterCard: {
-            card: 'summary',
-            title: name,
-            description,
-            image,
-            imageType: 'image/png',
-            imageWidth: 600,
-            imageHeight: 600
-          },
-           req
-        });
-        });
-      }).catch(nextError(next));
+          image,
+          imageType: 'image/png',
+          imageWidth: 600,
+          imageHeight: 600
+        },
+          req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
-  app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
+  app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
+    try{
+      const user_id = parseInt(req.session.user.maphubsUser.id);
+      const group_id = req.params.id;
 
-    var user_id = parseInt(req.session.user.maphubsUser.id);
-    var group_id = req.params.id;
+      //confirm that this user is allowed to administer this group
+     const role = await Group.getGroupRole(user_id, group_id);
+      if(role === 'Administrator') {
+        const group = await Group.getGroupByID(group_id);
+        const name = Locales.getLocaleStringObject(req.locale, group.name);
+        return res.render('groupadmin', {
+          title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {
+            group, 
+            maps: await Map.getGroupMaps(group_id, true), 
+            layers: await Layer.getGroupLayers(group_id, true), 
+            hubs: await Hub.getGroupHubs(group_id, true), 
+            members: await Group.getGroupMembers(group_id), 
+            account: await Account.getStatus(group_id)
+          }, req
+        });
+      } else {
+        return res.redirect('/unauthorized');
+      }
 
-    //confirm that this user is allowed to administer this group
-    Group.getGroupRole(user_id, group_id)
-      .then((role) => {
-        if(role === 'Administrator') {
-          return Promise.all([
-              Group.getGroupByID(group_id),
-              Map.getGroupMaps(group_id, true),
-              Layer.getGroupLayers(group_id, true),
-              Hub.getGroupHubs(group_id, true),
-              Group.getGroupMembers(group_id),
-              Account.getStatus(group_id)
-            ])
-            .then((result: Array<any>) => {
-              var group: Object = result[0];
-              var maps: Array<Object> = result[1];
-              var layers: Array<Object> = result[2];
-              var hubs: Array<Object> = result[3];
-              var members: Array<Object> = result[4];
-              var account: Object = result[5];
-              let name = Locales.getLocaleStringObject(req.locale, group.name);
-              return res.render('groupadmin', {
-                title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
-                props: {
-                  group, maps, layers, hubs, members, account
-                }, req
-              });
-            }).catch(nextError(next));
-        } else {
-          return res.redirect('/unauthorized');
-        }
-      }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/user/:username/groups', csrfProtection, (req, res, next) => {

@@ -9,95 +9,85 @@ var local = require('../local');
 
 module.exports = {
 
-  sendInviteEmail(email: string, __: Function){
+  async sendInviteEmail(email: string, __: Function){
     //create confirm link
     debug.log('sending email invite to: ' + email);
     var key = uuid();
-    return knex('omh.account_invites').insert({email, key})
-    .then(() => {
-        var baseUrl = urlUtil.getBaseUrl();
-        var url = baseUrl + '/signup/invite/' + key;
+    await knex('omh.account_invites').insert({email, key});
 
-          var text =
-            __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!\n\n' +
-            __('Please go to this link in your browser to sign up:')  + url + '\n\n' +
+    var baseUrl = urlUtil.getBaseUrl();
+    var url = baseUrl + '/signup/invite/' + key;
 
-            __('This invite is only valid for the email address:') + '\n' + email  + '\n\n' +
-            __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
+    var text =
+      __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!\n\n' +
+      __('Please go to this link in your browser to sign up:')  + url + '\n\n' +
+
+      __('This invite is only valid for the email address:') + '\n' + email  + '\n\n' +
+      __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
 
-          var html =
-            '<br />' + __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!' +
-            '<br />' +
-            '<br />' + __('Please go to this link in your browser to sign up:') + url +
-            '<br />' +
-            '<br />' +
-            __('This invite is only valid for the email address:') +
-            '<br />' + email  + '<br /><br />' +
-            __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
+    var html =
+      '<br />' + __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!' +
+      '<br />' +
+      '<br />' + __('Please go to this link in your browser to sign up:') + url +
+      '<br />' +
+      '<br />' +
+      __('This invite is only valid for the email address:') +
+      '<br />' + email  + '<br /><br />' +
+      __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
-          return Email.send({
-              from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
-              to: email,
-              subject: __('Account Invite') + ' - ' + MAPHUBS_CONFIG.productName,
-              text,
-              html
-            });
+    return Email.send({
+        from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
+        to: email,
+        subject: __('Account Invite') + ' - ' + MAPHUBS_CONFIG.productName,
+        text,
+        html
       });
   },
 
-  checkInviteKey(key: string){
+  async checkInviteKey(key: string){
     debug.log('checking invite key');
-    return knex('omh.account_invites').select('email').where({key, used:false})
-    .then((result) => {
-      if(result && result.length === 1){
-        return true;
-      }
-      return null;
-    });
+    const result = await knex('omh.account_invites').select('email').where({key, used:false});
+
+    if(result && result.length === 1){
+      return true;
+    }
+    return null;
   },
 
   /**
    * Check if the provide email has been invited and confirmed by the user
    * @param {*} email 
    */
-  checkInviteConfirmed(email: string){
-    return knex('omh.account_invites').where({email, used: true})
-    .then(results => {
-      if(results && Array.isArray(results) && results.length >= 1){
-        return true;
-      }else{
-        return false;
-      }
-    });
-  },
+  async checkInviteConfirmed(email: string){
+    const results = await knex('omh.account_invites').where({email, used: true});
 
-  useInvite(key: string){
-    debug.log('using invite key');
-    return knex('omh.account_invites').update({used:true}).where({key})
-    .then(() => {
-      return knex('omh.account_invites').select('email').where({key})
-      .then((result) => {
-        if(result && result.length === 1){
-          return result[0].email;
-        }else{
-          return null;
-        }
-      });
-    });
-  },
-
-  checkAdmin(user_id: number, trx: any){
-    let db = knex;
-    if(trx){db = trx;}
-    return db('omh.admins').select('user_id').where({user_id})
-    .then((result) => {
-      if(result && result.length === 1){
-        return true;
-      }
+    if(results && Array.isArray(results) && results.length >= 1){
+      return true;
+    }else{
       return false;
-    });
+    }
+  },
+
+  async useInvite(key: string){
+    debug.log('using invite key');
+    await knex('omh.account_invites').update({used:true}).where({key});
+
+    const result = await knex('omh.account_invites').select('email').where({key});
+    if(result && result.length === 1){
+      return result[0].email;
+    }else{
+      return null;
+    }
+  },
+
+  async checkAdmin(user_id: number, trx: any){
+    let db = trx ? trx : knex;
+    const result = await db('omh.admins').select('user_id').where({user_id});
+
+    if(result && result.length === 1){
+      return true;
+    }
+    return false;
   }
-
-
 };

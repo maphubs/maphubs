@@ -49,38 +49,28 @@ module.exports = function(app: any) {
  };
 
   //Views
-  app.get('/hubs', csrfProtection, (req, res, next) => {
-
-    Promise.all([
-      Hub.getFeaturedHubs(),
-      Hub.getPopularHubs(),
-      Hub.getRecentHubs()
-    ])
-      .then((results) => {
-        var featuredHubs = results[0];
-        var popularHubs = results[1];
-        var recentHubs = results[2];
-      
-        return res.render('hubs', {
-          title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            featuredHubs, popularHubs, recentHubs
-          }, req
-        });
-        
-      }).catch(nextError(next));
-  });
-
-  app.get('/hubs/all', csrfProtection, (req, res, next) => {
-    Hub.getAllHubs().orderBy('omh.hubs.name')
-    .then((hubs) => {
-      return res.render('allhubs', {
+  app.get('/hubs', csrfProtection, async (req, res, next) => {
+    try{
+      res.render('hubs', {
         title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
-          hubs
+          featuredHubs: await Hub.getFeaturedHubs(), 
+          popularHubs: await Hub.getPopularHubs(), 
+          recentHubs: await Hub.getRecentHubs()
         }, req
       });
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
+  });
+
+  app.get('/hubs/all', csrfProtection, async (req, res, next) => {
+    try{
+      res.render('allhubs', {
+        title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
+        props: {
+          hubs: await Hub.getAllHubs().orderBy('omh.hubs.name')
+        }, req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/user/:username/hubs', csrfProtection, (req, res, next) => {
@@ -132,50 +122,41 @@ module.exports = function(app: any) {
   });
 
 
-  var renderHubPage = function(hub, canEdit: boolean, req, res){
+  var renderHubPage = async function(hub, canEdit: boolean, req, res){
     debug.log(`loading hub, canEdit: ${canEdit.toString()}`);
-    var dataQueries =  [
-        Map.getMap(hub.map_id),
-        Map.getMapLayers(hub.map_id, canEdit),
-        Hub.getHubStories(hub.hub_id, canEdit)
-      ];
-      if(canEdit){
-        dataQueries.push(Map.getUserMaps(req.session.user.maphubsUser.id)),
-        dataQueries.push(Map.getPopularMaps());
-      }
-    return Promise.all(dataQueries)
-      .then((result) => {
-        var map = result[0];
-        var layers = result[1];
-        var stories = result[2];
-        var myMaps, popularMaps;
-        if(canEdit){
-          myMaps = result[4];
-          popularMaps = result[5];
-        }
 
-        var image = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id + '/images/logo';
+    let myMaps, popularMaps;
+    if(canEdit){
+      myMaps = await Map.getUserMaps(req.session.user.maphubsUser.id),
+      popularMaps = await Map.getPopularMaps();
+    }
+    const image = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id + '/images/logo';
 
-        return res.render('hubinfo', {
-          title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
-          description: hub.description,
-          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
-          fontawesome: true,
-          props: {
-            hub, map, layers, stories, canEdit, myMaps, popularMaps
-          },
-          twitterCard: {
-            card: 'summary',
-            title: hub.name,
-            description: hub.description,
-            image,
-            imageType: 'image/png',
-            imageWidth: 300,
-            imageHeight: 300
-          },
-           req
-        });
-      });
+    return res.render('hubinfo', {
+      title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
+      description: hub.description,
+      hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+      fontawesome: true,
+      props: {
+        hub, 
+        map: await Map.getMap(hub.map_id), 
+        layers: await Map.getMapLayers(hub.map_id, canEdit), 
+        stories: await Hub.getHubStories(hub.hub_id, canEdit), 
+        canEdit, 
+        myMaps, 
+        popularMaps
+      },
+      twitterCard: {
+        card: 'summary',
+        title: hub.name,
+        description: hub.description,
+        image,
+        imageType: 'image/png',
+        imageWidth: 300,
+        imageHeight: 300
+      },
+        req
+    });
   };
 
   app.get('/hub/:hubid', csrfProtection, privateHubCheck, (req, res, next) => {
@@ -290,17 +271,16 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/createhub', csrfProtection, login.ensureLoggedIn(), (req, res, next) => {
-    
-    var user_id = req.session.user.maphubsUser.id;
-
-    Group.getGroupsForUser(user_id)
-    .then((groups) => {
+  app.get('/createhub', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
+    try { 
+      const user_id = req.session.user.maphubsUser.id;
       return res.render('hubbuilder', {
         title: req.__('Create Hub') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {groups}, req
+        props: {
+          groups: await Group.getGroupsForUser(user_id)
+        }, req
       });
-    }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/hub/:hubid/story/create', login.ensureLoggedIn(), csrfProtection, (req, res, next) => {

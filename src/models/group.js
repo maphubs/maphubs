@@ -73,16 +73,14 @@ module.exports = {
         `, {input}));
     },
 
-    getGroupByID(group_id: string) {
-      return knex.select().table('omh.groups')
-        .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
-        .then((result) => {
-          if (result && result.length === 1) {
-            return result[0];
-          }
-          //else
-          return null;
-        });
+    async getGroupByID(group_id: string) {
+      const result = await knex.select().table('omh.groups')
+        .whereRaw('lower(group_id) = ?', group_id.toLowerCase());
+      if (result && result.length === 1) {
+        return result[0];
+      }
+      //else
+      return null;
     },
 
     getSearchResults(input: string) {
@@ -111,40 +109,35 @@ module.exports = {
         `, {input}));
     },
 
-    getGroupsForUser(user_id: number, trx: any = null) {
-       let db = knex;
-      if(trx){db = trx;}
-      return db.select('omh.groups.*',
+    async getGroupsForUser(user_id: number, trx: any = null) {
+      let db = trx ? trx : knex;
+
+      const groups = await db.select('omh.groups.*',
       db.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'))
       .from('omh.group_memberships')
         .leftJoin('omh.groups', 'omh.group_memberships.group_id', 'omh.groups.group_id')
         .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
-        .where('omh.group_memberships.user_id', user_id)
-        .then((groups) => {
-          var commands = [];
-          groups.forEach((group) => {
-            commands.push(Account.getStatus(group.group_id));
-          });
-          return Promise.all(commands).then((results) => {
-            results.forEach((status, i) => {
-              groups[i].account = status;
-            });
-             return groups;
-          });       
-        });
+        .where('omh.group_memberships.user_id', user_id);
+      
+      return Promise.map(groups, async (group) =>{
+        const status = await Account.getStatus(group.group_id);
+        group.account = status;
+        return group;
+      });
     },
 
-    getGroupRole(user_id: number, group_id: string): Object {
-      return knex.select('omh.group_memberships.role').from('omh.group_memberships')
-        .where({
-          group_id,
-          user_id
-        }).then((results) => {
-          if(results && results.length === 1){
-            return results[0].role;
-          }
-          return null;
-        });
+    async getGroupRole(user_id: number, group_id: string): Object {
+      const results = await knex
+      .select('omh.group_memberships.role')
+      .from('omh.group_memberships')
+      .where({
+        group_id,
+        user_id
+      });
+      if(results && results.length === 1){
+        return results[0].role;
+      }
+      return null;
     },
 
     getGroupMembers(group_id: string, trx: any= null): Promise<Array<Object>> {
@@ -180,38 +173,33 @@ module.exports = {
         .del();
     },
 
-    allowedToModify(group_id: string, user_id: number){
+    async allowedToModify(group_id: string, user_id: number){
       if(!group_id || user_id <= 0){
-        return new Promise((resolve) => {resolve(false);});
+        return false;
+      }else{
+        const users = await this.getGroupMembers(group_id);
+        if(_find(users, {id: user_id}) !== undefined){
+          return true;
+        }
+        return false;
       }
-      return this.getGroupMembers(group_id)
-        .then((users) => {
-          if(_find(users, {id: user_id}) !== undefined){
-            return true;
-          }
-          return false;
-        });
-      },
-
-    checkGroupIdAvailable(group_id: string) {
-      return this.getGroupByID(group_id)
-        .then((result) => {
-          if (result === null) return true;
-          return false;
-        });
     },
 
-    createGroup(group_id: string, name: string, description: string, location: string, published: boolean, user_id: number) {
-      return knex.transaction((trx) => {
-        return Promise.all([
-          trx('omh.groups').insert({
-            group_id, name, description, location, published, tier_id: 'public'
-          }),
-          //insert creating user as first admin
-          trx('omh.group_memberships').insert({
-            group_id, user_id, role: 'Administrator'
-          })
-        ]);
+    async checkGroupIdAvailable(group_id: string) {
+      const result = await this.getGroupByID(group_id);
+      if (result === null) return true;
+      return false;
+    },
+
+    async createGroup(group_id: string, name: string, description: string, location: string, published: boolean, user_id: number) {
+      return knex.transaction(async (trx) => {
+        await trx('omh.groups').insert({
+          group_id, name, description, location, published, tier_id: 'public'
+        });
+        //insert creating user as first admin
+        await trx('omh.group_memberships').insert({
+          group_id, user_id, role: 'Administrator'
+        });
       });
     },
 
@@ -224,19 +212,13 @@ module.exports = {
         });
     },
 
-    deleteGroup(group_id: string) {
-      return knex.transaction((trx) => {
-        return trx('omh.group_images').where({group_id}).del()
-        .then(() => {
-          return trx('omh.group_memberships').where({group_id}).del()
-          .then(() => {
-          return trx('omh.groups').where('group_id', group_id).del()
-            .then(() => {
-              return true;
-              });
-            });
-          });
-        });
+    async deleteGroup(group_id: string) {
+      return knex.transaction(async(trx) => {
+        await trx('omh.group_images').where({group_id}).del();
+        await trx('omh.group_memberships').where({group_id}).del();
+        await trx('omh.groups').where('group_id', group_id).del();
+        return true;
+      });
     }
 
 };
