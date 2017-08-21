@@ -165,6 +165,7 @@
     "react-medium-editor": "^1.8.1",
     "react-notification": "^6.8.0",
     "react-responsive-mixin": "^0.4.0",
+    "react-scroll-to-component": "^1.0.1",
     "react-select": "^1.0.0-rc.5",
     "react-share": "^1.15.1",
     "react-slick": "0.14.11",

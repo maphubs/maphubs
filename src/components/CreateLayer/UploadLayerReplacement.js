@@ -13,6 +13,7 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 import type {GeoJSONObject} from 'geojson-flow';
+let scrollToComponent;
 
 type Props = {|
   onSubmit: Function,
@@ -46,14 +47,12 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
   componentDidMount() {
     $('select').material_select();
+    scrollToComponent = require('react-scroll-to-component');
   }
 
   componentDidUpdate() {
     if(this.state.geoJSON){
-      var scrollTarget = $(this.refs.map);
-      $('html,body').animate({
-         scrollTop: scrollTarget.offset().top
-       }, 1000);
+      scrollToComponent(this.refs.map);
     }
     if(this.state.multipleShapefiles){
       this.refs.chooseshape.show();
