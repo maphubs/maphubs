@@ -857,5 +857,7 @@
 	"Replace Layer Data": "Replace Layer Data",
 	"Replace data in layer:": "Replace data in layer:",
 	"First you must download the backup file. This file can be used to restore the previous data if needed.": "First you must download the backup file. This file can be used to restore the previous data if needed.",
-	"Download Backup File": "Download Backup File"
+	"Download Backup File": "Download Backup File",
+	"Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.": "Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.",
+	"Print/Screenshot": "Print/Screenshot"
 }

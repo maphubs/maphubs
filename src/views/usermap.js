@@ -359,8 +359,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         </li>
          <li>
           <a onClick={this.onFullScreen} className="btn-floating user-map-tooltip yellow"
-            data-delay="50" data-position="left" data-tooltip={this.__('Full Screen')}>
-            <i className="material-icons">fullscreen</i>
+            data-delay="50" data-position="left" data-tooltip={this.__('Print/Screenshot')}>
+            <i className="material-icons">print</i>
           </a>
         </li>
 
