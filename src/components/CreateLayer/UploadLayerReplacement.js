@@ -134,7 +134,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 	render() {
 
     let layer_id = this.state.layer_id ? this.state.layer_id : 0;
-    let url = `/api/layer/${layer_id}/upload`;
+    let url = `/api/layer/${layer_id}/replace`;
     var largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (

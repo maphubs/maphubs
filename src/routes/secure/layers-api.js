@@ -90,7 +90,7 @@ module.exports = function(app: any) {
       var actionData = [];
       switch(action){
         case 'createLayer':       
-          actionData = [];
+          actionData = [user_id];
           break;
         case 'saveSettings':
           if(!data.layer_id){
@@ -104,7 +104,8 @@ module.exports = function(app: any) {
             data.group_id,
             data.private,
             data.source,
-            data.license
+            data.license,
+            user_id
           ];
         break;
         case 'saveDataSettings':
@@ -118,7 +119,8 @@ module.exports = function(app: any) {
             data.empty_data_type,
             data.is_external,
             data.external_layer_type,
-            data.external_layer_config
+            data.external_layer_config,
+            user_id
           ];
         break;
         case 'saveStyle':
@@ -132,7 +134,8 @@ module.exports = function(app: any) {
         data.labels,
         data.legend_html,
         data.settings,
-        data.preview_position
+        data.preview_position,
+        user_id
         ];
         break;
         case 'delete':
@@ -158,7 +161,6 @@ module.exports = function(app: any) {
         res.status(400).send({success:false, error: 'Bad Request: not a valid option'});
         return;
       }
-      actionData.push(user_id);
       if(action === 'createLayer'){
         //confirm user is allowed to add a layer to this group
         Group.allowedToModify(data.group_id, user_id)
@@ -221,12 +223,12 @@ app.post('/api/layer/presets/save', csrfProtection, (req, res) => {
   var user_id: number = req.session.user.maphubsUser.id;
 
   var data = req.body;
-  if(data && data.layer_id && data.presets && data.create !== undefined){
+  if(data && data.layer_id && data.presets && data.style && data.create !== undefined){
     knex.transaction((trx) => {
     return Layer.allowedToModify(data.layer_id, user_id, trx)
     .then((allowed: boolean) => {
       if(allowed){
-        return Layer.savePresets(data.layer_id, data.presets, user_id, data.create, trx)
+        return Layer.savePresets(data.layer_id, data.presets, data.style, user_id, data.create, trx)
         .then(() => {
           if(data.create){
             return res.status(200).send({success: true});

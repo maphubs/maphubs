@@ -1,12 +1,23 @@
 /* eslint-disable no-console*/
 /* eslint-disable unicorn/no-process-exit*/
-require('babel-register')({
+let babelConfig = {
   "presets": [
-    "env",
-    "react"
+    ["env", {
+      "targets": {
+        "node": true,
+    }
+    }],
+    "react",
+    "stage-0"
   ],
-  "plugins": ["transform-flow-strip-types"],
-});
+  ignore: /assets.*|node_modules\/(?!(react-disqus-thread|medium-editor|react-colorpickr|mapbox-gl)).*/
+};
+
+if(process.env.NODE_ENV !== 'production'){
+  babelConfig.sourceMaps = true;
+  babelConfig.retainLines = true;
+}
+require('babel-core/register')(babelConfig);
 
 var Layer = require('../src/models/layer');
 var LayerViews = require('../src/services/layer-views');

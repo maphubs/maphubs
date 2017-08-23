@@ -69,8 +69,7 @@ module.exports = {
 
   storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null){
     debug.log('storeTempGeoJSON');
-    let db = knex;
-    if(trx){db = trx;}
+    let db = trx ? trx : knex;
     return new Promise((resolve, reject) => {
     var result = {success: false, error: 'Unknown Error'};
     var uniqueProps = [];

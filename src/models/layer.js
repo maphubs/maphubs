@@ -532,7 +532,6 @@ module.exports = {
       await DataLoadUtils.removeLayerData(layer_id, trx);
       await trx('omh.layer_views').where({layer_id}).del();
       await _this.removeLayerFromMaps(layer_id, trx);
-      await _this.removeLayerFromHubs(layer_id, trx);
       await trx('omh.layer_notes').where({layer_id}).del();
       await PhotoAttachment.removeAllLayerAttachments(layer_id, trx);
       await trx('omh.layers').where({layer_id}).del();
@@ -655,8 +654,8 @@ module.exports = {
     return ScreenshotUtils.reloadLayerImage(layer_id);
   },
 
-  async savePresets(layer_id: number, presets: any, user_id: number, create: boolean, trx: any) {
-    return Presets.savePresets(layer_id, presets, user_id, create, trx);
+  async savePresets(layer_id: number, presets: any, style: any, user_id: number, create: boolean, trx: any) {
+    return Presets.savePresets(layer_id, presets, style, user_id, create, trx);
   },
 
   async saveLayerNote(layer_id: number, user_id: number, notes: string){

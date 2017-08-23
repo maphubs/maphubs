@@ -6,7 +6,7 @@ var MapStyles = require('../components/Map/Styles');
 
 module.exports = {
 
-    savePresets(layer_id: number, presets: any, user_id: number, create: boolean, trx: any) {
+    savePresets(layer_id: number, presets: any, style: Object, user_id: number, create: boolean, trx: any) {
       let db = knex;
       if(trx){db = trx;}
       if(create){
@@ -16,6 +16,7 @@ module.exports = {
           })
           .update({
               presets: JSON.stringify(presets),
+              style,
               updated_by_user_id: user_id,
               last_updated: knex.raw('now()')
           });
@@ -49,6 +50,7 @@ module.exports = {
             return db('omh.layers').where({layer_id})
             .update({
                 presets: JSON.stringify(presets),
+                style,
                 updated_by_user_id: user_id,
                 last_updated: knex.raw('now()')
             });
@@ -58,6 +60,7 @@ module.exports = {
           return db('omh.layers').where({layer_id})
           .update({
               presets: JSON.stringify(presets),
+              style,
               updated_by_user_id: user_id,
               last_updated: knex.raw('now()')
           });

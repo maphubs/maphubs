@@ -398,12 +398,9 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     debug.log("replaceData");
     if(this.state.layer_id){
        var _this = this;
-      request.post('/api/layer/data/replace')
+      request.post(`/api/layer/${this.state.layer_id}/replace/save`)
       .type('json').accept('json').timeout(1200000)
-      .send({
-        layer_id: _this.state.layer_id,
-        _csrf
-      })
+      .set('csrf-token', _csrf)
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
           _this.trigger(_this.state);
@@ -558,7 +555,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       });
       
       let newPresets = _differenceBy(importedPresets, presets, 'tag');
-      presets.concat(newPresets);
+      presets = presets.concat(newPresets);
 
       this.updatePresets(this.getImmPresets(presets));
     }
@@ -580,6 +577,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       .send({
         layer_id: _this.state.layer_id,
         presets,
+        style: _this.state.style, //presets also stored in style
         create,
         _csrf
       })

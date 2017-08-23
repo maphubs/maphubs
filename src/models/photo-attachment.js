@@ -117,9 +117,8 @@ module.exports = {
               type: 'text',
               id: maxId + 1
             });
-            let updatedStyle = MapStyles.settings.setSourceSetting(style, firstSource, 'presets', presets);
-            await Presets.savePresets(layer.layer_id, presets, user_id, false, trx);
-            await trx('omh.layers').update({style: updatedStyle}).where({layer_id: layer.layer_id});
+            let updatedStyle: Object = MapStyles.settings.setSourceSetting(style, firstSource, 'presets', presets);
+            await Presets.savePresets(layer.layer_id, presets, updatedStyle, user_id, false, trx);
             return presets;
         }
       }else{

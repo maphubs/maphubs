@@ -8,6 +8,7 @@ var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 var DataLoadUtils = require('../../services/data-load-utils');
+var LayerViews = require('../../services/layer-views');
 var knex = require('../../connection');
 var multer  = require('multer');
 var local = require('../../local');
@@ -42,15 +43,15 @@ app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (r
     }
   });
 
-  app.post('/api/layer/:id/upload/replace', multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
+  app.post('/api/layer/:id/replace', multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
   async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()
         || !req.session || !req.session.user) {
       res.status(401).send("Unauthorized, user not logged in");
     }
 
-    var user_id = req.session.user.maphubsUser.id;
-    var layer_id = parseInt(req.params.id || '', 10);
+    const user_id = req.session.user.maphubsUser.id;
+    const layer_id = parseInt(req.params.id || '', 10);
     try {
      const layer = await Layer.getLayerByID(layer_id);
      if(layer){
@@ -60,9 +61,11 @@ app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (r
          const importer = Importers.getImporterFromFileName(req.file.originalname);
          const importerResult = await importer(req.file.path, layer_id);
          if(importerResult.type && importerResult.type === 'FeatureCollection'){
-           //is geoJSON           
-           const result = await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, shortid, false, false);
-           return res.status(200).send(result);
+          //is geoJSON 
+          await knex.transaction(async (trx) => {       
+            const result = await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, shortid, true, false, trx); 
+            return res.status(200).send(result);
+          });
          }else{
            //pass through other types of results
            return res.status(200).send(importerResult);
@@ -79,21 +82,23 @@ app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (r
    }
  });
 
-  app.post('/api/layer/data/replace', csrfProtection, async (req, res) => {
+  app.post('/api/layer/:id/replace/save', csrfProtection, async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.maphubsUser.id;
-    var data = req.body;
-    if (data && data.layer_id) {
+    const user_id = req.session.user.maphubsUser.id;
+    const layer_id = parseInt(req.params.id || '', 10);
+    if (layer_id) {
       try{
-      const allowed =  await Layer.allowedToModify(data.layer_id, user_id);
+      const allowed =  await Layer.allowedToModify(layer_id, user_id);
       if(allowed){
         await knex.transaction(async (trx) => {
-          await DataLoadUtils.removeLayerData(data.layer_id, trx);
-          await DataLoadUtils.loadTempData(data.layer_id, trx);
-          await Layer.setComplete(data.layer_id, trx);
+          await DataLoadUtils.removeLayerData(layer_id, trx);
+          await DataLoadUtils.loadTempData(layer_id, trx);
+          const layer = await Layer.getLayerByID(layer_id, trx);
+          await LayerViews.replaceViews(layer_id, layer.presets, trx);
+          await Layer.setComplete(layer_id, trx);
           return res.send({success: true});
         });
       }else {
