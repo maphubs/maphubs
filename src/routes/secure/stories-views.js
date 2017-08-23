@@ -82,7 +82,7 @@ module.exports = function(app: any) {
 
   app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try{
-      const username = req.session.user.display_name;
+      const username = req.session.user.maphubsUser.display_name;
       const user_id = req.session.user.maphubsUser.id;
       const story_id = await Story.createUserStory(user_id);
 

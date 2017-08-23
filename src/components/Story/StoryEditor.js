@@ -448,7 +448,7 @@ publish = () => {
           onClick(){
             let storyTitle = (_this.state.story && _this.state.story.title)  ? slugify(_this.state.story.title) : '';   
             if(_this.props.storyType === 'user'){
-              window.location = `/user/${this.props.username}/story/${this.state.story.story_id}/${storyTitle}`;
+              window.location = `/user/${_this.props.username}/story/${_this.state.story.story_id}/${storyTitle}`;
             }else{
               let hub_id = _this.props.hub_id ? _this.props.hub_id : 'unknown';
               let baseUrl = `/hub/${hub_id}`; 
