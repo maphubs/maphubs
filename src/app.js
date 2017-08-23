@@ -39,6 +39,7 @@ let babelConfig = {
     "react",
     "stage-0"
   ],
+  plugins: ["transform-flow-strip-types"],
   ignore: /assets.*|node_modules\/(?!(react-disqus-thread|medium-editor|react-colorpickr|mapbox-gl)).*/
 };
 
