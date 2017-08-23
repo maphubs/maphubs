@@ -332,72 +332,40 @@ module.exports = function(app: any) {
     }catch(err){nextError(next)(err);}
   });
 
-  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, privateHubCheck, (req, res, next) => {
+  app.get('/hub/:hubid/story/:story_id/*', csrfProtection, privateHubCheck, async (req, res, next) => {
+    try{
+      const hub_id: string = req.params.hubid;
+      const story_id: number = parseInt(req.params.story_id || '', 10);
+      let user_id: number = -1;
+      if(req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
+      recordStoryView(req.session, story_id, user_id, next);
 
-    const hub_id: string = req.params.hubid;
-    const story_id: number = parseInt(req.params.story_id || '', 10);
-    let user_id: number = -1;
-    if(req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
-    recordStoryView(req.session, story_id, user_id, next);
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-        return Promise.all([
-          Story.getStoryByID(story_id),
-          Hub.getHubByID(hub_id)
-        ])
-          .then((results) => {
-            var story: Object = results[0];
-            var hub = results[1];
-             var image;
-            if(story.firstimage){
-              image = story.firstimage;
-            }
-            var description = story.title;
-            if(story.firstline){
-              description = story.firstline;
-            }
-            if(!story.published){
-              return res.status(401).send("Unauthorized");
-            }else{
-              return res.render('hubstory', {
-                title: story.title,
-                description,
-                props: {
-                  story, hub, canEdit: false
-                },
-                twitterCard: {
-                  title: story.title,
-                  description,
-                  image,
-                  imageType: 'image/jpeg'
-                },
-                req
-              });
-            }
-          }).catch(nextError(next));
-    }else{
-      return Story.allowedToModify(story_id, user_id)
-      .then(async (canEdit) => {      
-        const story = await Story.getStoryByID(story_id);
-        const hub = await Hub.getHubByID(hub_id);
-        let image;
-        if(story.firstimage){
-          image = story.firstimage;
-        }
-        let description = story.title;
-        if(story.firstline){
-          description = story.firstline;
-        }
-        if(!story.published && !canEdit){
+      const story = await Story.getStoryByID(story_id);
+      const hub = await Hub.getHubByID(hub_id);
+     
+      let image;
+      if(story.firstimage){
+        image = story.firstimage;
+      }
+
+      let description = story.title;
+      if(story.firstline){
+        description = story.firstline;
+      }
+
+      if (!req.isAuthenticated || !req.isAuthenticated()
+          || !req.session || !req.session.user) {
+        
+        if(!story.published){
           return res.status(401).send("Unauthorized");
         }else{
           return res.render('hubstory', {
             title: story.title,
             description,
             props: {
-              story, hub, canEdit
+              story, hub, canEdit: false
             },
             twitterCard: {
               title: story.title,
@@ -408,19 +376,35 @@ module.exports = function(app: any) {
             req
           });
         }
-      })
-      .asCallback((err, result) => {  
-        if(err){
-          if(err.message && err.message.startsWith('Story not found')){
-            return res.redirect('/notfound?path='+req.path);
-          }else{
-            next(err);
-          }
-        }else{
-          return result;
-        }
-      });
+    }else{
+      const canEdit = await Story.allowedToModify(story_id, user_id);
+       
+      if(!story.published && !canEdit){
+        return res.status(401).send("Unauthorized");
+      }else{
+        return res.render('hubstory', {
+          title: story.title,
+          description,
+          props: {
+            story, hub, canEdit
+          },
+          twitterCard: {
+            title: story.title,
+            description,
+            image,
+            imageType: 'image/jpeg'
+          },
+          req
+        });
+      }      
     }
+  }catch(err){
+    if(err.message && err.message.startsWith('Story not found')){
+      return res.redirect('/notfound?path='+req.path);
+    }else{
+      next(err);
+    }
+  }
   });
 
   app.get('/hub/:hub/logout', (req, res) => {

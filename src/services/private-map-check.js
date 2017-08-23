@@ -2,20 +2,19 @@ var Map = require('../models/map');
 var log = require('./log');
 var nextError = require('./error-response').nextError;
 var apiDataError = require('./error-response').apiDataError;
+var Promise = require('bluebird');
+var check = async function(map_id, user_id){
 
-var check = function(map_id, user_id){
-  return Map.isPrivate(map_id)
-  .then((isPrivate) => {
-    if(isPrivate){
-      if(user_id <= 0){
-        return false; //don't hit the db again if we know the user isn't valid
-      }else{
-        return Map.allowedToModify(map_id, user_id);
-      }
+  if(await Map.isPrivate(map_id)){
+    if(user_id <= 0){
+      return Promise.resolve(false); //don't hit the db again if we know the user isn't valid
     }else{
-      return true;
+      return Promise.resolve(Map.allowedToModify(map_id, user_id));
     }
-  });
+  }else{
+    return Promise.resolve(true);
+  }
+
 };
 
 var middleware = function(view) {

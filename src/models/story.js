@@ -97,7 +97,7 @@ module.exports = {
       if(userStoryResult && userStoryResult.length > 0){
         return userStoryResult[0];
       }else{
-        const hubStoryResult = this.getHubStoryById(story_id);
+        const hubStoryResult = await this.getHubStoryById(story_id);
         if(hubStoryResult && hubStoryResult.length > 0){
           return hubStoryResult[0];
         }else{
