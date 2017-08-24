@@ -14,8 +14,7 @@ module.exports = function(app) {
     var format = req.query.format;
 
     var urlArr = url.split('/');
-
-    var map_id = urlArr[urlArr.length-1];
+    var map_id = urlArr[urlArr.length-2];
 
     debug.log(map_id);
 
@@ -27,7 +26,7 @@ module.exports = function(app) {
       var url = `${baseUrl}/map/embed/${map.map_id}/static`;
       var imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`;
 
-      let title = title = Locales.getLocaleStringObject(req.locale, map.title);
+      let title = Locales.getLocaleStringObject(req.locale, map.title);
 
       var oembed = {
         type: "rich",
