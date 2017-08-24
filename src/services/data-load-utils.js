@@ -4,20 +4,14 @@ var GJV = require("geojson-validation");
 var log = require('./log');
 var local = require('../local');
 var debug = require('./debug')('data-load-utils');
-//var geojson2osm = require('./geojson_to_macrocosm');
-//var Changeset = require('./changeset');
 var fs = require('fs');
-//var XML = require('./xml');
 var LayerViews = require('./layer-views');
 var Promise = require('bluebird');
 var sizeof = require('object-sizeof');
 var MapStyles = require('../components/Map/Styles');
-//var fileEncodingUtils = require('./file-encoding-utils');
 var ogr2ogr = require('ogr2ogr');
 var SearchIndex = require('../models/search-index');
-
 const LARGE_DATA_THRESHOLD = 20000000;
-//const FEATURE_CHUNK_SIZE = 1000; 
 
 module.exports = {
 
@@ -67,24 +61,60 @@ module.exports = {
     return result[0].uploadtmppath;
   },
 
-  storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null){
+  cleanProps(props: Object, uniqueProps: Object){
+    //get unique list of properties
+    var cleanedFeatureProps = {};
+    Object.keys(props).map((key) => {
+      //remove chars that can't be in database fields (used in PostGIS views)         
+      var val = props[key];
+      
+      key = key.replace("-", "_");
+      key = key.replace("'", "''");
+      
+      if(!uniqueProps.includes(key)){
+        uniqueProps.push(key);
+      }
+      
+      if(typeof val === 'string'){
+        val = val.replace(/\r?\n/g, ' ');
+      }
+
+      if(typeof val === 'object'){
+        //log.info('converting nested object to string: ' + key);
+        val = JSON.stringify(val);
+      }
+      
+      cleanedFeatureProps[key] = val;
+    });
+    return cleanedFeatureProps;
+  },
+
+  async insertTempGeoJSONIntoDB(geoJSON: any, layer_id: number){ 
+    var ogr = ogr2ogr(geoJSON).format('PostgreSQL')
+    .skipfailures()
+    .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
+    .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
+    .timeout(1200000);
+    return Promise.promisify(ogr.exec, {context: ogr})();
+  },
+
+  async storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null){
+    var _this = this;
     debug.log('storeTempGeoJSON');
     let db = trx ? trx : knex;
-    return new Promise((resolve, reject) => {
+
     var result = {success: false, error: 'Unknown Error'};
     var uniqueProps = [];
 
     if(!geoJSON){
-      reject(new Error("Error dataset missing."));
-      return;
+      throw new Error("Error dataset missing.");
     }
     //confirm that it is a feature collection
     if(geoJSON.type === "FeatureCollection"){
 
       //Error if the FeatureCollection is empty
       if(!geoJSON.features || geoJSON.features.length === 0){
-        reject(new Error("Dataset appears to be empty. Zero features found in FeatureCollection"));
-        return;
+        throw new Error("Dataset appears to be empty. Zero features found in FeatureCollection");
       }
 
       let firstFeature = geoJSON.features[0];
@@ -118,34 +148,11 @@ module.exports = {
         if(feature.crs && feature.crs.properties && feature.crs.properties.name){
           let featureSRID = feature.crs.properties.name.split(':')[1];
           if(srid !== featureSRID){
-            reject(new Error('SRID mis-match found in geoJSON'));
-            return;
+            throw new Error('SRID mis-match found in geoJSON');
           }
         }
         //get unique list of properties
-        var cleanedFeatureProps = {};
-        Object.keys(feature.properties).map((key) => {
-          //remove chars that can't be in database fields (used in PostGIS views)         
-          var val = feature.properties[key];
-          
-          key = key.replace("-", "_");
-          key = key.replace("'", "''");
-          
-          if(!uniqueProps.includes(key)){
-            uniqueProps.push(key);
-          }
-          
-          if(typeof val === 'string'){
-            val = val.replace(/\r?\n/g, ' ');
-          }
-
-          if(typeof val === 'object'){
-            //log.info('converting nested object to string: ' + key);
-            val = JSON.stringify(val);
-          }
-          
-          cleanedFeatureProps[key] = val;
-        });
+        var cleanedFeatureProps = _this.cleanProps(feature.properties, uniqueProps);
 
         let mhid = `${layer_id}:${i+1}`;
         feature.properties = {
@@ -186,90 +193,62 @@ module.exports = {
         updateData.style = style;
       }
      
-      var commands = [db('omh.layers').where({layer_id}).update(updateData)];
-
-      if(update){
-        debug.log('Update temp geojson');
-        commands.push(
-        db('omh.temp_data').update({
-          srid,
-          unique_props:JSON.stringify(uniqueProps)})
-          .where({layer_id})
-        );
-      }else{
-        commands.push(
-          db('omh.temp_data').where({layer_id}).del()
-        );
-        commands.push(
-        db('omh.temp_data').insert({layer_id,
-          uploadtmppath,
-          srid,
-          unique_props:JSON.stringify(uniqueProps)})
-        );
-      }
-
       if(local.writeDebugData){
+        /*eslint-disable security/detect-non-literal-fs-filename*/
+        //temp file path is build using env var + GUID, not user input
         fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), (err) => {
           if(err) log.error(err);
           debug.log('wrote temp geojson to ' + uploadtmppath + '.geojson');
         });
-        }
+      }
+      try{
+        await _this.insertTempGeoJSONIntoDB(geoJSON, layer_id);
+      }catch(err){
+        log.error(err);
+        throw new Error("Failed to Insert Data into Temp POSTGIS Table");
+      }
            
-        var ogr = ogr2ogr(geoJSON).format('PostgreSQL')
-      .skipfailures()
-      .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
-      .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
-      .timeout(1200000);
-      ogr.exec((er) => {
-        if (er){
-          log.error(er);
-          reject(new Error("Failed to Insert Data into Temp POSTGIS Table"));
-        }else{
-
-      log.info('uniqueProps: ' + JSON.stringify(uniqueProps));    
-      
+      log.info('uniqueProps: ' + JSON.stringify(uniqueProps));          
       debug.log('inserting temp geojson into database');
       //insert into the database
-      Promise.all(commands)
-        .then((dbResult) => {
-          if(dbResult){
-            debug.log('db updates complete');
-            var largeData = false;
-            let size = sizeof(geoJSON);
-            debug.log(`GeoJSON size: ${size}`);
-            if(size > LARGE_DATA_THRESHOLD){
-              largeData = true;
-              geoJSON = null;
-            }
-            result = {
-              success: true,
-              error: null,
-              largeData,
-              geoJSON,
-              uniqueProps,
-              data_type: geomType
-            };
-            debug.log('Upload Complete!');
-            return resolve(result);
-          }else{
-            reject(new Error("Failed to Insert Metadata Database"));
-            return;
-          }
-        })
-        .catch((err) => {
-          log.error(err);
-          reject(err);
-          return;
-        });
+      await db('omh.layers').where({layer_id}).update(updateData);
+      
+      if(update){
+        debug.log('Update temp geojson');
+        await db('omh.temp_data').update({
+          srid,
+          unique_props:JSON.stringify(uniqueProps)})
+          .where({layer_id});
 
-          }
-      });
+      }else{ //delete and replace
+        await db('omh.temp_data').where({layer_id}).del();
+        await db('omh.temp_data').insert({layer_id,
+          uploadtmppath,
+          srid,
+          unique_props:JSON.stringify(uniqueProps)});
+      }
 
+      debug.log('db updates complete');
+      var largeData = false;
+      let size = sizeof(geoJSON);
+      debug.log(`GeoJSON size: ${size}`);
+      if(size > LARGE_DATA_THRESHOLD){
+        largeData = true;
+        geoJSON = null;
+      }
+      result = {
+        success: true,
+        error: null,
+        largeData,
+        geoJSON,
+        uniqueProps,
+        data_type: geomType
+      };
+      debug.log('Upload Complete!');
+      return result;
     }else{
-      reject(new Error('Data is not a valid GeoJSON FeatureCollection'));
-      return;
+      throw new Error('Data is not a valid GeoJSON FeatureCollection');
     }
-  });
   },
 
   async createEmptyDataTable(layer_id: number, trx: any){
