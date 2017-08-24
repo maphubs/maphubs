@@ -131,68 +131,74 @@ module.exports = function(app) {
 
   
   
-  app.get('/api/layer/:layer_id/tile.json', (req, res) => {
+  app.get('/api/layer/:layer_id/tile.json', async (req, res) => {
+    try{
+      const layer_id = parseInt(req.params.layer_id || '', 10);
 
-    const layer_id = parseInt(req.params.layer_id || '', 10);
-
-     var user_id = -1;
-    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
+      let user_id = -1;
+      if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
     
-    Layer.getLayerByID(layer_id)
-    .then((layer) => {
+      const layer = await Layer.getLayerByID(layer_id);
+
+      if(layer){
+        if(local.requireLogin){
+          if(manetCheck.check(req) || //screenshot service
+            (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
+          ){
+            completeLayerTileJSONRequest(req, res, layer);
+          }else{
+            res.status(404).send();
+          }
+        }else{
+          //only do the private layer check
+          if(privateLayerCheck(layer.layer_id, user_id)){
+            completeLayerTileJSONRequest(req, res, layer);
+          }else{
+            res.status(404).send();
+          }
+        }
+      }else{
+        res.status(404).send();
+      }
+    }catch(err){apiError(res, 500)(err);}
+  });
+
+  app.get('/api/lyr/:shortid/tile.json', async (req, res) => {
+    try{
+      const shortid = req.params.shortid;
+
+      var user_id = -1;
+      if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
+
+      const isShared = await Layer.isSharedInPublicMap(shortid);
+      const layer = await Layer.getLayerByShortID(shortid);
+      if(layer){
       if(local.requireLogin){
-        if(manetCheck.check(req) || //screenshot service
+        if(
+          isShared || //in public shared map
+          manetCheck.check(req) || //screenshot service
           (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
         ){
-          return completeLayerTileJSONRequest(req, res, layer);
+          completeLayerTileJSONRequest(req, res, layer);
         }else{
-          return res.status(404).send();
+          res.status(404).send();
         }
       }else{
         //only do the private layer check
         if(privateLayerCheck(layer.layer_id, user_id)){
-          return completeLayerTileJSONRequest(req, res, layer);
+          completeLayerTileJSONRequest(req, res, layer);
         }else{
-          return res.status(404).send();
+          res.status(404).send();
         }
       }
-    }).catch(apiError(res, 500));
-  });
-
-  app.get('/api/lyr/:shortid/tile.json', (req, res) => {
-
-    const shortid = req.params.shortid;
-
-    var user_id = -1;
-    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
-      user_id = req.session.user.maphubsUser.id;
+    }else{
+      res.status(404).send();
     }
 
-    Layer.isSharedInPublicMap(shortid)
-      .then(isShared =>{
-        return Layer.getLayerByShortID(shortid)
-          .then(layer=>{
-            if(local.requireLogin){
-              if(
-                isShared || //in public shared map
-                manetCheck.check(req) || //screenshot service
-                (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) //logged in and allowed to see this layer
-              ){
-                return completeLayerTileJSONRequest(req, res, layer);
-              }else{
-                return res.status(404).send();
-              }
-            }else{
-              //only do the private layer check
-              if(privateLayerCheck(layer.layer_id, user_id)){
-                return completeLayerTileJSONRequest(req, res, layer);
-              }else{
-                return res.status(404).send();
-              }
-            }
-        });
-      }).catch(apiError(res, 200));
+    }catch(err){apiError(res, 500)(err);}
   });
 };
