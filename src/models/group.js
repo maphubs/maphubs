@@ -197,7 +197,7 @@ module.exports = {
           group_id, name, description, location, published, tier_id: 'public'
         });
         //insert creating user as first admin
-        await trx('omh.group_memberships').insert({
+        return trx('omh.group_memberships').insert({
           group_id, user_id, role: 'Administrator'
         });
       });
