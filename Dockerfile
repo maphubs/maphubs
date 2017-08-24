@@ -27,7 +27,6 @@ RUN yarn install --production --pure-lockfile
 RUN npm run snyk-protect
 
 COPY ./src /app/src
-COPY .babelrc /app/.babelrc
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
