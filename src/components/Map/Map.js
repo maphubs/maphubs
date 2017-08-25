@@ -236,7 +236,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     layers.forEach((layer) => {
     try{
       var source = glStyle.sources[layer.source];
-      if(layer.source !== 'osm'  && source.type === 'vector' && !source.url.startsWith('mapbox://')  ){
+      if(!layer.source.startsWith('osm')  && source.type === 'vector' && (!source.url || !source.url.startsWith('mapbox://'))  ){
          LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
       }else if(source.type === 'geojson' && source.data){
          LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
@@ -275,7 +275,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           let source;
           if(prevStyle.sources && layer.source){
             source = prevStyle.sources[layer.source];  
-            if(layer.source !== 'osm' && source.type === 'vector' && (!source.url || !source.url.startsWith('mapbox://'))  ){
+            if(!layer.source.startsWith('osm')  && source.type === 'vector' && (!source.url || !source.url.startsWith('mapbox://'))  ){
               LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
             }else if(source.type === 'geojson' && source.data){
               LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
@@ -349,7 +349,7 @@ export default class Map extends MapHubsComponent<Props, State> {
         var source = glStyle.sources[key];
         var type = source.type;
         var url = source.url;
-        if(key !== 'osm' && type === 'vector' && !url.startsWith('mapbox://')  ){
+        if(!key.startsWith('osm') && type === 'vector' && (!url || !url.startsWith('mapbox://'))){
           //MapHubs Vector Source
           sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));   
         }else if(type === 'geojson' && source.data){
