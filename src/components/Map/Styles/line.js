@@ -3,19 +3,20 @@
 import type {GLLayer} from '../../../types/mapbox-gl-style';
 
 module.exports = {
-getLineLayers(layer_id: number, 
+getLineLayers(layer_id: number, shortid: string,
   color: string, hoverColor: string, 
   interactive: boolean, showBehindBaseMapLabels: boolean): Array<GLLayer>{
     var layers = [
       {
-        "id": "omh-data-line-" + layer_id,
+        "id": `omh-data-line-${layer_id}-${shortid}`,
         "type": "line",
         "metadata":{
           "maphubs:layer_id": layer_id,
+          "maphubs:globalid": shortid,
           "maphubs:interactive": interactive,
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
-        "source": "omh-" + layer_id,
+        "source": "omh-" + shortid,
         "source-layer": '',
         "filter": ["in", "$type", "LineString"],
         "paint": {
@@ -25,12 +26,13 @@ getLineLayers(layer_id: number,
         }
       },
       {
-        "id": "omh-hover-line-" + layer_id,
+        "id": `omh-hover-line-${layer_id}-${shortid}`,
         "type": "line",
         "metadata":{
-          "maphubs:layer_id": layer_id
+          "maphubs:layer_id": layer_id,
+          "maphubs:globalid": shortid
         },
-        "source": "omh-" + layer_id,
+        "source": "omh-" + shortid,
         "source-layer": '',
         "filter": ["==", "mhid", ""],
         "paint": {

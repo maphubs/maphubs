@@ -1,20 +1,21 @@
 //@flow
 module.exports = {
 getPolygonLayers(
-  layer_id: number, 
+  layer_id: number, shortid: string,
   color: string, hoverColor: string, hoverOutlineColor: string, 
   interactive: boolean, showBehindBaseMapLabels: boolean){
 
     var layers = [
       {
-        "id": "omh-data-polygon-" + layer_id,
+        "id": `omh-data-polygon-${layer_id}-${shortid}`,
         "type": "fill",
         "metadata":{
           "maphubs:layer_id": layer_id,
+          "maphubs:globalid": shortid,
           "maphubs:interactive": interactive,
           "maphubs:showBehindBaseMapLabels": showBehindBaseMapLabels
         },
-        "source": "omh-" + layer_id,
+        "source": "omh-" + shortid,
         "source-layer": '',
         "filter": ["in", "$type", "Polygon"],
         "paint": {
@@ -23,12 +24,13 @@ getPolygonLayers(
           "fill-opacity": 0.5
         }
       }, {
-        "id": "omh-data-doublestroke-polygon-" + layer_id,
+        "id": `omh-data-doublestroke-polygon--${layer_id}-${shortid}`,
         "type": "line",
         "metadata":{
-          "maphubs:layer_id": layer_id
+          "maphubs:layer_id": layer_id,
+          "maphubs:globalid": shortid
         },
-        "source": "omh-" + layer_id,
+        "source": "omh-" + shortid,
         "source-layer": '',
         "filter": ["in", "$type", "Polygon"],
         "paint": {
@@ -58,12 +60,13 @@ getPolygonLayers(
           }
         }
       }, {
-        "id": "omh-data-outline-polygon-" + layer_id,
+        "id": `omh-data-outline-polygon-${layer_id}-${shortid}`,
         "type": "line",
         "metadata":{
-          "maphubs:layer_id": layer_id
+          "maphubs:layer_id": layer_id,
+          "maphubs:globalid": shortid
         },
-        "source": "omh-" + layer_id,
+        "source": "omh-" + shortid,
         "source-layer": '',
         "filter": ["in", "$type", "Polygon"],
         "paint": {
@@ -85,12 +88,13 @@ getPolygonLayers(
         }
       },
       {
-      "id": "omh-hover-polygon-" + layer_id,
+      "id": `omh-hover-polygon-${layer_id}-${shortid}`,
       "type": "fill",
       "metadata":{
-          "maphubs:layer_id": layer_id
+          "maphubs:layer_id": layer_id,
+          "maphubs:globalid": shortid
         },
-      "source": "omh-" + layer_id,
+      "source": "omh-" + shortid,
       "source-layer": '',
       "filter": ["==", "mhid", ""],
       "paint": {

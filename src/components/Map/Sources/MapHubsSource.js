@@ -90,7 +90,14 @@ var MapHubsSource = {
       ){
       var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
       markerConfig.dataUrl = markerConfig.dataUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
-      var layer_id = layer.metadata['maphubs:layer_id'];
+      const layer_id = layer.metadata['maphubs:layer_id'];
+      let shortid;
+      if(layer.metadata['maphubs:globalid']){
+        shortid = layer.metadata['maphubs:globalid'];
+      }else{
+        shortid = layer_id;
+      }
+
     //load geojson for this layer
     var geojsonUrl = markerConfig.dataUrl;
     if(source.type === 'geojson'){
@@ -180,22 +187,27 @@ var MapHubsSource = {
         });
         //add marker shadows (hidden for now)
         //Need to draw something so layer is avaliable for search (otherwise source tiles are not cached)
-          map.addLayer({
-              "id": "omh-data-point-" + layer_id,
-              "type": "circle",
-              "metadata":{
-                "maphubs:layer_id": layer_id,
-                "maphubs:interactive": false,
-                "maphubs:showBehindBaseMapLabels": true
-              },
-              "source": "omh-" + layer_id,
-              "source-layer": 'data',
-              "filter": ["in", "$type", "Point"],
-              "paint": {
-                "circle-color": '#212121',
-                "circle-opacity": 0 //hidden 
-              }
-          },  'water');
+        let markerLayer = {
+          "id": layer.id,
+          "type": "circle",
+          "metadata":{
+            "maphubs:layer_id": layer_id,
+            "maphubs:globalid": shortid,
+            "maphubs:interactive": false,
+            "maphubs:showBehindBaseMapLabels": true
+          },
+          "source": layer.source,
+          "source-layer": 'data',
+          "filter": ["in", "$type", "Point"],
+          "paint": {
+            "circle-color": '#212121',
+            "circle-opacity": 0 //hidden 
+          }
+      };
+      if(layer["source-layer"]){
+        markerLayer["source-layer"] = layer["source-layer"];
+      }
+      map.addLayer(markerLayer,  'water');
     };
 
     let geobufUrl = markerConfig.geobufUrl;

@@ -25,15 +25,15 @@ module.exports = {
 
     var layers = [];
     if(dataType === 'point'){
-      layers = Point.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
+      layers = Point.getPointLayers(layer_id, shortid, color, hoverColor, interactive, showBehindBaseMapLabels);
     }else if(dataType === 'point'){
-      layers = Line.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels);
+      layers = Line.getLineLayers(layer_id, shortid, color, hoverColor, interactive, showBehindBaseMapLabels);
     }else if(dataType === 'polygon'){
-      layers = Polygon.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels);
+      layers = Polygon.getPolygonLayers(layer_id, shortid, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels);
     }else{
-      layers = Point.getPointLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels)
-      .concat(Line.getLineLayers(layer_id, color, hoverColor, interactive, showBehindBaseMapLabels))
-      .concat(Polygon.getPolygonLayers(layer_id, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels));
+      layers = Point.getPointLayers(layer_id, shortid, color, hoverColor, interactive, showBehindBaseMapLabels)
+      .concat(Line.getLineLayers(layer_id, shortid, color, hoverColor, interactive, showBehindBaseMapLabels))
+      .concat(Polygon.getPolygonLayers(layer_id, shortid, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels));
     }
 
     var styles = {
@@ -46,23 +46,23 @@ module.exports = {
       if(source.type === 'vector'){
         var url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json';
 
-        styles.sources['omh-' + layer_id] = {
+        styles.sources['omh-' + shortid] = {
           "type": "vector",
             url
         };
       }else if(source.type === 'ags-mapserver-query'
       || source.type === 'ags-featureserver-query'){
-        styles.sources['omh-' + layer_id] = {
+        styles.sources['omh-' + shortid] = {
           "type": source.type,
             url: source.url
         };
       }else if(source.type === 'ags-mapserver-tiles'){
-        styles.sources['omh-' + layer_id] = {
+        styles.sources['omh-' + shortid] = {
           "type": "arcgisraster",
             url: source.url + '?f=json'
         };
       }else if(source.type === 'geojson'){
-        styles.sources['omh-' + layer_id] = {
+        styles.sources['omh-' + shortid] = {
           "type": "geojson",
           "data": source.data
         };
