@@ -4,23 +4,25 @@ var Raven = require('raven');
 module.exports = {
 
   apiError(res: express$Response, code: number, userMessage?: string){
-    return function(err: any){
+    return function(err: Error){
       log.error(err);
       if(Raven && Raven.isSetup && Raven.isSetup()){
         Raven.captureException(err);
       }
-      if(typeof err === 'object'){
-        err = JSON.stringify(err);
-      }
+      
       var message = '';
       if(process.env.NODE_ENV === 'production'){
         if(userMessage){
           message = userMessage;
         }else{
-          message = res.__('Server Error');
+          message = 'Server Error';
         }      
       }else {
-        message = err.toString();
+        if(err.message){
+          message = err.message;
+        }else{
+          message = err.toString();
+        } 
       }
       res.status(code).send({success: false,error: message});
     };
