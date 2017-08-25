@@ -34,13 +34,13 @@ module.exports = {
     }else if(_endsWith(fileName, '.gpx')){
       debug.log('GPX File Detected');
       return gpx;
-    }else if(_endsWith(fileName, '.geojson ') || _endsWith(fileName, '.json')){
+    }else if(_endsWith(fileName, '.geojson') || _endsWith(fileName, '.json')){
       debug.log('GeoJSON File Detected');
       return geojson;
     }else if(_endsWith(fileName, '.shp')){
       throw new Error('Shapefile must uploaded in a Zip file');
     }else{
-      throw new Error('Unsupported file type');
+      throw new Error(`Unsupported file type: ${fileName}`);
     }
   }
 };

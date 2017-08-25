@@ -30,6 +30,7 @@ module.exports = function(app: any) {
       if(layer){
         let shortid = layer.shortid;       
         if(layer.created_by_user_id === user_id){
+          debug.log('Filename: ' +req.file.originalname);
           debug.log('Mimetype: ' +req.file.mimetype);
           const importer = Importers.getImporterFromFileName(req.file.originalname);
           const importerResult = await importer(req.file.path, layer_id);
@@ -49,7 +50,8 @@ module.exports = function(app: any) {
       } 
     }catch(err){
       log.error(err.message);
-      apiError(res, 200)(err);
+      //in this case allow error message to be sent to user
+      apiError(res, 200, err.message)(err);
     }
   });
 
