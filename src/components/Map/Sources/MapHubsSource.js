@@ -1,3 +1,4 @@
+//@flow
 var request = require('superagent-bluebird-promise');
 import superagent from 'superagent';
 var debug = require('../../../services/debug')('MapHubsSource');
@@ -11,8 +12,9 @@ import MarkerActions  from '../../../actions/map/MarkerActions';
 var GJV = require("geojson-validation");
 import geobuf from 'geobuf';
 import Pbf from 'pbf';
+import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 
-GJV.define("Position", (position) => {
+GJV.define("Position", (position: Array<number>) => {
     //the postion must be valid point on the earth, x between -180 and 180
     var errors = [];
     if(position[0] < -180 || position[0] > 180){
@@ -31,8 +33,8 @@ if (typeof window !== 'undefined') {
 }
 
 var MapHubsSource = {
-  load(key, source, map, mapComponent){
-
+  async load(key: string, source: GLSource, mapComponent: any){
+    let map = mapComponent.map;
     if(source.type === 'geojson' && source.data){
       return request.get(source.data)
         .then((res) => {
@@ -42,7 +44,7 @@ var MapHubsSource = {
               feature.properties.mhid = i;
             });
           }
-          return map.addSource(key, {type: 'geojson', data: geoJSON});
+          return mapComponent.addSource(key, {type: 'geojson', data: geoJSON});
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' +error);
         });
@@ -63,14 +65,14 @@ var MapHubsSource = {
                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
             }
           });
-          return map.addSource(key, tileJSON);
+          return mapComponent.addSource(key, tileJSON);
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' +error);
         });
     }
   },
-  addLayer(layer, source, map, mapComponent){
-
+  addLayer(layer: GLLayer, source: GLSource, position: number, mapComponent: any){
+    let map = mapComponent.map;
     //try to delete any old markers
     if(layer.metadata && layer.metadata['maphubs:markers']){  
       let layer_id = layer.metadata['maphubs:layer_id'];    
@@ -207,7 +209,7 @@ var MapHubsSource = {
       if(layer["source-layer"]){
         markerLayer["source-layer"] = layer["source-layer"];
       }
-      map.addLayer(markerLayer,  'water');
+      mapComponent.addLayer(markerLayer,  'water');
     };
 
     let geobufUrl = markerConfig.geobufUrl;
@@ -245,17 +247,16 @@ var MapHubsSource = {
     }
 
     }else if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
-      map.addLayer(layer, 'water');
+      mapComponent.addLayerBefore(layer, 'water');
     }else{
       if(mapComponent.state.editing){
-        map.addLayer(layer, mapComponent.getFirstDrawLayerID());
+        mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID());
       }else{
-        map.addLayer(layer);
-      }
-      
+        mapComponent.addLayer(layer, position);
+      }     
     }
   },
-  removeLayer(layer, map){
+  removeLayer(layer: GLLayer, mapComponent: any){
     if(layer.metadata && layer.metadata['maphubs:markers']){  
       let layer_id = layer.metadata['maphubs:layer_id'];    
       $('.maphubs-marker-'+layer_id).each((i, markerDiv) => {
@@ -266,10 +267,10 @@ var MapHubsSource = {
         MarkerActions.removeLayer(layer_id);
       }
     }
-    map.removeLayer(layer.id);
+    mapComponent.removeLayer(layer.id);
   },
-  remove(key, map){
-    map.removeSource(key);
+  remove(key: string, mapComponent: any){
+    mapComponent.removeSource(key);
   }
 };
 

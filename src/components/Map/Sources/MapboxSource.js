@@ -1,6 +1,9 @@
+//@flow
 var request = require('superagent-bluebird-promise');
+import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
+
 var MapboxSource = {
-  load(key, source, map, mapComponent){
+  load(key: string, source: GLSource, mapComponent: any){
     var mapboxid = source.mapboxid;
     var url = 'https://api.mapbox.com/styles/v1/' + mapboxid + '?access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
     return request.get(url)
@@ -13,36 +16,29 @@ var MapboxSource = {
           //add sources
           return Object.keys(mbstyle.sources).forEach((key) => {
             var source = mbstyle.sources[key];   
-            /*        
-            map.on('source.load', function(e) {
-              if (e.source.id === key && this.state.allowLayersToMoveMap) {
-                //map.flyTo({center: mbstyle.center, zoom:mbstyle.zoom});
-              }
-            });
-            */
-            map.addSource(key, source);
+            mapComponent.addSource(key, source);
           });
         });
   },
-  addLayer(layer, source, map, mapComponent){
-    this.mbstyle.layers.forEach((mbStyleLayer) => {
+  addLayer(layer: GLLayer, source: GLSource, position: number, mapComponent: any){
+    this.mbstyle.layers.forEach((mbStyleLayer: GLLayer) => {
       if(mbStyleLayer.type !== 'background'){ //ignore the Mapbox Studio background layer
         if(mapComponent.state.editing){
-          map.addLayer(mbStyleLayer, mapComponent.getFirstDrawLayerID());
+          mapComponent.addLayerBefore(mbStyleLayer, mapComponent.getFirstDrawLayerID());
         }else{
-          map.addLayer(mbStyleLayer);
+          mapComponent.addLayer(mbStyleLayer, position);
         }
       }
     });
   },
-  removeLayer(layer, map){
-     this.mbstyle.layers.forEach((mbStyleLayer) => {
-      map.removeLayer(mbStyleLayer.id);
+  removeLayer(layer: GLLayer, mapComponent: any){
+     this.mbstyle.layers.forEach((mbStyleLayer: GLLayer) => {
+      mapComponent.removeLayer(mbStyleLayer.id);
     });
   },
-  remove(key, map){
-    Object.keys(this.mbstyle.sources).forEach((mbstyleKey) => {
-      map.removeSource(mbstyleKey);
+  remove(key: string, mapComponent: any){
+    Object.keys(this.mbstyle.sources).forEach((mbstyleKey: string) => {
+      mapComponent.removeSource(mbstyleKey);
     });
   }
 };

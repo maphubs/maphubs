@@ -4,19 +4,17 @@ import classNames from 'classnames';
 import FeatureBox from './FeatureBox';
 import BaseMapActions from '../../actions/map/BaseMapActions'; 
 import BaseMapStore from '../../stores/map/BaseMapStore'; 
-import urlUtil from '../../services/url-util';
+//import urlUtil from '../../services/url-util';
 import DataEditorStore from '../../stores/DataEditorStore';
 import _isequal from 'lodash.isequal';
 import MapToolButton from './MapToolButton';
 import MapSearchPanel from './Search/MapSearchPanel';
 import MapToolPanel from './MapToolPanel';
 import InsetMap from './InsetMap';
-import LayerSources from './Sources';
 import MarkerSprites from './MarkerSprites';
 import AnimationOverlay from './AnimationOverlay';
 import AnimationStore from '../../stores/map/AnimationStore';
 import MarkerStore from '../../stores/map/MarkerStore';
-import Promise from 'bluebird';
 import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin';
 import MapInteractionMixin from './Helpers/MapInteractionMixin';
 import MeasurementToolMixin from './Helpers/MeasurementToolMixin';
@@ -24,10 +22,12 @@ import ForestAlertMixin from './Helpers/ForestAlertMixin';
 import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
 import DataEditorMixin from './Helpers/DataEditorMixin';
 import ForestLossMixin from './Helpers/ForestLossMixin';
+import StyleMixin from './Helpers/StyleMixin';
 import MapSearchMixin from './Search/MapSearchMixin';
 import DataEditorActions from '../../actions/DataEditorActions';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../MapHubsComponent';
+import Promise from 'bluebird';
 var debug = require('../../services/debug')('map');
 var $ = require('jquery');
 
@@ -38,7 +38,7 @@ if (typeof window !== 'undefined') {
     ScalePositionControl = require('mapbox-gl-dual-scale-control');
 }
 
-import type {GLStyle, GLSource} from '../../types/mapbox-gl-style';
+import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style';
 import type {GeoJSONObject} from 'geojson-flow';
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 import type {Layer} from '../../stores/layer-store';
@@ -86,7 +86,6 @@ type Props = {|
     selectedFeature?: Object,
     selected: boolean,
     interactive: boolean,
-    glStyle: GLStyle,
     interactiveLayers: [],
     mapLoaded: boolean,
     restoreBounds?: NestedArray<number>,
@@ -131,7 +130,7 @@ export default class Map extends MapHubsComponent<Props, State> {
         this.stores.push(DataEditorStore);
         this.stores.push(AnimationStore);
         this.stores.push(BaseMapStore);
-        this.stores.push( MarkerStore);
+        this.stores.push(MarkerStore);
     
        DataEditorActions.onFeatureUpdate.listen(this.onFeatureUpdate);
        AnimationActions.tick.listen(this.tick);
@@ -140,19 +139,11 @@ export default class Map extends MapHubsComponent<Props, State> {
       if(this.props.fitBounds){
         restoreBounds = this.props.fitBounds;
       }
-      let glStyle: GLStyle;
-      var interactiveLayers = [];
-      if(this.props.glStyle){
-        //TODO: why are we cloning the GLStyle?
-        glStyle = (JSON.parse(JSON.stringify(this.props.glStyle)):GLStyle);
-        interactiveLayers = this.getInteractiveLayers(glStyle);
-      }
+
       this.state = {
         id: this.props.id ? this.props.id : 'map',
         selected: false,
         interactive: this.props.interactive,
-        glStyle,
-        interactiveLayers,
         mapLoaded: false,
         restoreBounds,
         allowLayersToMoveMap: restoreBounds ? false : true
@@ -162,8 +153,8 @@ export default class Map extends MapHubsComponent<Props, State> {
   componentWillMount(){
     super.componentWillMount();
     BaseMapActions.setBaseMap(this.props.baseMap);
-    if(this.state.glStyle){
-      var interactiveLayers = this.getInteractiveLayers(this.state.glStyle);
+    if(this.props.glStyle){
+      var interactiveLayers = this.getInteractiveLayers(this.props.glStyle);
       this.setState({interactiveLayers});
     }
   }
@@ -209,183 +200,30 @@ export default class Map extends MapHubsComponent<Props, State> {
     }
   }
 
-  /**
-   * Attempt to optimize layers, put labels on top of other layer types
-   * @param {*} glStyle 
-   */
-  optimizeLayerOrder = (glStyle: Object) => {
-    var regularLayers = [];
-    var labelLayers = [];
-    if(this.props.allowLayerOrderOptimization){
-       glStyle.layers.forEach(layer=>{
-         if(layer.type === 'symbol'){
-           labelLayers.push(layer);
-         }else{
-           regularLayers.push(layer);
-         }
-       });
-      return regularLayers.concat(labelLayers);
-    }else{
-      return glStyle.layers;
-    }
-  }
-
-  addLayers = (map, glStyle: Object) => {
-    var _this = this;
-    var layers = this.optimizeLayerOrder(glStyle);
-    layers.forEach((layer) => {
-    try{
-      var source = glStyle.sources[layer.source];
-      if(!layer.source.startsWith('osm')  && source.type === 'vector' && (!source.url || !source.url.startsWith('mapbox://'))  ){
-         LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
-      }else if(source.type === 'geojson' && source.data){
-         LayerSources['maphubs-vector'].addLayer(layer, source, map, _this);
-      }else if( LayerSources[source.type] && LayerSources[source.type].addLayer){
-        //use custom driver for this source type
-         LayerSources[source.type].addLayer(layer, source, map);
-      }else if(source.type === 'raster'){
-        if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
-          map.addLayer(layer, 'water');
-        }else{
-          if(_this.state.editing){
-            map.addLayer(layer, _this.getFirstDrawLayerID());
-          }else{
-            map.addLayer(layer);
-          }      
-        }
-      }else{
-        if(_this.state.editing){
-            map.addLayer(layer, _this.getFirstDrawLayerID());
-          }else{
-            map.addLayer(layer);
-          }
-      }
-    }catch(err){
-      debug.log('(' + _this.state.id + ') ' +'Failed to add layer: ' + layer.id);
-      debug.log('(' + _this.state.id + ') ' +err);
-    }
-    });
-  }
-
-  removeAllLayers = (prevStyle: GLStyle) => {
-    var _this = this;
-    if(prevStyle && prevStyle.layers){
-      prevStyle.layers.forEach((layer) => {
-        try{
-          let source;
-          if(prevStyle.sources && layer.source){
-            source = prevStyle.sources[layer.source];  
-            if(!layer.source.startsWith('osm')  && source.type === 'vector' && (!source.url || !source.url.startsWith('mapbox://'))  ){
-              LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
-            }else if(source.type === 'geojson' && source.data){
-              LayerSources['maphubs-vector'].removeLayer(layer, _this.map);
-            }else if( LayerSources[source.type] && LayerSources[source.type].removeLayer){
-              LayerSources[source.type].removeLayer(layer, _this.map);
-            }else{
-              _this.map.removeLayer(layer.id);
-            }
-          }else{
-            _this.map.removeLayer(layer.id);
-          }
-        }catch(err){
-          debug.log('(' + _this.state.id + ') ' +'Failed to remove layer: ' + layer.id);
-        }
-      });
-    }
-  }
-
-  removeAllSources = (prevStyle: GLStyle) => {
-    var _this = this;
-      if(prevStyle && prevStyle.sources){
-      Object.keys(prevStyle.sources).forEach((key) => {
-          try{
-            if(LayerSources[prevStyle.sources[key].type] && LayerSources[prevStyle.sources[key].type].remove){
-              LayerSources[prevStyle.sources[key].type].remove(key, _this.map);
-            }else{
-              _this.map.removeSource(key);
-            }           
-          }catch(err){
-            debug.log('(' + _this.state.id + ') ' +'Failed to remove source: ' + key);
-          }
-      });
-    }
-  }
-
-  reload = (prevStyle: GLStyle, newStyle: GLStyle, baseMap?: string) => {
-    var _this = this;
-    debug.log('(' + _this.state.id + ') ' +'reload: start');
-    //clear selected when reloading
-    try{
-      this.clearSelection();
-    }catch(err){
-      debug.error(err);
-    }
-
-    //if no style is provided assume we are reloading the active style
-    if(!prevStyle && this.props.glStyle) prevStyle = this.props.glStyle;
-    if(!newStyle) newStyle = prevStyle;
-    this.removeAllLayers(prevStyle);
-    this.removeAllSources(prevStyle);
-    if(baseMap){
-      debug.log('(' + _this.state.id + ') ' +'reload: base map');
-      this.map.setStyle(baseMap, {diff: false}); 
-      //TODO: find a way to do this without forcing a full reload
-      //the problem is we currently rely on style.load to finish loading the map...
-      //revist after custom sources are ready
-      
-      //map data is loaded when style.load handler is called
-    }else {
-      this.addMapData(this.map, newStyle, this.props.data, () => {
-        debug.log('(' + _this.state.id + ') ' +'reload: finished adding data');
-      });
-    }
+  debugLog = (msg) => {
+    debug.log(`(${this.state.id}) ${msg}`);
   }
 
   addMapData = (map, glStyle: Object, geoJSON?: GeoJSONObject, cb: Function) => {
+    this.debugLog('addMapData');
     var _this = this;
     if(glStyle && glStyle.sources){
-      var sources = [];
-      Object.keys(glStyle.sources).forEach((key) => {
-        var source = glStyle.sources[key];
-        var type = source.type;
-        var url = source.url;
-        if(!key.startsWith('osm') && type === 'vector' && (!url || !url.startsWith('mapbox://'))){
-          //MapHubs Vector Source
-          sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));   
-        }else if(type === 'geojson' && source.data){
-          sources.push(LayerSources['maphubs-vector'].load(key, source, map, _this));  
-        }else if(LayerSources[type]){
-          //we have a custom driver for this source
-          sources.push(LayerSources[type].load(key, source, map, _this));      
-      }else if(type === 'raster'){
-        if(source.url){
-          source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
-        }  
-        map.addSource(key, source);
-      }else {
-          //just add the source as-is
-          map.addSource(key, source);
-        }
-      });
-      //once all sources are loaded then load the layers
-      Promise.all(sources).then(() => {
-        _this.addLayers(map, glStyle);
-         if(geoJSON){
-            _this.initGeoJSON(map, geoJSON);
+        return Promise.resolve(_this.setOverlayStyle(glStyle, _this.props.allowLayerOrderOptimization))
+        .catch((err)=>{
+          _this.debugLog(err);
+        })
+        .asCallback((err)=>{
+          if(err){
+            this.debugLog(err);
+          }
+          if(geoJSON){
+            _this.initGeoJSON(geoJSON);
           }
         cb();
-      }).catch((err) => {
-        debug.log('(' + _this.state.id + ') ' +err);
-        //try to load the map anyway
-        _this.addLayers(map, glStyle);
-        if(geoJSON){
-          _this.initGeoJSON(map, geoJSON);
-        }
-        cb();
-      });
+        });
     }
      else if(geoJSON){
-      _this.initGeoJSON(map, geoJSON);
+      _this.initGeoJSON(geoJSON);
       cb();
     }else{
       cb();
@@ -394,17 +232,20 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   createMap = () => {
     var _this = this;
-    debug.log('(' + _this.state.id + ') ' +'Creating MapboxGL Map');
+    this.debugLog('Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
+
+    _this.setBaseMapStyle(baseMap, false);
        
     if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
     alert(this.__('Your browser does not support Mapbox GL please see: http://help.maphubs.com/category/21-troubleshooting'));
+    return;
     }
 
     var map = new mapboxgl.Map({
       container: _this.state.id,
-      style: baseMap,
+      style: _this.glStyle,
       zoom: 0,
       interactive: _this.state.interactive,
       dragRotate: _this.props.enableRotation ? true : false,
@@ -417,6 +258,8 @@ export default class Map extends MapHubsComponent<Props, State> {
   map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
     if(err){
       debug.error(err);
+    }else{
+      _this.debugLog('Added custom source: arcgisraster');
     }
   });
 
@@ -426,11 +269,11 @@ export default class Map extends MapHubsComponent<Props, State> {
   });
 
   map.on('style.load', () => {
-    debug.log('(' + _this.state.id + ') ' +'style.load');
+    _this.debugLog('style.load');
     //add the omh data
-    _this.addMapData(map, _this.state.glStyle, _this.props.data, () => {
+    _this.addMapData(map, _this.props.glStyle, _this.props.data, () => {
       //do stuff that needs to happen after data loads
-      debug.log('(' + _this.state.id + ') ' +'finished adding map data');
+      _this.debugLog('finished adding map data');
       //restore map bounds (except for geoJSON maps)
       if(!_this.props.data && _this.state.restoreBounds){
         var fitBounds = _this.state.restoreBounds;
@@ -455,7 +298,7 @@ export default class Map extends MapHubsComponent<Props, State> {
         _this.restoreForestAlerts();
       }
       
-      debug.log('(' + _this.state.id + ') ' +'MAP LOADED');
+      _this.debugLog('MAP LOADED');
       _this.setState({mapLoaded: true});
     });
   });//end style.load
@@ -496,15 +339,11 @@ export default class Map extends MapHubsComponent<Props, State> {
     map.scrollZoom.disable();
   }
 
-  //var Geocoder = require('mapbox-gl-geocoder');
-  //map.addControl(new Geocoder({position: 'top-right'}));
-
   _this.map = map;
   });
   }
 
   
-
   componentWillReceiveProps(nextProps: Props){
     //debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
     var _this = this;
@@ -524,8 +363,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           this.initGeoJSON(this.map, nextProps.data);
         }else{
           debug.log(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
-        }
-        
+        }     
       }
     }
 
@@ -534,7 +372,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
 
     if(nextProps.fitBounds && !_isequal(this.props.fitBounds,nextProps.fitBounds) && this.map){
-      debug.log('(' + this.state.id + ') ' +'FIT BOUNDS CHANGING');
+      _this.debugLog('FIT BOUNDS CHANGING');
       fitBoundsChanging = true;
       allowLayersToMoveMap = false;
       if(nextProps.fitBounds && nextProps.fitBounds.length > 2){
@@ -548,46 +386,53 @@ export default class Map extends MapHubsComponent<Props, State> {
     }
 
     if(nextProps.glStyle && nextProps.baseMap) {
-      if(!_isequal(this.state.glStyle,nextProps.glStyle)) {
-          debug.log('(' + this.state.id + ') ' +'glstyle changing from props');
-          //** Style Changing (also reloads basemap) **/
+      if(!_isequal(this.props.glStyle,nextProps.glStyle)) {
+        _this.debugLog('glstyle changing from props');
+          //** Style Changing (also reloads basemap if needed) **/
           if(this.state.mapLoaded && !fitBoundsChanging) {
             //if fitBounds isn't changing, restore the current map position
-            if(this.state.glStyle !== null){
-              debug.log('(' + this.state.id + ') ' +"restoring current map position");
+            if(this.glStyle !== null){
+              this.debugLog('restoring current map position');
               allowLayersToMoveMap = false;
             }
-
           }
-          //clone the style object otherwise it is impossible to detect updates made to the object outside this component...      
-          var prevStyle = JSON.parse(JSON.stringify(this.state.glStyle));
-          var styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
-          this.setState({allowLayersToMoveMap, glStyle: styleCopy});
-          BaseMapActions.setBaseMap(nextProps.baseMap);
-          BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapUrl) => {
-            
-            _this.reload(prevStyle, styleCopy, baseMapUrl);
+          this.setState({allowLayersToMoveMap});
 
-            var interactiveLayers = _this.getInteractiveLayers(styleCopy);
+          if(!_isequal(this.state.baseMap,nextProps.baseMap)) {
+            BaseMapActions.setBaseMap(nextProps.baseMap);
+            BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
+              _this.setBaseMapStyle(baseMapStyle, false);
+            });
+          }
 
-            _this.setState({interactiveLayers});//wait to change state style until after reloaded
+          return Promise.resolve(_this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
+          .catch((err)=>{
+            _this.debugLog(err);
+          })
+          .asCallback((err)=>{
+            if(err){
+              _this.debugLog(err);
+            }
+            const interactiveLayers = _this.getInteractiveLayers(nextProps.glStyle);
+            _this.setState({interactiveLayers});
           });
+
 
       }else if(!_isequal(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Changing, but Base Map is Changing **/
-        debug.log('(' + this.state.id + ') ' +"basemap changing from props");
+        _this.debugLog('basemap changing from props');
         allowLayersToMoveMap = false;    
         this.setState({allowLayersToMoveMap});
         BaseMapActions.setBaseMap(nextProps.baseMap);
-        BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapUrl) => {
-          _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
+        BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
+          _this.setBaseMapStyle(baseMapStyle, true);
         });
 
       }else if(fitBoundsChanging) {
         //** just changing the fit bounds
         //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
         if(bounds){
-          debug.log('(' + this.state.id + ') ' +'only bounds changing, bounds: ' + bounds);
+          _this.debugLog('only bounds changing, bounds: ' + bounds);
           if(Array.isArray(bounds) && bounds.length > 2){           
              bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
            }
@@ -599,34 +444,37 @@ export default class Map extends MapHubsComponent<Props, State> {
      }
 
     }else if(nextProps.glStyle
-      && !_isequal(this.state.glStyle,nextProps.glStyle)){
+      && !_isequal(this.props.glStyle,nextProps.glStyle)){
         //** Style Changing (no basemap provided) **/
-        debug.log('(' + this.state.id + ') ' +'glstyle changing from props (default basemap)');
-
-        //clone the style object otherwise it is impossible to detect updates made to the object outside this component...
-        let styleCopy = JSON.parse(JSON.stringify(nextProps.glStyle));
-        this.reload(this.state.glStyle, styleCopy);
-
-        var interactiveLayers = this.getInteractiveLayers(styleCopy);
-
-        this.setState({glStyle: styleCopy, allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
+        _this.debugLog('glstyle changing from props (default basemap)');
+        return Promise.resolve(this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
+        .catch((err)=>{
+          _this.debugLog(err);
+        })
+        .asCallback((err)=>{
+          if(err){
+            _this.debugLog(err);
+          }
+          var interactiveLayers = this.getInteractiveLayers(nextProps.glStyle);
+          this.setState({allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
+        });
 
     }else if(nextProps.baseMap
       && !_isequal(this.state.baseMap,nextProps.baseMap)) {
         //** Style Not Found, but Base Map is Changing **/
-        debug.log('(' + this.state.id + ') ' +'basemap changing from props (no glstyle)');
+        _this.debugLog('basemap changing from props (no glstyle)');
 
       this.setState({allowLayersToMoveMap});
       BaseMapActions.setBaseMap(nextProps.baseMap);
-      BaseMapActions.getBaseMapFromName(nextProps.baseMap,(baseMapUrl) => {
-        _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
+      BaseMapActions.getBaseMapFromName(nextProps.baseMap,(baseMapStyle) => {
+        _this.setBaseMapStyle(baseMapStyle, true);
       });
 
     }else if(fitBoundsChanging) {
       //** just changing the fit bounds on a map that does not have styles or basemap settings **/
       //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
       if(bounds){
-        debug.log('(' + this.state.id + ') ' +'only bounds changing');
+        _this.debugLog('only bounds changing');
         if(bounds._ne && bounds._sw){
          this.map.fitBounds(bounds, this.props.fitBoundsOptions);
          }else if(Array.isArray(bounds) && bounds.length > 2){
@@ -657,15 +505,15 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   changeBaseMap = (mapName: string) => {
-    debug.log('changing basemap to: ' + mapName);
+    this.debugLog('changing basemap to: ' + mapName);
     var _this = this;
-    BaseMapActions.getBaseMapFromName(mapName, (baseMapUrl) => {
+    BaseMapActions.getBaseMapFromName(mapName, (baseMapStyle) => {
       BaseMapActions.setBaseMap(mapName);
       _this.setState({allowLayersToMoveMap: false});
-      _this.reload(_this.state.glStyle, _this.state.glStyle, baseMapUrl);
+      _this.setBaseMapStyle(baseMapStyle, true);
 
       if(_this.refs.insetMap){
-        _this.refs.insetMap.reloadInset(baseMapUrl);
+        _this.refs.insetMap.reloadInset(baseMapStyle);
          _this.refs.insetMap.sync(_this.map);
       }
 
@@ -801,8 +649,8 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   //GeoJSONMixin
-  initGeoJSON = (map: any, data: GeoJSONObject) => {
-    return MapGeoJSONMixin.initGeoJSON.bind(this)(map, data);
+  initGeoJSON = (data: GeoJSONObject) => {
+    return MapGeoJSONMixin.initGeoJSON.bind(this)(data);
   }
 
   resetGeoJSON = () => {
@@ -814,7 +662,6 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   //MapInteractionMixin
-
   setSelectionFilter = (features: Array<Object>) => {
     return MapInteractionMixin.setSelectionFilter.bind(this)(features);
   }
@@ -1007,6 +854,55 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   tick = (year: number) => {
     return ForestLossMixin.tick.bind(this)(year);
+  }
+
+  //StyleMixin
+  setBaseMapStyle = (style: GLStyle, update?: boolean) => {
+    return StyleMixin.setBaseMapStyle.bind(this)(style, update);
+  }
+
+  setOverlayStyle = (overlayStyle: GLStyle, optimizeLayers: boolean) => {
+    return StyleMixin.setOverlayStyle.bind(this)(overlayStyle, optimizeLayers);
+  }
+
+  reloadStyle = () => {
+    return StyleMixin.reloadStyle.bind(this)();
+  }
+
+  addLayer = (layer: GLLayer, position?: number) => {
+    return StyleMixin.addLayer.bind(this)(layer, position);
+  }
+
+  addLayerBefore = (layer: GLLayer, beforeLayer: string) => {
+    return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer);
+  }
+
+  addLayers = (layerIds: Array<string>, fromStyle: GLStyle) => {
+    return StyleMixin.addLayers.bind(this)(layerIds, fromStyle);
+  }
+
+  removeLayer = (id: string) => {
+    return StyleMixin.removeLayer.bind(this)(id);
+  }
+
+  removeLayers = (layersIDs: Array<string>, fromStyle: GLStyle) =>{
+    return StyleMixin.removeLayers.bind(this)(layersIDs, fromStyle);
+  }
+
+  addSource = (key: string, source: GLSource) => {
+    return StyleMixin.addSource.bind(this)(key, source);
+  }
+
+  removeSource = (key: string) => {
+    return StyleMixin.removeSource.bind(this)(key);
+  }
+
+  removeSources = (sourceKeys: Array<string>, fromStyle: GLStyle) => {
+    return StyleMixin.removeSources.bind(this)(sourceKeys, fromStyle);
+  }
+
+  loadSources = async (sourceKeys: Array<string>, fromStyle: GLStyle) => {
+    return StyleMixin.loadSources.bind(this)(sourceKeys, fromStyle);
   }
 
 

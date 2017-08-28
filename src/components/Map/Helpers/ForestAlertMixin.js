@@ -1,6 +1,5 @@
 //@flow
 var _area = require('@turf/area');
-
 module.exports = {
 
   getDefaultForestAlertState(){
@@ -123,7 +122,7 @@ module.exports = {
         "visibility": "visible"
       }
     });
-     this.map.addLayer({
+    this.map.addLayer({
       "id": "omh-glad-2017-outline-polygon",
       "type": "line",
       "maxzoom": 22,
@@ -182,9 +181,17 @@ module.exports = {
   },
 
   removeGLADLayer(){
-    this.map.removeLayer('omh-glad-2017-outline-polygon');
-    this.map.removeLayer('omh-glad-2017-polygon');
-    this.map.removeLayer('omh-glad-2017-point');
-    this.map.removeSource('omh-glad-2017');
+    try{
+      this.map.removeLayer('omh-glad-2017-outline-polygon');
+      this.map.removeLayer('omh-glad-2017-polygon');
+      this.map.removeLayer('omh-glad-2017-point');
+    }catch(err){
+      this.debugLog(err);
+    }
+    try{
+      this.map.removeSource('omh-glad-2017');
+    }catch(err){
+      this.debugLog(err);
+    }
   }
 };

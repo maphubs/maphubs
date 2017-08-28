@@ -10,8 +10,8 @@ import type {GLStyle} from '../../../types/mapbox-gl-style';
  */
 module.exports = {
   setSelectionFilter(features: Array<Object>){
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach((layer) => {
+    if(this.glStyle){
+      this.glStyle.layers.forEach((layer) => {
         var filter = ['in', "mhid"];
         features.forEach((feature) => {
           filter.push(feature.properties.mhid);
@@ -32,8 +32,8 @@ module.exports = {
   },
 
   clearSelectionFilter(){
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach((layer) => {
+    if(this.glStyle){
+      this.glStyle.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-hover')){
           if(this.map.getLayer(layer.id)){
             this.map.setFilter(layer.id,  ["==", "mhid", ""]);
@@ -95,7 +95,7 @@ module.exports = {
            var feature = features[0];
            //find presets and add to props
            if(feature.layer && feature.layer.source){
-             let presets = MapStyles.settings.getSourceSetting(this.state.glStyle, feature.layer.source, 'presets');
+             let presets = MapStyles.settings.getSourceSetting(this.glStyle, feature.layer.source, 'presets');
              if(!feature.properties['maphubs_metadata']){
                feature.properties['maphubs_metadata'] = {};
              }

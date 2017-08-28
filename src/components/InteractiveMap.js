@@ -111,7 +111,10 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layer_id: number) => {
-    MapActions.toggleVisibility(layer_id, () => {});
+    var _this = this;
+    MapActions.toggleVisibility(layer_id, (layerStyle) => {
+      //_this.refs.map.updateLayer(layerStyle);
+    });
   }
 
   onChangeBaseMap = (basemap: string) => {

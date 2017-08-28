@@ -287,8 +287,8 @@ module.exports = {
 
     var hideEditingFilter = ['!in', 'mhid'].concat(uniqueIds);
 
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach(layer => {
+    if(this.glStyle){
+      this.glStyle.layers.forEach(layer => {
 
         //check if the layer_id matches
         var foundMatch;
@@ -323,8 +323,8 @@ module.exports = {
     var layer_id = this.state.editingLayer.layer_id;
 
 
-    if(this.state.glStyle){
-      this.state.glStyle.layers.forEach(layer => {
+    if(this.glStyle){
+      this.glStyle.layers.forEach(layer => {
 
         //check if the layer_id matches
         var foundMatch;

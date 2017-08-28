@@ -127,7 +127,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
   }
 
   reloadMap = () => {
-    this.refs.map.reload();
+    this.refs.map.reloadStyle();
   }
 
   resetStyle = () => {

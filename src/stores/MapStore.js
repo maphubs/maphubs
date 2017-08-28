@@ -44,8 +44,9 @@ export default class MapStore extends Reflux.Store {
  toggleVisibility(layer_id: number, cb: Function){
     let mapLayers = this.state.layers;
     let index = findIndex(mapLayers, {layer_id});
+    let layer;
     if(mapLayers){
-      let layer = mapLayers[index];
+      layer = mapLayers[index];
       let active = MapStyles.settings.get(layer.style, 'active');
 
       if(active){
@@ -71,7 +72,7 @@ export default class MapStore extends Reflux.Store {
      
       this.updateMap(mapLayers);
     }
-    cb();
+    cb(layer.style);
   }
 
  updateLayers(layers: Array<Layer>, update: boolean=true){

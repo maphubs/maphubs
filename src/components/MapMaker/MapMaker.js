@@ -259,12 +259,9 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
         return this.__('A public map cannot contain private layers. Please save as a private map owned by your group, or remove the private layer');
       }
     }
-
   }
 
-
   onSave = (model: Object, cb: Function) => {
-    
     var _this = this;
 
     var position = this.refs.map.getPosition();
@@ -307,8 +304,10 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layer_id: number) => {
+    var _this = this;
     $('.layer-card-tooltipped').tooltip('remove');
-    Actions.toggleVisibility(layer_id, () => {
+    Actions.toggleVisibility(layer_id, (layerStyle) => {
+      //_this.refs.map.updateLayer(layerStyle);
     });
     $('.layer-card-tooltipped').tooltip();
   }
@@ -322,7 +321,8 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   onLayerStyleChange = (layer_id: number, style: Object, labels: Object, legend: Object) => {
     Actions.updateLayerStyle(layer_id, style, labels, legend, (updatedLayer) => {
-       this.setState({showMapLayerDesigner: true, layerDesignerLayer: updatedLayer});
+       this.setState({showMapLayerDesigner: true, layerDesignerLayer: updatedLayer})
+       //this.refs.map.updateLayer(updatedLayer.style);
     });
   }
 
@@ -371,7 +371,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   toggleAddLayerTab = () => {
     $(this.refs.tabs).tabs('select_tab', 'addlayer');
     fireResizeEvent();
-
   }
 
   editLayer = (layer: Layer) => {

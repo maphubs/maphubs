@@ -1,33 +1,31 @@
 //@flow
 var TerraformerGL = require('../../../services/terraformerGL.js');
-var debug = require('../../../services/debug')('AGSFeatureServerQuery');
-
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 import type {GeoJSONObject} from 'geojson-flow';
 var AGSFeatureServerQuery = {
-  load(key: string, source: GLSource, map: any, mapComponent: any){
+  load(key: string, source: GLSource, mapComponent: any){
     return TerraformerGL.getArcGISFeatureServiceGeoJSON(source.url)
       .then((geoJSON: GeoJSONObject) => {
         if(geoJSON.bbox && Array.isArray(geoJSON.bbox) && geoJSON.bbox.length > 0 && mapComponent.state.allowLayersToMoveMap){
           mapComponent.zoomToData(geoJSON);
         }
-        map.addSource(key, {"type": "geojson", data: geoJSON});
+        return mapComponent.addSource(key, {"type": "geojson", data: geoJSON});
       }, (error) => {
-       debug.log('(' + mapComponent.state.id + ') ' +error);
+        mapComponent.debugLog(error);
       });
   },
-  addLayer(layer: GLLayer, source: GLSource, map: any, mapComponent: any){
+  addLayer(layer: GLLayer, source: GLSource, position: number, mapComponent: any){
     if(mapComponent.state.editing){
-      map.addLayer(layer, mapComponent.getFirstDrawLayerID());
+      mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID());
     }else{
-      map.addLayer(layer);
+      mapComponent.addLayer(layer, position);
     }
   },
-  removeLayer(layer: GLLayer, map: any){
-    map.removeLayer(layer.id);
+  removeLayer(layer: GLLayer, mapComponent: any){
+    mapComponent.removeLayer(layer.id);
   },
-  remove(key: string, map: any){
-    map.removeSource(key);
+  remove(key: string, mapComponent: any){
+    mapComponent.removeSource(key);
   }
 };
 

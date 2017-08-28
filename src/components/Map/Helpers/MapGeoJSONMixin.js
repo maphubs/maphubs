@@ -6,21 +6,24 @@ var _bbox = require('@turf/bbox');
 import type {GeoJSONObject} from 'geojson-flow';
 
 module.exports = {
-  initGeoJSON(map: any, data: GeoJSONObject){
-    
-    if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
-      map.addSource("omh-geojson", {"type": "geojson", data});
-      var glStyle = MapStyles.style.defaultStyle('geojson', null, null, null);
-      glStyle.sources["omh-geojson"] = {"type": "geojson", data};
-      this.addLayers(map, glStyle);
+  initGeoJSON(data: GeoJSONObject){
+    if(this.map){
+      if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
+        this.addSource("omh-geojson", {"type": "geojson", data});
+        var glStyle = MapStyles.style.defaultStyle('geojson', null, null, null);
+        glStyle.sources["omh-geojson"] = {"type": "geojson", data};
+        this.addLayers(map, glStyle);
 
-      var interactiveLayers = this.getInteractiveLayers(glStyle);
+        var interactiveLayers = this.getInteractiveLayers(glStyle);
 
-      this.setState({interactiveLayers, glStyle});
-      this.zoomToData(data);
-    } else {
-      //empty data
-      debug.log(`(${this.state.id}) Empty/Missing GeoJSON Data`);
+        this.setState({interactiveLayers, glStyle});
+        this.zoomToData(data);
+      } else {
+        //empty data
+        this.debugLog('Empty/Missing GeoJSON Data');
+      }
+    }else{
+      this.debugLog('Map not initialized');
     }
   },
 

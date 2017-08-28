@@ -49,7 +49,7 @@ module.exports = {
   },
 
   getFirstLabelLayer(){
-    var glStyle = this.state.glStyle;
+    var glStyle = this.glStyle;
     var firstLayer;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       glStyle.layers.forEach(layer=>{
@@ -68,7 +68,7 @@ module.exports = {
   addForestLossLayers(){   
     
     var addBefore = 'water';
-    var glStyle = this.state.glStyle;
+    var glStyle = this.glStyle;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       addBefore = glStyle.layers[0].id;
     }
@@ -80,8 +80,8 @@ module.exports = {
     /*
     for(var i = 2001; i <= 2014; i++){
       var treecoverLayer = _this.getForestLossLayer('treecover', i);
-      _this.map.addSource(treecoverLayer.id, treecoverLayer.source);
-      _this.map.addLayer(treecoverLayer.layer, addBefore);
+      this.addSource(treecoverLayer.id, treecoverLayer.source);
+      this.addLayer(treecoverLayer.layer, addBefore);
             
     }
     */
@@ -102,19 +102,28 @@ module.exports = {
 
   removeForestLossLayers(){
 
-     var treecoverLayer = this.getForestLossLayer('treecover', 2001);
-       this.map.removeLayer(treecoverLayer.layer.id);
-        this.map.removeSource(treecoverLayer.id);
+    try{
+      var treecoverLayer = this.getForestLossLayer('treecover', 2001);
+      this.map.removeLayer(treecoverLayer.layer.id);
+      this.map.removeSource(treecoverLayer.id);
+    }catch(err){
+      this.debugLog(err);
+    }
+     
 
     for(var i = 2001; i <= 2014; i++){
       /*
        var treecoverLayer = _this.getForestLossLayer('treecover', i);
-       _this.map.removeLayer(treecoverLayer.layer.id);
-        _this.map.removeSource(treecoverLayer.id);
-*/
+       this.removeLayer(treecoverLayer.layer.id);
+       this.removeSource(treecoverLayer.id);
+      */
+      try{
        var lossLayer = this.getForestLossLayer('lossyear', i);
-        this.map.removeLayer(lossLayer.layer.id);
-        this.map.removeSource(lossLayer.id);
+       this.map.removeLayer(lossLayer.layer.id);
+       this.map.removeSource(lossLayer.id);
+      }catch(err){
+        this.debugLog(err);
+      }
     }
 
     this.setState({showForestLoss: false});
