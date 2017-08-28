@@ -351,9 +351,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           startEditing={this.startEditingData} stopEditing={this.stopEditingData} />
       );
 
-      var idEditButton = '', addPhotoPointButton = '';
-      if(!this.props.layer.is_external){
-        idEditButton = (
+      var mapEditButton = '', addPhotoPointButton = '';
+      if(!this.props.layer.is_external && !this.props.layer.remote){
+        mapEditButton = (
           <li>
             <a onClick={this.openEditor} className="btn-floating layer-info-tooltip blue darken-1" data-delay="50" data-position="left" data-tooltip={this.__('Edit Map Data')}>
               <i className="material-icons">mode_edit</i>
@@ -376,7 +376,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
             <i className="large material-icons">more_vert</i>
           </a>
           <ul>
-            {idEditButton}
+            {mapEditButton}
             {addPhotoPointButton}
             <li>
               <a className="btn-floating layer-info-tooltip yellow" href={'/layer/admin/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}data-delay="50" data-position="left" data-tooltip={this.__('Manage Layer')}>
