@@ -1,5 +1,19 @@
 # Change Log
 
+## [v0.12.7](https://github.com/maphubs/maphubs/tree/v0.12.7) (2017-08-29)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.6...v0.12.7)
+
+## [v0.12.6](https://github.com/maphubs/maphubs/tree/v0.12.6) (2017-08-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.5...v0.12.6)
+
+**Fixed bugs:**
+
+- error creating group [\#426](https://github.com/maphubs/maphubs/issues/426)
+- error in oembed url [\#425](https://github.com/maphubs/maphubs/issues/425)
+
+## [v0.12.5](https://github.com/maphubs/maphubs/tree/v0.12.5) (2017-08-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.4...v0.12.5)
+
 ## [v0.12.4](https://github.com/maphubs/maphubs/tree/v0.12.4) (2017-08-23)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.3...v0.12.4)
 
