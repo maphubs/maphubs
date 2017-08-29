@@ -360,7 +360,7 @@ export default class Map extends MapHubsComponent<Props, State> {
       }else {
         debug.log('(' + this.state.id + ') ' +'init geoJSON data');
         if(this.state.mapLoaded && nextProps.data){
-          this.initGeoJSON(this.map, nextProps.data);
+          this.initGeoJSON(nextProps.data);
         }else{
           debug.log(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
         }     
