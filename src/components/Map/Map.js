@@ -423,10 +423,8 @@ export default class Map extends MapHubsComponent<Props, State> {
         _this.debugLog('basemap changing from props');
         allowLayersToMoveMap = false;    
         this.setState({allowLayersToMoveMap});
-        BaseMapActions.setBaseMap(nextProps.baseMap);
-        BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
-          _this.setBaseMapStyle(baseMapStyle, true);
-        });
+
+        this.changeBaseMap(nextProps.baseMap);
 
       }else if(fitBoundsChanging) {
         //** just changing the fit bounds
