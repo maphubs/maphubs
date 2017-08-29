@@ -419,7 +419,9 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   render(){
     var _this = this;
-    var panelHeight = this.state.height - 191;
+    const headerHeight = 52;
+    const collasibleHeaderHeight = 55;
+    var panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 3);
 
     var tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
@@ -458,7 +460,8 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
     var editLayerPanel='', editingTools = '';
     if(this.state.editingLayer){
-      panelHeight = this.state.height - 241;
+    //panelHeight = this.state.height - 241;
+    panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 4);
       editLayerPanel = (
         <li ref="editLayerPanel">
               <div className="collapsible-header"><i className="material-icons">edit</i>{this.__('Editing Layer')}</div>

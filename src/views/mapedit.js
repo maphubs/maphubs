@@ -46,7 +46,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
 		return (
       <div>
         <Header {...this.props.headerConfig}/>
-        <main style={{height: 'calc(100% - 58px)'}}>
+        <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
           <MapMaker onCreate={this.mapCreated}
             mapConfig={this.props.mapConfig}
             mapLayers={this.props.layers}
