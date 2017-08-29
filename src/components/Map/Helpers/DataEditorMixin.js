@@ -230,7 +230,7 @@ module.exports = {
     this.map.removeControl(this.draw);
     this.removeMapLayerFilters();
     this.reloadEditingSourceCache();
-    this.reload();
+    this.reloadStyle();
   },
 
   
@@ -267,6 +267,7 @@ module.exports = {
   updateMapLayerFilters(){
 
     var layer_id = this.state.editingLayer.layer_id;
+    var shortid = this.state.editingLayer.shortid;
 
     //build a new filter
     var uniqueIds = [];
@@ -287,8 +288,8 @@ module.exports = {
 
     var hideEditingFilter = ['!in', 'mhid'].concat(uniqueIds);
 
-    if(this.glStyle){
-      this.glStyle.layers.forEach(layer => {
+    if(this.overlayMapStyle){
+      this.overlayMapStyle.layers.forEach(layer => {
 
         //check if the layer_id matches
         var foundMatch;
@@ -296,7 +297,7 @@ module.exports = {
           if(layer.metadata['maphubs:layer_id'] === layer_id){
             foundMatch = true;
           }
-        }else if(layer.id.endsWith(layer_id)){
+        }else if(layer.id.endsWith(shortid)){
           foundMatch = true;
         }
         if(foundMatch){
