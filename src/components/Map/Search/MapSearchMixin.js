@@ -15,8 +15,8 @@ module.exports = {
     query = `/.*${query}.*/ig`;
     let sourceIDs = [];
     let queries = [];
-    if(_this.glStyle){
-      _this.glStyle.layers.forEach((layer) => {
+    if(_this.overlayMapStyle){
+      _this.overlayMapStyle.layers.forEach((layer) => {
         if(layer.metadata && 
           (layer.metadata['maphubs:interactive'] 
             || (layer.metadata['maphubs:markers'] && 
@@ -25,7 +25,7 @@ module.exports = {
           ) &&
           (layer.id.startsWith('omh') || layer.id.startsWith('osm'))
         ){
-          let source = _this.glStyle.sources[layer.source];
+          let source = _this.overlayMapStyle.sources[layer.source];
           
           const sourceId = layer.source;
           if(!_includes(sourceIDs, sourceId)){
@@ -72,7 +72,7 @@ module.exports = {
         },
         _this.map);
 
-        let source = _this.glStyle.sources[query.source];
+        let source = _this.overlayMapStyle.sources[query.source];
         
         
 
