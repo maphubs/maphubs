@@ -270,22 +270,24 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   map.on('style.load', () => {
     _this.debugLog('style.load');
+    //restore map bounds (except for geoJSON maps)
+    if(!_this.props.data && _this.state.restoreBounds){
+      var fitBounds = _this.state.restoreBounds;
+      if(fitBounds.length > 2){
+        fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
+      }
+      debug.log('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
+      map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
+      if(_this.refs.insetMap){
+        _this.refs.insetMap.sync(map);
+      }
+    }
+
     //add the omh data
     _this.addMapData(map, _this.props.glStyle, _this.props.data, () => {
       //do stuff that needs to happen after data loads
       _this.debugLog('finished adding map data');
-      //restore map bounds (except for geoJSON maps)
-      if(!_this.props.data && _this.state.restoreBounds){
-        var fitBounds = _this.state.restoreBounds;
-        if(fitBounds.length > 2){
-          fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
-        }
-        debug.log('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
-        map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
-        if(_this.refs.insetMap){
-          _this.refs.insetMap.sync(map);
-        }
-      }
+
       //set locale
       if(_this.state.locale !== 'en'){
         _this.changeLocale(_this.state.locale, _this.map);
