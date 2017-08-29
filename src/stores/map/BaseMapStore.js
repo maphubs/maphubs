@@ -185,7 +185,16 @@ export default class BaseMapStore extends Reflux.Store {
       }else if(config.loadFromFile){
         this.loadFromFile(config.loadFromFile, cb);
       }else if(config.style){
-        cb(config.style);
+        let style = config.style;
+        if(!style.glyphs){
+          style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}"
+        }
+
+        if(!style.sprite){
+          style.sprite = "";
+        }
+
+        cb(style);
       }else if(config.mapboxUrl){
         //example: mapbox://styles/mapbox/streets-v8?optimize=true
         cb(config.mapboxUrl);
