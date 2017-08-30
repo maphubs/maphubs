@@ -51,37 +51,34 @@ module.exports = {
     });
   },
 
-  async rebuildFeatures(trx: any){  
+  async rebuildFeatures(){  
     var _this = this;
-    let db = trx ? trx : knex;
     //delete all existing features
-    const layers = await db('omh.layers').select('layer_id').whereNot({
+    const layers = await knex('omh.layers').select('layer_id').whereNot({
       is_external: true, remote: true, private: true, features_indexed: true
     });
     return Promise.mapSeries(layers, async (layer) => {
       try {
-        await _this.updateLayer(layer.layer_id, trx);
-        return db('omh.layers')
+        await _this.updateLayer(layer.layer_id);
+        return knex('omh.layers')
         .update({features_indexed: true})
         .where({layer_id: layer.layer_id});
       }catch(err){
-        log.error(err);
+        log.error(err.message);
       }
     });
   },
 
-  updateLayer(layer_id: number, trx: any){
+  async updateLayer(layer_id: number){
     var _this = this;
-    let db = knex; if(trx){db = trx;}
 
     log.info('Adding layer in search index: ' + layer_id);
-    return db(`layers.data_${layer_id}`).select('mhid')
-    .then(mhidResults =>{
-      log.info('updating ' + mhidResults.length + ' features');
-      return Promise.mapSeries(mhidResults, mhidResult => {
-        return _this.updateFeature(layer_id, mhidResult.mhid, false, trx);
-      });
+    const mhidResults = await knex(`layers.data_${layer_id}`).select('mhid');
+    log.info('updating ' + mhidResults.length + ' features');
+    return Promise.mapSeries(mhidResults, mhidResult => {
+      return _this.updateFeature(layer_id, mhidResult.mhid, false);
     });
+
   },
 
 

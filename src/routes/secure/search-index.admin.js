@@ -34,57 +34,55 @@ module.exports = app => {
     }).catch(nextError(next));
   });
 
-  app.post('/admin/searchindex/create', csrfProtection, (req, res) => {  
+  app.post('/admin/searchindex/create', csrfProtection, async (req, res) => {  
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.maphubsUser.id;
-    Admin.checkAdmin(user_id).then(isAdmin => {
+    const user_id = req.session.user.maphubsUser.id;
+    try{
+      const isAdmin = await Admin.checkAdmin(user_id);
       if(isAdmin){
-        return SearchIndex.initIndex().then(() =>{
-          return res.send({success: true});
-        });
+        await SearchIndex.initIndex();
+        return res.send({success: true});
       }else{
         return res.status(401).send();
       }
-    }).catch(apiError(res, 200));
+    }catch(err){apiError(res, 200)(err);}
   });
 
-  app.post('/admin/searchindex/delete', csrfProtection, (req, res) => {  
+  app.post('/admin/searchindex/delete', csrfProtection, async (req, res) => {  
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.maphubsUser.id;
-    Admin.checkAdmin(user_id).then(isAdmin => {
+    const user_id = req.session.user.maphubsUser.id;
+    try{
+      const isAdmin = await Admin.checkAdmin(user_id);
       if(isAdmin){
-        return SearchIndex.deleteIndex().then(() =>{
-          return res.send({success: true});
-        });
+        await SearchIndex.deleteIndex();
+        return res.send({success: true});
       }else{
         return res.status(401).send();
       }
-    }).catch(apiError(res, 200));
+    }catch(err){apiError(res, 200)(err);}
   });
 
-  app.post('/admin/searchindex/rebuild/features', csrfProtection, (req, res) => {  
+  app.post('/admin/searchindex/rebuild/features', csrfProtection, async (req, res) => {  
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401).send("Unauthorized, user not logged in");
       return;
     }
-    var user_id = req.session.user.maphubsUser.id;
-    knex.transaction((trx) => {
-      return Admin.checkAdmin(user_id, trx).then(isAdmin => {
-        if(isAdmin){
-          return SearchIndex.rebuildFeatures(trx).then(() =>{
-            return res.send({success: true});
-          });
-        }else{
-          return res.status(401).send();
-        }
-      });
-    }).catch(apiError(res, 200));
+    const user_id = req.session.user.maphubsUser.id;
+    try{
+      const isAdmin = await Admin.checkAdmin(user_id);
+      if(isAdmin){
+        await SearchIndex.rebuildFeatures();
+        return res.send({success: true});
+      }else{
+        return res.status(401).send();
+      }
+    }catch(err){apiError(res, 200)(err);}
   });
 
 
