@@ -1,5 +1,4 @@
 //@flow
-var debug = require('../../../services/debug')('MapGeoJSONMixin');
 var MapStyles = require('../Styles');
 var _bbox = require('@turf/bbox');
 
@@ -9,11 +8,11 @@ module.exports = {
   initGeoJSON(data: GeoJSONObject){
     if(this.map){
       if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
-        this.addSource("omh-geojson", {"type": "geojson", data});
-        var glStyle = MapStyles.style.defaultStyle('geojson', null, null, null);
+        this.map.addSource("omh-geojson", {"type": "geojson", data});
+        var glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null);
         glStyle.sources["omh-geojson"] = {"type": "geojson", data};
-        this.addLayers(map, glStyle);
-
+        glStyle.layers.map(this.map.addLayer.bind(this.map));
+        
         var interactiveLayers = this.getInteractiveLayers(glStyle);
 
         this.setState({interactiveLayers, glStyle});
