@@ -1,31 +1,5 @@
 version: '2'
 services:
-  assets:
-    image: 'nginx:alpine'
-    command: nginx -g 'daemon off;'
-    restart: always
-    ports:
-      - '8080:80'
-    volumes:
-      - './assets/maphubsnginx_assets.template:/etc/nginx/nginx.conf'
-      - './assets/assets:/data/assets'
-      - './assets/public:/data/public'
-  gateway:
-    image: 'nginx:alpine'
-    volumes:
-      - './env/maphubsnginx.template:/etc/nginx/nginx.conf'
-    env_file:
-      - ./env/dev/host.env
-    command: /bin/sh -c "until nc -z web 4000; do sleep 10; done; nginx -g 'daemon off;'"
-    dns:
-      - 8.8.8.8
-    restart: always
-    depends_on:
-      - web
-      - tiles
-      - assets
-    ports:
-      - '8888:8888'
   web:
     build:
       context: .
@@ -77,8 +51,8 @@ services:
       - db
   manet:
     image: 'quay.io/maphubs/manet:latest'
-    links:
-      - 'gateway:maphubs.dev'
+    extra_hosts:
+      - "maphubs.dev:192.168.65.1"
     ports:
       - '8891:8891'
     restart: always
