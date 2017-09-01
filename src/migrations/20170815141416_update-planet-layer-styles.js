@@ -37,10 +37,12 @@ exports.up = function(knex, Promise) {
   .whereIn('external_layer_type', ['Planet', 'Planet Labs'])
   .then((layers) => {
     var updateCommands = [];
-    layers.forEach(layer => {
-      let style = multiRasterStyleWithOpacity(layer.layer_id, layer.external_layer_config, 100);
-      updateCommands.push(knex('omh.layers').update({style}).where({layer_id: layer.layer_id}));
-    });
+    if(layers){
+      layers.forEach(layer => {
+        let style = multiRasterStyleWithOpacity(layer.layer_id, layer.external_layer_config.layers, 100);
+        updateCommands.push(knex('omh.layers').update({style}).where({layer_id: layer.layer_id}));
+      });
+    }
     return Promise.all(updateCommands);
   });
 };

@@ -178,8 +178,6 @@ module.exports = {
 
     var baseUrl = urlUtil.getBaseUrl();
     var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
-    //var maphubsUrl = 'http://map.loggingroads.org';
-
 
     var manetUrl = local.manetUrl;
 
