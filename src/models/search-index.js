@@ -73,11 +73,15 @@ module.exports = {
     var _this = this;
     let db = trx ? trx : knex;
     log.info('Adding layer in search index: ' + layer_id);
-    const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
-    log.info('updating ' + mhidResults.length + ' features');
-    return Promise.mapSeries(mhidResults, mhidResult => {
-      return _this.updateFeature(layer_id, mhidResult.mhid, false);
-    });
+    try {
+      const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
+      log.info('updating ' + mhidResults.length + ' features');
+      return Promise.mapSeries(mhidResults, mhidResult => {
+        return _this.updateFeature(layer_id, mhidResult.mhid, false);
+      });
+    }catch(err){
+      log.error(err.message);
+    }
 
   },
 
