@@ -69,11 +69,11 @@ module.exports = {
     });
   },
 
-  async updateLayer(layer_id: number){
+  async updateLayer(layer_id: number, trx: any){
     var _this = this;
-
+    let db = trx ? trx : knex;
     log.info('Adding layer in search index: ' + layer_id);
-    const mhidResults = await knex(`layers.data_${layer_id}`).select('mhid');
+    const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
     log.info('updating ' + mhidResults.length + ' features');
     return Promise.mapSeries(mhidResults, mhidResult => {
       return _this.updateFeature(layer_id, mhidResult.mhid, false);

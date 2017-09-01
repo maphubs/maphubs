@@ -134,7 +134,7 @@ module.exports = {
         geomType = 'point';
       }
       else {
-        log.error("unsupported data type: "+ firstFeatureGeom);
+        log.error("unsupported data type: "+ JSON.stringify(firstFeatureGeom));
       }
 
       var srid = '4326'; //assume WGS84 unless we find something else
