@@ -173,6 +173,19 @@ module.exports = {
         .del();
     },
 
+    async isGroupAdmin(group_id: string, user_id: number){
+      if(!group_id || user_id <= 0){
+        return false;
+      }else{
+        const users = await this.getGroupMembers(group_id);
+        const user = _find(users, {id: user_id});
+        if(user && user.role === 'Administrator'){
+          return true;
+        }
+        return false;
+      }
+    },
+    
     async allowedToModify(group_id: string, user_id: number){
       if(!group_id || user_id <= 0){
         return false;

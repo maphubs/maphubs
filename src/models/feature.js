@@ -68,7 +68,7 @@ module.exports = {
       }else{
         const bbox = await db.raw(`select 
         '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
-        from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)             
+        from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`);             
 
         var feature = {
           type: 'Feature',

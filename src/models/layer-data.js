@@ -15,7 +15,7 @@ module.exports = {
    * @param {any} trx
    * @returns Promise
    */
-  async createFeature(layer_id: number, geojson: Object, trx: any): Bluebird$Promise<string>{
+  async createFeature(layer_id: number, geojson: Object, trx: any): Promise<string>{
     var _this = this;
     debug.log('creating feature');
     

@@ -8,48 +8,35 @@ var debug = require('../../services/debug')('routes/layer-data');
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
+var isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
- app.post('/api/edits/save', csrfProtection, (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-
-    var user_id = req.session.user.maphubsUser.id;
-
-    var data = req.body;
-    if(data && data.layer_id && data.edits){
-       Layer.allowedToModify(data.layer_id, user_id)
-      .then((allowed) => {
-        if(allowed){
-          return knex.transaction(trx => {
-            var updates = [];
-            data.edits.forEach(edit => {
+  app.post('/api/edits/save', csrfProtection, isAuthenticated, async (req, res) => {
+    try{
+      var data = req.body;
+      if(data && data.layer_id && data.edits){
+        if(await Layer.allowedToModify(data.layer_id, req.user_id)){
+          return knex.transaction(async (trx) => {
+            await Promise.map(data.edits, (edit)=>{
               if(edit.status === 'create'){
-                updates.push(LayerData.createFeature(data.layer_id, edit.geojson, trx));
+                return LayerData.createFeature(data.layer_id, edit.geojson, trx);
               }else if(edit.status === 'modify'){
-                updates.push(LayerData.updateFeature(data.layer_id, edit.geojson.id, edit.geojson, trx));
+                return LayerData.updateFeature(data.layer_id, edit.geojson.id, edit.geojson, trx);
               }else if(edit.status === 'delete'){
-                updates.push(LayerData.deleteFeature(data.layer_id, edit.geojson.id, trx));
+                return LayerData.deleteFeature(data.layer_id, edit.geojson.id, trx);
               }
             });
-            return Promise.all(updates).then(()=>{
-              return Layer.setUpdated(data.layer_id, user_id, trx).then(()=>{
-                debug.log('save edits complete');
-                return res.status(200).send({success: true});
-              });
-            });
+            await Layer.setUpdated(data.layer_id, req.user_id, trx);
+            debug.log('save edits complete');
+            return res.status(200).send({success: true});
           });
-          }else{
-            return notAllowedError(res, 'layer');
-          }
-    }).catch(apiError(res, 500));      
-  }else{
-    apiDataError(res);
-  }
-});
- 
+        }else{
+          return notAllowedError(res, 'layer');
+        } 
+      }else{
+        apiDataError(res);
+      }
+    }catch(err){apiError(res, 500)(err);}
+  });
 };

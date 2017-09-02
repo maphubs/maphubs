@@ -13,23 +13,18 @@ var notAllowedError = require('../../services/error-response').notAllowedError;
 var Promise = require('bluebird');
 const Importers = require('../../services/importers');
 var csrfProtection = require('csurf')({cookie: false});
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
-  app.post('/api/layer/:id/upload', multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
+  app.post('/api/layer/:id/upload', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
    async (req, res) => {
-     if (!req.isAuthenticated || !req.isAuthenticated()
-         || !req.session || !req.session.user) {
-       res.status(401).send("Unauthorized, user not logged in");
-     }
-
-     var user_id = req.session.user.maphubsUser.id;
      var layer_id = parseInt(req.params.id || '', 10);
      try {
       const layer = await Layer.getLayerByID(layer_id);
       if(layer){
         let shortid = layer.shortid;       
-        if(layer.created_by_user_id === user_id){
+        if(layer.created_by_user_id === req.user_id){
           debug.log('Filename: ' +req.file.originalname);
           debug.log('Mimetype: ' +req.file.mimetype);
           const importer = Importers.getImporterFromFileName(req.file.originalname);
@@ -55,20 +50,13 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/layer/finishupload', csrfProtection, async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-
-    var user_id = req.session.user.maphubsUser.id;
+  app.post('/api/layer/finishupload', csrfProtection, isAuthenticated, async (req, res) => {
     if(req.body.layer_id && req.body.requestedShapefile){
       debug.log('finish upload for layer: ' + req.body.layer_id + ' requesting shapefile: ' + req.body.requestedShapefile);
       try{
         const layer = await Layer.getLayerByID(req.body.layer_id);
         const shortid = layer.shortid;
-        if(layer.created_by_user_id === user_id){
+        if(layer.created_by_user_id === req.user_id){
           debug.log('allowed');
           //get file path
           const path = await DataLoadUtils.getTempShapeUpload(req.body.layer_id);

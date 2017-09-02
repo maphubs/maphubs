@@ -3,277 +3,215 @@ var Map = require('../../models/map');
 var Group = require('../../models/group');
 var ScreenshotUtil = require('../../services/screenshot-utils');
 //var debug = require('../../services/debug')('routes/map');
-var log = require('../../services/log');
+//var log = require('../../services/log');
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 var csrfProtection = require('csurf')({cookie: false});
 var Locales = require('../../services/locales');
+var isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
-    app.post('/api/map/create', csrfProtection, (req, res) => {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.maphubsUser.id;
-
-      var data = req.body;
-      if(data && data.basemap && data.position && data.settings && data.title && data.private !== undefined){
-          var createMap;
-          if(data.group_id){
-            createMap = Group.allowedToModify(data.group_id, user_id)
-            .then((allowed) => {
-              if(allowed){
-                return Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id, data.group_id, data.private);
-              }else{
-                throw new Error('Unauthorized');
-              }
-            });
-          }else{
-            createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id, data.private);
-          }
-         createMap
-          .then((map_id) => {
-            //intentionally not returning here since we don't want to wait for the reload
-            ScreenshotUtil.reloadMapThumbnail(map_id)
-            .then(() => {
-              return ScreenshotUtil.reloadMapImage(map_id);
-            })
-            .catch((err) => {log.error(err);});
-            return res.status(200).send({success: true, map_id});
-          }).catch(apiError(res, 500));
-      }else{
-        apiDataError(res);
-      }
-    });
-
-    app.post('/api/map/copy', csrfProtection, (req, res) => {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.maphubsUser.id;
-
-      var data = req.body;
-      if(data && data.map_id){
-        Map.isPrivate(data.map_id).then((isPrivate) => {
-          if(isPrivate){
-            return Map.allowedToModify(data.map_id, user_id)
-            .then((allowed) => {
-              if(allowed){
-                if(data.group_id){
-                  //copy to a group
-                  return Group.allowedToModify(data.group_id, user_id)
-                  .then((groupAllowed) => {
-                    if(groupAllowed){
-                      return Map.copyMapToGroup(data.map_id, data.group_id, user_id)
-                      .then((map_id) => {
-                        //don't wait for screenshot
-                        ScreenshotUtil.reloadMapThumbnail(map_id)
-                        .then(() => {
-                          return ScreenshotUtil.reloadMapImage(map_id);
-                        }).catch((err) => {log.error(err);});
-                        return res.status(200).send({success: true, map_id});
-                      }).catch(apiError(res, 500));
-                    }else{
-                      return notAllowedError(res, 'group');
-                    }
-                  });
-                }else{
-                  //copy to the requesting user
-                  return Map.copyMapToUser(data.map_id, user_id)
-                  .then((map_id) => {
-                    //don't wait for screenshot
-                    ScreenshotUtil.reloadMapThumbnail(map_id)
-                    .then(() => {
-                      return ScreenshotUtil.reloadMapImage(map_id);
-                    }).catch((err) => {log.error(err);});
-                    return res.status(200).send({success: true, map_id});
-                  }).catch(apiError(res, 500));
-                }
-              }else{
-                return notAllowedError(res, 'map');
-              }
-            });
-          }else{
-            if(data.group_id){
-                  //copy to a group
-                  return Group.allowedToModify(data.group_id, user_id)
-                  .then((groupAllowed) => {
-                    if(groupAllowed){
-                      return Map.copyMapToGroup(data.map_id, data.group_id, user_id)
-                      .then((map_id) => {
-                        //don't wait for screenshot
-                        ScreenshotUtil.reloadMapThumbnail(map_id)
-                        .then(() => {
-                          return ScreenshotUtil.reloadMapImage(map_id);
-                        }).catch((err) => {log.error(err);});
-                        return res.status(200).send({success: true, map_id});
-                      }).catch(apiError(res, 500));
-                    }else{
-                      return notAllowedError(res, 'group');
-                    }
-                  });
-                }else{
-                  //copy to the requesting user
-                  return Map.copyMapToUser(data.map_id, user_id)
-                  .then((map_id) => {
-                    //don't wait for screenshot
-                    ScreenshotUtil.reloadMapThumbnail(map_id)
-                    .then(() => {
-                      return ScreenshotUtil.reloadMapImage(map_id);
-                    }).catch((err) => {log.error(err);});
-                    return res.status(200).send({success: true, map_id});
-                  }).catch(apiError(res, 500));
-                }
-          }
-        }).catch(apiError(res, 500));
-      }else{
-        apiDataError(res);
-      }
-    });
-
-    /* not used?
-
-    app.post('/api/map/privacy', csrfProtection, (req, res) => {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.maphubsUser.id;
-      var data = req.body;
-      if(data && data.map_id && typeof data.isPrivate !== 'undefined'){
-        Map.allowedToModify(data.map_id, user_id)
-        .then((allowed) => {
-          if(allowed){
-            return Map.setPrivate(data.map_id, data.isPrivate, data.user_id)
-            .then(() => {
-              return res.status(200).send({success: true});
-            });
-          }else{
-            return notAllowedError(res, 'map');
-          }
-        }).catch(apiError(res, 200));
-      }else{
-        apiDataError(res);
-      }
-    });
-    */
-
-    app.post('/api/map/public', csrfProtection, (req, res) => {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.maphubsUser.id;
-      var data = req.body;
-      if(data && data.map_id && typeof data.isPublic !== 'undefined'){
-        Map.allowedToModify(data.map_id, user_id)
-        .then((allowed) => {
-          if(allowed){
-            if(data.isPublic){
-              return Map.addPublicShareID(data.map_id)
-              .then((share_id) => {
-                return res.status(200).send({success: true, share_id});
-              });
+  app.post('/api/map/create', csrfProtection, isAuthenticated, async (req, res) => {
+    try{
+    const data = req.body;
+    if(data && data.basemap && data.position && data.settings && data.title && data.private !== undefined){
+        var createMap;
+        if(data.group_id){
+          createMap = Group.allowedToModify(data.group_id, req.user_id)
+          .then((allowed) => {
+            if(allowed){
+              return Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.group_id, data.private);
             }else{
-              return Map.removePublicShareID(data.map_id)
-              .then(() => {
-                return res.status(200).send({success: true});
-              });
+              throw new Error('Unauthorized');
+            }
+          });
+        }else{
+          createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.private);
+        }
+        const map_id = await createMap;
+        //intentionally not returning here since we don't want to wait for the reload
+        ScreenshotUtil.reloadMapThumbnail(map_id);
+        ScreenshotUtil.reloadMapImage(map_id);
+
+        return res.status(200).send({success: true, map_id});
+    }else{
+      apiDataError(res);
+    }
+  }catch(err){apiError(res, 500)(err);}
+  });
+
+  app.post('/api/map/copy', csrfProtection, isAuthenticated, async (req, res) => {
+    try{
+      const data = req.body;
+      if(data && data.map_id){
+        if(await Map.isPrivate(data.map_id)){
+          if(await Map.allowedToModify(data.map_id, req.user_id)){
+            if(data.group_id){
+              //copy to a group
+              if(await Group.allowedToModify(data.group_id, req.user_id)){
+                const map_id = await Map.copyMapToGroup(data.map_id, data.group_id, req.user_id);
+                  //don't wait for screenshot
+                  ScreenshotUtil.reloadMapThumbnail(map_id);
+                  ScreenshotUtil.reloadMapImage(map_id);
+
+                  return res.status(200).send({success: true, map_id});
+              }else{
+                return notAllowedError(res, 'group');
+              }
+            }else{
+              //copy to the requesting user
+              const map_id = await Map.copyMapToUser(data.map_id, req.user_id);
+
+              //don't wait for screenshot
+              ScreenshotUtil.reloadMapThumbnail(map_id);
+              ScreenshotUtil.reloadMapImage(map_id);
+
+              return res.status(200).send({success: true, map_id});
             }
           }else{
             return notAllowedError(res, 'map');
           }
-        }).catch(apiError(res, 200));
+        }else{
+          if(data.group_id){
+            //copy to a group  
+            if(await Group.allowedToModify(data.group_id, req.user_id)){
+              const map_id = await Map.copyMapToGroup(data.map_id, data.group_id, req.user_id);
+              //don't wait for screenshot
+              ScreenshotUtil.reloadMapThumbnail(map_id);
+              ScreenshotUtil.reloadMapImage(map_id);
+
+              return res.status(200).send({success: true, map_id});
+            }else{
+              return notAllowedError(res, 'group');
+            }
+          }else{
+            //copy to the requesting user
+            const map_id = await Map.copyMapToUser(data.map_id, req.user_id);
+            //don't wait for screenshot
+            ScreenshotUtil.reloadMapThumbnail(map_id);
+            ScreenshotUtil.reloadMapImage(map_id);
+            return res.status(200).send({success: true, map_id});
+          }
+        }
       }else{
         apiDataError(res);
       }
-    });
+    }catch(err){apiError(res, 500)(err);}
+  });
+
+  /* not used?
+
+  app.post('/api/map/privacy', csrfProtection, (req, res) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).send("Unauthorized, user not logged in");
+      return;
+    }
+    var user_id = req.session.user.maphubsUser.id;
+    var data = req.body;
+    if(data && data.map_id && typeof data.isPrivate !== 'undefined'){
+      Map.allowedToModify(data.map_id, user_id)
+      .then((allowed) => {
+        if(allowed){
+          return Map.setPrivate(data.map_id, data.isPrivate, data.user_id)
+          .then(() => {
+            return res.status(200).send({success: true});
+          });
+        }else{
+          return notAllowedError(res, 'map');
+        }
+      }).catch(apiError(res, 200));
+    }else{
+      apiDataError(res);
+    }
+  });
+  */
+
+  app.post('/api/map/public', csrfProtection, isAuthenticated, async (req, res) => {
+    try{ 
+      const data = req.body;
+      if(data && data.map_id && typeof data.isPublic !== 'undefined'){
+        if(await Map.allowedToModify(data.map_id, req.user_id)){
+          if(data.isPublic){
+            return res.status(200).send({
+              success: true, 
+              share_id: await Map.addPublicShareID(data.map_id)
+            });
+          }else{
+            await Map.removePublicShareID(data.map_id);
+            return res.status(200).send({success: true});
+          }
+        }else{
+          return notAllowedError(res, 'map');
+        }
+      }else{
+        apiDataError(res);
+      }
+    }catch(err){apiError(res, 500)(err);}
+  });
     
 
-    app.post('/api/map/save', csrfProtection, (req, res) => {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.maphubsUser.id;
-
-      var data = req.body;
+  app.post('/api/map/save', csrfProtection, isAuthenticated, async (req, res) => {
+    try{
+      const data = req.body;
       if(data && data.layers && data.style && data.settings && data.basemap && data.position && data.map_id && data.title){
-        Map.allowedToModify(data.map_id, user_id)
-        .then((allowed) => {
-          if(allowed){
-            return Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, data.settings, user_id)
-            .then(() => {       
-              //don't wait for screenshot
-              ScreenshotUtil.reloadMapThumbnail(data.map_id)
-              .then(() => {
-                return ScreenshotUtil.reloadMapImage(data.map_id);
-              }).catch((err) => {log.error(err);});
-              return res.status(200).send({success: true});
-            }).catch(apiError(res, 200));
-          }else{
-            return notAllowedError(res, 'map');
-          }
-        }).catch(apiError(res, 200));
+        if(await Map.allowedToModify(data.map_id, req.user_id)){
+          await Map.updateMap(data.map_id, data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id);      
+          //don't wait for screenshot
+          ScreenshotUtil.reloadMapThumbnail(data.map_id);
+          ScreenshotUtil.reloadMapImage(data.map_id);
+          return res.status(200).send({success: true});
+        }else{
+          return notAllowedError(res, 'map');
+        }
       }else{
         apiDataError(res);
       }
-    });
+    }catch(err){apiError(res, 500)(err);}
+  });
 
-    app.post('/api/map/delete', csrfProtection, (req, res) => {
-      if (!req.isAuthenticated || !req.isAuthenticated()) {
-        res.status(401).send("Unauthorized, user not logged in");
-        return;
-      }
-      var user_id = req.session.user.maphubsUser.id;
-
+  app.post('/api/map/delete', csrfProtection, isAuthenticated, async (req, res) => {
+    try{
       var data = req.body;
       if(data && data.map_id){
-        Map.allowedToModify(data.map_id, user_id)
-        .then((allowed) => {
-          if(allowed){
-            return Map.deleteMap(data.map_id)
-            .then(() => {
-              return res.status(200).send({success: true});
-            }).catch(apiError(res, 500));
-          }else{
-            return notAllowedError(res, 'map');
-          }
-        }).catch(apiError(res, 500));
+        if(await Map.allowedToModify(data.map_id, req.user_id)){
+          await Map.deleteMap(data.map_id);
+          return res.status(200).send({success: true});
+        }else{
+          return notAllowedError(res, 'map');
+        }
       }else{
         apiDataError(res);
       }
-    });
+    }catch(err){apiError(res, 500)(err);}
+  });
 
-    app.get('/api/maps/search/suggestions', (req, res) => {
-      if(!req.query.q){
-        res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
-        return;
-      }
-      var q = req.query.q;
-      Map.getSearchSuggestions(q)
-        .then((result) => {
-          var suggestions = [];
-            result.forEach((map) => {
-              let title = Locales.getLocaleStringObject(req.locale, map.title);
-              suggestions.push({key: map.map_id, value: title});
-            });
-            return res.send({suggestions});
-        }).catch(apiError(res, 500));
-    });
+  app.get('/api/maps/search/suggestions', (req, res) => {
+    if(!req.query.q){
+      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+      return;
+    }
+    var q = req.query.q;
+    Map.getSearchSuggestions(q)
+      .then((result) => {
+        var suggestions = [];
+          result.forEach((map) => {
+            let title = Locales.getLocaleStringObject(req.locale, map.title);
+            suggestions.push({key: map.map_id, value: title});
+          });
+          return res.send({suggestions});
+      }).catch(apiError(res, 500));
+  });
 
-    app.get('/api/maps/search', (req, res) => {
-      if (!req.query.q) {
-        res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
-        return;
-      }
-      Map.getSearchResults(req.query.q)
-        .then((result) => {
-          return res.status(200).send({maps: result});
-        }).catch(apiError(res, 500));
-    });
+  app.get('/api/maps/search', (req, res) => {
+    if (!req.query.q) {
+      res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
+      return;
+    }
+    Map.getSearchResults(req.query.q)
+      .then((result) => {
+        return res.status(200).send({maps: result});
+      }).catch(apiError(res, 500));
+  });
 };

@@ -15,6 +15,7 @@ var local = require('../../local');
 var log = require('../../services/log');
 var debug = require('../../services/debug')('routes/layers-replace');
 const Importers = require('../../services/importers');
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
@@ -43,20 +44,14 @@ app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (r
     }
   });
 
-  app.post('/api/layer/:id/replace', multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
+  app.post('/api/layer/:id/replace', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
   async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()
-        || !req.session || !req.session.user) {
-      res.status(401).send("Unauthorized, user not logged in");
-    }
-
-    const user_id = req.session.user.maphubsUser.id;
     const layer_id = parseInt(req.params.id || '', 10);
     try {
      const layer = await Layer.getLayerByID(layer_id);
      if(layer){
        let shortid = layer.shortid;       
-       if(layer.created_by_user_id === user_id){
+       if(layer.created_by_user_id === req.user_id){
          debug.log('Mimetype: ' +req.file.mimetype);
          const importer = Importers.getImporterFromFileName(req.file.originalname);
          const importerResult = await importer(req.file.path, layer_id);
@@ -82,35 +77,25 @@ app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (r
    }
  });
 
-  app.post('/api/layer/:id/replace/save', csrfProtection, async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    const user_id = req.session.user.maphubsUser.id;
-    const layer_id = parseInt(req.params.id || '', 10);
-    if (layer_id) {
-      try{
-      const allowed =  await Layer.allowedToModify(layer_id, user_id);
-      if(allowed){
-        await knex.transaction(async (trx) => {
-          await DataLoadUtils.removeLayerData(layer_id, trx);
-          await DataLoadUtils.loadTempData(layer_id, trx);
-          const layer = await Layer.getLayerByID(layer_id, trx);
-          await LayerViews.replaceViews(layer_id, layer.presets, trx);
-          await Layer.setComplete(layer_id, trx);
-          return res.send({success: true});
-        });
-      }else {
-        return notAllowedError(res, 'layer');
+  app.post('/api/layer/:id/replace/save', csrfProtection, isAuthenticated, async (req, res) => {
+    try{
+      const layer_id = parseInt(req.params.id || '', 10);
+      if (layer_id) {
+        if(await Layer.allowedToModify(layer_id, req.user_id)){
+          await knex.transaction(async (trx) => {
+            await DataLoadUtils.removeLayerData(layer_id, trx);
+            await DataLoadUtils.loadTempData(layer_id, trx);
+            const layer = await Layer.getLayerByID(layer_id, trx);
+            await LayerViews.replaceViews(layer_id, layer.presets, trx);
+            await Layer.setComplete(layer_id, trx);
+            return res.send({success: true});
+          });
+        }else {
+          return notAllowedError(res, 'layer');
+        }
+      } else {
+        apiDataError(res);
       }
-      }catch(err){
-        apiError(res, 200)(err);
-      }
-    } else {
-      apiDataError(res);
-    }
-
+    }catch(err){apiError(res, 200)(err);}
   });
-
 };

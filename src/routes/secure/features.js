@@ -16,6 +16,7 @@ var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
 var csrfProtection = require('csurf')({cookie: false});
 var privateLayerCheck = require('../../services/private-layer-check');
+var isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
@@ -212,19 +213,14 @@ module.exports = function(app: any) {
     }catch(err){apiError(res, 404)(err);}
   });
 
-  app.post('/api/feature/notes/save', csrfProtection, async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.maphubsUser.id;
-    var data = req.body;
+  app.post('/api/feature/notes/save', csrfProtection, isAuthenticated, async (req, res) => {
+    const data = req.body;
     if (data && data.layer_id && data.mhid && data.notes) {
       try{
-        const allowed = await Layer.allowedToModify(data.layer_id, user_id);
+        const allowed = await Layer.allowedToModify(data.layer_id, req.user_id);
         if(allowed){
           return knex.transaction(async (trx) => {
-            await Feature.saveFeatureNote(data.mhid, data.layer_id, user_id, data.notes, trx);
+            await Feature.saveFeatureNote(data.mhid, data.layer_id, req.user_id, data.notes, trx);
             await SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx);
             return res.send({success: true});
           });
@@ -237,30 +233,24 @@ module.exports = function(app: any) {
     }
   });
 
-
-  app.post('/api/feature/photo/add', csrfProtection, (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.maphubsUser.id;
-    var data = req.body;
+  app.post('/api/feature/photo/add', csrfProtection, isAuthenticated, (req, res) => {
+    const data = req.body;
     if (data && data.layer_id && data.mhid && data.image && data.info) {
-      Layer.allowedToModify(data.layer_id, user_id)
+      Layer.allowedToModify(data.layer_id, req.user_id)
       .then((allowed) => {
         if(allowed){
           return knex.transaction( async (trx) => {
             //set will replace existing photo
-            const photo_id = await PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, user_id, trx);
+            const photo_id = await PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, req.alloweduser_id, trx);
             
             //add a tag to the feature and update the layer
             const layer = await Layer.getLayerByID(data.layer_id, trx);
             const baseUrl = urlUtil.getBaseUrl();
             const photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg';
             await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx);
-            const presets = await PhotoAttachment.addPhotoUrlPreset(layer, user_id, trx);
+            const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx);
             await layerViews.replaceViews(data.layer_id, presets, trx);
-            await Layer.setUpdated(data.layer_id, user_id, trx);
+            await Layer.setUpdated(data.layer_id, req.user_id, trx);
       
             return res.send({success: true, photo_id, photo_url});
           }).catch(apiError(res, 500));
@@ -273,16 +263,10 @@ module.exports = function(app: any) {
     }
   });
 
-  app.post('/api/feature/photo/delete', csrfProtection, async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.maphubsUser.id;
-    var data = req.body;
+  app.post('/api/feature/photo/delete', csrfProtection, isAuthenticated, async (req, res) => {
+    const data = req.body;
     if (data && data.layer_id && data.mhid && data.photo_id) {
-      
-      Layer.allowedToModify(data.layer_id, user_id)
+      Layer.allowedToModify(data.layer_id, req.user_id)
       .then((allowed) => {
         if(allowed){
           return knex.transaction(async (trx) => {
@@ -293,7 +277,7 @@ module.exports = function(app: any) {
             //remove the photo URL from feature
             await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx);
             await layerViews.replaceViews(data.layer_id, layer.presets, trx);
-            await Layer.setUpdated(data.layer_id, user_id, trx);
+            await Layer.setUpdated(data.layer_id, req.user_id, trx);
             return res.send({success: true});
           }).catch(apiError(res, 500));
         }else {
@@ -304,5 +288,4 @@ module.exports = function(app: any) {
       apiDataError(res);
     }
   });
-   
 };

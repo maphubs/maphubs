@@ -5,6 +5,7 @@ var Page = require('../../models/page');
 var nextError = require('../../services/error-response').nextError;
 var apiError = require('../../services/error-response').apiError;
 var apiDataError = require('../../services/error-response').apiDataError;
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app) {
 
@@ -25,34 +26,28 @@ module.exports = function(app) {
     }catch(err){nextError(next)(err);}
   });
 
-  app.post('/api/page/save', csrfProtection, async (req, res) => {
+  app.post('/api/page/save', csrfProtection, isAuthenticated, async (req, res) => {
     try{
-    if(!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    const user_id = req.session.user.maphubsUser.id;
-    const data = req.body;
-    if(data && data.page_id && data.pageConfig) {
-      if(await Admin.checkAdmin(user_id)){
-        const result = await Page.savePageConfig(data.page_id, data.pageConfig);
-        if (result && result === 1) {
-          return res.send({
-            success: true
-          });
-        } else {
-          return res.send({
-            success: false,
-            error: "Failed to Save Page"
-          });
+      const data = req.body;
+      if(data && data.page_id && data.pageConfig) {
+        if(await Admin.checkAdmin(req.user_id)){
+          const result = await Page.savePageConfig(data.page_id, data.pageConfig);
+          if (result && result === 1) {
+            return res.send({
+              success: true
+            });
+          } else {
+            return res.send({
+              success: false,
+              error: "Failed to Save Page"
+            });
+          }
+        }else{
+          return res.status(401).send();
         }
-      }else{
-        return res.status(401).send();
+      } else {
+        apiDataError(res);
       }
-    } else {
-      apiDataError(res);
-    }
     }catch(err){apiError(res, 200)(err);}
   });
-
 };
