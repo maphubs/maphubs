@@ -77,14 +77,12 @@ module.exports = {
       const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
       log.info('updating ' + mhidResults.length + ' features');
       return Promise.mapSeries(mhidResults, mhidResult => {
-        return _this.updateFeature(layer_id, mhidResult.mhid, false);
+        return _this.updateFeature(layer_id, mhidResult.mhid, false, trx);
       });
     }catch(err){
       log.error(err.message);
     }
-
   },
-
 
   async deleteLayer(layer_id: number, trx: any){
     var _this = this;
