@@ -360,7 +360,8 @@ export default class InsetMap extends React.Component<Props, State> {
             minWidth: this.props.minWidth, 
             maxWidth: this.props.maxWidth,
             height: this.props.height, 
-            width: this.props.width
+            width: this.props.width,
+            pointerEvents: 'auto'
             }}>
             <div id={this.props.id + '_inset'} 
             ref= {(c) => { this.insetMapComponent = c; }}

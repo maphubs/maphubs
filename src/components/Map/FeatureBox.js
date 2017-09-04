@@ -207,7 +207,7 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
     }
 
     return (
-        <div className="features card" style={{display, maxHeight: this.state.maxHeight}}>
+        <div className="features card" style={{display, maxHeight: this.state.maxHeight, pointerEvents: 'auto'}}>
           <div className="features-container">
             {closeButton}
             {header}

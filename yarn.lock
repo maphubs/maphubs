@@ -1474,6 +1474,10 @@ bops@0.0.6:
     base64-js "0.0.2"
     to-utf8 "0.0.1"
 
+bowser@^1.2.0:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.7.3.tgz#504bdb43118ca8db9cbbadf28fd60f265af96e4f"
+
 boxen@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/boxen/-/boxen-0.3.1.tgz#a7d898243ae622f7abb6bb604d740a76c6a5461b"
@@ -2733,6 +2737,10 @@ electron-to-chromium@^1.3.18:
   version "1.3.18"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.18.tgz#3dcc99da3e6b665f6abbc71c28ad51a2cd731a9c"
 
+element-resize-event@^2.0.4:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/element-resize-event/-/element-resize-event-2.0.9.tgz#2f5e1581a296eb5275210c141bc56342e218f876"
+
 elliptic@^6.0.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
@@ -3697,6 +3705,22 @@ github-from-package@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/github-from-package/-/github-from-package-0.0.0.tgz#97fb5d96bfde8973313f20e8288ef9a167fa64ce"
 
+gl-mat4@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.1.4.tgz#1e895b55892e56a896867abd837d38f37a178086"
+
+gl-vec2@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gl-vec2/-/gl-vec2-1.0.0.tgz#77fce6ae9612856d6c8b621cd261cd8281b9c637"
+
+gl-vec3@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/gl-vec3/-/gl-vec3-1.0.3.tgz#110fd897d0729f6398307381567d0944941bf22b"
+
+gl-vec4@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/gl-vec4/-/gl-vec4-1.0.1.tgz#97d96878281b14b532cbce101785dfd1cb340964"
+
 gl@^4.0.3:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/gl/-/gl-4.0.4.tgz#46745f365a230672b2f988d85018f737e64c3343"
@@ -4055,6 +4079,10 @@ immutability-helper@^2.3.1:
   resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.3.1.tgz#8ccfce92157208c120b2afad7ed05c11114c086e"
   dependencies:
     invariant "^2.2.0"
+
+immutable@*:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
 
 immutable@4.0.0-rc.2:
   version "4.0.0-rc.2"
@@ -6537,7 +6565,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.8:
+prop-types@^15.5.10, prop-types@^15.5.7, prop-types@^15.5.8:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -6746,6 +6774,12 @@ react-data-grid@^2.0.58:
   version "2.0.58"
   resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.58.tgz#83946bf9cc34d144552349c343e15888c2c6293c"
 
+react-dimensions@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-dimensions/-/react-dimensions-1.3.0.tgz#f5dec8e7b84644a605a900cae0f4a6654acf4e9f"
+  dependencies:
+    element-resize-event "^2.0.4"
+
 react-disqus-thread@maphubs/react-disqus-thread#4114ce406af88bd15b65cc4b7bb0744985a3dd48:
   version "0.4.0"
   resolved "https://codeload.github.com/maphubs/react-disqus-thread/tar.gz/4114ce406af88bd15b65cc4b7bb0744985a3dd48"
@@ -6800,6 +6834,17 @@ react-intl@^2.3.0:
     intl-messageformat "^1.3.0"
     intl-relativeformat "^1.3.0"
     invariant "^2.1.1"
+
+react-map-gl@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-3.0.4.tgz#bd0bb8d92357e4cc774363fda83f02a3050202fb"
+  dependencies:
+    bowser "^1.2.0"
+    hammerjs "^2.0.8"
+    immutable "*"
+    mapbox-gl "0.38.0"
+    prop-types "^15.5.7"
+    viewport-mercator-project "^4.0.1"
 
 react-medium-editor@^1.8.1:
   version "1.8.1"
@@ -8666,6 +8711,15 @@ vfile@2.0.0:
     replace-ext "1.0.0"
     unist-util-stringify-position "^1.0.0"
     x-is-string "^0.1.0"
+
+viewport-mercator-project@^4.0.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/viewport-mercator-project/-/viewport-mercator-project-4.1.1.tgz#92b0611fa0041041d2f3568da3529a8a846017d0"
+  dependencies:
+    gl-mat4 "^1.1.4"
+    gl-vec2 "^1.0.0"
+    gl-vec3 "^1.0.3"
+    gl-vec4 "^1.0.1"
 
 vlq@^0.2.1:
   version "0.2.2"

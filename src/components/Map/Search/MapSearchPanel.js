@@ -191,7 +191,8 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
             lineHeight: '30px',
             textAlign: 'center',
             boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-            width: '30px'
+            width: '30px',
+            pointerEvents: 'auto'
           }}
             data-position="bottom" data-delay="50" 
             data-tooltip={this.__('Search')}
@@ -218,6 +219,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
                 overflow: 'hidden',
                 padding: '5px',
                 position: 'absolute',
+                pointerEvents: 'auto',
                 border: '1px solid #d3d3d3'}}>
             <SearchBar id={'map-search-bar'}
               placeholder={searchLabel}

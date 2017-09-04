@@ -21,6 +21,9 @@ module.exports = {
   },
 
   startMeasurementTool(){
+
+    //this.refs.map._eventManager.destroy();
+
     var draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {

@@ -117,7 +117,8 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
             lineHeight: '30px',
             textAlign: 'center',
             boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-            width: '30px'
+            width: '30px',
+            pointerEvents: 'auto'
           }}
             data-position="bottom" data-delay="50" 
             data-tooltip={this.__('Tools')}
@@ -143,6 +144,7 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
                 height: '100%', 
                 padding: 0,
                 position: 'absolute',
+                pointerEvents: 'auto',
                 border: '1px solid #d3d3d3'}}>
             
             <ul ref="mapToolPanel" className="collapsible no-margin" data-collapsible="accordion" style={{height: '100%'}}>

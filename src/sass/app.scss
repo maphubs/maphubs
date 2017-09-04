@@ -385,6 +385,13 @@ textarea.materialize-textarea+label:after {
   margin: 0px;
 }
 
+/*
+Test disabling react-map-gl click handling
+.overlays {
+  pointer-events: none !important;
+}
+*/
+
   .mapboxgl-ctrl {
     -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
     -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
@@ -422,13 +429,16 @@ textarea.materialize-textarea+label:after {
 
 .mapboxgl-ctrl-top-right {
   transform: rotate(-90deg);
+  /*
+  
   top: -35px !important;
-  right: 85px !important;
+  */
+  right: 110px !important;
 }
 
 .mapboxgl-ctrl-maphubs-measure-tool {
-  right: 135px !important;
-  top: -85px !important;
+  right: 170px !important;
+  top: -50px !important;
 }
 
 .maphubs-measure-tool-search-button {

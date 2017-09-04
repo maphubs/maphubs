@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import Map from '../components/Map/Map';
+import Map2 from '../components/Map/Map2';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
@@ -210,13 +210,13 @@ export default class Search extends MapHubsComponent<Props, State> {
           </div>
         </div>
         <div className="row no-margin" style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
-          <Map ref="map" 
+          <Map2 ref="map" 
           id="global-search-map"
           style={{width: '100%', height: '100%'}}
             disableScrollZoom={true} hoverInteraction={false} showLogo={false} attributionControl={true}
             mapConfig={this.props.mapConfig}
             data={this.state.searchResult} >
-          </Map>
+          </Map2>
          </div>
          <div className="divider"></div>
          <div className="row no-margin" style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>
