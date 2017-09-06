@@ -8,7 +8,7 @@ var Locales = require('../services/locales');
 var local = require('../local');
 
 module.exports = {
-  completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean){
+  async completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean){
     
     let showLogo = true;
     if(req.query.hideLogo){
@@ -24,77 +24,80 @@ module.exports = {
     if(req.query.hideInset){
       showInset = false;
     }
-    
-    Promise.all([
-    Map.getMap(map_id),
-    Map.getMapLayers(map_id, canEdit)
-    ])
-    .then((results) => {
-      var map = results[0];
-      var layers = results[1];
-      var title = 'Map';
-      var geoJSONUrl = req.query.geoJSON;
-      var markerColor = '#FF0000';
-      if(req.query.color){
-        markerColor = '#' + req.query.color;
-      }
-      var overlayName = req.__('Locations');
-      if(req.query.overlayName){
-        overlayName = req.query.overlayName;
-       }
-      
-      if(map.title){
-        title = Locales.getLocaleStringObject(req.locale, map.title);
-      }
-      title += ' - ' + MAPHUBS_CONFIG.productName;
-      
-      var baseUrl = urlUtil.getBaseUrl();
-      let imageUrl;
-      if(shared && map.share_id){
-        imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`;
-      }else{
-        imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`;
-      }
+    try{
 
-        return res.render('embedmap', {
-          title,
-          props:{
-            map, 
-            layers, 
-            canEdit, 
-            isStatic, 
-            interactive, 
-            geoJSONUrl, 
-            markerColor, 
-            overlayName,
-            showLogo,
-            showScale,
-            insetMap: showInset,
-            image: imageUrl
-          },
-          hideFeedback: true, 
-          oembed: 'map',
-           twitterCard: {
-             title,
-             description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
-             image: imageUrl,
-             imageWidth: 1200,
-             imageHeight: 630,
-             imageType: 'image/png'
-           },
-          req});
-    }).catch(nextError(next));
+      const map = await Map.getMap(map_id);
+      const layers = await Map.getMapLayers(map_id, canEdit);
+
+      if(!map){
+        return res.redirect('/notfound?path='+req.path);
+      }else{
+
+        var title = 'Map';
+        var geoJSONUrl = req.query.geoJSON;
+        var markerColor = '#FF0000';
+        if(req.query.color){
+          markerColor = '#' + req.query.color;
+        }
+        var overlayName = req.__('Locations');
+        if(req.query.overlayName){
+          overlayName = req.query.overlayName;
+        }
+        
+        if(map.title){
+          title = Locales.getLocaleStringObject(req.locale, map.title);
+        }
+        title += ' - ' + MAPHUBS_CONFIG.productName;
+        
+        var baseUrl = urlUtil.getBaseUrl();
+        let imageUrl;
+        if(shared && map.share_id){
+          imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`;
+        }else{
+          imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`;
+        }
+
+          return res.render('embedmap', {
+            title,
+            props:{
+              map, 
+              layers, 
+              canEdit, 
+              isStatic, 
+              interactive, 
+              geoJSONUrl, 
+              markerColor, 
+              overlayName,
+              showLogo,
+              showScale,
+              insetMap: showInset,
+              image: imageUrl
+            },
+            hideFeedback: true, 
+            oembed: 'map',
+            twitterCard: {
+              title,
+              description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
+              image: imageUrl,
+              imageWidth: 1200,
+              imageHeight: 630,
+              imageType: 'image/png'
+            },
+            req});
+      }
+    }catch(err){nextError(next)(err);}
   },
 
-  completeUserMapRequest(req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean){
+  async completeUserMapRequest(req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean){
     debug.log('completeUserMapRequest');
-    return Promise.all([
-    Map.getMap(map_id),
-    Map.getMapLayers(map_id, canEdit)
-    ])
-    .then((results) => {
-      var map = results[0];
-      var layers = results[1];
+    try{
+
+    const map = await Map.getMap(map_id);
+    const layers = await Map.getMapLayers(map_id, canEdit);
+
+    if(!map){
+      return res.redirect('/notfound?path='+req.path);
+    }else{
       var title = 'Map';
       if(map.title){
         title = Locales.getLocaleStringObject(req.locale, map.title);
@@ -133,6 +136,7 @@ module.exports = {
            req
          }
        );
-    }).catch(nextError(next));
+    }
+  }catch(err){nextError(next)(err);}
   }
 };

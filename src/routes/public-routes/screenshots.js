@@ -1,7 +1,6 @@
 // @flow
 var Layer = require('../../models/layer');
 var Map = require('../../models/map');
-var Promise = require('bluebird');
 //var log = require('../../services/log');
 //var debug = require('../../services/debug')('routes/screenshots-public');
 var nextError = require('../../services/error-response').nextError;
@@ -32,7 +31,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  let completeMapStaticRender = function(req, res, next, map_id){
+  let completeMapStaticRender = async function(req, res, next, map_id){
     let showLegend = true;
     if(req.query.hideLegend){
       showLegend = false;
@@ -52,14 +51,14 @@ module.exports = function(app: any) {
     if(req.query.hideInset){
       showInset = false;
     }
+    try{
 
-    Promise.all([
-      Map.getMap(map_id),
-      Map.getMapLayers(map_id, true)
-      ])
-      .then((results) => {
-        var map = results[0];
-        var layers = results[1];
+      const map = await Map.getMap(map_id);
+      if(!map){
+        return res.redirect('/notfound?path='+req.path);
+      }else{
+        const layers = await Map.getMapLayers(map_id, true);
+
         var title = req.__('Map');
         if(map.title){
           title = Locales.getLocaleStringObject(req.locale, map.title);
@@ -68,37 +67,41 @@ module.exports = function(app: any) {
           title: title + ' - ' + MAPHUBS_CONFIG.productName, 
           hideFeedback: true,
           disableGoogleAnalytics: true,
-           props:{
-             name: title,
-             layers,
-             position: map.position,
-             basemap: map.basemap,
-             style: map.style,
-             settings: map.settings,
-             showLegend,
-             showLogo,
-             showScale,
-             insetMap: showInset
-           }, req
-         });
-      }).catch(nextError(next));
+          props:{
+            name: title,
+            layers,
+            position: map.position,
+            basemap: map.basemap,
+            style: map.style,
+            settings: map.settings,
+            showLegend,
+            showLogo,
+            showScale,
+            insetMap: showInset
+          }, req
+        });
+      }
+    }catch(err){nextError(next)(err);}
   };
 
-  app.get('/api/map/:mapid/static/render/', manetCheck, (req, res, next) => {
+  app.get('/api/map/:mapid/static/render/', manetCheck, async (req, res, next) => {
     var map_id = parseInt(req.params.mapid || '', 10);
-    completeMapStaticRender(req, res, next, map_id);
+    await completeMapStaticRender(req, res, next, map_id);
   });
 
 
-  app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, (req, res, next) => {
-    var map_id = parseInt(req.params.mapid || '', 10);
-    Promise.all([
-      Map.getMap(map_id),
-      Map.getMapLayers(map_id, true)
-      ])
-      .then((results) => {
-        var map = results[0];
-        var layers = results[1];
+  app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, async (req, res, next) => {
+    try{
+      var map_id = parseInt(req.params.mapid || '', 10);
+
+      const map = await Map.getMap(map_id);
+
+      if(!map){
+        return res.redirect('/notfound?path='+req.path);
+      }else{
+
+        const layers = await Map.getMapLayers(map_id, true);
+
         var title = 'Map';
         if(map.title){
           title = Locales.getLocaleStringObject(req.locale, map.title);
@@ -107,18 +110,19 @@ module.exports = function(app: any) {
           title: title + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: true,
           disableGoogleAnalytics: true,
-           props:{
-             name: title,
-             layers,
-             position: map.position,
-             basemap: map.basemap,
-             style: map.style,
-             showLegend: false,
-             insetMap: false,
-             showLogo: false
-           }, req
-         });
-      }).catch(nextError(next));
+            props:{
+              name: title,
+              layers,
+              position: map.position,
+              basemap: map.basemap,
+              style: map.style,
+              showLegend: false,
+              insetMap: false,
+              showLogo: false
+            }, req
+          });
+      }
+    }catch(err){nextError(next)(err);}
   });
 
 };

@@ -8,7 +8,6 @@ var Stats = require('../../models/stats');
 var login = require('connect-ensure-login');
 //var log = require('../../services/log.js');
 var debug = require('../../services/debug')('routes/hubs');
-var Promise = require('bluebird');
 var urlUtil = require('../../services/url-util');
 var baseUrl = urlUtil.getBaseUrl();
 var nextError = require('../../services/error-response').nextError;
@@ -107,7 +106,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.maphubsUser.id;
+      const user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)
@@ -159,116 +158,85 @@ module.exports = function(app: any) {
     });
   };
 
-  app.get('/hub/:hubid', csrfProtection, privateHubCheck, (req, res, next) => {
-    var hub_id_input: string = req.params.hubid;
-    var user_id: number;
-    if(req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
-    Hub.getHubByID(hub_id_input)
-      .then((hub) => {
-        if(!hub){
-          res.redirect(baseUrl + '/notfound?path='+req.path);
-          return;
-        }
-        recordHubView(req.session, hub.hub_id, user_id, next);
-        if (!req.isAuthenticated || !req.isAuthenticated()) {
-          return renderHubPage(hub, false, req, res);
-        } else {
-          return Hub.allowedToModify(hub.hub_id, user_id)
-          .then((allowed) => {
-            if(allowed){
-              return renderHubPage(hub, true, req, res);
-            }else{
-              return renderHubPage(hub, false, req, res);
-            }
-          });
-        }
-      }).catch(nextError(next));
+  app.get('/hub/:hubid', csrfProtection, privateHubCheck, async (req, res, next) => {
+    try{
+      const hub_id_input: string = req.params.hubid;
+      let user_id: number;
+      if(req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
+      const hub = await Hub.getHubByID(hub_id_input);
+
+      if(!hub){
+        res.redirect(baseUrl + '/notfound?path='+req.path);
+        return;
+      }
+      recordHubView(req.session, hub.hub_id, user_id, next);
+      let canEdit = false;
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        canEdit = await Hub.allowedToModify(hub.hub_id, user_id);
+      }
+      await renderHubPage(hub, canEdit, req, res);
+    }catch(err){nextError(next)(err);}
   });
 
-  var renderHubStoryPage = function(hub, canEdit, req, res){
-      return Hub.getHubStories(hub.hub_id, canEdit)
-      .then((stories) => {
-        return res.render('hubstories', {
-          title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
-          hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
-          props: {
-            hub, stories, canEdit
-          }, req
-        });
+  app.get('/hub/:hubid/stories', csrfProtection, privateHubCheck, async (req, res, next) => {
+    try{
+      const hub_id_input: string = req.params.hubid;
+      let user_id: number;
+      if(req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
+      const hub = await Hub.getHubByID(hub_id_input);
+
+      if(!hub){
+        res.redirect(baseUrl + '/notfound?path='+req.path);
+        return;
+      }
+      recordHubView(req.session, hub.hub_id, user_id, next);
+      let canEdit = false;
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        canEdit = await Hub.allowedToModify(hub.hub_id, user_id);
+      } 
+      return res.render('hubstories', {
+        title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+        hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+        props: {
+          hub, 
+          stories: await Hub.getHubStories(hub.hub_id, canEdit),
+          canEdit
+        }, req
       });
-  };
-
-  app.get('/hub/:hubid/stories', csrfProtection, privateHubCheck, (req, res, next) => {
-
-    const hub_id_input: string = req.params.hubid;
-    let user_id: number;
-    if(req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
-    Hub.getHubByID(hub_id_input)
-      .then((hub) => {
-        if(!hub){
-          res.redirect(baseUrl + '/notfound?path='+req.path);
-          return;
-        }
-        recordHubView(req.session, hub.hub_id, user_id, next);
-        if (!req.isAuthenticated || !req.isAuthenticated()) {
-          return renderHubStoryPage(hub, false, req, res);
-        } else {
-          return Hub.allowedToModify(hub.hub_id, user_id)
-          .then((allowed) => {
-            if(allowed){
-              return renderHubStoryPage(hub, true, req, res);
-            }else{
-              return renderHubStoryPage(hub, false, req, res);
-            }
-          });
-        }
-      }).catch(nextError(next));
+    }catch(err){nextError(next)(err);}
   });
 
-  var renderHubResourcesPage = function(hub, canEdit, req, res){   
-    return res.render('hubresources', {
-      title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
-      hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
-      fontawesome: true,
-      rangy: true,
-      props: {
-        hub, canEdit
-      }, req
-    });
-  };
-
-  app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, (req, res, next) => {
-
-    const hub_id_input: string = req.params.hubid;
-    let user_id: number;
-    if(req.session.user){
-      user_id = req.session.user.maphubsUser.id;
-    }
-    Hub.getHubByID(hub_id_input)
-      .then((hub) => {
-        if(!hub){
-          res.redirect(baseUrl + '/notfound?path='+req.path);
-          return;
-        }
-        recordHubView(req.session, hub.hub_id, user_id, next);
-
-        if (!req.isAuthenticated || !req.isAuthenticated()) {
-          return renderHubResourcesPage(hub, false, req, res);
-        } else {
-          return Hub.allowedToModify(hub.hub_id, user_id)
-          .then((allowed) => {
-            if(allowed){
-              return renderHubResourcesPage(hub, true, req, res);
-            }else{
-              return renderHubResourcesPage(hub, false, req, res);
-            }
-          });
-        }
-    }).catch(nextError(next));
+  app.get('/hub/:hubid/resources', csrfProtection, privateHubCheck, async (req, res, next) => {
+    try{
+      const hub_id_input: string = req.params.hubid;
+      let user_id: number;
+      if(req.session.user){
+        user_id = req.session.user.maphubsUser.id;
+      }
+      const hub = await Hub.getHubByID(hub_id_input);
+      if(!hub){
+        res.redirect(baseUrl + '/notfound?path='+req.path);
+        return;
+      }
+      recordHubView(req.session, hub.hub_id, user_id, next);
+      let canEdit = false;
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        canEdit = await Hub.allowedToModify(hub.hub_id, user_id);
+      } 
+      return res.render('hubresources', {
+        title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
+        hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
+        fontawesome: true,
+        rangy: true,
+        props: {
+          hub, canEdit
+        }, req
+      });
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/createhub', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
@@ -289,18 +257,22 @@ module.exports = function(app: any) {
       const hub_id_input: string = req.params.hubid;
       if(await Hub.allowedToModify(hub_id_input, user_id)){
         const hub = await Hub.getHubByID(hub_id_input);
-        const story_id = await Story.createHubStory(hub.hub_id, user_id);        
-        return res.render('createhubstory', {
-          title: 'Create Story',
-          fontawesome: true,
-          rangy: true,
-          props: {
-            hub, 
-            myMaps: await Map.getUserMaps(user_id), 
-            popularMaps: await Map.getPopularMaps(), 
-            story_id
-          }, req
-        });
+        if(hub){
+          const story_id = await Story.createHubStory(hub.hub_id, user_id);        
+          return res.render('createhubstory', {
+            title: 'Create Story',
+            fontawesome: true,
+            rangy: true,
+            props: {
+              hub, 
+              myMaps: await Map.getUserMaps(user_id), 
+              popularMaps: await Map.getPopularMaps(), 
+              story_id
+            }, req
+          });
+        }else{
+          return res.redirect('/notfound?path='+req.path);
+        }
       }else{
         return res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }
