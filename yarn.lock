@@ -26,9 +26,9 @@
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@mapbox/gl-matrix/-/gl-matrix-0.0.1.tgz#e5126aab4d64c36b81c7a97d0ae0dddde5773d2b"
 
-"@mapbox/mapbox-gl-draw@^0.19.1":
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-draw/-/mapbox-gl-draw-0.19.1.tgz#d9e164a0889da77c5e85deef55c604d17b35c559"
+"@mapbox/mapbox-gl-draw@maphubs/mapbox-gl-draw", "@maphubs/mapbox-gl-draw@maphubs/mapbox-gl-draw":
+  version "1.0.1"
+  resolved "https://codeload.github.com/maphubs/mapbox-gl-draw/tar.gz/4f7dbb1975334c3d9d00d4f4d71e433678d46c08"
   dependencies:
     "@mapbox/geojson-area" "^0.2.1"
     "@mapbox/geojson-normalize" "0.0.1"
@@ -37,6 +37,7 @@
     hat "0.0.3"
     lodash.isequal "^4.2.0"
     point-geometry "0.1.0"
+    viewport-mercator-project "^4.1.1"
     xtend "^4.0.1"
 
 "@mapbox/shapefile-fairy@openmaphub/shapefile-fairy#950cb59adfadc6cbbccac2d33f7bc23c2f2b713e":
@@ -8712,7 +8713,7 @@ vfile@2.0.0:
     unist-util-stringify-position "^1.0.0"
     x-is-string "^0.1.0"
 
-viewport-mercator-project@^4.0.1:
+viewport-mercator-project@^4.0.1, viewport-mercator-project@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/viewport-mercator-project/-/viewport-mercator-project-4.1.1.tgz#92b0611fa0041041d2f3568da3529a8a846017d0"
   dependencies:

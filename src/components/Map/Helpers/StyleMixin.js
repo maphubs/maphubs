@@ -11,6 +11,7 @@ import _intersection from 'lodash.intersection';
 import Promise from 'bluebird';
 import LayerSources from '../Sources';
 
+type LayerIDWithPosition = {id: number, position: number};
 
 /**
    * Attempt to optimize layers, put labels on top of other layer types
@@ -83,7 +84,7 @@ module.exports = {
 
     const positionOffset = this.baseMapStyle.layers.length;
 
-    const layerIdsWithPosition = this.overlayMapStyle.layers.map((layer, i)=>{
+    const layerIdsWithPosition: Array<LayerIDWithPosition> = this.overlayMapStyle.layers.map((layer, i)=>{
       layerIds.push(layer.id);
       return {
         id: layer.id,
@@ -187,7 +188,7 @@ module.exports = {
         }
       });
 
-      let layersToUpdateWithPosition = [];
+      let layersToUpdateWithPosition: Array<LayerIDWithPosition> = [];
       overlayStyle.layers.forEach((layer, i)=>{
         if(layersToUpdate.includes(layer.id)){
           layersToUpdateWithPosition.push({
@@ -241,7 +242,7 @@ module.exports = {
     }else{ //initial load of overlays (nothing to replace)   
       _this.debugLog('initial layer load');
       const newSources = Object.keys(overlayStyle.sources); 
-      const newLayersToAdd = overlayStyle.layers.map((layer, i)=>{
+      const newLayersToAdd: Array<LayerIDWithPosition> = overlayStyle.layers.map((layer, i)=>{
           return {
             id: layer.id,
             position: positionOffset + i
@@ -312,7 +313,7 @@ module.exports = {
     });
   },
 
-  addLayers(layers: Array<{id: number, position: number}>, fromStyle: GLStyle){
+  addLayers(layers:Array<LayerIDWithPosition>, fromStyle: GLStyle){
     var _this = this;
     let customSourceLayers = [];
     layers.forEach((layerToAdd) => {

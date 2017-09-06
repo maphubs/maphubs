@@ -1,17 +1,17 @@
 //@flow
 import React from 'react';
-import{NavigationControl, InteractiveMap, StaticMap} from 'react-map-gl';
+import{NavigationControl, StaticMap, InteractiveMap} from 'react-map-gl';
 //import StaticMap from './react-static-map';
 //import InteractiveMap from './react-interactive-map';
 import MapHubsComponent from '../MapHubsComponent';
 
-import classNames from 'classnames';
+//import classNames from 'classnames';
 import FeatureBox from './FeatureBox';
 import BaseMapActions from '../../actions/map/BaseMapActions'; 
 import BaseMapStore from '../../stores/map/BaseMapStore'; 
 import DataEditorStore from '../../stores/DataEditorStore';
 import _isequal from 'lodash.isequal';
-import MapToolButton from './MapToolButton';
+import MeasurementTool from './MeasurementTool';
 import MapSearchPanel from './Search/MapSearchPanel';
 import MapToolPanel from './MapToolPanel';
 import InsetMap from './InsetMap';
@@ -21,7 +21,7 @@ import AnimationStore from '../../stores/map/AnimationStore';
 import MarkerStore from '../../stores/map/MarkerStore';
 import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin';
 import MapInteractionMixin from './Helpers/MapInteractionMixin';
-import MeasurementToolMixin from './Helpers/MeasurementToolMixin';
+//import MeasurementToolMixin from './Helpers/MeasurementToolMixin';
 import ForestAlertMixin from './Helpers/ForestAlertMixin';
 import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
 import DataEditorMixin from './Helpers/DataEditorMixin';
@@ -101,10 +101,11 @@ type State = {
   selectedFeature?: Object,
   selected: boolean,
   interactive: boolean,
-  interactiveLayers: [],
+  interactiveLayers: Array<GLLayer>,
   mapLoaded: boolean,
   restoreBounds?: NestedArray<number>,
   allowLayersToMoveMap: boolean,
+  dragPan: boolean,
   viewport: Viewport
 } & BaseMapStoreState
 
@@ -161,6 +162,7 @@ class Map extends MapHubsComponent<Props, State> {
       id: this.props.id ? this.props.id : 'map',
       selected: false,
       interactive: this.props.interactive,
+      dragPan: this.props.interactive,
       mapLoaded: false,
       restoreBounds,
       allowLayersToMoveMap: restoreBounds ? false : true,
@@ -168,7 +170,8 @@ class Map extends MapHubsComponent<Props, State> {
         latitude: 0, 
         longitude: 0, 
         zoom: 0
-      }
+      },
+      interactiveLayers: []
     };
   }
 
@@ -572,6 +575,22 @@ class Map extends MapHubsComponent<Props, State> {
     });
   }
 
+  toggleMeasurementTools = (show: boolean) =>{
+    if(show && !this.state.enableMeasurementTools){
+      this.setState({enableMeasurementTools: true});
+    }else if(!show && this.state.enableMeasurementTools){
+      this.closeMeasurementTool();
+    }
+  }
+
+  closeMeasurementTool = () =>{
+    this.setState({enableMeasurementTools: false});
+  }
+
+  toggleDragPan = (dragPan: boolean) =>{
+    this.setState({dragPan});
+  }
+
   render(){
     var _this = this;
 
@@ -622,27 +641,13 @@ class Map extends MapHubsComponent<Props, State> {
         if(this.state.enableMeasurementTools){
     
           measurementTools= (
-            <div>
-              <div style={{
-                position: 'absolute',
-                top: '46px',
-                right: '10px',
-                backgroundColor: 'rgba(0,0,0,0.6)',
-                color: '#FFF',
-                height:'30px',
-                paddingLeft: '5px',
-                paddingRight: '5px',
-                borderRadius: '4px',
-                zIndex: '100',
-                lineHeight: '30px',
-              }}>
-              <span>{this.state.measurementMessage}</span>
-              </div>
-              <MapToolButton  top="80px" right="10px" icon="close" show={true} color="#000"
-                onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
-            </div>
+            <MeasurementTool id={this.props.id}
+            reactMap={this.refs.map}
+            viewport={this.state.viewport}
+            toggleDragPan={this.toggleDragPan}
+            closeTool={this.closeMeasurementTool}
+              />
           );
-         
         }
     
         var animationOverlay = '';
@@ -669,9 +674,15 @@ class Map extends MapHubsComponent<Props, State> {
       }});
     };
 
+    let style = this.props.style;
+
+    if(style && !style.position){
+      style.position = 'relative';
+    }
+
     return (
       /*eslint-disable react/jsx-no-bind */
-      <div ref="mapcontainer" className={this.props.className} style={this.props.style}>
+      <div ref="mapcontainer" className={this.props.className} style={style}>
         <ReactMapGL
           ref="map"
           width={this.props.containerWidth}
@@ -683,13 +694,14 @@ class Map extends MapHubsComponent<Props, State> {
           mapboxApiAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
           attributionControl={false}
           preserveDrawingBuffer={false}
+          dragPan={this.state.dragPan}
           dragRotate={this.props.enableRotation ? true : false}
           touchZoomRotate={this.props.enableRotation ? true : false}
           scrollZoom={!this.props.disableScrollZoom}
           onViewportChange={updateViewport}
           onLoad={this.onMapLoad}
         >
-        <div style={{position: 'absolute', right: '70px', top: '-5px', transform: 'rotate(-90deg)'}}>
+        <div style={{position: 'absolute', right: '65px', top: '-5px', transform: 'rotate(-90deg)'}}>
           <NavigationControl onViewportChange={updateViewport} />
         </div>
         {insetMap}
@@ -704,8 +716,7 @@ class Map extends MapHubsComponent<Props, State> {
         calculateForestAlerts={this.calculateForestAlerts}
         forestAlerts={this.state.forestAlerts}
         onChangeBaseMap={this.changeBaseMap}
-         />
-        {measurementTools}
+         />       
         {featureBox}
         {interactiveButton}
         {children}
@@ -718,7 +729,9 @@ class Map extends MapHubsComponent<Props, State> {
           onSearchResultClick={this.onSearchResultClick}
           onSearchReset={this.onSearchReset}
           />
+          
         </ReactMapGL>
+        {measurementTools}
         <MarkerSprites />
       </div>
     );
@@ -812,6 +825,7 @@ class Map extends MapHubsComponent<Props, State> {
       return DataEditorMixin.reloadEditingSourceCache.bind(this)();
     }
   
+    /*
     //MeasurementToolMixin
     toggleMeasurementTools = (enable: boolean) => {
       return MeasurementToolMixin.toggleMeasurementTools.bind(this)(enable);
@@ -828,7 +842,7 @@ class Map extends MapHubsComponent<Props, State> {
     updateMeasurement = () => {
       return MeasurementToolMixin.updateMeasurement.bind(this)();
     }
-  
+  */
   
     //MapSearchMixin
     onSearch = (queryText: string) => {
@@ -953,7 +967,7 @@ class Map extends MapHubsComponent<Props, State> {
       return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer);
     }
   
-    addLayers = (layerIds: Array<string>, fromStyle: GLStyle) => {
+    addLayers = (layerIds: Array<{id: number, position: number}>, fromStyle: GLStyle) => {
       return StyleMixin.addLayers.bind(this)(layerIds, fromStyle);
     }
   

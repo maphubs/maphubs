@@ -152,12 +152,11 @@ export default class InteractiveMap extends PureComponent {
   }
 
   componentDidMount() {
-    const eventManager = undefined;
-    //const eventManager = new EventManager(this._eventCanvas);
+    const eventManager = new EventManager(this._map._mapboxMap);
 
     // Register additional event handlers for click and hover
-    //eventManager.on('mousemove', this._onMouseMove);
-    //eventManager.on('click', this._onMouseClick);
+    eventManager.on('mousemove', this._onMouseMove);
+    eventManager.on('click', this._onMouseClick);
     this._eventManager = eventManager;
 
     this._mapControls.setOptions(Object.assign({}, this.props, {

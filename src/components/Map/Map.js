@@ -877,7 +877,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer);
   }
 
-  addLayers = (layerIds: Array<string>, fromStyle: GLStyle) => {
+  addLayers = (layerIds: Array<{id: number, position: number}>, fromStyle: GLStyle) => {
     return StyleMixin.addLayers.bind(this)(layerIds, fromStyle);
   }
 

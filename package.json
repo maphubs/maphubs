@@ -40,8 +40,9 @@
   },
   "homepage": "https://maphubs.com",
   "dependencies": {
-    "@mapbox/mapbox-gl-draw": "^0.19.1",
+    "@mapbox/mapbox-gl-draw": "maphubs/mapbox-gl-draw",
     "@mapbox/shapefile-fairy": "openmaphub/shapefile-fairy#950cb59adfadc6cbbccac2d33f7bc23c2f2b713e",
+    "@maphubs/mapbox-gl-draw": "maphubs/mapbox-gl-draw",
     "@turf/area": "^4.6.0",
     "@turf/bbox": "^4.6.0",
     "@turf/bbox-polygon": "^4.6.0",
@@ -192,6 +193,7 @@
     "unzip2": "0.2.5",
     "urlencode": "^1.1.0",
     "uuid": "^3.1.0",
+    "viewport-mercator-project": "^4.1.1",
     "wgs84-util": "3.0.0",
     "winston": "^2.3.1",
     "winston-daily-rotate-file": "^1.4.6"
