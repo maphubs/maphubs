@@ -17,7 +17,7 @@ module.exports = {
     return db('omh.account_tiers').where({available: true});
   },
 
-  async getGroupTier(group_id: string, trx: any= null): Bluebird$Promise<Object>{
+  async getGroupTier(group_id: string, trx: any= null): Promise<Object>{
     let db = trx ? trx : knex;
     const results = await db.select('omh.account_tiers.*')
     .from('omh.groups').leftJoin('omh.account_tiers', 'omh.groups.tier_id', 'omh.account_tiers.tier_id')
@@ -29,34 +29,34 @@ module.exports = {
     return {};
   },
 
-  async countGroupMembers(group_id: string, trx: any= null): Bluebird$Promise<number>{
+  async countGroupMembers(group_id: string, trx: any= null): Promise<number>{
     let db = trx ? trx : knex;
     const result = await db.count('user_id').from('omh.group_memberships').where({group_id});
     return parseInt(result[0].count);
   },
 
-  async countGroupPrivateLayers(group_id: string, trx: any= null): Bluebird$Promise<number>{
+  async countGroupPrivateLayers(group_id: string, trx: any= null): Promise<number>{
     let db = trx ? trx : knex;
     const result = await db.count('layer_id').from('omh.layers')
     .where({owned_by_group_id: group_id, private: true});
     return parseInt(result[0].count);
   },
 
-  async countGroupPrivateHubs(group_id: string, trx: any= null): Bluebird$Promise<number>{
+  async countGroupPrivateHubs(group_id: string, trx: any= null): Promise<number>{
     let db = trx ? trx : knex;
     const result = await db.count('hub_id').from('omh.hubs')
     .where({owned_by_group_id: group_id, private: true});
     return parseInt(result[0].count);
   },
 
-  async countGroupPrivateMaps(group_id: string, trx: any= null): Bluebird$Promise<number>{
+  async countGroupPrivateMaps(group_id: string, trx: any= null): Promise<number>{
     let db = trx ? trx : knex;
     const result = await db.count('map_id').from('omh.maps')
     .where({owned_by_group_id: group_id, private: true});
     return parseInt(result[0].count);
   },
 
-  async getStatus(group_id: string, trx: any= null): Bluebird$Promise<Object>{
+  async getStatus(group_id: string, trx: any= null): Promise<Object>{
 
     const tier = await this.getGroupTier(group_id, trx);
     const numGroupMembers = await this.countGroupMembers(group_id, trx);

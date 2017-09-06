@@ -68,7 +68,7 @@ var middleware = function(req: any, res: any, next: any){
             if(allowed){
               return success(next);
             }else{
-              log.error('Unauthenticated screenshot request, not authorized to view private layer: ' + layer_id);
+              log.error('Unauthenticated screenshot request, not authorized to view private layer: ' + layer.layer_id);
               return failure(res);
             }
           });
@@ -91,29 +91,34 @@ var middleware = function(req: any, res: any, next: any){
    }else if(map_id){
      Map.getMap(map_id)
      .then((map) => {
-       if(map.private){
-         if(req.isAuthenticated && req.isAuthenticated()){
-           return map.allowedToModify(map_id, user_id)
-            .then((allowed) => {
-              if(allowed){
-                return success(next);
-              }else{
-                log.error('Unauthenticated screenshot request, not authorized to view private map: ' + map_id);
-                return failure(res);
-              }
-            });
-         }else{
-            // else private but no session = check for manet
+       if(map){
+        if(map.private){
+          if(req.isAuthenticated && req.isAuthenticated()){
+            return map.allowedToModify(map_id, user_id)
+              .then((allowed) => {
+                if(allowed){
+                  return success(next);
+                }else{
+                  log.error('Unauthenticated screenshot request, not authorized to view private map: ' + map.map_id);
+                  return failure(res);
+                }
+              });
+          }else{
+              // else private but no session = check for manet
+              return middlewareCheck(req, res, next);
+            }
+        }else{
+          // else not private = allow if login not required, or login required and authenticated
+          if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
+            return success(next);
+          }else {
+            //check for manet
             return middlewareCheck(req, res, next);
           }
-       }else{
-        // else not private = allow if login not required, or login required and authenticated
-        if(!local.requireLogin || (req.isAuthenticated && req.isAuthenticated())){
-          return success(next);
-        }else {
-          //check for manet
-          return middlewareCheck(req, res, next);
         }
+      }else{
+        log.error('Map not found');
+        return failure(res);
       }
      }).catch(err=>{
        log.error(err);

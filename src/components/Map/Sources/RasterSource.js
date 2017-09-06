@@ -22,10 +22,10 @@ var RasterSource = {
       }      
     }
   },
-  removeLayer(layer, mapComponent){
+  removeLayer(layer: GLLayer, mapComponent: any){
     return mapComponent.removeLayer(layer);
   },
-  remove(key, mapComponent){
+  remove(key: string, mapComponent: any){
     return mapComponent.removeSource(key);
   }
 };

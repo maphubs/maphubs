@@ -3,7 +3,7 @@ var knex = require('../connection.js');
 
 module.exports = {
 
-  async getPageConfig(page_id: string): Bluebird$Promise<Array<Object>> {
+  async getPageConfig(page_id: string): Promise<Array<Object>> {
     const result = await knex.select('config').from('omh.page').where({page_id});
     if (result && result.length === 1) {
       return result[0].config;
@@ -11,7 +11,7 @@ module.exports = {
     return null;
   },
 
-  async getPageConfigs(page_ids: Array<string>): Bluebird$Promise<Object> {
+  async getPageConfigs(page_ids: Array<string>): Promise<Object> {
     const results = await knex.select('page_id', 'config')
     .from('omh.page')
     .whereIn('page_id', page_ids);
