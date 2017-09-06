@@ -186,12 +186,14 @@ export default class BaseMapStore extends Reflux.Store {
         this.loadFromFile(config.loadFromFile, cb);
       }else if(config.style){
         let style = config.style;
-        if(!style.glyphs){
-          style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}"
-        }
+        if(typeof style !== 'string'){
+          if(!style.glyphs){
+            style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}"
+          }
 
-        if(!style.sprite){
-          style.sprite = "";
+          if(!style.sprite){
+            style.sprite = "";
+          }
         }
 
         cb(style);
