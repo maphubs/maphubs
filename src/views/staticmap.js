@@ -115,7 +115,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
             }}
             collapsible={false}
             title={this.props.name}
-            hideInactive={false} showLayersButton={false}
+            hideInactive={true} showLayersButton={false}
               layers={this.props.layers}/>
         );
       }
