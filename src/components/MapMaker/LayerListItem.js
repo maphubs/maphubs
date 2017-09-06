@@ -79,7 +79,7 @@ class LayerListItem extends MapHubsComponent<Props, void> {
     var isDragging = this.props.isDragging;
     var connectDragSource = this.props.connectDragSource;
     var connectDropTarget = this.props.connectDropTarget;
-    var backgroundColor = 'inherit';
+    var backgroundColor = 'white';
     let active = MapStyles.settings.get(layer.style, 'active');
 
     if(!active){
