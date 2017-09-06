@@ -5,8 +5,7 @@ Promise.promisifyAll(require("request"));
 
 module.exports = {
 
-  getManagementToken(){
-    
+  async getManagementToken(){
     var options = {
       method: 'POST',
       url: `https://${local.AUTH0_DOMAIN}/oauth/token`,
@@ -21,10 +20,8 @@ module.exports = {
       json: true 
     };
 
-    return request.getAsync(options)
-    .then((error, response, body) => {
-      return body.access_token;
-    });
+    const response = await request.postAsync(options);
+    return response.body.access_token;
   },
 
   updateAppMetadata(data, token, profile){

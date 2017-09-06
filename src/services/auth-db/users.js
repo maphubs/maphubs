@@ -44,7 +44,8 @@ exports.findByEmail = function(email: string) {
         return translateUserObject(data[0]);
       } else {
         //not found
-        throw new Error(`email not found: ${email}`);
+        log.info(`email not found: ${email}`);
+        return null;
       }
     }).catch((err) => {
       log.error(err);

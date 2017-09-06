@@ -6,38 +6,31 @@ var _find = require('lodash.find');
 var User = require('../models/user');
 var Admin = require('../models/admin');
 var Auth0Helper = require('../services/auth0-helper');
+var Promise = require('bluebird');
 
-var saveMapHubsIDToAuth0 = function(profile, maphubs_user_id){
+var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
   var hosts = [];
   if(profile._json.app_metadata && profile._json.app_metadata.hosts){
     hosts = profile._json.app_metadata.hosts;
   }
 
   hosts.push({host: local.host, user_id: maphubs_user_id});
-  return Auth0Helper.getManagementToken()
-  .then((accessToken) => {
-    return Auth0Helper.updateAppMetadata({hosts}, accessToken, profile);
-  });  
+  const accessToken = await Auth0Helper.getManagementToken();
+  return Auth0Helper.updateAppMetadata({hosts}, accessToken, profile);
 };
 
-var createMapHubsUser = function(profile: Object){
+var createMapHubsUser = async function(profile: Object){
   var display_name = profile.displayName ? profile.displayName: profile._json.email;
-  return User.createUser(profile._json.email, display_name, display_name, profile.id)
-  .then((user_id) => {
-    return saveMapHubsIDToAuth0(profile, user_id)
-    .then(() =>{
-      return AuthUsers.find(user_id)
-       .then(maphubsUser=>{
-          //attach MapHubs User
-          profile.maphubsUser = {
-            id: maphubsUser.id,
-            display_name: maphubsUser.display_name,
-            email: maphubsUser.email
-          };
-          return profile;
-       });
-    });
-  });
+  const user_id = await User.createUser(profile._json.email, display_name, display_name, profile.id);
+  await saveMapHubsIDToAuth0(profile, user_id);
+  const maphubsUser = await AuthUsers.find(user_id);
+  //attach MapHubs User
+  profile.maphubsUser = {
+    id: maphubsUser.id,
+    display_name: maphubsUser.display_name,
+    email: maphubsUser.email
+  };
+  return profile;
 };
 
 var Auth0Strategy = require('passport-auth0');
@@ -93,7 +86,7 @@ var strategy = new Auth0Strategy({
             //local user not found
             if(!local.requireInvite){
               //create local user
-              return createMapHubsUser(profile);
+              return Promise.resolve(createMapHubsUser(profile)); //wrap to support asCallback()
             }else{
               //check if email is in invite list
               return Admin.checkInviteConfirmed(profile._json.email)
