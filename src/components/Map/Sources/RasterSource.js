@@ -13,7 +13,7 @@ var RasterSource = {
   },
   addLayer(layer: GLLayer, source: GLSource, position: number, mapComponent: any){
     if(layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']){
-      mapComponent.addLayer(layer, 'water');
+      mapComponent.addLayerBefore(layer, 'water');
     }else{
       if(mapComponent.state.editing){
         mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID());
