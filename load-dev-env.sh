@@ -50,6 +50,8 @@ else
   wget -O /app/src/theme.scss ${OMH_REMOTE_THEME}
 fi
 
-#work-around old babel config included in dnd-core
+#work-around old babel configs
 touch ./node_modules/dnd-core/.babelrc
 rm ./node_modules/dnd-core/.babelrc
+touch ./node_modules/reactcss/.babelrc
+rm ./node_modules/reactcss/.babelrc

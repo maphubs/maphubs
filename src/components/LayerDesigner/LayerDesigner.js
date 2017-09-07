@@ -1,19 +1,20 @@
 //@flow
 import React from 'react';
 var $ = require('jquery');
-import ColorPicker from 'react-colorpickr';
-import ColorSwatch from './ColorSwatch';
 import CodeEditor from './CodeEditor';
 import LabelSettings from './LabelSettings';
 import MarkerSettings from './MarkerSettings';
 import AdvancedLayerSettings from './AdvancedLayerSettings';
 import MapHubsComponent from '../MapHubsComponent';
 import MapStyles from '../Map/Styles';
+import {SketchPicker, SwatchesPicker} from 'react-color';
 
 import type {GLStyle} from '../../types/mapbox-gl-style';
 
-type ColorValue = {r: number, g: number, b: number, a: number}
-
+type ColorValue = {
+  hex: string,
+  rgb: {r: number, g: number, b: number, a: number}
+}
 type Props = {|
   onColorChange: Function,
   onStyleChange: Function,
@@ -91,7 +92,7 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   onColorPickerChange = (colorValue: ColorValue) => {
-    let color = `rgba(${colorValue.r},${colorValue.g},${colorValue.b},${colorValue.a})`;
+    let color = `rgba(${colorValue.rgb.r},${colorValue.rgb.g},${colorValue.rgb.b},${colorValue.rgb.a})`;
     this.onColorChange(color);
   }
 
@@ -164,56 +165,28 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
                <i className="material-icons">color_lens</i>{this.__('Colors')}
            </div>
            <div className="collapsible-body"> 
-             <div className="row no-margin" style={{height: '170px', overflowY: 'auto', backgroundColor: 'rgba(240,240,239,1)'}}>
-             <div className="row no-margin">
-               <ColorSwatch onClick={this.onColorChange} color="rgba(255, 255, 204, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(254, 217, 118, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(254, 178, 76, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(252, 140, 59, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(240, 59, 32, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(255, 81, 34, 0.65)"/>
-             </div>
-             <div className="row no-margin">
-               <ColorSwatch onClick={this.onColorChange} color="rgba(240,194,194, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(226,133,133, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(217,93,93, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(208,53,53, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(189, 0, 38, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(145,37,37, 0.65)"/>
-             </div>
-             <div className="row no-margin">
-                <ColorSwatch onClick={this.onColorChange} color="rgba(240,247,218, 0.65)"/>
-                <ColorSwatch onClick={this.onColorChange} color="rgba(161, 218, 180, 0.65)"/>
-                <ColorSwatch onClick={this.onColorChange} color="rgba(201,223,138, 0.65)"/>
-                <ColorSwatch onClick={this.onColorChange} color="rgba(119,171,89, 0.65)"/>
-                <ColorSwatch onClick={this.onColorChange} color="rgba(54,128,45, 0.65)"/>
-                <ColorSwatch onClick={this.onColorChange} color="rgba(35,77,32, 0.65)"/>
-             </div>
-             <div className="row no-margin">
-               <ColorSwatch onClick={this.onColorChange} color="rgba(131, 219, 232, 0.65)"/>
-                <ColorSwatch onClick={this.onColorChange} color="rgba(25,179,202, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(102,204,204, 0.65)"/>
-                 <ColorSwatch onClick={this.onColorChange} color="rgba(44, 127, 184, 0.65)"/>
-                 <ColorSwatch onClick={this.onColorChange} color="rgba(49,105,138, 0.65)"/>
-                 <ColorSwatch onClick={this.onColorChange} color="rgba(37, 52, 148, 0.65)"/>
-             </div>
-             <div className="row no-margin">
-               <ColorSwatch onClick={this.onColorChange} color="rgba(214,140,255, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(191,78,255, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(163,0,255, 0.65)"/>
-                 <ColorSwatch onClick={this.onColorChange} color="rgba(116,0,182, 0.65)"/>
-                 <ColorSwatch onClick={this.onColorChange} color="rgba(85,0,133, 0.65)"/>
-                  <ColorSwatch onClick={this.onColorChange} color="rgba(240,21,231, 0.65)"/>
-             </div>
-             <div className="row no-margin">
-               <ColorSwatch onClick={this.onColorChange} color="rgba(161,93,26, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(151,84,32, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(126,77,30, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(118,69,20, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(87,51,15, 0.65)"/>
-               <ColorSwatch onClick={this.onColorChange} color="rgba(153, 65, 17, 0.65)"/>
-             </div>
-           </div>
+           <SwatchesPicker width="100%" onChange={this.onColorPickerChange} 
+           colors={[
+             ["rgba(183,28,28,0.65)","rgba(211,47,47,0.65)","rgba(244,67,54,0.65)","rgba(229,115,115,0.65)","rgba(255,205,210,0.65)"],
+             ["rgba(136,14,79,0.65)","rgba(194,24,91,0.65)","rgba(233,30,99,0.65)","rgba(240,98,146,0.65)","rgba(248,187,208,0.65)"],
+             ["rgba(74,20,140,0.65)","rgba(123,31,162,0.65)","rgba(156,39,176,0.65)","rgba(186,104,200,0.65)","rgba(225,190,231,0.65)"],
+             ["rgba(49,27,146,0.65)","rgba(81,45,168,0.65)","rgba(103,58,183,0.65)","rgba(149,117,205,0.65)","rgba(209,196,233,0.65)"],
+             ["rgba(26,35,126,0.65)","rgba(48,63,159,0.65)","rgba(63,81,181,0.65)","rgba(121,134,203,0.65)","rgba(197,202,233,0.65)"],
+             ["rgba(13,71,161,0.65)","rgba(25,118,210,0.65)","rgba(33,150,243,0.65)","rgba(100,181,246,0.65)","rgba(187,222,251,0.65)"],
+             ["rgba(1,87,155,0.65)","rgba(2,136,209,0.65)","rgba(3,169,244,0.65)","rgba(79,195,247,0.65)","rgba(179,229,252,0.65)"],
+             ["rgba(0,96,100,0.65)","rgba(0,151,167,0.65)","rgba(0,188,212,0.65)","rgba(77,208,225,0.65)","rgba(178,235,242,0.65)"],
+             ["rgba(0,77,64,0.65)","rgba(0,121,107,0.65)","rgba(0,150,136,0.65)","rgba(77,182,172,0.65)","rgba(178,223,219,0.65)"],
+             ["rgba(25,77,51,0.65)","rgba(56,142,60,0.65)","rgba(76,175,80,0.65)","rgba(129,199,132,0.65)","rgba(200,230,201,0.65)"],
+             ["rgba(51,105,30,0.65)","rgba(104,159,56,0.65)","rgba(139,195,74,0.65)","rgba(174,213,129,0.65)","rgba(220,237,200,0.65)"],
+             ["rgba(130,119,23,0.65)","rgba(175,180,43,0.65)","rgba(205,220,57,0.65)","rgba(220,231,117,0.65)","rgba(240,244,195,0.65)"],
+             ["rgba(245,127,23,0.65)","rgba(251,192,45,0.65)","rgba(255,235,59,0.65)","rgba(255,241,118,0.65)","rgba(255,249,196,0.65)"],
+             ["rgba(255,111,0,0.65)","rgba(255,160,0,0.65)","rgba(255,193,7,0.65)","rgba(255,213,79,0.65)","rgba(255,236,179,0.65)"],
+             ["rgba(230,81,0,0.65)","rgba(245,124,0,0.65)","rgba(255,152,0,0.65)","rgba(255,183,77,0.65)","rgba(255,224,178,0.65)"],
+             ["rgba(191,54,12,0.65)","rgba(230,74,25,0.65)","rgba(255,87,34,0.65)","rgba(255,138,101,0.65)","rgba(255,204,188,0.65)"],
+             ["rgba(62,39,35,0.65)","rgba(93,64,55,0.65)","rgba(121,85,72,0.65)","rgba(161,136,127,0.65)","rgba(215,204,200,0.65)"],
+             ["rgba(38,50,56,0.65)","rgba(69,90,100,0.65)","rgba(96,125,139,0.65)","rgba(144,164,174,0.65)","rgba(207,216,220,0.65)"],
+             ["rgba(0,0,0,0.65)","rgba(82,82,82,0.65)","rgba(150,150,150,0.65)","rgba(217,217,217,0.65)","rgba(255,255,255,0.65)"]]} 
+             /> 
            </div>
          </li>
          <li>
@@ -221,7 +194,11 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
              <i className="material-icons">expand_more</i>{this.__('More Colors')}
              </div>
            <div className="collapsible-body">
-             <ColorPicker onChange={this.onColorPickerChange} value={this.state.color} />
+           <SketchPicker
+              width="calc(100% - 20px)"
+              color={ this.state.color }
+              onChangeComplete={this.onColorPickerChange}
+            />
            </div>
          </li>
          <li>
