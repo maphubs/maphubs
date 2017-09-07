@@ -6,6 +6,11 @@ module.exports = function(app: any) {
     if(req.query.path){
       path = req.query.path;
     }
+
+    let sentryId;
+    if(req.sentry){
+      sentryId = req.sentry.id;
+    }
     
     res.status(401);
     res.render('error', {
@@ -14,7 +19,7 @@ module.exports = function(app: any) {
         title: req.__('Unauthorized'),
         error: req.__('You are not authorized to access this page.'),
         url: path,
-        eventId: req.sentry.id
+        eventId: sentryId
       },
       req});
   });
