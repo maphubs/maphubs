@@ -188,7 +188,7 @@ export default class BaseMapStore extends Reflux.Store {
         let style = config.style;
         if(typeof style !== 'string'){
           if(!style.glyphs){
-            style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}"
+            style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}";
           }
 
           if(!style.sprite){
@@ -197,9 +197,35 @@ export default class BaseMapStore extends Reflux.Store {
         }
 
         cb(style);
-      }else if(config.mapboxUrl){
+      }else if(config.url){
+
+        request.get(config.url)
+        .end((err, res) => {
+          if(err){
+            debug.error(err);
+          }else{
+            cb(res.body);
+          }
+        });
+      }
+      else if(config.mapboxUrl){
         //example: mapbox://styles/mapbox/streets-v8?optimize=true
-        cb(config.mapboxUrl);
+        //converted to: //https://api.mapbox.com/styles/v1/mapbox/streets-v9?access_token=
+        let url = config.mapboxUrl.replace('mapbox://styles/', 'https://api.mapbox.com/styles/v1/');
+        if(config.mapboxUrl.endsWith('?optimize=true')){
+          url = url + '&access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
+        }else{
+          url = url + '?access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
+        }
+
+        request.get(url)
+        .end((err, res) => {
+          if(err){
+            debug.error(err);
+          }else{
+            cb(res.body);
+          }
+        });
       }
       else{
           debug.log(`map style not found for base map: ${mapName}`);
