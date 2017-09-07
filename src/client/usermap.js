@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 require('babel-polyfill');
 require('jquery');
 require("materialize-css");
-require('../../node_modules/react-colorpickr/dist/colorpickr.css');
 require('medium-editor/dist/css/medium-editor.css');
 import UserMap from '../views/usermap';
 

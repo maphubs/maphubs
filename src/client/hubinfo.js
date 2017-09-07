@@ -11,7 +11,6 @@ if (!global.Intl) {
 }
 require('babel-polyfill');
 require('jquery');
-require('../../node_modules/react-colorpickr/dist/colorpickr.css');
 require("materialize-css");
 
 require('./story.css');
