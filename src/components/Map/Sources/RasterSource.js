@@ -23,7 +23,7 @@ var RasterSource = {
     }
   },
   removeLayer(layer: GLLayer, mapComponent: any){
-    return mapComponent.removeLayer(layer);
+    return mapComponent.removeLayer(layer.id);
   },
   remove(key: string, mapComponent: any){
     return mapComponent.removeSource(key);

@@ -65,11 +65,14 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
     this.props.onChange(opacity);
   }
 
-  onStyleChange = (style: string) => {
-    style = JSON.parse(style);
+  onStyleChange = (style: Object) => {
     this.props.onStyleChange(style);
   }
 
+  onCodeStyleChange = (style: string) => {
+    style = JSON.parse(style);
+    this.props.onStyleChange(style);
+  }
   onLegendChange = (legendCode: string) => {
     this.props.onLegendChange(legendCode);
   }
@@ -125,7 +128,7 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
 
        </ul>
         <CodeEditor ref="styleEditor" id="raster-style-editor" mode="json"
-         code={JSON.stringify(this.props.style, undefined, 2)} title="Edit Layer Style" onSave={this.onStyleChange} />
+         code={JSON.stringify(this.props.style, undefined, 2)} title="Edit Layer Style" onSave={this.onCodeStyleChange} />
        <CodeEditor ref="legendEditor" id="raster-legend-editor" mode="html"
            code={this.props.legendCode} title="Edit Layer Legend" onSave={this.onLegendChange} />
       </div>
