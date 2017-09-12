@@ -65,6 +65,9 @@ var MapHubsSource = {
                               [tileJSON.bounds[2], tileJSON.bounds[3]]]);
             }
           });
+          if(!tileJSON.metadata){
+            tileJSON.metadata = source.metadata;
+          }
           return mapComponent.addSource(key, tileJSON);
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' +error);
