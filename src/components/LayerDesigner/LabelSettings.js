@@ -81,7 +81,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
    onFormChange = (values: Object) => {
     if(values.enabled && values.field){
       //add labels to style
-      var style = MapStyles.labels.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id, this.props.layer.data_type);
+      var style = MapStyles.labels.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id,  this.props.layer.shortid, this.props.layer.data_type);
       this.setState({style, enabled: true, field: values.field});
       this.props.onChange(style, values);
     } else if(values.enabled && !values.field){

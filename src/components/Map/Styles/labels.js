@@ -14,7 +14,7 @@ module.exports = {
     return style;
   },
 
-  addStyleLabels(style: GLStyle, field: string, layer_id: number, data_type: string){
+  addStyleLabels(style: GLStyle, field: string, layer_id: number, shortid: string, data_type: string){
     //treat style as immutable and return a copy
     style = JSON.parse(JSON.stringify(style));
     style = this.removeStyleLabels(style);
@@ -50,11 +50,11 @@ module.exports = {
         sourceLayer = "data-centroids";
       }
       style.layers.push({
-        "id": "omh-label-" + layer_id,
+        "id": `omh-label-${layer_id}-${shortid}`,
         "type": "symbol",
-        "source": "omh-" + layer_id,
+        "source": "omh-" + shortid,
         "source-layer": sourceLayer,
-        "filter": filter,
+        filter,
         "layout": {
           "text-font": [
             "Roboto Bold"
