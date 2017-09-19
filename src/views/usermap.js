@@ -205,7 +205,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
     var code = `
       &lt;iframe src="${url}"
-        style="width: 600px; height: 330px;" frameborder="0" 
+        style="width: 100%; height: 350px;" frameborder="0" 
         allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
         &gt;
       &lt;/iframe&gt;
