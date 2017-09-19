@@ -287,17 +287,21 @@ module.exports = function(app: any) {
 
       if(await Hub.allowedToModify(hub_id, user_id)){
         const story = await Story.getStoryByID(story_id);
-        return res.render('edithubstory', {
-          title: 'Editing: ' + story.title,
-          fontawesome: true,
-          rangy: true,
-          props: {
-            story,
-            hub: await Hub.getHubByID(hub_id), 
-            myMaps: await Map.getUserMaps(user_id), 
-            popularMaps: await Map.getPopularMaps()
-          }, req
-        });
+        if(!story){
+          return res.redirect('/notfound?path='+req.path);
+        }else{
+          return res.render('edithubstory', {
+            title: 'Editing: ' + story.title,
+            fontawesome: true,
+            rangy: true,
+            props: {
+              story,
+              hub: await Hub.getHubByID(hub_id), 
+              myMaps: await Map.getUserMaps(user_id), 
+              popularMaps: await Map.getPopularMaps()
+            }, req
+          });
+        }
       }else{
         return res.redirect(baseUrl + '/unauthorized?path='+req.path);
       }
@@ -316,28 +320,53 @@ module.exports = function(app: any) {
 
       const story = await Story.getStoryByID(story_id);
       const hub = await Hub.getHubByID(hub_id);
+
+      if(!story){
+        return res.redirect('/notfound?path='+req.path);
+      }else{
      
-      let image;
-      if(story.firstimage){
-        image = story.firstimage;
-      }
+        let image;
+        if(story.firstimage){
+          image = story.firstimage;
+        }
 
-      let description = story.title;
-      if(story.firstline){
-        description = story.firstline;
-      }
+        let description = story.title;
+        if(story.firstline){
+          description = story.firstline;
+        }
 
-      if (!req.isAuthenticated || !req.isAuthenticated()
-          || !req.session || !req.session.user) {
+        if (!req.isAuthenticated || !req.isAuthenticated()
+            || !req.session || !req.session.user) {
+          
+          if(!story.published){
+            return res.status(401).send("Unauthorized");
+          }else{
+            return res.render('hubstory', {
+              title: story.title,
+              description,
+              props: {
+                story, hub, canEdit: false
+              },
+              twitterCard: {
+                title: story.title,
+                description,
+                image,
+                imageType: 'image/jpeg'
+              },
+              req
+            });
+          }
+      }else{
+        const canEdit = await Story.allowedToModify(story_id, user_id);
         
-        if(!story.published){
+        if(!story.published && !canEdit){
           return res.status(401).send("Unauthorized");
         }else{
           return res.render('hubstory', {
             title: story.title,
             description,
             props: {
-              story, hub, canEdit: false
+              story, hub, canEdit
             },
             twitterCard: {
               title: story.title,
@@ -347,28 +376,8 @@ module.exports = function(app: any) {
             },
             req
           });
-        }
-    }else{
-      const canEdit = await Story.allowedToModify(story_id, user_id);
-       
-      if(!story.published && !canEdit){
-        return res.status(401).send("Unauthorized");
-      }else{
-        return res.render('hubstory', {
-          title: story.title,
-          description,
-          props: {
-            story, hub, canEdit
-          },
-          twitterCard: {
-            title: story.title,
-            description,
-            image,
-            imageType: 'image/jpeg'
-          },
-          req
-        });
-      }      
+        }      
+      }
     }
   }catch(err){
     if(err.message && err.message.startsWith('Story not found')){
@@ -378,10 +387,4 @@ module.exports = function(app: any) {
     }
   }
   });
-
-  app.get('/hub/:hub/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
-  });
-
 };

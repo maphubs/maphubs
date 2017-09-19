@@ -101,7 +101,7 @@ module.exports = {
         if(hubStoryResult && hubStoryResult.length > 0){
           return hubStoryResult[0];
         }else{
-          return null;
+          return Promise.resolve();
         }
       }
     },

@@ -9,11 +9,10 @@ import MapHubsPureComponent from '../../components/MapHubsPureComponent';
 import urlUtil from '../../services/url-util';
 import type {HubStoreState} from '../../stores/HubStore';
 
-type Props = {
-  hubid: string,
+type Props = {|
   editing: boolean,
   subPage: boolean
-}
+|}
 
 type State = {
   imageCropAspectRatio: number,
@@ -99,7 +98,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
   render() {
     var omhBaseUrl = urlUtil.getBaseUrl();
 
-    var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid;
+    var hubBaseUrl = omhBaseUrl + '/hub/' + this.state.hub.hub_id;
     var bannerClass='hub-banner';
     if(this.props.subPage) {
       bannerClass='hub-banner-subpage';
@@ -179,7 +178,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
     } else if (this.state.hub.hasLogoImage) { //otherwise if there is an image from the server use that
       logoImage = (
         <a href={hubBaseUrl}>
-          <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={`/hub/${this.props.hubid}/images/logo`} />
+          <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={`/hub/${this.state.hub.hub_id}/images/logo`} />
         </a>
       );
     }else{ //show placeholder
@@ -195,7 +194,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
         style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url(${this.state.bannerImage.toString()})`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
     } else if (this.state.hub.hasBannerImage) {
       bannerImage = (<div className={bannerClass}
-      style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url("/hub/${this.props.hubid}/images/banner")`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
+      style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url("/hub/${this.state.hub.hub_id}/images/banner")`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
     } else{ //show placeholder
       bannerImage = (
         <div className="center center-align" style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '100%', position: 'absolute', top: 0, borderColor:'#bdbdbd',  borderStyle: 'dashed', borderWidth: '3px'}}>

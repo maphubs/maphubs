@@ -80,7 +80,7 @@ export default class HubStory extends MapHubsComponent<Props, void>  {
       <HubNav hubid={this.props.hub.hub_id}/>
       <main>
         <div className="row">
-          <HubBanner hubid={this.props.hub.hub_id} subPage/>
+          <HubBanner subPage/>
         </div>
         <div className="container">
           <div className="row" style={{marginTop: '20px'}}>
