@@ -58,8 +58,9 @@ export default class StoryStore extends Reflux.Store {
   save(body: string, firstline: string, firstimage: any, _csrf: string, cb: Function){
     var _this = this;
 
-    var data: Object = this.state.story;
+    var data: Object = JSON.parse(JSON.stringify(this.state.story));
 
+    data.body = body; //replace with clean body provided (UI elements stripped)
     data.firstline = firstline;
     data.firstimage = firstimage;
     data._csrf = _csrf;
