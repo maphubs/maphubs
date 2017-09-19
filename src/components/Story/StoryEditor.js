@@ -294,6 +294,8 @@ onAddMap = (map: Object) => {
   range
   );
 
+  this.addMapCloseButtons();
+
   _this.handleBodyChange($('.storybody').html());
 }
 
