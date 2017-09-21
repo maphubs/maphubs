@@ -80,11 +80,11 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
     let elc = this.props.layer.external_layer_config;
     if(elc && elc.type === 'ags-mapserver-tiles'){
       let url = elc.url? elc.url : '';
-      style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, url + '?f=json', opacity, 'arcgisraster');
+      style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, this.props.layer.shortid, url + '?f=json', opacity, 'arcgisraster');
     }else if(elc && elc.type === 'multiraster'){
-      style = MapStyles.raster.multiRasterStyleWithOpacity(this.props.layer.layer_id, elc.layers, opacity, 'raster');
+      style = MapStyles.raster.multiRasterStyleWithOpacity(this.props.layer.layer_id, this.props.layer.shortid, elc.layers, opacity, 'raster');
     }else{
-      style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, this.props.layer.shortid, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
     }
 
     //TODO: add legend placeholders for color opacity value?

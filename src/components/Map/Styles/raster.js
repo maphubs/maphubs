@@ -1,24 +1,28 @@
 //@flow
 import type {GLLayer} from '../../../types/mapbox-gl-style';
 module.exports = {
-  defaultRasterStyle(layer_id: number, sourceUrl: string, type: string="raster"){
-    return this.rasterStyleWithOpacity(layer_id, sourceUrl, 100, type);
+  defaultRasterStyle(layer_id: number, shortid: string, sourceUrl: string, type: string="raster"){
+    return this.rasterStyleWithOpacity(layer_id, shortid, sourceUrl, 100, type);
   },
 
-  defaultMultiRasterStyle(layer_id: number, layers: Array<GLLayer>, type: string="raster"){
-      return this.multiRasterStyleWithOpacity(layer_id, layers, 100, type);
+  defaultMultiRasterStyle(layer_id: number, shortid: string, layers: Array<GLLayer>, type: string="raster"){
+      return this.multiRasterStyleWithOpacity(layer_id, shortid, layers, 100, type);
   },
 
-  rasterStyleWithOpacity(layer_id: number, sourceUrl: string, opacity: number, type: string="raster"){
+  rasterStyleWithOpacity(layer_id: number, shortid: string, sourceUrl: string, opacity: number, type: string="raster"){
 
       opacity = opacity / 100;
       var style = {
           sources: {},
           layers: [
             {
-            "id": "omh-raster-" + layer_id,
+            "id": "omh-raster-" + shortid,
             "type": "raster",
-            "source": "omh-" + layer_id,
+            "metadata":{
+              "maphubs:layer_id": layer_id,
+              "maphubs:globalid": shortid
+            },
+            "source": "omh-" + shortid,
             "minzoom": 0,
             "maxzoom": 18,
             "paint": {
@@ -28,7 +32,7 @@ module.exports = {
           ]
       };
 
-      style.sources['omh-' + layer_id] = {
+      style.sources['omh-' + shortid] = {
           type,
           url: sourceUrl,
           "tileSize": 256
@@ -38,7 +42,7 @@ module.exports = {
       return style;
     },
 
-  multiRasterStyleWithOpacity(layer_id: number, layers: Array<Object>, opacity: number, type: string="raster"){
+  multiRasterStyleWithOpacity(layer_id: number, shortid: string, layers: Array<Object>, opacity: number, type: string="raster"){
   
       opacity = opacity / 100;
       var style = {
@@ -47,11 +51,15 @@ module.exports = {
       };
 
       layers.forEach((raster, i) => {
-        var id = `omh-raster-${i}-${layer_id}`;
+        var id = `omh-raster-${i}-${shortid}`;
         style.layers.push(
           {
-            "id": id,
+            id,
             "type": "raster",
+            "metadata":{
+              "maphubs:layer_id": layer_id,
+              "maphubs:globalid": shortid
+            },
             "source": id,
             "minzoom": 0,
             "maxzoom": 18,

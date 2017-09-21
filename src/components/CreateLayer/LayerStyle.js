@@ -92,13 +92,13 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     let layer_id = this.state.layer_id ? this.state.layer_id: 0;
     var style = null;
     if(this.state.is_external && elc.type === 'ags-mapserver-tiles' && elc.url){
-      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, elc.url + '?f=json', opacity, 'arcgisraster');
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, elc.url + '?f=json', opacity, 'arcgisraster');
     }else if(this.state.is_external && elc.type === 'multiraster' && elc.layers){
-       style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, elc.layers, opacity, 'raster');
+       style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, this.state.shortid, elc.layers, opacity, 'raster');
     }
     else{
       var baseUrl = urlUtil.getBaseUrl();
-      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
     }
 
     var legend = MapStyles.legend.rasterLegend(this.state);
