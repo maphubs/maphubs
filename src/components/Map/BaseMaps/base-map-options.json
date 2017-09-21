@@ -78,15 +78,15 @@
                 "tiles":[  
                   "https://mapforenvironment.org/raster/congo-landsat-2016/{z}/{x}/{y}.png"
                 ],
-                "tileSize": 256
+                "tileSize": 256,
+                "minzoom": 3,
+                "maxzoom": 12
             }
         },
         "layers": [{
             "id": "landsat-2016",
             "type": "raster",
-            "source": "landsat-2016",
-            "minzoom": 3,
-            "maxzoom": 12
+            "source": "landsat-2016"
         }]
     }
   },
@@ -107,15 +107,15 @@
                 "tiles":[  
                   "https://mapforenvironment.org/raster/congo-landsat-2014/{z}/{x}/{y}.png"
                 ],
-                "tileSize": 256
+                "tileSize": 256,
+                "minzoom": 3,
+                "maxzoom": 12
             }
         },
         "layers": [{
             "id": "landsat-2014",
             "type": "raster",
-            "source": "landsat-2014",
-            "minzoom": 3,
-            "maxzoom": 12
+            "source": "landsat-2014"
         }]
     }
   },
