@@ -211,7 +211,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  //Build iD edit link
+  //Build edit link
   getEditLink = () => {
     //get map position
     var position = this.refs.interactiveMap.getMap().getPosition();

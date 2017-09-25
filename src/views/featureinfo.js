@@ -149,14 +149,14 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     });
   }
 
-  //Build iD edit link
+  //Build edit link
   getEditLink = () => {
     //get map position
-    var position = this.refs.map.getPosition();
+    var position = this.refs.map.getMap().getPosition();
     var zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
     var baseUrl = urlUtil.getBaseUrl();
-    return baseUrl + '/edit#background=Bing&layer_id=' + this.props.layer.layer_id + '&map=' + zoom + '/' + position.lng + '/' + position.lat;
+    return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' +  position.lat + '/' + position.lng  ;
   }
 
   openEditor = () => {
@@ -165,7 +165,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    //var glStyle = null;
     var locationDisplay = '';
     var featureName: string = "Feature";
     var featureAreaDisplay = (
