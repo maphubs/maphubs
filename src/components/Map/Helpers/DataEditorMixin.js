@@ -235,7 +235,9 @@ module.exports = {
   reloadEditingSourceCache(){
     var sourceID = Object.keys(this.state.editingLayer.style.sources)[0];
     const sourceCache = this.map.style.sourceCaches[sourceID];
-    sourceCache.reload();
+    if(sourceCache){
+      sourceCache.reload();
+    }    
   }
 
 };
