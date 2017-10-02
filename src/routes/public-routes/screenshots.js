@@ -15,12 +15,15 @@ module.exports = function(app: any) {
     Layer.getLayerByID(layer_id).then((layer) => {
       let name = Locales.getLocaleStringObject(req.locale, layer.name);
       let title = name + ' - ' + MAPHUBS_CONFIG.productName;
+      let position = layer.preview_position;
+      const bbox = layer.preview_position.bbox;
+      position.bbox = [[bbox[0], bbox[1]],[bbox[2],bbox[3]]];
       return res.render('staticmap', {title, hideFeedback: true, 
         disableGoogleAnalytics: true,
         props:{
           name,
           layers: [layer],
-          position: layer.preview_position,
+          position,
           basemap: 'default',
           style: layer.style,
           showLegend: false,
