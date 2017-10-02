@@ -32,9 +32,16 @@ module.exports = function(app: any) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
       return;
     }
+    let user_id;
+    if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
+      user_id = req.session.user.maphubsUser.id;
+    }
     Layer.getSearchResults(req.query.q)
-      .then((result) => {
-        return res.status(200).send({layers: result});
+      .then(async (layers) => {
+        if(user_id){
+          await Layer.attachPermissionsToLayers(layers, user_id);
+        }
+        return res.status(200).send({layers});
       }).catch(apiError(res, 500));
   });
 
