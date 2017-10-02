@@ -163,10 +163,12 @@ app.use(session({
   store: sessionStore,
   resave: false,
   proxy: true,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  maxAge: 86400000,
   cookie: {
         path: '/',
-        domain: local.host
+        domain: local.host,
+        secure: 'auto'
     }
 }));
 

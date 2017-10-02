@@ -41,8 +41,11 @@ module.exports = function(app: any) {
     if(req.session.returnTo === '/public/auth0login.css'){
       req.session.returnTo = '';
     }
-
-    res.redirect(req.session.returnTo || '/');
+    
+    req.session.save(()=>{
+      res.redirect(req.session.returnTo || '/');
+    });
+    
   });
 
   app.get('/login/failed', (req, res) => {

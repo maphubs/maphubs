@@ -7,8 +7,10 @@ var User = require('../models/user');
 var Admin = require('../models/admin');
 var Auth0Helper = require('../services/auth0-helper');
 var Promise = require('bluebird');
+var log = require('./log');
 
 var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
+  log.info(`saving maphubs id ${maphubs_user_id} to auth0 for host ${local.host}`);
   var hosts = [];
   if(profile._json.app_metadata && profile._json.app_metadata.hosts){
     hosts = profile._json.app_metadata.hosts;
@@ -21,7 +23,9 @@ var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
 
 var createMapHubsUser = async function(profile: Object){
   var display_name = profile.displayName ? profile.displayName: profile._json.email;
+  
   const user_id = await User.createUser(profile._json.email, display_name, display_name, profile.id);
+  log.info(`Created new MapHubs user ${display_name} with id ${user_id}`);
   await saveMapHubsIDToAuth0(profile, user_id);
   const maphubsUser = await AuthUsers.find(user_id);
   //attach MapHubs User
@@ -34,6 +38,7 @@ var createMapHubsUser = async function(profile: Object){
 };
 
 var Auth0Strategy = require('passport-auth0');
+
 // Configure Passport to use Auth0
 var strategy = new Auth0Strategy({
     domain:       local.AUTH0_DOMAIN,
@@ -44,7 +49,7 @@ var strategy = new Auth0Strategy({
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
-      
+      log.info('Auth0 login');
       //check if user has a local user object
       var hosts = [];
 
@@ -58,6 +63,7 @@ var strategy = new Auth0Strategy({
         //local user already linked
         return AuthUsers.find(host.user_id).then(maphubsUser => {
           //attach MapHubs User
+          log.info(`Auth0 login successful for ${maphubsUser.id} ${maphubsUser.display_name} ${maphubsUser.email}`);
           profile.maphubsUser = {
             id: maphubsUser.id,
             display_name: maphubsUser.display_name,
@@ -67,6 +73,7 @@ var strategy = new Auth0Strategy({
         }).asCallback(done);
       
       }else {
+        log.warn(`local user not linked: ${profile._json.email}`);
         //attempt to lookup user by email
         return AuthUsers.findByEmail(profile._json.email)
         .then((maphubsUser) => {
@@ -94,6 +101,7 @@ var strategy = new Auth0Strategy({
                 if(confirmed){
                   return createMapHubsUser(profile);
                 }else{
+                  log.warn(`unauthorized user: ${profile._json.email}`);
                   return false;
                 }
               });      
@@ -113,8 +121,3 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
-
-  
-
-
-
