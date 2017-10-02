@@ -68,6 +68,10 @@ Raven.config(ravenConfig, {
 
 app.use(Raven.requestHandler());
 
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).send();
+});
+
 //use compression
 app.use(shrinkRay());
 
