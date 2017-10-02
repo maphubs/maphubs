@@ -6,7 +6,7 @@ ignore:
     - mapbox-gl > geojson-rewind > concat-stream:
         reason: no patch available
         expires: '2017-07-26T23:22:14.655Z'
-      '@mapbox/mapbox-gl-draw > geojson-extent > geojson-coords > geojson-flatten > concat-stream':
+    - '@mapbox/mapbox-gl-draw > geojson-extent > geojson-coords > geojson-flatten > concat-stream':
         reason: None given
         expires: '2017-08-10T05:13:55.372Z'
 # patches apply the minimum changes required to fix a vulnerability
@@ -19,3 +19,8 @@ patch:
         patched: '2017-06-26T23:13:51.545Z'
     - bcrypt > node-pre-gyp > tar-pack > debug > ms:
         patched: '2017-06-26T23:13:51.545Z'
+  'npm:debug:20170905':
+    - shrink-ray > debug:
+        patched: '2017-10-02T07:27:19.728Z'
+    - shapefile-fairy > debug:
+        patched: '2017-10-02T07:27:19.728Z'
