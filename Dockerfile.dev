@@ -2,8 +2,7 @@ FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=development DEBUG="maphubs:*,maphubs-error:*"
 
-#MapHubs Web Server
-MAINTAINER Kristofor Carle - MapHubs <kris@maphubs.com>
+LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
 RUN apt-get update && \
     apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick libpq-dev && \
