@@ -6,6 +6,24 @@ var log = require('../services/log.js');
 var knex = require('../connection.js');
 var urlUtil = require('../services/url-util');
 
+const screenshotOptions = {
+  url: '',
+  width: 400,
+  height: 300,
+  type: 'jpeg',
+  quality: 0.8,
+  selector: '#map-load-complete',
+  selectorOptions: {
+    timeout: 45000
+  },
+  cookies: [{
+    name: 'manet',
+    value: local.manetAPIKey,
+    domain: local.host,
+    path: "/"
+  }]
+};
+
 module.exports = {
 
   base64Download(url: string, data: any){
@@ -33,46 +51,29 @@ module.exports = {
     });
   },
 
-  updateLayerThumbnail(layer_id: number){
+  async updateLayerThumbnail(layer_id: number){
     debug.log('updating image for layer: ' + layer_id);
-    //get screenshot from the manet service
-    //generate 640x480 and then display at 320x240 for retina
-    var width = 400;
-    var height = 300;
 
-    var baseUrl = urlUtil.getBaseUrl(); //use internal route
-    var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
+    const width = 400;
+    const height = 300;
+
+    var maphubsUrl = urlUtil.getBaseUrl() + '/api/layer/' + layer_id + '/static/render/';
     var manetUrl = local.manetUrl;
-    var manetData = {
+
+    const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
       height,
-      force: true,
-      delay: 15000,
-      zoom: 1,
-      format: 'jpg',
-      quality: 0.8,
-      //selector: '#map-load-complete',
-      cookies: [{
-        name: 'manet',
-        value: local.manetAPIKey,
-        domain: local.host,
-        path: "/"
-      }]
-    };
-
-    debug.log(JSON.stringify(manetData));
-    //replace image in database
-
-    return this.base64Download(manetUrl, manetData)
-    .then((image) => {
-      return knex('omh.layers').update({thumbnail: image}).where({layer_id})
-      .then(() => {
-        log.info('Updated Layer Thumbnail: ' + layer_id);
-        return image;
-      });
+      type: 'jpeg',
+      quality: 0.8
     });
 
+    debug.log(JSON.stringify(options));
+
+    const image = await this.base64Download(manetUrl, options);
+    await knex('omh.layers').update({thumbnail: image}).where({layer_id});
+    log.info('Updated Layer Thumbnail: ' + layer_id);
+    return image;
   },
 
   reloadLayerThumbnail(layer_id: number){
@@ -101,7 +102,7 @@ module.exports = {
     });
   },
 
-  updateLayerImage(layer_id: number){
+  async updateLayerImage(layer_id: number){
     debug.log('updating image for layer: ' + layer_id);
     //get screenshot from the manet service
     var width = 1200;
@@ -110,51 +111,31 @@ module.exports = {
     var baseUrl = urlUtil.getBaseUrl(); //use internal route
     var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
     var manetUrl = local.manetUrl;
-    var manetData = {
+
+    const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
       height,
-      force: true,
-      delay: 15000,
-      zoom: 1.25,
-      format: 'png',
-      quality: 1,
-      //selector: '#map-load-complete',
-      cookies: [{
-        name: 'manet',
-        value: local.manetAPIKey,
-        domain: local.host,
-        path: "/"
-      }]
-    };
+      type: 'png',
+      quality: 1
+    });
 
-    debug.log(JSON.stringify(manetData));
+    debug.log(JSON.stringify(options));
     //replace image in database
-
-    return this.base64Download(manetUrl, manetData)
-    .then((image) => {
-      return knex('omh.layers').update({screenshot: image}).where({layer_id})
-      .then(() => {
-        log.info('Updated Layer Image: ' + layer_id);
-        return image;
-      });
-    });
-
+    const image = await this.base64Download(manetUrl, options);
+    await knex('omh.layers').update({screenshot: image}).where({layer_id});
+    log.info('Updated Layer Image: ' + layer_id);
+    return image;
   },
 
-   reloadLayerImage(layer_id: number){
-    var _this = this;
-    return knex('omh.layers').update({screenshot: null}).where({layer_id})
-    .then(() => {
-       //don't return the promise because we want this to run async
-       _this.updateLayerImage(layer_id);
-       return true;    
-    });
+   async reloadLayerImage(layer_id: number){
+    await knex('omh.layers').update({screenshot: null}).where({layer_id});
+    //don't return the promise because we want this to run async
+    this.updateLayerImage(layer_id);
+    return true;    
   },
-
 
   //Map Image
-
   getMapImage(map_id: number){
     var _this = this;
     debug.log('get screenshot image for map: ' + map_id);
@@ -170,97 +151,62 @@ module.exports = {
     });
   },
 
-  updateMapImage(map_id: number){
+  async updateMapImage(map_id: number){
     debug.log('updating image for map: ' + map_id);
     //get screenshot from the manet service
-    var width = 1200;
-    var height = 630;
+    const width = 1200;
+    const height = 630;
 
-    var baseUrl = urlUtil.getBaseUrl();
-    var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/';
+    const maphubsUrl =  urlUtil.getBaseUrl() + '/api/map/' + map_id + '/static/render/';
+    const manetUrl = local.manetUrl;
 
-    var manetUrl = local.manetUrl;
-
-    var manetData = {
+    const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
       height,
-      force: true,
-      delay: 15000,
-      zoom: 1.25,
-      format: 'png',
-      quality: 1,
-      //selector: '#map-load-complete',
-      cookies: [{
-        name: 'manet',
-        value: local.manetAPIKey,
-        domain: local.host,
-        path: "/"
-      }]
-    };
+      type: 'png',
+      quality: 1
+    });
 
-    debug.log(JSON.stringify(manetData));
+    debug.log(JSON.stringify(options));
     //replace image in database
-    return this.base64Download(manetUrl, manetData)
-    .then((image) => {
-      return knex('omh.maps').update({screenshot: image}).where({map_id})
-      .then(() => {
-        log.info('Updated Map Image: ' + map_id);
-        return image;
-      });
-    });
+    const image = await this.base64Download(manetUrl, options);
+    await knex('omh.maps').update({screenshot: image}).where({map_id});
+    log.info('Updated Map Image: ' + map_id);
+    return image;
   },
 
-  reloadMapImage(map_id: number){
-    var _this = this;
-    return knex('omh.maps').update({screenshot: null}).where({map_id})
-    .then(() => {
-       //don't return the promise because we want this to run async
-       _this.updateMapImage(map_id);
-       return true;    
-    });
+  async reloadMapImage(map_id: number){
+    await knex('omh.maps').update({screenshot: null}).where({map_id});
+    //don't return the promise because we want this to run async
+    this.updateMapImage(map_id);
+    return true;    
   },
 
-  updateMapThumbnail(map_id: number){
+  async updateMapThumbnail(map_id: number){
     debug.log('updating thumbnail for map: ' + map_id);
     //get screenshot from the manet service
-    var width = 400;
-    var height = 300;
+    const width = 400;
+    const height = 300;
+    const maphubsUrl = urlUtil.getBaseUrl() + '/api/map/' + map_id + '/static/render/thumbnail';
+    const manetUrl = local.manetUrl;
 
-    var baseUrl = urlUtil.getBaseUrl();
-    var maphubsUrl =  baseUrl + '/api/map/' + map_id + '/static/render/thumbnail';
-    var manetUrl = local.manetUrl;
-
-    var manetData = {
+    const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
       height,
-      force: true,
-      delay: 15000,
-      zoom: 1,
-      format: 'jpg',
-      quality: 0.8,
-      //selector: '#map-load-complete',
-      cookies: [{
-        name: 'manet',
-        value: local.manetAPIKey,
-        domain: local.host,
-        path: "/"
-      }]
-    };
+      type: 'jpeg',
+      quality: 0.8
+    });
 
-    debug.log(JSON.stringify(manetData));
+    debug.log(JSON.stringify(options));
 
     //replace image in database
     debug.log(manetUrl);
-    return this.base64Download(manetUrl, manetData)
-    .then((image) => {
-      return knex('omh.maps').update({thumbnail: image}).where({map_id})
-      .then(() => {
-        log.info('Updated Map Thumbnail: ' + map_id);
-        return image;
-      });
-    });
+    const image = await this.base64Download(manetUrl, options);
+    await knex('omh.maps').update({thumbnail: image}).where({map_id});
+    log.info('Updated Map Thumbnail: ' + map_id);
+    return image;
   },
 
   getMapThumbnail(map_id: number){
@@ -278,20 +224,17 @@ module.exports = {
     });
   },
 
-  reloadMapThumbnail(map_id: number){
-    var _this = this;
-    return knex('omh.maps').update({thumbnail: null}).where({map_id})
-    .then(() => {
-       //don't return the promise because we want this to run async
-       _this.updateMapThumbnail(map_id);
-       return true;    
-    });
+  async reloadMapThumbnail(map_id: number){
+    await knex('omh.maps').update({thumbnail: null}).where({map_id});
+    //don't return the promise because we want this to run async
+    this.updateMapThumbnail(map_id);
+    return true;    
   },
 
   returnImage(image: any, type: string, req: any, res: any){
-    var img = Buffer.from(image, 'base64');
-    var hash = require('crypto').createHash('md5').update(img).digest("hex");
-    var match = req.get('If-None-Match');
+    const img = Buffer.from(image, 'base64');
+    const hash = require('crypto').createHash('md5').update(img).digest("hex");
+    const match = req.get('If-None-Match');
      /*eslint-disable security/detect-possible-timing-attacks */
     if(hash === match){
       res.status(304).send();

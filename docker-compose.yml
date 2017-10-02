@@ -49,12 +49,17 @@ services:
     restart: always
     depends_on:
       - db
-  manet:
-    image: 'quay.io/maphubs/manet:latest'
+  screenshots:
+    image: 'quay.io/maphubs/screenshots:v1.0.1'
+    environment:
+      HOST: maphubs.dev
+      INTERNAL_PORT: 3000
     extra_hosts:
       - "maphubs.dev:192.168.65.1"
     ports:
-      - '8891:8891'
+      - '3000:3000'
+    volumes:
+      - './logs:/app/logs'
     restart: always
   elasticsearch1:
     image: 'docker.elastic.co/elasticsearch/elasticsearch:5.2.2'
