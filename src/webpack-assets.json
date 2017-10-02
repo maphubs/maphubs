@@ -3,86 +3,86 @@
     "js": "/public/about.a33aac8decc63727237b.js"
   },
   "addphotopoint": {
-    "js": "/public/addphotopoint.9973f8f99411a8967910.js",
-    "css": "/public/addphotopoint.9973f8f99411a8967910.css"
+    "js": "/public/addphotopoint.3ca5a4a95cd671d4d077.js",
+    "css": "/public/addphotopoint.3ca5a4a95cd671d4d077.css"
   },
   "adminuserinvite": {
-    "js": "/public/adminuserinvite.ac126c209df8fc0f5577.js"
+    "js": "/public/adminuserinvite.4354e9f10046a96bdd24.js"
   },
   "approvedialog": {
     "js": "/public/approvedialog.4e7f8358435732146173.js"
   },
   "creategroup": {
-    "js": "/public/creategroup.ace078cc2b3fba5b070a.js",
-    "css": "/public/creategroup.ace078cc2b3fba5b070a.css"
+    "js": "/public/creategroup.42e8570aab6ad8adad83.js",
+    "css": "/public/creategroup.42e8570aab6ad8adad83.css"
   },
   "createhubstory": {
-    "js": "/public/createhubstory.d8c65d31f3ea4fdfbe2e.js",
-    "css": "/public/createhubstory.d8c65d31f3ea4fdfbe2e.css"
+    "js": "/public/createhubstory.dc31ca2a5604e7559c68.js",
+    "css": "/public/createhubstory.dc31ca2a5604e7559c68.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.90b4816b33d8ed297c11.js",
-    "css": "/public/createlayer.90b4816b33d8ed297c11.css"
+    "js": "/public/createlayer.5b817f7af1f853433447.js",
+    "css": "/public/createlayer.5b817f7af1f853433447.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.24d4815758f4c2753dae.js",
-    "css": "/public/createremotelayer.24d4815758f4c2753dae.css"
+    "js": "/public/createremotelayer.ed8881d9a95414ef8979.js",
+    "css": "/public/createremotelayer.ed8881d9a95414ef8979.css"
   },
   "createuserstory": {
-    "js": "/public/createuserstory.4f292a613594a96fa6fd.js",
-    "css": "/public/createuserstory.4f292a613594a96fa6fd.css"
+    "js": "/public/createuserstory.adbbf585096f4587b72a.js",
+    "css": "/public/createuserstory.adbbf585096f4587b72a.css"
   },
   "edithubstory": {
-    "js": "/public/edithubstory.f3fcc27bf724e064946b.js",
-    "css": "/public/edithubstory.f3fcc27bf724e064946b.css"
+    "js": "/public/edithubstory.57970c88103aae122686.js",
+    "css": "/public/edithubstory.57970c88103aae122686.css"
   },
   "edituserstory": {
-    "js": "/public/edituserstory.681249d875287db2566f.js",
-    "css": "/public/edituserstory.681249d875287db2566f.css"
+    "js": "/public/edituserstory.be99f44a41b4b97066f4.js",
+    "css": "/public/edituserstory.be99f44a41b4b97066f4.css"
   },
   "emailconfirmation": {
     "js": "/public/emailconfirmation.5ce81f097012474f3c2e.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.95a333663e4efef463eb.js",
-    "css": "/public/embedmap.95a333663e4efef463eb.css"
+    "js": "/public/embedmap.2dad221799a4393c8c6a.js",
+    "css": "/public/embedmap.2dad221799a4393c8c6a.css"
   },
   "error": {
     "js": "/public/error.b79093570bc6f3cbc501.js"
   },
   "explore": {
-    "js": "/public/explore.da9b2195e772be1e8986.js",
-    "css": "/public/explore.da9b2195e772be1e8986.css"
+    "js": "/public/explore.5e91c20d2da7941c8fd6.js",
+    "css": "/public/explore.5e91c20d2da7941c8fd6.css"
   },
   "featureinfo": {
-    "js": "/public/featureinfo.057552d439345ac7ea08.js",
-    "css": "/public/featureinfo.057552d439345ac7ea08.css"
+    "js": "/public/featureinfo.d03b8bd910313902b8bb.js",
+    "css": "/public/featureinfo.d03b8bd910313902b8bb.css"
   },
   "groupadmin": {
-    "js": "/public/groupadmin.ad84b9bd1f3ad559e3f4.js",
-    "css": "/public/groupadmin.ad84b9bd1f3ad559e3f4.css"
+    "js": "/public/groupadmin.7cbc552f7086df8a675d.js",
+    "css": "/public/groupadmin.7cbc552f7086df8a675d.css"
   },
   "groupinfo": {
-    "js": "/public/groupinfo.59090611981e4d8a2a12.js",
-    "css": "/public/groupinfo.59090611981e4d8a2a12.css"
+    "js": "/public/groupinfo.474a8a10be7dcfe655df.js",
+    "css": "/public/groupinfo.474a8a10be7dcfe655df.css"
   },
   "groups": {
-    "js": "/public/groups.ac640876a4ad263d189a.js",
-    "css": "/public/groups.ac640876a4ad263d189a.css"
+    "js": "/public/groups.b11192cb751fd317141a.js",
+    "css": "/public/groups.b11192cb751fd317141a.css"
   },
   "home": {
-    "js": "/public/home.2de46ee2bf2e8b572e27.js",
-    "css": "/public/home.2de46ee2bf2e8b572e27.css"
+    "js": "/public/home.f17a6e3735dc3dcb6528.js",
+    "css": "/public/home.f17a6e3735dc3dcb6528.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
   },
   "hubbuilder": {
-    "js": "/public/hubbuilder.770f4bbb102835977c76.js"
+    "js": "/public/hubbuilder.02cd81ccc5ba53411e46.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.d3bd79871e477a804550.js",
-    "css": "/public/hubinfo.d3bd79871e477a804550.css"
+    "js": "/public/hubinfo.ac74114a681ad7b1e0c5.js",
+    "css": "/public/hubinfo.ac74114a681ad7b1e0c5.css"
   },
   "hubmap": {
     "js": "/public/hubmap.64826aba6be7ecc9e4f3.js",
@@ -93,35 +93,35 @@
     "css": "/public/hubresources.8f42601cd2977ae16442.css"
   },
   "hubs": {
-    "js": "/public/hubs.3b82c77edbb384461458.js",
-    "css": "/public/hubs.3b82c77edbb384461458.css"
+    "js": "/public/hubs.d06f6145e28bebb812c1.js",
+    "css": "/public/hubs.d06f6145e28bebb812c1.css"
   },
   "hubstories": {
-    "js": "/public/hubstories.6707b368be9c3d2f186a.js",
-    "css": "/public/hubstories.6707b368be9c3d2f186a.css"
+    "js": "/public/hubstories.bdbbb83d1c0dff9afb2a.js",
+    "css": "/public/hubstories.bdbbb83d1c0dff9afb2a.css"
   },
   "hubstory": {
-    "js": "/public/hubstory.1735b5b52f328d98273f.js",
-    "css": "/public/hubstory.1735b5b52f328d98273f.css"
+    "js": "/public/hubstory.f6e09e023efeb18f4678.js",
+    "css": "/public/hubstory.f6e09e023efeb18f4678.css"
   },
   "journalists": {
     "js": "/public/journalists.b6784dadd4270c9608c7.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.dd845edc04c7f0d75768.js",
-    "css": "/public/layeradmin.dd845edc04c7f0d75768.css"
+    "js": "/public/layeradmin.53654b34394b00ef44b2.js",
+    "css": "/public/layeradmin.53654b34394b00ef44b2.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.ebb1379399ba56155783.js",
-    "css": "/public/layerinfo.ebb1379399ba56155783.css"
+    "js": "/public/layerinfo.8904a3afc86b950287b9.js",
+    "css": "/public/layerinfo.8904a3afc86b950287b9.css"
   },
   "layermap": {
-    "js": "/public/layermap.c748509723673a1da780.js",
-    "css": "/public/layermap.c748509723673a1da780.css"
+    "js": "/public/layermap.d3dfad824e53abb88a05.js",
+    "css": "/public/layermap.d3dfad824e53abb88a05.css"
   },
   "layers": {
-    "js": "/public/layers.54b27592301b5f8f4819.js",
-    "css": "/public/layers.54b27592301b5f8f4819.css"
+    "js": "/public/layers.f07c17ca1f0cb9dc2c51.js",
+    "css": "/public/layers.f07c17ca1f0cb9dc2c51.css"
   },
   "locales": {
     "js": "/public/locales.0810f8db56e9c59acdf1.js"
@@ -130,19 +130,19 @@
     "js": "/public/login.ecff34c22635fc28df5d.js"
   },
   "map": {
-    "js": "/public/map.198d9f57321e3f8383b4.js",
-    "css": "/public/map.198d9f57321e3f8383b4.css"
+    "js": "/public/map.efc1568334f00911f817.js",
+    "css": "/public/map.efc1568334f00911f817.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.8f607e3150b76f0035ee.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.85f404ab4151e944e220.js",
-    "css": "/public/mapedit.85f404ab4151e944e220.css"
+    "js": "/public/mapedit.b403326a10d893423308.js",
+    "css": "/public/mapedit.b403326a10d893423308.css"
   },
   "maps": {
-    "js": "/public/maps.aa33f90d4b189599af41.js",
-    "css": "/public/maps.aa33f90d4b189599af41.css"
+    "js": "/public/maps.a2c139d731e939fa79e3.js",
+    "css": "/public/maps.a2c139d731e939fa79e3.css"
   },
   "passwordreset": {
     "js": "/public/passwordreset.248cdb0cda5be2319c01.js"
@@ -154,8 +154,8 @@
     "js": "/public/privacy.a26ceeba6ea5dd046fb7.js"
   },
   "search": {
-    "js": "/public/search.3d1f33edb2d05a56dfc3.js",
-    "css": "/public/search.3d1f33edb2d05a56dfc3.css"
+    "js": "/public/search.b9cfb9c2f0d6cbe46799.js",
+    "css": "/public/search.b9cfb9c2f0d6cbe46799.css"
   },
   "services": {
     "js": "/public/services.044295f220ab128905ea.js"
@@ -164,48 +164,48 @@
     "js": "/public/signup.78d6ad965fe65fde35ec.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.b57245029c40248b5084.js",
-    "css": "/public/staticmap.b57245029c40248b5084.css"
+    "js": "/public/staticmap.6597045099f4c0a12e8a.js",
+    "css": "/public/staticmap.6597045099f4c0a12e8a.css"
   },
   "stories": {
-    "js": "/public/stories.dda4798f79aae1812a7a.js",
-    "css": "/public/stories.dda4798f79aae1812a7a.css"
+    "js": "/public/stories.620ddd0cca1f419ebcf4.js",
+    "css": "/public/stories.620ddd0cca1f419ebcf4.css"
   },
   "terms": {
     "js": "/public/terms.0e8a4f33bac19ccb4155.js"
   },
   "usergroups": {
-    "js": "/public/usergroups.c503809254cad1a19723.js",
-    "css": "/public/usergroups.c503809254cad1a19723.css"
+    "js": "/public/usergroups.4d0936b759cdf5452b00.js",
+    "css": "/public/usergroups.4d0936b759cdf5452b00.css"
   },
   "userhubs": {
-    "js": "/public/userhubs.e710dc292e141a27d155.js",
-    "css": "/public/userhubs.e710dc292e141a27d155.css"
+    "js": "/public/userhubs.22c6fc92c9ebf4708237.js",
+    "css": "/public/userhubs.22c6fc92c9ebf4708237.css"
   },
   "usermap": {
-    "js": "/public/usermap.476853d4c3d7d46d402a.js",
-    "css": "/public/usermap.476853d4c3d7d46d402a.css"
+    "js": "/public/usermap.6b5ee9fb489d483f1e81.js",
+    "css": "/public/usermap.6b5ee9fb489d483f1e81.css"
   },
   "usermaps": {
-    "js": "/public/usermaps.fbfe6cc58c15a35944c1.js",
-    "css": "/public/usermaps.fbfe6cc58c15a35944c1.css"
+    "js": "/public/usermaps.521fa789bbfecadf7698.js",
+    "css": "/public/usermaps.521fa789bbfecadf7698.css"
   },
   "usersettings": {
     "js": "/public/usersettings.e97117d1f46dc14f357c.js"
   },
   "userstories": {
-    "js": "/public/userstories.db6f6b81022259603744.js",
-    "css": "/public/userstories.db6f6b81022259603744.css"
+    "js": "/public/userstories.6f10fd5d648ee1225f38.js",
+    "css": "/public/userstories.6f10fd5d648ee1225f38.css"
   },
   "userstory": {
-    "js": "/public/userstory.19a71ce90b9fcc9b741b.js",
-    "css": "/public/userstory.19a71ce90b9fcc9b741b.css"
+    "js": "/public/userstory.4fa58469344c15ab826f.js",
+    "css": "/public/userstory.4fa58469344c15ab826f.css"
   },
   "vendor": {
-    "js": "/public/vendor.1a28e65ea0dd6f9a2501.js"
+    "js": "/public/vendor.07be98f4afef8267e2bc.js"
   },
   "metadata": {
-    "version": "0.12.15"
+    "version": "0.12.16"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
@@ -231,30 +231,30 @@
     "js": "/public/auth0login.d64bda44bbd23e97580c.js"
   },
   "allmaps": {
-    "js": "/public/allmaps.cdae6d9159ae90dc7970.js",
-    "css": "/public/allmaps.cdae6d9159ae90dc7970.css"
+    "js": "/public/allmaps.5a960bfba2b7dbe225b9.js",
+    "css": "/public/allmaps.5a960bfba2b7dbe225b9.css"
   },
   "allstories": {
-    "js": "/public/allstories.62b6c161a587425fa2f5.js",
-    "css": "/public/allstories.62b6c161a587425fa2f5.css"
+    "js": "/public/allstories.5bd7d31358d70e5defaf.js",
+    "css": "/public/allstories.5bd7d31358d70e5defaf.css"
   },
   "alllayers": {
-    "js": "/public/alllayers.e53e3ee58d6ddc4bb8a0.js",
-    "css": "/public/alllayers.e53e3ee58d6ddc4bb8a0.css"
+    "js": "/public/alllayers.c6542bbc60cb9bb117d6.js",
+    "css": "/public/alllayers.c6542bbc60cb9bb117d6.css"
   },
   "allhubs": {
-    "js": "/public/allhubs.fd10ec6cbea5b57bc112.js",
-    "css": "/public/allhubs.fd10ec6cbea5b57bc112.css"
+    "js": "/public/allhubs.2bc3c9c7c5ab34e2e723.js",
+    "css": "/public/allhubs.2bc3c9c7c5ab34e2e723.css"
   },
   "allgroups": {
-    "js": "/public/allgroups.ff7789cac672d8a0cf55.js",
-    "css": "/public/allgroups.ff7789cac672d8a0cf55.css"
+    "js": "/public/allgroups.cd693eeea14c9e1f72f8.js",
+    "css": "/public/allgroups.cd693eeea14c9e1f72f8.css"
   },
   "auth0invite": {
     "js": "/public/auth0invite.21f58bd1e5b222bf586a.js"
   },
   "layerreplace": {
-    "js": "/public/layerreplace.0093778272b166eb824a.js",
-    "css": "/public/layerreplace.0093778272b166eb824a.css"
+    "js": "/public/layerreplace.346e9f52d819bad247ee.js",
+    "css": "/public/layerreplace.346e9f52d819bad247ee.css"
   }
 }
