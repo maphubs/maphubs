@@ -1,5 +1,14 @@
 # Change Log
 
+## [v0.12.16](https://github.com/maphubs/maphubs/tree/v0.12.16) (2017-10-02)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.15...v0.12.16)
+
+**Fixed bugs:**
+
+- edit button not displaying in map editor for certain layers [\#431](https://github.com/maphubs/maphubs/issues/431)
+- edit button broken on feature page [\#430](https://github.com/maphubs/maphubs/issues/430)
+- landsat 2016 basemap max zoom [\#429](https://github.com/maphubs/maphubs/issues/429)
+
 ## [v0.12.15](https://github.com/maphubs/maphubs/tree/v0.12.15) (2017-09-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.14...v0.12.15)
 
