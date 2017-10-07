@@ -181,7 +181,7 @@
     "sitemap": "^1.13.0",
     "slick-carousel": "^1.7.1",
     "slugify": "^1.2.1",
-    "snyk": "^1.40.2",
+    "snyk": "^1.42.0",
     "superagent": "^3.6.0",
     "superagent-bluebird-promise": "^4.2.0",
     "superagent-jsonp": "0.1.1",
