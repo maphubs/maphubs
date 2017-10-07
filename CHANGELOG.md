@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.12.17](https://github.com/maphubs/maphubs/tree/v0.12.17) (2017-10-07)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.16...v0.12.17)
+
+**Merged pull requests:**
+
+- \[Snyk Update\] New fixes for 2 vulnerable dependency paths [\#432](https://github.com/maphubs/maphubs/pull/432) ([snyk-bot](https://github.com/snyk-bot))
+
 ## [v0.12.16](https://github.com/maphubs/maphubs/tree/v0.12.16) (2017-10-02)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.12.15...v0.12.16)
 
