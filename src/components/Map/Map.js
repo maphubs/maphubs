@@ -300,15 +300,20 @@ export default class Map extends MapHubsComponent<Props, State> {
         _this.restoreForestAlerts();
       }
       
-      _this.debugLog('MAP LOADED');
+      
       _this.setState({mapLoaded: true});
     });
   });//end style.load
 
    map.on('load', () => {
-     $( "body" ).append( `<div id="map-load-complete" style="display: none;"></div>` );
+     _this.debugLog('MAP LOADED');
+    //wait a few seconds just to be sure the display catches up
+    setTimeout(()=>{
+      $( "body" ).append( `<div id="map-load-complete" style="display: none;"></div>` );
+    }, 5000);
+    
    });
-
+   
   //Setup inset map
     if(_this.refs.insetMap){
       if(!_this.refs.insetMap.getInsetMap()){
