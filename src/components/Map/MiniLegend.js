@@ -113,6 +113,8 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
           titleFontSize = '8px';
         }else if(titleText.length > 60) {
           titleFontSize = '11px';
+        }else if(titleText.length > 40) {
+          titleFontSize = '13px';
         }
         
       }else{
