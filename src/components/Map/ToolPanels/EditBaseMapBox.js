@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsPureComponent from '../../MapHubsPureComponent';
 
 type Props = {|
   gpxLink: string

@@ -1,10 +1,10 @@
 //@flow
 import React from 'react';
-import Radio from '../forms/radio';
+import Radio from '../../forms/radio';
 import Formsy from 'formsy-react';
-import BaseMapStore from '../../stores/map/BaseMapStore';
-import MapHubsComponent from '../MapHubsComponent';
-import type {BaseMapOption, BaseMapStoreState} from '../../stores/map/BaseMapStore';
+import BaseMapStore from '../../../stores/map/BaseMapStore';
+import MapHubsComponent from '../../MapHubsComponent';
+import type {BaseMapOption, BaseMapStoreState} from '../../../stores/map/BaseMapStore';
 import _isequal from 'lodash.isequal';
 
 type Props = {

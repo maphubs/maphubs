@@ -8,6 +8,7 @@ import MiniLegend from './Map/MiniLegend';
 import MapStore from '../stores/MapStore';
 import MapActions from '../actions/MapActions';
 import ForestLossLegendHelper from './Map/ForestLossLegendHelper';
+import IsochroneLegendHelper from './Map/IsochroneLegendHelper';
 import MapLayerMenu from './InteractiveMap/MapLayerMenu';
 import MapHubsComponent from './MapHubsComponent';
 import Reflux from './Rehydrate';
@@ -127,6 +128,35 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       mapLayers = this.state.layers;
     }
     var layers = ForestLossLegendHelper.getLegendLayers();
+  
+    if(enabled){
+      //add layers to legend
+       mapLayers = mapLayers.concat(layers);
+    }else{
+      var updatedLayers = [];
+      //remove layers from legend
+      mapLayers.forEach(mapLayer=>{
+        var foundInLayers;
+        layers.forEach(layer=>{
+          if(mapLayer.id === layer.id){
+            foundInLayers = true;
+          }
+        });
+        if(!foundInLayers){
+          updatedLayers.push(mapLayer);
+        }
+      });    
+      mapLayers = updatedLayers;
+    }
+    MapActions.updateLayers(mapLayers, false);
+  }
+
+  onToggleIsochroneLayer = (enabled: boolean) => {
+    var mapLayers = [];
+    if(this.state.layers){
+      mapLayers = this.state.layers;
+    }
+    var layers = IsochroneLegendHelper.getLegendLayers();
   
     if(enabled){
       //add layers to legend
@@ -298,6 +328,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
               baseMap={this.state.basemap}
               onChangeBaseMap={this.onChangeBaseMap}
               onToggleForestLoss={this.onToggleForestLoss}
+              onToggleIsochroneLayer={this.onToggleIsochroneLayer}
               showLogo={this.props.showLogo}
               mapConfig={this.props.mapConfig}
               insetConfig={this.props.insetConfig}

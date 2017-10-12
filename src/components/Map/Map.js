@@ -22,6 +22,7 @@ import ForestAlertMixin from './Helpers/ForestAlertMixin';
 import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
 import DataEditorMixin from './Helpers/DataEditorMixin';
 import ForestLossMixin from './Helpers/ForestLossMixin';
+import IsochroneMixin from './Helpers/IsochroneMixin';
 import StyleMixin from './Helpers/StyleMixin';
 import MapSearchMixin from './Search/MapSearchMixin';
 import DataEditorActions from '../../actions/DataEditorActions';
@@ -78,6 +79,7 @@ type Props = {|
     mapConfig: Object,
     insetConfig: Object,
     onToggleForestLoss?: Function,
+    onToggleIsochroneLayer?: Function,
     children?: any
   |}
 
@@ -633,6 +635,9 @@ export default class Map extends MapHubsComponent<Props, State> {
           calculateForestAlerts={this.calculateForestAlerts}
           forestAlerts={this.state.forestAlerts}
           onChangeBaseMap={this.changeBaseMap}
+          getIsochronePoint={this.getIsochronePoint}
+          clearIsochroneLayers={this.clearIsochroneLayers}
+          isochroneResult={this.state.isochroneResult}
            />
           {measurementTools}
           {featureBox}
@@ -908,6 +913,27 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   loadSources = async (sourceKeys: Array<string>, fromStyle: GLStyle) => {
     return StyleMixin.loadSources.bind(this)(sourceKeys, fromStyle);
+  }
+
+  //IsochroneMixin
+  getIsochroneStyle = (data: GeoJSONObject) => {
+    return IsochroneMixin.getIsochroneStyle.bind(this)(data);
+  }
+
+  getIsochronePoint = () => {
+    return IsochroneMixin.getIsochronePoint.bind(this)();
+  }
+
+  runIsochroneQuery = (point: {x: number, y: number}) => {
+    return IsochroneMixin.runIsochroneQuery.bind(this)(point);
+  }
+
+  clearIsochroneLayers = () => {
+    return IsochroneMixin.clearIsochroneLayers.bind(this)();
+  }
+
+  saveIsochroneLayer = () => {
+    return IsochroneMixin.saveIsochroneLayer.bind(this)();
   }
 
 

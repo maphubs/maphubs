@@ -1,11 +1,11 @@
 //@flow
 import React from 'react';
 var $ = require('jquery');
-import EditBaseMapBox from './EditBaseMapBox';
-import BaseMapSelection from './BaseMapSelection';
-import Formsy from 'formsy-react';
-import Toggle from '../forms/toggle';
-import AnimationActions from '../../actions/map/AnimationActions';
+import EditBaseMapBox from './ToolPanels/EditBaseMapBox';
+import BaseMapSelection from './ToolPanels/BaseMapSelection';
+import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel';
+import ForestAlertPanel from './ToolPanels/ForestAlertPanel';
+import IsochronePanel from './ToolPanels/IsochronePanel';
 import MapHubsComponent from '../../components/MapHubsComponent';
 
 type Props = {|
@@ -19,6 +19,9 @@ type Props = {|
   enableMeasurementTools:  boolean,
   forestAlerts: Object,
   forestLoss: Object,
+  getIsochronePoint: Function,
+  clearIsochroneLayers: Function,
+  isochroneResult: Object,
   height: string
 |}
 
@@ -66,11 +69,6 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
     this.props.onChangeBaseMap(val);
   }
 
-   toggleMeasurementTools = (model: {enableMeasurementTools: boolean}) => {
-    if(model.enableMeasurementTools) this.closePanel();
-    this.props.toggleMeasurementTools(model.enableMeasurementTools);
-  }
-
    toggleForestAlerts = (model: Object) => {
      //leave panel open for this tool?
     //if(model.enableGLAD2017) this.closePanel();
@@ -82,24 +80,7 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
   }
 
   render(){
-    var forestAlertsResult = '';
-    if(this.props.forestAlerts.result){
-      forestAlertsResult = (
-        
-        <div>
-          <div className="row no-margin">
-            <div className="col s12" style={{height: '50px', border: '1px solid #ddd'}}>
-              <span><b>{this.__('Alert Count: ')}</b>{this.props.forestAlerts.result.alertCount}</span>         
-            </div>                
-          </div>
-          <div className="row no-margin">
-            <div className="col s12" style={{height: '50px', border: '1px solid #ddd'}}>
-              <span><b>{this.__('Total Area: ')}</b>{this.props.forestAlerts.result.areaMessage}</span>
-            </div>                
-          </div>        
-        </div>
-      );
-    }
+    
   
     return (
       <div> 
@@ -158,14 +139,7 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">straighten</i>{this.__('Measurement Tools')}</div>
               <div className="collapsible-body center">
                 <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>              
-                  <Formsy.Form onChange={this.toggleMeasurementTools}>
-                   <b>{this.__('Show Measurement Tools')}</b>          
-                    <Toggle name="enableMeasurementTools"
-                        labelOff={this.__('Off')} labelOn={this.__('On')}                       
-                        className="col s12"
-                        checked={this.props.enableMeasurementTools}
-                    />                     
-                  </Formsy.Form>                 
+                  <MeasurementToolPanel {...this.props} closePanel={this.closePanel} />          
                 </div>
               </div>
             </li>
@@ -173,26 +147,15 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
               <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">warning</i>{this.__('Forest Alerts')}</div>
               <div className="collapsible-body center">
                 <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>              
-                  <Formsy.Form onChange={this.toggleForestAlerts}>
-                   <b>{this.__('2017 GLAD Alerts')}</b>          
-                    <Toggle name="enableGLAD2017"
-                        labelOff={this.__('Off')} labelOn={this.__('On')}                       
-                        className="col s12"
-                        checked={this.props.forestAlerts.enableGLAD2017}
-                    />                     
-                  </Formsy.Form>             
-                  <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
-                  {forestAlertsResult}
-                  <Formsy.Form onChange={this.toggleForestLoss}>
-                   <b>{this.__('2001 - 2014 Forest Loss')}</b>          
-                    <Toggle name="enableForestLoss"
-                        labelOff={this.__('Off')} labelOn={this.__('On')}                       
-                        className="col s12"
-                        checked={this.props.forestLoss.enableForestLoss}
-                    />                     
-                  </Formsy.Form>    
-                  <button className="btn-floating" style={{marginRight: '5px'}} onClick={AnimationActions.play}><i className="material-icons">play_arrow</i></button> 
-                  <button className="btn-floating" onClick={AnimationActions.stop}><i className="material-icons">pause</i></button> 
+                  <ForestAlertPanel {...this.props} />
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="collapsible-header" style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className="material-icons">access_time</i>{this.__('Travel Time')}</div>
+              <div className="collapsible-body center">
+                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>              
+                  <IsochronePanel {...this.props} />
                 </div>
               </div>
             </li>

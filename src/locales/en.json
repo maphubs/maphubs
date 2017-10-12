@@ -860,5 +860,7 @@
 	"Download Backup File": "Download Backup File",
 	"Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.": "Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.",
 	"Print/Screenshot": "Print/Screenshot",
-	"Delete Index": "Delete Index"
+	"Delete Index": "Delete Index",
+	"Travel Time": "Travel Time",
+	"Select Location": "Select Location"
 }

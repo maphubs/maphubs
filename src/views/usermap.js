@@ -255,32 +255,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     });
   }
 
-  onToggleForestLoss = (enabled: boolean) => {
-    var mapLayers = this.state.layers;
-    var layers = ForestLossLegendHelper.getLegendLayers();
-  
-    if(enabled){
-      //add layers to legend
-       mapLayers = mapLayers.concat(layers);
-    }else{
-      var updatedLayers = [];
-      //remove layers from legend
-      mapLayers.forEach(mapLayer=>{
-        var foundInLayers;
-        layers.forEach(layer=>{
-          if(mapLayer.id === layer.id){
-            foundInLayers = true;
-          }
-        });
-        if(!foundInLayers){
-          updatedLayers.push(mapLayer);
-        }
-      });    
-      mapLayers = updatedLayers;
-    }
-   this.setState({layers: mapLayers});
-  }
-
   render() {
     let map = '';
     let button = '', deleteButton = '', editButton ='', shareButton = '';

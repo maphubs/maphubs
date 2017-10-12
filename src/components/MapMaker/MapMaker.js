@@ -22,6 +22,7 @@ import EditLayerPanel from './EditLayerPanel';
 import MapLayerDesigner from '../LayerDesigner/MapLayerDesigner';
 import EditorToolButtons from './EditorToolButtons';
 import ForestLossLegendHelper from '../Map/ForestLossLegendHelper';
+import IsochroneLegendHelper from '../Map/IsochroneLegendHelper';
 import MapHubsComponent from '../MapHubsComponent';
 import Reflux from '../Rehydrate';
 import fireResizeEvent from '../../services/fire-resize-event';
@@ -417,6 +418,32 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     Actions.setMapLayers(mapLayers, false);
   }
 
+  onToggleIsochroneLayer = (enabled: boolean) => {
+    var mapLayers = this.state.mapLayers ? this.state.mapLayers: [];
+    var layers = IsochroneLegendHelper.getLegendLayers();
+  
+    if(enabled){
+      //add layers to legend
+       mapLayers = mapLayers.concat(layers);
+    }else{
+      var updatedLayers = [];
+      //remove layers from legend
+      mapLayers.forEach(mapLayer=>{
+        var foundInLayers;
+        layers.forEach(layer=>{
+          if(mapLayer.id === layer.id){
+            foundInLayers = true;
+          }
+        });
+        if(!foundInLayers){
+          updatedLayers.push(mapLayer);
+        }
+      });    
+      mapLayers = updatedLayers;
+    }
+    Actions.setMapLayers(mapLayers, false);
+  }
+
   render(){
     var _this = this;
     const headerHeight = 52;
@@ -540,6 +567,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
                   insetConfig={this.state.settings ? this.state.settings.insetConfig : undefined}
                   onChangeBaseMap={Actions.setMapBasemap}
                   onToggleForestLoss={this.onToggleForestLoss}
+                  onToggleIsochroneLayer={this.onToggleIsochroneLayer}
                   fitBounds={mapExtent}
                   mapConfig={this.props.mapConfig}
                   hash={true}
