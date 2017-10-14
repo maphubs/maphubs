@@ -3,8 +3,8 @@
     "js": "/public/about.2f5f3bac2135d357bfd7.js"
   },
   "addphotopoint": {
-    "js": "/public/addphotopoint.71a243885f27926570ae.js",
-    "css": "/public/addphotopoint.71a243885f27926570ae.css"
+    "js": "/public/addphotopoint.efcf61fb48d6b7bb4936.js",
+    "css": "/public/addphotopoint.efcf61fb48d6b7bb4936.css"
   },
   "adminuserinvite": {
     "js": "/public/adminuserinvite.8873e5a9e4e3f801c0ca.js"
@@ -21,12 +21,12 @@
     "css": "/public/createhubstory.bccf626b3c95b533a326.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.4f6ead34057094bf745f.js",
-    "css": "/public/createlayer.4f6ead34057094bf745f.css"
+    "js": "/public/createlayer.30122aa32ebff5ddb4c8.js",
+    "css": "/public/createlayer.30122aa32ebff5ddb4c8.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.0d9813cc82c25827f8c7.js",
-    "css": "/public/createremotelayer.0d9813cc82c25827f8c7.css"
+    "js": "/public/createremotelayer.77f57057d5412ea9cda3.js",
+    "css": "/public/createremotelayer.77f57057d5412ea9cda3.css"
   },
   "createuserstory": {
     "js": "/public/createuserstory.14e9793f3b58b55d4d16.js",
@@ -44,8 +44,8 @@
     "js": "/public/emailconfirmation.5ce81f097012474f3c2e.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.3c5ef063245426d87a7c.js",
-    "css": "/public/embedmap.3c5ef063245426d87a7c.css"
+    "js": "/public/embedmap.cd63562be753fd9a7c93.js",
+    "css": "/public/embedmap.cd63562be753fd9a7c93.css"
   },
   "error": {
     "js": "/public/error.3029213782d45a7c5ad5.js"
@@ -55,8 +55,8 @@
     "css": "/public/explore.af6f3bf47c35360020e4.css"
   },
   "featureinfo": {
-    "js": "/public/featureinfo.52aa9a63895f9df8ddbd.js",
-    "css": "/public/featureinfo.52aa9a63895f9df8ddbd.css"
+    "js": "/public/featureinfo.beb28a170c7ed8e7f7a0.js",
+    "css": "/public/featureinfo.beb28a170c7ed8e7f7a0.css"
   },
   "groupadmin": {
     "js": "/public/groupadmin.b17b5f205dc2c268f2b3.js",
@@ -71,8 +71,8 @@
     "css": "/public/groups.0a26f2ee1621410ce099.css"
   },
   "home": {
-    "js": "/public/home.6d0251c0cfe65be9233c.js",
-    "css": "/public/home.6d0251c0cfe65be9233c.css"
+    "js": "/public/home.4a49bd82a74a4b931dd6.js",
+    "css": "/public/home.4a49bd82a74a4b931dd6.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
@@ -81,8 +81,8 @@
     "js": "/public/hubbuilder.c1d416bff7c070d1897b.js"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.564ab148f48406672095.js",
-    "css": "/public/hubinfo.564ab148f48406672095.css"
+    "js": "/public/hubinfo.cd29060b17eae0cf3afc.js",
+    "css": "/public/hubinfo.cd29060b17eae0cf3afc.css"
   },
   "hubmap": {
     "js": "/public/hubmap.64826aba6be7ecc9e4f3.js",
@@ -108,16 +108,16 @@
     "js": "/public/journalists.71d3f649c029d51325a8.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.52eb8df71f435d257131.js",
-    "css": "/public/layeradmin.52eb8df71f435d257131.css"
+    "js": "/public/layeradmin.986d17bee95b77af566a.js",
+    "css": "/public/layeradmin.986d17bee95b77af566a.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.e69adff946ea95467cd2.js",
-    "css": "/public/layerinfo.e69adff946ea95467cd2.css"
+    "js": "/public/layerinfo.298d31d5447b32411fda.js",
+    "css": "/public/layerinfo.298d31d5447b32411fda.css"
   },
   "layermap": {
-    "js": "/public/layermap.64ffe2ecd4b11f2886f8.js",
-    "css": "/public/layermap.64ffe2ecd4b11f2886f8.css"
+    "js": "/public/layermap.b23c5ebefeedd7495974.js",
+    "css": "/public/layermap.b23c5ebefeedd7495974.css"
   },
   "layers": {
     "js": "/public/layers.730e675cb53ad7e802ef.js",
@@ -130,15 +130,15 @@
     "js": "/public/login.ecff34c22635fc28df5d.js"
   },
   "map": {
-    "js": "/public/map.eb37c80fa01a345ebe64.js",
-    "css": "/public/map.eb37c80fa01a345ebe64.css"
+    "js": "/public/map.70c3fa3c44e7a2e7c32d.js",
+    "css": "/public/map.70c3fa3c44e7a2e7c32d.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.8f607e3150b76f0035ee.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.32af32802e888e634fc6.js",
-    "css": "/public/mapedit.32af32802e888e634fc6.css"
+    "js": "/public/mapedit.90d805adb9a2383d8e17.js",
+    "css": "/public/mapedit.90d805adb9a2383d8e17.css"
   },
   "maps": {
     "js": "/public/maps.04b4a763059d13f4d8d8.js",
@@ -154,8 +154,8 @@
     "js": "/public/privacy.7251524238ff537ec06b.js"
   },
   "search": {
-    "js": "/public/search.0ab5bfcc1b6a66b16e5a.js",
-    "css": "/public/search.0ab5bfcc1b6a66b16e5a.css"
+    "js": "/public/search.88e1ddd5e906ad2dc948.js",
+    "css": "/public/search.88e1ddd5e906ad2dc948.css"
   },
   "services": {
     "js": "/public/services.2e13b0ccb12bf34d45c1.js"
@@ -164,8 +164,8 @@
     "js": "/public/signup.78d6ad965fe65fde35ec.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.ebe21590a1457fb68a67.js",
-    "css": "/public/staticmap.ebe21590a1457fb68a67.css"
+    "js": "/public/staticmap.7dd12978b15aba60d156.js",
+    "css": "/public/staticmap.7dd12978b15aba60d156.css"
   },
   "stories": {
     "js": "/public/stories.b80e89a06704b2daf3ac.js",
@@ -183,8 +183,8 @@
     "css": "/public/userhubs.63a19a562e98b0bbc090.css"
   },
   "usermap": {
-    "js": "/public/usermap.2973e6b37959db836a36.js",
-    "css": "/public/usermap.2973e6b37959db836a36.css"
+    "js": "/public/usermap.2d478bce938cc9042b51.js",
+    "css": "/public/usermap.2d478bce938cc9042b51.css"
   },
   "usermaps": {
     "js": "/public/usermaps.a9f9fb5970328e3d7418.js",
@@ -202,10 +202,10 @@
     "css": "/public/userstory.ea9d1804da2cd1d8d6f7.css"
   },
   "vendor": {
-    "js": "/public/vendor.9876e021cea594e14424.js"
+    "js": "/public/vendor.89664a5f877f2f6d6e72.js"
   },
   "metadata": {
-    "version": "0.13.0"
+    "version": "0.13.1"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
@@ -254,7 +254,7 @@
     "js": "/public/auth0invite.9777b92884e80bf79eef.js"
   },
   "layerreplace": {
-    "js": "/public/layerreplace.972ba34a54061f9be2ea.js",
-    "css": "/public/layerreplace.972ba34a54061f9be2ea.css"
+    "js": "/public/layerreplace.ddc54e8dfaab2cad1d34.js",
+    "css": "/public/layerreplace.ddc54e8dfaab2cad1d34.css"
   }
 }
