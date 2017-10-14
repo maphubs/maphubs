@@ -87,7 +87,7 @@ module.exports = {
             [e.point.x + this.props.interactionBufferSize / 2, e.point.y + this.props.interactionBufferSize / 2]
           ], {layers: this.state.interactiveLayers});
 
-        if (features && features.length) {          
+        if (features && features.length > 0) {          
           if(this.state.selected){
             this.clearSelection();
           }
@@ -96,6 +96,12 @@ module.exports = {
            //find presets and add to props
            if(feature.layer && feature.layer.source){
              let presets = MapStyles.settings.getSourceSetting(this.glStyle, feature.layer.source, 'presets');
+             if(!presets){
+              const data = this.glStyle.sources[feature.layer.source].data;
+              if(data && data.metadata){
+                presets = data.metadata['maphubs:presets'];
+              }
+             }
              if(!feature.properties['maphubs_metadata']){
                feature.properties['maphubs_metadata'] = {};
              }
@@ -110,8 +116,8 @@ module.exports = {
             return; //return here to disable interactation with other layers when editing
           }
           
-          this.setSelectionFilter([features[0]]);
-          this.setState({selectedFeature:features[0], selected:true});
+          this.setSelectionFilter([feature]);
+          this.setState({selectedFeature:feature, selected:true});
         } 
         else if(this.state.selectedFeature) {
           this.clearSelection();
