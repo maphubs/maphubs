@@ -3,7 +3,7 @@ import React from 'react';
 import {HOC} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 
 type Props = {|
@@ -30,15 +30,19 @@ type Props = {|
   isValid: Function,
   showError: Function,
   setValue: Function,
+  getValue: Function,
   getErrorMessage: Function
 |}
 
 type State = {
+  charCount: number,
   value: string,
-  charCount: number
+  isValid?: boolean,
+  showError?: boolean,
+  errorMessage?: string
 }
 
-class TextInput extends MapHubsPureComponent<Props, State> {
+class TextInput extends MapHubsComponent<Props, State> {
 
   props: Props
 
@@ -66,10 +70,19 @@ class TextInput extends MapHubsPureComponent<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
     if(this.props.value !== nextProps.value){
       var charCount = 0;
-      if(nextProps.value) charCount = nextProps.value.length;
+      if(nextProps.value){
+        charCount = nextProps.value.length;
+        this.setState({
+          charCount
+        });
+        this.props.setValue(nextProps.value);
+      } 
+
       this.setState({
-        value: nextProps.value,
-        charCount
+        value: nextProps.getValue(), 
+        isValid: nextProps.isValid(), 
+        showError: nextProps.showError(), 
+        errorMessage: nextProps.getErrorMessage()
       });
     }
   }
@@ -88,8 +101,20 @@ class TextInput extends MapHubsPureComponent<Props, State> {
     if(!_isequal(this.state, nextState)){
       return true;
     }
+    const value =  nextProps.getValue();
+    const isValid = nextProps.isValid();
+    const showError = nextProps.showError();
+    const errorMessage = nextProps.getErrorMessage();
+    if(value !== this.state.value || 
+      isValid !== this.state.isValid ||
+      showError !== this.state.showError ||
+      errorMessage !== this.state.errorMessage
+    ){
+      return true;
+    }
     return false;
   }
+  
 
   componentDidUpdate(prevProps: Props){
     if(!prevProps.dataTooltip && this.props.dataTooltip){
@@ -100,13 +125,16 @@ class TextInput extends MapHubsPureComponent<Props, State> {
   changeValue = (event) => {
      event.stopPropagation();
      this.props.setValue(event.currentTarget.value);
+     
      this.setState({
-       value: event.currentTarget.value,
-       charCount: event.currentTarget.value.length
+       charCount: event.currentTarget.value.length,
      });
    }
 
   render() {
+    const value = this.props.getValue();
+    const errorMessage = this.props.getErrorMessage();
+
     var className, inputClassName = '';
     if(this.props.useMaterialize){
       className = classNames('input-field', this.props.className);
@@ -121,8 +149,6 @@ class TextInput extends MapHubsPureComponent<Props, State> {
       className = classNames(this.props.className);
     }
 
-
-
    var icon = '';
    if(this.props.icon){
       icon = (<i className="material-icons prefix">{this.props.icon}</i>);
@@ -131,7 +157,7 @@ class TextInput extends MapHubsPureComponent<Props, State> {
    if(this.state.charCount > this.props.length) countColor = 'red';
 
    var labelClassName = '';
-   if(this.state.value && this.state.value !== ''){
+   if(value && value !== ''){
      labelClassName = 'active';
    }
 
@@ -154,11 +180,11 @@ class TextInput extends MapHubsPureComponent<Props, State> {
     return (
       <div ref="inputWrapper" className={className} style={this.props.style} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
           {icon}
-          <input ref="input" id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={this.state.value}
+          <input ref="input" id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
             disabled={this.props.disabled}
             onClick={this.props.onClick}
             onChange={this.changeValue}/>
-          <label htmlFor={id} className={labelClassName} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+          <label htmlFor={id} className={labelClassName} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
             {charCount}
       </div>
     );
