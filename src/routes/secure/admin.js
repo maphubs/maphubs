@@ -9,41 +9,66 @@ var knex = require('../../connection');
 
 module.exports = function(app: any) {
 
-  app.get('/admin/invite', csrfProtection, (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      return res.redirect('/login');
-    }
-    var user_id = req.session.user.maphubsUser.id;
-    Admin.checkAdmin(user_id).then((allowed) => {
-      if(allowed){
-        return res.render('adminuserinvite', {title: req.__('Invite User') + ' - ' + MAPHUBS_CONFIG.productName, props: {}, req});
+  app.get('/admin/manage', csrfProtection, async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated || !req.isAuthenticated()) {
+        return res.redirect('/login');
+      }
+      if(await Admin.checkAdmin(req.session.user.maphubsUser.id)){
+        return res.render('adminuserinvite', {
+          title: req.__('Manage Users') + ' - ' + MAPHUBS_CONFIG.productName, 
+          props: {
+            members: await Admin.getMembers()
+          }, req});
       }else{
         return res.redirect('/login');
       }
-    }).catch(nextError(next));
-
+    }catch(err){
+      nextError(next)(err);
+    }
   });
 
-  app.post('/admin/invite/send', csrfProtection, (req, res) => {
-    //check if logged in use is an admin
-    var data = req.body;
-    if (req.isAuthenticated && req.isAuthenticated()) {
-      var user_id = req.session.user.maphubsUser.id;
-      Admin.checkAdmin(user_id).then((allowed) => {
-        if(allowed){
+  app.post('/admin/invite/send', csrfProtection, async (req, res) => {
+    try{
+      var data = req.body;
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        var user_id = req.session.user.maphubsUser.id;
+        if(await Admin.checkAdmin(user_id)){
           if (data && data.email) {
-            return Admin.sendInviteEmail(data.email, req.__).then(() => {
-              return res.status(200).send({success:true});
-            });
+              res.status(200).send({
+                success:true, 
+                key: await Admin.sendInviteEmail(data.email, req.__)
+              });
           }else{
-            return apiDataError(res);
+            apiDataError(res);
           }
         }else{
-          return res.status(401).send("Unauthorized");
+          res.status(401).send("Unauthorized");
         }
-      }).catch(apiError(res, 200));
-    }else{
-       res.status(401).send("Unauthorized");
+      }else{
+        res.status(401).send("Unauthorized");
+      }
+    }catch(err){
+      apiError(res, 200)(err);
+    }
+  });
+
+  app.post('/admin/invite/deauthorize', csrfProtection, async (req, res) => {
+    try{
+      var data = req.body;
+      if(req.isAuthenticated && req.isAuthenticated() &&
+        await Admin.checkAdmin(req.session.user.maphubsUser.id)){
+        if (data && data.email && data.key) {
+          await Admin.deauthorize(data.email, data.key);
+          res.status(200).send({success:true});
+        }else{
+          apiDataError(res);
+        }
+      }else{
+        res.status(401).send("Unauthorized");
+      }
+    }catch(err){
+      apiError(res, 200)(err);
     }
   });
 

@@ -28,7 +28,16 @@ module.exports = function(app: any) {
         if(valid){
           return Admin.useInvite(inviteKey)
           .then((email) => {
-            return res.render('auth0invite', {title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, props: {email, inviteKey}, req});
+            return res.render('auth0invite', {
+              title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, 
+              props: {
+                email, 
+                inviteKey,
+                AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
+                AUTH0_DOMAIN: local.AUTH0_DOMAIN,
+                AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
+              }, 
+              req});
           });
         }else{
           return res.render('error', {
@@ -53,13 +62,13 @@ module.exports = function(app: any) {
     }else{
       res.render('auth0login', {
       title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName,
-      auth0: true,
-      allowSignUp: !local.requireInvite,
       props: {
         AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
         AUTH0_DOMAIN: local.AUTH0_DOMAIN,
         AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
-        initialScreen: 'signUp'
+        initialScreen: 'signUp',
+        allowSignUp: !local.requireInvite,
+        allowLogin: false
       }, req
     });
     }
@@ -68,13 +77,12 @@ module.exports = function(app: any) {
   app.get('/forgotpassword', csrfProtection, (req, res) => {
     res.render('auth0login', {
       title: req.__('Forgot Password') + ' - ' + MAPHUBS_CONFIG.productName,
-      auth0: true,
-      allowSignUp: !local.requireInvite,
       props: {
         AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
         AUTH0_DOMAIN: local.AUTH0_DOMAIN,
         AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
-        initialScreen: 'forgotPassword'
+        initialScreen: 'forgotPassword',
+        allowSignUp: false
       }, req
     });
   });

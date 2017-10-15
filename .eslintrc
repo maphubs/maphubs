@@ -67,8 +67,7 @@
     "L": true,
     "HS": true,
     "MAPHUBS_CONFIG": true,
-    "Raven": true,
-    "Auth0Lock": true
+    "Raven": true
   },
   "plugins": [
     "babel",

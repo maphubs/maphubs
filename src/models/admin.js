@@ -36,20 +36,31 @@ module.exports = {
       '<br />' + email  + '<br /><br />' +
       __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
-    return Email.send({
+    await Email.send({
         from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
         to: email,
         subject: __('Account Invite') + ' - ' + MAPHUBS_CONFIG.productName,
         text,
         html
       });
+    return key;
   },
 
   async checkInviteKey(key: string){
     debug.log('checking invite key');
-    const result = await knex('omh.account_invites').select('email').where({key, used:false});
+    const result = await knex('omh.account_invites').select('email').where({key});
 
     if(result && result.length === 1){
+      return true;
+    }
+    return null;
+  },
+
+  async checkInviteEmail(email: string){
+    debug.log('checking invite key');
+    const result = await knex('omh.account_invites').select('email').where({email});
+
+    if(result && result.length > 0){
       return true;
     }
     return null;
@@ -79,6 +90,16 @@ module.exports = {
     }else{
       return null;
     }
+  },
+
+  getMembers(trx: any){
+    let db = trx ? trx : knex;
+    return db('omh.account_invites');
+  },
+
+  deauthorize(email: string, key: string, trx: any){
+    let db = trx ? trx : knex;
+    return db('omh.account_invites').del().where({email, key});
   },
 
   async checkAdmin(user_id: number, trx: any){

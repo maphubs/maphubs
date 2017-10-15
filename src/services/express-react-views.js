@@ -271,11 +271,7 @@ function createEngine(engineOptions) {
           markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`;
         }
 
-        if(options.auth0  && !local.useLocalAuth){
-          markup += `
-          <script type="text/javascript" src="https://cdn.auth0.com/js/lock/10.15/lock.min.js"></script>
-          `;
-        }
+ 
         
          markup += `
           </head>

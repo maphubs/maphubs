@@ -21,13 +21,12 @@ module.exports = function(app: any) {
   app.get('/login', checkReturnTo,
   (req, res) => {
     res.render('auth0login', {
-      title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
-      auth0: true,
-      allowSignUp: !local.requireInvite,
+      title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,      
       props: {
         AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
         AUTH0_DOMAIN: local.AUTH0_DOMAIN,
-        AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
+        AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
+        allowSignUp: false
       }, req
     });
   });

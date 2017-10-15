@@ -79,7 +79,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       var adminInvites = '';
       if(this.state.user.admin){
         adminInvites = (
-          <li className="usermenu-wrapper"><a href="/admin/invite">{this.__('Invite Users')}</a></li>
+          <li className="usermenu-wrapper"><a href="/admin/manage">{this.__('Manage Users')}</a></li>
         );
       }
 

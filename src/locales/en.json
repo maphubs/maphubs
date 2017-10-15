@@ -862,5 +862,12 @@
 	"Print/Screenshot": "Print/Screenshot",
 	"Delete Index": "Delete Index",
 	"Travel Time": "Travel Time",
-	"Select Location": "Select Location"
+	"Select Location": "Select Location",
+	"Resend Invite": "Resend Invite",
+	"Manage Users": "Manage Users",
+	"Thank you for confirming your email!": "Thank you for confirming your email!",
+	"Option 1: I already have a MapHubs Account for kris+usermanagetest@maphubs.com": "Option 1: I already have a MapHubs Account for kris+usermanagetest@maphubs.com",
+	"Option 2: Create a new account for my email address kris+usermanagetest@maphubs.com": "Option 2: Create a new account for my email address kris+usermanagetest@maphubs.com",
+	"I already have a MapHubs Account for kris+usermanagetest@maphubs.com": "I already have a MapHubs Account for kris+usermanagetest@maphubs.com",
+	"Create a new account for my email address kris+usermanagetest@maphubs.com": "Create a new account for my email address kris+usermanagetest@maphubs.com"
 }

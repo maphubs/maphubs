@@ -61,7 +61,14 @@ var strategy = new Auth0Strategy({
       var host = _find(hosts, {host: local.host});
       if(host && host.user_id){
         //local user already linked
-        return AuthUsers.find(host.user_id).then(maphubsUser => {
+        return AuthUsers.find(host.user_id).then(async (maphubsUser) => {
+          if(maphubsUser.id !== '1' && local.requireInvite){
+            const allowed = await Admin.checkInviteEmail(maphubsUser.email);
+            if(!allowed){
+              log.warn(`unauthorized user: ${maphubsUser.email}`);
+              return false;
+            }
+          }
           //attach MapHubs User
           log.info(`Auth0 login successful for ${maphubsUser.id} ${maphubsUser.display_name} ${maphubsUser.email}`);
           profile.maphubsUser = {
@@ -76,9 +83,15 @@ var strategy = new Auth0Strategy({
         log.warn(`local user not linked: ${profile._json.email}`);
         //attempt to lookup user by email
         return AuthUsers.findByEmail(profile._json.email)
-        .then((maphubsUser) => {
+        .then(async (maphubsUser) => {
           if(maphubsUser){
-            //found a user with this email, 
+            if(maphubsUser.id !== '1' && local.requireInvite){
+              const allowed = await Admin.checkInviteEmail(maphubsUser.email);
+              if(!allowed){
+                log.warn(`unauthorized user: ${maphubsUser.email}`);
+                return false;
+              }
+            }
             //link it back to the Auth0 account
             return saveMapHubsIDToAuth0(profile, maphubsUser.id)
             .then(() =>{

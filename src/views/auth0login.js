@@ -1,16 +1,21 @@
 //@flow
 import React from 'react';
+import Auth0Lock from 'auth0-lock';
 import MapHubsComponent from '../components/MapHubsComponent';
 import LocaleStore from '../stores/LocaleStore';
 import Reflux from '../components/Rehydrate';
 import type {LocaleStoreState} from '../stores/LocaleStore';
+
 
 type Props = {
   locale: string,
   AUTH0_CLIENT_ID: string,
   AUTH0_DOMAIN: string,
   AUTH0_CALLBACK_URL: string,
-  initialScreen: string
+  initialScreen: string,
+  allowSignUp: boolean,
+  allowLogin: boolean,
+  flashMessage: {type: ['success' | 'error'], text: string}
 }
 
 type State = LocaleStoreState
@@ -20,7 +25,9 @@ export default class Login extends MapHubsComponent<Props, State> {
   props: Props
 
   static defaultProps = {
-    initialScreen: 'login'
+    initialScreen: 'login',
+    allowSignUp: true,
+    allowLogin: true
   }
 
   constructor(props: Props) {
@@ -29,6 +36,8 @@ export default class Login extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
+
+    
     var lock = new Auth0Lock(this.props.AUTH0_CLIENT_ID, this.props.AUTH0_DOMAIN,{ 
       container: 'login-container',
       initialScreen: this.props.initialScreen,
@@ -39,21 +48,60 @@ export default class Login extends MapHubsComponent<Props, State> {
           scope: 'openid name email picture'
         }
       },
-      allowSignUp: true,
+      allowSignUp: this.props.allowSignUp,
+      allowLogin: this.props.allowLogin,
+      allowForgotPassword: true,
+      allowShowPassword: false, //FIXME: causes css conflicts with materialize-css
       language: this.state.locale,
-      mustAcceptTerms: true,
+      mustAcceptTerms: false, //when enable you have click the checkbox first before the social buttons activate, this is very confusing
       theme: {
-        logo: 'https://d28qp8lgme8ph4.cloudfront.net/assets/maphubs-logo.png',
+        logo: 'https://cdn.maphubs.com/assets/maphubs-logo.png',
         primaryColor: MAPHUBS_CONFIG.primaryColor
       },
       languageDictionary: {
-        title: `${this.__('MapHubs Login')}`,
+        title: `${this.__('MapHubs Account')}`,
         signUpTerms: `${this.__('I have read and agree to the ')} <a href="/terms" target="_blank">${this.__('terms')}</a> ${this.__('and')} <a href="/privacy" target="_blank">${this.__('privacy policy')}.</a>`
       }
     });
 
-    lock.show();
+   
 
+    lock.on('authorization_error',(error) => {
+      lock.show({
+        flashMessage: {
+          type: 'error',
+          text: error.error_description
+        }
+      });
+    });
+
+    lock.show({flashMessage: this.props.flashMessage});
+    this.lock = lock;
+  }
+
+  componentWillReceiveProps(nextProps: Props){
+    if(nextProps.initialScreen !== this.props.initialScreen){
+      if(nextProps.initialScreen === 'signUp'){
+        this.lock.show({
+          initialScreen: nextProps.initialScreen,
+          flashMessage: nextProps.flashMessage
+        });
+      }else{
+        this.lock.show({
+          initialScreen: nextProps.initialScreen,
+          flashMessage: nextProps.flashMessage
+        });
+      }
+     
+    }else if(nextProps.flashMessage !== this.props.flashMessage){
+      this.lock.show({
+        flashMessage: nextProps.flashMessage
+      });
+    }else if(nextProps.allowSignUp !== this.props.allowSignUp){
+      this.lock.show({
+        allowSignUp: nextProps.flashMessage
+      });
+    }
   }
 
   render() {

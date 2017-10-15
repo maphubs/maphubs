@@ -109,7 +109,7 @@ module.exports = {
             "react",
             "stage-0"
           ],
-          plugins: ['transform-flow-strip-types']         
+          plugins: ['transform-flow-strip-types', "version-inline"]         
         }  
       },
       {
