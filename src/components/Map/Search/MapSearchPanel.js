@@ -82,13 +82,11 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   }
 
   selectTab = (tab: string) => {
-    if(tab === 'location' && 
-      this.state.tab !== 'location' &&
-      this.state.query){    
-      if(!this.state.locationSearchResults){
+    if(tab === 'location' && this.state.tab !== 'location'){   
+        this.setState({tab});
+      if(this.state.query && !this.state.locationSearchResults){
          this.runLocationSearch(this.state.query);
       }
-      this.setState({tab});
     }else if(tab === 'data' && 
       this.state.tab !== 'data' &&
       this.state.query){
