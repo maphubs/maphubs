@@ -44,10 +44,14 @@ var MapHubsSource = {
               feature.properties.mhid = i;
             });
           }
+          if(source.metadata){
+            //HACK: Mapbox-gl errors on metadata in GeoJSON sources
+            geoJSON.metadata = source.metadata;
+          }else{
+            debug.log(`missing metadata for source ${key}`);
+            geoJSON.metadata = {};
+          }
           
-          //HACK: Mapbox-gl errors on metadata in GeoJSON sources
-          geoJSON.metadata = source.metadata ? source.metadata : {};
-
           return mapComponent.addSource(key, {
             type: 'geojson',
             data: geoJSON
