@@ -427,9 +427,9 @@ export default class Map extends MapHubsComponent<Props, State> {
           });
 
 
-      }else if(!_isequal(this.state.baseMap,nextProps.baseMap)) {
+      }else if(this.props.baseMap !== nextProps.baseMap) {
         //** Style Not Changing, but Base Map is Changing **/
-        _this.debugLog('basemap changing from props');
+        _this.debugLog(`basemap changing from props (${this.state.baseMap} -> ${nextProps.baseMap})`);
         allowLayersToMoveMap = false;    
         this.setState({allowLayersToMoveMap});
 

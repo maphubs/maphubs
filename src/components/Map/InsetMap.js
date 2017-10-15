@@ -125,42 +125,49 @@ export default class InsetMap extends React.Component<Props, State> {
         attributionControl: false
       });
 
-      insetMap.on('style.load', () => {
+      insetMap.on('styledata', () => {
 
         //create geojson from bounds
-        var geoJSON = _this.getGeoJSONFromBounds(bounds);
-        geoJSON.features[0].properties = {'v': 1};
-        var geoJSONCentroid = _centroid(geoJSON);
-        geoJSONCentroid.properties = {'v': 1};
-        insetMap.addSource("inset-bounds", {"type": "geojson", data:geoJSON});
-        insetMap.addSource("inset-centroid", {"type": "geojson", data:geoJSONCentroid});
-        insetMap.addLayer({
-            'id': 'bounds',
-            'type': 'line',
-            'source': 'inset-bounds',
-            'paint': {
-                'line-color': 'rgb(244, 118, 144)',
-                'line-opacity': 0.75,
-                'line-width': 5
-            }
-        });
+        
 
-        insetMap.addLayer({
-            'id': 'center',
-            'type': 'circle',
-            'source': 'inset-centroid',
-            'paint': {
-                'circle-color': 'rgb(244, 118, 144)',
-                'circle-opacity': 0.75
-            }
-        });
+        const insetGeoJSONData = this.insetMap.getSource("inset-bounds");
+        if(!insetGeoJSONData){
+           //create layers  
+          var geoJSON = _this.getGeoJSONFromBounds(bounds);
+          geoJSON.features[0].properties = {'v': 1};
+          var geoJSONCentroid = _centroid(geoJSON);
+          geoJSONCentroid.properties = {'v': 1};
 
-        if(_this.showInsetAsPoint()){
-          insetMap.setFilter('center', ['==', 'v', 1]);
-          insetMap.setFilter('bounds', ['==', 'v', 2]);
-        } else {
-          insetMap.setFilter('center', ['==', 'v', 2]);
-          insetMap.setFilter('bounds', ['==', 'v', 1]);
+          insetMap.addSource("inset-bounds", {"type": "geojson", data:geoJSON});
+          insetMap.addSource("inset-centroid", {"type": "geojson", data:geoJSONCentroid});
+          insetMap.addLayer({
+              'id': 'bounds',
+              'type': 'line',
+              'source': 'inset-bounds',
+              'paint': {
+                  'line-color': 'rgb(244, 118, 144)',
+                  'line-opacity': 0.75,
+                  'line-width': 5
+              }
+          });
+
+          insetMap.addLayer({
+              'id': 'center',
+              'type': 'circle',
+              'source': 'inset-centroid',
+              'paint': {
+                  'circle-color': 'rgb(244, 118, 144)',
+                  'circle-opacity': 0.75
+              }
+          });
+
+          if(_this.showInsetAsPoint()){
+            insetMap.setFilter('center', ['==', 'v', 1]);
+            insetMap.setFilter('bounds', ['==', 'v', 2]);
+          } else {
+            insetMap.setFilter('center', ['==', 'v', 2]);
+            insetMap.setFilter('bounds', ['==', 'v', 1]);
+          }
         }
 
       });

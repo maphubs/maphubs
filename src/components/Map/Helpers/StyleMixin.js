@@ -58,8 +58,9 @@ module.exports = {
       this.glStyle = _cloneDeep(style);
     }
     this.baseMapStyle = style;
-    this.glStyle.glyphs = style.glyphs;
-    this.glStyle.sprite = style.sprite;
+    //don't clear glyphs/sprite, prevents full redraw when switching to raster base maps
+    this.glStyle.glyphs = style.glyphs ? style.glyphs : this.glStyle.glyphs;
+    this.glStyle.sprite = style.sprite ? style.sprite : this.glStyle.sprite;
     this.glStyle.metadata = style.metadata;
     if(this.map && update){
       try{

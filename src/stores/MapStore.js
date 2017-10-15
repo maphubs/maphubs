@@ -10,7 +10,6 @@ import type {Layer} from './layer-store';
 export type MapStoreState = {
   style: Object,
   position: Object,
-  basemap: string,
   layers: Array<Layer>
 }
 
@@ -28,7 +27,6 @@ export default class MapStore extends Reflux.Store {
     return {
       style: {},
       position: {},
-      basemap: 'default',
       layers: []
     };
   }
@@ -87,10 +85,6 @@ export default class MapStore extends Reflux.Store {
    layers = JSON.parse(JSON.stringify(layers));
    var style = this.buildMapStyle(layers);
    this.setState({layers, style});
- }
-
- changeBaseMap(basemap: string){
-  this.setState({basemap});
  }
 
  buildMapStyle(layers: Array<Layer>){

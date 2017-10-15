@@ -118,10 +118,6 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     });
   }
 
-  onChangeBaseMap = (basemap: string) => {
-     MapActions.changeBaseMap(basemap);
-  }
-
   onToggleForestLoss = (enabled: boolean) => {
     var mapLayers = [];
     if(this.state.layers){
@@ -325,8 +321,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
               interactive={this.props.interactive} 
               style={{width: '100%', height}}
               glStyle={this.state.style}
-              baseMap={this.state.basemap}
-              onChangeBaseMap={this.onChangeBaseMap}
+              baseMap={this.props.basemap}
               onToggleForestLoss={this.onToggleForestLoss}
               onToggleIsochroneLayer={this.onToggleIsochroneLayer}
               showLogo={this.props.showLogo}

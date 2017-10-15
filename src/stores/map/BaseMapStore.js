@@ -180,7 +180,15 @@ export default class BaseMapStore extends Reflux.Store {
         this.setState({
           bingImagerySet: 'Aerial'
         });
-        cb(config.style);
+        const style = config.style;
+        if(!style.glyphs){
+          style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}";
+        }
+
+        if(!style.sprite){
+          style.sprite = "";
+        }
+        cb(style);
       });
       }else if(config.loadFromFile){
         this.loadFromFile(config.loadFromFile, cb);
