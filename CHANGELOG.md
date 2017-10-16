@@ -1,5 +1,20 @@
 # Change Log
 
+## [v0.13.2](https://github.com/maphubs/maphubs/tree/v0.13.2) (2017-10-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.13.1...v0.13.2)
+
+**Implemented enhancements:**
+
+- add progress spinner to layer delete [\#428](https://github.com/maphubs/maphubs/issues/428)
+- add vertices to polygons in editor [\#398](https://github.com/maphubs/maphubs/issues/398)
+
+**Fixed bugs:**
+
+- location search not working [\#435](https://github.com/maphubs/maphubs/issues/435)
+- some raster basemaps not working [\#434](https://github.com/maphubs/maphubs/issues/434)
+- add progress spinner to layer delete [\#428](https://github.com/maphubs/maphubs/issues/428)
+- didn't redirect after deleting a layer [\#396](https://github.com/maphubs/maphubs/issues/396)
+
 ## [v0.13.1](https://github.com/maphubs/maphubs/tree/v0.13.1) (2017-10-14)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.13.0...v0.13.1)
 
