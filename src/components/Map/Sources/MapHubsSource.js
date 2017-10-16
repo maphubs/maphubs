@@ -87,6 +87,9 @@ var MapHubsSource = {
   },
   addLayer(layer: GLLayer, source: GLSource, position: number, mapComponent: any){
     let map = mapComponent.map;
+
+    const presets = source.metadata ? source.metadata['maphubs:presets'] : undefined;
+
     //try to delete any old markers
     if(layer.metadata && layer.metadata['maphubs:markers']){  
       let layer_id = layer.metadata['maphubs:layer_id'];    
@@ -153,6 +156,11 @@ var MapHubsSource = {
           }else{
             marker.properties.maphubs_host = window.location.hostname;
           }
+
+          if(!marker.properties['maphubs_metadata']){
+            marker.properties['maphubs_metadata'] = {};
+          }
+          marker.properties['maphubs_metadata'].presets = presets;
           
           markerId = marker.properties.mhid;
            
