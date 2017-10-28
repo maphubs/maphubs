@@ -321,7 +321,7 @@ function createEngine(engineOptions) {
             attachFileError: t('The maximum file size is 10mb'),
             nameLabel: t('Your Name'),
             nameError: t('Please enter your name'),
-            emailLabel: t('Email address'),
+            emailLabel: t('Your Email Address'),
             emailError: t('Please enter a valid email address'),
             topicLabel: t('Select a topic'),
             topicError: t('Please select a topic from the list'),
