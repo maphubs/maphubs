@@ -33,6 +33,20 @@ services:
     ports:
       - '5432:5432'
     restart: always
+  db-replica:
+    build:
+      context: ./db-server
+    env_file:
+      - ./env/dev/db-replica.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/secret/db-server-pass.env
+    volumes:
+      - 'db-data-replica:/var/lib/postgresql/data'
+    ports:
+      - '5433:5432'
+    depends_on:
+      - db
+    restart: always
   tiles:
     build:
       context: ../maphubs-tileserver
@@ -99,3 +113,6 @@ volumes:
   db-data:
     external:
       name: maphubs-db-data
+  db-data-replica:
+    external:
+      name: maphubs-db-data-replica
