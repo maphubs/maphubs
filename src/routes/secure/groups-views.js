@@ -70,7 +70,7 @@ module.exports = function(app: any) {
         return res.redirect('/notfound?path='+req.path);
       }
         
-      const image = urlUtil.getBaseUrl() +  '/group/OpenStreetMap/image';
+      const image = urlUtil.getBaseUrl() +  `/group/${group_id}/image`;
       const name = Locales.getLocaleStringObject(req.locale, group.name);
       const description = Locales.getLocaleStringObject(req.locale, group.description);
       return res.render('groupinfo', {
