@@ -293,7 +293,8 @@ module.exports = {
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
       'views',
       'style','labels', 'settings', 'legend_html', 'extent_bbox', 'preview_position', 'updated_by_user_id', 'created_by_user_id'
-    ).table('omh.layers').where('shortid', shortid);
+    ).table('omh.layers')
+    .whereRaw('trim(shortid) = trim(?)', [shortid]);
     if (result && result.length === 1) {
       return result[0];
     }
