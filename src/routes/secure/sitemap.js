@@ -78,9 +78,7 @@ Disallow: /xml/map/*
         {url: baseUrl + '/maps', changefreq: 'daily'},
         {url: baseUrl + '/stories', changefreq: 'daily'},
         {url: baseUrl + '/hubs', changefreq: 'daily'},
-        {url: baseUrl + '/groups', changefreq: 'daily'},
-        {url: baseUrl + '/about', changefreq: 'weekly'}
-
+        {url: baseUrl + '/groups', changefreq: 'daily'}
       ];
 
       knex.transaction(async (trx) => {
