@@ -137,18 +137,18 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  app.get('/services', csrfProtection, (req, res) => {   
-    return res.render('services', {
-      title: req.__('Services') + ' - ' + MAPHUBS_CONFIG.productName,
-      props:{},
+  app.get('/terms', csrfProtection, (req, res) => {
+    return res.render('terms', {
+      title: req.__('Terms') + ' - ' + MAPHUBS_CONFIG.productName,
+      props: {},
       req
     });
   });
 
-  app.get('/journalists', csrfProtection, (req, res) => {
-   return res.render('journalists', {
-      title: req.__('Maps for Journalists') + ' - ' + MAPHUBS_CONFIG.productName,
-      props:{},
+  app.get('/privacy', csrfProtection, (req, res) => {
+    return res.render('privacy', {
+      title: req.__('Privacy') + ' - ' + MAPHUBS_CONFIG.productName,
+      props: {},
       req
     });
   });

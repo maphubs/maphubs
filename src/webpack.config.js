@@ -60,13 +60,10 @@ module.exports = {
     embedmap: "./src/client/embedmap",
     usermap: "./src/client/usermap",
     staticmap: "./src/client/staticmap",
-    about: "./src/client/about",
     terms: "./src/client/terms",
     privacy: "./src/client/privacy",
     pageedit: "./src/client/pageedit",
     searchindexadmin: "./src/client/searchindexadmin",
-    services: "./src/client/services",
-    journalists: "./src/client/journalists",
     explore: "./src/client/explore",
     vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "jsts", "iconv-lite"],
     locales: ["./src/services/locales"]
