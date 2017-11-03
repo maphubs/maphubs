@@ -530,7 +530,10 @@ module.exports = {
   async delete(layer_id: number){
     var _this = this;
     return knex.transaction(async(trx) => {
-      await DataLoadUtils.removeLayerData(layer_id, trx);
+      const layer = await _this.getLayerByID(layer_id, trx);
+      if(!layer.remote && !layer.is_external){
+        await DataLoadUtils.removeLayerData(layer_id, trx);
+      }
       await trx('omh.layer_views').where({layer_id}).del();
       await _this.removeLayerFromMaps(layer_id, trx);
       await trx('omh.layer_notes').where({layer_id}).del();
