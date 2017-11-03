@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.13.8](https://github.com/maphubs/maphubs/tree/v0.13.8) (2017-11-03)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.13.7...v0.13.8)
+
+**Fixed bugs:**
+
+- error deleting external layer [\#441](https://github.com/maphubs/maphubs/issues/441)
+
 ## [v0.13.7](https://github.com/maphubs/maphubs/tree/v0.13.7) (2017-11-02)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.13.6...v0.13.7)
 
