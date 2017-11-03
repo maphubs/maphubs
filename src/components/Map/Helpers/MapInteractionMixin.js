@@ -98,7 +98,11 @@ module.exports = {
              let presets = MapStyles.settings.getSourceSetting(this.glStyle, feature.layer.source, 'presets');
              if(!presets){
                debug.log(`presets not found in source ${feature.layer.source}`);
-              const data = this.glStyle.sources[feature.layer.source].data;
+               const source = this.glStyle.sources[feature.layer.source];
+               let data;
+               if(source){
+                data = source.data;
+               }
               if(data){
                 if(data.metadata){
                   presets = data.metadata['maphubs:presets'];
