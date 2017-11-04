@@ -25,3 +25,6 @@ RUN wget http://download.osgeo.org/postgis/source/postgis-$PGIS_VERSION.tar.gz \
 COPY upgrade.sh /var/lib/postgresql/
 COPY cluster_setup.sh /var/lib/postgresql/
 RUN chmod +x /var/lib/postgresql/upgrade.sh && chmod +x /var/lib/postgresql/cluster_setup.sh
+
+#keep it running so we can connect a shell to manually execute the upgrade
+CMD ["tail", "-f", "/var/lib/postgresql/data/postgresql.conf"]
