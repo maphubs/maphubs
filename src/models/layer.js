@@ -683,6 +683,35 @@ module.exports = {
         updated_at: knex.raw('now()')
       });
     }
+  },
+
+   async importLayer(layer: Object, group_id: string, user_id: number, trx: any){
+
+    delete layer.layer_id; //get a new id from this instance
+
+    layer.owned_by_group_id = group_id;
+    layer.created_by_user_id = user_id;
+    layer.updated_by_user_id = user_id;
+    layer.last_updated = knex.raw('now()');
+
+    layer.description = JSON.stringify(layer.description);
+    layer.settings = JSON.stringify(layer.settings);
+    layer.extent_bbox = JSON.stringify(layer.extent_bbox);
+    layer.external_layer_config = JSON.stringify(layer.external_layer_config);
+    layer.name = JSON.stringify(layer.name);
+    layer.presets = JSON.stringify(layer.presets);
+    layer.preview_position = JSON.stringify(layer.preview_position);
+    layer.source = JSON.stringify(layer.source);
+    layer.style = JSON.stringify(layer.style);
+
+    //TODO: overwrite shortid so it doesn't conflict with remote layers if added to same map
+
+    const result = await trx('omh.layers').insert(layer).returning('layer_id');
+    if(result && result.length > 0){
+      return result[0];
+    }else{
+      throw new Error('layer insert failed');
+    }
   }
 
 

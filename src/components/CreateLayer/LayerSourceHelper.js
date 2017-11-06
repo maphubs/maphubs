@@ -29,7 +29,12 @@ export default {
     }else if(type === 'remote'){
       return(
         <div style={{marginTop: '20px'}}>
-          <a className="btn" href="/createremotelayer">{this.__('Go to Remote Layer Tool')}</a>
+        <div className="col s12 m6">
+          <a className="btn" href="/createremotelayer">{this.__('Link a Remote Layer')}</a>
+        </div>
+        <div className="col s12 m6">
+          <a className="btn" href="/importlayer">{this.__('Import MapHubs File')}</a>
+        </div>
         </div>
       );
     }else if(type === 'point' || type === 'line' || type === 'polygon'){

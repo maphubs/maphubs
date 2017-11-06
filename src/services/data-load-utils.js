@@ -64,27 +64,30 @@ module.exports = {
   cleanProps(props: Object, uniqueProps: Object){
     //get unique list of properties
     var cleanedFeatureProps = {};
-    Object.keys(props).map((key) => {
-      //remove chars that can't be in database fields (used in PostGIS views)         
-      var val = props[key];
-      
-      key = key.replace("-", "_");
-      key = key.replace("'", "''");
-      
-      if(!uniqueProps.includes(key)){
-        uniqueProps.push(key);
-      }
-      
-      if(typeof val === 'string'){
-        val = val.replace(/\r?\n/g, ' ');
-      }
+    Object.keys(props).forEach((key) => {
+      //ignore MapHubs ID fields  
+      if(key !== 'mhid' && key !== 'layer_id' && key !== 'osm_id'){
+        var val = props[key];
 
-      if(typeof val === 'object'){
-        //log.info('converting nested object to string: ' + key);
-        val = JSON.stringify(val);
+        //remove chars that can't be in database fields (used in PostGIS views) 
+        key = key.replace("-", "_");
+        key = key.replace("'", "''");
+        
+        if(!uniqueProps.includes(key)){
+          uniqueProps.push(key);
+        }
+        
+        if(typeof val === 'string'){
+          val = val.replace(/\r?\n/g, ' ');
+        }
+
+        if(typeof val === 'object'){
+          //log.info('converting nested object to string: ' + key);
+          val = JSON.stringify(val);
+        }
+        
+        cleanedFeatureProps[key] = val;
       }
-      
-      cleanedFeatureProps[key] = val;
     });
     return cleanedFeatureProps;
   },

@@ -34,6 +34,7 @@ module.exports = {
     addphotopoint: "./src/client/addphotopoint",
     createlayer: "./src/client/createlayer",
     createremotelayer: "./src/client/createremotelayer",
+    importlayer: "./src/client/importlayer",
     featureinfo: "./src/client/featureinfo",
     stories: "./src/client/stories",
     allstories: "./src/client/allstories",

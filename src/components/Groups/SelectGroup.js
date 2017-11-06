@@ -13,7 +13,8 @@ type Props = {
     group_id?: string,
     canChangeGroup: boolean,
     private: boolean,
-    editing: boolean
+    editing: boolean,
+    onGroupChange?: Function
 };
 
 type State = {
@@ -66,8 +67,11 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
     return owner;
   }
 
-  onGroupChange = (group_id: string) => {
+  onGroupChange = (group_id: string) => {   
     this.setState({group_id});
+    if(this.props.onGroupChange){
+      this.props.onGroupChange(group_id);
+    }
   }
 
   render(){

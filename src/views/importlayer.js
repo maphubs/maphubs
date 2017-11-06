@@ -1,0 +1,129 @@
+import React from 'react';
+import Formsy from 'formsy-react';
+import Header from '../components/header';
+import SelectGroup from '../components/Groups/SelectGroup';
+import MapHubsComponent from '../components/MapHubsComponent';
+import Reflux from '../components/Rehydrate';
+import LocaleStore from '../stores/LocaleStore';
+import MessageActions from '../actions/MessageActions';
+import FileUpload from '../components/forms/FileUpload';
+import Progress from '../components/Progress';
+
+type Props = {|
+  groups: Array,
+  locale: string,
+  headerConfig: Object
+|}
+
+type State = {
+  layer_id?: number,
+  group_id?: string
+}
+
+export default class ImportLayer extends MapHubsComponent<Props, State> {
+
+  props: Props
+
+  static defaultProps = {
+    groups: []
+  }
+
+  constructor(props: Props) {
+    super(props);
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
+  componentDidMount(){
+    var _this = this;
+    window.onbeforeunload = function(){
+      if(_this.state.group_id && !_this.state.layer_id){
+        return _this.__('You have not finished importing your layer.');
+      }
+    };
+  }
+
+  onGroupChange = (group_id: string) => {
+    this.setState({group_id});
+  }
+
+  onUpload = (result: Object) => {
+    if(result.success){
+      this.setState({layer_id: result.layer_id, processing: false});      
+    }else{
+      MessageActions.showMessage({title: this.__('Error'), message: result.error});
+      this.setState({processing: false});
+    }
+  }
+
+  onUploadError = (err: string) => {
+      MessageActions.showMessage({title: this.__('Error'), message: err});
+  }
+
+	render() {
+
+    if(!this.props.groups || this.props.groups.length === 0){
+      return (
+        <div>
+            <Header {...this.props.headerConfig}/>
+            <main>
+              <div className="container">
+                <div className="row">
+                  <h5>{this.__('Please Join a Group')}</h5>
+                  <p>{this.__('Please create or join a group before creating a layer.')}</p>
+                </div>
+              </div>
+            </main>
+        </div>
+      );
+    }
+
+    let groupSelection;
+    if(!this.state.group_id){
+      groupSelection = (
+        <div className="row">
+          <Formsy.Form>
+          <SelectGroup groups={this.props.groups} onGroupChange={this.onGroupChange} type="layer"/>
+          </Formsy.Form>
+        </div>
+      );
+    }
+
+    let importComplete;
+    if(this.state.layer_id){
+      importComplete = (
+        <div className="row">
+          <p>{this.__('Import Complete')}</p>
+          <a className="btn" href={`/lyr/${this.state.layer_id}`}>{this.__('Go to Layer')}</a>
+        </div>
+      );
+    }
+
+    let uploadBox;
+    if(this.state.group_id && !this.state.layer_id){
+      const url = `/api/import/layer/${this.state.group_id}/upload`;
+      uploadBox = (
+        <div className="row">
+          <p>{this.__('Please upload a MapHubs (.maphubs) file')}</p>
+          <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
+        </div>
+      );
+    }
+
+    
+		return (
+      <div>
+          <Header {...this.props.headerConfig}/>
+        <main>
+          <h4>{this.__('Import Layer')}</h4>
+          <div className="container center">
+            {groupSelection}
+            {uploadBox}
+            {importComplete}
+          </div>
+          <Progress id="upload-process-progess" title={this.__('Processing Data')} subTitle="" dismissible={false} show={this.state.processing}/>       
+			</main>
+
+      </div>
+		);
+	}
+}
