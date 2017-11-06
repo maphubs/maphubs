@@ -57,11 +57,15 @@ module.exports = function(app: any) {
               return knex.transaction(async(trx)=>{
                 //create the layer
                 const layer_id = await Layer.importLayer(maphubsLayer, group_id, req.user_id, trx);
-                //insert layer data
-                await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, maphubsLayer.shortid, false, false, trx);
-                await DataLoadUtils.loadTempData(layer_id, trx);
-                await layerViews.createLayerViews(layer_id, presets, trx);
-                debug.log('data load transaction complete');
+                
+                //insert layer data, if provided
+                if(importerResult.features.length > 0){
+                  await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, maphubsLayer.shortid, false, false, trx);
+                  await DataLoadUtils.loadTempData(layer_id, trx);
+                  await layerViews.createLayerViews(layer_id, presets, trx);
+                  debug.log('data load transaction complete');
+                }
+                
                 return res.status(200).send({success: true, layer_id});
               });
                             
