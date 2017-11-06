@@ -694,6 +694,9 @@ module.exports = {
     layer.updated_by_user_id = user_id;
     layer.last_updated = knex.raw('now()');
 
+    const style = layer.style;
+    
+
     layer.description = JSON.stringify(layer.description);
     layer.settings = JSON.stringify(layer.settings);
     layer.extent_bbox = JSON.stringify(layer.extent_bbox);
@@ -707,14 +710,24 @@ module.exports = {
     //TODO: overwrite shortid so it doesn't conflict with remote layers if added to same map
 
     const result = await trx('omh.layers').insert(layer).returning('layer_id');
+    let layer_id;
     if(result && result.length > 0){
-      return result[0];
+      layer_id = result[0];
     }else{
       throw new Error('layer insert failed');
     }
+
+    let styleUpdated = false;
+    style.layers.forEach((layer)=>{
+      if(layer.metadata && layer.metadata['maphubs:layer_id']){
+        layer.metadata['maphubs:layer_id'] = layer_id;
+        styleUpdated = true;
+      }
+    });
+    if(styleUpdated){
+      await trx('omh.layers').update(style).where({layer_id});
+    }
+    return layer_id;
   }
-
-
-
 
 };
