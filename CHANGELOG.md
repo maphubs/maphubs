@@ -1,5 +1,19 @@
 # Change Log
 
+## [v0.14.0](https://github.com/maphubs/maphubs/tree/v0.14.0) (2017-11-08)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/db-upgrade-96-v2...v0.14.0)
+
+**Implemented enhancements:**
+
+- import layer from MapHubs file [\#442](https://github.com/maphubs/maphubs/issues/442)
+- add total area to layer display [\#433](https://github.com/maphubs/maphubs/issues/433)
+
+## [db-upgrade-96-v2](https://github.com/maphubs/maphubs/tree/db-upgrade-96-v2) (2017-11-04)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/db-upgrade-96...db-upgrade-96-v2)
+
+## [db-upgrade-96](https://github.com/maphubs/maphubs/tree/db-upgrade-96) (2017-11-04)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.13.8...db-upgrade-96)
+
 ## [v0.13.8](https://github.com/maphubs/maphubs/tree/v0.13.8) (2017-11-03)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.13.7...v0.13.8)
 
