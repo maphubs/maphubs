@@ -725,7 +725,9 @@ module.exports = {
       }
     });
     if(styleUpdated){
-      await trx('omh.layers').update(style).where({layer_id});
+      await trx('omh.layers').update({
+        style: JSON.stringify(style)
+      }).where({layer_id});
     }
     return layer_id;
   }
