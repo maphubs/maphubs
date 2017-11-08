@@ -872,5 +872,6 @@
 	"Create a new account for my email address kris+usermanagetest@maphubs.com": "Create a new account for my email address kris+usermanagetest@maphubs.com",
 	"Your Email Address": "Your Email Address",
 	"Import Layer": "Import Layer",
-	"Please select the group that will own this layer": "Please select the group that will own this layer"
+	"Please select the group that will own this layer": "Please select the group that will own this layer",
+	"Feature Count:": "Feature Count:"
 }

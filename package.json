@@ -147,6 +147,7 @@
     "node-sass-middleware": "0.11.0",
     "nodemailer": "^4.1.0",
     "nuka-carousel": "^2.3.0",
+    "numeral": "^2.0.6",
     "object-assign": "^4.1.1",
     "object-sizeof": "^1.2.0",
     "ogr2ogr": "^1.2.1",

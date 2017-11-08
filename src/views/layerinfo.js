@@ -20,6 +20,8 @@ import BaseMapStore from '../stores/map/BaseMapStore';
 import DataEditorActions from '../actions/DataEditorActions';
 import geobuf from 'geobuf';
 import Pbf from 'pbf';
+import turf_area from '@turf/area';
+import numeral from 'numeral';
 var debug = require('../services/debug')('layerinfo');
 var urlUtil = require('../services/url-util');
 import slugify from 'slugify';
@@ -74,7 +76,9 @@ type State = {
   gridHeightOffset: number,
   userResize?: boolean,
   geoJSON?: Object,
-  dataMsg?: string
+  dataMsg?: string,
+  area?: number,
+  count?: number
 } & LocaleStoreState
 
 export default class LayerInfo extends MapHubsComponent<Props, State> {
@@ -179,8 +183,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       if(err){
         debug.error(err);
       }else{
-        let geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
-        _this.setState({geoJSON});
+        const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
+        const count = geoJSON.features.length;
+        const areaM2 = turf_area(geoJSON);
+        let area;
+        if(areaM2 && areaM2 > 0){
+          area = areaM2 / 10000.00;
+        }
+        _this.setState({geoJSON, count, area});
       }
     });
   }
@@ -557,6 +567,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   </div>
                   {remote}
                   {external}
+                  <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
+                  <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} hectares</p>
                   <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
                   <IntlProvider locale={this.state.locale}>
                     <FormattedDate value={creationTime}/>
