@@ -65,7 +65,7 @@ module.exports = function(app: any) {
                   await layerViews.createLayerViews(layer_id, presets, trx);
                   debug.log('data load transaction complete');
                 }
-                
+                await Layer.setComplete(layer_id, trx);
                 return res.status(200).send({success: true, layer_id});
               });
                             

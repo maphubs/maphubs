@@ -59,6 +59,10 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       MessageActions.showMessage({title: this.__('Error'), message: err});
   }
 
+  onProcessingStart = () => {
+    this.setState({processing: true});
+  }
+
 	render() {
 
     if(!this.props.groups || this.props.groups.length === 0){
@@ -120,7 +124,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
             {uploadBox}
             {importComplete}
           </div>
-          <Progress id="upload-process-progess" title={this.__('Processing Data')} subTitle="" dismissible={false} show={this.state.processing}/>       
+          <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.processing}/>      
 			</main>
 
       </div>
