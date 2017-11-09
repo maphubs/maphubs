@@ -202,10 +202,10 @@
     "css": "/public/userstory.bcfb68c969b82b8167c9.css"
   },
   "vendor": {
-    "js": "/public/vendor.e1286ea9ce33865fe60d.js"
+    "js": "/public/vendor.1555f2a28fcb9d39c633.js"
   },
   "metadata": {
-    "version": "0.14.0"
+    "version": "0.14.3"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
@@ -258,6 +258,6 @@
     "css": "/public/layerreplace.48292454c7294c66ee53.css"
   },
   "importlayer": {
-    "js": "/public/importlayer.7cfd263a6222287808ce.js"
+    "js": "/public/importlayer.0ce53739c52d50904f5d.js"
   }
 }
