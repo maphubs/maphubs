@@ -66,10 +66,10 @@ services:
   screenshots:
     image: 'quay.io/maphubs/screenshots:v1.0.1'
     environment:
-      HOST: maphubs.dev
+      HOST: maphubs.test
       INTERNAL_PORT: 3000
     extra_hosts:
-      - "maphubs.dev:192.168.65.1"
+      - "maphubs.test:192.168.65.1"
     ports:
       - '3000:3000'
     volumes:
@@ -99,7 +99,7 @@ services:
   kibana:
     image: 'docker.elastic.co/kibana/kibana:5.2.2'
     environment:
-      SERVER_NAME: maphubs.dev
+      SERVER_NAME: maphubs.test
       SERVER_PORT: 5601
       ELASTICSEARCH_URL: 'http://elasticsearch1:9200'
     ports:

@@ -37,7 +37,7 @@ http {
 
   server {
     listen 8888;
-    server_name maphubs.dev;
+    server_name maphubs.test;
     location / {
       proxy_pass http://web;
       proxy_set_header Host $host;

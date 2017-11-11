@@ -44,7 +44,7 @@ var strategy = new Auth0Strategy({
     domain:       local.AUTH0_DOMAIN,
     clientID:     local.AUTH0_CLIENT_ID,
     clientSecret: local.AUTH0_CLIENT_SECRET,
-    callbackURL:  local.AUTH0_CALLBACK_URL || 'http://maphubs.dev:4000/callback'
+    callbackURL:  local.AUTH0_CALLBACK_URL || 'http://maphubs.test:4000/callback'
   }, (accessToken, refreshToken, extraParams, profile, done) => {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
