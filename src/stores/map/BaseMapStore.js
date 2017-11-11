@@ -12,6 +12,10 @@ var positron = require('../../components/Map/BaseMaps/positron.json');
 var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json');
 var osmLiberty = require('../../components/Map/BaseMaps/osm-liberty.json');
 var osmBright = require('../../components/Map/BaseMaps/osm-liberty.json');
+var positronTz = require('../../components/Map/BaseMaps/positron-tz.json');
+var darkmatterTz = require('../../components/Map/BaseMaps/darkmatter-tz.json');
+var osmLibertyTz= require('../../components/Map/BaseMaps/osm-liberty-tz.json');
+var osmBrightTz = require('../../components/Map/BaseMaps/osm-liberty-tz.json');
 var defaultBaseMapOptions = require('../../components/Map/BaseMaps/base-map-options.json');
 
 export type BaseMapOption = {
@@ -149,16 +153,23 @@ export default class BaseMapStore extends Reflux.Store {
     });
   }
 
+  setMapzenKey(style){
+    style.sources.mapzen.tiles = style.sources.mapzen.tiles.map((tile)=>{
+      return tile.replace('{key}', MAPHUBS_CONFIG.MAPZEN_API_KEY);
+    });
+    return style;
+  }
+  
 
   loadFromFile(name, cb){
     if(name === 'positron'){
-      cb(positron);
+      cb(this.setMapzenKey(positronTz));
     }else if(name === 'darkmatter'){
-      cb(darkmatter);
+      cb(this.setMapzenKey(darkmatterTz));
     }else if(name === 'osmLiberty'){
-      cb(osmLiberty);
+      cb(this.setMapzenKey(osmLibertyTz));
     }else if(name === 'osmBright'){
-      cb(osmBright);
+      cb(this.setMapzenKey(osmBrightTz));
     }else{
       debug.log(`unknown base map file: ${name}`);
       cb(positron);

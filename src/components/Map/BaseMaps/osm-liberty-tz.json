@@ -8,7 +8,7 @@
     "mapzen": {
       "type": "vector",
       "tiles": [
-        "http://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt?api_key=vector-tiles-LM25tq4"
+        "https://tile.mapzen.com/mapzen/vector/v1/256/all/{z}/{x}/{y}.mvt?api_key=vector-tiles-LM25tq4"
       ]
     },
     "natural_earth_shaded_relief": {
