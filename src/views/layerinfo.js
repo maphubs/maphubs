@@ -29,7 +29,7 @@ var $ = require('jquery');
 var moment = require('moment-timezone');
 var clipboard;
 if(process.env.APP_ENV === 'browser'){
- clipboard = require('clipboard-js');
+ clipboard = require('clipboard-polyfill');
 }
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl';
@@ -281,7 +281,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   copyToClipboard = (val: string) => {
-    clipboard.copy(val);
+    clipboard.writeText(val);
   }
 
 	render() {

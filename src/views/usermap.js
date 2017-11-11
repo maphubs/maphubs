@@ -16,7 +16,6 @@ var checkClientError = require('../services/client-error-response').checkClientE
 import MapMakerStore from '../stores/MapMakerStore';
 
 import debounce from 'lodash.debounce';
-import ForestLossLegendHelper from '../components/Map/ForestLossLegendHelper';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -27,7 +26,7 @@ import BaseMapStore from '../stores/map/BaseMapStore';
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal';
 let clipboard;
 if(process.env.APP_ENV === 'browser'){
- clipboard = require('clipboard-js');
+ clipboard = require('clipboard-polyfill');
 }
 
 type Props = {
@@ -191,7 +190,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   copyToClipboard = (val: string) => {
-    clipboard.copy(val);
+    clipboard.writeText(val);
   }
 
   showEmbedCode = () => {

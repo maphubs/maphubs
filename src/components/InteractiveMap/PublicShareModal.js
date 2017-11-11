@@ -7,7 +7,7 @@ import ConfirmationActions from '../../actions/ConfirmationActions';
 var urlUtil = require('../../services/url-util');
 var clipboard;
 if(process.env.APP_ENV === 'browser'){
- clipboard = require('clipboard-js');
+ clipboard = require('clipboard-polyfill');
 }
 import Formsy from 'formsy-react';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
@@ -84,9 +84,9 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
         <p style={{fontSize: '16px'}}><b>{this.__('Share Link: ')}</b>
           &nbsp;-&nbsp;
           <a href={shareUrl} target="_blank" rel="noopener noreferrer">{shareUrl}</a>
-          <i className="material-icons layer-info-tooltip omh-accent-text" style={{cursor: 'pointer'}} data-delay="50" onClick={function(){clipboard.copy(shareUrl);}} data-position="left" data-tooltip={this.__('Copy to Clipboard')}>launch</i>
+          <i className="material-icons layer-info-tooltip omh-accent-text" style={{cursor: 'pointer'}} data-delay="50" onClick={function(){clipboard.writeText(shareUrl);}} data-position="left" data-tooltip={this.__('Copy to Clipboard')}>launch</i>
         </p>
-        <button onClick={function(){clipboard.copy(shareUrl);}} className="btn">{this.__('Copy Link')}</button>
+        <button onClick={function(){clipboard.writeText(shareUrl);}} className="btn">{this.__('Copy Link')}</button>
         <p>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
         </div>
       );
