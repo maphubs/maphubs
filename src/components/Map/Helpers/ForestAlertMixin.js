@@ -1,5 +1,5 @@
 //@flow
-var _area = require('@turf/area');
+import _area from '@turf/area';
 module.exports = {
 
   getDefaultForestAlertState(){

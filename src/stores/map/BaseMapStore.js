@@ -2,16 +2,16 @@ import Reflux from 'reflux';
 import Actions from '../../actions/map/BaseMapActions';
 var debug = require('../../services/debug')('stores/BaseMapStore');
 var request = require('superagent');
-var _bboxPolygon = require('@turf/bbox-polygon');
-var _intersect = require('@turf/intersect');
-var _debounce = require('lodash.debounce');
-var _distance = require('@turf/distance');
-var _find = require('lodash.find');
+import _bboxPolygon from '@turf/bbox-polygon';
+import _intersect from '@turf/intersect';
+import _debounce from 'lodash.debounce';
+import _distance from '@turf/distance';
+import _find from 'lodash.find';
 
-var positron = require('../../components/Map/BaseMaps/positron.json');
-var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json');
-var osmLiberty = require('../../components/Map/BaseMaps/osm-liberty.json');
-var osmBright = require('../../components/Map/BaseMaps/osm-liberty.json');
+//var positron = require('../../components/Map/BaseMaps/positron.json');
+//var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json');
+//var osmLiberty = require('../../components/Map/BaseMaps/osm-liberty.json');
+//var osmBright = require('../../components/Map/BaseMaps/osm-liberty.json');
 var positronTz = require('../../components/Map/BaseMaps/positron-tz.json');
 var darkmatterTz = require('../../components/Map/BaseMaps/darkmatter-tz.json');
 var osmLibertyTz= require('../../components/Map/BaseMaps/osm-liberty-tz.json');
@@ -172,7 +172,7 @@ export default class BaseMapStore extends Reflux.Store {
       cb(this.setMapzenKey(osmBrightTz));
     }else{
       debug.log(`unknown base map file: ${name}`);
-      cb(positron);
+      cb(positronTz);
     }
   }
 

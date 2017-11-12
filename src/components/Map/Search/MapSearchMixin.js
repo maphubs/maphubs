@@ -1,9 +1,9 @@
 //@flow
 var MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query-dev');
-var _includes = require('lodash.includes');
+import _includes from 'lodash.includes';
 var debug = require('../../../services/debug')('MapSearchMixin');
-var _find = require('lodash.find');
-var _bbox = require('@turf/bbox');
+import _find from 'lodash.find';
+import _bbox from '@turf/bbox';
 var uuid = require('uuid').v1;
 
 import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style';

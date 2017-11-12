@@ -21,6 +21,7 @@ import DataEditorActions from '../actions/DataEditorActions';
 import geobuf from 'geobuf';
 import Pbf from 'pbf';
 import turf_area from '@turf/area';
+import turf_bbox from '@turf/bbox';
 import numeral from 'numeral';
 var debug = require('../services/debug')('layerinfo');
 var urlUtil = require('../services/url-util');
@@ -213,7 +214,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     if(this.state.geoJSON){
       this.state.geoJSON.features.forEach((feature) => {
         if(idVal === feature.properties[idField]){
-          var bbox = require('@turf/bbox')(feature);
+          var bbox = turf_bbox(feature);
           _this.refs.interactiveMap.getMap().fitBounds(bbox, 16, 25);
           return;
         }

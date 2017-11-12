@@ -21,7 +21,8 @@ import FeatureNotesActions from '../actions/FeatureNotesActions';
 import FeaturePhotoActions from '../actions/FeaturePhotoActions';
 import FeatureNotesStore from '../stores/FeatureNotesStore';
 import FeaturePhotoStore from '../stores/FeaturePhotoStore';
-var turf_area = require('@turf/area');
+import turf_area from '@turf/area';
+import turf_centroid from '@turf/centroid';
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import es from 'react-intl/locale-data/es';
@@ -222,7 +223,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
           );
         }
 
-        var centroid = require('@turf/centroid')(this.props.feature.geojson);
+        var centroid = turf_centroid(this.props.feature.geojson);
 
         var utm = require('wgs84-util').LLtoUTM(centroid.geometry);
 

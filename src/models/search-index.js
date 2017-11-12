@@ -4,7 +4,7 @@ var client = require('../services/elasticsearch').getClient();
 var Feature = require('../models/feature');
 var local = require('../local');
 var log = require('../services/log');
-var _centroid = require('@turf/centroid');
+import _centroid from '@turf/centroid';
 var knex = require('../connection.js');
 var Promise = require('bluebird');
 

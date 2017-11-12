@@ -8,6 +8,7 @@ var dms2dec = require('dms2dec');
 var moment = require('moment');
 import type {GeoJSONObject} from 'geojson-flow';
 import type {Layer} from './layer-store';
+import _bbox from '@turf/bbox';
 
 export type AddPhotoPointStoreState = {
   layer: Layer,
@@ -68,7 +69,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
       bbox: undefined
     };
 
-    var bbox = require('@turf/bbox')(geoJSON);
+    var bbox = _bbox(geoJSON);
     debug.log(bbox);
     geoJSON.bbox = bbox;
 

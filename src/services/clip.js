@@ -1,7 +1,6 @@
 /* @flow weak */
-var linestring = require('@turf/helpers').lineString;
-var point = require('@turf/helpers').point;
-var inside = require('@turf/inside');
+import {point, lineString} from '@turf/helpers';
+import inside from '@turf/inside';
 
 // clip the given LineString features to the given polygon.
 // returns a new list of LineStrings, possibly longer than the original
@@ -16,7 +15,7 @@ module.exports = function clip(lines, polygon) {
 
     function pushLine() {
       if(current.length > 0) {
-        result.push(linestring(current, feat.properties));
+        result.push(lineString(current, feat.properties));
         current = [];
       }
     }

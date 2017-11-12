@@ -1,21 +1,23 @@
 //@flow
 var MapStyles = require('../Styles');
-var _bbox = require('@turf/bbox');
-
+import _bbox from '@turf/bbox';
 import type {GeoJSONObject} from 'geojson-flow';
 
 module.exports = {
   initGeoJSON(data: GeoJSONObject){
+    var _this = this;
     if(this.map){
       if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
         this.map.addSource("omh-geojson", {"type": "geojson", data});
-        var glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null);
-        glStyle.sources["omh-geojson"] = {"type": "geojson", data};
-        glStyle.layers.map(this.map.addLayer.bind(this.map));
-        
-        var interactiveLayers = this.getInteractiveLayers(glStyle);
+        let glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null);
+        //glStyle.sources["omh-geojson"] = {"type": "geojson", data};
+        glStyle.layers.map((layer)=>{
+          _this.map.addLayer(layer);
+        });
+         
+        const interactiveLayers = this.getInteractiveLayers(glStyle);
 
-        this.setState({interactiveLayers, glStyle});
+        this.setState({interactiveLayers});
         this.zoomToData(data);
       } else {
         //empty data

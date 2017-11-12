@@ -3,7 +3,7 @@ var knex = require('../../connection.js');
 var Promise = require('bluebird');
 var log = require('../../services/log.js');
 //var debug = require('../../services/debug')('routes/search');
-var turf_bbox = require('@turf/bbox');
+import turf_bbox from '@turf/bbox';
 var csrfProtection = require('csurf')({cookie: false});
 var SearchIndex = require('../../models/search-index');
 

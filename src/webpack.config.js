@@ -66,7 +66,7 @@ module.exports = {
     pageedit: "./src/client/pageedit",
     searchindexadmin: "./src/client/searchindexadmin",
     explore: "./src/client/explore",
-    vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "jsts", "iconv-lite"],
+    vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "iconv-lite"],
     locales: ["./src/services/locales"]
   },
   resolve: {

@@ -11,6 +11,9 @@ var sizeof = require('object-sizeof');
 var MapStyles = require('../components/Map/Styles');
 var ogr2ogr = require('ogr2ogr');
 var SearchIndex = require('../models/search-index');
+import _buffer from '@turf/buffer';
+import _bbox from '@turf/bbox';
+
 const LARGE_DATA_THRESHOLD = 20000000;
 
 module.exports = {
@@ -176,10 +179,10 @@ module.exports = {
       var bbox;
       if(geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point'){
         //buffer the Point
-        var buffered = require('@turf/buffer')(geoJSON.features[0], 500, 'meters');
-        bbox = require('@turf/bbox')(buffered);
+        var buffered = _buffer(geoJSON.features[0], 500, 'meters');
+        bbox = _bbox(buffered);
       }else{
-        bbox = require('@turf/bbox')(geoJSON);
+        bbox = _bbox(geoJSON);
       }
 
       debug.log(bbox);

@@ -4,6 +4,7 @@ var debug = require('./debug')('terraformerGL');
 var arcgis = require('terraformer-arcgis-parser');
 
 var jsonp = require('superagent-jsonp');
+import _bbox from '@turf/bbox';
 
 //tools to map ArcGIS data to geoJSON for MapboxGL
 
@@ -15,7 +16,7 @@ module.exports= {
     return _this.getArcGISJSON(url)
       .then((data) => {
         var geoJSON = _this.convertAGSData(data);
-        var bbox = require('@turf/bbox')(geoJSON);
+        var bbox = _bbox(geoJSON);
         debug.log(bbox);
         geoJSON.bbox = bbox;
         return geoJSON;
@@ -45,7 +46,7 @@ module.exports= {
     .type('json').accept('json')
     .then((res) => {
       var geoJSON = res.body;
-      var bbox = require('@turf/bbox')(geoJSON);
+      var bbox = _bbox(geoJSON);
       debug.log(bbox);
       geoJSON.bbox = bbox;
       return geoJSON;
