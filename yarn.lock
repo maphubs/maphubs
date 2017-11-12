@@ -2437,7 +2437,7 @@ create-react-class@^15.5.2:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-create-react-class@^15.6.0:
+create-react-class@^15.6.0, create-react-class@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.2.tgz#cf1ed15f12aad7f14ef5f2dfe05e6c42f91ef02a"
   dependencies:
@@ -2445,9 +2445,9 @@ create-react-class@^15.6.0:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-cropperjs@^0.8.0:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-0.8.1.tgz#3dc01813e2f6d1df2c8909e1ce092146c692548e"
+cropperjs@v1.0.0-rc.3:
+  version "1.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.0.0-rc.3.tgz#50a7c7611befc442702f845ede77d7df4572e82b"
 
 cross-spawn@^3.0.0:
   version "3.0.1"
@@ -3397,9 +3397,9 @@ exenv@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/exenv/-/exenv-1.2.1.tgz#75de1c8dee02e952b102aa17f8875973e0df14f9"
 
-exif-js@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/exif-js/-/exif-js-2.1.1.tgz#2962e6aa6600340a454b24c52e458b81ccf1e6d6"
+exif-js@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/exif-js/-/exif-js-2.3.0.tgz#9d10819bf571f873813e7640241255ab9ce1a814"
 
 exit-hook@^1.0.0:
   version "1.1.1"
@@ -5885,6 +5885,13 @@ multi-stage-sourcemap@0.2.1, multi-stage-sourcemap@^0.2.1:
   dependencies:
     source-map "^0.1.34"
 
+multimath@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/multimath/-/multimath-1.0.2.tgz#89e80ad6a1f9eddc9a913af7e69550c386d62282"
+  dependencies:
+    glur "^1.1.2"
+    object-assign "^4.1.1"
+
 multipipe@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/multipipe/-/multipipe-0.3.1.tgz#92625525761ba04feaa09605b6382bce2c91f11f"
@@ -6183,13 +6190,15 @@ npm-run-path@^2.0.0:
     gauge "~2.7.3"
     set-blocking "~2.0.0"
 
-nuka-carousel@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/nuka-carousel/-/nuka-carousel-2.3.0.tgz#827e284d9fd437898402b3ebd5ce8bbd59ce5fa0"
+nuka-carousel@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/nuka-carousel/-/nuka-carousel-3.0.0.tgz#b80c4e9b1d7fa08331b0d1b8f279e5deb596545e"
   dependencies:
+    create-react-class "^15.6.2"
     exenv "^1.2.0"
     kw-react-tween-state "^0.1.5"
     object-assign "^4.1.0"
+    prop-types "^15.6.0"
 
 num2fraction@^1.2.2:
   version "1.2.2"
@@ -6672,11 +6681,12 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
-pica@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/pica/-/pica-3.0.6.tgz#67ca6bad18586ba7fc8c64119c424eb0742f8963"
+pica@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/pica/-/pica-4.0.1.tgz#cedcb2a5f65c9c0c2d809d58ab410cb2273b05a5"
   dependencies:
-    glur "^1.1.2"
+    inherits "^2.0.3"
+    multimath "^1.0.2"
     object-assign "^4.1.1"
     webworkify "^1.3.0"
 
@@ -7262,11 +7272,11 @@ react-color@^2.13.8:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
-react-cropper@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/react-cropper/-/react-cropper-0.12.0.tgz#4b1e7f947e476d72d60ef9b228d9a308fe5be8b5"
+react-cropper@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-cropper/-/react-cropper-1.0.0.tgz#7b65a85bbfcd64fa586be25742b3f16a37847414"
   dependencies:
-    cropperjs "^0.8.0"
+    cropperjs v1.0.0-rc.3
     prop-types "^15.5.8"
 
 react-data-grid-addons@^2.0.59:
