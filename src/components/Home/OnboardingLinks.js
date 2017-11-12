@@ -2,7 +2,7 @@
 import React from 'react';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
-export default class OnboardingLinks extends MapHubsPureComponent {
+export default class OnboardingLinks extends MapHubsPureComponent<void, void> {
 
   render(){
     return (

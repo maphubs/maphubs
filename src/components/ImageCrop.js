@@ -72,7 +72,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
     aspectRatio: 1,
     cropWidth: 0,
     cropHeight: 0,
-    selectedFile: null,
+    selectedFile: '',
     exif: {}
   }
 
