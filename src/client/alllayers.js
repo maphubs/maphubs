@@ -12,7 +12,7 @@ require('../../node_modules/slick-carousel/slick/slick-theme.css');
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <AllLayers {...data}/>,
     document.querySelector('#app')
   );

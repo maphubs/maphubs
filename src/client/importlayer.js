@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <ImportLayer {...data}/>,
     document.querySelector('#app')
   );

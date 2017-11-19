@@ -347,6 +347,7 @@ module.exports = function(app: any) {
               props: {
                 story, hub, canEdit: false
               },
+              talkComments: true,
               twitterCard: {
                 title: story.title,
                 description,
@@ -368,6 +369,7 @@ module.exports = function(app: any) {
             props: {
               story, hub, canEdit
             },
+            talkComments: true,
             twitterCard: {
               title: story.title,
               description,

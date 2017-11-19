@@ -39,24 +39,24 @@ export default class ForestAlertPanel extends MapHubsPureComponent<Props, void> 
 
     return (
       <div>
-        <Formsy.Form onChange={this.toggleForestAlerts}>
+        <Formsy onChange={this.toggleForestAlerts}>
           <b>{this.__('2017 GLAD Alerts')}</b>          
           <Toggle name="enableGLAD2017"
               labelOff={this.__('Off')} labelOn={this.__('On')}                       
               className="col s12"
               checked={this.props.forestAlerts.enableGLAD2017}
           />                     
-        </Formsy.Form>             
+        </Formsy>             
         <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
         {forestAlertsResult}
-        <Formsy.Form onChange={this.toggleForestLoss}>
+        <Formsy onChange={this.toggleForestLoss}>
           <b>{this.__('2001 - 2014 Forest Loss')}</b>          
           <Toggle name="enableForestLoss"
               labelOff={this.__('Off')} labelOn={this.__('On')}                       
               className="col s12"
               checked={this.props.forestLoss.enableForestLoss}
           />                     
-        </Formsy.Form>    
+        </Formsy>    
         <button className="btn-floating" style={{marginRight: '5px'}} onClick={AnimationActions.play}><i className="material-icons">play_arrow</i></button> 
         <button className="btn-floating" onClick={AnimationActions.stop}><i className="material-icons">pause</i></button> 
       </div>

@@ -9,7 +9,7 @@ require("materialize-css");
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <Privacy {...data}/>,
     document.querySelector('#app')
   );

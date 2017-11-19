@@ -5,7 +5,7 @@ import Header from '../components/header';
 import slugify from 'slugify';
 var urlUtil = require('../services/url-util');
 var $ = require('jquery');
-import ReactDisqusThread from 'react-disqus-thread';
+import Comments from '../components/Comments';
 import FeatureProps from '../components/Feature/FeatureProps';
 import FeatureNotes from '../components/Feature/FeatureNotes';
 import HubEditButton from '../components/Hub/HubEditButton';
@@ -392,6 +392,18 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     let firstSource = Object.keys(this.props.layer.style.sources)[0];
     let presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
 
+    let commentsPanel, commentsTab;
+    if(MAPHUBS_CONFIG.enableComments){
+      commentsTab = (
+        <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>
+      );
+      commentsPanel = (
+        <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
+          <Comments />
+        </div>
+      );
+    }
+
     return (
       <div>
         <Header {...this.props.headerConfig}/>
@@ -407,7 +419,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
               <ul ref="tabs" className="tabs" style={{overflowX: 'hidden'}}>
                 <li className="tab"><a className="active" href="#data">{this.__('Data')}</a></li>
                 <li className="tab"><a href="#photo">{this.__('Photo')}</a></li>
-                <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>
+                {commentsTab}
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
@@ -430,14 +442,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                 {photo}
                 {photoEditButton}
               </div>
-              <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
-                <ReactDisqusThread
-                      shortname="maphubs"
-                      identifier={'maphubs-feature-' + this.props.layer.layer_id + '-' + this.props.feature.mhid + '-' + featureName}
-                      url={baseUrl + '/feature/' + this.props.layer.layer_id + '/' + this.props.feature.mhid + '/' + featureName}
-                      title={this.props.layer.layer_id + '/' + this.props.feature.mhid + '/' + featureName}
-                      />
-              </div>
+              {commentsPanel}
               <div id="notes" className="col s12" style={{position: 'relative', height: 'calc(100% - 48px)'}}>
                 <FeatureNotes editing={this.state.editingNotes}/>
                 {notesEditButton}

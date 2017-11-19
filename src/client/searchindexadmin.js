@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <SearchIndexAdmin {...data}/>,
     document.querySelector('#app')
   );

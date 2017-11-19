@@ -3,7 +3,7 @@ import React from 'react';
 import InteractiveMap from '../components/InteractiveMap';
 import Header from '../components/header';
 import _find from 'lodash.find';
-import ReactDisqusThread from 'react-disqus-thread';
+import Comments from '../components/Comments';
 import TerraformerGL from '../services/terraformerGL.js';
 import GroupTag from '../components/Groups/GroupTag';
 import Licenses from '../components/CreateLayer/licenses';
@@ -484,22 +484,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    var disqus = '';
-    if(!MAPHUBS_CONFIG.mapHubsPro){
-      disqus = (
-        <ReactDisqusThread
-              shortname="maphubs"
-              identifier={'maphubs-layer-' + this.props.layer.layer_id}
-              title={this._o_(this.props.layer.name)}
-              onNewComment={this.handleNewComment}
-              />
-          );
-    }else{
-      disqus = (
-        <div>
-          <h5>Disabled</h5>
-          <p>{MAPHUBS_CONFIG.productName + this.__(' uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.')}</p>
-        </div>
+    var commentTab, commentPanel;
+    if(MAPHUBS_CONFIG.enableComments){
+      commentTab = (
+        <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>
+      );
+      commentPanel = (
+        <Comments />
       );
     }
 
@@ -557,11 +548,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
               <ul ref="tabs" className="tabs" style={{overflowX: 'auto'}}>
                 <li className="tab"><a className="active" href="#info">{this.__('Info')}</a></li>
                 <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
-                <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>
+                {commentTab}
                 <li className="tab"><a href="#data" onClick={this.onTabSelect}>{this.__('Data')}</a></li>
                 <li className="tab"><a href="#export">{this.__('Export')}</a></li>
               </ul>
-              <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
+              <div id="info" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', position: 'relative'}}>
                 <div className="row word-wrap" style={{height: 'calc(100% - 75px)', marginLeft:'10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
                   <div className="right">
                     <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
@@ -613,7 +604,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                 {notesEditButton}
               </div>
               <div id="discuss" className="col s12" style={{display: tabContentDisplay}}>
-                {disqus}
+                {commentPanel}
               </div>
               <div id="data" ref="dataTabContent" className="col s12 no-padding" style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
                 <div className="row no-margin"> 

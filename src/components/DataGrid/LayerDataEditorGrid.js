@@ -108,6 +108,13 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
   }
 
   initReactDataGrid = () => {
+      // temporaryHackForReactDataGrid.js: import this file before react-data-grid
+
+      const PropTypes = require('prop-types');
+      // next line is only required until ron-react-autocomplete is rebuilt and republished
+      PropTypes.component = PropTypes.element;
+      require('react').PropTypes = PropTypes;
+      require('react').createClass = require('create-react-class');
       this.ReactDataGrid = require('react-data-grid');
       const {Toolbar, Editors, Formatters, Data: {Selectors}} = require('react-data-grid-addons');
       this.Toolbar = Toolbar;

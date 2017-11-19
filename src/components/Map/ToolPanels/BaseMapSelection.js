@@ -48,13 +48,13 @@ export default class BaseMapSelection extends MapHubsComponent<Props, State> {
 
     return (
       <div style={{width: '100%', marginRight: '10px', backgroundColor: 'white', textAlign: 'left'}}>
-          <Formsy.Form>
+          <Formsy>
           <h6>{this.__('Choose a Base Map')}</h6>
           <Radio name="baseMap" label="" className="base-map-selection"
               defaultValue={this.state.baseMap}
               options={radioOptions} onChange={this.onChange}
             />
-          </Formsy.Form>
+          </Formsy>
         </div>
     ); 
   }

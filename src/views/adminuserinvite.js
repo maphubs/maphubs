@@ -185,7 +185,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
         <h4 className="center">{this.__('Manage Users')}</h4> 
           <div className="row valign-wrapper">
             <div className="col s12 m8 l8 valign" style={{margin: 'auto'}}>
-                <Formsy.Form onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}>
+                <Formsy onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}>
                   <div className="row" style={{margin: '25px'}}>
                     <TextInput name="email" label={this.__('Email to Invite')} icon="email" className="col s12"
                           validations={{isEmail:true}} validationErrors={{
@@ -200,7 +200,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                     </div>
                   </div>
 
-                </Formsy.Form>
+                </Formsy>
             </div>
             
           </div>

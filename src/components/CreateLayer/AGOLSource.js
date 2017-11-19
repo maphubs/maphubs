@@ -203,7 +203,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
 
 		return (
         <div className="row">
-          <Formsy.Form>
+          <Formsy>
             <b>{this.__('Choose an Option')}</b>
             <div  className="row">
               <Radio name="type" label=""
@@ -213,8 +213,8 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
                 />
             </div>
             <hr />
-          </Formsy.Form>
-          <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+          </Formsy>
+          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
             {msqForm}
             {fsqForm}
             {tilesForm}
@@ -222,7 +222,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
             </div>
-          </Formsy.Form>
+          </Formsy>
       </div>
 		);
 	}

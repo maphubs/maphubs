@@ -137,7 +137,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
     return (
       <div>
         <div className="row">
-          <Formsy.Form ref="form" onChange={this.onFormChange}>
+          <Formsy ref="form" onChange={this.onFormChange}>
            <div className="row" style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
             <b>{this.__('Enable Labels')}</b>
              <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="col s12 tooltip-label-settings"
@@ -152,7 +152,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
                    dataPosition="right" dataTooltip={this.__('Data field to use in map labels.')}
                    required/>
             </div>
-          </Formsy.Form>
+          </Formsy>
           {invalidMessage}
         </div>
       </div>

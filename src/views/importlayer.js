@@ -85,9 +85,9 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     if(!this.state.group_id){
       groupSelection = (
         <div className="row">
-          <Formsy.Form>
+          <Formsy>
           <SelectGroup groups={this.props.groups} onGroupChange={this.onGroupChange} type="layer"/>
-          </Formsy.Form>
+          </Formsy>
         </div>
       );
     }

@@ -6,7 +6,6 @@ Modified to support MaterializeCSS and other customizations
 
 */
 
-//import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Suggestions from './Suggestions';

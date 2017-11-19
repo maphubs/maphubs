@@ -17,7 +17,7 @@ require('./story.css');
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <UserStories {...data}/>,
     document.querySelector('#app')
   );

@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import Header from '../components/header';
-import ReactDisqusThread from 'react-disqus-thread';
+import Comments from '../components/Comments';
 import slugify from 'slugify';
 import StoryHeader from '../components/Story/StoryHeader';
 import MapHubsComponent from '../components/MapHubsComponent';
@@ -51,9 +51,9 @@ export default class UserStory extends MapHubsComponent<Props, void> {
     var title = story.title.replace('&nbsp;', '');
 
     var shareAndDiscuss = '';
-    if(!MAPHUBS_CONFIG.mapHubsPro){
+    if(MAPHUBS_CONFIG.enableComments){
       shareAndDiscuss = (
-        <div>
+        <div className="story-share-comments">
           <div className="row" style={{height: '32px', position: 'relative'}}>
           <ShareButtons 
             title={story.title} 
@@ -61,11 +61,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
          />
          </div>
           <div className="row">
-            <ReactDisqusThread
-              shortname="maphubs"
-              identifier={'maphubs-story-' + story.story_id}
-              title={title}
-              />
+            <Comments />
           </div>
         </div>
       );

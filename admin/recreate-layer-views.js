@@ -10,7 +10,7 @@ let babelConfig = {
     "react",
     "stage-0"
   ],
-  ignore: /assets.*|node_modules\/(?!(react-disqus-thread|medium-editor|react-colorpickr|mapbox-gl)).*/
+  ignore: /assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/
 };
 
 if(process.env.NODE_ENV !== 'production'){

@@ -1,7 +1,5 @@
 //@flow
 import React from 'react';
-//import Formsy from 'formsy-react';
-//import {HOC} from 'formsy-react';
 import TextArea from './textArea';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 import _isequal from 'lodash.isequal';

@@ -121,7 +121,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
     if(this.state.loggedIn){
      return (
-        <Formsy.Form onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
+        <Formsy onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row">
             <MultiTextInput name="title" id="title"
               value={this.state.title}
@@ -143,7 +143,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
             </div>
           </div>
 
-        </Formsy.Form>
+        </Formsy>
       );
     }else{
      return (

@@ -4,7 +4,7 @@ import LayerListItem from './LayerListItem';
 import _isEqual from 'lodash.isequal';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import update from 'react/lib/update';
+import update from 'react-addons-update';
 
 type Props = {
   layers:  Array<Object>,

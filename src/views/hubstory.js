@@ -4,7 +4,7 @@ import HubNav from '../components/Hub/HubNav';
 import HubBanner from '../components/Hub/HubBanner';
 import HubStore from '../stores/HubStore';
 import StoryHeader from '../components/Story/StoryHeader';
-import ReactDisqusThread from 'react-disqus-thread';
+import Comments from '../components/Comments';
 import slugify from 'slugify';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
@@ -55,7 +55,7 @@ export default class HubStory extends MapHubsComponent<Props, void>  {
     }
 
     var discuss = '', shareButtons = '';
-    if(!MAPHUBS_CONFIG.mapHubsPro){
+    if(MAPHUBS_CONFIG.enableComments){
       shareButtons = (
          <ShareButtons 
             title={story.title} 
@@ -64,12 +64,7 @@ export default class HubStory extends MapHubsComponent<Props, void>  {
       );
       discuss = (
         <div className="row">
-
-          <ReactDisqusThread
-                shortname="maphubs"
-                identifier={'maphubs-story-' + story.story_id}
-                title={title}
-                />
+          <Comments />
         </div>
       );
     }

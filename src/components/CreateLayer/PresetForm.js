@@ -148,7 +148,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
 		return (
         <div>
           <div className="row">
-            <Formsy.Form ref="form" onChange={this.onFormChange}
+            <Formsy ref="form" onChange={this.onFormChange}
                 onValid={this.onValid} onInvalid={this.onInvalid}>
                 <div className="row">
                   <div className="col s12 m6">
@@ -227,7 +227,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                  
 
 
-            </Formsy.Form>
+            </Formsy>
             </div>
             <div className="row">
               <div className="col s8">

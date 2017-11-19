@@ -167,7 +167,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
           <h4>{this.__('Create a Hub')}</h4>
             <div className="row">
               <Progress id="create-hub-progess" title={this.__('Creating Hub')} dismissible={false} show={this.state.saving}/>
-              <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+              <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className="row">
                   <TextInput name="hub_id" label={this.__('Hub ID')} icon="group_work" className="col s6"
                         disabled={this.state.hub && this.state.created}
@@ -194,7 +194,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
                     <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
                 </div>
 
-              </Formsy.Form>
+              </Formsy>
            </div>
         </div>
       </div>

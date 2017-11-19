@@ -6,7 +6,7 @@ import Auth0Login from '../views/auth0login';
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <Auth0Login {...data}/>,
     document.querySelector('#app')
   );

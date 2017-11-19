@@ -1,7 +1,6 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var local = require('./local');
-require('babel-polyfill');
 var path = require('path');
 var pathToMapboxGL = path.resolve(__dirname, '../node_modules/mapbox-gl/dist/mapbox-gl.js');
 var pathToMapboxGLDraw = path.resolve(__dirname, '../node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js');
@@ -66,7 +65,7 @@ module.exports = {
     pageedit: "./src/client/pageedit",
     searchindexadmin: "./src/client/searchindexadmin",
     explore: "./src/client/explore",
-    vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "iconv-lite"],
+    vendor: ["babel-polyfill", "jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "iconv-lite"],
     locales: ["./src/services/locales"]
   },
   resolve: {
@@ -98,7 +97,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/, /react-disqus-thread/, /react-colorpickr/],       
+        include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/],       
         options: {
           presets: [       
            ["env", {

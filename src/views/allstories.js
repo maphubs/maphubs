@@ -78,9 +78,9 @@ export default class AllStories extends MapHubsComponent<Props, State> {
 
           <div className="row">
             <div className="left-align" style={{marginLeft: '15px', marginTop: '25px'}}>
-              <Formsy.Form>
+              <Formsy>
                 <Toggle name="mode" onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList}/>
-            </Formsy.Form>
+            </Formsy>
             </div>
             <div className="row">
               {stories}

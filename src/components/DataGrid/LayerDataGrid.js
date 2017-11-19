@@ -278,6 +278,13 @@ render() {
   var _this = this;
 
    if(this.state.rows.length > 0 && typeof window !== 'undefined'){
+     // temporaryHackForReactDataGrid.js: import this file before react-data-grid
+
+      const PropTypes = require('prop-types');
+      // next line is only required until ron-react-autocomplete is rebuilt and republished
+      PropTypes.component = PropTypes.element;
+      require('react').PropTypes = PropTypes;
+      require('react').createClass = require('create-react-class');
       var ReactDataGrid = require('react-data-grid');
       const {Toolbar, Data: {Selectors}} = require('react-data-grid-addons');
       this.Selectors = Selectors;

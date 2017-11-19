@@ -317,7 +317,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
           </div>
           <div className="divider"></div>
           <div className="row">
-            <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
               <div className="row">
                 <TextInput name="group_id" label={this.__('Group ID')} icon="group_work" className="col s4"
                     validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength:25, isAvailable:true}} validationErrors={{
@@ -376,7 +376,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 <button className="btn waves-effect waves-light" type="submit" name="action">{this.__('Update')}</button>
               </div>
 
-            </Formsy.Form>
+            </Formsy>
            </div>
            <div className="row">
              <EditList title="Members" items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />

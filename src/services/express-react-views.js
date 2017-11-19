@@ -15,7 +15,7 @@
  */
 import React from 'react';
 var Page = require('../models/page');
-var ReactDOMServer = require('react-dom/server');
+import {renderToString} from "react-dom/server";
 var assign = require('object-assign');
 var log = require('./log');
 var version = require('../../package.json').version;
@@ -97,7 +97,7 @@ function createEngine(engineOptions) {
 
       
 
-      var reactMarkup = ReactDOMServer.renderToString(React.createElement(component, options.props));
+      var reactMarkup = renderToString(React.createElement(component, options.props));
 
       // assume that there is always client file with the same name as the view
       var clientFileName = this.name;
@@ -271,6 +271,11 @@ function createEngine(engineOptions) {
           markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`;
         }
 
+        if(options.talkComments){
+          markup += `
+            <script type="text/javascript" src="https://talk.maphubs.com/embed.js"></script>
+          `;
+        }
  
         
          markup += `
@@ -298,6 +303,8 @@ function createEngine(engineOptions) {
           <script src="${assetHost}/assets/js/rangy-cssclassapplier.js"></script>
           `;
         }
+
+        
 
 
         if(!options.hideFeedback && req && req.__){
@@ -364,6 +371,8 @@ function createEngine(engineOptions) {
         </script>
         `;
       }
+
+      
 
      
 

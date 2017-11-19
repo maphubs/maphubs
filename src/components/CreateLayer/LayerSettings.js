@@ -178,7 +178,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
 
 		return (
         <div style={{marginRight: '2%', marginLeft: '2%', marginTop:'10px'}}>
-            <Formsy.Form onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
+            <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
               <div className="row">
               <div className="col s12 m6">
                 <div className="row">
@@ -243,7 +243,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
             </div>
             
            
-          </Formsy.Form>
+          </Formsy>
 
       </div>
 		);

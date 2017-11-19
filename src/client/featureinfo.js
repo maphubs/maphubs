@@ -16,7 +16,7 @@ require('medium-editor/dist/css/themes/flat.css');
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <FeatureInfo {...data}/>,
     document.querySelector('#app')
   );

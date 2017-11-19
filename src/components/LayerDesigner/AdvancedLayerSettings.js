@@ -98,7 +98,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
   render(){
     return (
         <div className="row" style={{marginLeft: '10px'}}>
-          <Formsy.Form ref="form" onChange={this.onFormChange}>
+          <Formsy ref="form" onChange={this.onFormChange}>
             <div className="row">
               <b>{this.__('Interactive')}</b>
                <Toggle name="interactive" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-advanced-layer-settings"
@@ -114,7 +114,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
                 />
             </div>
 
-          </Formsy.Form>
+          </Formsy>
         </div>
     );
   }

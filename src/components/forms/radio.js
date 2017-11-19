@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import {HOC} from 'formsy-react';
+import {withFormsy} from 'formsy-react';
 import classNames from 'classnames';
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
@@ -66,4 +66,4 @@ class Radio extends MapHubsPureComponent<Props, void> {
     );
   }
 }
-export default HOC(Radio);
+export default withFormsy(Radio);

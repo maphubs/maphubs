@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <CreateLayer {...data}/>,
     document.querySelector('#app')
   );

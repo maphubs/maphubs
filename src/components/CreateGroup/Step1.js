@@ -195,7 +195,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
       <div className={className}>
         <div className="container">
           <div className="row">
-            <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
               <div className="row">
                 <TextInput name="group_id" label={this.__('Group ID')} icon="group_work" className="col s6"
                       disabled={this.state.group.created}
@@ -252,7 +252,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
               </div>
 
-            </Formsy.Form>
+            </Formsy>
 
          </div>
          </div>

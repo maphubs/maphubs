@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import {HOC} from 'formsy-react';
+import {withFormsy} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
 import MapHubsPureComponent from '../MapHubsPureComponent';
@@ -120,4 +120,4 @@ class TextArea extends MapHubsPureComponent<Props, State> {
     );
   }
 }
-export default HOC(TextArea);
+export default withFormsy(TextArea);

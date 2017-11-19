@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import {HOC} from 'formsy-react';
+import {withFormsy} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
 var debug = require('../../services/debug')('Toggle');
@@ -108,4 +108,4 @@ class Toggle extends MapHubsComponent<Props, void> {
     );
   }
 }
-export default HOC(Toggle);
+export default withFormsy(Toggle);

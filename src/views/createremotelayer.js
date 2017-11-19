@@ -200,7 +200,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
           <div className="container center">
             <p>{this.__('Please copy and paste a link to a remote MapHubs layer')}</p>
             <div className="row">
-              <Formsy.Form onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
+              <Formsy onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
               <TextInput name="remoteLayerUrl" label={this.__('Remote MapHubs URL')} icon="link" className="col s12" validations="maxLength:250,isHttps,validMapHubsLayerPath" validationErrors={{
                      maxLength: this.__('Must be 250 characters or less.'),
                      isHttps:  this.__('MapHubs requires encryption for external links, URLs must start with https://'),
@@ -212,7 +212,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                  <div className="right">
                    <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Load Remote Layer')}</button>
                  </div>
-               </Formsy.Form>
+               </Formsy>
             </div>
             {layerReview}
 

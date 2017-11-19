@@ -90,7 +90,7 @@ render(){
         <b style={{fontSize: '14px'}}>{this._o_(this.props.text)}</b>
       </div>
       <div className="col s6 valign">
-      <Formsy.Form onSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInvalid}>
+      <Formsy onSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInvalid}>
         <div>
             <TextInput name="email" label={null} placeholder={placeholder}
               className="left no-margin no-padding mailing-list-text-input"
@@ -118,7 +118,7 @@ render(){
                 textTransform: 'none'
               }}>{this.__('Sign up')}</button>
           </div>
-      </Formsy.Form>
+      </Formsy>
        </div>
       </div>
   );

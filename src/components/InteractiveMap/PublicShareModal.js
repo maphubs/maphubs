@@ -119,9 +119,9 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
               {shareMessage}
             </div>
             <div className="row">
-              <Formsy.Form ref="form" onChange={this.onChange}>
+              <Formsy ref="form" onChange={this.onChange}>
                 <Toggle name="public" labelOff={this.__('Off')} labelOn={this.__('Share')} checked={this.state.sharing} className="col s12"/>
-              </Formsy.Form>
+              </Formsy>
             </div>
             <div className="row">
               {shareLink}

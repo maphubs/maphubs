@@ -171,7 +171,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
 
 		return (
         <div className="row">
-          <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
              <div>
               <p>{this.__('Paste the selected IDs from the Planet Explorer API box')}</p>
               <div className="row">
@@ -185,7 +185,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
             </div>
-          </Formsy.Form>
+          </Formsy>
 
       </div>
 		);

@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import {HOC} from 'formsy-react';
+import {withFormsy} from 'formsy-react';
 import find from 'lodash.find';
 import result from 'lodash.result';
 import ReactSelect from 'react-select';
@@ -167,4 +167,4 @@ class Select extends MapHubsComponent<Props, State> {
     );
   }
 }
-export default HOC(Select);
+export default withFormsy(Select);

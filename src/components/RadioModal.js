@@ -74,10 +74,10 @@ export default class RadioModal extends React.Component<Props, State> {
       <Modal id="radio-modal" show={this.state.show} fixedFooter={true} dismissible={false}>
         <ModalContent>
           <h5>{this.props.title}</h5>
-            <Formsy.Form onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Formsy onValid={this.enableButton} onInvalid={this.disableButton}>
               <Radio name="type" label="" options={this.props.options} onChange={this.optionChange}
                 />
-            </Formsy.Form>
+            </Formsy>
         </ModalContent>
         <ModalFooter>
           <div className="right">

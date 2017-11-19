@@ -23,6 +23,9 @@ declare class MapHubsConfig {
   MAPBOX_ACCESS_TOKEN: string;
   SENTRY_DSN_PUBLIC: string;
   MAPZEN_API_KEY: string;
+  enableComments: boolean;
+  CORAL_TALK_HOST: string;
+  CORAL_TALK_ID: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;

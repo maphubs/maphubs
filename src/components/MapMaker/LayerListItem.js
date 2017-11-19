@@ -139,11 +139,11 @@ class LayerListItem extends MapHubsComponent<Props, void> {
     if(this.props.showVisibility){
       visibilityToggle = (
         <div className="col s4 no-padding" style={{marginTop: '2px'}}>
-          <Formsy.Form>
+          <Formsy>
             <Toggle name="visible" onChange={function(){_this.props.toggleVisibility(layer.layer_id);}} 
             labelOff="" labelOn="" checked={active}
             />
-          </Formsy.Form>
+          </Formsy>
         </div>
       );
     }

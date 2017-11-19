@@ -40,7 +40,7 @@ let babelConfig = {
     "stage-0"
   ],
   plugins: ["transform-flow-strip-types", "version-inline"],
-  ignore: /assets.*|node_modules\/(?!(react-disqus-thread|medium-editor|react-colorpickr|mapbox-gl)).*/
+  ignore: /assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/
 };
 
 if(process.env.NODE_ENV !== 'production'){

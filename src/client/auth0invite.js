@@ -6,7 +6,7 @@ import Auth0Invite from '../views/auth0invite';
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <Auth0Invite {...data}/>,
     document.querySelector('#app')
   );

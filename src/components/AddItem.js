@@ -262,11 +262,11 @@ export default class AddItem extends MapHubsComponent<Props, State> {
                 <i className="material-icons" style={{height: 'inherit', lineHeight: 'inherit'}}>search</i></label>
             </div>
           </form>
-            <Formsy.Form >
+            <Formsy >
               <Toggle name="admin" onChange={this.handleAddWithOptionChecked} labelOff={this.__('Member')} labelOn={this.__('Administrator')} checked={this.state.option}
                 dataPosition="top" dataTooltip={this.props.optionLabel}
                 />
-            </Formsy.Form>
+            </Formsy>
 
             <a className="btn waves-effect waves-light right" onClick={this.submit}>{this.props.addButtonLabel}</a>
 

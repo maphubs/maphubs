@@ -181,7 +181,7 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
     return (
       <div>
         <div className="row">
-          <Formsy.Form ref="form" onChange={this.onFormChange}>
+          <Formsy ref="form" onChange={this.onFormChange}>
            <div className="row" style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
            <b>{this.__('Enable Markers')}</b>
              <Toggle name="enabled" labelOff={this.__('Off')} labelOn={this.__('On')} className="tooltip-marker-settings"
@@ -215,7 +215,7 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
                         dataPosition="right" dataTooltip={this.__('Invert colors')}
                         />
             </div>
-          </Formsy.Form>
+          </Formsy>
         </div>
       </div>
     );

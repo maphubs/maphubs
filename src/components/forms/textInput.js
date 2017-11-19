@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import {HOC} from 'formsy-react';
+import {withFormsy} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
 import MapHubsComponent from '../MapHubsComponent';
@@ -191,4 +191,4 @@ class TextInput extends MapHubsComponent<Props, State> {
 
   }
 }
-export default HOC(TextInput);
+export default withFormsy(TextInput);

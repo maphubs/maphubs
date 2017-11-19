@@ -72,7 +72,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
 </p>
   <h5>Third Party Services</h5>
   <p>
-  Comment and discussion areas of {MAPHUBS_CONFIG.productName} are provided by Disqus https://disqus.com/. Use of these areas is a transaction with Disqus and is not covered by this Privacy Policy. More information on Disqus policies is available at https://help.disqus.com/customer/en/portal/topics/215159-terms-and-policies/articles
+  The user login and authentication system for {MAPHUBS_CONFIG.productName} is provided by Auth0 https://auth0.com/. 
 </p>
   <p>
   The help form (Send a Message button) is provided by HelpScout. Use of the help form is also a transaction with HelpScout. More information on HelpScout&#39;s policy is available at https://www.helpscout.net/company/privacy/
@@ -82,7 +82,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
 </p>
   <h5>Data Storage</h5>
   <p>
-  {MAPHUBS_CONFIG.productName} uses third-party vendors and cloud hosting services to provide the necessary hardware, software, networking, storage, and related technology required to run {MAPHUBS_CONFIG.productName}. While {MAPHUBS_CONFIG.productName} controls these systems, you retain all rights to your data. {MAPHUBS_CONFIG.productName} uses the open-source software, MapHubs. CrowdCover LLC owns the MapHubs brand, and the copyright to the code. The MapHubs source code is open source, and can be on private networks or self hosted using on-premise servers. CrowdCover LLC offers consulting and support services, please contact us for assistance running your own instance of the MapHubs application.
+  {MAPHUBS_CONFIG.productName} uses third-party vendors and cloud hosting services to provide the necessary hardware, software, networking, storage, and related technology required to run {MAPHUBS_CONFIG.productName}. While {MAPHUBS_CONFIG.productName} controls these systems, you retain all rights to your data. {MAPHUBS_CONFIG.productName} uses the open-source software, MapHubs. MapHubs, Incorporated owns the MapHubs brand, and the copyright to the code. The MapHubs source code is open source, and can be on private networks or self hosted using on-premise servers. MapHubs offers consulting and support services, please contact us for assistance running your own instance of the MapHubs application.
   </p>
   <h5>Data security</h5>
   <p>
@@ -94,7 +94,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
   </p>
   <h5>EU and Swiss Residents</h5>
   <p>
-  If you choose to provide {MAPHUBS_CONFIG.productName} with your information, you consent to the transfer and storage of that information on our servers located in the United States.
+  If you choose to provide {MAPHUBS_CONFIG.productName} with your information, you consent to the transfer and storage of that information on our servers located in the United States and Germany.
   </p>
   <p>
   For European Union and Swiss residents, any questions or concerns regarding the use or disclosure of your information should be directed to {MAPHUBS_CONFIG.productName} by sending an email to {MAPHUBS_CONFIG.contactEmail}. We will investigate and attempt to resolve complaints and disputes regarding use and disclosure of your information in accordance with this Privacy Policy. For complaints that cannot be resolved, we have committed to cooperate with data protection authorities located within Switzerland or the European Union (or their authorized representatives).

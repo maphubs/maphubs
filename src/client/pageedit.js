@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <PageEdit {...data}/>,
     document.querySelector('#app')
   );

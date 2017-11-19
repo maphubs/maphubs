@@ -17,6 +17,7 @@ module.exports = {
       var user: string = local.elasticSearchUser ? local.elasticSearchUser : 'elastic';
       var pass: string = local.elasticSearchPass ? local.elasticSearchPass : 'changeme';
       this.client = new elasticsearch.Client({
+        apiVersion: '5.5',
         host: host + ':' + port,
         log: 'warning',
         httpAuth: user + ':' + pass,

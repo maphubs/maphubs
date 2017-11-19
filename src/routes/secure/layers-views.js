@@ -102,6 +102,7 @@ module.exports = function(app: any) {
             createdByUser: await User.getUser(layer.created_by_user_id), 
             updatedByUser: await User.getUser(layer.updated_by_user_id)
           },
+          talkComments: true,
           fontawesome: true, hideFeedback: true,
           twitterCard: {
             title: name,

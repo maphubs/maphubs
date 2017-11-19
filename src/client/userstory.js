@@ -19,7 +19,7 @@ require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <UserStory {...data}/>,
     document.querySelector('#app')
   );

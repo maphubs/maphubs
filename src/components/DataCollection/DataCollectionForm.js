@@ -84,7 +84,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Formsy.Form 
+      <Formsy 
         onValidSubmit={this.onSubmit} 
         onChange={this.onChange} 
         onValid={this.onValid} onInvalid={this.onInValid}>
@@ -102,7 +102,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
           })        
         }
         {submit}
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
