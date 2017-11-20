@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import Formsy from 'formsy-react';
+import Formsy, {addValidationRule} from 'formsy-react';
 var $ = require('jquery');
 import MultiTextArea from '../forms/MultiTextArea';
 import TextInput from '../forms/textInput';
@@ -57,7 +57,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
   componentWillMount() {
     super.componentWillMount();
     var _this = this;
-    Formsy.addValidationRule('isAvailable', function (values, value) {
+    addValidationRule('isAvailable', function (values, value) {
         if(_this.state.group.created) return true;
         if(!this.groupIdValue || value !== this.groupIdValue){
           this.groupIdValue = value;

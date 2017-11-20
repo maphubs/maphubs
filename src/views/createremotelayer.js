@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import Formsy, {addValidationRule} from 'formsy-react';
 import slugify from 'slugify';
 var request = require('superagent');
 var $ = require('jquery');
@@ -50,7 +50,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   componentWillMount(){
     super.componentWillMount();
 
-    Formsy.addValidationRule('isHttps', (values, value) => {
+    addValidationRule('isHttps', (values, value) => {
       if(value){
         return value.startsWith('https://');
       }else{
@@ -58,7 +58,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
       }   
     });
 
-    Formsy.addValidationRule('validMapHubsLayerPath', (values, value) => {
+    addValidationRule('validMapHubsLayerPath', (values, value) => {
       if(typeof window !== 'undefined' && value){
         var pathParts = $('<a>').prop('href', value).prop('pathname').split('/');
         if(pathParts[1] === 'layer'

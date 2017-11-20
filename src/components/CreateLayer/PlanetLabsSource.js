@@ -43,7 +43,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
     super.componentWillMount();
 
   /*
-    Formsy.addValidationRule('isNotRapidEye', (values, value) => {
+    addValidationRule('isNotRapidEye', (values, value) => {
         if(value){
           return !value.startsWith('REOrthoTile');
         }else{
@@ -52,7 +52,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
         
     });
 
-    Formsy.addValidationRule('isNotOrtho', (values, value) => {
+    addValidationRule('isNotOrtho', (values, value) => {
       if(value){
         return !value.startsWith('PSOrthoTile');
       }else{
@@ -60,7 +60,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
       }
     });
 
-    Formsy.addValidationRule('isNotSentinel', (values, value) => {
+    addValidationRule('isNotSentinel', (values, value) => {
       if(value){
         return !value.startsWith('Sentinel2L1C');
       }else{

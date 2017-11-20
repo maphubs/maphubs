@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import Header from '../components/header';
-import Formsy from 'formsy-react';
+import Formsy, {addValidationRule} from 'formsy-react';
 var $ = require('jquery');
 import TextInput from '../components/forms/textInput';
 import SelectGroup from '../components/Groups/SelectGroup';
@@ -60,7 +60,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
   componentWillMount() {
     super.componentWillMount();
     var _this = this;
-    Formsy.addValidationRule('isAvailable', function (values, value) {
+    addValidationRule('isAvailable', function (values, value) {
         if(!value) return false;
         if(_this.state.hub && _this.state.created) return true;
         if(!this.hubIdValue || value !== this.hubIdValue){

@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import Formsy from 'formsy-react';
+import Formsy, {addValidationRule} from 'formsy-react';
 import TextInput from '../forms/textInput';
 import Radio from '../forms/radio';
 import LayerActions from '../../actions/LayerActions';
@@ -39,7 +39,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
 
   componentWillMount(){
     super.componentWillMount();
-    Formsy.addValidationRule('isHttps', (values, value) => {
+    addValidationRule('isHttps', (values, value) => {
       if(value){
         return value.startsWith('https://');
       }else{

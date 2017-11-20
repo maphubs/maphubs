@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-import Formsy from 'formsy-react';
+import Formsy, {addValidationRule} from 'formsy-react';
 var $ = require('jquery');
 import EditList from '../components/EditList';
 import Header from '../components/header';
@@ -76,7 +76,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   componentWillMount() {
     super.componentWillMount();
     var _this = this;     
-    Formsy.addValidationRule('isAvailable', (values, value) => {
+    addValidationRule('isAvailable', (values, value) => {
       if(value){
         return _this.checkGroupIdAvailable(value);
       }else{
