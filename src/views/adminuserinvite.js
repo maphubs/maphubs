@@ -63,6 +63,19 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
 
   onSubmit = (user: User) => {
     var _this = this;
+    ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Invite'),
+      postitiveButtonText: this.__('Send Invite'),
+      negativeButtonText: this.__('Cancel'),
+      message: this.__(`Are you sure you want to invite ${user.email}?`),
+      onPositiveResponse(){
+        _this.submitInvite(user); 
+      }
+    });
+  }
+
+  submitInvite = (user: User) => {
+    var _this = this;
     this.setState({saving: true});
     request.post('/admin/invite/send')
     .type('json').accept('json')
@@ -102,7 +115,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
           negativeButtonText: this.__('Cancel'),
           message: this.__(`Are you sure you want to resend the invite email for ${user.email}?`),
           onPositiveResponse(){
-            _this.onSubmit(user); 
+            _this.submitInvite(user); 
           }
         });
       }
