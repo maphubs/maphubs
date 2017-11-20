@@ -1,5 +1,5 @@
 /* @flow weak */
-var request = require('superagent-bluebird-promise');
+var request = require('superagent');
 var debug = require('./debug')('terraformerGL');
 var arcgis = require('terraformer-arcgis-parser');
 

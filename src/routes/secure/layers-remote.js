@@ -7,7 +7,7 @@ var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
 var notAllowedError = require('../../services/error-response').notAllowedError;
-var request = require('superagent-bluebird-promise');
+var request = require('superagent');
 var isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {

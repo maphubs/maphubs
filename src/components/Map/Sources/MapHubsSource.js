@@ -1,5 +1,4 @@
 //@flow
-var request = require('superagent-bluebird-promise');
 import superagent from 'superagent';
 var debug = require('../../../services/debug')('MapHubsSource');
 var urlUtil = require('../../../services/url-util');
@@ -36,7 +35,7 @@ var MapHubsSource = {
   async load(key: string, source: GLSource, mapComponent: any){
     let map = mapComponent.map;
     if(source.type === 'geojson' && source.data){
-      return request.get(source.data)
+      return superagent.get(source.data)
         .then((res) => {
           var geoJSON = res.body;
           if(geoJSON.features){
@@ -64,7 +63,7 @@ var MapHubsSource = {
       if(source.url){
         var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       }
-      return request.get(url)
+      return superagent.get(url)
         .then((res) => {
           var tileJSON = res.body;
           tileJSON.type = 'vector';
@@ -240,7 +239,7 @@ var MapHubsSource = {
       superagent.get(geobufUrl)
     .buffer(true)
     .responseType('arraybuffer')
-    .parse(request.parse.image)
+    .parse(superagent.parse.image)
     .end((err, res) => {
       if(err){
         debug.error(err);

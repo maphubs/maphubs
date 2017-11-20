@@ -7,7 +7,7 @@ import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
 var cardUtil = require('../services/card-util');
 import Promise from 'bluebird';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 var debug = require('../services/debug')('home');
 var $ = require('jquery');
 import _shuffle from 'lodash.shuffle';

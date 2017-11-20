@@ -5,7 +5,6 @@ var log = require('../../services/log');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var apiDataError = require('../../services/error-response').apiDataError;
-//var request = require('superagent-bluebird-promise');
 var local = require('../../local');
 var csrfProtection = require('csurf')({cookie: false});
 

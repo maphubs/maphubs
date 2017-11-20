@@ -3,7 +3,7 @@ import React from 'react';
 var $ = require('jquery');
 import MapHubsComponent from '../../MapHubsComponent';
 import SearchBar from '../../SearchBar/SearchBar';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 import MessageActions from '../../../actions/MessageActions';
 var debug = require('../../../services/debug')('MapSearchPanel');
 

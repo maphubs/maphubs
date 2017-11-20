@@ -1,5 +1,5 @@
 //@flow
-var request = require('superagent-bluebird-promise');
+import request from 'superagent';
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 
 var MapboxSource = {

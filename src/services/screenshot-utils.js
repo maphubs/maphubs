@@ -1,10 +1,10 @@
 // @flow
-var request = require('superagent-bluebird-promise');
-var debug = require('../services/debug')('screenshot-utils');
-var local = require('../local');
-var log = require('../services/log.js');
-var knex = require('../connection.js');
-var urlUtil = require('../services/url-util');
+const request = require('superagent');
+const debug = require('../services/debug')('screenshot-utils');
+const local = require('../local');
+const log = require('../services/log.js');
+const knex = require('../connection.js');
+const urlUtil = require('../services/url-util');
 
 const screenshotOptions = {
   url: '',
