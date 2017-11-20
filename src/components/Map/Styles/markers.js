@@ -7,6 +7,7 @@ module.exports = {
       //treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style));
       let layer_id = (layer && layer.layer_id) ? layer.layer_id : '';
+      let shortid = (layer && layer.shortid) ? layer.shortid : '';
       //get host from source
       let baseUrl: string ='{MAPHUBS_DOMAIN}', remote_host;
       if(layer.remote && layer.remote_host){
@@ -24,8 +25,8 @@ module.exports = {
         }
       }
 
-      let dataUrl =`${baseUrl}/api/layer/${layer_id}/export/json/${layer_id}.json`;
-      let geobufUrl =`${baseUrl}/api/layer/${layer_id}/export/geobuf/${layer_id}.pbf`;
+      let dataUrl =`${baseUrl}/api/lyr/${shortid}/export/json/${shortid}.json`;
+      let geobufUrl =`${baseUrl}/api/lyr/${shortid}/export/geobuf/${shortid}.pbf`;
 
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
