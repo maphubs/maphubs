@@ -103,8 +103,9 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
     var _this = this;
     if(this.state.unsavedChanges){
       MessageActions.showMessage({title: _this.__('Unsaved Changes'), message: _this.__('Please save your changes before publishing.')});
-    }else if(isEmpty(this.state.hub.name) || isEmpty(this.state.hub.description)
-            || !this.state.hub.hasLogoImage || !this.state.hub.hasBannerImage){
+    }else if(isEmpty(this.state.hub.name) || 
+      !this.state.hub.hasLogoImage || 
+      !this.state.hub.hasBannerImage){
       MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')});
     }else {
       HubActions.publish(this.state._csrf, (err) => {
