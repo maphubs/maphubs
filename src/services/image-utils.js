@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var fs: typeof fs = Promise.promisifyAll(require("fs"));
 var uuid = require('uuid').v4;
 var local = require('../local');
-//var log = require('./log');
+var log = require('./log');
 var debug = require('./debug')('image-utils');
 var easyimg = require('easyimage');
 
@@ -39,7 +39,7 @@ module.exports = {
   },
 
   decodeBase64Image(dataString: string) {
-  var matches: Array<string> = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+  var matches: any = dataString.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
     response = {};
 
   if (matches.length !== 3) {
@@ -52,63 +52,65 @@ module.exports = {
   return response;
 },
 
-  resizeBase64(dataString: string, targetWidth: number, targetHeight: number, crop: boolean=false){
+  async resizeBase64(dataString: string, targetWidth: number, targetHeight: number, crop: boolean=false){
     var _this = this;
-    var cmd = null;
-
-    //decode base64
-    var imageBuffer = _this.decodeBase64Image(dataString);
-    //save it to a file
-    var origFile = uuid() + '.png';
-    var resizedFile = uuid() + '.png';
-    var convertedFile = uuid() + '.jpg';
-    var origfilePath = local.tempFilePath + '/' + origFile;
-    var resizedFilePath = local.tempFilePath + '/' + resizedFile;
-    var convertedFilePath = local.tempFilePath + '/' + convertedFile;
- 
-    return fs.writeFileAsync(origfilePath, imageBuffer.data).then(() => {
-        if(crop){
-          debug.log('cropping');
-          cmd = easyimg.crop({
-            src:origfilePath, dst:resizedFilePath,
-            cropwidth:targetWidth, cropheight:targetHeight,
-            background: 'white'
-          });
-        }else{
-          debug.log('resizing');
-          cmd = easyimg.resize({
-            src:origfilePath, dst:resizedFilePath,
-            width:targetWidth, height:targetHeight,
-            background: 'white'
-          });
-        }
-         return cmd.then(
-          (resizedImage) => {
-             debug.log('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
-             return easyimg.convert({
-               src:resizedFilePath, dst:convertedFilePath, quality: 85
-              })
-              .then(
-              () => {
-                var bitmap = fs.readFileSync(convertedFilePath);
-                var resizedImageBase64String = 'data:image/jpeg;base64,' + Buffer.from(bitmap).toString('base64');
-                //debug.log(resizedImageBase64String);
-                
-                fs.unlink(origfilePath);
-                fs.unlink(resizedFilePath);
-                fs.unlink(convertedFilePath);
-                return resizedImageBase64String;
-              });
-          })
-          .catch((err) => {
-            fs.unlink(origfilePath);
-            fs.unlink(resizedFilePath);
-            fs.unlink(convertedFilePath);
-            if(err){
-              throw err;
-            }
-          });
+    try{
+      //decode base64
+      var imageBuffer = _this.decodeBase64Image(dataString);
+      //save it to a file
+      var origFile = uuid() + '.png';
+      var resizedFile = uuid() + '.png';
+      var convertedFile = uuid() + '.jpg';
+      var origfilePath = local.tempFilePath + '/' + origFile;
+      var resizedFilePath = local.tempFilePath + '/' + resizedFile;
+      var convertedFilePath = local.tempFilePath + '/' + convertedFile;
+  
+      await fs.writeFileAsync(origfilePath, imageBuffer.data);
+      const options = {
+        src:origfilePath, 
+        dst:resizedFilePath,
+        background: 'white',
+        cropwidth: undefined,
+        cropheight: undefined,
+        width: targetWidth, 
+        height: targetHeight
+      };
+      let resizedImage;
+      if(crop){
+        options.cropwidth = targetWidth;
+        options.cropheight = targetHeight;
+        debug.log('cropping');
+        resizedImage = await easyimg.crop(options);
+      }else{
+        debug.log('resizing');
+        resizedImage = await easyimg.resize(options);
+      }
+      debug.log('Resized and cropped: ' + resizedImage.width + ' x ' + resizedImage.height);
+      await easyimg.convert({
+        src:resizedFilePath, dst:convertedFilePath, quality: 85
       });
+
+      //using configured temp path and uuid's, no user input used in path
+      //eslint-disable-next-line security/detect-non-literal-fs-filename
+      var bitmap = fs.readFileSync(convertedFilePath);
+      var resizedImageBase64String = 'data:image/jpeg;base64,' + Buffer.from(bitmap).toString('base64');
+      
+      /* eslint-disable security/detect-non-literal-fs-filename */
+      await fs.unlinkAsync(origfilePath);
+      await fs.unlinkAsync(resizedFilePath);
+      await fs.unlinkAsync(convertedFilePath);
+      return resizedImageBase64String;
+
+    }catch(err) {
+      try {
+        log.error(err);
+        await fs.unlinkAsync(origfilePath);
+        await fs.unlinkAsync(resizedFilePath);
+        await fs.unlinkAsync(convertedFilePath);
+      }catch(err){
+        log.error(err);
+      }
+    }
   }
 
 };
