@@ -119,8 +119,8 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
 
   render() {
 
-    var editButton = '';
-    var publishButton = '';
+    var editButton;
+    var publishButton;
     if(this.props.canEdit){
       editButton = (
         <HubEditButton editing={this.state.editing}
@@ -142,7 +142,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
       <div>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
         <main  style={{marginTop: '0px'}}>
-          {publishButton}
+          
           <div className="row no-margin">
             <HubBanner editing={this.state.editing} hubid={this.props.hub.hub_id}/>
           </div>
@@ -185,6 +185,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
 
           {editButton}
           <Footer {...this.props.footerConfig}/>
+          {publishButton}
         </main>
 
         <Notification />
