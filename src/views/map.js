@@ -11,7 +11,6 @@ import BaseMapStore from '../stores/map/BaseMapStore';
 type Props = {
   popularLayers: Array<Object>,
   myLayers: Array<Object>,
-  myGroups: Array<Object>,
   editLayer: Object,
   headerConfig: Object,
   mapConfig: Object,
@@ -56,7 +55,6 @@ export default class Map extends MapHubsComponent<Props, void> {
             onCreate={this.mapCreated} 
             popularLayers={this.props.popularLayers} 
             myLayers={this.props.myLayers} 
-            myGroups={this.props.myGroups}
             editLayer={this.props.editLayer}
              />
         </main>

@@ -38,7 +38,6 @@ type Props =  {
     onCreate: Function,
     myLayers: Array<Layer>,
     popularLayers: Array<Layer>,
-    myGroups: Array<Object>,
     title?: LocalizedString,
     position?: Object,
     basemap?: string,
@@ -531,7 +530,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
               <div className="collapsible-header"><i className="material-icons">save</i>{this.__('Save Map')}</div>
               <div className="collapsible-body">
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-                  <SaveMapPanel groups={this.props.myGroups} onSave={this.onSave} />
+                  <SaveMapPanel {...this.state} onSave={this.onSave} />
                 </div>
                 
               </div>
@@ -553,7 +552,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
             <li className="tab mapmaker-tab"><a href="#maptab" onClick={this.toggleMapTab}>{this.__('View Map')}</a></li>
           </ul>
 
-            <div id="addlayer" style={{height: 'calc(100vh - 100px)', overflow: 'scroll', display: tabContentDisplay}}>
+            <div id="addlayer" style={{height: 'calc(100vh - 100px)', overflow: 'scroll'}}>
               <AddLayerPanel myLayers={this.props.myLayers}
                 popularLayers={this.props.popularLayers}
                 onAdd={this.addLayer} />

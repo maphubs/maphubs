@@ -9,7 +9,8 @@ export type User = {
   id?: number,
   email?: string,
   display_name?: string,
-  picture?: string
+  picture?: string,
+  groups?: Array<Object>
 }
 
 export type UserStoreState = {

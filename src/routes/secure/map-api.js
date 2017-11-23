@@ -51,7 +51,7 @@ module.exports = function(app: any) {
             if(data.group_id){
               //copy to a group
               if(await Group.allowedToModify(data.group_id, req.user_id)){
-                const map_id = await Map.copyMapToGroup(data.map_id, data.group_id, req.user_id);
+                const map_id = await Map.copyMapToGroup(data.map_id, data.group_id, req.user_id, data.title);
                   //don't wait for screenshot
                   ScreenshotUtil.reloadMapThumbnail(map_id);
                   ScreenshotUtil.reloadMapImage(map_id);
@@ -62,7 +62,7 @@ module.exports = function(app: any) {
               }
             }else{
               //copy to the requesting user
-              const map_id = await Map.copyMapToUser(data.map_id, req.user_id);
+              const map_id = await Map.copyMapToUser(data.map_id, req.user_id, data.title);
 
               //don't wait for screenshot
               ScreenshotUtil.reloadMapThumbnail(map_id);
@@ -77,7 +77,7 @@ module.exports = function(app: any) {
           if(data.group_id){
             //copy to a group  
             if(await Group.allowedToModify(data.group_id, req.user_id)){
-              const map_id = await Map.copyMapToGroup(data.map_id, data.group_id, req.user_id);
+              const map_id = await Map.copyMapToGroup(data.map_id, data.group_id, req.user_id, data.title);
               //don't wait for screenshot
               ScreenshotUtil.reloadMapThumbnail(map_id);
               ScreenshotUtil.reloadMapImage(map_id);
@@ -88,7 +88,7 @@ module.exports = function(app: any) {
             }
           }else{
             //copy to the requesting user
-            const map_id = await Map.copyMapToUser(data.map_id, req.user_id);
+            const map_id = await Map.copyMapToUser(data.map_id, req.user_id, data.title);
             //don't wait for screenshot
             ScreenshotUtil.reloadMapThumbnail(map_id);
             ScreenshotUtil.reloadMapImage(map_id);

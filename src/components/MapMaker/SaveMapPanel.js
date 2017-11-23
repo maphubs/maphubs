@@ -1,6 +1,5 @@
 //@flow
 import React from 'react';
-import MapMakerStore from '../../stores/MapMakerStore';
 import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
 import Formsy from 'formsy-react';
@@ -11,19 +10,20 @@ import Toggle from '../forms/toggle';
 import MapHubsComponent from '../MapHubsComponent';
 import Locales from '../../services/locales';
 
-import type {MapMakerStoreState} from '../../stores/MapMakerStore';
 import type {UserStoreState} from '../../stores/UserStore';
 
 type Props = {|
   onSave: Function,
-  groups: Array<Object>
+  editing?: boolean,
+  owned_by_group_id: string,
+  title: LocalizedString
 |}
 
 type State = {
   canSave: boolean,
   ownedByGroup: boolean,
   saving?: boolean
-} & MapMakerStoreState & UserStoreState
+} & UserStoreState
 
 export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
@@ -31,16 +31,9 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
   constructor(props: Props){
     super(props);
-    this.stores.push(MapMakerStore);
     this.stores.push(UserStore);
-    var ownedByGroup = false;
-    if(this.props.groups && this.props.groups.length > 0){
-      //suggest a group by default if user is member of groups
-      ownedByGroup = true;
-    }
     this.state = {
-      canSave: false,
-      ownedByGroup
+      canSave: false
     };
   }
 
@@ -72,9 +65,9 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
       return;
     }
 
-    if(!model.group && this.props.groups.length === 1){
+    if(!model.group && this.state.user.groups.length === 1){
         //creating a new layer when user is only the member of a single group (not showing the group dropdown)
-        model.group = this.props.groups[0].group_id;
+        model.group = this.state.user.groups[0].group_id;
       }
     this.setState({saving: true});
     this.props.onSave(model, () =>{
@@ -87,44 +80,48 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
   }
 
   render(){
+    const {title, editing, owned_by_group_id} = this.props;
+    const {canSave, saving, ownedByGroup, loggedIn, user} = this.state;
+    const groups = user.groups || [];
 
-    var groups = '', groupToggle = '', editing = false;
-    if(this.props.groups && this.props.groups.length > 0){
-   
-        if(this.state.map_id && this.state.map_id > 0){
-          editing = true;
-        }else{
-          //if the user is in a group, show group options
-          groupToggle = (
-            <div className="row">   
-              <Toggle name="ownedByGroup" labelOff={this.__('Owned by Me')} labelOn={this.__('Owned by My Group')} 
-              checked={this.state.ownedByGroup} className="col s12"
-              onChange={this.onOwnedByGroup}
-                  dataPosition="right" dataTooltip={this.__('Select who should own this map')}
-                />
-            </div>  
-          );
-        }
-  
-      if(this.state.ownedByGroup){
-        //show group selection
-         groups = (
-          <div className="row">       
-            <SelectGroup groups={this.props.groups} group_id={this.state.owned_by_group_id} type="map" canChangeGroup={!editing} editing={editing}/>
-          </div>        
-        );
-      }
-     
+    let ownedByGroupChecked;
+    if(typeof ownedByGroup === 'undefined' && groups.length > 0){
+      //suggest a group by default if user is member of groups
+      ownedByGroupChecked = true;
     }else{
-      //owned by the user account is the default, display a message about groups?
+      ownedByGroupChecked = ownedByGroup;
     }
 
-    if(this.state.loggedIn){
+    let groupToggle;
+    if(groups.length > 0 && !editing){
+      //if the user is in a group, show group options
+      groupToggle = (
+        <div className="row">   
+          <Toggle name="ownedByGroup" labelOff={this.__('Owned by Me')} labelOn={this.__('Owned by My Group')} 
+          checked={ownedByGroupChecked} className="col s12"
+          onChange={this.onOwnedByGroup}
+              dataPosition="right" dataTooltip={this.__('Select who should own this map')}
+            />
+        </div>  
+      );   
+    }
+
+    let selectGroup;
+    if(ownedByGroupChecked){
+      const groups = user.groups || [];
+      selectGroup = (
+        <div className="row">       
+          <SelectGroup groups={groups} group_id={owned_by_group_id} type="map" canChangeGroup={!editing} editing={editing}/>
+        </div>
+      );
+    }
+
+    if(loggedIn){
      return (
         <Formsy onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className="row">
             <MultiTextInput name="title" id="title"
-              value={this.state.title}
+              value={title}
               label={{
                 en: 'Map Title', fr: 'Titre de la carte', es: 'Título del mapa', it: 'Titolo della mappa'
               }}
@@ -135,11 +132,11 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
                required/>
           </div>
           {groupToggle}
-          {groups}
+          {selectGroup}
           <div className="row">
             <div className="col s12 valign-wrapper">
                   <button type="submit" className="valign waves-effect waves-light btn" style={{margin: 'auto'}} 
-                  disabled={(!this.state.canSave || this.state.saving)}>{this.__('Save Map')}</button>
+                  disabled={(!canSave || saving)}>{this.__('Save Map')}</button>
             </div>
           </div>
 

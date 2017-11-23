@@ -24,6 +24,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {UserStoreState} from '../stores/UserStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal';
+import CopyMapModal from '../components/InteractiveMap/CopyMapModal';
 let clipboard;
 if(process.env.APP_ENV === 'browser'){
  clipboard = require('clipboard-polyfill');
@@ -227,11 +228,23 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     });
   }
 
-  onCopyMap = () => {
+  showCopyMap = () => {
+    //show modal
+    this.refs.copyMapModal.show();
+  } 
+
+  onCopyMap = (formData: Object, cb: Function) => {
     var _this = this;
+    const data = {
+      map_id: this.props.map.map_id, 
+      title: formData.title,
+      group_id: formData.group,
+      _csrf: this.state._csrf,
+    };
+
     request.post('/api/map/copy')
     .type('json').accept('json')
-    .send({map_id: this.props.map.map_id, _csrf: _this.state._csrf})
+    .send(data)
     .end((err, res) => {
       checkClientError(res, err, (err) => {
           if(err || !res.body || !res.body.map_id){
@@ -243,6 +256,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               message: _this.__('Map Copied'),
               dismissAfter: 2000,
               onDismiss(){
+                cb();
                 window.location = url;
               }
             });
@@ -293,7 +307,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if(this.state.loggedIn && this.state.user){
       copyButton = (
         <li>
-          <a onClick={this.onCopyMap} className="btn-floating user-map-tooltip purple"
+          <a onClick={this.showCopyMap} className="btn-floating user-map-tooltip purple"
             data-delay="50" data-position="left" data-tooltip={this.__('Copy Map')}>
             <i className="material-icons">queue</i>
           </a>
@@ -350,6 +364,10 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   </li>
   */
 
+  const copyMapTitle = JSON.parse(JSON.stringify(this.props.map.title));
+  copyMapTitle.en = copyMapTitle.en + ' - Copy';
+  //TODO: change copied map title in other languages
+
     map = (
       <InteractiveMap height="calc(100vh - 50px)" 
              {...this.props.map}         
@@ -369,6 +387,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>         
           {map}
           <PublicShareModal ref="publicShareModal" share_id={this.state.share_id} onChange={this.toggleSharePublic} />
+          <CopyMapModal ref="copyMapModal" title={copyMapTitle} onSubmit={this.onCopyMap} />
         </main>
       </div>
     );

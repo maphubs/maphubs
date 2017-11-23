@@ -1,6 +1,7 @@
 // @flow
 var User = require('../../models/user');
 var Admin = require('../../models/admin');
+var Group = require('../../models/group');
 var log = require('../../services/log');
 var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
@@ -119,31 +120,35 @@ module.exports = function(app: any) {
   });
 
   //can be used to dynamically check for login status, so should be public
-  app.all('/api/user/details/json', (req, res) => {
+  app.all('/api/user/details/json', async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(200).send({loggedIn: false, user: null});
       return;
     }else{
+      try {
       var user_id = req.session.user.maphubsUser.id;
 
-      User.getUser(user_id)
-        .then((user) => {
-          //remove sensitive content if present
-          delete user.pass_crypt;
-          delete user.pass_salt;
-          delete user.creation_ip;
-          //add session content
-          if(req.session.user && req.session.user._json){
-            user.username = req.session.user._json.username;
-            user.picture = req.session.user._json.picture;
-          }
+      const user = await User.getUser(user_id);
+
+      //remove sensitive content if present
+      delete user.pass_crypt;
+      delete user.pass_salt;
+      delete user.creation_ip;
+      //add session content
+      if(req.session.user && req.session.user._json){
+        user.username = req.session.user._json.username;
+        user.picture = req.session.user._json.picture;
+      }
+
+      const groups = await Group.getGroupsForUser(user_id);
+      user.groups = groups;
           
-          return Admin.checkAdmin(user_id)
-          .then((admin) => {
-            user.admin = admin;
-            return res.status(200).send({loggedIn: true, user});
-        });
-        }).catch(apiError(res, 200));
+      const admin = await Admin.checkAdmin(user_id);
+      user.admin = admin;
+
+      return res.status(200).send({loggedIn: true, user});
+
+      }catch(err){apiError(res, 200)(err);}
     }
   });
 

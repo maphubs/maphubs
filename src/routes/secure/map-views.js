@@ -2,7 +2,6 @@
 var User = require('../../models/user');
 var Map = require('../../models/map');
 var Layer = require('../../models/layer');
-var Group = require('../../models/group');
 var Stats = require('../../models/stats');
 var debug = require('../../services/debug')('routes/map');
 //var log = require('../../services/log');
@@ -50,8 +49,6 @@ module.exports = function(app: any) {
         let myLayers = await Layer.getUserLayers(user_id, 50, canAddPrivateLayers);
         await Layer.attachPermissionsToLayers(myLayers, user_id);
 
-        const myGroups = await  Group.getGroupsForUser(user_id);
-
         const editLayerId = req.query.editlayer;
         let editLayer;
         if(editLayerId){
@@ -66,7 +63,7 @@ module.exports = function(app: any) {
 
         return res.render('map', {
           title: req.__('New Map'), 
-          props:{popularLayers, myLayers, myGroups, editLayer}, 
+          props:{popularLayers, myLayers, editLayer}, 
           hideFeedback: true,
           req
         });
@@ -227,8 +224,7 @@ module.exports = function(app: any) {
                   map, 
                   layers, 
                   popularLayers, 
-                  myLayers, 
-                  myGroups: await Group.getGroupsForUser(user_id)
+                  myLayers
                 },
                 hideFeedback: true,
                 req

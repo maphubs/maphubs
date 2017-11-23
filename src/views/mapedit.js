@@ -13,7 +13,6 @@ type Props = {
   layers: Array<Object>,
   popularLayers:Array<Object>,
   myLayers: Array<Object>,
-  myGroups: Array<Object>,
   locale: string,
   _csrf: string,
   headerConfig: Object,
@@ -57,7 +56,6 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
             settings={this.props.map.settings}
             popularLayers={this.props.popularLayers}
             myLayers={this.props.myLayers}
-            myGroups={this.props.myGroups}
              edit/>
         </main>
       </div>

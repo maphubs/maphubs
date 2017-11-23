@@ -286,20 +286,22 @@ module.exports = {
    * Create a new map as a copy of the requested map an assign to the requested user
    * Can include private?: If requested
    */
-  async copyMapToUser(map_id: number, to_user_id: number){
+  async copyMapToUser(map_id: number, to_user_id: number, title?: LocalizedString){
     const map = await this.getMap(map_id);
     const layers = await this.getMapLayers(map_id);
-    return this.createUserMap(layers, map.style, map.basemap, map.position, map.title, to_user_id);
+    const copyTitle = title || map.title;
+    return this.createUserMap(layers, map.style, map.basemap, map.position, copyTitle, to_user_id);
   },
 
   /**
    * Create a new map as a copy of the requested map an assign to the requested group
    * Can include private?: If requested
    */
-  async copyMapToGroup(map_id: number, to_group_id: string, user_id: number){
+  async copyMapToGroup(map_id: number, to_group_id: string, user_id: number, title?: LocalizedString){
     const map = await this.getMap(map_id);
     const layers = await this.getMapLayers(map_id);
-    return this.createGroupMap(layers, map.style, map.basemap, map.position, map.title, map.settings, user_id, to_group_id, map.private);
+    const copyTitle = title || map.title;
+    return this.createGroupMap(layers, map.style, map.basemap, map.position, copyTitle, map.settings, user_id, to_group_id, map.private);
   },
 
   transferMapToUser(map_id: number, to_user_id: number, user_id: number){
