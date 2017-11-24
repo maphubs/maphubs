@@ -1,5 +1,25 @@
 # Change Log
 
+## [v0.15.0](https://github.com/maphubs/maphubs/tree/v0.15.0) (2017-11-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.14.3...v0.15.0)
+
+**Implemented enhancements:**
+
+- increase number of results returned in map maker searching [\#447](https://github.com/maphubs/maphubs/issues/447)
+- add confirmation to account invite box [\#444](https://github.com/maphubs/maphubs/issues/444)
+- Don't auto zoom new empty layers [\#438](https://github.com/maphubs/maphubs/issues/438)
+- add feature count to layer page [\#208](https://github.com/maphubs/maphubs/issues/208)
+
+**Fixed bugs:**
+
+- hub publish fails [\#446](https://github.com/maphubs/maphubs/issues/446)
+- copy map broken [\#445](https://github.com/maphubs/maphubs/issues/445)
+- error saving map after logging in [\#412](https://github.com/maphubs/maphubs/issues/412)
+- markers are not showing in thumbnail maps on password protected portals [\#353](https://github.com/maphubs/maphubs/issues/353)
+- Laos economic corridors data only partially loads [\#136](https://github.com/maphubs/maphubs/issues/136)
+- Mekong Rivers data didn't load [\#135](https://github.com/maphubs/maphubs/issues/135)
+- error uploading artisanal concession shapefile [\#98](https://github.com/maphubs/maphubs/issues/98)
+
 ## [v0.14.3](https://github.com/maphubs/maphubs/tree/v0.14.3) (2017-11-09)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.14.2...v0.14.3)
 
