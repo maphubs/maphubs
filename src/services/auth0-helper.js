@@ -1,7 +1,5 @@
 var local = require('../local');
-var Promise = require("bluebird");
-var request = require("request");
-Promise.promisifyAll(require("request"));
+var request = require("request-promise");
 
 module.exports = {
 
@@ -20,8 +18,8 @@ module.exports = {
       json: true 
     };
 
-    const response = await request.postAsync(options);
-    return response.body.access_token;
+    const response = await request(options);
+    return response.access_token;
   },
 
   updateAppMetadata(data, token, profile){
@@ -35,7 +33,7 @@ module.exports = {
         body: {app_metadata: data},
         json: true
       };
-    return request.getAsync(options);
+    return request(options);
   }
 
 };

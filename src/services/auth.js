@@ -8,6 +8,7 @@ var Admin = require('../models/admin');
 var Auth0Helper = require('../services/auth0-helper');
 var Promise = require('bluebird');
 var log = require('./log');
+var shortid = require('shortid');
 
 var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
   log.info(`saving maphubs id ${maphubs_user_id} to auth0 for host ${local.host}`);
@@ -21,8 +22,24 @@ var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
   return Auth0Helper.updateAppMetadata({hosts}, accessToken, profile);
 };
 
+var determineLocalDisplayName = function(profile){
+  let displayName;
+
+  if(profile._json && profile._json.username){
+    displayName =  profile._json.username;
+  }else if(profile.nickname){
+    displayName = profile.nickname;
+  }else if(profile.displayName){
+    displayName = profile.displayName;
+  }else{
+    displayName= shortid.generate();
+  }
+
+  return displayName;
+};
+
 var createMapHubsUser = async function(profile: Object){
-  var display_name = profile.displayName ? profile.displayName: profile._json.email;
+  var display_name = determineLocalDisplayName(profile);
   
   const user_id = await User.createUser(profile._json.email, display_name, display_name, profile.id);
   log.info(`Created new MapHubs user ${display_name} with id ${user_id}`);
