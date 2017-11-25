@@ -322,7 +322,7 @@ addMapCloseButtons = () => {
   $('.embed-map-container').each((i, map) => {
     var map_id = map.id.split('-')[1];
 
-    $(map).append(`<div class="map-remove-button" style="position: absolute; top: 10px; right: 80px;">
+    $(map).append(`<div class="map-remove-button-v2" style="position: absolute; top: 10px; right: 80px;">
     <i class="material-icons edit-map-tooltips story-media-edit-button"
       data-position="bottom" data-delay="50" data-tooltip="` +_this.__('Remove Map') + `"
       >close</i>
@@ -339,7 +339,7 @@ addMapCloseButtons = () => {
 
 removeMapCloseButtons = () => {
   $('.edit-map-tooltips').tooltip('remove');
-  $('.map-remove-button').each((i, button) => {
+  $('.map-remove-button-v2').each((i, button) => {
     $(button).remove();
   });
 }
@@ -348,7 +348,7 @@ addImageButtons = () => {
   var _this = this;
   $('.embed-image-container').each((i, image) => {
     var image_id = image.id.split('-')[1];
-    $(image).append( `<div class="image-remove-button" style="position: absolute; top: 10px; right: 10px;">
+    $(image).append( `<div class="image-remove-button-v2" style="position: absolute; top: 10px; right: 10px;">
     <i class="material-icons remove-image-tooltips story-media-edit-button"
       data-position="bottom" data-delay="50" data-tooltip="`+ _this.__('Remove Image')+ `"
       >close</i>
@@ -362,7 +362,7 @@ addImageButtons = () => {
 
 removeImageButtons = () => {
   $('.remove-image-tooltips').tooltip('remove');
-  $('.image-remove-button').each((i, button) => {
+  $('.image-remove-button-v2').each((i, button) => {
     $(button).remove();
   });
 }
