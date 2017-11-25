@@ -253,14 +253,7 @@ function createEngine(engineOptions) {
           //https://fonts.googleapis.com/icon?family=Material+Icons
           markup += `<link href="${assetHost}/assets/css/material-icons.css" rel="stylesheet">\n`;
         }
-        if(options.fontawesome){
-          //https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css
-          markup += `<link href="${assetHost}/assets/css/font-awesome.css" rel="stylesheet">\n`;
-        }
-        //https://fonts.googleapis.com/css?family=Raleway|Merriweather:400,700,400italic
-        markup += `<link href="${assetHost}/assets/css/raleway.css" rel="stylesheet" type="text/css">\n`;
-        //https://fonts.googleapis.com/css?family=Open+Sans
-        markup += `<link href="${assetHost}/assets/css/opensans.css" rel="stylesheet" type="text/css">\n`;     
+  
         markup +=
       //  '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
         '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">';
@@ -303,6 +296,15 @@ function createEngine(engineOptions) {
           <script src="${assetHost}/assets/js/rangy-cssclassapplier.js"></script>
           `;
         }
+
+        if(options.fontawesome){
+          //https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css
+          markup += `<link href="${assetHost}/assets/css/font-awesome.css" rel="stylesheet">\n`;
+        }
+        //https://fonts.googleapis.com/css?family=Raleway|Merriweather:400,700,400italic
+        markup += `<link href="${assetHost}/assets/css/raleway.css" rel="stylesheet" type="text/css">\n`;
+        //https://fonts.googleapis.com/css?family=Open+Sans
+        markup += `<link href="${assetHost}/assets/css/opensans.css" rel="stylesheet" type="text/css">\n`;     
 
         
 

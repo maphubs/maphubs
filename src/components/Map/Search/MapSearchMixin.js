@@ -1,5 +1,5 @@
 //@flow
-var MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query-dev');
+var MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query');
 import _includes from 'lodash.includes';
 var debug = require('../../../services/debug')('MapSearchMixin');
 import _find from 'lodash.find';
