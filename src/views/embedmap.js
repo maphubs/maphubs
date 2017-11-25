@@ -29,16 +29,6 @@ type Props = {
   _csrf: string
 }
 
-type DefaultProps = {
-  isStatic: boolean,
-  interactive: boolean,
-  markerColor: string,
-  overlayName: string,
-  showLogo: boolean,
-  showScale: boolean,
-  insetMap:  boolean,
-}
-
 type State = {
   interactive: boolean,
   bounds: ?Object,
@@ -50,7 +40,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     isStatic: false,
     interactive: false,
     markerColor: '#FF0000',

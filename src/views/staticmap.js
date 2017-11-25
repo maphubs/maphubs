@@ -26,7 +26,6 @@ type Props = {
 }
 
 type State = {
-  retina: boolean,
   width: number,
   height: number
 }
@@ -45,7 +44,6 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
   }
 
   state = {
-    retina: false,
     width: 1024,
     height: 600
   }
@@ -59,50 +57,39 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentWillMount(){
-    super.componentWillMount();
+  componentDidMount(){
     var _this = this;
-    if (typeof window === 'undefined') return; //only run this on the client
-
+    
     function getSize(){
-      // Get the dimensions of the viewport
-      var width = Math.floor($(window).width());
-      var height = $(window).height();
-      //var height = Math.floor(width * 0.75); //4:3 aspect ratio
-      //var height = Math.floor((width * 9)/16); //16:9 aspect ratio
-      return {width, height};
+      return {
+        width: Math.floor($(window).width()),
+        height: $(window).height()
+      };
     }
 
-    var size = getSize();
-    this.setState({
-      width: size.width,
-      height: size.height
-    });
+    this.setState(getSize());
 
     $(window).resize(function(){
       var debounced = _debounce(() => {
-        var size = getSize();
-        _this.setState({
-          width: size.width,
-          height: size.height
-        });
+        _this.setState(getSize());
       }, 2500).bind(this);
       debounced();
     });
   }
 
   render() {
-    var map = '', legend = '', bottomLegend = '';
-    if(this.props.showLegend){
+    let map, legend, bottomLegend;
+    const {name, layers, showLegend, position, settings} = this.props;
+    if(showLegend){
       if(this.state.width < 600){
         bottomLegend = (
           <MiniLegend style={{
               width: '100%'
             }}
             collapsible={false}
-            title={this.props.name}
+            title={name}
             hideInactive={false} showLayersButton={false}
-              layers={this.props.layers}/>
+              layers={layers}/>
           );
       } else {
         legend = (
@@ -114,25 +101,24 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
               width: '25%'
             }}
             collapsible={false}
-            title={this.props.name}
+            title={name}
             hideInactive={true} showLayersButton={false}
-              layers={this.props.layers}/>
+              layers={layers}/>
         );
       }
     }
 
-   
     var bounds;
     if(typeof window === 'undefined' || !window.location.hash){
         //only update position if there isn't absolute hash in the URL
-          if(this.props.position && this.props.position.bbox){
-            var bbox = this.props.position.bbox;
+          if(position && position.bbox){
+            var bbox = position.bbox;
             bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
           }        
       }
   let insetConfig = {};
-  if(this.props.settings && this.props.settings.insetConfig){
-    insetConfig = this.props.settings.insetConfig;
+  if(settings && settings.insetConfig){
+    insetConfig = settings.insetConfig;
   }
   insetConfig.collapsible = false;
 
@@ -146,7 +132,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
         insetConfig={insetConfig}
         showLogo={this.props.showLogo} 
         showScale={this.props.showScale} 
-        style={{width: '100%', height: this.state.height + 'px'}}
+        style={{width: '100vw', height: '100vh'}}
         glStyle={this.props.style} 
         mapConfig={this.props.mapConfig}
         baseMap={this.props.basemap} navPosition="top-right">
