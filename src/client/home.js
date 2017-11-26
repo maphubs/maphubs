@@ -9,7 +9,6 @@ if (!global.Intl) {
  require('intl/locale-data/jsonp/it.js');
 }
 
-require('babel-polyfill');
 import Home from '../views/home';
 
 

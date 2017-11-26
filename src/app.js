@@ -48,7 +48,6 @@ if(process.env.NODE_ENV !== 'production'){
   babelConfig.retainLines = true;
 }
 require('babel-core/register')(babelConfig);
-//require('babel-polyfill');
 
 var app = express();
 //settings flags

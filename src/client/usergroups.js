@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 
 import UserGroups from '../views/usergroups';
 
-require('babel-polyfill');
 require('jquery');
 require('../../node_modules/slick-carousel/slick/slick.css');
 require('../../node_modules/slick-carousel/slick/slick-theme.css');

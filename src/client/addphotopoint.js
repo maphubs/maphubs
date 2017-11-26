@@ -7,7 +7,6 @@ if (!global.Intl) {
  require('intl/locale-data/jsonp/fr.js');
  require('intl/locale-data/jsonp/it.js');
 }
-require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("cropperjs/dist/cropper.css");

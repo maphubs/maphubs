@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 
 import CreateLayer from '../views/createlayer';
 
-require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 

@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 
 import MapEdit from '../views/mapedit';
 
-require('babel-polyfill');
 require('jquery');
 require('../../node_modules/slick-carousel/slick/slick.css');
 require('../../node_modules/slick-carousel/slick/slick-theme.css');

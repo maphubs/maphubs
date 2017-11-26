@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require('medium-editor/dist/css/medium-editor.css');

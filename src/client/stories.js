@@ -8,7 +8,7 @@ if (!global.Intl) {
  require('intl/locale-data/jsonp/es.js');
  require('intl/locale-data/jsonp/fr.js');
 }
-require('babel-polyfill');
+
 require('jquery');
 require("materialize-css");
 

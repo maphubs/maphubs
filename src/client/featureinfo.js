@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 require("cropperjs/dist/cropper.css");

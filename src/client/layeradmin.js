@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 
 import LayerAdmin from '../views/layeradmin';
 
-require('babel-polyfill');
 require('jquery');
 require("materialize-css");
 
