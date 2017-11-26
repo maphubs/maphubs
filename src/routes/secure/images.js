@@ -14,8 +14,19 @@ module.exports = function(app: any) {
   if(local.port !== 80){
     baseHost += ':' + local.port;
   }
-  var options = {baseHost};
-  app.use('/img', scale(options));
+ 
+  if(!local.requireLogin){
+    var options = {baseHost};
+    app.use('/img', scale(options));
+  }else{
+    app.get('/img/*', (req, res) => {
+      if(!req.query.url){
+        res.status(400).send('expected image url');
+      }else{
+        res.redirect(req.query.url);
+      }
+    });
+  }
 
   app.get('/image/:id.*', (req, res, next) => {
     var image_id = parseInt(req.params.id || '', 10);
