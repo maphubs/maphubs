@@ -10,9 +10,9 @@ var local = require('../../local');
 
 module.exports = function(app: any) {
 
-  let baseHost = local.host;
+  let baseHost = local.host_internal;
   if(local.port !== 80){
-    baseHost += ':' + local.port;
+    baseHost += ':' + local.internal_port;
   }
  
   if(!local.requireLogin){
