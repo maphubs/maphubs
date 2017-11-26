@@ -88,7 +88,7 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
               marginLeft: '-12px',
               float: 'left'
             }}>
-            <img ref="groupimg" className="valign" src={baseUrl + '/group/' + this.props.group + '/thumbnail'}
+            <img ref="groupimg" className="valign" src={`/img/resize/40?url=/group/${this.props.group}/thumbnail`}
               style={{
                 height: sizeStr,
                 width: 'auto',

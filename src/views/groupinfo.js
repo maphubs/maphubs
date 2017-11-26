@@ -126,7 +126,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
           <h4>{this._o_(this.props.group.name)}</h4>
           <div className="row">
             <div className="col s6">
-              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + group_id + '/image'}/>
+              <img  alt={this.__('Group Photo')} width="300" className="" src={'/img/resize/600?url=/group/' + group_id + '/image'}/>
             </div>
             <div className="col s6">
               <div className="row">

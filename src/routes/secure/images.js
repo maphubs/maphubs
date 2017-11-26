@@ -5,8 +5,17 @@ var apiError = require('../../services/error-response').apiError;
 var nextError = require('../../services/error-response').nextError;
 var imageUtils = require('../../services/image-utils');
 var log = require('../../services/log');
+var scale = require('express-sharp');
+var local = require('../../local');
 
 module.exports = function(app: any) {
+
+  let baseHost = local.host;
+  if(local.port !== 80){
+    baseHost += ':' + local.port;
+  }
+  var options = {baseHost};
+  app.use('/img', scale(options));
 
   app.get('/image/:id.*', (req, res, next) => {
     var image_id = parseInt(req.params.id || '', 10);

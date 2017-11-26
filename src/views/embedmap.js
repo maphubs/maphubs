@@ -11,6 +11,7 @@ import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import type {Layer} from '../stores/layer-store';
 import type {GLStyle} from '../types/mapbox-gl-style';
+var urlUtil = require('../services/url-util');
 
 type Props = {
   map: Object,
@@ -179,10 +180,15 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     var bounds;
     
     if(this.props.isStatic && !this.state.interactive){
-
+      let imgSrc = this.props.image;
+      const baseUrl = urlUtil.getBaseUrl();
+      if(imgSrc.startsWith(baseUrl)){
+        imgSrc = imgSrc.replace(baseUrl, '');
+      }
+      imgSrc = '/img/resize/1200?url=' + imgSrc;
       map = (
           <div style={{position: 'relative'}}>
-            <img src={this.props.image} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />
+            <img src={imgSrc} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />
               <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light embed-tooltips"
                 data-delay="50" data-position="right" data-tooltip={this.__('Start Interactive Map')}
                 style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>

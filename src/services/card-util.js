@@ -22,7 +22,7 @@ module.exports = {
 
     let layer_id: number = layer.layer_id ? layer.layer_id: -1;
 
-    var image_url = '/api/screenshot/layer/thumbnail/' + layer_id + '.jpg';
+    var image_url = `/img/resize/400?url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`;
     
     return {
       id: `layer-${layer_id.toString()}`,
@@ -47,8 +47,8 @@ module.exports = {
       title,
       description: hub.description,
       group: hub.owned_by_group_id,
-      image_url: '/hub/' + hub.hub_id + '/images/logo',
-      background_image_url: '/hub/' + hub.hub_id + '/images/banner/thumbnail',
+      image_url: `/img/resize/150?url=/hub/${hub.hub_id}/images/logo`,
+      background_image_url: `/img/resize/400?url=/hub/${hub.hub_id}/images/banner/thumbnail`,
       link: hubUrl,
       type: 'hub',
       data: hub,
@@ -58,7 +58,7 @@ module.exports = {
   },
 
   getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
-    var image_url = '/api/screenshot/map/thumbnail/' + map.map_id + '.jpg';
+    var image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`;
     return {
       id: `map-${map.map_id.toString()}`,
       title: map.title,//LocalizedString
@@ -75,7 +75,7 @@ module.exports = {
   getGroupCard(group: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
     let image_url;
     if(group.hasimage){
-      image_url = '/group/' + group.group_id + '/image';
+      image_url = `/img/resize/400?url=/group/${group.group_id}/image`;
     }
     return {
       id: `group-${group.group_id}`,
@@ -106,6 +106,10 @@ module.exports = {
     var image_url;
     if(story.firstimage){
       image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
+      if(image_url.startsWith(baseUrl)){
+        image_url = image_url.replace(baseUrl, '');
+      }
+      image_url = '/img/resize/400?url=' + image_url;
     }
 
     return {
