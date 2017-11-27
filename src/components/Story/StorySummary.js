@@ -38,6 +38,9 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
     var image = '';
     if(this.props.story.firstimage){
         var imageUrl = this.props.story.firstimage.replace(/\/image\//i, '/thumbnail/');
+        if(imageUrl.startsWith(baseUrl)){
+          imageUrl = imageUrl.replace(baseUrl, '');
+        }
         imageUrl = '/img/resize/1200?url=' + imageUrl;
       image = (
         <div>
