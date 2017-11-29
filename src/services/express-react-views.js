@@ -95,7 +95,18 @@ function createEngine(engineOptions) {
       //include version number in all pages for debugging
       options.props.version = version;
 
-      
+
+      if(!options.props.error){ //don't hit the database on error and 404 pages
+      try{
+        const pageConfigs = await Page.getPageConfigs(['footer', 'header', 'map']);
+        options.props.headerConfig = pageConfigs.header;
+        options.props.footerConfig = pageConfigs.footer; 
+        options.props.mapConfig = pageConfigs.map;  
+      }catch(err){
+        log.error(err);
+        Raven.captureException(err);
+      }
+    }
 
       var reactMarkup = renderToString(React.createElement(component, options.props));
 
@@ -392,25 +403,8 @@ function createEngine(engineOptions) {
         }
       });
     }
-    if(!options.props.error){ //don't hit the database on error and 404 pages
-      try{
-        const pageConfigs = await Page.getPageConfigs(['footer', 'header', 'map']);
-        options.props.headerConfig = pageConfigs.header;
-        options.props.footerConfig = pageConfigs.footer; 
-        options.props.mapConfig = pageConfigs.map;  
-      }catch(err){
-        log.error(err);
-        Raven.captureException(err);
-      }finally{
-        let appData = JSON.stringify(options.props, null, 2);
-        markup += `
-        <script>window.__appData = ${appData}; </script>
-        </body>
-        </html>
-        `;
-        cb(null, markup); 
-      }
-  }else{
+    
+
       let appData: string = JSON.stringify(options.props, null, 2);
       markup += `
        <script>window.__appData = ${appData}; </script>
@@ -418,7 +412,7 @@ function createEngine(engineOptions) {
       </html>
       `;
        cb(null, markup);
-    }
+    
   }
   return renderFile;
 }
