@@ -306,4 +306,3 @@ getCookie = (cname: string) => {
     );
   }
 }
-//<LocaleChooser id="locale-sidenav"/> 

@@ -173,8 +173,8 @@
     "@turf/meta" "^5.0.4"
 
 "@turf/buffer@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-5.0.4.tgz#71e71f7cc6ab2211401e6a0cc588799866685af4"
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-5.0.5.tgz#2d82d0f21d3bc191902d49f0c08e6badfda7e5d3"
   dependencies:
     "@turf/bbox" "^5.0.4"
     "@turf/center" "^5.0.4"
@@ -182,7 +182,7 @@
     "@turf/meta" "^5.0.4"
     "@turf/projection" "^5.0.4"
     d3-geo "1.7.1"
-    jsts-es "*"
+    turf-jsts "*"
 
 "@turf/center@^5.0.4":
   version "5.0.4"
@@ -238,14 +238,14 @@
     "@turf/invariant" "^5.0.0"
 
 "@turf/intersect@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-5.0.4.tgz#136d19151c4c4f08df257e5e2e4ec8e63ac70b2c"
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-5.0.6.tgz#401f2f3f5a7fd75467c3340b2e906fb7741fe960"
   dependencies:
     "@turf/clean-coords" "^5.0.4"
     "@turf/helpers" "^5.0.4"
     "@turf/invariant" "^5.0.4"
     "@turf/truncate" "^5.0.4"
-    jsts-es "*"
+    turf-jsts "*"
 
 "@turf/invariant@^4.7.3":
   version "4.7.3"
@@ -415,7 +415,7 @@ ajv@^4.9.1:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
-ajv@^5.0.0, ajv@^5.1.5, ajv@^5.2.3, ajv@^5.3.0:
+ajv@^5.0.0, ajv@^5.1.5:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.3.0.tgz#4414ff74a50879c208ee5fdc826e32c303549eda"
   dependencies:
@@ -424,7 +424,7 @@ ajv@^5.0.0, ajv@^5.1.5, ajv@^5.2.3, ajv@^5.3.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
 
-ajv@^5.1.0:
+ajv@^5.1.0, ajv@^5.2.3, ajv@^5.3.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.5.0.tgz#eb2840746e9dc48bd5e063a36e3fd400c5eab5a9"
   dependencies:
@@ -753,8 +753,8 @@ autoprefixer@^6.3.1:
     postcss-value-parser "^3.2.3"
 
 aws-sdk@^2.114.0:
-  version "2.156.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.156.0.tgz#409c06f7051d58320cb389a024ca7b61ce31f136"
+  version "2.157.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.157.0.tgz#b55b16f8413dfa9e7323b60b21fce9743206f8a1"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -2013,6 +2013,10 @@ chalk@~0.4.0:
     has-color "~0.1.0"
     strip-ansi "~0.1.0"
 
+chardet@^0.4.0:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
+
 chokidar@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
@@ -2699,8 +2703,8 @@ cycle@1.0.x:
   resolved "https://registry.yarnpkg.com/cycle/-/cycle-1.0.3.tgz#21e80b2be8580f98b468f379430662b046c34ad2"
 
 d3-array@1:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.0.tgz#147d269720e174c4057a7f42be8b0f3f2ba53108"
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.1.tgz#d1ca33de2f6ac31efadb8e050a021d7e2396d5dc"
 
 d3-dsv@1.0.1:
   version "1.0.1"
@@ -2933,12 +2937,11 @@ doctrine@1.5.0:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
-doctrine@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.0.tgz#c73d8d2909d22291e1a007a395804da8b665fe63"
+doctrine@^2.0.0, doctrine@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.2.tgz#68f96ce8efc56cc42651f1faadb4f175273b0075"
   dependencies:
     esutils "^2.0.2"
-    isarray "^1.0.0"
 
 dom-helpers@^3.2.0:
   version "3.2.1"
@@ -3301,8 +3304,8 @@ eslint-scope@^3.7.1:
     estraverse "^4.1.1"
 
 eslint@^4.6.1:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.11.0.tgz#39a8c82bc0a3783adf5a39fa27fdd9d36fac9a34"
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.12.0.tgz#a7ce78eba8cc8f2443acfbbc870cc31a65135884"
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
@@ -3310,7 +3313,7 @@ eslint@^4.6.1:
     concat-stream "^1.6.0"
     cross-spawn "^5.1.0"
     debug "^3.0.1"
-    doctrine "^2.0.0"
+    doctrine "^2.0.2"
     eslint-scope "^3.7.1"
     espree "^3.5.2"
     esquery "^1.0.0"
@@ -3319,7 +3322,7 @@ eslint@^4.6.1:
     file-entry-cache "^2.0.0"
     functional-red-black-tree "^1.0.1"
     glob "^7.1.2"
-    globals "^9.17.0"
+    globals "^11.0.1"
     ignore "^3.3.3"
     imurmurhash "^0.1.4"
     inquirer "^3.0.6"
@@ -3585,11 +3588,11 @@ extendr@^2.1.0:
     typechecker "~2.0.1"
 
 external-editor@^2.0.4:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/external-editor/-/external-editor-2.0.5.tgz#52c249a3981b9ba187c7cacf5beb50bf1d91a6bc"
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/external-editor/-/external-editor-2.1.0.tgz#3d026a21b7f95b5726387d4200ac160d372c3b48"
   dependencies:
+    chardet "^0.4.0"
     iconv-lite "^0.4.17"
-    jschardet "^1.4.2"
     tmp "^0.0.33"
 
 extglob@^0.3.1:
@@ -4157,7 +4160,11 @@ globals@^10.0.0:
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-10.3.0.tgz#716aba93657b56630b5a0e77de5ea8ac6215afaa"
 
-globals@^9.17.0, globals@^9.18.0:
+globals@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-11.0.1.tgz#12a87bb010e5154396acc535e1e43fc753b0e5e8"
+
+globals@^9.18.0:
   version "9.18.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-9.18.0.tgz#aa3896b3e69b487f17e31ed2143d69a8e30c2d8a"
 
@@ -4546,8 +4553,8 @@ iltorb@^1.0.9:
     node-pre-gyp "^0.6.34"
 
 immutability-helper@^2.3.1:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.5.0.tgz#01ea7204334997c645bdfa7eb22e8b84c970946e"
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.5.1.tgz#1d38ba1c47d8d2d50783f917cb7fbeb5737121dd"
   dependencies:
     invariant "^2.2.0"
 
@@ -5009,7 +5016,7 @@ jsbn@^0.1.0, jsbn@~0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
 
-jschardet@^1.4.2, jschardet@^1.5.1:
+jschardet@^1.5.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.6.0.tgz#c7d1a71edcff2839db2f9ec30fc5d5ebd3c1a678"
 
@@ -5117,10 +5124,6 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
-
-jsts-es@*:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/jsts-es/-/jsts-es-1.5.4.tgz#1089a8ffe2b404dbf8042b1bdca5f21f6061baf6"
 
 jsx-ast-utils@^2.0.0:
   version "2.0.1"
@@ -5922,11 +5925,11 @@ mime-types@~2.1.11:
   dependencies:
     mime-db "~1.27.0"
 
-mime@1.4.1, mime@^1.4.1:
+mime@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.4.1.tgz#121f9ebc49e3766f311a76e1fa1c8003c4b03aa6"
 
-mime@^1.3.4:
+mime@^1.3.4, mime@^1.4.1, mime@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
 
@@ -7476,14 +7479,14 @@ react-cropper@1.0.1:
     prop-types "^15.5.8"
 
 react-data-grid-addons@^2.0.59:
-  version "2.0.76"
-  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-2.0.76.tgz#4b4bc8efed259771a6ec7f83a09e4885e9445fe9"
+  version "2.0.77"
+  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-2.0.77.tgz#5d2257da911db18cbc0db5ebf6c89426b32726a2"
   dependencies:
-    react-data-grid "^2.0.76"
+    react-data-grid "^2.0.77"
 
-react-data-grid@^2.0.59, react-data-grid@^2.0.76:
-  version "2.0.76"
-  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.76.tgz#9a7f73fd8fa9874126ad159bbcf0952613036c22"
+react-data-grid@^2.0.59, react-data-grid@^2.0.77:
+  version "2.0.77"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.77.tgz#50f6907c8ef5f79abaa560b40630ebe05dcaf515"
 
 react-dnd-html5-backend@^2.5.1:
   version "2.5.4"
@@ -7528,8 +7531,8 @@ react-dom@^15.6.2:
     sinon "^1.17.4"
 
 react-input-autosize@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.1.0.tgz#90631c093d66d392ddc995903430ee238bb1f01f"
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.1.2.tgz#a3dc11a5517c434db25229925541309de3f7a8f5"
   dependencies:
     prop-types "^15.5.8"
 
@@ -7571,8 +7574,8 @@ react-scroll-to-component@^1.0.1:
     scroll-to "0.0.2"
 
 react-select@^1.0.0-rc.9:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.0.1.tgz#27431bcd40c920b9d36a9282141bc245e47a43aa"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.1.0.tgz#626a2de839fdea2ade74dd1b143a9bde34be6c82"
   dependencies:
     classnames "^2.2.4"
     prop-types "^15.5.8"
@@ -8517,6 +8520,12 @@ snyk-nuget-plugin@1.3.2:
     xml2js "^0.4.17"
     zip "^1.2.0"
 
+snyk-php-plugin@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/snyk-php-plugin/-/snyk-php-plugin-1.1.2.tgz#74c16f1e66e53beab769d7cecd65a98d04fb03c3"
+  dependencies:
+    debug "^3.1.0"
+
 snyk-policy@1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/snyk-policy/-/snyk-policy-1.7.1.tgz#e413b6bd4af6050c5e5f445287909e4e98a09b22"
@@ -8588,8 +8597,8 @@ snyk-try-require@^1.1.1, snyk-try-require@^1.2.0:
     then-fs "^2.0.0"
 
 snyk@^1.42.0:
-  version "1.50.0"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.50.0.tgz#4828b0ce43bf223013ef429c92158999c5cc3a82"
+  version "1.52.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.52.0.tgz#7b56c49ab93e8facbf255c6d298c803247e3bcc7"
   dependencies:
     abbrev "^1.0.7"
     ansi-escapes "^1.3.0"
@@ -8610,6 +8619,7 @@ snyk@^1.42.0:
     snyk-module "1.8.1"
     snyk-mvn-plugin "1.1.0"
     snyk-nuget-plugin "1.3.2"
+    snyk-php-plugin "1.1.2"
     snyk-policy "1.7.1"
     snyk-python-plugin "1.4.0"
     snyk-recursive-readdir "^2.0.0"
@@ -9282,6 +9292,10 @@ tunnel-agent@~0.4.1:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
 
+turf-jsts@*:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/turf-jsts/-/turf-jsts-1.1.0.tgz#bb6a5377481c8d3c2bca60abc7710a40728aa7c6"
+
 tween-functions@^1.0.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/tween-functions/-/tween-functions-1.2.0.tgz#1ae3a50e7c60bb3def774eac707acbca73bbc3ff"
@@ -9673,11 +9687,11 @@ webidl-conversions@^4.0.0:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.1.tgz#8015a17ab83e7e1b311638486ace81da6ce206a0"
 
 webpack-dev-middleware@^1.12.0:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-1.12.1.tgz#338be3ca930973be1c2ce07d84d275e997e1a25a"
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-1.12.2.tgz#f8fc1120ce3b4fc5680ceecb43d777966b21105e"
   dependencies:
     memory-fs "~0.4.1"
-    mime "^1.4.1"
+    mime "^1.5.0"
     path-is-absolute "^1.0.0"
     range-parser "^1.0.3"
     time-stamp "^2.0.0"

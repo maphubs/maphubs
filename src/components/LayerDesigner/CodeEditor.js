@@ -114,6 +114,11 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
     var editor = '';
     if(this.state.show){
 
+      let enableBasicAutocompletion;
+      if(this.props.mode !== 'json'){
+        enableBasicAutocompletion = true;
+      }
+
       editor = (
         <AceEditor
           ref="ace"
@@ -124,7 +129,7 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
           width="100%"
           height="100%"
           highlightActiveLine={true}
-          enableBasicAutocompletion={true}
+          enableBasicAutocompletion={enableBasicAutocompletion}
           value={this.state.code}
           editorProps={{$blockScrolling: true}}
         />
