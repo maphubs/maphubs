@@ -52,7 +52,7 @@ require('babel-core/register')(babelConfig);
 var app = express();
 //settings flags
 app.enable('trust proxy');
-//app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
+app.disable('view cache'); //cache may be causing weird issues in production, due to our custom React view implementation
 app.disable("x-powered-by");
 
 log.info(`Environment: "${app.get('env')}"`);

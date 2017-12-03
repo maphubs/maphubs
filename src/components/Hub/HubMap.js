@@ -3,7 +3,6 @@ import React from 'react';
 //var debug = require('../../services/debug')('CreateMap');
 var $ = require('jquery');
 import InteractiveMap from '../InteractiveMap';
-import  HubStore from '../../stores/HubStore';
 import  HubActions from '../../actions/HubActions';
 import  AddMapModal from '../Story/AddMapModal';
 import MapHubsComponent from '../../components/MapHubsComponent';
@@ -16,12 +15,13 @@ type Props = {|
   border: boolean,
   myMaps: Array<Object>,
   popularMaps: Array<Object>,
-  mapConfig: Object
+  mapConfig: Object,
+  map: Object,
+  layers: Array<Object>
 |}
 
-import type {HubStoreState} from '../../stores/HubStore';
 
-export default class HubMap extends MapHubsComponent<Props, HubStoreState> {
+export default class HubMap extends MapHubsComponent<Props, void> {
 
   props: Props
 
@@ -32,11 +32,6 @@ export default class HubMap extends MapHubsComponent<Props, HubStoreState> {
     myMaps: [],
     popularMaps: []
   }
-
-  constructor(props: Props){
-		super(props);
-    this.stores.push(HubStore);
-	}
 
   componentDidMount() {
     $(this.refs.mapLayersPanel).sideNav({
@@ -73,7 +68,7 @@ export default class HubMap extends MapHubsComponent<Props, HubStoreState> {
          onAdd={this.onSetMap} onClose={this.onMapCancel}
          myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
       );
-      if(this.state.map){
+      if(this.props.map){
          mapEditButton = (
           <a className="btn omh-color white-text" onClick={this.showMapSelection}
             style={{position: 'absolute', top: '5px', left: '45%'}}>
@@ -95,10 +90,10 @@ export default class HubMap extends MapHubsComponent<Props, HubStoreState> {
       <div style={{width: '100%', height: this.props.height, overflow: 'hidden'}}>
         <div className="row no-margin" style={{height: '100%', position: 'relative'}}>
 
-          <InteractiveMap {...this.state.map} 
+          <InteractiveMap {...this.props.map} 
             mapConfig={this.props.mapConfig}
             height={this.props.height} showTitle={false}
-            layers={this.state.layers} />
+            layers={this.props.layers} />
           
             {mapEditButton}
 
