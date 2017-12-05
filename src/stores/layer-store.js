@@ -145,28 +145,30 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
   resetStyleGL(){
     var style = this.state.style ? JSON.parse(JSON.stringify(this.state.style)) : {"sources": {}};
-    var layer_id = this.state.layer_id ? this.state.layer_id: -1;
-    var isExternal = this.state.is_external;
+    const layer_id = this.state.layer_id ? this.state.layer_id: -1;
+    const isExternal = this.state.is_external;
+    const shortid = this.state.shortid;
     var elc = this.state.external_layer_config ? this.state.external_layer_config : {};
+
 
     var baseUrl = urlUtil.getBaseUrl();
     if(isExternal && this.state.external_layer_type === 'mapbox-map' && elc.url){
-      style = MapStyles.raster.defaultRasterStyle(this.state.layer_id, this.state.shortid, elc.url);
+      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc.url);
     }else if(isExternal && elc.type === 'raster'){
-      style = MapStyles.raster.defaultRasterStyle(layer_id, this.state.shortid, baseUrl + '/api/layer/' + layer_id.toString() +'/tile.json');
+      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, `${baseUrl}/api/lyr/${shortid}/tile.json`);
     }else if(isExternal && elc.type === 'multiraster' && elc.layers){
-      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, this.state.shortid, elc.layers);
+      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, shortid, elc.layers);
     }else if(isExternal && elc.type === 'mapbox-style' && elc.mapboxid){
         style = MapStyles.style.getMapboxStyle(elc.mapboxid);
     }else if(isExternal && elc.type === 'ags-mapserver-tiles' && elc.url){
-        style = MapStyles.raster.defaultRasterStyle(layer_id, this.state.shortid, elc.url + '?f=json', 'arcgisraster');
+        style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc.url + '?f=json', 'arcgisraster');
     }else if(isExternal && elc.type === 'geojson' && elc.data_type){
-        style = MapStyles.style.defaultStyle(layer_id, this.state.shortid, this.getSourceConfig(), elc.data_type);
+        style = MapStyles.style.defaultStyle(layer_id, shortid, this.getSourceConfig(), elc.data_type);
     }else if(style.sources.osm){
       alert('Unable to reset OSM layers');
       return;
     }else{
-      style = MapStyles.style.defaultStyle(layer_id, this.state.shortid, this.getSourceConfig(), this.state.data_type);
+      style = MapStyles.style.defaultStyle(layer_id, shortid, this.getSourceConfig(), this.state.data_type);
     }
     this.setState({style});
   }

@@ -98,7 +98,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     }
     else{
       var baseUrl = urlUtil.getBaseUrl();
-      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, `${baseUrl}/api/lyr/${this.state.shortid}/tile.json`, opacity);
     }
 
     var legend = MapStyles.legend.rasterLegend(this.state);

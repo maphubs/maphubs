@@ -75,30 +75,32 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
 
   setRasterOpacity = (opacity: number) => {
     var baseUrl = urlUtil.getBaseUrl();
-    let layer_id = this.props.layer.layer_id ? this.props.layer.layer_id : 0;
+    let {layer_id, shortid} = this.props.layer;
     var style; 
     let elc = this.props.layer.external_layer_config;
     if(elc && elc.type === 'ags-mapserver-tiles'){
       let url = elc.url? elc.url : '';
-      style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, this.props.layer.shortid, url + '?f=json', opacity, 'arcgisraster');
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, shortid, url + '?f=json', opacity, 'arcgisraster');
     }else if(elc && elc.type === 'multiraster'){
-      style = MapStyles.raster.multiRasterStyleWithOpacity(this.props.layer.layer_id, this.props.layer.shortid, elc.layers, opacity, 'raster');
+      style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, shortid, elc.layers, opacity, 'raster');
     }else{
-      style = MapStyles.raster.rasterStyleWithOpacity(this.props.layer.layer_id, this.props.layer.shortid, baseUrl + '/api/layer/' + layer_id +'/tile.json', opacity);
+      style = MapStyles.raster.rasterStyleWithOpacity(layer_id, shortid, `${baseUrl}/api/lyr/${shortid}/tile.json`, opacity);
     }
 
     //TODO: add legend placeholders for color opacity value?
     //var legend = MapStyles.legend.rasterLegend(this.props.layer);
-    this.props.onStyleChange(this.props.layer.layer_id, style, this.props.layer.labels, this.props.layer.legend_html);
+    this.props.onStyleChange(layer_id, style, this.props.layer.labels, this.props.layer.legend_html);
     this.setState({rasterOpacity: opacity});
   }
 
    onColorChange = (style: GLStyle, legend: string) => {
-    this.props.onStyleChange(this.props.layer.layer_id, style, this.props.layer.labels, legend);
+    const {layer_id, labels} = this.props.layer;
+    this.props.onStyleChange(layer_id, style, labels, legend);
   }
 
   setStyle = (style: GLStyle) => {
-    this.props.onStyleChange(this.props.layer.layer_id, style, this.props.layer.labels, this.props.layer.legend_html);
+    const {layer_id, labels, legend_html} = this.props.layer;
+    this.props.onStyleChange(layer_id, style, labels, legend_html);
   }
 
   setLabels = (style: GLStyle, labels: Object) => {
