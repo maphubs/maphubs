@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.15.5](https://github.com/maphubs/maphubs/tree/v0.15.5) (2017-12-06)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.4...v0.15.5)
+
+**Fixed bugs:**
+
+- Unable to enable markers on a layer with a single point [\#448](https://github.com/maphubs/maphubs/issues/448)
+
 ## [v0.15.4](https://github.com/maphubs/maphubs/tree/v0.15.4) (2017-11-27)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.3...v0.15.4)
 
