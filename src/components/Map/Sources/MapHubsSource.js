@@ -35,6 +35,7 @@ var MapHubsSource = {
   async load(key: string, source: GLSource, mapComponent: any){
     let map = mapComponent.map;
     if(source.type === 'geojson' && source.data){
+      if(typeof source.data === 'string'){
       return superagent.get(source.data)
         .then((res) => {
           var geoJSON = res.body;
@@ -58,6 +59,12 @@ var MapHubsSource = {
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' +error);
         });
+      }else if (typeof source.data === 'object'){
+        return mapComponent.addSource(key, {
+          type: 'geojson',
+          data: source.data
+        });
+      }
     }else{
       //load as tilejson
       if(source.url){

@@ -1,6 +1,5 @@
 //@flow
 import React from 'react';
-import Map from '../components/Map/Map';
 import Header from '../components/header';
 import slugify from 'slugify';
 var urlUtil = require('../services/url-util');
@@ -9,29 +8,14 @@ import Comments from '../components/Comments';
 import FeatureProps from '../components/Feature/FeatureProps';
 import FeatureNotes from '../components/Feature/FeatureNotes';
 import HubEditButton from '../components/Hub/HubEditButton';
-import ImageCrop from '../components/ImageCrop';
 import MapStyles from '../components/Map/Styles';
-//var request = require('superagent');
 import BaseMapStore from '../stores/map/BaseMapStore';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
-import ConfirmationActions from '../actions/ConfirmationActions';
-
 import FeatureNotesActions from '../actions/FeatureNotesActions';
-import FeaturePhotoActions from '../actions/FeaturePhotoActions';
 import FeatureNotesStore from '../stores/FeatureNotesStore';
 import FeaturePhotoStore from '../stores/FeaturePhotoStore';
-import turf_area from '@turf/area';
-import turf_centroid from '@turf/centroid';
-import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import es from 'react-intl/locale-data/es';
-import fr from 'react-intl/locale-data/fr';
-import it from 'react-intl/locale-data/it';
-addLocaleData(en);
-addLocaleData(es);
-addLocaleData(fr);
-addLocaleData(it);
+import {FeatureMap, FeatureArea, FeatureLocation, FeatureExport, FeaturePhoto, ForestReportEmbed} from '../components/Feature';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -52,7 +36,9 @@ type Props = {
   }
 
   type State = {
-    editingNotes: boolean
+    editingNotes: boolean,
+    tab: string,
+    frActive?: boolean
   } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState 
 
 export default class FeatureInfo extends MapHubsComponent<Props, State> {
@@ -60,7 +46,8 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   props: Props
 
   state: State = {
-    editingNotes: false
+    editingNotes: false,
+    tab: 'data'
   }
 
   constructor(props: Props){
@@ -104,52 +91,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     });
   }
 
-  showImageCrop = () => {
-    this.refs.imagecrop.show();
-  }
-
-  onCrop = (data: Object, info: Object) => {
-    var _this = this;
-    //send data to server
-    FeaturePhotoActions.addPhoto(data, info, this.state._csrf, (err) => {
-      if(err){
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-      }else{
-        NotificationActions.showNotification(
-          {
-            message: _this.__('Image Saved'),
-            position: 'bottomright',
-            dismissAfter: 3000,
-            onDismiss(){
-              location.reload();
-            }
-        });
-      }
-    });
-  }
-
-  deletePhoto = () => {
-    var _this = this;
-    ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Removal'),
-      message: _this.__('Are you sure you want to remove this photo?'),
-      onPositiveResponse(){
-        FeaturePhotoActions.removePhoto(this.state._csrf, (err) => {
-          if(err){
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-          }else{
-            NotificationActions.showNotification(
-              {
-                message: _this.__('Image Removed'),
-                position: 'bottomright',
-                dismissAfter: 3000
-            });
-          }
-        });
-      }
-    });
-  }
-
   //Build edit link
   getEditLink = () => {
     //get map position
@@ -165,160 +106,43 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     window.location = editLink;
   }
 
+  selectTab = (tab: string) => {
+    let frActive;
+    if(this.state.tab === 'forestreport'){
+      frActive = true;
+    }
+    this.setState({tab, frActive});
+  }
+
 	render() {
-    var locationDisplay = '';
+    var _this = this;
     var featureName: string = "Feature";
-    var featureAreaDisplay = (
-    <div className="row">
-        <h5>{this.__('Area')}</h5>
-        {this.__('Not available for this feature')}
-      </div>
-    );
+
+    const {canEdit} = this.props;
+ 
     if(this.props.feature && this.props.layer && this.props.feature.geojson){
       //glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
-      
-      var featureAreaM2, featureAreaKM2, featureAreaHA, areaDisplay;
       if(this.props.feature.geojson.features && this.props.feature.geojson.features.length > 0){
         var geoJSONProps = this.props.feature.geojson.features[0].properties;
         if(geoJSONProps.name) {
           featureName = geoJSONProps.name;
         }
-        featureAreaM2 = turf_area(this.props.feature.geojson);
-        if(featureAreaM2 && featureAreaM2 > 0){
-          featureAreaKM2 = featureAreaM2 * 0.000001;
-          featureAreaHA =featureAreaM2 / 10000.00;
-
-          var hectaresDisplay = (
-            <span>
-              <IntlProvider locale={this.state.locale}>
-                <FormattedNumber value={featureAreaHA}/>
-              </IntlProvider>&nbsp;ha</span>
-          );
-
-          if(featureAreaKM2 < 1){
-            areaDisplay = (
-              <span>
-                <IntlProvider locale={this.state.locale}>
-                  <FormattedNumber value={featureAreaM2}/>
-                </IntlProvider>&nbsp;m²</span>
-            );
-          }else{
-            areaDisplay = (
-                <span>
-                  <IntlProvider locale={this.state.locale}>
-                  <FormattedNumber value={featureAreaKM2}/>
-                </IntlProvider>&nbsp;km²
-              </span>
-            );
-          }
-
-          featureAreaDisplay = (
-          <div className="row">
-              <h5>{this.__('Area')}</h5>
-              {areaDisplay}
-              <br/>
-              {hectaresDisplay}
-            </div>
-          );
-        }
-
-        var centroid = turf_centroid(this.props.feature.geojson);
-
-        var utm = require('wgs84-util').LLtoUTM(centroid.geometry);
-
-        var lon = centroid.geometry.coordinates[0];
-        var lat = centroid.geometry.coordinates[1];
-        locationDisplay = (
-          <div className="row">
-            <h5>{this.__('Location')}</h5>
-            <div className="row no-margin">
-              <span>
-                <b>{this.__('Latitude:')}</b>&nbsp;
-                <IntlProvider locale={this.state.locale}>
-                  <FormattedNumber value={lat}/>
-                </IntlProvider>&nbsp;
-              </span>
-              <span>
-                <b>{this.__('Longitude:')}</b>&nbsp;
-                <IntlProvider locale={this.state.locale}>
-                  <FormattedNumber value={lon}/>
-                </IntlProvider>&nbsp;
-              </span>
-            </div>
-            <div className="row no-margin">
-              <span>
-                <b>{this.__('UTM:')}</b>&nbsp;
-                {utm.properties.zoneNumber}{utm.properties.zoneLetter}&nbsp;
-                <IntlProvider locale={this.state.locale}>
-                  <FormattedNumber value={utm.geometry.coordinates[0]}/>
-                </IntlProvider>m E&nbsp;
-                <IntlProvider locale={this.state.locale}>
-                  <FormattedNumber value={utm.geometry.coordinates[1]}/>
-                </IntlProvider>m N
-                </span>
-            </div>
-          </div>
-        );
-
       }
-
-      /*
-      var data = [];
-      for (var key in geoJSONProps){
-        data.push({tag: key, value: geoJSONProps[key]});
-      }
-      */
     }
 
-    var notesEditButton = '', photoEditButton = '';
+    const baseUrl = urlUtil.getBaseUrl();
 
-    if(this.props.canEdit){
+    let notesEditButton;
+    let editButton;
+    if(canEdit){
       notesEditButton = (
         <HubEditButton editing={this.state.editingNotes}
           style={{position: 'absolute'}}
           startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
       );
 
-      if(this.state.photo && this.state.photo.photo_id){
-        photoEditButton = (
-          <div className="row no-margin">
-            <button className="btn" style={{marginLeft: '10px'}}
-              onClick={this.showImageCrop}>{this.__('Replace Photo')}</button>
-              <button className="btn" style={{marginLeft: '10px'}}
-                onClick={this.deletePhoto}>{this.__('Remove Photo')}</button>
-          </div>
-        );
-
-      }else{
-        photoEditButton = (
-          <div className="row no-margin">
-            <button className="btn" style={{marginLeft: '10px'}}
-              onClick={this.showImageCrop}>{this.__('Add Photo')}</button>
-          </div>
-        );
-      }
-    }
-
-    var baseUrl = urlUtil.getBaseUrl();
-    var photo = '';
-
-    if(this.state.photo && this.state.photo.photo_id){
-      var photoUrl = baseUrl + '/feature/photo/' + this.state.photo.photo_id + '.jpg';
-      photo = (
-          <img style={{width: 'auto', maxHeight:'calc(100% - 58px)', paddingTop: '10px'}} src={photoUrl} alt="feature photo attachment"/>
-      );
-    }else{
-        photo = (
-          <div style={{maxHeight:'calc(100% - 58px)', paddingTop: '10px'}}>
-            <i className="material-icons grey-text valign" style={{fontSize: '72px', margin: '10px'}}>add_a_photo</i>
-          </div>
-        );
-    }
-
-    var editButton = '';
-    if(this.props.canEdit){
-      var idEditButton = '';
+      let idEditButton;
       if(!this.props.layer.is_external){
         idEditButton = (
           <li>
@@ -339,69 +163,31 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
         </div>
       );
     }
+  
+    const layerUrl = `${baseUrl}/layer/info/${this.props.layer.layer_id}/${slugify(this._o_(this.props.layer.name))}`;
+    const mhid = this.props.feature.mhid.split(':')[1];
 
-    var layerUrl = baseUrl + '/layer/info/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name));
-
-    var exportTabContent = '';
-
-    var mhid = this.props.feature.mhid.split(':')[1];
-
-     var gpxLink; 
-   
-    if(this.props.layer.is_external){
-      exportTabContent = (
-        <div>
-          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this._o_(this.props.layer.source)}</p>
-        </div>
-      );
-    }else {
-      var geoJSONURL = '/api/feature/json/' + this.props.layer.layer_id + '/' + mhid + '/' + slugify(this._o_(this.props.layer.name)) + '.geojson';
-      var kmlURL = '/api/feature/' + this.props.layer.layer_id + '/' + mhid + '/export/kml/' + slugify(this._o_(this.props.layer.name)) + '.kml';
-      
-      if(!this.props.layer.disable_export){
-        var gpxExport = '';
-        if(this.props.layer.data_type === 'polygon'){
-          gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + mhid + '/feature.gpx';
-          gpxExport = (
-            <li className="collection-item">{this.__('GPX:')} <a href={gpxLink}>{gpxLink}</a></li>
-          );
-        }
-        exportTabContent = (
-          <div>
-            <ul className="collection with-header">
-             <li className="collection-header"><h5>{this.__('Export Data')}</h5></li>
-             <li className="collection-item">{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
-             <li className="collection-item">{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
-             {gpxExport}
-            </ul>
-          </div>
-        );
-      }else{
-        exportTabContent = (
-          <div>
-            <p>{this.__('Export is not available for this layer.')}</p>
-          </div>
-        );
-      }
-    }
-
+    let gpxLink;   
     if(this.props.layer.data_type === 'polygon'){
       gpxLink = baseUrl + '/api/feature/gpx/' +  this.props.layer.layer_id + '/' + mhid + '/feature.gpx';
     }
 
-    let firstSource = Object.keys(this.props.layer.style.sources)[0];
-    let presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
+    const firstSource = Object.keys(this.props.layer.style.sources)[0];
+    const presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
 
-    let commentsPanel, commentsTab;
-    if(MAPHUBS_CONFIG.enableComments){
-      commentsTab = (
-        <li className="tab"><a href="#discussion">{this.__('Discussion')}</a></li>
-      );
-      commentsPanel = (
-        <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
-          <Comments />
-        </div>
-      );
+    let frPanel;
+    if(MAPHUBS_CONFIG.FR_ENABLE && this.props.canEdit){
+      if(this.state.tab === 'forestreport' || this.state.frActive){
+        frPanel = (
+          <div id="forestreport" className="col s12" style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
+            <ForestReportEmbed 
+              geoJSON={this.props.feature.geojson} 
+              onLoad={this.map.activateFR}
+              onAlertClick={this.map.onAlertClick}
+            />
+          </div>
+        );
+      }
     }
 
     return (
@@ -410,66 +196,57 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
         <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
         <div className="row" style={{height: '100%', margin: 0}}>
           <div className="col s6 no-padding" style={{height: '100%'}}>
-            <div style={{margin: '10px'}}>
-              <h4>{featureName}</h4>
-
-            </div>
-
-            <div className="row no-margin" style={{height: 'calc(100% - 67px)'}}>
-              <ul ref="tabs" className="tabs" style={{overflowX: 'hidden'}}>
-                <li className="tab"><a className="active" href="#data">{this.__('Data')}</a></li>
-                <li className="tab"><a href="#photo">{this.__('Photo')}</a></li>
-                {commentsTab}
-                <li className="tab"><a href="#notes">{this.__('Notes')}</a></li>
-                <li className="tab"><a href="#export">{this.__('Export')}</a></li>
+            <div className="row no-margin" style={{height: '100%', overflowY: 'hidden'}}>
+              <ul ref="tabs" className="tabs" style={{}}>
+                <li className="tab"><a className="active" onClick={function(){_this.selectTab('data');}}  href="#data">{this.__('Info')}</a></li>
+                {(MAPHUBS_CONFIG.FR_ENABLE && this.props.canEdit) &&
+                  <li className="tab"><a onClick={function(){_this.selectTab('forestreport');}} href="#forestreport">{this.__('Forest Report')}</a></li>
+                }
+                <li className="tab"><a onClick={function(){_this.selectTab('photo');}} href="#photo">{this.__('Photo')}</a></li>
+                {MAPHUBS_CONFIG.enableComments &&
+                  <li className="tab"><a onClick={function(){_this.selectTab('discussion');}} href="#discussion">{this.__('Discussion')}</a></li>
+                }
+                <li className="tab"><a onClick={function(){_this.selectTab('notes');}} href="#notes">{this.__('Notes')}</a></li>
               </ul>
               <div id="data" className="col s12" style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
+                <h4>{featureName}</h4>
                 <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this._o_(this.props.layer.name)}</a></p>
                 <div className="row no-margin">
                   <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
-                    {locationDisplay}
+                    <FeatureLocation geojson={this.props.feature.geojson} /> 
                   </div>
                   <div className="col m6 s12" style={{height: '140px', border: '1px solid #ddd'}}>
-                    {featureAreaDisplay}
+                    <FeatureArea geojson={this.props.feature.geojson} />
                   </div>
                 </div>
 
-
                 <h5>{this.__('Attributes')}</h5>
                 <FeatureProps data={geoJSONProps} presets={presets}/>
+                <FeatureExport mhid={mhid} {...this.props.layer} />
               </div>
+              {frPanel}
               <div id="photo" className="col s12" style={{height: 'calc(100% - 48px)', textAlign: 'center'}}>
-                {photo}
-                {photoEditButton}
+                {canEdit &&
+                  <FeaturePhoto photo={this.state.photo} />
+                }
               </div>
-              {commentsPanel}
+              {MAPHUBS_CONFIG.enableComments &&
+                <div id="discussion" className="col s12" style={{height: 'calc(100% - 48px)'}}>
+                  <Comments />
+                </div>
+              }
               <div id="notes" className="col s12" style={{position: 'relative', height: 'calc(100% - 48px)'}}>
                 <FeatureNotes editing={this.state.editingNotes}/>
                 {notesEditButton}
               </div>
-              <div id="export" className="col s12">
-                {exportTabContent}
-              </div>
             </div>
-
           </div>
             <div className="col s6 no-padding">
-              <Map ref="map" className="width-50" 
-              id="feature-map"
-              style={{
-                position: 'absolute',
-                top: '51px',
-                bottom:0
-              }}
-              fitBounds={this.props.feature.geojson.bbox} 
-              data={this.props.feature.geojson} 
-              mapConfig={this.props.mapConfig}
-              gpxLink={gpxLink}
-              />
+              <FeatureMap ref={ (map) => { this.map = map; }}
+                geojson={this.props.feature.geojson} gpxLink={gpxLink} />
             </div>
           </div>
           {editButton}
-          <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
         </main>
 			</div>
 		);

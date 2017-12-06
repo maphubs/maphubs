@@ -201,7 +201,8 @@
     "uuid": "^3.1.0",
     "wgs84-util": "3.0.0",
     "winston": "^2.3.1",
-    "winston-daily-rotate-file": "^1.4.6"
+    "winston-daily-rotate-file": "^1.4.6",
+    "xcomponent": "^6.0.33"
   },
   "optionalDependencies": {
     "fsevents": "^1.1.2"

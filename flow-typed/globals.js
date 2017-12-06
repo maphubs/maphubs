@@ -26,6 +26,9 @@ declare class MapHubsConfig {
   enableComments: boolean;
   CORAL_TALK_HOST: string;
   CORAL_TALK_ID: string;
+  FR_ENABLE: boolean;
+  FR_API_KEY: string;
+  FR_API: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;
