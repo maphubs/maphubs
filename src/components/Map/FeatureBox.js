@@ -149,7 +149,10 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
           if(this.props.feature && this.state.layer){
             let nameField = GetNameField.getNameField(this.props.feature.properties, this.state.layer.presets);
             if(nameField){
-              featureName = this.props.feature.properties[nameField];
+              const nameFieldValue = this.props.feature.properties[nameField];
+              if(nameFieldValue){
+                featureName = slugify(nameFieldValue);
+              }
             }        
           }
         }
@@ -160,7 +163,7 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
         }else{
           featureID = mhid;
         }
-        featureName = slugify(featureName);
+        
         if(host === window.location.hostname || host === 'dev.docker'){      
           featureLink = `/feature/${source_layer_id}/${featureID}/${featureName}`;
         }else{
