@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.15.6](https://github.com/maphubs/maphubs/tree/v0.15.6) (2017-12-08)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.5...v0.15.6)
+
+**Implemented enhancements:**
+
+- option to show only polygon outlines [\#391](https://github.com/maphubs/maphubs/issues/391)
+
+**Fixed bugs:**
+
+- unable to clear previous entry from group add member form [\#450](https://github.com/maphubs/maphubs/issues/450)
+
 ## [v0.15.5](https://github.com/maphubs/maphubs/tree/v0.15.5) (2017-12-06)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.4...v0.15.5)
 
