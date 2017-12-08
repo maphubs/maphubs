@@ -181,18 +181,23 @@ export default class AddItem extends MapHubsComponent<Props, State> {
  handleChange = (e: any) => {
    clearTimeout(this._timerId);
    let input = e.target.value;
-   if (!input) return this.setState({ 
+   if (!input){ 
+     return this.setState({ 
+      value: {key: input, value:input},
       suggestions: [],
       highlightedItem: -1,
-      option: false});
-   this.setState({value: {key: input, value:input}});
+      option: false
+    });
+   }else{
+    this.setState({value: {key: input, value:input}});
 
-   this._timerId = setTimeout(() => {
-    this.updateSuggestions(input, (suggestions)=>{
-      if (!this.state.value) return;
-      this.displaySuggestions(suggestions);
-     });
-   }, this.props.autosuggestDelay);
+    this._timerId = setTimeout(() => {
+      this.updateSuggestions(input, (suggestions)=>{
+        if (!this.state.value) return;
+        this.displaySuggestions(suggestions);
+      });
+    }, this.props.autosuggestDelay);
+  }
  }
 
  submit = (e: any) => {
