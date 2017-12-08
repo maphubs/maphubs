@@ -135,7 +135,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
         designer = (
           <div style={{padding:'5px'}}>
              <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-            style={style} onStyleChange={this.setStyle}
+            style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
             layer={this.props.layer}       
             legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced/>
           </div>

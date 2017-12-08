@@ -11,6 +11,7 @@ type Props = {|
   value: number,
   onStyleChange: Function,
   onLegendChange: Function,
+  onColorChange: Function,
   style: Object,
   legendCode: string,
   layer: Object,
@@ -77,6 +78,10 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
     this.props.onLegendChange(legendCode);
   }
 
+  onAdvancedSettingsChange = (style: GLStyle, legend: string) => {
+    this.props.onColorChange(style, legend);
+  }
+
   showStyleEditor = () => {
     this.refs.styleEditor.show();
   }
@@ -94,10 +99,15 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
             <i className="material-icons">code</i>{this.__('Advanced')}
             </div>
           <div className="collapsible-body">
-            <button onClick={this.showStyleEditor} className="btn" style={{margin: '10px'}}>{this.__('Edit Style Code')}</button>
-            <br />
-            <button onClick={this.showLegendEditor} className="btn" style={{marginBottom: '10px'}}>{this.__('Edit Legend Code')}</button>
-              <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onStyleChange}/>
+            <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onAdvancedSettingsChange}/>
+            <div className="row">
+              <div className="col s12, m6">
+                <button onClick={this.showStyleEditor} className="btn">{this.__('Style')}</button>
+              </div>
+              <div className="col s12, m6">
+                <button onClick={this.showLegendEditor} className="btn">{this.__('Legend')}</button>
+              </div>
+            </div>
           </div>
         </li>
       );

@@ -97,33 +97,29 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
        style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, this.state.shortid, elc.layers, opacity, 'raster');
     }
     else{
-      var baseUrl = urlUtil.getBaseUrl();
+      const baseUrl = urlUtil.getBaseUrl();
       style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, `${baseUrl}/api/lyr/${this.state.shortid}/tile.json`, opacity);
     }
 
-    var legend = MapStyles.legend.rasterLegend(this.state);
-    LayerActions.setStyle(style,  this.state.labels, legend, this.state.preview_position);
+    const legend_html = MapStyles.legend.rasterLegend(this.state);
+    LayerActions.setStyle({style, legend_html});
     this.setState({rasterOpacity: opacity});
   }
 
-  onColorChange = (style: GLStyle, legend: string) => {
-    LayerActions.setStyle(style, this.state.labels, legend, this.state.preview_position);
+  onColorChange = (style: GLStyle, legend_html: string) => {
+    LayerActions.setStyle({style, legend_html});
   }
 
   setStyle = (style: GLStyle) => {
-    LayerActions.setStyle(style, this.state.labels, this.state.legend_html, this.state.preview_position);
+    LayerActions.setStyle({style});
   }
 
   setLabels = (style: GLStyle, labels: Object) => {
-    LayerActions.setStyle(style, labels, this.state.legend_html, this.state.preview_position);
-  }
-
-  setMarkers = (style: GLStyle) => {
-    LayerActions.setStyle(style, this.state.labels, this.state.legend_html, this.state.preview_position);
+    LayerActions.setStyle({style, labels});
   }
 
   setLegend = (legend_html: string) => {
-    LayerActions.setStyle(this.state.style, this.state.labels, legend_html, this.state.preview_position);
+    LayerActions.setStyle({legend_html});
   }
 
   reloadMap = () => {
@@ -205,7 +201,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
         <div>
           <h5>{this.__('Choose Style')}</h5>
           <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-            style={style} onStyleChange={this.setStyle}
+            style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
             layer={this.state}
             legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced/>
         </div>
@@ -228,7 +224,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
         <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner onColorChange={this.onColorChange}
             style={style} onStyleChange={this.setStyle}
-            labels={this.state.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
+            labels={this.state.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setStyle}
             layer={this.state}
             legend={legendCode} onLegendChange={this.setLegend}/>
       </div>

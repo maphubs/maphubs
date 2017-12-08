@@ -47,4 +47,15 @@ module.exports = {
       return html;
     },
 
+    outlineLegendWithColor(layer: Layer, color: string) {
+
+      return `<div class="omh-legend">
+ <div class="block" style="border: ${color} solid 3px;">
+ </div>
+ <h3>{NAME}</h3>
+ </div>
+`;
+
+    }
+
 };

@@ -315,11 +315,13 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
 
 
-  setStyle(style: Object, labels: Object, legend_html: string, preview_position: Object, cb: Function){
+  setStyle(data: {style: Object, labels: Object, legend_html: string, preview_position: Object}, cb: Function){
     //treat as immutable and clone
-    labels = JSON.parse(JSON.stringify(labels));
-    preview_position = JSON.parse(JSON.stringify(preview_position));
-    style = JSON.parse(JSON.stringify(style));
+    const style = data.style ? JSON.parse(JSON.stringify(data.style)) : this.state.style;
+    const labels = data.labels ? JSON.parse(JSON.stringify(data.labels)) : this.state.labels;
+    const legend_html = data.legend_html ? data.legend_html : this.state.legend_html;
+    const preview_position = data.preview_position ? JSON.parse(JSON.stringify(data.preview_position)) : this.state.preview_position;
+    
     this.setState({
       style,
       labels,

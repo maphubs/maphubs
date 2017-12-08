@@ -11,7 +11,8 @@ module.exports = {
       return {
         active: true,
         interactive: true,
-        showBehindBaseMapLabels: false
+        showBehindBaseMapLabels: false,
+        fill: true
       };
     },
 
