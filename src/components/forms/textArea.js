@@ -3,7 +3,7 @@ import React from 'react';
 import {withFormsy} from 'formsy-react';
 var classNames = require('classnames');
 var $ = require('jquery');
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 
 type Props = {
@@ -29,7 +29,7 @@ type State = {
    charCount: number
 }
 
-class TextArea extends MapHubsPureComponent<Props, State> {
+class TextArea extends MapHubsComponent<Props, State> {
 
   props: Props
 

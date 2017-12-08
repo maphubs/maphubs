@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import TextArea from './textArea';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 var $ = require('jquery');
 
@@ -33,7 +33,7 @@ type State = {
   value: LocalizedString
 }
 
-export default class MultiTextArea extends MapHubsPureComponent<Props, State> {
+export default class MultiTextArea extends MapHubsComponent<Props, State> {
 
   props: Props
 
