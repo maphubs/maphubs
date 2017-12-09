@@ -1,8 +1,6 @@
 // @flow
 var Layer = require('../../models/layer');
 var Map = require('../../models/map');
-//var log = require('../../services/log');
-//var debug = require('../../services/debug')('routes/screenshots-public');
 var nextError = require('../../services/error-response').nextError;
 var manetCheck = require('../../services/manet-check').middleware;
 var Locales = require('../../services/locales');
@@ -12,6 +10,9 @@ module.exports = function(app: any) {
   app.get('/api/layer/:layer_id/static/render/', manetCheck, (req, res, next) => {
 
     var layer_id = parseInt(req.params.layer_id || '', 10);
+    if(!layer_id){
+      return res.status(404).send();
+    }
     Layer.getLayerByID(layer_id).then((layer) => {
       if(layer){
         let name = Locales.getLocaleStringObject(req.locale, layer.name);
@@ -60,7 +61,7 @@ module.exports = function(app: any) {
 
       const map = await Map.getMap(map_id);
       if(!map){
-        return res.redirect('/notfound?path='+req.path);
+        return res.status(404).send();
       }else{
         const layers = await Map.getMapLayers(map_id, true);
 
@@ -91,18 +92,25 @@ module.exports = function(app: any) {
 
   app.get('/api/map/:mapid/static/render/', manetCheck, async (req, res, next) => {
     var map_id = parseInt(req.params.mapid || '', 10);
-    await completeMapStaticRender(req, res, next, map_id);
+    if(map_id){
+      await completeMapStaticRender(req, res, next, map_id);
+    }else{
+      return res.status(404).send();
+    }
   });
-
 
   app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, async (req, res, next) => {
     try{
       var map_id = parseInt(req.params.mapid || '', 10);
 
+      if(!map_id){
+        return res.status(404).send();
+      }
+
       const map = await Map.getMap(map_id);
 
       if(!map){
-        return res.redirect('/notfound?path='+req.path);
+        return res.status(404).send();
       }else{
 
         const layers = await Map.getMapLayers(map_id, true);
@@ -129,5 +137,4 @@ module.exports = function(app: any) {
       }
     }catch(err){nextError(next)(err);}
   });
-
 };
