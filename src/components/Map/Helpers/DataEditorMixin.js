@@ -198,6 +198,11 @@ module.exports = {
 
   removeMapLayerFilters(){
 
+    if(!this.state.editingLayer || !this.state.editingLayer.layer_id){
+      debug.error('unable to find editing layer');
+      return;
+    }
+
     var layer_id = this.state.editingLayer.layer_id;
 
 
