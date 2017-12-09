@@ -1,17 +1,18 @@
 //@flow
 import React from 'react';
 import Attributes from './Attributes';
-var request = require('superagent');
-var checkClientError = require('../../services/client-error-response').checkClientError;
-var urlUtil = require('../../services/url-util');
+const request = require('superagent');
+const checkClientError = require('../../services/client-error-response').checkClientError;
+const urlUtil = require('../../services/url-util');
 import GroupTag from '../../components/Groups/GroupTag';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapHubsComponent from '../../components/MapHubsComponent';
 import _isequal from 'lodash.isequal';
 import type {Layer} from '../../stores/layer-store';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import slugify from 'slugify';
 import GetNameField from '../../services/get-name-field';
+const debug = require('../../services/debug')('map/featurebox');
 
 type Props = {|
   feature: Object,
@@ -47,7 +48,7 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
 
   componentDidMount(){
     if(this.props.feature){
-      var selectedFeature = this.props.feature;
+      const selectedFeature = this.props.feature;
       if(selectedFeature.properties.layer_id){
           this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
       }else{
@@ -59,12 +60,12 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
 
     if(!_isequal(this.props.feature, nextProps.feature)){
-       var selectedFeature = nextProps.feature;
-        if(selectedFeature.properties.layer_id){
-            this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
-        }else{
-          this.setState({layerLoaded: true});
-        }
+      const selectedFeature = nextProps.feature;
+      if(selectedFeature.properties.layer_id){
+          this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host);
+      }else{
+        this.setState({layerLoaded: true});
+      }
     }
   }
 
@@ -75,8 +76,8 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
   }
 
   getLayer = (layer_id: number, host: string) => {
-    var _this = this;
-    var baseUrl;
+    const _this = this;
+    let baseUrl;
     if(host && host !== 'dev.docker' && host !== window.location.hostname){
       baseUrl = 'https://' + host;
     }else{
@@ -86,8 +87,12 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
     .type('json').accept('json')
     .end((err, res) => {
       checkClientError(res, err, () => {}, (cb) => {
-        var layer = res.body.layer;
-        _this.setState({layer, layerLoaded: true});
+        if(res.body && res.body.layer){
+          const layer = res.body.layer;
+          _this.setState({layer, layerLoaded: true});
+        }else{
+          debug.error(`failed to load layer info for: ${layer_id}`);
+        }
         cb();
       });
     });
@@ -98,11 +103,11 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
   }
 
   render() {
-    var closeButton = '';
-    var header = '';
-    var infoPanel = '';
+    let closeButton = '';
+    let header = '';
+    let infoPanel = '';
 
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
 
     if(this.props.feature){
       closeButton = (
@@ -147,7 +152,7 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
             </div>
           );
           if(this.props.feature && this.state.layer){
-            let nameField = GetNameField.getNameField(this.props.feature.properties, this.state.layer.presets);
+            const nameField = GetNameField.getNameField(this.props.feature.properties, this.state.layer.presets);
             if(nameField){
               const nameFieldValue = this.props.feature.properties[nameField];
               if(nameFieldValue){
@@ -157,7 +162,7 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
           }
         }
 
-        var featureLink, featureID;
+        let featureLink, featureID;
         if(typeof mhid === 'string' && mhid.includes(':')){
           featureID = mhid.split(':')[1];
         }else{
