@@ -6,6 +6,10 @@ import Privacy from '../views/privacy';
 require('jquery');
 require("materialize-css");
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 

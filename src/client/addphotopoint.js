@@ -12,6 +12,10 @@ require("materialize-css");
 require("cropperjs/dist/cropper.css");
 import AddPhotoPoint from '../views/addphotopoint';
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 

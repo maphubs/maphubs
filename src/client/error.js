@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import Error from '../views/error';
 require("materialize-css");
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 

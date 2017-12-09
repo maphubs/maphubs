@@ -14,6 +14,10 @@ require('jquery');
 require("materialize-css");
 import Explore from '../views/explore';
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 require('../../node_modules/slick-carousel/slick/slick.css');

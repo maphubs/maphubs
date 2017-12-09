@@ -11,6 +11,9 @@ if (!global.Intl) {
 
 import Home from '../views/home';
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
 
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');

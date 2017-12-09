@@ -11,6 +11,10 @@ require('jquery');
 require("materialize-css");
 import LayerInfo from '../views/layerinfo';
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 require('medium-editor/dist/css/medium-editor.css');

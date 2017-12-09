@@ -65,7 +65,7 @@ module.exports = {
     pageedit: "./src/client/pageedit",
     searchindexadmin: "./src/client/searchindexadmin",
     explore: "./src/client/explore",
-    vendor: ["babel-polyfill", "jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "turf-jsts", "mapbox-gl-regex-query", "@mapbox/mapbox-gl-draw", "iconv-lite", "urlencode", "elliptic", "react-slick"],
+    vendor: ["jquery", "slugify", "react", "react-dom", "materialize-css", "reflux", "debug", "react-notification", "superagent", "bluebird", "classnames", "lodash.isequal", "@turf/bbox", "@turf/meta", "superagent-jsonp", "terraformer", "intl", "moment-timezone", "mapbox-gl", "turf-jsts", "mapbox-gl-regex-query", "@mapbox/mapbox-gl-draw", "iconv-lite", "urlencode", "elliptic", "react-slick"],
     locales: ["./src/services/locales"]
   },
   resolve: {

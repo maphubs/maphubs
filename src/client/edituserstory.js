@@ -6,6 +6,10 @@ import EditUserStory from '../views/edituserstory';
 require('jquery');
 require("materialize-css");
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/flat.css');
 require('../../node_modules/slick-carousel/slick/slick.css');

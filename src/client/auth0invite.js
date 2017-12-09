@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 
 import Auth0Invite from '../views/auth0invite';
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 

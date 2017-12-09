@@ -10,6 +10,11 @@ if (!global.Intl) {
 
 require('jquery');
 require("materialize-css");
+
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 require("cropperjs/dist/cropper.css");
 import LayerReplace from '../views/layerreplace';
 

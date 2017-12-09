@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 
 import Auth0Error from '../views/auth0error';
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   let data = window.__appData;
 

@@ -6,6 +6,9 @@ import CreateGroup from '../views/creategroup';
 require('jquery');
 require("materialize-css");
 
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
 
 require("cropperjs/dist/cropper.css");
 
