@@ -37,9 +37,8 @@ export default class ForestAlertPanel extends MapHubsPureComponent<Props, void> 
       );
     }
 
-    return (
-      <div>
-        <Formsy onChange={this.toggleForestAlerts}>
+    /*
+      <Formsy onChange={this.toggleForestAlerts}>
           <b>{this.__('2017 GLAD Alerts')}</b>          
           <Toggle name="enableGLAD2017"
               labelOff={this.__('Off')} labelOn={this.__('On')}                       
@@ -49,6 +48,10 @@ export default class ForestAlertPanel extends MapHubsPureComponent<Props, void> 
         </Formsy>             
         <button className="btn" onClick={this.props.calculateForestAlerts}>{this.__('Calculate')}</button>     
         {forestAlertsResult}
+    */
+
+    return (
+      <div>
         <Formsy onChange={this.toggleForestLoss}>
           <b>{this.__('2001 - 2014 Forest Loss')}</b>          
           <Toggle name="enableForestLoss"
