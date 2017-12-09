@@ -67,11 +67,10 @@ module.exports = function(app: any) {
       if(result && result.thumbnail){
         return imageUtils.processImage(result.thumbnail, req, res);
       }else{
-        return res.redirect('https://cdn.maphubs.com/assets/missing_group.png');
+        return res.status(404).send();
       }
     }).catch((err) => {
       log.error(err);
-      return res.redirect('https://cdn.maphubs.com/assets/missing_group.png');
     });
   });
 
