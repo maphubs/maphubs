@@ -266,9 +266,11 @@ export default class Map extends MapHubsComponent<Props, State> {
   });
 
   //catch generic errors until issue with 404 tile errors is resolved
+  /*
   map.on('error', (err) => {
     debug.error(err.error);
   });
+  */
 
   map.on('style.load', () => {
     _this.debugLog('style.load');
