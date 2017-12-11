@@ -7,6 +7,7 @@ import Header from '../components/header';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   user: Object,
@@ -30,7 +31,7 @@ export default class Auth0Profile extends MapHubsComponent<Props, void> {
 
   render() {
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main className="container">
           <h5>{this.__('User Profile')}</h5>
@@ -42,10 +43,9 @@ export default class Auth0Profile extends MapHubsComponent<Props, void> {
                 <img className="circle" style={{width: '250px', height: '250px'}} src={this.props.user.picture} />  
               </div>
             <p>{this.__('More user profile settings coming soon!')}</p>
-            </div>
-             
+            </div>       
       </main>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

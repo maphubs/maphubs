@@ -7,6 +7,7 @@ import LocaleStore from '../stores/LocaleStore';
 import Reflux from '../components/Rehydrate';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import Auth0Lock from 'auth0-lock';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   AUTH0_CLIENT_ID: string,
@@ -106,7 +107,7 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
 
   render() {
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main className="container">
           <div className="row valign-wrapper">
@@ -129,7 +130,7 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
           </div>
       </main>
       <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

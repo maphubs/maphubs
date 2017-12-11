@@ -7,6 +7,7 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   maps: Array<Object>,
@@ -73,14 +74,14 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
   }
 
 		return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 70px)'}}>
           {myMaps}
           {createMaps}
         </main>
         <Footer {...this.props.footerConfig} />
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

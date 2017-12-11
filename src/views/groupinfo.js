@@ -6,9 +6,9 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-
 import type {CardConfig} from '../components/CardCarousel/Card';
 import type {Group} from '../stores/GroupStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   group: Group,
@@ -120,7 +120,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     var allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.hubCards]);
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
           <h4>{this._o_(this.props.group.name)}</h4>
@@ -186,7 +186,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
           </div>
           {editButton}
         </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

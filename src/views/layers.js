@@ -14,8 +14,8 @@ var cardUtil = require('../services/card-util');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-
 import type {Layer} from '../stores/layer-store';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   featuredLayers: Array<Layer>,
@@ -114,7 +114,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
 
 
 		return (
-      <div>
+      <ErrorBoundary>
         <Header activePage="layers" {...this.props.headerConfig}/>
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
@@ -143,7 +143,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
           </div>
         </main>
         <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

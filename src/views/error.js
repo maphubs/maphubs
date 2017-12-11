@@ -4,6 +4,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Header from '../components/header';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   title: string,
@@ -32,7 +33,7 @@ export default class Error extends MapHubsComponent<Props, void> {
   
   render() {
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main>
           <div className="container s12">
@@ -41,7 +42,7 @@ export default class Error extends MapHubsComponent<Props, void> {
             <p className="flow-text center-align"><a href={this.props.url} target="_blank" rel="noopener noreferrer">{this.props.url}</a></p>
           </div>
         </main>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

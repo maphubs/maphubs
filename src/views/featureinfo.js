@@ -22,6 +22,7 @@ import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {FeaturePhotoStoreState} from '../stores/FeaturePhotoStore';
 import type {FeatureNotesStoreState} from '../stores/FeatureNotesStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
     feature: Object,
@@ -191,7 +192,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
         <div className="row" style={{height: '100%', margin: 0}}>
@@ -248,7 +249,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
           </div>
           {editButton}
         </main>
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

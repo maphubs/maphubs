@@ -5,6 +5,7 @@ import StoryEditor from '../components/Story/StoryEditor';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   story_id: number,
@@ -27,7 +28,7 @@ export default class CreateUserStory extends MapHubsComponent<Props, void> {
 
   render() {
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main>
           <StoryEditor storyType="user"
@@ -37,7 +38,7 @@ export default class CreateUserStory extends MapHubsComponent<Props, void> {
             username={this.props.username}/>
         </main>
 
-      </div>
+      </ErrorBoundary>
     );
   }
 }

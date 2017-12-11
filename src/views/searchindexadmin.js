@@ -10,6 +10,7 @@ import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -130,7 +131,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
 
   render() {
       return (
-        <div>
+        <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
           <main className="container" style={{height: 'calc(100% - 100px)'}}>
             <div>
@@ -150,7 +151,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>
-        </div>
+        </ErrorBoundary>
       );
   }
 }

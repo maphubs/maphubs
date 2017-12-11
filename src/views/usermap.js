@@ -25,6 +25,8 @@ import type {UserStoreState} from '../stores/UserStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal';
 import CopyMapModal from '../components/InteractiveMap/CopyMapModal';
+import ErrorBoundary from '../components/ErrorBoundary';
+
 let clipboard;
 if(process.env.APP_ENV === 'browser'){
  clipboard = require('clipboard-polyfill');
@@ -381,7 +383,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     );
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>         
@@ -389,7 +391,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           <PublicShareModal ref="publicShareModal" share_id={this.state.share_id} onChange={this.toggleSharePublic} />
           <CopyMapModal ref="copyMapModal" title={copyMapTitle} onSubmit={this.onCopyMap} />
         </main>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

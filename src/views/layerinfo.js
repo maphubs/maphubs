@@ -50,7 +50,7 @@ import Reflux from '../components/Rehydrate';
 import fireResizeEvent from '../services/fire-resize-event';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
-
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   layer: Object,
@@ -534,7 +534,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
 		return (
 
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
         <div className="row" style={{height: '100%', margin: 0}}>
@@ -638,8 +638,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           </div>
           {editButton}
         </main>
-			</div>
-
+			</ErrorBoundary>
 		);
 	}
 }

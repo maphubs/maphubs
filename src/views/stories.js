@@ -8,8 +8,8 @@ import UserStore from '../stores/UserStore';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-
 import type {UserStoreState} from '../stores/UserStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {|
   popularStories: Array<Object>,
@@ -60,7 +60,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
         <Header activePage="stories" {...this.props.headerConfig}/>
         <main>
         <div>
@@ -91,7 +91,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
         </div>
         </main>
         <Footer {...this.props.footerConfig}/>
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

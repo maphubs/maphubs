@@ -18,6 +18,7 @@ import HubList from '../components/Lists/HubList';
 import Toggle from '../components/forms/toggle';
 import Formsy from 'formsy-react';
 import CardGrid from '../components/CardCarousel/CardGrid';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   hubs: Array<Object>,
@@ -114,7 +115,7 @@ export default class Hubs extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
           <Header activePage="hubs" {...this.props.headerConfig}/>
           <main>
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
@@ -147,7 +148,7 @@ export default class Hubs extends MapHubsComponent<Props, State> {
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

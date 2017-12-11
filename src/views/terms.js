@@ -2,11 +2,10 @@
 import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
-
 import MapHubsComponent from '../components/MapHubsComponent';
-
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -26,7 +25,7 @@ export default class Terms extends MapHubsComponent<Props, void> {
  
   render() {
       return (
-        <div>
+        <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
           <main className="container">
             <div className="row">
@@ -179,7 +178,7 @@ The base map as well as map data indicated as sourced from OpenStreetMap is copy
 
           </main>
           <Footer {...this.props.footerConfig}/>
-        </div>
+        </ErrorBoundary>
       );
   }
 }

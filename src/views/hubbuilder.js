@@ -14,7 +14,7 @@ var urlUtil = require('../services/url-util');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
-
+import ErrorBoundary from '../components/ErrorBoundary';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {HubStoreState} from '../stores/HubStore';
 
@@ -161,8 +161,8 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
-          <Header {...this.props.headerConfig}/>
+      <ErrorBoundary>
+        <Header {...this.props.headerConfig}/>
         <div className="container">
           <h4>{this.__('Create a Hub')}</h4>
             <div className="row">
@@ -197,7 +197,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
               </Formsy>
            </div>
         </div>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

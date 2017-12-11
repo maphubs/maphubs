@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -62,7 +63,7 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
     var progressClassName = classNames('determinate', progressWidth);
 
 		return (
-      <div>
+      <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
         <div className="container">
           <h4>{this.__('Create Group')}</h4>
@@ -76,7 +77,7 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
           <Step1 active={step1} onSubmit={this.nextStep}/>
           <Step2 active={step2} showPrev={true} onPrev={this.prevStep} onSubmit={this.onComplete}/>
 			</div>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

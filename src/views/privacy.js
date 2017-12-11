@@ -5,6 +5,7 @@ import Footer from '../components/footer';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -24,7 +25,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
 
   render() {
       return (
-        <div>
+        <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
           <main className="container" lang="en">
             <div className="row">
@@ -116,7 +117,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
 
           </main>
           <Footer {...this.props.footerConfig}/>
-        </div>
+        </ErrorBoundary>
       );
 
 

@@ -25,6 +25,7 @@ import Locales from '../services/locales';
 import LayerList from '../components/Lists/LayerList';
 import MapList from '../components/Lists/MapList';
 import HubList from '../components/Lists/HubList';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   group: Group,
@@ -293,7 +294,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     var  groupUrl = '/group/' + group_id;
 
 		return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main>
 
@@ -408,7 +409,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
         </div>
         <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_width={600} resize_height={600} onCrop={this.onCrop} />
         </main>
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

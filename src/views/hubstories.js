@@ -18,6 +18,7 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {HubStoreState} from '../stores/HubStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   hub: Object,
@@ -121,7 +122,7 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div>
+      <ErrorBoundary>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
         <main style={{marginTop: '0px'}}>
           {publishButton}
@@ -141,7 +142,7 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
         <Notification />
         <Message />
         <Confirmation />
-      </div>
+      </ErrorBoundary>
     );
   }
 }

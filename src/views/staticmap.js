@@ -8,6 +8,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   name: LocalizedString,
@@ -141,10 +142,12 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     );
 
     return (
-      <div className="embed-map">
-        {map}
-        {bottomLegend}
-      </div>
+      <ErrorBoundary>
+        <div className="embed-map">
+          {map}
+          {bottomLegend}
+        </div>
+      </ErrorBoundary>
     );
   }
 }

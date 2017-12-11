@@ -7,6 +7,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   popularLayers: Array<Object>,
@@ -47,18 +48,20 @@ export default class Map extends MapHubsComponent<Props, void> {
 
 	render() {
 		return (
-      <div>
-        <Header activePage="map" {...this.props.headerConfig}/>
-        <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
-          <MapMaker 
-            mapConfig={this.props.mapConfig}
-            onCreate={this.mapCreated} 
-            popularLayers={this.props.popularLayers} 
-            myLayers={this.props.myLayers} 
-            editLayer={this.props.editLayer}
-             />
-        </main>
-      </div>
+      <ErrorBoundary>
+        <div>
+          <Header activePage="map" {...this.props.headerConfig}/>
+          <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
+            <MapMaker 
+              mapConfig={this.props.mapConfig}
+              onCreate={this.mapCreated} 
+              popularLayers={this.props.popularLayers} 
+              myLayers={this.props.myLayers} 
+              editLayer={this.props.editLayer}
+              />
+          </main>
+        </div>
+      </ErrorBoundary>
 		);
 	}
 }

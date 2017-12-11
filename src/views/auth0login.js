@@ -5,7 +5,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import LocaleStore from '../stores/LocaleStore';
 import Reflux from '../components/Rehydrate';
 import type {LocaleStoreState} from '../stores/LocaleStore';
-
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -106,7 +106,7 @@ export default class Login extends MapHubsComponent<Props, State> {
 
   render() {
     return (
-      <div>
+      <ErrorBoundary>
         <div className="row no-padding valign-wrapper z-depth-1">
             <div className="center valign" style={{fontSize: '16px', paddingLeft: '10%', paddingRight: '10%'}}>
               {this.__('We recently upgraded our login system. If you are unable to access your account please try to')} <a href="forgotpassword">{this.__('reset your password')}</a> {this.__('or contact us at')} <a href="mailto:support@maphubs.com">support@maphubs.com</a> 
@@ -115,11 +115,8 @@ export default class Login extends MapHubsComponent<Props, State> {
           </div>
          <div className="row no-margin" style={{height: 'calc(90% - 20px)'}}>
           <div id="login-container"></div>         
-         </div>
-          
-         
-      </div>
-     
+         </div>      
+      </ErrorBoundary>
     );
   }
 }

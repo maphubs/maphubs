@@ -15,7 +15,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
-
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type User = {
   email: string,
@@ -192,7 +192,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     });
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main className="container">
         <h4 className="center">{this.__('Manage Users')}</h4> 
@@ -223,7 +223,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
           <Progress id="saving-user-invite" title={this.__('Sending')} subTitle="" dismissible={false} show={this.state.saving}/>
       </main>
       <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

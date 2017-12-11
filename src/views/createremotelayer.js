@@ -11,6 +11,7 @@ import MiniLegend from '../components/Map/MiniLegend';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 var checkClientError = require('../services/client-error-response').checkClientError;
 
@@ -140,7 +141,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
     if(!this.props.groups || this.props.groups.length === 0){
       return (
-        <div>
+        <ErrorBoundary>
             <Header {...this.props.headerConfig}/>
           <main>
         <div className="container">
@@ -150,7 +151,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
           </div>
         </div>
         </main>
-        </div>
+        </ErrorBoundary>
       );
     }
 
@@ -193,7 +194,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
       );
     }
 		return (
-      <div>
+      <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
         <main>
           <h4>{this.__('Link to a Remote Layer')}</h4>
@@ -220,7 +221,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
 			</main>
 
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

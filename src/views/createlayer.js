@@ -20,6 +20,7 @@ import BaseMapStore from '../stores/map/BaseMapStore';
 import type {Group} from '../stores/GroupStore';
 import type {Layer, LayerStoreState} from '../stores/layer-store';
 import type {LocaleStoreState} from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   groups: Array<Group>,
@@ -150,7 +151,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
         <main>
           <div style={{marginLeft: '10px', marginRight: '10px'}}>
@@ -169,7 +170,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
             </div>
         </main>
 
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

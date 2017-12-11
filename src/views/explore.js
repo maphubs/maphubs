@@ -11,6 +11,7 @@ import SubPageBanner from '../components/Home/SubPageBanner';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   featuredLayers: Array<Object>,
@@ -147,7 +148,7 @@ export default class Home extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
       <Header activePage="explore" {...this.props.headerConfig}/>
       <main style={{margin: 0}}>
         <SubPageBanner locale={this.props.locale}
@@ -281,7 +282,7 @@ export default class Home extends MapHubsComponent<Props, State> {
               </div>
        </main>
        <Footer {...this.props.footerConfig}/>
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

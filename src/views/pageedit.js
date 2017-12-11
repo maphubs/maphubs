@@ -11,6 +11,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -72,7 +73,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
 
   render() {
       return (
-        <div>
+        <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
           <main className="container" style={{height: 'calc(100% - 100px)'}}>
             <CodeEditor ref="pageEditor" id="layer-style-editor" mode="json"
@@ -81,7 +82,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                         onSave={this.savePageConfig} modal={false}/>
           </main>
           <Footer {...this.props.footerConfig}/>
-        </div>
+        </ErrorBoundary>
       );
 
   }

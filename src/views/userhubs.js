@@ -8,6 +8,7 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   draftHubs: Array<Object>,
@@ -109,7 +110,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
     );
   }
 		return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{marginLeft: '10px', marginRight:'10px'}}>
           {hubsMessage}
@@ -120,7 +121,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
           {addButton}
         </main>
         <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

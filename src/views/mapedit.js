@@ -7,6 +7,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   map: Object,
@@ -43,7 +44,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
 
 	render() {
 		return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
           <MapMaker onCreate={this.mapCreated}
@@ -58,7 +59,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
             myLayers={this.props.myLayers}
              edit/>
         </main>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

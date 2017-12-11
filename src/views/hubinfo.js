@@ -22,6 +22,7 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {HubStoreState} from '../stores/HubStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   hub: Object,
@@ -140,7 +141,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
     var linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
 
     return (
-      <div>
+      <ErrorBoundary>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit}/>
         <main  style={{marginTop: '0px'}}>
           
@@ -194,7 +195,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
         <Message />
         <Confirmation />
         <Progress id="saving-hub" title={this.__('Saving')} subTitle="" dismissible={false} show={this.state.saving}/>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

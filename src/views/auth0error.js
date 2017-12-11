@@ -5,6 +5,7 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -43,7 +44,7 @@ export default class Error extends MapHubsComponent<Props, void> {
     }
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main>
           <div className="container s12">
@@ -52,7 +53,7 @@ export default class Error extends MapHubsComponent<Props, void> {
           </div>
         </main>
         <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

@@ -6,6 +6,7 @@ import StorySummary from '../components/Story/StorySummary';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   stories: Array<Object>,
@@ -64,7 +65,7 @@ export default class UserStories extends MapHubsComponent<Props, void> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
         <Header activePage="mystories" {...this.props.headerConfig}/>
         <main style={{minHeight: 'calc(100% - 70px)'}}>
         <div className="container" style={{height: '100%'}}>
@@ -83,7 +84,7 @@ export default class UserStories extends MapHubsComponent<Props, void> {
         {button}
       </main>
       <Footer {...this.props.footerConfig} />
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

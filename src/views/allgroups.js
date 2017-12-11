@@ -18,8 +18,8 @@ import GroupList from '../components/Lists/GroupList';
 import Toggle from '../components/forms/toggle';
 import Formsy from 'formsy-react';
 import CardGrid from '../components/CardCarousel/CardGrid';
-
 import type {Group} from '../stores/GroupStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   groups: Array<Group>,
@@ -124,7 +124,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
           <Header activePage="groups" {...this.props.headerConfig} />
           <main>
             <div style={{marginTop: '20px', marginBottom: '10px'}}>
@@ -161,7 +161,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
             </div>
           </main>
           <Footer {...this.props.footerConfig}/>
-      </div>
+      </ErrorBoundary>
 		);
 	}
 }

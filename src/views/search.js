@@ -18,6 +18,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   locale: string,
@@ -201,7 +202,7 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
       <Header {...this.props.headerConfig}/>
       <main style={{margin: 0}}>
         <div ref="search" className="container" style={{height: '55px', paddingTop:'10px'}}>
@@ -225,7 +226,7 @@ export default class Search extends MapHubsComponent<Props, State> {
           <Progress id="searching" title={this.__('Searching')} subTitle="" dismissible={false} show={this.state.searching}/>
        </main>
        <Footer {...this.props.footerConfig}/>
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

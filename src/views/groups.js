@@ -14,6 +14,7 @@ import cardUtil from '../services/card-util';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   featuredGroups: Array<Object>,
@@ -116,41 +117,41 @@ export default class Groups extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
-          <Header activePage="groups" {...this.props.headerConfig} />
-          <main>
-            <div style={{marginTop: '20px', marginBottom: '10px'}}>
-              <div className="row" style={{marginBottom: '0px'}}>
-                <div className="col l8 m7 s12">
-                  <h4 className="no-margin">{this.__('Groups')}</h4>
-                  <p style={{fontSize: '16px', margin: 0}}>{this.__('Create a group for your organization or browse the content of existing groups.')}</p>
-                </div>
-                <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-              <SearchBox label={this.__('Search Groups')} suggestionUrl="/api/groups/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+      <ErrorBoundary>
+        <Header activePage="groups" {...this.props.headerConfig} />
+        <main>
+          <div style={{marginTop: '20px', marginBottom: '10px'}}>
+            <div className="row" style={{marginBottom: '0px'}}>
+              <div className="col l8 m7 s12">
+                <h4 className="no-margin">{this.__('Groups')}</h4>
+                <p style={{fontSize: '16px', margin: 0}}>{this.__('Create a group for your organization or browse the content of existing groups.')}</p>
               </div>
+              <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
+            <SearchBox label={this.__('Search Groups')} suggestionUrl="/api/groups/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
             </div>
-            </div>
-            <div className="carousel-container">
+          </div>
+          </div>
+          <div className="carousel-container">
 
-            {searchResults}
+          {searchResults}
 
-              {featured}
-              <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink="/groups/all" />
-              <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink="/groups/all" />
-         
-             
-              <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Group')}>
-                <a className="btn-floating btn-large red red-text" href="/creategroup">
-                  <i className="large material-icons">add</i>
-                </a>
-              </div>
+            {featured}
+            <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink="/groups/all" />
+            <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink="/groups/all" />
+        
+            
+            <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Group')}>
+              <a className="btn-floating btn-large red red-text" href="/creategroup">
+                <i className="large material-icons">add</i>
+              </a>
             </div>
-            <div className="row center-align">
-              <a className="btn" href="/groups/all">{this.__('View All Groups')}</a>
-            </div>
-          </main>
-          <Footer {...this.props.footerConfig}/>
-      </div>
+          </div>
+          <div className="row center-align">
+            <a className="btn" href="/groups/all">{this.__('View All Groups')}</a>
+          </div>
+        </main>
+        <Footer {...this.props.footerConfig}/>
+      </ErrorBoundary>
 		);
 	}
 }

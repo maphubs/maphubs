@@ -21,6 +21,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Layer} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
 import type {CardConfig} from '../components/CardCarousel/Card';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 //import Perf from 'react-addons-perf';
 
@@ -276,6 +277,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     var _this = this;
 
 		return (
+      <ErrorBoundary>
       <div style={{margin: 0, height: '100%'}}>
       <Header {...this.props.headerConfig}/>
       <main style={{margin: 0, height: '100%'}}>
@@ -312,6 +314,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         <Footer {...this.props.footerConfig}/>
        </main>
 			</div>
+      </ErrorBoundary>
 		);
 	}
 }

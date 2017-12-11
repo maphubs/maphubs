@@ -23,6 +23,7 @@ import LocaleStore from '../stores/LocaleStore';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Layer, LayerStoreState} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   layer: Layer,
@@ -173,7 +174,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
 
     if(this.props.layer.remote){
       return (
-        <div>
+        <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
           <main>
             <div className="container">
@@ -198,7 +199,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
             </div>
             </div>
           </main>
-        </div>
+        </ErrorBoundary>
       );
 
     }else{

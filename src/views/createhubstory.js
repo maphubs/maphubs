@@ -11,6 +11,7 @@ import HubActions from '../actions/HubActions';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   story_id: number,
@@ -43,7 +44,7 @@ export default class CreateHubStory extends MapHubsComponent<Props, State> {
 
   render() {
     return (
-      <div>
+      <ErrorBoundary>
         <HubNav hubid={this.props.hub.hub_id}/>
         <main>
           <div className="row no-margin">
@@ -60,7 +61,7 @@ export default class CreateHubStory extends MapHubsComponent<Props, State> {
         <Notification />
         <Message />
         <Confirmation />
-      </div>
+      </ErrorBoundary>
     );
   }
 }

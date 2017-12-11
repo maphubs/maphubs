@@ -7,16 +7,12 @@ import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import LayerActions from '../actions/LayerActions';
 import LayerStore from '../stores/layer-store';
-//import MessageActions from '../actions/MessageActions';
-//import NotificationActions from '../actions/NotificationActions';
-//import ConfirmationActions from '../actions/ConfirmationActions';
 import Progress from '../components/Progress';
 import slugify from 'slugify';
 import UploadLayerReplacement from '../components/CreateLayer/UploadLayerReplacement';
-
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore';
-
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   layer: Object,
@@ -88,7 +84,7 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <div className="container">
@@ -103,7 +99,7 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
           </div>
           <Progress id="saving" title={this.__('Saving')} subTitle="" dismissible={false} show={this.state.saving}/>
         </main>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

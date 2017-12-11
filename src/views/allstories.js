@@ -12,8 +12,8 @@ import Toggle from '../components/forms/toggle';
 import Formsy from 'formsy-react';
 import CardGrid from '../components/CardCarousel/CardGrid';
 import cardUtil from '../services/card-util';
-
 import type {UserStoreState} from '../stores/UserStore';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {|
   stories: Array<Object>,
@@ -66,7 +66,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     }
 
 		return (
-      <div>
+      <ErrorBoundary>
         <Header activePage="stories" {...this.props.headerConfig}/>
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
@@ -94,7 +94,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
         </div>
         </main>
         <Footer {...this.props.footerConfig}/>
-			</div>
+			</ErrorBoundary>
 		);
 	}
 }

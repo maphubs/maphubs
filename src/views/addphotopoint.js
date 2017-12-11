@@ -18,6 +18,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore';
 var debug = require('../services/debug')('addphotopoint');
 import GetNameField from '../services/get-name-field';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   layer: Object,
@@ -173,7 +174,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <div className="container">
@@ -189,7 +190,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
           <Progress id="saving" title={this.__('Saving')} subTitle="" dismissible={false} show={this.state.saving}/>
         </main>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

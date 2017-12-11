@@ -12,6 +12,7 @@ import BaseMapStore from '../stores/map/BaseMapStore';
 import type {Layer} from '../stores/layer-store';
 import type {GLStyle} from '../types/mapbox-gl-style';
 var urlUtil = require('../services/url-util');
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   map: Object,
@@ -237,9 +238,11 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       );
     }
     return (
-      <div className="embed-map" style={{height: '100%', width: '100%', display: 'flex', overflow: 'hidden'}}>
-        {map}
-      </div>
+      <ErrorBoundary>
+        <div className="embed-map" style={{height: '100%', width: '100%', display: 'flex', overflow: 'hidden'}}>
+          {map}
+        </div>
+      </ErrorBoundary>
     );
   }
 }

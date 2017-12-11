@@ -8,6 +8,7 @@ import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import ShareButtons from '../components/ShareButtons';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
   story: Object,
@@ -69,7 +70,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
 
     /*eslint-disable react/no-danger*/
     return (
-      <div>
+      <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
         <main>
           <div className="container">
@@ -94,7 +95,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
               </div>
           {button}
         </main>
-      </div>
+      </ErrorBoundary>
     );
       /*eslint-enable react/no-danger*/
   }

@@ -8,6 +8,7 @@ import LocaleStore from '../stores/LocaleStore';
 import MessageActions from '../actions/MessageActions';
 import FileUpload from '../components/forms/FileUpload';
 import Progress from '../components/Progress';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {|
   groups: Array,
@@ -67,7 +68,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
     if(!this.props.groups || this.props.groups.length === 0){
       return (
-        <div>
+        <ErrorBoundary>
             <Header {...this.props.headerConfig}/>
             <main>
               <div className="container">
@@ -77,7 +78,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
                 </div>
               </div>
             </main>
-        </div>
+        </ErrorBoundary>
       );
     }
 
@@ -115,8 +116,8 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
     
 		return (
-      <div>
-          <Header {...this.props.headerConfig}/>
+      <ErrorBoundary>
+        <Header {...this.props.headerConfig}/>
         <main>
           <h4>{this.__('Import Layer')}</h4>
           <div className="container center">
@@ -125,9 +126,8 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
             {importComplete}
           </div>
           <Progress id="load-data-progess" title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.processing}/>      
-			</main>
-
-      </div>
+        </main>
+      </ErrorBoundary>
 		);
 	}
 }
