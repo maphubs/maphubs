@@ -53,6 +53,6 @@ export default class FeatureArea extends MapHubsPureComponent<Props, void> {
         </div>
       );
     }
-    return;
+    return null;
   }
 }
