@@ -281,15 +281,19 @@ function createEngine(engineOptions) {
           `;
         }
  
+        let ravenConfig;
+        if(process.env.NODE_ENV === 'production' && !local.disableTracking){
+          ravenConfig = MAPHUBS_CONFIG.SENTRY_DSN_PUBLIC;
+        }
         
          markup += `
           </head>
           <body>
           <div id="app">${reactMarkup}</div>
          
-          <script src="https://cdn.ravenjs.com/3.15.0/raven.min.js" crossorigin="anonymous"></script>
+          <script src="https://cdn.ravenjs.com/3.20.1/raven.min.js" crossorigin="anonymous"></script>
           <script type="text/javascript">
-             Raven.config('${(process.env.NODE_ENV === 'production' && !local.disableTracking) && MAPHUBS_CONFIG.SENTRY_DSN_PUBLIC}', {
+             Raven.config('${ravenConfig}', {
                 release: '${version}',
                 environment: '${local.ENV_TAG}',
                 tags: {host: '${local.host}'}
