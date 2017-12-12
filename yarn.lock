@@ -153,63 +153,63 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.0.0.tgz#c1de4293081424da3ac30c23afa850af1019bb54"
 
 "@turf/area@^5.0.4":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/area/-/area-5.1.0.tgz#ae56c262d86089cc743a31ecbb825dd6da16fe65"
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/area/-/area-5.1.5.tgz#efd899bfd260cdbd1541b2a3c155f8a5d2eefa1d"
   dependencies:
-    "@turf/helpers" "^5.1.0"
-    "@turf/meta" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
 
 "@turf/bbox-polygon@^5.0.4":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/bbox-polygon/-/bbox-polygon-5.1.0.tgz#d0bbcb57e1d0e2bb9ca151b0c0f311eb43c23e50"
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/bbox-polygon/-/bbox-polygon-5.1.5.tgz#6aeba4ed51d85d296e0f7c38b88c339f01eee024"
   dependencies:
-    "@turf/helpers" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
 
-"@turf/bbox@^5.0.4", "@turf/bbox@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/bbox/-/bbox-5.1.0.tgz#659d0b6a72353137bed2e1d46b9774718b4d86c7"
+"@turf/bbox@^5.0.4", "@turf/bbox@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/bbox/-/bbox-5.1.5.tgz#3051df514ad4c50f4a4f9b8a2d15fd8b6840eda3"
   dependencies:
-    "@turf/helpers" "^5.1.0"
-    "@turf/meta" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
 
 "@turf/buffer@^5.0.4":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-5.1.0.tgz#29c4ee57eb788a0af223284b838d849b22dc1cda"
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-5.1.5.tgz#841c9627cfb974b122ac4e1a956f0466bc0231c4"
   dependencies:
-    "@turf/bbox" "^5.1.0"
-    "@turf/center" "^5.1.0"
-    "@turf/helpers" "^5.1.0"
-    "@turf/meta" "^5.1.0"
-    "@turf/projection" "^5.1.0"
+    "@turf/bbox" "^5.1.5"
+    "@turf/center" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
+    "@turf/projection" "^5.1.5"
     d3-geo "1.7.1"
     turf-jsts "*"
 
-"@turf/center@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/center/-/center-5.1.0.tgz#06f21c3c3719f9f81b5e37b001b36d8d62c4d55f"
+"@turf/center@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/center/-/center-5.1.5.tgz#44ab2cd954f63c0d37757f7158a99c3ef5114b80"
   dependencies:
-    "@turf/bbox" "^5.1.0"
-    "@turf/helpers" "^5.1.0"
+    "@turf/bbox" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
 
 "@turf/centroid@^5.0.4":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/centroid/-/centroid-5.1.0.tgz#648b6e334bb89f151fe25fd36411a8f591deffed"
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/centroid/-/centroid-5.1.5.tgz#778ada74216335021ad8fd0e7a65a8349d53c769"
   dependencies:
-    "@turf/helpers" "^5.1.0"
-    "@turf/meta" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
 
-"@turf/clean-coords@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/clean-coords/-/clean-coords-5.1.0.tgz#0a4a418f8fcebe6a2e59ab7db8eb93b97d6c0471"
+"@turf/clean-coords@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/clean-coords/-/clean-coords-5.1.5.tgz#12800a98a78c9a452a72ec428493c43acf2ada1f"
   dependencies:
-    "@turf/helpers" "^5.1.0"
-    "@turf/invariant" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
+    "@turf/invariant" "^5.1.5"
 
-"@turf/clone@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/clone/-/clone-5.1.0.tgz#e1a1a0344776f9cc3e813b36fec9b5e1b54677cf"
+"@turf/clone@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/clone/-/clone-5.1.5.tgz#253e8d35477181976e33adfab50a0f02a7f0e367"
   dependencies:
-    "@turf/helpers" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
 
 "@turf/distance@^4.7.3":
   version "4.7.3"
@@ -219,19 +219,19 @@
     "@turf/invariant" "^4.7.3"
 
 "@turf/distance@^5.0.4":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-5.1.0.tgz#1788db4a1e1a99d25867337bde037eb3d68bffcb"
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-5.1.5.tgz#39cf18204bbf87587d707e609a60118909156409"
   dependencies:
-    "@turf/helpers" "^5.1.0"
-    "@turf/invariant" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
+    "@turf/invariant" "^5.1.5"
 
 "@turf/helpers@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-4.7.3.tgz#bc312ac43cab3c532a483151c4c382c5649429e9"
 
-"@turf/helpers@^5.0.4", "@turf/helpers@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.1.0.tgz#e308698654dbf770b4af1395df84e43c492614bd"
+"@turf/helpers@^5.0.4", "@turf/helpers@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.1.5.tgz#153405227ab933d004a5bb9641a9ed999fcbe0cf"
 
 "@turf/inside@^5.0.0":
   version "5.0.0"
@@ -240,13 +240,13 @@
     "@turf/invariant" "^5.0.0"
 
 "@turf/intersect@^5.0.4":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-5.1.0.tgz#3a080015a0a45ab0a89c1b0707ed59acc8147ac1"
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-5.1.5.tgz#121261dafa847b5408d8245f1f55fdbb2f744b7a"
   dependencies:
-    "@turf/clean-coords" "^5.1.0"
-    "@turf/helpers" "^5.1.0"
-    "@turf/invariant" "^5.1.0"
-    "@turf/truncate" "^5.1.0"
+    "@turf/clean-coords" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+    "@turf/invariant" "^5.1.5"
+    "@turf/truncate" "^5.1.5"
     turf-jsts "*"
 
 "@turf/invariant@^4.7.3":
@@ -259,11 +259,11 @@
   dependencies:
     "@turf/helpers" "^5.0.4"
 
-"@turf/invariant@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.1.0.tgz#3ab76ccc3ec46c3e479022a6b277b99f3f22b2cb"
+"@turf/invariant@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.1.5.tgz#f59f4fefa09224b15dce1651f903c868d57a24e1"
   dependencies:
-    "@turf/helpers" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
 
 "@turf/line-distance@^4.7.3":
   version "4.7.3"
@@ -277,26 +277,26 @@
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-4.7.3.tgz#038970178e90c8e43cf7dfed79d5782298a1080d"
 
-"@turf/meta@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.1.0.tgz#a52b2aa959f7ce7c90f00ee6e999c0f22a87138c"
+"@turf/meta@^5.1.5":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.1.6.tgz#c20a863eded0869fb28548dee889341bccb46a46"
   dependencies:
-    "@turf/helpers" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
 
-"@turf/projection@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/projection/-/projection-5.1.0.tgz#931b1c8dd231f0b18b85ee68c11363fa64588160"
+"@turf/projection@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/projection/-/projection-5.1.5.tgz#24517eeeb2f36816ba9f712e7ae6d6a368edf757"
   dependencies:
-    "@turf/clone" "^5.1.0"
-    "@turf/helpers" "^5.1.0"
-    "@turf/meta" "^5.1.0"
+    "@turf/clone" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
 
-"@turf/truncate@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@turf/truncate/-/truncate-5.1.0.tgz#24f0281841aa53c8d315fdc07d809c1fc0a74699"
+"@turf/truncate@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/truncate/-/truncate-5.1.5.tgz#9eedfb3b18ba81f2c98d3ead09431cca1884ad89"
   dependencies:
-    "@turf/helpers" "^5.1.0"
-    "@turf/meta" "^5.1.0"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
 
 "@types/body-parser@*":
   version "1.16.8"
@@ -770,8 +770,8 @@ autoprefixer@^6.3.1:
     postcss-value-parser "^3.2.3"
 
 aws-sdk@^2.114.0:
-  version "2.166.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.166.0.tgz#132e969b9fac950a0a897b43f46412cc3d14d4d8"
+  version "2.168.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.168.0.tgz#561e0a231b8f70a2bee56ff5e508b6efff604fe3"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -1731,15 +1731,9 @@ brace-expansion@^1.0.0, brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
-brace@0.11.0:
+brace@0.11.0, brace@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/brace/-/brace-0.11.0.tgz#155cd80607687dc8cb908f0df94e62a033c1d563"
-
-brace@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/brace/-/brace-0.10.0.tgz#edef4eb9b0928ba1ee5f717ffc157749a6dd5d76"
-  dependencies:
-    w3c-blob "0.0.1"
 
 braces@^1.8.2:
   version "1.8.5"
@@ -2413,7 +2407,11 @@ convert-source-map@^0.3.3:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-0.3.5.tgz#f1d802950af7dd2631a1febe0596550c86ab3190"
 
-convert-source-map@^1.1.1, convert-source-map@^1.5.0:
+convert-source-map@^1.1.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.5.1.tgz#b8278097b9bc229365de5c62cf5fcaed8b5599e5"
+
+convert-source-map@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.5.0.tgz#9acd70851c6d5dfdd93d9282e5edf94a03ff46b5"
 
@@ -3284,8 +3282,8 @@ eslint-plugin-babel@^4.1.2:
   resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-4.1.2.tgz#79202a0e35757dd92780919b2336f1fa2fe53c1e"
 
 eslint-plugin-flowtype@^2.35.1:
-  version "2.39.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.39.1.tgz#b5624622a0388bcd969f4351131232dcb9649cd5"
+  version "2.40.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.40.1.tgz#f78a8e6a4cc6da831dd541eb61e803ff0279b796"
   dependencies:
     lodash "^4.15.0"
 
@@ -3343,8 +3341,8 @@ eslint-scope@^3.7.1:
     estraverse "^4.1.1"
 
 eslint@^4.6.1:
-  version "4.12.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.12.1.tgz#5ec1973822b4a066b353770c3c6d69a2a188e880"
+  version "4.13.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.13.1.tgz#0055e0014464c7eb7878caf549ef2941992b444f"
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
@@ -3850,9 +3848,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@0.60.1:
-  version "0.60.1"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.60.1.tgz#0f4fa7b49be2a916f18cd946fc4a51e32ffe4b48"
+flow-bin@0.61.0:
+  version "0.61.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.61.0.tgz#d0473a8c35dbbf4de573823f4932124397d32d35"
 
 flow-remove-types@^1.1.2:
   version "1.2.3"
@@ -4204,8 +4202,8 @@ globals@^10.0.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-10.4.0.tgz#5c477388b128a9e4c5c5d01c7a2aca68c68b2da7"
 
 globals@^11.0.1:
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/globals/-/globals-11.0.1.tgz#12a87bb010e5154396acc535e1e43fc753b0e5e8"
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-11.1.0.tgz#632644457f5f0e3ae711807183700ebf2e4633e4"
 
 globals@^9.18.0:
   version "9.18.0"
@@ -6068,8 +6066,8 @@ moment-timezone@^0.5.13:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
 moment@^2.18.1:
-  version "2.19.3"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.3.tgz#bdb99d270d6d7fda78cc0fbace855e27fe7da69f"
+  version "2.19.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.4.tgz#17e5e2c6ead8819c8ecfad83a0acccb312e94682"
 
 morgan@^1.8.2:
   version "1.9.0"
@@ -6338,8 +6336,8 @@ node-zopfli@^1.4.0:
     node-pre-gyp "^0.6.4"
 
 nodemailer@^4.1.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-4.4.0.tgz#571989e524a906fb83b1518f3e4c0d3140db24af"
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-4.4.1.tgz#ce480eb3db7b949b3366e301b8f0af1c1248025e"
 
 "nomnom@>= 1.5.x":
   version "1.8.1"
@@ -7466,8 +7464,8 @@ range-parser@^1.0.3, range-parser@~1.2.0:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
 
 raven@^2.1.2:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/raven/-/raven-2.2.1.tgz#57c7fbe68a80147ec527def3d7c01575cf948fe3"
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/raven/-/raven-2.3.0.tgz#96f15346bdaa433b3b6d47130804506155833d69"
   dependencies:
     cookie "0.3.1"
     lsmod "1.0.0"
@@ -7497,11 +7495,11 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-ace@5.7.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-5.7.0.tgz#f2ca0090b4edee439dc37c9e9e6669dee0811724"
+react-ace@5.8.0:
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-5.8.0.tgz#872d9ee8b664300ed5ab9edac6234bbe90836836"
   dependencies:
-    brace "^0.10.0"
+    brace "^0.11.0"
     lodash.get "^4.4.2"
     lodash.isequal "^4.1.1"
     prop-types "^15.5.8"
@@ -8071,8 +8069,8 @@ resolve-protobuf-schema@^2.0.0:
     protocol-buffers-schema "^2.0.2"
 
 resolve-url-loader@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/resolve-url-loader/-/resolve-url-loader-2.2.0.tgz#9662feaa11debf7cf8e3feb91dae9544aa7dee88"
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/resolve-url-loader/-/resolve-url-loader-2.2.1.tgz#13a1396fb773edf959550e400e688f5ed32548bf"
   dependencies:
     adjust-sourcemap-loader "^1.1.0"
     camelcase "^4.0.0"
@@ -8657,8 +8655,8 @@ snyk-try-require@^1.1.1, snyk-try-require@^1.2.0:
     then-fs "^2.0.0"
 
 snyk@^1.42.0:
-  version "1.54.1"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.54.1.tgz#f243717a3c937d2b34bac8957f1701ad8ddef0bf"
+  version "1.56.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.56.0.tgz#344aaa07f2a8cb9c78f7a7047ea72ac6e6675bbc"
   dependencies:
     abbrev "^1.0.7"
     ansi-escapes "^1.3.0"
@@ -9006,9 +9004,24 @@ superagent@>=1.4:
     qs "^6.1.0"
     readable-stream "^2.0.5"
 
-superagent@^3.3.1, superagent@^3.6.0:
+superagent@^3.3.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.8.1.tgz#2571fd921f3fcdba43ac68c3b35c91951532701f"
+  dependencies:
+    component-emitter "^1.2.0"
+    cookiejar "^2.1.0"
+    debug "^3.1.0"
+    extend "^3.0.0"
+    form-data "^2.3.1"
+    formidable "^1.1.1"
+    methods "^1.1.1"
+    mime "^1.4.1"
+    qs "^6.5.1"
+    readable-stream "^2.0.5"
+
+superagent@^3.6.0:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.8.2.tgz#e4a11b9d047f7d3efeb3bbe536d9ec0021d16403"
   dependencies:
     component-emitter "^1.2.0"
     cookiejar "^2.1.0"
@@ -9353,8 +9366,8 @@ tunnel-agent@~0.4.1:
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
 
 turf-jsts@*:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/turf-jsts/-/turf-jsts-1.2.0.tgz#127c4e4332a59ecee917fca31d493996e8254be0"
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/turf-jsts/-/turf-jsts-1.2.1.tgz#4f7ac5f1163cd71bfb919efb4e25857cd3c9412a"
 
 tween-functions@^1.0.1:
   version "1.2.0"
@@ -9702,10 +9715,6 @@ vt-pbf@^3.0.1:
     "@mapbox/point-geometry" "0.1.0"
     "@mapbox/vector-tile" "^1.3.0"
     pbf "^3.0.5"
-
-w3c-blob@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/w3c-blob/-/w3c-blob-0.0.1.tgz#b0cd352a1a50f515563420ffd5861f950f1d85b8"
 
 walkdir@^0.0.11:
   version "0.0.11"
