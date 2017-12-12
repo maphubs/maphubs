@@ -8,5 +8,5 @@ module.exports = function(name){
   /*eslint-disable no-console */
   log.log = console.log.bind(console);
 
-  return {log, error};
+  return {log, error, info: log};
 };
