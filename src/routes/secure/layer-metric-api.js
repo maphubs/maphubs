@@ -24,12 +24,12 @@ module.exports = function(app: any) {
         const query = `        
         SELECT 
           ST_AsGeoJSON(
-            ST_Intersection(${layerTable}.wkb_geometry, 
+            ST_Intersection(ST_MakeValid(${layerTable}.wkb_geometry), 
               ST_SetSRID(ST_GeomFromGeoJSON('${geoJSONString}'), 4326))
           ) As clipped_geom,
           tags as properties
         FROM ${layerTable}
-        WHERE ST_Intersects(${layerTable}.wkb_geometry, 
+        WHERE ST_Intersects(ST_MakeValid(${layerTable}.wkb_geometry), 
                 ST_SetSRID(ST_GeomFromGeoJSON('${geoJSONString}'), 4326)) 
         ;
         `;
