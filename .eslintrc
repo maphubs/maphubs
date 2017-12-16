@@ -52,6 +52,8 @@
     "unicorn/filename-case": "off",
     "prefer-arrow-callback": 1,
     "import/default": "off",
+    "prefer-const": 1,
+    "no-var": 1,
     "semi": [2, "always"],
     "eqeqeq": 1 // require the use of === and !==
 
