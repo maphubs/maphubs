@@ -1,13 +1,13 @@
 // @flow
-var passport = require('passport');
-var local = require('../../local');
+const passport = require('passport');
+const local = require('../../local');
 //var log = require('../../services/log');
-var urlencode = require('urlencode');
+const urlencode = require('urlencode');
 
 module.exports = function(app: any) {
 
   function checkReturnTo(req, res, next) {
-    var returnTo = req.query['returnTo'];
+    const returnTo = req.query['returnTo'];
     if (returnTo) {
       // Maybe unnecessary, but just to be sure.
       req.session = req.session || {};

@@ -51,7 +51,7 @@ export default class MapHubsShareButtons extends MapHubsComponent<Props, State> 
   }
 
   render(){
-    let title = this._o_(this.props.title);
+    const title = this._o_(this.props.title);
     return (
       <div style={this.props.style}>
         <div style={{float: 'left'}}>

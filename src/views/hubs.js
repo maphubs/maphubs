@@ -4,13 +4,13 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
-var debug = require('../services/debug')('views/hubs');
+const debug = require('../services/debug')('views/hubs');
 import urlUtil from '../services/url-util';
 import cardUtil from '../services/card-util';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -53,7 +53,7 @@ export default class Hubs extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/hubs/search?q=' + input)
     .type('json').accept('json')
@@ -84,14 +84,14 @@ export default class Hubs extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var featuredCards = this.props.featuredHubs.map(cardUtil.getHubCard);
-    var recentCards = this.props.recentHubs.map(cardUtil.getHubCard);
-    var popularCards = this.props.popularHubs.map(cardUtil.getHubCard);
+    const featuredCards = this.props.featuredHubs.map(cardUtil.getHubCard);
+    const recentCards = this.props.recentHubs.map(cardUtil.getHubCard);
+    const popularCards = this.props.popularHubs.map(cardUtil.getHubCard);
     
-    var searchResults = '';
+    let searchResults = '';
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
-        var searchCards = this.state.searchResults.map(cardUtil.getHubCard);
+        const searchCards = this.state.searchResults.map(cardUtil.getHubCard);
         searchResults = (
           <CardCollection cards={searchCards} title={this.__('Search Results')} />
         );
@@ -109,7 +109,7 @@ export default class Hubs extends MapHubsComponent<Props, State> {
       }
     }
 
-    var featured = '';
+    let featured = '';
     if(featuredCards.length > 0){
       featured = (<CardCollection cards={featuredCards} title={this.__('Featured')} viewAllLink="/hubs/all" />);
     }

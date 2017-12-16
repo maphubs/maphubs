@@ -1,12 +1,12 @@
 // @flow
-var Hub = require('../../models/hub');
-var Image = require('../../models/image');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
+const Hub = require('../../models/hub');
+const Image = require('../../models/image');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
 const isAuthenticated = require('../../services/auth-check');
 
-var csrfProtection = require('csurf')({cookie: false});
+const csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 

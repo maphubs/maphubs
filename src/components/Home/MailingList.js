@@ -57,7 +57,7 @@ export default class MailingList extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (model: Object) => {
-    var _this = this;
+    const _this = this;
     if(this.state.valid){
       UserActions.joinMailingList(model.email, this.state._csrf, (err) => {
         if(err){
@@ -81,9 +81,9 @@ export default class MailingList extends MapHubsComponent<Props, State> {
   }
 
 render(){
-  var _this = this;
+  const _this = this;
 
-  var placeholder = this.state.placeholder ? this.state.placeholder : _this.__('Sign up for our mailing list');
+  const placeholder = this.state.placeholder ? this.state.placeholder : _this.__('Sign up for our mailing list');
   return (
     <div className="container valign-wrapper" style={{height: '62px'}}>
       <div className="col s6 valign right-align">

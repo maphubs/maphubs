@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import Formsy, {addValidationRule} from 'formsy-react';
-var $ = require('jquery');
+const $ = require('jquery');
 import EditList from '../components/EditList';
 import Header from '../components/header';
 import MultiTextArea from '../components/forms/MultiTextArea';
@@ -15,7 +15,7 @@ import GroupActions from '../actions/GroupActions';
 import NotificationActions from '../actions/NotificationActions';
 import ConfirmationActions from '../actions/ConfirmationActions';
 import ImageCrop from '../components/ImageCrop';
-var debug = require('../services/debug')('views/GroupAdmin');
+const debug = require('../services/debug')('views/GroupAdmin');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -76,7 +76,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
 
   componentWillMount() {
     super.componentWillMount();
-    var _this = this;     
+    const _this = this;     
     addValidationRule('isAvailable', (values, value) => {
       if(value){
         return _this.checkGroupIdAvailable(value);
@@ -107,7 +107,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
-    var _this = this;
+    const _this = this;
 
     model.name = Locales.formModelToLocalizedString(model, 'name');
     model.description = Locales.formModelToLocalizedString(model, 'description');
@@ -130,11 +130,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   checkGroupIdAvailable = (id: string) => {
-    var _this = this;
+    const _this = this;
     //if the form is modified but put back to the currently saved ID, just return true
     if (id === this.props.group.group_id) return true;
 
-    var result = false;
+    let result = false;
     //only check if a valid value was provided and we are running in the browser
     if (id && typeof window !== 'undefined') {
         $.ajax({
@@ -160,7 +160,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleMemberDelete = (user: Object) => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title:  _this.__('Confirm Removal'),
       message:  _this.__('Please confirm removal of ') + user.label,
@@ -177,7 +177,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleGroupDelete = () => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Deletion'),
       message: _this.__('Please confirm removal of group ') + this._o_(this.state.group.name),
@@ -199,7 +199,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleMemberMakeAdmin = (user: Object) => {
-    var _this = this;
+    const _this = this;
     if(user.type === 'Administrator'){
       this.handleRemoveMemberAdmin(user);
     }else{
@@ -220,7 +220,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleRemoveMemberAdmin = (user: Object) => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Remove Administrator'),
       message: _this.__('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
@@ -237,7 +237,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleAddMember = (user: Object) => {
-    var _this = this;
+    const _this = this;
     debug.log(user.value.value + ' as Admin:' + user.option);
     GroupActions.addMember(user.value.value, user.option, _this.state._csrf, (err) => {
       if(err){
@@ -253,7 +253,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   onCrop = (data: Object) => {
-    var _this = this;
+    const _this = this;
     //send data to server
     GroupActions.setGroupImage(data, _this.state._csrf, (err) => {
       if(err){
@@ -271,9 +271,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var _this = this;
-    var membersList = [];
-    let group_id = this.props.group.group_id ? this.props.group.group_id : '';
+    const _this = this;
+    const membersList = [];
+    const group_id = this.props.group.group_id ? this.props.group.group_id : '';
     this.state.members.forEach((user) => {
       membersList.push({
         key: user.id,
@@ -286,12 +286,12 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       });
     });
 
-    var isPublished = false;
+    let isPublished = false;
     if(this.state.group.published){
       isPublished = true;
     }
 
-    var  groupUrl = '/group/' + group_id;
+    const  groupUrl = '/group/' + group_id;
 
 		return (
       <ErrorBoundary>

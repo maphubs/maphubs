@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import ReactDOM from 'react-dom';
 import FileUpload from '../forms/FileUpload';
 import Map from '../Map/Map';
@@ -53,7 +53,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   componentDidUpdate() {
     if(this.state.geoJSON){
-      var scrollTarget = $(ReactDOM.findDOMNode(this.refs.map));
+      const scrollTarget = $(ReactDOM.findDOMNode(this.refs.map));
       $('html,body').animate({
          scrollTop: scrollTarget.offset().top
        }, 1000);
@@ -76,8 +76,8 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = () => {
-    var _this = this;
-    var data = {
+    const _this = this;
+    const data = {
       is_external: false,
       external_layer_type: '',
       external_layer_config: {}
@@ -97,7 +97,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   onUpload = (result: Object) => {
-    var _this = this;
+    const _this = this;
     
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
@@ -118,7 +118,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   finishUpload = (shapefileName: string) => {
-    var _this = this;
+    const _this = this;
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
@@ -136,7 +136,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -145,15 +145,15 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    let layer_id = this.state.layer_id ? this.state.layer_id : 0;
-    let url = `/api/layer/${layer_id}/upload`;
-    var largeDataMessage = '';
+    const layer_id = this.state.layer_id ? this.state.layer_id : 0;
+    const url = `/api/layer/${layer_id}/upload`;
+    let largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (
       <p>{this.__('Data Uploaded Successfully. Large dataset detected, you will be able to preview the data in Step 5 after it is loaded.')}</p>
       );
     }
-    var map = '';
+    let map = '';
     if(this.state.geoJSON){
       map = (
         <div>
@@ -167,9 +167,9 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    var multipleShapefiles = '';
+    let multipleShapefiles = '';
     if(this.state.multipleShapefiles){
-      var options = [];
+      const options = [];
       this.state.multipleShapefiles.forEach((shpFile) => {
         options.push({value: shpFile, label: shpFile});
       });

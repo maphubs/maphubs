@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 import Reflux from 'reflux';
-var $ = require('jquery');
-var classNames = require('classnames');
+const $ = require('jquery');
+const classNames = require('classnames');
 import fireResizeEvent from '../../services/fire-resize-event';
 import _isequal from 'lodash.isequal';
 
@@ -31,7 +31,7 @@ export class ModalContent extends Reflux.Component<ModalContentDefaultProps, Mod
     style: {}
   }
   render(){
-    var className = classNames('modal-content', this.props.className);
+    const className = classNames('modal-content', this.props.className);
     return (
       <div className={className} style={this.props.style}>
         {this.props.children}
@@ -56,7 +56,7 @@ export class ModalFooter extends Reflux.Component<ModalFooterDefaultProps, Modal
     style: {}
   }
   render(){
-      var className = classNames('modal-footer', this.props.className);
+      const className = classNames('modal-footer', this.props.className);
     return (
       <div className={className} style={this.props.style}>
         {this.props.children}
@@ -154,7 +154,7 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
   }
   
   render() {
-    var className = '';
+    let className = '';
     if(this.props.fixedFooter) {
       className = classNames('modal', 'modal-fixed-footer', this.props.className);
     }else{

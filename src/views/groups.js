@@ -4,10 +4,10 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
-var debug = require('../services/debug')('views/groups');
+const debug = require('../services/debug')('views/groups');
 import urlUtil from '../services/url-util';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import cardUtil from '../services/card-util';
@@ -50,7 +50,7 @@ export default class Groups extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
     .type('json').accept('json')
@@ -82,16 +82,16 @@ export default class Groups extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard);
-    var popularCards = this.props.popularGroups.map(cardUtil.getGroupCard);
-    var recentCards = this.props.recentGroups.map(cardUtil.getGroupCard);
+    const featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard);
+    const popularCards = this.props.popularGroups.map(cardUtil.getGroupCard);
+    const recentCards = this.props.recentGroups.map(cardUtil.getGroupCard);
 
-    var searchResults = '';
+    let searchResults = '';
 
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
-        var searchCards = this.state.searchResults.map(cardUtil.getGroupCard);
+        const searchCards = this.state.searchResults.map(cardUtil.getGroupCard);
         searchResults = (
           <CardCollection title={this.__('Search Results')} cards={searchCards} />
         );
@@ -109,7 +109,7 @@ export default class Groups extends MapHubsComponent<Props, State> {
       }
 
     }
-    var featured = '';
+    let featured = '';
     if(featuredCards.length > 0){
       featured = (
         <CardCollection title={this.__('Featured')} cards={featuredCards} viewAllLink="/groups/all" />

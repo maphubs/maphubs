@@ -17,9 +17,9 @@ export default class Gravatar extends React.PureComponent<Props, void> {
   }
 
   render() {
-    var hash = null;
-    let email:string = this.props.email ? this.props.email : '';
-    let size: number = this.props.size ? this.props.size: 30;
+    let hash = null;
+    const email:string = this.props.email ? this.props.email : '';
+    const size: number = this.props.size ? this.props.size: 30;
     if(this.props.emailHash){
       hash = this.props.emailHash;
     }else{
@@ -28,7 +28,7 @@ export default class Gravatar extends React.PureComponent<Props, void> {
          .digest("hex");
     } 
 
-    var gravatarUrl = 'https://www.gravatar.com/avatar/' + hash;
+    let gravatarUrl = 'https://www.gravatar.com/avatar/' + hash;
 
     if(this.props.size){
       gravatarUrl += '?s=' + this.props.size * 2 + '&d=mm';

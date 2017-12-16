@@ -12,7 +12,7 @@ module.exports = {
   rasterStyleWithOpacity(layer_id: number, shortid: string, sourceUrl: string, opacity: number, type: string="raster"){
 
       opacity = opacity / 100;
-      var style = {
+      const style = {
           sources: {},
           layers: [
             {
@@ -45,13 +45,13 @@ module.exports = {
   multiRasterStyleWithOpacity(layer_id: number, shortid: string, layers: Array<Object>, opacity: number, type: string="raster"){
   
       opacity = opacity / 100;
-      var style = {
+      const style = {
           sources: {},
           layers: []
       };
 
       layers.forEach((raster, i) => {
-        var id = `omh-raster-${i}-${shortid}`;
+        const id = `omh-raster-${i}-${shortid}`;
         style.layers.push(
           {
             id,

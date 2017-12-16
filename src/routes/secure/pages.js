@@ -1,10 +1,10 @@
-var csrfProtection = require('csurf')({cookie: false});
-var login = require('connect-ensure-login');
-var Admin = require('../../models/admin');
-var Page = require('../../models/page');
-var nextError = require('../../services/error-response').nextError;
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
+const csrfProtection = require('csurf')({cookie: false});
+const login = require('connect-ensure-login');
+const Admin = require('../../models/admin');
+const Page = require('../../models/page');
+const nextError = require('../../services/error-response').nextError;
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
 const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app) {
@@ -16,7 +16,7 @@ module.exports = function(app) {
 
       if(await Admin.checkAdmin(user_id)){
         const pageConfigs = await Page.getPageConfigs([page_id]);
-        var pageConfig = pageConfigs[page_id];
+        const pageConfig = pageConfigs[page_id];
         return res.render('pageedit', {
           title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {page_id, pageConfig}, req});

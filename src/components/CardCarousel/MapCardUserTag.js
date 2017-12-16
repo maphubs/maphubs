@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 
-var urlUtil = require('../../services/url-util');
-var moment = require('moment-timezone');
+const urlUtil = require('../../services/url-util');
+const moment = require('moment-timezone');
 import Gravatar from '../user/Gravatar';
 
 import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl';
@@ -30,18 +30,18 @@ export default class MapCardUserTag extends MapHubsComponent<Props, State> {
 
   render(){
 
-    var linkUrl = '';
-    var author = '';
-    var userImage='';
-    var guessedTz = moment.tz.guess();
-    var updatedTime = moment.tz(this.props.map.updated_at, guessedTz).format();
+    let linkUrl = '';
+    let author = '';
+    let userImage='';
+    const guessedTz = moment.tz.guess();
+    const updatedTime = moment.tz(this.props.map.updated_at, guessedTz).format();
 
         userImage = (
             <Gravatar size={36} emailHash={this.props.map.emailhash} />
 
         );
 
-      var baseUrl = urlUtil.getBaseUrl();
+      const baseUrl = urlUtil.getBaseUrl();
       linkUrl = baseUrl + '/user/' + this.props.map.username;
       author = (
         <div style={{height: '40px', marginBottom: '10px'}}>

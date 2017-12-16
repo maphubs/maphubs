@@ -41,7 +41,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var recent = '';
+    let recent = '';
     if(this.props.recentStories && this.props.recentStories.length > 0){
       recent = (
         <div className="col s12 m12 l6">

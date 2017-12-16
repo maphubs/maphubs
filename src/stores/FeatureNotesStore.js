@@ -1,8 +1,8 @@
 import Reflux from 'reflux';
 import Actions from '../actions/FeatureNotesActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/hub-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const request = require('superagent');
+const debug = require('../services/debug')('stores/hub-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 export type FeatureNotesStoreState = {
   notes?: string,
@@ -39,7 +39,7 @@ export default class FeatureNotesStore extends Reflux.Store {
  //listeners
  saveNotes(layer_id, mhid, _csrf, cb){
    debug.log('save feature notes');
-   var _this = this;
+   const _this = this;
    this.setState({saving: true});
    request.post('/api/feature/notes/save')
    .type('json').accept('json')
@@ -58,7 +58,7 @@ export default class FeatureNotesStore extends Reflux.Store {
  }
 
  setNotes(notes){
-   var state = this.state;
+   const state = this.state;
    state.notes = notes;
    state.unsavedChanges = true;
    this.setState(state);

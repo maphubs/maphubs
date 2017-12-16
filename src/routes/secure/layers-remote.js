@@ -1,14 +1,14 @@
 //@flow
-var Layer = require('../../models/layer');
-var login = require('connect-ensure-login');
-var Group = require('../../models/group');
+const Layer = require('../../models/layer');
+const login = require('connect-ensure-login');
+const Group = require('../../models/group');
 
-var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var request = require('superagent');
-var isAuthenticated = require('../../services/auth-check');
+const apiError = require('../../services/error-response').apiError;
+const nextError = require('../../services/error-response').nextError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const request = require('superagent');
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 

@@ -1,10 +1,10 @@
 //@flow
-var Admin = require('../../models/admin');
-var csrfProtection = require('csurf')({cookie: false});
-var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var knex = require('../../connection');
+const Admin = require('../../models/admin');
+const csrfProtection = require('csurf')({cookie: false});
+const apiError = require('../../services/error-response').apiError;
+const nextError = require('../../services/error-response').nextError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const knex = require('../../connection');
 //var log = require('../../services/log');
 
 module.exports = function(app: any) {
@@ -30,9 +30,9 @@ module.exports = function(app: any) {
 
   app.post('/admin/invite/send', csrfProtection, async (req, res) => {
     try{
-      var data = req.body;
+      const data = req.body;
       if (req.isAuthenticated && req.isAuthenticated()) {
-        var user_id = req.session.user.maphubsUser.id;
+        const user_id = req.session.user.maphubsUser.id;
         if(await Admin.checkAdmin(user_id)){
           if (data && data.email) {
               res.status(200).send({
@@ -55,7 +55,7 @@ module.exports = function(app: any) {
 
   app.post('/admin/invite/deauthorize', csrfProtection, async (req, res) => {
     try{
-      var data = req.body;
+      const data = req.body;
       if(req.isAuthenticated && req.isAuthenticated() &&
         await Admin.checkAdmin(req.session.user.maphubsUser.id)){
         if (data && data.email && data.key) {
@@ -76,12 +76,12 @@ module.exports = function(app: any) {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       return res.redirect('/login');
     }
-    var user_id = req.session.user.maphubsUser.id;
+    const user_id = req.session.user.maphubsUser.id;
     Admin.checkAdmin(user_id).then((allowed) => {
       if(allowed && MAPHUBS_CONFIG.enableUserExport){
         return knex('users').select('id', 'email', 'email_valid', 'display_name')
         .then((users) =>{
-          let userExport = [];
+          const userExport = [];
           users.forEach(user => {
             userExport.push(
               {

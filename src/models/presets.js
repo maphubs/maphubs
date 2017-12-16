@@ -1,8 +1,8 @@
 // @flow
-var knex = require('../connection.js');
-var Promise = require('bluebird');
-var log = require('../services/log');
-var MapStyles = require('../components/Map/Styles');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
+const log = require('../services/log');
+const MapStyles = require('../components/Map/Styles');
 
 module.exports = {
 
@@ -23,7 +23,7 @@ module.exports = {
       } else {
         //look for modified tags(properties) since new need to rename them in the data
 
-        let updateCommands = [];
+        const updateCommands = [];
 
         presets.forEach((preset) => {
           if(preset.prevTag !== undefined){
@@ -81,14 +81,14 @@ where map_id in (SELECT distinct map_id from omh.map_layers where layer_id = :la
 order by position
       `, {layer_id})
       .then(result => {
-        let updatedMapStyles = {};
-        let updateCommands = [];
+        const updatedMapStyles = {};
+        const updateCommands = [];
         result.rows.forEach(mapLayer => {
-          let mapLayerStyle = mapLayer.map_layer_style;
+          const mapLayerStyle = mapLayer.map_layer_style;
 
           //update source metadata
           Object.keys(mapLayerStyle.sources).forEach((sourceID) => {          
-            var mapSource =  mapLayerStyle.sources[sourceID];
+            const mapSource =  mapLayerStyle.sources[sourceID];
             if(!mapSource.metadata){
               mapSource.metadata = {};
             }
@@ -113,7 +113,7 @@ order by position
 
     //loop through map_ids, build updated styles, and update
     Object.keys(updatedMapStyles).forEach(map_id => {
-      let updatedMapStyle = MapStyles.style.buildMapStyle(updatedMapStyles[map_id]);
+      const updatedMapStyle = MapStyles.style.buildMapStyle(updatedMapStyles[map_id]);
       updateCommands.push(
         knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
       );

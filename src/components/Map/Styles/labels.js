@@ -1,5 +1,5 @@
 //@flow
-var _remove = require('lodash.remove');
+const _remove = require('lodash.remove');
 import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {
@@ -20,10 +20,10 @@ module.exports = {
     style = this.removeStyleLabels(style);
     if(style.layers && Array.isArray(style.layers) && style.layers.length > 0){
 
-      var sourceLayer = "data";
-      var filter = ["in","$type","Point"];
-      var placement = "point";
-      var translate =  [0,0];
+      let sourceLayer = "data";
+      let filter = ["in","$type","Point"];
+      let placement = "point";
+      let translate =  [0,0];
 
       if(data_type === 'point'){
 
@@ -34,8 +34,8 @@ module.exports = {
           if(layer.id.startsWith('omh-data-point')
               && layer.metadata && layer.metadata['maphubs:markers'] 
               && layer.metadata['maphubs:markers'].enabled){
-            var markerOptions = layer.metadata['maphubs:markers'];
-            var offset = 9;
+            const markerOptions = layer.metadata['maphubs:markers'];
+            let offset = 9;
               if(markerOptions.shape !== 'MAP_PIN' && markerOptions.shape !== 'SQUARE_PIN'){         
                 offset = offset + (markerOptions.height / 2);
               }

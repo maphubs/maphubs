@@ -1,15 +1,15 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/MapMakerActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/MapMakerStore');
-var _findIndex = require('lodash.findindex');
-var _reject = require('lodash.reject');
-var _find = require('lodash.find');
-var MapStyles = require('../components/Map/Styles');
+const request = require('superagent');
+const debug = require('../services/debug')('stores/MapMakerStore');
+const _findIndex = require('lodash.findindex');
+const _reject = require('lodash.reject');
+const _find = require('lodash.find');
+const MapStyles = require('../components/Map/Styles');
 //var $ = require('jquery');
 //var urlUtil = require('../services/url-util');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import type {Layer} from './layer-store';
 
 export type MapMakerStoreState = {
@@ -115,7 +115,7 @@ export default class MapMakerStore extends Reflux.Store  {
       //tell the map to make this layer visible
       layer.style = MapStyles.settings.set(layer.style, 'active', true);
     
-      var layers = this.state.mapLayers;
+      const layers = this.state.mapLayers;
       if(layers){
         layers.unshift(layer);
         this.updateMap(layers);
@@ -125,15 +125,15 @@ export default class MapMakerStore extends Reflux.Store  {
   }
 
   removeFromMap(layer: Layer){
-    var layers = _reject(this.state.mapLayers, {'layer_id': layer.layer_id});
+    const layers = _reject(this.state.mapLayers, {'layer_id': layer.layer_id});
     this.updateMap(layers);
   }
 
   toggleVisibility(layer_id: number, cb: Function){
-    let mapLayers = this.state.mapLayers;
-    let index = _findIndex(mapLayers, {layer_id});
+    const mapLayers = this.state.mapLayers;
+    const index = _findIndex(mapLayers, {layer_id});
     if(mapLayers){
-      let layer = mapLayers[index];
+      const layer = mapLayers[index];
       let active = MapStyles.settings.get(layer.style, 'active');
 
       if(active){
@@ -166,8 +166,8 @@ export default class MapMakerStore extends Reflux.Store  {
     //treat as immutable and clone
     style = JSON.parse(JSON.stringify(style));
     labels = JSON.parse(JSON.stringify(labels));
-    let layers = JSON.parse(JSON.stringify(this.state.mapLayers));
-    var index = _findIndex(this.state.mapLayers, {layer_id});
+    const layers = JSON.parse(JSON.stringify(this.state.mapLayers));
+    const index = _findIndex(this.state.mapLayers, {layer_id});
     if(layers){
       layers[index].style = style;
       layers[index].labels = labels;
@@ -181,7 +181,7 @@ export default class MapMakerStore extends Reflux.Store  {
     //treat as immutable and clone
     title = JSON.parse(JSON.stringify(title));
     position = JSON.parse(JSON.stringify(position));
-    var _this = this;
+    const _this = this;
     //resave an existing map
     Object.keys(title).forEach(key =>{
       title[key] = title[key].trim();
@@ -210,7 +210,7 @@ export default class MapMakerStore extends Reflux.Store  {
     //treat as immutable and clone
     title = JSON.parse(JSON.stringify(title));
     position = JSON.parse(JSON.stringify(position));
-    var _this = this;
+    const _this = this;
     Object.keys(title).forEach(key =>{
       title[key] = title[key].trim();
     });
@@ -229,7 +229,7 @@ export default class MapMakerStore extends Reflux.Store  {
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-        var map_id = res.body.map_id;
+        const map_id = res.body.map_id;
         _this.setState({title, map_id, position, basemap, owned_by_group_id: group_id, isPrivate});
         cb();
       });
@@ -265,7 +265,7 @@ export default class MapMakerStore extends Reflux.Store  {
   })
   .end((err, res) => {
     checkClientError(res, err, cb, (cb) => {
-      let share_id = res.body.share_id;
+      const share_id = res.body.share_id;
       cb(share_id);
     });
   });
@@ -275,7 +275,7 @@ export default class MapMakerStore extends Reflux.Store  {
   updateMap(mapLayers: Array<Layer>, rebuild: boolean =true){
     //treat as immutable and clone
     mapLayers = JSON.parse(JSON.stringify(mapLayers));
-    var mapStyle;
+    let mapStyle;
     if(rebuild){
       mapStyle = this.buildMapStyle(mapLayers);
     }else{

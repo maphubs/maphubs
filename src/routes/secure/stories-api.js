@@ -12,7 +12,7 @@ const isAuthenticated = require('../../services/auth-check');
 module.exports = function(app: any) {
 
   app.post('/api/story/save', csrfProtection, isAuthenticated, (req, res) => {
-    var data = req.body;
+    const data = req.body;
     if (data && data.story_id && data.title && data.body) {
       data.title = data.title.replace('&nbsp;', '');
       Story.allowedToModify(data.story_id, req.user_id)
@@ -83,7 +83,7 @@ module.exports = function(app: any) {
   });
 
   app.post('/api/story/addimage', csrfProtection, isAuthenticated, (req, res) => {
-    var data = req.body;
+    const data = req.body;
     if (data && data.story_id && data.image) {
       Story.allowedToModify(data.story_id, req.user_id)
       .then((allowed) => {

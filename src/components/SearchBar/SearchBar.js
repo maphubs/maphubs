@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom';
 import Suggestions from './Suggestions';
 import Promise from 'bluebird';
 
-var $ = require('jquery');
+const $ = require('jquery');
 
 const KEY_CODES = {
   UP: 38,
@@ -119,7 +119,7 @@ export default class SearchBar extends React.Component {
 
   handleChange = (e) => {
     clearTimeout(this._timerId);
-    let input = e.target.value;
+    const input = e.target.value;
     if (!input) return this.setState({
       value: '',
       suggestions: [],

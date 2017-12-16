@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import slugify from 'slugify';
-var urlUtil = require('../../services/url-util');
+const urlUtil = require('../../services/url-util');
 import StoryHeader from './StoryHeader';
 import MapHubsComponent from '../../components/MapHubsComponent';
 import ShareButtons from '../../components/ShareButtons';
@@ -20,24 +20,24 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
   }
 
   render(){
-    var title = '';
+    let title = '';
     if(this.props.story.title){
       title = this.props.story.title.replace('&nbsp;', '');
     }
-    var linkUrl = '';
-    var baseUrl = urlUtil.getBaseUrl();
+    let linkUrl = '';
+    const baseUrl = urlUtil.getBaseUrl();
     if(this.props.story.display_name){
       linkUrl = baseUrl + '/user/' + this.props.story.display_name;
     }else if(this.props.story.hub_id){
-      var hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
+      const hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
       linkUrl = hubUrl;
     }
 
     linkUrl += '/story/' + this.props.story.story_id + '/' + slugify(title);
 
-    var image = '';
+    let image = '';
     if(this.props.story.firstimage){
-        var imageUrl = this.props.story.firstimage.replace(/\/image\//i, '/thumbnail/');
+        let imageUrl = this.props.story.firstimage.replace(/\/image\//i, '/thumbnail/');
         if(imageUrl.startsWith(baseUrl)){
           imageUrl = imageUrl.replace(baseUrl, '');
         }
@@ -51,7 +51,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
       );
     }
 
-    var draft = '';
+    let draft = '';
     if(!this.props.story.published){
       draft = (
          <p style={{position: 'absolute', top: '15px', left: '50%', right: '50%'}}>

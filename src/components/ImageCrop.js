@@ -1,14 +1,14 @@
 //@flow
 import React from 'react';
 
-var debug = require('../services/debug')('ImageCrop');
+const debug = require('../services/debug')('ImageCrop');
 import {Modal, ModalContent} from './Modal/Modal.js';
 import Promise from 'bluebird';
 
 import MessageActions from '../actions/MessageActions';
-var $ = require('jquery');
+const $ = require('jquery');
 //import Cropper from 'react-cropper';
-var EXIF = require('exif-js');
+const EXIF = require('exif-js');
 import MapHubsComponent from './MapHubsComponent';
 
 type Props = {
@@ -85,7 +85,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
 	}
 
   componentWillReceiveProps(nextProps: Props) {
-    var updateProps = {};
+    const updateProps = {};
     if(nextProps.aspectRatio) {
       debug.log('update aspectratio to: ' + nextProps.aspectRatio);
       updateProps.aspectRatio = nextProps.aspectRatio;
@@ -103,7 +103,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
 
 
   checkFile = (file: Object) => {
-     let allowedFileExt = new RegExp('\.(' + this.props.allowedExtensions.join('|') + ')$', 'i');
+     const allowedFileExt = new RegExp('\.(' + this.props.allowedExtensions.join('|') + ')$', 'i');
      let message;
 
      if (!allowedFileExt.test(file.name)) {
@@ -114,9 +114,9 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
    }
 
   checkFileSize = (file: Object) => {
-    var _this = this;
+    const _this = this;
     return new Promise((resolve, reject) => {
-      let maxSize =  _this.props.max_size;
+      const maxSize =  _this.props.max_size;
       let message;
 
       if (file.size > maxSize) {
@@ -131,7 +131,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
 
 
 resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
-  var pica = null;
+  let pica = null;
   if (typeof window === 'undefined') {
     return new Promise((resolve) => {
       resolve();
@@ -140,13 +140,13 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     pica = require("../../node_modules/pica/dist/pica.min.js")();
   }
 
-  var _this = this;
+  const _this = this;
   return new Promise((resolve, reject) => {
 
   
   // If image size smaller than 'skip_size' - skip resizing
   if (_this.state.file && _this.state.file.size < _this.props.skip_size) {
-    let data = sourceCanvas.toDataURL(_this.state.file.type);
+    const data = sourceCanvas.toDataURL(_this.state.file.type);
     resolve(data);
     return;
   }
@@ -154,10 +154,10 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
   let scaledHeight: number, scaledWidth: number;
 
 
-  let resize_height = _this.props.resize_height;
-  let resize_width = _this.props.resize_width;
-  let resize_max_height: number = _this.props.resize_max_height;
-  let resize_max_width: number = _this.props.resize_max_width;
+  const resize_height = _this.props.resize_height;
+  const resize_width = _this.props.resize_width;
+  const resize_max_height: number = _this.props.resize_max_height;
+  const resize_max_width: number = _this.props.resize_max_width;
 
 
   if (resize_height && !resize_width) {
@@ -165,7 +165,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     // and crop by max_width
     scaledHeight = resize_height;
 
-    let proportionalWidth: number = Math.floor(_this.state.cropWidth * scaledHeight / _this.state.cropHeight);
+    const proportionalWidth: number = Math.floor(_this.state.cropWidth * scaledHeight / _this.state.cropHeight);
 
     scaledWidth = (!resize_max_width || resize_max_width > proportionalWidth) ? proportionalWidth : resize_max_width;
 
@@ -174,7 +174,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     // and crop by max_height
     scaledWidth = resize_width;
 
-    let proportionalHeight: number = Math.floor(_this.state.cropHeight * scaledWidth / _this.state.cropWidth);
+    const proportionalHeight: number = Math.floor(_this.state.cropHeight * scaledWidth / _this.state.cropWidth);
 
     scaledHeight = (!resize_max_height || resize_max_height > proportionalHeight) ? proportionalHeight : resize_max_height;
 
@@ -189,12 +189,12 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
     if(_this.state.cropWidth > resize_max_width){
       scaledWidth = resize_max_width;
-      let proportionalHeight = Math.floor(_this.state.cropHeight * scaledWidth / _this.state.cropWidth);
+      const proportionalHeight = Math.floor(_this.state.cropHeight * scaledWidth / _this.state.cropWidth);
       scaledHeight = (!resize_max_height || resize_max_height > proportionalHeight) ? proportionalHeight : resize_max_height;
     }else{
       //no need to resize
       if(_this.state.file){
-         let data = sourceCanvas.toDataURL(_this.state.file.type);
+         const data = sourceCanvas.toDataURL(_this.state.file.type);
         resolve(data);
       }else{
         throw new Error('missing file');
@@ -204,11 +204,11 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
   }
 
-  let quality = _this.props.jpeg_quality;
+  const quality = _this.props.jpeg_quality;
 
-  let alpha = _this.state.ext === 'png';
+  const alpha = _this.state.ext === 'png';
 
-  let dest = document.createElement('canvas');
+  const dest = document.createElement('canvas');
 
   dest.width = scaledWidth;
   dest.height = scaledHeight;
@@ -222,7 +222,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     })
     .then(result => {
       if(_this.state.file){
-        var data = result.toDataURL(_this.state.file.type, quality);
+        const data = result.toDataURL(_this.state.file.type, quality);
         return resolve(data);
       }else{
         throw new Error('missing file');
@@ -246,7 +246,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 }
 
   _onChange = (e: any) =>{
-    var _this = this;
+    const _this = this;
     _this.setState({loading: true});
     let files: Array<Object>;
     if (e.dataTransfer) {
@@ -256,12 +256,12 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     }
     if(files && files.length > 0){
 
-    var file = files[0];
+    const file = files[0];
 
-    let ext = file.name.split('.').pop();
+    const ext = file.name.split('.').pop();
 
     //check if file is supported
-    let err = this.checkFile(file);
+    const err = this.checkFile(file);
     if (err){
       debug.error(err);
       MessageActions.showMessage({title: 'Error', message: err});
@@ -271,24 +271,24 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
     this.checkFileSize(file)
     .then(() => {
       //read the file
-      let img = new Image();
+      const img = new Image();
 
       img.onload = () => {
         //get the original size
-        var width = img.width;
-        var height = img.height;
+        const width = img.width;
+        const height = img.height;
         //save exif data and image to state
         EXIF.getData(img, () => {
-          var exifdata = img.exifdata;
+          const exifdata = img.exifdata;
 
-          let tempCanvas = document.createElement('canvas');
+          const tempCanvas = document.createElement('canvas');
           tempCanvas.width = width;
           tempCanvas.height = height;
 
 
           if(exifdata.Orientation && exifdata.Orientation !== 1){
             //transfrom the canvas
-            var ctx: any = tempCanvas.getContext('2d');
+            const ctx: any = tempCanvas.getContext('2d');
             switch(exifdata.Orientation){
               case 1:
                 ctx.transform(1, 0, 0, 1, 0, 0);
@@ -328,18 +328,18 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
                 break;
             }
           }
-          var context = tempCanvas.getContext('2d');
+          const context = tempCanvas.getContext('2d');
           if(context){
             context.drawImage(img, 0, 0,  img.width, img.height);
           }
-          var data = tempCanvas.toDataURL(file.type, 1);
+          const data = tempCanvas.toDataURL(file.type, 1);
           _this.setState({src: data, exif: exifdata, file, img, ext, loading: false});
           $(tempCanvas).remove();
          });
       };
 
       img.onerror = () => {
-        let message = _this.__('Bad Image:') + ' ' + file.name;
+        const message = _this.__('Bad Image:') + ' ' + file.name;
         debug.log(message);
         MessageActions.showMessage({title: 'Error', message});
       };
@@ -362,15 +362,15 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
  }
 
   onSave = () => {
-    var _this = this;
-    var cropper = this.refs.cropper;
-    var canvas = cropper.getCroppedCanvas();
+    const _this = this;
+    const cropper = this.refs.cropper;
+    const canvas = cropper.getCroppedCanvas();
 
     //resize the image
     this.resizeImage(canvas).then((dataURL) => {
       _this.setState({show: false});
 
-      var info = {
+      const info = {
         width: _this.state.cropWidth,
         height: _this.state.cropHeight,
         exif: _this.state.exif
@@ -439,7 +439,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
 
   render(){
 
-    var cropper = '';
+    let cropper = '';
     if(this.state.src){
       if (typeof window !== 'undefined') {
         const Cropper = require('react-cropper').default;  
@@ -462,7 +462,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       );
       }
 
-    var toolButtons = '', saveButton = '', cropOriginalBtn = '', crop16by9Btn = '', crop3by2Btn = '', cropSquareBtn = '';
+    let toolButtons = '', saveButton = '', cropOriginalBtn = '', crop16by9Btn = '', crop3by2Btn = '', cropSquareBtn = '';
     if(this.state.src){
       if(!this.props.lockAspect){
         cropOriginalBtn = (

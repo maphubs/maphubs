@@ -1,5 +1,5 @@
 // @flow
-var winston = require('winston');
+const winston = require('winston');
 
 winston.add(require('winston-daily-rotate-file'), {
   filename: 'logs/maphubs.log',

@@ -59,9 +59,9 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 	}
 
   render() {
-    var _this = this;
-    let group_id = this.props.group.group_id? this.props.group.group_id : '';
-    var editButton = '';
+    const _this = this;
+    const group_id = this.props.group.group_id? this.props.group.group_id : '';
+    let editButton = '';
 
     if(this.props.canEdit){
       editButton = (
@@ -95,7 +95,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 
     }
 
-    var unofficial = '';
+    let unofficial = '';
     if(this.props.group.unofficial){
       unofficial = (
         <div className="row">
@@ -104,20 +104,20 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    var descriptionWithLinks = '';
+    let descriptionWithLinks = '';
 
     if(this.props.group.description){
-      let localizedDescription = this._o_(this.props.group.description);
+      const localizedDescription = this._o_(this.props.group.description);
       // regex for detecting links
-      var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
+      const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
     }
-    var status = this.__('DRAFT');
+    let status = this.__('DRAFT');
     if(this.props.group.published){
       status = this.__('Published');
     }
 
-    var allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.hubCards]);
+    const allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.hubCards]);
 
     return (
       <ErrorBoundary>
@@ -159,7 +159,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                 <h5>{this.__('Members')}</h5>
               </li>
               {this.props.members.map(function (user, i) {
-                var icon = '';
+                let icon = '';
                 if (user.role === 'Administrator') {
                   icon = (
                     <i className="secondary-content tooltipped material-icons"
@@ -168,7 +168,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                     </i>
                   );
                 }
-                var image = '';
+                let image = '';
                 if(user.image){
                   image = (<img  alt={this.__('Profile Photo')} className="circle" src={user.image}/>);
                 }else {

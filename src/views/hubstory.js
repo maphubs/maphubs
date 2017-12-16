@@ -38,10 +38,10 @@ export default class HubStory extends MapHubsComponent<Props, void>  {
 	}
 
   render() {
-    var story = this.props.story;
-    var title = story.title.replace('&nbsp;', '');
-    var button = '';
-    var baseUrl = '/hub/' + this.props.hub.hub_id;
+    const story = this.props.story;
+    const title = story.title.replace('&nbsp;', '');
+    let button = '';
+    const baseUrl = '/hub/' + this.props.hub.hub_id;
     if(this.props.canEdit){
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
@@ -55,7 +55,7 @@ export default class HubStory extends MapHubsComponent<Props, void>  {
       );
     }
 
-    var discuss = '', shareButtons = '';
+    let discuss = '', shareButtons = '';
     if(MAPHUBS_CONFIG.enableComments){
       shareButtons = (
          <ShareButtons 

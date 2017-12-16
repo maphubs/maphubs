@@ -9,7 +9,7 @@ if (!global._babelPolyfill) {
 
 document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <ImportLayer {...data}/>,

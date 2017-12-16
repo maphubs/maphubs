@@ -41,7 +41,7 @@ export default class LegendItem extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
     if(this.props.layer === undefined) return (<div></div>);
 
     if(!this.props.layer || ! this.props.layer.layer_id){
@@ -49,27 +49,27 @@ export default class LegendItem extends MapHubsComponent<Props, State> {
         <div></div>
       );
     }
-    let name = this.htmlEncode(this._o_(this.props.layer.name));
-    let source = this.htmlEncode(this._o_(this.props.layer.source));
+    const name = this.htmlEncode(this._o_(this.props.layer.name));
+    const source = this.htmlEncode(this._o_(this.props.layer.source));
 
     let html = '';
     if( this.props.layer.legend_html){
       html = this.props.layer.legend_html.replace(/\{NAME\}/i, name);
     }
     
-    var legendItem = (
+    let legendItem = (
         <div style={this.props.style}>
           <span className="no-margin no-padding valign" dangerouslySetInnerHTML={{__html: html}} />
           <span className="grey-text right right-align truncate no-padding" style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{source}</span>             
         </div>      
         );
-    var style = this.props.layer.style;  
+    const style = this.props.layer.style;  
     if(style && style.layers && Array.isArray(style.layers) && style.layers.length > 0){
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
           if(layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:markers'].enabled){
             //clone object to avoid changing size of real markers
-            var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
+            const markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
             markerConfig.width = 18;
             markerConfig.height = 18;
             legendItem = (

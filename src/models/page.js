@@ -1,5 +1,5 @@
 // @flow
-var knex = require('../connection.js');
+const knex = require('../connection.js');
 
 module.exports = {
 
@@ -16,7 +16,7 @@ module.exports = {
     .from('omh.page')
     .whereIn('page_id', page_ids);
 
-    var configs = {};
+    const configs = {};
     results.forEach(result =>{
       configs[result.page_id] = result.config;
     });

@@ -1,10 +1,10 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/ConfirmationActions';
-var debug = require('../services/debug')('stores/confirmation-store');
-var $ = require('jquery');
+const debug = require('../services/debug')('stores/confirmation-store');
+const $ = require('jquery');
 import LocaleActions from '../actions/LocaleActions';
-var Locales = require('../services/locales');
+const Locales = require('../services/locales');
 
 export type ConfirmationStoreState = {
   show: boolean,
@@ -29,7 +29,7 @@ export default class ConfirmationStore extends Reflux.Store {
   }
 
   __(text: string){
-    var locale = 'en';
+    let locale = 'en';
     if(this.state && this.state.locale){
       locale = this.state.locale;
     }
@@ -64,7 +64,7 @@ export default class ConfirmationStore extends Reflux.Store {
   //listeners
   showConfirmation(options: Object) {
     if (options) {
-      var updatedState = $.extend(this.getEmptyState(), options);
+      const updatedState = $.extend(this.getEmptyState(), options);
       this.setState(updatedState);
       this.setState({
         show: true

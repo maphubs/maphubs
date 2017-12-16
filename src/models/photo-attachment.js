@@ -1,14 +1,14 @@
 // @flow
-var knex = require('../connection.js');
-var Promise = require('bluebird');
-var Presets = require('./presets');
-var MapStyles = require('../components/Map/Styles');
-var log = require('../services/log');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
+const Presets = require('./presets');
+const MapStyles = require('../components/Map/Styles');
+const log = require('../services/log');
 
 module.exports = {
 
   async getPhotoAttachment(photo_id: number, trx: any=null){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     const result = await db('omh.photo_attachments').where({photo_id});
 
     if(result && result.length > 0){
@@ -34,7 +34,7 @@ module.exports = {
   },
 
   async setPhotoAttachment(layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any=null){
-    var _this = this;
+    const _this = this;
     const results = await this.getPhotoAttachmentsForFeature(layer_id, mhid, trx);
     if(results && results.length > 0){
       //delete previous
@@ -46,7 +46,7 @@ module.exports = {
   },
 
   async addPhotoAttachment(layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any=null){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     let photo_id = await db('omh.photo_attachments')
     .insert({
       data,
@@ -62,12 +62,12 @@ module.exports = {
   },
 
   async updatePhotoAttachment(photo_id: number, data: string, info: string, trx: any=null){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     return db('omh.photo_attachments').update({data, info}).where({photo_id});
   },
 
   async deletePhotoAttachment(layer_id: number, mhid: string, photo_id: number, trx: any=null){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     await db('omh.feature_photo_attachments')
     .where({layer_id, mhid, photo_id}).del();
     return db('omh.photo_attachments').where({photo_id}).del();
@@ -75,8 +75,8 @@ module.exports = {
 
   //need to call this before deleting a layer
   async removeAllLayerAttachments(layer_id: number, trx: any=null){
-    var _this = this;
-    let db = trx ? trx : knex; 
+    const _this = this;
+    const db = trx ? trx : knex; 
     const featurePhotoAttachments = await db('omh.feature_photo_attachments').where({layer_id});
     return Promise.map(featurePhotoAttachments, fpa => {
       return _this.deletePhotoAttachment(layer_id, fpa.mhid, fpa.photo_id);
@@ -85,15 +85,15 @@ module.exports = {
 
   async addPhotoUrlPreset(layer: Object, user_id: number, trx: any){
 
-    let style = layer.style;
+    const style = layer.style;
     if(style){
-       let firstSource:string = Object.keys(style.sources)[0];
+       const firstSource:string = Object.keys(style.sources)[0];
 
       if(firstSource){
-        let presets = MapStyles.settings.getSourceSetting(style, firstSource, 'presets');
+        const presets = MapStyles.settings.getSourceSetting(style, firstSource, 'presets');
         if(presets){
-          var maxId = 0;
-          var alreadyPresent = false;
+          let maxId = 0;
+          let alreadyPresent = false;
           presets.forEach((preset) => {
             if(preset.tag === 'photo_url'){
               alreadyPresent = true;
@@ -117,22 +117,22 @@ module.exports = {
               type: 'text',
               id: maxId + 1
             });
-            let updatedStyle: Object = MapStyles.settings.setSourceSetting(style, firstSource, 'presets', presets);
+            const updatedStyle: Object = MapStyles.settings.setSourceSetting(style, firstSource, 'presets', presets);
             await Presets.savePresets(layer.layer_id, presets, updatedStyle, user_id, false, trx);
             return presets;
         }
       }else{
-        let msg = 'layer missing style presets';
+        const msg = 'layer missing style presets';
         log.error(msg);
         throw new Error(msg);
       }
       }else{
-        let msg = 'layer missing style sources';
+        const msg = 'layer missing style sources';
         log.error(msg);
         throw new Error(msg);
       }
     }else{
-      let msg = 'layer missing style';
+      const msg = 'layer missing style';
       log.error(msg);
       throw new Error(msg);
     }

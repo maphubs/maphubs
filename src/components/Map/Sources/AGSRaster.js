@@ -1,7 +1,7 @@
 //@flow
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 
-var AGSRaster = {
+const AGSRaster = {
   async load(key: string, source: GLSource, mapComponent: any){
 
   //add directly to map until this is fixed https://github.com/mapbox/mapbox-gl-js/issues/3003

@@ -1,11 +1,11 @@
 // @flow
-var knex = require('../connection.js');
-var Promise = require('bluebird');
-var _map = require('lodash.map');
-var debug = require ('../services/debug')('model/hub');
-var Story = require('../models/story');
-var Image = require('../models/image');
-var Group = require('../models/group');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
+const _map = require('lodash.map');
+const debug = require ('../services/debug')('model/hub');
+const Story = require('../models/story');
+const Image = require('../models/image');
+const Group = require('../models/group');
 
 module.exports = {
 
@@ -57,7 +57,7 @@ module.exports = {
    */
   getHubStories(hub_id: string, includeDrafts: boolean = false) {
     debug.log('get stories for hub: ' + hub_id);
-    var query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
+    const query = knex.select('omh.stories.story_id', 'omh.stories.title', 'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
       'omh.stories.firstline',  'omh.stories.firstimage', 'omh.stories.language', 'omh.stories.user_id',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
       knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'))
@@ -150,7 +150,7 @@ module.exports = {
      * Can include private?: If Requested
      */
     async getHubByID(hub_id: string, trx: any) {
-      let db = trx ? trx : knex;
+      const db = trx ? trx : knex;
       debug.log('get hub: ' + hub_id);
       const hubResult = await db('omh.hubs')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
@@ -159,9 +159,9 @@ module.exports = {
         const imagesResult = await db('omh.hub_images').select().distinct('type')
         .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase());
 
-        var hub = hubResult[0];
-        var hasLogoImage = false;
-        var hasBannerImage = false;
+        const hub = hubResult[0];
+        let hasLogoImage = false;
+        let hasBannerImage = false;
         if(imagesResult && imagesResult.length > 0){
           imagesResult.forEach((result) => {
             if(result.type === 'logo'){
@@ -207,7 +207,7 @@ module.exports = {
      * Can include private?: If Requested
      */
     getGroupHubs(group_id: string, includePrivate: boolean = false) {
-    var query = knex.select().from('omh.hubs').orderBy('name');
+    const query = knex.select().from('omh.hubs').orderBy('name');
     if (includePrivate) {
       query.where('owned_by_group_id', group_id);
     } else {
@@ -302,7 +302,7 @@ module.exports = {
   },
 
   async deleteHub(hub_id_input: string) {
-    var _this = this;
+    const _this = this;
     return knex.transaction(async(trx) => {
       const hub = await _this.getHubByID(hub_id_input, trx);
       const hub_id = hub.hub_id;
@@ -321,7 +321,7 @@ module.exports = {
         await Story.delete(story_id, trx);
 
         if(imageIdResult.length > 0){
-          var imageIds = _map(imageIdResult, 'image_id');
+          const imageIds = _map(imageIdResult, 'image_id');
           await trx('omh.hub_images').where('hub_id', hub_id).delete();
           await trx('omh.images').whereIn('image_id', imageIds).delete();
         }

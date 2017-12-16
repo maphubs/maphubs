@@ -60,7 +60,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
-    var _this = this;
+    const _this = this;
 
     LayerActions.saveDataSettings({
       is_external: true,
@@ -101,7 +101,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -110,7 +110,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    var dataTypeOptions = [
+    const dataTypeOptions = [
       {value: 'point', label: this.__('Point')},
       {value: 'line', label: this.__("Line")},
       {value: 'polygon', label: this.__("Polygon")}

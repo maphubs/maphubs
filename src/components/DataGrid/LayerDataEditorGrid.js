@@ -127,15 +127,15 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
   }
 
   processGeoJSON = (geoJSON: Object, presets:any=null) => {
-    var _this = this;
+    const _this = this;
     //clone feature to avoid data grid attaching other values
-    var features = JSON.parse(JSON.stringify(geoJSON.features));
+    const features = JSON.parse(JSON.stringify(geoJSON.features));
 
-    var originalRows = _map(features, 'properties');
+    const originalRows = _map(features, 'properties');
 
-    var firstRow = originalRows[0];
+    const firstRow = originalRows[0];
 
-    var rowKey = 'mhid';
+    let rowKey = 'mhid';
     if(firstRow.mhid){
       rowKey = 'mhid';
     }
@@ -146,7 +146,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
       rowKey = 'OBJECTID';
     }
 
-    var columns: Array<Column> = [];
+    const columns: Array<Column> = [];
     columns.push(
       {
         key: rowKey,
@@ -160,7 +160,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
     if(presets){
         presets.forEach((preset) => {
         if(preset.type === 'check'){
-          let CheckboxEditor = this.CheckboxEditor;
+          const CheckboxEditor = this.CheckboxEditor;
           columns.push(
             {
               key: preset.tag,
@@ -175,11 +175,11 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
           );
           
         }else if(preset.type === 'combo' || preset.type === 'radio'){
-          let options = preset.options.split(',').map(option => {
+          const options = preset.options.split(',').map(option => {
             return option.trim();
           });
-          let DropDownEditor = this.DropDownEditor;
-          let DropDownFormatter = this.DropDownFormatter;
+          const DropDownEditor = this.DropDownEditor;
+          const DropDownFormatter = this.DropDownFormatter;
           columns.push(
             {
               key: preset.tag,
@@ -236,7 +236,7 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
       });
     }
 
-    var rows = originalRows.slice(0);
+    const rows = originalRows.slice(0);
 
     _this.setState({geoJSON, columns, rowKey, rows, filters : {}});
   }
@@ -259,12 +259,12 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
 
 
   rowGetter = (rowIdx: number): Object => {
-    let rows = this.getRows();
+    const rows = this.getRows();
     return rows[rowIdx];
   }
 
   handleFilterChange = (filter: Object) => {
-    let newFilters = Object.assign({}, this.state.filters);
+    const newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {
@@ -282,23 +282,23 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
     if(!rows || rows.length === 0){
       return;
     }
-    var row = rows[0];
-    var idField = this.state.rowKey;
-    var idVal = row.row[idField];
+    const row = rows[0];
+    const idField = this.state.rowKey;
+    const idVal = row.row[idField];
 
     this.props.onRowSelected(idVal,idField);
     this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
   }
 
   onRowsDeselected = (rows: Array<Object>) => {
-    let rowIndexes = rows.map(r => r.rowIdx);
+    const rowIndexes = rows.map(r => r.rowIdx);
     this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1 )});
   }
 
   getSelectedFeature(){
     const row = this.rowGetter(this.state.selectedIndexes[this.state.selectedIndexes.length - 1]);
     const idField = this.state.rowKey;
-    var idVal = row[idField];
+    const idVal = row[idField];
     let selectedFeature;
     if(this.state.geoJSON) {
       this.state.geoJSON.features.forEach((feature)=>{
@@ -316,40 +316,40 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
       return;
     }
     const lastSelectedIndex: number = this.state.selectedIndexes[this.state.selectedIndexes.length - 1];    
-    var row = this.rowGetter(lastSelectedIndex);
-    var idField = this.state.rowKey;
-    var idVal = row[idField];
+    const row = this.rowGetter(lastSelectedIndex);
+    const idField = this.state.rowKey;
+    let idVal = row[idField];
 
     let featureName = 'unknown';
-    let nameField = GetNameField.getNameField(row, this.props.presets);
+    const nameField = GetNameField.getNameField(row, this.props.presets);
     if(nameField){
       featureName = row[nameField];
     } 
     if(this.state.rowKey === 'mhid'){
       idVal = idVal.split(':')[1];
     }
-    let layer_id = this.props.layer.layer_id ? this.props.layer.layer_id : 0;
-    let url = `/feature/${layer_id}/${idVal}/${featureName}`;
+    const layer_id = this.props.layer.layer_id ? this.props.layer.layer_id : 0;
+    const url = `/feature/${layer_id}/${idVal}/${featureName}`;
     window.location = url;
   }
 
 
    handleGridRowsUpdated = (result: Object) => {
-     let fromRow: number = result.fromRow;
-     let toRow: number = result.toRow;
-     let updated: Object = result.updated;
-     let rows = this.getRows().slice();
+     const fromRow: number = result.fromRow;
+     const toRow: number = result.toRow;
+     const updated: Object = result.updated;
+     const rows = this.getRows().slice();
 
     for (let i = fromRow; i <= toRow; i++) {
-      let rowToUpdate = this.rowGetter(i);
-      let mhid = rowToUpdate[this.state.rowKey];
+      const rowToUpdate = this.rowGetter(i);
+      const mhid = rowToUpdate[this.state.rowKey];
       DataEditorActions.selectFeature(mhid, (featureData) => {
         //update data
-        let data = featureData.properties;
+        const data = featureData.properties;
         _assignIn(data, updated);
         DataEditorActions.updateSelectedFeatureTags(data);
       });
-      let updatedRow = update(rowToUpdate, {$merge: updated});
+      const updatedRow = update(rowToUpdate, {$merge: updated});
       rows[i] = updatedRow;
     }
 
@@ -358,11 +358,11 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
 
 
 render() {
-  var _this = this;
+  const _this = this;
 
    if(this.state.rows.length > 0 && typeof window !== 'undefined'){
-    let ReactDataGrid = this.ReactDataGrid;
-    let Toolbar = this.Toolbar;
+    const ReactDataGrid = this.ReactDataGrid;
+    const Toolbar = this.Toolbar;
   return (
     <ReactDataGrid
            ref="grid"

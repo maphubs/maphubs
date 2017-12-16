@@ -65,7 +65,7 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">

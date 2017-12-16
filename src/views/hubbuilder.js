@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '../components/header';
 import Formsy, {addValidationRule} from 'formsy-react';
-var $ = require('jquery');
+const $ = require('jquery');
 import TextInput from '../components/forms/textInput';
 import SelectGroup from '../components/Groups/SelectGroup';
 import MessageActions from '../actions/MessageActions';
@@ -10,7 +10,7 @@ import NotificationActions from '../actions/NotificationActions';
 import Progress from '../components/Progress';
 import HubStore from '../stores/HubStore';
 import HubActions from '../actions/HubActions';
-var urlUtil = require('../services/url-util');
+const urlUtil = require('../services/url-util');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -59,7 +59,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
 
   componentWillMount() {
     super.componentWillMount();
-    var _this = this;
+    const _this = this;
     addValidationRule('isAvailable', function (values, value) {
         if(!value) return false;
         if(_this.state.hub && _this.state.created) return true;
@@ -74,8 +74,8 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
   }
 
   checkHubIdAvailable = (id: number) => {
-    var result = false;
-    var _this = this;
+    let result = false;
+    const _this = this;
     //only check if a valid value was provided and we are running in the browser
     if (id && typeof window !== 'undefined') {
         $.ajax({
@@ -117,7 +117,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
   }
 
   saveHub = (model: Object) => {
-    var _this = this;
+    const _this = this;
     this.setState({canSubmit: false, saving:true}); //disable submit button
 
     if(!model.group && this.props.groups.length === 1){
@@ -142,7 +142,7 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
 
 
   onComplete = (hub_id: number) => {
-    var url = urlUtil.getBaseUrl() + '/hub/' + hub_id;
+    const url = urlUtil.getBaseUrl() + '/hub/' + hub_id;
     window.location = url;
   }
 

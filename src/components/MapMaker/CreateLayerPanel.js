@@ -23,7 +23,7 @@ export default class CreateLayerPanel extends MapHubsComponent<Props, State> {
   }
 
   createEmptyLayer = () => {
-    var _this = this;
+    const _this = this;
     LayerActions.createLayer(this.state._csrf, err =>{
       if(err){
         MessageActions.showMessage({title: _this.__('Error'), message: err});

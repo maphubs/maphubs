@@ -1,10 +1,10 @@
 //@flow
-var csrfProtection = require('csurf')({cookie: false});
-var Admin = require('../../models/admin');
-var elasticClient = require('../../services/elasticsearch');
-var SearchIndex = require('../../models/search-index');
-var nextError = require('../../services/error-response').nextError;
-var apiError = require('../../services/error-response').apiError;
+const csrfProtection = require('csurf')({cookie: false});
+const Admin = require('../../models/admin');
+const elasticClient = require('../../services/elasticsearch');
+const SearchIndex = require('../../models/search-index');
+const nextError = require('../../services/error-response').nextError;
+const apiError = require('../../services/error-response').apiError;
 const isAuthenticated = require('../../services/auth-check');
 
 module.exports = (app: any) => {

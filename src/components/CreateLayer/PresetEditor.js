@@ -30,7 +30,7 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(_this.props.warnIfUnsaved && _this.state.pendingPresetChanges){
         return _this.__('You have not saved your edits, your changes will be lost.');
@@ -59,7 +59,7 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var _this = this;
+    const _this = this;
     let presets = [];
     if(this.state.presets){
       presets = this.state.presets.toArray();

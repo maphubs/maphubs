@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapHubsComponent from './MapHubsComponent';
 import UserStore from '../stores/UserStore';
 import UserActions from '../actions/UserActions';
@@ -70,13 +70,13 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
   }
 
   render() {
-    var user = (<div style={{width: '194px'}}></div>);
+    let user = (<div style={{width: '194px'}}></div>);
     if(!this.state.loaded){
       return user;
     }
     if(this.state.loggedIn && this.state.user){
 
-      var adminInvites = '';
+      let adminInvites = '';
       if(this.state.user.admin){
         adminInvites = (
           <li className="usermenu-wrapper"><a href="/admin/manage">{this.__('Manage Users')}</a></li>
@@ -94,7 +94,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
         );
       }      
 
-      let display_name = (this.state.user && this.state.user.display_name) ? this.state.user.display_name: '';
+      const display_name = (this.state.user && this.state.user.display_name) ? this.state.user.display_name: '';
 
       user = (
         <li>
@@ -123,7 +123,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       );
     } else {
 
-      var style = {};
+      let style = {};
       if(!this.props.sideNav){
         style={marginLeft: '1px', marginRight: '5px'};
       }

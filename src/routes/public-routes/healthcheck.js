@@ -1,6 +1,6 @@
 //@flow
-var knex = require('../../connection');
-var log = require('../../services/log');
+const knex = require('../../connection');
+const log = require('../../services/log');
 module.exports = function(app: any) {
 
   app.get('/healthcheck',  (req, res) => {

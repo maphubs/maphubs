@@ -38,9 +38,9 @@ export default class Marker extends React.PureComponent<Props> {
 
   render(){
      
-     var markerBackground = '';
-     var iconScale = 0.75;
-     var viewBoxSize = 48;
+     let markerBackground = '';
+     let iconScale = 0.75;
+     let viewBoxSize = 48;
      if(this.props.shape === 'SQUARE'){   
        markerBackground = (
          <rect x="1" y="1"  width={viewBoxSize} height={viewBoxSize}/>
@@ -48,7 +48,7 @@ export default class Marker extends React.PureComponent<Props> {
        viewBoxSize = viewBoxSize + 2;
        
      }else if(this.props.shape === 'CIRCLE'){
-       let size = viewBoxSize / 2;
+       const size = viewBoxSize / 2;
        markerBackground = (     
           <circle cx={size + 1} cy={size + 1} r={size} />
        );
@@ -69,13 +69,13 @@ export default class Marker extends React.PureComponent<Props> {
          <path d="M49,41c0,4.4-3.6,8-8,8H9c-4.4,0-8-3.6-8-8V9c0-4.4,3.6-8,8-8h32c4.4,0,8,3.6,8,8V41z"/>
        );
      }
-     var viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`;
-     var icon = '';
+     const viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`;
+     let icon = '';
      if(this.props.icon && this.props.icon !== 'none'){
-       let iconWidth: number = viewBoxSize * iconScale;
-       let iconHeight: number = viewBoxSize * iconScale;
-       var x: number; // = (iconWidth / 2); // - (iconWidth / 2);
-       var y: number; // = (iconHeight / 2); // - (iconHeight / 2);
+       const iconWidth: number = viewBoxSize * iconScale;
+       const iconHeight: number = viewBoxSize * iconScale;
+       let x: number; // = (iconWidth / 2); // - (iconWidth / 2);
+       let y: number; // = (iconHeight / 2); // - (iconHeight / 2);
        if(this.props.shape === 'MAP_PIN'){
          x = 13;
          y = 6;

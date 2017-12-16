@@ -1,7 +1,7 @@
 // @flow
-var knex = require('../connection');
-var log = require('../services/log');
-var debug = require('../services/debug')('models/user');
+const knex = require('../connection');
+const log = require('../services/log');
+const debug = require('../services/debug')('models/user');
 
 module.exports = {
 
@@ -12,7 +12,7 @@ module.exports = {
    */
   async getUser(id: number, secure: boolean=false) {
     debug.log('getting for id: ' + id);
-      var user = {};
+      let user = {};
       const result = await knex('users').where('id', id);
       if(!result || result.length !== 1){
         throw new Error('User not found');
@@ -38,7 +38,7 @@ module.exports = {
       .where(knex.raw(`lower(display_name)`), '=', display_name);
     
       if(result && result.length === 1){
-        var user = result[0];
+        const user = result[0];
 
         if(!secure){
           //exclude sensitive info
@@ -64,7 +64,7 @@ module.exports = {
       .where(knex.raw(`lower(email)`), '=', email);
 
       if(result && result.length === 1){
-        var user = result[0];
+        const user = result[0];
 
         if(!secure){
           //exclude sensitive info
@@ -76,11 +76,11 @@ module.exports = {
 
         return user;
       }else if(result && result.length > 1) {
-        let msg = "found multiple users with email: "+ email;
+        const msg = "found multiple users with email: "+ email;
         log.error(msg);
         throw new Error(msg);
       } else {
-        let msg = "email not found: "+ email;
+        const msg = "email not found: "+ email;
         log.error(msg);
         return null;
       }

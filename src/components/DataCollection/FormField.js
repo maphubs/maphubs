@@ -15,8 +15,8 @@ export default class FormField extends MapHubsComponent<Props, void> {
   props: Props
 
   render() {
-    var preset = this.props.preset;
-    var field = (
+    const preset = this.props.preset;
+    let field = (
       <TextInput
         name={preset.tag}
         label={this._o_(preset.label)}
@@ -54,7 +54,7 @@ export default class FormField extends MapHubsComponent<Props, void> {
         />
       );
     }else if(preset.type === 'radio' || preset.type === 'combo'){
-      var options = [];
+      const options = [];
       if(preset.options){
 
         preset.options.split(',').forEach(option => {

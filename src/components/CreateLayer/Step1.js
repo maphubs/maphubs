@@ -50,7 +50,7 @@ export default class Step1 extends MapHubsComponent<Props, State> {
   }
 
    onCancel = () =>{
-    var _this = this;
+    const _this = this;
     if(_this.state.created){
       //delete the layer
       LayerActions.cancelLayer(this.state._csrf, (err) => {

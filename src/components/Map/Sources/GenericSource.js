@@ -1,6 +1,6 @@
 //@flow
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
-var GenericSource = {
+const GenericSource = {
   load(key: string, source: GLSource, mapComponent: any){
    return mapComponent.addSource(key, source);
   },

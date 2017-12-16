@@ -17,7 +17,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   }
 
   onCrop = (data: Object, info: Object) => {
-    var _this = this;
+    const _this = this;
     //send data to server
     FeaturePhotoActions.addPhoto(data, info, this.state._csrf, (err) => {
       if(err){
@@ -37,7 +37,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   }
 
   deletePhoto = () => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Removal'),
       message: _this.__('Are you sure you want to remove this photo?'),

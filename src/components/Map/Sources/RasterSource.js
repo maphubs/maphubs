@@ -3,7 +3,7 @@ import urlUtil from '../../../services/url-util';
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 
 
-var RasterSource = {
+const RasterSource = {
   async load(key: string, source: GLSource, mapComponent: any){
    //nothing to do
    if(source.url){

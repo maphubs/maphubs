@@ -42,9 +42,9 @@ export default class HubStories extends MapHubsComponent<Props, State> {
   }
 
   render() {
-    var _this = this;
-    var addButton = '';
-    var baseUrl = '/hub/' + this.props.hub.hub_id;
+    const _this = this;
+    let addButton = '';
+    const baseUrl = '/hub/' + this.props.hub.hub_id;
     
     if(_this.props.editing){
       addButton = (
@@ -59,7 +59,7 @@ export default class HubStories extends MapHubsComponent<Props, State> {
         {addButton}
         <div>
           {this.props.stories.map((story, i) => {
-            var editButton = '';
+            let editButton = '';
             if(_this.props.editing){
               editButton = (
                 <a className="secondary-content" href={baseUrl + '/story/' + story.story_id + '/edit/' + slugify(story.title)}>

@@ -1,10 +1,10 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import BaseMapStore from '../../stores/map/BaseMapStore';
 import LegendItem from './LegendItem';
 import MapHubsComponent from '../MapHubsComponent';
-var MapStyles = require('./Styles');
+const MapStyles = require('./Styles');
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
 
 type Props = {|
@@ -67,9 +67,9 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
 
-    var layersButton = '';
+    let layersButton = '';
     if(this.props.showLayersButton){
       layersButton = (
          <a ref="mapLayersButton"
@@ -104,7 +104,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
       );
     }
 
-    var titleText = '';
+    let titleText = '';
     let titleFontSize = '15px';
     if(this.props.title){
       titleText = this._o_(this.props.title);
@@ -125,10 +125,10 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
       titleText = this.__('Legend');
     }
 
-    var title = '';
+    let title = '';
     if(this.props.collapsible){
 
-      var iconName;
+      let iconName;
       if(this.props.collapseToBottom){
         if(this.state.collapsed){
           iconName = 'keyboard_arrow_up';
@@ -173,7 +173,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
       );
     }
 
-     var allowScroll = true;
+     let allowScroll = true;
     if(this.state.collapsed || this.props.layers.length === 1){
       allowScroll = false;
     }

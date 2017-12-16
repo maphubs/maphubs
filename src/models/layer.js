@@ -1,19 +1,19 @@
 // @flow
-var knex = require('../connection.js');
-var dbgeo = require('dbgeo');
-var Promise = require('bluebird');
-var log = require('../services/log.js');
-var _find = require('lodash.find');
-var Presets = require('./presets');
-var DataLoadUtils = require('../services/data-load-utils');
-var Group = require('./group');
-var Map = require('./map');
-var debug = require('../services/debug')('model/layers');
-var ScreenshotUtils = require('../services/screenshot-utils');
-var geojsonUtils = require('../services/geojson-utils');
-var PhotoAttachment = require('./photo-attachment');
-var MapStyles = require('../components/Map/Styles');
-var shortid = require('shortid');
+const knex = require('../connection.js');
+const dbgeo = require('dbgeo');
+const Promise = require('bluebird');
+const log = require('../services/log.js');
+const _find = require('lodash.find');
+const Presets = require('./presets');
+const DataLoadUtils = require('../services/data-load-utils');
+const Group = require('./group');
+const Map = require('./map');
+const debug = require('../services/debug')('model/layers');
+const ScreenshotUtils = require('../services/screenshot-utils');
+const geojsonUtils = require('../services/geojson-utils');
+const PhotoAttachment = require('./photo-attachment');
+const MapStyles = require('../components/Map/Styles');
+const shortid = require('shortid');
 
 module.exports = {
 
@@ -120,7 +120,7 @@ module.exports = {
    */
   getSearchSuggestions(input: string) {
     input = input.toLowerCase();
-    var query = knex.select('name', 'layer_id').table('omh.layers')
+    const query = knex.select('name', 'layer_id').table('omh.layers')
     .where(knex.raw(`
       private = false AND status = 'published'
       AND (
@@ -151,7 +151,7 @@ module.exports = {
    */
   getSearchResults(input: string) {
     input = input.toLowerCase();
-    var query =  knex('omh.layers')
+    const query =  knex('omh.layers')
     .select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets', 'style', 'legend_html', 'labels', 'settings',
@@ -186,7 +186,7 @@ module.exports = {
    * Can include private?: If Requested
    */
   getGroupLayers(group_id: string, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
-    var query: knex = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
+    const query: knex = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
@@ -213,13 +213,13 @@ module.exports = {
    * Can include private?: If Requested
    */
   async getLayerForPhotoAttachment(photo_id: number, trx: any=null){
-    var _this = this;
+    const _this = this;
     let db = trx ? trx : knex;
     if(trx){db = trx;}
     const results = await db('omh.feature_photo_attachments').select('layer_id').where({photo_id});
 
     if(results && results.length > 0 && results[0].layer_id){
-      var layer_id = results[0].layer_id;
+      const layer_id = results[0].layer_id;
       return _this.getLayerByID(layer_id, trx);
     }else{
       throw new Error('Not a layer photo');
@@ -231,9 +231,9 @@ module.exports = {
    */
   getUserLayers(user_id: number, number: number, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
 
-    var subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
+    const subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id});
 
-    var query = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
+    const query = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
     'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
@@ -258,7 +258,7 @@ module.exports = {
     debug.log('getting layer: ' + layer_id);
     let db = knex;
     if(trx){db = trx;}
-    let result = await db.select(
+    const result = await db.select(
       'layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
@@ -362,7 +362,7 @@ module.exports = {
   },
 
   async attachPermissionsToLayers(layers: Array<Object>, user_id: number){
-    var _this = this;
+    const _this = this;
     return Promise.all(layers.map(async (layer) => {
       const allowed = await _this.allowedToModify(layer.layer_id, user_id);
       layer.canEdit = allowed;
@@ -491,7 +491,7 @@ module.exports = {
     */
     async removeLayerFromMaps(layer_id: number, trx: any){
       //get maps that use this layer
-      let db = trx ? trx : knex;
+      const db = trx ? trx : knex;
 
       //get a list of maps that contain the layer
       const maps = await db.select('map_id').from('omh.map_layers').where({layer_id});
@@ -513,7 +513,7 @@ module.exports = {
     },
 
   async setComplete(layer_id: number, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     return db('omh.layers').update({status: 'published'}).where({layer_id});
   },
 
@@ -528,7 +528,7 @@ module.exports = {
   },
 
   async delete(layer_id: number){
-    var _this = this;
+    const _this = this;
     return knex.transaction(async(trx) => {
       const layer = await _this.getLayerByID(layer_id, trx);
       if(!layer.remote && !layer.is_external){
@@ -547,7 +547,7 @@ module.exports = {
   },
 
   async removePrivateLayerFromMaps(layer: Object, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
 
     const layer_id = layer.layer_id;
     const mapLayers = await db.select('map_id').from('omh.map_layers').where({layer_id});
@@ -567,14 +567,14 @@ module.exports = {
   },
 
   async saveSettings(layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, source: any, license: any, user_id: number) {
-      var _this = this;
+      const _this = this;
       return knex.transaction(async(trx) => {
         const layer = await _this.getLayerByID(layer_id, trx);
         //don't change privacy if request is missing the value
         if(isPrivate === undefined){
           isPrivate = layer.private;
         }
-        var owned_by_group_id = layer.owned_by_group_id;
+        let owned_by_group_id = layer.owned_by_group_id;
         if(!owned_by_group_id){
           //set for the first time
           owned_by_group_id = group_id;
@@ -582,7 +582,7 @@ module.exports = {
           log.warn('transfering layer ownership not implemented in this method: ' + layer_id);
         }
 
-        var update =  trx('omh.layers')
+        const update =  trx('omh.layers')
           .update({
             name, description,
               private: isPrivate,

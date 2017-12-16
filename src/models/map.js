@@ -1,9 +1,9 @@
 // @flow
-var knex = require('../connection');
-var debug = require('../services/debug')('models/map');
-var Group = require('./group');
-var MapStyles = require('../components/Map/Styles');
-var shortid = require('shortid');
+const knex = require('../connection');
+const debug = require('../services/debug')('models/map');
+const Group = require('./group');
+const MapStyles = require('../components/Map/Styles');
+const shortid = require('shortid');
 
 module.exports = {
 
@@ -34,7 +34,7 @@ module.exports = {
   getGroupMaps(owned_by_group_id: number, includePrivate: boolean, trx: any){
     let db = knex;
     if(trx){db = trx;}
-    var query = db('omh.maps')
+    const query = db('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, basemap, private, created_by,
       created_at, updated_by, updated_at, views, owned_by_group_id, owned_by_user_id,
@@ -53,7 +53,7 @@ module.exports = {
   async getMapLayers(map_id: number, includePrivateLayers: boolean, trx: any){
     let db = knex;
     if(trx){db = trx;}
-    var query = db.select(
+    const query = db.select(
       'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
       'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
       'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
@@ -82,7 +82,7 @@ module.exports = {
       const layers = await query;
       layers.map(layer=>{
         //repair layer settings if not set
-        let active = MapStyles.settings.get(layer.style, 'active');
+        const active = MapStyles.settings.get(layer.style, 'active');
         if(typeof active === 'undefined'){
           layer.style = MapStyles.settings.set(layer.style, 'active', true);
         }
@@ -264,7 +264,7 @@ module.exports = {
       const map_id = result[0];
       debug.log('Created Map with ID: ' + map_id);
       //insert layers
-      var mapLayers = [];
+      const mapLayers = [];
       if(layers && Array.isArray(layers) && layers.length > 0){
         layers.forEach((layer: Object, i: number) => {
           mapLayers.push({
@@ -378,7 +378,7 @@ module.exports = {
       await trx('omh.map_layers').where({map_id}).del();
 
       //insert layers
-      var mapLayers = [];
+      const mapLayers = [];
       layers.forEach((layer, i) => {
         mapLayers.push({
           map_id,
@@ -389,7 +389,7 @@ module.exports = {
           position: i
         });
       });
-      const result = await trx('omh.map_layers').insert(mapLayers)
+      const result = await trx('omh.map_layers').insert(mapLayers);
 
       debug.log('Updated Map Layers with MapID: ' + map_id);
       return result;
@@ -422,14 +422,14 @@ module.exports = {
         });
       }
     }
-    const map_id = await this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate)
+    const map_id = await this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate);
     debug.log('Saving User Map with ID: ' + map_id);
     await knex('omh.maps').update({owned_by_group_id: group_id}).where({map_id});
     return map_id; //pass on the new map_id
   },
 
   async getMapByShareId(share_id: string, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     const result = await db('omh.maps')
     .select(knex.raw(
       `map_id, title, position, style, settings, basemap, private, created_by,
@@ -445,14 +445,14 @@ module.exports = {
   },
 
   async addPublicShareID(map_id: number, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     const share_id = shortid.generate();
     await db('omh.maps').update({share_id}).where({map_id});
     return share_id;
   },
 
   async removePublicShareID(map_id: number, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     return db('omh.maps').update({share_id: null}).where({map_id});
   }
 

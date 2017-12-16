@@ -96,19 +96,19 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
   }
 
   render() {
-    var omhBaseUrl = urlUtil.getBaseUrl();
+    const omhBaseUrl = urlUtil.getBaseUrl();
 
-    var hubBaseUrl = omhBaseUrl + '/hub/' + this.state.hub.hub_id;
-    var bannerClass='hub-banner';
+    const hubBaseUrl = omhBaseUrl + '/hub/' + this.state.hub.hub_id;
+    let bannerClass='hub-banner';
     if(this.props.subPage) {
       bannerClass='hub-banner-subpage';
     }
-    var title = '', tagline = '',
+    let title = '', tagline = '',
     logoEditButton = '', bannerEditButton = '', imageCrop = '';
 
-    var nameVal = null;
+    let nameVal = null;
     if(this.state.hub.name) nameVal = this.state.hub.name.replace('&nbsp;', '');
-    var taglineVal = null;
+    let taglineVal = null;
     if(this.state.hub.tagline) taglineVal = this.state.hub.tagline.replace('&nbsp;', '');
 
     if(this.props.editing){
@@ -168,7 +168,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
         <p className="white-text text-shadow no-margin">{taglineVal}</p>
       );
     }
-    var logoImage = '', bannerImage= '';
+    let logoImage = '', bannerImage= '';
     if(this.state.logoImage){ //use new image first
       logoImage = (
         <a href={hubBaseUrl}>

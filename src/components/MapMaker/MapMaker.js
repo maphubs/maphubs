@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 
-var $ = require('jquery');
+const $ = require('jquery');
 import LayerList from './LayerList';
 import _isEqual from 'lodash.isequal';
 import _debounce from 'lodash.debounce';
@@ -98,7 +98,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   componentWillMount(){
     super.componentWillMount();
-    var _this = this;
+    const _this = this;
     if(this.props.mapLayers){
       Actions.setMapLayers(this.props.mapLayers);
     }
@@ -114,24 +114,24 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     if (typeof window === 'undefined') return; //only run this on the client
     function isRetinaDisplay() {
         if (window.matchMedia) {
-            var mq = window.matchMedia("only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)");
+            const mq = window.matchMedia("only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)");
             return (mq && mq.matches || (window.devicePixelRatio > 1));
         }
     }
     //detect retina
-    var retina = false;
+    let retina = false;
     if (isRetinaDisplay()){
       retina = true;
     }
 
     function getSize(){
       // Get the dimensions of the viewport
-      var width = Math.floor($(window).width());
-      var height = $(window).height();
+      const width = Math.floor($(window).width());
+      const height = $(window).height();
       return {width, height};
     }
 
-    var size = getSize();
+    const size = getSize();
     this.setState({
       retina,
       width: size.width,
@@ -139,8 +139,8 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     });
 
     $(window).resize(function(){
-      var debounced = _debounce(() => {
-        var size = getSize();
+      const debounced = _debounce(() => {
+        const size = getSize();
         _this.setState({
           width: size.width,
           height: size.height
@@ -151,7 +151,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     $(this.refs.tabs).tabs();
     $(this.refs.mapMakerToolPanel).collapsible();
     if(this.props.edit){
@@ -209,7 +209,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   onCancel = () => {
     $('.savebutton-tooltipped').tooltip('remove');
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Cancel'),
       postitiveButtonText: _this.__('Cancel Map'),
@@ -233,7 +233,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
          return this.__('Private map must be saved to a group');
       }
       //check all layers are in the same group
-      var privateLayerInOtherGroup = false;
+      let privateLayerInOtherGroup = false;
       if(this.state.mapLayers){
         this.state.mapLayers.forEach((layer) => {
           if(layer.private && layer.owned_by_group_id !== group_id){
@@ -247,7 +247,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
     }else{
       //check that no private layers are included
-      var privateLayerInPublicMap = false;
+      let privateLayerInPublicMap = false;
       if(this.state.mapLayers){
         this.state.mapLayers.forEach((layer) => {
           if(layer.private){
@@ -262,19 +262,19 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   onSave = (model: Object, cb: Function) => {
-    var _this = this;
+    const _this = this;
 
-    var position = this.refs.map.getPosition();
+    const position = this.refs.map.getPosition();
     position.bbox = this.refs.map.getBounds();
 
     if(model.private === undefined) model.private = false;
 
-    var err = this.privacyCheck(model.private, model.group);
+    const err = this.privacyCheck(model.private, model.group);
     if(err){
        MessageActions.showMessage({title: _this.__('Error'), message: err});
     }else{
 
-      var basemap = this.refs.map.getBaseMap();
+      const basemap = this.refs.map.getBaseMap();
       if(!this.state.map_id || this.state.map_id === -1){
         Actions.createMap(model.title, position, basemap, model.group, model.private, _this.state._csrf, err =>{
           cb();
@@ -304,7 +304,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layer_id: number) => {
-    var _this = this;
+    const _this = this;
     $('.layer-card-tooltipped').tooltip('remove');
     Actions.toggleVisibility(layer_id, (layerStyle) => {
       //_this.refs.map.updateLayer(layerStyle);
@@ -313,7 +313,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   showLayerDesigner = (layer_id: number) => {
-    var layer = _find(this.state.mapLayers, {layer_id});
+    const layer = _find(this.state.mapLayers, {layer_id});
     $('.layer-card-tooltipped').tooltip('remove');
     this.setState({showMapLayerDesigner: true, layerDesignerLayer: layer});
     $('.layer-card-tooltipped').tooltip();
@@ -321,7 +321,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   onLayerStyleChange = (layer_id: number, style: Object, labels: Object, legend: Object) => {
     Actions.updateLayerStyle(layer_id, style, labels, legend, (updatedLayer) => {
-       this.setState({showMapLayerDesigner: true, layerDesignerLayer: updatedLayer})
+       this.setState({showMapLayerDesigner: true, layerDesignerLayer: updatedLayer});
        //this.refs.map.updateLayer(updatedLayer.style);
     });
   }
@@ -337,7 +337,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   addLayer = (layer: Layer) => {
-    var _this=this;
+    const _this=this;
     $('.layer-card-tooltipped').tooltip('remove');
 
     //clone the layer object so we don't mutate the data in the search results
@@ -347,7 +347,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false);
     }
 
-    var position = this.refs.map.getPosition();
+    const position = this.refs.map.getPosition();
     position.bounds = this.refs.map.getBounds();
 
     Actions.setMapPosition(position);
@@ -392,17 +392,17 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   onToggleForestLoss = (enabled: boolean) => {
-    var mapLayers = this.state.mapLayers ? this.state.mapLayers: [];
-    var layers = ForestLossLegendHelper.getLegendLayers();
+    let mapLayers = this.state.mapLayers ? this.state.mapLayers: [];
+    const layers = ForestLossLegendHelper.getLegendLayers();
   
     if(enabled){
       //add layers to legend
        mapLayers = mapLayers.concat(layers);
     }else{
-      var updatedLayers = [];
+      const updatedLayers = [];
       //remove layers from legend
       mapLayers.forEach(mapLayer=>{
-        var foundInLayers;
+        let foundInLayers;
         layers.forEach(layer=>{
           if(mapLayer.id === layer.id){
             foundInLayers = true;
@@ -418,17 +418,17 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   onToggleIsochroneLayer = (enabled: boolean) => {
-    var mapLayers = this.state.mapLayers ? this.state.mapLayers: [];
-    var layers = IsochroneLegendHelper.getLegendLayers();
+    let mapLayers = this.state.mapLayers ? this.state.mapLayers: [];
+    const layers = IsochroneLegendHelper.getLegendLayers();
   
     if(enabled){
       //add layers to legend
        mapLayers = mapLayers.concat(layers);
     }else{
-      var updatedLayers = [];
+      const updatedLayers = [];
       //remove layers from legend
       mapLayers.forEach(mapLayer=>{
-        var foundInLayers;
+        let foundInLayers;
         layers.forEach(layer=>{
           if(mapLayer.id === layer.id){
             foundInLayers = true;
@@ -444,18 +444,18 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
     const headerHeight = 52;
     const collasibleHeaderHeight = 55;
-    var panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 3);
+    let panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 3);
 
-    var tabContentDisplay = 'none';
+    let tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit';
     }
 
     
-    var overlayLayerList = '';
+    let overlayLayerList = '';
     if(this.state.showMapLayerDesigner){
       overlayLayerList = (
         <MapLayerDesigner ref="LayerDesigner"
@@ -484,7 +484,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       );
     }
 
-    var editLayerPanel='', editingTools = '';
+    let editLayerPanel='', editingTools = '';
     if(this.state.editingLayer){
     //panelHeight = this.state.height - 241;
     panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 4);
@@ -508,7 +508,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
     let mapExtent;
     if(this.state.position && this.state.position.bbox){
-      var bbox = this.state.position.bbox;
+      const bbox = this.state.position.bbox;
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];
     }
 

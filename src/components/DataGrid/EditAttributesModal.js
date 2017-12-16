@@ -4,10 +4,10 @@ import {Modal, ModalContent, ModalFooter} from '../Modal/Modal.js';
 import MapHubsComponent from '../MapHubsComponent';
 import DataCollectionForm from '../DataCollection/DataCollectionForm';
 import MessageActions from '../../actions/MessageActions';
-var request = require('superagent');
-var checkClientError = require('../../services/client-error-response').checkClientError;
-var debug = require('../../services/debug')('EditAttributeModal');
-var _assignIn = require('lodash.assignin');
+const request = require('superagent');
+const checkClientError = require('../../services/client-error-response').checkClientError;
+const debug = require('../../services/debug')('EditAttributeModal');
+const _assignIn = require('lodash.assignin');
 
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {MapHubsField} from '../../types/maphubs-field';
@@ -27,7 +27,7 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
 
   constructor(props: Props){
     super(props);
-    let values = props.feature ? props.feature.properties : {};
+    const values = props.feature ? props.feature.properties : {};
     this.state = {
       values
     };
@@ -58,13 +58,13 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
    * Save data to server
    */
   onSave = () => {
-    var _this = this;
+    const _this = this;
 
-    let feature = this.props.feature; 
+    const feature = this.props.feature; 
      _assignIn(feature.properties, this.state.values);
     feature.id = feature.properties.mhid;
 
-    let edits = [
+    const edits = [
       {
         status: 'modify',
         geojson: feature

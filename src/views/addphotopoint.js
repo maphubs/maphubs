@@ -16,7 +16,7 @@ import ConfirmationActions from '../actions/ConfirmationActions';
 import Progress from '../components/Progress';
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore';
-var debug = require('../services/debug')('addphotopoint');
+const debug = require('../services/debug')('addphotopoint');
 import GetNameField from '../services/get-name-field';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -53,7 +53,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
 	}
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(!_this.state.submitted){
         return _this.__('You have not saved your data, your work will be lost.');
@@ -71,7 +71,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   }
 
   onCrop = (data: any, info: Object) => {
-    var _this = this;
+    const _this = this;
     Actions.setImage(data, info, function(err){
       if(err){
         MessageActions.showMessage({
@@ -85,7 +85,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (model: Object) => {
-    var _this = this;
+    const _this = this;
     this.setState({saving: true});
     Actions.submit(model, this.state._csrf, (err) => {
       _this.setState({saving: false});
@@ -103,21 +103,21 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           onNegativeResponse(){
 
             let featureName = 'unknown';
-            let geoJSON: any  = _this.state.geoJSON;
-            let layer_id: string = (_this.state.layer && _this.state.layer.layer_id) ? _this.state.layer.layer_id.toString() : '0';
+            const geoJSON: any  = _this.state.geoJSON;
+            const layer_id: string = (_this.state.layer && _this.state.layer.layer_id) ? _this.state.layer.layer_id.toString() : '0';
             if(geoJSON && geoJSON.features){
-              let features = geoJSON.features;
-              let props = features[0].properties;
-              let style = (_this.state.layer && _this.state.layer.style) ? _this.state.layer.style : undefined;
-              let presets = GetNameField.getPresetsFromStyle(style);
-              let nameField = GetNameField.getNameField(props, presets);
+              const features = geoJSON.features;
+              const props = features[0].properties;
+              const style = (_this.state.layer && _this.state.layer.style) ? _this.state.layer.style : undefined;
+              const presets = GetNameField.getPresetsFromStyle(style);
+              const nameField = GetNameField.getNameField(props, presets);
               if(nameField){
                 featureName = props[nameField];
               } 
             } 
             if(_this.state.mhid){
-              let featureId = _this.state.mhid.split(':')[1];
-              var featurePageUrl = `/feature/${layer_id}/${featureId}/${featureName}`;
+              const featureId = _this.state.mhid.split(':')[1];
+              const featurePageUrl = `/feature/${layer_id}/${featureId}/${featureName}`;
               window.location = featurePageUrl;
             }else{
               debug.log('mhid not found');
@@ -131,7 +131,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
 
   render(){
 
-    var dataReview = '', dataForm = '', addPhotoButton = '';
+    let dataReview = '', dataForm = '', addPhotoButton = '';
     if(this.state.geoJSON){
       //if we have a point show the preview map and data fields
       dataReview = (

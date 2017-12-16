@@ -30,7 +30,7 @@ export default class CardGrid extends React.Component<Props, State> {
 
   constructor(props: Props){
     super(props);
-    let chunks: NestedArray<CardConfig> = _chunk(props.cards, props.cardsPerPage);
+    const chunks: NestedArray<CardConfig> = _chunk(props.cards, props.cardsPerPage);
     this.state = {
       chunks,
       page: 1
@@ -38,7 +38,7 @@ export default class CardGrid extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props){
-    let chunks: NestedArray<CardConfig> = _chunk(nextProps.cards, nextProps.cardsPerPage);
+    const chunks: NestedArray<CardConfig> = _chunk(nextProps.cards, nextProps.cardsPerPage);
     this.setState({
       chunks
     });
@@ -49,8 +49,8 @@ export default class CardGrid extends React.Component<Props, State> {
   }
 
   render() {
-    let numPages = this.state.chunks.length;
-    let cards: Array<CardConfig> = (this.state.chunks[this.state.page-1]: Array<CardConfig>);
+    const numPages = this.state.chunks.length;
+    const cards: Array<CardConfig> = (this.state.chunks[this.state.page-1]: Array<CardConfig>);
      return (
        <div>
          <div className="row no-margin right-align">

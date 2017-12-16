@@ -1,5 +1,5 @@
 //@flow
-var shapefileFairy = require('@mapbox/shapefile-fairy');
+const shapefileFairy = require('@mapbox/shapefile-fairy');
 
 module.exports = function(path:string, options: Object){
   return new Promise((resolve, reject)=>{

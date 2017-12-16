@@ -27,7 +27,7 @@ require('medium-editor/dist/css/themes/flat.css');
 require("cropperjs/dist/cropper.css");
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <HubInfo {...data}/>,

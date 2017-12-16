@@ -14,7 +14,7 @@ require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <EmbedMap {...data}/>,

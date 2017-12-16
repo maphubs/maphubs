@@ -1,8 +1,8 @@
 // @flow
-var knex = require('../connection.js');
-var debug = require('../services/debug')('model/image');
-var ImageUtils = require('../services/image-utils');
-var Promise = require('bluebird');
+const knex = require('../connection.js');
+const debug = require('../services/debug')('model/image');
+const ImageUtils = require('../services/image-utils');
+const Promise = require('bluebird');
 
 module.exports = {
 
@@ -29,11 +29,11 @@ module.exports = {
 
   async getGroupImage(group_id: string){
     debug.log('get image for group: ' + group_id);
-    var _this = this;
+    const _this = this;
     const result = await knex('omh.group_images').select('image_id')
     .whereRaw('lower(group_id) = ?', group_id.toLowerCase());
     if(result.length === 1){
-      var id = result[0].image_id;
+      const id = result[0].image_id;
       debug.log('image found: ' + id);
       return _this.getImageByID(parseInt(id));
     }else{
@@ -47,7 +47,7 @@ module.exports = {
     const result = await knex('omh.group_images').select('image_id')
     .whereRaw('lower(group_id) = ?', group_id.toLowerCase());
     if(result.length === 1){
-      var id = result[0].image_id;
+      const id = result[0].image_id;
       debug.log('image found: ' + id);
       return this.getThumbnailImageByID(parseInt(id));
     }else{
@@ -65,7 +65,7 @@ module.exports = {
   },
 
   async setGroupImage(group_id: string, image: any, info: any){
-    var _this = this;
+    const _this = this;
     return knex.transaction(async (trx) => {
       const result = await trx('omh.group_images').select('image_id')
       .whereRaw('lower(group_id) = ?', group_id.toLowerCase());
@@ -85,7 +85,7 @@ module.exports = {
 
   async getHubImage(hub_id: string, type: string="logo"){
     debug.log('get image for hub: ' + hub_id);
-    var _this = this;
+    const _this = this;
     const result = await knex('omh.hub_images').select('image_id')
     .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type]);
 
@@ -109,7 +109,7 @@ module.exports = {
     .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type]);
 
     if(result.length === 1){
-      var id = result[0].image_id;
+      const id = result[0].image_id;
       debug.log('image found: ' + id);
       return this.getThumbnailImageByID(parseInt(id));
     }else{
@@ -131,7 +131,7 @@ module.exports = {
 
   //delete prev image if there is one, then insert
   async setHubImage(hub_id: string, image: any, info: any, type: string){
-    var _this = this;
+    const _this = this;
     return knex.transaction( async (trx) => {
       const result = await trx('omh.hub_images').select('image_id')
       .whereRaw('lower(hub_id) = ? AND type = ?', [hub_id.toLowerCase(), type]);

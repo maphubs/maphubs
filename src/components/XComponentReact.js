@@ -18,7 +18,7 @@ export default class XComponentReact extends React.Component<any, void> {
     const xEmbedComponent = xcomponent.create(this.props);
     xEmbedComponent.log(`instantiate_react_component`);
 
-    let parent = xEmbedComponent.init(Object.assign({}, this.props), null, this.xcontainer);
+    const parent = xEmbedComponent.init(Object.assign({}, this.props), null, this.xcontainer);
     this.setState({parent});
     parent.render(this.xcontainer);
   }

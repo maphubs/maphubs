@@ -1,7 +1,7 @@
 //@flow
-var csv2geojson = require('csv2geojson');
-var fileEncodingUtils = require('../file-encoding-utils');
-var Promise = require('bluebird');
+const csv2geojson = require('csv2geojson');
+const fileEncodingUtils = require('../file-encoding-utils');
+const Promise = require('bluebird');
 
 module.exports = async function(filePath: string, layer_id: number){
   const data = fileEncodingUtils.getDecodedFileWithBestGuess(filePath);

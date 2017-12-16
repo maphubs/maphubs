@@ -2,8 +2,8 @@
 import React from 'react';
 import Header from '../components/header';
 import slugify from 'slugify';
-var urlUtil = require('../services/url-util');
-var $ = require('jquery');
+const urlUtil = require('../services/url-util');
+const $ = require('jquery');
 import Comments from '../components/Comments';
 import FeatureProps from '../components/Feature/FeatureProps';
 import FeatureNotes from '../components/Feature/FeatureNotes';
@@ -66,7 +66,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   componentDidMount(){
     $(this.refs.tabs).tabs();
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(_this.state.editingNotes){
         return _this.__('You have not saved your edits, your changes will be lost.');
@@ -79,8 +79,8 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   }
 
   stopEditingNotes = () => {
-    var _this = this;
-    var geoJSONProps: Object = this.props.feature.geojson.features[0].properties;
+    const _this = this;
+    const geoJSONProps: Object = this.props.feature.geojson.features[0].properties;
 
     FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, (err) => {
       if(err){
@@ -95,15 +95,15 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   //Build edit link
   getEditLink = () => {
     //get map position
-    var position = this.refs.map.getMap().getPosition();
-    var zoom = Math.ceil(position.zoom);
+    const position = this.refs.map.getMap().getPosition();
+    let zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' +  position.lat + '/' + position.lng  ;
   }
 
   openEditor = () => {
-    var editLink = this.getEditLink();
+    const editLink = this.getEditLink();
     window.location = editLink;
   }
 
@@ -116,8 +116,8 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var _this = this;
-    var featureName: string = "Feature";
+    const _this = this;
+    let featureName: string = "Feature";
 
     const {canEdit} = this.props;
  

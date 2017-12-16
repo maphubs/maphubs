@@ -1,5 +1,5 @@
 // @flow
-var debug = require('./debug')('clientError');
+const debug = require('./debug')('clientError');
 
 module.exports = {
 

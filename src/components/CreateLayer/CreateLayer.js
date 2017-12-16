@@ -48,9 +48,9 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
   render() {
     
-    var sourceDisplay = this.getSource(this.state.source, this.props.mapConfig);
+    const sourceDisplay = this.getSource(this.state.source, this.props.mapConfig);
 
-    var planetSource = '';
+    let planetSource = '';
     if(MAPHUBS_CONFIG.mapHubsPro){
       planetSource = (
          <div className="col s6 m3 l2">
@@ -61,7 +61,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       );
     }
 
-    var cancelButton = '';
+    let cancelButton = '';
     if(this.props.showCancel){
       cancelButton = (
         <div className="left">

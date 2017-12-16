@@ -1,8 +1,8 @@
 import React from 'react';
 import Formsy, {addValidationRule} from 'formsy-react';
 import slugify from 'slugify';
-var request = require('superagent');
-var $ = require('jquery');
+const request = require('superagent');
+const $ = require('jquery');
 import Header from '../components/header';
 import TextInput from '../components/forms/textInput';
 import SelectGroup from '../components/Groups/SelectGroup';
@@ -13,7 +13,7 @@ import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 type Props = {|
   groups: Array,
@@ -61,7 +61,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
     addValidationRule('validMapHubsLayerPath', (values, value) => {
       if(typeof window !== 'undefined' && value){
-        var pathParts = $('<a>').prop('href', value).prop('pathname').split('/');
+        const pathParts = $('<a>').prop('href', value).prop('pathname').split('/');
         if(pathParts[1] === 'layer'
         && (pathParts[2] === 'info' || pathParts[2] === 'map')
         && pathParts[3]){
@@ -73,7 +73,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(_this.state.layer && !_this.state.complete){
         return _this.__('You have not finished creating your layer.');
@@ -94,18 +94,18 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   }
 
   loadRemoteUrl = (model) => {
-    var _this = this;
-    var remoteLayerUrl = model.remoteLayerUrl;
-    var group_id = model.group;
+    const _this = this;
+    const remoteLayerUrl = model.remoteLayerUrl;
+    const group_id = model.group;
 
-    var link = $('<a>').prop('href', remoteLayerUrl);
+    const link = $('<a>').prop('href', remoteLayerUrl);
 
-    var remote_host = link.prop('hostname');
-    var pathParts = link.prop('pathname').split('/');
+    const remote_host = link.prop('hostname');
+    const pathParts = link.prop('pathname').split('/');
     if(pathParts[1] === 'layer'
     && (pathParts[2] === 'info' || pathParts[2] === 'map')
     && pathParts[3]){
-      var remote_layer_id = pathParts[3];
+      const remote_layer_id = pathParts[3];
 
       request.get('https://' + remote_host + '/api/layer/metadata/' + remote_layer_id)
       .type('json').accept('json').timeout(1200000)
@@ -119,7 +119,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   }
 
   saveLayer = () => {
-    var _this = this;
+    const _this = this;
     request.post('/api/layer/create/remote')
     .type('json').accept('json')
     .send({
@@ -129,7 +129,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     })
     .end((err, res) => {
       checkClientError(res, err, () => {}, (cb) => {
-        var layer_id = res.body.layer_id;
+        const layer_id = res.body.layer_id;
         _this.setState({complete: true});
         window.location = '/layer/info/' + layer_id + '/' + slugify(_this._o_(_this.state.layer.name));
         cb();
@@ -155,7 +155,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
       );
     }
 
-    var layerReview = '';
+    let layerReview = '';
 
     if(this.state.layer){
       layerReview = (

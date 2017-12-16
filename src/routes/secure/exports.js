@@ -1,22 +1,22 @@
 //@flow
-var Layer = require('../../models/layer');
-var Feature = require('../../models/feature');
-var apiError = require('../../services/error-response').apiError;
-var ogr2ogr = require('ogr2ogr');
-var tokml = require('tokml');
-var debug = require('../../services/debug')('exports');
-var privateLayerCheck = require('../../services/private-layer-check').middleware;
-var knex = require('../../connection.js');
-var Promise = require('bluebird');
-var Locales = require('../../services/locales');
-var MapStyles = require('../../components/Map/Styles');
-var geojson2dsv = require('geojson2dsv');
-var exportUtils = require('../../services/export-utils');
+const Layer = require('../../models/layer');
+const Feature = require('../../models/feature');
+const apiError = require('../../services/error-response').apiError;
+const ogr2ogr = require('ogr2ogr');
+const tokml = require('tokml');
+const debug = require('../../services/debug')('exports');
+const privateLayerCheck = require('../../services/private-layer-check').middleware;
+const knex = require('../../connection.js');
+const Promise = require('bluebird');
+const Locales = require('../../services/locales');
+const MapStyles = require('../../components/Map/Styles');
+const geojson2dsv = require('geojson2dsv');
+const exportUtils = require('../../services/export-utils');
 
 module.exports = function(app: any) {
 
   app.get('/api/layer/:layer_id/export/json/*', privateLayerCheck, (req, res) => {
-      var layer_id = parseInt(req.params.layer_id || '', 10);
+      const layer_id = parseInt(req.params.layer_id || '', 10);
       Layer.getGeoJSON(layer_id).then((geoJSON) => {
         return res.status(200).send(geoJSON);
       }).catch(apiError(res, 200));
@@ -24,9 +24,9 @@ module.exports = function(app: any) {
 
 
   app.get('/api/layer/:layer_id/export/svg/*', privateLayerCheck, (req, res) => {
-      var layer_id = parseInt(req.params.layer_id || '', 10);    
+      const layer_id = parseInt(req.params.layer_id || '', 10);    
       Layer.getLayerByID(layer_id).then((layer) => {
-        let table = `layers.data_${layer.layer_id}`;
+        const table = `layers.data_${layer.layer_id}`;
         return Promise.all([
           knex.raw(`select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from :table:;`, {table}),
           knex.raw(`select ST_XMin(bbox)::float as xmin, 
@@ -34,12 +34,12 @@ module.exports = function(app: any) {
             ST_XMax(bbox)::float as xmax, ST_YMax(bbox)::float as ymax 
             from (select ST_Extent(ST_Transform(wkb_geometry, 900913)) as bbox from :table:) a`, {table})
         ]).then((results) => {
-          var featureSVGs = results[0];
-          var bounds = results[1].rows[0];
-          var paths = '';
+          const featureSVGs = results[0];
+          const bounds = results[1].rows[0];
+          let paths = '';
           
-          let savedColor = MapStyles.settings.get(layer.style, 'color');
-          let color = savedColor ? savedColor : '#FF0000';
+          const savedColor = MapStyles.settings.get(layer.style, 'color');
+          const color = savedColor ? savedColor : '#FF0000';
           
           if(layer.data_type === 'point'){
             featureSVGs.rows.forEach((row) => {
@@ -58,10 +58,10 @@ module.exports = function(app: any) {
            
           }
 
-          var width = bounds.xmax-bounds.xmin;
-          var height = bounds.ymax-bounds.ymin;
+          const width = bounds.xmax-bounds.xmin;
+          const height = bounds.ymax-bounds.ymin;
 
-          var svg = `
+          const svg = `
           <svg xmlns="http://www.w3.org/2000/svg"
           id="maphubs-layer-${layer.layer_id}" viewBox="${bounds.xmin} ${bounds.ymin} ${width} ${height*2}" preserveAspectRatio="xMidYMid meet">
           ${paths}
@@ -75,12 +75,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/api/layer/:layer_id/export/csv/*', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
 
     Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      var resultStr = JSON.stringify(geoJSON);
-      var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-      var match = req.get('If-None-Match');
+      const resultStr = JSON.stringify(geoJSON);
+      const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+      const match = req.get('If-None-Match');
       /*eslint-disable security/detect-possible-timing-attacks */
       //We freely give out the Etag hash, don't need to protect against someone brute forcing it
       if(hash === match){
@@ -89,7 +89,7 @@ module.exports = function(app: any) {
         res.header("Content-Type", "text/csv");
         res.header("ETag", hash);
 
-        let csvString = geojson2dsv(geoJSON, ",", true);
+        const csvString = geojson2dsv(geoJSON, ",", true);
 
         return res.status(200).send(csvString);
 
@@ -98,23 +98,23 @@ module.exports = function(app: any) {
   });
 
   app.get('/api/layer/:layer_id/export/geobuf/*', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
     exportUtils.completeGeoBufExport(req, res, layer_id);
   });
 
   app.get('/api/layer/:layer_id/export/maphubs/*', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
     exportUtils.completeMapHubsExport(req, res, layer_id);
   });
 
   app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getGeoJSON(layer_id).then((geoJSON) => {
       return Layer.getLayerByID(layer_id)
       .then((layer) => {
-        var geoJSONStr = JSON.stringify(geoJSON);
-        var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
-        var match = req.get('If-None-Match');
+        const geoJSONStr = JSON.stringify(geoJSON);
+        const hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
+        const match = req.get('If-None-Match');
         if(hash === match){
           return res.status(304).send();
         }else{
@@ -138,9 +138,9 @@ module.exports = function(app: any) {
             }
           });
 
-          let name = Locales.getLocaleStringObject(req.locale, layer.name);
-          let description = Locales.getLocaleStringObject(req.locale, layer.description);
-          var kml = tokml(geoJSON, {
+          const name = Locales.getLocaleStringObject(req.locale, layer.name);
+          const description = Locales.getLocaleStringObject(req.locale, layer.description);
+          const kml = tokml(geoJSON, {
               name: 'name',
               description: 'description',
               documentName: name,
@@ -157,22 +157,22 @@ module.exports = function(app: any) {
   });
 
   app.get('/api/feature/:layer_id/:id/export/kml/*', privateLayerCheck, (req, res, next) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
-     var id = req.params.id;
+    const layer_id = parseInt(req.params.layer_id || '', 10);
+     const id = req.params.id;
 
 
-     var mhid = `${layer_id}:${id}`;
+     const mhid = `${layer_id}:${id}`;
 
     if(mhid && layer_id){
         Layer.getLayerByID(layer_id)
         .then(layer => {
           return Feature.getFeatureByID(mhid, layer.layer_id)
           .then(result =>{
-            var feature = result.feature;
-            var geoJSON = feature.geojson;
-            var geoJSONStr = JSON.stringify(geoJSON);
-        var hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
-        var match = req.get('If-None-Match');
+            const feature = result.feature;
+            const geoJSON = feature.geojson;
+            const geoJSONStr = JSON.stringify(geoJSON);
+        const hash = require('crypto').createHash('md5').update(geoJSONStr).digest("hex");
+        const match = req.get('If-None-Match');
         if(hash === match){
           return res.status(304).send();
         }else{
@@ -196,9 +196,9 @@ module.exports = function(app: any) {
             }
           });
 
-          let name = Locales.getLocaleStringObject(req.locale, layer.name);
-          let description = Locales.getLocaleStringObject(req.locale, layer.description);         
-          var kml = tokml(geoJSON, {
+          const name = Locales.getLocaleStringObject(req.locale, layer.name);
+          const description = Locales.getLocaleStringObject(req.locale, layer.description);         
+          const kml = tokml(geoJSON, {
               name: 'name',
               description: 'description',
               documentName: name,
@@ -220,11 +220,11 @@ module.exports = function(app: any) {
   });
 
   app.get('/api/layer/:layer_id/export/gpx/*', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
     Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      var resultStr = JSON.stringify(geoJSON);
-      var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-      var match = req.get('If-None-Match');
+      const resultStr = JSON.stringify(geoJSON);
+      const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+      const match = req.get('If-None-Match');
       if(hash === match){
         return res.status(304).send();
       }else{
@@ -244,12 +244,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/api/layer/:layer_id/export/shp/*', privateLayerCheck, (req, res) => {
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
 
     Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      var resultStr = JSON.stringify(geoJSON);
-      var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-      var match = req.get('If-None-Match');
+      const resultStr = JSON.stringify(geoJSON);
+      const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+      const match = req.get('If-None-Match');
       if(hash === match){
         return res.status(304).send();
       }else{

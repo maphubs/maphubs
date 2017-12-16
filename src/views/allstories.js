@@ -59,7 +59,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
         </div>
       );
     }else{
-      let cards = this.props.stories.map(cardUtil.getStoryCard);
+      const cards = this.props.stories.map(cardUtil.getStoryCard);
       stories = (
         <CardGrid cards={cards} />
       );

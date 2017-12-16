@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var debug = require('../../services/debug')('FileUpload');
+const debug = require('../../services/debug')('FileUpload');
 import FileUploadProgress from 'react-fileupload-progress';
 import MapHubsComponent from '../MapHubsComponent';
 
@@ -43,8 +43,8 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   }
 
   onLoad =(e: any) => {
-    var dataTxt = e.target.response;
-    var data = JSON.parse(dataTxt);
+    const dataTxt = e.target.response;
+    const data = JSON.parse(dataTxt);
     this.setState({uploading: false});
     this.props.onUpload(data);
   }
@@ -58,9 +58,9 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   }
 
   formGetter = () => {
-    let element: any = document.getElementById('customForm');
+    const element: any = document.getElementById('customForm');
     if(element){
-      let formElement: HTMLFormElement = ((element: any): HTMLFormElement);
+      const formElement: HTMLFormElement = ((element: any): HTMLFormElement);
 
       return new FormData(formElement);
     }
@@ -72,14 +72,14 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   }
 
   customFormRenderer = (onSubmit: Function, onFileClick: Function) => {
-    var _this = this;
-    var onSubmitWrapper = function(val){
+    const _this = this;
+    const onSubmitWrapper = function(val){
       if(_this.props.onChange){
         _this.props.onChange();
       }
       onSubmit(val);
     };
-    let formRenderer = (
+    const formRenderer = (
       <div className="col s12 m4 l3" onClick={onFileClick} style={this.props.style}>
       <form id='customForm' ref="form" method="post" style={{marginBottom: '15px'}}>
         <div className="row file-field input-field">
@@ -100,7 +100,7 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   customProgressRenderer = (progress: number, hasError: boolean, cancelHandler: Function) => {
      let progressRenderer;
     if (hasError || progress > -1 ) {
-      let progressPct = progress + '%';
+      const progressPct = progress + '%';
 
       let message = (<span>{progressPct}</span>);
       if (hasError) {

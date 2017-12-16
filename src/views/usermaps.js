@@ -36,9 +36,9 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
 
 	render() {
 
-  var cards = this.props.maps.map(cardUtil.getMapCard);
+  const cards = this.props.maps.map(cardUtil.getMapCard);
 
-  var createMaps = '';
+  let createMaps = '';
   if(this.props.myMaps){
     createMaps=(
       <div>
@@ -51,7 +51,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
     );
   }
 
-  var myMaps = '';
+  let myMaps = '';
   if(!this.props.maps || this.props.maps.length === 0){
     myMaps = (
       <div className="row" style={{height: 'calc(100% - 100px)'}}>

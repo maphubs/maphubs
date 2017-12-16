@@ -42,8 +42,8 @@ export default class MapList extends MapHubsComponent<Props, void> {
       <ul className={className}>
         {title}
         {this.props.maps.map((map, i) => {
-          let mapTitle = this._o_(map.title);
-          let slugTitle = slugify(mapTitle);
+          const mapTitle = this._o_(map.title);
+          const slugTitle = slugify(mapTitle);
           return (
             <li className="collection-item" key={map.map_id}>
               <div>{mapTitle}

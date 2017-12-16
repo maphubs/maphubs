@@ -68,7 +68,7 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
   }
 
   stopEditing = () => {
-    var _this = this;
+    const _this = this;
     HubActions.saveHub(this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -80,8 +80,8 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
   }
 
   publish = () => {
-    var _this = this;
-    let hub = this.state.hub ? this.state.hub: {};
+    const _this = this;
+    const hub = this.state.hub ? this.state.hub: {};
     if(this.state.unsavedChanges){
       MessageActions.showMessage({
         title: _this.__('Unsaved Changes'), 
@@ -103,8 +103,8 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
 
   render() {
 
-    var editButton = '';
-    var publishButton = '';
+    let editButton = '';
+    let publishButton = '';
 
     if(this.props.canEdit){
       editButton = (

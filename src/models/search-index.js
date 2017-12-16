@@ -1,12 +1,12 @@
 //@flow
 
-var client = require('../services/elasticsearch').getClient();
-var Feature = require('../models/feature');
-var local = require('../local');
-var log = require('../services/log');
+const client = require('../services/elasticsearch').getClient();
+const Feature = require('../models/feature');
+const local = require('../local');
+const log = require('../services/log');
 import _centroid from '@turf/centroid';
-var knex = require('../connection.js');
-var Promise = require('bluebird');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
 
 module.exports = {
 
@@ -52,7 +52,7 @@ module.exports = {
   },
 
   async rebuildFeatures(){  
-    var _this = this;
+    const _this = this;
     //delete all existing features
     const layers = await knex('omh.layers').select('layer_id').whereNot({
       is_external: true, remote: true, private: true, features_indexed: true
@@ -70,8 +70,8 @@ module.exports = {
   },
 
   async updateLayer(layer_id: number, trx: any){
-    var _this = this;
-    let db = trx ? trx : knex;
+    const _this = this;
+    const db = trx ? trx : knex;
     log.info('Adding layer in search index: ' + layer_id);
     try {
       const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
@@ -85,8 +85,8 @@ module.exports = {
   },
 
   async deleteLayer(layer_id: number, trx: any){
-    var _this = this;
-    let db = trx ? trx : knex; 
+    const _this = this;
+    const db = trx ? trx : knex; 
     try {
       log.info('Deleting layer form search index: ' + layer_id);
       const mhidResults = await db(`layers.data_${layer_id}`).select('mhid');
@@ -103,12 +103,12 @@ module.exports = {
     
     const result = await Feature.getFeatureByID(mhid, layer_id, trx);
 
-    let feature = result.feature.geojson.features[0];
+    const feature = result.feature.geojson.features[0];
 
     //HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
     delete feature.properties.timestamp;
 
-    var centroid;
+    let centroid;
     if(feature.geometry.type === 'Point'){
       centroid = feature;
     }else{
@@ -116,8 +116,8 @@ module.exports = {
     }
 
     //convert props to array
-    let props = Object.keys(feature.properties).map(key => {
-      let val = JSON.stringify(feature.properties[key]);
+    const props = Object.keys(feature.properties).map(key => {
+      const val = JSON.stringify(feature.properties[key]);
       return {key, val};
     });
 

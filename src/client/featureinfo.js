@@ -17,7 +17,7 @@ require('medium-editor/dist/css/themes/flat.css');
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <FeatureInfo {...data}/>,

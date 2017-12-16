@@ -11,7 +11,7 @@ export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, v
   props:  Props
 
   render(){
-    var mapDemoText = '', storyDemoText = '', hubDemoText = '', searchDemoText = '';
+    let mapDemoText = '', storyDemoText = '', hubDemoText = '', searchDemoText = '';
     if(this.props.demo){
       mapDemoText = (
         <div className="flow-text center-align">Interactive maps you’ve made</div>

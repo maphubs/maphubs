@@ -1,5 +1,5 @@
 //@flow
-var local = require('../../local');
+const local = require('../../local');
 module.exports = function(app: any) {
 
   app.get('/logout', (req, res) => {

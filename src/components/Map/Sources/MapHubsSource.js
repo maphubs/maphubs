@@ -1,21 +1,21 @@
 //@flow
 import superagent from 'superagent';
-var debug = require('../../../services/debug')('MapHubsSource');
-var urlUtil = require('../../../services/url-util');
-var checkClientError = require('../../../services/client-error-response').checkClientError;
+const debug = require('../../../services/debug')('MapHubsSource');
+const urlUtil = require('../../../services/url-util');
+const checkClientError = require('../../../services/client-error-response').checkClientError;
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Marker from '../Marker';
-var $ =require('jquery');
+const $ =require('jquery');
 import MarkerActions  from '../../../actions/map/MarkerActions';
-var GJV = require("geojson-validation");
+const GJV = require("geojson-validation");
 import geobuf from 'geobuf';
 import Pbf from 'pbf';
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 
 GJV.define("Position", (position: Array<number>) => {
     //the postion must be valid point on the earth, x between -180 and 180
-    var errors = [];
+    const errors = [];
     if(position[0] < -180 || position[0] > 180){
         errors.push("Longitude must be between -180 and 180");
     }
@@ -26,19 +26,19 @@ GJV.define("Position", (position: Array<number>) => {
 
 });
 
-var mapboxgl = {};
+let mapboxgl = {};
 if (typeof window !== 'undefined') {
     mapboxgl = require("mapbox-gl");
 }
 
-var MapHubsSource = {
+const MapHubsSource = {
   async load(key: string, source: GLSource, mapComponent: any){
-    let map = mapComponent.map;
+    const map = mapComponent.map;
     if(source.type === 'geojson' && source.data){
       if(typeof source.data === 'string'){
       return superagent.get(source.data)
         .then((res) => {
-          var geoJSON = res.body;
+          const geoJSON = res.body;
           if(geoJSON.features){
             geoJSON.features.forEach((feature, i)=>{
               feature.properties.mhid = i;
@@ -67,12 +67,13 @@ var MapHubsSource = {
       }
     }else{
       //load as tilejson
+      let url;
       if(source.url){
-        var url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
+        url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       }
       return superagent.get(url)
         .then((res) => {
-          var tileJSON = res.body;
+          const tileJSON = res.body;
           tileJSON.type = 'vector';
 
           map.on('source.load', (e) => {
@@ -92,13 +93,13 @@ var MapHubsSource = {
     }
   },
   addLayer(layer: GLLayer, source: GLSource, position: number, mapComponent: any){
-    let map = mapComponent.map;
+    const map = mapComponent.map;
 
     const presets = source.metadata ? source.metadata['maphubs:presets'] : undefined;
 
     //try to delete any old markers
     if(layer.metadata && layer.metadata['maphubs:markers']){  
-      let layer_id = layer.metadata['maphubs:layer_id'];    
+      const layer_id = layer.metadata['maphubs:layer_id'];    
       $('.maphubs-marker-'+layer_id).each((i, markerDiv) => {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();
@@ -113,7 +114,7 @@ var MapHubsSource = {
       && layer.metadata['maphubs:markers'].enabled
       && !(layer.layout && layer.layout.visibility && layer.layout.visibility === 'none')
       ){
-      var markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
+      const markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']));
       markerConfig.dataUrl = markerConfig.dataUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl());
       const layer_id = layer.metadata['maphubs:layer_id'];
       let shortid;
@@ -124,12 +125,12 @@ var MapHubsSource = {
       }
 
     //load geojson for this layer
-    var geojsonUrl = markerConfig.dataUrl;
+    let geojsonUrl = markerConfig.dataUrl;
     if(source.type === 'geojson'){
       geojsonUrl = source.data;
     }
 
-    var createMarkersFromGeoJSON = function(geojson){
+    const createMarkersFromGeoJSON = function(geojson){
       // add markers to map
           geojson.features.forEach((marker, i) => {
 
@@ -144,7 +145,6 @@ var MapHubsSource = {
               debug.log(errs);
             }else{
 
-          var markerId;
           if(marker.properties.osm_id){
             marker.properties.mhid = layer_id + ':' + marker.properties.osm_id;
           }else if(marker.properties['id']){
@@ -168,10 +168,10 @@ var MapHubsSource = {
           }
           marker.properties['maphubs_metadata'].presets = presets;
           
-          markerId = marker.properties.mhid;
+          const markerId = marker.properties.mhid;
            
           // create a DOM element for the marker
-          var el = document.createElement('div');
+          const el = document.createElement('div');
           el.className = 'maphubs-marker-'+layer_id;
           el.style.width = markerConfig.width + 'px';
           el.style.height = markerConfig.height + 'px';
@@ -195,15 +195,15 @@ var MapHubsSource = {
             el
           );
 
-          var offsetWidth = -markerConfig.width / 2;
-          var offsetHeight;
+          const offsetWidth = -markerConfig.width / 2;
+          let offsetHeight;
           if(markerConfig.shape === 'MAP_PIN' || markerConfig.shape  === 'SQUARE_PIN'){
             offsetHeight = -markerConfig.height;
           }else{
             offsetHeight = -markerConfig.height / 2;
           }
 
-          var mapboxMarker = new mapboxgl.Marker(el, {offset: [offsetWidth, offsetHeight]})
+          const mapboxMarker = new mapboxgl.Marker(el, {offset: [offsetWidth, offsetHeight]})
               .setLngLat(marker.geometry.coordinates)
               .addTo(map);
           
@@ -217,7 +217,7 @@ var MapHubsSource = {
         });
         //add marker shadows (hidden for now)
         //Need to draw something so layer is avaliable for search (otherwise source tiles are not cached)
-        let markerLayer = {
+        const markerLayer = {
           "id": layer.id,
           "type": "circle",
           "metadata":{
@@ -251,7 +251,7 @@ var MapHubsSource = {
       if(err){
         debug.error(err);
       }else{
-        let geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
+        const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)));
         createMarkersFromGeoJSON(geoJSON);
       }
     });
@@ -263,7 +263,7 @@ var MapHubsSource = {
         if(err){
           debug.error(err);
         }else{
-          var geojson = res.body;        
+          const geojson = res.body;        
           createMarkersFromGeoJSON(geojson);
         }
       },
@@ -286,7 +286,7 @@ var MapHubsSource = {
   },
   removeLayer(layer: GLLayer, mapComponent: any){
     if(layer.metadata && layer.metadata['maphubs:markers']){  
-      let layer_id = layer.metadata['maphubs:layer_id'];    
+      const layer_id = layer.metadata['maphubs:layer_id'];    
       $('.maphubs-marker-'+layer_id).each((i, markerDiv) => {
         ReactDOM.unmountComponentAtNode(markerDiv);
         $(markerDiv).remove();

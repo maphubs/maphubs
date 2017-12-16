@@ -1,9 +1,9 @@
-var Hub = require('../models/hub');
-var log = require('./log');
-var nextError = require('./error-response').nextError;
-var apiDataError = require('./error-response').apiDataError;
+const Hub = require('../models/hub');
+const log = require('./log');
+const nextError = require('./error-response').nextError;
+const apiDataError = require('./error-response').apiDataError;
 
-var check = function(hub_id, user_id){
+const check = function(hub_id, user_id){
   return Hub.isPrivate(hub_id)
   .then((isPrivate) => {
     if(isPrivate){
@@ -18,14 +18,14 @@ var check = function(hub_id, user_id){
   });
 };
 
-var middleware = function(view) {
+const middleware = function(view) {
   return function(req, res, next){
-    var user_id = -1;
+    let user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
 
-    var hub_id;
+    let hub_id;
     if(req.params.hub_id){
       hub_id = req.params.hub_id;
     }else if(req.body.hub_id){

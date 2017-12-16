@@ -14,7 +14,7 @@ if (!global._babelPolyfill) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <UserHubs {...data}/>,

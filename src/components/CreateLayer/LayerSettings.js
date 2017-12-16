@@ -65,7 +65,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(_this.props.warnIfUnsaved && _this.state.pendingChanges){
         return _this.__('You have not saved your edits, your changes will be lost.');
@@ -96,12 +96,12 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (model: Object) => {
-    var _this = this;
+    const _this = this;
     model.name = Locales.formModelToLocalizedString(model, 'name');
     model.description = Locales.formModelToLocalizedString(model, 'description');
     model.source = Locales.formModelToLocalizedString(model, 'source');
 
-    var initLayer = false;
+    let initLayer = false;
     if(!this.state.owned_by_group_id){
       initLayer = true;
     }
@@ -142,17 +142,17 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
         </div>
       );
     }
-    var canChangeGroup = true;
+    let canChangeGroup = true;
     if(this.state.status === 'published'){
       canChangeGroup = false;
     }
 
    
     
-    var licenseOptions = Licenses.getLicenses(this.__);
+    const licenseOptions = Licenses.getLicenses(this.__);
 
 
-    var prevButton = '', submitIcon = '';
+    let prevButton = '', submitIcon = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -165,9 +165,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
       );
     }
 
-    var license = this.state.license ? this.state.license : 'none';
+    const license = this.state.license ? this.state.license : 'none';
 
-     var selectGroup = '';
+     let selectGroup = '';
     if(this.props.showGroup){
       selectGroup = (
         <div  className="row">

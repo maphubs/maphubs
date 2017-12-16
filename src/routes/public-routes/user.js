@@ -1,17 +1,17 @@
 // @flow
-var User = require('../../models/user');
-var Admin = require('../../models/admin');
-var Group = require('../../models/group');
-var log = require('../../services/log');
-var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var local = require('../../local');
-var csrfProtection = require('csurf')({cookie: false});
+const User = require('../../models/user');
+const Admin = require('../../models/admin');
+const Group = require('../../models/group');
+const log = require('../../services/log');
+const apiError = require('../../services/error-response').apiError;
+const nextError = require('../../services/error-response').nextError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const local = require('../../local');
+const csrfProtection = require('csurf')({cookie: false});
 
-var mailchimp;
+let mailchimp;
 if(!local.mapHubsPro){
-  var Mailchimp = require('mailchimp-api-v3');
+  const Mailchimp = require('mailchimp-api-v3');
   mailchimp = new Mailchimp(local.MAILCHIMP_API_KEY);
 }
 
@@ -21,7 +21,7 @@ module.exports = function(app: any) {
 
  app.get('/signup/invite/:key', csrfProtection, (req, res, next) => {
 
-    var inviteKey = req.params.key;
+    const inviteKey = req.params.key;
     if(inviteKey){
       Admin.checkInviteKey(inviteKey)
       .then((valid) => {
@@ -88,7 +88,7 @@ module.exports = function(app: any) {
   });
 
  app.post('/api/user/setlocale', (req, res) => {
-    var data = req.body;
+    const data = req.body;
     if(data.locale){
       req.session.locale = data.locale;
       req.setLocale(data.locale);
@@ -98,7 +98,7 @@ module.exports = function(app: any) {
   });
 
   app.post('/api/user/mailinglistsignup', csrfProtection, (req, res) => {
-    var data = req.body;
+    const data = req.body;
     if(data.email){
       mailchimp.post({
           path: '/lists/' + local.MAILCHIMP_LIST_ID + '/members',
@@ -126,7 +126,7 @@ module.exports = function(app: any) {
       return;
     }else{
       try {
-      var user_id = req.session.user.maphubsUser.id;
+      const user_id = req.session.user.maphubsUser.id;
 
       const user = await User.getUser(user_id);
 

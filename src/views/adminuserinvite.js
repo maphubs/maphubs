@@ -10,7 +10,7 @@ import NotificationActions from '../actions/NotificationActions';
 import Progress from '../components/Progress';
 import MessageActions from '../actions/MessageActions';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -62,7 +62,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (user: User) => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm Invite'),
       postitiveButtonText: this.__('Send Invite'),
@@ -75,7 +75,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   }
 
   submitInvite = (user: User) => {
-    var _this = this;
+    const _this = this;
     this.setState({saving: true});
     request.post('/admin/invite/send')
     .type('json').accept('json')
@@ -106,7 +106,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   }
 
   handleResendInvite = (action: {key: string}) => {
-    var _this = this;
+    const _this = this;
     this.state.members.forEach((user: User)=>{
       if(user.key === action.key){
         ConfirmationActions.showConfirmation({
@@ -123,7 +123,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   }
 
   handleDeauthorize = (action: {key: string}) => {
-    var _this = this;
+    const _this = this;
     this.state.members.forEach((user)=>{
       if(user.key === action.key){
         ConfirmationActions.showConfirmation({
@@ -140,7 +140,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   }
 
   submitDeauthorize = (user: User) => {
-    var _this = this;
+    const _this = this;
     this.setState({saving: true});
     request.post('/admin/invite/deauthorize')
     .type('json').accept('json')
@@ -161,7 +161,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
               position: 'topright',
               dismissAfter: 3000,
               onDismiss() {
-                let members = [];
+                const members = [];
                _this.state.members.forEach((member)=>{
                 if(member.key !== user.key){
                   members.push(member);
@@ -179,8 +179,8 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   }
 
   render() {
-    var _this = this;
-    let membersList = [];
+    const _this = this;
+    const membersList = [];
     this.state.members.forEach((user) => {
       membersList.push({
         key: user.key,

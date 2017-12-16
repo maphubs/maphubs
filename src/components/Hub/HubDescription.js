@@ -49,8 +49,8 @@ export default class HubDescription extends MapHubsComponent<Props, HubStoreStat
   }
 
   render() {   
-    var description = '';
-    var descriptionVal = null;
+    let description = '';
+    let descriptionVal = null;
     if (this.state.hub.description) descriptionVal = this.state.hub.description.replace('&nbsp;', '');
     if(this.props.editing){      
       description = (

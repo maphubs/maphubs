@@ -1,9 +1,9 @@
 //@flow
-var TerraformerGL = require('../../../services/terraformerGL.js');
-var debug = require('../../../services/debug')('AGSFeatureServerQuery');
+const TerraformerGL = require('../../../services/terraformerGL.js');
+const debug = require('../../../services/debug')('AGSFeatureServerQuery');
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 
-var AGSMapServerQuery = {
+const AGSMapServerQuery = {
   load(key: string, source: GLSource, mapComponent: any){
     return TerraformerGL.getArcGISGeoJSON(source.url)
       .then((geoJSON) => {

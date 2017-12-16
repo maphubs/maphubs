@@ -3,8 +3,8 @@ import React from 'react';
 import GroupTag from '../Groups/GroupTag';
 import MapCardUserTag from './MapCardUserTag';
 import StoryHeader from '../Story/StoryHeader';
-var $ = require('jquery');
-var _isequal = require('lodash.isequal');
+const $ = require('jquery');
+const _isequal = require('lodash.isequal');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
 
@@ -71,7 +71,7 @@ export default class Card extends MapHubsComponent<Props, State> {
 
   render() {
 
-    var group = '';
+    let group = '';
     if(this.props.group){
       group = (
         <div className="valign-wrapper" style={{position: 'absolute', bottom:1, left: 1}}>
@@ -91,7 +91,7 @@ export default class Card extends MapHubsComponent<Props, State> {
     }
     */
 
-    var typeIcon = '', iconName = '', toolTipText = '',
+    let typeIcon = '', iconName = '', toolTipText = '',
     mapCardUserTag= '',
     storyTag = '';
     if(this.props.type){
@@ -134,7 +134,7 @@ export default class Card extends MapHubsComponent<Props, State> {
       );
     }
 
-    var privateIcon = '';
+    let privateIcon = '';
     if(this.props.private){
       privateIcon = (
         <div style={{position: 'absolute', top: '5px', right: '5px'}}>
@@ -145,7 +145,7 @@ export default class Card extends MapHubsComponent<Props, State> {
       );
     }
 
-    var cardContents = (<div className="carousel-card small"></div>);
+    let cardContents = (<div className="carousel-card small"></div>);
     if(this.state.mounted){
       let addButton = '';
       if(this.props.showAddButton){
@@ -156,7 +156,7 @@ export default class Card extends MapHubsComponent<Props, State> {
           </a>
         );
       }
-      var image = '';
+      let image = '';
       if(this.props.type === 'hub'){
         image = (
           <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', height: '150px'}}>

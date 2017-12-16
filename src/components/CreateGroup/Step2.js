@@ -2,7 +2,7 @@
 import React from 'react';
 import MessageActions from '../../actions/MessageActions';
 import NotificationActions from '../../actions/NotificationActions';
-var classNames = require('classnames');
+const classNames = require('classnames');
 import ImageCrop from '../ImageCrop';
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
@@ -54,7 +54,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
   }
 
   onCrop = (data: Object) => {
-    var _this = this;
+    const _this = this;
     //send data to server
     GroupActions.setGroupImage(data, this.state._csrf, (err) => {
       if(err){
@@ -74,12 +74,12 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
 	render() {
 
     //hide if not active
-    var className = classNames('row');
+    let className = classNames('row');
     if(!this.props.active) {
       className = classNames('row', 'hidden');
     }
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -88,7 +88,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
       );
     }
 
-    var groupImage = '';
+    let groupImage = '';
     //if group has an image use link,
     if(this.state.group && this.state.group.group_id && this.state.group.hasImage){
       groupImage = (

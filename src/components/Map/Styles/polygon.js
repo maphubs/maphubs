@@ -7,7 +7,7 @@ getPolygonLayers(
   color: string, hoverColor: string, hoverOutlineColor: string, 
   interactive: boolean, showBehindBaseMapLabels: boolean){
 
-    var layers = [
+    const layers = [
       {
         "id": `omh-data-polygon-${layer_id}-${shortid}`,
         "type": "fill",

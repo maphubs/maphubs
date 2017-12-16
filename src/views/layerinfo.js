@@ -23,12 +23,12 @@ import Pbf from 'pbf';
 import turf_area from '@turf/area';
 import turf_bbox from '@turf/bbox';
 import numeral from 'numeral';
-var debug = require('../services/debug')('layerinfo');
-var urlUtil = require('../services/url-util');
+const debug = require('../services/debug')('layerinfo');
+const urlUtil = require('../services/url-util');
 import slugify from 'slugify';
-var $ = require('jquery');
-var moment = require('moment-timezone');
-var clipboard;
+const $ = require('jquery');
+const moment = require('moment-timezone');
+let clipboard;
 if(process.env.APP_ENV === 'browser'){
  clipboard = require('clipboard-polyfill');
 }
@@ -110,7 +110,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     $(this.refs.tabs).tabs();
     $('.layer-info-tooltip').tooltip();
 
@@ -136,7 +136,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           request.get(this.props.layer.external_layer_config.data)
           .type('json').accept('json')
           .end((err, res) => {
-            var geoJSON = res.body;
+            const geoJSON = res.body;
             _this.setState({geoJSON});
           });
          _this.setState({dataMsg: _this.__('Data Loading')});
@@ -166,8 +166,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   getGeoJSON = () => {
-    var _this = this;
-      var baseUrl, dataUrl;
+    const _this = this;
+      let baseUrl, dataUrl;
     if(this.props.layer.remote){
       baseUrl = 'https://' + this.props.layer.remote_host;
       dataUrl = baseUrl + '/api/layer/'  + this.props.layer.remote_layer_id +'/export/geobuf/data.pbf';
@@ -197,24 +197,24 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   onTabSelect = () => {
-    var _this = this;
+    const _this = this;
 
-    var gridHeight = $(this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
+    const gridHeight = $(this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
     this.setState({gridHeight});
 
    $(window).resize(() => {
-      var gridHeight = $(_this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
+      const gridHeight = $(_this.refs.dataTabContent).height() - _this.state.gridHeightOffset;
       _this.setState({gridHeight, userResize: true});
     });
 
   }
 
   onRowSelected = (idVal: string, idField: string) => {
-    var _this = this;
+    const _this = this;
     if(this.state.geoJSON){
       this.state.geoJSON.features.forEach((feature) => {
         if(idVal === feature.properties[idField]){
-          var bbox = turf_bbox(feature);
+          const bbox = turf_bbox(feature);
           _this.refs.interactiveMap.getMap().fitBounds(bbox, 16, 25);
           return;
         }
@@ -225,15 +225,15 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   //Build edit link
   getEditLink = () => {
     //get map position
-    var position = this.refs.interactiveMap.getMap().getPosition();
-    var zoom = Math.ceil(position.zoom);
+    const position = this.refs.interactiveMap.getMap().getPosition();
+    let zoom = Math.ceil(position.zoom);
     if(zoom < 10) zoom = 10;
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' +  position.lat + '/' + position.lng  ;
   }
 
   openEditor = () => {
-    var editLink = this.getEditLink();
+    const editLink = this.getEditLink();
     window.location = editLink;
   }
 
@@ -246,7 +246,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   stopEditingNotes = () => {
-    var _this = this;
+    const _this = this;
 
     LayerNotesActions.saveNotes(this.props.layer.layer_id, this.state._csrf, (err) => {
       if(err){
@@ -263,7 +263,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   stopEditingData = () => {
-    var _this = this;
+    const _this = this;
     DataEditorActions.saveEdits(this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -286,10 +286,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var _this = this;
-    var glStyle = this.props.layer.style;
+    const _this = this;
+    const glStyle = this.props.layer.style;
 
-    var exportTabContent = '';
+    let exportTabContent = '';
 
     if(this.props.layer.is_external){
       exportTabContent = (
@@ -299,20 +299,20 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }else {
 
-      let name = slugify(this._o_(this.props.layer.name));
-      let layer_id = this.props.layer.layer_id;
+      const name = slugify(this._o_(this.props.layer.name));
+      const layer_id = this.props.layer.layer_id;
 
-      var maphubsFileURL =  `/api/layer/${layer_id}/export/maphubs/${name}.maphubs`;
-      var geoJSONURL = `/api/layer/${layer_id}/export/json/${name}.geojson`;
-      var shpURL = `/api/layer/${layer_id}/export/shp/${name}.zip`;
-      var kmlURL = `/api/layer/${layer_id}/export/kml/${name}.kml`;
-      var csvURL = `/api/layer/${layer_id}/export/csv/${name}.csv`;
-      var gpxURL = `/api/layer/${layer_id}/export/gpx/${name}.gpx`;
-      var svgURL = `/api/layer/${layer_id}/export/svg/${name}.svg`;
-      var geobufURL =  `/api/layer/${layer_id}/export/geobuf/${name}.pbf`;
+      const maphubsFileURL =  `/api/layer/${layer_id}/export/maphubs/${name}.maphubs`;
+      const geoJSONURL = `/api/layer/${layer_id}/export/json/${name}.geojson`;
+      const shpURL = `/api/layer/${layer_id}/export/shp/${name}.zip`;
+      const kmlURL = `/api/layer/${layer_id}/export/kml/${name}.kml`;
+      const csvURL = `/api/layer/${layer_id}/export/csv/${name}.csv`;
+      const gpxURL = `/api/layer/${layer_id}/export/gpx/${name}.gpx`;
+      const svgURL = `/api/layer/${layer_id}/export/svg/${name}.svg`;
+      const geobufURL =  `/api/layer/${layer_id}/export/geobuf/${name}.pbf`;
 
       if(!this.props.layer.disable_export){
-        var gpxExport = '';
+        let gpxExport = '';
         if(this.props.layer.data_type !== 'polygon'){
           gpxExport = (
             <li className="collection-item">{this.__('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>
@@ -342,12 +342,12 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       }
     }
 
-    var tabContentDisplay = 'none';
+    let tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit';
     }
 
-    var editButton = '', notesEditButton, dataEditButton;
+    let editButton = '', notesEditButton, dataEditButton;
 
     if(this.props.canEdit){
       notesEditButton = (
@@ -362,7 +362,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           startEditing={this.startEditingData} stopEditing={this.stopEditingData} />
       );
 
-      var mapEditButton = '', addPhotoPointButton = '';
+      let mapEditButton = '', addPhotoPointButton = '';
       if(!this.props.layer.is_external && !this.props.layer.remote){
         mapEditButton = (
           <li>
@@ -408,12 +408,12 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    var guessedTz = moment.tz.guess();
-    var creationTimeObj = moment.tz(this.props.layer.creation_time, guessedTz);
-    var creationTime = creationTimeObj.format();
-    var updatedTimeObj = moment.tz(this.props.layer.last_updated, guessedTz);
-    var updatedTimeStr = updatedTimeObj.format();
-    var updatedTime = '';
+    const guessedTz = moment.tz.guess();
+    const creationTimeObj = moment.tz(this.props.layer.creation_time, guessedTz);
+    const creationTime = creationTimeObj.format();
+    const updatedTimeObj = moment.tz(this.props.layer.last_updated, guessedTz);
+    const updatedTimeStr = updatedTimeObj.format();
+    let updatedTime = '';
     if(updatedTimeObj > creationTimeObj){
       updatedTime = (
         <p style={{fontSize: '16px'}}><b>{this.__('Last Update:')} </b>
@@ -432,21 +432,21 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
 
-    var licenseOptions = Licenses.getLicenses(this.__);
-    var license = _find(licenseOptions, {value: this.props.layer.license});
+    const licenseOptions = Licenses.getLicenses(this.__);
+    const license = _find(licenseOptions, {value: this.props.layer.license});
 
-    var descriptionWithLinks = '';
+    let descriptionWithLinks = '';
 
     if(this.props.layer.description){
       // regex for detecting links
-      let localizedDescription = this._o_(this.props.layer.description);
-      var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
+      const localizedDescription = this._o_(this.props.layer.description);
+      const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig;
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>");
     }
 
-    var remote = '';
+    let remote = '';
     if(this.props.layer.remote){
-      var remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slugify(this._o_(this.props.layer.name));
+      const remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slugify(this._o_(this.props.layer.name));
       remote = (
         <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
           <a href={remoteURL} target="_blank" rel="noopener noreferrer">{remoteURL}</a>
@@ -454,10 +454,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    var external = '';
+    let external = '';
     if(this.props.layer.is_external && !this.props.layer.remote){
-      var externalUrl = this.props.layer.external_layer_config.url;
-      var type = '';
+      let externalUrl = this.props.layer.external_layer_config.url;
+      let type = '';
       if(this.props.layer.external_layer_type === 'openstreetmap'){
         type = 'OpenStreetMap';
         externalUrl = 'http://openstreetmap.org';
@@ -484,7 +484,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    var commentTab, commentPanel;
+    let commentTab, commentPanel;
     if(MAPHUBS_CONFIG.enableComments){
       commentTab = (
         <li className="tab"><a href="#discuss">{this.__('Discuss')}</a></li>
@@ -494,7 +494,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    var privateIcon = '';
+    let privateIcon = '';
     if(this.props.layer.private){
       privateIcon = (
         <div style={{position: 'absolute', top: '15px', right: '10px'}}>
@@ -505,10 +505,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       );
     }
 
-    let firstSource = Object.keys(this.props.layer.style.sources)[0];
-    var presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
+    const firstSource = Object.keys(this.props.layer.style.sources)[0];
+    const presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets');
 
-    var dataGrid = '';
+    let dataGrid = '';
     if(this.state.editingData){
       dataGrid = (
         <LayerDataEditorGrid  

@@ -1,16 +1,16 @@
 // @flow
-var knex = require('../connection.js');
-var GJV = require("geojson-validation");
-var log = require('./log');
-var local = require('../local');
-var debug = require('./debug')('data-load-utils');
-var fs = require('fs');
-var LayerViews = require('./layer-views');
-var Promise = require('bluebird');
-var sizeof = require('object-sizeof');
-var MapStyles = require('../components/Map/Styles');
-var ogr2ogr = require('ogr2ogr');
-var SearchIndex = require('../models/search-index');
+const knex = require('../connection.js');
+const GJV = require("geojson-validation");
+const log = require('./log');
+const local = require('../local');
+const debug = require('./debug')('data-load-utils');
+const fs = require('fs');
+const LayerViews = require('./layer-views');
+const Promise = require('bluebird');
+const sizeof = require('object-sizeof');
+const MapStyles = require('../components/Map/Styles');
+const ogr2ogr = require('ogr2ogr');
+const SearchIndex = require('../models/search-index');
 import _buffer from '@turf/buffer';
 import _bbox from '@turf/bbox';
 
@@ -26,7 +26,7 @@ module.exports = {
     const result = await db('omh.layers').select('status').where({layer_id});
     
     if(result && result.length > 0){
-      let status = result[0].status;
+      const status = result[0].status;
       if(status === 'published' || status === 'loaded'){
         debug.log('removing from search index');
         await SearchIndex.deleteLayer(layer_id, trx);
@@ -66,11 +66,11 @@ module.exports = {
 
   cleanProps(props: Object, uniqueProps: Object){
     //get unique list of properties
-    var cleanedFeatureProps = {};
+    const cleanedFeatureProps = {};
     Object.keys(props).forEach((key) => {
       //ignore MapHubs ID fields  
       if(key !== 'mhid' && key !== 'layer_id' && key !== 'osm_id'){
-        var val = props[key];
+        let val = props[key];
 
         //remove chars that can't be in database fields (used in PostGIS views) 
         key = key.replace("-", "_");
@@ -96,7 +96,7 @@ module.exports = {
   },
 
   async insertTempGeoJSONIntoDB(geoJSON: any, layer_id: number){ 
-    var ogr = ogr2ogr(geoJSON).format('PostgreSQL')
+    const ogr = ogr2ogr(geoJSON).format('PostgreSQL')
     .skipfailures()
     .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
     .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
@@ -105,12 +105,12 @@ module.exports = {
   },
 
   async storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null){
-    var _this = this;
+    const _this = this;
     debug.log('storeTempGeoJSON');
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
 
-    var result = {success: false, error: 'Unknown Error'};
-    var uniqueProps = [];
+    let result = {success: false, error: 'Unknown Error'};
+    const uniqueProps = [];
 
     if(!geoJSON){
       throw new Error("Error dataset missing.");
@@ -123,10 +123,10 @@ module.exports = {
         throw new Error("Dataset appears to be empty. Zero features found in FeatureCollection");
       }
 
-      let firstFeature = geoJSON.features[0];
+      const firstFeature = geoJSON.features[0];
       //get type and SRID from the first feature
-      var geomType = '';
-      var firstFeatureGeom = firstFeature;
+      let geomType = '';
+      let firstFeatureGeom = firstFeature;
       if(GJV.isFeature(firstFeature)){
         firstFeatureGeom = firstFeature.geometry;
       }
@@ -143,24 +143,24 @@ module.exports = {
         log.error("unsupported data type: "+ JSON.stringify(firstFeatureGeom));
       }
 
-      var srid = '4326'; //assume WGS84 unless we find something else
+      let srid = '4326'; //assume WGS84 unless we find something else
       if(firstFeature.crs && firstFeature.crs.properties && firstFeature.crs.properties.name){
         srid = firstFeature.crs.properties.name.split(':')[1];
       }
-      var cleanedFeatures = [];
+      const cleanedFeatures = [];
       //loop through features
       geoJSON.features.map((feature, i) => {
         //confirm feature is expected type/SRID
         if(feature.crs && feature.crs.properties && feature.crs.properties.name){
-          let featureSRID = feature.crs.properties.name.split(':')[1];
+          const featureSRID = feature.crs.properties.name.split(':')[1];
           if(srid !== featureSRID){
             throw new Error('SRID mis-match found in geoJSON');
           }
         }
         //get unique list of properties
-        var cleanedFeatureProps = _this.cleanProps(feature.properties, uniqueProps);
+        const cleanedFeatureProps = _this.cleanProps(feature.properties, uniqueProps);
 
-        let mhid = `${layer_id}:${i+1}`;
+        const mhid = `${layer_id}:${i+1}`;
         feature.properties = {
           mhid,
           tags: JSON.stringify(cleanedFeatureProps)
@@ -176,10 +176,10 @@ module.exports = {
 
       geoJSON.features = cleanedFeatures;
 
-      var bbox;
+      let bbox;
       if(geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point'){
         //buffer the Point
-        var buffered = _buffer(geoJSON.features[0], 500, 'meters');
+        const buffered = _buffer(geoJSON.features[0], 500, 'meters');
         bbox = _bbox(buffered);
       }else{
         bbox = _bbox(geoJSON);
@@ -188,14 +188,14 @@ module.exports = {
       debug.log(bbox);
       geoJSON.bbox = bbox;
 
-      let updateData = {
+      const updateData = {
           data_type: geomType,
           extent_bbox: JSON.stringify(bbox)
       };
 
       if(setStyle){
          //now that we know the data type, update the style to clear uneeded default styles
-        var style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
+        const style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
         updateData.style = style;
       }
      
@@ -235,8 +235,8 @@ module.exports = {
       }
 
       debug.log('db updates complete');
-      var largeData = false;
-      let size = sizeof(geoJSON);
+      let largeData = false;
+      const size = sizeof(geoJSON);
       debug.log(`GeoJSON size: ${size}`);
       if(size > LARGE_DATA_THRESHOLD){
         largeData = true;
@@ -289,7 +289,7 @@ module.exports = {
 
     //get count and create sequence
     const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`);  
-    var maxVal = parseInt(result.rows[0].cnt) + 1;
+    const maxVal = parseInt(result.rows[0].cnt) + 1;
     debug.log('creating sequence starting at: ' + maxVal);
     await trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`);
     

@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 
-var urlUtil = require('../../services/url-util');
-var moment = require('moment-timezone');
+const urlUtil = require('../../services/url-util');
+const moment = require('moment-timezone');
 import Gravatar from '../user/Gravatar';
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate} from 'react-intl';
@@ -38,15 +38,15 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
 
   render(){
 
-    var linkUrl = '';
-    var author = '';
-    var userImage='';
-    var guessedTz = moment.tz.guess();
-    var updatedTime = moment.tz(this.props.story.updated_at, guessedTz).format();
+    let linkUrl = '';
+    let author = '';
+    let userImage='';
+    const guessedTz = moment.tz.guess();
+    const updatedTime = moment.tz(this.props.story.updated_at, guessedTz).format();
 
-    var time = '';
+    let time = '';
     if(this.props.short){
-      var daysOld = moment().diff(moment(this.props.story.updated_at), 'days');
+      const daysOld = moment().diff(moment(this.props.story.updated_at), 'days');
       if(daysOld < 7){
         time = (
           <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
@@ -76,7 +76,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
         </p>
       );
     }
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     if(this.props.story.display_name){
       if(this.props.story.emailhash){
         userImage = (
@@ -97,16 +97,16 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
         </div>
       );
     }else if(this.props.story.hub_id){
-      var hubLogoUrl = `/img/resize/72?url=/hub/${this.props.story.hub_id}/images/logo/thumbnail`;
+      const hubLogoUrl = `/img/resize/72?url=/hub/${this.props.story.hub_id}/images/logo/thumbnail`;
       userImage = (
           <img className="circle valign" height="36" width="36" style={{height: '36px', width: '36px', border: '1px solid #bbbbbb'}} src={hubLogoUrl} alt="Hub Logo"  />
       );
-      var authorText = '';
+      let authorText = '';
       if(this.props.story.author){
         authorText = this.props.story.author + ' - ';
       }
 
-      var hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
+      const hubUrl = baseUrl + '/hub/' + this.props.story.hub_id;
       linkUrl = hubUrl;
       author = (
           <div style={{height: '40px', marginBottom: '10px'}}>

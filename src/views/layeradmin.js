@@ -14,9 +14,9 @@ import _mapvalues from 'lodash.mapvalues';
 import LayerActions from '../actions/LayerActions';
 import LayerStore from '../stores/layer-store';
 import BaseMapStore from '../stores/map/BaseMapStore';
-var $ = require('jquery');
+const $ = require('jquery');
 import slugify from 'slugify';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -68,7 +68,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   saveStyle = () => {
-    var _this = this;
+    const _this = this;
     LayerActions.saveStyle(this.state, this.state._csrf,  (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -83,12 +83,12 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   savePresets = () => {
-    var _this = this;
+    const _this = this;
     //check for duplicate presets
     if(this.state.presets){
-      let presets = this.state.presets.toArray();
-      let tags = _mapvalues(presets, 'tag');
-      let uniqTags = _uniq(tags);
+      const presets = this.state.presets.toArray();
+      const tags = _mapvalues(presets, 'tag');
+      const uniqTags = _uniq(tags);
       if(tags.length > uniqTags.length){
         MessageActions.showMessage({title: _this.__('Data Error'), message: this.__('Duplicate tag, please choose a unique tag for each field')});
       }else{
@@ -113,7 +113,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   deleteLayer = () => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of') + ' '
@@ -140,7 +140,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   refreshRemoteLayer = () => {
-    var _this = this;
+    const _this = this;
     request.post('/api/layer/refresh/remote')
     .type('json').accept('json')
     .send({
@@ -163,14 +163,14 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var _this = this;
-    var tabContentDisplay = 'none';
+    const _this = this;
+    let tabContentDisplay = 'none';
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit';
     }
-    let layer_id =  this.props.layer.layer_id ?  this.props.layer.layer_id : 0;
-    let layerName = slugify(this._o_(this.props.layer.name));
-    var layerInfoUrl = `/layer/info/${layer_id}/${layerName}`;
+    const layer_id =  this.props.layer.layer_id ?  this.props.layer.layer_id : 0;
+    const layerName = slugify(this._o_(this.props.layer.name));
+    const layerInfoUrl = `/layer/info/${layer_id}/${layerName}`;
 
     if(this.props.layer.remote){
       return (

@@ -1,7 +1,7 @@
 import Reflux from 'reflux';
 import Actions from '../actions/MessageActions';
-var debug = require('../services/debug')('stores/message-store');
-var $ = require('jquery');
+const debug = require('../services/debug')('stores/message-store');
+const $ = require('jquery');
 
 export type MessageStoreState = {
   show: boolean,
@@ -41,7 +41,7 @@ export default class MessageStore extends Reflux.Store {
   //listeners
   showMessage(options) {
     if (options) {
-      var updatedState = $.extend(this.getDefaultState(), options);
+      const updatedState = $.extend(this.getDefaultState(), options);
       this.setState(updatedState);
       this.setState({
         show: true

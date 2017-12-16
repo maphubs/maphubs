@@ -24,7 +24,7 @@ export default class Suggestions extends React.Component {
     }
   
   render() {
-    let suggestions = this.props.suggestions.map((match, index) =>
+    const suggestions = this.props.suggestions.map((match, index) =>
       <li
         className={classNames({
           highlighted: this.props.highlightedItem === index

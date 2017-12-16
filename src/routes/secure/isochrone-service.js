@@ -1,7 +1,7 @@
 //@flow
 import request from 'superagent';
-var apiDataError = require('../../services/error-response').apiDataError;
-var apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const apiError = require('../../services/error-response').apiError;
 
 module.exports = function(app: any) {
 
@@ -10,7 +10,7 @@ module.exports = function(app: any) {
     if(data && data.point){      
       try{
  
-        let query = {
+        const query = {
           locations: [{
             lat: data.point.lat,
             lon: data.point.lng

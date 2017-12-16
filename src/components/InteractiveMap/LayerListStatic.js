@@ -24,7 +24,7 @@ export default class LayerListStatic extends MapHubsPureComponent<Props, void> {
 
   constructor(props: Props){
     super(props);
-    var layers = JSON.parse(JSON.stringify(props.layers));
+    const layers = JSON.parse(JSON.stringify(props.layers));
     this.state = {
       layers
     };
@@ -32,13 +32,13 @@ export default class LayerListStatic extends MapHubsPureComponent<Props, void> {
 
   componentWillReceiveProps(nextProps: Props){
      if(!_isEqual(nextProps.layers, this.state.layers)){
-       var layers = JSON.parse(JSON.stringify(nextProps.layers));
+       const layers = JSON.parse(JSON.stringify(nextProps.layers));
      this.setState({layers});
     }
   }
 
   render(){
-    var _this = this;
+    const _this = this;
     return (
       <div style={{height: '100%', padding: 0, margin: 0}}>
           <ul ref="layers" style={{height: '100%', overflow: 'auto'}} className="collection no-margin custom-scroll-bar">{

@@ -1,8 +1,8 @@
-var debug = require('debug');
+const debug = require('debug');
 
 module.exports = function(name){
-  let log = debug(`maphubs:${name}`);
-  let error = debug(`maphubs-error:${name}`);
+  const log = debug(`maphubs:${name}`);
+  const error = debug(`maphubs-error:${name}`);
 
   //log goes to stdout
   /*eslint-disable no-console */

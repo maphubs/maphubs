@@ -1,18 +1,18 @@
 // @flow
-var passport = require('passport');
-var local = require('../local');
-var AuthUsers = require('./auth-db/users');
-var _find = require('lodash.find');
-var User = require('../models/user');
-var Admin = require('../models/admin');
-var Auth0Helper = require('../services/auth0-helper');
-var Promise = require('bluebird');
-var log = require('./log');
-var shortid = require('shortid');
+const passport = require('passport');
+const local = require('../local');
+const AuthUsers = require('./auth-db/users');
+const _find = require('lodash.find');
+const User = require('../models/user');
+const Admin = require('../models/admin');
+const Auth0Helper = require('../services/auth0-helper');
+const Promise = require('bluebird');
+const log = require('./log');
+const shortid = require('shortid');
 
-var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
+const saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
   log.info(`saving maphubs id ${maphubs_user_id} to auth0 for host ${local.host}`);
-  var hosts = [];
+  let hosts = [];
   if(profile._json.app_metadata && profile._json.app_metadata.hosts){
     hosts = profile._json.app_metadata.hosts;
   }
@@ -22,7 +22,7 @@ var saveMapHubsIDToAuth0 = async function(profile, maphubs_user_id){
   return Auth0Helper.updateAppMetadata({hosts}, accessToken, profile);
 };
 
-var determineLocalDisplayName = function(profile){
+const determineLocalDisplayName = function(profile){
   let displayName;
 
   if(profile._json && profile._json.username){
@@ -38,13 +38,13 @@ var determineLocalDisplayName = function(profile){
   return displayName;
 };
 
-var createMapHubsUser = async function(profile: Object){
-  var display_name = determineLocalDisplayName(profile);
+const createMapHubsUser = async function(profile: Object){
+  const display_name = determineLocalDisplayName(profile);
   
   const user_id = await User.createUser(profile._json.email, display_name, display_name, profile.id);
   log.info(`Created new MapHubs user ${display_name} with id ${user_id}`);
   await saveMapHubsIDToAuth0(profile, user_id);
-  const maphubsUser = await AuthUsers.find(user_id);
+  const maphubsUser = await AuthUsers.find(x => user_id(x));
   //attach MapHubs User
   profile.maphubsUser = {
     id: maphubsUser.id,
@@ -54,10 +54,10 @@ var createMapHubsUser = async function(profile: Object){
   return profile;
 };
 
-var Auth0Strategy = require('passport-auth0');
+const Auth0Strategy = require('passport-auth0');
 
 // Configure Passport to use Auth0
-var strategy = new Auth0Strategy({
+const strategy = new Auth0Strategy({
     domain:       local.AUTH0_DOMAIN,
     clientID:     local.AUTH0_CLIENT_ID,
     clientSecret: local.AUTH0_CLIENT_SECRET,
@@ -68,14 +68,14 @@ var strategy = new Auth0Strategy({
     // profile has all the information from the user
       log.info('Auth0 login');
       //check if user has a local user object
-      var hosts = [];
+      let hosts = [];
 
       if(profile._json.app_metadata && 
         profile._json.app_metadata.hosts){
           hosts =  profile._json.app_metadata.hosts;
       }
 
-      var host = _find(hosts, {host: local.host});
+      const host = _find(hosts, {host: local.host});
       if(host && host.user_id){
         //local user already linked
         return AuthUsers.find(host.user_id).then(async (maphubsUser) => {

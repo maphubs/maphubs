@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import ReactDOM from 'react-dom';
-var $ = require('jquery');
+const $ = require('jquery');
 import Formsy from 'formsy-react';
 import Toggle from './forms/toggle';
 import MessageActions from '../actions/MessageActions';
@@ -80,7 +80,7 @@ export default class AddItem extends MapHubsComponent<Props, State> {
  componentDidMount() {
    /*eslint-disable react/no-find-dom-node */
    if (this.props.autoFocus) {  
-     let domNode = ReactDOM.findDOMNode(this.refs.value);
+     const domNode = ReactDOM.findDOMNode(this.refs.value);
      if(domNode){
        domNode.focus();
      }
@@ -180,7 +180,7 @@ export default class AddItem extends MapHubsComponent<Props, State> {
 
  handleChange = (e: any) => {
    clearTimeout(this._timerId);
-   let input = e.target.value;
+   const input = e.target.value;
    if (!input){ 
      return this.setState({ 
       value: {key: input, value:input},

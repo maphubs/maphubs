@@ -88,15 +88,15 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
   }
 
   processGeoJSON = (geoJSON: Object, presets:any=null) => {
-    var _this = this;
+    const _this = this;
     //clone feature to avoid data grid attaching other values
-    var features = JSON.parse(JSON.stringify(geoJSON.features));
+    const features = JSON.parse(JSON.stringify(geoJSON.features));
 
-    var originalRows = _map(features, 'properties');
+    const originalRows = _map(features, 'properties');
 
-    var firstRow = originalRows[0];
+    const firstRow = originalRows[0];
 
-    var rowKey = 'mhid';
+    let rowKey = 'mhid';
     if(firstRow.mhid){
       rowKey = 'mhid';
     }
@@ -107,7 +107,7 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
       rowKey = 'OBJECTID';
     }
 
-    var columns: Array<Column> = [];
+    const columns: Array<Column> = [];
     columns.push(
       {
         key: rowKey,
@@ -160,7 +160,7 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
       });
     }
 
-    var rows = originalRows.slice(0);
+    const rows = originalRows.slice(0);
 
     _this.setState({geoJSON, columns, rowKey, rows, filters : {}});
   }
@@ -182,12 +182,12 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
   }
 
   rowGetter = (rowIdx: number): Object => {
-    let rows = this.getRows();
+    const rows = this.getRows();
     return rows[rowIdx];
   }
 
   handleFilterChange = (filter: Object) => {
-    let newFilters = Object.assign({}, this.state.filters);
+    const newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {
@@ -205,16 +205,16 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
     if(!rows || rows.length === 0){
       return;
     }
-    var row = rows[0];
-    var idField = this.state.rowKey;
-    var idVal = row.row[idField];
+    const row = rows[0];
+    const idField = this.state.rowKey;
+    const idVal = row.row[idField];
 
     this.props.onRowSelected(idVal,idField);
     this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
   }
 
   onRowsDeselected = (rows: Array<Object>) => {
-    let rowIndexes = rows.map(r => r.rowIdx);
+    const rowIndexes = rows.map(r => r.rowIdx);
     this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1 )});
   }
 
@@ -240,7 +240,7 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
   getSelectedFeature(){
     const row = this.rowGetter(this.state.selectedIndexes[this.state.selectedIndexes.length - 1]);
     const idField = this.state.rowKey;
-    var idVal = row[idField];
+    const idVal = row[idField];
     let selectedFeature;
     if(this.state.geoJSON) {
       this.state.geoJSON.features.forEach((feature)=>{
@@ -257,25 +257,25 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
     if(!this.state.selectedIndexes || this.state.selectedIndexes.length === 0){
       return;
     }
-    var row = this.state.rows[this.state.selectedIndexes[this.state.selectedIndexes.length - 1]];
-    var idField = this.state.rowKey;
-    var idVal = row[idField];
+    const row = this.state.rows[this.state.selectedIndexes[this.state.selectedIndexes.length - 1]];
+    const idField = this.state.rowKey;
+    let idVal = row[idField];
 
     let featureName = 'unknown';
-    let nameField = GetNameField.getNameField(row, this.props.presets);
+    const nameField = GetNameField.getNameField(row, this.props.presets);
     if(nameField){
       featureName = row[nameField];
     } 
     if(this.state.rowKey === 'mhid'){
       idVal = idVal.split(':')[1];
     }
-    var url = '/feature/' + this.props.layer_id.toString() + '/' + idVal + '/' + featureName;
+    const url = '/feature/' + this.props.layer_id.toString() + '/' + idVal + '/' + featureName;
     window.location = url;
   }
 
 
 render() {
-  var _this = this;
+  const _this = this;
 
    if(this.state.rows.length > 0 && typeof window !== 'undefined'){
      // temporaryHackForReactDataGrid.js: import this file before react-data-grid
@@ -285,7 +285,7 @@ render() {
       PropTypes.component = PropTypes.element;
       require('react').PropTypes = PropTypes;
       require('react').createClass = require('create-react-class');
-      var ReactDataGrid = require('react-data-grid');
+      const ReactDataGrid = require('react-data-grid');
       const {Toolbar, Data: {Selectors}} = require('react-data-grid-addons');
       this.Selectors = Selectors;
 

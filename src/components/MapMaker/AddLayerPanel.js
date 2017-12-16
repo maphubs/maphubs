@@ -2,11 +2,11 @@
 import React from 'react';
 import SearchBox from '../SearchBox';
 import CardCarousel from '../CardCarousel/CardCarousel';
-var cardUtil = require('../../services/card-util');
-var debug = require('../../services/debug')('mapmaker/addlayerpanel');
-var urlUtil = require('../../services/url-util');
+const cardUtil = require('../../services/card-util');
+const debug = require('../../services/debug')('mapmaker/addlayerpanel');
+const urlUtil = require('../../services/url-util');
 import request from 'superagent';
-var checkClientError = require('../../services/client-error-response').checkClientError;
+const checkClientError = require('../../services/client-error-response').checkClientError;
 import MessageActions from '../../actions/MessageActions';
 import NotificationActions from '../../actions/NotificationActions';
 import MapHubsComponent from '../MapHubsComponent';
@@ -32,7 +32,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
@@ -62,12 +62,12 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
-    var myCards = [];
-    var popularCards = [];
-    var myLayers = '';
+    const _this = this;
+    let myCards = [];
+    let popularCards = [];
+    let myLayers = '';
 
-    var cardCarouselStops = [
+    const cardCarouselStops = [
       {breakpoint: 600, settings: {slidesToShow: 1,  slidesToScroll: 1}},
       {breakpoint: 950, settings: {slidesToShow: 2,  slidesToScroll: 2}},
       {breakpoint: 1150, settings: {slidesToShow: 3,  slidesToScroll: 3}},
@@ -96,8 +96,8 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
       return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd);
     });
 
-    var searchResults = '';
-    var searchCards = [];
+    let searchResults = '';
+    let searchCards = [];
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 

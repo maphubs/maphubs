@@ -44,7 +44,7 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
 
 	render() {
 
-    var addButton = '', message='';
+    let addButton = '', message='';
     if(this.props.canEdit){
       addButton=(
         <div>
@@ -65,9 +65,9 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
       );
     }
 
-    var groups = '';
+    let groups = '';
     if(this.props.groups && this.props.groups.length > 0){
-      var cards = this.props.groups.map(cardUtil.getGroupCard);
+      const cards = this.props.groups.map(cardUtil.getGroupCard);
       groups = (
         <div className="row">
           <div className="col s12 no-padding">

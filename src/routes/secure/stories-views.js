@@ -1,14 +1,14 @@
 // @flow
 //var debug = require('../../services/debug')('routes/stories');
-var login = require('connect-ensure-login');
-var User = require('../../models/user');
-var Story = require('../../models/story');
-var Stats = require('../../models/stats');
-var Map = require('../../models/map');
-var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var csrfProtection = require('csurf')({cookie: false});
-var urlUtil = require('../../services/url-util');
+const login = require('connect-ensure-login');
+const User = require('../../models/user');
+const Story = require('../../models/story');
+const Stats = require('../../models/stats');
+const Map = require('../../models/map');
+const nextError = require('../../services/error-response').nextError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const csrfProtection = require('csurf')({cookie: false});
+const urlUtil = require('../../services/url-util');
 
 module.exports = function(app: any) {
 
@@ -38,9 +38,9 @@ module.exports = function(app: any) {
 
   app.get('/user/:username/stories', (req, res, next) => {
 
-    var username: string = req.params.username;
+    const username: string = req.params.username;
     if(!username){apiDataError(res);}
-    var myStories: boolean = false;
+    let myStories: boolean = false;
 
     function completeRequest(){
 
@@ -66,7 +66,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.maphubsUser.id;
+      const user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)
@@ -128,10 +128,10 @@ module.exports = function(app: any) {
 
   app.get('/user/:username/story/:story_id/*', (req, res, next) => {
 
-    var story_id = parseInt(req.params.story_id || '', 10);
-    var username = req.params.username;
+    const story_id = parseInt(req.params.story_id || '', 10);
+    const username = req.params.username;
 
-      var user_id = -1;
+      let user_id = -1;
       if ( (req.isAuthenticated || req.isAuthenticated())
           && req.session && req.session.user) {
             user_id = req.session.user.maphubsUser.id;
@@ -149,7 +149,7 @@ module.exports = function(app: any) {
           req.session.storyviews[story_id] = 1;
           Stats.addStoryView(story_id, user_id).catch(nextError(next));
         }else{
-          var views = req.session.storyviews[story_id];
+          const views = req.session.storyviews[story_id];
 
           req.session.storyviews[story_id] = views + 1;
         }
@@ -157,11 +157,11 @@ module.exports = function(app: any) {
         req.session.views = (req.session.views || 0) + 1;
 
         if (user_id === -1) { //don't check permissions if user is not logged in
-             var imageUrl = '';
+             let imageUrl = '';
             if(story.firstimage){
               imageUrl = urlUtil.getBaseUrl() + story.firstimage;
             }
-            var description = story.title;
+            let description = story.title;
             if(story.firstline){
               description = story.firstline;
             }
@@ -188,11 +188,11 @@ module.exports = function(app: any) {
       } else {
         return Story.allowedToModify(story_id, user_id)
         .then((canEdit) => {       
-           var imageUrl = '';
+           let imageUrl = '';
             if(story.firstimage){
               imageUrl = story.firstimage;
             }
-           var description = story.title;
+           let description = story.title;
             if(story.firstline){
               description = story.firstline;
             }

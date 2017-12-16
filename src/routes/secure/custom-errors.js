@@ -2,7 +2,7 @@
 module.exports = function(app: any) {
 
   app.get('/unauthorized', (req, res) => {
-    var path = '';
+    let path = '';
     if(req.query.path){
       path = req.query.path;
     }
@@ -25,7 +25,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/notfound', (req, res) => {
-    var path = '';
+    let path = '';
     if(req.query.path){
       path = req.query.path;
     }

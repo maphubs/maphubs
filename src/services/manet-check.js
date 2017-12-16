@@ -6,7 +6,7 @@ const Layer = require('../models/layer');
 const Map = require('../models/map');
 const compare = require('secure-compare');
 
-var check = function(req: any){
+const check = function(req: any){
     //determine if this is the manet screenshot service
     //first check the cookie
     if(req.cookies) debug.log(JSON.stringify(req.cookies));
@@ -21,15 +21,15 @@ var check = function(req: any){
     }
   };
 
-var failure = function(res){   
+const failure = function(res){   
     return res.status(401).send("Unauthorized");
   };
 
-  var success = function(next){
+  const success = function(next){
     next();
   };
 
-var middlewareCheck = function(req, res, next){
+const middlewareCheck = function(req, res, next){
   if(check(req)){
     return success(next);
   }else{
@@ -37,14 +37,14 @@ var middlewareCheck = function(req, res, next){
   }
 };
 
-var middleware = function(req: any, res: any, next: any){
+const middleware = function(req: any, res: any, next: any){
 
 
-  var user_id = -1;
+  let user_id = -1;
   if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
     user_id = req.session.user.maphubsUser.id;
   }
-  var layer_id, map_id;
+  let layer_id, map_id;
   if(req.params.layer_id){
     layer_id = parseInt(req.params.layer_id || '', 10);
   }else if(req.body.layer_id){

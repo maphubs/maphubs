@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-var request = require('superagent');
+const request = require('superagent');
 import SearchBar from './SearchBar/SearchBar';
-var debug = require('../services/debug')('SearchBox');
+const debug = require('../services/debug')('SearchBox');
 
 type Props = {
   label: string,
@@ -29,7 +29,7 @@ export default class SearchBox extends React.Component<Props, void> {
   }
 
   onChange = (input: string, resolve: Function) => {
-    var _this = this;
+    const _this = this;
     if (typeof window !== 'undefined' && this.props.suggestionUrl) {
       request.get(this.props.suggestionUrl + '?q=' + input)
       .type('json').accept('json')

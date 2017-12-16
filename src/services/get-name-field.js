@@ -9,7 +9,7 @@ module.exports = {
     
 
   getNamFieldFromPresets(presets: Array<Object>){
-    let nameFieldPreset = _find(presets, {isName: true});
+    const nameFieldPreset = _find(presets, {isName: true});
     let nameField; 
     if(nameFieldPreset){
       nameField = nameFieldPreset.tag;
@@ -19,9 +19,9 @@ module.exports = {
 
   guessNameFieldFromProps(properties: Object){
     let nameField;
-    var _this = this;
+    const _this = this;
     Object.keys(properties).forEach(key => {
-      let lowercaseKey = key.toLowerCase();
+      const lowercaseKey = key.toLowerCase();
       if(!nameField){
         _this.possibleNameFields.forEach(name => {
           if(lowercaseKey.includes(name)){
@@ -35,7 +35,7 @@ module.exports = {
 
   getPresetsFromStyle(style?: GLStyle){
     if(style){
-      let firstSource = Object.keys(style.sources)[0];
+      const firstSource = Object.keys(style.sources)[0];
       if(firstSource){
          return MapStyles.settings.getSourceSetting(style, firstSource, 'presets');
       }

@@ -17,16 +17,16 @@ export default class MapLayerMenu extends MapHubsPureComponent {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
 
     return (
        <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)', borderTop: '1px #444 solid', height: '35px'}}>
           <div className="nav-wrapper z-depth-0">
           <ul className="left" style={{height: '35px'}}>
       {this.props.categories.map((category, i) => {
-        var name = category.name[_this.state.locale];
+        let name = category.name[_this.state.locale];
         if(!name) name = category.name.en;
-        var categoriesLayers = [];
+        const categoriesLayers = [];
         category.layers.forEach(layer_id =>{
           categoriesLayers.push(_this.findLayer(layer_id));
         });

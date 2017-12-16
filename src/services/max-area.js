@@ -1,3 +1,3 @@
 /* @flow  */
-var maxArea: number = 3.50;
+const maxArea: number = 3.50;
 module.exports = maxArea;

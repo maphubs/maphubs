@@ -7,26 +7,26 @@ module.exports = {
       //treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style));
       let layer_id = (layer && layer.layer_id) ? layer.layer_id : '';
-      let shortid = (layer && layer.shortid) ? layer.shortid : '';
+      const shortid = (layer && layer.shortid) ? layer.shortid : '';
       //get host from source
       let baseUrl: string ='{MAPHUBS_DOMAIN}', remote_host;
       if(layer.remote && layer.remote_host){
         remote_host = layer.remote_host;
         baseUrl = 'https://' + layer.remote_host;
         //attempt to find remote layer id
-        let keys = Object.keys(style.sources);
+        const keys = Object.keys(style.sources);
         if(keys && keys.length > 0){
-          let firstSource = keys[0];
+          const firstSource = keys[0];
           if(firstSource.startsWith('omh-')){
-            let parts = firstSource.split('-');
-            let remoteLayerId = parts[1];
+            const parts = firstSource.split('-');
+            const remoteLayerId = parts[1];
             layer_id = remoteLayerId;
           }
         }
       }
 
-      let dataUrl =`${baseUrl}/api/lyr/${shortid}/export/json/${shortid}.json`;
-      let geobufUrl =`${baseUrl}/api/lyr/${shortid}/export/geobuf/${shortid}.pbf`;
+      const dataUrl =`${baseUrl}/api/lyr/${shortid}/export/json/${shortid}.json`;
+      const geobufUrl =`${baseUrl}/api/lyr/${shortid}/export/geobuf/${shortid}.pbf`;
 
       style.layers.forEach((layer) => {
         if(layer.id.startsWith('omh-data-point')){
@@ -66,7 +66,7 @@ module.exports = {
             layer.layout['text-size'] = {};
           }
 
-           var offset = (layer.layout['text-size'].base / 2) + layer.paint['text-halo-width'];
+           let offset = (layer.layout['text-size'].base / 2) + layer.paint['text-halo-width'];
           if(markerOptions.shape === 'MAP_PIN' || markerOptions.shape === 'SQUARE_PIN'){         
              layer.paint['text-translate'][1] = offset;
           }else{

@@ -42,10 +42,10 @@ class Radio extends MapHubsPureComponent<Props, void> {
   }
 
   render() {
-     var className = classNames(this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
-     var value = this.props.getValue();
-     var name = this.props.name;
-     var _this = this;
+     const className = classNames(this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+     const value = this.props.getValue();
+     const name = this.props.name;
+     const _this = this;
 
     return (
       <div className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
@@ -53,7 +53,7 @@ class Radio extends MapHubsPureComponent<Props, void> {
 
         <label>{this.props.label}</label>
           {this.props.options.map((option) => {
-            var checked = false;
+            let checked = false;
             if(option.value === value){
               checked = true;
             }

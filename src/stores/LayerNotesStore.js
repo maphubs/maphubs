@@ -1,9 +1,9 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/LayerNotesActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/hub-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const request = require('superagent');
+const debug = require('../services/debug')('stores/hub-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 export type LayerNotesStoreState = {
   notes?: string,
@@ -39,7 +39,7 @@ export default class LayerNotesStore extends Reflux.Store {
  //listeners
  saveNotes(layer_id: number, _csrf: string, cb: Function){
    debug.log('save layer notes');
-   var _this = this;
+   const _this = this;
    this.setState({saving: true});
    request.post('/api/layer/notes/save')
    .type('json').accept('json')
@@ -57,7 +57,7 @@ export default class LayerNotesStore extends Reflux.Store {
  }
 
  setNotes(notes: string){
-   var state = this.state;
+   const state = this.state;
    state.notes = notes;
    state.unsavedChanges = true;
    this.setState(state);

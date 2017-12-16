@@ -24,14 +24,14 @@ export default class CardCollection extends MapHubsComponent<Props, void> {
   }
 
   render(){
-    var title = '';
+    let title = '';
     if(this.props.title){
       title = (
         <h5>{this.props.title}</h5>
       );
     }
 
-    var viewAllLink = '';
+    let viewAllLink = '';
     if(this.props.viewAllLink){
       viewAllLink = (
         <a 

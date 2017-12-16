@@ -11,13 +11,13 @@ export default class EditBaseMapBox extends MapHubsPureComponent<Props, void> {
   props: Props
 
   getLinks = () => {
-    var origHash = window.location.hash.replace('#', '');
-      var hashParts = origHash.split('/');
-      var zoom =  Math.round(hashParts[0]);
-      var lon = hashParts[1];
-      var lat = hashParts[2];
-      var osmEditLink = 'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat;
-      var loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + zoom + '/' + lat + '/' + lon;
+    const origHash = window.location.hash.replace('#', '');
+      const hashParts = origHash.split('/');
+      const zoom =  Math.round(hashParts[0]);
+      const lon = hashParts[1];
+      const lat = hashParts[2];
+      let osmEditLink = 'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat;
+      let loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + zoom + '/' + lat + '/' + lon;
       if(this.props.gpxLink){
         osmEditLink += '&gpx=' + this.props.gpxLink;
         loggingRoadsEditLink +=  '&gpx=' + this.props.gpxLink;
@@ -29,12 +29,12 @@ export default class EditBaseMapBox extends MapHubsPureComponent<Props, void> {
   }
 
   openOSM = () => {
-    var links = this.getLinks();
+    const links = this.getLinks();
     window.location = links.osm;
   }
 
   openLoggingRoads = () =>{
-    var links = this.getLinks();
+    const links = this.getLinks();
     window.location = links.loggingroads;
   }
 

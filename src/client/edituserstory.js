@@ -23,7 +23,7 @@ require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
 require("cropperjs/dist/cropper.css");
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <EditUserStory {...data}/>,

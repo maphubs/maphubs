@@ -1,15 +1,15 @@
 // @flow
-var Map = require('../../models/map');
-var Group = require('../../models/group');
-var ScreenshotUtil = require('../../services/screenshot-utils');
+const Map = require('../../models/map');
+const Group = require('../../models/group');
+const ScreenshotUtil = require('../../services/screenshot-utils');
 //var debug = require('../../services/debug')('routes/map');
 //var log = require('../../services/log');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var csrfProtection = require('csurf')({cookie: false});
-var Locales = require('../../services/locales');
-var isAuthenticated = require('../../services/auth-check');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const csrfProtection = require('csurf')({cookie: false});
+const Locales = require('../../services/locales');
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
@@ -17,7 +17,7 @@ module.exports = function(app: any) {
     try{
     const data = req.body;
     if(data && data.basemap && data.position && data.settings && data.title && data.private !== undefined){
-        var createMap;
+        let createMap;
         if(data.group_id){
           createMap = Group.allowedToModify(data.group_id, req.user_id)
           .then((allowed) => {
@@ -173,7 +173,7 @@ module.exports = function(app: any) {
 
   app.post('/api/map/delete', csrfProtection, isAuthenticated, async (req, res) => {
     try{
-      var data = req.body;
+      const data = req.body;
       if(data && data.map_id){
         if(await Map.allowedToModify(data.map_id, req.user_id)){
           await Map.deleteMap(data.map_id);
@@ -192,12 +192,12 @@ module.exports = function(app: any) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
       return;
     }
-    var q = req.query.q;
+    const q = req.query.q;
     Map.getSearchSuggestions(q)
       .then((result) => {
-        var suggestions = [];
+        const suggestions = [];
           result.forEach((map) => {
-            let title = Locales.getLocaleStringObject(req.locale, map.title);
+            const title = Locales.getLocaleStringObject(req.locale, map.title);
             suggestions.push({key: map.map_id, value: title});
           });
           return res.send({suggestions});

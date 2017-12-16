@@ -1,5 +1,5 @@
 //@flow
-var _findIndex = require('lodash.findindex');
+const _findIndex = require('lodash.findindex');
 import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {
@@ -41,9 +41,9 @@ module.exports = {
     },
 
     getLayerSetting(style: GLStyle, id: string, key: string){
-      let index = _findIndex(style.layers, {id});
+      const index = _findIndex(style.layers, {id});
       if(typeof index !== 'undefined'){
-        let layer = style.layers[index];
+        const layer = style.layers[index];
         return this.get(layer, key);
       }else{
         return undefined;
@@ -53,14 +53,14 @@ module.exports = {
 
     getSourceSetting(style: GLStyle, id: string, key: string){
       
-      let source = style.sources[id];
+      const source = style.sources[id];
       return this.get(source, key);
     },
 
     setLayerSetting(style: GLStyle, id: string, key: string, value: any){
       //treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style));
-      let index = _findIndex(style.layers, {id});
+      const index = _findIndex(style.layers, {id});
       let layer = style.layers[index];
       layer = this.set(layer, key, value);
       style.layers[index] = layer;

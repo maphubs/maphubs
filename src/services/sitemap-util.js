@@ -1,13 +1,13 @@
 // @flow
-var Layer = require('../models/layer');
-var Hub = require('../models/hub');
-var Story = require('../models/story');
-var Map = require('../models/map');
-var Group = require('../models/group');
+const Layer = require('../models/layer');
+const Hub = require('../models/hub');
+const Story = require('../models/story');
+const Map = require('../models/map');
+const Group = require('../models/group');
 import slugify from 'slugify';
-var urlUtil = require('./url-util');
-var Promise = require('bluebird');
-var log = require('./log');
+const urlUtil = require('./url-util');
+const Promise = require('bluebird');
+const log = require('./log');
 
 module.exports = {
 
@@ -17,7 +17,7 @@ module.exports = {
     .whereNot({
       private: true, is_external: true, remote: true
     });
-    var urls = [];
+    const urls = [];
     await Promise.map(layers, async (layer) => {   
         try{
           const count = await Layer.getLayerFeatureCount(layer.layer_id);
@@ -34,11 +34,11 @@ module.exports = {
   },
 
   addLayersToSiteMap(sm: any, trx: any){
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     return Layer.getAllLayers(false, trx)
     .then((layers) => {
       layers.forEach((layer) => {
-        var lastmodISO = null;
+        let lastmodISO = null;
         if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
         sm.add({
           url: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(layer.name.en),
@@ -54,16 +54,16 @@ module.exports = {
     return Story.getAllStories(trx).orderBy('omh.stories.updated_at', 'desc')
     .then((stories) => {
       stories.forEach((story) => {
-        var title = story.title.replace('&nbsp;', '');
-        var story_url = '';
+        const title = story.title.replace('&nbsp;', '');
+        let story_url = '';
         if(story.display_name){
-          var baseUrl = urlUtil.getBaseUrl();
+          const baseUrl = urlUtil.getBaseUrl();
           story_url = baseUrl + '/user/' + story.display_name;
         }else if(story.hub_id){
           story_url ='/hub/' + story.hub_id;
         }
         story_url += '/story/' + story.story_id + '/' + slugify(title);
-        var lastmodISO = null;
+        let lastmodISO = null;
         if(story.updated_at) lastmodISO = story.updated_at.toISOString();
         sm.add({
           url: story_url,
@@ -79,9 +79,9 @@ module.exports = {
     return Hub.getAllHubs(trx)
     .then((hubs) => {
       hubs.forEach((hub) => {
-        var baseUrl = urlUtil.getBaseUrl();
-        var hubUrl = baseUrl + '/hub/' + hub.hub_id;
-        var lastmodISO = null;
+        const baseUrl = urlUtil.getBaseUrl();
+        const hubUrl = baseUrl + '/hub/' + hub.hub_id;
+        let lastmodISO = null;
         if(hub.updated_at_withTZ) lastmodISO = hub.updated_at_withTZ.toISOString();
         sm.add({
           url: hubUrl,
@@ -94,12 +94,12 @@ module.exports = {
   },
 
   addMapsToSiteMap(sm: any, trx: any){
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     return Map.getAllMaps(trx).orderBy('omh.maps.updated_at', 'desc')
     .then((maps) => {
       maps.forEach((map) => {
-        var mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slugify(map.title.en)}`;
-        var lastmodISO = null;
+        const mapUrl =  `${baseUrl}/map/view/${map.map_id}/${slugify(map.title.en)}`;
+        let lastmodISO = null;
         if(map.updated_at) lastmodISO = map.updated_at.toISOString();
         sm.add({
           url: mapUrl,
@@ -115,7 +115,7 @@ module.exports = {
     return Group.getAllGroups(trx)
     .then((groups) => {
       groups.forEach((group) => {
-        var groupUrl =  urlUtil.getBaseUrl() + '/group/' + group.group_id;
+        const groupUrl =  urlUtil.getBaseUrl() + '/group/' + group.group_id;
         sm.add({
           url: groupUrl,
           changefreq: 'daily'
@@ -127,19 +127,19 @@ module.exports = {
 
   addLayerFeaturesToSiteMap(layer_id: number, sm: any, trx: any){
     //get all layers
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     return Layer.getLayerByID(layer_id, trx)
     .then((layer) => {
       if(!layer.is_external && !layer.remote && !layer.private){
-        let layer_id = layer.layer_id;
-        var lastmodISO = null;
+        const layer_id = layer.layer_id;
+        let lastmodISO = null;
         if(layer.last_updated) lastmodISO = layer.last_updated.toISOString();
         return trx(`layers.data_${layer_id}`).select('mhid')
           .then(features => {
             if(features && Array.isArray(features)){
               features.forEach(feature => {
                 if(feature && feature.mhid){
-                  let featureId = feature.mhid.split(':')[1];
+                  const featureId = feature.mhid.split(':')[1];
                     sm.add({
                       url: baseUrl + `/feature/${layer_id}/${featureId}/`,
                       changefreq: 'weekly',

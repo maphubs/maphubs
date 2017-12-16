@@ -1,9 +1,9 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/UserActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/user-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const request = require('superagent');
+const debug = require('../services/debug')('stores/user-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 export type User = {
   id?: number,
@@ -49,7 +49,7 @@ export default class UserStore extends Reflux.Store {
  }
 
  getUser(cb: Function){
-   var _this = this;
+   const _this = this;
    request.post('/api/user/details/json')
    .type('json').accept('json')
    .end((err, res) => {

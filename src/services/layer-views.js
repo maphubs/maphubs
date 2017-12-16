@@ -1,15 +1,15 @@
 /* @flow weak */
 //Note: do not enable flow so we can use this in knex migrations for now without involving babel
-var knex = require('../connection.js');
-var Promise = require('bluebird');
-var debug = require('./debug')('layer-views');
-var log = require('./log');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
+const debug = require('./debug')('layer-views');
+const log = require('./log');
 
 module.exports = {
 
   replaceViews(layer_id, presets, trx){
     debug.log("replace views for layer: " + layer_id);
-    var _this = this;
+    const _this = this;
     return _this.dropLayerViews(layer_id, trx)
     .then(() => {
       return _this.createLayerViews(layer_id, presets, trx);
@@ -23,7 +23,7 @@ module.exports = {
     debug.log("drop views for layer: " + layer_id);
     let db = knex;
     if(trx){db = trx;}
-    var commands = [
+    const commands = [
       `DROP VIEW IF EXISTS layers.centroids_${layer_id}`,
       `DROP VIEW IF EXISTS layers.data_full_${layer_id}`
     ];
@@ -43,10 +43,10 @@ module.exports = {
     if(trx){db = trx;}
     return db('omh.layers').select('data_type').where({layer_id})
     .then(result => {
-      var dataType = result[0].data_type;
+      const dataType = result[0].data_type;
 
       debug.log(`create views for layer: ${layer_id}`);
-      var tagColumns = '';
+      let tagColumns = '';
       if(presets){
         presets.forEach((preset) => {
           if(preset.type === 'number'){
@@ -57,7 +57,7 @@ module.exports = {
         });
       }
 
-      var commands = [
+      const commands = [
       
         `CREATE OR REPLACE VIEW layers.data_full_${layer_id} AS
         SELECT

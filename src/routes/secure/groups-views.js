@@ -1,18 +1,18 @@
 // @flow
-var Group = require('../../models/group');
-var User = require('../../models/user');
-var Layer = require('../../models/layer');
-var Hub = require('../../models/hub');
-var Map = require('../../models/map');
-var Account = require('../../models/account');
-var login = require('connect-ensure-login');
+const Group = require('../../models/group');
+const User = require('../../models/user');
+const Layer = require('../../models/layer');
+const Hub = require('../../models/hub');
+const Map = require('../../models/map');
+const Account = require('../../models/account');
+const login = require('connect-ensure-login');
 //var log = require('../../services/log');
-var debug = require('../../services/debug')('routes/groups');
-var nextError = require('../../services/error-response').nextError;
-var urlUtil = require('../../services/url-util');
-var Locales = require('../../services/locales');
+const debug = require('../../services/debug')('routes/groups');
+const nextError = require('../../services/error-response').nextError;
+const urlUtil = require('../../services/url-util');
+const Locales = require('../../services/locales');
 
-var csrfProtection = require('csurf')({cookie: false});
+const csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
@@ -53,9 +53,9 @@ module.exports = function(app: any) {
 
   app.get('/group/:id', csrfProtection, async (req, res, next) => {
     try{
-      var group_id = req.params.id;
+      const group_id = req.params.id;
 
-      var user_id = -1;
+      let user_id = -1;
       if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
         user_id = req.session.user.maphubsUser.id;
       }
@@ -123,10 +123,10 @@ module.exports = function(app: any) {
 
   app.get('/user/:username/groups', csrfProtection, (req, res, next) => {
 
-    var username = req.params.username;
+    const username = req.params.username;
     debug.log(username);
     if(!username){nextError(next);}
-    var canEdit = false;
+    let canEdit = false;
 
     function completeRequest(userCanEdit){
       User.getUserByName(username)
@@ -147,7 +147,7 @@ module.exports = function(app: any) {
           completeRequest();
     } else {
       //get user id
-      var user_id = req.session.user.maphubsUser.id;
+      const user_id = req.session.user.maphubsUser.id;
 
       //get user for logged in user
       User.getUser(user_id)

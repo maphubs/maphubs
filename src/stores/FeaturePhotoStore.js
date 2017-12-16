@@ -1,8 +1,8 @@
 import Reflux from 'reflux';
 import Actions from '../actions/FeaturePhotoActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/hub-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const request = require('superagent');
+const debug = require('../services/debug')('stores/hub-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 export type FeaturePhotoStoreState = {
   feature: ?Object,
@@ -35,7 +35,7 @@ constructor(){
 
   addPhoto(data, info, _csrf, cb){
     debug.log('add feature photo');
-    var _this = this;
+    const _this = this;
 
     request.post('/api/feature/photo/add')
     .type('json').accept('json')
@@ -48,7 +48,7 @@ constructor(){
     })
     .end((err, res) => {
        checkClientError(res, err, cb, (cb) => {
-          var feature = _this.state.feature;
+          const feature = _this.state.feature;
           feature.hasImage = true;
           _this.setState({
             feature,
@@ -65,7 +65,7 @@ constructor(){
 
   removePhoto(_csrf, cb){
     debug.log('remove photo');
-    var _this = this;
+    const _this = this;
 
     request.post('/api/feature/photo/delete')
     .type('json').accept('json')
@@ -77,7 +77,7 @@ constructor(){
     })
     .end((err, res) => {
        checkClientError(res, err, cb, (cb) => {
-          var feature = _this.state.feature;
+          const feature = _this.state.feature;
           feature.hasImage = false;
           _this.setState({feature, photo: null});
           _this.trigger(_this.state);

@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import GroupTag from '../Groups/GroupTag';
 import Formsy from 'formsy-react';
 import Toggle from '../../components/forms/toggle';
@@ -63,25 +63,25 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
   }
 
   render() {
-    var _this = this;
-    var layer = this.props.item;
-    var canEdit = (this.props.showEdit 
+    const _this = this;
+    const layer = this.props.item;
+    const canEdit = (this.props.showEdit 
                     && layer.canEdit 
                     && !layer.remote 
                     && !layer.is_external);
 
    
-    var backgroundColor = '#FFF';
-    let active = MapStyles.settings.get(layer.style, 'active');
+    let backgroundColor = '#FFF';
+    const active = MapStyles.settings.get(layer.style, 'active');
     if(!active){
         backgroundColor = '#eeeeee';
     }
 
-    var buttonCount = 1;
+    let buttonCount = 1;
     if(this.props.showRemove) buttonCount++;
     if(this.props.showDesign) buttonCount++;
     if(canEdit) buttonCount++;
-    var buttonClass = '';
+    let buttonClass = '';
     if(buttonCount === 1){
       buttonClass = 'col s12 no-padding';
     }else if(buttonCount === 2){
@@ -93,7 +93,7 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
     }
 
 
-    var removeButton = '', designButton = '', editButton = '', visibilityToggle = '';
+    let removeButton = '', designButton = '', editButton = '', visibilityToggle = '';
     if(this.props.showRemove){
       removeButton = (
         <div className={buttonClass} style={{height: '30px'}}>

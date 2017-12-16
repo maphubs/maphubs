@@ -58,7 +58,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
   }
 
   onSave = (model: Object) => {
-    var _this = this;
+    const _this = this;
     model.title = Locales.formModelToLocalizedString(model, 'title');
     if(!model.title || this._o_(model.title) === ''){
       NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'});

@@ -13,7 +13,7 @@ if (!global._babelPolyfill) {
 require("cropperjs/dist/cropper.css");
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <CreateGroup {...data}/>,

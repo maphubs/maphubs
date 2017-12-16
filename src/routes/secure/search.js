@@ -1,11 +1,11 @@
 // @flow
-var knex = require('../../connection.js');
-var Promise = require('bluebird');
-var log = require('../../services/log.js');
+const knex = require('../../connection.js');
+const Promise = require('bluebird');
+const log = require('../../services/log.js');
 //var debug = require('../../services/debug')('routes/search');
 import turf_bbox from '@turf/bbox';
-var csrfProtection = require('csurf')({cookie: false});
-var SearchIndex = require('../../models/search-index');
+const csrfProtection = require('csurf')({cookie: false});
+const SearchIndex = require('../../models/search-index');
 
 module.exports = function(app: any) {
 
@@ -20,9 +20,9 @@ module.exports = function(app: any) {
     if (!req.query.q) {
       res.status(400).send('Bad Request: Expected query param. Ex. q=abc');
     }
-    var q = req.query.q.toLowerCase();
+    const q = req.query.q.toLowerCase();
 
-    var featureCollection = {
+    const featureCollection = {
       type: "FeatureCollection",
       features: [],
       bbox: null
@@ -31,23 +31,23 @@ module.exports = function(app: any) {
     SearchIndex.queryFeatures(q)
     .then(hits =>{
       //compile mhids by layer
-      var layers = {};
+      const layers = {};
       hits.forEach(hit => {
-        var layer_id = hit._source.layer_id;
+        const layer_id = hit._source.layer_id;
         if(!layers[layer_id]){
           layers[layer_id] = [];
         } 
         layers[layer_id].push(hit._source.mhid);
       });
       //query features for each layer
-      var commands = [];
+      const commands = [];
       Object.keys(layers).forEach(layer_id =>{
         commands.push(
            knex.select(knex.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags', 'mhid')
             .from('layers.data_' + layer_id).whereIn('mhid', layers[layer_id])
             .then(results =>{
               return results.forEach(result =>{
-                 var feature = {
+                 const feature = {
                     type: 'Feature',
                     geometry: JSON.parse(result.geom),
                     properties: result.tags
@@ -63,7 +63,7 @@ module.exports = function(app: any) {
       });
 
       return Promise.all(commands).then(()=>{
-         let bbox = turf_bbox(featureCollection);
+         const bbox = turf_bbox(featureCollection);
          featureCollection.bbox = bbox;
          return res.send(featureCollection);
       });

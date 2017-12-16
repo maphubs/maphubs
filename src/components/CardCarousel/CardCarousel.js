@@ -44,7 +44,7 @@ export default class CardCarousel extends React.Component<Props, void> {
   }
 
   render() {
-    var settings = {
+    const settings = {
        autoplay: this.props.autoplay,
        arrows: this.props.arrows,
        dots: this.props.dots,
@@ -56,7 +56,7 @@ export default class CardCarousel extends React.Component<Props, void> {
        lazyLoad: true
      };
 
-     var slider = '';
+     let slider = '';
      if(this.props.cards && this.props.cards.length > 0){
        slider = (
          <Slider ref="slider" {...settings}>

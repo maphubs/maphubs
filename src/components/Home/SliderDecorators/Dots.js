@@ -12,8 +12,8 @@ export default class SlideDots extends React.PureComponent<Props, void> {
 
   
   getIndexes = (count: number, inc: number) => {
-    var arr = [];
-    for (var i = 0; i < count; i += inc) {
+    const arr = [];
+    for (let i = 0; i < count; i += inc) {
       arr.push(i);
     }
     return arr;
@@ -49,13 +49,13 @@ export default class SlideDots extends React.PureComponent<Props, void> {
   }
 
   render() {
-    var self = this;
-    var indexes = this.getIndexes(self.props.slideCount, self.props.slidesToScroll);
+    const self = this;
+    const indexes = this.getIndexes(self.props.slideCount, self.props.slidesToScroll);
     return (
       <ul style={self.getListStyles()}>
         {
           indexes.map((index) => {
-            let goToSlide = function(){
+            const goToSlide = function(){
               self.props.goToSlide(index);
             };
             return (

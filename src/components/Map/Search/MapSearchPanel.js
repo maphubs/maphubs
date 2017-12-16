@@ -1,11 +1,11 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapHubsComponent from '../../MapHubsComponent';
 import SearchBar from '../../SearchBar/SearchBar';
 import request from 'superagent';
 import MessageActions from '../../../actions/MessageActions';
-var debug = require('../../../services/debug')('MapSearchPanel');
+const debug = require('../../../services/debug')('MapSearchPanel');
 
 type Props = {
   show: boolean,
@@ -60,7 +60,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
 
   onSearch = (query: string) => {
     if(this.state.tab === 'data'){
-      let results = this.props.onSearch(query);
+      const results = this.props.onSearch(query);
       this.setState({results, query});
     }else if(this.state.tab === 'location'){
       this.runLocationSearch(query);
@@ -92,7 +92,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
       this.state.query){
         this.setState({tab});
         if(!this.state.results){
-           let results = this.props.onSearch(this.state.query);
+           const results = this.props.onSearch(this.state.query);
           this.setState({results});
         } 
     }
@@ -100,14 +100,14 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   }
   //Uses Mapzen autocomplete API
   runLocationSearch(query: string){
-    var _this = this;
+    const _this = this;
     //get mapzen API key
     
     //run autocomplete search
-    let url = `https://search.mapzen.com/v1/autocomplete?text=${query}&api_key=${MAPHUBS_CONFIG.MAPZEN_API_KEY}`;
+    const url = `https://search.mapzen.com/v1/autocomplete?text=${query}&api_key=${MAPHUBS_CONFIG.MAPZEN_API_KEY}`;
      request.get(url)
     .then((res) => {
-      let locationSearchResults = res.body;
+      const locationSearchResults = res.body;
       return _this.setState({locationSearchResults, query});
     })
     .catch(err=>{
@@ -117,7 +117,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
     let results = '';
 
     if(this.state.results && 

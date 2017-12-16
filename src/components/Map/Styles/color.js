@@ -1,5 +1,5 @@
 //@flow
-var debug = require('../../../services/debug')('map-styles-color');
+const debug = require('../../../services/debug')('map-styles-color');
 import type {GLStyle} from '../../../types/mapbox-gl-style';
 
 module.exports = {

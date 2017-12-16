@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import FileUpload from '../forms/FileUpload';
 import Map from '../Map/Map';
 import NotificationActions from '../../actions/NotificationActions';
@@ -72,7 +72,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   onSubmit = () => {
-    var _this = this;
+    const _this = this;
     
     LayerActions.submitPresets(false, _this.state._csrf, (err) => {
       if (err){
@@ -93,7 +93,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   onUpload = (result: Object) => {
-    var _this = this;
+    const _this = this;
     
     if(result.success){
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
@@ -115,7 +115,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   finishUpload = (shapefileName: string) => {
-    var _this = this;
+    const _this = this;
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if(result.success){
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
@@ -133,15 +133,15 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
 	render() {
 
-    let layer_id = this.state.layer_id ? this.state.layer_id : 0;
-    let url = `/api/layer/${layer_id}/replace`;
-    var largeDataMessage = '';
+    const layer_id = this.state.layer_id ? this.state.layer_id : 0;
+    const url = `/api/layer/${layer_id}/replace`;
+    let largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (
       <p>{this.__('Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.')}</p>
       );
     }
-    var map = '';
+    let map = '';
     if(this.state.geoJSON){
       map = (
         <div>
@@ -155,9 +155,9 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
       );
     }
 
-    var multipleShapefiles = '';
+    let multipleShapefiles = '';
     if(this.state.multipleShapefiles){
-      var options = [];
+      const options = [];
       this.state.multipleShapefiles.forEach((shpFile) => {
         options.push({value: shpFile, label: shpFile});
       });

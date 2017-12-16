@@ -1,22 +1,22 @@
 // @flow
-var Story = require('../../models/story');
-var Hub = require('../../models/hub');
-var User = require('../../models/user');
-var Group = require('../../models/group');
-var Map = require('../../models/map');
-var Stats = require('../../models/stats');
-var login = require('connect-ensure-login');
+const Story = require('../../models/story');
+const Hub = require('../../models/hub');
+const User = require('../../models/user');
+const Group = require('../../models/group');
+const Map = require('../../models/map');
+const Stats = require('../../models/stats');
+const login = require('connect-ensure-login');
 //var log = require('../../services/log.js');
-var debug = require('../../services/debug')('routes/hubs');
-var urlUtil = require('../../services/url-util');
-var baseUrl = urlUtil.getBaseUrl();
-var nextError = require('../../services/error-response').nextError;
-var csrfProtection = require('csurf')({cookie: false});
-var privateHubCheck = require('../../services/private-hub-check').middlewareView;
+const debug = require('../../services/debug')('routes/hubs');
+const urlUtil = require('../../services/url-util');
+const baseUrl = urlUtil.getBaseUrl();
+const nextError = require('../../services/error-response').nextError;
+const csrfProtection = require('csurf')({cookie: false});
+const privateHubCheck = require('../../services/private-hub-check').middlewareView;
 
 module.exports = function(app: any) {
 
- var recordHubView = function(session: any, hub_id: string, user_id: number, next: any){
+ const recordHubView = function(session: any, hub_id: string, user_id: number, next: any){
 
    if(!session.hubviews){
      session.hubviews = {};
@@ -32,7 +32,7 @@ module.exports = function(app: any) {
    session.views = (session.views || 0) + 1;
  };
 
- var recordStoryView = function(session, story_id: number, user_id:number,  next){
+ const recordStoryView = function(session, story_id: number, user_id:number,  next){
    if(!session.storyviews){
      session.storyviews = {};
    }
@@ -40,7 +40,7 @@ module.exports = function(app: any) {
      session.storyviews[story_id] = 1;
      Stats.addStoryView(story_id, user_id).catch(nextError(next));
    }else{
-     var views = session.storyviews[story_id];
+     const views = session.storyviews[story_id];
 
      session.storyviews[story_id] = views + 1;
    }
@@ -74,10 +74,10 @@ module.exports = function(app: any) {
 
   app.get('/user/:username/hubs', csrfProtection, (req, res, next) => {
 
-    var username = req.params.username;
+    const username = req.params.username;
     debug.log(username);
     if(!username){nextError(next);}
-    var canEdit = false;
+    let canEdit = false;
 
     function completeRequest(userCanEdit){
       User.getUserByName(username)
@@ -121,7 +121,7 @@ module.exports = function(app: any) {
   });
 
 
-  var renderHubPage = async function(hub: Object, canEdit: boolean, req, res){
+  const renderHubPage = async function(hub: Object, canEdit: boolean, req, res){
     debug.log(`loading hub, canEdit: ${canEdit.toString()}`);
 
     let myMaps, popularMaps;

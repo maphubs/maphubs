@@ -1,18 +1,18 @@
 // @flow
-var knex = require('../connection.js');
-var debug = require('../services/debug')('feature');
+const knex = require('../connection.js');
+const debug = require('../services/debug')('feature');
 
 module.exports = {
 
   async getFeatureByID(mhid: string, layer_id: number, trx: any) {
     const geojson = await this.getGeoJSON(mhid, layer_id, trx);
-    var feature = {geojson};
+    const feature = {geojson};
     const notes = await this.getFeatureNotes(mhid, layer_id, trx);
     return{feature, notes};
   },
 
   async getFeatureNotes(mhid: string, layer_id: number, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
 
     const result = await db('omh.feature_notes').select('notes').where({mhid, layer_id});
 
@@ -23,7 +23,7 @@ module.exports = {
   },
 
   async saveFeatureNote(mhid: string, layer_id: number, user_id: number, notes: string, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     const result = await db('omh.feature_notes').select('mhid').where({mhid, layer_id});
 
     if(result && result.length === 1){
@@ -56,9 +56,9 @@ module.exports = {
    * @returns 
    */
     async getGeoJSON(mhid: string, layer_id: number, trx: any) {
-      let db = trx ? trx : knex;
+      const db = trx ? trx : knex;
      
-      var layerTable = 'layers.data_' + layer_id;  
+      const layerTable = 'layers.data_' + layer_id;  
       const data = await db.select(db.raw(`ST_AsGeoJSON(wkb_geometry) as geom`), 'tags')
       .from(layerTable).where({mhid});
 
@@ -70,7 +70,7 @@ module.exports = {
         '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
         from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`);             
 
-        var feature = {
+        const feature = {
           type: 'Feature',
           geometry: JSON.parse(data[0].geom),
           properties: data[0].tags

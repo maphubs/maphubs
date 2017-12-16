@@ -28,7 +28,7 @@ export default class EditList extends React.Component<Props> {
   }
 
   render() {
-    var _this = this;
+    const _this = this;
 
     return (
       <ul className="collection with-header">
@@ -36,8 +36,8 @@ export default class EditList extends React.Component<Props> {
           <h5>{this.props.title}</h5>
         </li>
         {this.props.items.map((item) => {
-            var icon = '';
-            var className = 'collection-item';
+            let icon = '';
+            let className = 'collection-item';
             if (item.image) {
               icon = (
                 <img alt="" className="circle" src={item.image}/>
@@ -50,7 +50,7 @@ export default class EditList extends React.Component<Props> {
               className = 'collection-item avatar';
             }
 
-            var action = '';
+            let action = '';
             if (item.actionIcon && item.actionLabel) {
               action = (
                 <a className="tooltipped" data-delay="50" data-position="bottom" data-tooltip={item.actionLabel}>
@@ -61,7 +61,7 @@ export default class EditList extends React.Component<Props> {
               );
             }
 
-            var type = '';
+            let type = '';
             if (item.type) {
               type = (
                 <p>{item.type}</p>

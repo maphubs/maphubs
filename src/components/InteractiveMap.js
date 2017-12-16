@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 //var debug = require('../../services/debug')('CreateMap');
-var $ = require('jquery');
+const $ = require('jquery');
 import Map from './Map/Map';
 import LayerList from './MapMaker/LayerList';
 import MiniLegend from './Map/MiniLegend';
@@ -75,25 +75,25 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
 
   componentWillMount(){
     super.componentWillMount();
-    var _this = this;
+    const _this = this;
     if (typeof window === 'undefined') return; //only run this on the client
 
     function getSize(){
       // Get the dimensions of the viewport
-      var width = Math.floor($(window).width());
-      var height = $(window).height();
+      const width = Math.floor($(window).width());
+      const height = $(window).height();
       return {width, height};
     }
 
-    var size = getSize();
+    const size = getSize();
     this.setState({
       width: size.width,
       height: size.height
     });
 
     $(window).resize(function(){
-      var debounced = _debounce(() => {
-        var size = getSize();
+      const debounced = _debounce(() => {
+        const size = getSize();
         _this.setState({
           width: size.width,
           height: size.height
@@ -112,27 +112,27 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layer_id: number) => {
-    var _this = this;
+    const _this = this;
     MapActions.toggleVisibility(layer_id, (layerStyle) => {
       //_this.refs.map.updateLayer(layerStyle);
     });
   }
 
   onToggleForestLoss = (enabled: boolean) => {
-    var mapLayers = [];
+    let mapLayers = [];
     if(this.state.layers){
       mapLayers = this.state.layers;
     }
-    var layers = ForestLossLegendHelper.getLegendLayers();
+    const layers = ForestLossLegendHelper.getLegendLayers();
   
     if(enabled){
       //add layers to legend
        mapLayers = mapLayers.concat(layers);
     }else{
-      var updatedLayers = [];
+      const updatedLayers = [];
       //remove layers from legend
       mapLayers.forEach(mapLayer=>{
-        var foundInLayers;
+        let foundInLayers;
         layers.forEach(layer=>{
           if(mapLayer.id === layer.id){
             foundInLayers = true;
@@ -148,20 +148,20 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   onToggleIsochroneLayer = (enabled: boolean) => {
-    var mapLayers = [];
+    let mapLayers = [];
     if(this.state.layers){
       mapLayers = this.state.layers;
     }
-    var layers = IsochroneLegendHelper.getLegendLayers();
+    const layers = IsochroneLegendHelper.getLegendLayers();
   
     if(enabled){
       //add layers to legend
        mapLayers = mapLayers.concat(layers);
     }else{
-      var updatedLayers = [];
+      const updatedLayers = [];
       //remove layers from legend
       mapLayers.forEach(mapLayer=>{
-        var foundInLayers;
+        let foundInLayers;
         layers.forEach(layer=>{
           if(mapLayer.id === layer.id){
             foundInLayers = true;
@@ -181,7 +181,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
  }
   render() {
 
-    var border = 'none';
+    let border = 'none';
     if(this.props.border){
       border = '1px solid #212121';
     }
@@ -193,24 +193,24 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       if(typeof window === 'undefined' || !window.location.hash){
         //only update position if there isn't absolute hash in the URL
         if(this.state.position && this.state.position.bbox){
-          var bbox = this.state.position.bbox;
+          const bbox = this.state.position.bbox;
           bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
         }     
       }
      
     }
 
-    var children = '';
+    let children = '';
     if(this.props.children){
       children = this.props.children;
     }
 
-    var title;
+    let title;
     if(this.props.showTitle && this.props.title){
       title = this.props.title;
     }
 
-    var categoryMenu = '', height = '100%', topOffset = 0;
+    let categoryMenu = '', height = '100%', topOffset = 0;
     if(this.props.categories){
       categoryMenu = (
         <MapLayerMenu categories={this.props.categories} 
@@ -221,7 +221,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       height = 'calc(100% - 35px)';
     }
 
-     var legend = '', mobileLegend = '';
+     let legend = '', mobileLegend = '';
     if(this.state.width < 600){
       mobileLegend = (
         <MiniLegend style={{
@@ -238,7 +238,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       if(!this.props.insetMap){
         insetOffset = 30;
       }
-      let legendMaxHeight = topOffset + insetOffset;
+      const legendMaxHeight = topOffset + insetOffset;
       legend = (
         <MiniLegend style={{
           position: 'absolute',
@@ -264,7 +264,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       );
     }
 
-    let mobileLegendButtonTop = `${10 + topOffset}px`;
+    const mobileLegendButtonTop = `${10 + topOffset}px`;
 
     return (
       <div style={{width: '100%', height: `calc(${this.props.height} - 0px)`, overflow: 'hidden', border, position: 'relative'}}>

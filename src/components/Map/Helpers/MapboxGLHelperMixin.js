@@ -1,5 +1,5 @@
 //@flow
-var debug = require('../../../services/debug')('mapboxGLHelperMixin');
+const debug = require('../../../services/debug')('mapboxGLHelperMixin');
 
 /**
  * Helper functions for interfacing with MapboxGL
@@ -14,8 +14,8 @@ module.exports = {
 
   getPosition(){
     if(this.map){
-      var center = this.map.getCenter();
-      var zoom = this.map.getZoom();
+      const center = this.map.getCenter();
+      const zoom = this.map.getZoom();
       return {
           zoom,
           lng: center.lng,
@@ -26,7 +26,7 @@ module.exports = {
 
   updatePosition(){
     debug.log('(' + this.state.id + ') ' +'UPDATE POSITION');
-    var map = this.map;
+    const map = this.map;
     map.setView(this.state.map.position.center, this.state.map.position.zoom, {animate: false});
   },
 
@@ -39,7 +39,7 @@ module.exports = {
   },
 
   fitBounds(bbox: Array<number>, maxZoom: number, padding: number = 0, animate: boolean = true){
-    var bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
+    const bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
     this.map.fitBounds(bounds, {padding, curve: 1, speed:0.6, maxZoom, animate});
   },
 

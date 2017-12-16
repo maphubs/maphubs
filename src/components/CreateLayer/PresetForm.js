@@ -70,7 +70,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
   }
 
   onFormChange = (values: Object) => {
-    var _this = this;
+    const _this = this;
     values.id = this.props.id;
     values.label = Locales.formModelToLocalizedString(values, 'label');
     Actions.updatePreset(_this.props.id, values);
@@ -78,7 +78,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
 
   onValid = () => {
     this.setState({valid: true});
-    var debounced = _debounce(function(){
+    const debounced = _debounce(function(){
       if(this.props.onValid) this.props.onValid();
     }, 2500).bind(this);
     debounced();
@@ -86,7 +86,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
 
   onInvalid =() => {
     this.setState({valid: false});
-    var debounced = _debounce(function(){
+    const debounced = _debounce(function(){
       if(this.props.onInvalid) this.props.onInvalid();
     }, 2500).bind(this);
     debounced();
@@ -97,7 +97,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
   }
 
   onRemove = () => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Removal'),
       message: _this.__('Are you sure you want to remove this field?') + ' '
@@ -118,7 +118,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var presetOptions = [
+    const presetOptions = [
       {value: 'text', label: this.__('Text')},
       {value: 'localized', label: this.__('Localized Text')},
       {value: 'number', label: this.__('Number')},
@@ -127,7 +127,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
       {value: 'check', label: this.__('Check Box (Yes/No)')}
     ];
     
-    var typeOptions = '';
+    let typeOptions = '';
 
     if(this.props.type === 'combo' || this.props.type === 'radio'){
       typeOptions = (
@@ -142,7 +142,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     }
 
 
-    var typeStartEmpty = true;
+    let typeStartEmpty = true;
     if(this.props.type) typeStartEmpty = false;
 
 		return (

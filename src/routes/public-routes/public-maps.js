@@ -1,15 +1,15 @@
 //@flow
-var nextError = require('../../services/error-response').nextError;
-var Map = require('../../models/map');
-var Stats = require('../../models/stats');
-var MapUtils = require('../../services/map-utils');
-var ScreenshotUtils = require('../../services/screenshot-utils');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
+const nextError = require('../../services/error-response').nextError;
+const Map = require('../../models/map');
+const Stats = require('../../models/stats');
+const MapUtils = require('../../services/map-utils');
+const ScreenshotUtils = require('../../services/screenshot-utils');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
 
 module.exports = function(app: any) {
 
-  var recordMapView = function(session: Object, map_id: number, user_id: number,  next: any){
+  const recordMapView = function(session: Object, map_id: number, user_id: number,  next: any){
     if(!session.mapviews){
       session.mapviews = {};
     }
@@ -17,7 +17,7 @@ module.exports = function(app: any) {
       session.mapviews[map_id] = 1;
       Stats.addMapView(map_id, user_id).catch(nextError(next));
     }else{
-      var views = session.mapviews[map_id];
+      const views = session.mapviews[map_id];
 
       session.mapviews[map_id] = views + 1;
     }
@@ -56,7 +56,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/api/map/share/screenshot/:share_id.png', (req, res) => {
-    var share_id = req.params.share_id;
+    const share_id = req.params.share_id;
     
     Map.getMapByShareId(share_id).then(map => {
       if(map){
@@ -72,12 +72,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/public-embed/:share_id', (req, res, next) => {
-    var share_id = req.params.share_id;
+    const share_id = req.params.share_id;
     if(!share_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -102,12 +102,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/public-embed/:share_id/static', (req, res, next) => {
-    var share_id = req.params.share_id;
+    const share_id = req.params.share_id;
     if(!share_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -132,12 +132,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/public-embed/:share_id/interactive', (req, res, next) => {
-    var share_id = req.params.share_id;
+    const share_id = req.params.share_id;
     if(!share_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }

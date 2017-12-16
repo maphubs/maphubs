@@ -3,14 +3,14 @@ import React from 'react';
 import {Modal, ModalContent} from '../Modal/Modal.js';
 
 import CardCarousel from '../CardCarousel/CardCarousel';
-var cardUtil = require('../../services/card-util');
+const cardUtil = require('../../services/card-util');
 import SearchBox from '../SearchBox';
 import NotificationActions from '../../actions/NotificationActions';
-var urlUtil = require('../../services/url-util');
-var request = require('superagent');
-var checkClientError = require('../../services/client-error-response').checkClientError;
+const urlUtil = require('../../services/url-util');
+const request = require('superagent');
+const checkClientError = require('../../services/client-error-response').checkClientError;
 import MessageActions from '../../actions/MessageActions';
-var debug = require('../../services/debug')('AddMapToStory');
+const debug = require('../../services/debug')('AddMapToStory');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
 type Props = {
@@ -61,7 +61,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
   }
 
   handleSearch(input: string) {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
     .type('json').accept('json')
@@ -95,11 +95,11 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
 
-    var myMaps = '';
+    let myMaps = '';
     if(this.props.myMaps && this.props.myMaps.length > 0){
-      var myCards = this.props.myMaps.map((map, i) => {
+      const myCards = this.props.myMaps.map((map, i) => {
         return cardUtil.getMapCard(map, i, [], _this.onAdd);
       });
       myMaps = (
@@ -113,12 +113,12 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
       );
     }
 
-    var popularCards = this.props.popularMaps.map((map, i) => {
+    const popularCards = this.props.popularMaps.map((map, i) => {
       return cardUtil.getMapCard(map, i, [], _this.onAdd);
     });
 
-    var searchResults = '';
-    var searchCards = [];
+    let searchResults = '';
+    let searchCards = [];
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 

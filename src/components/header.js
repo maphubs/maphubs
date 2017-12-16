@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import UserMenu from './UserMenu';
 import MapHubsComponent from './MapHubsComponent';
 import UserStore from '../stores/UserStore';
@@ -115,7 +115,7 @@ detectIE = () => {
     this.setCookie('iecheck', true, 1);
   }
 
-  var ua = window.navigator.userAgent;
+  const ua = window.navigator.userAgent;
 
   // Test values; Uncomment to check result …
 
@@ -131,16 +131,16 @@ detectIE = () => {
   // Edge (IE 12+)
   // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
 
-  var msie = ua.indexOf('MSIE ');
+  const msie = ua.indexOf('MSIE ');
   if (msie > 0) {
     // IE 10 or older => return version number
     return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
   }
 
-  var trident = ua.indexOf('Trident/');
+  const trident = ua.indexOf('Trident/');
   if (trident > 0) {
     // IE 11 => return version number
-    var rv = ua.indexOf('rv:');
+    const rv = ua.indexOf('rv:');
     return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
   }
 
@@ -156,17 +156,17 @@ detectIE = () => {
 }
 
 setCookie = (cname: string, cvalue: any, exdays: number) => {
-    var d = new Date();
+    const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+d.toUTCString();
+    const expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
 }
 
 getCookie = (cname: string) => {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
+    const name = cname + "=";
+    const ca = document.cookie.split(';');
+    for(let i=0; i<ca.length; i++) {
+        let c = ca[i];
         while (c.charAt(0)===' ') c = c.substring(1);
         if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
     }
@@ -176,7 +176,7 @@ getCookie = (cname: string) => {
   renderSearch = () => {
     let search = '';
     if(this.props.showSearch){
-      let searchLink = this.props.customSearchLink? this.props.customSearchLink: '/search';
+      const searchLink = this.props.customSearchLink? this.props.customSearchLink: '/search';
       search = (
         <li className="nav-link-wrapper nav-tooltip"
           data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
@@ -238,13 +238,13 @@ getCookie = (cname: string) => {
 
   render() {
 
-    var defaultLinkClasses = "nav-link-item";
-    var activeLinkClasses = "nav-link-item active";
+    const defaultLinkClasses = "nav-link-item";
+    const activeLinkClasses = "nav-link-item active";
 
-    var exploreClasses = 'explore-dropdown-button nav-dropdown-button',
+    let exploreClasses = 'explore-dropdown-button nav-dropdown-button',
         mapClasses = defaultLinkClasses;
     if(this.props.activePage){
-      var activePage = this.props.activePage;
+      const activePage = this.props.activePage;
       if(activePage === 'map'){
         mapClasses = activeLinkClasses;
       }else if(activePage === 'explore'){

@@ -1,8 +1,8 @@
 // @flow
-var knex = require('../connection.js');
-var Promise = require('bluebird');
-var _find = require('lodash.find');
-var Account = require('./account');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
+const _find = require('lodash.find');
+const Account = require('./account');
 
 module.exports = {
 
@@ -110,7 +110,7 @@ module.exports = {
     },
 
     async getGroupsForUser(user_id: number, trx: any = null) {
-      let db = trx ? trx : knex;
+      const db = trx ? trx : knex;
 
       const groups = await db.select('omh.groups.*',
       db.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'))

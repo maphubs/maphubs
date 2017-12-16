@@ -41,7 +41,7 @@ export default class HubResources extends MapHubsComponent<Props, HubStoreState>
   }
 
   render(){
-    var resources = '';
+    let resources = '';
     if(this.props.editing){
       resources = (
           <div className="row">

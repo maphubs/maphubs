@@ -1,7 +1,7 @@
 // @flow
-var debug = require('../services/debug')('layer-data');
-var SearchIndex = require('./search-index');
-var log = require('../services/log');
+const debug = require('../services/debug')('layer-data');
+const SearchIndex = require('./search-index');
+const log = require('../services/log');
 /**
  * Provides CRUD methods for updating layer data in PostGIS
  */
@@ -16,7 +16,7 @@ module.exports = {
    * @returns Promise
    */
   async createFeature(layer_id: number, geojson: Object, trx: any): Promise<string>{
-    var _this = this;
+    const _this = this;
     debug.log('creating feature');
     
     const result = await trx(`layers.data_${layer_id}`)
@@ -52,7 +52,7 @@ module.exports = {
    * @returns Promise
    */
   async updateFeature(layer_id: number, mhid: string, geojson: Object, trx: any): Bluebird$Promise<Object>{
-    var _this = this;
+    const _this = this;
     debug.log('updating feature: ' + mhid);
 
     await trx(`layers.data_${layer_id}`)
@@ -89,7 +89,7 @@ module.exports = {
     }else{
       valStr = 'null';
     }
-    let tagStr = `{${tag}}`;
+    const tagStr = `{${tag}}`;
     await trx(`layers.data_${layer_id}`)
     .update({
       tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
@@ -114,13 +114,13 @@ module.exports = {
    */
   async setNumberTag(layer_id: number, mhid: string, tag: string, val: number, trx: any): Bluebird$Promise<Object>{
     debug.log('updating tag: ' + mhid);
-    var valStr;
+    let valStr;
     if(val){
       valStr = `${val}`;
     }else{
       valStr = 'null';
     }
-    let tagStr = `{${tag}}`;
+    const tagStr = `{${tag}}`;
     await trx(`layers.data_${layer_id}`)
     .update({
       tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})

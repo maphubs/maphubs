@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 import LayerListStatic from './LayerListStatic';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapHubsPureComponent from '../MapHubsPureComponent';
 
 export default class LayerListDropDown extends MapHubsPureComponent {

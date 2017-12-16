@@ -26,8 +26,8 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
   }
 
   onSubmit = () => {
-    var _this = this;
-    var data = {
+    const _this = this;
+    const data = {
       is_external: false,
       external_layer_type: '',
       external_layer_config: {},
@@ -50,7 +50,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
 
 	render() {
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">

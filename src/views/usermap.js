@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import InteractiveMap from '../components/InteractiveMap';
 import Header from '../components/header';
 //var NotificationActions = require('../actions/NotificationActions');
@@ -12,7 +12,7 @@ import Progress from '../components/Progress';
 import urlUtil from '../services/url-util';
 import UserStore from '../stores/UserStore';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MapMakerStore from '../stores/MapMakerStore';
 
 import debounce from 'lodash.debounce';
@@ -86,20 +86,20 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
   componentWillMount(){
     super.componentWillMount();
-    var _this = this;
+    const _this = this;
 
     if (typeof window === 'undefined') return; //only run this on the client
 
     function getSize(){
       // Get the dimensions of the viewport
-      var width = Math.floor($(window).width());
-      var height = $(window).height();
+      const width = Math.floor($(window).width());
+      const height = $(window).height();
       //var height = Math.floor(width * 0.75); //4:3 aspect ratio
       //var height = Math.floor((width * 9)/16); //16:9 aspect ratio
       return {width, height};
     }
 
-    var size = getSize();
+    const size = getSize();
     this.setState({
       width: size.width,
       height: size.height
@@ -107,7 +107,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
     $(window).resize(() => {
       debounce(() => {
-      var size = getSize();
+      const size = getSize();
         _this.setState({
           width: size.width,
           height: size.height
@@ -135,7 +135,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   onDelete = () => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of ') + this._o_(this.props.map.title),
@@ -158,7 +158,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   onFullScreen = () => {
-    var fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`;
+    let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`;
     if(window.location.hash){
       fullScreenLink = fullScreenLink += window.location.hash;
     }
@@ -174,7 +174,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   download = () => {
-    var _this = this;
+    const _this = this;
     if(!this.props.map.has_screenshot){
       //warn the user if we need to wait for the screenshot to be created
       this.setState({downloading: true});
@@ -195,15 +195,15 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       url = `${baseUrl}/map/embed/${this.props.map.map_id}/static`;
     }
 
-    var code = `
+    const code = `
       &lt;iframe src="${url}"
         style="width: 100%; height: 350px;" frameborder="0" 
         allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
         &gt;
       &lt;/iframe&gt;
     `;
-    var messageIntro =  this.__('Paste the following code into your website to embed a map:');
-     var message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`;
+    const messageIntro =  this.__('Paste the following code into your website to embed a map:');
+     const message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`;
 
     MessageActions.showMessage({title: this.__('Embed Code'), message});
   }
@@ -214,7 +214,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   } 
 
   toggleSharePublic = (value: boolean) => {
-    var _this = this;
+    const _this = this;
     MapMakerActions.setPublic(this.props.map.map_id, value, this.state._csrf, (share_id) => {
       _this.setState({share_id});
     });
@@ -226,7 +226,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   } 
 
   onCopyMap = (formData: Object, cb: Function) => {
-    var _this = this;
+    const _this = this;
     const data = {
       map_id: this.props.map.map_id, 
       title: formData.title,
@@ -242,8 +242,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           if(err || !res.body || !res.body.map_id){
             MessageActions.showMessage({title: _this.__('Error'), message: err});
           }else{
-            var map_id = res.body.map_id;
-            var url = '/map/edit/' + map_id;
+            const map_id = res.body.map_id;
+            const url = '/map/edit/' + map_id;
             NotificationActions.showNotification({
               message: _this.__('Map Copied'),
               dismissAfter: 2000,
@@ -295,7 +295,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
     }
 
-    var copyButton = '';
+    let copyButton = '';
     if(this.state.loggedIn && this.state.user){
       copyButton = (
         <li>
@@ -307,8 +307,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       );
     }
 
-    let download= `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`; 
-    let downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`;
+    const download= `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`; 
+    const downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`;
 
     button = (
     <div id="user-map-button" className="fixed-action-btn" style={{bottom: '40px'}}

@@ -1,6 +1,6 @@
 import Reflux from 'reflux';
 import Actions from '../../actions/map/MarkerActions';
-var debug = require('../../services/debug')('stores/MarkerStore');
+const debug = require('../../services/debug')('stores/MarkerStore');
 
 /**
  * A store to hold marker objects so we can update them later
@@ -26,7 +26,7 @@ export default class MarkerStore extends Reflux.Store {
   }
 
   addMarker(layer_id, mhid, marker){
-    var featureId = mhid.split(':')[1];
+    const featureId = mhid.split(':')[1];
     if(!this.state.markers[layer_id]){
       this.state.markers[layer_id] = {};
     }
@@ -34,7 +34,7 @@ export default class MarkerStore extends Reflux.Store {
   }
 
   removeMarker(layer_id, mhid){
-    var featureId = mhid.split(':')[1];
+    const featureId = mhid.split(':')[1];
     if(this.state.markers[layer_id]){
       delete this.state.markers[layer_id][featureId];
     }
@@ -47,7 +47,7 @@ export default class MarkerStore extends Reflux.Store {
   }
 
   getMarker(layer_id, mhid, cb){
-    var featureId = mhid.split(':')[1];
+    const featureId = mhid.split(':')[1];
     if(this.state.markers[layer_id]){
       cb(this.state.markers[layer_id][featureId]);
     }else{

@@ -5,11 +5,11 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
-var cardUtil = require('../services/card-util');
+const cardUtil = require('../services/card-util');
 import Promise from 'bluebird';
 import request from 'superagent';
-var debug = require('../services/debug')('home');
-var $ = require('jquery');
+const debug = require('../services/debug')('home');
+const $ = require('jquery');
 import _shuffle from 'lodash.shuffle';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
@@ -59,7 +59,7 @@ export default class Search extends MapHubsComponent<Props, State> {
     if (!url) url = window.location.href;
     url = url.toLowerCase(); // This is just to avoid case sensitiveness
     name = name.replace(/[\[\]]/g, "\\$&").toLowerCase();// This is just to avoid case sensitiveness for query parameter name
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
@@ -67,7 +67,7 @@ export default class Search extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var q = this.getParameterByName('q');
+    const q = this.getParameterByName('q');
     if(q){
       this.handleSearch(q);
     }
@@ -75,7 +75,7 @@ export default class Search extends MapHubsComponent<Props, State> {
 
   componentDidUpdate(){
     if(this.state.searchResult){
-      var scrollTarget = $(this.refs.search);
+      const scrollTarget = $(this.refs.search);
       $('html,body').animate({
          scrollTop: scrollTarget.offset().top
        }, 1000);
@@ -88,9 +88,9 @@ export default class Search extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     this.setState({searching: true});
-    var requests = [
+    const requests = [
       request.get('/api/global/search' + '?q=' + input).type('json').accept('json').promise(),
       request.get('/api/layers/search' + '?q=' + input).type('json').accept('json').promise(),
       request.get('/api/groups/search' + '?q=' + input).type('json').accept('json').promise(),
@@ -101,19 +101,19 @@ export default class Search extends MapHubsComponent<Props, State> {
     Promise.all(requests).then((results) => {
       _this.setState({searching: false});
 
-      var totalResults = 0;
+      let totalResults = 0;
 
-      var featureRes = results[0];
-      var layerRes = results[1];
-      var groupRes = results[2];
-      var hubRes = results[3];
-      var mapRes = results[4];
+      const featureRes = results[0];
+      const layerRes = results[1];
+      const groupRes = results[2];
+      const hubRes = results[3];
+      const mapRes = results[4];
 
-      var layerResults =[];
-      var groupResults = [];
-      var hubResults = [];
-      var mapResults = [];
-      var storyResults = [];
+      let layerResults =[];
+      let groupResults = [];
+      let hubResults = [];
+      let mapResults = [];
+      const storyResults = [];
 
       //layers
       if(layerRes.body && layerRes.body.layers && layerRes.body.layers.length > 0){
@@ -139,7 +139,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         mapResults = mapRes.body.maps;
       }
 
-      var searchCards = _this.getMixedCardSet(layerResults, groupResults, hubResults, mapResults, storyResults);
+      const searchCards = _this.getMixedCardSet(layerResults, groupResults, hubResults, mapResults, storyResults);
 
       //features
       if(featureRes.body && featureRes.body.features && featureRes.body.features.length > 0){
@@ -194,7 +194,7 @@ export default class Search extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var cardsPanel = '';
+    let cardsPanel = '';
     if(this.state.searchCards && this.state.searchCards.length > 0){
       cardsPanel = (
         <CardCollection cards={this.state.searchCards} />

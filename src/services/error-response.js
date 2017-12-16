@@ -1,6 +1,6 @@
 //@flow
-var log = require('./log');
-var Raven = require('raven');
+const log = require('./log');
+const Raven = require('raven');
 module.exports = {
 
   apiError(res: express$Response, code: number, userMessage?: string){
@@ -10,7 +10,7 @@ module.exports = {
         Raven.captureException(err);
       }
       
-      var message = '';
+      let message = '';
       if(process.env.NODE_ENV === 'production'){
         if(userMessage){
           message = userMessage;

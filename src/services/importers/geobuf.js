@@ -1,9 +1,9 @@
 //@flow
 import geobuf from 'geobuf';
 import Pbf from 'pbf';
-var Promise = require('bluebird');
-var fs = require('fs');
-var debug = require('../debug')('services/importers/geobuf');
+const Promise = require('bluebird');
+const fs = require('fs');
+const debug = require('../debug')('services/importers/geobuf');
 
 module.exports = async function(filePath: string, layer_id: number){
   debug.log(`importing Geobuf for layer: ${layer_id}`);

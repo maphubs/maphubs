@@ -4,7 +4,7 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import CodeEditor from '../components/LayerDesigner/CodeEditor';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
@@ -45,7 +45,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
   }
 
   savePageConfig = (pageConfig: string) => {
-   var _this = this;
+   const _this = this;
    request.post('/api/page/save')
    .type('json').accept('json')
    .send({

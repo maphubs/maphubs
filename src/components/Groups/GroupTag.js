@@ -1,9 +1,9 @@
 //@flow
 import React from 'react';
-var urlUtil = require('../../services/url-util');
-var $ = require('jquery');
-var _isequal = require('lodash.isequal');
-var classNames = require('classnames');
+const urlUtil = require('../../services/url-util');
+const $ = require('jquery');
+const _isequal = require('lodash.isequal');
+const classNames = require('classnames');
 import MapHubsComponent from '../../components/MapHubsComponent';
 
 type Props = {|
@@ -61,12 +61,12 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var baseUrl = urlUtil.getBaseUrl();
-    var sizeStr = this.props.size + 'px';
-    var fontSizeStr = this.props.fontSize + 'px';
-    var imgWidth = this.props.size.toString() + 'px';
-    var chipWidth = this.props.chipWidth.toString()  + 'px';
-    var className = classNames(['chip', 'truncate', this.props.className]);
+    const baseUrl = urlUtil.getBaseUrl();
+    const sizeStr = this.props.size + 'px';
+    const fontSizeStr = this.props.fontSize + 'px';
+    const imgWidth = this.props.size.toString() + 'px';
+    const chipWidth = this.props.chipWidth.toString()  + 'px';
+    const className = classNames(['chip', 'truncate', this.props.className]);
 
     /*
 

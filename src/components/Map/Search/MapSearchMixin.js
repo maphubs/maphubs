@@ -1,20 +1,20 @@
 //@flow
-var MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query');
+const MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query');
 import _includes from 'lodash.includes';
-var debug = require('../../../services/debug')('MapSearchMixin');
+const debug = require('../../../services/debug')('MapSearchMixin');
 import _find from 'lodash.find';
 import _bbox from '@turf/bbox';
-var uuid = require('uuid').v1;
+const uuid = require('uuid').v1;
 
 import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style';
 
 module.exports = {
 
   getSearchFilters(query: string){
-    let _this = this;
+    const _this = this;
     query = `/.*${query}.*/ig`;
-    let sourceIDs = [];
-    let queries = [];
+    const sourceIDs = [];
+    const queries = [];
     if(_this.overlayMapStyle){
       _this.overlayMapStyle.layers.forEach((layer) => {
         if(layer.metadata && 
@@ -25,13 +25,13 @@ module.exports = {
           ) &&
           (layer.id.startsWith('omh') || layer.id.startsWith('osm'))
         ){
-          let source = _this.overlayMapStyle.sources[layer.source];
+          const source = _this.overlayMapStyle.sources[layer.source];
           
           const sourceId = layer.source;
           if(!_includes(sourceIDs, sourceId)){
             if(source.metadata && source.metadata['maphubs:presets']){
-              let filter = ['any'];
-              let presets = source.metadata['maphubs:presets'];
+              const filter = ['any'];
+              const presets = source.metadata['maphubs:presets'];
               presets.forEach(preset=>{
                 if(preset.type === 'text'){
                   filter.push(['~=', preset.tag, query]);
@@ -50,12 +50,12 @@ module.exports = {
   },
 
   onSearch(queryText: string){
-    var _this = this;
+    const _this = this;
 
     //clear prev display layers
     this.onSearchReset();
 
-    var results = {
+    const results = {
       bbox: [],
       geoJSON: {type: 'FeatureCollection', features: []},
       list: []
@@ -64,7 +64,7 @@ module.exports = {
     let searchDisplayLayers = [];
 
     this.getSearchFilters(queryText).forEach(query => {
-      let queryResults = MapboxGLRegexSearch.querySourceFeatures(
+      const queryResults = MapboxGLRegexSearch.querySourceFeatures(
         query.source,   
         {
           sourceLayer: 'data',
@@ -72,24 +72,24 @@ module.exports = {
         },
         _this.map);
 
-        let source = _this.overlayMapStyle.sources[query.source];
+        const source = _this.overlayMapStyle.sources[query.source];
         
         
 
         
-        let presets = source.metadata['maphubs:presets'];
-        let nameFieldPreset = _find(presets, {isName: true});
+        const presets = source.metadata['maphubs:presets'];
+        const nameFieldPreset = _find(presets, {isName: true});
         let nameField; 
         if(nameFieldPreset){
           nameField = nameFieldPreset.tag;
         }
 
         if(!nameField){
-          let matchNameArr = [];
+          const matchNameArr = [];
           if(presets && presets.length > 0){
              presets.forEach(preset =>{
               if(preset && preset.label ){
-                let label = _this._o_(preset.label).toString();
+                const label = _this._o_(preset.label).toString();
                 if(label.match(/.*[N,n]ame.*/g)){
                   matchNameArr.push(preset.tag);
                 }
@@ -104,7 +104,7 @@ module.exports = {
             }
           }else if(queryResults.length > 0){
             //use props of first feature
-            let propNames = Object.keys(queryResults[0].properties);
+            const propNames = Object.keys(queryResults[0].properties);
             propNames.forEach(propName =>{
             if(propName.match(/.*[N,n]ame.*/g)){
               matchNameArr.push(propName);
@@ -120,10 +120,10 @@ module.exports = {
           }
         }
 
-        let mhids = [];
+        const mhids = [];
         queryResults.forEach(result => {
-          let name = result.properties[nameField];
-          let data = {
+          const name = result.properties[nameField];
+          const data = {
             id: result.properties.mhid,
             name,
             geoJSON: result,
@@ -154,14 +154,14 @@ module.exports = {
     if(results.list.length > 0){
       //getting a weird effect from larger polygon layers if they are zoomed inside of their boundaries
       if(_this.map.getZoom() < 10){
-        let bbox =  _bbox(results.geoJSON);
+        const bbox =  _bbox(results.geoJSON);
         _this.map.fitBounds(bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
         results.bbox = bbox;
       }    
     }
     
     this.searchDisplayLayers = searchDisplayLayers;
-    var firstLabelLayer = _this.getFirstLabelLayer();
+    const firstLabelLayer = _this.getFirstLabelLayer();
     searchDisplayLayers.forEach(layer => {
       _this.map.addLayer(layer, firstLabelLayer);
     });
@@ -175,18 +175,18 @@ module.exports = {
     if(result.bbox){
       this.map.fitBounds(result.bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 16});
     }else if(result._geometry || result.geometry){
-      let geometry = result._geometry ? result._geometry : result.geometry;
+      const geometry = result._geometry ? result._geometry : result.geometry;
       if(geometry.type === 'Point'){
          this.map.flyTo({center: geometry.coordinates});
       }else{
-         let bbox =  _bbox(geometry);
+         const bbox =  _bbox(geometry);
          this.map.fitBounds(bbox, {padding: 25, curve: 3, speed:0.6, maxZoom: 22});
       }  
     }  
   },
 
   onSearchReset() {
-    var _this = this;
+    const _this = this;
     if(this.searchDisplayLayers && this.searchDisplayLayers.length > 0){
       this.searchDisplayLayers.forEach(layer => {
         _this.map.removeLayer(layer.id);

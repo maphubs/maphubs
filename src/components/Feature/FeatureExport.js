@@ -13,7 +13,7 @@ type Props = {
 
 export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   render(){
-    let {mhid, layer_id, name, disable_export, data_type} = this.props;
+    const {mhid, layer_id, name, disable_export, data_type} = this.props;
     
     const geoJSONURL = `/api/feature/json/${layer_id}/${mhid}/${slugify(this._o_(name))}.geojson`;
     const kmlURL = `/api/feature/${layer_id}/${mhid}/export/kml/${slugify(this._o_(name))}.kml`;

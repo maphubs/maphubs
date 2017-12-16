@@ -1,9 +1,9 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import InteractiveMap from '../components/InteractiveMap';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import _bbox from '@turf/bbox';
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
@@ -11,7 +11,7 @@ import LocaleStore from '../stores/LocaleStore';
 import BaseMapStore from '../stores/map/BaseMapStore';
 import type {Layer} from '../stores/layer-store';
 import type {GLStyle} from '../types/mapbox-gl-style';
-var urlUtil = require('../services/url-util');
+const urlUtil = require('../services/url-util');
 import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = {
@@ -62,8 +62,8 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
        Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
     }
     
-    var glStyle = this.props.map.style;
-    let layers = this.props.layers;
+    const glStyle = this.props.map.style;
+    const layers = this.props.layers;
     if(this.props.geoJSONUrl){
       glStyle.sources['geojson-overlay'] = {
         type: 'geojson',
@@ -96,13 +96,13 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   }
 
   loadGeoJSON = (url: string) => {
-    var _this = this;
+    const _this = this;
     request.get(url)
     .type('json').accept('json')
     .end((err, res) => {
       checkClientError(res, err, ()=>{}, () => {
-        var geoJSON = res.body;
-        var bounds = _bbox(geoJSON);
+        const geoJSON = res.body;
+        const bounds = _bbox(geoJSON);
         //_this.refs.map.fitBounds(bounds, 12, 10, true);
         _this.setState({bounds});
       });
@@ -145,9 +145,9 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   }
 
   getLayerConfig = (): Layer => {
-    let emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''};
+    const emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''};
 
-    let style: GLStyle = {
+    const style: GLStyle = {
       version: 8,
       sources: {
         "geojson-overlay": {
@@ -176,9 +176,9 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   }
   
   render() {
-    var map = '';
+    let map = '';
     
-    var bounds;
+    let bounds;
     
     if(this.props.isStatic && !this.state.interactive){
       let imgSrc = this.props.image;
@@ -200,7 +200,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           if(typeof window === 'undefined' || !window.location.hash){
               //only update position if there isn't absolute hash in the URL
                 if( this.props.map.position && this.props.map.position.bbox){
-                  var bbox = this.props.map.position.bbox;
+                  const bbox = this.props.map.position.bbox;
                   bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
                 }      
             }             

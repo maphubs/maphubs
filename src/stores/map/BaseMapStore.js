@@ -1,7 +1,7 @@
 import Reflux from 'reflux';
 import Actions from '../../actions/map/BaseMapActions';
-var debug = require('../../services/debug')('stores/BaseMapStore');
-var request = require('superagent');
+const debug = require('../../services/debug')('stores/BaseMapStore');
+const request = require('superagent');
 import _bboxPolygon from '@turf/bbox-polygon';
 import _intersect from '@turf/intersect';
 import _debounce from 'lodash.debounce';
@@ -12,11 +12,11 @@ import _find from 'lodash.find';
 //var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json');
 //var osmLiberty = require('../../components/Map/BaseMaps/osm-liberty.json');
 //var osmBright = require('../../components/Map/BaseMaps/osm-liberty.json');
-var positronTz = require('../../components/Map/BaseMaps/positron-tz.json');
-var darkmatterTz = require('../../components/Map/BaseMaps/darkmatter-tz.json');
-var osmLibertyTz= require('../../components/Map/BaseMaps/osm-liberty-tz.json');
-var osmBrightTz = require('../../components/Map/BaseMaps/osm-liberty-tz.json');
-var defaultBaseMapOptions = require('../../components/Map/BaseMaps/base-map-options.json');
+const positronTz = require('../../components/Map/BaseMaps/positron-tz.json');
+const darkmatterTz = require('../../components/Map/BaseMaps/darkmatter-tz.json');
+const osmLibertyTz= require('../../components/Map/BaseMaps/osm-liberty-tz.json');
+const osmBrightTz = require('../../components/Map/BaseMaps/osm-liberty-tz.json');
+const defaultBaseMapOptions = require('../../components/Map/BaseMaps/base-map-options.json');
 
 export type BaseMapOption = {
   value: string,
@@ -57,10 +57,10 @@ export default class BaseMapStore extends Reflux.Store {
   }
 
   debouncedUpdateMapPosition = _debounce(function(position, bbox){
-    var _this = this;
+    const _this = this;
 
     if(_this.position){
-      var from = {
+      const from = {
         "type": "Feature",
         "properties": {},
         "geometry": {
@@ -68,7 +68,7 @@ export default class BaseMapStore extends Reflux.Store {
           "coordinates": [_this.position.lng, _this.position.lat]
         }
       };
-      var to = {
+      const to = {
         "type": "Feature",
         "properties": {},
         "geometry": {
@@ -76,7 +76,7 @@ export default class BaseMapStore extends Reflux.Store {
           "coordinates": [position.lng, position.lat]
         }
       };
-      var distance = _distance(from, to, "kilometers");
+      const distance = _distance(from, to, "kilometers");
       debug.log('map moved: ' + distance + 'km');     
       if(distance < 50 && Math.abs(_this.position.zoom - position.zoom) < 1){
         _this.position = position;
@@ -84,34 +84,34 @@ export default class BaseMapStore extends Reflux.Store {
       } 
     }
 
-    var bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
-      var lat = position.lat;
-      var lng = position.lng;
-      var zoom = Math.round(position.zoom);
-      var url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${MAPHUBS_CONFIG.BING_KEY}`;
-      var attributionString = '© Bing Maps';
+    const bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
+      const lat = position.lat;
+      const lng = position.lng;
+      const zoom = Math.round(position.zoom);
+      const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${MAPHUBS_CONFIG.BING_KEY}`;
+      let attributionString = '© Bing Maps';
       request.get(url)
       .end((err, res) => {
         if(err){
           debug.error(err);
         }else{
-          var metadata = res.body;
-          var attributions = [];
+          const metadata = res.body;
+          const attributions = [];
 
 
-          var bboxFeature = _bboxPolygon(bounds);
+          const bboxFeature = _bboxPolygon(bounds);
           if(metadata.resourceSets && metadata.resourceSets.length > 0 
             && metadata.resourceSets[0].resources && metadata.resourceSets[0].resources.length > 0 
             && metadata.resourceSets[0].resources[0].imageryProviders && metadata.resourceSets[0].resources[0].imageryProviders.length > 0){
-            var resource = metadata.resourceSets[0].resources[0];
-            var imageryTime = '';
+            const resource = metadata.resourceSets[0].resources[0];
+            let imageryTime = '';
             if(resource.vintageEnd){
               imageryTime = '<b class="no-margin no-padding">(' + resource.vintageEnd + ')</b>';
             }
-            var imageryProviders = resource.imageryProviders;
+            const imageryProviders = resource.imageryProviders;
             imageryProviders.forEach((provider) => {
-            for (var i = 0; i < provider.coverageAreas.length; i++) {
-              var providerBboxFeature = _bboxPolygon(provider.coverageAreas[i].bbox);
+            for (let i = 0; i < provider.coverageAreas.length; i++) {
+              const providerBboxFeature = _bboxPolygon(provider.coverageAreas[i].bbox);
             
               if (_intersect(bboxFeature, providerBboxFeature) &&
                 zoom >= provider.coverageAreas[i].zoomMin &&
@@ -140,13 +140,13 @@ export default class BaseMapStore extends Reflux.Store {
   }
 
  getBingSource(type, cb){
-    var url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`;
+    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`;
     request.get(url)
     .end((err, res) => {
       if(err){
         debug.error(err);
       }else{
-        var metadata = res.body;
+        const metadata = res.body;
         //don't actually need anything from bing
         cb(metadata);
       }
@@ -178,7 +178,7 @@ export default class BaseMapStore extends Reflux.Store {
 
   getBaseMapFromName(mapName, cb){
 
-    var config = _find(this.state.baseMapOptions, {value: mapName});
+    const config = _find(this.state.baseMapOptions, {value: mapName});
 
     if(config){
 
@@ -204,7 +204,7 @@ export default class BaseMapStore extends Reflux.Store {
       }else if(config.loadFromFile){
         this.loadFromFile(config.loadFromFile, cb);
       }else if(config.style){
-        let style = config.style;
+        const style = config.style;
         if(typeof style !== 'string'){
           if(!style.glyphs){
             style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}";
@@ -252,7 +252,7 @@ export default class BaseMapStore extends Reflux.Store {
     }else{
       debug.log(`unknown base map: ${mapName}`);
       //load the  default basemap
-      let defaultConfig = _find(defaultBaseMapOptions, {value: 'default'});
+      const defaultConfig = _find(defaultBaseMapOptions, {value: 'default'});
        this.setState({
         attribution: defaultConfig.attribution,
         updateWithMapPosition: defaultConfig.updateWithMapPosition

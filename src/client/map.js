@@ -16,7 +16,7 @@ require('medium-editor/dist/css/medium-editor.css');
 require("materialize-css");
 
 document.addEventListener('DOMContentLoaded', () => {
-  let data = window.__appData;
+  const data = window.__appData;
 
   ReactDOM.hydrate(
     <Map {...data}/>,

@@ -1,20 +1,20 @@
 // @flow
-var User = require('../../models/user');
-var Map = require('../../models/map');
-var Layer = require('../../models/layer');
-var Stats = require('../../models/stats');
-var debug = require('../../services/debug')('routes/map');
+const User = require('../../models/user');
+const Map = require('../../models/map');
+const Layer = require('../../models/layer');
+const Stats = require('../../models/stats');
+const debug = require('../../services/debug')('routes/map');
 //var log = require('../../services/log');
-var MapUtils = require('../../services/map-utils');
-var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var privateMapCheck = require('../../services/private-map-check').middlewareView;
-var csrfProtection = require('csurf')({cookie: false});
-var Locales = require('../../services/locales');
+const MapUtils = require('../../services/map-utils');
+const nextError = require('../../services/error-response').nextError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const privateMapCheck = require('../../services/private-map-check').middlewareView;
+const csrfProtection = require('csurf')({cookie: false});
+const Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
 
-  var recordMapView = function(session: Object, map_id: number, user_id: number,  next: any){
+  const recordMapView = function(session: Object, map_id: number, user_id: number,  next: any){
     if(!session.mapviews){
       session.mapviews = {};
     }
@@ -22,7 +22,7 @@ module.exports = function(app: any) {
       session.mapviews[map_id] = 1;
       Stats.addMapView(map_id, user_id).catch(nextError(next));
     }else{
-      var views = session.mapviews[map_id];
+      const views = session.mapviews[map_id];
 
       session.mapviews[map_id] = views + 1;
     }
@@ -39,14 +39,14 @@ module.exports = function(app: any) {
         return res.render('map', {title: 'New Map ', props:{popularLayers}, req});
       } else {
         //get user id
-        var user_id = req.session.user.maphubsUser.id;
+        const user_id = req.session.user.maphubsUser.id;
 
-        var canAddPrivateLayers = true; //TODO: adjust this based on group settings?
+        const canAddPrivateLayers = true; //TODO: adjust this based on group settings?
 
-        let popularLayers = await Layer.getPopularLayers();
+        const popularLayers = await Layer.getPopularLayers();
         await Layer.attachPermissionsToLayers(popularLayers, user_id);
 
-        let myLayers = await Layer.getUserLayers(user_id, 50, canAddPrivateLayers);
+        const myLayers = await Layer.getUserLayers(user_id, 50, canAddPrivateLayers);
         await Layer.attachPermissionsToLayers(myLayers, user_id);
 
         const editLayerId = req.query.editlayer;
@@ -89,7 +89,7 @@ module.exports = function(app: any) {
 
   app.get('/maps/all', csrfProtection, async (req, res, next) => {
     try{
-      let locale = req.locale ? req.locale : 'en';
+      const locale = req.locale ? req.locale : 'en';
       const maps = await Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`);
       return res.render('allmaps', {
         title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName, 
@@ -101,12 +101,12 @@ module.exports = function(app: any) {
 
   app.get('/user/:username/maps', csrfProtection, async (req, res, next) => {
     try{
-      var username = req.params.username;
+      const username = req.params.username;
       debug.log(username);
       if(!username){apiDataError(res);}
-      var myMaps = false;
+      let myMaps = false;
 
-      var completeRequest = async function(){
+      const completeRequest = async function(){
         const user = await User.getUserByName(username);
         if(user){
           const maps = await Map.getUserMaps(user.id);
@@ -136,12 +136,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/view/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {
-    var map_id = req.params.map_id;
+    const map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -161,12 +161,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/user/:username/map/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {
-    var map_id = req.params.map_id;
+    const map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -210,7 +210,7 @@ module.exports = function(app: any) {
               .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);});
             const popularLayers = await Layer.getPopularLayers()
               .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);});
-            var myLayers = await Layer.getUserLayers(user_id, 50, true)
+            const myLayers = await Layer.getUserLayers(user_id, 50, true)
               .then(layers=>{return Layer.attachPermissionsToLayers(layers, user_id);});
 
             let title: string = 'Map';
@@ -238,12 +238,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/embed/:map_id', csrfProtection, privateMapCheck, (req, res, next) => {
-    var map_id = req.params.map_id;
+    const map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -261,12 +261,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/embed/:map_id/static', csrfProtection, privateMapCheck, (req, res, next) => {
-    var map_id = req.params.map_id;
+    const map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -284,12 +284,12 @@ module.exports = function(app: any) {
   });
 
   app.get('/map/embed/:map_id/interactive', csrfProtection, privateMapCheck, (req, res, next) => {
-    var map_id = req.params.map_id;
+    const map_id = req.params.map_id;
     if(!map_id){
       apiDataError(res);
     }
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }

@@ -6,7 +6,7 @@ module.exports = {
 getLineLayers(layer_id: number, shortid: string,
   color: string, hoverColor: string, 
   interactive: boolean, showBehindBaseMapLabels: boolean): Array<GLLayer>{
-    var layers = [
+    const layers = [
       {
         "id": `omh-data-line-${layer_id}-${shortid}`,
         "type": "line",

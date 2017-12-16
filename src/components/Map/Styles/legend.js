@@ -7,12 +7,12 @@ module.exports = {
 
   rasterLegend(){
     //var name = this.htmlEncode(layer.name);
-    var html = `<div class="omh-legend">\n<h3>{NAME}</h3>\n</div>`;
+    const html = `<div class="omh-legend">\n<h3>{NAME}</h3>\n</div>`;
     return html;
   },
 
   legendWithColor(layer: Layer, color: string) {
-      var html = '';
+      let html = '';
       //var name = this.htmlEncode(layer.name);
       if(layer.data_type === 'point'){
         html = `<div class="omh-legend">

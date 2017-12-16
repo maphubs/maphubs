@@ -84,27 +84,27 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
 
   getAPIUrl = (selected: string) => {
 
-    var selectedArr = selected.split(':');
-    var selectedType = selectedArr[0].trim();
-    var selectedScene = selectedArr[1].trim();
+    const selectedArr = selected.split(':');
+    const selectedType = selectedArr[0].trim();
+    const selectedScene = selectedArr[1].trim();
 
     //build planet labs API URL
     //v0 https://tiles.planet.com/v0/scenes/ortho/20160909_175231_0c75/{z}/{x}/{y}.png?api_key=your-api-key
     //v1 https://tiles.planet.com/data/v1/PSScene3Band/20161221_024131_0e19/14/12915/8124.png?api_key=your-api-key
-    var url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`;
+    const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`;
     return url;
   }
 
   submit = (model: Object) => {
-    var _this = this;
-    var layers = [];
+    const _this = this;
+    const layers = [];
 
-    var selectedIDs = model.selectedIDs;
+    const selectedIDs = model.selectedIDs;
 
-    var selectedIDArr = selectedIDs.split(',');
+    const selectedIDArr = selectedIDs.split(',');
 
     selectedIDArr.forEach(selected => {
-      var url = _this.getAPIUrl(selected);
+      const url = _this.getAPIUrl(selected);
       layers.push({
         planet_labs_scene: selected,
         tiles: [url]
@@ -152,7 +152,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">

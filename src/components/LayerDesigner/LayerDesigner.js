@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import CodeEditor from './CodeEditor';
 import LabelSettings from './LabelSettings';
 import MarkerSettings from './MarkerSettings';
@@ -50,14 +50,14 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   
   constructor(props: Props){
     super(props);
-    let color = this.getColorFromStyle(props.style);
+    const color = this.getColorFromStyle(props.style);
     this.state = {
       color
     };
   }
 
   componentWillReceiveProps(nextProps: Props){
-    let color = this.getColorFromStyle(nextProps.style);
+    const color = this.getColorFromStyle(nextProps.style);
     this.setState({
       color
     });
@@ -71,7 +71,7 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
 
   getColorFromStyle = (style: GLStyle): string => {
     let color = 'rgba(255,0,0,0.65)';
-    let prevColor = MapStyles.settings.get(style, 'color');
+    const prevColor = MapStyles.settings.get(style, 'color');
     if(prevColor){
       color = prevColor;
     }
@@ -86,13 +86,13 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   onColorChange = (color: string) => {
     let style = this.setColorInStyle(this.props.style, color);
     style = MapStyles.color.updateStyleColor(style, color);
-    let legend = MapStyles.legend.legendWithColor(this.props.layer, color);
+    const legend = MapStyles.legend.legendWithColor(this.props.layer, color);
     this.setState({color});
     this.props.onColorChange(style, legend);
   }
 
   onColorPickerChange = (colorValue: ColorValue) => {
-    let color = `rgba(${colorValue.rgb.r},${colorValue.rgb.g},${colorValue.rgb.b},${colorValue.rgb.a})`;
+    const color = `rgba(${colorValue.rgb.r},${colorValue.rgb.g},${colorValue.rgb.b},${colorValue.rgb.a})`;
     this.onColorChange(color);
   }
 
@@ -130,7 +130,7 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var markers = '';
+    let markers = '';
     if(this.props.layer.data_type === 'point'){
       markers = (
         <li>
@@ -144,7 +144,7 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
       );
     }
 
-    var advanced = '';
+    let advanced = '';
     if(this.props.showAdvanced){
       advanced = (
         <li>

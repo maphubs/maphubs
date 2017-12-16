@@ -61,7 +61,7 @@ module.exports = {
     const _this = this;
 
 
-    var disableClick = function(){
+    const disableClick = function(){
       map.off('click', onClick);
     };
 

@@ -1,20 +1,20 @@
 //@flow
-var Layer = require('../../models/layer');
-var LayerData = require('../../models/layer-data');
-var csrfProtection = require('csurf')({cookie: false});
-var knex = require('../../connection.js');
-var Promise = require('bluebird');
-var debug = require('../../services/debug')('routes/layer-data');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var isAuthenticated = require('../../services/auth-check');
+const Layer = require('../../models/layer');
+const LayerData = require('../../models/layer-data');
+const csrfProtection = require('csurf')({cookie: false});
+const knex = require('../../connection.js');
+const Promise = require('bluebird');
+const debug = require('../../services/debug')('routes/layer-data');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
   app.post('/api/edits/save', csrfProtection, isAuthenticated, async (req, res) => {
     try{
-      var data = req.body;
+      const data = req.body;
       if(data && data.layer_id && data.edits){
         if(await Layer.allowedToModify(data.layer_id, req.user_id)){
           return knex.transaction(async (trx) => {

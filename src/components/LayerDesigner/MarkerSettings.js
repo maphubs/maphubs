@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
 import Select from '../forms/select';
@@ -26,7 +26,7 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
   constructor(props: Props){
     super(props);
 
-    var options = {
+    const options = {
       shape: 'MAP_PIN',
       size: "32",
       width: 32,
@@ -84,7 +84,7 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
        model.height = parseInt(model.size);
      }
 
-    var options = JSON.parse(JSON.stringify(this.state.options));
+    const options = JSON.parse(JSON.stringify(this.state.options));
     _assignIn(options, model);
 
     //invert colors
@@ -105,7 +105,7 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
        options.shapeStrokeWidth = 1;
     }
 
-    var style;
+    let style;
     if(options.enabled){
       style = MapStyles.markers.enableMarkers(this.props.style, options, this.props.layer);    
     }else{
@@ -118,14 +118,14 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
   }
 
   render(){
-    var shapeOptions = [
+    const shapeOptions = [
       {value: 'MAP_PIN', label: this.__('Map Pin')},
       {value: 'SQUARE_PIN', label: this.__('Square Pin')},
       {value: 'SQUARE_ROUNDED', label: this.__('Rounded Square')},
       {value: 'SQUARE', label: this.__('Square')},
       {value: 'CIRCLE', label: this.__('Circle')},
     ];
-    var sizeOptions = [
+    const sizeOptions = [
       {value: '16', label: '16'},
       {value: '24', label: '24'},
       {value: '32', label: '32'},
@@ -135,7 +135,7 @@ export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
       {value: '64', label: '64'},
       {value: '96', label: '96'}
     ];
-     var iconOptions = [
+     const iconOptions = [
       {value: 'none', label: this.__('None')},
       {value: 'maphubs-icon-boat', label: this.__('Boat')},
       {value: 'maphubs-icon-campfire', label: this.__('Campfire')},

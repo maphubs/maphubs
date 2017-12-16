@@ -1,14 +1,14 @@
 //@flow
-var log = require('../../services/log');
-var unzip = require('unzip2');
-var DataLoadUtils = require('../data-load-utils');
-var Promise = require('bluebird');
-var fs = require('fs');
-var ogr2ogr = require('ogr2ogr');
-var shapefileFairy = require('../shapefile-fairy');
-var debug = require('../debug')('services/importers/shapefile');
+const log = require('../../services/log');
+const unzip = require('unzip2');
+const DataLoadUtils = require('../data-load-utils');
+const Promise = require('bluebird');
+const fs = require('fs');
+const ogr2ogr = require('ogr2ogr');
+const shapefileFairy = require('../shapefile-fairy');
+const debug = require('../debug')('services/importers/shapefile');
 
-var streamCloseToPromise = function(stream){
+const streamCloseToPromise = function(stream){
   return new Promise((resolve, reject)=> {
     stream.on("close", resolve);
     stream.on("error", reject);
@@ -18,7 +18,7 @@ var streamCloseToPromise = function(stream){
 module.exports = async function(filePath: string, layer_id: number){
   /*eslint-disable security/detect-non-literal-fs-filename*/
   //file path is a folder from a env var + a GUID, not orginal filename
-  let pipedStream = fs.createReadStream(filePath).pipe(unzip.Extract({path: filePath + '_zip'}));
+  const pipedStream = fs.createReadStream(filePath).pipe(unzip.Extract({path: filePath + '_zip'}));
   await streamCloseToPromise(pipedStream);              
   //validate                  
   const result = await shapefileFairy(filePath, {extract: false});
@@ -35,9 +35,9 @@ module.exports = async function(filePath: string, layer_id: number){
       };
   }else if(result){
     debug.log('Shapefile Validation Successful');
-    var shpFilePath = filePath + '_zip/' + result.shp;
+    const shpFilePath = filePath + '_zip/' + result.shp;
     debug.log("shapefile: " + shpFilePath);
-    var ogr = ogr2ogr(shpFilePath)
+    const ogr = ogr2ogr(shpFilePath)
     .format('GeoJSON')
     .skipfailures()
     .options(['-t_srs', 'EPSG:4326'])

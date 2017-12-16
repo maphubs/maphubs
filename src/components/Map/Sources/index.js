@@ -1,6 +1,6 @@
 module.exports = {
   getSource(key, source){
-    var response = function(driver: Function, custom: boolean = false){
+    const response = function(driver: Function, custom: boolean = false){
       return {
         key,
         source,

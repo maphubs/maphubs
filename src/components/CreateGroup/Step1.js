@@ -1,14 +1,14 @@
 //@flow
 import React from 'react';
 import Formsy, {addValidationRule} from 'formsy-react';
-var $ = require('jquery');
+const $ = require('jquery');
 import MultiTextArea from '../forms/MultiTextArea';
 import TextInput from '../forms/textInput';
 import MultiTextInput from '../forms/MultiTextInput';
 import Toggle from '../forms/toggle';
 import MessageActions from '../../actions/MessageActions';
 import NotificationActions from '../../actions/NotificationActions';
-var classNames = require('classnames');
+const classNames = require('classnames');
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import MapHubsComponent from '../../components/MapHubsComponent';
@@ -56,7 +56,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
 
   componentWillMount() {
     super.componentWillMount();
-    var _this = this;
+    const _this = this;
     addValidationRule('isAvailable', function (values, value) {
         if(_this.state.group.created) return true;
         if(!this.groupIdValue || value !== this.groupIdValue){
@@ -70,8 +70,8 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
   }
 
   checkGroupIdAvailable = (id: string) => {
-    var _this = this;
-    var result = false;
+    const _this = this;
+    let result = false;
     //only check if a valid value was provided and we are running in the browser
     if (id && typeof window !== 'undefined') {
         $.ajax({
@@ -115,7 +115,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
   }
 
     saveGroup = (model: Object) => {
-      var _this = this;
+      const _this = this;
       model.name = Locales.formModelToLocalizedString(model, 'name');
       model.description = Locales.formModelToLocalizedString(model, 'description');
 
@@ -152,7 +152,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     }
 
     handleCancel = () => {
-      var _this = this;
+      const _this = this;
       if(_this.state.group.created){
         GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if(err){
@@ -186,7 +186,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
 	render() {
 
     //hide if not active
-    var className = classNames('row');
+    let className = classNames('row');
     if(!this.props.active) {
       className = classNames('row', 'hidden');
     }

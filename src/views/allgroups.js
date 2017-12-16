@@ -4,10 +4,10 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
-var debug = require('../services/debug')('views/groups');
+const debug = require('../services/debug')('views/groups');
 import urlUtil from '../services/url-util';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import cardUtil from '../services/card-util';
@@ -51,7 +51,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
     .type('json').accept('json')
@@ -86,12 +86,12 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
 
 	render() {
    
-    var searchResults = '';
+    let searchResults = '';
 
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
-        var searchCards = this.state.searchResults.map(cardUtil.getGroupCard);
+        const searchCards = this.state.searchResults.map(cardUtil.getGroupCard);
         searchResults = (
          <CardCollection title={this.__('Search Results')} cards={searchCards} />
         );
@@ -117,7 +117,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
         </div>
       );
     }else{
-      let cards = this.props.groups.map(cardUtil.getGroupCard);
+      const cards = this.props.groups.map(cardUtil.getGroupCard);
       groups = (
         <CardGrid cards={cards} />
       );

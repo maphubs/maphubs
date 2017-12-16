@@ -1,8 +1,8 @@
-var i18n = null ;
+let i18n = null ;
 if (process.env.APP_ENV !== 'browser') {
    i18n = require("../i18n");
  }
- var locales = require('../locales');
+ const locales = require('../locales');
 module.exports = {
   en:locales.en, 
   fr:locales.fr, 
@@ -19,7 +19,7 @@ module.exports = {
   },
 
   formModelToLocalizedString(model, name){
-    let result = {en: '', fr: '', es: '', it: ''};
+    const result = {en: '', fr: '', es: '', it: ''};
     Object.keys(result).forEach(key => {
       if(model[`${name}-${key}`]){
         result[key] = model[`${name}-${key}`];
@@ -31,7 +31,7 @@ module.exports = {
   getFirstNonEmptyString(localizedString){
     let result = '';
     Object.keys(localizedString).forEach(key => {
-      let val = localizedString[key];
+      const val = localizedString[key];
       if(val) result = val;
     });
     return result;

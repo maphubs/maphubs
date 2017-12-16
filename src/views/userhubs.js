@@ -46,7 +46,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
 
 	render() {
 
-    var addButton = '', hubsMessage = '';
+    let addButton = '', hubsMessage = '';
     if(this.props.canEdit){
       addButton=(
         <div>
@@ -67,9 +67,9 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
       );
     }
 
-    var draftHubs = '', hasDrafts = false;
+    let draftHubs = '', hasDrafts = false;
     if(this.props.draftHubs && this.props.draftHubs.length > 0){
-      var draftCards = this.props.draftHubs.map(cardUtil.getHubCard);
+      const draftCards = this.props.draftHubs.map(cardUtil.getHubCard);
       draftHubs = (
         <div className="row">
           <div className="col s12 no-padding">
@@ -81,9 +81,9 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
       hasDrafts = true;
     }
 
-  var publishedHubs = '', emptyMessage = '', divider='', hasPubished = false;
+  let publishedHubs = '', emptyMessage = '', divider='', hasPubished = false;
   if(this.props.publishedHubs && this.props.publishedHubs.length > 0){
-    var publishedCards = this.props.publishedHubs.map(cardUtil.getHubCard);
+    const publishedCards = this.props.publishedHubs.map(cardUtil.getHubCard);
     publishedHubs = (
       <div className="row">
         <div className="col s12 no-padding">

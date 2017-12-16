@@ -1,7 +1,7 @@
 import Reflux from 'reflux';
 
 Reflux.rehydrate = (str, data) => {
-  let store = Reflux.initStore(str);
+  const store = Reflux.initStore(str);
   if(!store.hydrated || typeof window === 'undefined'){ //always rehydrate during SSR
     store.setState(data);
     store.hydrated = true;
@@ -20,7 +20,7 @@ export function initStore(str) {
 }
 
  export function createActions(actions){
-  let rehydrateActions = ['rehydrate'];
+  const rehydrateActions = ['rehydrate'];
   actions = rehydrateActions.concat(actions);
   return Reflux.createActions(actions);
 } 

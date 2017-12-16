@@ -1,9 +1,9 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/MapActions';
-var MapStyles = require('../components/Map/Styles');
-var debug = require('../services/debug')('stores/map-store');
-var findIndex = require('lodash.findindex');
+const MapStyles = require('../components/Map/Styles');
+const debug = require('../services/debug')('stores/map-store');
+const findIndex = require('lodash.findindex');
 
 import type {Layer} from './layer-store';
 
@@ -40,8 +40,8 @@ export default class MapStore extends Reflux.Store {
   }
 
  toggleVisibility(layer_id: number, cb: Function){
-    let mapLayers = this.state.layers;
-    let index = findIndex(mapLayers, {layer_id});
+    const mapLayers = this.state.layers;
+    const index = findIndex(mapLayers, {layer_id});
     let layer;
     if(mapLayers){
       layer = mapLayers[index];
@@ -83,7 +83,7 @@ export default class MapStore extends Reflux.Store {
  updateMap(layers: Array<Layer>){
    //treat as immutable and clone
    layers = JSON.parse(JSON.stringify(layers));
-   var style = this.buildMapStyle(layers);
+   const style = this.buildMapStyle(layers);
    this.setState({layers, style});
  }
 

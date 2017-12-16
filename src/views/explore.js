@@ -101,8 +101,8 @@ export default class Home extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var _this = this;
-    var storyCards = [];
+    const _this = this;
+    let storyCards = [];
     if(this.state.storyMode === 'featured'){
       storyCards = this.state.featuredStoryCards;
     }else if(this.state.storyMode === 'popular'){
@@ -111,7 +111,7 @@ export default class Home extends MapHubsComponent<Props, State> {
       storyCards = this.state.recentStoryCards;
     }
 
-    var mapCards = [];
+    let mapCards = [];
     if(this.state.mapMode === 'featured'){
       mapCards =  this.state.featuredMapCards;
     }else if(this.state.mapMode === 'popular'){
@@ -120,7 +120,7 @@ export default class Home extends MapHubsComponent<Props, State> {
       mapCards =  this.state.recentMapCards;
     }
 
-    var hubCards = [];
+    let hubCards = [];
     if(this.state.hubMode === 'featured'){
       hubCards =  this.state.featuredHubCards;
     }else if(this.state.hubMode === 'popular'){
@@ -129,7 +129,7 @@ export default class Home extends MapHubsComponent<Props, State> {
       hubCards =  this.state.recentHubCards;
     }
 
-    var groupCards = [];
+    let groupCards = [];
     if(this.state.groupMode === 'featured'){
       groupCards = this.state.featuredGroupCards;
     }else if(this.state.groupMode === 'popular'){
@@ -138,7 +138,7 @@ export default class Home extends MapHubsComponent<Props, State> {
       groupCards =  this.state.recentGroupCards;
     }
 
-    var layerCards = [];
+    let layerCards = [];
     if(this.state.layerMode === 'featured'){
       layerCards =  this.state.featuredLayerCards;
     }else if(this.state.layerMode === 'popular'){

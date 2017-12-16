@@ -3,7 +3,7 @@ import React from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import ConfirmationActions from '../actions/ConfirmationActions';
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
@@ -34,7 +34,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   createIndex = () => {
-   var _this = this;
+   const _this = this;
    ConfirmationActions.showConfirmation({
       title: this.__('Confirm'),
       postitiveButtonText: this.__('Confirm'),
@@ -66,7 +66,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   deleteIndex = () => {
-   var _this = this;
+   const _this = this;
    ConfirmationActions.showConfirmation({
       title: this.__('Confirm Delete'),
       postitiveButtonText: this.__('Confirm'),
@@ -98,7 +98,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   rebuildFeatures = () => {
-   var _this = this;
+   const _this = this;
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm'),
       postitiveButtonText: this.__('Confirm'),

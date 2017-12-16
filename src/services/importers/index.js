@@ -1,12 +1,12 @@
 //@flow
-var csv = require('./csv');
-var shapefile = require('./shapefile');
-var kml = require('./kml');
-var geojson = require('./geojson');
-var gpx = require('./gpx');
-var geobuf = require('./geobuf');
-var _endsWith = require('lodash.endswith');
-var debug = require('../debug')('services/importers');
+const csv = require('./csv');
+const shapefile = require('./shapefile');
+const kml = require('./kml');
+const geojson = require('./geojson');
+const gpx = require('./gpx');
+const geobuf = require('./geobuf');
+const _endsWith = require('lodash.endswith');
+const debug = require('../debug')('services/importers');
 
 module.exports = {
   csv,

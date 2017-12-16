@@ -75,7 +75,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
 	}
 
   componentDidMount() {
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(_this.state.editing){
         return _this.__('You have not saved the edits for your hub, your changes will be lost.');
@@ -88,7 +88,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
   }
 
   stopEditing = () => {
-    var _this = this;
+    const _this = this;
     HubActions.saveHub(this.state._csrf, (err) => {
       if(err){
         MessageActions.showMessage({title: _this.__('Server Error'), message: err});
@@ -101,7 +101,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
   }
 
   publish = () => {
-    var _this = this;
+    const _this = this;
     if(this.state.unsavedChanges){
       MessageActions.showMessage({title: _this.__('Unsaved Changes'), message: _this.__('Please save your changes before publishing.')});
     }else if(isEmpty(this.state.hub.name) || 
@@ -121,8 +121,8 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
 
   render() {
 
-    var editButton;
-    var publishButton;
+    let editButton;
+    let publishButton;
     if(this.props.canEdit){
       editButton = (
         <HubEditButton editing={this.state.editing}
@@ -138,7 +138,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
       }
     }
 
-    var linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
+    const linkBaseUrl = '/hub/' + this.props.hub.hub_id + '/';
 
     return (
       <ErrorBoundary>

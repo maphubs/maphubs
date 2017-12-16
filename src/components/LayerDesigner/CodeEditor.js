@@ -3,7 +3,7 @@ import React from 'react';
 import {Modal, ModalContent, ModalFooter} from '../Modal/Modal';
 import _isequal from 'lodash.isequal';
 
-var AceEditor;
+let AceEditor;
 if(process.env.APP_ENV === 'browser'){
   require('brace');
    AceEditor = require('react-ace').default;
@@ -67,12 +67,12 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
   }
 
   componentDidUpdate(){
-    var _this = this;
+    const _this = this;
     if(this.refs.ace){
       this.editor = this.refs.ace.editor;
       this.editor.getSession().on("changeAnnotation", () => {
-        var annotations = _this.editor.getSession().getAnnotations();
-        var canSave = true;
+        const annotations = _this.editor.getSession().getAnnotations();
+        let canSave = true;
         if(annotations && annotations.length > 0){
           annotations.forEach((anno) => {
             if(anno.type === 'error'){
@@ -111,7 +111,7 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var editor = '';
+    let editor = '';
     if(this.state.show){
 
       let enableBasicAutocompletion;

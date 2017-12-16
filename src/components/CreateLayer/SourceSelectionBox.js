@@ -26,7 +26,7 @@ export default class SourceSelectionBox extends MapHubsPureComponent<Props, void
    
   render() {
 
-    var icon = '';  
+    let icon = '';  
     if(this.props.icon){
       icon = (<i className="material-icons white-text" style={{fontSize: '48px'}}>{this.props.icon}</i>);
     }

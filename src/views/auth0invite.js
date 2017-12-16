@@ -55,7 +55,7 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
       allowLogin = true;
     }
 
-    var lock = new Auth0Lock(this.props.AUTH0_CLIENT_ID, this.props.AUTH0_DOMAIN,{ 
+    const lock = new Auth0Lock(this.props.AUTH0_CLIENT_ID, this.props.AUTH0_DOMAIN,{ 
       container: 'login-container',
       initialScreen,
       auth: {

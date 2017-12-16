@@ -5,7 +5,7 @@ import MessageActions from '../actions/MessageActions';
 import MessageStore from '../stores/MessageStore';
 import MapHubsComponent from './MapHubsComponent';
 import _isequal from 'lodash.isequal';
-var debug = require('../services/debug')('message');
+const debug = require('../services/debug')('message');
 
 type Props = {}
 
@@ -65,7 +65,7 @@ export default class Message extends MapHubsComponent<Props, MessageStoreState> 
                 return (
                   <tr key={i}>{
                     Object.keys(messageItem).map(key=>{
-                      let val = JSON.stringify(messageItem[key]);
+                      const val = JSON.stringify(messageItem[key]);
                       return (
                         <td key={key}><b>{key}:</b>{val}</td>
                       );

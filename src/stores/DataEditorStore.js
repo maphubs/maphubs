@@ -2,13 +2,13 @@
 import Reflux from 'reflux';
 
 import Actions from '../actions/DataEditorActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/DataEditorStore');
-var _assignIn = require('lodash.assignin');
-var _forEachRight = require('lodash.foreachright');
+const request = require('superagent');
+const debug = require('../services/debug')('stores/DataEditorStore');
+const _assignIn = require('lodash.assignin');
+const _forEachRight = require('lodash.foreachright');
 //var $ = require('jquery');
 //var urlUtil = require('../services/url-util');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 import type {Layer} from './layer-store';
 import type {GeoJSONObject} from 'geojson-flow';
@@ -71,12 +71,12 @@ export default class DataEditorStore extends Reflux.Store {
    * receive updates from the drawing tool
    */
   updateFeatures(features: Array<Object>){
-    var _this = this;
-    let edits = JSON.parse(JSON.stringify(this.state.edits));
+    const _this = this;
+    const edits = JSON.parse(JSON.stringify(this.state.edits));
     features.forEach(feature =>{
       debug.log('Updating feature: ' + feature.id);
 
-        var edit = {
+        const edit = {
             status: 'modify',
             geojson: JSON.parse(JSON.stringify(feature))
           };
@@ -87,7 +87,7 @@ export default class DataEditorStore extends Reflux.Store {
         this.state.selectedEditFeature = edit;
       }
       //edit history gets a different clone from the selection state
-      var editCopy = JSON.parse(JSON.stringify(edit));   
+      const editCopy = JSON.parse(JSON.stringify(edit));   
       edits.push(editCopy);     
     });
     _this.setState({
@@ -100,14 +100,14 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   undoEdit(){
-    let edits = JSON.parse(JSON.stringify(this.state.edits));
-    let redo = JSON.parse(JSON.stringify(this.state.redo));
+    const edits = JSON.parse(JSON.stringify(this.state.edits));
+    const redo = JSON.parse(JSON.stringify(this.state.redo));
     let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
      if(edits.length > 0){
-      var lastEdit = edits.pop();
-      var lastEditCopy = JSON.parse(JSON.stringify(lastEdit));
+      const lastEdit = edits.pop();
+      const lastEditCopy = JSON.parse(JSON.stringify(lastEdit));
       redo.push(lastEditCopy);
-      var currEdit = this.getLastEditForID(lastEdit.geojson.id, edits);
+      const currEdit = this.getLastEditForID(lastEdit.geojson.id, edits);
       if(currEdit &&
         selectedEditFeature && 
         lastEdit.geojson.id === selectedEditFeature.geojson.id){
@@ -127,14 +127,14 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   redoEdit(){
-    let edits = JSON.parse(JSON.stringify(this.state.edits));
-    let redo = JSON.parse(JSON.stringify(this.state.redo));
+    const edits = JSON.parse(JSON.stringify(this.state.edits));
+    const redo = JSON.parse(JSON.stringify(this.state.redo));
     let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
     
     if(redo.length > 0){
-      var prevEdit = redo.pop();
-      var prevEditCopy = JSON.parse(JSON.stringify(prevEdit));
-      var prevEditCopy2 = JSON.parse(JSON.stringify(prevEdit));
+      const prevEdit = redo.pop();
+      const prevEditCopy = JSON.parse(JSON.stringify(prevEdit));
+      const prevEditCopy2 = JSON.parse(JSON.stringify(prevEdit));
       edits.push(prevEditCopy);
       if(selectedEditFeature &&
         prevEdit.geojson.id === selectedEditFeature.geojson.id){
@@ -149,7 +149,7 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   getLastEditForID(id: string, edits: any){
-    var matchingEdits = [];
+    const matchingEdits = [];
     _forEachRight(edits, edit => {
         if(edit.geojson.id === id){
           matchingEdits.push(edit);
@@ -158,7 +158,7 @@ export default class DataEditorStore extends Reflux.Store {
     if(matchingEdits.length > 0){
       return JSON.parse(JSON.stringify(matchingEdits[0]));
     }else{
-      var original;
+      let original;
       this.state.originals.forEach(orig => {
         if(orig.geojson.id === id){
           original = orig;
@@ -175,12 +175,12 @@ export default class DataEditorStore extends Reflux.Store {
    * Save all edits to the server and reset current edits
    */
   saveEdits(_csrf: string, cb: Function){
-    var _this = this;
-    var featureIds = this.getUniqueFeatureIds();
-    var editsToSave = [];
+    const _this = this;
+    const featureIds = this.getUniqueFeatureIds();
+    const editsToSave = [];
     featureIds.forEach(id => {
-      var featureEdits = _this.getAllEditsForFeatureId(id);
-      var lastFeatureEdit = featureEdits[featureEdits.length -1];
+      const featureEdits = _this.getAllEditsForFeatureId(id);
+      const lastFeatureEdit = featureEdits[featureEdits.length -1];
       if(featureEdits.length > 1){      
         if(featureEdits[0].status === 'create'){
         //first edit is a create, so mark edit as create
@@ -189,7 +189,7 @@ export default class DataEditorStore extends Reflux.Store {
       }
       editsToSave.push(lastFeatureEdit);
     });
-    let layer_id: number = (this.state.editingLayer && this.state.editingLayer.layer_id) ? this.state.editingLayer.layer_id : 0;
+    const layer_id: number = (this.state.editingLayer && this.state.editingLayer.layer_id) ? this.state.editingLayer.layer_id : 0;
       
     //send edits to server
     request.post('/api/edits/save')
@@ -219,9 +219,9 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   getUniqueFeatureIds(){
-    var uniqueIds = [];
+    const uniqueIds = [];
     this.state.edits.forEach(edit =>{
-      var id = edit.geojson.id;
+      const id = edit.geojson.id;
       if(id && !uniqueIds.includes(id)){
         uniqueIds.push(id);
       }
@@ -230,7 +230,7 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   getAllEditsForFeatureId(id: string){
-    var featureEdits = [];
+    const featureEdits = [];
     this.state.edits.forEach(edit =>{
       if(edit.geojson.id === id){
         featureEdits.push(edit);
@@ -240,20 +240,20 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   updateSelectedFeatureTags(data: GeoJSONObject){
-    let edits = JSON.parse(JSON.stringify(this.state.edits));
-    let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
+    const edits = JSON.parse(JSON.stringify(this.state.edits));
+    const selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature));
     
    
     if(selectedEditFeature){
       //check if selected feature has been edited yet
-      var editRecord = {
+      const editRecord = {
         status: 'modify',
         geojson: JSON.parse(JSON.stringify(selectedEditFeature.geojson))
       };    
 
       //update the edit record
       _assignIn(editRecord.geojson.properties, data);
-      var editRecordCopy = JSON.parse(JSON.stringify(editRecord));
+      const editRecordCopy = JSON.parse(JSON.stringify(editRecord));
       edits.push(editRecordCopy);
 
       //update the selected feature
@@ -267,29 +267,29 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   selectFeature(mhid: string, cb: Function){
-    var _this = this;
+    const _this = this;
     //check if this feature is in the created or modified lists
-    var selected = this.getLastEditForID(mhid, this.state.edits);
+    const selected = this.getLastEditForID(mhid, this.state.edits);
     
     if(selected){
       this.setState({selectedEditFeature: selected});
     }else{
-      let id = mhid.split(':')[1];
-      let layer_id: number = (this.state.editingLayer && this.state.editingLayer.layer_id) ? this.state.editingLayer.layer_id : 0;
+      const id = mhid.split(':')[1];
+      const layer_id: number = (this.state.editingLayer && this.state.editingLayer.layer_id) ? this.state.editingLayer.layer_id : 0;
       //otherwise get the geojson from the server
       request.get(`/api/feature/json/${layer_id.toString()}/${id}/data.geojson`)
       .accept('json')
       .end((err, res) => {
         checkClientError(res, err, cb, cb => {
-          var featureCollection = res.body;
-          var feature = featureCollection.features[0];
+          const featureCollection = res.body;
+          const feature = featureCollection.features[0];
 
-          var selected = {
+          const selected = {
               status: 'original',
               geojson: feature
             };
           selected.geojson.id = mhid; 
-          var original = JSON.parse(JSON.stringify(selected)); //needs to be a clone
+          const original = JSON.parse(JSON.stringify(selected)); //needs to be a clone
           _this.state.originals.push(original);
           _this.setState({
             selectedEditFeature: selected
@@ -305,8 +305,8 @@ export default class DataEditorStore extends Reflux.Store {
    * 
    */
   createFeature(feature: GeoJSONObject){
-    let edits = JSON.parse(JSON.stringify(this.state.edits));
-    var created = {
+    const edits = JSON.parse(JSON.stringify(this.state.edits));
+    const created = {
         status: 'create',
         geojson: JSON.parse(JSON.stringify(feature))
       };
@@ -319,8 +319,8 @@ export default class DataEditorStore extends Reflux.Store {
   }
 
   deleteFeature(feature: GeoJSONObject){
-    let edits = JSON.parse(JSON.stringify(this.state.edits));
-    var edit = {
+    const edits = JSON.parse(JSON.stringify(this.state.edits));
+    const edit = {
       status: 'delete',
       geojson: JSON.parse(JSON.stringify(feature))
     };

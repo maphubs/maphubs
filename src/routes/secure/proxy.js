@@ -1,7 +1,7 @@
 // @flow
-var proxy = require('express-http-proxy');
-var debug = require('../../services/debug')('proxy');
-var local = require('../../local');
+const proxy = require('express-http-proxy');
+const debug = require('../../services/debug')('proxy');
+const local = require('../../local');
 
 module.exports = function(app: any) {
 
@@ -10,8 +10,8 @@ module.exports = function(app: any) {
   //needed for generating screenshots on local MapHubs Pro deployments
   app.use('/tiles', proxy(local.tileServiceInternalUrl, {
   proxyReqPathResolver(req) {
-    var url: Object = require('url').parse(req.url); 
-    var path = '/tiles' + url.path;
+    const url: Object = require('url').parse(req.url); 
+    const path = '/tiles' + url.path;
     debug.log(path);
     return path;
   }
@@ -19,8 +19,8 @@ module.exports = function(app: any) {
   
   app.use('/screenshots', proxy(local.manetUrl, {
   proxyReqPathResolver(req) {
-    var url: Object = require('url').parse(req.url); 
-    var path = url.path;
+    const url: Object = require('url').parse(req.url); 
+    const path = url.path;
     debug.log(path);
     return path;
   }

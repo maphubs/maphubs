@@ -1,10 +1,10 @@
-var local = require('../local');
-var request = require("request-promise");
+const local = require('../local');
+const request = require("request-promise");
 
 module.exports = {
 
   async getManagementToken(){
-    var options = {
+    const options = {
       method: 'POST',
       url: `https://${local.AUTH0_DOMAIN}/oauth/token`,
       headers: {'content-type': 'application/json'},
@@ -23,7 +23,7 @@ module.exports = {
   },
 
   updateAppMetadata(data, token, profile){
-    var options = { 
+    const options = { 
         method: 'PATCH',
         url: `https://${local.AUTH0_DOMAIN}/api/v2/users/${profile.id}`,
         headers: { 

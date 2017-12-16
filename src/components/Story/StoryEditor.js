@@ -1,14 +1,14 @@
 // @flow
 import React from 'react';
 import slugify from 'slugify';
-var $ = require('jquery');
-var debounce = require('lodash.debounce');
-var _isequal = require('lodash.isequal');
+const $ = require('jquery');
+const debounce = require('lodash.debounce');
+const _isequal = require('lodash.isequal');
 import Actions from '../../actions/StoryActions';
 import MessageActions from '../../actions/MessageActions';
 import NotificationActions from '../../actions/NotificationActions';
 import ConfirmationActions from '../../actions/ConfirmationActions';
-var urlUtil = require('../../services/url-util');
+const urlUtil = require('../../services/url-util');
 import AddMapModal from './AddMapModal';
 import ImageCrop from '../ImageCrop';
 import StoryStore from '../../stores/StoryStore';
@@ -62,14 +62,14 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
 	}
 
   componentDidMount(){
-   var _this = this;
+   const _this = this;
 
    $('.storybody').on('focus', () => {
      NotificationActions.dismissNotification();
    });
 
    $('.storybody').on('click', function(){
-     var debounced = debounce(() => {
+     const debounced = debounce(() => {
        _this.saveSelectionRange();
      }, 500).bind(this);
      debounced();
@@ -103,17 +103,17 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
  }
 
   handleBodyChange = (body) => {
-    var _this = this;
+    const _this = this;
     this.body = body;
     Actions.handleBodyChange(body);        
-    var debounced = debounce(() => {
+    const debounced = debounce(() => {
         _this.saveSelectionRange();
     }, 500).bind(this);
     debounced();
   }
 
 getFirstLine = () =>{
-  var first_line = $('.storybody').find('p')
+  const first_line = $('.storybody').find('p')
     .filter( function(){
        return ($.trim($(this).text()).length);
      }).first().text();
@@ -122,10 +122,10 @@ getFirstLine = () =>{
 
 getFirstImage = () =>{
   //attempt to find the first map or image
-  var first_img = null;
-  var firstEmbed = $('.storybody').find('img, .embed-map-container').first();
+  let first_img = null;
+  const firstEmbed = $('.storybody').find('img, .embed-map-container').first();
   if(firstEmbed.is('.embed-map-container')){
-    var mapid = firstEmbed.attr('id').split('-')[1];
+    const mapid = firstEmbed.attr('id').split('-')[1];
     first_img = urlUtil.getBaseUrl() + '/api/screenshot/map/'+ mapid + '.png';
   }else{
     first_img = firstEmbed.attr('src');
@@ -134,7 +134,7 @@ getFirstImage = () =>{
 }
 
 save = () => {
-  var _this = this;
+  const _this = this;
 
   if(!this.state.story.title || this.state.story.title === ''){
     NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'});
@@ -150,14 +150,14 @@ save = () => {
   //remove the map buttons so they are not saved
   this.removeMapCloseButtons();
   this.removeImageButtons();
-  var body = $('.storybody').html();
+  const body = $('.storybody').html();
   this.setState({saving: true});
 
   //get first line
-  var firstline = this.getFirstLine();
+  const firstline = this.getFirstLine();
 
   //get first image
-  var firstimage = this.getFirstImage();
+  const firstimage = this.getFirstImage();
 
   Actions.save(body, firstline, firstimage, this.state._csrf, (err: Error) => {
       _this.setState({saving: false});
@@ -201,7 +201,7 @@ save = () => {
 }
 
 delete = () => {
-  var _this = this;
+  const _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Delete'),
     message: _this.__('Please confirm removal of ') + this.state.story.title,
@@ -224,7 +224,7 @@ delete = () => {
 }
 
 getSelectionRange = () => {
-  var sel, range;
+  let sel, range;
   if (window.getSelection) {
       // IE9 and non-IE
       sel = window.getSelection();
@@ -235,7 +235,7 @@ getSelectionRange = () => {
       }
   } else if ( (sel = document.selection) && sel.type !== "Control") {
       // IE < 9
-      var originalRange = sel.createRange();
+      const originalRange = sel.createRange();
       originalRange.collapse(true);
       range = sel.createRange();
       return range;
@@ -243,9 +243,9 @@ getSelectionRange = () => {
 }
 
 pasteHtmlAtCaret = (html: any, rangeInput: any=null) => {
-    var sel, savedRange = this.savedSelectionRange;
-    var selection = window.getSelection();
-    var range = null;
+    let sel, savedRange = this.savedSelectionRange;
+    const selection = window.getSelection();
+    let range = null;
     if(rangeInput){
       range = rangeInput;
     }else{
@@ -260,9 +260,9 @@ pasteHtmlAtCaret = (html: any, rangeInput: any=null) => {
         // Range.createContextualFragment() would be useful here but is
         // only relatively recently standardized and is not supported in
         // some browsers (IE9, for one)
-        var el = document.createElement("p");
+        const el = document.createElement("p");
         el.innerHTML = html;
-        var frag = document.createDocumentFragment(), node;
+        let frag = document.createDocumentFragment(), node;
         while ( (node = el.firstChild) ) {
             frag.appendChild(node);
         }
@@ -276,13 +276,13 @@ pasteHtmlAtCaret = (html: any, rangeInput: any=null) => {
 }
 
 onAddMap = (map: Object) => {
-  var _this = this;
-  var map_id = map.map_id;
+  const _this = this;
+  const map_id = map.map_id;
   //this.setState({addingMap: true});
   this.removeMapCloseButtons();
-  var range = null;
+  const range = null;
 
-  var url = urlUtil.getBaseUrl() + '/map/embed/' + map_id + '/static';
+  let url = urlUtil.getBaseUrl() + '/map/embed/' + map_id + '/static';
 
   url = url.replace(/http:/, '');
   url = url.replace(/https:/, '');
@@ -306,7 +306,7 @@ onMapCancel = () => {
 }
 
 removeMap = (map_id: number) => { 
-  var _this = this;
+  const _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Map Removal'),
     message: _this.__('Please confirm that you want to remove this map'),
@@ -318,9 +318,9 @@ removeMap = (map_id: number) => {
 }
 
 addMapCloseButtons = () => {
-  var _this = this;
+  const _this = this;
   $('.embed-map-container').each((i, map) => {
-    var map_id = map.id.split('-')[1];
+    const map_id = map.id.split('-')[1];
 
     $(map).append(`<div class="map-remove-button-v2" style="position: absolute; top: 10px; right: 80px;">
     <i class="material-icons edit-map-tooltips story-media-edit-button"
@@ -345,9 +345,9 @@ removeMapCloseButtons = () => {
 }
 
 addImageButtons = () => {
-  var _this = this;
+  const _this = this;
   $('.embed-image-container').each((i, image) => {
-    var image_id = image.id.split('-')[1];
+    const image_id = image.id.split('-')[1];
     $(image).append( `<div class="image-remove-button-v2" style="position: absolute; top: 10px; right: 10px;">
     <i class="material-icons remove-image-tooltips story-media-edit-button"
       data-position="bottom" data-delay="50" data-tooltip="`+ _this.__('Remove Image')+ `"
@@ -368,13 +368,13 @@ removeImageButtons = () => {
 }
 
 onAddImage = (data: string, info: Object) => {
-  var _this = this;
+  const _this = this;
   Actions.addImage(data, info, this.state._csrf, (err, res) => {
     if(err || !res.body || !res.body.image_id){
       MessageActions.showMessage({title: _this.__('Error'), message: err});
     }else{
-      var image_id = res.body.image_id;
-      var url = '/images/story/' + _this.state.story.story_id + '/image/' + image_id + '.jpg';
+      const image_id = res.body.image_id;
+      const url = '/images/story/' + _this.state.story.story_id + '/image/' + image_id + '.jpg';
       //<div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"
       _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + image_id + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><br /><p></p>');
       NotificationActions.showNotification({message: _this.__('Image Added')});
@@ -384,7 +384,7 @@ onAddImage = (data: string, info: Object) => {
 }
 
 onRemoveImage = (image_id: number) => {
-  var _this = this;
+  const _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Image Removal'),
     message: _this.__('Please confirm that you want to remove this image'),
@@ -404,7 +404,7 @@ onRemoveImage = (image_id: number) => {
 }
 
 publish = () => {
-   var _this = this;
+   const _this = this;
   ConfirmationActions.showConfirmation({
     title: _this.__('Publish story?'),
     message: _this.__('Please confirm that you want to publish this story'),
@@ -424,14 +424,14 @@ publish = () => {
     //remove the map buttons so they are not saved
     _this.removeMapCloseButtons();
     _this.removeImageButtons();
-    var body = $('.storybody').html();
+    const body = $('.storybody').html();
     _this.setState({saving: true});
 
   //get first line
-  var firstline = _this.getFirstLine();
+  const firstline = _this.getFirstLine();
 
   //get first image
-  var firstimage = _this.getFirstImage();
+  const firstimage = _this.getFirstImage();
 
   Actions.save(body, firstline, firstimage, _this.state._csrf, (err: Error) => {
       _this.setState({saving: false});
@@ -448,12 +448,12 @@ publish = () => {
 
           },
           onClick(){
-            let storyTitle = (_this.state.story && _this.state.story.title)  ? slugify(_this.state.story.title) : '';   
+            const storyTitle = (_this.state.story && _this.state.story.title)  ? slugify(_this.state.story.title) : '';   
             if(_this.props.storyType === 'user'){
               window.location = `/user/${_this.props.username}/story/${_this.state.story.story_id}/${storyTitle}`;
             }else{
-              let hub_id = _this.props.hub_id ? _this.props.hub_id : 'unknown';
-              let baseUrl = `/hub/${hub_id}`; 
+              const hub_id = _this.props.hub_id ? _this.props.hub_id : 'unknown';
+              const baseUrl = `/hub/${hub_id}`; 
                         
               window.location = `${baseUrl}/story/${_this.state.story.story_id}/${storyTitle}`;
             }
@@ -469,14 +469,14 @@ publish = () => {
 }
 
 saveSelectionRange = () => {
-  var sel = window.getSelection();
+  const sel = window.getSelection();
 
   if(sel.anchorNode && sel.anchorNode.parentNode){
-    var storyBody = $('.storybody')[0];
-    var anchorNode = $(sel.anchorNode)[0];
+    const storyBody = $('.storybody')[0];
+    const anchorNode = $(sel.anchorNode)[0];
   
     if($.contains(storyBody, anchorNode) || $(sel.anchorNode).hasClass('storybody')){
-      var range = this.getSelectionRange();
+      const range = this.getSelectionRange();
       if(range){
         this.savedSelectionRange = {
           "startContainer": range.startContainer, 
@@ -514,7 +514,7 @@ showImageCrop = () => {
 }
 
   render() {
-    var author='';
+    let author='';
     if(this.props.storyType === 'hub'){
       author = (
         <div className="story-author" style={{height: '30px'}}>
@@ -532,7 +532,7 @@ showImageCrop = () => {
       );
     }
 
-    var deleteButton = '';
+    let deleteButton = '';
     if(this.state.story.story_id){
       deleteButton = (
         <div className="fixed-action-btn action-button-bottom-right" style={{marginRight: '70px'}}>
@@ -543,8 +543,8 @@ showImageCrop = () => {
         </div>
       );
     }
-    var publishButton = '';
-    var saveButtonText = this.__('Save');
+    let publishButton = '';
+    let saveButtonText = this.__('Save');
     if(!this.state.story.published){
         publishButton = (
           <div className="center center-align" style={{margin: 'auto', position: 'fixed', bottom: '15px', zIndex: '1', right: 'calc(50% - 60px)'}}>

@@ -37,7 +37,7 @@ export default class MapHubsNotification extends Reflux.Component<void, Props, S
   }
 
   render() {
-    var position = {};
+    let position = {};
     switch(this.state.position) {
       case 'topright':
         position = {top: '60px', right: '20px', bottom: undefined, left: undefined};

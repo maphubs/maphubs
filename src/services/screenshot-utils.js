@@ -37,7 +37,7 @@ module.exports = {
   },
 
   getLayerThumbnail(layer_id: number){
-    var _this = this;
+    const _this = this;
     debug.log('get thumbnail image for layer: ' + layer_id);
     return knex('omh.layers').select('thumbnail').where({layer_id})
     .then((result) => {
@@ -57,8 +57,8 @@ module.exports = {
     const width = 400;
     const height = 300;
 
-    var maphubsUrl = urlUtil.getBaseUrl() + '/api/layer/' + layer_id + '/static/render/';
-    var manetUrl = local.manetUrl;
+    const maphubsUrl = urlUtil.getBaseUrl() + '/api/layer/' + layer_id + '/static/render/';
+    const manetUrl = local.manetUrl;
 
     const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
@@ -77,7 +77,7 @@ module.exports = {
   },
 
   reloadLayerThumbnail(layer_id: number){
-    var _this = this;
+    const _this = this;
     return knex('omh.layers').update({thumbnail: null}).where({layer_id})
     .then(() => {
        //don't return the promise because we want this to run async
@@ -88,7 +88,7 @@ module.exports = {
 
   //Layer image
   getLayerImage(layer_id: number){
-    var _this = this;
+    const _this = this;
     debug.log('get image for layer: ' + layer_id);
     return knex('omh.layers').select('screenshot').where({layer_id})
     .then((result) => {
@@ -105,12 +105,12 @@ module.exports = {
   async updateLayerImage(layer_id: number){
     debug.log('updating image for layer: ' + layer_id);
     //get screenshot from the manet service
-    var width = 1200;
-    var height = 630;
+    const width = 1200;
+    const height = 630;
 
-    var baseUrl = urlUtil.getBaseUrl(); //use internal route
-    var maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
-    var manetUrl = local.manetUrl;
+    const baseUrl = urlUtil.getBaseUrl(); //use internal route
+    const maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/';
+    const manetUrl = local.manetUrl;
 
     const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
@@ -137,7 +137,7 @@ module.exports = {
 
   //Map Image
   getMapImage(map_id: number){
-    var _this = this;
+    const _this = this;
     debug.log('get screenshot image for map: ' + map_id);
     return knex('omh.maps').select('screenshot').where({map_id})
     .then((result) => {
@@ -210,7 +210,7 @@ module.exports = {
   },
 
   getMapThumbnail(map_id: number){
-    var _this = this;
+    const _this = this;
     debug.log('get thumbnail image for map: ' + map_id);
     return knex('omh.maps').select('thumbnail').where({map_id})
     .then((result) => {

@@ -189,13 +189,13 @@ function createEngine(engineOptions) {
         }
         if(options.oembed){
           if(options.oembed === 'map'){
-            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + reqUrl;
+            const oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + reqUrl;
             markup += `
             <link rel="alternate" type="application/json+oembed" href="${oembedUrl}&format=json" title="Maphubs Map" />
             <link rel="alternate" type="text/xml+oembed" href="${oembedUrl}&format=xml" title="Maphubs Map" />
             `;
           }else if(options.oembed === 'layer'){
-            let oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + reqUrl;
+            const oembedUrl = baseUrl + '/api/oembed/' + options.oembed + '?url=' + baseUrl + reqUrl;
             markup += `
             <link rel="alternate" type="application/json+oembed" href="${oembedUrl}&format=json" title="Maphubs Layer" />
             <link rel="alternate" type="text/xml+oembed" href="${oembedUrl}&format=xml" title="Maphubs Layer" />
@@ -409,7 +409,7 @@ function createEngine(engineOptions) {
     }
     
 
-      let appData: string = JSON.stringify(options.props, null, 2);
+      const appData: string = JSON.stringify(options.props, null, 2);
       markup += `
        <script>window.__appData = ${appData}; </script>
       </body>

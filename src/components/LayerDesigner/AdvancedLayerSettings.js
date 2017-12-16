@@ -2,7 +2,7 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapStyles from '../Map/Styles';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
@@ -35,9 +35,9 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
   }
 
   getStateFromStyleProp(props: Props): State{
-    let defaults = MapStyles.settings.defaultLayerSettings();
+    const defaults = MapStyles.settings.defaultLayerSettings();
     if(props.layer.layer_id && props.layer.data_type && props.style){
-      let glLayerId = props.style.layers[0].id;
+      const glLayerId = props.style.layers[0].id;
     
       let interactive = defaults.interactive;
       const interactiveSetting: any = MapStyles.settings.getLayerSetting(props.style,glLayerId, 'interactive');
@@ -96,9 +96,9 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
   onFormChange = (values: Object) => {
      let legend = this.props.legend;
 
-     var style = this.props.style;
+     let style = this.props.style;
      if(values.interactive !== this.state.interactive){
-       let glLayerId = style.layers[0].id;
+       const glLayerId = style.layers[0].id;
        style = MapStyles.settings.setLayerSetting(style, glLayerId ,'interactive', values.interactive);   
        this.setState({interactive: values.interactive});    
      }else if(values.showBehindBaseMapLabels !== this.state.showBehindBaseMapLabels){

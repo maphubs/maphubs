@@ -1,11 +1,11 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/AddPhotoPointActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/hub-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
-var dms2dec = require('dms2dec');
-var moment = require('moment');
+const request = require('superagent');
+const debug = require('../services/debug')('stores/hub-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
+const dms2dec = require('dms2dec');
+const moment = require('moment');
 import type {GeoJSONObject} from 'geojson-flow';
 import type {Layer} from './layer-store';
 import _bbox from '@turf/bbox';
@@ -49,12 +49,12 @@ export default class AddPhotoPointStore extends Reflux.Store {
 
     if(info && info.exif && info.exif['GPSLatitude']){
 
-    var lat = info.exif['GPSLatitude'];
-    var latRef = info.exif['GPSLatitudeRef'];
-    var lon = info.exif['GPSLongitude'];
-    var lonRef = info.exif['GPSLongitudeRef'];
+    const lat = info.exif['GPSLatitude'];
+    const latRef = info.exif['GPSLatitudeRef'];
+    const lon = info.exif['GPSLongitude'];
+    const lonRef = info.exif['GPSLongitudeRef'];
 
-    var geoJSON = {
+    const geoJSON = {
       type: 'FeatureCollection',
       features: [
         {
@@ -69,11 +69,11 @@ export default class AddPhotoPointStore extends Reflux.Store {
       bbox: undefined
     };
 
-    var bbox = _bbox(geoJSON);
+    const bbox = _bbox(geoJSON);
     debug.log(bbox);
     geoJSON.bbox = bbox;
 
-    var properties = {};
+    const properties = {};
 
     //add optional exif metadata
     if(info.exif['Make']){
@@ -93,16 +93,16 @@ export default class AddPhotoPointStore extends Reflux.Store {
     }
 
     if(info.exif['GPSDateStamp'] && info.exif['GPSTimeStamp']){
-      var dateParts = info.exif['GPSDateStamp'].split(':');
-      var year = dateParts[0];
-      var month = dateParts[1];
-      var day = dateParts[2];
-      var time = info.exif['GPSTimeStamp'];
-      var hour = time[0];
-      var minute = time[1];
-      var second = time[2];
+      const dateParts = info.exif['GPSDateStamp'].split(':');
+      const year = dateParts[0];
+      const month = dateParts[1];
+      const day = dateParts[2];
+      const time = info.exif['GPSTimeStamp'];
+      const hour = time[0];
+      const minute = time[1];
+      const second = time[2];
 
-      var timestamp = moment()
+      const timestamp = moment()
       .year(year).month(month).date(day)
       .hour(hour).minute(minute).second(second)
       .format();
@@ -121,17 +121,17 @@ export default class AddPhotoPointStore extends Reflux.Store {
 
   submit(fields: any, _csrf: any, cb: any){
     debug.log('submit photo point');
-    var _this = this;
+    const _this = this;
 
     //save fields into geoJSON
     if(this.state.geoJSON && 
       this.state.geoJSON.features && 
       Array.isArray( this.state.geoJSON.features) &&
       this.state.geoJSON.features.length > 0){
-      let firstFeature: any = this.state.geoJSON.features[0];
+      const firstFeature: any = this.state.geoJSON.features[0];
       if(firstFeature){
         Object.keys(fields).map((key) => {
-            let val = fields[key];  
+            const val = fields[key];  
             if(firstFeature.properties){
               firstFeature.properties[key] = val;
             }                             

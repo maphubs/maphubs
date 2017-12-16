@@ -29,7 +29,7 @@ export default class FeatureNotes extends MapHubsComponent<Props, FeatureNotesSt
   }
 
   render(){
-    var resources = '';
+    let resources = '';
     if(this.props.editing){
       resources = (
           <div className="row">

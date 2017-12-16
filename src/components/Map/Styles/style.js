@@ -3,14 +3,14 @@ import Settings from './settings';
 import Line from './line';
 import Point from './point';
 import Polygon from './polygon';
-var _forEachRight = require('lodash.foreachright');
-var debug = require('../../../services/debug')('MapStyles/style');
+const _forEachRight = require('lodash.foreachright');
+const debug = require('../../../services/debug')('MapStyles/style');
 import type {Layer} from '../../../stores/layer-store';
 import type {GLStyle, GLSource} from '../../../types/mapbox-gl-style';
 
 module.exports = {
   defaultStyle(layer_id: number,  shortid: string, source: GLSource, dataType: string): GLStyle {
-    var settings = Settings.defaultLayerSettings();
+    const settings = Settings.defaultLayerSettings();
     return this.styleWithColor(layer_id, shortid, source, "red", dataType, settings.interactive, settings.showBehindBaseMapLabels);
   },
 
@@ -20,10 +20,10 @@ module.exports = {
     source: GLSource, color: string, dataType: string, 
     interactive: boolean, showBehindBaseMapLabels: boolean): GLStyle {
     //TODO: make default selected colors better match user color
-    var hoverColor = "yellow";
-    var hoverOutlineColor = "black";
+    const hoverColor = "yellow";
+    const hoverOutlineColor = "black";
 
-    var layers = [];
+    let layers = [];
     if(dataType === 'point'){
       layers = Point.getPointLayers(layer_id, shortid, color, hoverColor, interactive, showBehindBaseMapLabels);
     }else if(dataType === 'point'){
@@ -36,7 +36,7 @@ module.exports = {
       .concat(Polygon.getPolygonLayers(layer_id, shortid, color, hoverColor, hoverOutlineColor, interactive, showBehindBaseMapLabels));
     }
 
-    var styles = {
+    const styles = {
         version: 8,
         sources: {},
         layers
@@ -44,7 +44,7 @@ module.exports = {
 
     if(source){
       if(source.type === 'vector'){
-        var url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json';
+        const url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json';
 
         styles.sources['omh-' + shortid] = {
           "type": "vector",
@@ -78,7 +78,7 @@ module.exports = {
 
       //Note: we are treating a mapbox style as a special type of "source"
       //it will be converted to sources and layers when the map loads by downloading the style json from the Mapbox API
-      var style: GLStyle = {
+      const style: GLStyle = {
           version: 8,
           sources: {
           },
@@ -98,7 +98,7 @@ module.exports = {
     },
 
     buildMapStyle(layers: Array<Layer>){
-     var mapStyle: GLStyle = {
+     const mapStyle: GLStyle = {
        version: 8,
        sources: {},
        layers: []
@@ -106,7 +106,7 @@ module.exports = {
 
      //reverse the order for the styles, since the map draws them in the order recieved
      _forEachRight(layers, (layer: Layer) => {
-       let style = layer.style;
+       const style = layer.style;
        if(style && style.sources && style.layers){
         //add source
         mapStyle.sources = Object.assign(mapStyle.sources, style.sources);

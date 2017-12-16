@@ -42,7 +42,7 @@ class LayerList extends React.PureComponent<Props, State> {
 
   constructor(props){
     super(props);
-    var layers = JSON.parse(JSON.stringify(props.layers));
+    const layers = JSON.parse(JSON.stringify(props.layers));
     this.state = {
       layers
     };
@@ -50,7 +50,7 @@ class LayerList extends React.PureComponent<Props, State> {
 
   componentWillReceiveProps(nextProps){
      if(!_isEqual(nextProps.layers, this.state.layers)){
-       var layers = JSON.parse(JSON.stringify(nextProps.layers));
+       const layers = JSON.parse(JSON.stringify(nextProps.layers));
      this.setState({layers});
     }
   }
@@ -59,7 +59,7 @@ class LayerList extends React.PureComponent<Props, State> {
     const layers = this.state.layers;
     const dragLayer = layers[dragIndex];
 
-    var updatedLayers = update(layers, {
+    const updatedLayers = update(layers, {
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, dragLayer],
@@ -71,7 +71,7 @@ class LayerList extends React.PureComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
     return (
       <div style={{height: '100%', padding: 0, margin: 0}}>
           <ul ref="layers" style={{height: '100%', overflowY: 'auto'}} className="collection no-margin custom-scroll-bar">{

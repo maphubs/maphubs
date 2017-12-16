@@ -32,7 +32,7 @@ export default class LayerNotes extends MapHubsComponent<Props, LayerNotesStoreS
   }
 
   render(){
-    var resources = '';
+    let resources = '';
     if(this.props.editing){
       resources = (
           <div className="row no-margin"  style={{height: '100%', overflow: 'auto'}}>

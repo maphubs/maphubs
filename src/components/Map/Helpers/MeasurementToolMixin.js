@@ -1,9 +1,9 @@
 //@flow
-var debug = require('../../../services/debug')('Map/MeasureArea');
+const debug = require('../../../services/debug')('Map/MeasureArea');
 import _area from '@turf/area';
 import _lineDistance from '@turf/line-distance';
-var $ = require('jquery');
-var MapboxDraw = {};
+const $ = require('jquery');
+let MapboxDraw = {};
 if (typeof window !== 'undefined') {
     MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js');
 }
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   startMeasurementTool(){
-    var draw = new MapboxDraw({
+    const draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
         polygon: true,
@@ -65,13 +65,13 @@ module.exports = {
   },
 
   updateMeasurement(){
-    var data = this.draw.getAll();
+    const data = this.draw.getAll();
     if (data.features.length > 0) {
-      var lines = {
+      const lines = {
         "type": "FeatureCollection",
         "features": []
       };
-        var polygons = {
+        const polygons = {
           "type": "FeatureCollection",
           "features": []
       };
@@ -83,13 +83,13 @@ module.exports = {
         }
       });
       if(polygons.features.length > 0){
-        var area = _area(polygons);
+        const area = _area(polygons);
         // restrict to area to 2 decimal points
-        var areaM2 = Math.round(area*100)/100;
-        var areaKM2 = area * 0.000001;
-        var areaHA = areaM2 / 10000.00;
+        const areaM2 = Math.round(area*100)/100;
+        const areaKM2 = area * 0.000001;
+        const areaHA = areaM2 / 10000.00;
 
-        var areaMessage = this.__('Total area: ');
+        let areaMessage = this.__('Total area: ');
 
         if(areaM2 < 1000){
           areaMessage = areaMessage + areaM2.toLocaleString() + 'm2 ';
@@ -99,12 +99,12 @@ module.exports = {
         areaMessage = areaMessage + areaHA.toLocaleString() + 'ha';
         this.setState({measurementMessage: areaMessage}); 
       }else if(lines.features.length > 0){
-        var distanceKm = 0;
+        let distanceKm = 0;
         lines.features.forEach((linestring) => {
           distanceKm += _lineDistance(linestring);
         });
-          var distanceMiles = distanceKm * 0.621371;
-        var distanceMessage= 'Total distance: ' + distanceKm.toLocaleString() + 'km ' + distanceMiles.toLocaleString() + 'mi';
+          const distanceMiles = distanceKm * 0.621371;
+        const distanceMessage= 'Total distance: ' + distanceKm.toLocaleString() + 'km ' + distanceMiles.toLocaleString() + 'mi';
         this.setState({measurementMessage: distanceMessage}); 
       }
      

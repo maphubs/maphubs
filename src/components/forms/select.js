@@ -6,7 +6,7 @@ import result from 'lodash.result';
 import ReactSelect from 'react-select';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
-var $ = require('jquery');
+const $ = require('jquery');
 
 type Props = {|
   emptyText: string,
@@ -94,7 +94,7 @@ class Select extends MapHubsComponent<Props, State> {
   }  
 
   setNote = (val) => {
-    var note = result(find(this.props.options, {'value': val}), 'note');
+    const note = result(find(this.props.options, {'value': val}), 'note');
     if(note){
       this.setState({note});
     }
@@ -127,16 +127,16 @@ class Select extends MapHubsComponent<Props, State> {
   }
 
   render() {
-    var value = this.props.getValue();
+    const value = this.props.getValue();
 
-    var note = '';
+    let note = '';
     if(this.state.note){
       /*eslint-disable react/no-danger*/
       note = (<div dangerouslySetInnerHTML={{__html: this.state.note}}></div>);
       /*eslint-enable react/no-danger*/
     }
 
-    var icon = '';
+    let icon = '';
     if(this.props.icon){
         icon = (<i className="material-icons prefix">{this.props.icon}</i>);
     }

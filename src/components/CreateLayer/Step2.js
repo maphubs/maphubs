@@ -52,7 +52,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
   }
 
   initEmptyLayer = () => {
-    var _this = this;
+    const _this = this;
 
     //save presets
     LayerActions.loadDefaultPresets();
@@ -75,7 +75,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
   }
 
   saveDataLoad = () => {
-    var _this = this;
+    const _this = this;
 
     _this.setState({saving: true});
     //save presets

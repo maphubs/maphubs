@@ -49,8 +49,8 @@ module.exports = {
   },
 
   getFirstLabelLayer(){
-    var glStyle = this.glStyle;
-    var firstLayer;
+    const glStyle = this.glStyle;
+    let firstLayer;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       glStyle.layers.forEach(layer=>{
         if(!firstLayer && layer.id.startsWith('omh-label')){
@@ -67,13 +67,13 @@ module.exports = {
 
   addForestLossLayers(){   
     
-    var addBefore = 'water';
-    var glStyle = this.glStyle;
+    let addBefore = 'water';
+    const glStyle = this.glStyle;
     if(glStyle && glStyle.layers && glStyle.layers.length > 0){
       addBefore = glStyle.layers[0].id;
     }
 
-    var treecoverLayer = this.getForestLossLayer('treecover', 2001);
+    const treecoverLayer = this.getForestLossLayer('treecover', 2001);
     this.map.addSource(treecoverLayer.id, treecoverLayer.source);
     this.map.addLayer(treecoverLayer.layer, addBefore);
     
@@ -85,10 +85,10 @@ module.exports = {
             
     }
     */
-    var firstLabelLayer = this.getFirstLabelLayer();
+    const firstLabelLayer = this.getFirstLabelLayer();
 
-    for(var j = 2001; j <= 2014; j++){
-      var lossLayer = this.getForestLossLayer('lossyear', j);
+    for(let j = 2001; j <= 2014; j++){
+      const lossLayer = this.getForestLossLayer('lossyear', j);
       this.map.addSource(lossLayer.id, lossLayer.source);
       if(firstLabelLayer){
         this.map.addLayer(lossLayer.layer, firstLabelLayer);
@@ -103,7 +103,7 @@ module.exports = {
   removeForestLossLayers(){
 
     try{
-      var treecoverLayer = this.getForestLossLayer('treecover', 2001);
+      const treecoverLayer = this.getForestLossLayer('treecover', 2001);
       this.map.removeLayer(treecoverLayer.layer.id);
       this.map.removeSource(treecoverLayer.id);
     }catch(err){
@@ -111,14 +111,14 @@ module.exports = {
     }
      
 
-    for(var i = 2001; i <= 2014; i++){
+    for(let i = 2001; i <= 2014; i++){
       /*
        var treecoverLayer = _this.getForestLossLayer('treecover', i);
        this.removeLayer(treecoverLayer.layer.id);
        this.removeSource(treecoverLayer.id);
       */
       try{
-       var lossLayer = this.getForestLossLayer('lossyear', i);
+       const lossLayer = this.getForestLossLayer('lossyear', i);
        this.map.removeLayer(lossLayer.layer.id);
        this.map.removeSource(lossLayer.id);
       }catch(err){
@@ -146,7 +146,7 @@ module.exports = {
       }else if(year === 2001){
         //_this.map.setLayoutProperty(`omh-treecover-${2014}`, 'visibility', 'none');
         //reset hide all loss years
-        for(var i = 2002; i <= 2014; i++){
+        for(let i = 2002; i <= 2014; i++){
           this.map.setLayoutProperty(`omh-lossyear-${i}`, 'visibility', 'none');
         }
         

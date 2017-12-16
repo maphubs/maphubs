@@ -34,9 +34,9 @@ export default class UserStory extends MapHubsComponent<Props, void> {
   }
 
   render() {
-    var story = this.props.story;
+    const story = this.props.story;
 
-    var button = '';
+    let button = '';
     if(this.props.canEdit){
       button = (
         <div className="fixed-action-btn action-button-bottom-right">
@@ -49,9 +49,9 @@ export default class UserStory extends MapHubsComponent<Props, void> {
         </div>
       );
     }
-    var title = story.title.replace('&nbsp;', '');
+    const title = story.title.replace('&nbsp;', '');
 
-    var shareAndDiscuss = '';
+    let shareAndDiscuss = '';
     if(MAPHUBS_CONFIG.enableComments){
       shareAndDiscuss = (
         <div className="story-share-comments">

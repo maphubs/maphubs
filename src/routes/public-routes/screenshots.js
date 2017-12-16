@@ -1,22 +1,22 @@
 // @flow
-var Layer = require('../../models/layer');
-var Map = require('../../models/map');
-var nextError = require('../../services/error-response').nextError;
-var manetCheck = require('../../services/manet-check').middleware;
-var Locales = require('../../services/locales');
+const Layer = require('../../models/layer');
+const Map = require('../../models/map');
+const nextError = require('../../services/error-response').nextError;
+const manetCheck = require('../../services/manet-check').middleware;
+const Locales = require('../../services/locales');
 
 module.exports = function(app: any) {
   //create a map view that we will use to screenshot the layer
   app.get('/api/layer/:layer_id/static/render/', manetCheck, (req, res, next) => {
 
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const layer_id = parseInt(req.params.layer_id || '', 10);
     if(!layer_id){
       return res.status(404).send();
     }
     Layer.getLayerByID(layer_id).then((layer) => {
       if(layer){
-        let name = Locales.getLocaleStringObject(req.locale, layer.name);
-        let title = name + ' - ' + MAPHUBS_CONFIG.productName;
+        const name = Locales.getLocaleStringObject(req.locale, layer.name);
+        const title = name + ' - ' + MAPHUBS_CONFIG.productName;
 
         return res.render('staticmap', {title, hideFeedback: true, 
           disableGoogleAnalytics: true,
@@ -37,7 +37,7 @@ module.exports = function(app: any) {
     }).catch(nextError(next));
   });
 
-  let completeMapStaticRender = async function(req, res, next, map_id){
+  const completeMapStaticRender = async function(req, res, next, map_id){
     let showLegend = true;
     if(req.query.hideLegend){
       showLegend = false;
@@ -65,7 +65,7 @@ module.exports = function(app: any) {
       }else{
         const layers = await Map.getMapLayers(map_id, true);
 
-        var title = req.__('Map');
+        let title = req.__('Map');
         if(map.title){
           title = Locales.getLocaleStringObject(req.locale, map.title);
         }
@@ -91,7 +91,7 @@ module.exports = function(app: any) {
   };
 
   app.get('/api/map/:mapid/static/render/', manetCheck, async (req, res, next) => {
-    var map_id = parseInt(req.params.mapid || '', 10);
+    const map_id = parseInt(req.params.mapid || '', 10);
     if(map_id){
       await completeMapStaticRender(req, res, next, map_id);
     }else{
@@ -101,7 +101,7 @@ module.exports = function(app: any) {
 
   app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, async (req, res, next) => {
     try{
-      var map_id = parseInt(req.params.mapid || '', 10);
+      const map_id = parseInt(req.params.mapid || '', 10);
 
       if(!map_id){
         return res.status(404).send();
@@ -115,7 +115,7 @@ module.exports = function(app: any) {
 
         const layers = await Map.getMapLayers(map_id, true);
 
-        var title = 'Map';
+        let title = 'Map';
         if(map.title){
           title = Locales.getLocaleStringObject(req.locale, map.title);
         }

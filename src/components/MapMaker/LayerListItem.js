@@ -3,7 +3,7 @@ import React from 'react';
 import GroupTag from '../Groups/GroupTag';
 import Formsy from 'formsy-react';
 import Toggle from '../../components/forms/toggle';
-var $ = require('jquery');
+const $ = require('jquery');
 import _isEqual from 'lodash.isequal';
 import flow from 'lodash.flow';
 require('dnd-core/lib/actions/dragDrop');
@@ -68,29 +68,29 @@ class LayerListItem extends MapHubsComponent<Props, void> {
   }
 
   render() {
-    var _this = this;
-    let layer: Layer = this.props.item;
-    let layer_id = layer.layer_id ? layer.layer_id : 0;
-    var canEdit = (this.props.showEdit 
+    const _this = this;
+    const layer: Layer = this.props.item;
+    const layer_id = layer.layer_id ? layer.layer_id : 0;
+    const canEdit = (this.props.showEdit 
                     && layer.canEdit 
                     && !layer.remote 
                     && !layer.is_external);
 
-    var isDragging = this.props.isDragging;
-    var connectDragSource = this.props.connectDragSource;
-    var connectDropTarget = this.props.connectDropTarget;
-    var backgroundColor = 'white';
-    let active = MapStyles.settings.get(layer.style, 'active');
+    const isDragging = this.props.isDragging;
+    const connectDragSource = this.props.connectDragSource;
+    const connectDropTarget = this.props.connectDropTarget;
+    let backgroundColor = 'white';
+    const active = MapStyles.settings.get(layer.style, 'active');
 
     if(!active){
         backgroundColor = '#eeeeee';
     }
 
-    var buttonCount = 1;
+    let buttonCount = 1;
     if(this.props.showRemove) buttonCount++;
     if(this.props.showDesign) buttonCount++;
     if(canEdit) buttonCount++;
-    var buttonClass = '';
+    let buttonClass = '';
     if(buttonCount === 1){
       buttonClass = 'col s12 no-padding';
     }else if(buttonCount === 2){
@@ -102,7 +102,7 @@ class LayerListItem extends MapHubsComponent<Props, void> {
     }
 
 
-    var removeButton = '', designButton = '', editButton = '', visibilityToggle = '';
+    let removeButton = '', designButton = '', editButton = '', visibilityToggle = '';
     if(this.props.showRemove){
       removeButton = (
         <div className={buttonClass} style={{height: '30px', width: '22px'}}>

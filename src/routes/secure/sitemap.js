@@ -1,12 +1,12 @@
-var local = require('../../local');
-var urlUtil = require('../../services/url-util');
-var siteMapUtil = require('../../services/sitemap-util');
-var Promise = require('bluebird');
+const local = require('../../local');
+const urlUtil = require('../../services/url-util');
+const siteMapUtil = require('../../services/sitemap-util');
+const Promise = require('bluebird');
 //var log = require('../../services/log');
-var nextError = require('../../services/error-response').nextError;
-var knex = require('../../connection');
+const nextError = require('../../services/error-response').nextError;
+const knex = require('../../connection');
 
-var sitemap = require('sitemap'),
+const sitemap = require('sitemap'),
   sm = sitemap.createSitemap({
       hostname : urlUtil.getBaseUrl(),
       sitemapName: 'Maphubs'
@@ -39,11 +39,11 @@ Disallow: /xml/map/*
     if(local.requireLogin){
       return res.status(404).send();
     }
-    var baseUrl = urlUtil.getBaseUrl();
+    const baseUrl = urlUtil.getBaseUrl();
     knex.transaction((trx) => {
       return siteMapUtil.getSiteMapIndexFeatureURLs(trx)
       .then(layerUrls => {
-        let smi = sitemap.buildSitemapIndex({
+        const smi = sitemap.buildSitemapIndex({
           urls:  [ baseUrl + '/sitemap.xml'].concat(layerUrls)
         });
         res.header('Content-Type', 'application/xml');
@@ -56,7 +56,7 @@ Disallow: /xml/map/*
       if(local.requireLogin){
         return res.status(404).send();
       }
-      var layer_id = parseInt(req.params.layer_id || '', 10);
+      const layer_id = parseInt(req.params.layer_id || '', 10);
       //clear sitemap
       sm.urls = [];
       knex.transaction(async(trx) => {
@@ -71,7 +71,7 @@ Disallow: /xml/map/*
       if(local.requireLogin){
         return res.status(404).send();
       }
-      var baseUrl = urlUtil.getBaseUrl();
+      const baseUrl = urlUtil.getBaseUrl();
       //clear sitemap
       sm.urls = [
         {url: baseUrl + '/layers', changefreq: 'daily'},

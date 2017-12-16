@@ -1,9 +1,9 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/GroupActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/group-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const request = require('superagent');
+const debug = require('../services/debug')('stores/group-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 export type Group = {
   group_id?: string, 
@@ -62,7 +62,7 @@ export default class GroupStore extends Reflux.Store {
 
  createGroup(group_id: string, name: string, description: string, location: string, published: boolean, _csrf: string, cb: Function){
    debug.log('create group');
-   var _this = this;
+   const _this = this;
 
    request.post('/api/group/create')
    .type('json').accept('json')
@@ -76,7 +76,7 @@ export default class GroupStore extends Reflux.Store {
    })
    .end((err, res) => {
      checkClientError(res, err, cb, (cb) => {
-       var group = {
+       const group = {
          group_id,
          name,
          description,
@@ -94,7 +94,7 @@ export default class GroupStore extends Reflux.Store {
 
  updateGroup(group_id: string, name: string, description: string, location: string, published: boolean, _csrf: string, cb: Function){
    debug.log('update group');
-   var _this = this;
+   const _this = this;
    request.post('/api/group/save')
    .type('json').accept('json')
    .send({
@@ -107,7 +107,7 @@ export default class GroupStore extends Reflux.Store {
    })
    .end((err, res) => {
      checkClientError(res, err, cb, (cb) => {
-       var group = {
+       const group = {
          group_id,
          name,
          description,
@@ -140,7 +140,7 @@ export default class GroupStore extends Reflux.Store {
 
  setGroupImage(data: Object, _csrf: string, cb: Function){
    debug.log('set group image');
-   var _this = this;
+   const _this = this;
 
    request.post('/api/group/setphoto')
    .type('json').accept('json')
@@ -151,7 +151,7 @@ export default class GroupStore extends Reflux.Store {
     })
    .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-         var group = _this.state.group;
+         const group = _this.state.group;
          group.hasImage = true;
          _this.setState({group});
          _this.trigger(_this.state);
@@ -162,7 +162,7 @@ export default class GroupStore extends Reflux.Store {
 
  addMember(display_name: string, asAdmin: boolean, _csrf: string, cb: Function){
    debug.log('add member');
-   var _this = this;
+   const _this = this;
    request.post('/api/group/addmember')
    .type('json').accept('json')
    .send({
@@ -180,7 +180,7 @@ export default class GroupStore extends Reflux.Store {
 
  removeMember(user_id: number, _csrf: string, cb: Function){
    debug.log('remove member');
-   var _this = this;
+   const _this = this;
    request.post('/api/group/removemember')
    .type('json').accept('json')
    .send({
@@ -197,7 +197,7 @@ export default class GroupStore extends Reflux.Store {
 
  setMemberAdmin(user_id: number, _csrf: string, cb: Function){
    debug.log('set member admin');
-   var _this = this;
+   const _this = this;
    request.post('/api/group/updatememberrole')
    .type('json').accept('json')
    .send({
@@ -215,7 +215,7 @@ export default class GroupStore extends Reflux.Store {
 
  removeMemberAdmin(user_id: number, _csrf: string, cb: Function){
    debug.log('remove member admin');
-   var _this = this;
+   const _this = this;
    request.post('/api/group/updatememberrole')
    .type('json').accept('json')
    .send({
@@ -233,8 +233,8 @@ export default class GroupStore extends Reflux.Store {
 
  reloadMembers(_csrf: string, cb: Function){
    debug.log('reload members');
-   var _this = this;
-   var group_id = this.state.group.group_id? this.state.group.group_id : '';
+   const _this = this;
+   const group_id = this.state.group.group_id? this.state.group.group_id : '';
    request.post('/api/group/' + group_id + '/members')
    .type('json').accept('json')
    .send({_csrf})

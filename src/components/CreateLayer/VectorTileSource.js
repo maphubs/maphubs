@@ -59,9 +59,9 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
-    var _this = this;
+    const _this = this;
 
-    var boundsArr = model.bounds.split(',');
+    const boundsArr = model.bounds.split(',');
     boundsArr.map((item) => {
       return item.trim();
     });
@@ -106,7 +106,7 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">

@@ -1,9 +1,9 @@
 //@flow
 import React from 'react';
 import {withFormsy} from 'formsy-react';
-var classNames = require('classnames');
-var $ = require('jquery');
-var debug = require('../../services/debug')('Toggle');
+const classNames = require('classnames');
+const $ = require('jquery');
+const debug = require('../../services/debug')('Toggle');
 import MapHubsComponent from '../MapHubsComponent';
 
 type Props = {|
@@ -52,7 +52,7 @@ class Toggle extends MapHubsComponent<Props, void> {
   componentWillReceiveProps(nextProps: Props) {
     
     //only change if the props value is swapped
-    var currentValue =  this.props.checked;
+    const currentValue =  this.props.checked;
     if ('checked' in nextProps 
     && nextProps.checked !== currentValue){
          this.props.setValue(nextProps.checked);
@@ -67,7 +67,7 @@ class Toggle extends MapHubsComponent<Props, void> {
 
   changeValue = (event) => {    
     event.stopPropagation();
-    var checked = event.currentTarget.checked;
+    const checked = event.currentTarget.checked;
     debug.log('change value: ' + checked);
     if(checked !== this.props.getValue())
      this.props.setValue(checked);
@@ -81,7 +81,7 @@ class Toggle extends MapHubsComponent<Props, void> {
     // (specify either the value prop, or the defaultValue prop, but not both).
     delete props.defaultChecked;
 
-    var className = classNames('switch', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+    const className = classNames('switch', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
 
     let checked = this.props.getValue();
 

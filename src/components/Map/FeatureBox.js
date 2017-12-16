@@ -120,10 +120,10 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
       header=(<h6 style={{position: 'absolute', top: 0, left: '5px', fontSize: '12px'}}>{this.__('Selected Feature')}</h6>);
       
       if(this.props.showButtons){
-        var mhid = -1;
-        var source_layer_id = '';
-        var host = '';
-        var featureName = 'unknown';
+        let mhid = -1;
+        let source_layer_id = '';
+        let host = '';
+        let featureName = 'unknown';
         if(this.props.feature){
           var currentFeature = this.props.feature;
           if(currentFeature && currentFeature.properties){
@@ -134,11 +134,11 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
         }
 
 
-        var layerinfo = '';
+        let layerinfo = '';
         if(this.state.layer){
-          let group_id = this.state.layer.owned_by_group_id;
-          let local_layer_id = this.state.layer.layer_id ? this.state.layer.layer_id : 0;
-          let layerName = this.state.layer.name;
+          const group_id = this.state.layer.owned_by_group_id;
+          const local_layer_id = this.state.layer.layer_id ? this.state.layer.layer_id : 0;
+          const layerName = this.state.layer.name;
           let layerLink;
           if(host === window.location.hostname || host === 'dev.docker'){      
             layerLink = `${baseUrl}/lyr/${local_layer_id}`;
@@ -174,7 +174,7 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
         }else{
           featureLink = `https://${host}/feature/${source_layer_id}/${featureID}/${featureName}`;
         }
-        var featureButton = '';
+        let featureButton = '';
         if(host && featureLink){
           featureButton = (
             <a href={featureLink} target="_blank" rel="noopener noreferrer"
@@ -195,9 +195,9 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
     }
 
     //only show the panel if there is at least one feature active
-    var display = 'none';
-    var attributes = '';
-    var properties: Object = {};
+    let display = 'none';
+    let attributes = '';
+    let properties: Object = {};
     if(this.props.feature){
       display = 'flex';     
       currentFeature = this.props.feature;

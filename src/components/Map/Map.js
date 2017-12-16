@@ -29,10 +29,10 @@ import DataEditorActions from '../../actions/DataEditorActions';
 import AnimationActions from '../../actions/map/AnimationActions';
 import MapHubsComponent from '../MapHubsComponent';
 import Promise from 'bluebird';
-var debug = require('../../services/debug')('map');
-var $ = require('jquery');
+const debug = require('../../services/debug')('map');
+const $ = require('jquery');
 
-var mapboxgl = {}, ArcGISTiledMapServiceSource, ScalePositionControl;
+let mapboxgl = {}, ArcGISTiledMapServiceSource, ScalePositionControl;
 if (typeof window !== 'undefined') {
     mapboxgl = require("mapbox-gl");
     ArcGISTiledMapServiceSource  = require('mapbox-gl-arcgis-tiled-map-service');
@@ -156,7 +156,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     super.componentWillMount();
     BaseMapActions.setBaseMap(this.props.baseMap);
     if(this.props.glStyle){
-      var interactiveLayers = this.getInteractiveLayers(this.props.glStyle);
+      const interactiveLayers = this.getInteractiveLayers(this.props.glStyle);
       this.setState({interactiveLayers});
     }
   }
@@ -188,7 +188,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     if(this.state.interactive && !prevState.interactive){    
       this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
       this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition);
-      var interaction = this.map.interaction;
+      const interaction = this.map.interaction;
       interaction.enable();
       $(this.refs.basemapButton).show();
       $(this.refs.editBaseMapButton).show();
@@ -208,7 +208,7 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   addMapData = (map: any, glStyle: GLStyle, geoJSON?: GeoJSONObject, cb: Function) => {
     this.debugLog('addMapData');
-    var _this = this;
+    const _this = this;
     if(glStyle && glStyle.sources){
         return Promise.resolve(_this.setOverlayStyle(glStyle, _this.props.allowLayerOrderOptimization))
         .catch((err)=>{
@@ -233,7 +233,7 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   createMap = () => {
-    var _this = this;
+    const _this = this;
     this.debugLog('Creating MapboxGL Map');
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
@@ -245,7 +245,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     return;
     }
 
-    var map = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: _this.state.id,
       style: _this.glStyle,
       zoom: 0,
@@ -276,7 +276,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     _this.debugLog('style.load');
     //restore map bounds (except for geoJSON maps)
     if(!_this.props.data && _this.state.restoreBounds){
-      var fitBounds = _this.state.restoreBounds;
+      let fitBounds = _this.state.restoreBounds;
       if(fitBounds.length > 2){
         fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
       }
@@ -357,9 +357,9 @@ export default class Map extends MapHubsComponent<Props, State> {
   
   componentWillReceiveProps(nextProps: Props){
     //debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
-    var _this = this;
+    const _this = this;
     if(nextProps.data && this.map){
-      var geoJSONData = this.map.getSource("omh-geojson");
+      const geoJSONData = this.map.getSource("omh-geojson");
       if(geoJSONData){
         debug.log('(' + this.state.id + ') ' +'update geoJSON data');
         //update existing data
@@ -378,9 +378,9 @@ export default class Map extends MapHubsComponent<Props, State> {
       }
     }
 
-    var fitBoundsChanging = false;
-    var bounds: any;
-    var allowLayersToMoveMap = this.state.allowLayersToMoveMap;
+    let fitBoundsChanging = false;
+    let bounds: any;
+    let allowLayersToMoveMap = this.state.allowLayersToMoveMap;
 
     if(nextProps.fitBounds && !_isequal(this.props.fitBounds,nextProps.fitBounds) && this.map){
       _this.debugLog('FIT BOUNDS CHANGING');
@@ -464,7 +464,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           if(err){
             _this.debugLog(err);
           }
-          var interactiveLayers = this.getInteractiveLayers(nextProps.glStyle);
+          const interactiveLayers = this.getInteractiveLayers(nextProps.glStyle);
           this.setState({allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
         });
 
@@ -515,7 +515,7 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   changeBaseMap = (mapName: string) => {
     this.debugLog('changing basemap to: ' + mapName);
-    var _this = this;
+    const _this = this;
     BaseMapActions.getBaseMapFromName(mapName, (baseMapStyle) => {
       BaseMapActions.setBaseMap(mapName);
       _this.setState({allowLayersToMoveMap: false});
@@ -538,9 +538,9 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   render() {
 
-    var className = classNames('mode', 'map', 'active');
+    const className = classNames('mode', 'map', 'active');
 
-    var featureBox = '';
+    let featureBox = '';
     if(this.state.selectedFeature){
       featureBox = (
         <FeatureBox
@@ -552,7 +552,7 @@ export default class Map extends MapHubsComponent<Props, State> {
       );
     }
 
-    var interactiveButton = '';
+    let interactiveButton = '';
     if(!this.state.interactive && this.props.showPlayButton){
       interactiveButton = (
         <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light"
@@ -560,7 +560,7 @@ export default class Map extends MapHubsComponent<Props, State> {
       );
     }
 
-    var logo = '', children = '';
+    let logo = '', children = '';
     if(this.state.mapLoaded){
       if(this.props.showLogo){
         logo = (
@@ -570,16 +570,16 @@ export default class Map extends MapHubsComponent<Props, State> {
       children = this.props.children;
     }
 
-    var insetMap = '';
+    let insetMap = '';
     if(this.props.insetMap){
-      var bottom='25px';
+      let bottom='25px';
       if(this.props.showLogo){
          bottom='30px';
       }
       insetMap = (<InsetMap ref="insetMap" id={this.state.id}  bottom={bottom} {...this.props.insetConfig} />);
     }
 
-    var measurementTools = '';
+    let measurementTools = '';
     if(this.state.enableMeasurementTools){
 
       measurementTools= (
@@ -606,7 +606,7 @@ export default class Map extends MapHubsComponent<Props, State> {
      
     }
 
-    var animationOverlay = '';
+    let animationOverlay = '';
     if(this.state.showForestLoss){
       animationOverlay = (
         <AnimationOverlay style={{

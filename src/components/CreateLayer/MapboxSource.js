@@ -49,7 +49,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
 
     addValidationRule('isValidMapboxMapID', (values, value) => {
       if(value){
-        var valArr = value.split('.');
+        const valArr = value.split('.');
         return valArr && Array.isArray(valArr) && valArr.length === 2;
       }else{
         return false;
@@ -70,10 +70,10 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
-    var _this = this;
-    var dataSettings = null;
+    const _this = this;
+    let dataSettings = null;
     if(model.mapboxStyleID){
-      var mapboxStyleID = model.mapboxStyleID.replace(/mapbox:\/\/styles\//i, '');
+      const mapboxStyleID = model.mapboxStyleID.replace(/mapbox:\/\/styles\//i, '');
       dataSettings = {
         is_external: true,
         external_layer_type: 'mapbox-style',
@@ -83,7 +83,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
         }
       };
     }else if(model.mapboxMapID){
-      var mapboxMapID = model.mapboxMapID;
+      const mapboxMapID = model.mapboxMapID;
       dataSettings = {
         is_external: true,
         external_layer_type: 'mapbox-map',
@@ -124,12 +124,12 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var mapboxOptions = [
+    const mapboxOptions = [
       {value: 'style', label: this.__('Link to a complete Mapbox Studio Style')},
       {value: 'tiles', label: this.__("Link to Mapbox Data/Raster Tiles")}
     ];
 
-    var styleOption=false, tilesOption=false;
+    let styleOption=false, tilesOption=false;
     switch(this.state.selectedOption){
       case 'style':
         styleOption = true;
@@ -141,7 +141,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
       break;
     }
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -150,7 +150,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    var styleForm = '';
+    let styleForm = '';
     if(styleOption){
       styleForm = (
         <div>
@@ -165,7 +165,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
         </div>
       );
     }
-    var tilesForm = '';
+    let tilesForm = '';
     if(tilesOption){
       tilesForm = (
         <div>

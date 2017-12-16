@@ -1,15 +1,15 @@
 //@flow
-var MapStyles = require('../Styles');
+const MapStyles = require('../Styles');
 import _bbox from '@turf/bbox';
 import type {GeoJSONObject} from 'geojson-flow';
 
 module.exports = {
   initGeoJSON(data: GeoJSONObject){
-    var _this = this;
+    const _this = this;
     if(this.map){
       if(data && data.features && Array.isArray( data.features) && data.features.length > 0){
         this.map.addSource("omh-geojson", {"type": "geojson", data});
-        let glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null);
+        const glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null);
         //glStyle.sources["omh-geojson"] = {"type": "geojson", data};
         glStyle.layers.map((layer)=>{
           _this.map.addLayer(layer);
@@ -32,7 +32,7 @@ module.exports = {
    * Called when clearing search
    */
   resetGeoJSON(){
-    var geoJSONData = this.map.getSource("omh-geojson");
+    const geoJSONData = this.map.getSource("omh-geojson");
     geoJSONData.setData({
       type: 'FeatureCollection',
       features: []
@@ -41,7 +41,7 @@ module.exports = {
   },
 
   zoomToData(data: GeoJSONObject){
-    var bbox: Array<number>;
+    let bbox: Array<number>;
     if(data.bbox && Array.isArray(data.bbox) && data.bbox.length > 0){
        bbox = (data.bbox: Array<number>) ;      
     }else{
@@ -57,7 +57,7 @@ module.exports = {
       let e = bbox[3];
       if(e > 85) e = 85;
 
-      var bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
+      const bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
       this.map.fitBounds(bounds, {padding: 25, curve: 3, speed:0.6, maxZoom: 12});
     }  
   }

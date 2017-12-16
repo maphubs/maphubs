@@ -1,8 +1,8 @@
 //@flow
-var TerraformerGL = require('../../../services/terraformerGL.js');
+const TerraformerGL = require('../../../services/terraformerGL.js');
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style';
 import type {GeoJSONObject} from 'geojson-flow';
-var AGSFeatureServerQuery = {
+const AGSFeatureServerQuery = {
   load(key: string, source: GLSource, mapComponent: any){
     return TerraformerGL.getArcGISFeatureServiceGeoJSON(source.url)
       .then((geoJSON: GeoJSONObject) => {

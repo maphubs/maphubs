@@ -1,22 +1,22 @@
 // @flow
-var Feature = require('../../models/feature');
-var Layer = require('../../models/layer');
-var LayerData = require('../../models/layer-data');
-var PhotoAttachment = require('../../models/photo-attachment');
-var SearchIndex = require('../../models/search-index');
-var knex = require('../../connection.js');
-var urlUtil = require('../../services/url-util');
-var imageUtils = require('../../services/image-utils');
-var layerViews = require('../../services/layer-views');
+const Feature = require('../../models/feature');
+const Layer = require('../../models/layer');
+const LayerData = require('../../models/layer-data');
+const PhotoAttachment = require('../../models/photo-attachment');
+const SearchIndex = require('../../models/search-index');
+const knex = require('../../connection.js');
+const urlUtil = require('../../services/url-util');
+const imageUtils = require('../../services/image-utils');
+const layerViews = require('../../services/layer-views');
 //var debug = require('../../services/debug')('routes/features');
-var log = require('../../services/log');
-var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var csrfProtection = require('csurf')({cookie: false});
-var privateLayerCheck = require('../../services/private-layer-check');
-var isAuthenticated = require('../../services/auth-check');
+const log = require('../../services/log');
+const apiError = require('../../services/error-response').apiError;
+const nextError = require('../../services/error-response').nextError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const csrfProtection = require('csurf')({cookie: false});
+const privateLayerCheck = require('../../services/private-layer-check');
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
@@ -32,7 +32,7 @@ module.exports = function(app: any) {
       mhid = `${layer_id}:${id}`;
     }
 
-    var user_id: number = -1;
+    let user_id: number = -1;
     if(req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
@@ -54,7 +54,7 @@ module.exports = function(app: any) {
         }
         let featureName = "Feature";
         if(feature.geojson.features.length > 0 && feature.geojson.features[0].properties){
-          var geoJSONProps = feature.geojson.features[0].properties;
+          const geoJSONProps = feature.geojson.features[0].properties;
           if(geoJSONProps.name) {
             featureName = geoJSONProps.name;
           }
@@ -143,10 +143,10 @@ module.exports = function(app: any) {
 
   app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, async (req, res, next) => {
 
-    var id = req.params.id;
-    var layer_id = parseInt(req.params.layer_id || '', 10);
+    const id = req.params.id;
+    const layer_id = parseInt(req.params.layer_id || '', 10);
 
-    var mhid = `${layer_id}:${id}`;
+    const mhid = `${layer_id}:${id}`;
 
     if(mhid && layer_id){
       try{
@@ -154,11 +154,11 @@ module.exports = function(app: any) {
         const result = await Feature.getFeatureByID(mhid, layer.layer_id);
 
         const feature = result.feature;
-        let geoJSON = feature.geojson;
+        const geoJSON = feature.geojson;
         geoJSON.features[0].geometry.type = "LineString";
-        var coordinates = geoJSON.features[0].geometry.coordinates[0][0];
+        const coordinates = geoJSON.features[0].geometry.coordinates[0][0];
         log.info(coordinates);
-        var resultStr = JSON.stringify(geoJSON);
+        const resultStr = JSON.stringify(geoJSON);
         log.info(resultStr);
         const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
         const match = req.get('If-None-Match');
@@ -170,7 +170,7 @@ module.exports = function(app: any) {
             'ETag': hash
           });
 
-          var gpx = `
+          let gpx = `
           <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="MapHubs">
             <metadata>
               <link href="https://maphubs.com">
@@ -199,8 +199,8 @@ module.exports = function(app: any) {
   });
 
   app.get('/feature/photo/:photo_id.jpg', async (req, res) => {
-    var photo_id = req.params.photo_id;
-    var user_id = -1;
+    const photo_id = req.params.photo_id;
+    let user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }

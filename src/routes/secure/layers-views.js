@@ -1,17 +1,17 @@
 // @flow
-var Layer = require('../../models/layer');
-var Group = require('../../models/group');
-var User = require('../../models/user');
-var Stats = require('../../models/stats');
+const Layer = require('../../models/layer');
+const Group = require('../../models/group');
+const User = require('../../models/user');
+const Stats = require('../../models/stats');
 //var log = require('../../services/log');
-var login = require('connect-ensure-login');
+const login = require('connect-ensure-login');
 //var debug = require('../../services/debug')('routes/layers');
-var urlUtil = require('../../services/url-util');
-var nextError = require('../../services/error-response').nextError;
-var csrfProtection = require('csurf')({cookie: false});
-var privateLayerCheck = require('../../services/private-layer-check').middlewareView;
-var Locales = require('../../services/locales');
-var knex = require('../../connection.js');
+const urlUtil = require('../../services/url-util');
+const nextError = require('../../services/error-response').nextError;
+const csrfProtection = require('csurf')({cookie: false});
+const privateLayerCheck = require('../../services/private-layer-check').middlewareView;
+const Locales = require('../../services/locales');
+const knex = require('../../connection.js');
 
 module.exports = function(app: any) {
 
@@ -76,7 +76,7 @@ module.exports = function(app: any) {
         req.session.layerviews[layer_id] = 1;
         await Stats.addLayerView(layer_id,user_id).catch(nextError(next));
       }else{
-        let views = req.session.layerviews[layer_id];
+        const views = req.session.layerviews[layer_id];
         req.session.layerviews[layer_id] = views + 1;
       }
 
@@ -128,8 +128,8 @@ module.exports = function(app: any) {
   });
 
   app.get('/lyr/:layerid', csrfProtection, (req, res) => {
-    var layerid = req.params.layerid;
-    var baseUrl = urlUtil.getBaseUrl();
+    const layerid = req.params.layerid;
+    const baseUrl = urlUtil.getBaseUrl();
     res.redirect(baseUrl + '/layer/info/' + layerid + '/');
   });
 
@@ -150,15 +150,15 @@ module.exports = function(app: any) {
       req.session.layerviews[layer_id] = 1;
       await Stats.addLayerView(layer_id,user_id);
     }else{
-      let views = req.session.layerviews[layer_id];
+      const views = req.session.layerviews[layer_id];
       req.session.layerviews[layer_id] = views + 1;
     }
     req.session.views = (req.session.views || 0) + 1;
 
     const layer = await Layer.getLayerByID(layer_id);     
     if(layer){
-      let name = Locales.getLocaleStringObject(req.locale, layer.name);
-      let description = Locales.getLocaleStringObject(req.locale, layer.description);
+      const name = Locales.getLocaleStringObject(req.locale, layer.name);
+      const description = Locales.getLocaleStringObject(req.locale, layer.description);
       return res.render('layermap', {
         title: name + ' - ' + MAPHUBS_CONFIG.productName,
         description,

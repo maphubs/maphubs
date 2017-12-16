@@ -1,7 +1,7 @@
 // @flow
 module.exports = {
   getBaseUrl(internal: boolean=false): string{
-    var host, port;
+    let host, port;
     if(internal){
        host = MAPHUBS_CONFIG.host_internal;
        port = MAPHUBS_CONFIG.internal_port;
@@ -9,9 +9,9 @@ module.exports = {
        host = MAPHUBS_CONFIG.host;
         port = MAPHUBS_CONFIG.port;
     }
-    var proto = 'http://';
+    let proto = 'http://';
     if(MAPHUBS_CONFIG.https && !internal) proto = 'https://';
-    var url = proto +  host;
+    let url = proto +  host;
     if(port !== 80){
       url += ':' + port;
     }
@@ -20,10 +20,9 @@ module.exports = {
 
   getUrlParameter(sParam: string) {
     if(typeof window === 'undefined') return;
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
+    const sPageURL = decodeURIComponent(window.location.search.substring(1));
+    const sURLVariables = sPageURL.split('&');
+    let sParameterName, i;
 
     for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');

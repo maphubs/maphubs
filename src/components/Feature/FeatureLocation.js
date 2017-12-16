@@ -18,12 +18,12 @@ type Props = {
 
 export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
   render(){
-    var centroid = turf_centroid(this.props.geojson);
+    const centroid = turf_centroid(this.props.geojson);
     
-    var utm = require('wgs84-util').LLtoUTM(centroid.geometry);
+    const utm = require('wgs84-util').LLtoUTM(centroid.geometry);
 
-    var lon = centroid.geometry.coordinates[0];
-    var lat = centroid.geometry.coordinates[1];
+    const lon = centroid.geometry.coordinates[0];
+    const lat = centroid.geometry.coordinates[1];
     return (
       <div className="row">
       <h5>{this.__('Location')}</h5>

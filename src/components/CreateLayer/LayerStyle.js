@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapStyles from '../Map/Styles';
 import Map from '../Map/Map';
 import MiniLegend from '../Map/MiniLegend';
@@ -61,9 +61,9 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = () => {
-    var _this = this;
+    const _this = this;
     _this.setState({saving: true});
-    var preview_position =  this.refs.map.getPosition();
+    const preview_position =  this.refs.map.getPosition();
     preview_position.bbox = this.refs.map.getBounds();
     LayerActions.saveStyle({
       layer_id: this.state.layer_id,
@@ -88,9 +88,9 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
   }
 
   setRasterOpacity = (opacity: number) => {
-    let elc = this.state.external_layer_config? this.state.external_layer_config: {};
-    let layer_id = this.state.layer_id ? this.state.layer_id: 0;
-    var style = null;
+    const elc = this.state.external_layer_config? this.state.external_layer_config: {};
+    const layer_id = this.state.layer_id ? this.state.layer_id: 0;
+    let style = null;
     if(this.state.is_external && elc.type === 'ags-mapserver-tiles' && elc.url){
       style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, elc.url + '?f=json', opacity, 'arcgisraster');
     }else if(this.state.is_external && elc.type === 'multiraster' && elc.layers){
@@ -145,11 +145,11 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
 
     let mapExtent;
     if(this.state.preview_position && this.state.preview_position.bbox){
-      var bbox = this.state.preview_position.bbox;
+      const bbox = this.state.preview_position.bbox;
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]];
     }
 
-    var map = '';
+    let map = '';
     if(this.state.layer_id !== undefined
       && this.state.layer_id !== -1
       && showMap){
@@ -177,7 +177,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     }
 
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -186,11 +186,11 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
       );
     }
 
-    let externalLayerConfig: Object = this.state.external_layer_config? this.state.external_layer_config: {};
-    let legendCode: string = this.state.legend_html? this.state.legend_html : '';
-    let style: Object = this.state.style? this.state.style: {};
+    const externalLayerConfig: Object = this.state.external_layer_config? this.state.external_layer_config: {};
+    const legendCode: string = this.state.legend_html? this.state.legend_html : '';
+    const style: Object = this.state.style? this.state.style: {};
 
-    var colorChooser = '';
+    let colorChooser = '';
     if(this.state.is_external
       && (externalLayerConfig.type === 'raster'
       || externalLayerConfig.type === 'multiraster'

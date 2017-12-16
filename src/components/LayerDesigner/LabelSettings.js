@@ -3,7 +3,7 @@ import React from 'react';
 import Formsy from 'formsy-react';
 import Toggle from '../forms/toggle';
 import Select from '../forms/select';
-var $ = require('jquery');
+const $ = require('jquery');
 import MapStyles from '../Map/Styles';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
@@ -79,9 +79,10 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
   }
 
    onFormChange = (values: Object) => {
+    let style;
     if(values.enabled && values.field){
       //add labels to style
-      var style = MapStyles.labels.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id,  this.props.layer.shortid, this.props.layer.data_type);
+      style = MapStyles.labels.addStyleLabels(this.state.style, values.field, this.props.layer.layer_id,  this.props.layer.shortid, this.props.layer.data_type);
       this.setState({style, enabled: true, field: values.field});
       this.props.onChange(style, values);
     } else if(values.enabled && !values.field){
@@ -97,14 +98,14 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var _this = this;
-    var fieldOptions = [];
+    const _this = this;
+    const fieldOptions = [];
 
     let presets;
     if(this.props.layer.style && this.props.layer.style.sources){
-      let sourceKeys =  Object.keys(this.props.layer.style.sources);
+      const sourceKeys =  Object.keys(this.props.layer.style.sources);
       if(sourceKeys && sourceKeys.length > 0){
-        let firstSource = Object.keys(this.props.layer.style.sources)[0];
+        const firstSource = Object.keys(this.props.layer.style.sources)[0];
         presets = MapStyles.settings.getSourceSetting(this.props.style, firstSource, 'presets');
       }
     }
@@ -127,7 +128,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
       );
     }
 
-    var invalidMessage = '';
+    let invalidMessage = '';
     if(this.state.enabled && !this.state.field){
       invalidMessage = (
         <p style={{color: 'red'}}>{this.__('Please Select a Label Field')}</p>

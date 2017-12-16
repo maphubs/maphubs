@@ -45,9 +45,9 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var stepText = this.__('Step') + ' ' + this.state.step;
-    var progressWidth = '';
-    var step1 = false, step2 = false;
+    const stepText = this.__('Step') + ' ' + this.state.step;
+    let progressWidth = '';
+    let step1 = false, step2 = false;
     switch(this.state.step){
       case 1:
         progressWidth = 'width-50';
@@ -60,7 +60,7 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
       default:
       break;
     }
-    var progressClassName = classNames('determinate', progressWidth);
+    const progressClassName = classNames('determinate', progressWidth);
 
 		return (
       <ErrorBoundary>

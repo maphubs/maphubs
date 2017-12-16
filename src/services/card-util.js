@@ -1,5 +1,5 @@
 // @flow
-var urlUtil = require('./url-util');
+const urlUtil = require('./url-util');
 import slugify from 'slugify';
 
 import type {Layer} from '../stores/layer-store';
@@ -11,7 +11,7 @@ module.exports = {
 
 
   combineCards(cardDataArray: Array<CardConfigArray>): Array<CardConfig>{
-    var output = [];
+    let output = [];
     cardDataArray.forEach((cardArr: Array<CardConfig>) => {
       output = output.concat(cardArr);
     });
@@ -20,9 +20,9 @@ module.exports = {
 
   getLayerCard(layer: Layer, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
 
-    let layer_id: number = layer.layer_id ? layer.layer_id: -1;
+    const layer_id: number = layer.layer_id ? layer.layer_id: -1;
 
-    var image_url = `/img/resize/400?url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`;
+    const image_url = `/img/resize/400?url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`;
     
     return {
       id: `layer-${layer_id.toString()}`,
@@ -40,8 +40,8 @@ module.exports = {
   },
 
   getHubCard(hub: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
-    var title = hub.name.replace('&nbsp;', '');
-    var hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
+    const title = hub.name.replace('&nbsp;', '');
+    const hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
     return {
       id: `hub-${hub.hub_id}`,
       title,
@@ -58,7 +58,7 @@ module.exports = {
   },
 
   getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
-    var image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`;
+    const image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`;
     return {
       id: `map-${map.map_id.toString()}`,
       title: map.title,//LocalizedString
@@ -92,18 +92,18 @@ module.exports = {
 
 
   getStoryCard(story: Object, id: number, arr: Array<Object>, onClick?: Function){
-    var title = story.title.replace('&nbsp;', '');
-    var story_url = '';
-    var baseUrl = urlUtil.getBaseUrl();
+    const title = story.title.replace('&nbsp;', '');
+    let story_url = '';
+    const baseUrl = urlUtil.getBaseUrl();
     if(story.display_name){
       story_url = baseUrl + '/user/' + story.display_name;
     }else if(story.hub_id){
-      var hubUrl = baseUrl + '/hub/' + story.hub_id;
+      const hubUrl = baseUrl + '/hub/' + story.hub_id;
       story_url = hubUrl;
     }
     story_url += '/story/' + story.story_id + '/' + slugify(title);
 
-    var image_url;
+    let image_url;
     if(story.firstimage){
       image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
       if(image_url.startsWith(baseUrl)){

@@ -1,10 +1,10 @@
 // @flow
-var knex = require('../connection');
-var debug = require('../services/debug')('models/user');
-var Email = require('../services/email-util.js');
-var uuid = require('uuid').v4;
-var urlUtil = require('../services/url-util');
-var local = require('../local');
+const knex = require('../connection');
+const debug = require('../services/debug')('models/user');
+const Email = require('../services/email-util.js');
+const uuid = require('uuid').v4;
+const urlUtil = require('../services/url-util');
+const local = require('../local');
 
 
 module.exports = {
@@ -12,13 +12,13 @@ module.exports = {
   async sendInviteEmail(email: string, __: Function){
     //create confirm link
     debug.log('sending email invite to: ' + email);
-    var key = uuid();
+    const key = uuid();
     await knex('omh.account_invites').insert({email, key});
 
-    var baseUrl = urlUtil.getBaseUrl();
-    var url = baseUrl + '/signup/invite/' + key;
+    const baseUrl = urlUtil.getBaseUrl();
+    const url = baseUrl + '/signup/invite/' + key;
 
-    var text =
+    const text =
       __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!\n\n' +
       __('Please go to this link in your browser to sign up:')  + url + '\n\n' +
 
@@ -26,7 +26,7 @@ module.exports = {
       __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.');
 
 
-    var html =
+    const html =
       '<br />' + __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!' +
       '<br />' +
       '<br />' + __('Please go to this link in your browser to sign up:') + url +
@@ -93,17 +93,17 @@ module.exports = {
   },
 
   getMembers(trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     return db('omh.account_invites');
   },
 
   deauthorize(email: string, key: string, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     return db('omh.account_invites').del().where({email, key});
   },
 
   async checkAdmin(user_id: number, trx: any){
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     const result = await db('omh.admins').select('user_id').where({user_id});
 
     if(result && result.length === 1){

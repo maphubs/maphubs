@@ -39,7 +39,7 @@ export default class BaseMapSelection extends MapHubsComponent<Props, State> {
 
   render(){
 
-    var radioOptions:Array<{value: string, label: string}> = [];
+    const radioOptions:Array<{value: string, label: string}> = [];
     if(this.state.baseMapOptions && Array.isArray(this.state.baseMapOptions)){ 
       this.state.baseMapOptions.forEach((baseMapOption: BaseMapOption) =>{
         radioOptions.push({value: baseMapOption.value, label: baseMapOption.label[this.state.locale]});

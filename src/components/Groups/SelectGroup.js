@@ -58,7 +58,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
   }
 
   getOwnerGroup = (group_id: string): Object => {
-    var owner = {};
+    let owner = {};
     this.props.groups.forEach((group) => {
       if(group.group_id === group_id){
         owner = group;
@@ -76,15 +76,15 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
 
   render(){
 
-    var startEmpty = true;
-    var owner;
+    let startEmpty = true;
+    let owner;
     if(this.state.group_id){
       startEmpty = false;
     }
-    var groups = '';
+    let groups = '';
      if(this.props.groups.length > 1 && this.props.canChangeGroup){
-      var groupOptions = [];
-      var _this = this;
+      const groupOptions = [];
+      const _this = this;
       this.props.groups.map((group) => {
         groupOptions.push({
           value: group.group_id,
@@ -120,14 +120,14 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
         );
       }
 
-      var privateToggle = '';
+      let privateToggle = '';
 
       if(this.state.group_id){
         //check if allowed to have private content
         owner = this.getOwnerGroup(this.state.group_id);
-        var privateAllowed = false;
-        var overLimit = false;        
-        var itemCount, itemLimit, itemName;
+        let privateAllowed = false;
+        let overLimit = false;        
+        let itemCount, itemLimit, itemName;
         if(owner.account.tier.tier_id !== 'public'){
 
           if(this.props.type === 'layer'){
@@ -163,11 +163,11 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
           } 
         }
         if(privateAllowed){
-          var tooltipMessage = this.__('Private layers are only accessible to members of the same group');
+          const tooltipMessage = this.__('Private layers are only accessible to members of the same group');
           
-          var checked = false;
-          var disablePrivate = false;
-          var overLimitMessage = '';
+          let checked = false;
+          let disablePrivate = false;
+          let overLimitMessage = '';
           if(overLimit){
             disablePrivate = true;
             //keep previous settings even if over the limit

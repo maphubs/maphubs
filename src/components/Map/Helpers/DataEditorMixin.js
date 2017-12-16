@@ -1,10 +1,10 @@
 //@flow
-var debug = require('../../../services/debug')('Map/DataEditorMixin');
+const debug = require('../../../services/debug')('Map/DataEditorMixin');
 import DataEditorActions from '../../../actions/DataEditorActions';
-var $ = require('jquery');
+const $ = require('jquery');
 //var _assignIn = require('lodash.assignin');
 //import Reflux from 'reflux';
-var MapboxDraw = {};
+let MapboxDraw = {};
 if (typeof window !== 'undefined') {
     MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js');
 }
@@ -41,7 +41,7 @@ module.exports = {
 
   startEditingTool(layer: Layer){
     
-    var draw = new MapboxDraw({
+    const draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
         point: layer.data_type === 'point',
@@ -61,7 +61,7 @@ module.exports = {
 
     this.map.on('draw.create', e => {
       debug.log('draw create');
-      var features = e.features;
+      const features = e.features;
       if(features && features.length > 0){
         features.forEach( feature => {
           DataEditorActions.createFeature(feature);
@@ -78,7 +78,7 @@ module.exports = {
 
      this.map.on('draw.delete', e =>{
        debug.log('draw delete');
-      var features = e.features;
+      const features = e.features;
       if(features && features.length > 0){
         features.forEach(feature => {
           DataEditorActions.deleteFeature(feature);
@@ -89,9 +89,9 @@ module.exports = {
      this.map.on('draw.selectionchange', e => {
        debug.log('draw selection');
        //if in simple mode (e.g. not selecting vertices) then check if selected feature changed
-       var mode = this.draw.getMode();
+       const mode = this.draw.getMode();
        if(mode === 'simple_select'){
-        var features = e.features;
+        const features = e.features;
         if(features && features.length > 0){
           features.forEach(feature => {
             DataEditorActions.selectFeature(feature.id, ()=>{});
@@ -143,33 +143,33 @@ module.exports = {
    */
   updateMapLayerFilters(){
 
-    var layer_id = this.state.editingLayer.layer_id;
-    var shortid = this.state.editingLayer.shortid;
+    const layer_id = this.state.editingLayer.layer_id;
+    const shortid = this.state.editingLayer.shortid;
 
     //build a new filter
-    var uniqueIds = [];
+    const uniqueIds = [];
 
     this.state.edits.forEach(edit =>{
-      var mhid = edit.geojson.id;
+      const mhid = edit.geojson.id;
       if(mhid && !uniqueIds.includes(mhid)){
         uniqueIds.push(mhid);
       }
     });
 
     this.state.originals.forEach(orig =>{
-      var mhid = orig.geojson.id;
+      const mhid = orig.geojson.id;
       if(mhid && !uniqueIds.includes(mhid)){
         uniqueIds.push(mhid);
       }
     });
 
-    var hideEditingFilter = ['!in', 'mhid'].concat(uniqueIds);
+    const hideEditingFilter = ['!in', 'mhid'].concat(uniqueIds);
 
     if(this.overlayMapStyle){
       this.overlayMapStyle.layers.forEach(layer => {
 
         //check if the layer_id matches
-        var foundMatch;
+        let foundMatch;
         if(layer.metadata && layer.metadata['maphubs:layer_id']){
           if(layer.metadata['maphubs:layer_id'] === layer_id){
             foundMatch = true;
@@ -179,7 +179,7 @@ module.exports = {
         }
         if(foundMatch){
           //get current filter
-          var filter = layer.filter;
+          let filter = layer.filter;
           if(!filter || !Array.isArray(filter) || filter.length === 0 ){
             //create a new filter
             filter = hideEditingFilter;
@@ -203,14 +203,14 @@ module.exports = {
       return;
     }
 
-    var layer_id = this.state.editingLayer.layer_id;
+    const layer_id = this.state.editingLayer.layer_id;
 
 
     if(this.glStyle){
       this.glStyle.layers.forEach(layer => {
 
         //check if the layer_id matches
-        var foundMatch;
+        let foundMatch;
         if(layer.metadata && layer.metadata['maphubs:layer_id']){
           if(layer.metadata['maphubs:layer_id'] === layer_id){
             foundMatch = true;
@@ -220,7 +220,7 @@ module.exports = {
         }
         if(foundMatch){
           //get current filter
-          var filter = layer.filter;
+          let filter = layer.filter;
           if(!filter || !Array.isArray(filter) || filter.length === 0 ){
             //do nothing
           }else if(filter[0] === "all"){
@@ -238,7 +238,7 @@ module.exports = {
   },
 
   reloadEditingSourceCache(){
-    var sourceID = Object.keys(this.state.editingLayer.style.sources)[0];
+    const sourceID = Object.keys(this.state.editingLayer.style.sources)[0];
     const sourceCache = this.map.style.sourceCaches[sourceID];
     if(sourceCache){
       sourceCache.reload();

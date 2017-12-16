@@ -13,7 +13,7 @@ export default class PageSelect extends React.PureComponent<void, Props, void> {
   }
 
   render(){
-    var _this = this;
+    const _this = this;
     let leftArrowClass = 'waves-effect', rightArrowClass = 'waves-effect';
     if(this.props.page === 1){
       leftArrowClass = 'disabled';
@@ -22,16 +22,16 @@ export default class PageSelect extends React.PureComponent<void, Props, void> {
       rightArrowClass = 'disabled';
     }
 
-    let pages = [];
+    const pages = [];
     for(let i = 1; i <= this.props.numPages; i++){
       pages.push(i);
     }
 
-    let onClickPrev = () => {
+    const onClickPrev = () => {
       _this.onClick(this.props.page-1);
     };
 
-    let onClickNext = () => {
+    const onClickNext = () => {
       _this.onClick(this.props.page+1);
     };
 
@@ -44,7 +44,7 @@ export default class PageSelect extends React.PureComponent<void, Props, void> {
         </li>
         {
           pages.map(page =>{
-            let onClickFunc = () => {
+            const onClickFunc = () => {
               _this.onClick(page);
             };
             if(page === this.props.page){     

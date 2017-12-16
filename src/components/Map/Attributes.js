@@ -21,15 +21,15 @@ export default class Attributes extends MapHubsComponent<Props, void> {
   }
 
   render() {
-    var _this = this;
+    const _this = this;
 
 
-    var spacer = (<div style={{height: '50px'}}></div>);
+    const spacer = (<div style={{height: '50px'}}></div>);
     
 
-    var display = '';
-    var photo = '';
-    var photoUrl = null;
+    let display = '';
+    let photo = '';
+    let photoUrl = null;
     if(_this.props.attributes.photo_url){
       photoUrl = _this.props.attributes.photo_url;
     }else if(_this.props.attributes['Photo URL']){
@@ -43,7 +43,7 @@ export default class Attributes extends MapHubsComponent<Props, void> {
     }
 
     if(_this.props.attributes && Object.keys(_this.props.attributes).length > 0){
-      var presets;
+      let presets;
       if( this.props.attributes['maphubs_metadata'] &&  
           this.props.attributes['maphubs_metadata'].presets){
         presets = this.props.attributes['maphubs_metadata'].presets;
@@ -56,7 +56,7 @@ export default class Attributes extends MapHubsComponent<Props, void> {
               {
                 presets.map((preset) => {
                   if(typeof preset.showOnMap !== 'undefined' && preset.showOnMap === false) return '';
-                  var val = _this.props.attributes[preset.tag];
+                  let val = _this.props.attributes[preset.tag];
                   if(!val || (typeof val === 'string' && val === 'null')) return '';
                   if(typeof val === 'string' && val.startsWith('http')){
                     val = (<a target="_blank" rel="noopener noreferrer" href={val}>{val}</a>);
@@ -87,7 +87,7 @@ export default class Attributes extends MapHubsComponent<Props, void> {
                         key !== 'layer_id' &&
                         key !== 'maphubs_metadata' &&
                         key !== 'maphubs_host'){
-                     var val = _this.props.attributes[key];
+                     let val = _this.props.attributes[key];
 
                      if(!val){
                        return '';
@@ -121,7 +121,7 @@ export default class Attributes extends MapHubsComponent<Props, void> {
 
 
     }
-    var marginTop = '25px';
+    const marginTop = '25px';
 
     return (
       <div style={{marginTop, width: '100%', overflowY: 'auto', height: 'calc(100% - 85px)', borderTop: '1px solid #DDD'}}>

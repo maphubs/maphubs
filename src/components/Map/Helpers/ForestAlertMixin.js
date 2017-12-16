@@ -11,7 +11,7 @@ module.exports = {
 
   //API
   toggleForestAlerts(config: Object){
-    var forestAlerts;
+    let forestAlerts;
     if(!this.state.forestAlerts){
       forestAlerts = this.getDefaultForestAlertState();
     }else{
@@ -46,17 +46,17 @@ module.exports = {
       return;
     }
 
-    var features = this.map.queryRenderedFeatures({layers: ['omh-glad-2017-polygon']});
+    const features = this.map.queryRenderedFeatures({layers: ['omh-glad-2017-polygon']});
 
-    var alertCount = features.length;
+    const alertCount = features.length;
 
-    var area = _area({type: 'FeatureCollection', features});
+    const area = _area({type: 'FeatureCollection', features});
         // restrict to area to 2 decimal points
-        var areaM2 = Math.round(area*100)/100;
-        var areaKM2 = area * 0.000001;
-        var areaHA = areaM2 / 10000.00;
+        const areaM2 = Math.round(area*100)/100;
+        const areaKM2 = area * 0.000001;
+        const areaHA = areaM2 / 10000.00;
 
-        var areaMessage = '';
+        let areaMessage = '';
 
         if(areaM2 < 1000){
           areaMessage = areaMessage + areaM2.toLocaleString() + 'm2 ';
@@ -65,7 +65,7 @@ module.exports = {
         }
         areaMessage = areaMessage + areaHA.toLocaleString() + 'ha';
 
-        var forestAlerts = JSON.parse(JSON.stringify(this.state.forestAlerts)); 
+        const forestAlerts = JSON.parse(JSON.stringify(this.state.forestAlerts)); 
         forestAlerts.result = {alertCount,areaMessage};
           
         this.setState({forestAlerts}); 

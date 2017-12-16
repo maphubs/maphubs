@@ -1,19 +1,19 @@
 //@flow
-var Layer = require('../../models/layer');
-var csrfProtection = require('csurf')({cookie: false});
-var nextError = require('../../services/error-response').nextError;
-var login = require('connect-ensure-login');
-var Locales = require('../../services/locales');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var DataLoadUtils = require('../../services/data-load-utils');
-var LayerViews = require('../../services/layer-views');
-var knex = require('../../connection');
-var multer  = require('multer');
-var local = require('../../local');
-var log = require('../../services/log');
-var debug = require('../../services/debug')('routes/layers-replace');
+const Layer = require('../../models/layer');
+const csrfProtection = require('csurf')({cookie: false});
+const nextError = require('../../services/error-response').nextError;
+const login = require('connect-ensure-login');
+const Locales = require('../../services/locales');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const DataLoadUtils = require('../../services/data-load-utils');
+const LayerViews = require('../../services/layer-views');
+const knex = require('../../connection');
+const multer  = require('multer');
+const local = require('../../local');
+const log = require('../../services/log');
+const debug = require('../../services/debug')('routes/layers-replace');
 const Importers = require('../../services/importers');
 const isAuthenticated = require('../../services/auth-check');
 
@@ -21,14 +21,14 @@ module.exports = function(app: any) {
 
 app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
 
-    var user_id = req.session.user.maphubsUser.id;
-    var layer_id = parseInt(req.params.id || '', 10);
+    const user_id = req.session.user.maphubsUser.id;
+    const layer_id = parseInt(req.params.id || '', 10);
 
     //confirm that this user is allowed to administer this layeradmin
     try{
      const allowed = await Layer.allowedToModify(layer_id, user_id);
      if(allowed){
-      let layer = await Layer.getLayerByID(layer_id);
+      const layer = await Layer.getLayerByID(layer_id);
       if(layer){
         res.render('layerreplace', {
           title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
@@ -50,7 +50,7 @@ app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (r
     try {
      const layer = await Layer.getLayerByID(layer_id);
      if(layer){
-       let shortid = layer.shortid;       
+       const shortid = layer.shortid;       
        if(layer.created_by_user_id === req.user_id){
          debug.log('Mimetype: ' +req.file.mimetype);
          const importer = Importers.getImporterFromFileName(req.file.originalname);

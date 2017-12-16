@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import MiniLegend from '../components/Map/MiniLegend';
 import Map from '../components/Map/Map';
 import _debounce from 'lodash.debounce';
@@ -59,7 +59,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     
     function getSize(){
       return {
@@ -71,7 +71,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     this.setState(getSize());
 
     $(window).resize(function(){
-      var debounced = _debounce(() => {
+      const debounced = _debounce(() => {
         _this.setState(getSize());
       }, 2500).bind(this);
       debounced();
@@ -109,11 +109,11 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       }
     }
 
-    var bounds;
+    let bounds;
     if(typeof window === 'undefined' || !window.location.hash){
         //only update position if there isn't absolute hash in the URL
           if(position && position.bbox){
-            var bbox = position.bbox;
+            const bbox = position.bbox;
             bounds = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]];
           }        
       }

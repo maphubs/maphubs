@@ -4,13 +4,13 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
-var debug = require('../services/debug')('views/layers');
-var urlUtil = require('../services/url-util');
+const debug = require('../services/debug')('views/layers');
+const urlUtil = require('../services/url-util');
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
-var cardUtil = require('../services/card-util');
+const cardUtil = require('../services/card-util');
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
@@ -50,7 +50,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
     .type('json').accept('json')
@@ -84,12 +84,12 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var searchResults = '';
+    let searchResults = '';
 
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
-        var searchCards = this.state.searchResults.map(cardUtil.getLayerCard);
+        const searchCards = this.state.searchResults.map(cardUtil.getLayerCard);
         searchResults = (
          <CardCollection title={this.__('Search Results')} cards={searchCards} />
         );
@@ -115,7 +115,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
         </div>
       );
     }else{
-      let cards = this.props.layers.map(cardUtil.getLayerCard);
+      const cards = this.props.layers.map(cardUtil.getLayerCard);
       layers = (
         <CardGrid cards={cards} />
       );

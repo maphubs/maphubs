@@ -52,7 +52,7 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
 	}
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
     window.onbeforeunload = function(){
       if(!_this.state.submitted){
         return _this.__('You have not finished. Layer data replacement may be incomplete');
@@ -72,9 +72,9 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
 
   render(){
 
-    let name = slugify(this._o_(this.props.layer.name));
-    let layer_id = this.props.layer.layer_id;
-    let maphubsFileURL =  `/api/layer/${layer_id}/export/maphubs/${name}.maphubs`;
+    const name = slugify(this._o_(this.props.layer.name));
+    const layer_id = this.props.layer.layer_id;
+    const maphubsFileURL =  `/api/layer/${layer_id}/export/maphubs/${name}.maphubs`;
 
     let upload = '';
     if(this.state.downloaded){

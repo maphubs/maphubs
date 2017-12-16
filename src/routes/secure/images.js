@@ -1,12 +1,12 @@
 //@flow
-var Image = require('../../models/image');
-var debug = require('../../services/debug')('routes/images');
-var apiError = require('../../services/error-response').apiError;
-var nextError = require('../../services/error-response').nextError;
-var imageUtils = require('../../services/image-utils');
-var log = require('../../services/log');
-var scale = require('express-sharp');
-var local = require('../../local');
+const Image = require('../../models/image');
+const debug = require('../../services/debug')('routes/images');
+const apiError = require('../../services/error-response').apiError;
+const nextError = require('../../services/error-response').nextError;
+const imageUtils = require('../../services/image-utils');
+const log = require('../../services/log');
+const scale = require('express-sharp');
+const local = require('../../local');
 
 module.exports = function(app: any) {
 
@@ -16,7 +16,7 @@ module.exports = function(app: any) {
   }
  
   if(!local.requireLogin){
-    var options = {baseHost};
+    const options = {baseHost};
     app.use('/img', scale(options));
   }else{
     app.get('/img/*', (req, res) => {
@@ -29,16 +29,16 @@ module.exports = function(app: any) {
   }
 
   app.get('/image/:id.*', (req, res, next) => {
-    var image_id = parseInt(req.params.id || '', 10);
+    const image_id = parseInt(req.params.id || '', 10);
     //var ext = req.params.ext;
     debug.log('getting image: ' + image_id);
     Image.getImageByID(image_id)
     .then((image) => {
-      var dataArr = image.split(',');
-      var dataInfoArr = dataArr[0].split(':')[1].split(';');
-      var dataType = dataInfoArr[0];
-      var data = dataArr[1];
-      var img = Buffer.from(data, 'base64');
+      const dataArr = image.split(',');
+      const dataInfoArr = dataArr[0].split(':')[1].split(';');
+      const dataType = dataInfoArr[0];
+      const data = dataArr[1];
+      const img = Buffer.from(data, 'base64');
       res.writeHead(200, {
         'Content-Type': dataType,
         'Content-Length': img.length,
@@ -49,7 +49,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/group/:id/image', (req, res) => {
-    var group_id = req.params.id;
+    const group_id = req.params.id;
     Image.getGroupImage(group_id)
     .then((result) => {
       if(result && result.image){
@@ -61,7 +61,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/group/:id/thumbnail', (req, res) => {
-    var group_id = req.params.id;
+    const group_id = req.params.id;
     Image.getGroupThumbnail(group_id)
     .then((result) => {
       if(result && result.thumbnail){
@@ -75,7 +75,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/hub/:id/images/logo', (req, res) => {
-    var hub_id = req.params.id;
+    const hub_id = req.params.id;
     Image.getHubImage(hub_id, 'logo')
     .then((result) => {
       return imageUtils.processImage(result.image, req, res);
@@ -83,7 +83,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/hub/:id/images/logo/thumbnail', (req, res) => {
-    var hub_id = req.params.id;
+    const hub_id = req.params.id;
     Image.getHubThumbnail(hub_id, 'logo')
     .then((result) => {
       if(result && result.thumbnail){
@@ -95,7 +95,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/hub/:id/images/banner', (req, res) => {
-    var hub_id = req.params.id;
+    const hub_id = req.params.id;
     Image.getHubImage(hub_id, 'banner')
     .then((result) => {
       return imageUtils.processImage(result.image, req, res);
@@ -103,7 +103,7 @@ module.exports = function(app: any) {
   });
 
   app.get('/hub/:id/images/banner/thumbnail', (req, res) => {
-    var hub_id = req.params.id;
+    const hub_id = req.params.id;
     Image.getHubThumbnail(hub_id, 'banner')
     .then((result) => {
       if(result && result.thumbnail){
@@ -115,8 +115,8 @@ module.exports = function(app: any) {
   });
 
   app.get('/images/story/:storyid/image/:imageid.jpg', (req, res) => {
-    var story_id = req.params.storyid;
-    var image_id = req.params.imageid;
+    const story_id = req.params.storyid;
+    const image_id = req.params.imageid;
     Image.getStoryImage(story_id, image_id)
     .then((result) => {
       if(result && result.image){
@@ -128,8 +128,8 @@ module.exports = function(app: any) {
   });
 
   app.get('/images/story/:storyid/thumbnail/:imageid.jpg', (req, res) => {
-    var story_id = req.params.storyid;
-    var image_id = req.params.imageid;
+    const story_id = req.params.storyid;
+    const image_id = req.params.imageid;
     Image.getStoryThumbnail(story_id, image_id)
     .then((result) => {
       if(result && result.thumbnail){

@@ -1,9 +1,9 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/HubActions';
-var request = require('superagent');
-var debug = require('../services/debug')('stores/hub-store');
-var checkClientError = require('../services/client-error-response').checkClientError;
+const request = require('superagent');
+const debug = require('../services/debug')('stores/hub-store');
+const checkClientError = require('../services/client-error-response').checkClientError;
 
 import type {Layer} from './layer-store';
 
@@ -93,7 +93,7 @@ export default class HubStore extends Reflux.Store {
 
  createHub(hub_id: string, group_id: string, name: string, published: boolean, isPrivate: boolean, _csrf: string, cb: Function){
    debug.log('create hub');
-   var _this = this;
+   const _this = this;
 
    request.post('/api/hub/create')
    .type('json').accept('json')
@@ -107,7 +107,7 @@ export default class HubStore extends Reflux.Store {
    })
    .end((err, res) => {
      checkClientError(res, err, cb, (cb) => {
-       var hub = {
+       const hub = {
          hub_id,
          name,
          published
@@ -121,9 +121,9 @@ export default class HubStore extends Reflux.Store {
 
  saveHub(_csrf: string, cb: Function){
    debug.log('save hub');
-   var _this = this;
-  let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
-   var baseUrl = '/hub/' + hub_id;
+   const _this = this;
+  const hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+   const baseUrl = '/hub/' + hub_id;
 
    this.setState({saving: true});
    request.post(baseUrl + '/api/save')
@@ -153,10 +153,10 @@ export default class HubStore extends Reflux.Store {
  }
 
  setPrivate(isPrivate: boolean, _csrf: string, cb: Function){
-    var _this = this;
+    const _this = this;
     debug.log('hub privacy');
-    let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
-    var baseUrl = '/hub/' + hub_id;
+    const hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+    const baseUrl = '/hub/' + hub_id;
     request.post(baseUrl + '/api/privacy')
     .type('json').accept('json')
     .send({
@@ -166,7 +166,7 @@ export default class HubStore extends Reflux.Store {
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-        var hub = _this.state.hub;
+        const hub = _this.state.hub;
         hub.private = isPrivate;
         _this.setState({hub});
         cb();
@@ -175,10 +175,10 @@ export default class HubStore extends Reflux.Store {
   }
 
   transferOwnership(to_group_id: string, _csrf: string, cb: Function){
-    var _this = this;
+    const _this = this;
     debug.log('hub privacy');
-    let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
-    var baseUrl = '/hub/' + hub_id;
+    const hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+    const baseUrl = '/hub/' + hub_id;
     request.post(baseUrl + '/api/transfer')
     .type('json').accept('json')
     .send({
@@ -188,7 +188,7 @@ export default class HubStore extends Reflux.Store {
     })
     .end((err, res) => {
       checkClientError(res, err, cb, (cb) => {
-         var hub = _this.state.hub;
+         const hub = _this.state.hub;
          hub.owned_by_group_id = to_group_id;
         _this.setState({hub});
         cb();
@@ -197,10 +197,10 @@ export default class HubStore extends Reflux.Store {
   }
 
  deleteHub(_csrf: string, cb: Function){
-   var _this = this;
+   const _this = this;
    debug.log('delete hub');
-   let hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
-   var baseUrl = '/hub/' + hub_id;
+   const hub_id = this.state.hub.hub_id ? this.state.hub.hub_id : 'unknown';
+   const baseUrl = '/hub/' + hub_id;
 
    request.post(baseUrl + '/api/delete')
    .type('json').accept('json')
@@ -215,31 +215,31 @@ export default class HubStore extends Reflux.Store {
  }
 
  setMap(map: Object){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.map_id = map.map_id;
    this.setState({hub, map, unsavedChanges: true});
  }
 
  setHubLogoImage(data: Object, info: Object){
-    var hub = this.state.hub;
+    const hub = this.state.hub;
     hub.hasLogoImage = true;
    this.setState({logoImage: data, logoImageInfo: info, unsavedChanges: true, hub});
  }
 
  setHubBannerImage(data: Object, info: Object){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
     hub.hasBannerImage = true;
    this.setState({bannerImage: data, bannerImageInfo: info, unsavedChanges: true, hub});
  }
 
  setTitle(title: string){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.name = title;
    this.setState({hub, unsavedChanges: true});
  }
 
   publish(_csrf: string, cb: Function){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.published = true;
    this.setState({hub, unsavedChanges: true});
    this.trigger(this.state);
@@ -247,25 +247,25 @@ export default class HubStore extends Reflux.Store {
  }
 
  setTagline(tagline: string){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.tagline = tagline;
    this.setState({hub, unsavedChanges: true});
  }
 
  setDescription(description: string){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.description = description;
    this.setState({hub, unsavedChanges: true});
  }
 
  setResources(resources: string){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.resources = resources;
    this.setState({hub, unsavedChanges: true});
  }
 
  setAbout(about: string){
-   var hub = this.state.hub;
+   const hub = this.state.hub;
    hub.about = about;
    this.setState({hub, unsavedChanges: true});
  }

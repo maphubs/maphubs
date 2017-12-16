@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import CodeEditor from './CodeEditor';
 import AdvancedLayerSettings from './AdvancedLayerSettings';
 import MapHubsComponent from '../MapHubsComponent';
@@ -61,7 +61,7 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
   }
 
   onChange = (e: any) => {
-    var opacity = e.target.valueAsNumber;
+    const opacity = e.target.valueAsNumber;
     this.setState({opacity});
     this.props.onChange(opacity);
   }
@@ -91,7 +91,7 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
   }
 
   render(){
-     var advanced = '';
+     let advanced = '';
     if(this.props.showAdvanced){
       advanced = (
         <li>

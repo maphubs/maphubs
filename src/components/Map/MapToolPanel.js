@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import EditBaseMapBox from './ToolPanels/EditBaseMapBox';
 import BaseMapSelection from './ToolPanels/BaseMapSelection';
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel';

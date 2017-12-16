@@ -2,7 +2,7 @@
 module.exports = {
   getPointLayers(layer_id: number, shortid: string, color: string, hoverColor: string, interactive: boolean, showBehindBaseMapLabels: boolean){
 
-    var layers = [
+    const layers = [
       {
         "id": `omh-data-point-${layer_id}-${shortid}`,
         "type": "circle",

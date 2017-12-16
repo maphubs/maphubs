@@ -32,12 +32,12 @@ module.exports = function(app: any) {
     if (!req.query.q) {
       apiDataError(res);
     }
-    var q = req.query.q;
+    const q = req.query.q;
     Group.getSearchSuggestions(q)
       .then((result) => {
-        var suggestions = [];
+        const suggestions = [];
         result.forEach((group) => {
-          let name = Locales.getLocaleStringObject(req.locale, group.name);
+          const name = Locales.getLocaleStringObject(req.locale, group.name);
           suggestions.push({key: group.group_id, value:name});
         });
         return res.send({
@@ -193,12 +193,12 @@ module.exports = function(app: any) {
       const user = await User.getUserByName(data.display_name);
       if(user){
         if(await Group.allowedToModify(data.group_id, req.user_id)){
-          var role = 'Member';
+          let role = 'Member';
           if(data.asAdmin){
             role = 'Administrator';
           }
           const members = await Group.getGroupMembers(data.group_id);
-          var alreadyInGroup = false;
+          let alreadyInGroup = false;
           members.forEach((member) => {
             if(member.id === user.id){
                 alreadyInGroup = true;

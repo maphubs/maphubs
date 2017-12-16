@@ -1,6 +1,6 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 import classNames from 'classnames';
 import PresetEditor from './PresetEditor';
 import MessageActions from '../../actions/MessageActions';
@@ -62,7 +62,7 @@ export default class Step4 extends MapHubsComponent<Props, State> {
   }
 
   saveDataLoad = () => {
-    var _this = this;
+    const _this = this;
 
     _this.setState({saving: true});
     //save presets
@@ -105,12 +105,12 @@ export default class Step4 extends MapHubsComponent<Props, State> {
 	render() {
 
     //hide if not active
-    var className = classNames('container');
+    let className = classNames('container');
     if(!this.props.active) {
       className = classNames('container', 'hidden');
     }
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">
@@ -118,7 +118,7 @@ export default class Step4 extends MapHubsComponent<Props, State> {
         </div>
       );
     }
-    var presetEditor = '';
+    let presetEditor = '';
     if(!this.state.is_external){
       presetEditor = (
         <div>

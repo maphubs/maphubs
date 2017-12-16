@@ -1,7 +1,7 @@
 //@flow
-var $ = require('jquery');
+const $ = require('jquery');
 import _debounce from 'lodash.debounce';
-var debug = require('../../../services/debug')('MapInteractionMixin');
+const debug = require('../../../services/debug')('MapInteractionMixin');
 import BaseMapActions from '../../../actions/map/BaseMapActions';
 import MapStyles from '../Styles';
 import type {GLStyle} from '../../../types/mapbox-gl-style';
@@ -12,7 +12,7 @@ module.exports = {
   setSelectionFilter(features: Array<Object>){
     if(this.glStyle){
       this.glStyle.layers.forEach((layer) => {
-        var filter = ['in', "mhid"];
+        const filter = ['in', "mhid"];
         features.forEach((feature) => {
           filter.push(feature.properties.mhid);
         });
@@ -54,7 +54,7 @@ module.exports = {
   },
 
   getInteractiveLayers(glStyle: GLStyle){
-    var interactiveLayers = [];
+    const interactiveLayers = [];
     if(glStyle){
       glStyle.layers.forEach((layer) => {
         if(layer.metadata && layer.metadata['maphubs:interactive'] &&
@@ -69,7 +69,7 @@ module.exports = {
   },
 
   clickHandler(e: any){
-    var map = this.map;
+    const map = this.map;
 
     if(this.state.enableMeasurementTools){
       return;
@@ -81,7 +81,7 @@ module.exports = {
       }else{
         $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
 
-        var features = map.queryRenderedFeatures(
+        const features = map.queryRenderedFeatures(
           [
             [e.point.x - this.props.interactionBufferSize / 2, e.point.y - this.props.interactionBufferSize / 2],
             [e.point.x + this.props.interactionBufferSize / 2, e.point.y + this.props.interactionBufferSize / 2]
@@ -92,7 +92,7 @@ module.exports = {
             this.clearSelection();
           }
 
-           var feature = features[0];
+           const feature = features[0];
            //find presets and add to props
            if(feature.layer && feature.layer.source){
              let presets = MapStyles.settings.getSourceSetting(this.glStyle, feature.layer.source, 'presets');
@@ -151,21 +151,21 @@ module.exports = {
 
   //fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
  mousemoveHandler(e: any){
-    var map = this.map;
-    var _this = this;
+    const map = this.map;
+    const _this = this;
    
     if(_this.state.enableMeasurementTools){
       return;
     }
     else{
-      var debounced = _debounce(() => {
+      const debounced = _debounce(() => {
         if(_this.state.mapLoaded && _this.state.restoreBounds){
           debug.log('(' + _this.state.id + ') ' +"clearing restoreBounds");
           _this.setState({restoreBounds:null});
           //stop restoring map possition after user has moved the map
         }
 
-        var features = map.queryRenderedFeatures(
+        const features = map.queryRenderedFeatures(
           [
             [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
             [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]

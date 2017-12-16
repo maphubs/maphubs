@@ -41,7 +41,7 @@ export default class GroupList extends MapHubsComponent<Props, void> {
       <ul className={className}>
         {title}
         {this.props.groups.map((group, i) => {
-          let groupName = this._o_(group.name);
+          const groupName = this._o_(group.name);
           return (
             <li className="collection-item" key={group.group_id}>
               <div>{groupName}                

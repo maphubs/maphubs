@@ -36,7 +36,7 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
   }
 
   saveEdits = (cb: Function) => {
-    var _this = this;
+    const _this = this;
     this.setState({saving: true});
     DataEditorActions.saveEdits(this.state._csrf, (err) => {
       _this.setState({saving: false});
@@ -52,7 +52,7 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
   }
 
   stopEditing = () => {
-     var _this = this;
+     const _this = this;
      if(this.state.edits.length > 0){
       ConfirmationActions.showConfirmation({
         title: _this.__('Unsaved Edits'),

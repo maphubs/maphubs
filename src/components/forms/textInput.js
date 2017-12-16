@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 import {withFormsy} from 'formsy-react';
-var classNames = require('classnames');
-var $ = require('jquery');
+const classNames = require('classnames');
+const $ = require('jquery');
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 
@@ -69,7 +69,7 @@ class TextInput extends MapHubsComponent<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if(this.props.value !== nextProps.value){
-      var charCount = 0;
+      let charCount = 0;
       if(nextProps.value){
         charCount = nextProps.value.length;
         this.setState({
@@ -135,7 +135,7 @@ class TextInput extends MapHubsComponent<Props, State> {
     const value = this.props.getValue();
     const errorMessage = this.props.getErrorMessage();
 
-    var className, inputClassName = '';
+    let className, inputClassName = '';
     if(this.props.useMaterialize){
       className = classNames('input-field', this.props.className);
       inputClassName = classNames(
@@ -149,25 +149,25 @@ class TextInput extends MapHubsComponent<Props, State> {
       className = classNames(this.props.className);
     }
 
-   var icon = '';
+   let icon = '';
    if(this.props.icon){
       icon = (<i className="material-icons prefix">{this.props.icon}</i>);
    }
-   var countColor = 'black';
+   let countColor = 'black';
    if(this.state.charCount > this.props.length) countColor = 'red';
 
-   var labelClassName = '';
+   let labelClassName = '';
    if(value && value !== ''){
      labelClassName = 'active';
    }
 
-   var id = '';
+   let id = '';
    if(this.props.id){
      id = this.props.id;
    }else {
      id = this.props.name;
    }
-   var charCount = '';
+   let charCount = '';
    if(this.props.showCharCount){
      charCount = (
        <span className="character-counter"

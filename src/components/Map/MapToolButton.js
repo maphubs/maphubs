@@ -1,5 +1,5 @@
 import React from 'react';
-var $ = require('jquery');
+const $ = require('jquery');
 
 type Props = {|
   icon: string,
@@ -58,8 +58,8 @@ export default class MapToolButton extends React.PureComponent<DefaultProps, Pro
 
   render(){
     if(this.props.show){
-      var backgroundColor = 'white';
-      var color = this.props.color;
+      let backgroundColor = 'white';
+      let color = this.props.color;
       if(this.props.disabled){
         backgroundColor = '#DFDFDF';
         color = "#9F9F9F";

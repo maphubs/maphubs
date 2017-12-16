@@ -1,9 +1,9 @@
 // @flow
-var User = require('../../models/user');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
+const User = require('../../models/user');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
 
-var csrfProtection = require('csurf')({cookie: false});
+const csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
@@ -13,7 +13,7 @@ module.exports = function(app: any) {
       return res.redirect('/login');
     }
 
-    var user = {
+    const user = {
       username: req.session.user._json.username,
       email: req.session.user._json.email,
       picture: req.session.user._json.picture
@@ -26,10 +26,10 @@ module.exports = function(app: any) {
       apiDataError(res);
       return;
     }
-    var q = req.query.q;
+    const q = req.query.q;
     User.getSearchSuggestions(q)
       .then((result) => {
-        var suggestions = [];
+        const suggestions = [];
         result.forEach((user) => {
           suggestions.push({key: user.id, value:user.display_name});
         });

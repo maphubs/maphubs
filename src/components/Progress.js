@@ -42,7 +42,7 @@ export default class Progress extends React.Component {
 
   render(){
 
-    var subTitle = '';
+    let subTitle = '';
     if(this.props.subTitle){
       subTitle = (
         <div className="row">

@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
-var $ = require('jquery');
-var classNames = require('classnames');
+const $ = require('jquery');
+const classNames = require('classnames');
 import slugify from 'slugify';
 
 import Header from '../components/header';
@@ -10,7 +10,7 @@ import Step2 from '../components/CreateLayer/Step2';
 import Step5 from '../components/CreateLayer/Step5';
 
 import debugFactory from '../services/debug';
-let debug = debugFactory('CreateLayer');
+const debug = debugFactory('CreateLayer');
 
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
@@ -64,7 +64,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 	}
 
   componentDidMount(){
-    var _this = this;
+    const _this = this;
 
     window.onunload = function(){
       if(_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete){
@@ -124,25 +124,25 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       );
     }
 
-    var stepText = this.__('Step') + ' ' + this.state.step;
-    var progressWidth = '';
+    const stepText = this.__('Step') + ' ' + this.state.step;
+    let progressWidth = '';
 
-    var progressClassName = classNames('determinate', progressWidth);
-    var step1 = '';
+    const progressClassName = classNames('determinate', progressWidth);
+    let step1 = '';
     if(this.state.step === 1){
       progressWidth = 'width-25';
       step1 = (
         <Step1 onSubmit={this.nextStep} mapConfig={this.props.mapConfig}/>
       );
     }
-    var step2 = '';
+    let step2 = '';
     if(this.state.step === 2){
        progressWidth = 'width-50';
       step2 = (
         <Step2  groups={this.props.groups} showPrev={true} onPrev={this.prevStep} onSubmit={this.nextStep} />
       );
     }
-    var step3 = '';
+    let step3 = '';
     if(this.state.step === 3){
        progressWidth = 'width-75';
       step3 = (

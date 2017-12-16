@@ -3,7 +3,7 @@ import React from 'react';
 import TextArea from './textArea';
 import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
-var $ = require('jquery');
+const $ = require('jquery');
 
 type Props = {
   id: string,
@@ -105,7 +105,7 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
 
 render(){
 
-  let commonProps = {
+  const commonProps = {
     length: this.props.length,
     showCharCount: this.props.showCharCount,
     dataPosition: this.props.dataPosition,
@@ -116,7 +116,7 @@ render(){
     successText: this.props.successText
   };
 
-   var id = '';
+   let id = '';
    if(this.props.id){
      id = this.props.id;
    }else {

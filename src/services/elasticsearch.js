@@ -1,8 +1,8 @@
 //@flow
-var elasticsearch = require('elasticsearch');
-var local = require('../local');
-var log = require('../services/log');
-var Bluebird = require('bluebird');
+const elasticsearch = require('elasticsearch');
+const local = require('../local');
+const log = require('../services/log');
+const Bluebird = require('bluebird');
 
 /**
  * Singleton wrapper around Elasticsearch client object
@@ -12,10 +12,10 @@ module.exports = {
   
   getClient(){
     if(!this.client){
-      var host: string = local.elasticSearchHost ? local.elasticSearchHost : 'localhost';
-      var port: string = local.elasticSearchPort ? local.elasticSearchPort : '9200';
-      var user: string = local.elasticSearchUser ? local.elasticSearchUser : 'elastic';
-      var pass: string = local.elasticSearchPass ? local.elasticSearchPass : 'changeme';
+      const host: string = local.elasticSearchHost ? local.elasticSearchHost : 'localhost';
+      const port: string = local.elasticSearchPort ? local.elasticSearchPort : '9200';
+      const user: string = local.elasticSearchUser ? local.elasticSearchUser : 'elastic';
+      const pass: string = local.elasticSearchPass ? local.elasticSearchPass : 'changeme';
       this.client = new elasticsearch.Client({
         apiVersion: '5.5',
         host: host + ':' + port,

@@ -1,13 +1,13 @@
 // @flow
-var knex = require('../connection.js');
-var Promise = require('bluebird');
-var Group = require('./group');
-var debug = require ('../services/debug')('model/story');
+const knex = require('../connection.js');
+const Promise = require('bluebird');
+const Group = require('./group');
+const debug = require ('../services/debug')('model/story');
 
 module.exports = {
 
   getAllStories(trx: any) {
-    let db = trx ? trx : knex;
+    const db = trx ? trx : knex;
     return db.select(
       'omh.stories.story_id', 'omh.stories.title',
         'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
@@ -108,7 +108,7 @@ module.exports = {
 
     getHubStoryById(story_id: number) {
       debug.log('get hub story: ' + story_id);
-      var query = knex.select(
+      const query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.body', 'omh.stories.language',
          'omh.stories.firstline',  'omh.stories.firstimage',
@@ -128,7 +128,7 @@ module.exports = {
 
     getUserStories(user_id: number, includeDrafts: boolean = false) {
       debug.log('get stories for user: ' + user_id);
-      var query = knex.select(
+      const query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
          'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
@@ -155,7 +155,7 @@ module.exports = {
 
     getUserStoryById(story_id: number) {
       debug.log('get user story: ' + story_id);
-      var query = knex.select(
+      const query = knex.select(
         'omh.stories.story_id', 'omh.stories.title',
          'omh.stories.body', 'omh.stories.language',
          'omh.stories.firstline',  'omh.stories.firstimage',
@@ -185,7 +185,7 @@ module.exports = {
     },
 
     publishStory(story_id: number, trx: any=null) {
-      let db = trx ? trx : knex;
+      const db = trx ? trx : knex;
       return db('omh.stories')
         .where('story_id', story_id)
         .update({
@@ -238,7 +238,7 @@ module.exports = {
   
       if(hubStories && hubStories.length > 0){
         //check if user is allow to modify the hub
-        var hub_id = hubStories[0].hub_id;
+        const hub_id = hubStories[0].hub_id;
         debug.log('found a hub story in hub: '+ hub_id);
         return this.allowedToModifyHub(hub_id, user_id);
       }else if(userStories && userStories.length > 0){

@@ -46,8 +46,8 @@ export default class CardFilter extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var activeClass = 'omh-accent-text';
-    var featuredClass = '', popularClass= '', recentClass = '';
+    const activeClass = 'omh-accent-text';
+    let featuredClass = '', popularClass= '', recentClass = '';
     if(this.state.value === 'featured'){
       featuredClass = activeClass;
     }else if(this.state.value === 'popular'){

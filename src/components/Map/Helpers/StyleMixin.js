@@ -17,8 +17,8 @@ import LayerSources from '../Sources';
    * @param {*} glStyle 
    */
   function optimizeLayerOrder(glStyle: Object){
-    var regularLayers = [];
-    var labelLayers = [];
+    const regularLayers = [];
+    const labelLayers = [];
     glStyle.layers.forEach(layer=>{
       if(layer.type === 'symbol'){
         labelLayers.push(layer);
@@ -36,7 +36,7 @@ module.exports = {
     style = _cloneDeep(style);
     if(this.overlayMapStyle){
       //need to update in place to avoid redrawing overlay layers
-      let sourcesToAdd = Object.keys(style.sources);
+      const sourcesToAdd = Object.keys(style.sources);
       const layersToAdd = style.layers;
 
       if(this.baseMapStyle){
@@ -51,7 +51,7 @@ module.exports = {
       });
 
       //FIXME: this will reset layers showing below base map labels
-      let updatedLayers = layersToAdd.concat(this.glStyle.layers);
+      const updatedLayers = layersToAdd.concat(this.glStyle.layers);
       this.glStyle.layers = updatedLayers;
     }else{
       //we can just overwrite the base map and let mapbox-gl do the diff
@@ -76,7 +76,7 @@ module.exports = {
    * This is inefficient, use updateLayer when possible
    */
   async reloadStyle(){
-    var _this = this;
+    const _this = this;
     //start with a fresh copy of the base map
     this.glStyle = _cloneDeep(this.baseMapStyle);
 
@@ -95,14 +95,14 @@ module.exports = {
     const sourceKeys = Object.keys(this.overlayMapStyle.sources); 
     this.removeLayers(layerIds, this.overlayMapStyle);      
     this.removeSources(sourceKeys, this.overlayMapStyle);
-    let customSources = await this.loadSources(sourceKeys, this.overlayMapStyle);
-    let customSourceLayers = this.addLayers(layerIdsWithPosition, this.overlayMapStyle);
+    const customSources = await this.loadSources(sourceKeys, this.overlayMapStyle);
+    const customSourceLayers = this.addLayers(layerIdsWithPosition, this.overlayMapStyle);
 
     if(this.map){
       try{
-        var map = this.map;
+        const map = this.map;
         
-        var customSourceRender = function(){
+        const customSourceRender = () => {
           if(customSources){
             customSources.forEach(customSource =>{
               customSource.driver.load(customSource.key, customSource.source, _this);
@@ -125,7 +125,7 @@ module.exports = {
   },
 
   async setOverlayStyle(overlayStyle: Object, optimizeLayers: boolean){
-    var _this = this;
+    const _this = this;
     overlayStyle = _cloneDeep(overlayStyle);
 
     if(optimizeLayers){
@@ -143,7 +143,7 @@ module.exports = {
       const layersToAdd = _difference(newLayerIds, prevLayerIds);
 
       
-      let layersToAddWithPosition = [];
+      const layersToAddWithPosition = [];
       overlayStyle.layers.forEach((layer, i)=>{
         if(layersToAdd.includes(layer.id)){
           layersToAddWithPosition.push({
@@ -162,10 +162,10 @@ module.exports = {
 
       //find sources to update
       const sourcesInBoth = _intersection(prevSources, newSources);
-      let sourcesToUpdate = [];
+      const sourcesToUpdate = [];
       sourcesInBoth.forEach((key)=>{
-        let prevSource = this.overlayMapStyle.sources[key];
-        let newSource = overlayStyle.sources[key];
+        const prevSource = this.overlayMapStyle.sources[key];
+        const newSource = overlayStyle.sources[key];
         if(!_isequal(prevSource, newSource) || newSource.type === 'arcgisraster'){
           sourcesToUpdate.push(key);
         }
@@ -173,22 +173,22 @@ module.exports = {
 
       //find layers to update
       const layersInBoth = _intersection(prevLayerIds, newLayerIds);
-      let layersToUpdate = [];
+      const layersToUpdate = [];
       layersInBoth.forEach((id)=>{
-        let prevLayer = _find(this.overlayMapStyle.layers, {id});
-        let newLayer = _find(overlayStyle.layers, {id});
-        let source = overlayStyle.sources[newLayer.source];
+        const prevLayer = _find(this.overlayMapStyle.layers, {id});
+        const newLayer = _find(overlayStyle.layers, {id});
+        const source = overlayStyle.sources[newLayer.source];
         if(!_isequal(prevLayer, newLayer) || source.type === 'arcgisraster'){
           layersToUpdate.push(id);
         }
-        let prevLayerPosition = _findIndex(this.overlayMapStyle.layers, {id});
-        let newLayerPosition = _findIndex(overlayStyle.layers, {id});
+        const prevLayerPosition = _findIndex(this.overlayMapStyle.layers, {id});
+        const newLayerPosition = _findIndex(overlayStyle.layers, {id});
         if(prevLayerPosition !== newLayerPosition){
           layersToUpdate.push(id);
         }
       });
 
-      let layersToUpdateWithPosition = [];
+      const layersToUpdateWithPosition = [];
       overlayStyle.layers.forEach((layer, i)=>{
         if(layersToUpdate.includes(layer.id)){
           layersToUpdateWithPosition.push({
@@ -216,7 +216,7 @@ module.exports = {
       //run updates
       this.removeLayers(layersToUpdate, this.overlayMapStyle);      
       this.removeSources(sourcesToUpdate, this.overlayMapStyle);
-      let customSourcesToUpdate = await this.loadSources(sourcesToUpdate, overlayStyle);
+      const customSourcesToUpdate = await this.loadSources(sourcesToUpdate, overlayStyle);
       customSources = customSources.concat(customSourcesToUpdate);
       customSourceLayers = customSourceLayers.concat(this.addLayers(layersToUpdateWithPosition, overlayStyle));
 
@@ -255,9 +255,9 @@ module.exports = {
     this.overlayMapStyle = overlayStyle;
     if(this.map){
       try{
-        var map = this.map;
+        const map = this.map;
         
-        var customSourceRender = function(){
+        const customSourceRender = () => {
           _this.debugLog('customSourceRender');
           if(customSources){
             customSources.forEach(customSource =>{
@@ -288,8 +288,8 @@ module.exports = {
   },
 
   async loadSources(sourceKeys: Array<string>, fromStyle: GLStyle){
-    var _this = this;
-    let customSources = [];
+    const _this = this;
+    const customSources = [];
     await Promise.map(sourceKeys, async (key) => {
       _this.debugLog(`loading source: ${key}`);
       const source = fromStyle.sources[key];
@@ -305,17 +305,17 @@ module.exports = {
   },
 
   removeSources(sourceKeys: Array<string>, fromStyle: GLStyle){
-    var _this = this;
+    const _this = this;
     sourceKeys.map((key)=>{
       _this.debugLog(`removing source: ${key}`);
-      var source = fromStyle.sources[key];
+      const source = fromStyle.sources[key];
       return LayerSources.getSource(key, source).driver.remove(key, _this);
     });
   },
 
   addLayers(layers: Array<{id: number, position: number}>, fromStyle: GLStyle){
-    var _this = this;
-    let customSourceLayers = [];
+    const _this = this;
+    const customSourceLayers = [];
     layers.forEach((layerToAdd) => {
       _this.debugLog(`adding layer: ${layerToAdd.id}`);
       try{
@@ -342,10 +342,10 @@ module.exports = {
   },
 
   removeLayers(layersIDs: Array<string>, fromStyle: GLStyle){
-    var _this = this;
+    const _this = this;
     layersIDs.map((id)=>{
       _this.debugLog(`removing layer: ${id}`);
-      let layer = _find(fromStyle.layers, {id});
+      const layer = _find(fromStyle.layers, {id});
       try{
         const source = fromStyle.sources[layer.source];
         LayerSources.getSource(layer.source, source).driver.removeLayer(layer, _this);
@@ -357,7 +357,7 @@ module.exports = {
   },
 
   addLayer(layer: GLLayer, position?: number){
-    let index = _findIndex(this.glStyle.layers, {id: layer.id});
+    const index = _findIndex(this.glStyle.layers, {id: layer.id});
     if(index >= 0){
       //replace existing layer
       this.glStyle.layers[index] = layer;
@@ -371,7 +371,7 @@ module.exports = {
   },
 
   addLayerBefore(layer: GLLayer, beforeLayer: string){
-    let index = _findIndex(this.glStyle.layers, {id: beforeLayer});
+    const index = _findIndex(this.glStyle.layers, {id: beforeLayer});
     if(index && index >=0){
       this.glStyle.layers.splice(index, 0, layer);
     }else{

@@ -1,6 +1,6 @@
-var Locales = require('../services/locales');
+const Locales = require('../services/locales');
 
-var LocaleMixin = {
+const LocaleMixin = {
   __(text){
     return Locales.getLocaleString(this.state.locale, text);
   },

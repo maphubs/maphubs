@@ -1,11 +1,10 @@
 // @flow
-var Promise = require('bluebird');
-var Map = require('../models/map');
-var nextError = require('./error-response').nextError;
-var urlUtil = require('../services/url-util');
-var debug = require('./debug')('map-utils');
-var Locales = require('../services/locales');
-var local = require('../local');
+const Map = require('../models/map');
+const nextError = require('./error-response').nextError;
+const urlUtil = require('../services/url-util');
+const debug = require('./debug')('map-utils');
+const Locales = require('../services/locales');
+const local = require('../local');
 
 module.exports = {
   async completeEmbedMapRequest(req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean){
@@ -33,13 +32,13 @@ module.exports = {
         return res.redirect('/notfound?path='+req.path);
       }else{
 
-        var title = 'Map';
-        var geoJSONUrl = req.query.geoJSON;
-        var markerColor = '#FF0000';
+        let title = 'Map';
+        const geoJSONUrl = req.query.geoJSON;
+        let markerColor = '#FF0000';
         if(req.query.color){
           markerColor = '#' + req.query.color;
         }
-        var overlayName = req.__('Locations');
+        let overlayName = req.__('Locations');
         if(req.query.overlayName){
           overlayName = req.query.overlayName;
         }
@@ -49,7 +48,7 @@ module.exports = {
         }
         title += ' - ' + MAPHUBS_CONFIG.productName;
         
-        var baseUrl = urlUtil.getBaseUrl();
+        const baseUrl = urlUtil.getBaseUrl();
         let imageUrl;
         if(shared && map.share_id){
           imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`;
@@ -98,12 +97,12 @@ module.exports = {
     if(!map){
       return res.redirect('/notfound?path='+req.path);
     }else{
-      var title = 'Map';
+      let title = 'Map';
       if(map.title){
         title = Locales.getLocaleStringObject(req.locale, map.title);
       }
       title += ' - ' + MAPHUBS_CONFIG.productName;
-      var baseUrl = urlUtil.getBaseUrl();
+      const baseUrl = urlUtil.getBaseUrl();
 
       let imageUrl;
       if(shared && map.share_id){

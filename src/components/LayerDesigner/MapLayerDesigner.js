@@ -64,7 +64,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   getSourceConfig = () => {
-    var sourceConfig = {
+    let sourceConfig = {
       type: 'vector'
     };
     if(this.props.layer.is_external){
@@ -74,12 +74,12 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   setRasterOpacity = (opacity: number) => {
-    var baseUrl = urlUtil.getBaseUrl();
-    let {layer_id, shortid} = this.props.layer;
-    var style; 
-    let elc = this.props.layer.external_layer_config;
+    const baseUrl = urlUtil.getBaseUrl();
+    const {layer_id, shortid} = this.props.layer;
+    let style; 
+    const elc = this.props.layer.external_layer_config;
     if(elc && elc.type === 'ags-mapserver-tiles'){
-      let url = elc.url? elc.url : '';
+      const url = elc.url? elc.url : '';
       style = MapStyles.raster.rasterStyleWithOpacity(layer_id, shortid, url + '?f=json', opacity, 'arcgisraster');
     }else if(elc && elc.type === 'multiraster'){
       style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, shortid, elc.layers, opacity, 'raster');
@@ -120,12 +120,12 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    let legendCode: string = (this.props.layer && this.props.layer.legend_html) ? this.props.layer.legend_html : '';
-    let style = (this.props.layer && this.props.layer.style) ? this.props.layer.style : undefined;
+    const legendCode: string = (this.props.layer && this.props.layer.legend_html) ? this.props.layer.legend_html : '';
+    const style = (this.props.layer && this.props.layer.style) ? this.props.layer.style : undefined;
 
-    let elc = this.props.layer.external_layer_config;
+    const elc = this.props.layer.external_layer_config;
   
-    var designer = '';
+    let designer = '';
     if(this.props.layer){
       if(this.props.layer.is_external && elc
         && (

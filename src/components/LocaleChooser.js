@@ -2,9 +2,9 @@
 import React from 'react';
 import MapHubsComponent from '../components/MapHubsComponent';
 import LocaleActions from '../actions/LocaleActions';
-var $ = require('jquery');
+const $ = require('jquery');
 import debugFactory from '../services/debug';
-let debug = debugFactory('MapHubsComponent');
+const debug = debugFactory('MapHubsComponent');
 
 type Props = {
   id: string
@@ -47,9 +47,9 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
 
   render() {
 
-    var _this = this;
+    const _this = this;
 
-    var options = {
+    const options = {
       'en':  {label: 'EN'},
       'fr': {label: 'FR'},
       'es': {label: 'ES'},

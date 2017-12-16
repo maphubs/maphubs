@@ -1,21 +1,21 @@
 // @flow
-var knex = require('../../connection.js');
-var Layer = require('../../models/layer');
-var LayerData = require('../../models/layer-data');
-var Group = require('../../models/group');
+const knex = require('../../connection.js');
+const Layer = require('../../models/layer');
+const LayerData = require('../../models/layer-data');
+const Group = require('../../models/group');
 //var log = require('../../services/log');
-var DataLoadUtils = require('../../services/data-load-utils');
-var debug = require('../../services/debug')('routes/layers');
-var layerViews = require('../../services/layer-views');
-var urlUtil = require('../../services/url-util');
+const DataLoadUtils = require('../../services/data-load-utils');
+const debug = require('../../services/debug')('routes/layers');
+const layerViews = require('../../services/layer-views');
+const urlUtil = require('../../services/url-util');
 
-var PhotoAttachment = require('../../models/photo-attachment');
+const PhotoAttachment = require('../../models/photo-attachment');
 //var Tag = require('../../models/tag');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var csrfProtection = require('csurf')({cookie: false});
-var isAuthenticated = require('../../services/auth-check');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const csrfProtection = require('csurf')({cookie: false});
+const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
@@ -58,7 +58,7 @@ module.exports = function(app: any) {
     const action = req.params.action;
     const data = req.body;
     if(data){
-      var actionData = [];
+      let actionData = [];
       switch(action){
         case 'createLayer':       
           actionData = [req.user_id];
@@ -178,7 +178,7 @@ app.post('/api/layer/deletedata/:id', csrfProtection, isAuthenticated, async (re
 
 app.post('/api/layer/presets/save', csrfProtection, isAuthenticated, (req, res) => {
 
-  var data = req.body;
+  const data = req.body;
   if(data && data.layer_id && data.presets && data.style && data.create !== undefined){
     knex.transaction(async (trx) => {
       if(await Layer.allowedToModify(data.layer_id, req.user_id, trx)){
@@ -241,7 +241,7 @@ app.post('/api/layer/addphotopoint', csrfProtection, isAuthenticated, async (req
     if (data && data.layer_id && data.geoJSON && data.image && data.imageInfo) {
       let geoJSON = data.geoJSON;
       if(data.geoJSON.type === 'FeatureCollection'){
-        let firstFeature = data.geoJSON.features[0];
+        const firstFeature = data.geoJSON.features[0];
         geoJSON = firstFeature;
       }
 

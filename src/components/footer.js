@@ -27,9 +27,9 @@ export default class Footer extends MapHubsComponent<Props, void> {
   }
 
   render() {
-    var _this = this;
+    const _this = this;
 
-    var m4eFooter = '';
+    let m4eFooter = '';
     if(this.props.showMapForEnvironmentMoabiLogo){
       m4eFooter = (
         <ul style={{marginTop: '0px'}}>
@@ -45,7 +45,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
    
     }
 
-    var copyright = '';
+    let copyright = '';
 
     if(this.props.copyrightText){
       copyright = (
@@ -57,7 +57,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       );
     }
 
-    var poweredByMapHubs = '';
+    let poweredByMapHubs = '';
     if(this.props.showPoweredByMapHubs){
       poweredByMapHubs = (
         <ul>
@@ -75,7 +75,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       );
     }
 
-    var contactUs = '';
+    let contactUs = '';
     if(this.props.showContactUs){
       contactUs = (
          <ul>
@@ -86,7 +86,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       );
     }
 
-    var linkSection = '';
+    let linkSection = '';
     if(this.props.links){
       linkSection = (
         <ul>

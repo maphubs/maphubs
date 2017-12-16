@@ -1,7 +1,7 @@
 //@flow
 import React from 'react';
 //var debug = require('../../services/debug')('CreateMap');
-var $ = require('jquery');
+const $ = require('jquery');
 import InteractiveMap from '../InteractiveMap';
 import  HubActions from '../../actions/HubActions';
 import  AddMapModal from '../Story/AddMapModal';
@@ -61,7 +61,7 @@ export default class HubMap extends MapHubsComponent<Props, void> {
 
     //TODO: if map is set, show the map, otherwise show instruction to set a map
 
-    var mapEditButton = '', selectMap = '';
+    let mapEditButton = '', selectMap = '';
     if(this.props.editing){
       selectMap = (
          <AddMapModal ref="addmap"

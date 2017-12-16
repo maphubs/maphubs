@@ -1,13 +1,13 @@
 // @flow
-var Layer = require('../../models/layer');
-var Group = require('../../models/group');
-var Hub = require('../../models/hub');
-var Map = require('../../models/map');
-var Page = require('../../models/page');
-var Story = require('../../models/story');
-var Promise = require('bluebird');
-var nextError = require('../../services/error-response').nextError;
-var csrfProtection = require('csurf')({cookie: false});
+const Layer = require('../../models/layer');
+const Group = require('../../models/group');
+const Hub = require('../../models/hub');
+const Map = require('../../models/map');
+const Page = require('../../models/page');
+const Story = require('../../models/story');
+const Promise = require('bluebird');
+const nextError = require('../../services/error-response').nextError;
+const csrfProtection = require('csurf')({cookie: false});
 
 module.exports = function(app: any) {
 
@@ -16,9 +16,9 @@ module.exports = function(app: any) {
     let useMailChimp = false;
 
     Page.getPageConfigs(['home']).then((pageConfigs: Object) => {
-      var pageConfig = pageConfigs['home'];
-      var dataRequests = [];
-      var dataRequestNames: Array<string> = [];
+      const pageConfig = pageConfigs['home'];
+      const dataRequests = [];
+      const dataRequestNames: Array<string> = [];
     //use page config to determine data requests
     if(pageConfig.components && Array.isArray(pageConfig.components) && pageConfig.components.length > 0){
       pageConfig.components.forEach((component: Object) => {
@@ -60,11 +60,11 @@ module.exports = function(app: any) {
     
     return Promise.all(dataRequests)
     .then((results) => {
-      var props = {pageConfig, _csrf: req.csrfToken()};
+      const props = {pageConfig, _csrf: req.csrfToken()};
       results.forEach((result, i) => {
         props[dataRequestNames[i]] = result;
       });
-      var title =  MAPHUBS_CONFIG.productName, description =  MAPHUBS_CONFIG.productName;
+      let title =  MAPHUBS_CONFIG.productName, description =  MAPHUBS_CONFIG.productName;
       if(pageConfig.title && pageConfig.title[req.locale]){
         title = pageConfig.title[req.locale];
       }else if(pageConfig.title && pageConfig.title.en){
@@ -109,23 +109,23 @@ module.exports = function(app: any) {
       Map.getRecentMaps(10),
       Story.getRecentStories(10)
     ]).then((results) => {
-      var featuredLayers = results[0];
-      var featuredGroups = results[1];
-      var featuredHubs = results[2];
-      var featuredMaps = results[3];
-      var featuredStories = results[4];
+      const featuredLayers = results[0];
+      const featuredGroups = results[1];
+      const featuredHubs = results[2];
+      const featuredMaps = results[3];
+      const featuredStories = results[4];
 
-      var popularLayers = results[5];
-      var popularGroups = results[6];
-      var popularHubs = results[7];
-      var popularMaps = results[8];
-      var popularStories = results[9];
+      const popularLayers = results[5];
+      const popularGroups = results[6];
+      const popularHubs = results[7];
+      const popularMaps = results[8];
+      const popularStories = results[9];
 
-      var recentLayers = results[10];
-      var recentGroups = results[11];
-      var recentHubs = results[12];
-      var recentMaps = results[13];
-      var recentStories = results[14];
+      const recentLayers = results[10];
+      const recentGroups = results[11];
+      const recentHubs = results[12];
+      const recentMaps = results[13];
+      const recentStories = results[14];
       return res.render('explore', {
         title: req.__('Explore') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {

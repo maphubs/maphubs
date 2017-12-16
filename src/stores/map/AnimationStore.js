@@ -1,6 +1,6 @@
 import Reflux from 'reflux';
 import Actions from '../../actions/map/AnimationActions';
-var debug = require('../../services/debug')('stores/AnimationStore');
+const debug = require('../../services/debug')('stores/AnimationStore');
 
 /**
  * A store to hold marker objects so we can update them later
@@ -27,7 +27,7 @@ export default class AnimationStore extends Reflux.Store {
 
   play(){
     debug.log('play');
-    var _this = this;
+    const _this = this;
     if(this.state.playing){
       //already playing
        debug.log('already playing');
@@ -38,7 +38,7 @@ export default class AnimationStore extends Reflux.Store {
   }
 
   runTick(){
-    var _this = this;
+    const _this = this;
     if(this.state.playing){
       debug.log('tick: ' + _this.state.currentVal);
       Actions.tick(_this.state.currentVal);

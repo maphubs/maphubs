@@ -1,8 +1,8 @@
 //@flow
 import Reflux from 'reflux';
 import Actions from '../actions/NotificationActions';
-var debug = require('../services/debug')('stores/notification-store');
-var $ = require('jquery');
+const debug = require('../services/debug')('stores/notification-store');
+const $ = require('jquery');
 
 export type NotificationStoreState = {
   isActive: boolean,
@@ -52,7 +52,7 @@ export default class NotificationStore extends Reflux.Store {
   //listeners
   showNotification(options: NotificationStoreState) {
     if (options) {
-      var updatedState = $.extend(this.getDefaultState(), options);
+      const updatedState = $.extend(this.getDefaultState(), options);
       this.setState(updatedState);
       this.setState({
         isActive: true

@@ -1,9 +1,9 @@
-var Map = require('../models/map');
-var log = require('./log');
-var nextError = require('./error-response').nextError;
-var apiDataError = require('./error-response').apiDataError;
-var Promise = require('bluebird');
-var check = async function(map_id, user_id){
+const Map = require('../models/map');
+const log = require('./log');
+const nextError = require('./error-response').nextError;
+const apiDataError = require('./error-response').apiDataError;
+const Promise = require('bluebird');
+const check = async function(map_id, user_id){
 
   if(await Map.isPrivate(map_id)){
     if(user_id <= 0){
@@ -17,13 +17,13 @@ var check = async function(map_id, user_id){
 
 };
 
-var middleware = function(view) {
+const middleware = function(view) {
   return function(req, res, next){
-    var user_id = -1;
+    let user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }
-    var map_id;
+    let map_id;
     if(req.params.map_id){
       map_id = parseInt(req.params.map_id || '', 10);
     }else if(req.body.map_id){

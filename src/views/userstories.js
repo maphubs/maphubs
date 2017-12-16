@@ -36,9 +36,9 @@ export default class UserStories extends MapHubsComponent<Props, void> {
   }
 
 	render() {
-    var _this = this;
+    const _this = this;
 
-    var button = '';
+    let button = '';
     if(this.props.myStories){
       button=(
         <div>
@@ -51,7 +51,7 @@ export default class UserStories extends MapHubsComponent<Props, void> {
       );
     }
 
-    var emptyMessage = '';
+    let emptyMessage = '';
     if(!this.props.stories || this.props.stories.length === 0){
       emptyMessage = (
         <div className="row" style={{height: 'calc(100% - 100px)'}}>

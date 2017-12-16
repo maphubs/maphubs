@@ -3,7 +3,7 @@ import React from 'react';
 import Formsy from 'formsy-react';
 import FormField from './FormField';
 import MapHubsComponent from '../MapHubsComponent';
-var Locales = require('../../services/locales');
+const Locales = require('../../services/locales');
 
 type Props = {|
   presets: Array<Object>,
@@ -37,7 +37,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
 
   constructor(props: Props){
     super(props);
-    var submitText = '';
+    let submitText = '';
     if(this.props.submitText){
       submitText = this.props.submitText;
     }else if(this.state && this.state.locale){
@@ -71,9 +71,9 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
   }
 
   render() {
-    var _this = this;
+    const _this = this;
 
-    var submit = '';
+    let submit = '';
     if(this.props.showSubmit){
 
       submit = (
@@ -90,7 +90,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
         onValid={this.onValid} onInvalid={this.onInValid}>
         {
           this.props.presets.map((preset) => {
-            var value;
+            let value;
             if(_this.props.values && _this.props.values[preset.tag]){
               value = _this.props.values[preset.tag];
             }

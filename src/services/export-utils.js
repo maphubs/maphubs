@@ -1,19 +1,19 @@
 //@flow
-var Layer = require('../models/layer');
-var geobuf = require('geobuf');
-var Pbf = require('pbf');
-var apiError = require('../services/error-response').apiError;
-var version = require('../../package.json').version;
-var local = require('../local');
-var moment = require('moment');
+const Layer = require('../models/layer');
+const geobuf = require('geobuf');
+const Pbf = require('pbf');
+const apiError = require('../services/error-response').apiError;
+const version = require('../../package.json').version;
+const local = require('../local');
+const moment = require('moment');
 
 module.exports = {
 
   completeGeoBufExport(req: any, res: any, layer_id: number){
     Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      var resultStr = JSON.stringify(geoJSON);
-      var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-      var match = req.get('If-None-Match');
+      const resultStr = JSON.stringify(geoJSON);
+      const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+      const match = req.get('If-None-Match');
        /*eslint-disable security/detect-possible-timing-attacks */
       if(hash === match){
         return res.status(304).send();
@@ -23,8 +23,8 @@ module.exports = {
           'ETag': hash
         });
 
-        let data = geobuf.encode(geoJSON, new Pbf());
-        var buf = Buffer.from(data, 'binary');
+        const data = geobuf.encode(geoJSON, new Pbf());
+        const buf = Buffer.from(data, 'binary');
         return res.end(buf, 'binary');
       }
     }).catch(apiError(res, 200));
@@ -41,9 +41,9 @@ module.exports = {
           host: local.host,
           layer
         };
-        var resultStr = JSON.stringify(geoJSON);
-        var hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
-        var match = req.get('If-None-Match');
+        const resultStr = JSON.stringify(geoJSON);
+        const hash = require('crypto').createHash('md5').update(resultStr).digest("hex");
+        const match = req.get('If-None-Match');
          /*eslint-disable security/detect-possible-timing-attacks */
         if(hash === match){
           return res.status(304).send();
@@ -53,8 +53,8 @@ module.exports = {
             'ETag': hash
           });
   
-          let data = geobuf.encode(geoJSON, new Pbf());
-          var buf = Buffer.from(data, 'binary');
+          const data = geobuf.encode(geoJSON, new Pbf());
+          const buf = Buffer.from(data, 'binary');
           return res.end(buf, 'binary');
         }
       });

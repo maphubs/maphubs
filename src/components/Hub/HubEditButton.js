@@ -38,7 +38,7 @@ export default class HubEditButton extends MapHubsComponent<Props, State> {
   }
 
   render(){
-    var button = '';
+    let button = '';
     if(this.props.editing){
       button = (
           <a onClick={this.props.stopEditing} className="btn-floating btn-large omh-accent-text">

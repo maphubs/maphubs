@@ -1,8 +1,8 @@
 //@flow
 import React from 'react';
 
-var $ = require('jquery');
-var urlUtil = require('../../services/url-util');
+const $ = require('jquery');
+const urlUtil = require('../../services/url-util');
 import UserMenu from '../UserMenu';
 import LocaleChooser from '../LocaleChooser';
 import NotificationActions from '../../actions/NotificationActions';
@@ -27,7 +27,7 @@ export default class HubHav extends MapHubsPureComponent {
   }
 
   deleteHub = () => {
-    var _this = this;
+    const _this = this;
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm Hub Deletion'),
       message: this.__('Please confirm that you want to delete this hub and all of its stories.'),
@@ -50,11 +50,11 @@ export default class HubHav extends MapHubsPureComponent {
   }
 
   render(){
-    var omhBaseUrl = urlUtil.getBaseUrl();
+    const omhBaseUrl = urlUtil.getBaseUrl();
 
-    var hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
+    const hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/';
 
-    var deleteButton = '';
+    let deleteButton = '';
     if(this.props.canEdit){
       deleteButton = (
         <li className="nav-link-wrapper"><a href="#" onClick={this.deleteHub}>{this.__('Delete Hub')}</a></li>

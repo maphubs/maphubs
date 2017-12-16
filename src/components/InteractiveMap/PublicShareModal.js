@@ -4,8 +4,8 @@ import {Modal, ModalContent} from '../Modal/Modal.js';
 import MapHubsComponent from '../MapHubsComponent';
 import Toggle from '../forms/toggle';
 import ConfirmationActions from '../../actions/ConfirmationActions';
-var urlUtil = require('../../services/url-util');
-var clipboard;
+const urlUtil = require('../../services/url-util');
+let clipboard;
 if(process.env.APP_ENV === 'browser'){
  clipboard = require('clipboard-polyfill');
 }
@@ -51,7 +51,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
   }
 
   onChange = (model: Object) => {
-    var _this = this;
+    const _this = this;
      if(model.public){
         ConfirmationActions.showConfirmation({
           title: this.__('Share Map'),
@@ -78,7 +78,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
   render(){
     let shareLink = '', shareMessage = '';
     if(this.props.share_id && this.state.sharing){
-       let shareUrl = urlUtil.getBaseUrl() + `/map/share/${this.props.share_id}`;
+       const shareUrl = urlUtil.getBaseUrl() + `/map/share/${this.props.share_id}`;
       shareLink = (
         <div>
         <p style={{fontSize: '16px'}}><b>{this.__('Share Link: ')}</b>

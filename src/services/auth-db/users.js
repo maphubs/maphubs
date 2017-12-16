@@ -1,11 +1,11 @@
 //@flow
-var knex = require('../../connection.js');
-var log = require('../log.js');
-var debug = require('../debug')('oauth-db/users');
+const knex = require('../../connection.js');
+const log = require('../log.js');
+const debug = require('../debug')('oauth-db/users');
 
 function translateUserObject(data: Object) {
 
-  var user = {
+  const user = {
     id: data.id,
     display_name: data.display_name,
     pass_crypt: data.pass_crypt,

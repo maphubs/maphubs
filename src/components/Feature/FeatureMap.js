@@ -45,7 +45,7 @@ export default class FeatureLocation extends MapHubsComponent<Props, State> {
   onAlertClick = (alert: Object) => {
     //console.log(alert);
     const map = this.refs.map.map;
-    var geoJSONData = map.getSource("fr-glad-geojson");
+    const geoJSONData = map.getSource("fr-glad-geojson");
     const data = {
       type: 'FeatureCollection',
       features: alert.features
@@ -60,7 +60,7 @@ export default class FeatureLocation extends MapHubsComponent<Props, State> {
   getFRStyle = (gladGeoJSON: Object) => {
     const defaultColor = 'yellow';
     const gladColor = 'red';
-    var layers = [
+    const layers = [
       {
         "id": "fr-tree-cover-density",
         "type": "raster",
@@ -153,7 +153,7 @@ export default class FeatureLocation extends MapHubsComponent<Props, State> {
       },
     ];
 
-    let style = {
+    const style = {
       version: 8,
       sources: {
         "omh-feature-geojson": {
@@ -180,7 +180,7 @@ export default class FeatureLocation extends MapHubsComponent<Props, State> {
 
   getDataStyle = (geojson: Object) => {
     const defaultColor = 'red';
-    var layers = [
+    const layers = [
       {
         "id": `omh-data-point-feature-geojson`,
         "type": "circle",
@@ -237,7 +237,7 @@ export default class FeatureLocation extends MapHubsComponent<Props, State> {
       },
     ];
 
-    let style = {
+    const style = {
       version: 8,
       sources: {
         "omh-feature-geojson": {

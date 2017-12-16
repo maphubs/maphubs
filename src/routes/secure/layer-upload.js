@@ -1,29 +1,29 @@
 // @flow
-var Layer = require('../../models/layer');
-var multer  = require('multer');
-var log = require('../../services/log');
-var ogr2ogr = require('ogr2ogr');
-var shapefileFairy = require('../../services/shapefile-fairy');
-var DataLoadUtils = require('../../services/data-load-utils');
-var debug = require('../../services/debug')('routes/layers-upload');
-var local = require('../../local');
-var apiError = require('../../services/error-response').apiError;
-var apiDataError = require('../../services/error-response').apiDataError;
-var notAllowedError = require('../../services/error-response').notAllowedError;
-var Promise = require('bluebird');
+const Layer = require('../../models/layer');
+const multer  = require('multer');
+const log = require('../../services/log');
+const ogr2ogr = require('ogr2ogr');
+const shapefileFairy = require('../../services/shapefile-fairy');
+const DataLoadUtils = require('../../services/data-load-utils');
+const debug = require('../../services/debug')('routes/layers-upload');
+const local = require('../../local');
+const apiError = require('../../services/error-response').apiError;
+const apiDataError = require('../../services/error-response').apiDataError;
+const notAllowedError = require('../../services/error-response').notAllowedError;
+const Promise = require('bluebird');
 const Importers = require('../../services/importers');
-var csrfProtection = require('csurf')({cookie: false});
+const csrfProtection = require('csurf')({cookie: false});
 const isAuthenticated = require('../../services/auth-check');
 
 module.exports = function(app: any) {
 
   app.post('/api/layer/:id/upload', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
    async (req, res) => {
-     var layer_id = parseInt(req.params.id || '', 10);
+     const layer_id = parseInt(req.params.id || '', 10);
      try {
       const layer = await Layer.getLayerByID(layer_id);
       if(layer){
-        let shortid = layer.shortid;       
+        const shortid = layer.shortid;       
         if(layer.created_by_user_id === req.user_id){
           debug.log('Filename: ' +req.file.originalname);
           debug.log('Mimetype: ' +req.file.mimetype);
@@ -63,12 +63,12 @@ module.exports = function(app: any) {
           debug.log("finishing upload with file: " + path);
           const shapefileFairyResult = await shapefileFairy(path, {shapefileName: req.body.requestedShapefile});
           if(shapefileFairyResult){
-            var shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile;
+            const shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile;
 
-            var ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
+            const ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000);
             const geoJSON = await Promise.promisify(ogr.exec, {context: ogr})();
 
-            let result = await DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, shortid, true, true);
+            const result = await DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, shortid, true, true);
             return res.status(200).send(result);
           }else{
             return res.status(200).send({

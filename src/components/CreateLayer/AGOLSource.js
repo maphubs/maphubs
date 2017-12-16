@@ -61,8 +61,8 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
-    var _this = this;
-    var dataSettings = null;
+    const _this = this;
+    let dataSettings = null;
     if(model.mapServiceUrl){
       dataSettings = {
         is_external: true,
@@ -120,13 +120,13 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-    var agolOptions = [
+    const agolOptions = [
       {value: 'mapserverquery', label: this.__('Link to a MapServer Query Service')},
       {value: 'featureserverquery', label: this.__("Link to a FeatureServer Query Service")},
       {value: 'mapservertiles', label: this.__("Link to a MapServer Tile Service")}
     ];
 
-    var msqOption=false, fsqOption=false, tilesOption=false;
+    let msqOption=false, fsqOption=false, tilesOption=false;
     switch(this.state.selectedOption){
       case 'mapserverquery':
         msqOption = true;
@@ -141,7 +141,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       break;
     }
 
-    var msqForm = '';
+    let msqForm = '';
     if(msqOption){
       msqForm = (
         <div>
@@ -158,7 +158,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    var fsqForm = '';
+    let fsqForm = '';
     if(fsqOption){
       fsqForm = (
         <div>
@@ -175,7 +175,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    var tilesForm = '';
+    let tilesForm = '';
     if(tilesOption){
       tilesForm = (
         <div>
@@ -192,7 +192,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    var prevButton = '';
+    let prevButton = '';
     if(this.props.showPrev){
       prevButton = (
         <div className="left">

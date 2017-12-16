@@ -1,11 +1,11 @@
-var Layer = require('../../models/layer');
-var urlUtil = require('../../services/url-util');
+const Layer = require('../../models/layer');
+const urlUtil = require('../../services/url-util');
 import slugify from 'slugify';
-var apiError = require('../../services/error-response').apiError;
-var manetCheck = require('../../services/manet-check');
-var privateLayerCheck = require('../../services/private-layer-check').check;
-var Locales = require('../../services/locales');
-var local = require('../../local');
+const apiError = require('../../services/error-response').apiError;
+const manetCheck = require('../../services/manet-check');
+const privateLayerCheck = require('../../services/private-layer-check').check;
+const Locales = require('../../services/locales');
+const local = require('../../local');
 
 
 /*
@@ -14,15 +14,15 @@ Note: this needs to be in public-routes since it is used by the screenshot servi
 
 module.exports = function(app) {
 
-  let completeLayerTileJSONRequest = function(req, res, layer) {
+  const completeLayerTileJSONRequest = function(req, res, layer) {
     if(!layer){
       return res.status(404).send("TileJSON not supported for this layer");
     }
-    var baseUrl = urlUtil.getBaseUrl();
-    let name = Locales.getLocaleStringObject(req.locale, layer.name);
-      let description = Locales.getLocaleStringObject(req.locale, layer.description); 
-      let source = Locales.getLocaleStringObject(req.locale, layer.source);       
-      let legend = layer.legend_html ?  layer.legend_html : name;
+    const baseUrl = urlUtil.getBaseUrl();
+    const name = Locales.getLocaleStringObject(req.locale, layer.name);
+      const description = Locales.getLocaleStringObject(req.locale, layer.description); 
+      const source = Locales.getLocaleStringObject(req.locale, layer.source);       
+      const legend = layer.legend_html ?  layer.legend_html : name;
 
       if(layer.is_external && layer.external_layer_config.type === 'raster'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
@@ -31,15 +31,15 @@ module.exports = function(app) {
         }else if(layer.extent_bbox){
           bounds = layer.extent_bbox;
         } 
-        let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
-        let maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
+        const minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
+        const maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
 
-        let centerZoom = Math.floor((maxzoom - minzoom) / 2);
-        let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
-        let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
-        let legend = layer.legend_html ?  layer.legend_html : name;
+        const centerZoom = Math.floor((maxzoom - minzoom) / 2);
+        const centerX = Math.floor((bounds[2] - bounds[0]) / 2);
+        const centerY = Math.floor((bounds[3] - bounds[1]) / 2);
+        const legend = layer.legend_html ?  layer.legend_html : name;
 
-        let tileJSON = {
+        const tileJSON = {
           attribution: source,
           autoscale: true,
           bounds,
@@ -62,14 +62,14 @@ module.exports = function(app) {
       }else if(layer.is_external && layer.external_layer_config.type === 'vector'){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
-        let minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
-        let maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
+        const minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0;
+        const maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19;
 
-        let centerZoom = Math.floor((maxzoom - minzoom) / 2);
-        let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
-        let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
+        const centerZoom = Math.floor((maxzoom - minzoom) / 2);
+        const centerX = Math.floor((bounds[2] - bounds[0]) / 2);
+        const centerY = Math.floor((bounds[3] - bounds[1]) / 2);
 
-        let tileJSON = {
+        const tileJSON = {
           attribution: source,
           bounds,
           center: [centerX, centerY, centerZoom],
@@ -93,16 +93,16 @@ module.exports = function(app) {
       }else if(!layer.is_external){
         let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ];
         if(layer.extent_bbox) bounds = layer.extent_bbox;
-        let minzoom = 0;
-        let maxzoom = 19;
+        const minzoom = 0;
+        const maxzoom = 19;
 
-        let centerZoom = Math.floor((maxzoom - minzoom) / 2);
-        let centerX = Math.floor((bounds[2] - bounds[0]) / 2);
-        let centerY = Math.floor((bounds[3] - bounds[1]) / 2);
+        const centerZoom = Math.floor((maxzoom - minzoom) / 2);
+        const centerX = Math.floor((bounds[2] - bounds[0]) / 2);
+        const centerY = Math.floor((bounds[3] - bounds[1]) / 2);
 
-        let  uri = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/lyr/' + layer.shortid + '/{z}/{x}/{y}.pbf';
+        const  uri = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/lyr/' + layer.shortid + '/{z}/{x}/{y}.pbf';
 
-        let tileJSON = {
+        const tileJSON = {
           attribution: source,
           bounds,
           center: [centerX, centerY, centerZoom],
@@ -169,7 +169,7 @@ module.exports = function(app) {
     try{
       const shortid = req.params.shortid;
 
-      var user_id = -1;
+      let user_id = -1;
       if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
         user_id = req.session.user.maphubsUser.id;
       }

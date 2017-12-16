@@ -1,17 +1,17 @@
 //@flow
-var exportUtils = require('../../services/export-utils');
-var Layer = require('../../models/layer');
-var apiError = require('../../services/error-response').apiError;
-var privateLayerCheck = require('../../services/private-layer-check').check;
-var manetCheck = require('../../services/manet-check');
-var local = require('../../local');
+const exportUtils = require('../../services/export-utils');
+const Layer = require('../../models/layer');
+const apiError = require('../../services/error-response').apiError;
+const privateLayerCheck = require('../../services/private-layer-check').check;
+const manetCheck = require('../../services/manet-check');
+const local = require('../../local');
 
 module.exports = function(app: any) {
 
   app.get('/api/lyr/:shortid/export/json/*', (req, res) => {
       const shortid = req.params.shortid;
 
-      var user_id = -1;
+      let user_id = -1;
       if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
         user_id = req.session.user.maphubsUser.id;
       }
@@ -49,7 +49,7 @@ module.exports = function(app: any) {
   app.get('/api/lyr/:shortid/export/geobuf/*', (req, res) => {
     const shortid = req.params.shortid;
 
-    var user_id = -1;
+    let user_id = -1;
     if(req.isAuthenticated && req.isAuthenticated() && req.session.user){
       user_id = req.session.user.maphubsUser.id;
     }

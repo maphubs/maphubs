@@ -4,11 +4,11 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
-var cardUtil = require('../services/card-util');
-var debug = require('../services/debug')('views/maps');
-var urlUtil = require('../services/url-util');
+const cardUtil = require('../services/card-util');
+const debug = require('../services/debug')('views/maps');
+const urlUtil = require('../services/url-util');
 import request from 'superagent';
-var checkClientError = require('../services/client-error-response').checkClientError;
+const checkClientError = require('../services/client-error-response').checkClientError;
 import MessageActions from '../actions/MessageActions';
 import NotificationActions from '../actions/NotificationActions';
 import MapHubsComponent from '../components/MapHubsComponent';
@@ -46,7 +46,7 @@ export default class Maps extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
-    var _this = this;
+    const _this = this;
     debug.log('searching for: ' + input);
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
     .type('json').accept('json')
@@ -77,16 +77,16 @@ export default class Maps extends MapHubsComponent<Props, State> {
 
 	render() {
 
-    var featuredCards = this.props.featuredMaps.map(cardUtil.getMapCard);
-    var recentCards = this.props.recentMaps.map(cardUtil.getMapCard);
-    var popularCards = this.props.popularMaps.map(cardUtil.getMapCard);
+    const featuredCards = this.props.featuredMaps.map(cardUtil.getMapCard);
+    const recentCards = this.props.recentMaps.map(cardUtil.getMapCard);
+    const popularCards = this.props.popularMaps.map(cardUtil.getMapCard);
 
 
-    var searchResults = '';
+    let searchResults = '';
     if(this.state.searchActive){
       if(this.state.searchResults.length > 0){
 
-        var searchCards =   this.state.searchResults.map(cardUtil.getMapCard);
+        const searchCards =   this.state.searchResults.map(cardUtil.getMapCard);
 
         searchResults = (
           <CardCollection title={this.__('Search Results')} cards={searchCards} />
@@ -105,7 +105,7 @@ export default class Maps extends MapHubsComponent<Props, State> {
       }
     }
 
-    var featured = '';
+    let featured = '';
     if(!MAPHUBS_CONFIG.mapHubsPro && featuredCards && featuredCards.length > 0){
       featured = (
         <CardCollection title={this.__('Featured')} cards={featuredCards} viewAllLink="/maps/all" />
