@@ -107,13 +107,13 @@ export default class Login extends MapHubsComponent<Props, State> {
   render() {
     return (
       <ErrorBoundary>
-        <div className="row no-padding valign-wrapper z-depth-1">
-            <div className="center valign" style={{fontSize: '16px', paddingLeft: '10%', paddingRight: '10%'}}>
-              {this.__('We recently upgraded our login system. If you are unable to access your account please try to')} <a href="forgotpassword">{this.__('reset your password')}</a> {this.__('or contact us at')} <a href="mailto:support@maphubs.com">support@maphubs.com</a> 
+        <div className="row no-padding valign-wrapper z-depth-1" style={{height: '60px'}}>
+            <div className="center valign" style={{margin: 0, fontSize: '16px', paddingLeft: '10%', paddingRight: '10%'}}>
+              {this.__('If you are unable to access your account please try to')} <a href="forgotpassword">{this.__('reset your password')}</a> {this.__('or contact us at')} <a href="mailto:support@maphubs.com">support@maphubs.com</a> 
             </div>
          
           </div>
-         <div className="row no-margin" style={{height: 'calc(90% - 20px)'}}>
+         <div className="row no-margin" style={{height: 'calc(100% - 60px)', padding: '20px'}}>
           <div id="login-container"></div>         
          </div>      
       </ErrorBoundary>
