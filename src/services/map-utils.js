@@ -133,6 +133,7 @@ module.exports = {
              imageHeight: 630,
              imageType: 'image/png'
            },
+           cache: false,
            req
          }
        );

@@ -14,16 +14,16 @@
  2) Assumes that the client will load its data out of window.__appData and use the query selector id="app"
  */
 import React from 'react';
-var Page = require('../models/page');
+const Page = require('../models/page');
 import {renderToString} from "react-dom/server";
-var assign = require('object-assign');
-var log = require('./log');
-var version = require('../../package.json').version;
-var local = require('../local');
-var urlUtil = require('./url-util');
-var Raven = require('raven');
-var webpackAssets = require('../webpack-assets.json');
-var DEFAULT_OPTIONS = {
+const assign = require('object-assign');
+const log = require('./log');
+const version = require('../../package.json').version;
+const local = require('../local');
+const urlUtil = require('./url-util');
+const Raven = require('raven');
+const webpackAssets = require('../webpack-assets.json');
+const DEFAULT_OPTIONS = {
   doctype: '<!DOCTYPE html>'
 };
 
@@ -48,30 +48,30 @@ type ViewOptions = {
 }
 
 function createEngine(engineOptions) {
-  var registered = false;
-  var moduleDetectRegEx;
+  let registered = false;
+  let moduleDetectRegEx;
 
   engineOptions = assign({}, DEFAULT_OPTIONS, engineOptions || {});
 
   async function renderFile(filename: string, options: ViewOptions, cb: Function) {
-    var materialicons = options.materialicons ? options.materialicons : true;
+    const materialicons = options.materialicons ? options.materialicons : true;
     // Defer babel registration until the first request so we can grab the view path.
     if (!registered) {
       moduleDetectRegEx = new RegExp('^' + options.settings.views);
       registered = true;
     }
-      var markup: string = '';
+      let markup: string = '';
     try {
       markup = engineOptions.doctype;
-      var component = require(filename);
+      let component = require(filename);
       // Transpiled ES6 may export components as { default: Component }
       component = component.default || component;
 
       if(!options.props){
         options.props = {};
       }
-      var locale = 'en';
-      var req;
+      let locale = 'en';
+      let req;
       if(options.req){
         req = options.req;
         //var browserLocale = req.acceptsLanguages('en', 'fr', 'es', 'it');
@@ -108,16 +108,16 @@ function createEngine(engineOptions) {
       }
     }
 
-      var reactMarkup = renderToString(React.createElement(component, options.props));
+      const reactMarkup = renderToString(React.createElement(component, options.props));
 
       // assume that there is always client file with the same name as the view
-      var clientFileName = this.name;
-      var title: string = this.name;
+      const clientFileName = this.name;
+      let title: string = this.name;
       if(options.title){
         title = options.title;
       }
 
-      var getAssets = function(entryName){
+      const getAssets = function(entryName){
         if(process.env.NODE_ENV === 'production'){
           return webpackAssets[entryName];  
         }else{
@@ -128,7 +128,7 @@ function createEngine(engineOptions) {
         }
       };
 
-      var assetHost = '';
+      let assetHost = '';
      if(process.env.NODE_ENV === 'production' && !local.useLocalAssets){
       assetHost = 'https://cdn.maphubs.com';
      }
@@ -146,7 +146,7 @@ function createEngine(engineOptions) {
           `;
         }
 
-        var iconFolder = MAPHUBS_CONFIG.theme;
+        let iconFolder = MAPHUBS_CONFIG.theme;
         if(MAPHUBS_CONFIG.theme === 'maphubs-pro'){
           iconFolder = 'maphubs';
         }
@@ -182,7 +182,7 @@ function createEngine(engineOptions) {
         <meta name="msapplication-square310x310logo" content="${themeUrl}/mstile-310x310.png" />
         `;
 
-        var baseUrl = urlUtil.getBaseUrl();
+        const baseUrl = urlUtil.getBaseUrl();
         let reqUrl = '';
         if(req && req.url){
           reqUrl = req.url;
@@ -236,7 +236,7 @@ function createEngine(engineOptions) {
           if(options.twitterCard.description){
             markup += `<meta property="og:description" content="${options.twitterCard.description}" />`;
           }
-            var openGraphUrl = baseUrl + reqUrl;
+            const openGraphUrl = baseUrl + reqUrl;
             markup += `
             <meta property="og:type" content="website" />
             <meta property="og:url" content="${openGraphUrl}" />
@@ -270,7 +270,7 @@ function createEngine(engineOptions) {
         '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">';
 
         //some endpoints don't generate css
-        var cssFile = assetHost + getAssets(clientFileName).css;
+        const cssFile = assetHost + getAssets(clientFileName).css;
         if(cssFile){
           markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`;
         }
@@ -330,13 +330,13 @@ function createEngine(engineOptions) {
           //  username = req.session.user.display_name;
           }
 
-          var t = function(value){
-            var translation = req.__(value);
+          const t = function(value){
+            let translation = req.__(value);
             translation = translation.replace(/'/g ,'&#39;');
             return translation;
           };
 
-          var beaconTranslation = {
+          const beaconTranslation = {
             searchLabel: t('What can we help you with?'),
             searchErrorLabel: t('Your search timed out. Please double-check your internet connection and try again.'),
             noResultsLabel: t('No results found for'),
@@ -358,7 +358,7 @@ function createEngine(engineOptions) {
             contactSuccessDescription: t('Thanks for reaching out! Someone from our team will get back to you soon.')
           };
 
-          var beaconTranslationText = JSON.stringify(beaconTranslation);
+          const beaconTranslationText = JSON.stringify(beaconTranslation);
 
           markup += `
             <script>!function(e,o,n){

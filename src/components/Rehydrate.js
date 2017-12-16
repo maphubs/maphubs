@@ -2,7 +2,7 @@ import Reflux from 'reflux';
 
 Reflux.rehydrate = (str, data) => {
   let store = Reflux.initStore(str);
-  if(!store.hydrated){
+  if(!store.hydrated || typeof window === 'undefined'){ //always rehydrate during SSR
     store.setState(data);
     store.hydrated = true;
     return store;
