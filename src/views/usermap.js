@@ -50,10 +50,8 @@ type UserMapState = {
   width: number,
   height: number,
   downloading: boolean,
-  layers: Array<Object>,
   share_id?: string
 }
-
 
 
 type State = LocaleStoreState & UserStoreState & UserMapState
@@ -69,8 +67,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   state: State = {
     width: 1024,
     height: 600,
-    downloading: false,
-    layers: []
+    downloading: false
   }
 
   constructor(props: Props){
@@ -82,7 +79,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if(props.mapConfig && props.mapConfig.baseMapOptions){
        Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
     }
-    this.state.layers = props.layers;
     if(this.props.map.share_id){
       this.state.share_id = this.props.map.share_id;
     }
@@ -126,12 +122,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       edge: 'left', // Choose the horizontal origin
       closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
     });
-  }
-
-  componentWillReceiveProps(nextProps: Props){
-    if(nextProps.layers && nextProps.layers.length !== this.state.layers.length){
-      this.setState({layers: nextProps.layers});
-    }
   }
 
   componentDidUpdate(){
