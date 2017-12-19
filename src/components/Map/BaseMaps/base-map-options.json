@@ -5,7 +5,7 @@
       "en": "Default (Light)",
       "fr": ""
     },
-    "attribution": "<a href=\"http://openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://mapzen.com\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; Mapzen</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "loadFromFile": "positron"
   },
@@ -15,7 +15,7 @@
       "en": "Dark",
       "fr": "Dark"
     },
-    "attribution": "<a href=\"http://openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://mapzen.com\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; Mapzen</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "loadFromFile": "darkmatter"
   },
@@ -25,7 +25,7 @@
       "en": "Streets",
       "fr": "Streets"
     },
-    "attribution": "<a href=\"http://openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://mapzen.com\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; Mapzen</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "loadFromFile": "osmLiberty"
   },

@@ -35,7 +35,7 @@
     }
   },
   "sprite": "https://openmaptiles.github.io/positron-gl-style/sprite",
-  "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+  "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
   "layers": [
     {
       "id": "background",
