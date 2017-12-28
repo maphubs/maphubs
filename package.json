@@ -191,7 +191,6 @@
     "sitemap": "^1.13.0",
     "slick-carousel": "^1.7.1",
     "slugify": "^1.2.8",
-    "snyk": "^1.62.2",
     "superagent": "^3.6.0",
     "superagent-jsonp": "0.2.0",
     "terraformer-arcgis-parser": "1.0.5",
@@ -229,6 +228,7 @@
     "react-addons-perf": "^15.4.2",
     "resolve-url-loader": "^2.1.0",
     "sass-loader": "^6.0.6",
+    "snyk": "^1.63.0",
     "style-loader": "0.19.1",
     "webpack": "^3.5.6",
     "webpack-dev-middleware": "^2.0.3"

@@ -12,14 +12,17 @@ RUN apt-get update && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get install -y yarn && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    mkdir -p /app && \
-    npm install -g snyk
+    mkdir -p /app
 
 WORKDIR /app
 
-COPY package.json yarn.lock .snyk /app/
+COPY package.json yarn.lock .yarnclean .snyk /app/
+
 RUN yarn install --production --pure-lockfile && \
-    npm run snyk-protect
+    npm install -g snyk && \
+    yarn run snyk-protect && \
+    npm uninstall -g snyk & \
+    yarn autoclean --force
 
 COPY ./src /app/src
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
