@@ -10,7 +10,32 @@ const apiDataError = require('../../services/error-response').apiDataError;
 const notAllowedError = require('../../services/error-response').notAllowedError;
 const isAuthenticated = require('../../services/auth-check');
 
+
 module.exports = function(app: any) {
+
+  /**
+   * When enabled, allows a public user to submit a single feature to the layer
+   */
+  app.post('/api/layer/public/submit', async (req, res) => {
+    try{
+      const data = req.body;
+      if(data && data.layer_id && data.feature){
+        const layer = await Layer.getLayerByID(data.layer_id);
+        if(layer.allow_public_submit){
+          return knex.transaction(async (trx) => {
+            await LayerData.createFeature(data.layer_id, data.feature, trx);
+            await Layer.setUpdated(data.layer_id, req.user_id, trx);
+            debug.log('feature submission complete');
+            return res.status(200).send({success: true});
+          });
+        }else{
+          return notAllowedError(res, 'layer');
+        } 
+      }else{
+        apiDataError(res);
+      }
+    }catch(err){apiError(res, 500)(err);}
+  });
 
   app.post('/api/edits/save', csrfProtection, isAuthenticated, async (req, res) => {
     try{

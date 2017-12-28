@@ -2,6 +2,7 @@ import Reflux from 'reflux';
 export default Reflux.createActions([
   'loadLayer',
   'saveSettings',
+  'saveAdminSettings',
   'saveDataSettings',
   'saveStyle',
   'loadData',

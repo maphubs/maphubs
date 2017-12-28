@@ -27,6 +27,7 @@ module.exports = {
       return db.select('layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'source', 'license', 'presets',
+      'allow_public_submit',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
       'owned_by_group_id', db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
       'style', 'legend_html','labels', 'settings', 'extent_bbox', 'preview_position')
@@ -49,6 +50,7 @@ module.exports = {
     return knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets',
+    'allow_public_submit',
     'is_external', 'external_layer_type', 'external_layer_config',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
@@ -65,6 +67,7 @@ module.exports = {
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'source', 'license', 'presets',
     'is_external', 'external_layer_type', 'external_layer_config',
+    'allow_public_submit',
     'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
      'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
@@ -189,6 +192,7 @@ module.exports = {
     const query: knex = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
+    'allow_public_submit',
     'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers').orderBy(knex.raw(`name -> 'en'`));
 
@@ -237,7 +241,9 @@ module.exports = {
     'remote', 'remote_host', 'remote_layer_id',
     'status', 'private', 'source', 'license', 'presets',
     'style', 'legend_html','labels', 'settings','extent_bbox', 'preview_position',
-    'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+    'is_external', 'external_layer_type', 'external_layer_config', 
+    'allow_public_submit',
+    'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
     .table('omh.layers')
     .whereIn('owned_by_group_id', subquery)
     .where({status: 'published'})
@@ -263,6 +269,7 @@ module.exports = {
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
+      'allow_public_submit',
       'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
@@ -288,6 +295,7 @@ module.exports = {
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
+      'allow_public_submit',
       'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
@@ -598,6 +606,20 @@ module.exports = {
           log.info('Public layer switching to private: ' + layer_id);
           await _this.removePrivateLayerFromMaps(layer_id, trx);          
         }
+        return update;
+      });
+    },
+
+    async saveAdminSettings(layer_id: number, group_id: string, disable_export: boolean, allow_public_submit: boolean, user_id: number) {
+      return knex.transaction(async(trx) => { 
+        const update =  trx('omh.layers')
+          .update({
+              owned_by_group_id: group_id,
+              disable_export,
+              allow_public_submit,
+              updated_by_user_id: user_id,
+              last_updated: knex.raw('now()')
+          }).where({layer_id});
         return update;
       });
     },

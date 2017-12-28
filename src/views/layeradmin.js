@@ -2,6 +2,7 @@
 import React from 'react';
 import Header from '../components/header';
 import LayerSettings from '../components/CreateLayer/LayerSettings';
+import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings';
 import PresetEditor from '../components/CreateLayer/PresetEditor';
 import LayerStyle from '../components/CreateLayer/LayerStyle';
 import MessageActions from '../actions/MessageActions';
@@ -20,10 +21,13 @@ const checkClientError = require('../services/client-error-response').checkClien
 import MapHubsComponent from '../components/MapHubsComponent';
 import Reflux from '../components/Rehydrate';
 import LocaleStore from '../stores/LocaleStore';
+import UserStore from '../stores/UserStore';
+import ErrorBoundary from '../components/ErrorBoundary';
+
 import type {LocaleStoreState} from '../stores/LocaleStore';
 import type {Layer, LayerStoreState} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
-import ErrorBoundary from '../components/ErrorBoundary';
+import type {UserStoreState} from '../stores/UserStore';
 
 type Props = {
   layer: Layer,
@@ -38,7 +42,7 @@ type State = {
   tab: string,
   canSavePresets: boolean,
   saving?: boolean
-} & LocaleStoreState & LayerStoreState
+} & LocaleStoreState & LayerStoreState & UserStoreState
 
 export default class LayerAdmin extends MapHubsComponent<Props, State> {
 
@@ -53,6 +57,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     super(props);
     this.stores.push(LayerStore);
     this.stores.push(BaseMapStore);
+    this.stores.push(UserStore);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
     Reflux.rehydrate(LayerStore, this.props.layer);
     if(props.mapConfig && props.mapConfig.baseMapOptions){
@@ -204,50 +209,11 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
 
     }else{
 
-      let settingsTabContent = '', fieldsTabContent = '', styleTabContent = '';
-      if(this.state.tab === 'settings'){
-        settingsTabContent = (
-          <LayerSettings
-                groups={this.props.groups} 
-                 showGroup={false}
-                 warnIfUnsaved
-                 onSubmit={this.onSave}
-                 submitText={this.__('Save')}
-             />
-        );
-
-      }else if(this.state.tab === 'fields'){
-        fieldsTabContent = (
-          <div className="container" >
-            <h5>{this.__('Data Fields')}</h5>
-              <div className="right">
-                <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
-              </div>
-              <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid}/>
-              <div className="right">
-                <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
-              </div>
-          </div>
-          
-        );
-
-      }else if(this.state.tab === 'style'){
-        styleTabContent = (
-          <LayerStyle
-            showPrev={false}
-            onSubmit={this.onSave}
-            mapConfig={this.props.mapConfig}
-          />
-        );
-      }
-
-
 		return (
       <div>
         <Header {...this.props.headerConfig}/>
         <main>
         <div>
-
           <div className="row">
            <div className="col s12">
              <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
@@ -261,16 +227,56 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                <li className="tab">
                  <a onClick={function(){_this.selectTab('style');}} href="#style">{this.__('Style/Display')}</a>
               </li>
+              {this.state.user && this.state.user.admin &&
+                <li className="tab">
+                  <a onClick={function(){_this.selectTab('admin');}} href="#admin">{this.__('Admin Only')}</a>
+                </li>
+              }
              </ul>
            </div>
            <div id="info" className="col s12" style={{borderTop: '1px solid #ddd'}}>
-             {settingsTabContent}
+            {this.state.tab === 'settings' &&
+              <LayerSettings
+                groups={this.props.groups} 
+                showGroup={false}
+                warnIfUnsaved
+                onSubmit={this.onSave}
+                submitText={this.__('Save')}
+              />
+            }
            </div>
            <div id="fields" className="col s12" style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
-             {fieldsTabContent}
+            {this.state.tab === 'fields' &&
+              <div className="container" >
+                <h5>{this.__('Data Fields')}</h5>
+                  <div className="right">
+                    <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                  </div>
+                  <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid}/>
+                  <div className="right">
+                    <button onClick={this.savePresets} className="waves-effect waves-light btn" disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                  </div>
+              </div>   
+            }
            </div>
            <div id="style" className="col s12" style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
-             {styleTabContent}
+            {this.state.tab === 'style' &&
+              <LayerStyle
+                showPrev={false}
+                onSubmit={this.onSave}
+                mapConfig={this.props.mapConfig}
+              />
+            }
+           </div>
+           <div id="admin" className="col s12" style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
+             {this.state.tab === 'admin' &&
+              <LayerAdminSettings 
+                groups={this.props.groups} 
+                warnIfUnsaved
+                onSubmit={this.onSave}
+                submitText={this.__('Save')}
+              />
+             }
            </div>
         </div>
       </div>     

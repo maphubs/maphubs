@@ -194,24 +194,24 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                    <div className="col s12 m6" style={{textAlign: 'center'}}>
                     <Toggle 
                       name="isRequired" 
-                      labelOff="Optional" 
-                      labelOn="Required" 
+                      labelOff={this.__('Optional')} 
+                      labelOn={this.__('Required')}
                       className="row no-margin"
                       style={{paddingTop: '25px'}}
                       checked={this.props.isRequired}
                     />
                     <Toggle 
                       name="showOnMap" 
-                      labelOff="Hide in Map" 
-                      labelOn="Show in Map" 
+                      labelOff={this.__('Hide in Map')}
+                      labelOn={this.__('Show in Map')} 
                       className="row no-margin"
                       style={{paddingTop: '25px'}}
                       checked={this.props.showOnMap}
                     />
                     <Toggle 
                       name="isName" 
-                      labelOff="Regular Field" 
-                      labelOn="Name Field" 
+                      labelOff={this.__('Regular Field')}
+                      labelOn={this.__('Name Field')}
                       className="row no-margin"
                       style={{paddingTop: '25px'}}
                       checked={this.props.isName}

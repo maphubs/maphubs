@@ -11,19 +11,19 @@ module.exports = {
    * Create a new feature in a layer
    * 
    * @param {any} layer_id
-   * @param {any} geojson valid GeoJSON Feature with geometry and properties
+   * @param {any} feature valid GeoJSON Feature with geometry and properties
    * @param {any} trx
    * @returns Promise
    */
-  async createFeature(layer_id: number, geojson: Object, trx: any): Promise<string>{
+  async createFeature(layer_id: number, feature: Object, trx: any): Promise<string | void> | void{
     const _this = this;
     debug.log('creating feature');
     
     const result = await trx(`layers.data_${layer_id}`)
     .insert({
       mhid: trx.raw(`${layer_id} || ':' || nextval('layers.mhid_seq_${layer_id}')`),
-      wkb_geometry: trx.raw(`ST_SetSRID(ST_GeomFromGeoJSON( :geom ),4326)::geometry(Geometry,4326)`, {geom: JSON.stringify(geojson.geometry)}),
-      tags: JSON.stringify(geojson.properties)
+      wkb_geometry: trx.raw(`ST_SetSRID(ST_GeomFromGeoJSON( :geom ),4326)::geometry(Geometry,4326)`, {geom: JSON.stringify(feature.geometry)}),
+      tags: JSON.stringify(feature.properties)
     }).returning('mhid');
 
     if(result && result[0]){
@@ -38,7 +38,7 @@ module.exports = {
         return mhid;
       }
     }else{
-      return null;
+      return;
     }
   },
 

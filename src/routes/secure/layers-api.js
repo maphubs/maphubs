@@ -53,7 +53,7 @@ module.exports = function(app: any) {
     }catch(err){apiError(res, 500)(err);}
   });
 
-  app.post('/api/layer/admin/:action', csrfProtection, isAuthenticated, (req, res) => {
+  app.post('/api/layer/admin/:action', csrfProtection, isAuthenticated, async (req, res) => {
 
     const action = req.params.action;
     const data = req.body;
@@ -76,6 +76,19 @@ module.exports = function(app: any) {
             data.private,
             data.source,
             data.license,
+            req.user_id
+          ];
+        break;
+        case 'saveAdminSettings':
+          if(!data.layer_id){
+            apiDataError(res);
+            return;
+          }
+          actionData = [
+            data.layer_id,
+            data.group_id,
+            data.disable_export,
+            data.allow_public_submit,
             req.user_id
           ];
         break;
@@ -132,33 +145,33 @@ module.exports = function(app: any) {
         res.status(400).send({success:false, error: 'Bad Request: not a valid option'});
         return;
       }
-      if(action === 'createLayer'){
-        //confirm user is allowed to add a layer to this group
-        Group.allowedToModify(data.group_id, req.user_id)
-        .then((allowed) => {
-          if(allowed){
-            return Layer[action](...actionData)
-            .then((result) => {
-              if(result){
-                return res.send({success:true, action, layer_id: result[0]});
-              }else {
-                return res.send({success:false, error: "Failed to Create Layer"});
-              }
-            }).catch(apiError(res, 500));
+
+      try{
+        if(action === 'createLayer'){
+          // confirm user is allowed to add a layer to this group
+          if(await Group.allowedToModify(data.group_id, req.user_id)) {
+            const result = await Layer[action](...actionData);
+            if(result){
+              return res.send({success:true, action, layer_id: result[0]});
+            }else {
+              return res.send({success:false, error: "Failed to Create Layer"});
+            }
           }else{
             return notAllowedError(res, 'layer');
           }
-        }).catch(apiError(res, 500));
-      }else{
-        Layer[action](...actionData)
-        .then((result) => {
-          if(result){
-            return res.send({success:true, action});
-          }else {
-            return res.send({success:false, error: "Failed to Update Layer"});
+        }else{
+          if(await Layer.allowedToModify(data.layer_id, req.user_id)) {
+            const result = await Layer[action](...actionData);
+            if(result){
+              return res.send({success:true, action});
+            }else {
+              return res.send({success:false, error: "Failed to Update Layer"});
+            }
+          }else{
+            return notAllowedError(res, 'layer');
           }
-        }).catch(apiError(res, 500));
-      }
+        }
+      }catch(err){apiError(res, 500)(err);}
     }else{
       apiDataError(res);
     }

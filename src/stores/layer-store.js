@@ -40,6 +40,8 @@ export type Layer = {
     layers?: Array<Object>
     },
   is_empty?: boolean,
+  disable_export?: boolean,
+  allow_public_submit?: boolean,
   remote?: boolean,
   remote_host?: string,
   complete?: boolean
@@ -77,6 +79,8 @@ const defaultState: LayerStoreState = {
     external_layer_config: {},
     complete: false,
     private: false,
+    disable_export: false,
+    allow_public_submit: false,
     tileServiceInitialized: false,
     pendingChanges: false,
     pendingPresetChanges: false,
@@ -258,6 +262,42 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       private: data.private,
       source: data.source,
       license: data.license,
+      _csrf
+    })
+    .end((err, res) => {
+      checkClientError(res, err, cb, (cb) => {
+
+        //if(initLayer){
+        //  layer = _this.initLayer(layer);
+        //}
+        _this.setState({
+          name: data.name,
+          description: data.description,
+          owned_by_group_id: data.group,
+          private: data.private,
+          source: data.source,
+          license: data.license
+        });
+        cb();
+      });
+    });
+  }
+
+  saveAdminSettings(
+    data: {group: string, disableExport: boolean, allowPublicSubmit: boolean},
+    _csrf: string,
+    cb: Function
+  ){
+    //treat as immutable and clone
+    data = JSON.parse(JSON.stringify(data));
+    const _this = this;
+    request.post('/api/layer/admin/saveAdminSettings')
+    .type('json').accept('json')
+    .send({
+      layer_id: _this.state.layer_id,
+      group_id: data.group,
+      disable_export: data.disableExport,
+      allow_public_submit: data.allowPublicSubmit,
       _csrf
     })
     .end((err, res) => {
