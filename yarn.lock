@@ -59,7 +59,7 @@
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@mapbox/extent/-/extent-0.4.0.tgz#3e591f32e1f0c3981c864239f7b0ac06e610f8a9"
 
-"@mapbox/geojson-area@^0.2.1":
+"@mapbox/geojson-area@0.2.2", "@mapbox/geojson-area@^0.2.1":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@mapbox/geojson-area/-/geojson-area-0.2.2.tgz#18d7814aa36bf23fbbcc379f8e26a22927debf10"
   dependencies:
@@ -111,6 +111,10 @@
     hat "0.0.3"
     lodash.isequal "^4.2.0"
     xtend "^4.0.1"
+
+"@mapbox/mapbox-gl-supported@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-supported/-/mapbox-gl-supported-1.3.0.tgz#89daee16845400ea1c76e084bdfab2971e552a9c"
 
 "@mapbox/point-geometry@0.1.0", "@mapbox/point-geometry@^0.1.0", "@mapbox/point-geometry@~0.1.0":
   version "0.1.0"
@@ -709,9 +713,9 @@ atob@~1.1.0:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/atob/-/atob-1.1.3.tgz#95f13629b12c3a51a5d215abdce2aa9f32f80773"
 
-auth0-js@~8.11.2:
-  version "8.11.3"
-  resolved "https://registry.yarnpkg.com/auth0-js/-/auth0-js-8.11.3.tgz#97385a17c8aad1cd612bf82fded328a4396eebdf"
+auth0-js@9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/auth0-js/-/auth0-js-9.0.1.tgz#cd51eafd513d182b67708acd0792d7d4808435e5"
   dependencies:
     base64-js "^1.2.0"
     idtoken-verifier "^1.1.0"
@@ -720,11 +724,11 @@ auth0-js@~8.11.2:
     url-join "^1.1.0"
     winchan "^0.2.0"
 
-auth0-lock@^10.23.1:
-  version "10.24.1"
-  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-10.24.1.tgz#f85a87c3a9309b9a7a7df369040fc663bde6ec9c"
+auth0-lock@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-11.0.1.tgz#a51dadfdbce43dd0c52d7c79de78edd8555ad838"
   dependencies:
-    auth0-js "~8.11.2"
+    auth0-js "9.0.1"
     blueimp-md5 "2.3.1"
     fbjs "^0.3.1"
     idtoken-verifier "^1.0.1"
@@ -769,9 +773,9 @@ autoprefixer@^6.3.1:
     postcss "^5.2.5"
     postcss-value-parser "^3.2.3"
 
-aws-sdk@^2.114.0:
-  version "2.171.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.171.0.tgz#69c2565e98e353d437402477cc3064a13caedc9c"
+aws-sdk@^2.175.0:
+  version "2.175.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.175.0.tgz#33346247b3b9ca674f275eea746edfdfb6479e44"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -836,14 +840,16 @@ babel-core@^6.26.0:
     slash "^1.0.0"
     source-map "^0.5.6"
 
-babel-eslint@^8.0.0:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-8.0.3.tgz#f29ecf02336be438195325cd47c468da81ee4e98"
+babel-eslint@^8.1.2:
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-8.1.2.tgz#a39230b0c20ecbaa19a35d5633bf9b9ca2c8116f"
   dependencies:
     "@babel/code-frame" "7.0.0-beta.31"
     "@babel/traverse" "7.0.0-beta.31"
     "@babel/types" "7.0.0-beta.31"
     babylon "7.0.0-beta.31"
+    eslint-scope "~3.7.1"
+    eslint-visitor-keys "^1.0.0"
 
 babel-generator@^6.26.0:
   version "6.26.0"
@@ -2004,7 +2010,7 @@ chainsaw@~0.1.0:
   dependencies:
     traverse ">=0.3.0 <0.4"
 
-chalk@2.3.0, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.0:
+chalk@2.3.0, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.0.tgz#b5ea48efc9c1793dccc9b4767c93914d3f2d52ba"
   dependencies:
@@ -3333,28 +3339,32 @@ eslint-plugin-unicorn@3.0.1:
     lodash.snakecase "^4.0.1"
     lodash.upperfirst "^4.2.0"
 
-eslint-scope@^3.7.1:
+eslint-scope@^3.7.1, eslint-scope@~3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-3.7.1.tgz#3d63c3edfda02e06e01a452ad88caacc7cdcb6e8"
   dependencies:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@^4.6.1:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.13.1.tgz#0055e0014464c7eb7878caf549ef2941992b444f"
+eslint-visitor-keys@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
+
+eslint@^4.14.0:
+  version "4.14.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.14.0.tgz#96609768d1dd23304faba2d94b7fefe5a5447a82"
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
     chalk "^2.1.0"
     concat-stream "^1.6.0"
     cross-spawn "^5.1.0"
-    debug "^3.0.1"
+    debug "^3.1.0"
     doctrine "^2.0.2"
     eslint-scope "^3.7.1"
+    eslint-visitor-keys "^1.0.0"
     espree "^3.5.2"
     esquery "^1.0.0"
-    estraverse "^4.2.0"
     esutils "^2.0.2"
     file-entry-cache "^2.0.0"
     functional-red-black-tree "^1.0.1"
@@ -3744,9 +3754,9 @@ file-entry-cache@^2.0.0:
     flat-cache "^1.2.1"
     object-assign "^4.0.1"
 
-file-loader@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-1.1.5.tgz#91c25b6b6fbe56dae99f10a425fd64933b5c9daa"
+file-loader@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-1.1.6.tgz#7b9a8f2c58f00a77fddf49e940f7ac978a3ea0e8"
   dependencies:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
@@ -4030,12 +4040,6 @@ geobuf@^3.0.0:
     pbf "^3.0.1"
     shapefile "~0.5.7"
 
-geojson-area@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/geojson-area/-/geojson-area-0.1.0.tgz#d48d807082cfadf4a78df1349be50f38bf1894ae"
-  dependencies:
-    wgs84 "0.0.0"
-
 geojson-flatten@~0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/geojson-flatten/-/geojson-flatten-0.2.1.tgz#476fc6b041e94d016983ec95400f8777bd60c45c"
@@ -4053,21 +4057,21 @@ geojson-precision@^0.4.0:
   dependencies:
     commander "^2.4.0"
 
-geojson-rewind@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/geojson-rewind/-/geojson-rewind-0.2.0.tgz#ea558e9e44ff03b8655d0a08b75078dc33a15e79"
+geojson-rewind@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/geojson-rewind/-/geojson-rewind-0.3.0.tgz#d5c35025fa708910e2da1a97fc23a2e2478a876a"
   dependencies:
-    concat-stream "~1.2.1"
-    geojson-area "0.1.0"
-    minimist "0.0.5"
+    "@mapbox/geojson-area" "0.2.2"
+    concat-stream "~1.6.0"
+    minimist "1.2.0"
 
 geojson-validation@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/geojson-validation/-/geojson-validation-0.2.0.tgz#0ebc6701d2d4d4f35e56cd8f51aae5c2bab5f05a"
 
-geojson-vt@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-2.4.0.tgz#3c1cf44493f35eb4d2c70c95da6550de66072c05"
+geojson-vt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-3.0.0.tgz#a24cae5488ab4897e86ca0e4bf0d9760d628ae0a"
 
 geojson2dsv@^0.1.0:
   version "0.1.0"
@@ -5697,13 +5701,9 @@ log-symbols@^2.1.0:
   dependencies:
     chalk "^2.0.1"
 
-loglevel-plugin-prefix@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/loglevel-plugin-prefix/-/loglevel-plugin-prefix-0.5.3.tgz#8e9131b96e4697a0dba517996f76b9e6c3f43210"
-
-loglevel@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.0.tgz#ae0caa561111498c5ba13723d6fb631d24003934"
+loglevelnext@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/loglevelnext/-/loglevelnext-1.0.1.tgz#8b17b5a43395338a96c67911a962c44af466d1c8"
 
 lolex@1.3.2:
   version "1.3.2"
@@ -5803,15 +5803,12 @@ mapbox-gl-regex-query@0.1.2:
     gl "^4.0.3"
     jsdom "^9.11.0"
 
-mapbox-gl-supported@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/mapbox-gl-supported/-/mapbox-gl-supported-1.2.0.tgz#cbd34df894206cadda9a33c8d9a4609f26bb1989"
-
-mapbox-gl@0.42.2:
-  version "0.42.2"
-  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-0.42.2.tgz#b349142d0b0a3c2f4225b30d301c9bf6c507a272"
+mapbox-gl@0.43.0:
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-0.43.0.tgz#c53978cdce0e3fa393a60bd5afc657842ce5b098"
   dependencies:
     "@mapbox/gl-matrix" "^0.0.1"
+    "@mapbox/mapbox-gl-supported" "^1.3.0"
     "@mapbox/point-geometry" "^0.1.0"
     "@mapbox/shelf-pack" "^3.1.0"
     "@mapbox/tiny-sdf" "^1.1.0"
@@ -5822,13 +5819,12 @@ mapbox-gl@0.42.2:
     bubleify "^0.7.0"
     csscolorparser "~1.0.2"
     earcut "^2.0.3"
-    geojson-rewind "^0.2.0"
-    geojson-vt "^2.4.0"
+    geojson-rewind "^0.3.0"
+    geojson-vt "^3.0.0"
     gray-matter "^3.0.8"
     grid-index "^1.0.0"
     jsonlint-lines-primitives "~1.6.0"
     lodash.isequal "^3.0.4"
-    mapbox-gl-supported "^1.2.0"
     minimist "0.0.8"
     package-json-versionify "^1.0.2"
     pbf "^3.0.5"
@@ -5889,9 +5885,9 @@ medium-editor@^5.10.0:
   version "5.23.1"
   resolved "https://registry.yarnpkg.com/medium-editor/-/medium-editor-5.23.1.tgz#02e7b6959b8decd9c713d007083e9ef1e2484065"
 
-medium-editor@^5.23.2:
-  version "5.23.2"
-  resolved "https://registry.yarnpkg.com/medium-editor/-/medium-editor-5.23.2.tgz#736c681f3e4b175f9c2ee4e48f9543f9f889e066"
+medium-editor@^5.23.3:
+  version "5.23.3"
+  resolved "https://registry.yarnpkg.com/medium-editor/-/medium-editor-5.23.3.tgz#6fb638759ae2fc76c423feb056f346d9c518d3b7"
 
 mem@^1.1.0:
   version "1.1.0"
@@ -5996,9 +5992,9 @@ mime@^1.3.4, mime@^1.4.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
 
-mime@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/mime/-/mime-2.0.3.tgz#4353337854747c48ea498330dc034f9f4bbbcc0b"
+mime@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-2.1.0.tgz#1022a5ada445aa30686e4059abaea83d0b4e8f9c"
 
 mimic-fn@^1.0.0:
   version "1.1.0"
@@ -6083,9 +6079,9 @@ moment-timezone@^0.5.13:
   version "2.19.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
-moment@^2.18.1:
-  version "2.19.4"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.4.tgz#17e5e2c6ead8819c8ecfad83a0acccb312e94682"
+moment@^2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
 morgan@^1.8.2:
   version "1.9.0"
@@ -7656,9 +7652,9 @@ react-select@^1.0.0-rc.9:
     prop-types "^15.5.8"
     react-input-autosize "^2.1.0"
 
-react-share@^1.16.0:
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/react-share/-/react-share-1.18.0.tgz#1b60611251b936b73eab366c7bc739634fb301a9"
+react-share@^1.18.1:
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/react-share/-/react-share-1.18.1.tgz#2e99acd3d6e6c85d97886ac29e22ec2539babb97"
   dependencies:
     babel-runtime "^6.6.1"
     classnames "^2.2.5"
@@ -8538,9 +8534,9 @@ slide@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
 
-slugify@^1.2.1:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.2.6.tgz#98c8f7e3c78f06af71e44670d8086715d86fc528"
+slugify@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.2.8.tgz#f74581b0376d1ccec9a4abfaf06c7aaa9737caef"
 
 sntp@1.x.x:
   version "1.0.9"
@@ -8562,9 +8558,9 @@ snyk-config@1.0.1:
     nconf "^0.7.2"
     path-is-absolute "^1.0.0"
 
-snyk-go-plugin@1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/snyk-go-plugin/-/snyk-go-plugin-1.4.2.tgz#b17b0fa216ed2ab8e7c54607b9252be1992bd980"
+snyk-go-plugin@1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/snyk-go-plugin/-/snyk-go-plugin-1.4.4.tgz#90230b9f6399f91922a25a0c4cc1105eba224a07"
   dependencies:
     graphlib "^2.1.1"
     toml "^2.3.2"
@@ -8586,9 +8582,9 @@ snyk-mvn-plugin@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/snyk-mvn-plugin/-/snyk-mvn-plugin-1.1.0.tgz#6ad3fb670cd22972094f065ab99b90d286c8ad6f"
 
-snyk-nuget-plugin@1.3.5:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/snyk-nuget-plugin/-/snyk-nuget-plugin-1.3.5.tgz#64ea4c134ba5020d68b6b1acdbc279cd729e7958"
+snyk-nuget-plugin@1.3.7:
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/snyk-nuget-plugin/-/snyk-nuget-plugin-1.3.7.tgz#07ad8223b319323db9553e5bc6693b802fd35a71"
   dependencies:
     debug "^3.1.0"
     es6-promise "^4.1.1"
@@ -8616,9 +8612,9 @@ snyk-policy@^1.10.1:
     snyk-try-require "^1.1.1"
     then-fs "^2.0.0"
 
-snyk-python-plugin@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/snyk-python-plugin/-/snyk-python-plugin-1.4.0.tgz#4c085ff7ff1eaafb18e4d12225f76bb8adc9d60f"
+snyk-python-plugin@1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/snyk-python-plugin/-/snyk-python-plugin-1.4.1.tgz#5143cfaff5d85f6ee0eb8de7584732b614f616e0"
 
 snyk-recursive-readdir@^2.0.0:
   version "2.0.0"
@@ -8672,9 +8668,9 @@ snyk-try-require@^1.1.1, snyk-try-require@^1.2.0:
     lru-cache "^4.0.0"
     then-fs "^2.0.0"
 
-snyk@^1.42.0:
-  version "1.59.1"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.59.1.tgz#64cba29723ad9bd0a0d11686d810f2dde5be0644"
+snyk@^1.62.2:
+  version "1.62.2"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.62.2.tgz#dc31aa30ac23e757cfd98ede6e90cb3a476747d9"
   dependencies:
     abbrev "^1.0.7"
     ansi-escapes "^1.3.0"
@@ -8690,14 +8686,14 @@ snyk@^1.42.0:
     proxy-from-env "^1.0.0"
     semver "^5.1.0"
     snyk-config "1.0.1"
-    snyk-go-plugin "1.4.2"
+    snyk-go-plugin "1.4.4"
     snyk-gradle-plugin "1.2.0"
     snyk-module "1.8.1"
     snyk-mvn-plugin "1.1.0"
-    snyk-nuget-plugin "1.3.5"
+    snyk-nuget-plugin "1.3.7"
     snyk-php-plugin "1.3.0"
     snyk-policy "^1.10.1"
-    snyk-python-plugin "1.4.0"
+    snyk-python-plugin "1.4.1"
     snyk-recursive-readdir "^2.0.0"
     snyk-resolve "1.0.0"
     snyk-resolve-deps "1.7.0"
@@ -9237,10 +9233,6 @@ tildify@1.2.0:
   dependencies:
     os-homedir "^1.0.0"
 
-time-stamp@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-2.0.0.tgz#95c6a44530e15ba8d6f4a3ecb8c3a3fac46da357"
-
 timed-out@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
@@ -9777,21 +9769,25 @@ webidl-conversions@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.1.tgz#8015a17ab83e7e1b311638486ace81da6ce206a0"
 
-webpack-dev-middleware@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-2.0.1.tgz#22c8ecef27f08fca6dfa95504d57f66a8f37cc13"
+webpack-dev-middleware@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-2.0.3.tgz#44e15480ec58d275417ac4d93a0126c7b72450bd"
   dependencies:
-    chalk "^2.3.0"
-    log-symbols "^2.1.0"
-    loglevel "^1.6.0"
-    loglevel-plugin-prefix "^0.5.3"
     loud-rejection "^1.6.0"
     memory-fs "~0.4.1"
-    mime "^2.0.3"
+    mime "^2.1.0"
     path-is-absolute "^1.0.0"
     range-parser "^1.0.3"
-    time-stamp "^2.0.0"
     url-join "^2.0.2"
+    webpack-log "^1.0.1"
+
+webpack-log@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/webpack-log/-/webpack-log-1.1.0.tgz#fc17ce3aba349130d09464ee31d04686e8023f6a"
+  dependencies:
+    chalk "^2.1.0"
+    log-symbols "^2.1.0"
+    loglevelnext "^1.0.1"
     uuid "^3.1.0"
 
 webpack-sources@^1.0.1:
