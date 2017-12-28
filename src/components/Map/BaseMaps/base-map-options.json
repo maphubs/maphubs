@@ -39,7 +39,7 @@
     "updateWithMapPosition": true,
     "style": {
         "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+        "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
         "sources": {
             "bing-tiles": {
                 "type": "raster",
@@ -71,7 +71,7 @@
     "updateWithMapPosition": false,
     "style": {
         "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+        "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
         "sources": {
             "landsat-2016": {
                 "type": "raster",
@@ -100,7 +100,7 @@
     "updateWithMapPosition": false,
     "style": {
         "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+        "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
         "sources": {
             "landsat-2014": {
                 "type": "raster",
@@ -129,7 +129,7 @@
     "updateWithMapPosition": false,
     "style":{
         "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+        "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
         "sources": {
             "stamen-toner-tiles": {
                 "type": "raster",
@@ -161,7 +161,7 @@
     "updateWithMapPosition": false,
     "style": {
         "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+        "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
         "sources": {
             "stamen-terrain-tiles": {
                 "type": "raster",
@@ -193,7 +193,7 @@
     "updateWithMapPosition": false,
     "style": {
         "version": 8,
-        "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
+        "glyphs": "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}",
         "sources": {
             "stamen-watercolor-tiles": {
                 "type": "raster",

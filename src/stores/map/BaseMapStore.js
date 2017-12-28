@@ -193,7 +193,7 @@ export default class BaseMapStore extends Reflux.Store {
         });
         const style = config.style;
         if(!style.glyphs){
-          style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}";
+          style.glyphs = "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}";
         }
 
         if(!style.sprite){
@@ -207,7 +207,7 @@ export default class BaseMapStore extends Reflux.Store {
         const style = config.style;
         if(typeof style !== 'string'){
           if(!style.glyphs){
-            style.glyphs = "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}";
+            style.glyphs = "https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}";
           }
 
           if(!style.sprite){
