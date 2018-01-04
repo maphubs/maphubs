@@ -773,9 +773,9 @@ autoprefixer@^6.3.1:
     postcss "^5.2.5"
     postcss-value-parser "^3.2.3"
 
-aws-sdk@^2.175.0:
-  version "2.175.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.175.0.tgz#33346247b3b9ca674f275eea746edfdfb6479e44"
+aws-sdk@^2.176.0:
+  version "2.176.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.176.0.tgz#2723c14e1c623ac45c5b890a3fc736eee8085f67"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -3858,9 +3858,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@0.61.0:
-  version "0.61.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.61.0.tgz#d0473a8c35dbbf4de573823f4932124397d32d35"
+flow-bin@0.62.0:
+  version "0.62.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.62.0.tgz#14bca669a6e3f95c0bc0c2d1eb55ec4e98cb1d83"
 
 flow-remove-types@^1.1.2:
   version "1.2.3"
@@ -6728,9 +6728,9 @@ parseurl@~1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.2.tgz#fc289d4ed8993119460c156253262cdc8de65bf3"
 
-passport-auth0@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/passport-auth0/-/passport-auth0-0.6.0.tgz#4a5c6d06df427e0aa5b48737dbff9e1fd14935c2"
+passport-auth0@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/passport-auth0/-/passport-auth0-0.6.1.tgz#8a6ace06b5d1927aaad15e22e1c43b9b04e5ddee"
   dependencies:
     passport-oauth "^1.0.0"
     request "^2.61.0"
@@ -6962,10 +6962,6 @@ pkg-dir@^2.0.0:
   resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-2.0.0.tgz#f6d5d1109e19d63edf428e0bd57e12777615334b"
   dependencies:
     find-up "^2.1.0"
-
-platform@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/platform/-/platform-1.3.4.tgz#6f0fb17edaaa48f21442b3a975c063130f1c3ebd"
 
 plur@^2.0.0:
   version "2.1.2"
@@ -7509,9 +7505,9 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-ace@5.8.0:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-5.8.0.tgz#872d9ee8b664300ed5ab9edac6234bbe90836836"
+react-ace@5.9.0:
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-5.9.0.tgz#427a1cc4869b960a6f9748aa7eb169a9269fc336"
   dependencies:
     brace "^0.11.0"
     lodash.get "^4.4.2"
@@ -7652,14 +7648,13 @@ react-select@^1.0.0-rc.9:
     prop-types "^15.5.8"
     react-input-autosize "^2.1.0"
 
-react-share@^1.18.1:
-  version "1.18.1"
-  resolved "https://registry.yarnpkg.com/react-share/-/react-share-1.18.1.tgz#2e99acd3d6e6c85d97886ac29e22ec2539babb97"
+react-share@^1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/react-share/-/react-share-1.19.0.tgz#546b152231b7fc16e57b299f8a0d7e400264280b"
   dependencies:
     babel-runtime "^6.6.1"
     classnames "^2.2.5"
     jsonp "^0.2.1"
-    platform "^1.3.4"
     prop-types "^15.5.8"
 
 react-slick@0.16.0:
@@ -8534,9 +8529,9 @@ slide@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
 
-slugify@^1.2.8:
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.2.8.tgz#f74581b0376d1ccec9a4abfaf06c7aaa9737caef"
+slugify@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.2.9.tgz#c3d518f5136b3c69345d5d0bbbcde7412b5694aa"
 
 sntp@1.x.x:
   version "1.0.9"
@@ -8668,9 +8663,9 @@ snyk-try-require@^1.1.1, snyk-try-require@^1.2.0:
     lru-cache "^4.0.0"
     then-fs "^2.0.0"
 
-snyk@^1.63.0:
-  version "1.63.0"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.63.0.tgz#d149a59cb22c442832301c5ab674a3ad2a420ea9"
+snyk@^1.65.0:
+  version "1.65.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.65.0.tgz#ac5304e8eac32b36455e12e29ea49a566763f7ca"
   dependencies:
     abbrev "^1.0.7"
     ansi-escapes "^1.3.0"
