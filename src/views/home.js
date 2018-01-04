@@ -22,6 +22,7 @@ import type {Layer} from '../stores/layer-store';
 import type {Group} from '../stores/GroupStore';
 import type {CardConfig} from '../components/CardCarousel/Card';
 import ErrorBoundary from '../components/ErrorBoundary';
+import XComponentReact from '../components/XComponentReact';
 
 //import Perf from 'react-addons-perf';
 
@@ -55,7 +56,8 @@ type Props = {
     collectionMapCards: Array<CardConfig>,
     collectionHubCards: Array<CardConfig>,
     collectionGroupCards: Array<CardConfig>,
-    collectionLayerCards: Array<CardConfig>
+    collectionLayerCards: Array<CardConfig>,
+    loaded: boolean
   } & LocaleStoreState
 
 
@@ -83,8 +85,14 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       collectionMapCards: _shuffle(this.props.trendingMaps.map(cardUtil.getMapCard)),
       collectionHubCards: _shuffle(this.props.trendingHubs.map(cardUtil.getHubCard)),
       collectionGroupCards: _shuffle(this.props.trendingGroups.map(cardUtil.getGroupCard)),
-      collectionLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard))
+      collectionLayerCards: _shuffle(this.props.trendingLayers.map(cardUtil.getLayerCard)),
+      loaded: false
     };
+  }
+
+  componentDidMount () {
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({loaded: true});
   }
 
 /*
@@ -121,6 +129,31 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
     return homepageMap;   
   }
+  /* eslint-disable react/display-name */
+  renderXComponent = (config: Object, key: string) => {
+    if(this.state.loaded){
+      let height = '100%';
+      if (config.height) {
+        height = config.height;
+      }
+      const dimensions = {width: '100%', height};
+      return (
+        <div key={key} className="row">
+          <XComponentReact  
+            tag={config.tag}
+            url={config.url}
+            containerProps={{
+              style: dimensions
+            }}
+            dimensions={dimensions}
+          />
+        </div>
+      );
+    }else{
+      return '';
+    }
+  }
+
 
   renderSlides = (config: Object, key: string) => {
     const slides = (
@@ -303,6 +336,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             return _this.renderSlides(component, key);
           }else if(component.type === 'mailinglist'){
             return _this.renderMailingList(component, key);
+          }else if(component.type === 'xcomponent'){
+            return _this.renderXComponent(component, key);
           }else{
             return '';
           }
