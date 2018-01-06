@@ -97,7 +97,7 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
     const firstRow = originalRows[0];
 
     let rowKey = 'mhid';
-    if(firstRow.mhid){
+    if(!firstRow || firstRow.mhid){
       rowKey = 'mhid';
     }
     else if(firstRow.objectid){
