@@ -34,7 +34,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       m4eFooter = (
         <ul style={{marginTop: '0px'}}>
           <li className="valign-wrapper">
-            <a href="http://moabi.org" className="valign" style={{float: 'left', paddingRight: '5px'}}>
+            <a href="http://moabi.org" className="valign page-footer no-padding" style={{float: 'left', paddingRight: '5px'}}>
               <img width="75" height="75" style={{marginLeft: '-10px'}} src="https://cdn.maphubs.com/assets/moabi-logo.png" alt="Moabi.org" />
             </a>
             <span className="valign">{MAPHUBS_CONFIG.productName + this.__(' is a non-profit initiative of the Moabi organization')}</span>
@@ -63,13 +63,13 @@ export default class Footer extends MapHubsComponent<Props, void> {
         <ul>
           <li className="valign-wrapper">
             <span className="valign">{this.__('Powered by') + ' '}</span>
-            <a href="http://maphubs.com" className="valign" style={{float: 'left'}}>
+            <a href="http://maphubs.com" className="valign page-footer no-padding" style={{float: 'left'}}>
                 <img width="111" height="30" style={{marginTop: '10px'}} src="https://cdn.maphubs.com/assets/maphubs-logo-small.png" alt="MapHubs.com" />
               </a>
               
             </li>
           <li>
-            {this.__('View the open source code on ')}<a href="https://github.com/maphubs">GitHub</a>
+            {this.__('View the open source code on ')}<a className="page-footer  no-padding" href="https://github.com/maphubs">GitHub</a>
           </li>
         </ul>
       );
@@ -80,8 +80,8 @@ export default class Footer extends MapHubsComponent<Props, void> {
       contactUs = (
          <ul>
           <li>{this.__('Contact Us')}</li>
-          <li><a className="text-darken-3 center" href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></li>
-          <li><a className="text-darken-3 center" href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}>@{MAPHUBS_CONFIG.twitter}</a></li>
+          <li><a className="page-footer no-padding center" href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></li>
+          <li><a className="page-footer no-padding center" href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}>@{MAPHUBS_CONFIG.twitter}</a></li>
         </ul>
       );
     }
@@ -94,7 +94,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
         {_this.props.links.map((link, i) =>{
           return (
             <li key={`footer-link-${i}`}>
-              <a href={link.href} target={link.target}>{_this.__(link.name)}</a>
+              <a className="page-footer no-padding" href={link.href} target={link.target}>{_this.__(link.name)}</a>
             </li>
           );
         })      
