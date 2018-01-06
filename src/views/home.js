@@ -43,14 +43,6 @@ type Props = {
     mapConfig: Object
   }
 
-  type DefaultProps = {
-    trendingLayers: Array<Layer>,
-    trendingGroups:Array<Group>,
-    trendingHubs: Array<Object>,
-    trendingMaps: Array<Object>,
-    trendingStories: Array<Object>
-  }
-
   type State = {
     collectionStoryCards: Array<CardConfig>,
     collectionMapCards: Array<CardConfig>,
@@ -138,7 +130,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       }
       const dimensions = {width: '100%', height};
       return (
-        <div key={key} className="row">
+        <div key={key} className="row no-margin" style={dimensions}>
           <XComponentReact  
             tag={config.tag}
             url={config.url}
@@ -153,7 +145,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       return '';
     }
   }
-
 
   renderSlides = (config: Object, key: string) => {
     const slides = (
@@ -305,6 +296,25 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return textPanel;
   }
 
+  renderButton = (config: Object, key: string) => {
+    let label = config.label[this.state.locale];
+    if(!label) label = config.text.en;
+    const button =(
+      <div key={key} className="row valign-wrapper" 
+        style={{padding: '25px'}}>
+        <a 
+          className="waves-effect waves-light btn valign" 
+          style={{margin: 'auto'}}
+          href={config.href}
+        >
+          {label}
+        </a>
+      </div>
+    );
+
+    return button;
+  }
+
 	render() {
 
     const _this = this;
@@ -313,7 +323,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
       <div style={{margin: 0, height: '100%'}}>
       <Header {...this.props.headerConfig}/>
-      <main style={{margin: 0, height: '100%'}}>
+      <main style={{margin: 0, height: 'calc(100% - 50px)'}}>
 
        {this.props.pageConfig.components.map((component, i) => {
          const key = `homepro-component-${i}`;
@@ -338,6 +348,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             return _this.renderMailingList(component, key);
           }else if(component.type === 'xcomponent'){
             return _this.renderXComponent(component, key);
+          }else if(component.type === 'button'){
+            return _this.renderButton(component, key);
           }else{
             return '';
           }
@@ -346,7 +358,10 @@ export default class HomePro extends MapHubsComponent<Props, State> {
           
         })
        }
+       {!this.props.pageConfig.disableFooter &&
         <Footer {...this.props.footerConfig}/>
+       }
+        
        </main>
 			</div>
       </ErrorBoundary>

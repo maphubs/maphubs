@@ -49,6 +49,8 @@ if(process.env.NODE_ENV !== 'production'){
 }
 require('babel-core/register')(babelConfig);
 
+var CMSPages = require('./services/cms-pages');
+
 var app = express();
 //settings flags
 app.enable('trust proxy');
@@ -209,6 +211,9 @@ app.use(checkLogin);
 //load secure routes
 consign().include('./src/routes/secure').into(app);
 
+
+CMSPages(app).then(()=>{
+
 //error handling
 
 app.use((req, res, next) => {
@@ -314,11 +319,15 @@ app.use((err, req, res, next) => {
 }
 });
 
-
 var http = require('http');
 var server = http.createServer(app);
 server.setTimeout(10*60*1000); // 10 * 60 seconds * 1000 msecs
 server.listen(local.internal_port, () => {
     log.info('**** STARTING SERVER ****');
     log.info('Server Running on port: ' + local.internal_port);
+});
+return;
+}).catch((err)=>{
+  log.error(err);
+  Raven.captureException(err);
 });
