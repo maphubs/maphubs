@@ -387,6 +387,10 @@ module.exports = {
     }
     const layer = await this.getLayerByID(layer_id, trx);
     if(layer){
+      //if the layer has not yet been assigned to a group (still in progress in the wizard) then only the creating user can modify
+      if(layer.status === 'incomplete' && layer.created_by_user_id === user_id){
+        return true;
+      }
       const users = await Group.getGroupMembers(layer.owned_by_group_id);
       if(_find(users, {id: user_id}) !== undefined){
         return true;
