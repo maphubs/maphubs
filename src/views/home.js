@@ -138,6 +138,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
               style: dimensions
             }}
             dimensions={dimensions}
+            onComplete={ () => { window.location = config.onCompleteUrl || '/'; }}
           />
         </div>
       );
