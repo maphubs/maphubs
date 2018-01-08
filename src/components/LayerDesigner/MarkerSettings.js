@@ -6,7 +6,7 @@ import Toggle from '../forms/toggle';
 import Select from '../forms/select';
 import _assignIn from 'lodash.assignin';
 import MapStyles from '../Map/Styles';
-import MapHubsPureComponent from '../MapHubsPureComponent';
+import MapHubsComponent from '../MapHubsComponent';
 import _isequal from 'lodash.isequal';
 
 type Props = {|
@@ -19,7 +19,7 @@ type State = {
   options: Object
 }
 
-export default class MarkerSettings extends MapHubsPureComponent<Props, State> {
+export default class MarkerSettings extends MapHubsComponent<Props, State> {
 
   props: Props
 

@@ -195,15 +195,14 @@ const MapHubsSource = {
             el
           );
 
-          const offsetWidth = -markerConfig.width / 2;
           let offsetHeight;
           if(markerConfig.shape === 'MAP_PIN' || markerConfig.shape  === 'SQUARE_PIN'){
-            offsetHeight = -markerConfig.height;
+            offsetHeight = -(markerConfig.height / 2);           
           }else{
-            offsetHeight = -markerConfig.height / 2;
+            offsetHeight = 0;
           }
 
-          const mapboxMarker = new mapboxgl.Marker(el, {offset: [offsetWidth, offsetHeight]})
+          const mapboxMarker = new mapboxgl.Marker(el, {offset: [0, offsetHeight]})
               .setLngLat(marker.geometry.coordinates)
               .addTo(map);
           
@@ -234,6 +233,7 @@ const MapHubsSource = {
             "circle-opacity": 0 //hidden 
           }
       };
+      
       if(layer["source-layer"]){
         markerLayer["source-layer"] = layer["source-layer"];
       }
