@@ -6,7 +6,6 @@ import Footer from '../components/footer';
 import SearchBox from '../components/SearchBox';
 import CardCollection from '../components/CardCarousel/CardCollection';
 const cardUtil = require('../services/card-util');
-import Promise from 'bluebird';
 import request from 'superagent';
 const debug = require('../services/debug')('home');
 const $ = require('jquery');
@@ -87,27 +86,29 @@ export default class Search extends MapHubsComponent<Props, State> {
     this.setState({searchResult: null, searchCards: []});
   }
 
-  handleSearch = (input: string) => {
-    const _this = this;
+  handleSearch = async (input: string) => {
     this.setState({searching: true});
-    const requests = [
-      request.get('/api/global/search' + '?q=' + input).type('json').accept('json').promise(),
-      request.get('/api/layers/search' + '?q=' + input).type('json').accept('json').promise(),
-      request.get('/api/groups/search' + '?q=' + input).type('json').accept('json').promise(),
-      request.get('/api/hubs/search' + '?q=' + input).type('json').accept('json').promise(),
-      request.get('/api/maps/search' + '?q=' + input).type('json').accept('json').promise()
-    ];
+    try{
 
-    Promise.all(requests).then((results) => {
-      _this.setState({searching: false});
 
       let totalResults = 0;
 
-      const featureRes = results[0];
-      const layerRes = results[1];
-      const groupRes = results[2];
-      const hubRes = results[3];
-      const mapRes = results[4];
+      try{
+        let featureRes = await request.get(`/api/global/search?q=${input}`).type('json').accept('json');
+        if(featureRes.body && featureRes.body.features && featureRes.body.features.length > 0){
+          this.setState({
+            searchResult: featureRes.body
+          });
+          totalResults += featureRes.body.features.length;
+        }
+      }catch(err){
+        debug.error(err);
+      }
+
+      const layerRes = await request.get(`/api/layers/search?q=${input}`).type('json').accept('json');
+      const groupRes = await request.get(`/api/groups/search?q=${input}`).type('json').accept('json');
+      const hubRes = await request.get(`/api/hubs/search?q=${input}`).type('json').accept('json');
+      const mapRes = await request.get(`/api/maps/search?q=${input}`).type('json').accept('json');
 
       let layerResults =[];
       let groupResults = [];
@@ -139,26 +140,18 @@ export default class Search extends MapHubsComponent<Props, State> {
         mapResults = mapRes.body.maps;
       }
 
-      const searchCards = _this.getMixedCardSet(layerResults, groupResults, hubResults, mapResults, storyResults);
+      const searchCards = this.getMixedCardSet(layerResults, groupResults, hubResults, mapResults, storyResults);
+      this.setState({
+        searchCards
+      });
 
-      //features
-      if(featureRes.body && featureRes.body.features && featureRes.body.features.length > 0){
-        _this.setState({
-          searchResult: featureRes.body,
-          searchCards
-        });
-        totalResults += featureRes.body.features.length;
-      }else{
-        _this.setState({
-          searchCards
-        });
-      }
+      this.setState({searching: false});
 
       if(totalResults > 0){
         NotificationActions.showNotification(
           {
             message: totalResults
-             + ' ' + _this.__('Results Found'),
+             + ' ' + this.__('Results Found'),
             position: 'bottomright',
             dismissAfter: 3000
         });
@@ -168,7 +161,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         //tell user no results found
         NotificationActions.showNotification(
           {
-            message: _this.__('No Results Found'),
+            message: this.__('No Results Found'),
             position: 'bottomright',
             dismissAfter: 3000
         });
@@ -176,12 +169,12 @@ export default class Search extends MapHubsComponent<Props, State> {
 
 
 
-    }).catch((err) => {
-      _this.setState({searching: false});
+    }catch(err){
+      this.setState({searching: false});
       debug.error(err);
       MessageActions.showMessage({title: 'Error', message: err.toString()});
 
-    });
+    }
   }
 
   getMixedCardSet(layers: Array<Object>, groups: Array<Object>, hubs: Array<Object>, maps: Array<Object>, stories: Array<Object>){

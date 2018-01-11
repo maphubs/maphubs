@@ -70,7 +70,7 @@ module.exports = function(app: any) {
      
     }).catch((err) => {
         log.error(err);
-        throw err;
+        res.status(500).send('Feature Search Failed');
       });
   });
 };
