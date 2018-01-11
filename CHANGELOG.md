@@ -1,5 +1,11 @@
 # Change Log
 
+## [v0.15.15](https://github.com/maphubs/maphubs/tree/v0.15.15) (2018-01-11)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.14...v0.15.15)
+
+## [v0.15.14](https://github.com/maphubs/maphubs/tree/v0.15.14) (2018-01-09)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.13...v0.15.14)
+
 ## [v0.15.13](https://github.com/maphubs/maphubs/tree/v0.15.13) (2018-01-08)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.12...v0.15.13)
 
