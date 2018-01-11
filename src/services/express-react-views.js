@@ -342,7 +342,7 @@ function createEngine(engineOptions) {
         
             Userback.email = "${email}";
             Userback.custom_data = {
-              account_id: ${user_id},
+              account_id: '${user_id}',
               name: '${display_name}'
             };
 
