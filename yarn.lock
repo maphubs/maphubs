@@ -786,8 +786,8 @@ autoprefixer@^6.3.1:
     postcss-value-parser "^3.2.3"
 
 aws-sdk@^2.176.0:
-  version "2.178.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.178.0.tgz#e8257adde039cad2a1ac0abd278d172b6c39a9c7"
+  version "2.179.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.179.0.tgz#48e07843c6ae83d6752e58547b168299f140cc11"
   dependencies:
     buffer "4.9.1"
     create-hash "^1.1.3"
@@ -1989,7 +1989,7 @@ caniuse-lite@^1.0.30000758:
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
-  resolved "http://registry.npmjs.org/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
+  resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -2118,8 +2118,8 @@ cli-width@^2.0.0:
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
 
 clipboard-polyfill@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/clipboard-polyfill/-/clipboard-polyfill-2.3.0.tgz#21031844c1ec24b39ab7940dba1eb0860134be59"
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/clipboard-polyfill/-/clipboard-polyfill-2.4.1.tgz#7d56c45ffa177a25cbf04a49094110b7dadad6ae"
   dependencies:
     es6-promise "4.1.1"
 
@@ -2492,7 +2492,7 @@ create-ecdh@^4.0.0:
 
 create-error-class@^3.0.1:
   version "3.0.2"
-  resolved "http://registry.npmjs.org/create-error-class/-/create-error-class-3.0.2.tgz#06be7abef947a3f14a30fd610671d401bca8b7b6"
+  resolved "https://registry.yarnpkg.com/create-error-class/-/create-error-class-3.0.2.tgz#06be7abef947a3f14a30fd610671d401bca8b7b6"
   dependencies:
     capture-stack-trace "^1.0.0"
 
@@ -2535,8 +2535,8 @@ cross-domain-safe-weakmap@^1.0.1, cross-domain-safe-weakmap@^1.0.8:
     cross-domain-utils "^2.0.0"
 
 cross-domain-utils@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/cross-domain-utils/-/cross-domain-utils-2.0.1.tgz#9ccf445bb624514cd2c6816afe571177f22a246b"
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/cross-domain-utils/-/cross-domain-utils-2.0.3.tgz#1378d2ab235e83eb1f4760ef3ffe8c0b94529897"
   dependencies:
     zalgo-promise "^1.0.11"
 
@@ -3012,8 +3012,8 @@ duplexer2@~0.0.2:
     readable-stream "~1.1.9"
 
 duplexify@^3.2.0:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-3.5.1.tgz#4e1516be68838bc90a49994f0b39a6e5960befcd"
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-3.5.3.tgz#8b5818800df92fd0125b27ab896491912858243e"
   dependencies:
     end-of-stream "^1.0.0"
     inherits "^2.0.1"
@@ -3111,7 +3111,13 @@ encoding@^0.1.11:
   dependencies:
     iconv-lite "~0.4.13"
 
-end-of-stream@^1.0.0, end-of-stream@^1.1.0:
+end-of-stream@^1.0.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/end-of-stream/-/end-of-stream-1.4.1.tgz#ed29634d19baba463b6ce6b80a37213eab71ec43"
+  dependencies:
+    once "^1.4.0"
+
+end-of-stream@^1.1.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/end-of-stream/-/end-of-stream-1.4.0.tgz#7a90d833efda6cfa6eac0f4949dbb0fad3a63206"
   dependencies:
@@ -4132,7 +4138,7 @@ github-from-package@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/github-from-package/-/github-from-package-0.0.0.tgz#97fb5d96bfde8973313f20e8288ef9a167fa64ce"
 
-gl@^4.0.3:
+gl@4.0.4, gl@^4.0.3, gl@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/gl/-/gl-4.0.4.tgz#46745f365a230672b2f988d85018f737e64c3343"
   dependencies:
@@ -4611,8 +4617,8 @@ iltorb@^1.0.9:
     node-pre-gyp "^0.6.34"
 
 immutability-helper@^2.3.1:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.6.2.tgz#0df76cd906518cf81f79caecb4e55d2850a11e2d"
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.6.4.tgz#a931aef97257fcb6d2b5456de652ab6e3bba8408"
   dependencies:
     invariant "^2.2.0"
 
@@ -5787,12 +5793,12 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
-mapbox-gl-arcgis-tiled-map-service@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/mapbox-gl-arcgis-tiled-map-service/-/mapbox-gl-arcgis-tiled-map-service-0.1.2.tgz#f669b420c544123f3bd69dcf358e677c28766c8a"
+mapbox-gl-arcgis-tiled-map-service@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl-arcgis-tiled-map-service/-/mapbox-gl-arcgis-tiled-map-service-0.2.0.tgz#253f03715031f4931d19ddb89382c75f6102a8f7"
   dependencies:
     "@mapbox/sphericalmercator" "^1.0.5"
-    gl "^4.0.3"
+    gl "4.0.4"
     jsdom "^9.11.0"
 
 mapbox-gl-dual-scale-control@0.1.1:
@@ -5803,11 +5809,11 @@ mapbox-gl-dual-scale-control@0.1.1:
     gl "^4.0.3"
     jsdom "^9.11.0"
 
-mapbox-gl-regex-query@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/mapbox-gl-regex-query/-/mapbox-gl-regex-query-0.1.2.tgz#f28bb715b98544a356ec4cb138ceab8e9983ef2f"
+mapbox-gl-regex-query@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl-regex-query/-/mapbox-gl-regex-query-0.2.0.tgz#b9ebb86d96e3e69879625297956c5a68690f37e9"
   dependencies:
-    gl "^4.0.3"
+    gl "^4.0.4"
     jsdom "^9.11.0"
 
 mapbox-gl@0.43.0:
@@ -6911,8 +6917,8 @@ pg-types@^1.12.1, pg-types@~1.12.1:
     postgres-interval "^1.1.0"
 
 pg@^7.3.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/pg/-/pg-7.4.0.tgz#e256061d2c52723c3c858defb97f1159ca660f83"
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-7.4.1.tgz#f3411c8ddf9f692322fe05e7017a1888e47f78f1"
   dependencies:
     buffer-writer "1.0.1"
     js-string-escape "1.0.1"
@@ -7558,14 +7564,14 @@ react-cropper@1.0.1:
     prop-types "^15.5.8"
 
 react-data-grid-addons@^2.0.59:
-  version "2.0.78"
-  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-2.0.78.tgz#e47bde1ea1067da6385a5267b564dfdb934f958d"
+  version "2.0.80"
+  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-2.0.80.tgz#d9a4c08cf14d5a6e170fcacb3da7bf210f5dcc8a"
   dependencies:
-    react-data-grid "^2.0.78"
+    react-data-grid "^2.0.80"
 
-react-data-grid@^2.0.59, react-data-grid@^2.0.78:
-  version "2.0.78"
-  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.78.tgz#f9dde48a804d19da28916ef7daa09a58abe633c6"
+react-data-grid@^2.0.59, react-data-grid@^2.0.80:
+  version "2.0.80"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-2.0.80.tgz#e6ee6eb33ac9421ec8bd7ddb760f43537f6a1c1d"
 
 react-dnd-html5-backend@^2.5.1:
   version "2.5.4"
@@ -8676,8 +8682,8 @@ snyk-try-require@^1.1.1, snyk-try-require@^1.2.0:
     then-fs "^2.0.0"
 
 snyk@^1.65.0:
-  version "1.65.3"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.65.3.tgz#4569982a753171d85288b0389135a0aeb201e42b"
+  version "1.67.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.67.0.tgz#e81f8ab29c80862fb317f196069924a65d1527b0"
   dependencies:
     abbrev "^1.0.7"
     ansi-escapes "^1.3.0"
@@ -9991,8 +9997,8 @@ x-is-string@^0.1.0:
   resolved "https://registry.yarnpkg.com/x-is-string/-/x-is-string-0.1.0.tgz#474b50865af3a49a9c4657f05acd145458f77d82"
 
 xcomponent@^6.0.33:
-  version "6.0.35"
-  resolved "https://registry.yarnpkg.com/xcomponent/-/xcomponent-6.0.35.tgz#f6a5e3be5ed89b03084986645ce1a616050f751e"
+  version "6.0.38"
+  resolved "https://registry.yarnpkg.com/xcomponent/-/xcomponent-6.0.38.tgz#22f4ed5c88384e6f583f81b60bcfd70525660df1"
   dependencies:
     beaver-logger "^3"
     cross-domain-safe-weakmap "^1.0.8"

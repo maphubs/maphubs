@@ -18,7 +18,7 @@ const AGSRaster = {
         if(mapComponent.glStyle && 
           mapComponent.glStyle.layers && 
           Array.isArray(mapComponent.glStyle.layers) &&
-            mapComponent.glStyle.layers.length >= position){
+            mapComponent.glStyle.layers.length > position){
           const beforeLayerId = mapComponent.glStyle.layers[position].id;
           mapComponent.map.addLayer(layer, beforeLayerId);
         }else{
