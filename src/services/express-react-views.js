@@ -325,52 +325,50 @@ function createEngine(engineOptions) {
 
 
         if(!options.hideFeedback && req && req.__){
-        //  var username = null;
+
+          let email = '', user_id = '', display_name = '';
           if(req.session && req.session.user){
-          //  username = req.session.user.display_name;
+            //  username = req.session.user.display_name;
+            email = req.session.user.email || req.session.user.maphubsUser.email;
+            user_id = req.session.user.maphubsUser.id;
+            display_name = req.session.user.maphubsUser.display_name;
           }
 
-          const t = function(value){
-            let translation = req.__(value);
-            translation = translation.replace(/'/g ,'&#39;');
-            return translation;
-          };
+            markup += `
 
-          const beaconTranslation = {
-            searchLabel: t('What can we help you with?'),
-            searchErrorLabel: t('Your search timed out. Please double-check your internet connection and try again.'),
-            noResultsLabel: t('No results found for'),
-            contactLabel: t('Send a Message'),
-            attachFileLabel: t('Attach a file'),
-            attachFileError: t('The maximum file size is 10mb'),
-            nameLabel: t('Your Name'),
-            nameError: t('Please enter your name'),
-            emailLabel: t('Your Email Address'),
-            emailError: t('Please enter a valid email address'),
-            topicLabel: t('Select a topic'),
-            topicError: t('Please select a topic from the list'),
-            subjectLabel: t('Subject'),
-            subjectError: t('Please enter a subject'),
-            messageLabel: t('How can we help you?'),
-            messageError: t('Please enter a message'),
-            sendLabel: t('Send'),
-            contactSuccessLabel: t('Message sent!'),
-            contactSuccessDescription: t('Thanks for reaching out! Someone from our team will get back to you soon.')
-          };
+            <script>
+            Userback = window.Userback || {};
+            Userback.access_token = '1543|2037|tb9c1TOxoFcMIA834eVabMRUqZaUgieJunWvgL3Fqfr9PAcTO8';
+        
+            Userback.email = "${email}";
+            Userback.custom_data = {
+              account_id: ${user_id},
+              name: '${display_name}'
+            };
 
-          const beaconTranslationText = JSON.stringify(beaconTranslation);
-
-          markup += `
-            <script>!function(e,o,n){
-                window.HSCW=o,window.HS=n,n.beacon=n.beacon||{};
-                var t=n.beacon;
-                t.userConfig={icon: 'question', color: '${MAPHUBS_CONFIG.primaryColor}', topArticles: true,
-                  topics: [{val: 'question', label: '${t('Question')}'},{val: 'suggestion', label: '${t('Suggestion')}'},{val: 'problem', label: '${t('Report a Problem')}'}],
-                  translation: ${beaconTranslationText},
-                },
-                t.readyQueue=[],t.config=function(e){this.userConfig=e},t.ready=function(e){this.readyQueue.push(e)},o.config={docs:{enabled:!0,baseUrl:"//maphubs.helpscoutdocs.com/"},contact:{enabled:!0,formId:"59df584f-4d3b-11e6-aae8-0a7d6919297d"}};
-                var r=e.getElementsByTagName("script")[0],c=e.createElement("script");
-                c.type="text/javascript",c.async=!0,c.src="https://djtflbt20bdde.cloudfront.net/",r.parentNode.insertBefore(c,r)}(document,window.HSCW||{},window.HS||{});</script>
+            Userback.widget_settings = {
+                language: '${locale}',
+                style: 'circle',
+                position: 'se',
+                main_button_background_colour : "${MAPHUBS_CONFIG.primaryColor}", 
+                main_button_text_colour       : "#FFFFFF", 
+                send_button_background_colour : "${MAPHUBS_CONFIG.primaryColor}", 
+                send_button_text_colour       : "#FFFFFF"  
+            };
+            Userback.after_send = function() {
+                // alert("after send");
+            };
+        
+            (function(id) {
+                if (document.getElementById(id)) {return;}
+                var s = document.createElement('script');
+                s.id = id;
+                s.src = 'https://static.userback.io/widget/v1.js';
+                var parent_node = document.head || document.body;
+                parent_node.appendChild(s);
+            })('userback-sdk');
+        </script> 
+            
             `;
 
         }

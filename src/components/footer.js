@@ -80,7 +80,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       contactUs = (
          <ul>
           <li>{this.__('Contact Us')}</li>
-          <li><a className="page-footer no-padding center" href="#" onClick={function(){HS.beacon.open();}}>{MAPHUBS_CONFIG.contactEmail}</a></li>
+          <li><a className="page-footer no-padding center" href={`mailto:${MAPHUBS_CONFIG.contactEmail}`}>{MAPHUBS_CONFIG.contactEmail}</a></li>
           <li><a className="page-footer no-padding center" href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}>@{MAPHUBS_CONFIG.twitter}</a></li>
         </ul>
       );

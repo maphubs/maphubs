@@ -23,16 +23,9 @@ type Props = {
   activePage: string,
   logoLinkUrl: string,
   showSearch: boolean,
-  customSearchLink: string,
-  showMakeAMap: boolean,
-  showExplore: boolean,
-  showOSM: boolean,
-  customLinks: Array<Link>
-}
-
-type DefaultProps = {
-  logoLinkUrl: string,
-  showSearch: boolean,
+  showHelp: boolean,
+  customSearchLink?: string,
+  customHelpLink?: string,
   showMakeAMap: boolean,
   showExplore: boolean,
   showOSM: boolean,
@@ -45,9 +38,10 @@ export default class Header extends MapHubsComponent<Props, State> {
 
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     logoLinkUrl: '/',
     showSearch: true,
+    showHelp: true,
     showMakeAMap: true,
     showExplore: true,
     showOSM: false,
@@ -176,17 +170,33 @@ getCookie = (cname: string) => {
   renderSearch = () => {
     let search = '';
     if(this.props.showSearch){
-      const searchLink = this.props.customSearchLink? this.props.customSearchLink: '/search';
+      const searchLink = this.props.customSearchLink || '/search';
       search = (
-        <li className="nav-link-wrapper nav-tooltip"
+        <li className="nav-link-wrapper nav-tooltip" style={{width: '30px'}}
           data-position="bottom" data-delay="50" data-tooltip={this.__('Search')}>
-          <a  className="nav-link-item" href={searchLink}>
+          <a  className="nav-link-item" style={{padding: 0, margin: 'auto', textAlign: 'center'}} href={searchLink}>
             <i className="material-icons">search</i>
           </a>
         </li>
       );
     }
     return search;
+  }
+
+  renderHelp = () => {
+    let help;
+    if(this.props.showHelp){
+      const helpLink = this.props.customHelpLink || 'http://help.maphubs.com';
+      help = (
+        <li className="nav-link-wrapper nav-tooltip" style={{width: '30px'}}
+          data-position="bottom" data-delay="50" data-tooltip={this.__('Help/Support')}>
+          <a  className="nav-link-item" style={{padding: 0, margin: 'auto', textAlign: 'center'}} target="_blank" rel="noopener noreferrer" href={helpLink}>
+            <i className="material-icons">help_outline</i>
+          </a>
+        </li>
+      );
+    }
+    return help;
   }
 
   renderMakeAMap = (mapClasses: any) => {
@@ -222,7 +232,7 @@ getCookie = (cname: string) => {
         <li className="nav-dropdown-link-wrapper nav-link-wrapper">
           <a className={exploreClasses} id="header-explore-menu" href="#!" data-activates="explore-dropdown" style={{paddingRight: 0}}>{this.__('Explore')}<i className="material-icons right" style={{marginLeft: 0}}>arrow_drop_down</i></a>
             <ul id="explore-dropdown" className="dropdown-content">
-              <li><a href="/explore" className="nav-hover-menu-item">{this.__('Explore')}</a></li>
+              <li><a href="/explore" className="nav-hover-menu-item">{this.__('All')}</a></li>
               <li className="divider"></li>
               <li><a href="/maps" className="nav-hover-menu-item">{this.__('Maps')}</a></li>
               <li><a href="/stories" className="nav-hover-menu-item">{this.__('Stories')}</a></li>
@@ -279,6 +289,7 @@ getCookie = (cname: string) => {
             }
             <LocaleChooser/>
              {this.renderSearch()}
+             {this.renderHelp()}
             <UserMenu id="user-menu-header"/>
           </ul>
           <ul className="side-nav" id="side-nav-menu">
