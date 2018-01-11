@@ -57,10 +57,10 @@ export default class CreateHubStory extends MapHubsComponent<Props, State> {
               popularMaps={this.props.popularMaps}
               hub_id={this.props.hub.hub_id}/>
           </div>
+          <Notification />
+          <Message />
+          <Confirmation />
         </main>
-        <Notification />
-        <Message />
-        <Confirmation />
       </ErrorBoundary>
     );
   }

@@ -50,10 +50,10 @@ export default class EditHubStory extends MapHubsComponent<Props, void> {
               popularMaps={this.props.popularMaps}
               storyType="hub" hub_id={this.props.hub.hub_id}/>
           </div>
+          <Notification />
+          <Message />
+          <Confirmation />
         </main>
-        <Notification />
-        <Message />
-        <Confirmation />
       </ErrorBoundary>
     );
   }
