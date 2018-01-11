@@ -73,6 +73,7 @@ module.exports = function (config: Object, req: any, res: any){
       description,
       mailchimp: useMailChimp,
       props, 
+      hideFeedback: config.hideFeedback,
       req
     });
   });
