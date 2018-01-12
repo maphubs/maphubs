@@ -17,8 +17,8 @@
     "css": "/public/creategroup.f85adae45ee66a24e9af.css"
   },
   "createhubstory": {
-    "js": "/public/createhubstory.58c3e1e4863e134a6f3f.js",
-    "css": "/public/createhubstory.58c3e1e4863e134a6f3f.css"
+    "js": "/public/createhubstory.615c305bedf17b3660cb.js",
+    "css": "/public/createhubstory.615c305bedf17b3660cb.css"
   },
   "createlayer": {
     "js": "/public/createlayer.e295a78e00873b1a7ef0.js",
@@ -33,8 +33,8 @@
     "css": "/public/createuserstory.6406f3ae178f8b6730b8.css"
   },
   "edithubstory": {
-    "js": "/public/edithubstory.e916815d19a4cec0d0bf.js",
-    "css": "/public/edithubstory.e916815d19a4cec0d0bf.css"
+    "js": "/public/edithubstory.d654734c6b426fc5658d.js",
+    "css": "/public/edithubstory.d654734c6b426fc5658d.css"
   },
   "edituserstory": {
     "js": "/public/edituserstory.63546fd17f0b1769d047.js",
@@ -202,10 +202,10 @@
     "css": "/public/userstory.3847aefd69b474dc07db.css"
   },
   "vendor": {
-    "js": "/public/vendor.1b4145dc6a5f3f2b8bf6.js"
+    "js": "/public/vendor.e9bb721a43f1db615714.js"
   },
   "metadata": {
-    "version": "0.15.15"
+    "version": "0.15.16"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
