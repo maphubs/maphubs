@@ -17,7 +17,6 @@ CREATE TABLE users (
     new_email character varying(255),
     creation_ip character varying(255),
     languages character varying(255),
-    status user_status_enum DEFAULT 'pending'::user_status_enum NOT NULL,
     consider_pd boolean DEFAULT false NOT NULL,
     terms_seen boolean DEFAULT false NOT NULL,
 );
