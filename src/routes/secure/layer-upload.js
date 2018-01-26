@@ -32,14 +32,16 @@ module.exports = function(app: any) {
           if(importerResult.type && importerResult.type === 'FeatureCollection'){
             //is geoJSON
             const result = await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, shortid, false, true);
-            return res.status(200).send(result);
+            log.info('Upload Complete');
+            res.status(200).send(result);
+            log.info('upload response sent');
           }else{
             //pass through other types of results
             return res.status(200).send(importerResult);
           }  
-          }else {
-            return notAllowedError(res, 'layer');
-          }
+        }else {
+          return notAllowedError(res, 'layer');
+        }
       }else{
         throw new Error('layer not found');
       } 
