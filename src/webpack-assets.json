@@ -124,7 +124,7 @@
     "css": "/public/layers.90c921b6f033985286f3.css"
   },
   "locales": {
-    "js": "/public/locales.762dd20f8bb5c35dfb2f.js"
+    "js": "/public/locales.325a7b7ee72ebfe540e8.js"
   },
   "login": {
     "js": "/public/login.ecff34c22635fc28df5d.js"
@@ -202,10 +202,10 @@
     "css": "/public/userstory.f16162c57ef11f261026.css"
   },
   "vendor": {
-    "js": "/public/vendor.9455002ec54674b9eb92.js"
+    "js": "/public/vendor.82b0c29d691d784dc9b0.js"
   },
   "metadata": {
-    "version": "0.15.17"
+    "version": "0.15.19"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
@@ -251,7 +251,7 @@
     "css": "/public/allgroups.96ece58c3883e0b90a43.css"
   },
   "auth0invite": {
-    "js": "/public/auth0invite.62f612747125a045fb2a.js"
+    "js": "/public/auth0invite.d7621bcd826d2c7ddb30.js"
   },
   "layerreplace": {
     "js": "/public/layerreplace.d0d28a8a50ed90fcc6fb.js",
