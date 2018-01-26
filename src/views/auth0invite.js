@@ -16,6 +16,7 @@ type Props = {
   locale: string,
   _csrf: string,
   email: string,
+  existingAccount: boolean,
   footerConfig: Object,
   headerConfig: Object
 }
@@ -31,6 +32,14 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
   constructor(props: Props) {
     super(props);
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  }
+
+  componentDidMount(){
+    if(this.props.existingAccount){
+      this.showLogin();
+    }else{
+      this.showSignup();
+    }
   }
 
   showLogin = () => {
@@ -53,6 +62,11 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
       initialScreen = 'login';
       allowSignUp = false;
       allowLogin = true;
+    }
+
+    let passwordPlaceholder = 'your password';
+    if(signup) {
+      passwordPlaceholder = 'choose a password';
     }
 
     const lock = new Auth0Lock(this.props.AUTH0_CLIENT_ID, this.props.AUTH0_DOMAIN,{ 
@@ -80,6 +94,7 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
       },
       languageDictionary: {
         title: `${this.__('MapHubs Account')}`,
+        passwordInputPlaceholder: `${this.__(passwordPlaceholder)}`,
         signUpTerms: `${this.__('I have read and agree to the ')} <a href="/terms" target="_blank">${this.__('terms')}</a> ${this.__('and')} <a href="/privacy" target="_blank">${this.__('privacy policy')}.</a>`
       }
     });
@@ -104,8 +119,17 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
     this.lock = lock;
   }
 
-
   render() {
+    let message = '';
+    if(this.props.existingAccount){
+      message = (
+        <p style={{textAlign: 'center'}}>{this.__(`We have detected an existing MapHubs account for your email, please login to your account to complete the signup process.`)}</p>
+      );
+    }else{
+      message = (
+        <p style={{textAlign: 'center'}}>{this.__(`Welcome to MapHubs! Please choose a user name and password to signup for an account.`)}</p>
+      );
+    }
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig}/>
@@ -115,15 +139,8 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
               <h4 className="center">{this.__('Email Confirmed')}</h4>         
             </div>    
           </div>
-          <div className="row center" style={{margin: 'auto'}}>
-            <div className="col s12 m6">
-            <p>{this.__(`I already have a MapHubs Account for ${this.props.email}`)}</p> 
-              <a className="btn" onClick={this.showLogin}>{this.__('Login')}</a>
-            </div>
-            <div className="col s12 m6">
-            <p>{this.__(`Create a new account for my email address ${this.props.email}`)}</p> 
-              <a className="btn"  onClick={this.showSignup}>{this.__('Signup')}</a>
-            </div>
+          <div className="row no-margin">
+            {message}
           </div>
           <div className="row no-margin" style={{paddingTop: '20px', minHeight: '200px'}}>
            <div id="login-container"></div>         

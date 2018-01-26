@@ -6,6 +6,7 @@ const log = require('../../services/log');
 const apiError = require('../../services/error-response').apiError;
 const nextError = require('../../services/error-response').nextError;
 const apiDataError = require('../../services/error-response').apiDataError;
+const Auth0Helper = require('../../services/auth0-helper');
 const local = require('../../local');
 const csrfProtection = require('csurf')({cookie: false});
 
@@ -19,41 +20,46 @@ if(!local.mapHubsPro){
 module.exports = function(app: any) {
 
 
- app.get('/signup/invite/:key', csrfProtection, (req, res, next) => {
-
+ app.get('/signup/invite/:key', csrfProtection, async (req, res, next) => {
+  try{
     const inviteKey = req.params.key;
     if(inviteKey){
-      Admin.checkInviteKey(inviteKey)
-      .then((valid) => {
-        if(valid){
-          return Admin.useInvite(inviteKey)
-          .then((email) => {
-            return res.render('auth0invite', {
-              title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, 
-              props: {
-                email, 
-                inviteKey,
-                AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
-                AUTH0_DOMAIN: local.AUTH0_DOMAIN,
-                AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
-              }, 
-              req});
-          });
-        }else{
-          return res.render('error', {
-            title: req.__('Invalid Key'),
-            props: {
-              title: req.__('Invite Key Invalid'),
-              error: req.__('The key used was invalid or has already been used. Please contact an administrator.'),
-              url: req.url
-            },
-            req
-          });
+      if(await Admin.checkInviteKey(inviteKey)){
+        const email = await Admin.useInvite(inviteKey);
+        //check if auth0 already
+        let existingAccount = false;
+        const accessToken = await Auth0Helper.getManagementToken();
+        const auth0Accounts = await Auth0Helper.findUserByEmail(email, accessToken);
+        if(auth0Accounts && Array.isArray(auth0Accounts) && auth0Accounts.length > 0){
+          log.info(`Found User: ${JSON.stringify(auth0Accounts)}`);
+          existingAccount = true;
         }
-      }).catch(nextError(next));
-    }else{
-      return res.redirect('/login');
-    }
+        res.render('auth0invite', {
+          title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName, 
+          props: {
+            email, 
+            inviteKey,
+            existingAccount,
+            AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
+            AUTH0_DOMAIN: local.AUTH0_DOMAIN,
+            AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
+          }, 
+          req});
+      }else{
+        return res.render('error', {
+          title: req.__('Invalid Key'),
+          props: {
+            title: req.__('Invite Key Invalid'),
+            error: req.__('The key used was invalid or has already been used. Please contact an administrator.'),
+            url: req.url
+          },
+          req
+        });
+      }
+      }else{
+        return res.redirect('/login');
+      }
+    }catch(err){nextError(next)(err);}
   });
 
   app.get('/signup', csrfProtection, (req, res) => {

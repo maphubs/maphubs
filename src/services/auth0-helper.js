@@ -1,5 +1,6 @@
 const local = require('../local');
 const request = require("request-promise");
+const urlencode = require('urlencode');
 
 module.exports = {
 
@@ -31,6 +32,19 @@ module.exports = {
           authorization: 'Bearer ' +  token
         },
         body: {app_metadata: data},
+        json: true
+      };
+    return request(options);
+  },
+
+  findUserByEmail(email, token){
+    const options = { 
+        method: 'GET',
+        url: `https://${local.AUTH0_DOMAIN}/api/v2/users-by-email?email=${urlencode(email)}`,
+        headers: { 
+          'content-type': 'application/json',
+          authorization: 'Bearer ' +  token
+        },
         json: true
       };
     return request(options);

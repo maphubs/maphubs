@@ -44,7 +44,8 @@ const createMapHubsUser = async function(profile: Object){
   const user_id = await User.createUser(profile._json.email, display_name, display_name, profile.id);
   log.info(`Created new MapHubs user ${display_name} with id ${user_id}`);
   await saveMapHubsIDToAuth0(profile, user_id);
-  const maphubsUser = await AuthUsers.find(x => user_id(x));
+  // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
+  const maphubsUser = await AuthUsers.find(user_id);
   //attach MapHubs User
   profile.maphubsUser = {
     id: maphubsUser.id,
