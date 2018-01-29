@@ -227,7 +227,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
 
     return (
       <div>
-        <Progress id='save-style-progess' title={this.__('Saving map')} subTitle='' dismissible={false} show={this.state.saving} />
+        <Progress id='save-style-progess' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
         <div className='row'>
 
           <div className='row center'>

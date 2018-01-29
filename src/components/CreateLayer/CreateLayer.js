@@ -151,6 +151,11 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                     selected={this.state.source === 'ags'} icon='cloud_download'
                     onSelect={this.selectSource} />
                 </div>
+                <div className='col s6 m4 l4'>
+                  <SourceSelectionBox name={this.__('WMS')} value={'wms'}
+                    selected={this.state.source === 'wms'} icon='cloud_download'
+                    onSelect={this.selectSource} />
+                </div>
               </div>
             </div>
           </div>

@@ -888,5 +888,6 @@
 	"Satellite Data": "Satellite Data",
 	"Sentinel-2": "Sentinel-2",
 	"Remote Data Sources": "Remote Data Sources",
-	"Upload Data or Import MapHubs Data": "Upload Data or Import MapHubs Data"
+	"Upload Data or Import MapHubs Data": "Upload Data or Import MapHubs Data",
+	"WMS": "WMS"
 }

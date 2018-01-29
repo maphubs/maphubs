@@ -8,6 +8,8 @@ import VectorTileSource from './VectorTileSource'
 import GeoJSONUrlSource from './GeoJSONUrlSource'
 import AGOLSource from './AGOLSource'
 import PlanetLabsSource from './PlanetLabsSource'
+import SentinelSource from './SentinelSource'
+import WMSSource from './WMSSource'
 
 export default {
 
@@ -26,6 +28,10 @@ export default {
       return (<AGOLSource onSubmit={this.onSubmit} />)
     } else if (type === 'planet') {
       return (<PlanetLabsSource onSubmit={this.onSubmit} />)
+    } else if (type === 'sentinel') {
+      return (<SentinelSource onSubmit={this.onSubmit} />)
+    } else if (type === 'wms') {
+      return (<WMSSource onSubmit={this.onSubmit} />)
     } else if (type === 'remote') {
       return (
         <div style={{marginTop: '20px'}}>
