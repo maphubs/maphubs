@@ -167,8 +167,9 @@ module.exports = {
   },
 
   onSearchResultClick (result: Object) {
-    if (result.bbox) {
-      this.map.fitBounds(result.bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 16})
+    if (result.bbox || result.boundingbox) {
+      const bbox = result.bbox ? result.bbox : result.boundingbox
+      this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 16})
     } else if (result._geometry || result.geometry) {
       const geometry = result._geometry ? result._geometry : result.geometry
       if (geometry.type === 'Point') {
@@ -177,6 +178,8 @@ module.exports = {
         const bbox = _bbox(geometry)
         this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 22})
       }
+    } else if (result.lat && result.lon) {
+      this.map.flyTo({center: [result.lon, result.lat]})
     }
   },
 

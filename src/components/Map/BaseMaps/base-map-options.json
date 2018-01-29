@@ -5,9 +5,9 @@
       "en": "Default (Light)",
       "fr": ""
     },
-    "attribution": "<a href=\"https://mapzen.com\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; Mapzen</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "loadFromFile": "positron"
+    "tilehostingUrl": "https://free.tilehosting.com/styles/positron/style.json?key="
   },
   {
     "value": "dark", 
@@ -15,9 +15,9 @@
       "en": "Dark",
       "fr": "Dark"
     },
-    "attribution": "<a href=\"https://mapzen.com\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; Mapzen</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "loadFromFile": "darkmatter"
+    "tilehostingUrl": "https://free.tilehosting.com/styles/darkmatter/style.json?key="
   },
   {
     "value": "streets", 
@@ -25,9 +25,9 @@
       "en": "Streets",
       "fr": "Streets"
     },
-    "attribution": "<a href=\"https://mapzen.com\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; Mapzen</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "loadFromFile": "osmLiberty"
+    "tilehostingUrl": "https://free.tilehosting.com/styles/basic/style.json?key="
   },
   {
     "value": "bing-satellite", 

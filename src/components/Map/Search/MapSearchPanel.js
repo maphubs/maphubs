@@ -100,14 +100,24 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   // Uses Mapzen autocomplete API
   runLocationSearch (query: string) {
     const _this = this
-    // get mapzen API key
-
     // run autocomplete search
-    const url = `https://search.mapzen.com/v1/autocomplete?text=${query}&api_key=${MAPHUBS_CONFIG.MAPZEN_API_KEY}`
+    const url = `https://geocoder.tilehosting.com/q/${query}.js?key=${MAPHUBS_CONFIG.TILEHOSTING_GEOCODING_API_KEY}`
+
     request.get(url)
       .then((res) => {
-        const locationSearchResults = res.body
-        return _this.setState({locationSearchResults, query})
+        const { count, results } = res.body
+        if (count > 0 && results) {
+          const features = results.map((feature) => {
+            /* eslint-disable camelcase */
+            const { id, name, display_name } = feature
+            return {
+              key: `${id}`,
+              value: display_name || name,
+              feature
+            }
+          })
+          return _this.setState({locationSearchResults: features, query})
+        } // elsefeatures
       })
       .catch(err => {
         debug.log(err)
@@ -151,16 +161,15 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
 
     let locationResults = ''
     if (this.state.locationSearchResults &&
-      this.state.locationSearchResults.features &&
-      this.state.locationSearchResults.features.length > 0) {
+      this.state.locationSearchResults.length > 0) {
       locationResults = (
         <div className='collection'>
           {
-            this.state.locationSearchResults.features.map(result => {
+            this.state.locationSearchResults.map(result => {
               return (
-                <a key={result.properties.id} href='#!' className='collection-item'
-                  onClick={function () { _this.onClickResult(result) }}>
-                  {result.properties.name}
+                <a key={result.key} href='#!' className='collection-item'
+                  onClick={function () { _this.onClickResult(result.feature) }}>
+                  {result.value}
                 </a>
               )
             })
