@@ -1,22 +1,21 @@
 // @flow
-const Layer = require('../../models/layer');
-const Group = require('../../models/group');
-const Hub = require('../../models/hub');
-const Map = require('../../models/map');
-const Page = require('../../models/page');
-const Story = require('../../models/story');
-const nextError = require('../../services/error-response').nextError;
-const csrfProtection = require('csurf')({cookie: false});
-const renderCMSPage = require('../../services/render-cms-page');
+const Layer = require('../../models/layer')
+const Group = require('../../models/group')
+const Hub = require('../../models/hub')
+const Map = require('../../models/map')
+const Page = require('../../models/page')
+const Story = require('../../models/story')
+const nextError = require('../../services/error-response').nextError
+const csrfProtection = require('csurf')({cookie: false})
+const renderCMSPage = require('../../services/render-cms-page')
 
-module.exports = function(app: any) {
-
+module.exports = function (app: any) {
   app.get('/', csrfProtection, async (req, res, next) => {
     try {
-      const {home} = await Page.getPageConfigs(['home']);
-      await renderCMSPage(home, req, res);
-    } catch (err) { nextError(next)(err); }
-  });
+      const {home} = await Page.getPageConfigs(['home'])
+      await renderCMSPage(home, req, res)
+    } catch (err) { nextError(next)(err) }
+  })
 
   app.get('/explore', csrfProtection, async (req, res, next) => {
     try {
@@ -38,24 +37,25 @@ module.exports = function(app: any) {
           recentHubs: await Hub.getRecentHubs(10),
           recentMaps: await Map.getRecentMaps(10),
           recentStories: await Story.getRecentStories(10)
-        }, req
-      });
-    } catch (err) { nextError(next)(err); }
-  });
+        },
+        req
+      })
+    } catch (err) { nextError(next)(err) }
+  })
 
   app.get('/terms', csrfProtection, (req, res) => {
     return res.render('terms', {
       title: req.__('Terms') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {},
       req
-    });
-  });
+    })
+  })
 
   app.get('/privacy', csrfProtection, (req, res) => {
     return res.render('privacy', {
       title: req.__('Privacy') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {},
       req
-    });
-  });
-};
+    })
+  })
+}

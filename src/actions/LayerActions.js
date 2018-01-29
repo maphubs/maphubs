@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux'
 export default Reflux.createActions([
   'loadLayer',
   'saveSettings',
@@ -21,7 +21,7 @@ export default Reflux.createActions([
   'setComplete',
   'finishUpload',
 
-  //presets
+  // presets
   'setImportedTags',
   'submitPresets',
   'addPreset',
@@ -32,4 +32,4 @@ export default Reflux.createActions([
   'movePresetDown',
   'loadPresets',
   'loadDefaultPresets'
-]);
+])

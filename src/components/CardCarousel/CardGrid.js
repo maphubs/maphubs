@@ -1,10 +1,10 @@
-//@flow
-import React from 'react';
-import Card  from './Card';
-import PageSelection from '../UI/PageSelection';
-import _chunk from 'lodash.chunk';
+// @flow
+import React from 'react'
+import Card from './Card'
+import PageSelection from '../UI/PageSelection'
+import _chunk from 'lodash.chunk'
 
-import type {CardConfig} from './Card';
+import type {CardConfig} from './Card'
 
   type Props = {
     cards: Array<CardConfig>,
@@ -18,7 +18,6 @@ import type {CardConfig} from './Card';
   }
 
 export default class CardGrid extends React.Component<Props, State> {
-
   props: Props
 
   static defaultProps = {
@@ -28,47 +27,47 @@ export default class CardGrid extends React.Component<Props, State> {
 
   state: State
 
-  constructor(props: Props){
-    super(props);
-    const chunks: NestedArray<CardConfig> = _chunk(props.cards, props.cardsPerPage);
+  constructor (props: Props) {
+    super(props)
+    const chunks: NestedArray<CardConfig> = _chunk(props.cards, props.cardsPerPage)
     this.state = {
       chunks,
       page: 1
-    };
+    }
   }
 
-  componentWillReceiveProps(nextProps: Props){
-    const chunks: NestedArray<CardConfig> = _chunk(nextProps.cards, nextProps.cardsPerPage);
+  componentWillReceiveProps (nextProps: Props) {
+    const chunks: NestedArray<CardConfig> = _chunk(nextProps.cards, nextProps.cardsPerPage)
     this.setState({
       chunks
-    });
+    })
   }
 
   onChangePage = (page: number) => {
-    this.setState({page});
+    this.setState({page})
   }
 
-  render() {
-    const numPages = this.state.chunks.length;
-    const cards: Array<CardConfig> = (this.state.chunks[this.state.page-1]: Array<CardConfig>);
-     return (
-       <div>
-         <div className="row no-margin right-align">
+  render () {
+    const numPages = this.state.chunks.length
+    const cards: Array<CardConfig> = (this.state.chunks[this.state.page - 1]: Array<CardConfig>)
+    return (
+      <div>
+        <div className='row no-margin right-align'>
           <PageSelection page={this.state.page} numPages={numPages} onClick={this.onChangePage} />
         </div>
-         <div className="row">
-        {cards.map((card) => {
-             return (
-               <div key={card.id} className="col s12 m4 l3">
-                 <Card showAddButton={this.props.showAddButton} {...card} />
+        <div className='row'>
+          {cards.map((card) => {
+            return (
+              <div key={card.id} className='col s12 m4 l3'>
+                <Card showAddButton={this.props.showAddButton} {...card} />
               </div>
-            );
-           })}
+            )
+          })}
         </div>
-        <div className="row right-align">
+        <div className='row right-align'>
           <PageSelection page={this.state.page} numPages={numPages} onClick={this.onChangePage} />
         </div>
       </div>
-     );
+    )
   }
 }

@@ -1,33 +1,30 @@
 // @flow
-const urlUtil = require('./url-util');
-import slugify from 'slugify';
-
-import type {Layer} from '../stores/layer-store';
-import type {CardConfig} from '../components/CardCarousel/Card';
+import slugify from 'slugify'
+import type {Layer} from '../stores/layer-store'
+import type {CardConfig} from '../components/CardCarousel/Card'
+const urlUtil = require('./url-util')
 
 type CardConfigArray = Array<CardConfig>
 
 module.exports = {
 
-
-  combineCards(cardDataArray: Array<CardConfigArray>): Array<CardConfig>{
-    let output = [];
+  combineCards (cardDataArray: Array<CardConfigArray>): Array<CardConfig> {
+    let output = []
     cardDataArray.forEach((cardArr: Array<CardConfig>) => {
-      output = output.concat(cardArr);
-    });
-    return output;
+      output = output.concat(cardArr)
+    })
+    return output
   },
 
-  getLayerCard(layer: Layer, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
+  getLayerCard (layer: Layer, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
+    const layer_id: number = layer.layer_id ? layer.layer_id : -1
 
-    const layer_id: number = layer.layer_id ? layer.layer_id: -1;
+    const image_url = `/img/resize/400?url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`
 
-    const image_url = `/img/resize/400?url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`;
-    
     return {
       id: `layer-${layer_id.toString()}`,
-      title: layer.name, //LocalizedString
-      description: layer.description, //LocalizedString
+      title: layer.name, // LocalizedString
+      description: layer.description, // LocalizedString
       image_url,
       source: layer.source,
       group: layer.owned_by_group_id,
@@ -36,12 +33,12 @@ module.exports = {
       data: layer,
       private: layer.private,
       onClick
-    };
+    }
   },
 
-  getHubCard(hub: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
-    const title = hub.name.replace('&nbsp;', '');
-    const hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id;
+  getHubCard (hub: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
+    const title = hub.name.replace('&nbsp;', '')
+    const hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id
     return {
       id: `hub-${hub.hub_id}`,
       title,
@@ -54,14 +51,14 @@ module.exports = {
       data: hub,
       private: hub.private,
       onClick
-    };
+    }
   },
 
-  getMapCard(map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
-    const image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`;
+  getMapCard (map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
+    const image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`
     return {
       id: `map-${map.map_id.toString()}`,
-      title: map.title,//LocalizedString
+      title: map.title, // LocalizedString
       group: map.owned_by_group_id,
       image_url,
       link: '/map/view/' + map.map_id + '/',
@@ -69,47 +66,46 @@ module.exports = {
       data: map,
       private: map.private,
       onClick
-    };
+    }
   },
 
-  getGroupCard(group: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig{
-    let image_url;
-    if(group.hasimage){
-      image_url = `/img/resize/400?url=/group/${group.group_id}/image`;
+  getGroupCard (group: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
+    let image_url
+    if (group.hasimage) {
+      image_url = `/img/resize/400?url=/group/${group.group_id}/image`
     }
     return {
       id: `group-${group.group_id}`,
-      title: group.name, //LocalizedString
-      description: group.description, //LocalizedString
+      title: group.name, // LocalizedString
+      description: group.description, // LocalizedString
       image_url,
       link: '/group/' + group.group_id,
       group: group.group_id,
       type: 'group',
       data: group,
       onClick
-    };
+    }
   },
 
-
-  getStoryCard(story: Object, id: number, arr: Array<Object>, onClick?: Function){
-    const title = story.title.replace('&nbsp;', '');
-    let story_url = '';
-    const baseUrl = urlUtil.getBaseUrl();
-    if(story.display_name){
-      story_url = baseUrl + '/user/' + story.display_name;
-    }else if(story.hub_id){
-      const hubUrl = baseUrl + '/hub/' + story.hub_id;
-      story_url = hubUrl;
+  getStoryCard (story: Object, id: number, arr: Array<Object>, onClick?: Function) {
+    const title = story.title.replace('&nbsp;', '')
+    let story_url = ''
+    const baseUrl = urlUtil.getBaseUrl()
+    if (story.display_name) {
+      story_url = baseUrl + '/user/' + story.display_name
+    } else if (story.hub_id) {
+      const hubUrl = baseUrl + '/hub/' + story.hub_id
+      story_url = hubUrl
     }
-    story_url += '/story/' + story.story_id + '/' + slugify(title);
+    story_url += '/story/' + story.story_id + '/' + slugify(title)
 
-    let image_url;
-    if(story.firstimage){
-      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/');
-      if(image_url.startsWith(baseUrl)){
-        image_url = image_url.replace(baseUrl, '');
+    let image_url
+    if (story.firstimage) {
+      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/')
+      if (image_url.startsWith(baseUrl)) {
+        image_url = image_url.replace(baseUrl, '')
       }
-      image_url = '/img/resize/400?url=' + image_url;
+      image_url = '/img/resize/400?url=' + image_url
     }
 
     return {
@@ -120,8 +116,7 @@ module.exports = {
       type: 'story',
       data: story,
       onClick
-    };
+    }
   }
 
-
-};
+}

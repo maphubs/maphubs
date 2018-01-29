@@ -1,21 +1,20 @@
-//@flow
-import React from 'react';
+// @flow
+import React from 'react'
 
 type Props = {
   currentSlide: number,
   slidesToScroll: number,
   slideCount: number,
   wrapAround: boolean,
-  nextSlide:  Function
+  nextSlide: Function
 }
 
 export default class SlideRightArrow extends React.PureComponent<Props, void> {
-
     props: Props
 
     handleClick = (e: Event) => {
-      e.preventDefault();
-      this.props.nextSlide();
+      e.preventDefault()
+      this.props.nextSlide()
     }
 
     getButtonStyles = (disabled: boolean) => {
@@ -27,15 +26,15 @@ export default class SlideRightArrow extends React.PureComponent<Props, void> {
         outline: 0,
         opacity: disabled ? 0.3 : 1,
         cursor: 'pointer'
-      };
+      }
     }
 
-    render() {
+    render () {
       return (
         <button
-          className="valign-wrapper hide-on-small-only"
+          className='valign-wrapper hide-on-small-only'
           style={this.getButtonStyles(this.props.currentSlide + this.props.slidesToScroll >= this.props.slideCount && !this.props.wrapAround)}
-          onClick={this.handleClick}><i className="material-icons valign" style={{fontSize: '32px', fontWeight: 'bold'}}>arrow_forward</i></button>
-      );
-    } 
-  }
+          onClick={this.handleClick}><i className='material-icons valign' style={{fontSize: '32px', fontWeight: 'bold'}}>arrow_forward</i></button>
+      )
+    }
+}

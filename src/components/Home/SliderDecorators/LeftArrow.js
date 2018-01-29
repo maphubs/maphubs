@@ -1,19 +1,18 @@
-//@flow
-import React from 'react';
+// @flow
+import React from 'react'
 
 type Props = {
   currentSlide: number,
   wrapAround: boolean,
-  previousSlide:  Function
+  previousSlide: Function
 }
 
 export default class SlideLeftArrow extends React.PureComponent<Props, void> {
-
-      props:  Props
+      props: Props
 
       handleClick = (e: Event) => {
-        e.preventDefault();
-        this.props.previousSlide();
+        e.preventDefault()
+        this.props.previousSlide()
       }
 
       getButtonStyles = (disabled: boolean) => {
@@ -25,16 +24,15 @@ export default class SlideLeftArrow extends React.PureComponent<Props, void> {
           outline: 0,
           opacity: disabled ? 0.3 : 1,
           cursor: 'pointer'
-        };
+        }
       }
 
-      render() {
+      render () {
         return (
           <button
-          className="valign-wrapper hide-on-small-only"
+            className='valign-wrapper hide-on-small-only'
             style={this.getButtonStyles(this.props.currentSlide === 0 && !this.props.wrapAround)}
-            onClick={this.handleClick}><i className="material-icons valign" style={{fontSize: '32px', fontWeight: 'bold'}}>arrow_back</i></button>
-        );
+            onClick={this.handleClick}><i className='material-icons valign' style={{fontSize: '32px', fontWeight: 'bold'}}>arrow_back</i></button>
+        )
       }
-      
-    }
+}

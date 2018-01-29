@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux'
 export default Reflux.createActions([
   'setSearchLayers',
   'setMapLayers',
@@ -24,4 +24,4 @@ export default Reflux.createActions([
   'stopEditing',
   'setSettings',
   'setPublic'
-]);
+])

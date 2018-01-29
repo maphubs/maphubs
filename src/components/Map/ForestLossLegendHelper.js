@@ -1,8 +1,7 @@
 
-
 module.exports = {
-  getLegendLayers(){
-    return [   
+  getLegendLayers () {
+    return [
       {
         active: true,
         layer_id: '-2',
@@ -14,7 +13,7 @@ module.exports = {
         is_external: true,
         external_layer_config: {},
         style: {
-          source: {}, layers:[]
+          source: {}, layers: []
         },
         legend_html: `
         <div class="omh-legend">
@@ -44,7 +43,7 @@ module.exports = {
 </div>
         `
       },
-       {
+      {
         active: true,
         layer_id: '-1',
         name: 'Tree Cover Loss 2001-2014',
@@ -55,7 +54,7 @@ module.exports = {
         is_external: true,
         external_layer_config: {},
         style: {
-          source: {}, layers:[]
+          source: {}, layers: []
         },
         legend_html: `
           <div class="omh-legend">
@@ -65,6 +64,6 @@ module.exports = {
  </div>
         `
       }
-    ];
+    ]
   }
-};
+}

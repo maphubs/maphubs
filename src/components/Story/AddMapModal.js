@@ -1,21 +1,22 @@
-//@flow
-import React from 'react';
-import {Modal, ModalContent} from '../Modal/Modal.js';
+// @flow
+import React from 'react'
+import {Modal, ModalContent} from '../Modal/Modal.js'
+import CardCarousel from '../CardCarousel/CardCarousel'
+import SearchBox from '../SearchBox'
+import NotificationActions from '../../actions/NotificationActions'
+import MessageActions from '../../actions/MessageActions'
+import MapHubsComponent from '../../components/MapHubsComponent'
 
-import CardCarousel from '../CardCarousel/CardCarousel';
-const cardUtil = require('../../services/card-util');
-import SearchBox from '../SearchBox';
-import NotificationActions from '../../actions/NotificationActions';
-const urlUtil = require('../../services/url-util');
-const request = require('superagent');
-const checkClientError = require('../../services/client-error-response').checkClientError;
-import MessageActions from '../../actions/MessageActions';
-const debug = require('../../services/debug')('AddMapToStory');
-import MapHubsComponent from '../../components/MapHubsComponent';
+const cardUtil = require('../../services/card-util')
+const urlUtil = require('../../services/url-util')
+const request = require('superagent')
+const checkClientError = require('../../services/client-error-response').checkClientError
+
+const debug = require('../../services/debug')('AddMapToStory')
 
 type Props = {
-   onAdd:  Function,
-  onClose:  Function,
+   onAdd: Function,
+  onClose: Function,
   myMaps: Array<Object>,
   popularMaps: Array<Object>
 }
@@ -28,11 +29,10 @@ type State = {
 }
 
 export default class AddMapModal extends MapHubsComponent<Props, State> {
-
-  props:  Props
+  props: Props
 
   static defaultProps = {
-    myMaps:[],
+    myMaps: [],
     popularMaps: []
   }
 
@@ -44,138 +44,135 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
   }
 
   show = () => {
-    this.setState({show: true});
+    this.setState({show: true})
   }
 
   onAdd = (map: Object) => {
-    this.setState({show: false});
-    this.props.onAdd(map);
+    this.setState({show: false})
+    this.props.onAdd(map)
   }
 
   close = () => {
-    this.setState({show: false});
+    this.setState({show: false})
   }
 
   hide = () => {
-    this.close();
+    this.close()
   }
 
-  handleSearch(input: string) {
-    const _this = this;
-    debug.log('searching for: ' + input);
+  handleSearch (input: string) {
+    const _this = this
+    debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
-    .type('json').accept('json')
-    .end((err, res) => {
-      checkClientError(res, err, (err) => {
-        if(err){
-          MessageActions.showMessage({title: 'Error', message: err});
-        }else{
-          if(res.body.maps && res.body.maps.length > 0){
-            _this.setState({searchActive: true, searchResults: res.body.maps});
-            NotificationActions.showNotification({message: res.body.maps.length + ' ' + _this.__('Results'), position: 'bottomleft'});
-          }else{
-            //show error message
-            NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'});
+      .type('json').accept('json')
+      .end((err, res) => {
+        checkClientError(res, err, (err) => {
+          if (err) {
+            MessageActions.showMessage({title: 'Error', message: err})
+          } else {
+            if (res.body.maps && res.body.maps.length > 0) {
+              _this.setState({searchActive: true, searchResults: res.body.maps})
+              NotificationActions.showNotification({message: res.body.maps.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+            } else {
+            // show error message
+              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+            }
           }
+        },
+        (cb) => {
+          cb()
         }
-      },
-      (cb) => {
-        cb();
-      }
-      );
-    });
+        )
+      })
   }
 
   resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []});
+    this.setState({searchActive: false, searchResults: []})
   }
 
-  modalReady = () =>{
-    this.setState({modalReady: true});
+  modalReady = () => {
+    this.setState({modalReady: true})
   }
 
-  render(){
-    const _this = this;
+  render () {
+    const _this = this
 
-    let myMaps = '';
-    if(this.props.myMaps && this.props.myMaps.length > 0){
+    let myMaps = ''
+    if (this.props.myMaps && this.props.myMaps.length > 0) {
       const myCards = this.props.myMaps.map((map, i) => {
-        return cardUtil.getMapCard(map, i, [], _this.onAdd);
-      });
+        return cardUtil.getMapCard(map, i, [], _this.onAdd)
+      })
       myMaps = (
-        <div className="row" style={{width: '100%'}}>
-          <div className="col s12 no-padding" style={{width: '100%'}}>
+        <div className='row' style={{width: '100%'}}>
+          <div className='col s12 no-padding' style={{width: '100%'}}>
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Maps')}</h5>
-            <div className="divider"></div>
-            <CardCarousel cards={myCards} infinite={false}/>
+            <div className='divider' />
+            <CardCarousel cards={myCards} infinite={false} />
           </div>
         </div>
-      );
+      )
     }
 
     const popularCards = this.props.popularMaps.map((map, i) => {
-      return cardUtil.getMapCard(map, i, [], _this.onAdd);
-    });
+      return cardUtil.getMapCard(map, i, [], _this.onAdd)
+    })
 
-    let searchResults = '';
-    let searchCards = [];
-    if(this.state.searchActive){
-      if(this.state.searchResults.length > 0){
-
-
+    let searchResults = ''
+    let searchCards = []
+    if (this.state.searchActive) {
+      if (this.state.searchResults.length > 0) {
         searchCards = this.state.searchResults.map((map, i) => {
-          return cardUtil.getMapCard(map, i, [], _this.onAdd);
-        });
+          return cardUtil.getMapCard(map, i, [], _this.onAdd)
+        })
         searchResults = (
-          <div className="row">
-            <div className="col s12 no-padding">
-            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
-            <div className="divider"></div>
-            <CardCarousel infinite={false} cards={searchCards}/>
+          <div className='row'>
+            <div className='col s12 no-padding'>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
+              <div className='divider' />
+              <CardCarousel infinite={false} cards={searchCards} />
+            </div>
           </div>
-          </div>
-        );
-      }
-      else {
+        )
+      } else {
         searchResults = (
-          <div className="row">
-            <div className="col s12">
-            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
-            <div className="divider"></div>
-            <p><b>{this.__('No Results Found')}</b></p>
+          <div className='row'>
+            <div className='col s12'>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
+              <div className='divider' />
+              <p><b>{this.__('No Results Found')}</b></p>
+            </div>
           </div>
-          </div>
-        );
+        )
       }
     }
 
     return (
-      <Modal show={this.state.show} ready={this.modalReady} className="create-map-modal" dismissible={false} fixedFooter={false}>
+      <Modal show={this.state.show} ready={this.modalReady} className='create-map-modal' dismissible={false} fixedFooter={false}>
         <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden', width: '100%'}}>
-          <a className="omh-color" style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
-            <i className="material-icons selected-feature-close" style={{fontSize: '35px'}}>close</i>
+          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
+            <i className='material-icons selected-feature-close' style={{fontSize: '35px'}}>close</i>
           </a>
           <div className='row' style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
             <div className='col s12'>
-              <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+              <SearchBox label={this.__('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
             </div>
           </div>
           <div className='row'style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto'}}>
             <div className='col s12 no-padding' style={{height: '100%', width: '100%'}}>
               {searchResults}
               {myMaps}
-              <div className="row">
-                <div className="col s12 no-padding">
+              <div className='row'>
+                <div className='col s12 no-padding'>
                   <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Maps')}</h5>
-                  <div className="divider"></div>
-                  <CardCarousel cards={popularCards} infinite={false}/>
+                  <div className='divider' />
+                  <CardCarousel cards={popularCards} infinite={false} />
                 </div>
               </div>
             </div>
           </div>
 
-      </ModalContent>
+        </ModalContent>
       </Modal>
-      );
+    )
   }
 }

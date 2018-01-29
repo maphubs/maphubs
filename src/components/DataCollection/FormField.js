@@ -1,9 +1,9 @@
-//@flow
-import React from 'react';
-import TextInput from '../forms/textInput';
-import Toggle from '../forms/toggle';
-import Select from '../forms/select';
-import MapHubsComponent from '../MapHubsComponent';
+// @flow
+import React from 'react'
+import TextInput from '../forms/textInput'
+import Toggle from '../forms/toggle'
+import Select from '../forms/select'
+import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {|
   preset: Object,
@@ -11,21 +11,20 @@ type Props = {|
 |}
 
 export default class FormField extends MapHubsComponent<Props, void> {
-
   props: Props
 
-  render() {
-    const preset = this.props.preset;
+  render () {
+    const preset = this.props.preset
     let field = (
       <TextInput
         name={preset.tag}
         label={this._o_(preset.label)}
-        className="col s12 no-margin"
+        className='col s12 no-margin'
         required={preset.isRequired}
         showCharCount={false}
         value={this.props.value}
       />
-    );
+    )
 
     /*
     var presetOptions = [
@@ -38,55 +37,54 @@ export default class FormField extends MapHubsComponent<Props, void> {
     ];
     */
 
-    //TODO: add localized string support
+    // TODO: add localized string support
 
-    if(preset.type === 'number'){
+    if (preset.type === 'number') {
       field = (
         <TextInput
           name={preset.tag}
           label={this._o_(preset.label)}
-          className="col s12 no-margin"
-          validations="isNumeric" validationErrors={{
-               isNumeric: this.__('Value must be a number')
-           }}
+          className='col s12 no-margin'
+          validations='isNumeric' validationErrors={{
+            isNumeric: this.__('Value must be a number')
+          }}
           required={preset.isRequired}
           value={this.props.value}
         />
-      );
-    }else if(preset.type === 'radio' || preset.type === 'combo'){
-      const options = [];
-      if(preset.options){
-
+      )
+    } else if (preset.type === 'radio' || preset.type === 'combo') {
+      const options = []
+      if (preset.options) {
         preset.options.split(',').forEach(option => {
-          option = option.trim();
-          options.push({value: option, label: option});
-        });
+          option = option.trim()
+          options.push({value: option, label: option})
+        })
       }
       field = (
-          <Select
-            name={preset.tag} id={'select-' + preset.tag}
-            label={this._o_(preset.label)}
-            options={options}
-            className="col s12 no-margin"
-            startEmpty={!this.props.value}
-            required={preset.isRequired}
-            value={this.props.value}
-         />
-     );
-   }else if(preset.type === 'check'){
+        <Select
+          name={preset.tag} id={'select-' + preset.tag}
+          label={this._o_(preset.label)}
+          options={options}
+          className='col s12 no-margin'
+          startEmpty={!this.props.value}
+          required={preset.isRequired}
+          value={this.props.value}
+        />
+      )
+    } else if (preset.type === 'check') {
       field = (
         <Toggle name={preset.tag}
-          labelOff="" labelOn={this._o_(preset.label)}
-          className="col s12"
+          labelOff='' labelOn={this._o_(preset.label)}
+          className='col s12'
           checked={this.props.value}
         />
-      );
+      )
     }
 
     return (
-      <div className="row">
+      <div className='row'>
         {field}
       </div>
-    );
+    )
   }
 }

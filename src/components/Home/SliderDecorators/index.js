@@ -1,6 +1,6 @@
-import LeftArrow from './LeftArrow';
-import RightArrow from './RightArrow';
-import Dots from './Dots';
+import LeftArrow from './LeftArrow'
+import RightArrow from './RightArrow'
+import Dots from './Dots'
 
 const SliderDecorators = [
   {
@@ -15,6 +15,6 @@ const SliderDecorators = [
     component: Dots,
     position: 'BottomRight'
   }
-];
+]
 
-export default SliderDecorators;
+export default SliderDecorators

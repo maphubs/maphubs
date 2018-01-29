@@ -3122,13 +3122,7 @@ doctrine@1.5.0:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
-doctrine@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.2.tgz#68f96ce8efc56cc42651f1faadb4f175273b0075"
-  dependencies:
-    esutils "^2.0.2"
-
-doctrine@^2.1.0:
+doctrine@^2.0.2, doctrine@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.1.0.tgz#5cd01fc101621b42c4cd7f5d1a66243716d3f39d"
   dependencies:
@@ -3351,8 +3345,8 @@ error-ex@^1.2.0:
     is-arrayish "^0.2.1"
 
 es-abstract@^1.7.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.9.0.tgz#690829a07cae36b222e7fd9b75c0d0573eb25227"
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.10.0.tgz#1ecb36c197842a00d8ee4c2dfd8646bb97d60864"
   dependencies:
     es-to-primitive "^1.1.1"
     function-bind "^1.1.1"
@@ -3490,6 +3484,20 @@ eslint-ast-utils@^1.0.0:
     lodash.get "^4.4.2"
     lodash.zip "^4.2.0"
 
+eslint-config-standard-jsx@^4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/eslint-config-standard-jsx/-/eslint-config-standard-jsx-4.0.2.tgz#009e53c4ddb1e9ee70b4650ffe63a7f39f8836e1"
+
+eslint-config-standard-react@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-standard-react/-/eslint-config-standard-react-5.0.0.tgz#64c7b8140172852be810a53d48ee87649ff178e3"
+  dependencies:
+    eslint-config-standard-jsx "^4.0.0"
+
+eslint-config-standard@^11.0.0-beta.0:
+  version "11.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-11.0.0-beta.0.tgz#f8afe69803d95c685a4b8392b8793188eb03cbb3"
+
 eslint-import-resolver-node@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.1.tgz#4422574cde66a9a7b099938ee4d508a199e0e3cc"
@@ -3514,7 +3522,7 @@ eslint-plugin-flowtype@^2.35.1:
   dependencies:
     lodash "^4.15.0"
 
-eslint-plugin-import@^2.7.0:
+eslint-plugin-import@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.8.0.tgz#fa1b6ef31fcb3c501c09859c1b86f1fc5b986894"
   dependencies:
@@ -3529,17 +3537,26 @@ eslint-plugin-import@^2.7.0:
     minimatch "^3.0.3"
     read-pkg-up "^2.0.0"
 
-eslint-plugin-promise@^3.5.0:
+eslint-plugin-node@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-node/-/eslint-plugin-node-5.2.1.tgz#80df3253c4d7901045ec87fa660a284e32bdca29"
+  dependencies:
+    ignore "^3.3.6"
+    minimatch "^3.0.4"
+    resolve "^1.3.3"
+    semver "5.3.0"
+
+eslint-plugin-promise@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-3.6.0.tgz#54b7658c8f454813dc2a870aff8152ec4969ba75"
 
-eslint-plugin-react@7.5.1:
-  version "7.5.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.5.1.tgz#52e56e8d80c810de158859ef07b880d2f56ee30b"
+eslint-plugin-react@^7.6.1:
+  version "7.6.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.6.1.tgz#5d0e908be599f0c02fbf4eef0c7ed6f29dff7633"
   dependencies:
-    doctrine "^2.0.0"
+    doctrine "^2.0.2"
     has "^1.0.1"
-    jsx-ast-utils "^2.0.0"
+    jsx-ast-utils "^2.0.1"
     prop-types "^15.6.0"
 
 eslint-plugin-security@^1.4.0:
@@ -3547,6 +3564,10 @@ eslint-plugin-security@^1.4.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-security/-/eslint-plugin-security-1.4.0.tgz#d4f314484a80b1b613b8c8886e84f52efe1526c2"
   dependencies:
     safe-regex "^1.1.0"
+
+eslint-plugin-standard@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-standard/-/eslint-plugin-standard-3.0.1.tgz#34d0c915b45edc6f010393c7eef3823b08565cf2"
 
 eslint-plugin-unicorn@3.0.1:
   version "3.0.1"
@@ -4916,7 +4937,7 @@ ieee754@^1.1.4, ieee754@^1.1.6:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
 
-ignore@^3.3.3:
+ignore@^3.3.3, ignore@^3.3.6:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.7.tgz#612289bfb3c220e186a58118618d5be8c1bab021"
 
@@ -5597,7 +5618,7 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jsx-ast-utils@^2.0.0:
+jsx-ast-utils@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-2.0.1.tgz#e801b1b39985e20fffc87b40e3748080e2dcac7f"
   dependencies:
@@ -8747,7 +8768,7 @@ resolve-url@^0.2.1, resolve-url@~0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
 
-resolve@^1.1.5, resolve@^1.2.0:
+resolve@^1.1.5, resolve@^1.2.0, resolve@^1.3.3:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.5.0.tgz#1f09acce796c9a762579f31b2c1cc4c3cddf9f36"
   dependencies:
@@ -8973,7 +8994,7 @@ semver@4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/semver/-/semver-4.3.2.tgz#c7a07158a80bedd052355b770d82d6640f803be7"
 
-semver@~5.3.0:
+semver@5.3.0, semver@~5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 

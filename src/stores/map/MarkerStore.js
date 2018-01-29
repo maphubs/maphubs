@@ -1,57 +1,56 @@
-import Reflux from 'reflux';
-import Actions from '../../actions/map/MarkerActions';
-const debug = require('../../services/debug')('stores/MarkerStore');
+import Reflux from 'reflux'
+import Actions from '../../actions/map/MarkerActions'
+const debug = require('../../services/debug')('stores/MarkerStore')
 
 /**
  * A store to hold marker objects so we can update them later
  */
 export default class MarkerStore extends Reflux.Store {
-
-  constructor(){
-    super();
+  constructor () {
+    super()
     this.state = {
       markers: {}
-    };
-    this.listenables = Actions;
+    }
+    this.listenables = Actions
   }
 
-  reset(){
+  reset () {
     this.setState({
       markers: {}
-    });
+    })
   }
 
-  storeDidUpdate(){
-    debug.log('store updated');
+  storeDidUpdate () {
+    debug.log('store updated')
   }
 
-  addMarker(layer_id, mhid, marker){
-    const featureId = mhid.split(':')[1];
-    if(!this.state.markers[layer_id]){
-      this.state.markers[layer_id] = {};
+  addMarker (layer_id, mhid, marker) {
+    const featureId = mhid.split(':')[1]
+    if (!this.state.markers[layer_id]) {
+      this.state.markers[layer_id] = {}
     }
-    this.state.markers[layer_id][featureId] = marker;
+    this.state.markers[layer_id][featureId] = marker
   }
 
-  removeMarker(layer_id, mhid){
-    const featureId = mhid.split(':')[1];
-    if(this.state.markers[layer_id]){
-      delete this.state.markers[layer_id][featureId];
-    }
-  }
-
-  removeLayer(layer_id){
-    if(this.state.markers[layer_id]){
-      delete this.state.markers[layer_id];
+  removeMarker (layer_id, mhid) {
+    const featureId = mhid.split(':')[1]
+    if (this.state.markers[layer_id]) {
+      delete this.state.markers[layer_id][featureId]
     }
   }
 
-  getMarker(layer_id, mhid, cb){
-    const featureId = mhid.split(':')[1];
-    if(this.state.markers[layer_id]){
-      cb(this.state.markers[layer_id][featureId]);
-    }else{
-      cb();
+  removeLayer (layer_id) {
+    if (this.state.markers[layer_id]) {
+      delete this.state.markers[layer_id]
+    }
+  }
+
+  getMarker (layer_id, mhid, cb) {
+    const featureId = mhid.split(':')[1]
+    if (this.state.markers[layer_id]) {
+      cb(this.state.markers[layer_id][featureId])
+    } else {
+      cb()
     }
   }
 }

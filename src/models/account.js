@@ -1,75 +1,74 @@
-//@flow
-const knex = require('../connection.js');
+// @flow
+const knex = require('../connection.js')
 
 module.exports = {
 
-  async setGroupTier(group_id: string, tier_id: string, trx: any= null){
-    const db = trx ? trx : knex;
-    return db('omh.groups').udpdate({tier_id}).where({group_id});
+  async setGroupTier (groupId: string, tierId: string, trx: any = null) {
+    const db = trx || knex
+    return db('omh.groups').udpdate({tier_id: tierId}).where({group_id: groupId})
   },
 
   /**
    * Get tiers current offer to end-users
    * otherwise tiers are hidden to support grandfathered and custom accounts
    */
-  async getAvailableTiers(trx: any= null){
-    const db = trx ? trx : knex;
-    return db('omh.account_tiers').where({available: true});
+  async getAvailableTiers (trx: any = null) {
+    const db = trx || knex
+    return db('omh.account_tiers').where({available: true})
   },
 
-  async getGroupTier(group_id: string, trx: any= null): Promise<Object>{
-    const db = trx ? trx : knex;
+  async getGroupTier (groupId: string, trx: any = null): Promise<Object> {
+    const db = trx || knex
     const results = await db.select('omh.account_tiers.*')
-    .from('omh.groups').leftJoin('omh.account_tiers', 'omh.groups.tier_id', 'omh.account_tiers.tier_id')
-    .where('omh.groups.group_id', group_id);
+      .from('omh.groups').leftJoin('omh.account_tiers', 'omh.groups.tier_id', 'omh.account_tiers.tier_id')
+      .where('omh.groups.group_id', groupId)
 
-    if(results && results.length === 1){
-      return results[0];
+    if (results && results.length === 1) {
+      return results[0]
     }
-    return {};
+    return {}
   },
 
-  async countGroupMembers(group_id: string, trx: any= null): Promise<number>{
-    const db = trx ? trx : knex;
-    const result = await db.count('user_id').from('omh.group_memberships').where({group_id});
-    return parseInt(result[0].count);
+  async countGroupMembers (groupId: string, trx: any = null): Promise<number> {
+    const db = trx || knex
+    const result = await db.count('user_id').from('omh.group_memberships').where({group_id: groupId})
+    return parseInt(result[0].count)
   },
 
-  async countGroupPrivateLayers(group_id: string, trx: any= null): Promise<number>{
-    const db = trx ? trx : knex;
+  async countGroupPrivateLayers (groupId: string, trx: any = null): Promise<number> {
+    const db = trx || knex
     const result = await db.count('layer_id').from('omh.layers')
-    .where({owned_by_group_id: group_id, private: true});
-    return parseInt(result[0].count);
+      .where({owned_by_group_id: groupId, private: true})
+    return parseInt(result[0].count)
   },
 
-  async countGroupPrivateHubs(group_id: string, trx: any= null): Promise<number>{
-    const db = trx ? trx : knex;
+  async countGroupPrivateHubs (groupId: string, trx: any = null): Promise<number> {
+    const db = trx || knex
     const result = await db.count('hub_id').from('omh.hubs')
-    .where({owned_by_group_id: group_id, private: true});
-    return parseInt(result[0].count);
+      .where({owned_by_group_id: groupId, private: true})
+    return parseInt(result[0].count)
   },
 
-  async countGroupPrivateMaps(group_id: string, trx: any= null): Promise<number>{
-    const db = trx ? trx : knex;
+  async countGroupPrivateMaps (groupId: string, trx: any = null): Promise<number> {
+    const db = trx || knex
     const result = await db.count('map_id').from('omh.maps')
-    .where({owned_by_group_id: group_id, private: true});
-    return parseInt(result[0].count);
+      .where({owned_by_group_id: groupId, private: true})
+    return parseInt(result[0].count)
   },
 
-  async getStatus(group_id: string, trx: any= null): Promise<Object>{
-
-    const tier = await this.getGroupTier(group_id, trx);
-    const numGroupMembers = await this.countGroupMembers(group_id, trx);
-    const numPrivateLayers = await this.countGroupPrivateLayers(group_id, trx);
-    const numPrivateHubs = await this.countGroupPrivateHubs(group_id, trx);
-    const numPrivateMaps = await this.countGroupPrivateMaps(group_id, trx);
+  async getStatus (groupId: string, trx: any = null): Promise<Object> {
+    const tier = await this.getGroupTier(groupId, trx)
+    const numGroupMembers = await this.countGroupMembers(groupId, trx)
+    const numPrivateLayers = await this.countGroupPrivateLayers(groupId, trx)
+    const numPrivateHubs = await this.countGroupPrivateHubs(groupId, trx)
+    const numPrivateMaps = await this.countGroupPrivateMaps(groupId, trx)
 
     return {
       tier,
       numGroupMembers,
       numPrivateLayers,
       numPrivateHubs,
-      numPrivateMaps,
-    };
+      numPrivateMaps
+    }
   }
-};
+}

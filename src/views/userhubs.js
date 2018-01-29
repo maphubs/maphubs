@@ -1,14 +1,14 @@
-//@flow
-import React from 'react';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import CardCarousel from '../components/CardCarousel/CardCarousel';
-//var debug = require('../services/debug')('usermaps');
-import cardUtil from '../services/card-util';
-import MapHubsComponent from '../components/MapHubsComponent';
-import Reflux from '../components/Rehydrate';
-import LocaleStore from '../stores/LocaleStore';
-import ErrorBoundary from '../components/ErrorBoundary';
+// @flow
+import React from 'react'
+import Header from '../components/header'
+import Footer from '../components/footer'
+import CardCarousel from '../components/CardCarousel/CardCarousel'
+// var debug = require('../services/debug')('usermaps');
+import cardUtil from '../services/card-util'
+import MapHubsComponent from '../components/MapHubsComponent'
+import Reflux from '../components/Rehydrate'
+import LocaleStore from '../stores/LocaleStore'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 type Props = {
   draftHubs: Array<Object>,
@@ -29,7 +29,6 @@ type DefaultProps = {
 }
 
 export default class UserHubs extends MapHubsComponent<Props, void> {
-
   props: Props
 
   static defaultProps: DefaultProps = {
@@ -39,80 +38,84 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
     canEdit: false
   }
 
-  constructor(props: Props) {
-    super(props);
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  constructor (props: Props) {
+    super(props)
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
   }
 
-	render() {
-
-    let addButton = '', hubsMessage = '';
-    if(this.props.canEdit){
-      addButton=(
+  render () {
+    let addButton = ''
+    let hubsMessage = ''
+    if (this.props.canEdit) {
+      addButton = (
         <div>
-          <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Hub')}>
-            <a href="/createhub" className="btn-floating btn-large red red-text">
-              <i className="large material-icons">add</i>
+          <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Hub')}>
+            <a href='/createhub' className='btn-floating btn-large red red-text'>
+              <i className='large material-icons'>add</i>
             </a>
           </div>
         </div>
-      );
+      )
 
       hubsMessage = (
         <h4>{this.__('My Hubs')}</h4>
-      );
-    }else{
+      )
+    } else {
       hubsMessage = (
         <h4>{this.__('Hubs for user: ' + this.props.user.display_name)}</h4>
-      );
+      )
     }
 
-    let draftHubs = '', hasDrafts = false;
-    if(this.props.draftHubs && this.props.draftHubs.length > 0){
-      const draftCards = this.props.draftHubs.map(cardUtil.getHubCard);
+    let draftHubs = ''
+    let hasDrafts = false
+    if (this.props.draftHubs && this.props.draftHubs.length > 0) {
+      const draftCards = this.props.draftHubs.map(cardUtil.getHubCard)
       draftHubs = (
-        <div className="row">
-          <div className="col s12 no-padding">
+        <div className='row'>
+          <div className='col s12 no-padding'>
             <h5>{this.__('Draft Hubs')}</h5>
             <CardCarousel infinite={false} cards={draftCards} />
           </div>
         </div>
-      );
-      hasDrafts = true;
+      )
+      hasDrafts = true
     }
 
-  let publishedHubs = '', emptyMessage = '', divider='', hasPubished = false;
-  if(this.props.publishedHubs && this.props.publishedHubs.length > 0){
-    const publishedCards = this.props.publishedHubs.map(cardUtil.getHubCard);
-    publishedHubs = (
-      <div className="row">
-        <div className="col s12 no-padding">
-          <h5>{this.__('Published Hubs')}</h5>
-          <CardCarousel infinite={false} cards={publishedCards} />
-        </div>
-      </div>
-    );
-    if(hasDrafts){
-      divider = (
-        <div className="divider" />
-      );
-    }
-    hasPubished = true;
-  }else if(!hasDrafts && !hasPubished){
-    emptyMessage = (
-      <div className="row" style={{height: 'calc(100% - 100px)'}}>
-        <div className="valign-wrapper" style={{height: '100%'}}>
-          <div className="valign align-center center-align" style={{width: '100%'}}>
-            <h5>{this.__('Click the button below to create your first hub')}</h5>
+    let publishedHubs = ''
+    let emptyMessage = ''
+    let divider = ''
+    let hasPubished = false
+    if (this.props.publishedHubs && this.props.publishedHubs.length > 0) {
+      const publishedCards = this.props.publishedHubs.map(cardUtil.getHubCard)
+      publishedHubs = (
+        <div className='row'>
+          <div className='col s12 no-padding'>
+            <h5>{this.__('Published Hubs')}</h5>
+            <CardCarousel infinite={false} cards={publishedCards} />
           </div>
         </div>
-      </div>
-    );
-  }
-		return (
+      )
+      if (hasDrafts) {
+        divider = (
+          <div className='divider' />
+        )
+      }
+      hasPubished = true
+    } else if (!hasDrafts && !hasPubished) {
+      emptyMessage = (
+        <div className='row' style={{height: 'calc(100% - 100px)'}}>
+          <div className='valign-wrapper' style={{height: '100%'}}>
+            <div className='valign align-center center-align' style={{width: '100%'}}>
+              <h5>{this.__('Click the button below to create your first hub')}</h5>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig}/>
-        <main style={{marginLeft: '10px', marginRight:'10px'}}>
+        <Header {...this.props.headerConfig} />
+        <main style={{marginLeft: '10px', marginRight: '10px'}}>
           {hubsMessage}
           {draftHubs}
           {divider}
@@ -120,8 +123,8 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
           {emptyMessage}
           {addButton}
         </main>
-        <Footer {...this.props.footerConfig}/>
+        <Footer {...this.props.footerConfig} />
       </ErrorBoundary>
-		);
-	}
+    )
+  }
 }

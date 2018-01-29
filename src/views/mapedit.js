@@ -1,13 +1,13 @@
-//@flow
-import React from 'react';
-import Header from '../components/header';
-import MapMaker from '../components/MapMaker/MapMaker';
-import slugify from 'slugify';
-import MapHubsComponent from '../components/MapHubsComponent';
-import Reflux from '../components/Rehydrate';
-import LocaleStore from '../stores/LocaleStore';
-import BaseMapStore from '../stores/map/BaseMapStore';
-import ErrorBoundary from '../components/ErrorBoundary';
+// @flow
+import React from 'react'
+import Header from '../components/header'
+import MapMaker from '../components/MapMaker/MapMaker'
+import slugify from 'slugify'
+import MapHubsComponent from '../components/MapHubsComponent'
+import Reflux from '../components/Rehydrate'
+import LocaleStore from '../stores/LocaleStore'
+import BaseMapStore from '../stores/map/BaseMapStore'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 type Props = {
   map: Object,
@@ -21,7 +21,6 @@ type Props = {
 }
 
 export default class MapEdit extends MapHubsComponent<Props, void> {
-
   props: Props
 
   static defaultProps = {
@@ -29,23 +28,23 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
     myLayers: []
   }
 
-  constructor(props: Props) {
-    super(props);
-    this.stores.push(BaseMapStore);
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
-    if(props.mapConfig && props.mapConfig.baseMapOptions){
-       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(BaseMapStore)
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.mapConfig && props.mapConfig.baseMapOptions) {
+      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
     }
   }
 
-  mapCreated = (map_id: string, title: LocalizedString) => {
-    window.location = '/map/view/' + map_id + '/'+ slugify(this._o_(title));
+  mapCreated = (mapId: string, title: LocalizedString) => {
+    window.location = '/map/view/' + mapId + '/' + slugify(this._o_(title))
   }
 
-	render() {
-		return (
+  render () {
+    return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig}/>
+        <Header {...this.props.headerConfig} />
         <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
           <MapMaker onCreate={this.mapCreated}
             mapConfig={this.props.mapConfig}
@@ -57,9 +56,9 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
             settings={this.props.map.settings}
             popularLayers={this.props.popularLayers}
             myLayers={this.props.myLayers}
-             edit/>
+            edit />
         </main>
       </ErrorBoundary>
-		);
-	}
+    )
+  }
 }

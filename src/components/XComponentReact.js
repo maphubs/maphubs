@@ -1,31 +1,30 @@
-import React from 'react';
+import React from 'react'
 
 export default class XComponentReact extends React.Component<any, void> {
-
-  render() {
+  render () {
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div  
-        ref={(container) => { this.xcontainer = container; }} 
+      <div
+        ref={(container) => { this.xcontainer = container }}
         {...this.props.containerProps}
       />
-    );
+    )
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // eslint-disable-next-line global-require (needed for SSR)
-    const xcomponent = require('xcomponent');
-    const xEmbedComponent = xcomponent.create(this.props);
-    xEmbedComponent.log(`instantiate_react_component`);
+    const xcomponent = require('xcomponent')
+    const xEmbedComponent = xcomponent.create(this.props)
+    xEmbedComponent.log(`instantiate_react_component`)
 
-    const parent = xEmbedComponent.init(Object.assign({}, this.props), null, this.xcontainer);
-    this.setState({parent});
-    parent.render(this.xcontainer);
+    const parent = xEmbedComponent.init(Object.assign({}, this.props), null, this.xcontainer)
+    this.setState({parent})
+    parent.render(this.xcontainer)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     if (this.state && this.state.parent) {
-      this.state.parent.updateProps(Object.assign({}, this.props));
+      this.state.parent.updateProps(Object.assign({}, this.props))
     }
   }
 }

@@ -1,16 +1,16 @@
-//@flow
-import React from 'react';
-import Formsy, {addValidationRule} from 'formsy-react';
-import TextInput from '../forms/textInput';
-import LayerActions from '../../actions/LayerActions';
-import NotificationActions from '../../actions/NotificationActions';
-import MessageActions from '../../actions/MessageActions';
-import Radio from '../forms/radio';
-import LayerStore from '../../stores/layer-store';
-import MapHubsComponent from '../MapHubsComponent';
+// @flow
+import React from 'react'
+import Formsy, {addValidationRule} from 'formsy-react'
+import TextInput from '../forms/textInput'
+import LayerActions from '../../actions/LayerActions'
+import NotificationActions from '../../actions/NotificationActions'
+import MessageActions from '../../actions/MessageActions'
+import Radio from '../forms/radio'
+import LayerStore from '../../stores/layer-store'
+import MapHubsComponent from '../MapHubsComponent'
 
-import type {LocaleStoreState} from '../../stores/LocaleStore';
-import type {LayerStoreState} from '../../stores/layer-store';
+import type {LocaleStoreState} from '../../stores/LocaleStore'
+import type {LayerStoreState} from '../../stores/layer-store'
 
 type Props = {
   onSubmit: Function
@@ -22,43 +22,42 @@ type State = {
 } & LocaleStoreState & LayerStoreState
 
 export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
-
   props: Props
 
   state: State = {
     canSubmit: false
   }
 
-  constructor(props: Props){
-    super(props);
-    this.stores.push(LayerStore);
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(LayerStore)
   }
 
-  componentWillMount(){
-    super.componentWillMount();
+  componentWillMount () {
+    super.componentWillMount()
     addValidationRule('isHttps', (values, value) => {
-      if(value){
-        return value.startsWith('https://');
-      }else{
-        return false;
-      }   
-    });
+      if (value) {
+        return value.startsWith('https://')
+      } else {
+        return false
+      }
+    })
   }
 
   enableButton = () => {
     this.setState({
       canSubmit: true
-    });
+    })
   }
 
   disableButton = () => {
     this.setState({
       canSubmit: false
-    });
+    })
   }
 
   submit = (model: Object) => {
-    const _this = this;
+    const _this = this
 
     LayerActions.saveDataSettings({
       is_external: true,
@@ -70,75 +69,73 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
         data: model.geojsonUrl
       }
     }, _this.state._csrf, (err) => {
-      if (err){
-        MessageActions.showMessage({title: _this.__('Error'), message: err});
-      }else{
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Error'), message: err})
+      } else {
         NotificationActions.showNotification({
           message: _this.__('Layer Saved'),
           dismissAfter: 1000,
-          onDismiss(){
-            //reset style to load correct source
-            LayerActions.resetStyle();
-            //tell the map that the data is initialized
-            LayerActions.tileServiceInitialized();
-            _this.props.onSubmit();
+          onDismiss () {
+            // reset style to load correct source
+            LayerActions.resetStyle()
+            // tell the map that the data is initialized
+            LayerActions.tileServiceInitialized()
+            _this.props.onSubmit()
           }
-        });
+        })
       }
-
-    });
+    })
   }
 
   sourceChange = (value: string) => {
-    this.setState({selectedSource: value});
+    this.setState({selectedSource: value})
   }
 
   onPrev = () => {
-    if(this.props.onPrev) this.props.onPrev();
+    if (this.props.onPrev) this.props.onPrev()
   }
 
-	render() {
-
+  render () {
     const dataTypeOptions = [
       {value: 'point', label: this.__('Point')},
-      {value: 'line', label: this.__("Line")},
-      {value: 'polygon', label: this.__("Polygon")}
-    ];
+      {value: 'line', label: this.__('Line')},
+      {value: 'polygon', label: this.__('Polygon')}
+    ]
 
-		return (
-        <div className="row">
-          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+    return (
+      <div className='row'>
+        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
-            <div>
-              <p>{this.__('GeoJSON URL')}</p>
-            <div className="row">
-              <TextInput name="geojsonUrl" label={this.__('GeoJSON URL')} icon="info" className="col s12" validations="maxLength:500,isHttps" validationErrors={{
-                     maxLength: this.__('Must be 500 characters or less.'),
-                     isHttps:  this.__('SSL required for external links, URLs must start with https://')
-                 }} length={500}
-                 dataPosition="top" dataTooltip={this.__('Vector Tile URL for example:') +'http://myserver/tiles/{z}/{x}/{y}.pbf'}
-                 required/>
+          <div>
+            <p>{this.__('GeoJSON URL')}</p>
+            <div className='row'>
+              <TextInput name='geojsonUrl' label={this.__('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
+                maxLength: this.__('Must be 500 characters or less.'),
+                isHttps: this.__('SSL required for external links, URLs must start with https://')
+              }} length={500}
+              dataPosition='top' dataTooltip={this.__('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
+              required />
             </div>
-            <div className="row">
-              <TextInput name="id" label={this.__('ID Property (Optional)')} icon="info" className="col s12" 
-                 dataPosition="top" dataTooltip={this.__('Some features require idenify a unique identifier that can be used to select features')}
-                 required/>
-            </div>  
-            <div  className="row">
-              <Radio name="data_type" label=""
-                  defaultValue="point"
-                  options={dataTypeOptions}
-                  className="col s10"
-                />
+            <div className='row'>
+              <TextInput name='id' label={this.__('ID Property (Optional)')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={this.__('Some features require idenify a unique identifier that can be used to select features')}
+                required />
+            </div>
+            <div className='row'>
+              <Radio name='data_type' label=''
+                defaultValue='point'
+                options={dataTypeOptions}
+                className='col s10'
+              />
             </div>
           </div>
 
-            <div className="right">
-              <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
-            </div>
-          </Formsy>
+          <div className='right'>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+          </div>
+        </Formsy>
 
       </div>
-		);
-	}
+    )
+  }
 }

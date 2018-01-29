@@ -1,11 +1,11 @@
-//@flow
-import React from 'react';
-import MapHubsComponent from '../components/MapHubsComponent';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import Reflux from '../components/Rehydrate';
-import LocaleStore from '../stores/LocaleStore';
-import ErrorBoundary from '../components/ErrorBoundary';
+// @flow
+import React from 'react'
+import MapHubsComponent from '../components/MapHubsComponent'
+import Header from '../components/header'
+import Footer from '../components/footer'
+import Reflux from '../components/Rehydrate'
+import LocaleStore from '../stores/LocaleStore'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 type Props = {
   locale: string,
@@ -17,43 +17,41 @@ type Props = {
 }
 
 export default class Error extends MapHubsComponent<Props, void> {
-
   props: Props
 
-  constructor(props: Props) {
-    super(props);
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  constructor (props: Props) {
+    super(props)
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
   }
 
-  render() {
+  render () {
+    let message = ''
 
-    let message = '';
-
-    if(this.props.requireInvite){
+    if (this.props.requireInvite) {
       message = (
-        <p className="flow-text center-align">{this.__('Accessing this site requires an invitation. Please contact us at ')}
+        <p className='flow-text center-align'>{this.__('Accessing this site requires an invitation. Please contact us at ')}
           <a href={`mailto:${this.props.adminEmail}`}>{this.props.adminEmail}</a>
         </p>
-      );
-    }else{
+      )
+    } else {
       message = (
-        <p className="flow-text center-align">{this.__('We are having an issue finding your account. Please contact us at ')}
+        <p className='flow-text center-align'>{this.__('We are having an issue finding your account. Please contact us at ')}
           <a href={`mailto:${this.props.adminEmail}`}>{this.props.adminEmail}</a>
         </p>
-      );
+      )
     }
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig}/>
+        <Header {...this.props.headerConfig} />
         <main>
-          <div className="container s12">
-            <h3 className="center-align">{this.__('Unable to Access Account')}</h3>
+          <div className='container s12'>
+            <h3 className='center-align'>{this.__('Unable to Access Account')}</h3>
             {message}
           </div>
         </main>
-        <Footer {...this.props.footerConfig}/>
+        <Footer {...this.props.footerConfig} />
       </ErrorBoundary>
-    );
+    )
   }
 }

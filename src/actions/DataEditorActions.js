@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux'
 export default Reflux.createActions([
   'saveEdits',
   'startEditing',
@@ -12,4 +12,4 @@ export default Reflux.createActions([
   'onFeatureUpdate',
   'createFeature',
   'deleteFeature'
-]);
+])

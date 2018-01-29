@@ -1,19 +1,19 @@
-//@flow
-import React from 'react';
-import LayerListStatic from './LayerListStatic';
-const $ = require('jquery');
-import MapHubsPureComponent from '../MapHubsPureComponent';
+// @flow
+import React from 'react'
+import LayerListStatic from './LayerListStatic'
+import MapHubsPureComponent from '../MapHubsPureComponent'
 
-export default class LayerListDropDown extends MapHubsPureComponent {
+const $ = require('jquery')
 
-  props:  {
-    id: string,
-    name:  string,
-    layers:  Array<Object>,
-    toggleVisibility: Function
-  }
+type Props = {
+  id: string,
+  name: string,
+  layers: Array<Object>,
+  toggleVisibility: Function
+}
 
-  componentDidMount() {
+export default class LayerListDropDown extends MapHubsPureComponent<Props, void> {
+  componentDidMount () {
     $(this.refs.dropdownButton).dropdown({
       inDuration: 300,
       outDuration: 225,
@@ -22,21 +22,21 @@ export default class LayerListDropDown extends MapHubsPureComponent {
       gutter: 0, // Spacing from edge
       belowOrigin: true, // Displays dropdown below the button
       alignment: 'right' // Displays dropdown with edge aligned to the left of button
-    });
+    })
   }
 
-  render(){
+  render () {
     return (
-       <li style={{height: '35px'}}>
-        <a ref="dropdownButton" className="category-dropdown-button"
-          href="#!" data-activates={this.props.id} style={{paddingRight: 0, height: '35px', lineHeight: '35px'}}>{this.props.name}
-          <i className="material-icons right" style={{marginLeft: 0, lineHeight: '35px'}}>arrow_drop_down</i></a>
-          <div ref="dropdownMenu" id={this.props.id} className="dropdown-content" style={{width: '300px'}}>
-            <LayerListStatic layers={this.props.layers} toggleVisibility={this.props.toggleVisibility}
-              showDesign={false} showRemove={false} showEdit={false} showChangeDesign={false} allowReorder={false}
-            />
-          </div>
+      <li style={{height: '35px'}}>
+        <a ref='dropdownButton' className='category-dropdown-button'
+          href='#!' data-activates={this.props.id} style={{paddingRight: 0, height: '35px', lineHeight: '35px'}}>{this.props.name}
+          <i className='material-icons right' style={{marginLeft: 0, lineHeight: '35px'}}>arrow_drop_down</i></a>
+        <div ref='dropdownMenu' id={this.props.id} className='dropdown-content' style={{width: '300px'}}>
+          <LayerListStatic layers={this.props.layers} toggleVisibility={this.props.toggleVisibility}
+            showDesign={false} showRemove={false} showEdit={false} showChangeDesign={false} allowReorder={false}
+          />
+        </div>
       </li>
-    );
+    )
   }
 }

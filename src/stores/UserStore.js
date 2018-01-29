@@ -1,9 +1,9 @@
-//@flow
-import Reflux from 'reflux';
-import Actions from '../actions/UserActions';
-const request = require('superagent');
-const debug = require('../services/debug')('stores/user-store');
-const checkClientError = require('../services/client-error-response').checkClientError;
+// @flow
+import Reflux from 'reflux'
+import Actions from '../actions/UserActions'
+const request = require('superagent')
+const debug = require('../services/debug')('stores/user-store')
+const checkClientError = require('../services/client-error-response').checkClientError
 
 export type User = {
   id?: number,
@@ -20,69 +20,68 @@ export type UserStoreState = {
 }
 
 export default class UserStore extends Reflux.Store {
-
-  constructor(){
-    super();
-    this.state = this.getDefaultState();
-    this.listenables = Actions;
+  constructor () {
+    super()
+    this.state = this.getDefaultState()
+    this.listenables = Actions
   }
 
-  getDefaultState(): UserStoreState{
+  getDefaultState (): UserStoreState {
     return {
       user: {},
       loggedIn: false,
       loaded: false
-    };
+    }
   }
 
-  reset(){
-    this.setState(this.getDefaultState());
+  reset () {
+    this.setState(this.getDefaultState())
   }
 
-  storeDidUpdate(){
-    debug.log('store updated');
+  storeDidUpdate () {
+    debug.log('store updated')
   }
 
- //listeners
- login(user: string){
-   this.setState({user, loggedIn: true, loaded: true});
- }
+  // listeners
+  login (user: string) {
+    this.setState({user, loggedIn: true, loaded: true})
+  }
 
- getUser(cb: Function){
-   const _this = this;
-   request.post('/api/user/details/json')
-   .type('json').accept('json')
-   .end((err, res) => {
-     checkClientError(res, err, cb, (cb) => {
-       if (err) {
-         cb(err);
-       }else{
-         if(res.body && res.body.loggedIn){
-           _this.login(res.body.user);
-           cb();
-         }else{
-           _this.setState({loaded: true});
-           cb(JSON.stringify(res.body));
-         }
-       }
-     });
-   });
- }
+  getUser (cb: Function) {
+    const _this = this
+    request.post('/api/user/details/json')
+      .type('json').accept('json')
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          if (err) {
+            cb(err)
+          } else {
+            if (res.body && res.body.loggedIn) {
+              _this.login(res.body.user)
+              cb()
+            } else {
+              _this.setState({loaded: true})
+              cb(JSON.stringify(res.body))
+            }
+          }
+        })
+      })
+  }
 
- logout(){
-   this.setState(this.getDefaultState());
-   this.trigger(this.state);
-   //Note the server side is handed by redirecting the user to the logout page
- }
+  logout () {
+    this.setState(this.getDefaultState())
+    this.trigger(this.state)
+    // Note the server side is handed by redirecting the user to the logout page
+  }
 
-  joinMailingList(email: string, _csrf: string, cb: Function){
+  joinMailingList (email: string, _csrf: string, cb: Function) {
     request.post('/api/user/mailinglistsignup')
-    .type('json').accept('json')
-    .send({email, _csrf})
-    .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-          cb(err);
-      });
-    });
+      .type('json').accept('json')
+      .send({email, _csrf})
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          cb(err)
+        })
+      })
   }
 }

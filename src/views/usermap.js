@@ -1,35 +1,34 @@
-//@flow
-import React from 'react';
-const $ = require('jquery');
-import InteractiveMap from '../components/InteractiveMap';
-import Header from '../components/header';
-//var NotificationActions = require('../actions/NotificationActions');
-import ConfirmationActions from '../actions/ConfirmationActions';
-import NotificationActions from '../actions/NotificationActions';
-import MessageActions from '../actions/MessageActions';
-import MapMakerActions from '../actions/MapMakerActions';
-import Progress from '../components/Progress';
-import urlUtil from '../services/url-util';
-import UserStore from '../stores/UserStore';
-import request from 'superagent';
-const checkClientError = require('../services/client-error-response').checkClientError;
-import MapMakerStore from '../stores/MapMakerStore';
+// @flow
+import React from 'react'
+import InteractiveMap from '../components/InteractiveMap'
+import Header from '../components/header'
+import ConfirmationActions from '../actions/ConfirmationActions'
+import NotificationActions from '../actions/NotificationActions'
+import MessageActions from '../actions/MessageActions'
+import MapMakerActions from '../actions/MapMakerActions'
+import Progress from '../components/Progress'
+import urlUtil from '../services/url-util'
+import UserStore from '../stores/UserStore'
+import request from 'superagent'
+import MapMakerStore from '../stores/MapMakerStore'
+import debounce from 'lodash.debounce'
+import MapHubsComponent from '../components/MapHubsComponent'
+import Reflux from '../components/Rehydrate'
+import LocaleStore from '../stores/LocaleStore'
+import fireResizeEvent from '../services/fire-resize-event'
+import type {LocaleStoreState} from '../stores/LocaleStore'
+import type {UserStoreState} from '../stores/UserStore'
+import BaseMapStore from '../stores/map/BaseMapStore'
+import PublicShareModal from '../components/InteractiveMap/PublicShareModal'
+import CopyMapModal from '../components/InteractiveMap/CopyMapModal'
+import ErrorBoundary from '../components/ErrorBoundary'
 
-import debounce from 'lodash.debounce';
-import MapHubsComponent from '../components/MapHubsComponent';
-import Reflux from '../components/Rehydrate';
-import LocaleStore from '../stores/LocaleStore';
-import fireResizeEvent from '../services/fire-resize-event';
-import type {LocaleStoreState} from '../stores/LocaleStore';
-import type {UserStoreState} from '../stores/UserStore';
-import BaseMapStore from '../stores/map/BaseMapStore';
-import PublicShareModal from '../components/InteractiveMap/PublicShareModal';
-import CopyMapModal from '../components/InteractiveMap/CopyMapModal';
-import ErrorBoundary from '../components/ErrorBoundary';
+const $ = require('jquery')
+const checkClientError = require('../services/client-error-response').checkClientError
 
-let clipboard;
-if(process.env.APP_ENV === 'browser'){
- clipboard = require('clipboard-polyfill');
+let clipboard
+if (process.env.APP_ENV === 'browser') {
+  clipboard = require('clipboard-polyfill')
 }
 
 type Props = {
@@ -53,11 +52,9 @@ type UserMapState = {
   share_id?: string
 }
 
-
 type State = LocaleStoreState & UserStoreState & UserMapState
 
 export default class UserMap extends MapHubsComponent<Props, State> {
-
   props: Props
 
   static defaultProps: DefaultProps = {
@@ -70,129 +67,128 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     downloading: false
   }
 
-  constructor(props: Props){
-		super(props);
-    this.stores.push(UserStore);
-    this.stores.push(MapMakerStore);
-    this.stores.push(BaseMapStore);
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
-    if(props.mapConfig && props.mapConfig.baseMapOptions){
-       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions});
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(UserStore)
+    this.stores.push(MapMakerStore)
+    this.stores.push(BaseMapStore)
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.mapConfig && props.mapConfig.baseMapOptions) {
+      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
     }
-    if(this.props.map.share_id){
-      this.state.share_id = this.props.map.share_id;
+    if (this.props.map.share_id) {
+      this.state.share_id = this.props.map.share_id
     }
-	}
+  }
 
-  componentWillMount(){
-    super.componentWillMount();
-    const _this = this;
+  componentWillMount () {
+    super.componentWillMount()
+    const _this = this
 
-    if (typeof window === 'undefined') return; //only run this on the client
+    if (typeof window === 'undefined') return // only run this on the client
 
-    function getSize(){
+    function getSize () {
       // Get the dimensions of the viewport
-      const width = Math.floor($(window).width());
-      const height = $(window).height();
-      //var height = Math.floor(width * 0.75); //4:3 aspect ratio
-      //var height = Math.floor((width * 9)/16); //16:9 aspect ratio
-      return {width, height};
+      const width = Math.floor($(window).width())
+      const height = $(window).height()
+      // var height = Math.floor(width * 0.75); //4:3 aspect ratio
+      // var height = Math.floor((width * 9)/16); //16:9 aspect ratio
+      return {width, height}
     }
 
-    const size = getSize();
+    const size = getSize()
     this.setState({
       width: size.width,
       height: size.height
-    });
+    })
 
     $(window).resize(() => {
       debounce(() => {
-      const size = getSize();
+        const size = getSize()
         _this.setState({
           width: size.width,
           height: size.height
-        });
-      }, 300);
-    });
+        })
+      }, 300)
+    })
   }
 
-  componentDidMount() {
+  componentDidMount () {
     $(this.refs.mapLayersPanel).sideNav({
       menuWidth: 240, // Default is 240
       edge: 'left', // Choose the horizontal origin
       closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    });
+    })
   }
 
-  componentDidUpdate(){
+  componentDidUpdate () {
     debounce(() => {
-      fireResizeEvent();
-    }, 300);
+      fireResizeEvent()
+    }, 300)
   }
 
   onMouseEnterMenu = () => {
-    $('.user-map-tooltip').tooltip();
+    $('.user-map-tooltip').tooltip()
   }
 
   onDelete = () => {
-    const _this = this;
+    const _this = this
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Delete'),
       message: _this.__('Please confirm removal of ') + this._o_(this.props.map.title),
-      onPositiveResponse(){
+      onPositiveResponse () {
         MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, (err) => {
-          if(err){
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err});
+          if (err) {
+            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
           } else {
-            window.location = '/maps';
+            window.location = '/maps'
           }
-
-        });
+        })
       }
-    });
+    })
   }
 
   onEdit = () => {
-    window.location = '/map/edit/' + this.props.map.map_id;
-    //CreateMapActions.showMapDesigner();
+    window.location = '/map/edit/' + this.props.map.map_id
+    // CreateMapActions.showMapDesigner();
   }
 
   onFullScreen = () => {
-    let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`;
-    if(window.location.hash){
-      fullScreenLink = fullScreenLink += window.location.hash;
+    let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`
+    if (window.location.hash) {
+      fullScreenLink = fullScreenLink += window.location.hash
     }
-    window.location = fullScreenLink;
+    window.location = fullScreenLink
   }
 
   onMapChanged = () => {
-    location.reload();
+    location.reload()
   }
 
   postToMedium = () => {
-    alert('coming soon');
+    alert('coming soon')
   }
 
   download = () => {
-    const _this = this;
-    if(!this.props.map.has_screenshot){
-      //warn the user if we need to wait for the screenshot to be created
-      this.setState({downloading: true});
-      setTimeout(() => {_this.setState({downloading: false}); }, 15000);
+    const _this = this
+    if (!this.props.map.has_screenshot) {
+      // warn the user if we need to wait for the screenshot to be created
+      this.setState({downloading: true})
+      setTimeout(() => { _this.setState({downloading: false}) }, 15000)
     }
   }
 
   copyToClipboard = (val: string) => {
-    clipboard.writeText(val);
+    clipboard.writeText(val)
   }
 
   showEmbedCode = () => {
-    const baseUrl = urlUtil.getBaseUrl();
-    let url;
-    if(this.props.map.share_id){
-      url = `${baseUrl}/map/public-embed/${this.props.map.share_id}/static`;
-    }else{
-      url = `${baseUrl}/map/embed/${this.props.map.map_id}/static`;
+    const baseUrl = urlUtil.getBaseUrl()
+    let url
+    if (this.props.map.share_id) {
+      url = `${baseUrl}/map/public-embed/${this.props.map.share_id}/static`
+    } else {
+      url = `${baseUrl}/map/embed/${this.props.map.map_id}/static`
     }
 
     const code = `
@@ -201,153 +197,154 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
         &gt;
       &lt;/iframe&gt;
-    `;
-    const messageIntro =  this.__('Paste the following code into your website to embed a map:');
-     const message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`;
+    `
+    const messageIntro = this.__('Paste the following code into your website to embed a map:')
+    const message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`
 
-    MessageActions.showMessage({title: this.__('Embed Code'), message});
+    MessageActions.showMessage({title: this.__('Embed Code'), message})
   }
 
   showSharePublic = () => {
-    //show modal
-    this.refs.publicShareModal.show();
-  } 
+    // show modal
+    this.refs.publicShareModal.show()
+  }
 
   toggleSharePublic = (value: boolean) => {
-    const _this = this;
-    MapMakerActions.setPublic(this.props.map.map_id, value, this.state._csrf, (share_id) => {
-      _this.setState({share_id});
-    });
+    const _this = this
+    MapMakerActions.setPublic(this.props.map.map_id, value, this.state._csrf, (shareId) => {
+      _this.setState({share_id: shareId})
+    })
   }
 
   showCopyMap = () => {
-    //show modal
-    this.refs.copyMapModal.show();
-  } 
+    // show modal
+    this.refs.copyMapModal.show()
+  }
 
   onCopyMap = (formData: Object, cb: Function) => {
-    const _this = this;
+    const _this = this
     const data = {
-      map_id: this.props.map.map_id, 
+      map_id: this.props.map.map_id,
       title: formData.title,
       group_id: formData.group,
-      _csrf: this.state._csrf,
-    };
+      _csrf: this.state._csrf
+    }
 
     request.post('/api/map/copy')
-    .type('json').accept('json')
-    .send(data)
-    .end((err, res) => {
-      checkClientError(res, err, (err) => {
-          if(err || !res.body || !res.body.map_id){
-            MessageActions.showMessage({title: _this.__('Error'), message: err});
-          }else{
-            const map_id = res.body.map_id;
-            const url = '/map/edit/' + map_id;
+      .type('json').accept('json')
+      .send(data)
+      .end((err, res) => {
+        checkClientError(res, err, (err) => {
+          if (err || !res.body || !res.body.map_id) {
+            MessageActions.showMessage({title: _this.__('Error'), message: err})
+          } else {
+            const mapId = res.body.map_id
+            const url = '/map/edit/' + mapId
             NotificationActions.showNotification({
               message: _this.__('Map Copied'),
               dismissAfter: 2000,
-              onDismiss(){
-                cb();
-                window.location = url;
+              onDismiss () {
+                cb()
+                window.location = url
               }
-            });
+            })
           }
-      },
-      (cb) => {
-        cb();
-      });
-    });
+        },
+        (cb) => {
+          cb()
+        })
+      })
   }
 
-  render() {
-    let map = '';
-    let button = '', deleteButton = '', editButton ='', shareButton = '';
-    if(this.props.canEdit){
+  render () {
+    let map = ''
+    let button = ''
+    let deleteButton = ''
+    let editButton = ''
+    let shareButton = ''
+    if (this.props.canEdit) {
       deleteButton = (
-          <li>
-            <a onClick={this.onDelete} className="btn-floating user-map-tooltip red"
-              data-delay="50" data-position="left" data-tooltip={this.__('Delete Map')}>
-              <i className="material-icons">delete</i>
-            </a>
-          </li>
-        );
-      editButton = (
-          <li>
-            <a onClick={this.onEdit} className="btn-floating user-map-tooltip blue"
-              data-delay="50" data-position="left" data-tooltip={this.__('Edit Map')}>
-              <i className="material-icons">mode_edit</i>
-            </a>
-          </li>
-        );
-
-     
-    if(MAPHUBS_CONFIG.mapHubsPro){
-      shareButton = (
         <li>
-          <a onClick={this.showSharePublic} className="btn-floating user-map-tooltip"
-            data-delay="50" data-position="left" data-tooltip={this.__('Share')}>
-            <i className="material-icons">share</i>
+          <a onClick={this.onDelete} className='btn-floating user-map-tooltip red'
+            data-delay='50' data-position='left' data-tooltip={this.__('Delete Map')}>
+            <i className='material-icons'>delete</i>
           </a>
         </li>
-      );
+      )
+      editButton = (
+        <li>
+          <a onClick={this.onEdit} className='btn-floating user-map-tooltip blue'
+            data-delay='50' data-position='left' data-tooltip={this.__('Edit Map')}>
+            <i className='material-icons'>mode_edit</i>
+          </a>
+        </li>
+      )
+
+      if (MAPHUBS_CONFIG.mapHubsPro) {
+        shareButton = (
+          <li>
+            <a onClick={this.showSharePublic} className='btn-floating user-map-tooltip'
+              data-delay='50' data-position='left' data-tooltip={this.__('Share')}>
+              <i className='material-icons'>share</i>
+            </a>
+          </li>
+        )
+      }
     }
 
-    }
-
-    let copyButton = '';
-    if(this.state.loggedIn && this.state.user){
+    let copyButton = ''
+    if (this.state.loggedIn && this.state.user) {
       copyButton = (
         <li>
-          <a onClick={this.showCopyMap} className="btn-floating user-map-tooltip purple"
-            data-delay="50" data-position="left" data-tooltip={this.__('Copy Map')}>
-            <i className="material-icons">queue</i>
+          <a onClick={this.showCopyMap} className='btn-floating user-map-tooltip purple'
+            data-delay='50' data-position='left' data-tooltip={this.__('Copy Map')}>
+            <i className='material-icons'>queue</i>
           </a>
         </li>
-      );
+      )
     }
 
-    const download= `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`; 
-    const downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`;
+    const download = `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`
+    const downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`
 
     button = (
-    <div id="user-map-button" className="fixed-action-btn" style={{bottom: '40px'}}
-      onMouseEnter={this.onMouseEnterMenu}
+      <div id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
+        onMouseEnter={this.onMouseEnterMenu}
       >
-      <a className="btn-floating btn-large">
-        <i className="large material-icons">more_vert</i>
-      </a>
-      <ul>
-        {shareButton}
-        {deleteButton}
-        {editButton}
-        {copyButton}
-        <li>
-          <a onClick={this.download} 
-            download={download} href={downloadHREF}
-            className="btn-floating user-map-tooltip green"
-            data-delay="50" data-position="left" data-tooltip={this.__('Get Map as a PNG Image')}>
-            <i className="material-icons">insert_photo</i>
-          </a>
-        </li>
-        <li>
-          <a onClick={this.showEmbedCode} className="btn-floating user-map-tooltip orange"
-            data-delay="50" data-position="left" data-tooltip={this.__('Embed')}>
-            <i className="material-icons">code</i>
-          </a>
-        </li>
-         <li>
-          <a onClick={this.onFullScreen} className="btn-floating user-map-tooltip yellow"
-            data-delay="50" data-position="left" data-tooltip={this.__('Print/Screenshot')}>
-            <i className="material-icons">print</i>
-          </a>
-        </li>
+        <a className='btn-floating btn-large'>
+          <i className='large material-icons'>more_vert</i>
+        </a>
+        <ul>
+          {shareButton}
+          {deleteButton}
+          {editButton}
+          {copyButton}
+          <li>
+            <a onClick={this.download}
+              download={download} href={downloadHREF}
+              className='btn-floating user-map-tooltip green'
+              data-delay='50' data-position='left' data-tooltip={this.__('Get Map as a PNG Image')}>
+              <i className='material-icons'>insert_photo</i>
+            </a>
+          </li>
+          <li>
+            <a onClick={this.showEmbedCode} className='btn-floating user-map-tooltip orange'
+              data-delay='50' data-position='left' data-tooltip={this.__('Embed')}>
+              <i className='material-icons'>code</i>
+            </a>
+          </li>
+          <li>
+            <a onClick={this.onFullScreen} className='btn-floating user-map-tooltip yellow'
+              data-delay='50' data-position='left' data-tooltip={this.__('Print/Screenshot')}>
+              <i className='material-icons'>print</i>
+            </a>
+          </li>
 
-      </ul>
-    </div>
-  );
+        </ul>
+      </div>
+    )
 
-  /*
+    /*
   <li>
     <a onClick={this.postToMedium} className="btn-floating tooltipped user-map-tooltip purple"
       data-delay="50" data-position="left" data-tooltip={this.__('Post to Medium.com')}>
@@ -356,32 +353,32 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   </li>
   */
 
-  const copyMapTitle = JSON.parse(JSON.stringify(this.props.map.title));
-  copyMapTitle.en = copyMapTitle.en + ' - Copy';
-  //TODO: change copied map title in other languages
+    const copyMapTitle = JSON.parse(JSON.stringify(this.props.map.title))
+    copyMapTitle.en = copyMapTitle.en + ' - Copy'
+    // TODO: change copied map title in other languages
 
     map = (
-      <InteractiveMap height="calc(100vh - 50px)" 
-             {...this.props.map}         
-             layers={this.props.layers}
-             mapConfig={this.props.mapConfig}
-             disableScrollZoom={false}
-             {...this.props.map.settings}
-             >
+      <InteractiveMap height='calc(100vh - 50px)'
+        {...this.props.map}
+        layers={this.props.layers}
+        mapConfig={this.props.mapConfig}
+        disableScrollZoom={false}
+        {...this.props.map.settings}
+      >
         {button}
-        </InteractiveMap> 
-    );
+      </InteractiveMap>
+    )
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig}/>
+        <Header {...this.props.headerConfig} />
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-          <Progress id="load-data-progess" title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading}/>         
+          <Progress id='load-data-progess' title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
           {map}
-          <PublicShareModal ref="publicShareModal" share_id={this.state.share_id} onChange={this.toggleSharePublic} />
-          <CopyMapModal ref="copyMapModal" title={copyMapTitle} onSubmit={this.onCopyMap} />
+          <PublicShareModal ref='publicShareModal' share_id={this.state.share_id} onChange={this.toggleSharePublic} />
+          <CopyMapModal ref='copyMapModal' title={copyMapTitle} onSubmit={this.onCopyMap} />
         </main>
       </ErrorBoundary>
-    );
+    )
   }
 }

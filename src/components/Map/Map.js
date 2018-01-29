@@ -1,48 +1,50 @@
-//@flow
-import React from 'react';
-import classNames from 'classnames';
-import FeatureBox from './FeatureBox';
-import BaseMapActions from '../../actions/map/BaseMapActions'; 
-import BaseMapStore from '../../stores/map/BaseMapStore'; 
-//import urlUtil from '../../services/url-util';
-import DataEditorStore from '../../stores/DataEditorStore';
-import _isequal from 'lodash.isequal';
-import MapToolButton from './MapToolButton';
-import MapSearchPanel from './Search/MapSearchPanel';
-import MapToolPanel from './MapToolPanel';
-import InsetMap from './InsetMap';
-import MarkerSprites from './MarkerSprites';
-import AnimationOverlay from './AnimationOverlay';
-import AnimationStore from '../../stores/map/AnimationStore';
-import MarkerStore from '../../stores/map/MarkerStore';
-import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin';
-import MapInteractionMixin from './Helpers/MapInteractionMixin';
-import MeasurementToolMixin from './Helpers/MeasurementToolMixin';
-import ForestAlertMixin from './Helpers/ForestAlertMixin';
-import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin';
-import DataEditorMixin from './Helpers/DataEditorMixin';
-import ForestLossMixin from './Helpers/ForestLossMixin';
-import IsochroneMixin from './Helpers/IsochroneMixin';
-import StyleMixin from './Helpers/StyleMixin';
-import MapSearchMixin from './Search/MapSearchMixin';
-import DataEditorActions from '../../actions/DataEditorActions';
-import AnimationActions from '../../actions/map/AnimationActions';
-import MapHubsComponent from '../MapHubsComponent';
-import Promise from 'bluebird';
-const debug = require('../../services/debug')('map');
-const $ = require('jquery');
+// @flow
+import React from 'react'
+import classNames from 'classnames'
+import FeatureBox from './FeatureBox'
+import BaseMapActions from '../../actions/map/BaseMapActions'
+import BaseMapStore from '../../stores/map/BaseMapStore'
+// import urlUtil from '../../services/url-util';
+import DataEditorStore from '../../stores/DataEditorStore'
+import _isequal from 'lodash.isequal'
+import MapToolButton from './MapToolButton'
+import MapSearchPanel from './Search/MapSearchPanel'
+import MapToolPanel from './MapToolPanel'
+import InsetMap from './InsetMap'
+import MarkerSprites from './MarkerSprites'
+import AnimationOverlay from './AnimationOverlay'
+import AnimationStore from '../../stores/map/AnimationStore'
+import MarkerStore from '../../stores/map/MarkerStore'
+import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin'
+import MapInteractionMixin from './Helpers/MapInteractionMixin'
+import MeasurementToolMixin from './Helpers/MeasurementToolMixin'
+import ForestAlertMixin from './Helpers/ForestAlertMixin'
+import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin'
+import DataEditorMixin from './Helpers/DataEditorMixin'
+import ForestLossMixin from './Helpers/ForestLossMixin'
+import IsochroneMixin from './Helpers/IsochroneMixin'
+import StyleMixin from './Helpers/StyleMixin'
+import MapSearchMixin from './Search/MapSearchMixin'
+import DataEditorActions from '../../actions/DataEditorActions'
+import AnimationActions from '../../actions/map/AnimationActions'
+import MapHubsComponent from '../MapHubsComponent'
+import Promise from 'bluebird'
+import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style'
+import type {GeoJSONObject} from 'geojson-flow'
+import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
+import type {Layer} from '../../stores/layer-store'
 
-let mapboxgl = {}, ArcGISTiledMapServiceSource, ScalePositionControl;
+const debug = require('../../services/debug')('map')
+const $ = require('jquery')
+
+let mapboxgl = {}
+let ArcGISTiledMapServiceSource
+let ScalePositionControl
 if (typeof window !== 'undefined') {
-    mapboxgl = require("mapbox-gl");
-    ArcGISTiledMapServiceSource  = require('mapbox-gl-arcgis-tiled-map-service');
-    ScalePositionControl = require('mapbox-gl-dual-scale-control');
+  mapboxgl = require('mapbox-gl')
+  ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
+  ScalePositionControl = require('mapbox-gl-dual-scale-control')
 }
-
-import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style';
-import type {GeoJSONObject} from 'geojson-flow';
-import type {BaseMapStoreState} from '../../stores/map/BaseMapStore';
-import type {Layer} from '../../stores/layer-store';
 
 type Props = {|
     className: string,
@@ -53,9 +55,9 @@ type Props = {|
     height: string,
     style: Object,
     glStyle?: GLStyle,
-    features?:  Array<Object>,
+    features?: Array<Object>,
     tileJSONType?: string,
-    tileJSONUrl?:  string,
+    tileJSONUrl?: string,
     data?: GeoJSONObject,
     interactive: boolean,
     showPlayButton: boolean,
@@ -66,7 +68,7 @@ type Props = {|
     fitBoundsOptions: Object,
     disableScrollZoom?: boolean,
     enableRotation?: boolean,
-    navPosition:  string,
+    navPosition: string,
     baseMap: string,
     onChangeBaseMap?: Function,
     insetMap: boolean,
@@ -95,7 +97,6 @@ type Props = {|
   } & BaseMapStoreState
 
 export default class Map extends MapHubsComponent<Props, State> {
-
   props: Props
 
   static defaultProps = {
@@ -116,7 +117,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     attributionControl: false,
     style: {},
     allowLayerOrderOptimization: true,
-    fitBoundsOptions: {animate:false},
+    fitBoundsOptions: {animate: false},
     height: '100%',
     mapConfig: {},
     insetConfig: {}
@@ -126,463 +127,450 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   map: Object
 
-  constructor(props: Props){
-        super(props);
+  constructor (props: Props) {
+    super(props)
 
-        this.stores.push(DataEditorStore);
-        this.stores.push(AnimationStore);
-        this.stores.push(BaseMapStore);
-        this.stores.push(MarkerStore);
-    
-       DataEditorActions.onFeatureUpdate.listen(this.onFeatureUpdate);
-       AnimationActions.tick.listen(this.tick);
+    this.stores.push(DataEditorStore)
+    this.stores.push(AnimationStore)
+    this.stores.push(BaseMapStore)
+    this.stores.push(MarkerStore)
 
-      let restoreBounds;
-      if(this.props.fitBounds){
-        restoreBounds = this.props.fitBounds;
-      }
+    DataEditorActions.onFeatureUpdate.listen(this.onFeatureUpdate)
+    AnimationActions.tick.listen(this.tick)
 
-      this.state = {
-        id: this.props.id ? this.props.id : 'map',
-        selected: false,
-        interactive: this.props.interactive,
-        mapLoaded: false,
-        restoreBounds,
-        allowLayersToMoveMap: restoreBounds ? false : true
-      };
+    let restoreBounds
+    if (this.props.fitBounds) {
+      restoreBounds = this.props.fitBounds
     }
 
-  componentWillMount(){
-    super.componentWillMount();
-    BaseMapActions.setBaseMap(this.props.baseMap);
-    if(this.props.glStyle){
-      const interactiveLayers = this.getInteractiveLayers(this.props.glStyle);
-      this.setState({interactiveLayers});
+    this.state = {
+      id: this.props.id ? this.props.id : 'map',
+      selected: false,
+      interactive: this.props.interactive,
+      mapLoaded: false,
+      restoreBounds,
+      allowLayersToMoveMap: !restoreBounds
     }
   }
 
-  componentDidMount() {
-    this.createMap();
+  componentWillMount () {
+    super.componentWillMount()
+    BaseMapActions.setBaseMap(this.props.baseMap)
+    if (this.props.glStyle) {
+      const interactiveLayers = this.getInteractiveLayers(this.props.glStyle)
+      this.setState({interactiveLayers})
+    }
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State){
-    //always update if there is a selection
-    //avoids glitch where feature hover doesn't show
-    if(this.state.selected || nextState.selected
-    || this.state.selectedFeature || nextState.selectedFeature){
-      return true;
-    }
-
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
+  componentDidMount () {
+    this.createMap()
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State){
-    //switch to interactive
-    if(this.state.interactive && !prevState.interactive){    
-      this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition);
-      this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition);
-      const interaction = this.map.interaction;
-      interaction.enable();
-      $(this.refs.basemapButton).show();
-      $(this.refs.editBaseMapButton).show();
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
+    // always update if there is a selection
+    // avoids glitch where feature hover doesn't show
+    if (this.state.selected || nextState.selected ||
+    this.state.selectedFeature || nextState.selectedFeature) {
+      return true
     }
-    //change locale
-    if(this.state.locale && (this.state.locale !== prevState.locale) ){     
-      this.changeLocale(this.state.locale, this.map);
-      if(this.refs.insetMap){
-          this.changeLocale(this.state.locale, this.refs.insetMap.getInsetMap());
+
+    // only update if something changes
+    if (!_isequal(this.props, nextProps)) {
+      return true
+    }
+    if (!_isequal(this.state, nextState)) {
+      return true
+    }
+    return false
+  }
+
+  componentDidUpdate (prevProps: Props, prevState: State) {
+    // switch to interactive
+    if (this.state.interactive && !prevState.interactive) {
+      this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition)
+      this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition)
+      const interaction = this.map.interaction
+      interaction.enable()
+      $(this.refs.basemapButton).show()
+      $(this.refs.editBaseMapButton).show()
+    }
+    // change locale
+    if (this.state.locale && (this.state.locale !== prevState.locale)) {
+      this.changeLocale(this.state.locale, this.map)
+      if (this.refs.insetMap) {
+        this.changeLocale(this.state.locale, this.refs.insetMap.getInsetMap())
       }
     }
   }
 
   debugLog = (msg: string) => {
-    debug.log(`(${this.state.id}) ${msg}`);
+    debug.log(`(${this.state.id}) ${msg}`)
   }
 
   addMapData = (map: any, glStyle: GLStyle, geoJSON?: GeoJSONObject, cb: Function) => {
-    this.debugLog('addMapData');
-    const _this = this;
-    if(glStyle && glStyle.sources){
-        return Promise.resolve(_this.setOverlayStyle(glStyle, _this.props.allowLayerOrderOptimization))
-        .catch((err)=>{
-          _this.debugLog(err);
+    this.debugLog('addMapData')
+    const _this = this
+    if (glStyle && glStyle.sources) {
+      return Promise.resolve(_this.setOverlayStyle(glStyle, _this.props.allowLayerOrderOptimization))
+        .catch((err) => {
+          _this.debugLog(err)
         })
-        .asCallback((err)=>{
-          if(err){
-            this.debugLog(err);
+        .asCallback((err) => {
+          if (err) {
+            this.debugLog(err)
           }
-          if(geoJSON){
-            _this.initGeoJSON(geoJSON);
+          if (geoJSON) {
+            _this.initGeoJSON(geoJSON)
           }
-        cb();
-        });
+          cb()
+        })
+    } else if (geoJSON) {
+      _this.initGeoJSON(geoJSON)
+      cb()
+    } else {
+      cb()
     }
-     else if(geoJSON){
-      _this.initGeoJSON(geoJSON);
-      cb();
-    }else{
-      cb();
-    }    
   }
 
   createMap = () => {
-    const _this = this;
-    this.debugLog('Creating MapboxGL Map');
-    mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN;
+    const _this = this
+    this.debugLog('Creating MapboxGL Map')
+    mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
+      _this.setBaseMapStyle(baseMap, false)
 
-    _this.setBaseMapStyle(baseMap, false);
-       
-    if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
-    alert(this.__('Your browser does not support Mapbox GL please see: http://help.maphubs.com/category/21-troubleshooting'));
-    return;
-    }
+      if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
+        alert(this.__('Your browser does not support Mapbox GL please see: http://help.maphubs.com/category/21-troubleshooting'))
+        return
+      }
 
-    const map = new mapboxgl.Map({
-      container: _this.state.id,
-      style: _this.glStyle,
-      zoom: 0,
-      interactive: _this.state.interactive,
-      dragRotate: _this.props.enableRotation ? true : false,
-      touchZoomRotate: _this.props.enableRotation ? true : false,
-      center: [0,0],
-      hash: _this.props.hash,
-      attributionControl: false
-    });
+      const map = new mapboxgl.Map({
+        container: _this.state.id,
+        style: _this.glStyle,
+        zoom: 0,
+        interactive: _this.state.interactive,
+        dragRotate: !!_this.props.enableRotation,
+        touchZoomRotate: !!_this.props.enableRotation,
+        center: [0, 0],
+        hash: _this.props.hash,
+        attributionControl: false
+      })
 
-  map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
-    if(err){
-      debug.error(err);
-    }else{
-      _this.debugLog('Added custom source: arcgisraster');
-    }
-  });
+      map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
+        if (err) {
+          debug.error(err)
+        } else {
+          _this.debugLog('Added custom source: arcgisraster')
+        }
+      })
 
-  //catch generic errors until issue with 404 tile errors is resolved
-  /*
+      // catch generic errors until issue with 404 tile errors is resolved
+      /*
   map.on('error', (err) => {
     debug.error(err.error);
   });
   */
 
-  map.on('style.load', () => {
-    _this.debugLog('style.load');
-    //restore map bounds (except for geoJSON maps)
-    if(!_this.props.data && _this.state.restoreBounds){
-      let fitBounds = _this.state.restoreBounds;
-      if(fitBounds.length > 2){
-        fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]];
-      }
-      debug.log('(' + _this.state.id + ') ' +'restoring bounds: ' + _this.state.restoreBounds);        
-      map.fitBounds(fitBounds, _this.props.fitBoundsOptions);
-      if(_this.refs.insetMap){
-        _this.refs.insetMap.sync(map);
-      }
-    }
-
-    //add the omh data
-    _this.addMapData(map, _this.props.glStyle, _this.props.data, () => {
-      //do stuff that needs to happen after data loads
-      _this.debugLog('finished adding map data');
-
-      //set locale
-      if(_this.state.locale !== 'en'){
-        _this.changeLocale(_this.state.locale, _this.map);
-        if(_this.refs.insetMap){
-           _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap());
+      map.on('style.load', () => {
+        _this.debugLog('style.load')
+        // restore map bounds (except for geoJSON maps)
+        if (!_this.props.data && _this.state.restoreBounds) {
+          let fitBounds = _this.state.restoreBounds
+          if (fitBounds.length > 2) {
+            fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
+          }
+          debug.log('(' + _this.state.id + ') ' + 'restoring bounds: ' + _this.state.restoreBounds)
+          map.fitBounds(fitBounds, _this.props.fitBoundsOptions)
+          if (_this.refs.insetMap) {
+            _this.refs.insetMap.sync(map)
+          }
         }
-      }
 
-      if(_this.state.forestAlerts){
-        _this.restoreForestAlerts();
-      }
-      
-      
-      _this.setState({mapLoaded: true});
-    });
-  });//end style.load
+        // add the omh data
+        _this.addMapData(map, _this.props.glStyle, _this.props.data, () => {
+          // do stuff that needs to happen after data loads
+          _this.debugLog('finished adding map data')
 
-   map.on('load', () => {
-     _this.debugLog('MAP LOADED');
-    //wait a few seconds just to be sure the display catches up
-    setTimeout(()=>{
-      $( "body" ).append( `<div id="map-load-complete" style="display: none;"></div>` );
-    }, 5000);
-    
-   });
-   
-  //Setup inset map
-    if(_this.refs.insetMap){
-      if(!_this.refs.insetMap.getInsetMap()){
-        _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap);
-        map.on('move', () => {_this.refs.insetMap.sync(map);});
-        map.on('load', () => {_this.refs.insetMap.sync(map);});
-      } 
-    }
-
-  map.on('mousemove', _this.mousemoveHandler);
-  map.on('moveend', _this.moveendHandler);
-  map.on('click', _this.clickHandler);
-
-  if(_this.state.interactive){
-    map.addControl(new mapboxgl.NavigationControl(), _this.props.navPosition);
-    map.addControl(new mapboxgl.FullscreenControl());
-  }
-
-  if(_this.props.attributionControl){
-    map.addControl(new mapboxgl.AttributionControl(), 'bottom-left');
-  }
-
-  if(_this.props.showScale){
-    map.addControl(new ScalePositionControl({
-        maxWidth: 175,
-    }), 'bottom-right');
-  }
-
-  if(_this.props.disableScrollZoom){
-    map.scrollZoom.disable();
-  }
-
-  _this.map = map;
-  });
-  }
-
-  
-  componentWillReceiveProps(nextProps: Props){
-    //debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
-    const _this = this;
-    if(nextProps.data && this.map){
-      const geoJSONData = this.map.getSource("omh-geojson");
-      if(geoJSONData){
-        debug.log('(' + this.state.id + ') ' +'update geoJSON data');
-        //update existing data
-        geoJSONData.setData(nextProps.data);
-        this.zoomToData(nextProps.data);       
-       
-      }else if(geoJSONData === undefined && this.props.data){
-        //do nothing, still updating from the last prop change...
-      }else {
-        debug.log('(' + this.state.id + ') ' +'init geoJSON data');
-        if(this.state.mapLoaded && nextProps.data){
-          this.initGeoJSON(nextProps.data);
-        }else{
-          debug.log(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`);
-        }     
-      }
-    }
-
-    let fitBoundsChanging = false;
-    let bounds: any;
-    let allowLayersToMoveMap = this.state.allowLayersToMoveMap;
-
-    if(nextProps.fitBounds && !_isequal(this.props.fitBounds,nextProps.fitBounds) && this.map){
-      _this.debugLog('FIT BOUNDS CHANGING');
-      fitBoundsChanging = true;
-      allowLayersToMoveMap = false;
-      if(nextProps.fitBounds && nextProps.fitBounds.length > 2){
-        bounds = [[nextProps.fitBounds[0], nextProps.fitBounds[1]], [nextProps.fitBounds[2], nextProps.fitBounds[3]]];
-      }else{
-        bounds = nextProps.fitBounds;
-      }
-      if(bounds){
-        debug.log('(' + this.state.id + ') ' +'bounds: ' + bounds.toString());
-      }  
-    }
-
-    if(nextProps.glStyle && nextProps.baseMap) {
-      if(!_isequal(this.props.glStyle,nextProps.glStyle)) {
-        _this.debugLog('glstyle changing from props');
-          //** Style Changing (also reloads basemap if needed) **/
-          if(this.state.mapLoaded && !fitBoundsChanging) {
-            //if fitBounds isn't changing, restore the current map position
-            if(this.glStyle !== null){
-              this.debugLog('restoring current map position');
-              allowLayersToMoveMap = false;
+          // set locale
+          if (_this.state.locale !== 'en') {
+            _this.changeLocale(_this.state.locale, _this.map)
+            if (_this.refs.insetMap) {
+              _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap())
             }
           }
-          this.setState({allowLayersToMoveMap});
 
-          if(!_isequal(this.state.baseMap,nextProps.baseMap)) {
-            BaseMapActions.setBaseMap(nextProps.baseMap);
-            BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
-              _this.setBaseMapStyle(baseMapStyle, false);
-            });
+          if (_this.state.forestAlerts) {
+            _this.restoreForestAlerts()
           }
 
-          return Promise.resolve(_this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
-          .catch((err)=>{
-            _this.debugLog(err);
-          })
-          .asCallback((err)=>{
-            if(err){
-              _this.debugLog(err);
-            }
-            const interactiveLayers = _this.getInteractiveLayers(nextProps.glStyle);
-            _this.setState({interactiveLayers});
-          });
-
-
-      }else if(this.props.baseMap !== nextProps.baseMap) {
-        //** Style Not Changing, but Base Map is Changing **/
-        _this.debugLog(`basemap changing from props (${this.state.baseMap} -> ${nextProps.baseMap})`);
-        allowLayersToMoveMap = false;    
-        this.setState({allowLayersToMoveMap});
-
-        this.changeBaseMap(nextProps.baseMap);
-
-      }else if(fitBoundsChanging) {
-        //** just changing the fit bounds
-        //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
-        if(bounds){
-          _this.debugLog('only bounds changing, bounds: ' + bounds);
-          if(Array.isArray(bounds) && bounds.length > 2){           
-             bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
-           }
-           debug.log('(' + this.state.id + ') ' +'calling map fitBounds');
-           this.map.fitBounds(bounds, this.props.fitBoundsOptions);
-
-           this.setState({allowLayersToMoveMap, restoreBounds: bounds});
-        }
-     }
-
-    }else if(nextProps.glStyle
-      && !_isequal(this.props.glStyle,nextProps.glStyle)){
-        //** Style Changing (no basemap provided) **/
-        _this.debugLog('glstyle changing from props (default basemap)');
-        return Promise.resolve(this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
-        .catch((err)=>{
-          _this.debugLog(err);
+          _this.setState({mapLoaded: true})
         })
-        .asCallback((err)=>{
-          if(err){
-            _this.debugLog(err);
-          }
-          const interactiveLayers = this.getInteractiveLayers(nextProps.glStyle);
-          this.setState({allowLayersToMoveMap, interactiveLayers}); //wait to change state style until after reloaded
-        });
+      })// end style.load
 
-    }else if(nextProps.baseMap
-      && !_isequal(this.state.baseMap,nextProps.baseMap)) {
-        //** Style Not Found, but Base Map is Changing **/
-        _this.debugLog('basemap changing from props (no glstyle)');
+      map.on('load', () => {
+        _this.debugLog('MAP LOADED')
+        // wait a few seconds just to be sure the display catches up
+        setTimeout(() => {
+          $('body').append(`<div id="map-load-complete" style="display: none;"></div>`)
+        }, 5000)
+      })
 
-      this.setState({allowLayersToMoveMap});
-      BaseMapActions.setBaseMap(nextProps.baseMap);
-      BaseMapActions.getBaseMapFromName(nextProps.baseMap,(baseMapStyle) => {
-        _this.setBaseMapStyle(baseMapStyle, true);
-      });
-
-    }else if(fitBoundsChanging) {
-      //** just changing the fit bounds on a map that does not have styles or basemap settings **/
-      //in this case we can fitBounds directly since we are not waiting for the map to reload styles first
-      if(bounds){
-        _this.debugLog('only bounds changing');
-        if(bounds._ne && bounds._sw){
-         this.map.fitBounds(bounds, this.props.fitBoundsOptions);
-         }else if(Array.isArray(bounds) && bounds.length > 2){
-           this.map.fitBounds([[bounds[0], bounds[1]],
-                         [bounds[2], bounds[3]]], this.props.fitBoundsOptions);
-         }else{
-           this.map.fitBounds(bounds, this.props.fitBoundsOptions);
-         }
-         this.setState({allowLayersToMoveMap});
+      // Setup inset map
+      if (_this.refs.insetMap) {
+        if (!_this.refs.insetMap.getInsetMap()) {
+          _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap)
+          map.on('move', () => { _this.refs.insetMap.sync(map) })
+          map.on('load', () => { _this.refs.insetMap.sync(map) })
+        }
       }
-   }
+
+      map.on('mousemove', _this.mousemoveHandler)
+      map.on('moveend', _this.moveendHandler)
+      map.on('click', _this.clickHandler)
+
+      if (_this.state.interactive) {
+        map.addControl(new mapboxgl.NavigationControl(), _this.props.navPosition)
+        map.addControl(new mapboxgl.FullscreenControl())
+      }
+
+      if (_this.props.attributionControl) {
+        map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
+      }
+
+      if (_this.props.showScale) {
+        map.addControl(new ScalePositionControl({
+          maxWidth: 175
+        }), 'bottom-right')
+      }
+
+      if (_this.props.disableScrollZoom) {
+        map.scrollZoom.disable()
+      }
+
+      _this.map = map
+    })
   }
 
-  componentWillUnmount() {
-    this.map.remove();
+  componentWillReceiveProps (nextProps: Props) {
+    // debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
+    const _this = this
+    if (nextProps.data && this.map) {
+      const geoJSONData = this.map.getSource('omh-geojson')
+      if (geoJSONData) {
+        debug.log('(' + this.state.id + ') ' + 'update geoJSON data')
+        // update existing data
+        geoJSONData.setData(nextProps.data)
+        this.zoomToData(nextProps.data)
+      } else if (geoJSONData === undefined && this.props.data) {
+        // do nothing, still updating from the last prop change...
+      } else {
+        debug.log('(' + this.state.id + ') ' + 'init geoJSON data')
+        if (this.state.mapLoaded && nextProps.data) {
+          this.initGeoJSON(nextProps.data)
+        } else {
+          debug.log(`(${this.state.id}) Skipping GeoJSON init, map not ready yet`)
+        }
+      }
+    }
+
+    let fitBoundsChanging = false
+    let bounds: any
+    let allowLayersToMoveMap = this.state.allowLayersToMoveMap
+
+    if (nextProps.fitBounds && !_isequal(this.props.fitBounds, nextProps.fitBounds) && this.map) {
+      _this.debugLog('FIT BOUNDS CHANGING')
+      fitBoundsChanging = true
+      allowLayersToMoveMap = false
+      if (nextProps.fitBounds && nextProps.fitBounds.length > 2) {
+        bounds = [[nextProps.fitBounds[0], nextProps.fitBounds[1]], [nextProps.fitBounds[2], nextProps.fitBounds[3]]]
+      } else {
+        bounds = nextProps.fitBounds
+      }
+      if (bounds) {
+        debug.log('(' + this.state.id + ') ' + 'bounds: ' + bounds.toString())
+      }
+    }
+
+    if (nextProps.glStyle && nextProps.baseMap) {
+      if (!_isequal(this.props.glStyle, nextProps.glStyle)) {
+        _this.debugLog('glstyle changing from props')
+        //* * Style Changing (also reloads basemap if needed) **/
+        if (this.state.mapLoaded && !fitBoundsChanging) {
+          // if fitBounds isn't changing, restore the current map position
+          if (this.glStyle !== null) {
+            this.debugLog('restoring current map position')
+            allowLayersToMoveMap = false
+          }
+        }
+        this.setState({allowLayersToMoveMap})
+
+        if (!_isequal(this.state.baseMap, nextProps.baseMap)) {
+          BaseMapActions.setBaseMap(nextProps.baseMap)
+          BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
+            _this.setBaseMapStyle(baseMapStyle, false)
+          })
+        }
+
+        return Promise.resolve(_this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
+          .catch((err) => {
+            _this.debugLog(err)
+          })
+          .asCallback((err) => {
+            if (err) {
+              _this.debugLog(err)
+            }
+            const interactiveLayers = _this.getInteractiveLayers(nextProps.glStyle)
+            _this.setState({interactiveLayers})
+          })
+      } else if (this.props.baseMap !== nextProps.baseMap) {
+        //* * Style Not Changing, but Base Map is Changing **/
+        _this.debugLog(`basemap changing from props (${this.state.baseMap} -> ${nextProps.baseMap})`)
+        allowLayersToMoveMap = false
+        this.setState({allowLayersToMoveMap})
+
+        this.changeBaseMap(nextProps.baseMap)
+      } else if (fitBoundsChanging) {
+        //* * just changing the fit bounds
+        // in this case we can fitBounds directly since we are not waiting for the map to reload styles first
+        if (bounds) {
+          _this.debugLog('only bounds changing, bounds: ' + bounds)
+          if (Array.isArray(bounds) && bounds.length > 2) {
+            bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]]
+          }
+          debug.log('(' + this.state.id + ') ' + 'calling map fitBounds')
+          this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+
+          this.setState({allowLayersToMoveMap, restoreBounds: bounds})
+        }
+      }
+    } else if (nextProps.glStyle &&
+      !_isequal(this.props.glStyle, nextProps.glStyle)) {
+      //* * Style Changing (no basemap provided) **/
+      _this.debugLog('glstyle changing from props (default basemap)')
+      return Promise.resolve(this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
+        .catch((err) => {
+          _this.debugLog(err)
+        })
+        .asCallback((err) => {
+          if (err) {
+            _this.debugLog(err)
+          }
+          const interactiveLayers = this.getInteractiveLayers(nextProps.glStyle)
+          this.setState({allowLayersToMoveMap, interactiveLayers}) // wait to change state style until after reloaded
+        })
+    } else if (nextProps.baseMap &&
+      !_isequal(this.state.baseMap, nextProps.baseMap)) {
+      //* * Style Not Found, but Base Map is Changing **/
+      _this.debugLog('basemap changing from props (no glstyle)')
+
+      this.setState({allowLayersToMoveMap})
+      BaseMapActions.setBaseMap(nextProps.baseMap)
+      BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
+        _this.setBaseMapStyle(baseMapStyle, true)
+      })
+    } else if (fitBoundsChanging) {
+      //* * just changing the fit bounds on a map that does not have styles or basemap settings **/
+      // in this case we can fitBounds directly since we are not waiting for the map to reload styles first
+      if (bounds) {
+        _this.debugLog('only bounds changing')
+        if (bounds._ne && bounds._sw) {
+          this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+        } else if (Array.isArray(bounds) && bounds.length > 2) {
+          this.map.fitBounds([[bounds[0], bounds[1]],
+            [bounds[2], bounds[3]]], this.props.fitBoundsOptions)
+        } else {
+          this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+        }
+        this.setState({allowLayersToMoveMap})
+      }
+    }
+  }
+
+  componentWillUnmount () {
+    this.map.remove()
   }
 
   startInteractive = () => {
-    this.setState({interactive: true});
-    if(!this.props.enableRotation){
-      this.map.dragRotate.disable();
-      this.map.touchZoomRotate.disableRotation();
+    this.setState({interactive: true})
+    if (!this.props.enableRotation) {
+      this.map.dragRotate.disable()
+      this.map.touchZoomRotate.disableRotation()
     }
   }
 
   getBaseMap = () => {
-    return this.state.baseMap;
+    return this.state.baseMap
   }
 
   changeBaseMap = (mapName: string) => {
-    this.debugLog('changing basemap to: ' + mapName);
-    const _this = this;
+    this.debugLog('changing basemap to: ' + mapName)
+    const _this = this
     BaseMapActions.getBaseMapFromName(mapName, (baseMapStyle) => {
-      BaseMapActions.setBaseMap(mapName);
-      _this.setState({allowLayersToMoveMap: false});
-      _this.setBaseMapStyle(baseMapStyle, true);
+      BaseMapActions.setBaseMap(mapName)
+      _this.setState({allowLayersToMoveMap: false})
+      _this.setBaseMapStyle(baseMapStyle, true)
 
-      if(_this.refs.insetMap){
-        _this.refs.insetMap.reloadInset(baseMapStyle);
-         _this.refs.insetMap.sync(_this.map);
+      if (_this.refs.insetMap) {
+        _this.refs.insetMap.reloadInset(baseMapStyle)
+        _this.refs.insetMap.sync(_this.map)
       }
 
-      if(_this.state.forestAlerts){
-        _this.restoreForestAlerts();
+      if (_this.state.forestAlerts) {
+        _this.restoreForestAlerts()
       }
-      
-      if(_this.props.onChangeBaseMap){
-        _this.props.onChangeBaseMap(mapName);
+
+      if (_this.props.onChangeBaseMap) {
+        _this.props.onChangeBaseMap(mapName)
       }
-    });
+    })
   }
 
-  render() {
+  render () {
+    const className = classNames('mode', 'map', 'active')
 
-    const className = classNames('mode', 'map', 'active');
-
-    let featureBox = '';
-    if(this.state.selectedFeature){
+    let featureBox = ''
+    if (this.state.selectedFeature) {
       featureBox = (
         <FeatureBox
-            feature={this.state.selectedFeature}
-            selected={this.state.selected}
-            onUnselected={this.handleUnselectFeature}
-            showButtons={this.props.showFeatureInfoEditButtons}
+          feature={this.state.selectedFeature}
+          selected={this.state.selected}
+          onUnselected={this.handleUnselectFeature}
+          showButtons={this.props.showFeatureInfoEditButtons}
         />
-      );
+      )
     }
 
-    let interactiveButton = '';
-    if(!this.state.interactive && this.props.showPlayButton){
+    let interactiveButton = ''
+    if (!this.state.interactive && this.props.showPlayButton) {
       interactiveButton = (
-        <a onClick={this.startInteractive} className="btn-floating waves-effect waves-light"
-          style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)',  zIndex: '999'}}><i className="material-icons">play_arrow</i></a>
-      );
+        <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
+          style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}><i className='material-icons'>play_arrow</i></a>
+      )
     }
 
-    let logo = '', children = '';
-    if(this.state.mapLoaded){
-      if(this.props.showLogo){
+    let logo = ''
+    let children = ''
+    if (this.state.mapLoaded) {
+      if (this.props.showLogo) {
         logo = (
-          <img style={{position:'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt="Logo"/>
-        );      
+          <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt='Logo' />
+        )
       }
-      children = this.props.children;
+      children = this.props.children
     }
 
-    let insetMap = '';
-    if(this.props.insetMap){
-      let bottom='25px';
-      if(this.props.showLogo){
-         bottom='30px';
+    let insetMap = ''
+    if (this.props.insetMap) {
+      let bottom = '25px'
+      if (this.props.showLogo) {
+        bottom = '30px'
       }
-      insetMap = (<InsetMap ref="insetMap" id={this.state.id}  bottom={bottom} {...this.props.insetConfig} />);
+      insetMap = (<InsetMap ref='insetMap' id={this.state.id} bottom={bottom} {...this.props.insetConfig} />)
     }
 
-    let measurementTools = '';
-    if(this.state.enableMeasurementTools){
-
-      measurementTools= (
+    let measurementTools = ''
+    if (this.state.enableMeasurementTools) {
+      measurementTools = (
         <div>
           <div style={{
             position: 'absolute',
@@ -590,24 +578,23 @@ export default class Map extends MapHubsComponent<Props, State> {
             right: '10px',
             backgroundColor: 'rgba(0,0,0,0.6)',
             color: '#FFF',
-            height:'30px',
+            height: '30px',
             paddingLeft: '5px',
             paddingRight: '5px',
             borderRadius: '4px',
             zIndex: '100',
-            lineHeight: '30px',
+            lineHeight: '30px'
           }}>
-          <span>{this.state.measurementMessage}</span>
+            <span>{this.state.measurementMessage}</span>
           </div>
-          <MapToolButton  top="80px" right="10px" icon="close" show={true} color="#000"
+          <MapToolButton top='80px' right='10px' icon='close' show color='#000'
             onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
         </div>
-      );
-     
+      )
     }
 
-    let animationOverlay = '';
-    if(this.state.showForestLoss){
+    let animationOverlay = ''
+    if (this.state.showForestLoss) {
       animationOverlay = (
         <AnimationOverlay style={{
           position: 'absolute',
@@ -619,324 +606,321 @@ export default class Map extends MapHubsComponent<Props, State> {
           textShadow: '-1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000',
           zIndex: 1
         }} />
-      );
+      )
     }
 
     return (
-      <div ref="mapcontainer" className={this.props.className} style={this.props.style}>
-        <div id={this.state.id} ref="map" className={className} style={{width:'100%', height:'100%'}}>
+      <div ref='mapcontainer' className={this.props.className} style={this.props.style}>
+        <div id={this.state.id} ref='map' className={className} style={{width: '100%', height: '100%'}}>
           {insetMap}
-          
-          <MapToolPanel show={this.state.interactive && this.state.mapLoaded} 
-          height={this.props.height}
-          gpxLink={this.props.gpxLink}
-          toggleMeasurementTools={this.toggleMeasurementTools}
-          enableMeasurementTools={this.state.enableMeasurementTools}
-          toggleForestAlerts={this.toggleForestAlerts}
-          toggleForestLoss={this.toggleForestLoss}
-          calculateForestAlerts={this.calculateForestAlerts}
-          forestAlerts={this.state.forestAlerts}
-          onChangeBaseMap={this.changeBaseMap}
-          getIsochronePoint={this.getIsochronePoint}
-          clearIsochroneLayers={this.clearIsochroneLayers}
-          isochroneResult={this.state.isochroneResult}
-           />
+
+          <MapToolPanel show={this.state.interactive && this.state.mapLoaded}
+            height={this.props.height}
+            gpxLink={this.props.gpxLink}
+            toggleMeasurementTools={this.toggleMeasurementTools}
+            enableMeasurementTools={this.state.enableMeasurementTools}
+            toggleForestAlerts={this.toggleForestAlerts}
+            toggleForestLoss={this.toggleForestLoss}
+            calculateForestAlerts={this.calculateForestAlerts}
+            forestAlerts={this.state.forestAlerts}
+            onChangeBaseMap={this.changeBaseMap}
+            getIsochronePoint={this.getIsochronePoint}
+            clearIsochroneLayers={this.clearIsochroneLayers}
+            isochroneResult={this.state.isochroneResult}
+          />
           {measurementTools}
           {featureBox}
           {interactiveButton}
           {children}
           {logo}
-          {animationOverlay}         
-          <MapSearchPanel 
+          {animationOverlay}
+          <MapSearchPanel
             show={this.state.interactive && this.state.mapLoaded}
-            height={this.props.height} 
+            height={this.props.height}
             onSearch={this.onSearch}
             onSearchResultClick={this.onSearchResultClick}
             onSearchReset={this.onSearchReset}
-            />
+          />
         </div>
         <MarkerSprites />
-        </div>
-    );
+      </div>
+    )
   }
 
-  //GeoJSONMixin
+  // GeoJSONMixin
   initGeoJSON = (data: GeoJSONObject) => {
-    return MapGeoJSONMixin.initGeoJSON.bind(this)(data);
+    return MapGeoJSONMixin.initGeoJSON.bind(this)(data)
   }
 
   resetGeoJSON = () => {
-    return MapGeoJSONMixin.resetGeoJSON.bind(this)();
+    return MapGeoJSONMixin.resetGeoJSON.bind(this)()
   }
 
   zoomToData = (data: GeoJSONObject) => {
-    return MapGeoJSONMixin.zoomToData.bind(this)(data);
+    return MapGeoJSONMixin.zoomToData.bind(this)(data)
   }
 
-  //MapInteractionMixin
+  // MapInteractionMixin
   setSelectionFilter = (features: Array<Object>) => {
-    return MapInteractionMixin.setSelectionFilter.bind(this)(features);
+    return MapInteractionMixin.setSelectionFilter.bind(this)(features)
   }
 
   clearSelectionFilter = () => {
-    return MapInteractionMixin.clearSelectionFilter.bind(this)();
+    return MapInteractionMixin.clearSelectionFilter.bind(this)()
   }
 
   handleUnselectFeature = () => {
-    return MapInteractionMixin.handleUnselectFeature.bind(this)();
+    return MapInteractionMixin.handleUnselectFeature.bind(this)()
   }
 
   clearSelection = () => {
-    return MapInteractionMixin.clearSelection.bind(this)();
+    return MapInteractionMixin.clearSelection.bind(this)()
   }
 
   getInteractiveLayers = (glStyle: GLStyle) => {
-    return MapInteractionMixin.getInteractiveLayers.bind(this)(glStyle);
+    return MapInteractionMixin.getInteractiveLayers.bind(this)(glStyle)
   }
 
   clickHandler = (e: any) => {
-    return MapInteractionMixin.clickHandler.bind(this)(e);
+    return MapInteractionMixin.clickHandler.bind(this)(e)
   }
 
   moveendHandler = () => {
-    return MapInteractionMixin.moveendHandler.bind(this)();
+    return MapInteractionMixin.moveendHandler.bind(this)()
   }
 
   mousemoveHandler = (e: any) => {
-    return MapInteractionMixin.mousemoveHandler.bind(this)(e);
+    return MapInteractionMixin.mousemoveHandler.bind(this)(e)
   }
 
-  //DataEditorMixin
+  // DataEditorMixin
 
   getFirstDrawLayerID = () => {
-    return DataEditorMixin.getFirstDrawLayerID.bind(this)();
+    return DataEditorMixin.getFirstDrawLayerID.bind(this)()
   }
 
-  getEditorStyles = () =>{
-    return DataEditorMixin.getEditorStyles.bind(this)();
+  getEditorStyles = () => {
+    return DataEditorMixin.getEditorStyles.bind(this)()
   }
 
   editFeature = (feature: Object) => {
-    return DataEditorMixin.editFeature.bind(this)(feature);
+    return DataEditorMixin.editFeature.bind(this)(feature)
   }
 
-  startEditingTool = (layer: Layer) =>{
-    return DataEditorMixin.startEditingTool.bind(this)(layer);
+  startEditingTool = (layer: Layer) => {
+    return DataEditorMixin.startEditingTool.bind(this)(layer)
   }
 
   stopEditingTool = () => {
-    return DataEditorMixin.stopEditingTool.bind(this)();
+    return DataEditorMixin.stopEditingTool.bind(this)()
   }
 
   updateEdits = (e: any) => {
-    return DataEditorMixin.updateEdits.bind(this)(e);
+    return DataEditorMixin.updateEdits.bind(this)(e)
   }
 
   onFeatureUpdate = (type: string, feature: Object) => {
-    return DataEditorMixin.onFeatureUpdate.bind(this)(type, feature);
+    return DataEditorMixin.onFeatureUpdate.bind(this)(type, feature)
   }
 
   updateMapLayerFilters = () => {
-    return DataEditorMixin.updateMapLayerFilters.bind(this)();
+    return DataEditorMixin.updateMapLayerFilters.bind(this)()
   }
 
   removeMapLayerFilters = () => {
-    return DataEditorMixin.removeMapLayerFilters.bind(this)();
+    return DataEditorMixin.removeMapLayerFilters.bind(this)()
   }
 
   reloadEditingSourceCache = () => {
-    return DataEditorMixin.reloadEditingSourceCache.bind(this)();
+    return DataEditorMixin.reloadEditingSourceCache.bind(this)()
   }
 
-  //MeasurementToolMixin
+  // MeasurementToolMixin
   toggleMeasurementTools = (enable: boolean) => {
-    return MeasurementToolMixin.toggleMeasurementTools.bind(this)(enable);
+    return MeasurementToolMixin.toggleMeasurementTools.bind(this)(enable)
   }
 
   startMeasurementTool = () => {
-    return MeasurementToolMixin.startMeasurementTool.bind(this)();
+    return MeasurementToolMixin.startMeasurementTool.bind(this)()
   }
 
   stopMeasurementTool = () => {
-    return MeasurementToolMixin.stopMeasurementTool.bind(this)();
+    return MeasurementToolMixin.stopMeasurementTool.bind(this)()
   }
 
   updateMeasurement = () => {
-    return MeasurementToolMixin.updateMeasurement.bind(this)();
+    return MeasurementToolMixin.updateMeasurement.bind(this)()
   }
 
-
-  //MapSearchMixin
+  // MapSearchMixin
   onSearch = (queryText: string) => {
-    return MapSearchMixin.onSearch.bind(this)(queryText);
+    return MapSearchMixin.onSearch.bind(this)(queryText)
   }
 
   onSearchResultClick = (result: Object) => {
-    return MapSearchMixin.onSearchResultClick.bind(this)(result);
+    return MapSearchMixin.onSearchResultClick.bind(this)(result)
   }
 
   getSearchDisplayLayers = (sourceID: string, source: GLSource, mhids: Array<string>) => {
-    return MapSearchMixin.getSearchDisplayLayers.bind(this)(sourceID, source, mhids);
+    return MapSearchMixin.getSearchDisplayLayers.bind(this)(sourceID, source, mhids)
   }
 
   onSearchReset = () => {
-    return MapSearchMixin.onSearchReset.bind(this)();
+    return MapSearchMixin.onSearchReset.bind(this)()
   }
 
   getSearchFilters = (query: string) => {
-    return MapSearchMixin.getSearchFilters.bind(this)(query);
+    return MapSearchMixin.getSearchFilters.bind(this)(query)
   }
 
-  //MapboxGLHelperMixin
+  // MapboxGLHelperMixin
   getBounds = () => {
-    return MapboxGLHelperMixin.getBounds.bind(this)();
+    return MapboxGLHelperMixin.getBounds.bind(this)()
   }
 
   getPosition = () => {
-    return MapboxGLHelperMixin.getPosition.bind(this)();
+    return MapboxGLHelperMixin.getPosition.bind(this)()
   }
 
   updatePosition = () => {
-    return MapboxGLHelperMixin.updatePosition.bind(this)();
+    return MapboxGLHelperMixin.updatePosition.bind(this)()
   }
 
   flyTo = (center: any, zoom: number) => {
-    return MapboxGLHelperMixin.flyTo.bind(this)(center, zoom);
+    return MapboxGLHelperMixin.flyTo.bind(this)(center, zoom)
   }
 
   getBoundsObject = (bbox: Array<number>) => {
-    return MapboxGLHelperMixin.getBoundsObject.bind(this)(bbox);
+    return MapboxGLHelperMixin.getBoundsObject.bind(this)(bbox)
   }
 
   fitBounds = (bbox: any, maxZoom: number, padding: number = 0, animate: boolean = true) => {
-    return MapboxGLHelperMixin.fitBounds.bind(this)(bbox, maxZoom, padding, animate);
+    return MapboxGLHelperMixin.fitBounds.bind(this)(bbox, maxZoom, padding, animate)
   }
 
   changeLocale = (locale: string, map: any) => {
-    return MapboxGLHelperMixin.changeLocale.bind(this)(locale, map);
+    return MapboxGLHelperMixin.changeLocale.bind(this)(locale, map)
   }
 
-  //ForestAlertMixin
+  // ForestAlertMixin
 
   getDefaultForestAlertState = () => {
-    return ForestAlertMixin.getDefaultForestAlertState.bind(this)();
+    return ForestAlertMixin.getDefaultForestAlertState.bind(this)()
   }
 
   toggleForestAlerts = (config: Object) => {
-    return ForestAlertMixin.toggleForestAlerts.bind(this)(config);
+    return ForestAlertMixin.toggleForestAlerts.bind(this)(config)
   }
 
   restoreForestAlerts = () => {
-    return ForestAlertMixin.restoreForestAlerts.bind(this)();
+    return ForestAlertMixin.restoreForestAlerts.bind(this)()
   }
 
   calculateForestAlerts = () => {
-    return ForestAlertMixin.calculateForestAlerts.bind(this)();
+    return ForestAlertMixin.calculateForestAlerts.bind(this)()
   }
 
   addGLADLayer = () => {
-    return ForestAlertMixin.addGLADLayer.bind(this)();
+    return ForestAlertMixin.addGLADLayer.bind(this)()
   }
 
   removeGLADLayer = () => {
-    return ForestAlertMixin.removeGLADLayer.bind(this)();
+    return ForestAlertMixin.removeGLADLayer.bind(this)()
   }
 
-  //ForestLossMixin
+  // ForestLossMixin
 
   getForestLossLayer = (type: string, year: number) => {
-    return ForestLossMixin.getForestLossLayer.bind(this)(type, year);
+    return ForestLossMixin.getForestLossLayer.bind(this)(type, year)
   }
 
   toggleForestLoss = () => {
-    return ForestLossMixin.toggleForestLoss.bind(this)();
+    return ForestLossMixin.toggleForestLoss.bind(this)()
   }
 
   getFirstLabelLayer = () => {
-    return ForestLossMixin.getFirstLabelLayer.bind(this)();
+    return ForestLossMixin.getFirstLabelLayer.bind(this)()
   }
 
   addForestLossLayers = () => {
-    return ForestLossMixin.addForestLossLayers.bind(this)();
-  } 
+    return ForestLossMixin.addForestLossLayers.bind(this)()
+  }
 
   removeForestLossLayers = () => {
-    return ForestLossMixin.removeForestLossLayers.bind(this)();
+    return ForestLossMixin.removeForestLossLayers.bind(this)()
   }
 
   tick = (year: number) => {
-    return ForestLossMixin.tick.bind(this)(year);
+    return ForestLossMixin.tick.bind(this)(year)
   }
 
-  //StyleMixin
+  // StyleMixin
   setBaseMapStyle = (style: GLStyle, update?: boolean) => {
-    return StyleMixin.setBaseMapStyle.bind(this)(style, update);
+    return StyleMixin.setBaseMapStyle.bind(this)(style, update)
   }
 
   setOverlayStyle = (overlayStyle: GLStyle, optimizeLayers: boolean) => {
-    return StyleMixin.setOverlayStyle.bind(this)(overlayStyle, optimizeLayers);
+    return StyleMixin.setOverlayStyle.bind(this)(overlayStyle, optimizeLayers)
   }
 
   reloadStyle = () => {
-    return StyleMixin.reloadStyle.bind(this)();
+    return StyleMixin.reloadStyle.bind(this)()
   }
 
   addLayer = (layer: GLLayer, position?: number) => {
-    return StyleMixin.addLayer.bind(this)(layer, position);
+    return StyleMixin.addLayer.bind(this)(layer, position)
   }
 
   addLayerBefore = (layer: GLLayer, beforeLayer: string) => {
-    return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer);
+    return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer)
   }
 
   addLayers = (layerIds: Array<{layer_id: number, position: number}>, fromStyle: GLStyle) => {
-    return StyleMixin.addLayers.bind(this)(layerIds, fromStyle);
+    return StyleMixin.addLayers.bind(this)(layerIds, fromStyle)
   }
 
   removeLayer = (id: string) => {
-    return StyleMixin.removeLayer.bind(this)(id);
+    return StyleMixin.removeLayer.bind(this)(id)
   }
 
-  removeLayers = (layersIDs: Array<string>, fromStyle: GLStyle) =>{
-    return StyleMixin.removeLayers.bind(this)(layersIDs, fromStyle);
+  removeLayers = (layersIDs: Array<string>, fromStyle: GLStyle) => {
+    return StyleMixin.removeLayers.bind(this)(layersIDs, fromStyle)
   }
 
   addSource = (key: string, source: GLSource) => {
-    return StyleMixin.addSource.bind(this)(key, source);
+    return StyleMixin.addSource.bind(this)(key, source)
   }
 
   removeSource = (key: string) => {
-    return StyleMixin.removeSource.bind(this)(key);
+    return StyleMixin.removeSource.bind(this)(key)
   }
 
   removeSources = (sourceKeys: Array<string>, fromStyle: GLStyle) => {
-    return StyleMixin.removeSources.bind(this)(sourceKeys, fromStyle);
+    return StyleMixin.removeSources.bind(this)(sourceKeys, fromStyle)
   }
 
   loadSources = async (sourceKeys: Array<string>, fromStyle: GLStyle) => {
-    return StyleMixin.loadSources.bind(this)(sourceKeys, fromStyle);
+    return StyleMixin.loadSources.bind(this)(sourceKeys, fromStyle)
   }
 
-  //IsochroneMixin
+  // IsochroneMixin
   getIsochroneStyle = (data: GeoJSONObject) => {
-    return IsochroneMixin.getIsochroneStyle.bind(this)(data);
+    return IsochroneMixin.getIsochroneStyle.bind(this)(data)
   }
 
   getIsochronePoint = () => {
-    return IsochroneMixin.getIsochronePoint.bind(this)();
+    return IsochroneMixin.getIsochronePoint.bind(this)()
   }
 
   runIsochroneQuery = (point: {x: number, y: number}) => {
-    return IsochroneMixin.runIsochroneQuery.bind(this)(point);
+    return IsochroneMixin.runIsochroneQuery.bind(this)(point)
   }
 
   clearIsochroneLayers = () => {
-    return IsochroneMixin.clearIsochroneLayers.bind(this)();
+    return IsochroneMixin.clearIsochroneLayers.bind(this)()
   }
 
   saveIsochroneLayer = () => {
-    return IsochroneMixin.saveIsochroneLayer.bind(this)();
+    return IsochroneMixin.saveIsochroneLayer.bind(this)()
   }
-
-
 }

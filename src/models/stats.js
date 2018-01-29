@@ -1,117 +1,117 @@
 // @flow
-const knex = require('../connection.js');
-const debug = require('../services/debug')('model/stats');
+const knex = require('../connection.js')
+const debug = require('../services/debug')('model/stats')
 
 module.exports = {
 
-  async getLayerStats(layer_id: number){
-    let maps;
+  async getLayerStats (layer_id: number) {
+    let maps
     const mapsResult = await knex('omh.map_layers')
-    .select(knex.raw('count(map_id)'))
-    .where({layer_id});
-    if(mapsResult && mapsResult.length === 1){
-      maps =  mapsResult[0].count;
+      .select(knex.raw('count(map_id)'))
+      .where({layer_id})
+    if (mapsResult && mapsResult.length === 1) {
+      maps = mapsResult[0].count
     }
-   
-    let stories;
+
+    let stories
     const storiesResult = await knex.select(knex.raw('count(story_id)'))
-    .from('omh.story_maps')
-    .leftJoin('omh.map_layers', 'omh.story_maps.map_id', 'omh.map_layers.map_id')
-    .where({layer_id});
-    if(storiesResult && storiesResult.length === 1){
-      stories =  storiesResult[0].count;
+      .from('omh.story_maps')
+      .leftJoin('omh.map_layers', 'omh.story_maps.map_id', 'omh.map_layers.map_id')
+      .where({layer_id})
+    if (storiesResult && storiesResult.length === 1) {
+      stories = storiesResult[0].count
     }
 
     const viewsByDay = await knex
-    .select(knex.raw("date_trunc('day', time) as day"), knex.raw('count(view_id)'))
-    .from('omh.layer_views')
-    .groupBy(
-      knex.raw("date_trunc('day', time)")
-    ).orderBy(
-      knex.raw("date_trunc('day', time)")
-    );
+      .select(knex.raw("date_trunc('day', time) as day"), knex.raw('count(view_id)'))
+      .from('omh.layer_views')
+      .groupBy(
+        knex.raw("date_trunc('day', time)")
+      ).orderBy(
+        knex.raw("date_trunc('day', time)")
+      )
 
     return {
       maps,
       stories,
       viewsByDay
-    };
+    }
   },
 
-  async addLayerView(layer_id: number, user_id: any){
-    if(user_id <= 0){
-      user_id = null;
+  async addLayerView (layer_id: number, user_id: any) {
+    if (user_id <= 0) {
+      user_id = null
     }
-    const viewsResult = await knex('omh.layer_views').select(knex.raw('count(view_id)')).where({layer_id});
-    let views: number = parseInt(viewsResult[0].count);
-    if(views === undefined || isNaN(views)){
-      views = 1;
-    }else{
-      views = views + 1;
+    const viewsResult = await knex('omh.layer_views').select(knex.raw('count(view_id)')).where({layer_id})
+    let views: number = parseInt(viewsResult[0].count)
+    if (views === undefined || isNaN(views)) {
+      views = 1
+    } else {
+      views = views + 1
     }
     await knex('omh.layer_views').insert({
-      layer_id, 
-      user_id, 
+      layer_id,
+      user_id,
       time: knex.raw('now()')
-    });
-    debug.log("layer: " + layer_id + " now has " + views + " views!");
-    return knex('omh.layers').update({views}).where({layer_id});
+    })
+    debug.log('layer: ' + layer_id + ' now has ' + views + ' views!')
+    return knex('omh.layers').update({views}).where({layer_id})
   },
 
-  async addMapView(map_id: number, user_id: any){
-    if(user_id <= 0){
-      user_id = null;
+  async addMapView (map_id: number, user_id: any) {
+    if (user_id <= 0) {
+      user_id = null
     }
-    const viewsResult = await knex('omh.map_views').select(knex.raw('count(view_id)')).where({map_id});
+    const viewsResult = await knex('omh.map_views').select(knex.raw('count(view_id)')).where({map_id})
 
-    let views: number = parseInt(viewsResult[0].count);
-    if(views === undefined || isNaN(views)){
-      views = 1;
-    }else{
-      views = views + 1;
+    let views: number = parseInt(viewsResult[0].count)
+    if (views === undefined || isNaN(views)) {
+      views = 1
+    } else {
+      views = views + 1
     }
     await knex('omh.map_views').insert({
       map_id, user_id, time: knex.raw('now()')
-    });
-    debug.log("map: " + map_id + " now has " + views + " views!");
-    return knex('omh.maps').update({views}).where({map_id});
+    })
+    debug.log('map: ' + map_id + ' now has ' + views + ' views!')
+    return knex('omh.maps').update({views}).where({map_id})
   },
 
-  async addStoryView(story_id: number, user_id: any){
-    if(user_id <= 0){
-      user_id = null;
+  async addStoryView (story_id: number, user_id: any) {
+    if (user_id <= 0) {
+      user_id = null
     }
-    const viewsResult = await knex('omh.story_views').select(knex.raw('count(view_id)')).where({story_id});
+    const viewsResult = await knex('omh.story_views').select(knex.raw('count(view_id)')).where({story_id})
 
-    let views: number = parseInt(viewsResult[0].count);
-    if(views === undefined || isNaN(views)){
-      views = 1;
-    }else{
-      views = views + 1;
+    let views: number = parseInt(viewsResult[0].count)
+    if (views === undefined || isNaN(views)) {
+      views = 1
+    } else {
+      views = views + 1
     }
     await knex('omh.story_views').insert({
       story_id, user_id, time: knex.raw('now()')
-    });
-    debug.log("story: " + story_id + " now has " + views + " views!");
-    return knex('omh.stories').update({views}).where({story_id});
+    })
+    debug.log('story: ' + story_id + ' now has ' + views + ' views!')
+    return knex('omh.stories').update({views}).where({story_id})
   },
 
-  async addHubView(hub_id: string, user_id: any){
-    if(user_id <= 0){
-      user_id = null;
+  async addHubView (hub_id: string, user_id: any) {
+    if (user_id <= 0) {
+      user_id = null
     }
-    const viewsResult = await knex('omh.hub_views').select(knex.raw('count(view_id)')).where({hub_id});
+    const viewsResult = await knex('omh.hub_views').select(knex.raw('count(view_id)')).where({hub_id})
 
-    let views: number = parseInt(viewsResult[0].count);
-    if(views === undefined || isNaN(views)){
-      views = 1;
-    }else{
-      views = views + 1;
+    let views: number = parseInt(viewsResult[0].count)
+    if (views === undefined || isNaN(views)) {
+      views = 1
+    } else {
+      views = views + 1
     }
     await knex('omh.hub_views').insert({
       hub_id, user_id, time: knex.raw('now()')
-    });
-    debug.log("hub: " + hub_id + " now has " + views + " views!");
-    return knex('omh.hubs').update({views}).where({hub_id});
+    })
+    debug.log('hub: ' + hub_id + ' now has ' + views + ' views!')
+    return knex('omh.hubs').update({views}).where({hub_id})
   }
-};
+}

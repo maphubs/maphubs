@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux'
 export default Reflux.createActions([
   'save',
   'delete',
@@ -8,4 +8,4 @@ export default Reflux.createActions([
   'handleTitleChange',
   'handleAuthorChange',
   'publish'
-]);
+])

@@ -1,9 +1,9 @@
-//@flow
-import React from 'react';
-import slugify from 'slugify';
-import StorySummary from '../Story/StorySummary';
-import _isequal from 'lodash.isequal';
-import MapHubsComponent from '../../components/MapHubsComponent';
+// @flow
+import React from 'react'
+import slugify from 'slugify'
+import StorySummary from '../Story/StorySummary'
+import _isequal from 'lodash.isequal'
+import MapHubsComponent from '../../components/MapHubsComponent'
 
 type Props = {|
   hub: Object,
@@ -21,7 +21,6 @@ type DefaultProps = {
 type State = {}
 
 export default class HubStories extends MapHubsComponent<Props, State> {
-
   props: Props
 
   static defaultProps: DefaultProps = {
@@ -30,58 +29,58 @@ export default class HubStories extends MapHubsComponent<Props, State> {
     editing: false
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
+    // only update if something changes
+    if (!_isequal(this.props, nextProps)) {
+      return true
     }
-    if(!_isequal(this.state, nextState)){
-      return true;
+    if (!_isequal(this.state, nextState)) {
+      return true
     }
-    return false;
+    return false
   }
 
-  render() {
-    const _this = this;
-    let addButton = '';
-    const baseUrl = '/hub/' + this.props.hub.hub_id;
-    
-    if(_this.props.editing){
+  render () {
+    const _this = this
+    let addButton = ''
+    const baseUrl = '/hub/' + this.props.hub.hub_id
+
+    if (_this.props.editing) {
       addButton = (
         <div>
-          <a href={baseUrl + '/story/create'} className="btn center-align center"><i className="material-icons left">add</i>{this.__('Add Story')}</a>
+          <a href={baseUrl + '/story/create'} className='btn center-align center'><i className='material-icons left'>add</i>{this.__('Add Story')}</a>
         </div>
 
-      );
+      )
     }
     return (
       <div>
         {addButton}
         <div>
           {this.props.stories.map((story, i) => {
-            let editButton = '';
-            if(_this.props.editing){
+            let editButton = ''
+            if (_this.props.editing) {
               editButton = (
-                <a className="secondary-content" href={baseUrl + '/story/' + story.story_id + '/edit/' + slugify(story.title)}>
-                  <i className="material-icons">edit</i>
+                <a className='secondary-content' href={baseUrl + '/story/' + story.story_id + '/edit/' + slugify(story.title)}>
+                  <i className='material-icons'>edit</i>
                 </a>
-              );
+              )
             }
-            if(_this.props.limit > 0 && i+1 > _this.props.limit){
-              return (<div></div>);
+            if (_this.props.limit > 0 && i + 1 > _this.props.limit) {
+              return (<div />)
             }
             return (
-                <div className="card" key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                  <div className="card-content">
+              <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                <div className='card-content'>
                   {editButton}
                   <StorySummary story={story} baseUrl={baseUrl} />
                 </div>
               </div>
-            );
+            )
           })}
 
         </div>
       </div>
-    );
+    )
   }
 }

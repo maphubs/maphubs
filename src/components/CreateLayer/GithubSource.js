@@ -1,9 +1,9 @@
-//@flow
-import React from 'react';
-import Formsy from 'formsy-react';
-import TextInput from '../forms/textInput';
-import LayerStore from '../../stores/layer-store';
-import MapHubsComponent from '../MapHubsComponent';
+// @flow
+import React from 'react'
+import Formsy from 'formsy-react'
+import TextInput from '../forms/textInput'
+import LayerStore from '../../stores/layer-store'
+import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {|
   onSubmit: Function,
@@ -20,7 +20,6 @@ type State = {
 }
 
 export default class GithubSource extends MapHubsComponent<Props, State> {
-
   propss: Props
 
   static defaultProps: DefaultProps = {
@@ -31,56 +30,56 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
     canSubmit: false
   }
 
-  constructor(props: Props){
-    super(props);
-    this.stores.push(LayerStore);
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(LayerStore)
   }
 
   enableButton = () => {
     this.setState({
       canSubmit: true
-    });
+    })
   }
 
   disableButton = () => {
     this.setState({
       canSubmit: false
-    });
+    })
   }
 
   submit = (model: Object) => {
-    //#TODO:180 save step 2 to DB
-    this.props.onSubmit(model);
+    // #TODO:180 save step 2 to DB
+    this.props.onSubmit(model)
   }
 
   sourceChange = (value: string) => {
-    this.setState({selectedSource: value});
+    this.setState({selectedSource: value})
   }
 
   onPrev = () => {
-    if(this.props.onPrev) this.props.onPrev();
+    if (this.props.onPrev) this.props.onPrev()
   }
 
-	render() {
-		return (
-        <div className="row">
-          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+  render () {
+    return (
+      <div className='row'>
+        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
-            <div>
-              <p>Github GeoJSON Source</p>
-            <div className="row">
-              <TextInput name="githuburl" label="Github GeoJSON URL" icon="info" className="col s12" validations="maxLength:100" validationErrors={{
-                     maxLength: 'Must be 100 characters or less.'
-                 }} length={100}
-                 dataPosition="top" dataTooltip="Github GeoJSON URL"
-                 required/>
+          <div>
+            <p>Github GeoJSON Source</p>
+            <div className='row'>
+              <TextInput name='githuburl' label='Github GeoJSON URL' icon='info' className='col s12' validations='maxLength:100' validationErrors={{
+                maxLength: 'Must be 100 characters or less.'
+              }} length={100}
+              dataPosition='top' dataTooltip='Github GeoJSON URL'
+              required />
             </div>
-            </div>
-            <div className="right">
-              <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>Save and Continue</button>
-            </div>
-          </Formsy>
+          </div>
+          <div className='right'>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>Save and Continue</button>
+          </div>
+        </Formsy>
       </div>
-		);
-	}
+    )
+  }
 }

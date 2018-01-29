@@ -1,7 +1,7 @@
-import Reflux from 'reflux';
-import Actions from '../actions/MessageActions';
-const debug = require('../services/debug')('stores/message-store');
-const $ = require('jquery');
+import Reflux from 'reflux'
+import Actions from '../actions/MessageActions'
+const debug = require('../services/debug')('stores/message-store')
+const $ = require('jquery')
 
 export type MessageStoreState = {
   show: boolean,
@@ -11,47 +11,45 @@ export type MessageStoreState = {
 }
 
 export default class MessageStore extends Reflux.Store {
-
   state: MessageStoreState
 
-  constructor(){
-    super();
-    this.state = this.getDefaultState();
-    this.listenables = Actions;
+  constructor () {
+    super()
+    this.state = this.getDefaultState()
+    this.listenables = Actions
   }
 
-  getDefaultState(): MessageStoreState{
+  getDefaultState (): MessageStoreState {
     return {
       show: false,
       title: 'Message',
       message: '',
       onDismiss: null
-    };
-  }
-
-  reset() {
-    this.setState(this.getDefaultState());
-    this.trigger(this.state);
-  }
-
-  storeDidUpdate() {
-    debug.log('store updated');
-  }
-
-  //listeners
-  showMessage(options) {
-    if (options) {
-      const updatedState = $.extend(this.getDefaultState(), options);
-      this.setState(updatedState);
-      this.setState({
-        show: true
-      });
     }
   }
 
-  dismissMessage() {
-    if(this.state.onDismiss) this.state.onDismiss();
-    this.reset();
+  reset () {
+    this.setState(this.getDefaultState())
+    this.trigger(this.state)
   }
 
+  storeDidUpdate () {
+    debug.log('store updated')
+  }
+
+  // listeners
+  showMessage (options) {
+    if (options) {
+      const updatedState = $.extend(this.getDefaultState(), options)
+      this.setState(updatedState)
+      this.setState({
+        show: true
+      })
+    }
+  }
+
+  dismissMessage () {
+    if (this.state.onDismiss) this.state.onDismiss()
+    this.reset()
+  }
 }

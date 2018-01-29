@@ -1,77 +1,73 @@
 // @flow
-const knex = require('../connection.js');
-const Promise = require('bluebird');
-const log = require('../services/log');
-const MapStyles = require('../components/Map/Styles');
+const knex = require('../connection.js')
+const Promise = require('bluebird')
+const log = require('../services/log')
+const MapStyles = require('../components/Map/Styles')
 
 module.exports = {
 
-    savePresets(layer_id: number, presets: any, style: Object, user_id: number, create: boolean, trx: any) {
-      let db = knex;
-      if(trx){db = trx;}
-      if(create){
-        //just insert them
-        return db('omh.layers').where({
-            layer_id
-          })
-          .update({
-              presets: JSON.stringify(presets),
-              style,
-              updated_by_user_id: user_id,
-              last_updated: knex.raw('now()')
-          });
-      } else {
-        //look for modified tags(properties) since new need to rename them in the data
+  savePresets (layer_id: number, presets: any, style: Object, user_id: number, create: boolean, trx: any) {
+    let db = knex
+    if (trx) { db = trx }
+    if (create) {
+      // just insert them
+      return db('omh.layers').where({
+        layer_id
+      })
+        .update({
+          presets: JSON.stringify(presets),
+          style,
+          updated_by_user_id: user_id,
+          last_updated: knex.raw('now()')
+        })
+    } else {
+      // look for modified tags(properties) since new need to rename them in the data
 
-        const updateCommands = [];
+      const updateCommands = []
 
-        presets.forEach((preset) => {
-          if(preset.prevTag !== undefined){
-            //preset was modified
-            updateCommands.push(
+      presets.forEach((preset) => {
+        if (preset.prevTag !== undefined) {
+          // preset was modified
+          updateCommands.push(
             db(`layers.data_${layer_id}`)
-            .select(db.raw(`count(tags -> '${preset.prevTag}')`))
-            .then(countResult =>{
-              if(countResult[0].count === 0){               
-                return db.raw(`UPDATE layers.data_${layer_id} SET tags=jsonb_set(tags, '{${preset.tag}}', tags-> '${preset.prevTag}')`);
-              }else{
-                log.error(`tag: ${preset.prevTag} already exists`);
-              }
-              return;
-            })
-            );
-          }
-        });
+              .select(db.raw(`count(tags -> '${preset.prevTag}')`))
+              .then(countResult => {
+                if (countResult[0].count === 0) {
+                  return db.raw(`UPDATE layers.data_${layer_id} SET tags=jsonb_set(tags, '{${preset.tag}}', tags-> '${preset.prevTag}')`)
+                } else {
+                  log.error(`tag: ${preset.prevTag} already exists`)
+                }
+              })
+          )
+        }
+      })
 
-        if(updateCommands.length > 0){
-          return Promise.all(updateCommands)
+      if (updateCommands.length > 0) {
+        return Promise.all(updateCommands)
           .then(() => {
-
             return db('omh.layers').where({layer_id})
-            .update({
+              .update({
                 presets: JSON.stringify(presets),
                 style,
                 updated_by_user_id: user_id,
                 last_updated: knex.raw('now()')
-            });
-            });
-
-        }else{
-          return db('omh.layers').where({layer_id})
+              })
+          })
+      } else {
+        return db('omh.layers').where({layer_id})
           .update({
-              presets: JSON.stringify(presets),
-              style,
-              updated_by_user_id: user_id,
-              last_updated: knex.raw('now()')
-          });
-        }
+            presets: JSON.stringify(presets),
+            style,
+            updated_by_user_id: user_id,
+            last_updated: knex.raw('now()')
+          })
       }
+    }
+  },
 
-    },
-
-//Not needed?
-    updatePresetsInMapStyles(layer_id: number, presets: any){
-      return knex.raw(`
+  // Not needed?
+  updatePresetsInMapStyles (layer_id: number, presets: any) {
+    return knex.raw(`
         select omh.map_layers.map_id, omh.map_layers .layer_id, 
 omh.map_layers.style as map_layer_style,
 omh.layers.style as orig_layer_style
@@ -81,46 +77,46 @@ where map_id in (SELECT distinct map_id from omh.map_layers where layer_id = :la
 order by position
       `, {layer_id})
       .then(result => {
-        const updatedMapStyles = {};
-        const updateCommands = [];
+        const updatedMapStyles = {}
+        const updateCommands = []
         result.rows.forEach(mapLayer => {
-          const mapLayerStyle = mapLayer.map_layer_style;
+          const mapLayerStyle = mapLayer.map_layer_style
 
-          //update source metadata
-          Object.keys(mapLayerStyle.sources).forEach((sourceID) => {          
-            const mapSource =  mapLayerStyle.sources[sourceID];
-            if(!mapSource.metadata){
-              mapSource.metadata = {};
+          // update source metadata
+          Object.keys(mapLayerStyle.sources).forEach((sourceID) => {
+            const mapSource = mapLayerStyle.sources[sourceID]
+            if (!mapSource.metadata) {
+              mapSource.metadata = {}
             }
-             mapSource.metadata['maphubs:presets'] = presets;
-          });
-          
-          if(!updatedMapStyles[mapLayer.map_id]){
-            updatedMapStyles[mapLayer.map_id] = [];
+            mapSource.metadata['maphubs:presets'] = presets
+          })
+
+          if (!updatedMapStyles[mapLayer.map_id]) {
+            updatedMapStyles[mapLayer.map_id] = []
           }
 
           updatedMapStyles[mapLayer.map_id].push({
             layer_id: mapLayer.layer_id,
             style: mapLayerStyle
-          });
-        
+          })
+
           updateCommands.push(
             knex('omh.map_layers')
-            .update({style: mapLayerStyle})
-            .where({map_id: mapLayer.map_id, layer_id: mapLayer.layer_id})
-          );
-    });
+              .update({style: mapLayerStyle})
+              .where({map_id: mapLayer.map_id, layer_id: mapLayer.layer_id})
+          )
+        })
 
-    //loop through map_ids, build updated styles, and update
-    Object.keys(updatedMapStyles).forEach(map_id => {
-      const updatedMapStyle = MapStyles.style.buildMapStyle(updatedMapStyles[map_id]);
-      updateCommands.push(
-        knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
-      );
-    });
+        // loop through map_ids, build updated styles, and update
+        Object.keys(updatedMapStyles).forEach(map_id => {
+          const updatedMapStyle = MapStyles.style.buildMapStyle(updatedMapStyles[map_id])
+          updateCommands.push(
+            knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
+          )
+        })
 
-    return Promise.all(updateCommands);
-  });
-    }
+        return Promise.all(updateCommands)
+      })
+  }
 
-};
+}

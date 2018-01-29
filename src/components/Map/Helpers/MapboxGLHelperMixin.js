@@ -1,53 +1,53 @@
-//@flow
-const debug = require('../../../services/debug')('mapboxGLHelperMixin');
+// @flow
+const debug = require('../../../services/debug')('mapboxGLHelperMixin')
 
 /**
  * Helper functions for interfacing with MapboxGL
  */
 module.exports = {
 
-  getBounds(){
-    if(this.map){
-      return this.map.getBounds().toArray();
+  getBounds () {
+    if (this.map) {
+      return this.map.getBounds().toArray()
     }
   },
 
-  getPosition(){
-    if(this.map){
-      const center = this.map.getCenter();
-      const zoom = this.map.getZoom();
+  getPosition () {
+    if (this.map) {
+      const center = this.map.getCenter()
+      const zoom = this.map.getZoom()
       return {
-          zoom,
-          lng: center.lng,
-          lat: center.lat
-      };
+        zoom,
+        lng: center.lng,
+        lat: center.lat
+      }
     }
   },
 
-  updatePosition(){
-    debug.log('(' + this.state.id + ') ' +'UPDATE POSITION');
-    const map = this.map;
-    map.setView(this.state.map.position.center, this.state.map.position.zoom, {animate: false});
+  updatePosition () {
+    debug.log('(' + this.state.id + ') ' + 'UPDATE POSITION')
+    const map = this.map
+    map.setView(this.state.map.position.center, this.state.map.position.zoom, {animate: false})
   },
 
-  flyTo(center: any, zoom: number){
-    this.map.flyTo({center, zoom});
+  flyTo (center: any, zoom: number) {
+    this.map.flyTo({center, zoom})
   },
 
-  getBoundsObject(bbox: Array<number>){
-    return [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
+  getBoundsObject (bbox: Array<number>) {
+    return [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]
   },
 
-  fitBounds(bbox: Array<number>, maxZoom: number, padding: number = 0, animate: boolean = true){
-    const bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]];
-    this.map.fitBounds(bounds, {padding, curve: 1, speed:0.6, maxZoom, animate});
+  fitBounds (bbox: Array<number>, maxZoom: number, padding: number = 0, animate: boolean = true) {
+    const bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]
+    this.map.fitBounds(bounds, {padding, curve: 1, speed: 0.6, maxZoom, animate})
   },
 
-  changeLocale(locale: string, map: any){
-  if(!locale || !map){
-    debug.log('missing required args');
-  }
-  //disable until OpenMapTile has translations;
+  changeLocale (locale: string, map: any) {
+    if (!locale || !map) {
+      debug.log('missing required args')
+    }
+  // disable until OpenMapTile has translations;
     /*
     var supportedLangauges = ['en', 'fr', 'es', 'de', 'de', 'ru', 'zh'];
     var foundLocale = _includes(supportedLangauges, locale);
@@ -74,7 +74,7 @@ module.exports = {
         map.setLayoutProperty('place_suburb', 'text-field', '{name_' + locale + '}');
         map.setLayoutProperty('place_other', 'text-field', '{name_' + locale + '}');
         map.setLayoutProperty('water_name', 'text-field', '{name_' + locale + '}');
-            
+
       }else if(this.state.baseMap === 'dark'){
         map.setLayoutProperty('place_country_major', 'text-field', '{name_' + locale + '}');
         map.setLayoutProperty('place_country_other', 'text-field', '{name_' + locale + '}');
@@ -86,13 +86,12 @@ module.exports = {
         map.setLayoutProperty('place_suburb', 'text-field', '{name_' + locale + '}');
         map.setLayoutProperty('place_other', 'text-field', '{name_' + locale + '}');
         map.setLayoutProperty('water_name', 'text-field', '{name_' + locale + '}');
-            
+
       }
-   
+
     }catch(err){
       debug.error(err);
     }
 */
-
   }
-};
+}

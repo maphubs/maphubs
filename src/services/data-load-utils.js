@@ -1,246 +1,239 @@
 // @flow
-const knex = require('../connection.js');
-const GJV = require("geojson-validation");
-const log = require('./log');
-const local = require('../local');
-const debug = require('./debug')('data-load-utils');
-const fs = require('fs');
-const LayerViews = require('./layer-views');
-const Promise = require('bluebird');
-const sizeof = require('object-sizeof');
-const MapStyles = require('../components/Map/Styles');
-const ogr2ogr = require('ogr2ogr');
-const SearchIndex = require('../models/search-index');
-import _buffer from '@turf/buffer';
-import _bbox from '@turf/bbox';
+import _buffer from '@turf/buffer'
+import _bbox from '@turf/bbox'
+const knex = require('../connection.js')
+const GJV = require('geojson-validation')
+const log = require('./log')
+const local = require('../local')
+const debug = require('./debug')('data-load-utils')
+const fs = require('fs')
+const LayerViews = require('./layer-views')
+const Promise = require('bluebird')
+const sizeof = require('object-sizeof')
+const MapStyles = require('../components/Map/Styles')
+const ogr2ogr = require('ogr2ogr')
+const SearchIndex = require('../models/search-index')
 
-const LARGE_DATA_THRESHOLD = 20000000;
+const LARGE_DATA_THRESHOLD = 20000000
 
 module.exports = {
 
-  async removeLayerData(layer_id: number, trx: any = null){
-    debug.log('removeLayerData');
-    let db = knex;
-    if(trx){db = trx;}
-    //remove views
-    const result = await db('omh.layers').select('status').where({layer_id});
-    
-    if(result && result.length > 0){
-      const status = result[0].status;
-      if(status === 'published' || status === 'loaded'){
-        debug.log('removing from search index');
-        await SearchIndex.deleteLayer(layer_id, trx);
-        debug.log('dropping layer views');
-        await LayerViews.dropLayerViews(layer_id, trx);
-        debug.log('dropping layer data');
-        await db.raw(`DROP TABLE layers.data_${layer_id};`);
-        debug.log('dropping layer sequence');
-        return db.raw(`DROP SEQUENCE layers.mhid_seq_${layer_id};`);
-      }else{
-        return null;
+  async removeLayerData (layer_id: number, trx: any = null) {
+    debug.log('removeLayerData')
+    let db = knex
+    if (trx) { db = trx }
+    // remove views
+    const result = await db('omh.layers').select('status').where({layer_id})
+
+    if (result && result.length > 0) {
+      const status = result[0].status
+      if (status === 'published' || status === 'loaded') {
+        debug.log('removing from search index')
+        await SearchIndex.deleteLayer(layer_id, trx)
+        debug.log('dropping layer views')
+        await LayerViews.dropLayerViews(layer_id, trx)
+        debug.log('dropping layer data')
+        await db.raw(`DROP TABLE layers.data_${layer_id};`)
+        debug.log('dropping layer sequence')
+        return db.raw(`DROP SEQUENCE layers.mhid_seq_${layer_id};`)
+      } else {
+        return null
       }
-    }else{
-      return null;
-    }    
-
-  },
-
-  async storeTempShapeUpload(uploadtmppath: string, layer_id: number, trx: any = null){
-    debug.log('storeTempShapeUpload');
-    let db = knex;
-    if(trx){db = trx;}
-    await db('omh.temp_data').where({layer_id}).del();
-    return db('omh.temp_data').insert({
-        layer_id,
-        uploadtmppath
-      });
-  },
-
-  async getTempShapeUpload(layer_id: number, trx: any = null){
-    debug.log('getTempShapeUpload');
-    let db = knex;
-    if(trx){db = trx;}
-    const result = await db('omh.temp_data').where({layer_id});
-    return result[0].uploadtmppath;
-  },
-
-  cleanProps(props: Object, uniqueProps: Object){
-    //get unique list of properties
-    const cleanedFeatureProps = {};
-    Object.keys(props).forEach((key) => {
-      //ignore MapHubs ID fields  
-      if(key !== 'mhid' && key !== 'layer_id' && key !== 'osm_id'){
-        let val = props[key];
-
-        //remove chars that can't be in database fields (used in PostGIS views) 
-        key = key.replace("-", "_");
-        key = key.replace("'", "''");
-        
-        if(!uniqueProps.includes(key)){
-          uniqueProps.push(key);
-        }
-        
-        if(typeof val === 'string'){
-          val = val.replace(/\r?\n/g, ' ');
-        }
-
-        if(typeof val === 'object'){
-          //log.info('converting nested object to string: ' + key);
-          val = JSON.stringify(val);
-        }
-        
-        cleanedFeatureProps[key] = val;
-      }
-    });
-    return cleanedFeatureProps;
-  },
-
-  async insertTempGeoJSONIntoDB(geoJSON: any, layer_id: number){ 
-    const ogr = ogr2ogr(geoJSON).format('PostgreSQL')
-    .skipfailures()
-    .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}` ])
-    .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
-    .timeout(1200000);
-    return Promise.promisify(ogr.exec, {context: ogr})();
-  },
-
-  async storeTempGeoJSON(geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null){
-    const _this = this;
-    debug.log('storeTempGeoJSON');
-    const db = trx ? trx : knex;
-
-    let result = {success: false, error: 'Unknown Error'};
-    const uniqueProps = [];
-
-    if(!geoJSON){
-      throw new Error("Error dataset missing.");
+    } else {
+      return null
     }
-    //confirm that it is a feature collection
-    if(geoJSON.type === "FeatureCollection"){
+  },
 
-      //Error if the FeatureCollection is empty
-      if(!geoJSON.features || geoJSON.features.length === 0){
-        throw new Error("Dataset appears to be empty. Zero features found in FeatureCollection");
+  async storeTempShapeUpload (uploadtmppath: string, layer_id: number, trx: any = null) {
+    debug.log('storeTempShapeUpload')
+    let db = knex
+    if (trx) { db = trx }
+    await db('omh.temp_data').where({layer_id}).del()
+    return db('omh.temp_data').insert({
+      layer_id,
+      uploadtmppath
+    })
+  },
+
+  async getTempShapeUpload (layer_id: number, trx: any = null) {
+    debug.log('getTempShapeUpload')
+    let db = knex
+    if (trx) { db = trx }
+    const result = await db('omh.temp_data').where({layer_id})
+    return result[0].uploadtmppath
+  },
+
+  cleanProps (props: Object, uniqueProps: Object) {
+    // get unique list of properties
+    const cleanedFeatureProps = {}
+    Object.keys(props).forEach((key) => {
+      // ignore MapHubs ID fields
+      if (key !== 'mhid' && key !== 'layer_id' && key !== 'osm_id') {
+        let val = props[key]
+
+        // remove chars that can't be in database fields (used in PostGIS views)
+        key = key.replace('-', '_')
+        key = key.replace("'", "''")
+
+        if (!uniqueProps.includes(key)) {
+          uniqueProps.push(key)
+        }
+
+        if (typeof val === 'string') {
+          val = val.replace(/\r?\n/g, ' ')
+        }
+
+        if (typeof val === 'object') {
+          // log.info('converting nested object to string: ' + key);
+          val = JSON.stringify(val)
+        }
+
+        cleanedFeatureProps[key] = val
+      }
+    })
+    return cleanedFeatureProps
+  },
+
+  async insertTempGeoJSONIntoDB (geoJSON: any, layer_id: number) {
+    const ogr = ogr2ogr(geoJSON).format('PostgreSQL')
+      .skipfailures()
+      .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}`])
+      .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
+      .timeout(1200000)
+    return Promise.promisify(ogr.exec, {context: ogr})()
+  },
+
+  async storeTempGeoJSON (geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null) {
+    const _this = this
+    debug.log('storeTempGeoJSON')
+    const db = trx || knex
+
+    let result = {success: false, error: 'Unknown Error'}
+    const uniqueProps = []
+
+    if (!geoJSON) {
+      throw new Error('Error dataset missing.')
+    }
+    // confirm that it is a feature collection
+    if (geoJSON.type === 'FeatureCollection') {
+      // Error if the FeatureCollection is empty
+      if (!geoJSON.features || geoJSON.features.length === 0) {
+        throw new Error('Dataset appears to be empty. Zero features found in FeatureCollection')
       }
 
-      const firstFeature = geoJSON.features[0];
-      //get type and SRID from the first feature
-      let geomType = '';
-      let firstFeatureGeom = firstFeature;
-      if(GJV.isFeature(firstFeature)){
-        firstFeatureGeom = firstFeature.geometry;
+      const firstFeature = geoJSON.features[0]
+      // get type and SRID from the first feature
+      let geomType = ''
+      let firstFeatureGeom = firstFeature
+      if (GJV.isFeature(firstFeature)) {
+        firstFeatureGeom = firstFeature.geometry
       }
-      if(GJV.isPolygon(firstFeatureGeom) || GJV.isMultiPolygon(firstFeatureGeom)){
-        geomType = 'polygon';
-      }
-      else if(GJV.isLineString(firstFeatureGeom) || GJV.isMultiLineString(firstFeatureGeom)){
-        geomType = 'line';
-      }
-      else if(GJV.isPoint(firstFeatureGeom) || GJV.isMultiPoint(firstFeatureGeom)){
-        geomType = 'point';
-      }
-      else {
-        log.error("unsupported data type: "+ JSON.stringify(firstFeatureGeom));
+      if (GJV.isPolygon(firstFeatureGeom) || GJV.isMultiPolygon(firstFeatureGeom)) {
+        geomType = 'polygon'
+      } else if (GJV.isLineString(firstFeatureGeom) || GJV.isMultiLineString(firstFeatureGeom)) {
+        geomType = 'line'
+      } else if (GJV.isPoint(firstFeatureGeom) || GJV.isMultiPoint(firstFeatureGeom)) {
+        geomType = 'point'
+      } else {
+        log.error('unsupported data type: ' + JSON.stringify(firstFeatureGeom))
       }
 
-      let srid = '4326'; //assume WGS84 unless we find something else
-      if(firstFeature.crs && firstFeature.crs.properties && firstFeature.crs.properties.name){
-        srid = firstFeature.crs.properties.name.split(':')[1];
+      let srid = '4326' // assume WGS84 unless we find something else
+      if (firstFeature.crs && firstFeature.crs.properties && firstFeature.crs.properties.name) {
+        srid = firstFeature.crs.properties.name.split(':')[1]
       }
-      const cleanedFeatures = [];
-      //loop through features
+      const cleanedFeatures = []
+      // loop through features
       geoJSON.features.map((feature, i) => {
-        //confirm feature is expected type/SRID
-        if(feature.crs && feature.crs.properties && feature.crs.properties.name){
-          const featureSRID = feature.crs.properties.name.split(':')[1];
-          if(srid !== featureSRID){
-            throw new Error('SRID mis-match found in geoJSON');
+        // confirm feature is expected type/SRID
+        if (feature.crs && feature.crs.properties && feature.crs.properties.name) {
+          const featureSRID = feature.crs.properties.name.split(':')[1]
+          if (srid !== featureSRID) {
+            throw new Error('SRID mis-match found in geoJSON')
           }
         }
-        //get unique list of properties
-        const cleanedFeatureProps = _this.cleanProps(feature.properties, uniqueProps);
+        // get unique list of properties
+        const cleanedFeatureProps = _this.cleanProps(feature.properties, uniqueProps)
 
-        const mhid = `${layer_id}:${i+1}`;
+        const mhid = `${layer_id}:${i + 1}`
         feature.properties = {
           mhid,
           tags: JSON.stringify(cleanedFeatureProps)
-        };
-
-        if(GJV.isFeature(feature) && feature.geometry){
-          cleanedFeatures.push(feature);
-        }else{
-          log.warn('Skipping invalid GeoJSON feature');
         }
 
-      });
+        if (GJV.isFeature(feature) && feature.geometry) {
+          cleanedFeatures.push(feature)
+        } else {
+          log.warn('Skipping invalid GeoJSON feature')
+        }
+      })
 
-      geoJSON.features = cleanedFeatures;
+      geoJSON.features = cleanedFeatures
 
-      let bbox;
-      if(geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point'){
-        //buffer the Point
-        const buffered = _buffer(geoJSON.features[0], 500, 'meters');
-        bbox = _bbox(buffered);
-      }else{
-        bbox = _bbox(geoJSON);
+      let bbox
+      if (geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point') {
+        // buffer the Point
+        const buffered = _buffer(geoJSON.features[0], 500, 'meters')
+        bbox = _bbox(buffered)
+      } else {
+        bbox = _bbox(geoJSON)
       }
 
-      debug.log(bbox);
-      geoJSON.bbox = bbox;
+      debug.log(bbox)
+      geoJSON.bbox = bbox
 
       const updateData = {
-          data_type: geomType,
-          extent_bbox: JSON.stringify(bbox)
-      };
+        data_type: geomType,
+        extent_bbox: JSON.stringify(bbox)
+      }
 
-      if(setStyle){
-         //now that we know the data type, update the style to clear uneeded default styles
-        const style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType);
-        updateData.style = style;
+      if (setStyle) {
+        // now that we know the data type, update the style to clear uneeded default styles
+        const style = MapStyles.style.defaultStyle(layer_id, shortid, 'vector', geomType)
+        updateData.style = style
       }
-     
-      if(local.writeDebugData){
-        /*eslint-disable security/detect-non-literal-fs-filename*/
-        //temp file path is build using env var + GUID, not user input
+
+      if (local.writeDebugData) {
+        /* eslint-disable security/detect-non-literal-fs-filename */
+        // temp file path is build using env var + GUID, not user input
         fs.writeFile(uploadtmppath + '.geojson', JSON.stringify(geoJSON), (err) => {
-          if(err) log.error(err);
-          debug.log('wrote temp geojson to ' + uploadtmppath + '.geojson');
-        });
+          if (err) log.error(err)
+          debug.log('wrote temp geojson to ' + uploadtmppath + '.geojson')
+        })
       }
-      try{
-        await _this.insertTempGeoJSONIntoDB(geoJSON, layer_id);
-      }catch(err){
-        log.error(err);
-        throw new Error("Failed to Insert Data into Temp POSTGIS Table");
+      try {
+        await _this.insertTempGeoJSONIntoDB(geoJSON, layer_id)
+      } catch (err) {
+        log.error(err)
+        throw new Error('Failed to Insert Data into Temp POSTGIS Table')
       }
-           
-      log.info('uniqueProps: ' + JSON.stringify(uniqueProps));          
-      debug.log('inserting temp geojson into database');
-      //insert into the database
-      await db('omh.layers').where({layer_id}).update(updateData);
-      
-      if(update){
-        debug.log('Update temp geojson');
+
+      log.info('uniqueProps: ' + JSON.stringify(uniqueProps))
+      debug.log('inserting temp geojson into database')
+      // insert into the database
+      await db('omh.layers').where({layer_id}).update(updateData)
+
+      if (update) {
+        debug.log('Update temp geojson')
         await db('omh.temp_data').update({
           srid,
-          unique_props:JSON.stringify(uniqueProps)})
-          .where({layer_id});
-
-      }else{ //delete and replace
-        await db('omh.temp_data').where({layer_id}).del();
+          unique_props: JSON.stringify(uniqueProps)})
+          .where({layer_id})
+      } else { // delete and replace
+        await db('omh.temp_data').where({layer_id}).del()
         await db('omh.temp_data').insert({layer_id,
           uploadtmppath,
           srid,
-          unique_props:JSON.stringify(uniqueProps)});
+          unique_props: JSON.stringify(uniqueProps)})
       }
 
-      debug.log('db updates complete');
-      let largeData = false;
-      const size = sizeof(geoJSON);
-      debug.log(`GeoJSON size: ${size}`);
-      if(size > LARGE_DATA_THRESHOLD){
-        largeData = true;
-        geoJSON = null;
+      debug.log('db updates complete')
+      let largeData = false
+      const size = sizeof(geoJSON)
+      debug.log(`GeoJSON size: ${size}`)
+      if (size > LARGE_DATA_THRESHOLD) {
+        largeData = true
+        geoJSON = null
       }
       result = {
         success: true,
@@ -249,53 +242,53 @@ module.exports = {
         geoJSON,
         uniqueProps,
         data_type: geomType
-      };
-      debug.log('Upload Complete!');
-      return result;
-    }else{
-      throw new Error('Data is not a valid GeoJSON FeatureCollection');
+      }
+      debug.log('Upload Complete!')
+      return result
+    } else {
+      throw new Error('Data is not a valid GeoJSON FeatureCollection')
     }
   },
 
-  async createEmptyDataTable(layer_id: number, trx: any){
+  async createEmptyDataTable (layer_id: number, trx: any) {
     await trx.raw(`CREATE TABLE layers.data_${layer_id}
      (
        mhid text, 
        wkb_geometry geometry(Geometry, 4326),
        tags jsonb
-     )`);
-    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`);
+     )`)
+    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
     await trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
       ON layers.data_${layer_id}
       USING gist
-      (wkb_geometry);`);
-    return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`);
+      (wkb_geometry);`)
+    return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`)
   },
 
-  async loadTempData(layer_id: number, trx: any){
-    debug.log('loadTempData');
-    //create data table
+  async loadTempData (layer_id: number, trx: any) {
+    debug.log('loadTempData')
+    // create data table
     await trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
-      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`);
-    //set mhid as primary key
-    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`);
-    //create index
+      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
+    // set mhid as primary key
+    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
+    // create index
     await trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
                     ON layers.data_${layer_id}
                     USING gist
-                    (wkb_geometry);`);
-    //drop temp data
-    await trx.raw(`DROP TABLE layers.temp_${layer_id};`);
+                    (wkb_geometry);`)
+    // drop temp data
+    await trx.raw(`DROP TABLE layers.temp_${layer_id};`)
 
-    //get count and create sequence
-    const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`);  
-    const maxVal = parseInt(result.rows[0].cnt) + 1;
-    debug.log('creating sequence starting at: ' + maxVal);
-    await trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`);
-    
-    //update search index
-    await SearchIndex.updateLayer(layer_id, trx);
+    // get count and create sequence
+    const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
+    const maxVal = parseInt(result.rows[0].cnt) + 1
+    debug.log('creating sequence starting at: ' + maxVal)
+    await trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
 
-    return trx('omh.layers').update({status: 'loaded'}).where({layer_id});        
+    // update search index
+    await SearchIndex.updateLayer(layer_id, trx)
+
+    return trx('omh.layers').update({status: 'loaded'}).where({layer_id})
   }
-};
+}

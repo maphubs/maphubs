@@ -1,13 +1,13 @@
-//@flow
-import React from 'react';
-import Editor from 'react-medium-editor';
-import ImageCrop from '../ImageCrop';
-import HubStore from '../../stores/HubStore';
-import HubActions from '../../actions/HubActions';
-import MapHubsPureComponent from '../../components/MapHubsPureComponent';
-//import _isequal from 'lodash.isequal';
-import urlUtil from '../../services/url-util';
-import type {HubStoreState} from '../../stores/HubStore';
+// @flow
+import React from 'react'
+import Editor from 'react-medium-editor'
+import ImageCrop from '../ImageCrop'
+import HubStore from '../../stores/HubStore'
+import HubActions from '../../actions/HubActions'
+import MapHubsPureComponent from '../../components/MapHubsPureComponent'
+// import _isequal from 'lodash.isequal';
+import urlUtil from '../../services/url-util'
+import type {HubStoreState} from '../../stores/HubStore'
 
 type Props = {|
   editing: boolean,
@@ -23,7 +23,6 @@ type State = {
 } & HubStoreState
 
 export default class HubBanner extends MapHubsPureComponent<Props, State> {
-
   props: Props
 
   static defaultProps = {
@@ -36,16 +35,16 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
     imageCropResizeWidth: 0,
     imageCropResizeMaxWidth: 0,
     imageCropResizeHeight: 0,
-    onCrop(){},
+    onCrop () {},
     hub: {}
   }
 
-  constructor(props: Props){
-		super(props);
-    this.stores.push(HubStore);
-	}
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(HubStore)
+  }
 
-/*
+  /*
   shouldComponentUpdate(nextProps: Props, nextState: State){
     //only update if something changes
     if(!_isequal(this.props, nextProps)){
@@ -59,11 +58,11 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
   */
 
   handleTitleChange = (title: string) => {
-    HubActions.setTitle(title);
+    HubActions.setTitle(title)
   }
 
   handleTaglineChange = (tagline: string) => {
-    HubActions.setTagline(tagline);
+    HubActions.setTagline(tagline)
   }
 
   showLogoEdit = () => {
@@ -72,138 +71,144 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
       imageCropResizeWidth: 300,
       imageCropResizeHeight: 300,
       imageCropResizeMaxWidth: null,
-      onCrop: this.onLogoCrop});
-    this.refs.imagecrop.show();
+      onCrop: this.onLogoCrop})
+    this.refs.imagecrop.show()
   }
 
   onLogoCrop = (data: Object, info: Object) => {
-    HubActions.setHubLogoImage(data, info);
+    HubActions.setHubLogoImage(data, info)
   }
 
   showBannerEdit = () => {
     this.setState({
-      imageCropAspectRatio: 4/1,
+      imageCropAspectRatio: 4 / 1,
       imageCropResizeMaxWidth: 2000,
       imageCropResizeWidth: null,
       imageCropResizeHeight: null,
       onCrop: this.onBannerCrop
-    });
-    this.refs.imagecrop.show();
+    })
+    this.refs.imagecrop.show()
   }
 
   onBannerCrop = (data: Object, info: Object) => {
-    HubActions.setHubBannerImage(data, info);
+    HubActions.setHubBannerImage(data, info)
   }
 
-  render() {
-    const omhBaseUrl = urlUtil.getBaseUrl();
+  render () {
+    const omhBaseUrl = urlUtil.getBaseUrl()
 
-    const hubBaseUrl = omhBaseUrl + '/hub/' + this.state.hub.hub_id;
-    let bannerClass='hub-banner';
-    if(this.props.subPage) {
-      bannerClass='hub-banner-subpage';
+    const hubBaseUrl = omhBaseUrl + '/hub/' + this.state.hub.hub_id
+    let bannerClass = 'hub-banner'
+    if (this.props.subPage) {
+      bannerClass = 'hub-banner-subpage'
     }
-    let title = '', tagline = '',
-    logoEditButton = '', bannerEditButton = '', imageCrop = '';
+    let title = ''
+    let tagline = ''
+    let logoEditButton = ''
+    let bannerEditButton = ''
+    let imageCrop = ''
 
-    let nameVal = null;
-    if(this.state.hub.name) nameVal = this.state.hub.name.replace('&nbsp;', '');
-    let taglineVal = null;
-    if(this.state.hub.tagline) taglineVal = this.state.hub.tagline.replace('&nbsp;', '');
+    let nameVal = null
+    if (this.state.hub.name) nameVal = this.state.hub.name.replace('&nbsp;', '')
+    let taglineVal = null
+    if (this.state.hub.tagline) taglineVal = this.state.hub.tagline.replace('&nbsp;', '')
 
-    if(this.props.editing){
+    if (this.props.editing) {
       title = (
-        <div className="white-text text-shadow hub-title">
+        <div className='white-text text-shadow hub-title'>
           <Editor
-           tag="h2"
-           text={nameVal}
-           onChange={this.handleTitleChange}
-           options={{toolbar: false,
-             placeholder: {text: this.__('Enter a Title for Your Hub')},
-             disableReturn: true, buttons: []}}
-         />
+            tag='h2'
+            text={nameVal}
+            onChange={this.handleTitleChange}
+            options={{toolbar: false,
+              placeholder: {text: this.__('Enter a Title for Your Hub')},
+              disableReturn: true,
+              buttons: []}}
+          />
         </div>
-      );
+      )
       tagline = (
-        <div className="white-text text-shadow hub-tagline">
+        <div className='white-text text-shadow hub-tagline'>
           <Editor
-           tag="p"
-           text={taglineVal}
-           onChange={this.handleTaglineChange}
-           options={{toolbar: false, buttonLabels: false,
-             placeholder: {text: this.__('Enter a Tagline or Subheading for Your Hub')},
-             disableReturn: true, buttons: []}}
-         />
+            tag='p'
+            text={taglineVal}
+            onChange={this.handleTaglineChange}
+            options={{toolbar: false,
+              buttonLabels: false,
+              placeholder: {text: this.__('Enter a Tagline or Subheading for Your Hub')},
+              disableReturn: true,
+              buttons: []}}
+          />
         </div>
-      );
-      
+      )
+
       logoEditButton = (
-        <a className="btn-floating omh-color white-text" onClick={this.showLogoEdit}
+        <a className='btn-floating omh-color white-text' onClick={this.showLogoEdit}
           style={{position: 'absolute', top: '-15px', left: '85px'}}>
-          <i className="material-icons">edit</i>
+          <i className='material-icons'>edit</i>
         </a>
-      );
+      )
 
       bannerEditButton = (
-        <a className="btn-floating omh-color white-text" onClick={this.showBannerEdit}
+        <a className='btn-floating omh-color white-text' onClick={this.showBannerEdit}
           style={{position: 'absolute', top: '205px', right: '10px'}}>
-          <i className="material-icons">edit</i>
+          <i className='material-icons'>edit</i>
         </a>
-      );
+      )
       imageCrop = (
-        <ImageCrop ref="imagecrop"
-          aspectRatio={this.state.imageCropAspectRatio} lockAspect={true}
+        <ImageCrop ref='imagecrop'
+          aspectRatio={this.state.imageCropAspectRatio} lockAspect
           resize_max_width={this.state.imageCropResizeMaxWidth}
           resize_width={this.state.imageCropResizeWidth}
           resize_height={this.state.imageCropResizeHeight}
           onCrop={this.state.onCrop} />
-      );
-
-    }else{
+      )
+    } else {
       title = (
-        <h2 className="white-text text-shadow no-margin">{nameVal}</h2>
-      );
+        <h2 className='white-text text-shadow no-margin'>{nameVal}</h2>
+      )
 
       tagline = (
-        <p className="white-text text-shadow no-margin">{taglineVal}</p>
-      );
+        <p className='white-text text-shadow no-margin'>{taglineVal}</p>
+      )
     }
-    let logoImage = '', bannerImage= '';
-    if(this.state.logoImage){ //use new image first
+    let logoImage = ''
+    let bannerImage = ''
+    if (this.state.logoImage) { // use new image first
       logoImage = (
         <a href={hubBaseUrl}>
-          <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={this.state.logoImage} />
+          <img alt={this.__('Hub Photo')} width='100' style={{borderRadius: '25px'}} src={this.state.logoImage} />
         </a>
-      );
-    } else if (this.state.hub.hasLogoImage) { //otherwise if there is an image from the server use that
+      )
+    } else if (this.state.hub.hasLogoImage) { // otherwise if there is an image from the server use that
       logoImage = (
         <a href={hubBaseUrl}>
-          <img  alt={this.__('Hub Photo')} width="100" style={{borderRadius: '25px'}} src={`/hub/${this.state.hub.hub_id}/images/logo`} />
+          <img alt={this.__('Hub Photo')} width='100' style={{borderRadius: '25px'}} src={`/hub/${this.state.hub.hub_id}/images/logo`} />
         </a>
-      );
-    }else{ //show placeholder
+      )
+    } else { // show placeholder
       logoImage = (
-        <div className="center center-align valign-wrapper" style={{margin: 'auto', borderRadius: '25px', width: '100px', height: '100px',  borderStyle: 'dashed', borderColor:'#bdbdbd', borderWidth: '3px'}}>
-          <i className="material-icons grey-text valign">add_a_photo</i>
-          <p className="valign grey-text">{this.__('Add a Logo')}</p>
+        <div className='center center-align valign-wrapper' style={{margin: 'auto', borderRadius: '25px', width: '100px', height: '100px', borderStyle: 'dashed', borderColor: '#bdbdbd', borderWidth: '3px'}}>
+          <i className='material-icons grey-text valign'>add_a_photo</i>
+          <p className='valign grey-text'>{this.__('Add a Logo')}</p>
         </div>
-      );
+      )
     }
-    if(this.state.bannerImage){
+    if (this.state.bannerImage) {
       bannerImage = (<div className={bannerClass}
-        style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url(${this.state.bannerImage.toString()})`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
+        style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url(${this.state.bannerImage.toString()})`, backgroundSize: 'cover', backgroundPosition: 'center'}} />)
     } else if (this.state.hub.hasBannerImage) {
       bannerImage = (<div className={bannerClass}
-      style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url("/hub/${this.state.hub.hub_id}/images/banner")`, backgroundSize: 'cover', backgroundPosition: 'center'}}/>);
-    } else{ //show placeholder
+        style={{width: '100%', position: 'absolute', top: 0, backgroundImage: `url("/hub/${this.state.hub.hub_id}/images/banner")`, backgroundSize: 'cover', backgroundPosition: 'center'}} />)
+    } else { // show placeholder
       bannerImage = (
-        <div className="center center-align" style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '100%', position: 'absolute', top: 0, borderColor:'#bdbdbd',  borderStyle: 'dashed', borderWidth: '3px'}}>
-          <div className="center center-align valign-wrapper" style={{margin: 'auto', height: '100%', width: '200px'}}>
-            <i className="material-icons grey-text valign">add_a_photo</i>
-            <p className="valign grey-text">{this.__('Add a Banner Image')}</p>
+        <div className='center center-align' style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '100%', position: 'absolute', top: 0, borderColor: '#bdbdbd', borderStyle: 'dashed', borderWidth: '3px'}}>
+          <div className='center center-align valign-wrapper' style={{margin: 'auto', height: '100%', width: '200px'}}>
+            <i className='material-icons grey-text valign'>add_a_photo</i>
+            <p className='valign grey-text'>{this.__('Add a Banner Image')}</p>
           </div>
         </div>
-      );
+      )
     }
 
     return (
@@ -211,12 +216,12 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
         <div className={'row no-margin valign-wrapper ' + bannerClass} style={{position: 'relative'}}>
           {bannerImage}
           {bannerEditButton}
-          <div className="row no-margin valign" style={{margin: 0, paddingLeft: '20px', width: '100%'}}>
-            <div className="col s12 m1 l1 no-padding" style={{position: 'relative', minWidth: '110px'}}>
+          <div className='row no-margin valign' style={{margin: 0, paddingLeft: '20px', width: '100%'}}>
+            <div className='col s12 m1 l1 no-padding' style={{position: 'relative', minWidth: '110px'}}>
               {logoImage}
               {logoEditButton}
             </div>
-            <div className="col s12 m9 l10 no-padding" style={{position: 'relative', marginTop: '20px'}}>
+            <div className='col s12 m9 l10 no-padding' style={{position: 'relative', marginTop: '20px'}}>
               {title}
               {tagline}
             </div>
@@ -224,6 +229,6 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
         </div>
         {imageCrop}
       </div>
-    );
+    )
   }
 }

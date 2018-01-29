@@ -1,6 +1,6 @@
-//@flow
-import React from 'react';
-import MapHubsComponent from '../../MapHubsComponent';
+// @flow
+import React from 'react'
+import MapHubsComponent from '../../MapHubsComponent'
 
 type Props = {|
   getIsochronePoint: Function,
@@ -9,61 +9,57 @@ type Props = {|
 |}
 
 type State = {
-  selectingLocation: boolean  
+  selectingLocation: boolean
 }
 
-
-
 export default class IsochronePanel extends MapHubsComponent<Props, State> {
-
-  constructor(props: Props){
-    super(props);
+  constructor (props: Props) {
+    super(props)
     this.state = {
       selectingLocation: false
-    };
+    }
   }
 
   selectLocation = () => {
-    this.setState({selectingLocation: true});
-    this.props.getIsochronePoint();
+    this.setState({selectingLocation: true})
+    this.props.getIsochronePoint()
   }
 
   clear = () => {
-    this.setState({selectingLocation: false});
-    this.props.clearIsochroneLayers();
+    this.setState({selectingLocation: false})
+    this.props.clearIsochroneLayers()
   }
 
-  render(){
-      let message, clearButton, selectButton;
-      if(this.props.isochroneResult){
-        message = (
-          <p>
-            {this.__('Displaying Result')}
-          </p> 
-        );
+  render () {
+    let message, clearButton, selectButton
+    if (this.props.isochroneResult) {
+      message = (
+        <p>
+          {this.__('Displaying Result')}
+        </p>
+      )
 
-        clearButton = (
-          <a className="btn" onClick={this.clear}>{this.__('Clear Results')}</a>
-        );
+      clearButton = (
+        <a className='btn' onClick={this.clear}>{this.__('Clear Results')}</a>
+      )
+    } else if (this.state.selectingLocation) {
+      message = (
+        <p>
+          {this.__('Click a location on the map.')}
+        </p>
+      )
+    } else {
+      selectButton = (
+        <a className='btn' onClick={this.selectLocation}>{this.__('Select Location')}</a>
+      )
+    }
 
-      }else if(this.state.selectingLocation){
-        message = (
-          <p>
-            {this.__('Click a location on the map.')}
-          </p>
-        );
-      }else{
-        selectButton = (
-          <a className="btn" onClick={this.selectLocation}>{this.__('Select Location')}</a>
-        );
-      }
-
-      return (
+    return (
       <div style={{width: '100%', textAlign: 'center'}}>
-          {selectButton}
-          {message}
-          {clearButton}
+        {selectButton}
+        {message}
+        {clearButton}
       </div>
-    ); 
+    )
   }
 }

@@ -1,8 +1,8 @@
-//@flow
-import Reflux from 'reflux';
-import Actions from '../actions/NotificationActions';
-const debug = require('../services/debug')('stores/notification-store');
-const $ = require('jquery');
+// @flow
+import Reflux from 'reflux'
+import Actions from '../actions/NotificationActions'
+const debug = require('../services/debug')('stores/notification-store')
+const $ = require('jquery')
 
 export type NotificationStoreState = {
   isActive: boolean,
@@ -17,51 +17,50 @@ export type NotificationStoreState = {
 }
 
 export default class NotificationStore extends Reflux.Store {
-
   state: NotificationStoreState
 
-  constructor(){
-    super();
-    this.state = this.getDefaultState();
-    this.listenables = Actions;
+  constructor () {
+    super()
+    this.state = this.getDefaultState()
+    this.listenables = Actions
   }
 
-  getDefaultState(): NotificationStoreState{
+  getDefaultState (): NotificationStoreState {
     return {
       isActive: false,
       message: '',
-      onClick() {},
+      onClick () {},
       backgroundColor: MAPHUBS_CONFIG.primaryColor,
       color: 'white',
       position: 'topright',
       dismissAfter: 3000,
-      onDismiss() {
+      onDismiss () {
       }
-    };
-  }
-
-  reset() {
-    this.setState(this.getDefaultState());
-    this.trigger(this.state);
-  }
-
-  storeDidUpdate() {
-    debug.log('store updated');
-  }
-
-  //listeners
-  showNotification(options: NotificationStoreState) {
-    if (options) {
-      const updatedState = $.extend(this.getDefaultState(), options);
-      this.setState(updatedState);
-      this.setState({
-        isActive: true
-      });
     }
   }
 
-  dismissNotification() {
-    this.state.onDismiss();
-    this.reset();
+  reset () {
+    this.setState(this.getDefaultState())
+    this.trigger(this.state)
+  }
+
+  storeDidUpdate () {
+    debug.log('store updated')
+  }
+
+  // listeners
+  showNotification (options: NotificationStoreState) {
+    if (options) {
+      const updatedState = $.extend(this.getDefaultState(), options)
+      this.setState(updatedState)
+      this.setState({
+        isActive: true
+      })
+    }
+  }
+
+  dismissNotification () {
+    this.state.onDismiss()
+    this.reset()
   }
 }

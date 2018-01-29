@@ -1,10 +1,10 @@
-//@flow
-import React from 'react';
-import {withFormsy} from 'formsy-react';
-const classNames = require('classnames');
-const $ = require('jquery');
-const debug = require('../../services/debug')('Toggle');
-import MapHubsComponent from '../MapHubsComponent';
+// @flow
+import React from 'react'
+import {withFormsy} from 'formsy-react'
+import MapHubsComponent from '../MapHubsComponent'
+const classNames = require('classnames')
+const $ = require('jquery')
+const debug = require('../../services/debug')('Toggle')
 
 type Props = {|
   className: string,
@@ -24,8 +24,7 @@ type Props = {|
 |}
 
 class Toggle extends MapHubsComponent<Props, void> {
-
-  props:  Props
+  props: Props
 
   static defaultProps = {
     style: {},
@@ -34,78 +33,76 @@ class Toggle extends MapHubsComponent<Props, void> {
     disabled: false
   }
 
-  componentWillMount() {
-    super.componentWillMount();
+  componentWillMount () {
+    super.componentWillMount()
     if ('checked' in this.props) {
-      this.props.setValue(this.props.checked);
-    }else{
-      this.props.setValue(this.props.defaultChecked);  
-    }       
+      this.props.setValue(this.props.checked)
+    } else {
+      this.props.setValue(this.props.defaultChecked)
+    }
   }
 
-  componentDidMount(){
-    if(this.props.dataTooltip){
-      $(this.refs.toggle).tooltip();
-    }   
+  componentDidMount () {
+    if (this.props.dataTooltip) {
+      $(this.refs.toggle).tooltip()
+    }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    
-    //only change if the props value is swapped
-    const currentValue =  this.props.checked;
-    if ('checked' in nextProps 
-    && nextProps.checked !== currentValue){
-         this.props.setValue(nextProps.checked);
-    }   
+  componentWillReceiveProps (nextProps: Props) {
+    // only change if the props value is swapped
+    const currentValue = this.props.checked
+    if ('checked' in nextProps &&
+    nextProps.checked !== currentValue) {
+      this.props.setValue(nextProps.checked)
+    }
   }
 
-  componentDidUpdate(prevProps: Props){
-    if(!prevProps.dataTooltip && this.props.dataTooltip){
-      $(this.refs.toggle).tooltip();
-    } 
+  componentDidUpdate (prevProps: Props) {
+    if (!prevProps.dataTooltip && this.props.dataTooltip) {
+      $(this.refs.toggle).tooltip()
+    }
   }
 
-  changeValue = (event) => {    
-    event.stopPropagation();
-    const checked = event.currentTarget.checked;
-    debug.log('change value: ' + checked);
-    if(checked !== this.props.getValue())
-     this.props.setValue(checked);
-     if(this.props.onChange){this.props.onChange(event.currentTarget.checked);}
-   }
+  changeValue = (event) => {
+    event.stopPropagation()
+    const checked = event.currentTarget.checked
+    debug.log('change value: ' + checked)
+    if (checked !== this.props.getValue()) { this.props.setValue(checked) }
+    if (this.props.onChange) { this.props.onChange(event.currentTarget.checked) }
+  }
 
-  render() {
-    const props = {...this.props};
+  render () {
+    const props = {...this.props}
     // Remove React warning.
     // Warning: Input elements must be either controlled or uncontrolled
     // (specify either the value prop, or the defaultValue prop, but not both).
-    delete props.defaultChecked;
+    delete props.defaultChecked
 
-    const className = classNames('switch', this.props.className, {tooltipped: this.props.dataTooltip ? true : false});
+    const className = classNames('switch', this.props.className, {tooltipped: !!this.props.dataTooltip})
 
-    let checked = this.props.getValue();
+    let checked = this.props.getValue()
 
     if (typeof checked === 'boolean') {
-      checked = checked ? 1 : 0;
+      checked = checked ? 1 : 0
     }
 
-    let leverClass = "lever";
-    if(!props.labelOn || props.labelOn === ''){
-      leverClass = "lever no-margin";
+    let leverClass = 'lever'
+    if (!props.labelOn || props.labelOn === '') {
+      leverClass = 'lever no-margin'
     }
 
     return (
-      <div ref="toggle" className={className} disabled={props.disabled} data-delay={props.dataDelay} data-position={props.dataPosition}
-          style={props.style}
-          data-tooltip={props.dataTooltip}>
+      <div ref='toggle' className={className} disabled={props.disabled} data-delay={props.dataDelay} data-position={props.dataPosition}
+        style={props.style}
+        data-tooltip={props.dataTooltip}>
         <label>
           {props.labelOff}
-          <input type="checkbox" id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue}/>
-          <span className={leverClass}></span>
+          <input type='checkbox' id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue} />
+          <span className={leverClass} />
           {props.labelOn}
         </label>
       </div>
-    );
+    )
   }
 }
-export default withFormsy(Toggle);
+export default withFormsy(Toggle)

@@ -1,4 +1,4 @@
-import Reflux from 'reflux';
+import Reflux from 'reflux'
 export default Reflux.createActions([
   'loadGroup',
   'loadMembers',
@@ -10,4 +10,4 @@ export default Reflux.createActions([
   'setMemberAdmin',
   'removeMemberAdmin',
   'deleteGroup'
-]);
+])

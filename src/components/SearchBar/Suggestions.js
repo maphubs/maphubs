@@ -6,8 +6,8 @@ Modified to support MaterializeCSS and other customizations
 
 */
 
-import React from 'react';
-import classNames from 'classnames';
+import React from 'react'
+import classNames from 'classnames'
 
 export default class Suggestions extends React.Component {
   displayName: 'Suggestions'
@@ -19,11 +19,11 @@ export default class Suggestions extends React.Component {
   }
 
   static defaultProps = {
-      suggestions: [],
-      highlightedItem: -1
-    }
-  
-  render() {
+    suggestions: [],
+    highlightedItem: -1
+  }
+
+  render () {
     const suggestions = this.props.suggestions.map((match, index) =>
       <li
         className={classNames({
@@ -31,9 +31,9 @@ export default class Suggestions extends React.Component {
         })}
         key={match.key}
         onClick={this.props.onSelection.bind(null, match)}>
-        <a href="#!">{match.value}</a>
+        <a href='#!'>{match.value}</a>
       </li>
-    );
-    return <ul className="search-bar-suggestions dropdown-content" style={{opacity: 1}}>{suggestions}</ul>;
+    )
+    return <ul className='search-bar-suggestions dropdown-content' style={{opacity: 1}}>{suggestions}</ul>
   }
 }

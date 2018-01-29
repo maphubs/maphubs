@@ -1,31 +1,32 @@
-//@flow
-import React from 'react';
-import Formsy, {addValidationRule} from 'formsy-react';
-const $ = require('jquery');
-import EditList from '../components/EditList';
-import Header from '../components/header';
-import MultiTextArea from '../components/forms/MultiTextArea';
-import TextInput from '../components/forms/textInput';
-import MultiTextInput from '../components/forms/MultiTextInput';
-import Toggle from '../components/forms/toggle';
-import MessageActions from '../actions/MessageActions';
-import AddItem from '../components/AddItem';
-import GroupStore from '../stores/GroupStore';
-import GroupActions from '../actions/GroupActions';
-import NotificationActions from '../actions/NotificationActions';
-import ConfirmationActions from '../actions/ConfirmationActions';
-import ImageCrop from '../components/ImageCrop';
-const debug = require('../services/debug')('views/GroupAdmin');
-import MapHubsComponent from '../components/MapHubsComponent';
-import Reflux from '../components/Rehydrate';
-import LocaleStore from '../stores/LocaleStore';
-import type {LocaleStoreState} from '../stores/LocaleStore';
-import type {Group, GroupStoreState} from '../stores/GroupStore';
-import Locales from '../services/locales';
-import LayerList from '../components/Lists/LayerList';
-import MapList from '../components/Lists/MapList';
-import HubList from '../components/Lists/HubList';
-import ErrorBoundary from '../components/ErrorBoundary';
+// @flow
+import React from 'react'
+import Formsy, {addValidationRule} from 'formsy-react'
+import EditList from '../components/EditList'
+import Header from '../components/header'
+import MultiTextArea from '../components/forms/MultiTextArea'
+import TextInput from '../components/forms/textInput'
+import MultiTextInput from '../components/forms/MultiTextInput'
+import Toggle from '../components/forms/toggle'
+import MessageActions from '../actions/MessageActions'
+import AddItem from '../components/AddItem'
+import GroupStore from '../stores/GroupStore'
+import GroupActions from '../actions/GroupActions'
+import NotificationActions from '../actions/NotificationActions'
+import ConfirmationActions from '../actions/ConfirmationActions'
+import ImageCrop from '../components/ImageCrop'
+import MapHubsComponent from '../components/MapHubsComponent'
+import Reflux from '../components/Rehydrate'
+import LocaleStore from '../stores/LocaleStore'
+import type {LocaleStoreState} from '../stores/LocaleStore'
+import type {Group, GroupStoreState} from '../stores/GroupStore'
+import Locales from '../services/locales'
+import LayerList from '../components/Lists/LayerList'
+import MapList from '../components/Lists/MapList'
+import HubList from '../components/Lists/HubList'
+import ErrorBoundary from '../components/ErrorBoundary'
+
+const $ = require('jquery')
+const debug = require('../services/debug')('views/GroupAdmin')
 
 type Props = {
   group: Group,
@@ -50,7 +51,6 @@ type State = {
 } & LocaleStoreState & GroupStoreState
 
 export default class GroupAdmin extends MapHubsComponent<Props, State> {
-
   props: Props
 
   static defaultProps: DefaultProps = {
@@ -66,214 +66,213 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     members: []
   }
 
-  constructor(props: Props){
-		super(props);
-    this.stores.push(GroupStore);
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
-    Reflux.rehydrate(GroupStore, {group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members});
-	}
-
-
-  componentWillMount() {
-    super.componentWillMount();
-    const _this = this;     
-    addValidationRule('isAvailable', (values, value) => {
-      if(value){
-        return _this.checkGroupIdAvailable(value);
-      }else{
-        return false;
-      }      
-    });
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(GroupStore)
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(GroupStore, {group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members})
   }
 
-  componentDidMount(){
-    $('.groupadmin-tooltips').tooltip();
+  componentWillMount () {
+    super.componentWillMount()
+    const _this = this
+    addValidationRule('isAvailable', (values, value) => {
+      if (value) {
+        return _this.checkGroupIdAvailable(value)
+      } else {
+        return false
+      }
+    })
+  }
+
+  componentDidMount () {
+    $('.groupadmin-tooltips').tooltip()
   }
 
   enableButton = () => {
     this.setState({
       canSubmit: true
-    });
+    })
   }
 
   disableButton = () => {
     this.setState({
       canSubmit: false
-    });
+    })
   }
 
   onError = (msg: string) => {
-    MessageActions.showMessage({title: this.__('Error'), message: msg});
+    MessageActions.showMessage({title: this.__('Error'), message: msg})
   }
 
   submit = (model: Object) => {
-    const _this = this;
+    const _this = this
 
-    model.name = Locales.formModelToLocalizedString(model, 'name');
-    model.description = Locales.formModelToLocalizedString(model, 'description');
+    model.name = Locales.formModelToLocalizedString(model, 'name')
+    model.description = Locales.formModelToLocalizedString(model, 'description')
 
     GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
-      if(err){
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-      }else{
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+      } else {
         NotificationActions.showNotification(
           {
             message: _this.__('Group Saved'),
             position: 'bottomright',
             dismissAfter: 3000,
-            onDismiss() {
-              window.location = "/group/" + model.group_id;
+            onDismiss () {
+              window.location = '/group/' + model.group_id
             }
-        });
+          })
       }
-    });
+    })
   }
 
   checkGroupIdAvailable = (id: string) => {
-    const _this = this;
-    //if the form is modified but put back to the currently saved ID, just return true
-    if (id === this.props.group.group_id) return true;
+    const _this = this
+    // if the form is modified but put back to the currently saved ID, just return true
+    if (id === this.props.group.group_id) return true
 
-    let result = false;
-    //only check if a valid value was provided and we are running in the browser
+    let result = false
+    // only check if a valid value was provided and we are running in the browser
     if (id && typeof window !== 'undefined') {
-        $.ajax({
-          type: "POST",
-          url: '/api/group/checkidavailable',
-          contentType : 'application/json;charset=UTF-8',
-          dataType: 'json',
-          data: JSON.stringify({id}),
-          async: false,
-          success(msg){
-            if(msg.available){
-              result = true;
-            }
-          },
-          error(msg){
-            MessageActions.showMessage({title: _this.__('Server Error'), message: msg});
-          },
-          complete(){
+      $.ajax({
+        type: 'POST',
+        url: '/api/group/checkidavailable',
+        contentType: 'application/json;charset=UTF-8',
+        dataType: 'json',
+        data: JSON.stringify({id}),
+        async: false,
+        success (msg) {
+          if (msg.available) {
+            result = true
           }
-      });
+        },
+        error (msg) {
+          MessageActions.showMessage({title: _this.__('Server Error'), message: msg})
+        },
+        complete () {
+        }
+      })
     }
-    return result;
+    return result
   }
 
   handleMemberDelete = (user: Object) => {
-    const _this = this;
+    const _this = this
     ConfirmationActions.showConfirmation({
-      title:  _this.__('Confirm Removal'),
-      message:  _this.__('Please confirm removal of ') + user.label,
-      onPositiveResponse(){
+      title: _this.__('Confirm Removal'),
+      message: _this.__('Please confirm removal of ') + user.label,
+      onPositiveResponse () {
         GroupActions.removeMember(user.key, _this.state._csrf, (err) => {
-          if(err){
-            MessageActions.showMessage({title:  _this.__('Error'), message: err});
-          }else{
-            NotificationActions.showNotification({message:  _this.__('Member Removed')});
+          if (err) {
+            MessageActions.showMessage({title: _this.__('Error'), message: err})
+          } else {
+            NotificationActions.showNotification({message: _this.__('Member Removed')})
           }
-        });
+        })
       }
-    });
+    })
   }
 
   handleGroupDelete = () => {
-    const _this = this;
+    const _this = this
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Deletion'),
       message: _this.__('Please confirm removal of group ') + this._o_(this.state.group.name),
-      onPositiveResponse(){
+      onPositiveResponse () {
         GroupActions.deleteGroup(_this.state._csrf, (err) => {
-          if(err){
-            MessageActions.showMessage({title: _this.__('Error'), message: err});
-          }else{
+          if (err) {
+            MessageActions.showMessage({title: _this.__('Error'), message: err})
+          } else {
             NotificationActions.showNotification({
               message: _this.__('Group Deleted'),
-              onDismiss(){
-                window.location = '/groups';
+              onDismiss () {
+                window.location = '/groups'
               }
-            });
+            })
           }
-        });
+        })
       }
-    });
+    })
   }
 
   handleMemberMakeAdmin = (user: Object) => {
-    const _this = this;
-    if(user.type === 'Administrator'){
-      this.handleRemoveMemberAdmin(user);
-    }else{
+    const _this = this
+    if (user.type === 'Administrator') {
+      this.handleRemoveMemberAdmin(user)
+    } else {
       ConfirmationActions.showConfirmation({
         title: _this.__('Confirm Administrator'),
         message: _this.__('Please confirm that you want to make this user an Administrator: ') + user.label,
-        onPositiveResponse(){
+        onPositiveResponse () {
           GroupActions.setMemberAdmin(user.key, _this.state._csrf, (err) => {
-            if(err){
-              MessageActions.showMessage({title: _this.__('Error'), message: err});
-            }else{
-              NotificationActions.showNotification({message: _this.__('Member is now an Administrator'), dismissAfter: 7000});
+            if (err) {
+              MessageActions.showMessage({title: _this.__('Error'), message: err})
+            } else {
+              NotificationActions.showNotification({message: _this.__('Member is now an Administrator'), dismissAfter: 7000})
             }
-          });
+          })
         }
-      });
+      })
     }
   }
 
   handleRemoveMemberAdmin = (user: Object) => {
-    const _this = this;
+    const _this = this
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Remove Administrator'),
       message: _this.__('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
-      onPositiveResponse(){
+      onPositiveResponse () {
         GroupActions.removeMemberAdmin(user.key, _this.state._csrf, (err) => {
-          if(err){
-            MessageActions.showMessage({title: _this.__('Error'), message: err});
-          }else{
-            NotificationActions.showNotification({message: _this.__('Member is no longer an Administrator'), dismissAfter: 7000});
+          if (err) {
+            MessageActions.showMessage({title: _this.__('Error'), message: err})
+          } else {
+            NotificationActions.showNotification({message: _this.__('Member is no longer an Administrator'), dismissAfter: 7000})
           }
-        });
+        })
       }
-    });
+    })
   }
 
   handleAddMember = (user: Object) => {
-    const _this = this;
-    debug.log(user.value.value + ' as Admin:' + user.option);
+    const _this = this
+    debug.log(user.value.value + ' as Admin:' + user.option)
     GroupActions.addMember(user.value.value, user.option, _this.state._csrf, (err) => {
-      if(err){
-        MessageActions.showMessage({title: _this.__('Error'), message: err});
-      }else{
-        NotificationActions.showNotification({message: _this.__('Member Added'), dismissAfter: 7000});
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Error'), message: err})
+      } else {
+        NotificationActions.showNotification({message: _this.__('Member Added'), dismissAfter: 7000})
       }
-    });
+    })
   }
 
   showImageCrop = () => {
-    this.refs.imagecrop.show();
+    this.refs.imagecrop.show()
   }
 
   onCrop = (data: Object) => {
-    const _this = this;
-    //send data to server
+    const _this = this
+    // send data to server
     GroupActions.setGroupImage(data, _this.state._csrf, (err) => {
-      if(err){
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err});
-      }else{
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+      } else {
         NotificationActions.showNotification(
           {
             message: _this.__('Image Saved'),
             position: 'bottomright',
             dismissAfter: 3000
-        });
+          })
       }
-    });
-    //this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
+    })
+    // this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
   }
 
-	render() {
-    const _this = this;
-    const membersList = [];
-    const group_id = this.props.group.group_id ? this.props.group.group_id : '';
+  render () {
+    const _this = this
+    const membersList = []
+    const groupId = this.props.group.group_id ? this.props.group.group_id : ''
     this.state.members.forEach((user) => {
       membersList.push({
         key: user.id,
@@ -283,133 +282,134 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
         icon: 'person',
         actionIcon: 'supervisor_account',
         actionLabel: _this.__('Add/Remove Administrator Access')
-      });
-    });
+      })
+    })
 
-    let isPublished = false;
-    if(this.state.group.published){
-      isPublished = true;
+    let isPublished = false
+    if (this.state.group.published) {
+      isPublished = true
     }
 
-    const  groupUrl = '/group/' + group_id;
+    const groupUrl = '/group/' + groupId
 
-		return (
+    return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig}/>
+        <Header {...this.props.headerConfig} />
         <main>
 
-        <div className="container">
-          <div className="row">
-             <div className="col s12">
-               <p>&larr; <a href={groupUrl}>{this.__('Back to Group')}</a></p>
-             </div>
-           </div>
-          <div className="row" style={{marginTop: '20px'}}>
-            <div className="col s12 m6 l6">
-              <img  alt={this.__('Group Photo')} width="300" className="" src={'/group/' + group_id + '/image?' + new Date().getTime()}/>
-            </div>
-            <div className="col s12 m6 l6">
-              <button className="waves-effect waves-light btn" onClick={this.showImageCrop}>{this.__('Change Image')}</button>
-            </div>
-
-          </div>
-          <div className="row">
-            <h4>{this._o_(this.props.group.name)}</h4>
-          </div>
-          <div className="divider"></div>
-          <div className="row">
-            <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-              <div className="row">
-                <TextInput name="group_id" label={this.__('Group ID')} icon="group_work" className="col s4"
-                    validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength:25, isAvailable:true}} validationErrors={{
-                       maxLength: this.__('ID must be 25 characters or less.'),
-                       matchRegexp: this.__('Can only contain letters, numbers, or dashes.'),
-                       isAvailable: this.__('ID already taken, please try another.')
-                   }} length={25}
-                    successText={this.__('ID is Available')}
-                    dataPosition="right" dataTooltip={this.__('Identifier for the Group. This will be used in links and URLs for your group\'s content.')}
-                    value={this.state.group.group_id}
-                    required/>
+          <div className='container'>
+            <div className='row'>
+              <div className='col s12'>
+                <p>&larr; <a href={groupUrl}>{this.__('Back to Group')}</a></p>
               </div>
-              <div className="row">
-                <MultiTextInput name="name" id="name"
-                  label={{
+            </div>
+            <div className='row' style={{marginTop: '20px'}}>
+              <div className='col s12 m6 l6'>
+                <img alt={this.__('Group Photo')} width='300' className='' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
+              </div>
+              <div className='col s12 m6 l6'>
+                <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{this.__('Change Image')}</button>
+              </div>
+
+            </div>
+            <div className='row'>
+              <h4>{this._o_(this.props.group.name)}</h4>
+            </div>
+            <div className='divider' />
+            <div className='row'>
+              <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+                <div className='row'>
+                  <TextInput name='group_id' label={this.__('Group ID')} icon='group_work' className='col s4'
+                    validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
+                      maxLength: this.__('ID must be 25 characters or less.'),
+                      matchRegexp: this.__('Can only contain letters, numbers, or dashes.'),
+                      isAvailable: this.__('ID already taken, please try another.')
+                    }} length={25}
+                    successText={this.__('ID is Available')}
+                    dataPosition='right' dataTooltip={this.__('Identifier for the Group. This will be used in links and URLs for your group\'s content.')}
+                    value={this.state.group.group_id}
+                    required />
+                </div>
+                <div className='row'>
+                  <MultiTextInput name='name' id='name'
+                    label={{
                       en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                     }}
-                  icon="info" 
-                className="col s12" validations="maxLength:100" validationErrors={{
-                       maxLength: this.__('Name must be 100 characters or less.')
-                   }} length={100}
-                    dataPosition="top" dataTooltip={this.__('Short Descriptive Name for the Group')}
+                    icon='info'
+                    className='col s12' validations='maxLength:100' validationErrors={{
+                      maxLength: this.__('Name must be 100 characters or less.')
+                    }} length={100}
+                    dataPosition='top' dataTooltip={this.__('Short Descriptive Name for the Group')}
                     value={this.state.group.name}
-                    required/>
-              </div>
-              <div className="row">
-                <MultiTextArea name="description" 
-                  label={{
+                    required />
+                </div>
+                <div className='row'>
+                  <MultiTextArea name='description'
+                    label={{
                       en: 'Description',
                       fr: 'Description',
                       es: 'Descripción',
                       it: 'Descrizione'
-                    }} 
-                  icon="description" className="col s12" validations="maxLength:500" validationErrors={{
-                       maxLength: this.__('Description must be 500 characters or less.')
-                   }} length={500}
-                    dataPosition="top" dataTooltip={this.__('Brief Description of the Group')}
+                    }}
+                    icon='description' className='col s12' validations='maxLength:500' validationErrors={{
+                      maxLength: this.__('Description must be 500 characters or less.')
+                    }} length={500}
+                    dataPosition='top' dataTooltip={this.__('Brief Description of the Group')}
                     value={this.state.group.description}
-                    required/>
-              </div>
-              <div className="row">
-                <TextInput name="location" label={this.__('Location')} icon="navigation" className="col s12" validations="maxLength:100" validationErrors={{
-                       maxLength: this.__('Location must be 100 characters or less.')
-                   }} length={100}
-                    dataPosition="top" dataTooltip={this.__('Country or City Where the Group is Located')}
+                    required />
+                </div>
+                <div className='row'>
+                  <TextInput 
+                    name='location' label={this.__('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
+                      maxLength: this.__('Location must be 100 characters or less.')
+                    }} length={100}
+                    dataPosition='top' dataTooltip={this.__('Country or City Where the Group is Located')}
                     value={this.state.group.location}
-                    required/>
-              </div>
-              <div className="row">
-                <Toggle name="published" labelOff={this.__('Draft')} labelOn={this.__('Published')} className="col s12"
-                    dataPosition="top" dataTooltip={this.__('Include in Public Group Listings')}
+                    required />
+                </div>
+                <div className='row'>
+                  <Toggle name='published' labelOff={this.__('Draft')} labelOn={this.__('Published')} className='col s12'
+                    dataPosition='top' dataTooltip={this.__('Include in Public Group Listings')}
                     checked={isPublished}
                   />
-              </div>
-              <div className="right">
-                <button className="btn waves-effect waves-light" type="submit" name="action">{this.__('Update')}</button>
-              </div>
+                </div>
+                <div className='right'>
+                  <button className='btn waves-effect waves-light' type='submit' name='action'>{this.__('Update')}</button>
+                </div>
 
-            </Formsy>
-           </div>
-           <div className="row">
-             <EditList title="Members" items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
+              </Formsy>
             </div>
-            <div className="row">
+            <div className='row'>
+              <EditList title='Members' items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
+            </div>
+            <div className='row'>
               <h5>{this.__('Add Group Member')}</h5>
               <AddItem placeholder={this.__('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
                 optionLabel={this.__('Add as Administrator')} addButtonLabel={this.__('Add and Send Invite')}
-                onAdd={this.handleAddMember} onError={this.onError}/>
-          </div>
-          <div className="row">
-            <LayerList layers={this.props.layers} />
-          </div>
-          <div className="row">
-            <MapList maps={this.props.maps} />
-          </div>
-          <div className="row">
-            <HubList hubs={this.props.hubs} />
-          </div>
-          <div className="fixed-action-btn action-button-bottom-right">
-            <a className="btn-floating btn-large red groupadmin-tooltips"
-              onClick={this.handleGroupDelete}
-              data-delay="50" data-position="left" data-tooltip={this.__('Delete Group')}
+                onAdd={this.handleAddMember} onError={this.onError} />
+            </div>
+            <div className='row'>
+              <LayerList layers={this.props.layers} />
+            </div>
+            <div className='row'>
+              <MapList maps={this.props.maps} />
+            </div>
+            <div className='row'>
+              <HubList hubs={this.props.hubs} />
+            </div>
+            <div className='fixed-action-btn action-button-bottom-right'>
+              <a className='btn-floating btn-large red groupadmin-tooltips'
+                onClick={this.handleGroupDelete}
+                data-delay='50' data-position='left' data-tooltip={this.__('Delete Group')}
               >
-              <i className="large material-icons">delete</i>
-            </a>
-          </div>
+                <i className='large material-icons'>delete</i>
+              </a>
+            </div>
 
-        </div>
-        <ImageCrop ref="imagecrop" aspectRatio={1} lockAspect={true} resize_width={600} resize_height={600} onCrop={this.onCrop} />
+          </div>
+          <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_width={600} resize_height={600} onCrop={this.onCrop} />
         </main>
-			</ErrorBoundary>
-		);
-	}
+      </ErrorBoundary>
+    )
+  }
 }

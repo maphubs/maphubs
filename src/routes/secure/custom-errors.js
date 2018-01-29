@@ -1,18 +1,17 @@
-//@flow
-module.exports = function(app: any) {
-
+// @flow
+module.exports = function (app: any) {
   app.get('/unauthorized', (req, res) => {
-    let path = '';
-    if(req.query.path){
-      path = req.query.path;
+    let path = ''
+    if (req.query.path) {
+      path = req.query.path
     }
 
-    let sentryId;
-    if(req.sentry){
-      sentryId = req.sentry.id;
+    let sentryId
+    if (req.sentry) {
+      sentryId = req.sentry.id
     }
-    
-    res.status(401);
+
+    res.status(401)
     res.render('error', {
       title: req.__('Unauthorized'),
       props: {
@@ -21,25 +20,24 @@ module.exports = function(app: any) {
         url: path,
         eventId: sentryId
       },
-      req});
-  });
+      req})
+  })
 
   app.get('/notfound', (req, res) => {
-    let path = '';
-    if(req.query.path){
-      path = req.query.path;
+    let path = ''
+    if (req.query.path) {
+      path = req.query.path
     }
 
-    res.status(404);
-    res.render('error',{
-    title: req.__('Page not found'),
-    props: {
+    res.status(404)
+    res.render('error', {
       title: req.__('Page not found'),
-      error: req.__('The page you requested was not found.'),
-      url: path,
-      eventId: req.sentry ? req.sentry.id : undefined
-    },
-    req});
-  });
-
-};
+      props: {
+        title: req.__('Page not found'),
+        error: req.__('The page you requested was not found.'),
+        url: path,
+        eventId: req.sentry ? req.sentry.id : undefined
+      },
+      req})
+  })
+}

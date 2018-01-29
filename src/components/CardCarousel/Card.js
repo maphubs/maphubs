@@ -1,12 +1,12 @@
-//@flow
-import React from 'react';
-import GroupTag from '../Groups/GroupTag';
-import MapCardUserTag from './MapCardUserTag';
-import StoryHeader from '../Story/StoryHeader';
-const $ = require('jquery');
-const _isequal = require('lodash.isequal');
-import MapHubsComponent from '../../components/MapHubsComponent';
+// @flow
+import React from 'react'
+import GroupTag from '../Groups/GroupTag'
+import MapCardUserTag from './MapCardUserTag'
+import StoryHeader from '../Story/StoryHeader'
+import MapHubsComponent from '../../components/MapHubsComponent'
 
+const $ = require('jquery')
+const _isequal = require('lodash.isequal')
 
 export type CardConfig = {|
   id: string,
@@ -31,54 +31,52 @@ type State = {
 }
 
 export default class Card extends MapHubsComponent<Props, State> {
-
-  props:  Props
+  props: Props
 
   state: State = {
     mounted: false
   }
 
-  componentDidMount() {
-    if(!this.state.mounted){
-      this.setState({mounted: true});
+  componentDidMount () {
+    if (!this.state.mounted) {
+      this.setState({mounted: true})
     }
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
+    // only update if something changes
+    if (!_isequal(this.props, nextProps)) {
+      return true
     }
-    if(!_isequal(this.state, nextState)){
-      return true;
+    if (!_isequal(this.state, nextState)) {
+      return true
     }
-    return false;
+    return false
   }
 
-  componentDidUpdate(){
-     $('.card-tooltip').tooltip();
+  componentDidUpdate () {
+    $('.card-tooltip').tooltip()
   }
 
   onClick = () => {
-    if(this.props.onClick){
-      this.props.onClick(this.props.data);
-    }else if(this.props.link){
+    if (this.props.onClick) {
+      this.props.onClick(this.props.data)
+    } else if (this.props.link) {
       if (typeof window !== 'undefined') {
-        window.location = this.props.link;
+        window.location = this.props.link
       }
     }
   }
 
-  render() {
-
-    let group = '';
-    if(this.props.group){
+  render () {
+    let group = ''
+    if (this.props.group) {
       group = (
-        <div className="valign-wrapper" style={{position: 'absolute', bottom:1, left: 1}}>
+        <div className='valign-wrapper' style={{position: 'absolute', bottom: 1, left: 1}}>
           <GroupTag group={this.props.group} />
         </div>
 
-      );
+      )
     }
 
     /*
@@ -91,140 +89,139 @@ export default class Card extends MapHubsComponent<Props, State> {
     }
     */
 
-    let typeIcon = '', iconName = '', toolTipText = '',
-    mapCardUserTag= '',
-    storyTag = '';
-    if(this.props.type){
-      if(this.props.type === 'layer'){
-        iconName = 'layers';
-        toolTipText = this.__('Layer');
-      }else if(this.props.type === 'group'){
-        iconName = 'supervisor_account';
-        toolTipText = this.__('Group');
-      }else if(this.props.type === 'hub'){
-        iconName = 'web';
-        toolTipText = 'Hub';
-      }else if(this.props.type === 'story'){
-        iconName = 'library_books';
-        toolTipText = this.__('Story');
+    let typeIcon = ''
+    let iconName = ''
+    let toolTipText = ''
+    let mapCardUserTag = ''
+    let storyTag = ''
+    if (this.props.type) {
+      if (this.props.type === 'layer') {
+        iconName = 'layers'
+        toolTipText = this.__('Layer')
+      } else if (this.props.type === 'group') {
+        iconName = 'supervisor_account'
+        toolTipText = this.__('Group')
+      } else if (this.props.type === 'hub') {
+        iconName = 'web'
+        toolTipText = 'Hub'
+      } else if (this.props.type === 'story') {
+        iconName = 'library_books'
+        toolTipText = this.__('Story')
         storyTag = (
-          <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
-            <StoryHeader story={this.props.data} short/>
+          <div style={{position: 'absolute', bottom: 1, left: 1, width: '200px'}}>
+            <StoryHeader story={this.props.data} short />
           </div>
-        );
-      }else if(this.props.type === 'map'){
-        iconName = 'map';
-        toolTipText = this.__('Map');
-        if(!this.props.group){
+        )
+      } else if (this.props.type === 'map') {
+        iconName = 'map'
+        toolTipText = this.__('Map')
+        if (!this.props.group) {
           mapCardUserTag = (
-          <div style={{position: 'absolute', bottom:1, left: 1, width: '200px'}}>
-            <MapCardUserTag map={this.props.data} />
-          </div>
-        );
+            <div style={{position: 'absolute', bottom: 1, left: 1, width: '200px'}}>
+              <MapCardUserTag map={this.props.data} />
+            </div>
+          )
         }
-        
       }
 
       typeIcon = (
-        <i className="material-icons grey-text text-darken-3 card-tooltip"
+        <i className='material-icons grey-text text-darken-3 card-tooltip'
           style={{position: 'absolute', bottom: '6px', right: '6px'}}
-          data-position="bottom" data-delay="50" data-tooltip={toolTipText}>
+          data-position='bottom' data-delay='50' data-tooltip={toolTipText}>
           {iconName}
         </i>
-      );
+      )
     }
 
-    let privateIcon = '';
-    if(this.props.private){
+    let privateIcon = ''
+    if (this.props.private) {
       privateIcon = (
         <div style={{position: 'absolute', top: '5px', right: '5px'}}>
-        <i className="material-icons grey-text text-darken-3 card-tooltip"
-        data-position="bottom" data-delay="50" data-tooltip={this.__('Private')}>
+          <i className='material-icons grey-text text-darken-3 card-tooltip'
+            data-position='bottom' data-delay='50' data-tooltip={this.__('Private')}>
         lock</i>
         </div>
-      );
+      )
     }
 
-    let cardContents = (<div className="carousel-card small"></div>);
-    if(this.state.mounted){
-      let addButton = '';
-      if(this.props.showAddButton){
+    let cardContents = (<div className='carousel-card small' />)
+    if (this.state.mounted) {
+      let addButton = ''
+      if (this.props.showAddButton) {
         addButton = (
-          <a className="btn-floating halfway-fab waves-effect waves-light red" 
+          <a className='btn-floating halfway-fab waves-effect waves-light red'
             style={{bottom: '5px', right: '10px'}}>
-            <i className="material-icons">add</i>
+            <i className='material-icons'>add</i>
           </a>
-        );
+        )
       }
-      let image = '';
-      if(this.props.type === 'hub'){
+      let image = ''
+      if (this.props.type === 'hub') {
         image = (
-          <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', height: '150px'}}>
-            <img className="responsive-img" style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
-            <img className="valign" width="75" height="75" style={{position: 'relative',width: '75px', borderRadius: '15px', margin: 'auto'}}  src={this.props.image_url} />
+          <div className='card-image valign-wrapper' style={{borderBottom: '1px solid #757575', height: '150px'}}>
+            <img className='responsive-img' style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
+            <img className='valign' width='75' height='75' style={{position: 'relative', width: '75px', borderRadius: '15px', margin: 'auto'}} src={this.props.image_url} />
             {addButton}
           </div>
-        );
-      }else if(this.props.type === 'story' && !this.props.image_url){
+        )
+      } else if (this.props.type === 'story' && !this.props.image_url) {
         image = (
-          <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
-            <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
+          <div className='card-image valign-wrapper' style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
+            <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
             {addButton}
           </div>
-        );
-      }else if(this.props.type === 'story' && this.props.image_url){
+        )
+      } else if (this.props.type === 'story' && this.props.image_url) {
         image = (
-          <div style={{height: '150px', width: '200px', backgroundImage: 'url('+ this.props.image_url +')', backgroundSize: 'cover', backgroundPosition: 'center'}} >
+          <div style={{height: '150px', width: '200px', backgroundImage: 'url(' + this.props.image_url + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} >
             {addButton}
           </div>
 
-        );
-      }else if(this.props.type === 'group' && !this.props.image_url){
+        )
+      } else if (this.props.type === 'group' && !this.props.image_url) {
         image = (
-          <div className="card-image valign-wrapper" style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
-            <i className="material-icons omh-accent-text valign center-align" style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
+          <div className='card-image valign-wrapper' style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
+            <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
             {addButton}
           </div>
-        );
-      }else if(this.props.type === 'group' && this.props.image_url){
+        )
+      } else if (this.props.type === 'group' && this.props.image_url) {
         image = (
-          <div className="card-image" style={{borderBottom: '1px solid #757575'}}>
-            <img  className="responsive-img" style={{height: '150px', width: 'auto', margin: 'auto'}} src={this.props.image_url} />
+          <div className='card-image' style={{borderBottom: '1px solid #757575'}}>
+            <img className='responsive-img' style={{height: '150px', width: 'auto', margin: 'auto'}} src={this.props.image_url} />
             {addButton}
           </div>
-        );
-      }else{
+        )
+      } else {
         image = (
-          <div className="card-image">
-            <img width="200" height="150" style={{borderBottom: '1px solid #757575'}} src={this.props.image_url} />
+          <div className='card-image'>
+            <img width='200' height='150' style={{borderBottom: '1px solid #757575'}} src={this.props.image_url} />
             {addButton}
           </div>
-        );
+        )
       }
 
-      
-
-      cardContents = (  
-        <div ref="card" className='hoverable small carousel-card card' onClick={this.onClick}>
+      cardContents = (
+        <div ref='card' className='hoverable small carousel-card card' onClick={this.onClick}>
           {image}
-          
-          {privateIcon}
-        <div className="card-content word-wrap" style={{padding: '5px'}}>
 
-          <b>{this._o_(this.props.title)}</b> <br />
-          
-          <p className="fade" style={{fontSize: '12px'}}> {this._o_(this.props.description)}</p>
+          {privateIcon}
+          <div className='card-content word-wrap' style={{padding: '5px'}}>
+
+            <b>{this._o_(this.props.title)}</b> <br />
+
+            <p className='fade' style={{fontSize: '12px'}}> {this._o_(this.props.description)}</p>
             {mapCardUserTag}
             {storyTag}
             {group}
             {typeIcon}
+          </div>
         </div>
-        </div>
-      );
+      )
     }
 
-     return (
-        <div>{cardContents}</div>
-     );
+    return (
+      <div>{cardContents}</div>
+    )
   }
 }

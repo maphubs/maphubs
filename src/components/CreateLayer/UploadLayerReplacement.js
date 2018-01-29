@@ -1,19 +1,21 @@
-//@flow
-import React from 'react';
-const $ = require('jquery');
-import FileUpload from '../forms/FileUpload';
-import Map from '../Map/Map';
-import NotificationActions from '../../actions/NotificationActions';
-import LayerStore from '../../stores/layer-store';
-import LayerActions from '../../actions/LayerActions';
-import MessageActions from '../../actions/MessageActions';
-import RadioModal from '../RadioModal';
-import Progress from '../Progress';
-import MapHubsComponent from '../MapHubsComponent';
-import type {LocaleStoreState} from '../../stores/LocaleStore';
-import type {LayerStoreState} from '../../stores/layer-store';
-import type {GeoJSONObject} from 'geojson-flow';
-let scrollToComponent;
+// @flow
+import React from 'react'
+import FileUpload from '../forms/FileUpload'
+import Map from '../Map/Map'
+import NotificationActions from '../../actions/NotificationActions'
+import LayerStore from '../../stores/layer-store'
+import LayerActions from '../../actions/LayerActions'
+import MessageActions from '../../actions/MessageActions'
+import RadioModal from '../RadioModal'
+import Progress from '../Progress'
+import MapHubsComponent from '../MapHubsComponent'
+import type {LocaleStoreState} from '../../stores/LocaleStore'
+import type {LayerStoreState} from '../../stores/layer-store'
+import type {GeoJSONObject} from 'geojson-flow'
+
+const $ = require('jquery')
+
+let scrollToComponent
 
 type Props = {|
   onSubmit: Function,
@@ -30,7 +32,6 @@ type State = {
 } & LocaleStoreState & LayerStoreState
 
 export default class UploadLayerReplacement extends MapHubsComponent<Props, State> {
-
   props: Props
 
   state: State = {
@@ -40,151 +41,147 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     multipleShapefiles: null
   }
 
-  constructor(props: Props){
-    super(props);
-    this.stores.push(LayerStore);
+  constructor (props: Props) {
+    super(props)
+    this.stores.push(LayerStore)
   }
 
-  componentDidMount() {
-    $('select').material_select();
-    scrollToComponent = require('react-scroll-to-component');
+  componentDidMount () {
+    $('select').material_select()
+    scrollToComponent = require('react-scroll-to-component')
   }
 
-  componentDidUpdate() {
-    if(this.state.geoJSON){
-      scrollToComponent(this.refs.map);
+  componentDidUpdate () {
+    if (this.state.geoJSON) {
+      scrollToComponent(this.refs.map)
     }
-    if(this.state.multipleShapefiles){
-      this.refs.chooseshape.show();
+    if (this.state.multipleShapefiles) {
+      this.refs.chooseshape.show()
     }
   }
 
   enableButton = () => {
     this.setState({
       canSubmit: true
-    });
+    })
   }
 
   disableButton = () => {
     this.setState({
       canSubmit: false
-    });
+    })
   }
 
   onSubmit = () => {
-    const _this = this;
-    
+    const _this = this
+
     LayerActions.submitPresets(false, _this.state._csrf, (err) => {
-      if (err){
-        MessageActions.showMessage({title: _this.__('Error'), message: err});
-      }else{
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Error'), message: err})
+      } else {
         LayerActions.replaceData(_this.state._csrf, (err) => {
-          if (err){
-            MessageActions.showMessage({title: _this.__('Error'), message: err});
-          }else{
-            NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit});
+          if (err) {
+            MessageActions.showMessage({title: _this.__('Error'), message: err})
+          } else {
+            NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
           }
-        });
+        })
       }
-    });
-
-   
-
+    })
   }
 
   onUpload = (result: Object) => {
-    const _this = this;
-    
-    if(result.success){
-      this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
-      //LayerActions.setDataType(result.data_type);
-      LayerActions.mergeNewPresetTags(result.uniqueProps);
-      //LayerActions.setImportedTags(result.uniqueProps,  true);
-    }else{
-      if(result.code === 'MULTIPLESHP'){
-        this.setState({multipleShapefiles: result.shapefiles});
-      }else{
-        MessageActions.showMessage({title: _this.__('Error'), message: result.error});
+    const _this = this
+
+    if (result.success) {
+      this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData})
+      // LayerActions.setDataType(result.data_type);
+      LayerActions.mergeNewPresetTags(result.uniqueProps)
+      // LayerActions.setImportedTags(result.uniqueProps,  true);
+    } else {
+      if (result.code === 'MULTIPLESHP') {
+        this.setState({multipleShapefiles: result.shapefiles})
+      } else {
+        MessageActions.showMessage({title: _this.__('Error'), message: result.error})
       }
     }
-    this.setState({processing: false});
+    this.setState({processing: false})
   }
 
   onUploadError = (err: string) => {
-      MessageActions.showMessage({title: this.__('Error'), message: err});
+    MessageActions.showMessage({title: this.__('Error'), message: err})
   }
 
   finishUpload = (shapefileName: string) => {
-    const _this = this;
+    const _this = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
-      if(result.success){
-        _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null});
-        LayerActions.setDataType(result.data_type);
-        LayerActions.setImportedTags(result.uniqueProps, true);    
+      if (result.success) {
+        _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null})
+        LayerActions.setDataType(result.data_type)
+        LayerActions.setImportedTags(result.uniqueProps, true)
       } else {
-        MessageActions.showMessage({title: _this.__('Error'), message: result.error});
+        MessageActions.showMessage({title: _this.__('Error'), message: result.error})
       }
-    });
+    })
   }
 
   onProcessingStart = () => {
-    this.setState({processing: true});
+    this.setState({processing: true})
   }
 
-	render() {
-
-    const layer_id = this.state.layer_id ? this.state.layer_id : 0;
-    const url = `/api/layer/${layer_id}/replace`;
-    let largeDataMessage = '';
-    if(this.state.largeData){
+  render () {
+    const layer_id = this.state.layer_id ? this.state.layer_id : 0
+    const url = `/api/layer/${layer_id}/replace`
+    let largeDataMessage = ''
+    if (this.state.largeData) {
       largeDataMessage = (
-      <p>{this.__('Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.')}</p>
-      );
+        <p>{this.__('Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.')}</p>
+      )
     }
-    let map = '';
-    if(this.state.geoJSON){
+    let map = ''
+    if (this.state.geoJSON) {
       map = (
         <div>
           <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
-          <Map ref="map" style={{width: '100%', height: '400px'}} 
-          id="upload-preview-map"
-          showFeatureInfoEditButtons={false} 
-          mapConfig={this.props.mapConfig}
-          data={this.state.geoJSON} />
+          <Map ref='map' style={{width: '100%', height: '400px'}}
+            id='upload-preview-map'
+            showFeatureInfoEditButtons={false}
+            mapConfig={this.props.mapConfig}
+            data={this.state.geoJSON} />
         </div>
-      );
+      )
     }
 
-    let multipleShapefiles = '';
-    if(this.state.multipleShapefiles){
-      const options = [];
+    let multipleShapefiles = ''
+    if (this.state.multipleShapefiles) {
+      const options = []
       this.state.multipleShapefiles.forEach((shpFile) => {
-        options.push({value: shpFile, label: shpFile});
-      });
+        options.push({value: shpFile, label: shpFile})
+      })
       multipleShapefiles = (
-        <RadioModal ref="chooseshape" title={this.__('Multiple Shapefiles Found - Please Select One')}
+        <RadioModal ref='chooseshape' title={this.__('Multiple Shapefiles Found - Please Select One')}
           options={options} onSubmit={this.finishUpload} />
-      );
+      )
     }
 
-		return (
-        <div className="row">
-        <Progress id="upload-process-progess" title={this.__('Processing Data')} subTitle="" dismissible={false} show={this.state.processing}/>       
+    return (
+      <div className='row'>
+        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
           <p>{this.__('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
-          <div className="row">
+          <div className='row'>
             <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
           </div>
-          <div className="row">
+          <div className='row'>
             {largeDataMessage}
             {map}
           </div>
           {multipleShapefiles}
         </div>
-        <div className="right">
-          <button className="waves-effect waves-light btn" disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Replace Layer Data')}</button>
+        <div className='right'>
+          <button className='waves-effect waves-light btn' disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Replace Layer Data')}</button>
         </div>
       </div>
-		);
-	}
+    )
+  }
 }

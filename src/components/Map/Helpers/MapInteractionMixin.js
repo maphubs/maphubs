@@ -1,168 +1,166 @@
-//@flow
-const $ = require('jquery');
-import _debounce from 'lodash.debounce';
-const debug = require('../../../services/debug')('MapInteractionMixin');
-import BaseMapActions from '../../../actions/map/BaseMapActions';
-import MapStyles from '../Styles';
-import type {GLStyle} from '../../../types/mapbox-gl-style';
+// @flow
+import _debounce from 'lodash.debounce'
+import BaseMapActions from '../../../actions/map/BaseMapActions'
+import MapStyles from '../Styles'
+import type {GLStyle} from '../../../types/mapbox-gl-style'
+const $ = require('jquery')
+const debug = require('../../../services/debug')('MapInteractionMixin')
+
 /**
  * Helper functions for interacting with the map and selecting features
  */
 module.exports = {
-  setSelectionFilter(features: Array<Object>){
-    if(this.glStyle){
+  setSelectionFilter (features: Array<Object>) {
+    if (this.glStyle) {
       this.glStyle.layers.forEach((layer) => {
-        const filter = ['in', "mhid"];
+        const filter = ['in', 'mhid']
         features.forEach((feature) => {
-          filter.push(feature.properties.mhid);
-        });
-        if(this.map.getLayer(layer.id) && 
-          filter[2] //found a mhid
-          ){
-          if(layer.id.startsWith('omh-hover-point')){
-            this.map.setFilter(layer.id,  ["all", ["in", "$type", "Point"], filter]);
-          }else if(layer.id.startsWith('omh-hover-line')){
-            this.map.setFilter(layer.id,  ["all", ["in", "$type", "LineString"], filter]);
-          }else if(layer.id.startsWith('omh-hover-polygon')){
-            this.map.setFilter(layer.id,  ["all", ["in", "$type", "Polygon"], filter]);
+          filter.push(feature.properties.mhid)
+        })
+        if (this.map.getLayer(layer.id) &&
+          filter[2] // found a mhid
+        ) {
+          if (layer.id.startsWith('omh-hover-point')) {
+            this.map.setFilter(layer.id, ['all', ['in', '$type', 'Point'], filter])
+          } else if (layer.id.startsWith('omh-hover-line')) {
+            this.map.setFilter(layer.id, ['all', ['in', '$type', 'LineString'], filter])
+          } else if (layer.id.startsWith('omh-hover-polygon')) {
+            this.map.setFilter(layer.id, ['all', ['in', '$type', 'Polygon'], filter])
           }
         }
-      });
+      })
     }
   },
 
-  clearSelectionFilter(){
-    if(this.glStyle){
+  clearSelectionFilter () {
+    if (this.glStyle) {
       this.glStyle.layers.forEach((layer) => {
-        if(layer.id.startsWith('omh-hover')){
-          if(this.map.getLayer(layer.id)){
-            this.map.setFilter(layer.id,  ["==", "mhid", ""]);
+        if (layer.id.startsWith('omh-hover')) {
+          if (this.map.getLayer(layer.id)) {
+            this.map.setFilter(layer.id, ['==', 'mhid', ''])
           }
         }
-      });
+      })
     }
   },
 
-  handleUnselectFeature(){
-    this.setState({selected:false});
-    this.clearSelection();
+  handleUnselectFeature () {
+    this.setState({selected: false})
+    this.clearSelection()
   },
 
-  clearSelection(){
-    this.clearSelectionFilter();
-    this.setState({selectedFeature: undefined});
+  clearSelection () {
+    this.clearSelectionFilter()
+    this.setState({selectedFeature: undefined})
   },
 
-  getInteractiveLayers(glStyle: GLStyle){
-    const interactiveLayers = [];
-    if(glStyle){
+  getInteractiveLayers (glStyle: GLStyle) {
+    const interactiveLayers = []
+    if (glStyle) {
       glStyle.layers.forEach((layer) => {
-        if(layer.metadata && layer.metadata['maphubs:interactive'] &&
-          (layer.id.startsWith('omh')
-          || layer.id.startsWith('osm'))
-        ){
-          interactiveLayers.push(layer.id);
+        if (layer.metadata && layer.metadata['maphubs:interactive'] &&
+          (layer.id.startsWith('omh') ||
+          layer.id.startsWith('osm'))
+        ) {
+          interactiveLayers.push(layer.id)
         }
-      });
+      })
     }
-    return interactiveLayers;
+    return interactiveLayers
   },
 
-  clickHandler(e: any){
-    const map = this.map;
+  clickHandler (e: any) {
+    const map = this.map
 
-    if(this.state.enableMeasurementTools){
-      return;
-    }
-    else{
-      //feature selection
-      if(!this.state.selected && this.state.selectedFeature){
-        this.setState({selected:true});
-      }else{
-        $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
+    if (this.state.enableMeasurementTools) {
+
+    } else {
+      // feature selection
+      if (!this.state.selected && this.state.selectedFeature) {
+        this.setState({selected: true})
+      } else {
+        $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair')
 
         const features = map.queryRenderedFeatures(
           [
             [e.point.x - this.props.interactionBufferSize / 2, e.point.y - this.props.interactionBufferSize / 2],
             [e.point.x + this.props.interactionBufferSize / 2, e.point.y + this.props.interactionBufferSize / 2]
-          ], {layers: this.state.interactiveLayers});
+          ], {layers: this.state.interactiveLayers})
 
-        if (features && features.length > 0) {          
-          if(this.state.selected){
-            this.clearSelection();
+        if (features && features.length > 0) {
+          if (this.state.selected) {
+            this.clearSelection()
           }
 
-           const feature = features[0];
-           //find presets and add to props
-           if(feature.layer && feature.layer.source){
-             let presets = MapStyles.settings.getSourceSetting(this.glStyle, feature.layer.source, 'presets');
-             if(!presets){
-               debug.log(`presets not found in source ${feature.layer.source}`);
-               const source = this.glStyle.sources[feature.layer.source];
-               let data;
-               if(source){
-                data = source.data;
-               }
-              if(data){
-                if(data.metadata){
-                  presets = data.metadata['maphubs:presets'];
-                  if(presets){
-                    debug.log(`presets FOUND! for source ${feature.layer.source}`);
-                  }else{
-                    debug.log(`presets not found in data.metadata for source ${feature.layer.source}`);
-                  }
-                }else{
-                  debug.log(`data.metadata not found in source ${feature.layer.source}`);
-                }
-              }else{
-                debug.log(`data not found in source ${feature.layer.source}`);
+          const feature = features[0]
+          // find presets and add to props
+          if (feature.layer && feature.layer.source) {
+            let presets = MapStyles.settings.getSourceSetting(this.glStyle, feature.layer.source, 'presets')
+            if (!presets) {
+              debug.log(`presets not found in source ${feature.layer.source}`)
+              const source = this.glStyle.sources[feature.layer.source]
+              let data
+              if (source) {
+                data = source.data
               }
-             }
-             if(!feature.properties['maphubs_metadata']){
-               feature.properties['maphubs_metadata'] = {};
-             }
-             feature.properties['maphubs_metadata'].presets = presets;
-           }
-        
-          if(this.state.editing){
-            if(feature.properties.layer_id && 
-              this.state.editingLayer.layer_id === feature.properties.layer_id){
-                this.editFeature(feature);
-              }    
-            return; //return here to disable interactation with other layers when editing
+              if (data) {
+                if (data.metadata) {
+                  presets = data.metadata['maphubs:presets']
+                  if (presets) {
+                    debug.log(`presets FOUND! for source ${feature.layer.source}`)
+                  } else {
+                    debug.log(`presets not found in data.metadata for source ${feature.layer.source}`)
+                  }
+                } else {
+                  debug.log(`data.metadata not found in source ${feature.layer.source}`)
+                }
+              } else {
+                debug.log(`data not found in source ${feature.layer.source}`)
+              }
+            }
+            if (!feature.properties['maphubs_metadata']) {
+              feature.properties['maphubs_metadata'] = {}
+            }
+            feature.properties['maphubs_metadata'].presets = presets
           }
-          
-          this.setSelectionFilter([feature]);
-          this.setState({selectedFeature:feature, selected:true});
-        } 
-        else if(this.state.selectedFeature) {
-          this.clearSelection();
-            this.setState({selected: false});
-            $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+
+          if (this.state.editing) {
+            if (feature.properties.layer_id &&
+              this.state.editingLayer.layer_id === feature.properties.layer_id) {
+              this.editFeature(feature)
+            }
+            return // return here to disable interactation with other layers when editing
           }
+
+          this.setSelectionFilter([feature])
+          this.setState({selectedFeature: feature, selected: true})
+        } else if (this.state.selectedFeature) {
+          this.clearSelection()
+          this.setState({selected: false})
+          $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
+        }
       }
     }
   },
 
-  moveendHandler(){
-     debug.log('mouse up fired');
-    BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds());
+  moveendHandler () {
+    debug.log('mouse up fired')
+    BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds())
   },
 
-  //fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
- mousemoveHandler(e: any){
-    const map = this.map;
-    const _this = this;
-   
-    if(_this.state.enableMeasurementTools){
-      return;
-    }
-    else{
+  // fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
+  mousemoveHandler (e: any) {
+    const map = this.map
+    const _this = this
+
+    if (_this.state.enableMeasurementTools) {
+
+    } else {
       const debounced = _debounce(() => {
-        if(_this.state.mapLoaded && _this.state.restoreBounds){
-          debug.log('(' + _this.state.id + ') ' +"clearing restoreBounds");
-          _this.setState({restoreBounds:null});
-          //stop restoring map possition after user has moved the map
+        if (_this.state.mapLoaded && _this.state.restoreBounds) {
+          debug.log('(' + _this.state.id + ') ' + 'clearing restoreBounds')
+          _this.setState({restoreBounds: null})
+          // stop restoring map possition after user has moved the map
         }
 
         const features = map.queryRenderedFeatures(
@@ -170,27 +168,26 @@ module.exports = {
             [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
             [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
           ],
-        {layers: _this.state.interactiveLayers});
+          {layers: _this.state.interactiveLayers})
 
         if (features && features.length) {
-          if(_this.state.selected){
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-          } else if(_this.props.hoverInteraction){
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair');
-            //_this.setSelectionFilter(features);
-            //_this.setState({selectedFeatures:features});
-          }else{
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer');
+          if (_this.state.selected) {
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair')
+          } else if (_this.props.hoverInteraction) {
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair')
+            // _this.setSelectionFilter(features);
+            // _this.setState({selectedFeatures:features});
+          } else {
+            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer')
           }
-        } else if(!_this.state.selected && _this.state.selectedFeatures !== null) {
-            _this.clearSelection();
-            $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+        } else if (!_this.state.selected && _this.state.selectedFeatures !== null) {
+          _this.clearSelection()
+          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
         } else {
-          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '');
+          $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
         }
-
-      }, 300).bind(this);
-      debounced();
+      }, 300).bind(this)
+      debounced()
+    }
   }
-  }
-};
+}

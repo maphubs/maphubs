@@ -1,9 +1,9 @@
-//@flow
-import React from 'react';
-import Slider from 'react-slick';
-import Card  from './Card';
+// @flow
+import React from 'react'
+import Slider from 'react-slick'
+import Card from './Card'
 
-import type {CardConfig} from './Card';
+import type {CardConfig} from './Card'
 
 type Props = {
     cards: Array<CardConfig>,
@@ -19,19 +19,18 @@ type Props = {
   };
 
 export default class CardCarousel extends React.Component<Props, void> {
-
   props: Props
 
   static defaultProps = {
     responsive: [
-      {breakpoint: 450, settings: {slidesToShow: 1,  slidesToScroll: 1}},
-      {breakpoint: 768, settings: {slidesToShow: 2,  slidesToScroll: 2}},
-      {breakpoint: 950, settings: {slidesToShow: 3,  slidesToScroll: 3}},
-      {breakpoint: 1150, settings: {slidesToShow: 4,  slidesToScroll: 4}},
-      {breakpoint: 1400, settings: {slidesToShow: 5,  slidesToScroll: 5}},
-      {breakpoint: 1700, settings: {slidesToShow: 6,  slidesToScroll: 6}},
-        {breakpoint: 2500, settings: {slidesToShow: 8,  slidesToScroll: 8}},
-        {breakpoint: 4000, settings: {slidesToShow: 10,  slidesToScroll: 10}}
+      {breakpoint: 450, settings: {slidesToShow: 1, slidesToScroll: 1}},
+      {breakpoint: 768, settings: {slidesToShow: 2, slidesToScroll: 2}},
+      {breakpoint: 950, settings: {slidesToShow: 3, slidesToScroll: 3}},
+      {breakpoint: 1150, settings: {slidesToShow: 4, slidesToScroll: 4}},
+      {breakpoint: 1400, settings: {slidesToShow: 5, slidesToScroll: 5}},
+      {breakpoint: 1700, settings: {slidesToShow: 6, slidesToScroll: 6}},
+      {breakpoint: 2500, settings: {slidesToShow: 8, slidesToScroll: 8}},
+      {breakpoint: 4000, settings: {slidesToShow: 10, slidesToScroll: 10}}
     ],
     autoplay: false,
     arrows: true,
@@ -43,38 +42,38 @@ export default class CardCarousel extends React.Component<Props, void> {
     showAddButton: false
   }
 
-  render() {
+  render () {
     const settings = {
-       autoplay: this.props.autoplay,
-       arrows: this.props.arrows,
-       dots: this.props.dots,
-       infinite: this.props.infinite,
-       speed: this.props.speed,
-       slidesToShow: this.props.slidesToShow,
-       slidesToScroll: this.props.slidesToScroll,
-       responsive: this.props.responsive,
-       lazyLoad: true
-     };
+      autoplay: this.props.autoplay,
+      arrows: this.props.arrows,
+      dots: this.props.dots,
+      infinite: this.props.infinite,
+      speed: this.props.speed,
+      slidesToShow: this.props.slidesToShow,
+      slidesToScroll: this.props.slidesToScroll,
+      responsive: this.props.responsive,
+      lazyLoad: true
+    }
 
-     let slider = '';
-     if(this.props.cards && this.props.cards.length > 0){
-       slider = (
-         <Slider ref="slider" {...settings}>
-           {this.props.cards.map((card) => {
-             return (
-               <div key={card.id}>
-                 <Card showAddButton={this.props.showAddButton} {...card} />
+    let slider = ''
+    if (this.props.cards && this.props.cards.length > 0) {
+      slider = (
+        <Slider ref='slider' {...settings}>
+          {this.props.cards.map((card) => {
+            return (
+              <div key={card.id}>
+                <Card showAddButton={this.props.showAddButton} {...card} />
               </div>
-            );
-           })}
-         </Slider>
-       );
-     }
+            )
+          })}
+        </Slider>
+      )
+    }
 
-     return (
-       <div className="card-carousel">
+    return (
+      <div className='card-carousel'>
         {slider}
       </div>
-     );
+    )
   }
 }

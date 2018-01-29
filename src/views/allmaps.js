@@ -1,24 +1,25 @@
-//@flow
-import React from 'react';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import SearchBox from '../components/SearchBox';
-import CardCollection from '../components/CardCarousel/CardCollection';
-const cardUtil = require('../services/card-util');
-const debug = require('../services/debug')('views/maps');
-const urlUtil = require('../services/url-util');
-import request from 'superagent';
-const checkClientError = require('../services/client-error-response').checkClientError;
-import MessageActions from '../actions/MessageActions';
-import NotificationActions from '../actions/NotificationActions';
-import MapHubsComponent from '../components/MapHubsComponent';
-import Reflux from '../components/Rehydrate';
-import LocaleStore from '../stores/LocaleStore';
-import MapList from '../components/Lists/MapList';
-import Toggle from '../components/forms/toggle';
-import Formsy from 'formsy-react';
-import CardGrid from '../components/CardCarousel/CardGrid';
-import ErrorBoundary from '../components/ErrorBoundary';
+// @flow
+import React from 'react'
+import Header from '../components/header'
+import Footer from '../components/footer'
+import SearchBox from '../components/SearchBox'
+import CardCollection from '../components/CardCarousel/CardCollection'
+import request from 'superagent'
+import MessageActions from '../actions/MessageActions'
+import NotificationActions from '../actions/NotificationActions'
+import MapHubsComponent from '../components/MapHubsComponent'
+import Reflux from '../components/Rehydrate'
+import LocaleStore from '../stores/LocaleStore'
+import MapList from '../components/Lists/MapList'
+import Toggle from '../components/forms/toggle'
+import Formsy from 'formsy-react'
+import CardGrid from '../components/CardCarousel/CardGrid'
+import ErrorBoundary from '../components/ErrorBoundary'
+
+const cardUtil = require('../services/card-util')
+const debug = require('../services/debug')('views/maps')
+const urlUtil = require('../services/url-util')
+const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {
   maps: Array<Object>,
@@ -35,7 +36,6 @@ type State = {
 }
 
 export default class AllMaps extends MapHubsComponent<Props, State> {
-
   props: Props
 
   state: State = {
@@ -44,122 +44,119 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
     showList: false
   }
 
-  constructor(props: Props) {
-    super(props);
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf});
+  constructor (props: Props) {
+    super(props)
+    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
   }
 
   handleSearch = (input: string) => {
-    const _this = this;
-    debug.log('searching for: ' + input);
+    const _this = this
+    debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
-    .type('json').accept('json')
-    .end((err, res) => {
-      checkClientError(res, err, (err) => {
-        if(err){
-          MessageActions.showMessage({title: 'Error', message: err});
-        }else{
-          if(res.body.maps && res.body.maps.length > 0){
-            _this.setState({searchActive: true, searchResults: res.body.maps});
-            NotificationActions.showNotification({message: res.body.maps.length + ' ' + _this.__('Results'), position: 'bottomleft'});
-          }else{
-            //show error message
-            NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'});
+      .type('json').accept('json')
+      .end((err, res) => {
+        checkClientError(res, err, (err) => {
+          if (err) {
+            MessageActions.showMessage({title: 'Error', message: err})
+          } else {
+            if (res.body.maps && res.body.maps.length > 0) {
+              _this.setState({searchActive: true, searchResults: res.body.maps})
+              NotificationActions.showNotification({message: res.body.maps.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+            } else {
+            // show error message
+              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+            }
           }
+        },
+        (cb) => {
+          cb()
         }
-      },
-      (cb) => {
-        cb();
-      }
-      );
-    });
+        )
+      })
   }
 
   resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []});
+    this.setState({searchActive: false, searchResults: []})
   }
 
   onModeChange = (showList: boolean) => {
-    this.setState({showList});
+    this.setState({showList})
   }
 
-	render() {
-
-    let searchResults = '';
-    if(this.state.searchActive){
-      if(this.state.searchResults.length > 0){
-
-        const searchCards =   this.state.searchResults.map(cardUtil.getMapCard);
+  render () {
+    let searchResults = ''
+    if (this.state.searchActive) {
+      if (this.state.searchResults.length > 0) {
+        const searchCards = this.state.searchResults.map(cardUtil.getMapCard)
 
         searchResults = (
           <CardCollection title={this.__('Search Results')} cards={searchCards} />
-        );
-      }
-      else {
+        )
+      } else {
         searchResults = (
-          <div className="row">
-            <div className="col s12">
-            <h5>{this.__('Search Results')}</h5>
-            <div className="divider"></div>
-            <p><b>{this.__('No Results Found')}</b></p>
+          <div className='row'>
+            <div className='col s12'>
+              <h5>{this.__('Search Results')}</h5>
+              <div className='divider' />
+              <p><b>{this.__('No Results Found')}</b></p>
+            </div>
           </div>
-          </div>
-        );
+        )
       }
     }
 
-    let maps = '';
-    if(this.state.showList){
+    let maps = ''
+    if (this.state.showList) {
       maps = (
-        <div className="container">
+        <div className='container'>
           <MapList showTitle={false} maps={this.props.maps} />
         </div>
-      );
-    }else{
-      const cards = this.props.maps.map(cardUtil.getMapCard);
+      )
+    } else {
+      const cards = this.props.maps.map(cardUtil.getMapCard)
       maps = (
         <CardGrid cards={cards} />
-      );
+      )
     }
 
-		return (
+    return (
       <ErrorBoundary>
-        <Header activePage="maps" {...this.props.headerConfig}/>
+        <Header activePage='maps' {...this.props.headerConfig} />
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className="row" style={{marginBottom: '0px'}}>
-              <div className="col l8 m7 s12">
-                 <h4 className="no-margin">{this.__('Maps')}</h4>
+            <div className='row' style={{marginBottom: '0px'}}>
+              <div className='col l8 m7 s12'>
+                <h4 className='no-margin'>{this.__('Maps')}</h4>
                 <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse maps or create a new map using the respository of open map layers.')}</p>
               </div>
-              <div className="col l3 m4 s12 right" style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Maps')} suggestionUrl="/api/maps/search/suggestions" onSearch={this.handleSearch} onReset={this.resetSearch}/>
+              <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
+                <SearchBox label={this.__('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </div>
             </div>
           </div>
           {searchResults}
-          <div className="row">
+          <div className='row'>
 
-            <div className="left-align" style={{marginLeft: '15px', marginTop: '25px'}}>
+            <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
               <Formsy>
-            <Toggle name="mode" onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList}/>
-            </Formsy>
+                <Toggle name='mode' onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList} />
+              </Formsy>
             </div>
-            <div className="row">
+            <div className='row'>
               {maps}
             </div>
-            
+
           </div>
           <div>
-            <div className="fixed-action-btn action-button-bottom-right tooltipped" data-position="top" data-delay="50" data-tooltip={this.__('Create New Map')}>
-              <a href="/map/new" className="btn-floating btn-large red red-text">
-                <i className="large material-icons">add</i>
+            <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Map')}>
+              <a href='/map/new' className='btn-floating btn-large red red-text'>
+                <i className='large material-icons'>add</i>
               </a>
             </div>
           </div>
         </main>
-        <Footer {...this.props.footerConfig}/>
+        <Footer {...this.props.footerConfig} />
       </ErrorBoundary>
-		);
-	}
+    )
+  }
 }

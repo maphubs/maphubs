@@ -1,5 +1,5 @@
-//@flow
-import React from 'react';
+// @flow
+import React from 'react'
 
 type Props = {
   goToSlide: Function,
@@ -9,14 +9,12 @@ type Props = {
 }
 
 export default class SlideDots extends React.PureComponent<Props, void> {
-
-  
   getIndexes = (count: number, inc: number) => {
-    const arr = [];
+    const arr = []
     for (let i = 0; i < count; i += inc) {
-      arr.push(i);
+      arr.push(i)
     }
-    return arr;
+    return arr
   }
 
   getListStyles = () => {
@@ -25,14 +23,14 @@ export default class SlideDots extends React.PureComponent<Props, void> {
       margin: 0,
       top: -10,
       padding: 0
-    };
+    }
   }
 
   getListItemStyles = () => {
     return {
       listStyleType: 'none',
       display: 'inline-block'
-    };
+    }
   }
 
   getButtonStyles = (active: boolean) => {
@@ -45,19 +43,19 @@ export default class SlideDots extends React.PureComponent<Props, void> {
       outline: 0,
       fontSize: 30,
       opacity: active ? 1 : 0.5
-    };
+    }
   }
 
-  render() {
-    const self = this;
-    const indexes = this.getIndexes(self.props.slideCount, self.props.slidesToScroll);
+  render () {
+    const self = this
+    const indexes = this.getIndexes(self.props.slideCount, self.props.slidesToScroll)
     return (
       <ul style={self.getListStyles()}>
         {
           indexes.map((index) => {
-            const goToSlide = function(){
-              self.props.goToSlide(index);
-            };
+            const goToSlide = function () {
+              self.props.goToSlide(index)
+            }
             return (
               <li style={self.getListItemStyles()} key={index}>
                 <button
@@ -66,10 +64,10 @@ export default class SlideDots extends React.PureComponent<Props, void> {
                   &bull;
                 </button>
               </li>
-            );
+            )
           })
         }
       </ul>
-    );
-  }     
+    )
+  }
 }

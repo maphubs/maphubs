@@ -9,4 +9,4 @@ module.exports = {
   raster: require('./raster.js'),
   color: require('./color.js'),
   style: require('./style.js')
-};
+}

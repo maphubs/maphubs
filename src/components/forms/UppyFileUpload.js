@@ -1,12 +1,12 @@
-//@flow
-import React from 'react';
-import Uppy from 'uppy/lib/core';
-import Tus from 'uppy/lib/plugins/Tus';
-import Dashboard from 'uppy/lib/react/Dashboard';
+// @flow
+import React from 'react'
+import Uppy from 'uppy/lib/core'
+import Tus from 'uppy/lib/plugins/Tus'
+import Dashboard from 'uppy/lib/react/Dashboard'
 // import GoogleDrive from 'uppy/lib/plugins/GoogleDrive';
 // import Dropbox from 'uppy/lib/plugins/Dropbox';
 
-import MapHubsComponent from '../MapHubsComponent';
+import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {
   endpoint: string,
@@ -24,7 +24,7 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
   static defaultProps = {
     maxHeight: 300
   }
-  componentDidMount() {
+  componentDidMount () {
     this.uppy = Uppy({
       id: 'uppy',
       autoProceed: true,
@@ -36,32 +36,32 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
         allowedFileTypes: false
       },
       thumbnailGeneration: false
-    });
+    })
     // this.uppy.use(GoogleDrive, { host: 'http://localhost:3020' });
     // this.uppy.use(Dropbox, { host: 'http://localhost:3020' });
-    this.uppy.use(Tus, { endpoint: this.props.endpoint });
-    
+    this.uppy.use(Tus, { endpoint: this.props.endpoint })
+
     this.uppy.on('complete', (result) => {
-      if(result.successful && result.successful.length === 1){
-        const file = result.successful[0];
-        console.log(file);
-        if(this.props.onComplete){
-          this.props.onComplete(file);
+      if (result.successful && result.successful.length === 1) {
+        const file = result.successful[0]
+        console.log(file)
+        if (this.props.onComplete) {
+          this.props.onComplete(file)
         }
       }
-    });
+    })
 
-    this.uppy.run();
+    this.uppy.run()
   }
 
   render () {
-    const {note, maxHeight} = this.props;
-    if(this.uppy){
+    const {note, maxHeight} = this.props
+    if (this.uppy) {
       return (
         <Dashboard
           uppy={this.uppy}
           // plugins={['GoogleDrive', 'Dropbox']}
-          inline={true}
+          inline
           maxHeight={maxHeight}
           note={note}
           locale={{
@@ -92,9 +92,9 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
             }
           }}
         />
-      );
+      )
     } else {
-      return '';
+      return ''
     }
   }
 }

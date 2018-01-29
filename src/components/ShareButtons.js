@@ -1,17 +1,17 @@
-import React from 'react';
-import MapHubsComponent from './MapHubsComponent';
+import React from 'react'
+import MapHubsComponent from './MapHubsComponent'
 import {
   ShareButtons,
-  generateShareIcon,
-} from 'react-share';
+  generateShareIcon
+} from 'react-share'
 
-  const {
-    FacebookShareButton,
-    TwitterShareButton
-  } = ShareButtons;
+const {
+  FacebookShareButton,
+  TwitterShareButton
+} = ShareButtons
 
-  const FacebookIcon = generateShareIcon('facebook');
-  const TwitterIcon = generateShareIcon('twitter');
+const FacebookIcon = generateShareIcon('facebook')
+const TwitterIcon = generateShareIcon('twitter')
 
 type Props = {
   style: Object,
@@ -26,7 +26,6 @@ type State = {
 }
 
 export default class MapHubsShareButtons extends MapHubsComponent<Props, State> {
-
   props: Props
 
   static defaultProps = {
@@ -36,49 +35,46 @@ export default class MapHubsShareButtons extends MapHubsComponent<Props, State> 
 
   state: State
 
-  constructor(props: Props){
-    super(props);
+  constructor (props: Props) {
+    super(props)
     this.state = {
       url: props.url ? props.url : ''
-    };
-  }
-
-  componentDidMount(){
-    if(!this.props.url){
-      this.setState({url: window.location.href});
     }
- 
   }
 
-  render(){
-    const title = this._o_(this.props.title);
+  componentDidMount () {
+    if (!this.props.url) {
+      this.setState({url: window.location.href})
+    }
+  }
+
+  render () {
+    const title = this._o_(this.props.title)
     return (
       <div style={this.props.style}>
         <div style={{float: 'left'}}>
-           <FacebookShareButton
+          <FacebookShareButton
             url={this.state.url}
             quote={title}
             picture={this.props.photoUrl}
-            >
+          >
             <FacebookIcon
               size={this.props.iconSize}
               round />
           </FacebookShareButton>
         </div>
         <div style={{float: 'right', marginLeft: '3px'}}>
-           <TwitterShareButton
+          <TwitterShareButton
             url={this.state.url}
             title={title}
-            >
+          >
             <TwitterIcon
               size={this.props.iconSize}
               round />
           </TwitterShareButton>
         </div>
-       
-          
+
       </div>
-    );
-  
+    )
   }
 }
