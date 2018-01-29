@@ -40,3 +40,4 @@ sync-to-cdn.sh
 src/sass/themes/clients
 css
 logs
+uppy.env

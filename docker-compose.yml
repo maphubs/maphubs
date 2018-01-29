@@ -106,6 +106,14 @@ services:
       - '5601:5601'
     depends_on:
       - elasticsearch1
+  uppy:
+    image: transloadit/uppy-server
+    env_file:
+      - ./env/dev/secret/uppy.env
+    volumes:
+      - './temp/uppy:/app/uploads'
+    ports:
+      - '3020:3020'
 volumes:
   esdata1:
     external:
