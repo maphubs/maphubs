@@ -1,17 +1,11 @@
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
 import {
-  ShareButtons,
-  generateShareIcon
-} from 'react-share'
-
-const {
   FacebookShareButton,
-  TwitterShareButton
-} = ShareButtons
-
-const FacebookIcon = generateShareIcon('facebook')
-const TwitterIcon = generateShareIcon('twitter')
+  TwitterShareButton,
+  FacebookIcon,
+  TwitterIcon
+} from 'react-share'
 
 type Props = {
   style: Object,
