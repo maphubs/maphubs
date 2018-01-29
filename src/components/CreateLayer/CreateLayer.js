@@ -4,6 +4,8 @@ import LayerSourceHelper from './LayerSourceHelper';
 import SourceSelectionBox from './SourceSelectionBox';
 import MapHubsComponent from '../MapHubsComponent';
 
+let scrollToComponent;
+
 type Props = {|
   onSubmit: Function,
   showPrev?: boolean,
@@ -28,10 +30,17 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     source: ''
   }
 
+  componentDidMount(){
+    scrollToComponent = require('react-scroll-to-component');
+  }
+
   getSource = LayerSourceHelper.getSource.bind(this)
+
+  sourceDisplay: any
 
   selectSource = (source: string) =>{
     this.setState({source});
+    scrollToComponent(this.sourceDisplay, {align: 'bottom'});
   }
 
   onCancel = () => {
@@ -53,9 +62,9 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     let planetSource = '';
     if(MAPHUBS_CONFIG.mapHubsPro){
       planetSource = (
-         <div className="col s6 m3 l2">
+         <div className="col s6">
             <SourceSelectionBox name={this.__('Planet API')} value={'planet'}
-            selected={this.state.source === 'planet'} icon="cloud_download"
+            selected={this.state.source === 'planet'} icon="satellite"
             onSelect={this.selectSource} />
           </div>
       );
@@ -72,63 +81,84 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
     return (
       <div>
-        <div className="row" style={{maxWidth: '500px', margin: 'auto'}}>
-          <div className="col s6 m4 l4">
-            <SourceSelectionBox name={this.__('New Point(s)')} value={'point'} 
-            selected={this.state.source === 'point'} icon="place"
-            onSelect={this.selectSource} />
+        <div className="container">
+        <div className="row" style={{margin: 'auto', textAlign: 'center'}}>
+          <div className="col s5">
+            <div className="row no-margin">
+              <p style={{margin: '5px'}}>{this.__('Upload Data or Import MapHubs Data')}</p>   
+                <div className="col s6">
+                  <SourceSelectionBox name={this.__('Upload File')} value={'local'} 
+                  selected={this.state.source === 'local'} icon="file_upload"
+                  onSelect={this.selectSource} />
+                </div>
+                <div className="col s6">
+                  <SourceSelectionBox name={this.__('MapHubs Layer')} value={'remote'} 
+                  selected={this.state.source === 'maphubs'} icon="cloud_download"
+                  onSelect={this.selectSource} />
+                </div>
+            </div>
+            <div className="row no-margin">
+              <p style={{margin: '5px'}}>{this.__('Satellite Data')}</p>
+              {planetSource}
+              <div className="col s6">
+                <SourceSelectionBox name={this.__('Sentinel-2')} value={'sentinel'} 
+                selected={this.state.source === 'sentinel'} icon="satellite"
+                onSelect={this.selectSource} />
+              </div>
+            </div>
           </div>
-          <div className="col s6 m4 l4">
-            <SourceSelectionBox name={this.__('New Line(s)')} value={'line'} 
-            selected={this.state.source === 'line'} icon="timeline"
-            onSelect={this.selectSource} />
-          </div>
-          <div className="col s6 m4 l4">
-            <SourceSelectionBox name={this.__('New Polygon(s)')} value={'polygon'} 
-            selected={this.state.source === 'polygon'} icon="crop_din"
-            onSelect={this.selectSource} />
+          <div className="col s7">
+            <div className="row no-margin">
+              <p style={{margin: '5px'}}>{this.__('Create New Data')}</p>
+              <div className="col s6 m4 l4">
+                <SourceSelectionBox name={this.__('New Point(s)')} value={'point'} 
+                selected={this.state.source === 'point'} icon="place"
+                onSelect={this.selectSource} />
+              </div>
+              <div className="col s6 m4 l4">
+                <SourceSelectionBox name={this.__('New Line(s)')} value={'line'} 
+                selected={this.state.source === 'line'} icon="timeline"
+                onSelect={this.selectSource} />
+              </div>
+              <div className="col s6 m4 l4">
+                <SourceSelectionBox name={this.__('New Polygon(s)')} value={'polygon'} 
+                selected={this.state.source === 'polygon'} icon="crop_din"
+                onSelect={this.selectSource} />
+              </div>
+            </div>
+            <div className="row no-margin">
+              <p style={{margin: '5px'}}>{this.__('Remote Data Sources')}</p>            
+                <div className="col s6 m4 l4">
+                  <SourceSelectionBox name={this.__('GeoJSON URL')} value={'geojson'} 
+                  selected={this.state.source === 'geojson'} icon="cloud_download"
+                  onSelect={this.selectSource} />
+                </div>
+                <div className="col s6 m4 l4">
+                  <SourceSelectionBox name={this.__('Mapbox Styles')} value={'mapbox'} 
+                  selected={this.state.source === 'mapbox'} icon="cloud_download"
+                  onSelect={this.selectSource} />
+                </div>
+                <div className="col s6 m4 l4">
+                  <SourceSelectionBox name={this.__('Raster Tiles')} value={'raster'}
+                  selected={this.state.source === 'raster'}  icon="cloud_download"
+                  onSelect={this.selectSource} />
+                </div>
+                <div className="col s6 m4 l4">
+                  <SourceSelectionBox name={this.__('Vector Tiles')} value={'vector'}
+                  selected={this.state.source === 'vector'}  icon="cloud_download"
+                  onSelect={this.selectSource} />
+                </div>
+                <div className="col s6 m4 l4">
+                  <SourceSelectionBox name={this.__('ArcGIS Services')} value={'ags'} 
+                  selected={this.state.source === 'ags'} icon="cloud_download"
+                  onSelect={this.selectSource} />
+                </div>
+            </div>
           </div>
         </div>
-        <div className="row" style={{maxWidth: '800px', margin: 'auto'}}>
-          <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('Upload File')} value={'local'} 
-            selected={this.state.source === 'local'} icon="file_upload"
-            onSelect={this.selectSource} />
-          </div>
-          <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('GeoJSON URL')} value={'geojson'} 
-            selected={this.state.source === 'geojson'} icon="cloud_download"
-            onSelect={this.selectSource} />
-          </div>
-          <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('Mapbox Styles')} value={'mapbox'} 
-            selected={this.state.source === 'mapbox'} icon="cloud_download"
-            onSelect={this.selectSource} />
-          </div>
-           <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('Raster Tiles')} value={'raster'}
-            selected={this.state.source === 'raster'}  icon="cloud_download"
-            onSelect={this.selectSource} />
-          </div>
-          <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('Vector Tiles')} value={'vector'}
-            selected={this.state.source === 'vector'}  icon="cloud_download"
-            onSelect={this.selectSource} />
-          </div>
-          <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('ArcGIS Services')} value={'ags'} 
-            selected={this.state.source === 'ags'} icon="cloud_download"
-            onSelect={this.selectSource} />
-          </div>
-          <div className="col s6 m3 l2">
-            <SourceSelectionBox name={this.__('MapHubs Layer')} value={'remote'} 
-            selected={this.state.source === 'maphubs'} icon="cloud_download"
-            onSelect={this.selectSource} />
-          </div>
-          {planetSource}
         </div>
         <div className="divider" />
-        <div className="container">
+        <div ref={(ref)=>{this.sourceDisplay = ref;}} className="container">
           {sourceDisplay}
         </div>
         {cancelButton}

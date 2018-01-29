@@ -12,9 +12,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
 type Props = {|
-  onSubmit: Function,
-  showPrev: boolean,
-  onPrev: Function
+  onSubmit: Function
 |}
 
 type State = {
@@ -141,15 +139,6 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
       break;
     }
 
-    let prevButton = '';
-    if(this.props.showPrev){
-      prevButton = (
-        <div className="left">
-          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>{this.__('Previous Step')}</a>
-        </div>
-      );
-    }
-
     let styleForm = '';
     if(styleOption){
       styleForm = (
@@ -199,12 +188,10 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
             {styleForm}
             {tilesForm}
-            {prevButton}
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
             </div>
           </Formsy>
-
       </div>
 		);
 	}

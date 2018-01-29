@@ -11,9 +11,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 
 type Props = {|
   onSubmit: Function,
-  showPrev: boolean,
-  type: string,
-  onPrev: Function
+  type: string
 |}
 
 export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStoreState> {
@@ -44,28 +42,13 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
     });
   }
 
-  onPrev = () => {
-    if(this.props.onPrev) this.props.onPrev();
-  }
-
 	render() {
-
-    let prevButton = '';
-    if(this.props.showPrev){
-      prevButton = (
-        <div className="left">
-          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>{this.__('Previous Step')}</a>
-        </div>
-      );
-    }
-
 		return (
-        <div className="row">
-            <p>{this.__('Creating a new layer of type:') + ' ' + this.props.type}</p>
-            {prevButton}
-            <div className="right">
-              <button className="waves-effect waves-light btn" onClick={this.onSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
-            </div>
+      <div className="row">
+        <p>{this.__('Creating a new layer of type:') + ' ' + this.props.type}</p>
+        <div className="right">
+          <button className="waves-effect waves-light btn" onClick={this.onSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
+        </div>
       </div>
 		);
 	}

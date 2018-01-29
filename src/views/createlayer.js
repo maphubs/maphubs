@@ -154,8 +154,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
           <Header {...this.props.headerConfig}/>
         <main>
-          <div style={{marginLeft: '10px', marginRight: '10px'}}>
-            <h5>{this.__('Create Layer')}</h5>
+          <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>
             <div className="row center no-margin">
 
               <b>{stepText}</b>

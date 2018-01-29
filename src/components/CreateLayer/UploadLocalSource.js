@@ -1,8 +1,6 @@
 //@flow
 import React from 'react';
-const $ = require('jquery');
-import ReactDOM from 'react-dom';
-import FileUpload from '../forms/FileUpload';
+import UppyFileUpload from '../forms/UppyFileUpload';
 import Map from '../Map/Map';
 import NotificationActions from '../../actions/NotificationActions';
 import LayerStore from '../../stores/layer-store';
@@ -14,11 +12,12 @@ import MapHubsComponent from '../MapHubsComponent';
 import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 import type {GeoJSONObject} from 'geojson-flow';
+import request from 'superagent';
+
+let scrollToComponent;
 
 type Props = {|
   onSubmit: Function,
-  showPrev: boolean,
-  onPrev: Function,
   mapConfig: Object
 |}
 
@@ -47,16 +46,13 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore);
   }
 
-  componentDidMount() {
-    $('select').material_select();
+  componentDidMount(){
+    scrollToComponent = require('react-scroll-to-component');
   }
 
   componentDidUpdate() {
     if(this.state.geoJSON){
-      const scrollTarget = $(ReactDOM.findDOMNode(this.refs.map));
-      $('html,body').animate({
-         scrollTop: scrollTarget.offset().top
-       }, 1000);
+      scrollToComponent(this.refs.map);
     }
     if(this.state.multipleShapefiles){
       this.refs.chooseshape.show();
@@ -96,21 +92,35 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     if(this.props.onPrev) this.props.onPrev();
   }
 
-  onUpload = (result: Object) => {
+  onUpload = (file: Object) => {
     const _this = this;
-    
-    if(result.success){
-      this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
-      LayerActions.setDataType(result.data_type);
-      LayerActions.setImportedTags(result.uniqueProps,  true);
-    }else{
-      if(result.code === 'MULTIPLESHP'){
-        this.setState({multipleShapefiles: result.shapefiles});
-      }else{
-        MessageActions.showMessage({title: _this.__('Error'), message: result.error});
-      }
-    }
-    this.setState({processing: false});
+    this.onProcessingStart();
+    request.post('/api/layer/complete/upload')
+        .type('json').accept('json')
+        .send({
+          uploadUrl: file.uploadURL,
+          layer_id: this.state.layer_id,
+          originalName: file.data.name
+        })
+        .end((err, res) => {
+          if(err){
+            _this.onUploadError(err);
+          }else {
+            const result = res.body;
+            if(result.success){
+              this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData});      
+              LayerActions.setDataType(result.data_type);
+              LayerActions.setImportedTags(result.uniqueProps,  true);
+            }else{
+              if(result.code === 'MULTIPLESHP'){
+                this.setState({multipleShapefiles: result.shapefiles});
+              }else{
+                MessageActions.showMessage({title: _this.__('Error'), message: result.error});
+              }
+            }
+            this.setState({processing: false});
+          }
+        });
   }
 
   onUploadError = (err: string) => {
@@ -135,18 +145,8 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-
-    let prevButton = '';
-    if(this.props.showPrev){
-      prevButton = (
-        <div className="left">
-          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>{this.__('Previous Step')}</a>
-        </div>
-      );
-    }
-
     const layer_id = this.state.layer_id ? this.state.layer_id : 0;
-    const url = `/api/layer/${layer_id}/upload`;
+    // const url = `/api/layer/${layer_id}/upload`;
     let largeDataMessage = '';
     if(this.state.largeData){
       largeDataMessage = (
@@ -183,9 +183,17 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         <div className="row">
         <Progress id="upload-process-progess" title={this.__('Processing Data')} subTitle="" dismissible={false} show={this.state.processing}/>       
         <div>
-          <p>{this.__('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
           <div className="row">
-            <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
+            <div style={{margin: 'auto auto', maxWidth: '750px'}}>
+              <UppyFileUpload
+                endpoint="/api/layer/upload"
+                note="Supported files: Shapefile (Zip), GeoJSON, KML,  GPX (tracks or waypoints), or CSV (with Lat/Lon fields), and MapHubs format"
+                layer_id={layer_id}
+                onProcessingStart={this.onProcessingStart}
+                onComplete={this.onUpload}
+                onError={this.onUploadError}
+              />
+            </div>
           </div>
           <div className="row">
             {largeDataMessage}
@@ -193,7 +201,6 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           </div>
           {multipleShapefiles}
         </div>
-        {prevButton}
         <div className="right">
           <button className="waves-effect waves-light btn" disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
         </div>

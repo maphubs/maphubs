@@ -11,9 +11,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
 type Props = {|
-    onSubmit: Function,
-    showPrev: boolean,
-    onPrev: Function
+    onSubmit: Function
   |}
 
 type State = {

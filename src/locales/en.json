@@ -881,5 +881,12 @@
 	"All": "All",
 	"Help/Support": "Help/Support",
 	"We have detected an existing MapHubs account for your email, please login to your account to complete the signup process.": "We have detected an existing MapHubs account for your email, please login to your account to complete the signup process.",
-	"Welcome to MapHubs! Please choose a user name and password to signup for an account.": "Welcome to MapHubs! Please choose a user name and password to signup for an account."
+	"Welcome to MapHubs! Please choose a user name and password to signup for an account.": "Welcome to MapHubs! Please choose a user name and password to signup for an account.",
+	"Sentinel-2 (coming soon)": "Sentinel-2 (coming soon)",
+	"Planet": "Planet",
+	"Upload Data or Import a MapHubs Layer": "Upload Data or Import a MapHubs Layer",
+	"Satellite Data": "Satellite Data",
+	"Sentinel-2": "Sentinel-2",
+	"Remote Data Sources": "Remote Data Sources",
+	"Upload Data or Import MapHubs Data": "Upload Data or Import MapHubs Data"
 }

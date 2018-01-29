@@ -13,9 +13,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore';
 import type {LayerStoreState} from '../../stores/layer-store';
 
 type Props = {
-  onSubmit: Function,
-  showPrev: boolean,
-  onPrev: Function
+  onSubmit: Function
 }
 
 type State = {
@@ -192,15 +190,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       );
     }
 
-    let prevButton = '';
-    if(this.props.showPrev){
-      prevButton = (
-        <div className="left">
-          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>{this.__('Previous Step')}</a>
-        </div>
-      );
-    }
-
 		return (
         <div className="row">
           <Formsy>
@@ -218,7 +207,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
             {msqForm}
             {fsqForm}
             {tilesForm}
-            {prevButton}
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
             </div>

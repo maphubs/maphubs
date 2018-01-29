@@ -7,8 +7,6 @@ import MapHubsComponent from '../MapHubsComponent';
 
 type Props = {|
   onSubmit: Function,
-  showPrev: boolean,
-  onPrev: Function,
   active: boolean
 |}
 
@@ -64,16 +62,6 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
   }
 
 	render() {
-
-    let prevButton = '';
-    if(this.props.showPrev){
-      prevButton = (
-        <div className="left">
-          <a className="waves-effect waves-light btn" onClick={this.onPrev}><i className="material-icons left">arrow_back</i>Previous Step</a>
-        </div>
-      );
-    }
-
 		return (
         <div className="row">
           <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -88,15 +76,10 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
                  required/>
             </div>
             </div>
-
-
-            {prevButton}
             <div className="right">
               <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>Save and Continue</button>
             </div>
           </Formsy>
-
-
       </div>
 		);
 	}

@@ -3,6 +3,11 @@ require('dotenv').config();
 var getenv = require('getenv');
 getenv.disableErrors();
 
+var tempPath = getenv('OMH_TEMP_FILE_PATH');
+if(!tempPath || tempPath === 'undefined'){
+  tempPath = path.join(__dirname, '../temp');
+}
+
 var local = {
   connection: {
     url: 'postgres://' + getenv('DB_USER') + ':'+ getenv('DB_PASS') +'@' + getenv('DB_HOST') + ':' + getenv('DB_PORT') + '/' + getenv('DB_DATABASE')
@@ -12,7 +17,7 @@ var local = {
   port: getenv('OMH_PORT'),
   internal_port: getenv('OMH_INTERNAL_PORT'),
   publicFilePath: path.join(__dirname, '../assets/public'),
-  tempFilePath: path.join(__dirname, '../temp'),
+  tempFilePath: tempPath,
   manetUrl: getenv('OMH_MANET_URL'),
   tileServiceUrl: getenv('OMH_TILESERVICE_URL'),
   tileServiceInternalUrl: getenv('OMH_TILESERVICE_INTERNAL_URL'),

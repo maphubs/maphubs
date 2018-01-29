@@ -1,8 +1,13 @@
 // @flow
-const Layer = require('../../models/layer');
 const multer  = require('multer');
-const log = require('../../services/log');
 const ogr2ogr = require('ogr2ogr');
+const Layer = require('../../models/layer');
+const Promise = require('bluebird');
+const tus = require('tus-node-server');
+const EVENTS = require('tus-node-server').EVENTS;
+const express = require('express');
+
+const log = require('../../services/log');
 const shapefileFairy = require('../../services/shapefile-fairy');
 const DataLoadUtils = require('../../services/data-load-utils');
 const debug = require('../../services/debug')('routes/layers-upload');
@@ -10,12 +15,92 @@ const local = require('../../local');
 const apiError = require('../../services/error-response').apiError;
 const apiDataError = require('../../services/error-response').apiDataError;
 const notAllowedError = require('../../services/error-response').notAllowedError;
-const Promise = require('bluebird');
 const Importers = require('../../services/importers');
 const csrfProtection = require('csurf')({cookie: false});
 const isAuthenticated = require('../../services/auth-check');
 
+
+const metadataStringToObject = (stringValue) => {
+  const keyValuePairList = stringValue.split(',');
+
+  const metadata = {};
+  keyValuePairList.forEach((keyValuePair) => {
+    let [key, base64Value] = keyValuePair.split(' ');
+    metadata[key] = Buffer.from(base64Value, "base64").toString("ascii");
+  });
+  
+  return metadata;
+
+};
+
+const UPLOAD_PATH = `/${local.tempFilePath}/uploads`;
+
 module.exports = function(app: any) {
+
+  const server = new tus.Server();
+  server.datastore = new tus.FileStore({
+      path: UPLOAD_PATH
+  });
+
+  const uploadApp = express();
+  uploadApp.all('*', server.handle.bind(server));
+
+  server.on(EVENTS.EVENT_UPLOAD_COMPLETE, async (event) => {
+    console.log(event);
+    console.log(`Upload complete for file ${event.file.id}`);
+    const metadata = metadataStringToObject(event.file.upload_metadata);
+    console.log(metadata);
+    const layer_id = metadata.layer_id;
+    const origFileName = metadata.name;
+    debug.log(`Filename: ${origFileName}`);
+    /*
+    try {
+      const layer = await Layer.getLayerByID(layer_id);
+      if(layer){
+        
+      }
+
+    }catch(err){
+      log.error(err.message);
+    }
+    */
+
+});
+
+  app.use('/api/layer/upload', isAuthenticated, uploadApp);
+
+  app.post('/api/layer/complete/upload', isAuthenticated, async (req, res) => {
+    const {layer_id, uploadUrl, originalName} = req.body;
+    if(layer_id && uploadUrl && originalName){
+      try{
+        const layer = await Layer.getLayerByID(layer_id);
+        const shortid = layer.shortid; 
+        if(layer.created_by_user_id === req.user_id){
+          const importer = Importers.getImporterFromFileName(originalName);
+
+          const uploadUrlParts = uploadUrl.split('/');
+          const fileid = uploadUrlParts[uploadUrlParts.length-1];
+          const path = UPLOAD_PATH + '/' + fileid;
+          const importerResult = await importer(path, layer_id);
+          if(importerResult.type && importerResult.type === 'FeatureCollection'){
+            //is geoJSON
+            const result = await DataLoadUtils.storeTempGeoJSON(importerResult, path, layer_id, shortid, false, true);
+            log.info('Upload Complete');
+            res.status(200).send(result);
+          }else{
+            //pass through other types of results
+            return res.status(200).send(importerResult);
+          }  
+        }
+      }catch(err){
+        log.error(err.message);
+        apiError(res, 200)(err);
+      }
+    }else{
+      debug.log('missing required data');
+      apiDataError(res);
+    }
+  });
 
   app.post('/api/layer/:id/upload', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
    async (req, res) => {

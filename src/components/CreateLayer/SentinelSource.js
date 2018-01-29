@@ -22,7 +22,7 @@ type State = {
 } & LocaleStoreState & LayerStoreState;
 
 
-export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
+export default class SentinelSource extends MapHubsComponent<Props, State> {
 
   props: Props
 
@@ -55,9 +55,6 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
     const selectedType = selectedArr[0].trim();
     const selectedScene = selectedArr[1].trim();
 
-    //build planet labs API URL
-    //v1 https://tiles.planet.com/data/v1/PSScene3Band/20161221_024131_0e19/14/12915/8124.png?api_key=your-api-key
-    const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`;
     return url;
   }
 
@@ -72,14 +69,14 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
     selectedIDArr.forEach(selected => {
       const url = _this.getAPIUrl(selected);
       layers.push({
-        planet_labs_scene: selected,
+        sentinel_secene: selected,
         tiles: [url]
       });
     });
 
     LayerActions.saveDataSettings({
       is_external: true,
-      external_layer_type: 'Planet',
+      external_layer_type: 'Sentinel',
       external_layer_config: {
         type: 'multiraster',
         layers
@@ -116,19 +113,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
 	render() {
 		return (
         <div className="row">
-          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-             <div>
-              <p>{this.__('Paste the selected IDs from the Planet Explorer API box')}</p>
-              <div className="row">
-                <TextArea name="selectedIDs" label={this.__('Planet Explorer Selected IDs')}
-                  length={2000}
-                  icon="info" className="col s12"required/>
-              </div>
-            </div>
-            <div className="right">
-              <button type="submit" className="waves-effect waves-light btn" disabled={!this.state.canSubmit}><i className="material-icons right">arrow_forward</i>{this.__('Save and Continue')}</button>
-            </div>
-          </Formsy>
+          <p>Coming Soon!</p>
       </div>
 		);
 	}

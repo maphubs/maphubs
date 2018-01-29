@@ -12,6 +12,7 @@ if (!global._babelPolyfill) {
 
 require('../../node_modules/mapbox-gl/dist/mapbox-gl.css');
 require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css');
+require('uppy/dist/uppy.min.css');
 
 document.addEventListener('DOMContentLoaded', () => {
   localStorage.debug = '*';
