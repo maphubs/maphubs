@@ -176,11 +176,12 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
                   required />
               </div>
               <div className='row'>
-                <TextInput name='name' label={this.__('Name')} icon='info' className='col s12' validations='maxLength:100' validationErrors={{
-                  maxLength: this.__('Name must be 100 characters or less.')
-                }} length={100}
-                dataPosition='top' dataTooltip={this.__('Short Descriptive Name for the Hub')}
-                required />
+                <TextInput
+                  name='name' label={this.__('Name')} icon='info' className='col s12' validations='maxLength:100' validationErrors={{
+                    maxLength: this.__('Name must be 100 characters or less.')
+                  }} length={100}
+                  dataPosition='top' dataTooltip={this.__('Short Descriptive Name for the Hub')}
+                  required />
               </div>
               <div className='row'>
                 <SelectGroup groups={this.props.groups} type='hub' canChangeGroup editing={false} />

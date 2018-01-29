@@ -5,6 +5,8 @@ import AdvancedLayerSettings from './AdvancedLayerSettings'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 
+import type {GLStyle} from '../../types/mapbox-gl-style'
+
 const $ = require('jquery')
 
 type Props = {|

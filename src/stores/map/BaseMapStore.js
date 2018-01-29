@@ -1,12 +1,12 @@
 import Reflux from 'reflux'
 import Actions from '../../actions/map/BaseMapActions'
-const debug = require('../../services/debug')('stores/BaseMapStore')
-const request = require('superagent')
 import _bboxPolygon from '@turf/bbox-polygon'
 import _intersect from '@turf/intersect'
 import _debounce from 'lodash.debounce'
 import _distance from '@turf/distance'
 import _find from 'lodash.find'
+const debug = require('../../services/debug')('stores/BaseMapStore')
+const request = require('superagent')
 
 // var positron = require('../../components/Map/BaseMaps/positron.json');
 // var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json');

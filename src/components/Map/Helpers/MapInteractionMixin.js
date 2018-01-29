@@ -170,7 +170,7 @@ module.exports = {
           ],
           {layers: _this.state.interactiveLayers})
 
-        if (features && features.length) {
+        if (features && features.length > 0) {
           if (_this.state.selected) {
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'crosshair')
           } else if (_this.props.hoverInteraction) {

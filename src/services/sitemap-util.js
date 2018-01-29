@@ -1,10 +1,10 @@
 // @flow
+import slugify from 'slugify'
 const Layer = require('../models/layer')
 const Hub = require('../models/hub')
 const Story = require('../models/story')
 const Map = require('../models/map')
 const Group = require('../models/group')
-import slugify from 'slugify'
 const urlUtil = require('./url-util')
 const Promise = require('bluebird')
 const log = require('./log')

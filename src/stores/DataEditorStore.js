@@ -1,6 +1,7 @@
 // @flow
 import Reflux from 'reflux'
-
+import type {Layer} from './layer-store'
+import type {GeoJSONObject} from 'geojson-flow'
 import Actions from '../actions/DataEditorActions'
 const request = require('superagent')
 const debug = require('../services/debug')('stores/DataEditorStore')
@@ -9,9 +10,6 @@ const _forEachRight = require('lodash.foreachright')
 // var $ = require('jquery');
 // var urlUtil = require('../services/url-util');
 const checkClientError = require('../services/client-error-response').checkClientError
-
-import type {Layer} from './layer-store'
-import type {GeoJSONObject} from 'geojson-flow'
 
 export type DataEditorStoreState = {
   editing?: boolean,

@@ -10,12 +10,13 @@ import NotificationActions from '../actions/NotificationActions'
 import Progress from '../components/Progress'
 import MessageActions from '../actions/MessageActions'
 import request from 'superagent'
-const checkClientError = require('../services/client-error-response').checkClientError
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+
+const checkClientError = require('../services/client-error-response').checkClientError
 
 type User = {
   email: string,

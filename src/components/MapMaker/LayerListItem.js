@@ -100,7 +100,10 @@ class LayerListItem extends MapHubsComponent<Props, void> {
       buttonClass = 'col s3 no-padding'
     }
 
-    let removeButton = '', designButton = '', editButton = '', visibilityToggle = ''
+    let removeButton = ''
+    let designButton = ''
+    let editButton = ''
+    let visibilityToggle = ''
     if (this.props.showRemove) {
       removeButton = (
         <div className={buttonClass} style={{height: '30px', width: '22px'}}>

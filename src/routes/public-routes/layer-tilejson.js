@@ -1,6 +1,8 @@
+// @flow
+import slugify from 'slugify'
 const Layer = require('../../models/layer')
 const urlUtil = require('../../services/url-util')
-import slugify from 'slugify'
+
 const apiError = require('../../services/error-response').apiError
 const manetCheck = require('../../services/manet-check')
 const privateLayerCheck = require('../../services/private-layer-check').check
@@ -11,7 +13,7 @@ const local = require('../../local')
 Note: this needs to be in public-routes since it is used by the screenshot service and by shared maps
 */
 
-module.exports = function (app) {
+module.exports = function (app: any) {
   const completeLayerTileJSONRequest = function (req, res, layer) {
     if (!layer) {
       return res.status(404).send('TileJSON not supported for this layer')

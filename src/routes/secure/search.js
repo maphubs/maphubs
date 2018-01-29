@@ -1,9 +1,9 @@
 // @flow
+import turf_bbox from '@turf/bbox'
 const knex = require('../../connection.js')
 const Promise = require('bluebird')
 const log = require('../../services/log.js')
 // var debug = require('../../services/debug')('routes/search');
-import turf_bbox from '@turf/bbox'
 const csrfProtection = require('csurf')({cookie: false})
 const SearchIndex = require('../../models/search-index')
 

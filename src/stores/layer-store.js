@@ -1,11 +1,6 @@
 // @flow
 import Reflux from 'reflux'
 import Actions from '../actions/LayerActions'
-const request = require('superagent')
-const MapStyles = require('../components/Map/Styles')
-const urlUtil = require('../services/url-util')
-const checkClientError = require('../services/client-error-response').checkClientError
-const debug = require('../services/debug')('layer-store')
 import _findIndex from 'lodash.findindex'
 import _remove from 'lodash.remove'
 import _differenceBy from 'lodash.differenceby'
@@ -13,6 +8,12 @@ import type {GLStyle} from '../types/mapbox-gl-style'
 import type {MapHubsField} from '../types/maphubs-field'
 
 import {OrderedSet} from 'immutable'
+
+const request = require('superagent')
+const MapStyles = require('../components/Map/Styles')
+const urlUtil = require('../services/url-util')
+const checkClientError = require('../services/client-error-response').checkClientError
+const debug = require('../services/debug')('layer-store')
 
 export type Layer = {
   layer_id?: number,

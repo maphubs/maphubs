@@ -70,6 +70,7 @@ class LayerList extends React.PureComponent<Props, State> {
 
   render () {
     const _this = this
+    const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, removeFromMap, showLayerDesigner, editLayer} = this.props
     return (
       <div style={{height: '100%', padding: 0, margin: 0}}>
         <ul ref='layers' style={{height: '100%', overflowY: 'auto'}} className='collection no-margin custom-scroll-bar'>{
@@ -78,15 +79,15 @@ class LayerList extends React.PureComponent<Props, State> {
               return (
                 <li key={layer.layer_id} >
                   <LayerListItem id={layer.layer_id} item={layer} index={i}
-                    toggleVisibility={_this.props.toggleVisibility}
-                    showVisibility={_this.props.showVisibility}
-                    showRemove={_this.props.showRemove}
-                    showDesign={_this.props.showDesign}
-                    showEdit={_this.props.showEdit}
+                    toggleVisibility={toggleVisibility}
+                    showVisibility={showVisibility}
+                    showRemove={showRemove}
+                    showDesign={showDesign}
+                    showEdit={showEdit}
                     moveItem={_this.moveLayer}
-                    removeFromMap={_this.props.removeFromMap}
-                    showLayerDesigner={_this.props.showLayerDesigner}
-                    editLayer={_this.props.editLayer}
+                    removeFromMap={removeFromMap}
+                    showLayerDesigner={showLayerDesigner}
+                    editLayer={editLayer}
                   />
                 </li>
               )

@@ -359,7 +359,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     required />
                 </div>
                 <div className='row'>
-                  <TextInput 
+                  <TextInput
                     name='location' label={this.__('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
                       maxLength: this.__('Location must be 100 characters or less.')
                     }} length={100}

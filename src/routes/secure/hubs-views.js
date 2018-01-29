@@ -124,7 +124,7 @@ module.exports = function (app: any) {
 
     let myMaps, popularMaps
     if (canEdit) {
-      myMaps = await Map.getUserMaps(req.session.user.maphubsUser.id),
+      myMaps = await Map.getUserMaps(req.session.user.maphubsUser.id)
       popularMaps = await Map.getPopularMaps()
     }
     const image = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id + '/images/logo'

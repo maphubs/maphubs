@@ -6,11 +6,11 @@ const Promise = require('bluebird')
 const nextError = require('../../services/error-response').nextError
 const knex = require('../../connection')
 
-const sitemap = require('sitemap'),
-  sm = sitemap.createSitemap({
-    hostname: urlUtil.getBaseUrl(),
-    sitemapName: 'Maphubs'
-  })
+const sitemap = require('sitemap')
+const sm = sitemap.createSitemap({
+  hostname: urlUtil.getBaseUrl(),
+  sitemapName: 'Maphubs'
+})
 
 module.exports = function (app) {
   app.get('/robots.txt', (req, res) => {
@@ -43,7 +43,7 @@ Disallow: /xml/map/*
       return siteMapUtil.getSiteMapIndexFeatureURLs(trx)
         .then(layerUrls => {
           const smi = sitemap.buildSitemapIndex({
-            urls: [ baseUrl + '/sitemap.xml'].concat(layerUrls)
+            urls: [baseUrl + '/sitemap.xml'].concat(layerUrls)
           })
           res.header('Content-Type', 'application/xml')
           return res.send(smi)

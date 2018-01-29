@@ -1,11 +1,11 @@
 // @flow
 import Reflux from 'reflux'
 import Actions from '../actions/HubActions'
+import type {Layer} from './layer-store'
+
 const request = require('superagent')
 const debug = require('../services/debug')('stores/hub-store')
 const checkClientError = require('../services/client-error-response').checkClientError
-
-import type {Layer} from './layer-store'
 
 export type Hub = {
   hub_id?: string,

@@ -1,14 +1,15 @@
 // @flow
 import Reflux from 'reflux'
 import Actions from '../actions/AddPhotoPointActions'
+import type {GeoJSONObject} from 'geojson-flow'
+import type {Layer} from './layer-store'
+import _bbox from '@turf/bbox'
+
 const request = require('superagent')
 const debug = require('../services/debug')('stores/hub-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 const dms2dec = require('dms2dec')
 const moment = require('moment')
-import type {GeoJSONObject} from 'geojson-flow'
-import type {Layer} from './layer-store'
-import _bbox from '@turf/bbox'
 
 export type AddPhotoPointStoreState = {
   layer: Layer,
@@ -113,7 +114,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
       cb(null)
     } else {
     // image does not contain GPS Location
-      cb('Photo Missing GPS Information')
+      cb(new Error('Photo Missing GPS Information'))
     }
   }
 

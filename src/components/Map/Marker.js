@@ -53,7 +53,7 @@ export default class Marker extends React.PureComponent<Props> {
     } else if (this.props.shape === 'MAP_PIN') {
       iconScale = 0.5
       markerBackground = (
-        <path d='M25.015,2.4c-7.8,0-14.121,6.204-14.121,13.854C10.894,23.906,25.015,49,25.015,49s14.122-25.094,14.122-32.746	C39.137,8.604,32.812,2.4,25.015,2.4z' />
+        <path d='M25.015,2.4c-7.8,0-14.121,6.204-14.121,13.854C10.894,23.906,25.015,49,25.015,49s14.122-25.094,14.122-32.746 C39.137,8.604,32.812,2.4,25.015,2.4z' />
       )
     } else if (this.props.shape === 'SQUARE_PIN') {
       markerBackground = (

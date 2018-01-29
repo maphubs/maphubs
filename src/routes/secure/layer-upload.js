@@ -46,21 +46,7 @@ module.exports = function (app: any) {
     console.log(event)
     console.log(`Upload complete for file ${event.file.id}`)
     const metadata = metadataStringToObject(event.file.upload_metadata)
-    console.log(metadata)
-    const layer_id = metadata.layer_id
-    const origFileName = metadata.name
-    debug.log(`Filename: ${origFileName}`)
-    /*
-    try {
-      const layer = await Layer.getLayerByID(layer_id);
-      if(layer){
-
-      }
-
-    }catch(err){
-      log.error(err.message);
-    }
-    */
+    debug.log(metadata)
   })
 
   app.use('/api/layer/upload', isAuthenticated, uploadApp)

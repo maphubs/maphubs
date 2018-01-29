@@ -55,8 +55,7 @@ type Props = {
     editLayerLoaded: boolean,
     saved: boolean,
     height: number,
-    width: number,
-    retina: boolean
+    width: number
   } & LocaleStoreState & MapMakerStoreState & UserStoreState
 
 export default class MapMaker extends MapHubsComponent<Props, State> {
@@ -77,8 +76,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     editLayerLoaded: false,
     saved: false,
     width: 800,
-    height: 600,
-    retina: false
+    height: 600
   }
 
   constructor (props: Props) {
@@ -109,17 +107,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     }
 
     if (typeof window === 'undefined') return // only run this on the client
-    function isRetinaDisplay () {
-      if (window.matchMedia) {
-        const mq = window.matchMedia('only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)')
-        return (mq && mq.matches || (window.devicePixelRatio > 1))
-      }
-    }
-    // detect retina
-    let retina = false
-    if (isRetinaDisplay()) {
-      retina = true
-    }
 
     function getSize () {
       // Get the dimensions of the viewport
@@ -130,7 +117,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
     const size = getSize()
     this.setState({
-      retina,
       width: size.width,
       height: size.height
     })
@@ -565,16 +551,17 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
                 {editingTools}
               </Map>
 
-              <MiniLegend style={{
-                position: 'absolute',
-                top: '5px',
-                left: '5px',
-                minWidth: '200px',
-                width: '25%'
-              }}
-              layers={this.state.mapLayers}
-              maxHeight='calc(100vh - 300px)'
-              collapseToBottom={false} hideInactive showLayersButton={false} />
+              <MiniLegend
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  left: '5px',
+                  minWidth: '200px',
+                  width: '25%'
+                }}
+                layers={this.state.mapLayers}
+                maxHeight='calc(100vh - 300px)'
+                collapseToBottom={false} hideInactive showLayersButton={false} />
             </div>
           </div>
         </div>

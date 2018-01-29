@@ -91,10 +91,6 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
     this.setState({selectedSource: value})
   }
 
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
-  }
-
   render () {
     const dataTypeOptions = [
       {value: 'point', label: this.__('Point')},
@@ -109,12 +105,13 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
           <div>
             <p>{this.__('GeoJSON URL')}</p>
             <div className='row'>
-              <TextInput name='geojsonUrl' label={this.__('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
-                maxLength: this.__('Must be 500 characters or less.'),
-                isHttps: this.__('SSL required for external links, URLs must start with https://')
-              }} length={500}
-              dataPosition='top' dataTooltip={this.__('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
-              required />
+              <TextInput
+                name='geojsonUrl' label={this.__('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
+                  maxLength: this.__('Must be 500 characters or less.'),
+                  isHttps: this.__('SSL required for external links, URLs must start with https://')
+                }} length={500}
+                dataPosition='top' dataTooltip={this.__('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
+                required />
             </div>
             <div className='row'>
               <TextInput name='id' label={this.__('ID Property (Optional)')} icon='info' className='col s12'

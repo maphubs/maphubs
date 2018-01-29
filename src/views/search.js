@@ -57,8 +57,8 @@ export default class Search extends MapHubsComponent<Props, State> {
     if (!url) url = window.location.href
     url = url.toLowerCase() // This is just to avoid case sensitiveness
     name = name.replace(/[\[\]]/g, '\\$&').toLowerCase()// This is just to avoid case sensitiveness for query parameter name
-    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url)
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
+    let results = regex.exec(url)
     if (!results) return null
     if (!results[2]) return ''
     return decodeURIComponent(results[2].replace(/\+/g, ' '))

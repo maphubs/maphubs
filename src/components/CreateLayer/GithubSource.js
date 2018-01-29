@@ -68,11 +68,12 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
           <div>
             <p>Github GeoJSON Source</p>
             <div className='row'>
-              <TextInput name='githuburl' label='Github GeoJSON URL' icon='info' className='col s12' validations='maxLength:100' validationErrors={{
-                maxLength: 'Must be 100 characters or less.'
-              }} length={100}
-              dataPosition='top' dataTooltip='Github GeoJSON URL'
-              required />
+              <TextInput
+                name='githuburl' label='Github GeoJSON URL' icon='info' className='col s12' validations='maxLength:100' validationErrors={{
+                  maxLength: 'Must be 100 characters or less.'
+                }} length={100}
+                dataPosition='top' dataTooltip='Github GeoJSON URL'
+                required />
             </div>
           </div>
           <div className='right'>

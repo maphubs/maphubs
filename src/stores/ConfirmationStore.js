@@ -1,9 +1,10 @@
 // @flow
 import Reflux from 'reflux'
 import Actions from '../actions/ConfirmationActions'
+import LocaleActions from '../actions/LocaleActions'
 const debug = require('../services/debug')('stores/confirmation-store')
 const $ = require('jquery')
-import LocaleActions from '../actions/LocaleActions'
+
 const Locales = require('../services/locales')
 
 export type ConfirmationStoreState = {
