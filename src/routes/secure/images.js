@@ -5,45 +5,29 @@ const apiError = require('../../services/error-response').apiError
 const nextError = require('../../services/error-response').nextError
 const imageUtils = require('../../services/image-utils')
 const log = require('../../services/log')
-const scale = require('express-sharp')
-const local = require('../../local')
 
 module.exports = function (app: any) {
-  let baseHost = local.host_internal
-  if (local.port !== 80) {
-    baseHost += ':' + local.internal_port
-  }
-
-  if (!local.requireLogin) {
-    const options = {baseHost}
-    app.use('/img', scale(options))
-  } else {
-    app.get('/img/*', (req, res) => {
-      if (!req.query.url) {
-        res.status(400).send('expected image url')
-      } else {
-        res.redirect(req.query.url)
-      }
-    })
-  }
-
   app.get('/image/:id.*', (req, res, next) => {
     const image_id = parseInt(req.params.id || '', 10)
     // var ext = req.params.ext;
     debug.log('getting image: ' + image_id)
     Image.getImageByID(image_id)
       .then((image) => {
-        const dataArr = image.split(',')
-        const dataInfoArr = dataArr[0].split(':')[1].split(';')
-        const dataType = dataInfoArr[0]
-        const data = dataArr[1]
-        const img = Buffer.from(data, 'base64')
-        res.writeHead(200, {
-          'Content-Type': dataType,
-          'Content-Length': img.length,
-          'ETag': require('crypto').createHash('md5').update(img).digest('hex')
-        })
-        return res.end(img)
+        if (image) {
+          const dataArr = image.split(',')
+          const dataInfoArr = dataArr[0].split(':')[1].split(';')
+          const dataType = dataInfoArr[0]
+          const data = dataArr[1]
+          const img = Buffer.from(data, 'base64')
+          res.writeHead(200, {
+            'Content-Type': dataType,
+            'Content-Length': img.length,
+            'ETag': require('crypto').createHash('md5').update(img).digest('hex')
+          })
+          return res.end(img)
+        } else {
+          res.status(404).send()
+        }
       }).catch(nextError(next))
   })
 

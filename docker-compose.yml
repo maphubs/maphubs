@@ -69,7 +69,7 @@ services:
       HOST: maphubs.test
       INTERNAL_PORT: 3000
     extra_hosts:
-      - "maphubs.test:192.168.65.1"
+      - "maphubs.test:192.168.65.2"
     ports:
       - '3000:3000'
     volumes:

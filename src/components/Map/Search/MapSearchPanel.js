@@ -97,7 +97,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
       }
     }
   }
-  // Uses Mapzen autocomplete API
+  
   runLocationSearch (query: string) {
     const _this = this
     // run autocomplete search
