@@ -7,7 +7,7 @@
     },
     "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://free.tilehosting.com/styles/positron/style.json?key="
+    "tilehostingUrl": "https://maps.tilehosting.com/styles/positron/style.json?key="
   },
   {
     "value": "dark", 
@@ -17,7 +17,7 @@
     },
     "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://free.tilehosting.com/styles/darkmatter/style.json?key="
+    "tilehostingUrl": "https://maps.tilehosting.com/styles/darkmatter/style.json?key="
   },
   {
     "value": "streets", 
@@ -27,7 +27,27 @@
     },
     "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://free.tilehosting.com/styles/basic/style.json?key="
+    "tilehostingUrl": "https://maps.tilehosting.com/styles/streets/style.json?key="
+  },
+  {
+    "value": "topo", 
+    "label": {
+      "en": "Topo",
+      "fr": "Topo"
+    },
+    "attribution": "<a href=\"https://openmaptiles.com/contours\" target=\"_blank\">Contours</a> | <a href=\"https://openmaptiles.com/hillshades\" target=\"_blank\">Hillshades</a> | <a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "updateWithMapPosition": false,
+    "tilehostingUrl": "https://maps.tilehosting.com/styles/topo/style.json?key="
+  },
+  {
+    "value": "satellite", 
+    "label": {
+      "en": "Satellite",
+      "fr": "Satellite"
+    },
+    "attribution": "<a href=\"https://www.openmaptiles.com/satellite/\" target=\"_blank\">© OpenMapTiles Satellite</a> | <a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "updateWithMapPosition": false,
+    "tilehostingUrl": "https://maps.tilehosting.com/styles/hybrid/style.json?key="
   },
   {
     "value": "bing-satellite", 
