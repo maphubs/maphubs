@@ -187,7 +187,7 @@ export default class BaseMapStore extends Reflux.Store {
           })
           const style = config.style
           if (!style.glyphs) {
-            style.glyphs = 'https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}'
+            style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
           }
           if (!style.sprite) {
             style.sprite = ''
@@ -200,7 +200,7 @@ export default class BaseMapStore extends Reflux.Store {
         const style = config.style
         if (typeof style !== 'string') {
           if (!style.glyphs) {
-            style.glyphs = 'https://cdn.maphubs.com/fonts/default/{range}.pbf?fontstack={fontstack}'
+            style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
           }
           if (!style.sprite) {
             style.sprite = ''
@@ -213,7 +213,14 @@ export default class BaseMapStore extends Reflux.Store {
             if (err) {
               debug.error(err)
             } else {
-              cb(res.body)
+              const style = res.body
+              if (!style.glyphs) {
+                style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+              }
+              if (!style.sprite) {
+                style.sprite = ''
+              }
+              cb(style)
             }
           })
       } else if (config.tilehostingUrl) {
@@ -223,7 +230,14 @@ export default class BaseMapStore extends Reflux.Store {
             if (err) {
               debug.error(err)
             } else {
-              cb(res.body)
+              const style = res.body
+              if (!style.glyphs) {
+                style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+              }
+              if (!style.sprite) {
+                style.sprite = ''
+              }
+              cb(style)
             }
           })
       } else if (config.mapboxUrl) {
