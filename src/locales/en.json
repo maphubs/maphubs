@@ -889,5 +889,7 @@
 	"Sentinel-2": "Sentinel-2",
 	"Remote Data Sources": "Remote Data Sources",
 	"Upload Data or Import MapHubs Data": "Upload Data or Import MapHubs Data",
-	"WMS": "WMS"
+	"WMS": "WMS",
+	"Select An Area": "Select An Area",
+	"DigitalGlobe WMS": "DigitalGlobe WMS"
 }

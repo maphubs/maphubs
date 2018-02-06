@@ -85,9 +85,9 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
       }
       url = `${baseUrl}?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=${layers}`
       if (model.other) {
-        url += `?${model.other}`
+        url += `${model.other}`
       }
-  
+
       LayerActions.saveDataSettings({
         is_external: true,
         external_layer_type: 'WMS',

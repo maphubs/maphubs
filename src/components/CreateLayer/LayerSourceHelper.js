@@ -10,6 +10,7 @@ import AGOLSource from './AGOLSource'
 import PlanetLabsSource from './PlanetLabsSource'
 import SentinelSource from './SentinelSource'
 import WMSSource from './WMSSource'
+import DGWMSSource from './DGWMSSource'
 
 export default {
 
@@ -32,6 +33,8 @@ export default {
       return (<SentinelSource onSubmit={this.onSubmit} />)
     } else if (type === 'wms') {
       return (<WMSSource onSubmit={this.onSubmit} />)
+    } else if (type === 'dgwms') {
+      return (<DGWMSSource onSubmit={this.onSubmit} />)
     } else if (type === 'remote') {
       return (
         <div style={{marginTop: '20px'}}>

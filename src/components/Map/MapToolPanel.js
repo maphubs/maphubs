@@ -3,9 +3,10 @@ import React from 'react'
 import EditBaseMapBox from './ToolPanels/EditBaseMapBox'
 import BaseMapSelection from './ToolPanels/BaseMapSelection'
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
-import ForestAlertPanel from './ToolPanels/ForestAlertPanel'
+// import ForestAlertPanel from './ToolPanels/ForestAlertPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
 import MapHubsComponent from '../../components/MapHubsComponent'
+import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 
 const $ = require('jquery')
 
@@ -14,39 +15,19 @@ type Props = {|
   gpxLink: string,
   onChangeBaseMap: Function,
   toggleMeasurementTools: Function,
-  toggleForestAlerts: Function,
-  toggleForestLoss:Function,
-  calculateForestAlerts: Function,
   enableMeasurementTools: boolean,
-  forestAlerts: Object,
-  forestLoss: Object,
   getIsochronePoint: Function,
   clearIsochroneLayers: Function,
   isochroneResult: Object,
   height: string
 |}
 
-type DefaultProps = {|
-   show: boolean,
-  enableMeasurementTools: boolean,
-  forestAlerts: Object,
-  forestLoss: Object
-|}
-
 export default class MapToolPanel extends MapHubsComponent<Props, void> {
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     show: false,
-    enableMeasurementTools: false,
-    forestAlerts: {
-      enableGLAD2017: false,
-      result: null
-    },
-    forestLoss: {
-      enableForestLoss: false,
-      result: null
-    }
+    enableMeasurementTools: false
   }
 
   componentDidMount () {
@@ -145,7 +126,7 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
               <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>warning</i>{this.__('Forest Alerts')}</div>
               <div className='collapsible-body center'>
                 <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
-                  <ForestAlertPanel {...this.props} />
+                  <AreaComparisonPanel {...this.props} />
                 </div>
               </div>
             </li>
