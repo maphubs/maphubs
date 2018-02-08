@@ -206,7 +206,7 @@ module.exports = function (app: any) {
               await Group.addGroupMember(data.group_id, user.id, role)
               debug.log('Added ' + data.display_name + ' to ' + data.group_id)
               Email.send({
-                from: MAPHUBS_CONFIG.productName + ' <info@maphub.com>',
+                from: MAPHUBS_CONFIG.productName + ' <info@maphubs.com>',
                 to: user.email,
                 subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - ' + MAPHUBS_CONFIG.productName,
                 text: user.display_name + ',\n' +
