@@ -1,15 +1,15 @@
 // @flow
 import type {GLLayer} from '../../../types/mapbox-gl-style'
 module.exports = {
-  defaultRasterStyle (layer_id: number, shortid: string, sourceUrl: string, type: string = 'raster') {
-    return this.rasterStyleWithOpacity(layer_id, shortid, sourceUrl, 100, type)
+  defaultRasterStyle (layer_id: number, shortid: string, elc: Object, type: string = 'raster') {
+    return this.rasterStyleWithOpacity(layer_id, shortid, elc, 100, type, elc)
   },
 
-  defaultMultiRasterStyle (layer_id: number, shortid: string, layers: Array<GLLayer>, type: string = 'raster') {
-    return this.multiRasterStyleWithOpacity(layer_id, shortid, layers, 100, type)
+  defaultMultiRasterStyle (layer_id: number, shortid: string, layers: Array<GLLayer>, type: string = 'raster', elc?: Object) {
+    return this.multiRasterStyleWithOpacity(layer_id, shortid, layers, 100, type, elc)
   },
 
-  rasterStyleWithOpacity (layer_id: number, shortid: string, sourceUrl: string, opacity: number, type: string = 'raster') {
+  rasterStyleTileJSON (layer_id: number, shortid: string, sourceUrl: string, opacity: number, type: string = 'raster') {
     opacity = opacity / 100
     const style = {
       sources: {},
@@ -35,7 +35,47 @@ module.exports = {
       type,
       url: sourceUrl,
       'tileSize': 256
+    }
 
+    return style
+  },
+
+  rasterStyleWithOpacity (layer_id: number, shortid: string, elc: Object, opacity: number, type: string = 'raster') {
+    opacity = opacity / 100
+    const style = {
+      sources: {},
+      layers: [
+        {
+          'id': 'omh-raster-' + shortid,
+          'type': 'raster',
+          'metadata': {
+            'maphubs:layer_id': layer_id,
+            'maphubs:globalid': shortid
+          },
+          'source': 'omh-' + shortid,
+          'minzoom': 0,
+          'maxzoom': 18,
+          'paint': {
+            'raster-opacity': opacity
+          }
+        }
+      ]
+    }
+
+    let metadata = {}
+
+    if (elc.authUrl && elc.authToken) {
+      metadata.authUrl = elc.authUrl
+      metadata.authToken = elc.authToken
+    }
+
+    style.sources['omh-' + shortid] = {
+      type,
+      'minzoom': elc.minzoom || 0,
+      'maxzoom': elc.maxzoom || 22,
+      tiles: elc.tiles,
+      'tileSize': 256,
+      'metadata': metadata
     }
 
     return style

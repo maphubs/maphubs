@@ -153,15 +153,15 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
     const baseUrl = urlUtil.getBaseUrl()
     if (isExternal && this.state.external_layer_type === 'mapbox-map' && elc.url) {
-      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc.url)
+      style = MapStyles.raster.rasterStyleTileJSON(layer_id, shortid, elc.url, 100, 'raster')
     } else if (isExternal && elc.type === 'raster') {
-      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, `${baseUrl}/api/lyr/${shortid}/tile.json`)
+      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc, 'raster')
     } else if (isExternal && elc.type === 'multiraster' && elc.layers) {
-      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, shortid, elc.layers)
+      style = MapStyles.raster.defaultMultiRasterStyle(layer_id, shortid, elc.layers, 'raster', elc)
     } else if (isExternal && elc.type === 'mapbox-style' && elc.mapboxid) {
       style = MapStyles.style.getMapboxStyle(elc.mapboxid)
     } else if (isExternal && elc.type === 'ags-mapserver-tiles' && elc.url) {
-      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc.url + '?f=json', 'arcgisraster')
+      style = MapStyles.raster.rasterStyleTileJSON(layer_id, shortid, elc.url + '?f=json', 100, 'arcgisraster')
     } else if (isExternal && elc.type === 'geojson' && elc.data_type) {
       style = MapStyles.style.defaultStyle(layer_id, shortid, this.getSourceConfig(), elc.data_type)
     } else if (style.sources.osm) {

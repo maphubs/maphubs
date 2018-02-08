@@ -59,7 +59,7 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
     const _this = this
 
     const layers = 'DigitalGlobe:Imagery'
-    let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-4326}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:4326&width=256&height=256&layers=${layers}&connectid=${model.connectid}&COVERAGE_CQL_FILTER=featureId='${model.featureid}'`
+    let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=${layers}&connectid=${model.connectid}&COVERAGE_CQL_FILTER=featureId='${model.featureid}'`
 
     if (model.username) {
       url += `&username=${model.username}&password=${model.password}`
@@ -73,7 +73,9 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
         minzoom: model.minzoom,
         maxzoom: model.maxzoom,
         bounds: undefined,
-        tiles: [url]
+        tiles: [url],
+        authUrl: 'https://services.digitalglobe.com',
+        authToken: window.btoa(`${model.username}:${model.password}`)
       }
     }, _this.state._csrf, (err) => {
       if (err) {

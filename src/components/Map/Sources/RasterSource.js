@@ -8,6 +8,10 @@ const RasterSource = {
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
+    if (source.metadata && source.metadata.authUrl && source.metadata.authToken) {
+      mapComponent.map.authUrlStartsWith = source.metadata.authUrl
+      mapComponent.map.authToken = source.metadata.authToken
+    }
     return mapComponent.addSource(key, source)
   },
   addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {

@@ -253,7 +253,16 @@ export default class Map extends MapHubsComponent<Props, State> {
         touchZoomRotate: !!_this.props.enableRotation,
         center: [0, 0],
         hash: _this.props.hash,
-        attributionControl: false
+        attributionControl: false,
+        transformRequest: (url, resourceType) => {
+          if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
+            return {
+              url: url,
+              headers: { 'Authorization': 'Basic ' + map.authToken },
+              credentials: 'include'
+            }
+          }
+        }
       })
 
       map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
