@@ -53,7 +53,10 @@ const MapHubsSource = {
 
             return mapComponent.addSource(key, {
               type: 'geojson',
-              data: geoJSON
+              data: geoJSON,
+              cluster: source.cluster ? source.cluster : false,
+              clusterMaxZoom: source.clusterMaxZoom || 14,
+              clusterRadius: source.clusterRadius || 50
             })
           }, (error) => {
             debug.log('(' + mapComponent.state.id + ') ' + error)
