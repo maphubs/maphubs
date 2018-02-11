@@ -29,6 +29,7 @@ declare class MapHubsConfig {
   FR_ENABLE: boolean;
   FR_API_KEY: string;
   FR_API: string;
+  DG_WMS_CONNECT_ID: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;

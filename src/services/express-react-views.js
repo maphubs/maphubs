@@ -298,7 +298,42 @@ function createEngine (engineOptions) {
           </script>
           <script type="text/javascript" src="${assetHost + getAssets('vendor').js}"></script>
           <script type="text/javascript" src="${assetHost + getAssets('locales').js}"></script>
-          <script type="text/javascript" src="/clientconfig.js"></script>
+          <script type="text/javascript">
+              var MAPHUBS_CONFIG = {
+                host: "${local.host}",
+                port: ${local.port},
+                https: ${local.https},
+                productName: "${local.productName}",
+                logo: "${local.logo}",
+                logoSmall: "${local.logoSmall}",
+                logoWidth: ${local.logoWidth},
+                logoHeight: ${local.logoHeight},
+                logoSmallWidth: ${local.logoSmallWidth},
+                logoSmallHeight: ${local.logoSmallHeight},
+                primaryColor: "${local.primaryColor}",
+                betaText: "${local.betaText}",
+                twitter: "${local.twitter}",
+                contactEmail: "${local.contactEmail}",
+                mapHubsPro: ${local.mapHubsPro},
+                enableComments: ${local.enableComments},
+                CORAL_TALK_ID: "${!options.login ? local.CORAL_TALK_ID : ''}",
+                CORAL_TALK_HOST: "${local.CORAL_TALK_HOST}",
+                FR_ENABLE: ${local.FR_ENABLE},
+                FR_API: "${local.FR_API}",
+                FR_API_KEY: "${(!options.login || !options.publicShare) ? local.FR_API_KEY : ''}",
+                tileServiceUrl: "${local.tileServiceUrl}",
+                MAPBOX_ACCESS_TOKEN: "${!options.login ? local.MAPBOX_ACCESS_TOKEN : ''}",
+                TILEHOSTING_GEOCODING_API_KEY: "${!options.login ? local.TILEHOSTING_GEOCODING_API_KEY : ''}",
+                TILEHOSTING_MAPS_API_KEY: "${!options.login ? local.TILEHOSTING_MAPS_API_KEY : ''}",
+                PLANET_LABS_API_KEY: "${(!options.login  || !options.publicShare) ? local.PLANET_LABS_API_KEY : ''}",
+                DG_WMS_CONNECT_ID: "${(!options.login || !options.publicShare) ? local.DG_WMS_CONNECT_ID : ''}",
+                BING_KEY:  "${!options.login ? local.BING_KEY : ''}",
+                SENTRY_DSN_PUBLIC:  "${local.SENTRY_DSN_PUBLIC}",
+                theme: "${local.theme}",
+                themeUrl: "${local.themeUrl}",
+                enableUserExport: "${local.enableUserExport}"
+              }
+          </script>
           <script type="text/javascript" src="${assetHost + getAssets(clientFileName).js}"></script>
         `
 

@@ -79,6 +79,7 @@ module.exports = {
             imageHeight: 630,
             imageType: 'image/png'
           },
+          publicShare: shared,
           req})
       }
     } catch (err) { nextError(next)(err) }
@@ -129,6 +130,7 @@ module.exports = {
               imageType: 'image/png'
             },
             cache: false,
+            publicShare: shared,
             req
           }
         )

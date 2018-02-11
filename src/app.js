@@ -129,8 +129,7 @@ if(local.useLocalAssets){
 
 app.use('/css', express.static('css'));
 
-app.use('/clientconfig.js', express.static('./src/clientconfig.js'));
-
+// app.use('/clientconfig.js', express.static('./src/clientconfig.js'));
 
 //use webpack middleware in local dev environment
 if(process.env.NODE_ENV !== 'production'){

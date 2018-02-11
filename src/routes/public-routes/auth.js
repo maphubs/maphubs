@@ -27,6 +27,7 @@ module.exports = function (app: any) {
           AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
           allowSignUp: false
         },
+        login: true,
         req
       })
     })
@@ -52,6 +53,7 @@ module.exports = function (app: any) {
         requireInvite: local.requireInvite,
         adminEmail: local.adminEmail
       },
+      login: true,
       req
     })
   })

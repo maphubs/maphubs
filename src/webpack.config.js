@@ -145,7 +145,7 @@ module.exports = {
            names: ["locales", "vendor"],
                        minChunks: Infinity
    }),   
-   new webpack.IgnorePlugin(/^(i18n|winston|clientconfig)$/),
+   new webpack.IgnorePlugin(/^(i18n|winston)$/),
    new webpack.DefinePlugin({
     'process.env': {
         APP_ENV: JSON.stringify('browser'),

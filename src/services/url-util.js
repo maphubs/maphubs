@@ -1,16 +1,13 @@
 // @flow
 module.exports = {
-  getBaseUrl (internal: boolean = false): string {
+  getBaseUrl (): string {
     let host, port
-    if (internal) {
-      host = MAPHUBS_CONFIG.host_internal
-      port = MAPHUBS_CONFIG.internal_port
-    } else {
-      host = MAPHUBS_CONFIG.host
-      port = MAPHUBS_CONFIG.port
-    }
+
+    host = MAPHUBS_CONFIG.host
+    port = MAPHUBS_CONFIG.port
+    
     let proto = 'http://'
-    if (MAPHUBS_CONFIG.https && !internal) proto = 'https://'
+    if (MAPHUBS_CONFIG.https) proto = 'https://'
     let url = proto + host
     if (port !== 80) {
       url += ':' + port
