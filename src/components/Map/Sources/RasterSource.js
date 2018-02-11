@@ -8,6 +8,15 @@ const RasterSource = {
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
+
+    if (source.tiles && source.tiles.length > 0) {
+      source.tiles = source.tiles.map((tile) => {
+        tile = tile.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
+        tile = tile.replace('{DG_WMS_CONNECT_ID}', MAPHUBS_CONFIG.DG_WMS_CONNECT_ID)
+        return tile
+      })
+    }
+
     if (source.metadata && source.metadata.authUrl && source.metadata.authToken) {
       mapComponent.map.authUrlStartsWith = source.metadata.authUrl
       mapComponent.map.authToken = source.metadata.authToken
