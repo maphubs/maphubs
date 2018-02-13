@@ -74,7 +74,7 @@ module.exports = {
       'minzoom': elc.minzoom || 0,
       'maxzoom': elc.maxzoom || 22,
       tiles: elc.tiles,
-      'tileSize': 256,
+      'tileSize': elc.tileSize || 256,
       'metadata': metadata
     }
 
