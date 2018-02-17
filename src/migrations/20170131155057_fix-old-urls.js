@@ -1,4 +1,4 @@
-//var config = require('../clientconfig');
+//var config = require('../local');
 /*eslint-disable no-console */
 var updateStyle = function(style){
   if(style && style.sources){

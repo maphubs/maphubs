@@ -1,4 +1,4 @@
-global.MAPHUBS_CONFIG = require('../clientconfig');
+global.MAPHUBS_CONFIG = require('../local');
 
 var multiRasterStyleWithOpacity = function(layer_id, layers, opacity){
   

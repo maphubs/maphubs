@@ -1,4 +1,4 @@
-global.MAPHUBS_CONFIG = require('../clientconfig');
+global.MAPHUBS_CONFIG = require('../local');
 
 var updatePlanetConfig = function(elc){
   if(elc.layers){

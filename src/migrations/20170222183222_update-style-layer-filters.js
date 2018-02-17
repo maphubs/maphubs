@@ -1,4 +1,4 @@
-//var config = require('../clientconfig');
+//var config = require('../local');
 
 var updateStyle = function(style){
   if(style && style.layers){
