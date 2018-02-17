@@ -51,6 +51,7 @@
     "@turf/helpers": "^5.0.4",
     "@turf/inside": "^5.0.0",
     "@turf/intersect": "^5.0.4",
+    "@turf/length": "^5.1.5",
     "@turf/line-distance": "^4.7.3",
     "auth0-lock": "10.24.2",
     "aws-sdk": "^2.176.0",

@@ -21,6 +21,7 @@ import DataEditorActions from '../actions/DataEditorActions'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import turf_area from '@turf/area'
+import turf_length from '@turf/length'
 import turf_bbox from '@turf/bbox'
 import numeral from 'numeral'
 import slugify from 'slugify'
@@ -80,6 +81,7 @@ type State = {
   geoJSON?: Object,
   dataMsg?: string,
   area?: number,
+  length?: number,
   count?: number
 } & LocaleStoreState
 
@@ -189,12 +191,22 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
         } else {
           const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)))
           const count = geoJSON.features.length
-          const areaM2 = turf_area(geoJSON)
           let area
-          if (areaM2 && areaM2 > 0) {
-            area = areaM2 / 10000.00
+          let length = 0
+          if (this.props.layer.data_type === 'polygon') {
+            const areaM2 = turf_area(geoJSON)
+            if (areaM2 && areaM2 > 0) {
+              area = areaM2 / 10000.00
+            }
+          } else if (this.props.layer.data_type === 'line') {
+            geoJSON.features.forEach(feature => {
+              if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+                length += turf_length(feature.geometry, {units: 'kilometers'})
+              }
+            })
           }
-          _this.setState({geoJSON, count, area})
+
+          _this.setState({geoJSON, count, area, length})
         }
       })
   }
@@ -562,7 +574,12 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                     {remote}
                     {external}
                     <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
-                    <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} hectares</p>
+                    {this.state.area &&
+                      <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
+                    }
+                    {this.state.length > 0 &&
+                      <p style={{fontSize: '16px'}}><b>{this.__('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
+                    }
                     <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
                       <IntlProvider locale={this.state.locale}>
                         <FormattedDate value={creationTime} />
