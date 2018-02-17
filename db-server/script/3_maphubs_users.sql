@@ -18,7 +18,7 @@ CREATE TABLE users (
     creation_ip character varying(255),
     languages character varying(255),
     consider_pd boolean DEFAULT false NOT NULL,
-    terms_seen boolean DEFAULT false NOT NULL,
+    terms_seen boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE users_id_seq
