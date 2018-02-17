@@ -75,8 +75,15 @@ export default class BaseMapStore extends Reflux.Store {
           'coordinates': [position.lng, position.lat]
         }
       }
-      const distance = _distance(from, to, 'kilometers')
+      let distance
+      try {
+        distance = _distance(from, to, {units: 'kilometers'})
+      } catch (err) {
+        debug.error(`error calculating map move distance`)
+      }
+
       debug.log('map moved: ' + distance + 'km')
+      
       if (distance < 50 && Math.abs(_this.position.zoom - position.zoom) < 1) {
         _this.position = position
         return
