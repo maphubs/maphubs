@@ -54,7 +54,7 @@ module.exports = {
     let db = knex
     if (trx) { db = trx }
     const query = db.select(
-      'omh.layers.layer_id', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
+      'omh.layers.layer_id', 'omh.layers.shortid', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
       'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
       'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
       'omh.layers.is_external', 'omh.layers.external_layer_type', 'omh.layers.external_layer_config', 'omh.layers.disable_export', 'omh.layers.is_empty',
