@@ -7,7 +7,6 @@ const tokml = require('tokml')
 const debug = require('../../services/debug')('exports')
 const privateLayerCheck = require('../../services/private-layer-check').middleware
 const knex = require('../../connection.js')
-const Promise = require('bluebird')
 const Locales = require('../../services/locales')
 const MapStyles = require('../../components/Map/Styles')
 const geojson2dsv = require('geojson2dsv')
@@ -21,19 +20,19 @@ module.exports = function (app: any) {
     }).catch(apiError(res, 200))
   })
 
-  app.get('/api/layer/:layer_id/export/svg/*', privateLayerCheck, (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
-    Layer.getLayerByID(layer_id).then((layer) => {
-      const table = `layers.data_${layer.layer_id}`
-      return Promise.all([
-        knex.raw(`select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from :table:;`, {table}),
-        knex.raw(`select ST_XMin(bbox)::float as xmin, 
+  app.get('/api/layer/:layer_id/export/svg/*', privateLayerCheck, async (req, res) => {
+    try {
+      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer = await Layer.getLayerByID(layer_id)
+      if (layer) {
+        const table = `layers.data_${layer.layer_id}`
+        const featureSVGs = await knex.raw(`select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from :table:;`, {table})
+        let bounds = await knex.raw(`select ST_XMin(bbox)::float as xmin, 
             ST_YMin(bbox)::float as ymin, 
             ST_XMax(bbox)::float as xmax, ST_YMax(bbox)::float as ymax 
             from (select ST_Extent(ST_Transform(wkb_geometry, 900913)) as bbox from :table:) a`, {table})
-      ]).then((results) => {
-        const featureSVGs = results[0]
-        const bounds = results[1].rows[0]
+        bounds = bounds.rows[0]
+
         let paths = ''
 
         const savedColor = MapStyles.settings.get(layer.style, 'color')
@@ -65,8 +64,10 @@ module.exports = function (app: any) {
 
         res.header('Content-Type', 'image/svg+xml')
         return res.status(200).send(svg)
-      })
-    }).catch(apiError(res, 200))
+      } else {
+        return res.status(404).send()
+      }
+    } catch (err) { apiError(res, 200)(err) }
   })
 
   app.get('/api/layer/:layer_id/export/csv/*', privateLayerCheck, (req, res) => {
@@ -101,11 +102,71 @@ module.exports = function (app: any) {
     exportUtils.completeMapHubsExport(req, res, layer_id)
   })
 
-  app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
-    Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      return Layer.getLayerByID(layer_id)
-        .then((layer) => {
+  app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, async (req, res) => {
+    try {
+      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const geoJSON = await Layer.getGeoJSON(layer_id)
+      const layer = await Layer.getLayerByID(layer_id)
+      if (layer) {
+        const geoJSONStr = JSON.stringify(geoJSON)
+        const hash = require('crypto').createHash('md5').update(geoJSONStr).digest('hex')
+        const match = req.get('If-None-Match')
+        if (hash === match) {
+          return res.status(304).send()
+        } else {
+          res.header('Content-Type', 'application/vnd.google-earth.kml+xml')
+          res.header('ETag', hash)
+
+          geoJSON.features.map((feature) => {
+            if (feature.properties) {
+              if (layer.data_type === 'polygon') {
+                feature.properties['stroke'] = '#212121'
+                feature.properties['stroke-width'] = 2
+                feature.properties['fill'] = '#FF0000'
+                feature.properties['fill-opacity'] = 0.5
+              } else if (layer.data_type === 'line') {
+                feature.properties['stroke'] = '#FF0000'
+                feature.properties['stroke-width'] = 2
+              } else if (layer.data_type === 'point') {
+                feature.properties['marker-color'] = '#FF0000'
+                feature.properties['marker-size'] = 'medium'
+              }
+            }
+          })
+
+          const name = Locales.getLocaleStringObject(req.locale, layer.name)
+          const description = Locales.getLocaleStringObject(req.locale, layer.description)
+          const kml = tokml(geoJSON, {
+            name: 'name',
+            description: 'description',
+            documentName: name,
+            documentDescription: description,
+            simplestyle: true
+          })
+
+          debug.log('KML Generated')
+
+          return res.status(200).send(kml)
+        }
+      } else {
+        return res.status(404).send()
+      }
+    } catch (err) { apiError(res, 200)(err) }
+  })
+
+  app.get('/api/feature/:layer_id/:id/export/kml/*', privateLayerCheck, async (req, res, next) => {
+    try {
+      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const id = req.params.id
+
+      const mhid = `${layer_id}:${id}`
+
+      if (mhid && layer_id) {
+        const layer = await Layer.getLayerByID(layer_id)
+        if (layer) {
+          const result = await Feature.getFeatureByID(mhid, layer.layer_id)
+          const feature = result.feature
+          const geoJSON = feature.geojson
           const geoJSONStr = JSON.stringify(geoJSON)
           const hash = require('crypto').createHash('md5').update(geoJSONStr).digest('hex')
           const match = req.get('If-None-Match')
@@ -146,68 +207,13 @@ module.exports = function (app: any) {
 
             return res.status(200).send(kml)
           }
-        })
-    }).catch(apiError(res, 200))
-  })
-
-  app.get('/api/feature/:layer_id/:id/export/kml/*', privateLayerCheck, (req, res, next) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
-    const id = req.params.id
-
-    const mhid = `${layer_id}:${id}`
-
-    if (mhid && layer_id) {
-      Layer.getLayerByID(layer_id)
-        .then(layer => {
-          return Feature.getFeatureByID(mhid, layer.layer_id)
-            .then(result => {
-              const feature = result.feature
-              const geoJSON = feature.geojson
-              const geoJSONStr = JSON.stringify(geoJSON)
-              const hash = require('crypto').createHash('md5').update(geoJSONStr).digest('hex')
-              const match = req.get('If-None-Match')
-              if (hash === match) {
-                return res.status(304).send()
-              } else {
-                res.header('Content-Type', 'application/vnd.google-earth.kml+xml')
-                res.header('ETag', hash)
-
-                geoJSON.features.map((feature) => {
-                  if (feature.properties) {
-                    if (layer.data_type === 'polygon') {
-                      feature.properties['stroke'] = '#212121'
-                      feature.properties['stroke-width'] = 2
-                      feature.properties['fill'] = '#FF0000'
-                      feature.properties['fill-opacity'] = 0.5
-                    } else if (layer.data_type === 'line') {
-                      feature.properties['stroke'] = '#FF0000'
-                      feature.properties['stroke-width'] = 2
-                    } else if (layer.data_type === 'point') {
-                      feature.properties['marker-color'] = '#FF0000'
-                      feature.properties['marker-size'] = 'medium'
-                    }
-                  }
-                })
-
-                const name = Locales.getLocaleStringObject(req.locale, layer.name)
-                const description = Locales.getLocaleStringObject(req.locale, layer.description)
-                const kml = tokml(geoJSON, {
-                  name: 'name',
-                  description: 'description',
-                  documentName: name,
-                  documentDescription: description,
-                  simplestyle: true
-                })
-
-                debug.log('KML Generated')
-
-                return res.status(200).send(kml)
-              }
-            })
-        }).catch(apiError(res, 200))
-    } else {
-      next(new Error('Missing Required Data'))
-    }
+        } else {
+          return res.status(404).send()
+        }
+      } else {
+        next(new Error('Missing Required Data'))
+      }
+    } catch (err) { apiError(res, 200)(err) }
   })
 
   app.get('/api/layer/:layer_id/export/gpx/*', privateLayerCheck, (req, res) => {

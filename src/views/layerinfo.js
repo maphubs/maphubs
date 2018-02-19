@@ -81,7 +81,7 @@ type State = {
   geoJSON?: Object,
   dataMsg?: string,
   area?: number,
-  length?: number,
+  length: number,
   count?: number
 } & LocaleStoreState
 
@@ -97,7 +97,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     editingNotes: false,
     editingData: false,
     gridHeight: 100,
-    gridHeightOffset: 48
+    gridHeightOffset: 48,
+    length: 0
   }
 
   constructor (props: Props) {

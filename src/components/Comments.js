@@ -1,7 +1,11 @@
 // @flow
 import React from 'react'
 
-export default class Comments extends React.PureComponent<void, void> {
+type Props = {
+
+}
+
+export default class Comments extends React.PureComponent<Props, void> {
   componentDidMount () {
     // eslint-disable-next-line no-undef
     if (Coral && Coral.Talk) {

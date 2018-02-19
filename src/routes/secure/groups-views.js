@@ -104,19 +104,23 @@ module.exports = function (app: any) {
       const role = await Group.getGroupRole(user_id, group_id)
       if (role === 'Administrator') {
         const group = await Group.getGroupByID(group_id)
-        const name = Locales.getLocaleStringObject(req.locale, group.name)
-        return res.render('groupadmin', {
-          title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            group,
-            maps: await Map.getGroupMaps(group_id, true),
-            layers: await Layer.getGroupLayers(group_id, true),
-            hubs: await Hub.getGroupHubs(group_id, true),
-            members: await Group.getGroupMembers(group_id),
-            account: await Account.getStatus(group_id)
-          },
-          req
-        })
+        if (group) {
+          const name = Locales.getLocaleStringObject(req.locale, group.name)
+          return res.render('groupadmin', {
+            title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
+            props: {
+              group,
+              maps: await Map.getGroupMaps(group_id, true),
+              layers: await Layer.getGroupLayers(group_id, true),
+              hubs: await Hub.getGroupHubs(group_id, true),
+              members: await Group.getGroupMembers(group_id),
+              account: await Account.getStatus(group_id)
+            },
+            req
+          })
+        } else {
+          return res.redirect('/notfound')
+        }
       } else {
         return res.redirect('/unauthorized')
       }
