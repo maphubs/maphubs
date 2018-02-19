@@ -144,14 +144,14 @@ function createEngine (engineOptions) {
           `
       }
 
-      let iconFolder = MAPHUBS_CONFIG.theme
-      if (MAPHUBS_CONFIG.theme === 'maphubs-pro') {
+      let iconFolder = local.theme
+      if (local.theme === 'maphubs-pro') {
         iconFolder = 'maphubs'
       }
 
       let themeUrl = ''
-      if (MAPHUBS_CONFIG.themeUrl) {
-        themeUrl = MAPHUBS_CONFIG.themeUrl + iconFolder
+      if (local.themeUrl) {
+        themeUrl = local.themeUrl + iconFolder
       } else {
         themeUrl = `${assetHost}/assets/themes/${iconFolder}`
       }
@@ -171,7 +171,7 @@ function createEngine (engineOptions) {
         <link rel="icon" type="image/png" href="${themeUrl}/favicon-32x32.png" sizes="32x32" />
         <link rel="icon" type="image/png" href="${themeUrl}/favicon-16x16.png" sizes="16x16" />
         <link rel="icon" type="image/png" href="${themeUrl}/favicon-128.png" sizes="128x128" />
-        <meta name="application-name" content="${MAPHUBS_CONFIG.productName}"/>
+        <meta name="application-name" content="${local.productName}"/>
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-TileImage" content="${themeUrl}/mstile-144x144.png" />
         <meta name="msapplication-square70x70logo" content="${themeUrl}/mstile-70x70.png" />
@@ -212,7 +212,7 @@ function createEngine (engineOptions) {
             `
         }
         markup += `
-          <meta name="twitter:site" content="@${MAPHUBS_CONFIG.twitter}">
+          <meta name="twitter:site" content="@${local.twitter}">
           <meta name="twitter:title" content="${options.twitterCard.title}">
           `
         if (options.twitterCard.description) {
@@ -280,7 +280,7 @@ function createEngine (engineOptions) {
 
       let ravenConfig
       if (process.env.NODE_ENV === 'production' && !local.disableTracking) {
-        ravenConfig = MAPHUBS_CONFIG.SENTRY_DSN_PUBLIC
+        ravenConfig = local.SENTRY_DSN_PUBLIC
       }
 
       markup += `
@@ -378,9 +378,9 @@ function createEngine (engineOptions) {
                 language: '${locale}',
                 style: 'circle',
                 position: 'se',
-                main_button_background_colour : "${MAPHUBS_CONFIG.primaryColor}", 
+                main_button_background_colour : "${local.primaryColor}", 
                 main_button_text_colour       : "#FFFFFF", 
-                send_button_background_colour : "${MAPHUBS_CONFIG.primaryColor}", 
+                send_button_background_colour : "${local.primaryColor}", 
                 send_button_text_colour       : "#FFFFFF"  
             };
             Userback.after_send = function() {

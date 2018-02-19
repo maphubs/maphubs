@@ -41,7 +41,7 @@ var local = {
   BING_KEY: getenv('BING_API_KEY'),
   SENTRY_DSN_PUBLIC: getenv('OMH_SENTRY_DSN_PUBLIC'),
   theme: getenv('OMH_THEME'),
-  themeUrl: getenv('OMH_THEME_URL'),
+  themeUrl: getenv('OMH_THEME_URL', ''),
   enableUserExport: getenv.bool('OMH_ENABLE_USER_EXPORT', false),
   manetUrl: getenv('OMH_MANET_URL'),
   tileServiceUrl: getenv('OMH_TILESERVICE_URL'),
