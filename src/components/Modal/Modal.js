@@ -143,7 +143,7 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
   }
 
   close () {
-    $('.lean-overlay').remove() // for some reason materialize isn't clearing the overlay mask on overlapping modals, possibly related to https://github.com/Dogfalo/materialize/issues/1647
+    $('.modal-overlay').hide() // for some reason materialize isn't clearing the overlay mask on overlapping modals, possibly related to https://github.com/Dogfalo/materialize/issues/1647
     $(this.refs.modal).modal('close')
   }
 
