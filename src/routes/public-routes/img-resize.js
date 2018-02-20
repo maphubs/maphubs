@@ -4,7 +4,7 @@ const local = require('../../local')
 
 module.exports = function (app: any) {
   let baseHost = local.host_internal
-  if (local.port !== 80) {
+  if (local.internal_port !== 80) {
     baseHost += ':' + local.internal_port
   }
 
