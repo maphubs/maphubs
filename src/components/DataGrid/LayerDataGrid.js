@@ -88,6 +88,10 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
 
   processGeoJSON = (geoJSON: Object, presets:any = null) => {
     const _this = this
+
+    if (!geoJSON.features || geoJSON.features.length === 0) {
+      return
+    }
     // clone feature to avoid data grid attaching other values
     const features = JSON.parse(JSON.stringify(geoJSON.features))
 
