@@ -278,6 +278,10 @@ export default class Map extends MapHubsComponent<Props, State> {
         debug.error(err.error)
       })
 
+      map.on('load', () => {
+        _this.debugLog('MAP LOADED')
+      })
+
       map.on('style.load', () => {
         _this.debugLog('style.load')
         // restore map bounds (except for geoJSON maps)
@@ -311,16 +315,12 @@ export default class Map extends MapHubsComponent<Props, State> {
           }
 
           _this.setState({mapLoaded: true})
+          // add selector for screenshot tool
+          setTimeout(() => {
+            $('body').append(`<div id="map-load-complete" style="display: none;"></div>`)
+          }, 5000)
         })
       })// end style.load
-
-      map.on('load', () => {
-        _this.debugLog('MAP LOADED')
-        // wait a few seconds just to be sure the display catches up
-        setTimeout(() => {
-          $('body').append(`<div id="map-load-complete" style="display: none;"></div>`)
-        }, 5000)
-      })
 
       // Setup inset map
       if (_this.refs.insetMap) {
