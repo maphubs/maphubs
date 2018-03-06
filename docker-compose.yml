@@ -64,7 +64,7 @@ services:
     depends_on:
       - db
   screenshots:
-    image: 'quay.io/maphubs/screenshots:v1.0.1'
+    image: 'quay.io/maphubs/screenshots:v1.0.5'
     environment:
       HOST: maphubs.test
       INTERNAL_PORT: 3000
