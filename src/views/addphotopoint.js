@@ -4,6 +4,7 @@ import Header from '../components/header'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
+import UserStore from '../stores/UserStore'
 import Map from '../components/Map/Map'
 import DataCollectionForm from '../components/DataCollection/DataCollectionForm'
 import ImageCrop from '../components/ImageCrop'
@@ -26,7 +27,8 @@ type Props = {
   locale: string,
   _csrf: string,
   mapConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -49,6 +51,9 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(AddPhotoPointStore, {layer: this.props.layer})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+    }
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
     }
   }
 

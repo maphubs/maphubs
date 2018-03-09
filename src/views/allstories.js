@@ -20,7 +20,8 @@ type Props = {|
   locale: string,
   _csrf: string,
   footerConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 |}
 
 type State = {
@@ -34,6 +35,13 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(UserStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
+  }
+
+  componentDidMount () {
+    M.FloatingActionButton.init(this.refs.addButton, {})
   }
 
   onCreateStory = () => {
@@ -85,7 +93,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
               </div>
             </div>
           </div>
-          <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Story')}>
+          <div ref='addButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Story')}>
             <a onClick={this.onCreateStory} className='btn-floating btn-large red red-text'>
               <i className='large material-icons'>add</i>
             </a>

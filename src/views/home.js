@@ -23,6 +23,7 @@ import type {Group} from '../stores/GroupStore'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import ErrorBoundary from '../components/ErrorBoundary'
 import XComponentReact from '../components/XComponentReact'
+import UserStore from '../stores/UserStore'
 
 // import Perf from 'react-addons-perf';
 
@@ -40,7 +41,8 @@ type Props = {
     layers: Array<Layer>,
     footerConfig: Object,
     headerConfig: Object,
-    mapConfig: Object
+    mapConfig: Object,
+    user: Object
   }
 
   type State = {
@@ -67,6 +69,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
     }

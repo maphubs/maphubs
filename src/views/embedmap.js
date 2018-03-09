@@ -10,6 +10,7 @@ import BaseMapStore from '../stores/map/BaseMapStore'
 import type {Layer} from '../stores/layer-store'
 import type {GLStyle} from '../types/mapbox-gl-style'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const $ = require('jquery')
 const urlUtil = require('../services/url-util')
@@ -29,7 +30,8 @@ type Props = {
   showScale: boolean,
   insetMap: boolean,
   image: string,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type State = {
@@ -60,6 +62,10 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+    }
+
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
     }
 
     const glStyle = this.props.map.style

@@ -7,11 +7,8 @@ Modified to support MaterializeCSS and other customizations
 */
 
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Suggestions from './Suggestions'
 import Promise from 'bluebird'
-
-const $ = require('jquery')
 
 const KEY_CODES = {
   UP: 38,
@@ -48,20 +45,9 @@ export default class SearchBar extends React.Component {
   }
 
   componentDidMount () {
-    /* eslint-disable react/no-find-dom-node */
     if (this.props.autoFocus) {
-      ReactDOM.findDOMNode(this.refs.value).focus()
+      this.refs.value.focus()
     }
-    $(ReactDOM.findDOMNode(this.refs.suggestions)).dropdown({
-      inDuration: 300,
-      outDuration: 225,
-      constrainWidth: true, // Does not change width of dropdown to that of the activator
-      hover: false, // Activate on hover
-      gutter: 0, // Spacing from edge
-      belowOrigin: true // Displays dropdown below the button
-    })
-    $(document.body).on('click', this.hideSuggestions)
-    /* eslint-enable react/no-find-dom-node */
   }
 
   componentWillUnmount () {
@@ -101,15 +87,11 @@ export default class SearchBar extends React.Component {
       suggestions,
       highlightedItem: -1
     })
-    /* eslint-disable react/no-find-dom-node */
-    $(ReactDOM.findDOMNode(this.refs.suggestions)).show()
-    /* eslint-enable react/no-find-dom-node */
+    this.refs.suggestions.show()
   }
 
   hideSuggestions = () => {
-    /* eslint-disable react/no-find-dom-node */
-    $(ReactDOM.findDOMNode(this.refs.suggestions)).hide()
-    /* eslint-enable react/no-find-dom-node */
+    this.refs.suggestions.hide()
   }
 
   fillInSuggestion = (suggestion) => {
@@ -143,6 +125,7 @@ export default class SearchBar extends React.Component {
     e.preventDefault()
     if (!this.state.value) return
     this.search(this.state.value.trim())
+    this.hideSuggestions()
   }
 
   search = (value) => {

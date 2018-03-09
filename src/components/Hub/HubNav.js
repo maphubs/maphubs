@@ -8,7 +8,6 @@ import MessageActions from '../../actions/MessageActions'
 import HubActions from '../../actions/HubActions'
 import MapHubsPureComponent from '../../components/MapHubsPureComponent'
 
-const $ = require('jquery')
 const urlUtil = require('../../services/url-util')
 
 type Props = {
@@ -22,7 +21,7 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
   }
 
   componentDidMount () {
-    $(this.refs.hubNav).sideNav({edge: 'right'})
+    M.Sidenav.init(this.refs.hubNav, {edge: 'right'})
   }
 
   deleteHub = () => {
@@ -62,12 +61,12 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
     return (
       <nav className='white' style={{height: '0px'}}>
         <div className='nav-wrapper'>
-          <a href='#' ref='hubNav' data-activates='nav' className='button-collapse white-text text-shadow'
+          <a href='#' data-target='nav' className='button-collapse white-text text-shadow'
             style={{display: 'block', position: 'absolute', top: '5px', right: '5px'}}>
             <i className='material-icons'>menu</i>
           </a>
-          <ul className='side-nav' id='nav'>
-            <UserMenu id='user-menu-sidenav' sideNav />
+          <ul ref='hubNav' className='sidenav' id='nav'>
+            <UserMenu id='user-menu-sidenav' sidenav />
             <li className='nav-link-wrapper'><a href={hubBaseUrl}>{this.__('Home')}</a></li>
             <li className='nav-link-wrapper'><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
             <li className='nav-link-wrapper'><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>

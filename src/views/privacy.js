@@ -6,12 +6,14 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   locale: string,
   _csrf: string,
   footerConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 export default class Privacy extends MapHubsComponent<Props, void> {
@@ -20,6 +22,9 @@ export default class Privacy extends MapHubsComponent<Props, void> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
   }
 
   render () {
@@ -31,12 +36,6 @@ export default class Privacy extends MapHubsComponent<Props, void> {
             <h4>{MAPHUBS_CONFIG.productName + ' ' + this.__('Privacy Policy')}</h4>
             <p>
   We respect your privacy and will not share your information other than in the circumstances outlined below.
-            </p>
-
-            <h5>{MAPHUBS_CONFIG.productName} Public Beta</h5>
-
-            <p>
-              {MAPHUBS_CONFIG.productName} is currently offered as public beta software. We do not guarantee that the application is 100% free of bugs or issues that may impact privacy.  You use the {MAPHUBS_CONFIG.productName} service at your own risk. Please see our Terms of Service for more information.
             </p>
             <h5>General Information</h5>
             <p>
@@ -75,9 +74,6 @@ export default class Privacy extends MapHubsComponent<Props, void> {
   The user login and authentication system for {MAPHUBS_CONFIG.productName} is provided by Auth0 https://auth0.com/.
             </p>
             <p>
-  The help form (Send a Message button) is provided by HelpScout. Use of the help form is also a transaction with HelpScout. More information on HelpScout&#39;s policy is available at https://www.helpscout.net/company/privacy/
-            </p>
-            <p>
               {MAPHUBS_CONFIG.productName} layers may link to external map services services hosted by other organizations. This Privacy Policy does not cover usage information collected by map services external to {MAPHUBS_CONFIG.productName}.
             </p>
             <h5>Data Storage</h5>
@@ -105,7 +101,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
             </p>
             <h5>Changes</h5>
             <p>
-              {MAPHUBS_CONFIG.productName} may periodically update this policy. We will notify you about significant changes in the way we treat personal information by sending a notice to the primary email address specified in your {MAPHUBS_CONFIG.productName} account or by placing a prominent notice on our site.
+              {MAPHUBS_CONFIG.productName} may periodically update this policy. We will notify you about significant changes in the way we treat personal information by sending a notice to the primary email address specified in your MapHubs account or by placing a prominent notice on our site.
             </p>
             <h5>Questions</h5>
             <p>

@@ -35,7 +35,8 @@ type Props = {
   locale: string,
   _csrf: string,
   headerConfig: Object,
-  mapConfig: Object
+  mapConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -58,6 +59,9 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     this.stores.push(BaseMapStore)
     this.stores.push(UserStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(LayerStore, this.props.layer)
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})

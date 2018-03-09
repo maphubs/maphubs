@@ -6,9 +6,6 @@ import AddMapModal from '../Story/AddMapModal'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import fireResizeEvent from '../../services/fire-resize-event'
 
-// var debug = require('../../services/debug')('CreateMap');
-const $ = require('jquery')
-
 type Props = {|
   hub: Object,
   editing: boolean,
@@ -30,14 +27,6 @@ export default class HubMap extends MapHubsComponent<Props, void> {
     border: false,
     myMaps: [],
     popularMaps: []
-  }
-
-  componentDidMount () {
-    $(this.refs.mapLayersPanel).sideNav({
-      menuWidth: 240, // Default is 240
-      edge: 'left', // Choose the horizontal origin
-      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    })
   }
 
   componentDidUpdate () {

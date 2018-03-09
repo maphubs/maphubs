@@ -6,6 +6,7 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   story_id: number,
@@ -14,7 +15,8 @@ type Props = {
   popularMaps: Array<Object>,
   locale: string,
   _csrf: string,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 export default class CreateUserStory extends MapHubsComponent<Props, void> {
@@ -23,6 +25,9 @@ export default class CreateUserStory extends MapHubsComponent<Props, void> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
   }
 
   render () {

@@ -11,6 +11,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const checkClientError = require('../services/client-error-response').checkClientError
 
@@ -20,7 +21,8 @@ type Props = {
   pageConfig: Object,
   footerConfig: Object,
   headerConfig: Object,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type State = {
@@ -35,6 +37,9 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     this.state = {
       pageConfig: props.pageConfig
     }

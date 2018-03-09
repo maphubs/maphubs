@@ -24,6 +24,7 @@ import LayerList from '../components/Lists/LayerList'
 import MapList from '../components/Lists/MapList'
 import HubList from '../components/Lists/HubList'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const $ = require('jquery')
 const debug = require('../services/debug')('views/GroupAdmin')
@@ -36,7 +37,8 @@ type Props = {
   members: Array<Object>,
   locale: string,
   _csrf: string,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 type DefaultProps = {
@@ -70,6 +72,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(GroupStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(GroupStore, {group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members})
   }
 

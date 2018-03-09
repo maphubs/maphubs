@@ -25,6 +25,7 @@ import turf_length from '@turf/length'
 import turf_bbox from '@turf/bbox'
 import numeral from 'numeral'
 import slugify from 'slugify'
+import UserStore from '../stores/UserStore'
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl'
 import en from 'react-intl/locale-data/en'
@@ -64,7 +65,8 @@ type Props = {
   locale: string,
   _csrf: string,
   headerConfig: Object,
-  mapConfig: Object
+  mapConfig: Object,
+  user: Object
 }
 
 type DefaultProps = {
@@ -106,6 +108,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     this.stores.push(LayerNotesStore)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(LayerNotesStore, {notes: this.props.notes})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})

@@ -8,6 +8,7 @@ import Reflux from '../components/Rehydrate'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import Auth0Lock from 'auth0-lock'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   AUTH0_CLIENT_ID: string,
@@ -18,7 +19,8 @@ type Props = {
   email: string,
   existingAccount: boolean,
   footerConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 type State = {
   showLogin: boolean,
@@ -31,6 +33,9 @@ export default class Auth0InviteConfirmation extends MapHubsComponent<Props, Sta
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
   }
 
   componentDidMount () {

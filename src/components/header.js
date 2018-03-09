@@ -55,9 +55,10 @@ export default class Header extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.sideNav).sideNav()
+    M.Sidenav.init(this.refs.sidenav, {})
     $('.nav-tooltip').tooltip()
     this.initExploreDropDown()
+    this.initExploreDropDown(true)
 
     if (this.detectIE()) {
       MessageActions.showMessage({
@@ -81,17 +82,18 @@ export default class Header extends MapHubsComponent<Props, State> {
   componentDidUpdate (prevProps: Props) {
     if (this.props.showExplore && !prevProps.showExplore) {
       this.initExploreDropDown()
+      this.initExploreDropDown(true)
     }
   }
 
-initExploreDropDown = () => {
-  $('#header-explore-menu').dropdown({
+initExploreDropDown = (navMenu?: boolean) => {
+  M.Dropdown.init(navMenu ? this.refs.exploreDropdownNavMenu : this.refs.exploreDropdown, {
     inDuration: 300,
     outDuration: 225,
     constrainWidth: true, // Does not change width of dropdown to that of the activator
     hover: false, // Activate on hover
     gutter: 0, // Spacing from edge
-    belowOrigin: true, // Displays dropdown below the button
+    coverTrigger: false, // Displays dropdown below the button
     alignment: 'right' // Displays dropdown with edge aligned to the left of button
   })
 }
@@ -226,13 +228,28 @@ getCookie = (cname: string) => {
     return osm
   }
 
-  renderExplore = (exploreClasses: any) => {
+  renderExplore = (exploreClasses: any, navMenu?: boolean) => {
     let explore = ''
     if (this.props.showExplore) {
+      let ref = 'exploreDropdown'
+      let menuid = 'header-explore-menu'
+      let contentid = 'explore-dropdown'
+      if (navMenu) {
+        ref += 'NavMenu'
+        menuid += '-nav-menu'
+        contentid += '-nav-menu'
+      }
       explore = (
         <li className='nav-dropdown-link-wrapper nav-link-wrapper'>
-          <a className={exploreClasses} id='header-explore-menu' href='#!' data-activates='explore-dropdown' style={{paddingRight: 0}}>{this.__('Explore')}<i className='material-icons right' style={{marginLeft: 0}}>arrow_drop_down</i></a>
-          <ul id='explore-dropdown' className='dropdown-content'>
+          <a
+            ref={ref}
+            className={exploreClasses}
+            id={menuid} href='#!'
+            data-target={contentid}
+            style={{paddingRight: 0}}>{this.__('Explore')}
+            <i className='material-icons right' style={{marginLeft: 0}}>arrow_drop_down</i>
+          </a>
+          <ul id={contentid} className='dropdown-content'>
             <li><a href='/explore' className='nav-hover-menu-item'>{this.__('All')}</a></li>
             <li className='divider' />
             <li><a href='/maps' className='nav-hover-menu-item'>{this.__('Maps')}</a></li>
@@ -251,14 +268,14 @@ getCookie = (cname: string) => {
     const defaultLinkClasses = 'nav-link-item'
     const activeLinkClasses = 'nav-link-item active'
 
-    let exploreClasses = 'explore-dropdown-button nav-dropdown-button'
+    let exploreClasses = 'explore-dropdown-button nav-dropdown-button dropdown-trigger'
     let mapClasses = defaultLinkClasses
     if (this.props.activePage) {
       const activePage = this.props.activePage
       if (activePage === 'map') {
         mapClasses = activeLinkClasses
       } else if (activePage === 'explore') {
-        exploreClasses = activeLinkClasses + ' explore-dropdown-button nav-dropdown-button'
+        exploreClasses = activeLinkClasses + ' explore-dropdown-button nav-dropdown-button dropdown-trigger'
       }
     }
 
@@ -273,7 +290,7 @@ getCookie = (cname: string) => {
 
             </a>
 
-            <a ref='sideNav' className='button-collapse omh-accent-text' data-activates='side-nav-menu' href='#'><i className='material-icons'>menu</i></a>
+            <a className='button-collapse omh-accent-text sidenav-trigger' data-target='side-nav-menu' href='#'><i className='material-icons'>menu</i></a>
             <ul className='right hide-on-med-and-down'>
               {this.renderMakeAMap(mapClasses)}
               {this.renderExplore(exploreClasses)}
@@ -292,10 +309,10 @@ getCookie = (cname: string) => {
               {this.renderHelp()}
               <UserMenu id='user-menu-header' />
             </ul>
-            <ul className='side-nav' id='side-nav-menu'>
-              <UserMenu id='user-menu-sidenav' sideNav />
+            <ul ref='sidenav' className='sidenav' id='side-nav-menu'>
+              <UserMenu id='user-menu-sidenav' sidenav />
               {this.renderMakeAMap(mapClasses)}
-              {this.renderExplore(exploreClasses)}
+              {this.renderExplore(exploreClasses, true)}
               {this.renderOSM(mapClasses)}
               {
                 this.props.customLinks.map((link, i) => {

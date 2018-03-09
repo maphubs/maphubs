@@ -32,17 +32,15 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
 
   componentDidMount () {
     $(this.refs.mapToolButton).tooltip()
-    $(this.refs.mapToolButton).sideNav({
-      menuWidth: 240, // Default is 240
-      edge: 'right', // Choose the horizontal origin
-      closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      draggable: false // Choose whether you can drag to open on touch screens
+    M.Sidenav.init(this.refs.sidenav, {
+      edge: 'right',
+      draggable: false
     })
     $(this.refs.mapToolPanel).collapsible()
   }
 
   closePanel = () => {
-    $(this.refs.mapToolButton).sideNav('hide')
+    M.Sidenav.getInstance(this.refs.sidenav).close()
   }
 
   onChangeBaseMap = (val: string) => {
@@ -65,7 +63,8 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
       <div>
         <a ref='mapToolButton'
           href='#'
-          data-activates='map-tool-panel'
+          className='sidenav-trigger'
+          data-target='map-tool-panel'
           style={{
             display: this.props.show ? 'inherit' : 'none',
             position: 'absolute',
@@ -97,10 +96,11 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
               fontSize: '18px'}}
           >build</i>
         </a>
-        <div className='side-nav' id='map-tool-panel'
+        <div ref='sidenav' className='sidenav' id='map-tool-panel'
           style={{
             backgroundColor: '#FFF',
             height: '100%',
+            width: '240px',
             padding: 0,
             position: 'absolute',
             border: '1px solid #d3d3d3'}}>

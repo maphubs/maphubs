@@ -17,7 +17,8 @@ type Props = {|
   locale: string,
   _csrf: string,
   footerConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 |}
 
 type State = UserStoreState;
@@ -29,6 +30,9 @@ export default class Stories extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(UserStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
   }
 
   onCreateStory = () => {

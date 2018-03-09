@@ -21,6 +21,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {FeaturePhotoStoreState} from '../stores/FeaturePhotoStore'
 import type {FeatureNotesStoreState} from '../stores/FeatureNotesStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const urlUtil = require('../services/url-util')
 const $ = require('jquery')
@@ -34,7 +35,8 @@ type Props = {
     locale: string,
     _csrf: string,
     mapConfig: Object,
-    headerConfig: Object
+    headerConfig: Object,
+    user: Object
   }
 
   type State = {
@@ -57,6 +59,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     this.stores.push(FeaturePhotoStore)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(FeatureNotesStore, {notes: this.props.notes})
     Reflux.rehydrate(FeaturePhotoStore, {feature: this.props.feature, photo: this.props.photo})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
@@ -71,6 +76,15 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       if (_this.state.editingNotes) {
         return _this.__('You have not saved your edits, your changes will be lost.')
       }
+    }
+    if (this.props.canEdit) {
+      M.FloatingActionButton.init(this.refs.editButton, {})
+    }
+  }
+
+  componentDidUpdate (prevProps: Props, prevState: State) {
+    if (!prevProps.canEdit && this.props.canEdit) {
+      M.FloatingActionButton.init(this.refs.editButton, {})
     }
   }
 
@@ -154,7 +168,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
         )
       }
       editButton = (
-        <div className='fixed-action-btn action-button-bottom-right'>
+        <div ref='menuButton' className='fixed-action-btn action-button-bottom-right'>
           <a className='btn-floating btn-large red red-text'>
             <i className='large material-icons'>more_vert</i>
           </a>

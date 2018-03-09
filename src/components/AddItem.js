@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Formsy from 'formsy-react'
 import Toggle from './forms/toggle'
 import MessageActions from '../actions/MessageActions'
@@ -76,24 +75,12 @@ export default class AddItem extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    /* eslint-disable react/no-find-dom-node */
     if (this.props.autoFocus) {
-      const domNode = ReactDOM.findDOMNode(this.refs.value)
-      if (domNode) {
-        domNode.focus()
+      if (this.refs.value) {
+        this.refs.value.focus()
       }
     }
-
-    $(ReactDOM.findDOMNode(this.refs.suggestions)).dropdown({
-      inDuration: 300,
-      outDuration: 225,
-      constrainWidth: true, // Does not change width of dropdown to that of the activator
-      hover: false, // Activate on hover
-      gutter: 0, // Spacing from edge
-      belowOrigin: true // Displays dropdown below the button
-    })
     $(document.body).on('click', this.hideSuggestions)
-  /* eslint-enable react/no-find-dom-node */
   }
 
   componentWillUnmount () {
@@ -160,16 +147,11 @@ export default class AddItem extends MapHubsComponent<Props, State> {
      suggestions,
      highlightedItem: -1
    })
-   // findDOMNode needed here, possible due to the way suggestions are added dynamicallly below
-   /* eslint-disable react/no-find-dom-node */
-   $(ReactDOM.findDOMNode(this.refs.suggestions)).show()
-   /* eslint-enable react/no-find-dom-node  */
+   this.refs.suggestions.show()
  }
 
  hideSuggestions = () => {
-   /* eslint-disable react/no-find-dom-node */
-   $(ReactDOM.findDOMNode(this.refs.suggestions)).hide()
-   /* eslint-enable react/no-find-dom-node */
+   this.refs.suggestions.hide()
  }
 
  fillInSuggestion = (suggestion: Value) => {

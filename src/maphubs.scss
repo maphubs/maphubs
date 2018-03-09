@@ -3,7 +3,8 @@
 // import materialize
 $roboto-font-path: "./node_modules/materialize-css/fonts/roboto/";
 //get default colors
-@import "./node_modules/materialize-css/sass/components/_color.scss";
+@import "./node_modules/materialize-css/sass/components/_color-variables.scss";
+@import "./node_modules/materialize-css/sass/components/color-classes.scss";
 //override with our theme colors
 @import "./theme.scss";
 //load the rest of materialize-css

@@ -13,13 +13,15 @@ import UploadLayerReplacement from '../components/CreateLayer/UploadLayerReplace
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   layer: Object,
   locale: string,
   _csrf: string,
   mapConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -43,6 +45,9 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(LayerStore, this.props.layer)
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})

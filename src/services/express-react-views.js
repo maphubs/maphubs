@@ -16,6 +16,9 @@
 import React from 'react'
 import {renderToString} from 'react-dom/server'
 const Page = require('../models/page')
+const User = require('../models/user')
+const Group = require('../models/group')
+const Admin = require('../models/admin')
 const assign = require('object-assign')
 const log = require('./log')
 const version = require('../../package.json').version
@@ -100,6 +103,28 @@ function createEngine (engineOptions) {
           options.props.headerConfig = pageConfigs.header
           options.props.footerConfig = pageConfigs.footer
           options.props.mapConfig = pageConfigs.map
+        } catch (err) {
+          log.error(err)
+          Raven.captureException(err)
+        }
+        try {
+          if (req && req.session && req.session.user && req.session.user.maphubsUser) {
+            const user_id = req.session.user.maphubsUser.id
+            const user = await User.getUser(user_id)
+
+            // add session content
+            if (req.session.user && req.session.user._json) {
+              user.username = req.session.user._json.username
+              user.picture = req.session.user._json.picture
+            }
+
+            const groups = await Group.getGroupsForUser(user_id)
+            user.groups = groups
+
+            const admin = await Admin.checkAdmin(user_id)
+            user.admin = admin
+            options.props.user = user
+          }
         } catch (err) {
           log.error(err)
           Raven.captureException(err)

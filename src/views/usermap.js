@@ -38,7 +38,8 @@ type Props = {
   locale: string,
   _csrf: string,
   headerConfig: Object,
-  mapConfig: Object
+  mapConfig: Object,
+  user: Object
 }
 
 type DefaultProps = {
@@ -75,6 +76,9 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+    }
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
     }
     if (this.props.map.share_id) {
       this.state.share_id = this.props.map.share_id
@@ -114,17 +118,16 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.mapLayersPanel).sideNav({
-      menuWidth: 240, // Default is 240
-      edge: 'left', // Choose the horizontal origin
-      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    })
+    M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (prevProps: Props, prevState: State) {
     debounce(() => {
       fireResizeEvent()
     }, 300)
+    if (this.state.user && !prevState.user) {
+      M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
+    }
   }
 
   onMouseEnterMenu = () => {
@@ -257,8 +260,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    let map = ''
-    let button = ''
     let deleteButton = ''
     let editButton = ''
     let shareButton = ''
@@ -293,7 +294,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
 
     let copyButton = ''
-    if (this.state.loggedIn && this.state.user) {
+    if (this.state.user) {
       copyButton = (
         <li>
           <a onClick={this.showCopyMap} className='btn-floating user-map-tooltip purple'
@@ -307,74 +308,55 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     const download = `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`
     const downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`
 
-    button = (
-      <div id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
-        onMouseEnter={this.onMouseEnterMenu}
-      >
-        <a className='btn-floating btn-large'>
-          <i className='large material-icons'>more_vert</i>
-        </a>
-        <ul>
-          {shareButton}
-          {deleteButton}
-          {editButton}
-          {copyButton}
-          <li>
-            <a onClick={this.download}
-              download={download} href={downloadHREF}
-              className='btn-floating user-map-tooltip green'
-              data-delay='50' data-position='left' data-tooltip={this.__('Get Map as a PNG Image')}>
-              <i className='material-icons'>insert_photo</i>
-            </a>
-          </li>
-          <li>
-            <a onClick={this.showEmbedCode} className='btn-floating user-map-tooltip orange'
-              data-delay='50' data-position='left' data-tooltip={this.__('Embed')}>
-              <i className='material-icons'>code</i>
-            </a>
-          </li>
-          <li>
-            <a onClick={this.onFullScreen} className='btn-floating user-map-tooltip yellow'
-              data-delay='50' data-position='left' data-tooltip={this.__('Print/Screenshot')}>
-              <i className='material-icons'>print</i>
-            </a>
-          </li>
-
-        </ul>
-      </div>
-    )
-
-    /*
-  <li>
-    <a onClick={this.postToMedium} className="btn-floating tooltipped user-map-tooltip purple"
-      data-delay="50" data-position="left" data-tooltip={this.__('Post to Medium.com')}>
-      <i className="material-icons">publish</i>
-    </a>
-  </li>
-  */
-
     const copyMapTitle = JSON.parse(JSON.stringify(this.props.map.title))
     copyMapTitle.en = copyMapTitle.en + ' - Copy'
     // TODO: change copied map title in other languages
-
-    map = (
-      <InteractiveMap height='calc(100vh - 50px)'
-        {...this.props.map}
-        layers={this.props.layers}
-        mapConfig={this.props.mapConfig}
-        disableScrollZoom={false}
-        {...this.props.map.settings}
-      >
-        {button}
-      </InteractiveMap>
-    )
 
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
           <Progress id='load-data-progess' title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
-          {map}
+          <InteractiveMap height='calc(100vh - 50px)'
+            {...this.props.map}
+            layers={this.props.layers}
+            mapConfig={this.props.mapConfig}
+            disableScrollZoom={false}
+            {...this.props.map.settings}
+          />
+          <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
+            onMouseEnter={this.onMouseEnterMenu}
+          >
+            <a className='btn-floating btn-large'>
+              <i className='large material-icons'>more_vert</i>
+            </a>
+            <ul>
+              {shareButton}
+              {deleteButton}
+              {editButton}
+              {copyButton}
+              <li>
+                <a onClick={this.download}
+                  download={download} href={downloadHREF}
+                  className='btn-floating user-map-tooltip green'
+                  data-delay='50' data-position='left' data-tooltip={this.__('Get Map as a PNG Image')}>
+                  <i className='material-icons'>insert_photo</i>
+                </a>
+              </li>
+              <li>
+                <a onClick={this.showEmbedCode} className='btn-floating user-map-tooltip orange'
+                  data-delay='50' data-position='left' data-tooltip={this.__('Embed')}>
+                  <i className='material-icons'>code</i>
+                </a>
+              </li>
+              <li>
+                <a onClick={this.onFullScreen} className='btn-floating user-map-tooltip yellow'
+                  data-delay='50' data-position='left' data-tooltip={this.__('Print/Screenshot')}>
+                  <i className='material-icons'>print</i>
+                </a>
+              </li>
+            </ul>
+          </div>
           <PublicShareModal ref='publicShareModal' share_id={this.state.share_id} onChange={this.toggleSharePublic} />
           <CopyMapModal ref='copyMapModal' title={copyMapTitle} onSubmit={this.onCopyMap} />
         </main>

@@ -105,11 +105,8 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.mobileLegendPanel).sideNav({
-      menuWidth: 240, // Default is 240
-      edge: 'left', // Choose the horizontal origin
-      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    })
+    M.Sidenav.init(this.refs.mapLegendSideNav, {edge: 'left'})
+    M.Sidenav.init(this.refs.mapLayersSideNav, {edge: 'left'})
   }
 
   toggleVisibility = (layer_id: number) => {
@@ -273,9 +270,9 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     return (
       <div style={{width: '100%', height: `calc(${this.props.height} - 0px)`, overflow: 'hidden', border, position: 'relative'}}>
 
-        <a href='#' ref='mobileLegendPanel'
-          className='button-collapse hide-on-med-and-up'
-          data-activates={`mobile-map-legend-${this.props.map_id}`}
+        <a href='#'
+          className='button-collapse hide-on-med-and-up sidenav-trigger'
+          data-target={`mobile-map-legend-${this.props.map_id}`}
           style={{position: 'absolute',
             top: mobileLegendButtonTop,
             left: '10px',
@@ -299,18 +296,20 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           >info</i>
         </a>
 
-        <div className='side-nav' id={`mobile-map-legend-${this.props.map_id}`}
+        <div ref='mapLegendSideNav' className='sidenav' id={`mobile-map-legend-${this.props.map_id}`}
           style={{
             maxHeight: `calc(${this.props.height} - ${topOffset}px)`,
+            width: '240px',
             paddingBottom: '0',
             position: 'absolute',
             top: `${topOffset}px`}}>
           {mobileLegend}
         </div>
 
-        <div className='side-nav' id={`map-layers-${this.props.map_id}`}
+        <div ref='mapLayersSideNav' className='sidenav' id={`map-layers-${this.props.map_id}`}
           style={{height: 'auto',
             maxHeight: `calc(${this.props.height} - ${topOffset}px)`,
+            width: '260px',
             paddingBottom: '0',
             position: 'absolute',
             top: `${topOffset}px`}}>

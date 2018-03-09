@@ -342,12 +342,12 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   toggleMapTab = () => {
-    $(this.refs.tabs).tabs('select_tab', 'maptab')
+    $(this.refs.tabs).tabs('select', 'maptab')
     fireResizeEvent()
   }
 
   toggleAddLayerTab = () => {
-    $(this.refs.tabs).tabs('select_tab', 'addlayer')
+    $(this.refs.tabs).tabs('select', 'addlayer')
     fireResizeEvent()
   }
 

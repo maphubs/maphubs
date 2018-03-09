@@ -34,12 +34,11 @@ declare class MapHubsConfig {
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;
 
-declare var HS: Object;
 declare var Raven: Object;
 declare var Auth0Lock: Class<Object>;
+declare var M: Object;
 
 import type ReactComponent from 'react';
-
 
 type JSXHelper<T> = Class<ReactComponent<T,T,mixed>>;
 

@@ -13,6 +13,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {HubStoreState} from '../stores/HubStore'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   story_id: number,
@@ -20,7 +21,8 @@ type Props = {
   myMaps: Array<Object>,
   popularMaps: Array<Object>,
   locale: string,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type State = HubStoreState;
@@ -36,6 +38,9 @@ export default class CreateHubStory extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(HubStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(HubStore, {hub: this.props.hub})
     HubActions.loadHub(this.props.hub)
   }

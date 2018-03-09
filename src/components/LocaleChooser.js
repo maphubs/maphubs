@@ -3,7 +3,6 @@ import React from 'react'
 import MapHubsComponent from '../components/MapHubsComponent'
 import LocaleActions from '../actions/LocaleActions'
 import debugFactory from '../services/debug'
-const $ = require('jquery')
 const debug = debugFactory('MapHubsComponent')
 
 type Props = {
@@ -20,13 +19,13 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.dropdownButton).dropdown({
+    M.Dropdown.init(this.refs.dropdown, {
       inDuration: 300,
       outDuration: 225,
       constrainWidth: false, // Does not change width of dropdown to that of the activator
       hover: false, // Activate on hover
       gutter: 0, // Spacing from edge
-      belowOrigin: true, // Displays dropdown below the button
+      coverTrigger: false, // Displays dropdown below the button
       alignment: 'right' // Displays dropdown with edge aligned to the left of button
     })
   }
@@ -55,8 +54,8 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
 
     return (
       <li className='nav-link-wrapper nav-dropdown-link-wrapper'>
-        <a ref='dropdownButton' className='locale-dropdown-button nav-dropdown-button'
-          href='#!' data-activates={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
+        <a ref='dropdown' className='locale-dropdown-button nav-dropdown-button dropdown-trigger'
+          href='#!' data-target={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
           <i className='material-icons right' style={{marginLeft: 0}}>arrow_drop_down</i></a>
         <ul id={this.props.id} className='dropdown-content'>
           <li><a href='#!' onClick={function () { _this.onChange('en') }} className='nav-hover-menu-item'>English (EN)</a></li>

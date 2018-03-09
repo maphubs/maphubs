@@ -126,17 +126,12 @@ module.exports = function (app: any) {
   // can be used to dynamically check for login status, so should be public
   app.all('/api/user/details/json', async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(200).send({loggedIn: false, user: null})
+      res.status(200).send({user: null})
     } else {
       try {
         const user_id = req.session.user.maphubsUser.id
-
         const user = await User.getUser(user_id)
 
-        // remove sensitive content if present
-        delete user.pass_crypt
-        delete user.pass_salt
-        delete user.creation_ip
         // add session content
         if (req.session.user && req.session.user._json) {
           user.username = req.session.user._json.username
@@ -149,7 +144,7 @@ module.exports = function (app: any) {
         const admin = await Admin.checkAdmin(user_id)
         user.admin = admin
 
-        return res.status(200).send({loggedIn: true, user})
+        return res.status(200).send({user})
       } catch (err) { apiError(res, 200)(err) }
     }
   })

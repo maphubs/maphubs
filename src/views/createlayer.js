@@ -15,6 +15,7 @@ import type {Group} from '../stores/GroupStore'
 import type {Layer, LayerStoreState} from '../stores/layer-store'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const $ = require('jquery')
 const classNames = require('classnames')
@@ -26,7 +27,8 @@ type Props = {
   locale: string,
   _csrf: string,
   headerConfig: Object,
-  mapConfig: Object
+  mapConfig: Object,
+  user: Object
 }
 
 type DefaultProps = {
@@ -55,6 +57,10 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+    }
+
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
     }
 
     Reflux.rehydrate(LayerStore, this.props.layer)

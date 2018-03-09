@@ -9,6 +9,7 @@ import LocaleStore from '../stores/LocaleStore'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   group: Group,
@@ -19,7 +20,8 @@ type Props = {
   canEdit: boolean,
   headerConfig: Object,
   locale: string,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type DefaultProps = {
@@ -50,6 +52,9 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     this.state = {
       mapCards: this.props.maps.map(cardUtil.getMapCard),
       layerCards: this.props.layers.map(cardUtil.getLayerCard),

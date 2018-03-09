@@ -84,6 +84,9 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
     }
 
     $('.storyeditor-tooltips').tooltip()
+
+    M.FloatingActionButton.init(this.refs.saveButton, {})
+    M.FloatingActionButton.init(this.refs.addButton, {})
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {
@@ -100,6 +103,12 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
       return true
     }
     return false
+  }
+
+  componentDidUpdate (prevProps: Props, prevState: State) {
+    if (!prevState.story.story_id && this.state.story.story_id) {
+      M.FloatingActionButton.init(this.refs.deleteButton, {})
+    }
   }
 
   handleBodyChange = (body) => {
@@ -536,7 +545,7 @@ render () {
   let deleteButton = ''
   if (this.state.story.story_id) {
     deleteButton = (
-      <div className='fixed-action-btn action-button-bottom-right' style={{marginRight: '70px'}}>
+      <div ref='deleteButton' className='fixed-action-btn action-button-bottom-right' style={{marginRight: '70px'}}>
         <a className='btn-floating btn-large red red-text storyeditor-tooltips' onClick={this.delete}
           data-delay='50' data-position='left' data-tooltip={this.__('Delete')}>
           <i className='large material-icons'>delete</i>
@@ -609,7 +618,7 @@ render () {
 
       <ImageCrop ref='imagecrop' onCrop={this.onAddImage} resize_max_width={1200} />
 
-      <div className='fixed-action-btn action-button-bottom-right' style={{bottom: '155px'}}>
+      <div ref='addButton' className='fixed-action-btn action-button-bottom-right' style={{bottom: '155px'}}>
         <a onMouseDown={function (e) { e.stopPropagation() }} className='btn-floating btn-large red red-text'>
           <i className='large material-icons'>add</i>
         </a>
@@ -626,7 +635,7 @@ render () {
           </li>
         </ul>
       </div>
-      <div className='fixed-action-btn action-button-bottom-right'>
+      <div ref='saveButton' className='fixed-action-btn action-button-bottom-right'>
         <a className='btn-floating btn-large blue storyeditor-tooltips' onClick={this.save} data-delay='50' data-position='left' data-tooltip={saveButtonText}>
           <i className='large material-icons'>save</i>
         </a>

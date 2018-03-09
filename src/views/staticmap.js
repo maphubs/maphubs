@@ -8,6 +8,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import BaseMapStore from '../stores/map/BaseMapStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const $ = require('jquery')
 
@@ -24,7 +25,8 @@ type Props = {
   locale: string,
   _csrf: string,
   settings: Object,
-  mapConfig: Object
+  mapConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -53,6 +55,9 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
     }

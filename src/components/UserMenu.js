@@ -9,23 +9,19 @@ import _isequal from 'lodash.isequal'
 import urlencode from 'urlencode'
 import type {UserStoreState} from '../stores/UserStore'
 
-const $ = require('jquery')
-
 type Props = {
     id: string,
-    sideNav: boolean
+    sidenav: boolean
   }
 
-type State = {
-  loaded: boolean
-} & UserStoreState
+type State = UserStoreState
 
 export default class UserMenu extends MapHubsComponent<Props, State> {
   props: Props
 
   static defaultProps: Props = {
     id: 'user-menu',
-    sideNav: false
+    sidenav: false
   }
 
   state: State
@@ -33,10 +29,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(UserStore)
-  }
-
-  componentDidMount () {
-    UserActions.getUser(() => {})
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {
@@ -52,14 +44,14 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
-    if (this.state.loggedIn && !prevState.loggedIn) {
-      $(this.refs.userButton).dropdown({
+    if (this.state.user && !prevState.user) {
+      M.Dropdown.init(this.refs.userButton, {
         inDuration: 300,
         outDuration: 225,
         constrainWidth: false, // Does not change width of dropdown to that of the activator
         hover: false, // Activate on hover
         gutter: 0, // Spacing from edge
-        belowOrigin: true, // Displays dropdown below the button
+        coverTrigger: false, // Displays dropdown below the button
         alignment: 'right' // Displays dropdown with edge aligned to the left of button
       })
     }
@@ -70,11 +62,8 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    let user = (<div style={{width: '194px'}} />)
-    if (!this.state.loaded) {
-      return user
-    }
-    if (this.state.loggedIn && this.state.user) {
+    let user
+    if (this.state.user) {
       let adminInvites = ''
       if (this.state.user.admin) {
         adminInvites = (
@@ -97,7 +86,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
 
       user = (
         <li>
-          <div ref='userButton' className='chip user-dropdown-button omh-btn' style={{marginRight: '5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-activates={this.props.id}>
+          <div ref='userButton' className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-target={this.props.id}>
             {picture}
             {displayName}
             <i className='material-icons right' style={{marginLeft: 0, color: '#212121', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
@@ -121,20 +110,20 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       )
     } else {
       let style = {}
-      if (!this.props.sideNav) {
+      if (!this.props.sidenav) {
         style = {marginLeft: '1px', marginRight: '5px'}
       }
       if (!MAPHUBS_CONFIG.mapHubsPro) {
         user = (
           <li className='nav-link-wrapper login-with-signup'>
-            <a className='nav-link-item login-with-signup-link' style={{float: !this.props.sideNav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{this.__('Login')}</a>
+            <a className='nav-link-item login-with-signup-link' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{this.__('Login')}</a>
             <a className='btn' style={style} href='/signup'>{this.__('Sign Up')}</a>
           </li>
         )
       } else {
         user = (
           <li className='nav-link-wrapper'>
-            <a className='nav-link-item' style={{float: !this.props.sideNav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{this.__('Login')}</a>
+            <a className='nav-link-item' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{this.__('Login')}</a>
           </li>
         )
       }

@@ -12,6 +12,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import type {Layer} from '../stores/layer-store'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const debug = require('../services/debug')('views/layers')
 const urlUtil = require('../services/url-util')
@@ -25,7 +26,8 @@ type Props = {
   locale: string,
   footerConfig: Object,
   headerConfig: Object,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type State = {
@@ -43,6 +45,9 @@ export default class Layers extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
   }
 
   handleSearch = (input: string) => {

@@ -16,6 +16,7 @@ import LocaleStore from '../stores/LocaleStore'
 import BaseMapStore from '../stores/map/BaseMapStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {CardConfig} from '../components/CardCarousel/Card'
+import UserStore from '../stores/UserStore'
 
 const cardUtil = require('../services/card-util')
 const debug = require('../services/debug')('home')
@@ -26,7 +27,8 @@ type Props = {
   footerConfig: Object,
   headerConfig: Object,
   mapConfig: Object,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type State = {
@@ -48,6 +50,9 @@ export default class Search extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
     }

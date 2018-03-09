@@ -50,6 +50,7 @@
   "globals": {
     "L": true,
     "HS": true,
+    "M": true,
     "MAPHUBS_CONFIG": true,
     "Raven": true
   },

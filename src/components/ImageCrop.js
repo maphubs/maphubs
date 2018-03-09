@@ -81,6 +81,10 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
     }
   }
 
+  componentDidMount () {
+    M.FloatingActionButton.init(this.refs.saveButton, {})
+  }
+
   componentWillReceiveProps (nextProps: Props) {
     const updateProps = {}
     if (nextProps.aspectRatio) {
@@ -473,7 +477,7 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       )
 
       saveButton = (
-        <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Save Map')}>
+        <div ref='saveButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Save Map')}>
           <a onMouseDown={this.onSave} className='btn-floating btn-large omh-color'>
             <i className='large material-icons'>save</i>
           </a>

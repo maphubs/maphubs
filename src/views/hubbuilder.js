@@ -15,6 +15,7 @@ import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {HubStoreState} from '../stores/HubStore'
+import UserStore from '../stores/UserStore'
 
 const $ = require('jquery')
 const urlUtil = require('../services/url-util')
@@ -26,7 +27,8 @@ type Props = {
   hub: Object,
   locale: string,
   _csrf: string,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -55,6 +57,9 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
      super(props)
      this.stores.push(HubStore)
      Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+     if (props.user) {
+       Reflux.rehydrate(UserStore, {user: props.user})
+     }
    }
 
    componentWillMount () {

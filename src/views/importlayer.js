@@ -9,11 +9,13 @@ import MessageActions from '../actions/MessageActions'
 import FileUpload from '../components/forms/FileUpload'
 import Progress from '../components/Progress'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {|
   groups: Array,
   locale: string,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 |}
 
 type State = {
@@ -31,6 +33,9 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
   }
 
   componentDidMount () {

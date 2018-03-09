@@ -41,11 +41,9 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     $(this.refs.mapSearchButton).tooltip()
-    $(this.refs.mapSearchButton).sideNav({
-      menuWidth: 240, // Default is 240
-      edge: 'right', // Choose the horizontal origin
-      closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      draggable: false // Choose whether you can drag to open on touch screens
+    M.Sidenav.init(this.refs.sidenav, {
+      edge: 'right',
+      draggable: false
     })
     $(this.refs.tabs).tabs()
   }
@@ -55,7 +53,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   }
 
   closePanel = () => {
-    $(this.refs.mapSearchButton).sideNav('hide')
+    M.Sidenav.getInstance(this.refs.sidenav).close()
   }
 
   onSearch = (query: string) => {
@@ -181,9 +179,9 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
     return (
       <div>
         <a ref='mapSearchButton'
-          className='map-search-button'
+          className='map-search-button sidenav-trigger'
           href='#'
-          data-activates='map-search-panel'
+          data-target='map-search-panel'
           onMouseDown={this.onPanelOpen}
           style={{
             display: this.props.show ? 'inherit' : 'none',
@@ -216,13 +214,14 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
               fontSize: '18px'}}
           >search</i>
         </a>
-        <div className='side-nav' id='map-search-panel'
+        <div ref='sidenav' className='sidenav' id='map-search-panel'
           style={{
             backgroundColor: '#FFF',
             height: '100%',
             overflow: 'hidden',
             padding: '5px',
             position: 'absolute',
+            width: '240px',
             border: '1px solid #d3d3d3'}}>
           <SearchBar id={'map-search-bar'}
             placeholder={searchLabel}

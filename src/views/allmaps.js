@@ -15,6 +15,7 @@ import Toggle from '../components/forms/toggle'
 import Formsy from 'formsy-react'
 import CardGrid from '../components/CardCarousel/CardGrid'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 const cardUtil = require('../services/card-util')
 const debug = require('../services/debug')('views/maps')
@@ -26,7 +27,8 @@ type Props = {
   locale: string,
   _csrf: string,
   footerConfig: Object,
-  headerConfig: Object
+  headerConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -47,6 +49,13 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
+  }
+
+  componentDidMount () {
+    M.FloatingActionButton.init(this.refs.addButton, {})
   }
 
   handleSearch = (input: string) => {
@@ -148,7 +157,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
 
           </div>
           <div>
-            <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Map')}>
+            <div ref='addButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Map')}>
               <a href='/map/new' className='btn-floating btn-large red red-text'>
                 <i className='large material-icons'>add</i>
               </a>

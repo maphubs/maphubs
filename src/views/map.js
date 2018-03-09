@@ -8,6 +8,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import BaseMapStore from '../stores/map/BaseMapStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   popularLayers: Array<Object>,
@@ -16,7 +17,8 @@ type Props = {
   headerConfig: Object,
   mapConfig: Object,
   locale: string,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 type DefaultProps = {
@@ -36,6 +38,9 @@ export default class Map extends MapHubsComponent<Props, void> {
     super(props)
     this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
     }

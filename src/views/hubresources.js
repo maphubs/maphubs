@@ -19,13 +19,15 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {HubStoreState} from '../stores/HubStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   hub: Object,
   canEdit?: boolean,
   locale: string,
   _csrf: string,
-  footerConfig: Object
+  footerConfig: Object,
+  user: Object
 }
 
 type State = {
@@ -50,6 +52,9 @@ export default class HubResourcesPage extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(HubStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(HubStore, {hub: this.props.hub, canEdit: this.props.canEdit})
   }
 

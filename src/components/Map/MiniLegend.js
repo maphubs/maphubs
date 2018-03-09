@@ -5,7 +5,6 @@ import LegendItem from './LegendItem'
 import MapHubsComponent from '../MapHubsComponent'
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
 
-const $ = require('jquery')
 const MapStyles = require('./Styles')
 
 type Props = {|
@@ -46,35 +45,25 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
     this.stores.push(BaseMapStore)
   }
 
-  componentDidMount () {
-    if (this.props.collapsible) {
-      $(this.refs.legend).collapsible()
-    }
-
-    if (this.props.showLayersButton) {
-      $(this.refs.mapLayersButton).sideNav({
-        menuWidth: 260, // Default is 240
-        edge: 'left', // Choose the horizontal origin
-        closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+  toggleCollapsed = (e: Event) => {
+    if (e.target.id !== 'legend-settings') {
+      this.setState({
+        collapsed: !this.state.collapsed
       })
     }
   }
 
-  toggleCollapsed = () => {
-    this.setState({
-      collapsed: !this.state.collapsed
-    })
-  }
-
   render () {
     const _this = this
+    const {collapsed} = this.state
 
     let layersButton = ''
     if (this.props.showLayersButton) {
       layersButton = (
-        <a ref='mapLayersButton'
+        <a
           href='#'
-          data-activates={this.props.mapLayersActivatesID}
+          className='sidenav-trigger'
+          data-target={this.props.mapLayersActivatesID}
           style={{
             position: 'absolute',
             right: '20px',
@@ -91,6 +80,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
           data-tooltip={this.__('Tools')}
         >
           <i className='material-icons'
+            id='legend-settings'
             style={{height: '32px',
               lineHeight: '32px',
               width: '32px',
@@ -128,13 +118,13 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
     if (this.props.collapsible) {
       let iconName
       if (this.props.collapseToBottom) {
-        if (this.state.collapsed) {
+        if (collapsed) {
           iconName = 'keyboard_arrow_up'
         } else {
           iconName = 'keyboard_arrow_down'
         }
       } else {
-        if (this.state.collapsed) {
+        if (collapsed) {
           iconName = 'keyboard_arrow_down'
         } else {
           iconName = 'keyboard_arrow_up'
@@ -176,13 +166,13 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
     }
 
     let allowScroll = true
-    if (this.state.collapsed || this.props.layers.length === 1) {
+    if (collapsed || this.props.layers.length === 1) {
       allowScroll = false
     }
 
     let contentHeight = `calc(${this.props.maxHeight} - 32px)`
     let legendHeight = this.props.maxHeight
-    if (this.state.collapsed) {
+    if (collapsed) {
       contentHeight = '0px'
       legendHeight = '0px'
     }
@@ -192,7 +182,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
 
     return (
       <div style={this.props.style}>
-        <ul ref='legend' className='collapsible' data-collapsible='accordion'
+        <ul ref='legend' className='collapsible'
           style={{
             zIndex: 1,
             textAlign: 'left',
@@ -216,7 +206,8 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
             </div>
             <div className='collapsible-body'
               style={{
-                display: 'flex',
+                display: collapsed ? 'none' : 'flex',
+                maxHeight: contentHeight,
                 flexDirection: 'column',
                 borderBottom: 'none'}}>
               <div className='no-margin'

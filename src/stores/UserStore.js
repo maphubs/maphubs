@@ -6,17 +6,15 @@ const debug = require('../services/debug')('stores/user-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 export type User = {
-  id?: number,
-  email?: string,
-  display_name?: string,
+  id: number,
+  email: string,
+  display_name: string,
   picture?: string,
-  groups?: Array<Object>
+  groups: Array<Object>
 }
 
 export type UserStoreState = {
-  user?: User,
-  loggedIn?: boolean,
-  loaded?: boolean
+  user?: User
 }
 
 export default class UserStore extends Reflux.Store {
@@ -28,9 +26,7 @@ export default class UserStore extends Reflux.Store {
 
   getDefaultState (): UserStoreState {
     return {
-      user: {},
-      loggedIn: false,
-      loaded: false
+      user: undefined
     }
   }
 
@@ -44,7 +40,7 @@ export default class UserStore extends Reflux.Store {
 
   // listeners
   login (user: string) {
-    this.setState({user, loggedIn: true, loaded: true})
+    this.setState({user})
   }
 
   getUser (cb: Function) {
@@ -56,11 +52,10 @@ export default class UserStore extends Reflux.Store {
           if (err) {
             cb(err)
           } else {
-            if (res.body && res.body.loggedIn) {
+            if (res.body.user) {
               _this.login(res.body.user)
               cb()
             } else {
-              _this.setState({loaded: true})
               cb(JSON.stringify(res.body))
             }
           }

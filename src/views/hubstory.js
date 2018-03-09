@@ -11,13 +11,15 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ShareButtons from '../components/ShareButtons'
 import ErrorBoundary from '../components/ErrorBoundary'
+import UserStore from '../stores/UserStore'
 
 type Props = {
   story: Object,
   hub: Object,
   canEdit: boolean,
   locale: string,
-  _csrf: string
+  _csrf: string,
+  user: Object
 }
 
 export default class HubStory extends MapHubsComponent<Props, void> {
@@ -33,6 +35,9 @@ export default class HubStory extends MapHubsComponent<Props, void> {
     super(props)
     this.stores.push(HubStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    if (props.user) {
+      Reflux.rehydrate(UserStore, {user: props.user})
+    }
     Reflux.rehydrate(HubStore, {hub: this.props.hub, canEdit: this.props.canEdit})
   }
 

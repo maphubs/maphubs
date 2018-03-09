@@ -25,6 +25,10 @@ export default class HubEditButton extends MapHubsComponent<Props, State> {
     style: {}
   }
 
+  componentDidMount () {
+    M.FloatingActionButton.init(this.refs.button, {})
+  }
+
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
@@ -52,7 +56,7 @@ export default class HubEditButton extends MapHubsComponent<Props, State> {
       )
     }
     return (
-      <div style={this.props.style} className='fixed-action-btn action-button-bottom-right'>
+      <div ref='button' style={this.props.style} className='fixed-action-btn action-button-bottom-right'>
         {button}
       </div>
     )

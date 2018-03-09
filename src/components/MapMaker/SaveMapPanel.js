@@ -21,7 +21,7 @@ type Props = {|
 
 type State = {
   canSave: boolean,
-  ownedByGroup: boolean,
+  ownedByGroup?: boolean,
   saving?: boolean
 } & UserStoreState
 
@@ -80,7 +80,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
   render () {
     const {title, editing, owned_by_group_id} = this.props
-    const {canSave, saving, ownedByGroup, loggedIn, user} = this.state
+    const {canSave, saving, ownedByGroup, user} = this.state
     const groups = user.groups || []
 
     let ownedByGroupChecked
@@ -115,7 +115,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
       )
     }
 
-    if (loggedIn) {
+    if (user) {
       return (
         <Formsy onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <div className='row'>
