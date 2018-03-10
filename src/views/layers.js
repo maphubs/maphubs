@@ -13,6 +13,7 @@ import LocaleStore from '../stores/LocaleStore'
 import type {Layer} from '../stores/layer-store'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const debug = require('../services/debug')('views/layers')
 const urlUtil = require('../services/url-util')
@@ -133,10 +134,12 @@ export default class Layers extends MapHubsComponent<Props, State> {
           <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink='/layers/all' />
           <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink='/layers/all' />
 
-          <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Layer')}>
-            <a href='/createlayer' className='btn-floating btn-large red red-text'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              href='/createlayer'
+              tooltip={this.__('Create New Layer')}
+              tooltipPosition='top'
+              icon='add' />
           </div>
           <div className='row center-align'>
             <a className='btn' href='/layers/all'>{this.__('View All Layers')}</a>

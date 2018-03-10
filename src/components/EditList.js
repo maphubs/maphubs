@@ -1,15 +1,16 @@
 // @flow
 import React from 'react'
+import MapHubsComponent from './MapHubsComponent'
+import {Tooltip} from 'react-tippy'
 
 type Props = {
   title: string,
   items: Array<Object>, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
   onDelete: Function,
-  onAction: Function,
-  onError: Function
+  onAction: Function
 }
 
-export default class EditList extends React.Component<Props> {
+export default class EditList extends MapHubsComponent<Props, void> {
   props: Props
 
   static defaultProps = {
@@ -52,11 +53,13 @@ export default class EditList extends React.Component<Props> {
           let action = ''
           if (item.actionIcon && item.actionLabel) {
             action = (
-              <a className='tooltipped' data-delay='50' data-position='bottom' data-tooltip={item.actionLabel}>
-                <i className='material-icons' onClick={function () {
-                  _this.onAction(item)
-                }} style={{cursor: 'pointer'}}>{item.actionIcon}</i>
-              </a>
+              <Tooltip title={item.actionLabel} position='bottom' inertia followCursor>
+                <a>
+                  <i className='material-icons' onClick={function () {
+                    _this.onAction(item)
+                  }} style={{cursor: 'pointer'}}>{item.actionIcon}</i>
+                </a>
+              </Tooltip>
             )
           }
 
@@ -76,13 +79,15 @@ export default class EditList extends React.Component<Props> {
               {type}
               <div className='secondary-content'>
                 {action}
-                <a className='tooltipped' data-delay='50' data-position='bottom' data-tooltip='Remove' >
-                  <i className='material-icons'onClick={function () {
-                    _this.onDelete(item)
-                  }} style={{
-                    cursor: 'pointer'
-                  }}>delete</i>
-                </a>
+                <Tooltip title={_this._('Remove')} position='bottom' inertia followCursor>
+                  <a>
+                    <i className='material-icons'onClick={function () {
+                      _this.onDelete(item)
+                    }} style={{
+                      cursor: 'pointer'
+                    }}>delete</i>
+                  </a>
+                </Tooltip>
               </div>
             </li>
           )

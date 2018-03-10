@@ -10,6 +10,7 @@ import LocaleStore from '../stores/LocaleStore'
 import ShareButtons from '../components/ShareButtons'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 type Props = {
   story: Object,
@@ -44,12 +45,11 @@ export default class UserStory extends MapHubsComponent<Props, void> {
     if (this.props.canEdit) {
       button = (
         <div className='fixed-action-btn action-button-bottom-right'>
-          <a className='btn-floating btn-large red red-text tooltipped'
-            href={'/user/' + this.props.username + '/story/' + this.props.story.story_id + '/edit/' + slugify(this.props.story.title)}
-            data-delay='50' data-position='left' data-tooltip={this.__('Edit')}>
-            <i className='large material-icons'>mode_edit</i>
-          </a>
-
+          <FloatingButton
+            href={`/user/${this.props.username}/story/${this.props.story.story_id}/edit/${slugify(this.props.story.title)}`}
+            tooltip={this.__('Edit')}
+            tooltipPosition='left'
+            icon='mode_edit' />
         </div>
       )
     }

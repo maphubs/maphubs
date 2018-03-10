@@ -11,6 +11,7 @@ import LocaleStore from '../stores/LocaleStore'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 type Props = {|
   groups: Array<Group>,
@@ -52,10 +53,11 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
     if (this.props.canEdit) {
       addButton = (
         <div>
-          <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Group')}>
-            <a href='/creategroup' className='btn-floating btn-large red red-text'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              href='/creategroup'
+              tooltip={this.__('Create New Group')} tooltipPosition='top'
+              icon='add' />
           </div>
         </div>
       )

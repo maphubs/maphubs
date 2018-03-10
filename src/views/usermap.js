@@ -22,6 +22,8 @@ import BaseMapStore from '../stores/map/BaseMapStore'
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal'
 import CopyMapModal from '../components/InteractiveMap/CopyMapModal'
 import ErrorBoundary from '../components/ErrorBoundary'
+import {Tooltip} from 'react-tippy'
+import FloatingButton from '../components/FloatingButton'
 
 const $ = require('jquery')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -131,7 +133,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   onMouseEnterMenu = () => {
-    $('.user-map-tooltip').tooltip()
+    // still needed?
   }
 
   onDelete = () => {
@@ -266,28 +268,25 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (this.props.canEdit) {
       deleteButton = (
         <li>
-          <a onClick={this.onDelete} className='btn-floating user-map-tooltip red'
-            data-delay='50' data-position='left' data-tooltip={this.__('Delete Map')}>
-            <i className='material-icons'>delete</i>
-          </a>
+          <FloatingButton color='red' icon='delete'
+            onClick={this.onDelete} tooltip={this.__('Delete Map')}
+          />
         </li>
       )
       editButton = (
         <li>
-          <a onClick={this.onEdit} className='btn-floating user-map-tooltip blue'
-            data-delay='50' data-position='left' data-tooltip={this.__('Edit Map')}>
-            <i className='material-icons'>mode_edit</i>
-          </a>
+          <FloatingButton color='blue' icon='mode_edit'
+            onClick={this.onEdit} tooltip={this.__('Edit Map')}
+          />
         </li>
       )
 
       if (MAPHUBS_CONFIG.mapHubsPro) {
         shareButton = (
           <li>
-            <a onClick={this.showSharePublic} className='btn-floating user-map-tooltip'
-              data-delay='50' data-position='left' data-tooltip={this.__('Share')}>
-              <i className='material-icons'>share</i>
-            </a>
+            <FloatingButton color='red' icon='share'
+              onClick={this.showSharePublic} tooltip={this.__('Share')}
+            />
           </li>
         )
       }
@@ -297,10 +296,9 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (this.state.user) {
       copyButton = (
         <li>
-          <a onClick={this.showCopyMap} className='btn-floating user-map-tooltip purple'
-            data-delay='50' data-position='left' data-tooltip={this.__('Copy Map')}>
-            <i className='material-icons'>queue</i>
-          </a>
+          <FloatingButton color='purple' icon='queue'
+            onClick={this.showCopyMap} tooltip={this.__('Copy Map')}
+          />
         </li>
       )
     }
@@ -336,24 +334,25 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               {editButton}
               {copyButton}
               <li>
-                <a onClick={this.download}
-                  download={download} href={downloadHREF}
-                  className='btn-floating user-map-tooltip green'
-                  data-delay='50' data-position='left' data-tooltip={this.__('Get Map as a PNG Image')}>
-                  <i className='material-icons'>insert_photo</i>
-                </a>
+                <Tooltip
+                  title={this.__('Get Map as a PNG Image')}
+                  position='left' inertia followCursor>
+                  <a onClick={this.download}
+                    download={download} href={downloadHREF}
+                    className='btn-floating green'>
+                    <i className='material-icons'>insert_photo</i>
+                  </a>
+                </Tooltip>
               </li>
               <li>
-                <a onClick={this.showEmbedCode} className='btn-floating user-map-tooltip orange'
-                  data-delay='50' data-position='left' data-tooltip={this.__('Embed')}>
-                  <i className='material-icons'>code</i>
-                </a>
+                <FloatingButton color='orange' icon='code'
+                  onClick={this.showEmbedCode} tooltip={this.__('Embed')}
+                />
               </li>
               <li>
-                <a onClick={this.onFullScreen} className='btn-floating user-map-tooltip yellow'
-                  data-delay='50' data-position='left' data-tooltip={this.__('Print/Screenshot')}>
-                  <i className='material-icons'>print</i>
-                </a>
+                <FloatingButton color='yellow' icon='print'
+                  onClick={this.onFullScreen} tooltip={this.__('Print/Screenshot')}
+                />
               </li>
             </ul>
           </div>

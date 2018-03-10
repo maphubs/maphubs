@@ -7,8 +7,6 @@ import MapStyles from '../Map/Styles'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 
-const $ = require('jquery')
-
 type Labels = {
   enabled: boolean,
   field: string
@@ -59,10 +57,6 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    $('.tooltip-label-settings').tooltip()
-  }
-
   componentWillReceiveProps (nextProps: Props) {
     this.setState({style: nextProps.style})
   }
@@ -93,8 +87,6 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
        this.setState({style, enabled: false})
        this.props.onChange(style, values)
      }
-     $('.tooltip-label-settings').tooltip('remove')
-     $('.tooltip-label-settings').tooltip()
    }
 
    render () {
@@ -140,7 +132,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
            <Formsy ref='form' onChange={this.onFormChange}>
              <div className='row' style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
                <b>{this.__('Enable Labels')}</b>
-               <Toggle name='enabled' labelOff={this.__('Off')} labelOn={this.__('On')} className='col s12 tooltip-label-settings'
+               <Toggle name='enabled' labelOff={this.__('Off')} labelOn={this.__('On')} className='col s12'
                  checked={this.state.enabled}
                  dataPosition='right' dataTooltip={this.__('Enable Labels for this Layer')}
                />

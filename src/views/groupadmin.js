@@ -25,6 +25,7 @@ import MapList from '../components/Lists/MapList'
 import HubList from '../components/Lists/HubList'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const $ = require('jquery')
 const debug = require('../services/debug')('views/GroupAdmin')
@@ -88,10 +89,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
         return false
       }
     })
-  }
-
-  componentDidMount () {
-    $('.groupadmin-tooltips').tooltip()
   }
 
   enableButton = () => {
@@ -403,12 +400,10 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
               <HubList hubs={this.props.hubs} />
             </div>
             <div className='fixed-action-btn action-button-bottom-right'>
-              <a className='btn-floating btn-large red groupadmin-tooltips'
+              <FloatingButton
                 onClick={this.handleGroupDelete}
-                data-delay='50' data-position='left' data-tooltip={this.__('Delete Group')}
-              >
-                <i className='large material-icons'>delete</i>
-              </a>
+                tooltip={this.__('Delete Group')}
+                color='red' icon='delete' />
             </div>
 
           </div>

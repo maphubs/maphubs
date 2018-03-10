@@ -10,6 +10,8 @@ import type {CardConfig} from '../components/CardCarousel/Card'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
+import {Tooltip} from 'react-tippy'
 
 type Props = {
   group: Group,
@@ -62,6 +64,10 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     }
   }
 
+  componentDidMount () {
+    M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
+  }
+
   render () {
     const _this = this
     const groupId = this.props.group.group_id ? this.props.group.group_id : ''
@@ -69,21 +75,20 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 
     if (this.props.canEdit) {
       editButton = (
-        <div className='fixed-action-btn action-button-bottom-right'>
+        <div ref={(el) => { this.menuButton = el }}className='fixed-action-btn action-button-bottom-right'>
           <a className='btn-floating btn-large red red-text'>
             <i className='large material-icons'>more_vert</i>
           </a>
           <ul>
             <li>
-              <a className='btn-floating tooltipped green' data-delay='50' data-position='left' data-tooltip={this.__('Add New Layer')}
-                href='/createlayer'>
-                <i className='material-icons'>add</i>
-              </a>
+              <FloatingButton
+                href='/createlayer' icon='add' color='green'
+                tooltip={this.__('Add New Layer')} tooltipPosition='left' />
             </li>
             <li>
-              <a className='btn-floating tooltipped blue' href={'/group/' + groupId + '/admin'}data-delay='50' data-position='left' data-tooltip={this.__('Manage Group')}>
-                <i className='material-icons'>settings</i>
-              </a>
+              <FloatingButton
+                href={`/group/${groupId}/admin`} icon='settings' color='blue'
+                tooltip={this.__('Manage Group')} tooltipPosition='left' />
             </li>
           </ul>
         </div>
@@ -164,10 +169,13 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                 let icon = ''
                 if (user.role === 'Administrator') {
                   icon = (
-                    <i className='secondary-content tooltipped material-icons'
-                      data-delay='50' data-position='top' data-tooltip={_this.__('Group Administrator')}>
-                      supervisor_account
-                    </i>
+                    <Tooltip
+                      title={_this.__('Group Administrator')}
+                      position='top' inertia followCursor>
+                      <i className='secondary-content material-icons'>
+                        supervisor_account
+                      </i>
+                    </Tooltip>
                   )
                 }
                 let image = ''

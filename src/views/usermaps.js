@@ -9,6 +9,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 type Props = {
   maps: Array<Object>,
@@ -45,10 +46,10 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
     if (this.props.myMaps) {
       createMaps = (
         <div>
-          <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Map')}>
-            <a href='/map/new' className='btn-floating btn-large red red-text'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              href='/map/new' icon='add'
+              tooltip={this.__('Create New Map')} tooltipPosition='top' />
           </div>
         </div>
       )

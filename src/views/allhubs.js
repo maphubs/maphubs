@@ -18,6 +18,7 @@ import Formsy from 'formsy-react'
 import CardGrid from '../components/CardCarousel/CardGrid'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const debug = require('../services/debug')('views/hubs')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -148,10 +149,10 @@ export default class Hubs extends MapHubsComponent<Props, State> {
             </div>
           </div>
 
-          <div ref='addButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Hub')}>
-            <a className='btn-floating btn-large red red-text' href='/createhub'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              href='/createhub' icon='add'
+              tooltip={this.__('Create New Hub')} tooltipPosition='top' />
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

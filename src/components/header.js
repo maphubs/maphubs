@@ -11,10 +11,8 @@ import Confirmation from '../components/confirmation'
 // var debug = require('../services/debug')('header');
 import LocaleChooser from './LocaleChooser'
 import _isequal from 'lodash.isequal'
-
 import type {LocaleStoreState} from '../stores/LocaleStore'
-
-const $ = require('jquery')
+import {Tooltip} from 'react-tippy'
 
 type Link = {
   href: string,
@@ -56,7 +54,6 @@ export default class Header extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     M.Sidenav.init(this.refs.sidenav, {})
-    $('.nav-tooltip').tooltip()
     this.initExploreDropDown()
     this.initExploreDropDown(true)
 
@@ -175,12 +172,18 @@ getCookie = (cname: string) => {
     if (this.props.showSearch) {
       const searchLink = this.props.customSearchLink || '/search'
       search = (
-        <li className='nav-link-wrapper nav-tooltip' style={{width: '30px'}}
-          data-position='bottom' data-delay='50' data-tooltip={this.__('Search')}>
-          <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} href={searchLink}>
-            <i className='material-icons'>search</i>
-          </a>
-        </li>
+        <Tooltip
+          title={this.__('Search')}
+          position='bottom'
+          inertia
+          followCursor
+        >
+          <li className='nav-link-wrapper' style={{width: '30px'}}>
+            <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} href={searchLink}>
+              <i className='material-icons'>search</i>
+            </a>
+          </li>
+        </Tooltip>
       )
     }
     return search
@@ -191,12 +194,18 @@ getCookie = (cname: string) => {
     if (this.props.showHelp) {
       const helpLink = this.props.customHelpLink || 'http://help.maphubs.com'
       help = (
-        <li className='nav-link-wrapper nav-tooltip' style={{width: '30px'}}
-          data-position='bottom' data-delay='50' data-tooltip={this.__('Help/Support')}>
-          <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} target='_blank' rel='noopener noreferrer' href={helpLink}>
-            <i className='material-icons'>help_outline</i>
-          </a>
-        </li>
+        <Tooltip
+          title={this.__('Help/Support')}
+          position='bottom'
+          inertia
+          followCursor
+        >
+          <li className='nav-link-wrapper' style={{width: '30px'}}>
+            <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} target='_blank' rel='noopener noreferrer' href={helpLink}>
+              <i className='material-icons'>help_outline</i>
+            </a>
+          </li>
+        </Tooltip>
       )
     }
     return help
@@ -212,20 +221,6 @@ getCookie = (cname: string) => {
       )
     }
     return makeAMap
-  }
-
-  renderOSM = (mapClasses: any) => {
-    let osm = ''
-    if (this.props.showOSM) {
-      osm = (
-        <li className='nav-link-wrapper nav-tooltip'
-          data-position='bottom' data-delay='50' data-tooltip={this.__('Help us map in OpenStreetMap')}
-        >
-          <a className={mapClasses} href='https://osm.mapforenvironment.org'>{this.__('OpenStreetMap')}</a>
-        </li>
-      )
-    }
-    return osm
   }
 
   renderExplore = (exploreClasses: any, navMenu?: boolean) => {
@@ -294,7 +289,6 @@ getCookie = (cname: string) => {
             <ul className='right hide-on-med-and-down'>
               {this.renderMakeAMap(mapClasses)}
               {this.renderExplore(exploreClasses)}
-              {this.renderOSM(mapClasses)}
               {
                 this.props.customLinks.map((link, i) => {
                   return (
@@ -313,7 +307,6 @@ getCookie = (cname: string) => {
               <UserMenu id='user-menu-sidenav' sidenav />
               {this.renderMakeAMap(mapClasses)}
               {this.renderExplore(exploreClasses, true)}
-              {this.renderOSM(mapClasses)}
               {
                 this.props.customLinks.map((link, i) => {
                   return (

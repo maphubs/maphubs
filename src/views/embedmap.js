@@ -11,8 +11,8 @@ import type {Layer} from '../stores/layer-store'
 import type {GLStyle} from '../types/mapbox-gl-style'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import {Tooltip} from 'react-tippy'
 
-const $ = require('jquery')
 const urlUtil = require('../services/url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
 
@@ -89,8 +89,6 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $('.embed-tooltips').tooltip()
-
     if (this.props.geoJSONUrl) {
       this.loadGeoJSON(this.props.geoJSONUrl)
     }
@@ -98,7 +96,6 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   startInteractive = () => {
     this.setState({interactive: true})
-    $('.embed-tooltips').tooltip('remove')
   }
 
   loadGeoJSON = (url: string) => {
@@ -196,9 +193,13 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       map = (
         <div style={{position: 'relative'}}>
           <img src={imgSrc} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />
-          <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light embed-tooltips'
-            data-delay='50' data-position='right' data-tooltip={this.__('Start Interactive Map')}
-            style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}><i className='material-icons'>play_arrow</i></a>
+          <Tooltip
+            title={this.__('Start Interactive Map')}
+            position='right' inertia followCursor>
+            <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
+              style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}><i className='material-icons'>play_arrow</i>
+            </a>
+          </Tooltip>
         </div>
       )
     } else {

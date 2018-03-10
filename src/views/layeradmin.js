@@ -25,6 +25,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {Layer, LayerStoreState} from '../stores/layer-store'
 import type {Group} from '../stores/GroupStore'
 import type {UserStoreState} from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const $ = require('jquery')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -72,7 +73,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     $(this.refs.tabs).tabs()
-    $('.layeradmin-tooltips').tooltip()
+    M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
   }
 
   saveStyle = () => {
@@ -199,11 +200,12 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                 </div>
                 <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
               </div>
-              <div className='fixed-action-btn action-button-bottom-right'>
-                <a className='btn-floating btn-large layeradmin-tooltips red' data-delay='50' data-position='left' data-tooltip={this.__('Delete Layer')}
-                  onClick={this.deleteLayer}>
-                  <i className='material-icons'>delete</i>
-                </a>
+              <div ref={(el) => { this.menuButton = el }}
+                className='fixed-action-btn action-button-bottom-right'>
+                <FloatingButton
+                  onClick={this.deleteLayer}
+                  tooltip={this.__('Delete Layer')}
+                  color='red' icon='delete' />
               </div>
             </div>
           </main>
@@ -281,25 +283,22 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                 </div>
               </div>
             </div>
-            <div className='fixed-action-btn action-button-bottom-right'>
+            <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right'>
               <a className='btn-floating btn-large red red-text'>
                 <i className='large material-icons'>settings</i>
               </a>
               <ul>
                 <li>
-                  <a className='btn-floating tooltipped blue'
+                  <FloatingButton
                     href={`/layer/replace/${layerId}/${layerName}`}
-                    data-delay='50' data-position='left'
-                    data-tooltip={this.__('Replace Layer Data')}
-                  >
-                    <i className='material-icons'>file_upload</i>
-                  </a>
+                    tooltip={this.__('Replace Layer Data')}
+                    color='blue' icon='file_upload' />
                 </li>
                 <li>
-                  <a className='btn-floating tooltipped red' data-delay='50' data-position='left' data-tooltip={this.__('Delete Layer')}
-                    onClick={this.deleteLayer}>
-                    <i className='material-icons'>delete</i>
-                  </a>
+                  <FloatingButton
+                    onClick={this.deleteLayer}
+                    tooltip={this.__('Delete Layer')}
+                    color='red' icon='delete' />
                 </li>
               </ul>
             </div>

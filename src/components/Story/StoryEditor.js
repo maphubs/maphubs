@@ -10,10 +10,12 @@ import ImageCrop from '../ImageCrop'
 import StoryStore from '../../stores/StoryStore'
 import Progress from '../Progress'
 import Editor from 'react-medium-editor'
-import MapHubsComponent from '../../components/MapHubsComponent'
+import MapHubsComponent from '../MapHubsComponent'
 import Reflux from '../Rehydrate'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {Story, StoryStoreState} from '../../stores/StoryStore'
+import FloatingButton from '../FloatingButton'
+import {Tooltip} from 'react-tippy'
 
 const $ = require('jquery')
 const debounce = require('lodash.debounce')
@@ -82,8 +84,6 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
         return _this.__('You have not saved the edits for your story, your changes will be lost.')
       }
     }
-
-    $('.storyeditor-tooltips').tooltip()
 
     M.FloatingActionButton.init(this.refs.saveButton, {})
     M.FloatingActionButton.init(this.refs.addButton, {})
@@ -334,22 +334,16 @@ addMapCloseButtons = () => {
     const mapId = map.id.split('-')[1]
 
     $(map).append(`<div class="map-remove-button-v2" style="position: absolute; top: 10px; right: 80px;">
-    <i class="material-icons edit-map-tooltips story-media-edit-button"
-      data-position="bottom" data-delay="50" data-tooltip="` + _this.__('Remove Map') + `"
-      >close</i>
-
+    <i class="material-icons story-media-edit-button">close</i>
     </div>`)
 
     $(map).find('i').first().click(() => {
       _this.removeMap(mapId)
     })
-
-    $('.edit-map-tooltips').tooltip()
   })
 }
 
 removeMapCloseButtons = () => {
-  $('.edit-map-tooltips').tooltip('remove')
   $('.map-remove-button-v2').each((i, button) => {
     $(button).remove()
   })
@@ -360,19 +354,15 @@ addImageButtons = () => {
   $('.embed-image-container').each((i, image) => {
     const imageId = image.id.split('-')[1]
     $(image).append(`<div class="image-remove-button-v2" style="position: absolute; top: 10px; right: 10px;">
-    <i class="material-icons remove-image-tooltips story-media-edit-button"
-      data-position="bottom" data-delay="50" data-tooltip="` + _this.__('Remove Image') + `"
-      >close</i>
+    <i class="material-icons story-media-edit-button">close</i>
     </div>`)
     $(image).find('i').click(() => {
       _this.onRemoveImage(imageId)
     })
-    $('.remove-image-tooltips').tooltip()
   })
 }
 
 removeImageButtons = () => {
-  $('.remove-image-tooltips').tooltip('remove')
   $('.image-remove-button-v2').each((i, button) => {
     $(button).remove()
   })
@@ -546,10 +536,10 @@ render () {
   if (this.state.story.story_id) {
     deleteButton = (
       <div ref='deleteButton' className='fixed-action-btn action-button-bottom-right' style={{marginRight: '70px'}}>
-        <a className='btn-floating btn-large red red-text storyeditor-tooltips' onClick={this.delete}
-          data-delay='50' data-position='left' data-tooltip={this.__('Delete')}>
-          <i className='large material-icons'>delete</i>
-        </a>
+        <FloatingButton
+          onClick={this.delete}
+          tooltip={this.__('Delete')}
+          color='red' icon='delete' />
       </div>
     )
   }
@@ -624,21 +614,32 @@ render () {
         </a>
         <ul>
           <li>
-            <a onMouseDown={this.showAddMap} className='btn-floating storyeditor-tooltips green darken-1' data-delay='50' data-position='left' data-tooltip={this.__('Insert Map')}>
-              <i className='material-icons'>map</i>
-            </a>
+            <Tooltip
+              title={this.__('Insert Map')}
+              position='left' inertia followCursor
+            >
+              <a onMouseDown={this.showAddMap} className='btn-floating green darken-1'>
+                <i className='material-icons'>map</i>
+              </a>
+            </Tooltip>
           </li>
           <li>
-            <a onMouseDown={this.showImageCrop} className='btn-floating storyeditor-tooltips yellow' data-delay='50' data-position='left' data-tooltip={this.__('Insert Image')}>
-              <i className='material-icons'>insert_photo</i>
-            </a>
+            <Tooltip
+              title={this.__('Insert Image')}
+              position='left' inertia followCursor
+            >
+              <a onMouseDown={this.showImageCrop} className='btn-floating yellow'>
+                <i className='material-icons'>insert_photo</i>
+              </a>
+            </Tooltip>
           </li>
         </ul>
       </div>
       <div ref='saveButton' className='fixed-action-btn action-button-bottom-right'>
-        <a className='btn-floating btn-large blue storyeditor-tooltips' onClick={this.save} data-delay='50' data-position='left' data-tooltip={saveButtonText}>
-          <i className='large material-icons'>save</i>
-        </a>
+        <FloatingButton
+          onClick={this.save}
+          tooltip={saveButtonText}
+          color='blue' icon='save' />
       </div>
       {deleteButton}
 

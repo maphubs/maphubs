@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from '../../components/MapHubsComponent'
+import {Tooltip} from 'react-tippy'
 const urlUtil = require('../../services/url-util')
 const $ = require('jquery')
 const _isequal = require('lodash.isequal')
@@ -39,10 +40,6 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    if (this.props.showTooltip) {
-      $('.group-tag-tooltip').tooltip()
-    }
-
     $(this.refs.groupimg).on('error', function () {
       $(this).attr('src', 'https://cdn.maphubs.com/assets/missing_group.png')
     })
@@ -60,26 +57,24 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {group, size, fontSize, chipWidth} = this.props
     const baseUrl = urlUtil.getBaseUrl()
-    const sizeStr = this.props.size + 'px'
-    const fontSizeStr = this.props.fontSize + 'px'
-    const imgWidth = this.props.size.toString() + 'px'
-    const chipWidth = this.props.chipWidth.toString() + 'px'
+    const sizeStr = size + 'px'
+    const fontSizeStr = fontSize + 'px'
+    const imgWidth = size.toString() + 'px'
+    const chipWidthStr = chipWidth.toString() + 'px'
     const className = classNames(['chip', 'truncate', this.props.className])
 
-    /*
-
-    */
     return (
       <div className={className}
         style={{height: sizeStr,
-          width: chipWidth,
+          width: chipWidthStr,
           minWidth: '75px',
           marginBottom: '2px',
           border: '0.25pt solid #E4E4E4',
           lineHeight: sizeStr,
           fontSize: fontSizeStr}}>
-        <a target='_blank' className='no-padding' rel='noopener noreferrer' href={baseUrl + '/group/' + this.props.group} style={{height: 'initial'}}>
+        <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
           <div className='valign-wrapper'
             style={{
               height: sizeStr,
@@ -89,7 +84,7 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
               marginLeft: '-12px',
               float: 'left'
             }}>
-            <img ref='groupimg' className='valign' src={`/img/resize/40?url=/group/${this.props.group}/thumbnail`}
+            <img ref='groupimg' className='valign' src={`/img/resize/40?url=/group/${group}/thumbnail`}
               style={{
                 height: sizeStr,
                 width: 'auto',
@@ -101,10 +96,16 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
           </div>
 
         </a>
-        <a target='_blank' rel='noopener noreferrer' className='omh-accent-text group-tag-tooltip no-padding'
-          style={{height: sizeStr, width: 'auto', display: 'inherit', lineHeight: sizeStr, fontSize: fontSizeStr}}
-          data-position='top' data-delay='50' data-tooltip={this.props.group}
-          href={baseUrl + '/group/' + this.props.group}>{this.props.group}</a>
+        <Tooltip
+          title={group}
+          position='top'
+          inertia
+          followCursor
+        >
+          <a target='_blank' rel='noopener noreferrer' className='omh-accent-text no-padding'
+            style={{height: sizeStr, width: 'auto', display: 'inherit', lineHeight: sizeStr, fontSize: fontSizeStr}}
+            href={`${baseUrl}/group/${group}`}>{group}</a>
+        </Tooltip>
       </div>
     )
   }

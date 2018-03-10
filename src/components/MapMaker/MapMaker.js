@@ -155,8 +155,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
-    $('.layer-card-tooltipped').tooltip()
-    $('.savebutton-tooltipped').tooltip()
 
     if (this.state.editingLayer && !prevState.editingLayer) {
       // starting editing
@@ -184,12 +182,10 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   onClose = () => {
-    $('.savebutton-tooltipped').tooltip('remove')
     Actions.closeMapDesigner()
   }
 
   onCancel = () => {
-    $('.savebutton-tooltipped').tooltip('remove')
     const _this = this
     ConfirmationActions.showConfirmation({
       title: _this.__('Confirm Cancel'),
@@ -283,18 +279,14 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layerId: number) => {
-    $('.layer-card-tooltipped').tooltip('remove')
     Actions.toggleVisibility(layerId, (layerStyle) => {
       // _this.refs.map.updateLayer(layerStyle);
     })
-    $('.layer-card-tooltipped').tooltip()
   }
 
   showLayerDesigner = (layerId: number) => {
     const layer = _find(this.state.mapLayers, {layer_id: layerId})
-    $('.layer-card-tooltipped').tooltip('remove')
     this.setState({showMapLayerDesigner: true, layerDesignerLayer: layer})
-    $('.layer-card-tooltipped').tooltip()
   }
 
   onLayerStyleChange = (layerId: number, style: Object, labels: Object, legend: Object) => {
@@ -309,14 +301,11 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   removeFromMap = (layer: Layer) => {
-    $('.layer-card-tooltipped').tooltip('remove')
     Actions.removeFromMap(layer)
-    $('.layer-card-tooltipped').tooltip()
   }
 
   addLayer = (layer: Layer) => {
     const _this = this
-    $('.layer-card-tooltipped').tooltip('remove')
 
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
@@ -333,8 +322,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       if (err) {
         NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'})
       }
-      // reset stuck tooltips...
-      $('.layer-card-tooltipped').tooltip()
 
       // switch to map tab
       _this.toggleMapTab()

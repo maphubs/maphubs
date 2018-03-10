@@ -5,7 +5,8 @@ import MapCardUserTag from './MapCardUserTag'
 import StoryHeader from '../Story/StoryHeader'
 import MapHubsComponent from '../../components/MapHubsComponent'
 
-const $ = require('jquery')
+import {Tooltip} from 'react-tippy'
+
 const _isequal = require('lodash.isequal')
 
 export type CardConfig = {|
@@ -52,10 +53,6 @@ export default class Card extends MapHubsComponent<Props, State> {
       return true
     }
     return false
-  }
-
-  componentDidUpdate () {
-    $('.card-tooltip').tooltip()
   }
 
   onClick = () => {
@@ -125,11 +122,18 @@ export default class Card extends MapHubsComponent<Props, State> {
       }
 
       typeIcon = (
-        <i className='material-icons grey-text text-darken-3 card-tooltip'
-          style={{position: 'absolute', bottom: '6px', right: '6px'}}
-          data-position='bottom' data-delay='50' data-tooltip={toolTipText}>
-          {iconName}
-        </i>
+        <Tooltip
+          title={toolTipText}
+          position='bottom'
+          inertia
+          followCursor
+        >
+          <i className='material-icons grey-text text-darken-3'
+            style={{position: 'absolute', bottom: '6px', right: '6px'}}
+          >
+            {iconName}
+          </i>
+        </Tooltip>
       )
     }
 
@@ -137,9 +141,14 @@ export default class Card extends MapHubsComponent<Props, State> {
     if (this.props.private) {
       privateIcon = (
         <div style={{position: 'absolute', top: '5px', right: '5px'}}>
-          <i className='material-icons grey-text text-darken-3 card-tooltip'
-            data-position='bottom' data-delay='50' data-tooltip={this.__('Private')}>
-        lock</i>
+          <Tooltip
+            title={this.__('Private')}
+            position='bottom'
+            inertia
+            followCursor
+          >
+            <i className='material-icons grey-text text-darken-3'>lock</i>
+          </Tooltip>
         </div>
       )
     }

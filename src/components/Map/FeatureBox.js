@@ -68,12 +68,6 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidUpdate (prevProps: Props, prevState: State) {
-    if (!prevState.layerLoaded && this.state.layerLoaded) {
-      $('.feature-box-tooltips').tooltip()
-    }
-  }
-
   getLayer = (layerId: number, host: string) => {
     const _this = this
     let baseUrl
@@ -174,9 +168,8 @@ export default class FeatureBox extends MapHubsComponent<Props, State> {
         let featureButton = ''
         if (host && featureLink) {
           featureButton = (
-            <a href={featureLink} target='_blank' rel='noopener noreferrer'
-              className='feature-box-tooltips' data-delay='50' data-position='bottom' data-tooltip={this.__('More Info')}>
-              <i className='material-icons omh-accent-color' style={{fontSize: 32}}>info_outline</i>
+            <a href={featureLink} target='_blank' rel='noopener noreferrer'>
+              <i className='material-icons omh-color' style={{fontSize: 32}}>info_outline</i>
             </a>
           )
         }

@@ -14,6 +14,7 @@ import CardGrid from '../components/CardCarousel/CardGrid'
 import cardUtil from '../services/card-util'
 import type {UserStoreState} from '../stores/UserStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import FloatingButton from '../components/FloatingButton'
 
 type Props = {|
   stories: Array<Object>,
@@ -93,10 +94,12 @@ export default class AllStories extends MapHubsComponent<Props, State> {
               </div>
             </div>
           </div>
-          <div ref='addButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Story')}>
-            <a onClick={this.onCreateStory} className='btn-floating btn-large red red-text'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              onClick={this.onCreateStory}
+              tooltip={this.__('Create New Story')}
+              tooltipPosition='top'
+              icon='add' />
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

@@ -26,6 +26,7 @@ import turf_bbox from '@turf/bbox'
 import numeral from 'numeral'
 import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
+import {Tooltip} from 'react-tippy'
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl'
 import en from 'react-intl/locale-data/en'
@@ -120,7 +121,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   componentDidMount () {
     const _this = this
     $(this.refs.tabs).tabs()
-    $('.layer-info-tooltip').tooltip()
 
     if (this.props.layer.is_external) {
       // retreive geoJSON data for layers
@@ -387,17 +387,25 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       if (!this.props.layer.is_external && !this.props.layer.remote) {
         mapEditButton = (
           <li>
-            <a onClick={this.openEditor} className='btn-floating layer-info-tooltip blue darken-1' data-delay='50' data-position='left' data-tooltip={this.__('Edit Map Data')}>
-              <i className='material-icons'>mode_edit</i>
-            </a>
+            <Tooltip
+              title={this.__('Edit Map Data')}
+              position='left' inertia followCursor>
+              <a onClick={this.openEditor} className='btn-floating blue darken-1'>
+                <i className='material-icons'>mode_edit</i>
+              </a>
+            </Tooltip>
           </li>
         )
         if (this.props.layer.data_type === 'point') {
           addPhotoPointButton = (
             <li>
-              <a href={'/layer/adddata/' + this.props.layer.layer_id} className='btn-floating layer-info-tooltip blue darken-1' data-delay='50' data-position='left' data-tooltip={this.__('Add a Photo')}>
-                <i className='material-icons'>photo</i>
-              </a>
+              <Tooltip
+                title={this.__('Add a Photo')}
+                position='left' inertia followCursor>
+                <a href={'/layer/adddata/' + this.props.layer.layer_id} className='btn-floating blue darken-1'>
+                  <i className='material-icons'>photo</i>
+                </a>
+              </Tooltip>
             </li>
           )
         }
@@ -411,9 +419,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
             {mapEditButton}
             {addPhotoPointButton}
             <li>
-              <a className='btn-floating layer-info-tooltip yellow' href={'/layer/admin/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}data-delay='50' data-position='left' data-tooltip={this.__('Manage Layer')}>
-                <i className='material-icons'>settings</i>
-              </a>
+              <Tooltip
+                title={this.__('Manage Layer')}
+                position='left' inertia followCursor>
+                <a className='btn-floating yellow' href={'/layer/admin/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}>
+                  <i className='material-icons'>settings</i>
+                </a>
+              </Tooltip>
             </li>
           </ul>
         </div>
@@ -421,10 +433,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     } else {
       editButton = (
         <div className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
-          <a className='btn-floating btn-large layer-info-tooltip red' data-delay='50' data-position='left' data-tooltip={this.__('View Map')}
-            href={'/layer/map/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}>
-            <i className='material-icons'>map</i>
-          </a>
+          <Tooltip
+            title={this.__('View Map')}
+            position='left' inertia>
+            <a className='btn-floating btn-large red'
+              href={'/layer/map/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}>
+              <i className='material-icons'>map</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
@@ -498,7 +514,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}
             &nbsp;-&nbsp;
             <a href={externalUrl} target='_blank' rel='noopener noreferrer'>{externalUrl}</a>
-            <i className='material-icons layer-info-tooltip omh-accent-text' style={{cursor: 'pointer'}} data-delay='50' onClick={function () { _this.copyToClipboard(externalUrl) }} data-position='left' data-tooltip={this.__('Copy to Clipboard')}>launch</i>
+            <Tooltip
+              title={this.__('Copy to Clipboard')}
+              position='left' inertia followCursor>
+              <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={function () { _this.copyToClipboard(externalUrl) }}>launch</i>
+            </Tooltip>
           </p>
         </div>
       )
@@ -518,9 +538,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     if (this.props.layer.private) {
       privateIcon = (
         <div style={{position: 'absolute', top: '15px', right: '10px'}}>
-          <i className='material-icons grey-text text-darken-3 layer-info-tooltip'
-            data-position='left' data-delay='50' data-tooltip={this.__('Private')}>
-        lock</i>
+          <Tooltip
+            title={this.__('Private')}
+            position='left' inertia followCursor>
+            <i className='material-icons grey-text text-darken-3'>lock</i>
+          </Tooltip>
         </div>
       )
     }

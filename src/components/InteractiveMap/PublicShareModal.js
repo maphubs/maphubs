@@ -83,7 +83,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
           <p style={{fontSize: '16px'}}><b>{this.__('Share Link: ')}</b>
           &nbsp;-&nbsp;
             <a href={shareUrl} target='_blank' rel='noopener noreferrer'>{shareUrl}</a>
-            <i className='material-icons layer-info-tooltip omh-accent-text' style={{cursor: 'pointer'}} data-delay='50' onClick={function () { clipboard.writeText(shareUrl) }} data-position='left' data-tooltip={this.__('Copy to Clipboard')}>launch</i>
+            <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={function () { clipboard.writeText(shareUrl) }}>launch</i>
           </p>
           <button onClick={function () { clipboard.writeText(shareUrl) }} className='btn'>{this.__('Copy Link')}</button>
           <p>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>

@@ -6,8 +6,7 @@ import Toggle from '../../components/forms/toggle'
 import _isEqual from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
 import MapStyles from '../Map/Styles'
-
-const $ = require('jquery')
+import {Tooltip} from 'react-tippy'
 
 type Props = {|
   id: number,
@@ -37,10 +36,6 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
     showVisibility: true
   }
 
-  componentDidMount () {
-    $('.map-layer-tooltipped').tooltip()
-  }
-
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
     if (!_isEqual(this.props, nextProps)) {
@@ -52,14 +47,16 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
     return false
   }
 
-  resetTooltips = () => {
-    $('.map-layer-tooltipped').tooltip('remove')
-    $('.map-layer-tooltipped').tooltip()
+  editLayer = () => {
+    this.props.editLayer(this.props.item)
   }
 
-  removeFromMap = (layer: Object) => {
-    $('.map-layer-tooltipped').tooltip('remove')
-    this.props.removeFromMap(layer)
+  removeFromMap = () => {
+    this.props.removeFromMap(this.props.item)
+  }
+
+  showLayerDesigner = () => {
+    this.props.showLayerDesigner(this.props.item.layer_id)
   }
 
   render () {
@@ -98,33 +95,44 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
     if (this.props.showRemove) {
       removeButton = (
         <div className={buttonClass} style={{height: '30px'}}>
-          <a onClick={function () { _this.removeFromMap(layer) }}
-            className='layer-item-btn map-layer-tooltipped'
-            data-position='top' data-delay='50' data-tooltip={_this.__('Remove from Map')}>
-            <i className='material-icons omh-accent-text'
-              style={{height: 'inherit', lineHeight: 'inherit'}}>delete</i></a>
+          <Tooltip
+            title={this.__('Remove from Map')}
+            position='top' inertia followCursor
+          >
+            <a onClick={this.removeFromMap} className='layer-item-btn'>
+              <i className='material-icons omh-accent-text'
+                style={{height: 'inherit', lineHeight: 'inherit'}}>delete</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
     if (this.props.showDesign) {
       designButton = (
         <div className={buttonClass} style={{height: '30px'}}>
-          <a onClick={function () { _this.props.showLayerDesigner(layer.layer_id); _this.resetTooltips() }}
-            className='layer-item-btn map-layer-tooltipped'
-            data-position='top' data-delay='50' data-tooltip={_this.__('Edit Layer Style')}>
-            <i className='material-icons omh-accent-text'
-              style={{height: 'inherit', lineHeight: 'inherit'}}>color_lens</i></a>
+          <Tooltip
+            title={this.__('Edit Layer Style')}
+            position='top' inertia followCursor
+          >
+            <a onClick={this.showLayerDesigner} className='layer-item-btn'>
+              <i className='material-icons omh-accent-text'
+                style={{height: 'inherit', lineHeight: 'inherit'}}>color_lens</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
     if (canEdit) {
       editButton = (
         <div className={buttonClass} style={{height: '30px'}}>
-          <a onClick={function () { _this.props.editLayer(layer); _this.resetTooltips() }}
-            className='layer-item-btn map-layer-tooltipped'
-            data-position='top' data-delay='50' data-tooltip={_this.__('Edit Layer Data')}>
-            <i className='material-icons omh-accent-text'
-              style={{height: 'inherit', lineHeight: 'inherit'}}>edit</i></a>
+          <Tooltip
+            title={this.__('Edit Layer Data')}
+            position='top' inertia followCursor>
+            <a onClick={this.editLayer} className='layer-item-btn'>
+              <i className='material-icons omh-accent-text'
+                style={{height: 'inherit', lineHeight: 'inherit'}}>edit</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
@@ -132,7 +140,7 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
       visibilityToggle = (
         <div className='col s5 no-padding' style={{marginTop: '2px'}}>
           <Formsy>
-            <Toggle name='visible' onChange={function () { _this.props.toggleVisibility(layer.layer_id) }}
+            <Toggle name='visible' onChange={() => { _this.props.toggleVisibility(layer.layer_id) }}
               labelOff='' labelOn='' checked={active}
             />
           </Formsy>
@@ -172,12 +180,15 @@ export default class LayerListItemStatic extends MapHubsComponent<Props, State> 
           }}>
             <div className='col s7 no-padding'>
               <div className={buttonClass} style={{height: '30px'}}>
-                <a href={'/lyr/' + layer.layer_id} target='_blank' rel='noopener noreferrer'
-                  className='layer-item-btn map-layer-tooltipped'
-                  data-position='top' data-delay='50' data-tooltip={_this.__('Layer Info')}>
-                  <i className='material-icons omh-accent-text'
-                    style={{height: 'inherit', lineHeight: 'inherit'}}>info</i>
-                </a>
+                <Tooltip
+                  title={this.__('Layer Info')}
+                  position='top' inertia followCursor>
+                  <a href={`/lyr/${layer.layer_id}`} target='_blank' rel='noopener noreferrer'
+                    className='layer-item-btn'>
+                    <i className='material-icons omh-accent-text'
+                      style={{height: 'inherit', lineHeight: 'inherit'}}>info</i>
+                  </a>
+                </Tooltip>
               </div>
               {removeButton}
               {designButton}

@@ -8,8 +8,6 @@ import MapStyles from '../Map/Styles'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 
-const $ = require('jquery')
-
 type Props = {|
   onChange: Function,
   layer: Object,
@@ -63,10 +61,6 @@ export default class MarkerSettings extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    $('.tooltip-marker-settings').tooltip()
-  }
-
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
@@ -113,8 +107,6 @@ export default class MarkerSettings extends MapHubsComponent<Props, State> {
     }
     this.setState({options})
     this.props.onChange(style, options)
-    $('.tooltip-marker-settings').tooltip('remove')
-    $('.tooltip-marker-settings').tooltip()
   }
 
   render () {
@@ -184,7 +176,7 @@ export default class MarkerSettings extends MapHubsComponent<Props, State> {
           <Formsy ref='form' onChange={this.onFormChange}>
             <div className='row' style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
               <b>{this.__('Enable Markers')}</b>
-              <Toggle name='enabled' labelOff={this.__('Off')} labelOn={this.__('On')} className='tooltip-marker-settings'
+              <Toggle name='enabled' labelOff={this.__('Off')} labelOn={this.__('On')}
                 checked={this.state.options.enabled}
                 dataPosition='right' dataTooltip={this.__('Enable markers for this Layer')}
               />
@@ -210,7 +202,7 @@ export default class MarkerSettings extends MapHubsComponent<Props, State> {
             </div>
             <div className='row no-margin' style={{padding: '0 .75rem'}}>
               <b>{this.__('Invert Colors')}</b>
-              <Toggle name='inverted' labelOff={this.__('Off')} labelOn={this.__('On')} className='tooltip-marker-settings'
+              <Toggle name='inverted' labelOff={this.__('Off')} labelOn={this.__('On')}
                 checked={this.state.options.inverted}
                 dataPosition='right' dataTooltip={this.__('Invert colors')}
               />

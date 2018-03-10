@@ -14,6 +14,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const checkClientError = require('../services/client-error-response').checkClientError
 const debug = require('../services/debug')('views/hubs')
@@ -29,12 +30,6 @@ type Props = {
   user: Object
 }
 
-type DefaultProps = {
-  featuredHubs: Array<Object>,
-  popularHubs: Array<Object>,
-  recentHubs: Array<Object>
-}
-
 type State = {
   searchActive: boolean,
   searchResults: Array<Object>
@@ -43,7 +38,7 @@ type State = {
 export default class Hubs extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     featuredHubs: [],
     popularHubs: [],
     recentHubs: []
@@ -136,10 +131,12 @@ export default class Hubs extends MapHubsComponent<Props, State> {
           <CardCollection cards={popularCards} title={this.__('Popular')} viewAllLink='/hubs/all' />
           <CardCollection cards={recentCards} title={this.__('Recent')} viewAllLink='/hubs/all' />
 
-          <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Hub')}>
-            <a className='btn-floating btn-large red red-text' href='/createhub'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              href='/createhub'
+              tooltip={this.__('Create New Hub')}
+              tooltipPosition='top'
+              icon='add' />
           </div>
           <div className='row center-align'>
             <a className='btn' href='/hubs/all'>{this.__('View All Hubs')}</a>

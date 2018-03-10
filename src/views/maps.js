@@ -12,6 +12,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const cardUtil = require('../services/card-util')
 const debug = require('../services/debug')('views/maps')
@@ -134,10 +135,11 @@ export default class Maps extends MapHubsComponent<Props, State> {
           <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink='/maps/all' />
 
           <div>
-            <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Map')}>
-              <a href='/map/new' className='btn-floating btn-large red red-text'>
-                <i className='large material-icons'>add</i>
-              </a>
+            <div className='fixed-action-btn action-button-bottom-right'>
+              <FloatingButton
+                href='/map/new'
+                tooltip={this.__('Create New Map')} tooltipPosition='top'
+                icon='add' />
             </div>
           </div>
           <div className='row center-align'>

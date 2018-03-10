@@ -17,6 +17,7 @@ import CardGrid from '../components/CardCarousel/CardGrid'
 import type {Layer} from '../stores/layer-store'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const cardUtil = require('../services/card-util')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -156,10 +157,12 @@ export default class Layers extends MapHubsComponent<Props, State> {
             </div>
           </div>
 
-          <div ref='addButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Layer')}>
-            <a href='/createlayer' className='btn-floating btn-large red red-text'>
-              <i className='large material-icons'>add</i>
-            </a>
+          <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
+            <FloatingButton
+              href='/createlayer'
+              tooltip={this.__('Create New Layer')}
+              tooltipPosition='top'
+              icon='add' />
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

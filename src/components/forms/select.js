@@ -6,7 +6,7 @@ import result from 'lodash.result'
 import ReactSelect from 'react-select'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
-const $ = require('jquery')
+import {Tooltip} from 'react-tippy'
 
 type Props = {|
   emptyText: string,
@@ -68,12 +68,6 @@ class Select extends MapHubsComponent<Props, State> {
     this.setNote(this.props.value)
   }
 
-  componentDidMount () {
-    if (this.props.dataTooltip) {
-      $(this.refs.selectwrapper).tooltip()
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     if (!nextProps.startEmpty && this.props.value !== nextProps.value) {
       this.props.setValue(nextProps.value)
@@ -100,8 +94,6 @@ class Select extends MapHubsComponent<Props, State> {
   }
 
   handleSelectChange = (selected) => {
-    // clear toolips so they don't stick
-    $(this.refs.selectwrapper).tooltip('remove')
     let val
     if (selected) {
       val = selected.value
@@ -113,57 +105,61 @@ class Select extends MapHubsComponent<Props, State> {
     }
   }
 
-   validate = () => {
-     if (this.props.isRequired()) {
-       if (this.props.getValue() && this.props.getValue() !== '') {
-         return true
-       } else {
-         return false
-       }
-     } else {
-       return true
-     }
-   }
+  validate = () => {
+    if (this.props.isRequired()) {
+      if (this.props.getValue() && this.props.getValue() !== '') {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  }
 
-   render () {
-     const value = this.props.getValue()
+  render () {
+    const value = this.props.getValue()
 
-     let note = ''
-     if (this.state.note) {
-       /* eslint-disable react/no-danger */
-       note = (<div dangerouslySetInnerHTML={{__html: this.state.note}} />)
-       /* eslint-enable react/no-danger */
-     }
+    let note = ''
+    if (this.state.note) {
+      /* eslint-disable react/no-danger */
+      note = (<div dangerouslySetInnerHTML={{__html: this.state.note}} />)
+      /* eslint-enable react/no-danger */
+    }
 
-     let icon = ''
-     if (this.props.icon) {
-       icon = (<i className='material-icons prefix'>{this.props.icon}</i>)
-     }
+    let icon = ''
+    if (this.props.icon) {
+      icon = (<i className='material-icons prefix'>{this.props.icon}</i>)
+    }
 
-     return (
-       <div className={this.props.className}>
-
-         <div ref='selectwrapper' className='input-field no-margin' id={this.props.id} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
-           data-tooltip={this.props.dataTooltip}>
-           {icon}
-           <div className='row' style={{height: '10px'}}>
-
-             <label htmlFor={this.props.name} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
-
-           </div>
-           <div className='row no-margin'>
-             <ReactSelect
-               name={this.props.name}
-               value={value}
-               placeholder={this.props.emptyText}
-               options={this.props.options}
-               onChange={this.handleSelectChange}
-             />
-           </div>
-         </div>
-         {note}
-       </div>
-     )
-   }
+    return (
+      <div className={this.props.className}>
+        <Tooltip
+          disabled={!this.props.dataTooltip}
+          title={this.props.dataTooltip}
+          position={this.props.dataPosition}
+          inertia
+          followCursor
+        >
+          <div ref='selectwrapper' className='input-field no-margin' id={this.props.id} >
+            {icon}
+            <div className='row' style={{height: '10px'}}>
+              <label htmlFor={this.props.name} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+            </div>
+            <div className='row no-margin'>
+              <ReactSelect
+                name={this.props.name}
+                value={value}
+                placeholder={this.props.emptyText}
+                options={this.props.options}
+                onChange={this.handleSelectChange}
+              />
+            </div>
+          </div>
+          {note}
+        </Tooltip>
+      </div>
+    )
+  }
 }
 export default withFormsy(Select)

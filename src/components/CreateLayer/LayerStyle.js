@@ -164,9 +164,9 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
               fitBounds={mapExtent}
             />
           </div>
-          <div className='row' style={{width: '400px', position: 'relative'}}>
-            <MiniLegend style={{height: 'auto', width: '400px', margin: 'auto', overflow: 'auto'}}
-              collapsible hideInactive={false} showLayersButton={false}
+          <div className='row' style={{width: '400px', position: 'relative', margin: 'auto'}}>
+            <MiniLegend style={{position: 'absolute', height: 'auto', width: '400px', margin: 'auto'}}
+              collapsible={false} hideInactive={false} showLayersButton={false}
               layers={[this.state]} />
           </div>
         </div>

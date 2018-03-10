@@ -7,6 +7,7 @@ import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
+import {Tooltip} from 'react-tippy'
 
 const $ = require('jquery')
 
@@ -31,7 +32,6 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
   }
 
   componentDidMount () {
-    $(this.refs.mapToolButton).tooltip()
     M.Sidenav.init(this.refs.sidenav, {
       edge: 'right',
       draggable: false
@@ -51,51 +51,54 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
    toggleForestAlerts = (model: Object) => {
      // leave panel open for this tool?
      // if(model.enableGLAD2017) this.closePanel();
-     this.props.toggleForestAlerts(model)
+     // this.props.toggleForestAlerts(model)
    }
 
   toggleForestLoss = (model: Object) => {
-    this.props.toggleForestLoss(model)
+    // this.props.toggleForestLoss(model)
   }
 
   render () {
     return (
       <div>
-        <a ref='mapToolButton'
-          href='#'
-          className='sidenav-trigger'
-          data-target='map-tool-panel'
-          style={{
-            display: this.props.show ? 'inherit' : 'none',
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            height: '30px',
-            zIndex: '100',
-            borderRadius: '4px',
-            lineHeight: '30px',
-            textAlign: 'center',
-            boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-            width: '30px'
-          }}
-          data-position='bottom' data-delay='50'
-          data-tooltip={this.__('Tools')}
+        <Tooltip
+          title={this.__('Tools')}
+          position='bottom' inertia followCursor
         >
-          <i className='material-icons'
-            style={{height: '30px',
-              lineHeight: '30px',
-              width: '30px',
-              color: '#000',
+          <a ref='mapToolButton'
+            href='#'
+            className='sidenav-trigger'
+            data-target='map-tool-panel'
+            style={{
+              display: this.props.show ? 'inherit' : 'none',
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              height: '30px',
+              zIndex: '100',
               borderRadius: '4px',
-              cursor: 'pointer',
-              backgroundColor: 'white',
-              borderColor: '#ddd',
-              borderStyle: 'none',
-              borderWidth: '1px',
+              lineHeight: '30px',
               textAlign: 'center',
-              fontSize: '18px'}}
-          >build</i>
-        </a>
+              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
+              width: '30px'
+            }}
+          >
+            <i className='material-icons'
+              style={{height: '30px',
+                lineHeight: '30px',
+                width: '30px',
+                color: '#000',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                borderColor: '#ddd',
+                borderStyle: 'none',
+                borderWidth: '1px',
+                textAlign: 'center',
+                fontSize: '18px'}}
+            >build</i>
+          </a>
+        </Tooltip>
         <div ref='sidenav' className='sidenav' id='map-tool-panel'
           style={{
             backgroundColor: '#FFF',

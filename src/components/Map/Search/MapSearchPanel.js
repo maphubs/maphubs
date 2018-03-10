@@ -4,6 +4,7 @@ import MapHubsComponent from '../../MapHubsComponent'
 import SearchBar from '../../SearchBar/SearchBar'
 import request from 'superagent'
 import MessageActions from '../../../actions/MessageActions'
+import {Tooltip} from 'react-tippy'
 
 const $ = require('jquery')
 const debug = require('../../../services/debug')('MapSearchPanel')
@@ -40,7 +41,6 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.mapSearchButton).tooltip()
     M.Sidenav.init(this.refs.sidenav, {
       edge: 'right',
       draggable: false
@@ -49,7 +49,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
   }
 
   onPanelOpen = () => {
-    $(this.refs.mapSearchButton).tooltip('remove')
+    // remove tooltip?
   }
 
   closePanel = () => {
@@ -95,7 +95,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
       }
     }
   }
-  
+
   runLocationSearch (query: string) {
     const _this = this
     // run autocomplete search
@@ -178,42 +178,45 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
 
     return (
       <div>
-        <a ref='mapSearchButton'
-          className='map-search-button sidenav-trigger'
-          href='#'
-          data-target='map-search-panel'
-          onMouseDown={this.onPanelOpen}
-          style={{
-            display: this.props.show ? 'inherit' : 'none',
-            position: 'absolute',
-            top: '10px',
-            right: '160px',
-            height: '30px',
-            zIndex: '100',
-            borderRadius: '4px',
-            lineHeight: '30px',
-            textAlign: 'center',
-            boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-            width: '30px'
-          }}
-          data-position='bottom' data-delay='50'
-          data-tooltip={this.__('Search')}
+        <Tooltip
+          title={this.__('Search')}
+          position='bottom' inertia followCursor
         >
-          <i className='material-icons'
-            style={{height: '30px',
-              lineHeight: '30px',
-              width: '30px',
-              color: '#000',
+          <a ref='mapSearchButton'
+            className='map-search-button sidenav-trigger'
+            href='#'
+            data-target='map-search-panel'
+            onMouseDown={this.onPanelOpen}
+            style={{
+              display: this.props.show ? 'inherit' : 'none',
+              position: 'absolute',
+              top: '10px',
+              right: '160px',
+              height: '30px',
+              zIndex: '100',
               borderRadius: '4px',
-              cursor: 'pointer',
-              backgroundColor: 'white',
-              borderColor: '#ddd',
-              borderStyle: 'none',
-              borderWidth: '1px',
+              lineHeight: '30px',
               textAlign: 'center',
-              fontSize: '18px'}}
-          >search</i>
-        </a>
+              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
+              width: '30px'
+            }}
+          >
+            <i className='material-icons'
+              style={{height: '30px',
+                lineHeight: '30px',
+                width: '30px',
+                color: '#000',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                borderColor: '#ddd',
+                borderStyle: 'none',
+                borderWidth: '1px',
+                textAlign: 'center',
+                fontSize: '18px'}}
+            >search</i>
+          </a>
+        </Tooltip>
         <div ref='sidenav' className='sidenav' id='map-search-panel'
           style={{
             backgroundColor: '#FFF',

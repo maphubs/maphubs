@@ -4,6 +4,7 @@ import MapHubsComponent from './MapHubsComponent'
 import {Modal, ModalContent} from './Modal/Modal.js'
 import Promise from 'bluebird'
 import MessageActions from '../actions/MessageActions'
+import {Tooltip} from 'react-tippy'
 const $ = require('jquery')
 // import Cropper from 'react-cropper';
 const EXIF = require('exif-js')
@@ -477,10 +478,14 @@ resizeImage = (sourceCanvas: any): Bluebird$Promise<Object> => {
       )
 
       saveButton = (
-        <div ref='saveButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Save Map')}>
-          <a onMouseDown={this.onSave} className='btn-floating btn-large omh-color'>
-            <i className='large material-icons'>save</i>
-          </a>
+        <div ref='saveButton' className='fixed-action-btn action-button-bottom-right'>
+          <Tooltip
+            title={this.__('Save Map')}
+            position='top' inertia followCursor>
+            <a onMouseDown={this.onSave} className='btn-floating btn-large omh-color'>
+              <i className='large material-icons'>save</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }

@@ -2,8 +2,8 @@
 import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
+import {Tooltip} from 'react-tippy'
 const classNames = require('classnames')
-const $ = require('jquery')
 const debug = require('../../services/debug')('Toggle')
 
 type Props = {|
@@ -42,24 +42,12 @@ class Toggle extends MapHubsComponent<Props, void> {
     }
   }
 
-  componentDidMount () {
-    if (this.props.dataTooltip) {
-      $(this.refs.toggle).tooltip()
-    }
-  }
-
   componentWillReceiveProps (nextProps: Props) {
     // only change if the props value is swapped
     const currentValue = this.props.checked
     if ('checked' in nextProps &&
     nextProps.checked !== currentValue) {
       this.props.setValue(nextProps.checked)
-    }
-  }
-
-  componentDidUpdate (prevProps: Props) {
-    if (!prevProps.dataTooltip && this.props.dataTooltip) {
-      $(this.refs.toggle).tooltip()
     }
   }
 
@@ -78,7 +66,7 @@ class Toggle extends MapHubsComponent<Props, void> {
     // (specify either the value prop, or the defaultValue prop, but not both).
     delete props.defaultChecked
 
-    const className = classNames('switch', this.props.className, {tooltipped: !!this.props.dataTooltip})
+    const className = classNames('switch', this.props.className)
 
     let checked = this.props.getValue()
 
@@ -92,16 +80,27 @@ class Toggle extends MapHubsComponent<Props, void> {
     }
 
     return (
-      <div ref='toggle' className={className} disabled={props.disabled} data-delay={props.dataDelay} data-position={props.dataPosition}
-        style={props.style}
-        data-tooltip={props.dataTooltip}>
-        <label>
-          {props.labelOff}
-          <input type='checkbox' id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue} />
-          <span className={leverClass} />
-          {props.labelOn}
-        </label>
-      </div>
+      <Tooltip
+        disabled={!this.props.dataTooltip}
+        title={this.props.dataTooltip}
+        position={this.props.dataPosition}
+        inertia
+        followCursor
+      >
+        <div
+          ref='toggle'
+          className={className}
+          disabled={props.disabled}
+          style={props.style}
+        >
+          <label>
+            {props.labelOff}
+            <input type='checkbox' id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue} />
+            <span className={leverClass} />
+            {props.labelOn}
+          </label>
+        </div>
+      </Tooltip>
     )
   }
 }

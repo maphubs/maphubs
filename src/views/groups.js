@@ -14,6 +14,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const debug = require('../services/debug')('views/groups')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -139,10 +140,10 @@ export default class Groups extends MapHubsComponent<Props, State> {
             <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink='/groups/all' />
             <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink='/groups/all' />
 
-            <div className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Group')}>
-              <a className='btn-floating btn-large red red-text' href='/creategroup'>
-                <i className='large material-icons'>add</i>
-              </a>
+            <div className='fixed-action-btn action-button-bottom-right'>
+              <FloatingButton
+                href='/creategroup' icon='add'
+                tooltip={this.__('Create New Group')} tooltipPosition='top' />
             </div>
           </div>
           <div className='row center-align'>

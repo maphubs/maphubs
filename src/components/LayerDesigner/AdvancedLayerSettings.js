@@ -8,8 +8,6 @@ import _isequal from 'lodash.isequal'
 import type {GLStyle} from '../../types/mapbox-gl-style'
 import type {Layer} from '../../stores/layer-store'
 
-const $ = require('jquery')
-
 type Props = {|
   onChange: Function,
   layer: Layer,
@@ -68,14 +66,6 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     }
   }
 
-  componentDidMount () {
-    $('.tooltip-advanced-layer-settings').tooltip()
-  }
-
-  componentDidUpdate () {
-    $('.tooltip-advanced-layer-settings').tooltip()
-  }
-
   componentWillReceiveProps (nextProps: Props) {
     const state = this.getStateFromStyleProp(nextProps)
     this.setState(state)
@@ -125,16 +115,15 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     let toggleFill
     if (this.props.layer.data_type === 'polygon') {
       toggleFill = (
-        <div className='row tooltip-advanced-layer-settings'
-          data-position='right'
-          data-tooltip={this.__('Hide polygon fill and only show the outline in the selected color')}
-        >
+        <div className='row'>
           <b>{this.__('Fill')}</b>
           <Toggle
             name='fill'
             labelOff={this.__('Outline Only')}
             labelOn={this.__('Fill')}
             checked={this.state.interactive}
+            dataPosition='right'
+            dataTooltip={this.__('Hide polygon fill and only show the outline in the selected color')}
           />
         </div>
       )
@@ -146,14 +135,14 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
           {toggleFill}
           <div className='row'>
             <b>{this.__('Interactive')}</b>
-            <Toggle name='interactive' labelOff={this.__('Off')} labelOn={this.__('On')} className='tooltip-advanced-layer-settings'
+            <Toggle name='interactive' labelOff={this.__('Off')} labelOn={this.__('On')}
               checked={this.state.interactive}
               dataPosition='right' dataTooltip={this.__('Allow users to interact with this layer by clicking the map')}
             />
           </div>
           <div className='row'>
             <b>{this.__('Show Below Base Map Labels')}</b>
-            <Toggle name='showBehindBaseMapLabels' className='tooltip-advanced-layer-settings' labelOff={this.__('Off')} labelOn={this.__('On')}
+            <Toggle name='showBehindBaseMapLabels' labelOff={this.__('Off')} labelOn={this.__('On')}
               checked={this.state.showBehindBaseMapLabels}
               dataPosition='right' dataTooltip={this.__('Allow base map labels to display on top of this layer')}
             />

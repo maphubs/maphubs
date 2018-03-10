@@ -22,6 +22,7 @@ import type {FeaturePhotoStoreState} from '../stores/FeaturePhotoStore'
 import type {FeatureNotesStoreState} from '../stores/FeatureNotesStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const urlUtil = require('../services/url-util')
 const $ = require('jquery')
@@ -161,9 +162,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       if (!this.props.layer.is_external) {
         idEditButton = (
           <li>
-            <a onClick={this.openEditor} className='btn-floating layer-info-tooltip blue darken-1' data-delay='50' data-position='left' data-tooltip={this.__('Edit Map Data')}>
-              <i className='material-icons'>mode_edit</i>
-            </a>
+            <FloatingButton
+              onClick={this.openEditor} icon='mode_edit'
+              tooltip={this.__('Edit Map Data')} tooltipPosition='left' />
           </li>
         )
       }

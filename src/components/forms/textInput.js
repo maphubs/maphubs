@@ -3,8 +3,8 @@ import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
+import {Tooltip} from 'react-tippy'
 const classNames = require('classnames')
-const $ = require('jquery')
 
 type Props = {|
   value: string,
@@ -86,12 +86,6 @@ class TextInput extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    if (this.props.dataTooltip) {
-      $(this.refs.inputWrapper).tooltip()
-    }
-  }
-
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
@@ -112,12 +106,6 @@ class TextInput extends MapHubsComponent<Props, State> {
       return true
     }
     return false
-  }
-
-  componentDidUpdate (prevProps: Props) {
-    if (!prevProps.dataTooltip && this.props.dataTooltip) {
-      $(this.refs.inputWrapper).tooltip()
-    }
   }
 
   changeValue = (event) => {
@@ -177,15 +165,23 @@ class TextInput extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div ref='inputWrapper' className={className} style={this.props.style} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
-        {icon}
-        <input ref='input' id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
-          disabled={this.props.disabled}
-          onClick={this.props.onClick}
-          onChange={this.changeValue} />
-        <label htmlFor={id} className={labelClassName} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
-        {charCount}
-      </div>
+      <Tooltip
+        disabled={!this.props.dataTooltip}
+        title={this.props.dataTooltip}
+        position={this.props.dataPosition}
+        inertia
+        followCursor
+      >
+        <div ref='inputWrapper' className={className} style={this.props.style}>
+          {icon}
+          <input ref='input' id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
+            disabled={this.props.disabled}
+            onClick={this.props.onClick}
+            onChange={this.changeValue} />
+          <label htmlFor={id} className={labelClassName} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
+          {charCount}
+        </div>
+      </Tooltip>
     )
   }
 }

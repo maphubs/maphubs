@@ -19,6 +19,7 @@ import CardGrid from '../components/CardCarousel/CardGrid'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import FloatingButton from '../components/FloatingButton'
 
 const debug = require('../services/debug')('views/groups')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -159,10 +160,10 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
               </div>
             </div>
 
-            <div ref='addButton' className='fixed-action-btn action-button-bottom-right tooltipped' data-position='top' data-delay='50' data-tooltip={this.__('Create New Group')}>
-              <a className='btn-floating btn-large red red-text' href='/creategroup'>
-                <i className='large material-icons'>add</i>
-              </a>
+            <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
+              <FloatingButton
+                href='/creategroup' icon='add'
+                tooltip={this.__('Create New Group')} tooltipPosition='top' />
             </div>
           </div>
         </main>

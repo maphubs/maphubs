@@ -46,7 +46,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
   }
 
   toggleCollapsed = (e: Event) => {
-    if (e.target.id !== 'legend-settings') {
+    if (this.props.collapsible && e.target.id !== 'legend-settings') {
       this.setState({
         collapsed: !this.state.collapsed
       })
@@ -76,8 +76,6 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
             textAlign: 'center',
             width: '32px'
           }}
-          data-position='bottom' data-delay='50'
-          data-tooltip={this.__('Tools')}
         >
           <i className='material-icons'
             id='legend-settings'

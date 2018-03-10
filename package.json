@@ -181,6 +181,7 @@
     "react-select": "^1.0.0-rc.9",
     "react-share": "^2.0.0",
     "react-slick": "0.20.0",
+    "react-tippy": "^1.2.2",
     "reflux": "^6.4.1",
     "reflux-rehydrate": "^0.1.3",
     "request": "^2.81.0",

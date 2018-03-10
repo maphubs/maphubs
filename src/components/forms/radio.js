@@ -1,13 +1,12 @@
 // @flow
 import React from 'react'
 import {withFormsy} from 'formsy-react'
-import classNames from 'classnames'
+import {Tooltip} from 'react-tippy'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 
 type Props = {
   className: string,
   dataTooltip: string,
-  dataDelay: number,
   dataPosition: string,
   defaultValue: string,
   label: string,
@@ -41,29 +40,34 @@ class Radio extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
-    const className = classNames(this.props.className, {tooltipped: !!this.props.dataTooltip})
+    const {name, className, dataPosition, dataTooltip, options, label} = this.props
     const value = this.props.getValue()
-    const name = this.props.name
     const _this = this
 
     return (
-      <div className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition}
-        data-tooltip={this.props.dataTooltip}>
+      <Tooltip
+        disabled={!dataTooltip}
+        title={dataTooltip}
+        position={dataPosition}
+        inertia followCursor
+      >
+        <div className={className}>
 
-        <label>{this.props.label}</label>
-        {this.props.options.map((option) => {
-          let checked = false
-          if (option.value === value) {
-            checked = true
-          }
-          return (<p key={option.value}>
-            <label>
-              <input name={name} type='radio' id={option.value} onChange={_this.changeValue} checked={checked} />
-              <span>{option.label}</span>
-            </label>
-          </p>)
-        })}
-      </div>
+          <label>{label}</label>
+          {options.map((option) => {
+            let checked = false
+            if (option.value === value) {
+              checked = true
+            }
+            return (<p key={option.value}>
+              <label>
+                <input name={name} type='radio' id={option.value} onChange={_this.changeValue} checked={checked} />
+                <span>{option.label}</span>
+              </label>
+            </p>)
+          })}
+        </div>
+      </Tooltip>
     )
   }
 }

@@ -8,13 +8,12 @@ import type {Layer} from '../../stores/layer-store'
 import _isEqual from 'lodash.isequal'
 import flow from 'lodash.flow'
 import MapStyles from '../../components/Map/Styles'
+import {Tooltip} from 'react-tippy'
 
 require('dnd-core/lib/actions/dragDrop')
 import {DragSource, DropTarget} from 'react-dnd'
 import DraggleIndicator from '../../components/UI/DraggableIndicator'
 import DragItemConfig from '../../components/UI/DragItemConfig'
-
-const $ = require('jquery')
 
 type Props = {
   id: number,
@@ -41,10 +40,6 @@ class LayerListItem extends MapHubsComponent<Props, void> {
     showVisibility: false
   }
 
-  componentDidMount () {
-    $('.map-layer-tooltipped').tooltip()
-  }
-
   shouldComponentUpdate (nextProps, nextState) {
     // only update if something changes
     if (!_isEqual(this.props, nextProps)) {
@@ -56,14 +51,20 @@ class LayerListItem extends MapHubsComponent<Props, void> {
     return false
   }
 
-  resetTooltips = () => {
-    $('.map-layer-tooltipped').tooltip('remove')
-    $('.map-layer-tooltipped').tooltip()
+  editLayer = () => {
+    this.props.editLayer(this.props.item)
   }
 
-  removeFromMap = (layer) => {
-    $('.map-layer-tooltipped').tooltip('remove')
-    this.props.removeFromMap(layer)
+  removeFromMap = () => {
+    this.props.removeFromMap(this.props.item)
+  }
+
+  showLayerDesigner = () => {
+    this.props.showLayerDesigner(this.props.item.layer_id)
+  }
+
+  toggleVisibility = () => {
+    this.props.showLayerDesigner(this.props.item.layer_id)
   }
 
   render () {
@@ -107,33 +108,43 @@ class LayerListItem extends MapHubsComponent<Props, void> {
     if (this.props.showRemove) {
       removeButton = (
         <div className={buttonClass} style={{height: '30px', width: '22px'}}>
-          <a onClick={function () { _this.removeFromMap(layer) }}
-            className='layer-item-btn map-layer-tooltipped'
-            data-position='top' data-delay='50' data-tooltip={_this.__('Remove from Map')}>
-            <i className='material-icons omh-accent-text'
-              style={{height: 'inherit', lineHeight: 'inherit'}}>delete</i></a>
+          <Tooltip
+            title={this.__('Remove from Map')}
+            position='top' inertia followCursor>
+            <a onClick={this.removeFromMap} className='layer-item-btn'>
+              <i className='material-icons omh-accent-text'
+                style={{height: 'inherit', lineHeight: 'inherit'}}>delete</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
     if (this.props.showDesign) {
       designButton = (
         <div className={buttonClass} style={{height: '30px', width: '22px'}}>
-          <a onClick={function () { _this.props.showLayerDesigner(layer.layer_id); _this.resetTooltips() }}
-            className='layer-item-btn map-layer-tooltipped'
-            data-position='top' data-delay='50' data-tooltip={_this.__('Edit Layer Style')}>
-            <i className='material-icons omh-accent-text'
-              style={{height: 'inherit', lineHeight: 'inherit'}}>color_lens</i></a>
+          <Tooltip
+            title={this.__('Edit Layer Style')}
+            position='top' inertia followCursor>
+            <a onClick={this.showLayerDesigner}
+              className='layer-item-btn'>
+              <i className='material-icons omh-accent-text'
+                style={{height: 'inherit', lineHeight: 'inherit'}}>color_lens</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
     if (canEdit) {
       editButton = (
         <div className={buttonClass} style={{height: '30px', width: '22px'}}>
-          <a onClick={function () { _this.props.editLayer(layer); _this.resetTooltips() }}
-            className='layer-item-btn map-layer-tooltipped'
-            data-position='top' data-delay='50' data-tooltip={_this.__('Edit Layer Data')}>
-            <i className='material-icons omh-accent-text'
-              style={{height: 'inherit', lineHeight: 'inherit'}}>edit</i></a>
+          <Tooltip
+            title={this.__('Edit Layer Data')}
+            position='top' inertia followCursor>
+            <a onClick={this.editLayer} className='layer-item-btn'>
+              <i className='material-icons omh-accent-text'
+                style={{height: 'inherit', lineHeight: 'inherit'}}>edit</i>
+            </a>
+          </Tooltip>
         </div>
       )
     }
@@ -141,7 +152,8 @@ class LayerListItem extends MapHubsComponent<Props, void> {
       visibilityToggle = (
         <div className='col s4 no-padding' style={{marginTop: '2px'}}>
           <Formsy>
-            <Toggle name='visible' onChange={function () { _this.props.toggleVisibility(layer.layer_id) }}
+            <Toggle name='visible' onChange={this.toggleVisibility}
+              dataPosition='right' dataTooltip={this._('Show/Hide Layer')}
               labelOff='' labelOn='' checked={active}
             />
           </Formsy>
@@ -183,12 +195,15 @@ class LayerListItem extends MapHubsComponent<Props, void> {
           }}>
             <div className='col s8 no-padding'>
               <div className={buttonClass} style={{height: '30px', width: '22px'}}>
-                <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'
-                  className='layer-item-btn map-layer-tooltipped'
-                  data-position='top' data-delay='50' data-tooltip={_this.__('Layer Info')}>
-                  <i className='material-icons omh-accent-text'
-                    style={{height: 'inherit', lineHeight: 'inherit'}}>info</i>
-                </a>
+                <Tooltip
+                  title={_this.__('Layer Info')}
+                  position='right' inertia followCursor>
+                  <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'
+                    className='layer-item-btn'>
+                    <i className='material-icons omh-accent-text'
+                      style={{height: 'inherit', lineHeight: 'inherit'}}>info</i>
+                  </a>
+                </Tooltip>
               </div>
               {removeButton}
               {designButton}

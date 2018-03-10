@@ -3,8 +3,8 @@ import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
+import {Tooltip} from 'react-tippy'
 const classNames = require('classnames')
-const $ = require('jquery')
 
 type Props = {
   length: number,
@@ -43,12 +43,6 @@ class TextArea extends MapHubsComponent<Props, State> {
     this.state = {
       value: this.props.value,
       charCount: this.props.value ? this.props.value.length : 0
-    }
-  }
-
-  componentDidMount () {
-    if (this.props.dataTooltip) {
-      $(this.refs.inputWrapper).tooltip()
     }
   }
 
@@ -107,15 +101,23 @@ class TextArea extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div ref='inputWrapper' className={className} data-delay={this.props.dataDelay} data-position={this.props.dataPosition} data-tooltip={this.props.dataTooltip}>
-        {icon}
-        <textarea ref='textarea' id={this.props.name} className={textAreaClassName} value={this.state.value} onChange={this.changeValue} />
-        <label htmlFor={this.props.name} className={labelClassName} data-error={this.props.getErrorMessage()} data-success=''>{this.props.label}</label>
-        <span className='character-counter'
-          style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
-          {this.state.charCount} / {this.props.length}
-        </span>
-      </div>
+      <Tooltip
+        disabled={!this.props.dataTooltip}
+        title={this.props.dataTooltip}
+        position={this.props.dataPosition}
+        inertia
+        followCursor
+      >
+        <div ref='inputWrapper' className={className}>
+          {icon}
+          <textarea ref='textarea' id={this.props.name} className={textAreaClassName} value={this.state.value} onChange={this.changeValue} />
+          <label htmlFor={this.props.name} className={labelClassName} data-error={this.props.getErrorMessage()} data-success=''>{this.props.label}</label>
+          <span className='character-counter'
+            style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
+            {this.state.charCount} / {this.props.length}
+          </span>
+        </div>
+      </Tooltip>
     )
   }
 }
