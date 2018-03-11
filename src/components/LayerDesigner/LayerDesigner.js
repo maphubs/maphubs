@@ -168,8 +168,8 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
     return (
       <div>
         <ul ref='collapsible' className='collapsible' data-collapsible='accordion'>
-          <li>
-            <div className='collapsible-header active'>
+          <li className='active'>
+            <div className='collapsible-header'>
               <i className='material-icons'>color_lens</i>{this.__('Colors')}
             </div>
             <div className='collapsible-body'>

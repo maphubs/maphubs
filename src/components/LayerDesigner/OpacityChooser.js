@@ -117,8 +117,8 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
     return (
       <div>
         <ul ref='collapsible' className='collapsible' data-collapsible='accordion'>
-          <li>
-            <div className='collapsible-header active'>
+          <li className='active'>
+            <div className='collapsible-header'>
               <i className='material-icons'>opacity</i>{this.__('Opacity')}
             </div>
             <div className='collapsible-body'>

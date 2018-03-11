@@ -481,8 +481,8 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
         <div className='create-map-side-nav col s6 m4 l3 no-padding' style={{height: '100%'}}>
           <ul ref='mapMakerToolPanel' className='collapsible no-margin' data-collapsible='accordion' style={{height: '100%', borderTop: 'none'}}>
             {editLayerPanel}
-            <li ref='layersListPanel'>
-              <div className='collapsible-header active'><i className='material-icons'>layers</i>{this.__('Overlay Layers')}</div>
+            <li ref='layersListPanel' className='active'>
+              <div className='collapsible-header'><i className='material-icons'>layers</i>{this.__('Overlay Layers')}</div>
               <div className='collapsible-body' >
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
                   {overlayLayerList}

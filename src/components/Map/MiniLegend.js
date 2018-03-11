@@ -191,7 +191,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
             boxShadow: 'none',
             pointerEvents: 'none',
             border: 'none'}}>
-          <li className='z-depth-1'
+          <li className='z-depth-1 active'
             style={{
               backgroundColor: '#FFF',
               height: 'auto',
@@ -199,7 +199,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
               borderTop: '1px solid #ddd',
               borderRight: '1px solid #ddd',
               borderLeft: '1px solid #ddd'}}>
-            <div className='collapsible-header active no-padding' style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
+            <div className='collapsible-header no-padding' style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
               {title}
             </div>
             <div className='collapsible-body'
