@@ -157,7 +157,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
               <SearchBox label={this.__('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
             </div>
           </div>
-          <div className='row'style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto'}}>
+          <div className='row' style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto', paddingRight: '3%', paddingLeft: '3%'}}>
             <div className='col s12 no-padding' style={{height: '100%', width: '100%'}}>
               {searchResults}
               {myMaps}

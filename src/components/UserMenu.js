@@ -2,7 +2,7 @@
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
 import UserStore from '../stores/UserStore'
-import UserActions from '../actions/UserActions'
+// import UserActions from '../actions/UserActions'
 import Gravatar from './user/Gravatar'
 import UserIcon from './user/UserIcon'
 import _isequal from 'lodash.isequal'
@@ -31,6 +31,10 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
     this.stores.push(UserStore)
   }
 
+  componentDidMount () {
+    this.initDropdown()
+  }
+
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
 
@@ -45,6 +49,12 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
 
   componentDidUpdate (prevProps: Props, prevState: State) {
     if (this.state.user && !prevState.user) {
+      this.initDropdown()
+    }
+  }
+
+  initDropdown = () => {
+    if (this.state.user) {
       M.Dropdown.init(this.refs.userButton, {
         inDuration: 300,
         outDuration: 225,

@@ -153,7 +153,7 @@ class LayerListItem extends MapHubsComponent<Props, void> {
         <div className='col s4 no-padding' style={{marginTop: '2px'}}>
           <Formsy>
             <Toggle name='visible' onChange={this.toggleVisibility}
-              dataPosition='right' dataTooltip={this._('Show/Hide Layer')}
+              dataPosition='right' dataTooltip={this.__('Show/Hide Layer')}
               labelOff='' labelOn='' checked={active}
             />
           </Formsy>

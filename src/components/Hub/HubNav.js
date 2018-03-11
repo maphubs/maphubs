@@ -61,8 +61,8 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
     return (
       <nav className='white' style={{height: '0px'}}>
         <div className='nav-wrapper'>
-          <a href='#' data-target='nav' className='button-collapse white-text text-shadow'
-            style={{display: 'block', position: 'absolute', top: '5px', right: '5px'}}>
+          <a href='#' data-target='nav' className='button-collapse white-text text-shadow sidenav-trigger'
+            style={{display: 'block', position: 'absolute', top: '5px', right: '5px', zIndex: 1}}>
             <i className='material-icons'>menu</i>
           </a>
           <ul ref='hubNav' className='sidenav' id='nav'>
