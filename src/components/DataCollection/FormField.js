@@ -7,22 +7,24 @@ import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {|
   preset: Object,
-  value: any
+  value: any,
+  style?: Object
 |}
 
 export default class FormField extends MapHubsComponent<Props, void> {
   props: Props
 
   render () {
-    const preset = this.props.preset
+    const {preset, style, value} = this.props
     let field = (
       <TextInput
         name={preset.tag}
         label={this._o_(preset.label)}
         className='col s12 no-margin'
+        style={style}
         required={preset.isRequired}
         showCharCount={false}
-        value={this.props.value}
+        value={value}
       />
     )
 
@@ -45,11 +47,12 @@ export default class FormField extends MapHubsComponent<Props, void> {
           name={preset.tag}
           label={this._o_(preset.label)}
           className='col s12 no-margin'
+          style={style}
           validations='isNumeric' validationErrors={{
             isNumeric: this.__('Value must be a number')
           }}
           required={preset.isRequired}
-          value={this.props.value}
+          value={value}
         />
       )
     } else if (preset.type === 'radio' || preset.type === 'combo') {
@@ -66,9 +69,9 @@ export default class FormField extends MapHubsComponent<Props, void> {
           label={this._o_(preset.label)}
           options={options}
           className='col s12 no-margin'
-          startEmpty={!this.props.value}
+          startEmpty={!value}
           required={preset.isRequired}
-          value={this.props.value}
+          value={value}
         />
       )
     } else if (preset.type === 'check') {
@@ -76,7 +79,7 @@ export default class FormField extends MapHubsComponent<Props, void> {
         <Toggle name={preset.tag}
           labelOff='' labelOn={this._o_(preset.label)}
           className='col s12'
-          checked={this.props.value}
+          checked={value}
         />
       )
     }

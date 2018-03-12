@@ -13,7 +13,8 @@ type Props = {|
   onValid?: Function,
   onInValid?: Function,
   onChange?: Function,
-  submitText?: string
+  submitText?: string,
+  style?: Object
 |}
 
 type DefaultProps = {
@@ -69,10 +70,9 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const _this = this
-
+    const {style, showSubmit, presets, values} = this.props
     let submit = ''
-    if (this.props.showSubmit) {
+    if (showSubmit) {
       submit = (
         <div className='right'>
           <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.state.submitText}</button>
@@ -81,25 +81,27 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Formsy
-        onValidSubmit={this.onSubmit}
-        onChange={this.onChange}
-        onValid={this.onValid} onInvalid={this.onInValid}>
-        {
-          this.props.presets.map((preset) => {
-            let value
-            if (_this.props.values && _this.props.values[preset.tag]) {
-              value = _this.props.values[preset.tag]
-            }
-            if (preset.tag !== 'photo_url') {
-              return (
-                <FormField key={preset.tag} preset={preset} value={value} />
-              )
-            }
-          })
-        }
-        {submit}
-      </Formsy>
+      <div style={style}>
+        <Formsy
+          onValidSubmit={this.onSubmit}
+          onChange={this.onChange}
+          onValid={this.onValid} onInvalid={this.onInValid}>
+          {
+            presets.map((preset) => {
+              let value
+              if (values && values[preset.tag]) {
+                value = values[preset.tag]
+              }
+              if (preset.tag !== 'photo_url') {
+                return (
+                  <FormField key={preset.tag} preset={preset} value={value} />
+                )
+              }
+            })
+          }
+          {submit}
+        </Formsy>
+      </div>
     )
   }
 }
