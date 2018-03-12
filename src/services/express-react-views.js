@@ -288,10 +288,10 @@ function createEngine (engineOptions) {
       }
 
       markup +=
-      //  '<link rel="stylesheet" type="text/css" href="/public/vendor.css">' +
-        '<link rel="stylesheet" type="text/css" href="/css/maphubs.css">'
-
-        // some endpoints don't generate css
+        `<link rel="stylesheet" type="text/css" href="${assetHost + getAssets('vendor').css}">
+        <link rel="stylesheet" type="text/css" href="/css/maphubs.css">
+        `
+      // some endpoints don't generate css
       const cssFile = assetHost + getAssets(clientFileName).css
       if (cssFile) {
         markup += `<link rel="stylesheet" type="text/css" href="${cssFile}">`
@@ -321,8 +321,14 @@ function createEngine (engineOptions) {
                 tags: {host: '${local.host}'}
               }).install();
           </script>
-          <script type="text/javascript" src="${assetHost + getAssets('vendor').js}"></script>
-          <script type="text/javascript" src="${assetHost + getAssets('locales').js}"></script>
+          `
+
+      markup += `
+        <script type="text/javascript" src="${assetHost + getAssets('vendor').js}"></script>
+        <script type="text/javascript" src="${assetHost + getAssets('locales').js}"></script>
+      `
+
+      markup += `
           <script type="text/javascript">
               var MAPHUBS_CONFIG = {
                 host: "${local.host}",

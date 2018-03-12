@@ -9,6 +9,7 @@ var pathToMediumEditor = path.resolve(__dirname, '../node_modules/medium-editor/
 
 module.exports = {
   mode: 'development',
+  cache: true,
   devtool: 'eval',
   entry: {
     auth0login: './src/client/auth0login',
@@ -65,7 +66,7 @@ module.exports = {
     pageedit: './src/client/pageedit',
     searchindexadmin: './src/client/searchindexadmin',
     explore: './src/client/explore',
-    vendor: ['jquery', 'slugify', 'react', 'react-dom', 'materialize-css', 'reflux', 'debug', 'react-notification', 'superagent', 'bluebird', 'classnames', 'lodash.isequal', '@turf/bbox', '@turf/meta', 'superagent-jsonp', 'terraformer', 'intl', 'moment-timezone', 'mapbox-gl', 'turf-jsts', 'mapbox-gl-regex-query', '@mapbox/mapbox-gl-draw', 'iconv-lite', 'urlencode', 'elliptic', 'react-slick'],
+    // vendor: ['./src/vendor'],
     locales: ['./src/services/locales']
   },
   resolve: {
@@ -99,6 +100,7 @@ module.exports = {
         loader: 'babel-loader',
         include: [/i18n\.js/, /locales/, /views/, /components/, /stores/, /actions/, /services/, /client/, /medium-editor/],
         options: {
+          cacheDirectory: true,
           presets: [
             ['env', {
               'browsers': ['> 5%', 'not ie <= 11']
@@ -107,8 +109,7 @@ module.exports = {
             'stage-0'
           ],
           plugins: ['transform-flow-strip-types', 'version-inline']
-        },
-        type: 'javascript/auto'
+        }
       },
       {
         test: /\.(scss|css)$/,
@@ -153,6 +154,18 @@ module.exports = {
     new ExtractTextPlugin({filename: '[name].css'}),
     new webpack.optimize.ModuleConcatenationPlugin()
   ],
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all'
+        }
+      }
+    }
+  },
 
   externals: {
     'unicode/category/So': '{}'

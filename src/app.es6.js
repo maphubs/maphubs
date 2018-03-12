@@ -115,13 +115,12 @@ if (process.env.NODE_ENV !== 'production') {
   log.info('Dev: Using Webpack Dev Middleware')
   app.use(webpackDevMiddleware(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    stats: {
-      chunks: false,
-      timings: false,
-      assets: false,
-      modules: false,
-      children: false
-    }
+    lazy: false,
+    logLevel: 'debug',
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    stats: 'errors-only'
   }))
 }
 
