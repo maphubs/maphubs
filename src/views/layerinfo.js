@@ -121,6 +121,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   componentDidMount () {
     const _this = this
     $(this.refs.tabs).tabs()
+    M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
 
     if (this.props.layer.is_external) {
       // retreive geoJSON data for layers
@@ -411,7 +412,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
         }
       }
       editButton = (
-        <div className='fixed-action-btn action-button-bottom-right'>
+        <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right'>
           <a className='btn-floating btn-large red red-text'>
             <i className='large material-icons'>more_vert</i>
           </a>
@@ -432,7 +433,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       )
     } else {
       editButton = (
-        <div className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
+        <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
           <Tooltip
             title={this.__('View Map')}
             position='left' inertia>

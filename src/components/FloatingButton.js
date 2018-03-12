@@ -8,10 +8,11 @@ type Props = {
   icon: string,
   onClick?:Function,
   color?: string,
-  href?: string
+  href?: string,
+  large?: boolean
 }
 
-export default function FloatingButton ({ onClick, icon = 'info', href, tooltip, tooltipPosition = 'left', color = 'omh-color' }: Props) {
+export default function FloatingButton ({ onClick, icon = 'info', href, tooltip, tooltipPosition = 'left', color = 'omh-color', large = true }: Props) {
   const clickHandler = () => {
     if (onClick) onClick()
   }
@@ -21,7 +22,7 @@ export default function FloatingButton ({ onClick, icon = 'info', href, tooltip,
       disabled={!tooltip}
       title={tooltip}
       position={tooltipPosition} inertia followCursor>
-      <a className={`btn-floating btn-large ${color}`}
+      <a className={`btn-floating ${large ? 'btn-large' : ''} ${color}`}
         onClick={clickHandler} href={hrefProp}
       >
         <i className='large material-icons'>{icon}</i>

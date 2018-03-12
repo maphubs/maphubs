@@ -268,14 +268,14 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (this.props.canEdit) {
       deleteButton = (
         <li>
-          <FloatingButton color='red' icon='delete'
+          <FloatingButton color='red' icon='delete' large={false}
             onClick={this.onDelete} tooltip={this.__('Delete Map')}
           />
         </li>
       )
       editButton = (
         <li>
-          <FloatingButton color='blue' icon='mode_edit'
+          <FloatingButton color='blue' icon='mode_edit' large={false}
             onClick={this.onEdit} tooltip={this.__('Edit Map')}
           />
         </li>
@@ -284,7 +284,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       if (MAPHUBS_CONFIG.mapHubsPro) {
         shareButton = (
           <li>
-            <FloatingButton color='red' icon='share'
+            <FloatingButton color='red' icon='share' large={false}
               onClick={this.showSharePublic} tooltip={this.__('Share')}
             />
           </li>
@@ -296,7 +296,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (this.state.user) {
       copyButton = (
         <li>
-          <FloatingButton color='purple' icon='queue'
+          <FloatingButton color='purple' icon='queue' large={false}
             onClick={this.showCopyMap} tooltip={this.__('Copy Map')}
           />
         </li>
@@ -345,12 +345,12 @@ export default class UserMap extends MapHubsComponent<Props, State> {
                 </Tooltip>
               </li>
               <li>
-                <FloatingButton color='orange' icon='code'
+                <FloatingButton color='orange' icon='code' large={false}
                   onClick={this.showEmbedCode} tooltip={this.__('Embed')}
                 />
               </li>
               <li>
-                <FloatingButton color='yellow' icon='print'
+                <FloatingButton color='yellow' icon='print' large={false}
                   onClick={this.onFullScreen} tooltip={this.__('Print/Screenshot')}
                 />
               </li>

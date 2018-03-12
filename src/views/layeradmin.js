@@ -292,13 +292,13 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   <FloatingButton
                     href={`/layer/replace/${layerId}/${layerName}`}
                     tooltip={this.__('Replace Layer Data')}
-                    color='blue' icon='file_upload' />
+                    color='blue' icon='file_upload' large={false} />
                 </li>
                 <li>
                   <FloatingButton
                     onClick={this.deleteLayer}
                     tooltip={this.__('Delete Layer')}
-                    color='red' icon='delete' />
+                    color='red' icon='delete' large={false} />
                 </li>
               </ul>
             </div>
