@@ -47,9 +47,6 @@ module.exports = {
     })
     this.draw = draw
 
-    $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-edit-tool')
-    $('.map-search-button').addClass('maphubs-edit-tool-search-button')
-
     this.map.addControl(draw, 'top-right')
 
     this.map.on('draw.create', e => {
@@ -93,8 +90,6 @@ module.exports = {
   },
 
   stopEditingTool () {
-    $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-edit-tool')
-    $('.map-search-button').removeClass('maphubs-edit-tool-search-button')
     this.map.removeControl(this.draw)
     this.removeMapLayerFilters()
     this.reloadEditingSourceCache()

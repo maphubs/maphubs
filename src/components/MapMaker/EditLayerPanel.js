@@ -62,6 +62,7 @@ export default class EditLayerPanel extends MapHubsComponent<Props, State> {
         <DataCollectionForm presets={presets}
           values={feature.geojson.properties}
           onChange={this.onChange}
+          style={{padding: '10px'}}
           showSubmit={false} />
       )
     }

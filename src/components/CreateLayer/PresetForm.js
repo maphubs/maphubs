@@ -22,14 +22,9 @@ type Props = {
   isRequired: boolean,
   showOnMap: boolean,
   isName: boolean,
+  isDescription: boolean,
   onValid: Function,
   onInvalid: Function
-}
-
-type DefaultProps = {
-  showOnMap: boolean,
-  isRequired: boolean,
-  isName: boolean,
 }
 
 type State = {
@@ -39,10 +34,11 @@ type State = {
 export default class PresetForm extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showOnMap: true,
     isRequired: false,
-    isName: false
+    isName: false,
+    isDescription: false
   }
 
   state: State
@@ -213,6 +209,14 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isName}
+                />
+                <Toggle
+                  name='isDescription'
+                  labelOff={this.__('Regular Field')}
+                  labelOn={this.__('Description Field')}
+                  className='row no-margin'
+                  style={{paddingTop: '25px'}}
+                  checked={this.props.isDescription}
                 />
               </div>
             </div>

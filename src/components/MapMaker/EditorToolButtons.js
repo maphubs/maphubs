@@ -75,16 +75,16 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
   render () {
     return (
       <div>
-        <MapToolButton top='10px' right='85px' icon='undo' show color='#000'
+        <MapToolButton top='10px' right='125px' icon='undo' show color='#000'
           disabled={this.state.edits.length === 0}
           onClick={DataEditorActions.undoEdit} tooltipText={this.__('Undo')} />
-        <MapToolButton top='10px' right='50px' icon='redo' show color='#000'
+        <MapToolButton top='10px' right='90px' icon='redo' show color='#000'
           disabled={this.state.redo.length === 0}
           onClick={DataEditorActions.redoEdit} tooltipText={this.__('Redo')} />
-        <MapToolButton top='45px' right='10px' icon='save' show color='#000'
+        <MapToolButton top='230px' right='10px' icon='save' show color='#000'
           disabled={this.state.edits.length === 0}
           onClick={this.saveEdits} tooltipText={this.__('Save Edits')} />
-        <MapToolButton top='80px' right='10px' icon='close' show color='#000'
+        <MapToolButton top='265px' right='10px' icon='close' show color='#000'
           onClick={this.stopEditing} tooltipText={this.__('Stop Editing')} />
         <Progress id='saving-edits' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
       </div>

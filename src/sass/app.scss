@@ -411,16 +411,36 @@ textarea.materialize-textarea+label:after {
   display: none !important;
 }
 
-.mapboxgl-ctrl-zoom-out {
-  border-bottom: none !important;
+.mapboxgl-popup {
+  z-index: 200 !important;
 }
 
-.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out{
-  transform: rotate(90deg); 
+.mapboxgl-popup-content{
+  padding: 0 !important;
 }
 
-.mapbox-gl-draw_trash, .mapbox-gl-draw_point, .mapbox-gl-draw_line, .mapbox-gl-draw_polygon{
-  transform: rotate(90deg); 
+.mapboxgl-popup-close-button{
+  top: -257px !important;
+  z-index: 201 !important;
+  right: -105px !important;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  color: $maphubs-accent-color !important;
+  border-radius: 25px !important;
+  border: 1px solid $maphubs-accent-color !important;
+  width: 15px !important;
+  height: 15px !important;
+  padding-bottom: 2px !important;
+  padding-top: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.maphubs-feature-popup{
+  height: 275px;
+  position: absolute;
+  left: -85px;
+  top: -250px;
+  padding: 0;
 }
 
 .mapbox-gl-draw_point, .mapbox-gl-draw_line, .mapbox-gl-draw_polygon{
@@ -433,27 +453,7 @@ textarea.materialize-textarea+label:after {
 }
 
 .mapboxgl-ctrl-top-right {
-  transform: rotate(-90deg);
-  top: -35px !important;
-  right: 85px !important;
-}
-
-.mapboxgl-ctrl-maphubs-measure-tool {
-  right: 135px !important;
-  top: -85px !important;
-}
-
-.maphubs-measure-tool-search-button {
-  right: 258px !important;
-}
-
-.mapboxgl-ctrl-maphubs-edit-tool {
-    right: 195px !important;
-    top: -70px !important;
-}
-
-.maphubs-edit-tool-search-button {
-  right: 305px !important;
+  top: 40px !important;
 }
 
 .embed-map-container {

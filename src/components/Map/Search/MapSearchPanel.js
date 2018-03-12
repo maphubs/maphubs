@@ -191,7 +191,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
               display: this.props.show ? 'inherit' : 'none',
               position: 'absolute',
               top: '10px',
-              right: '160px',
+              right: '50px',
               height: '30px',
               zIndex: '100',
               borderRadius: '4px',

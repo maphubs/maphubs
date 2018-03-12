@@ -44,14 +44,9 @@ module.exports = {
     }
   },
 
-  handleUnselectFeature () {
-    this.setState({selected: false})
-    this.clearSelection()
-  },
-
   clearSelection () {
     this.clearSelectionFilter()
-    this.setState({selectedFeature: undefined})
+    this.setState({selected: false, selectedFeature: undefined})
   },
 
   getInteractiveLayers (glStyle: GLStyle) {
@@ -136,7 +131,6 @@ module.exports = {
           this.setState({selectedFeature: feature, selected: true})
         } else if (this.state.selectedFeature) {
           this.clearSelection()
-          this.setState({selected: false})
           $(this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
         }
       }

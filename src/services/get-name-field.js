@@ -7,7 +7,7 @@ module.exports = {
 
   possibleNameFields: ['name', 'nom', 'nombre', 'nome'],
 
-  getNamFieldFromPresets (presets: Array<Object>) {
+  getNameFieldFromPresets (presets: Array<Object>) {
     const nameFieldPreset = _find(presets, {isName: true})
     let nameField
     if (nameFieldPreset) {
@@ -44,11 +44,28 @@ module.exports = {
   getNameField (properties: Object, presets?: Array<Object>) {
     let nameField
     if (presets) {
-      nameField = this.getNamFieldFromPresets(presets)
+      nameField = this.getNameFieldFromPresets(presets)
     }
     if (!nameField) {
       nameField = this.guessNameFieldFromProps(properties)
     }
     return nameField
+  },
+
+  getDescriptionFieldFromPresets (presets: Array<Object>) {
+    const descriptionFieldPreset = _find(presets, {isDescription: true})
+    let descriptionField
+    if (descriptionFieldPreset) {
+      descriptionField = descriptionFieldPreset.tag
+    }
+    return descriptionField
+  },
+
+  getDescriptionField (properties: Object, presets?: Array<Object>) {
+    let descriptionField
+    if (presets) {
+      descriptionField = this.getDescriptionFieldFromPresets(presets)
+    }
+    return descriptionField
   }
 }

@@ -1,10 +1,10 @@
 // @flow
 import React from 'react'
+import ReactDOM from 'react-dom'
 import classNames from 'classnames'
-import FeatureBox from './FeatureBox'
+import FeaturePopup from './FeaturePopup'
 import BaseMapActions from '../../actions/map/BaseMapActions'
 import BaseMapStore from '../../stores/map/BaseMapStore'
-// import urlUtil from '../../services/url-util';
 import DataEditorStore from '../../stores/DataEditorStore'
 import _isequal from 'lodash.isequal'
 import MapToolButton from './MapToolButton'
@@ -29,6 +29,7 @@ import DataEditorActions from '../../actions/DataEditorActions'
 import AnimationActions from '../../actions/map/AnimationActions'
 import MapHubsComponent from '../MapHubsComponent'
 import Promise from 'bluebird'
+import turfCentroid from '@turf/centroid'
 import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style'
 import type {GeoJSONObject} from 'geojson-flow'
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
@@ -537,14 +538,32 @@ export default class Map extends MapHubsComponent<Props, State> {
 
     let featureBox = ''
     if (this.state.selectedFeature) {
-      featureBox = (
-        <FeatureBox
-          feature={this.state.selectedFeature}
+      let popupFeature = this.state.selectedFeature
+      if (popupFeature.geometry.type !== 'Point') {
+        popupFeature = turfCentroid(popupFeature)
+      }
+
+      const el = document.createElement('div')
+      el.className = 'maphubs-feature-popup'
+      ReactDOM.render(
+        <FeaturePopup
+          features={[this.state.selectedFeature]}
           selected={this.state.selected}
-          onUnselected={this.handleUnselectFeature}
           showButtons={this.props.showFeatureInfoEditButtons}
-        />
+        />,
+        el
       )
+
+      this.mapboxPopup = new mapboxgl.Popup()
+        .setLngLat(popupFeature.geometry.coordinates)
+        .setDOMContent(el)
+        .addTo(this.map)
+
+      this.mapboxPopup.on('close', () => {
+        this.clearSelection()
+      })
+    } else if (this.mapboxPopup) {
+      this.mapboxPopup.remove()
     }
 
     let interactiveButton = ''
@@ -581,8 +600,8 @@ export default class Map extends MapHubsComponent<Props, State> {
         <div>
           <div style={{
             position: 'absolute',
-            top: '46px',
-            right: '10px',
+            top: '10px',
+            right: '100px',
             backgroundColor: 'rgba(0,0,0,0.6)',
             color: '#FFF',
             height: '30px',
@@ -594,7 +613,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           }}>
             <span>{this.state.measurementMessage}</span>
           </div>
-          <MapToolButton top='80px' right='10px' icon='close' show color='#000'
+          <MapToolButton top='260px' right='10px' icon='close' show color='#000'
             onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
         </div>
       )
@@ -674,10 +693,6 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   clearSelectionFilter = () => {
     return MapInteractionMixin.clearSelectionFilter.bind(this)()
-  }
-
-  handleUnselectFeature = () => {
-    return MapInteractionMixin.handleUnselectFeature.bind(this)()
   }
 
   clearSelection = () => {

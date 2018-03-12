@@ -2,7 +2,6 @@
 import _area from '@turf/area'
 import _lineDistance from '@turf/line-distance'
 const debug = require('../../../services/debug')('Map/MeasureArea')
-const $ = require('jquery')
 let MapboxDraw = {}
 if (typeof window !== 'undefined') {
   MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')
@@ -30,8 +29,6 @@ module.exports = {
       }
     })
     this.draw = draw
-    $('.mapboxgl-ctrl-top-right').addClass('mapboxgl-ctrl-maphubs-measure-tool')
-    $('.map-search-button').addClass('maphubs-measure-tool-search-button')
     this.map.addControl(draw, 'top-right')
 
     this.map.on('draw.create', (e) => {
@@ -46,17 +43,17 @@ module.exports = {
 
     this.map.on('draw.delete', () => {
       debug.log('draw delete')
-      this.setState({measurementMessage: this.__('Use the drawing tools above')})
+      this.setState({measurementMessage: this.__('Use the drawing tools below')})
     })
 
     this.setState({enableMeasurementTools: true,
-      measurementMessage: this.__('Use the drawing tools above')
+      measurementMessage: this.__('Use the drawing tools below')
     })
   },
 
   stopMeasurementTool () {
-    $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-measure-tool')
-    $('.map-search-button').removeClass('maphubs-measure-tool-search-button')
+    // $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-measure-tool')
+    // $('.map-search-button').removeClass('maphubs-measure-tool-search-button')
     this.map.removeControl(this.draw)
     this.setState({
       enableMeasurementTools: false,
