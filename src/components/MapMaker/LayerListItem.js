@@ -64,7 +64,7 @@ class LayerListItem extends MapHubsComponent<Props, void> {
   }
 
   toggleVisibility = () => {
-    this.props.showLayerDesigner(this.props.item.layer_id)
+    this.props.toggleVisibility(this.props.item.layer_id)
   }
 
   render () {
