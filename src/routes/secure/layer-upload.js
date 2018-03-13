@@ -6,7 +6,7 @@ const Promise = require('bluebird')
 const tus = require('tus-node-server')
 const EVENTS = require('tus-node-server').EVENTS
 const express = require('express')
-
+const exportUtils = require('../../services/export-utils')
 const log = require('../../services/log')
 const shapefileFairy = require('../../services/shapefile-fairy')
 const DataLoadUtils = require('../../services/data-load-utils')
@@ -118,6 +118,21 @@ module.exports = function (app: any) {
         apiError(res, 200, err.message)(err)
       }
     })
+
+  app.get('/api/layer/:layer_id/uploadtempdata/*', isAuthenticated, async (req, res) => {
+    const layer_id = parseInt(req.params.layer_id || '', 10)
+    try {
+      const layer = await Layer.getLayerByID(layer_id)
+      if (layer.created_by_user_id === req.user_id) {
+        exportUtils.completeGeoBufExport(req, res, layer_id, true)
+      } else {
+        return notAllowedError(res, 'layer')
+      }
+    } catch (err) {
+      log.error(err.message)
+      apiError(res, 200)(err)
+    }
+  })
 
   app.post('/api/layer/finishupload', csrfProtection, isAuthenticated, async (req, res) => {
     if (req.body.layer_id && req.body.requestedShapefile) {

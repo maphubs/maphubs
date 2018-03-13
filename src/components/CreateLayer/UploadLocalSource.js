@@ -12,7 +12,10 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {GeoJSONObject} from 'geojson-flow'
-import request from 'superagent'
+import superagent from 'superagent'
+import geobuf from 'geobuf'
+import Pbf from 'pbf'
+const debug = require('../../services/debug')('UploadLocalSource')
 
 let scrollToComponent
 
@@ -93,12 +96,13 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   onUpload = (file: Object) => {
     const _this = this
+    const {layer_id} = this.state
     this.onProcessingStart()
-    request.post('/api/layer/complete/upload')
+    superagent.post('/api/layer/complete/upload')
       .type('json').accept('json')
       .send({
         uploadUrl: file.uploadURL,
-        layer_id: this.state.layer_id,
+        layer_id,
         originalName: file.data.name
       })
       .end((err, res) => {
@@ -107,9 +111,20 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         } else {
           const result = res.body
           if (result.success) {
-            this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData})
-            LayerActions.setDataType(result.data_type)
-            LayerActions.setImportedTags(result.uniqueProps, true)
+            superagent.get(`/api/layer/${layer_id}/uploadtempdata/${layer_id}-temp.pbf`)
+              .buffer(true)
+              .responseType('arraybuffer')
+              .parse(superagent.parse.image)
+              .end((err, res) => {
+                if (err) {
+                  debug.error(err)
+                } else {
+                  const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)))
+                  this.setState({geoJSON: geoJSON, canSubmit: true, largeData: result.largeData})
+                  LayerActions.setDataType(result.data_type)
+                  LayerActions.setImportedTags(result.uniqueProps, true)
+                }
+              })
           } else {
             if (result.code === 'MULTIPLESHP') {
               this.setState({multipleShapefiles: result.shapefiles})

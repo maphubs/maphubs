@@ -9,8 +9,8 @@ const moment = require('moment')
 
 module.exports = {
 
-  completeGeoBufExport (req: any, res: any, layer_id: number) {
-    Layer.getGeoJSON(layer_id).then((geoJSON) => {
+  completeGeoBufExport (req: any, res: any, layer_id: number, temp: boolean = false) {
+    Layer.getGeoJSON(layer_id, temp).then((geoJSON) => {
       const resultStr = JSON.stringify(geoJSON)
       const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
       const match = req.get('If-None-Match')

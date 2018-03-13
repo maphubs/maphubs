@@ -233,13 +233,11 @@ module.exports = {
       debug.log(`GeoJSON size: ${size}`)
       if (size > LARGE_DATA_THRESHOLD) {
         largeData = true
-        geoJSON = null
       }
       result = {
         success: true,
         error: null,
         largeData,
-        geoJSON,
         uniqueProps,
         data_type: geomType
       }
