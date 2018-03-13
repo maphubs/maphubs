@@ -155,7 +155,7 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
       className = classNames('modal', this.props.className)
     }
     return (
-      <div ref='modal' id={this.props.id} className={className} style={{height: 'auto'}}>
+      <div ref='modal' id={this.props.id} className={className}>
         {this.props.children}
       </div>
 

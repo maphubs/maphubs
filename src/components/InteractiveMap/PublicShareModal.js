@@ -86,7 +86,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
             <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={function () { clipboard.writeText(shareUrl) }}>launch</i>
           </p>
           <button onClick={function () { clipboard.writeText(shareUrl) }} className='btn'>{this.__('Copy Link')}</button>
-          <p>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
+          <p className='no-margin'>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
         </div>
       )
 
@@ -105,8 +105,8 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Modal ref='modal' id='public-share-modal' dismissible={false} fixedFooter>
-        <ModalContent style={{padding: '10px', margin: 0, height: 'calc(100% - 60px)', overflow: 'hidden'}}>
+      <Modal ref='modal' id='public-share-modal' dismissible={false} fixedFooter={false}>
+        <ModalContent style={{padding: '10px', margin: 0, height: '350px', overflow: 'hidden'}}>
           <div className='row no-margin' style={{height: '35px'}}>
             <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
               <i className='material-icons selected-feature-close' style={{fontSize: '35px'}}>close</i>
