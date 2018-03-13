@@ -61,7 +61,6 @@ export default class Attributes extends MapHubsComponent<Props, void> {
       } else {
         display = (
           <ul className='collection' style={{marginTop: 0}}>
-            {photo}
             {
               Object.keys(_this.props.attributes).map((key) => {
                 if (key !== 'mhid' &&
