@@ -300,9 +300,8 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           style={{
             maxHeight: `calc(${this.props.height} - ${topOffset}px)`,
             width: '240px',
-            paddingBottom: '0',
-            position: 'absolute',
-            top: `${topOffset}px`}}>
+            paddingBottom: '0'
+          }}>
           {mobileLegend}
         </div>
 
@@ -310,9 +309,8 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           style={{height: 'auto',
             maxHeight: `calc(${this.props.height} - ${topOffset}px)`,
             width: '260px',
-            paddingBottom: '0',
-            position: 'absolute',
-            top: `${topOffset}px`}}>
+            paddingBottom: '0'
+          }}>
           <LayerList layers={this.state.layers}
             showDesign={false} showRemove={false} showVisibility
             toggleVisibility={this.toggleVisibility}
