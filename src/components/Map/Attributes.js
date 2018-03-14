@@ -46,9 +46,9 @@ export default class Attributes extends MapHubsComponent<Props, void> {
                 }
 
                 return (
-                  <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0}} className='collection-item attribute-collection-item'>
-                    <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{this._o_(preset.label)}</p>
-                    <p className='word-wrap'>
+                  <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
+                    <p style={{color: 'rgb(158, 158, 158)', fontSize: '9px'}}>{this._o_(preset.label)}</p>
+                    <p className='word-wrap' style={{fontSize: '11px'}}>
                       {val}
                     </p>
                   </li>
@@ -82,9 +82,9 @@ export default class Attributes extends MapHubsComponent<Props, void> {
                   }
 
                   return (
-                    <li key={key} style={{padding: 5}} className='collection-item attribute-collection-item'>
-                      <p style={{color: 'rgb(158, 158, 158)', fontSize: '11px'}}>{key}</p>
-                      <p className='word-wrap'>
+                    <li key={key} style={{padding: 5, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
+                      <p style={{color: 'rgb(158, 158, 158)', fontSize: '9px'}}>{key}</p>
+                      <p className='word-wrap' style={{fontSize: '11px'}}>
                         {val}
                       </p>
                     </li>

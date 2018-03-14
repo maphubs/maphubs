@@ -413,6 +413,8 @@ textarea.materialize-textarea+label:after {
 
 .mapboxgl-popup {
   z-index: 200 !important;
+  height: 200px;
+  width: 150px;
 }
 
 .mapboxgl-popup-content{
@@ -420,26 +422,23 @@ textarea.materialize-textarea+label:after {
 }
 
 .mapboxgl-popup-close-button{
-  top: -257px !important;
+  top: -7px !important;
+  right: -7px !important;
   z-index: 201 !important;
-  right: -105px !important;
   background-color: rgba(255, 255, 255, 0.75) !important;
   color: $maphubs-accent-color !important;
   border-radius: 25px !important;
   border: 1px solid $maphubs-accent-color !important;
-  width: 15px !important;
-  height: 15px !important;
-  padding-bottom: 2px !important;
+  width: 14px !important;
+  height: 14px !important;
+  line-height: 5px !important;
+  padding-bottom: 1px !important;
   padding-top: 0px !important;
-  padding-left: 0px !important;
+  padding-left: 0.5px !important;
   padding-right: 0px !important;
 }
 
 .maphubs-feature-popup{
-  height: 275px;
-  position: absolute;
-  left: -85px;
-  top: -250px;
   padding: 0;
 }
 

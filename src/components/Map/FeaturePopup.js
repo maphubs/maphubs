@@ -58,6 +58,12 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
     }
   }
 
+  componentDidUpdate () {
+    if (this.image) {
+      M.Materialbox.init(this.image, {})
+    }
+  }
+
   getLayer = (layerId: number, host: string) => {
     debug.info(`Getting layer info for: ${layerId} from ${host}`)
     const _this = this
@@ -86,10 +92,8 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
 
   }
 
-  renderContentWithImage = (name: string, description: string, photoUrl: string, featureName: string, properties: Object) => {
-    // const {layer} = this.state
-    // const selectedFeature = this.props.features[0]
-    // let imageHeight = 'calc(100% - 100px)'
+  renderContentWithImage = (name?: string, description?: string, photoUrl: string, featureName: string, properties: Object) => {
+    const {layerLoaded} = this.state
 
     let nameDisplay
 
@@ -108,28 +112,47 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
     }
 
     let descDisplay
-    if (description) {
-      descDisplay = (
-        <div className='card-content' style={{padding: '5px', overflowY: 'auto'}}>
-          <p>{description}</p>
-        </div>
-      )
+    if (layerLoaded) {
+      if (description) {
+        descDisplay = (
+          <div className='card-content' style={{padding: '3px', height: 'calc(100% - 100px)', overflowY: 'auto'}}>
+            <p>{description}</p>
+          </div>
+        )
+      } else {
+        descDisplay = (
+          <div className='card-content' style={{padding: 0, height: 'calc(100% - 100px)'}}>
+            <Attributes attributes={properties} />
+          </div>
+        )
+      }
     } else {
       descDisplay = (
-        <div className='card-content' style={{padding: 0, height: 'calc(100% - 150px)'}}>
-          <Attributes attributes={properties} />
+        <div className='card-content' style={{padding: 0, width: '100%', height: 'calc(100% - 100px)', margin: 'auto', textAlign: 'center'}}>
+          <div className='preloader-wrapper small active'>
+            <div className='spinner-layer omh-accent-text'>
+              <div className='circle-clipper left'>
+                <div className='circle' />
+              </div><div className='gap-patch'>
+                <div className='circle' />
+              </div><div className='circle-clipper right'>
+                <div className='circle' />
+              </div>
+            </div>
+          </div>
         </div>
       )
     }
 
     return (
       <div style={{height: '100%'}}>
-        <div className='card-image' style={{
-          height: '150px',
-          background: `url(${photoUrl})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover'
-        }}>
+        <div ref={(el) => { this.image = el }}
+          className='card-image materialboxed' style={{
+            height: '100px',
+            background: `url(${photoUrl})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
+          }}>
           {nameDisplay}
         </div>
         {descDisplay}
@@ -180,11 +203,11 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div className='card' style={{width: '200px', height: '250px', margin: 0}}>
-        <div className='card-content no-padding' style={{height: 'calc(100% - 41px)'}}>
+      <div key='feature' className='card' style={{width: '150px', height: '200px', margin: 0, boxShadow: 'none'}}>
+        <div className='card-content no-padding' style={{height: 'calc(100% - 35px)'}}>
           {content}
         </div>
-        <div className='card-action' style={{padding: '10px 10px'}}>
+        <div className='card-action' style={{padding: '5px 5px'}}>
           <ActionPanel layer={layer} t={this.__} tObject={this._o_}
             selectedFeature={feature} featureName={featureName}
             toggled={showAttributes}
