@@ -63,7 +63,7 @@ module.exports = function (app: any) {
                   // insert layer data, if provided
                   if (importerResult.features.length > 0) {
                     await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, maphubsLayer.shortid, false, false, trx)
-                    await DataLoadUtils.loadTempData(layer_id, trx)
+                    await DataLoadUtils.loadTempData(layer_id, trx, maphubsLayer.disable_feature_indexing)
                     await layerViews.createLayerViews(layer_id, presets, trx)
                     debug.log('data load transaction complete')
                   }

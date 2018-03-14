@@ -24,7 +24,7 @@ module.exports = function (app: any) {
       if (await Layer.allowedToModify(layer_id, req.user_id)) {
         await knex.transaction(async (trx) => {
           const layer = await Layer.getLayerByID(layer_id, trx)
-          await DataLoadUtils.loadTempData(layer_id, trx)
+          await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing)
           await layerViews.createLayerViews(layer_id, layer.presets, trx)
           debug.log('data load transaction complete')
           return res.status(200).send({success: true})
@@ -74,6 +74,7 @@ module.exports = function (app: any) {
             data.private,
             data.source,
             data.license,
+            data.disable_feature_indexing,
             req.user_id
           ]
           break

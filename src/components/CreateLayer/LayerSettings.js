@@ -14,6 +14,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {Group} from '../../stores/GroupStore'
 import Locales from '../../services/locales'
+import Toggle from '../forms/toggle'
 
 type Props = {|
   onSubmit: Function,
@@ -228,6 +229,17 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   className='col s12'
                   dataPosition='top' dataTooltip={this.__('Layer License')}
                   required
+                />
+              </div>
+              <div className='row' style={{border: '1px solid #212121', marginLeft: '5px', padding: '10px 25px 25px 10px'}}>
+                <h5>{this.__('Advanced')}</h5>
+                <Toggle
+                  name='disable_feature_indexing'
+                  labelOff={this.__('Normal Indexing')}
+                  labelOn={this.__('Disable Feature Indexing')}
+                  checked={this.state.disable_feature_indexing}
+                  dataPosition='bottom'
+                  dataTooltip={this.__('Disable search indexing for large layers or layers without meaningful data attributes in order to speed up import time.')}
                 />
               </div>
             </div>

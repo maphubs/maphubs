@@ -263,7 +263,7 @@ module.exports = {
     return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`)
   },
 
-  async loadTempData (layer_id: number, trx: any) {
+  async loadTempData (layer_id: number, trx: any, skipIndex?: boolean = false) {
     debug.log('loadTempData')
     // create data table
     await trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
@@ -285,7 +285,9 @@ module.exports = {
     await trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
 
     // update search index
-    await SearchIndex.updateLayer(layer_id, trx)
+    if(!skipIndex){
+      await SearchIndex.updateLayer(layer_id, trx)
+    }
 
     return trx('omh.layers').update({status: 'loaded'}).where({layer_id})
   }

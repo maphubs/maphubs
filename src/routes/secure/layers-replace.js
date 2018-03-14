@@ -83,8 +83,8 @@ module.exports = function (app: any) {
         if (await Layer.allowedToModify(layer_id, req.user_id)) {
           await knex.transaction(async (trx) => {
             await DataLoadUtils.removeLayerData(layer_id, trx)
-            await DataLoadUtils.loadTempData(layer_id, trx)
             const layer = await Layer.getLayerByID(layer_id, trx)
+            await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing) 
             await LayerViews.replaceViews(layer_id, layer.presets, trx)
             await Layer.setComplete(layer_id, trx)
             return res.send({success: true})

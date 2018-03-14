@@ -266,7 +266,7 @@ module.exports = {
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
-      'allow_public_submit',
+      'allow_public_submit', 'disable_feature_indexing',
       'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
@@ -292,7 +292,7 @@ module.exports = {
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
       'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'is_empty',
-      'allow_public_submit',
+      'allow_public_submit', 'disable_feature_indexing',
       'owned_by_group_id',
       knex.raw('timezone(\'UTC\', last_updated) as last_updated'),
       knex.raw('timezone(\'UTC\', creation_time) as creation_time'),
@@ -576,7 +576,7 @@ module.exports = {
     }
   },
 
-  async saveSettings (layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, source: any, license: any, user_id: number) {
+  async saveSettings (layer_id: number, name: string, description: string, group_id: string, isPrivate: boolean, source: any, license: any, disable_feature_indexing: boolean, user_id: number) {
     const _this = this
     return knex.transaction(async (trx) => {
       const layer = await _this.getLayerByID(layer_id, trx)
@@ -599,6 +599,7 @@ module.exports = {
           private: isPrivate,
           source,
           license,
+          disable_feature_indexing,
           owned_by_group_id,
           updated_by_user_id: user_id,
           last_updated: knex.raw('now()')

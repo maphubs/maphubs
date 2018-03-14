@@ -11,7 +11,6 @@ import {OrderedSet} from 'immutable'
 
 const request = require('superagent')
 const MapStyles = require('../components/Map/Styles')
-const urlUtil = require('../services/url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
 const debug = require('../services/debug')('layer-store')
 
@@ -42,6 +41,7 @@ export type Layer = {
   is_empty?: boolean,
   disable_export?: boolean,
   allow_public_submit?: boolean,
+  disable_feature_indexing?: boolean,
   remote?: boolean,
   remote_host?: string,
   complete?: boolean
@@ -79,6 +79,7 @@ const defaultState: LayerStoreState = {
   private: false,
   disable_export: false,
   allow_public_submit: false,
+  disable_feature_indexing: false,
   tileServiceInitialized: false,
   pendingChanges: false,
   pendingPresetChanges: false,
@@ -151,7 +152,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     const shortid = this.state.shortid
     const elc = this.state.external_layer_config ? this.state.external_layer_config : {}
 
-    const baseUrl = urlUtil.getBaseUrl()
     if (isExternal && this.state.external_layer_type === 'mapbox-map' && elc.url) {
       style = MapStyles.raster.rasterStyleTileJSON(layer_id, shortid, elc.url, 100, 'raster')
     } else if (isExternal && elc.type === 'raster') {
@@ -258,20 +258,19 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         private: data.private,
         source: data.source,
         license: data.license,
+        disable_feature_indexing: data.disable_feature_indexing,
         _csrf
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-        // if(initLayer){
-        //  layer = _this.initLayer(layer);
-        // }
           _this.setState({
             name: data.name,
             description: data.description,
             owned_by_group_id: data.group,
             private: data.private,
             source: data.source,
-            license: data.license
+            license: data.license,
+            disable_feature_indexing: data.disable_feature_indexing
           })
           cb()
         })
@@ -297,16 +296,10 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-        // if(initLayer){
-        //  layer = _this.initLayer(layer);
-        // }
           _this.setState({
-            name: data.name,
-            description: data.description,
             owned_by_group_id: data.group,
-            private: data.private,
-            source: data.source,
-            license: data.license
+            disable_export: data.disableExport,
+            allow_public_submit: data.allowPublicSubmit
           })
           cb()
         })

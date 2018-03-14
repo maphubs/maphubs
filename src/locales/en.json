@@ -894,5 +894,8 @@
 	"DigitalGlobe WMS": "DigitalGlobe WMS",
 	"Digital Globe": "Digital Globe",
 	"My Stories": "My Stories",
-	"Admin Only": "Admin Only"
+	"Admin Only": "Admin Only",
+	"Normal Indexing": "Normal Indexing",
+	"Disable Feature Indexing": "Disable Feature Indexing",
+	"Disable for large layers or layers without meaningful data attributes in order to speed up import time.": "Disable for large layers or layers without meaningful data attributes in order to speed up import time."
 }
