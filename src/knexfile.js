@@ -1,11 +1,10 @@
-// Update with your config settings.
-var local = require('./local');
-
+var getenv = require('getenv')
+var connection = `postgres://${getenv('DB_USER')}:${getenv('DB_PASS')}@${getenv('DB_HOST')}:${getenv('DB_PORT')}/${getenv('DB_DATABASE')}`
 module.exports = {
 
   development: {
     client: 'pg',
-    connection: local.connection.url,
+    connection,
     pool: {
       min: 2,
       max: 10
@@ -17,7 +16,7 @@ module.exports = {
 
   staging: {
     client: 'pg',
-    connection: local.connection.url,
+    connection,
     pool: {
       min: 2,
       max: 10
@@ -29,7 +28,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: local.connection.url,
+    connection,
     pool: {
       min: 2,
       max: 10
@@ -38,5 +37,4 @@ module.exports = {
       tableName: 'knex_migrations'
     }
   }
-
-};
+}
