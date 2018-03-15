@@ -95,7 +95,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     if (groups.length > 0 && !editing) {
       // if the user is in a group, show group options
       groupToggle = (
-        <div className='row'>
+        <div className='row no-margin' style={{width: '100%'}}>
           <Toggle name='ownedByGroup' labelOff={this.__('Owned by Me')} labelOn={this.__('Owned by My Group')}
             checked={ownedByGroupChecked} className='col s12'
             onChange={this.onOwnedByGroup}
@@ -109,7 +109,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     if (ownedByGroupChecked) {
       const groups = user.groups || []
       selectGroup = (
-        <div className='row'>
+        <div className='row no-margin' style={{width: '100%'}}>
           <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />
         </div>
       )
@@ -118,7 +118,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     if (user) {
       return (
         <Formsy onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
-          <div className='row'>
+          <div className='row no-margin' style={{width: '100%'}}>
             <MultiTextInput name='title' id='title'
               value={title}
               label={{
@@ -132,7 +132,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
           </div>
           {groupToggle}
           {selectGroup}
-          <div className='row'>
+          <div className='row no-margin' style={{width: '100%'}}>
             <div className='col s12 valign-wrapper'>
               <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}
                 disabled={(!canSave || saving)}>{this.__('Save Map')}</button>

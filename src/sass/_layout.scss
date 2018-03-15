@@ -1,3 +1,9 @@
+/* Patch for Materialize 1.x adding margins to nested rows */
+.col .row {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .no-padding {
   padding: 0 !important;
 }
