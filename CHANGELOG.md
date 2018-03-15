@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.16.0](https://github.com/maphubs/maphubs/tree/v0.16.0) (2018-03-15)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.29...v0.16.0)
+
 ## [v0.15.29](https://github.com/maphubs/maphubs/tree/v0.15.29) (2018-02-25)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.28...v0.15.29)
 
@@ -11,10 +14,6 @@
 
 ## [v0.15.26](https://github.com/maphubs/maphubs/tree/v0.15.26) (2018-02-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.25...v0.15.26)
-
-**Fixed bugs:**
-
-- public share popup gets stuck [\#455](https://github.com/maphubs/maphubs/issues/455)
 
 ## [v0.15.25](https://github.com/maphubs/maphubs/tree/v0.15.25) (2018-02-17)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.4...v0.15.25)
