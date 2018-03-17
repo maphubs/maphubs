@@ -239,7 +239,9 @@ const MapHubsSource = {
         if (layer['source-layer']) {
           markerLayer['source-layer'] = layer['source-layer']
         }
-        mapComponent.addLayer(markerLayer, 'water')
+        debug.info(`adding marker shadow layer for ${layer_id}`)
+        mapComponent.addLayerBefore(markerLayer, 'water')
+        mapComponent.map.setStyle(mapComponent.glStyle)
       }
 
       let geobufUrl = markerConfig.geobufUrl
