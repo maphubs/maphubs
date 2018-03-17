@@ -91,7 +91,9 @@ export default class SearchBar extends React.Component {
   }
 
   hideSuggestions = () => {
-    this.refs.suggestions.hide()
+    if (this.refs.suggestions) {
+      this.refs.suggestions.hide()
+    }
   }
 
   fillInSuggestion = (suggestion) => {
