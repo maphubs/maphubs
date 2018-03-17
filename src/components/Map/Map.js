@@ -538,6 +538,12 @@ export default class Map extends MapHubsComponent<Props, State> {
 
     let featureBox = ''
     if (this.state.selectedFeature) {
+      // close any existing popups
+      if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
+        this.mapboxPopup.remove()
+        this.mapboxPopup = undefined
+      }
+
       let popupFeature = this.state.selectedFeature
       if (popupFeature.geometry.type !== 'Point') {
         popupFeature = turfCentroid(popupFeature)
