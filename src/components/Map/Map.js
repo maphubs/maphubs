@@ -168,13 +168,6 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {
-    // always update if there is a selection
-    // avoids glitch where feature hover doesn't show
-    if (this.state.selected || nextState.selected ||
-    this.state.selectedFeature || nextState.selectedFeature) {
-      return true
-    }
-
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -192,8 +185,6 @@ export default class Map extends MapHubsComponent<Props, State> {
       this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition)
       const interaction = this.map.interaction
       interaction.enable()
-      $(this.refs.basemapButton).show()
-      $(this.refs.editBaseMapButton).show()
     }
     // change locale
     if (this.state.locale && (this.state.locale !== prevState.locale)) {
@@ -534,7 +525,6 @@ export default class Map extends MapHubsComponent<Props, State> {
   render () {
     const className = classNames('mode', 'map', 'active')
 
-    let featureBox = ''
     if (this.state.selectedFeature) {
       // close any existing popups
       if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
@@ -563,9 +553,7 @@ export default class Map extends MapHubsComponent<Props, State> {
         .setDOMContent(el)
         .addTo(this.map)
 
-      this.mapboxPopup.on('close', () => {
-        this.clearSelection()
-      })
+      this.mapboxPopup.on('close', this.clearSelection)
     } else if (this.mapboxPopup) {
       this.mapboxPopup.remove()
     }
@@ -578,17 +566,6 @@ export default class Map extends MapHubsComponent<Props, State> {
       )
     }
 
-    let logo = ''
-    let children = ''
-    if (this.state.mapLoaded) {
-      if (this.props.showLogo) {
-        logo = (
-          <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt='Logo' />
-        )
-      }
-      children = this.props.children
-    }
-
     let insetMap = ''
     if (this.props.insetMap) {
       let bottom = '25px'
@@ -596,31 +573,6 @@ export default class Map extends MapHubsComponent<Props, State> {
         bottom = '30px'
       }
       insetMap = (<InsetMap ref='insetMap' id={this.state.id} bottom={bottom} {...this.props.insetConfig} />)
-    }
-
-    let measurementTools = ''
-    if (this.state.enableMeasurementTools) {
-      measurementTools = (
-        <div>
-          <div style={{
-            position: 'absolute',
-            top: '10px',
-            right: '100px',
-            backgroundColor: 'rgba(0,0,0,0.6)',
-            color: '#FFF',
-            height: '30px',
-            paddingLeft: '5px',
-            paddingRight: '5px',
-            borderRadius: '4px',
-            zIndex: '100',
-            lineHeight: '30px'
-          }}>
-            <span>{this.state.measurementMessage}</span>
-          </div>
-          <MapToolButton top='260px' right='10px' icon='close' show color='#000'
-            onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
-        </div>
-      )
     }
 
     let animationOverlay = ''
@@ -658,11 +610,34 @@ export default class Map extends MapHubsComponent<Props, State> {
             clearIsochroneLayers={this.clearIsochroneLayers}
             isochroneResult={this.state.isochroneResult}
           />
-          {measurementTools}
-          {featureBox}
+          {this.state.enableMeasurementTools &&
+            <div>
+              <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '100px',
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                color: '#FFF',
+                height: '30px',
+                paddingLeft: '5px',
+                paddingRight: '5px',
+                borderRadius: '4px',
+                zIndex: '100',
+                lineHeight: '30px'
+              }}>
+                <span>{this.state.measurementMessage}</span>
+              </div>
+              <MapToolButton top='260px' right='10px' icon='close' show color='#000'
+                onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
+            </div>
+          }
           {interactiveButton}
-          {children}
-          {logo}
+          {this.state.mapLoaded &&
+            this.props.children
+          }
+          {(this.state.mapLoaded && this.props.showLogo) &&
+            <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt='Logo' />
+          }
           {animationOverlay}
           <MapSearchPanel
             show={this.state.interactive && this.state.mapLoaded}
