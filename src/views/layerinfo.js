@@ -27,6 +27,7 @@ import numeral from 'numeral'
 import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
+import LayerExport from '../components/LayerInfo/LayerExport'
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl'
 import en from 'react-intl/locale-data/en'
@@ -309,58 +310,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const _this = this
     const glStyle = this.props.layer.style
 
-    let exportTabContent = ''
-
-    if (this.props.layer.is_external) {
-      exportTabContent = (
-        <div>
-          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this._o_(this.props.layer.source)}</p>
-        </div>
-      )
-    } else {
-      const name = slugify(this._o_(this.props.layer.name))
-      const layerId = this.props.layer.layer_id
-
-      const maphubsFileURL = `/api/layer/${layerId}/export/maphubs/${name}.maphubs`
-      const geoJSONURL = `/api/layer/${layerId}/export/json/${name}.geojson`
-      const shpURL = `/api/layer/${layerId}/export/shp/${name}.zip`
-      const kmlURL = `/api/layer/${layerId}/export/kml/${name}.kml`
-      const csvURL = `/api/layer/${layerId}/export/csv/${name}.csv`
-      const gpxURL = `/api/layer/${layerId}/export/gpx/${name}.gpx`
-      const svgURL = `/api/layer/${layerId}/export/svg/${name}.svg`
-      const geobufURL = `/api/layer/${layerId}/export/geobuf/${name}.pbf`
-
-      if (!this.props.layer.disable_export) {
-        let gpxExport = ''
-        if (this.props.layer.data_type !== 'polygon') {
-          gpxExport = (
-            <li className='collection-item'>{this.__('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>
-          )
-        }
-        exportTabContent = (
-          <div>
-            <ul className='collection with-header'>
-              <li className='collection-header'><h5>{this.__('Export Data')}</h5></li>
-              <li className='collection-item'>{this.__('MapHubs Format:')} <a href={maphubsFileURL}>{maphubsFileURL}</a></li>
-              <li className='collection-item'>{this.__('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
-              <li className='collection-item'>{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
-              <li className='collection-item'>{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
-              <li className='collection-item'>{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
-              <li className='collection-item'>{this.__('SVG:')} <a href={svgURL}>{svgURL}</a></li>
-              <li className='collection-item'>{this.__('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href='https://github.com/mapbox/geobuf'>{this.__('Learn More')}</a>)</li>
-              {gpxExport}
-            </ul>
-          </div>
-        )
-      } else {
-        exportTabContent = (
-          <div>
-            <p>{this.__('Export is not available for this layer.')}</p>
-          </div>
-        )
-      }
-    }
-
     let tabContentDisplay = 'none'
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit'
@@ -498,6 +447,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       if (this.props.layer.external_layer_type === 'openstreetmap') {
         type = 'OpenStreetMap'
         externalUrl = 'http://openstreetmap.org'
+      } else if (this.props.layer.external_layer_type === 'planet') {
+        type = 'Planet'
+        externalUrl = 'https://planet.com'
       } else if (this.props.layer.external_layer_config.type === 'raster') {
         type = 'Raster'
         externalUrl = this.props.layer.external_layer_config.tiles[0]
@@ -587,7 +539,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                 <h5 className='word-wrap'>{this._o_(this.props.layer.name)}</h5>
               </div>
 
-              <div className='row no-margin' style={{height: 'calc(100% - 72px)'}}>
+              <div className='row no-margin' style={{height: 'calc(100% - 78px)'}}>
                 <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
                   <li className='tab'><a className='active' href='#info'>{this.__('Info')}</a></li>
                   <li className='tab'><a href='#notes'>{this.__('Notes')}</a></li>
@@ -597,37 +549,48 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                 </ul>
                 <div id='info' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', position: 'relative'}}>
                   <div className='row word-wrap' style={{height: 'calc(100% - 75px)', marginLeft: '10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
-                    <div className='right'>
-                      <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
-                    </div>
                     {remote}
                     {external}
-                    <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
-                    {this.state.area &&
-                      <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
-                    }
-                    {this.state.length > 0 &&
-                      <p style={{fontSize: '16px'}}><b>{this.__('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
-                    }
-                    <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
-                      <IntlProvider locale={this.state.locale}>
-                        <FormattedDate value={creationTime} />
-                      </IntlProvider>&nbsp;
-                      <IntlProvider locale={this.state.locale}>
-                        <FormattedTime value={creationTime} />
-                      </IntlProvider>&nbsp;
-                  (
-                      <IntlProvider locale={this.state.locale}>
-                        <FormattedRelative value={creationTime} />
-                      </IntlProvider>
-                  )&nbsp;
-                      {this.__('by') + ' ' + this.props.updatedByUser.display_name}
-                    </p>
-                    {updatedTime}
-                    <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
-                    <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
-                    <p className='word-wrap' style={{fontSize: '16px', maxHeight: '95px', overflow: 'auto'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
-
+                    <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
+                      <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
+                      {this.state.area &&
+                        <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
+                      }
+                      {this.state.length > 0 &&
+                        <p style={{fontSize: '16px'}}><b>{this.__('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
+                      }
+                    </div>
+                    <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
+                     
+                      <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
+                        <IntlProvider locale={this.state.locale}>
+                          <FormattedDate value={creationTime} />
+                        </IntlProvider>&nbsp;
+                        <IntlProvider locale={this.state.locale}>
+                          <FormattedTime value={creationTime} />
+                        </IntlProvider>&nbsp;
+                    (
+                        <IntlProvider locale={this.state.locale}>
+                          <FormattedRelative value={creationTime} />
+                        </IntlProvider>
+                    )&nbsp;
+                        {this.__('by') + ' ' + this.props.updatedByUser.display_name}
+                      </p>
+                      {updatedTime}
+                    </div>
+                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd'}}>
+                      <p style={{fontSize: '16px'}}>
+                        <b>{this.__('Group:')} </b>
+                      </p>
+                      <div>
+                        <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
+                      </div>
+                      <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
+                      <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
+                    </div>
+                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', overflow: 'auto', border: '1px solid #ddd'}}>
+                      <p className='word-wrap' style={{fontSize: '16px'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                    </div>
                   </div>
 
                   <div className='row no-margin' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
@@ -659,12 +622,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                 <div id='data' ref='dataTabContent' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
                   <div className='row no-margin'>
                     {dataGrid}
-
                   </div>
                   {dataEditButton}
                 </div>
                 <div id='export' className='col s12' style={{display: tabContentDisplay}}>
-                  {exportTabContent}
+                  <LayerExport layer={this.props.layer} />
                 </div>
               </div>
 
