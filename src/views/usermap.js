@@ -265,6 +265,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     let deleteButton = ''
     let editButton = ''
     let shareButton = ''
+    let shareModal = ''
     if (this.props.canEdit) {
       deleteButton = (
         <li>
@@ -284,15 +285,19 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       if (MAPHUBS_CONFIG.mapHubsPro) {
         shareButton = (
           <li>
-            <FloatingButton color='red' icon='share' large={false}
+            <FloatingButton color='green' icon='share' large={false}
               onClick={this.showSharePublic} tooltip={this.__('Share')}
             />
           </li>
+        )
+        shareModal = (
+          <PublicShareModal ref='publicShareModal' share_id={this.state.share_id} onChange={this.toggleSharePublic} />
         )
       }
     }
 
     let copyButton = ''
+    let copyModal = ''
     if (this.state.user) {
       copyButton = (
         <li>
@@ -301,14 +306,18 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           />
         </li>
       )
+
+      const copyMapTitle = JSON.parse(JSON.stringify(this.props.map.title))
+      copyMapTitle.en = copyMapTitle.en + ' - Copy'
+      // TODO: change copied map title in other languages
+
+      copyModal = (
+        <CopyMapModal ref='copyMapModal' title={copyMapTitle} onSubmit={this.onCopyMap} />
+      )
     }
 
     const download = `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`
     const downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`
-
-    const copyMapTitle = JSON.parse(JSON.stringify(this.props.map.title))
-    copyMapTitle.en = copyMapTitle.en + ' - Copy'
-    // TODO: change copied map title in other languages
 
     return (
       <ErrorBoundary>
@@ -356,8 +365,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               </li>
             </ul>
           </div>
-          <PublicShareModal ref='publicShareModal' share_id={this.state.share_id} onChange={this.toggleSharePublic} />
-          <CopyMapModal ref='copyMapModal' title={copyMapTitle} onSubmit={this.onCopyMap} />
+          {shareModal}
+          {copyModal}
         </main>
       </ErrorBoundary>
     )
