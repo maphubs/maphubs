@@ -95,7 +95,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       const displayName = (this.state.user && this.state.user.display_name) ? this.state.user.display_name : ''
 
       user = (
-        <li>
+        <li className='nav-link-wrapper'>
           <div ref='userButton' className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-target={this.props.id}>
             {picture}
             {displayName}

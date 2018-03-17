@@ -172,18 +172,18 @@ getCookie = (cname: string) => {
     if (this.props.showSearch) {
       const searchLink = this.props.customSearchLink || '/search'
       search = (
-        <Tooltip
-          title={this.__('Search')}
-          position='bottom'
-          inertia
-          followCursor
-        >
-          <li className='nav-link-wrapper' style={{width: '30px'}}>
+        <li className='nav-link-wrapper' style={{width: '30px'}}>
+          <Tooltip
+            title={this.__('Search')}
+            position='bottom'
+            inertia
+            followCursor
+          >
             <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} href={searchLink}>
               <i className='material-icons'>search</i>
             </a>
-          </li>
-        </Tooltip>
+          </Tooltip>
+        </li>
       )
     }
     return search
@@ -193,19 +193,20 @@ getCookie = (cname: string) => {
     let help
     if (this.props.showHelp) {
       const helpLink = this.props.customHelpLink || 'http://help.maphubs.com'
-      help = (
-        <Tooltip
-          title={this.__('Help/Support')}
-          position='bottom'
-          inertia
-          followCursor
-        >
-          <li className='nav-link-wrapper' style={{width: '30px'}}>
+      help = (  
+        <li className='nav-link-wrapper' style={{width: '30px'}}>
+          <Tooltip
+            title={this.__('Help/Support')}
+            position='bottom'
+            inertia
+            followCursor
+          >
             <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} target='_blank' rel='noopener noreferrer' href={helpLink}>
               <i className='material-icons'>help_outline</i>
             </a>
-          </li>
-        </Tooltip>
+          </Tooltip>
+        </li>
+
       )
     }
     return help
