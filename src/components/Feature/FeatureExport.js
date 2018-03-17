@@ -28,7 +28,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
       }
       return (
         <div>
-          <ul className='collection with-header'>
+          <ul className='collection with-header no-margin'>
             <li className='collection-header'><h5>{this.__('Export Data')}</h5></li>
             <li className='collection-item'>{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
             <li className='collection-item'>{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>

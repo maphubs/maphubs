@@ -235,10 +235,13 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                       <FeatureArea geojson={this.props.feature.geojson} />
                     </div>
                   </div>
-
-                  <h5>{this.__('Attributes')}</h5>
-                  <FeatureProps data={geoJSONProps} presets={presets} />
-                  <FeatureExport mhid={mhid} {...this.props.layer} />
+                  <div className='col m6 s12' style={{maxHeight: '300px', overflowY: 'auto', border: '1px solid #ddd'}}>
+                    <h5>{this.__('Attributes')}</h5>
+                    <FeatureProps data={geoJSONProps} presets={presets} />
+                  </div>
+                  <div className='col m6 s12 no-padding'>          
+                    <FeatureExport mhid={mhid} {...this.props.layer} />
+                  </div>
                 </div>
                 {frPanel}
                 <div id='photo' className='col s12' style={{height: 'calc(100% - 48px)', textAlign: 'center'}}>
