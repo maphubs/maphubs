@@ -222,10 +222,16 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
             backgroundColor: '#FFF',
             height: '100%',
             overflow: 'hidden',
-            padding: '5px',
+            paddingLeft: '5px',
+            paddingRight: '5px',
+            paddingBottom: '5px',
+            paddingTop: '25px',
             position: 'absolute',
             width: '240px',
             border: '1px solid #d3d3d3'}}>
+          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.closePanel}>
+            <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
+          </a>
           <SearchBar id={'map-search-bar'}
             placeholder={searchLabel}
             onChange={this.onSearch}
