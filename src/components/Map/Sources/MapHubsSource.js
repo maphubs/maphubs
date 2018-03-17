@@ -145,16 +145,19 @@ const MapHubsSource = {
                 valid = false
                 debug.log(errs)
               } else {
-                if (marker.properties.osm_id) {
-                  marker.properties.mhid = layer_id + ':' + marker.properties.osm_id
-                } else if (marker.properties['id']) {
-                  marker.properties.mhid = layer_id + ':' + marker.properties['id']
-                } else if (marker.properties['ID']) {
-                  marker.properties.mhid = layer_id + ':' + marker.properties['ID']
-                } else if (marker.properties['OBJECTID']) {
-                  marker.properties.mhid = layer_id + ':' + marker.properties['OBJECTID']
-                } else {
-                  marker.properties.mhid = layer_id + ':' + i
+                if (!marker.properties.mhid) {
+                  // mhid not found determine an ID for the marker
+                  if (marker.properties.osm_id) {
+                    marker.properties.mhid = layer_id + ':' + marker.properties.osm_id
+                  } else if (marker.properties['id']) {
+                    marker.properties.mhid = layer_id + ':' + marker.properties['id']
+                  } else if (marker.properties['ID']) {
+                    marker.properties.mhid = layer_id + ':' + marker.properties['ID']
+                  } else if (marker.properties['OBJECTID']) {
+                    marker.properties.mhid = layer_id + ':' + marker.properties['OBJECTID']
+                  } else {
+                    marker.properties.mhid = layer_id + ':' + i
+                  }
                 }
 
                 if (markerConfig.remote_host) {
