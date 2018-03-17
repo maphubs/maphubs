@@ -47,51 +47,65 @@ module.exports = {
     if (!locale || !map) {
       debug.log('missing required args')
     }
-  // disable until OpenMapTile has translations;
-    /*
-    var supportedLangauges = ['en', 'fr', 'es', 'de', 'de', 'ru', 'zh'];
-    var foundLocale = _includes(supportedLangauges, locale);
-    if(!foundLocale){
-      //Mapbox vector tiles currently only have en,es,fr,de,ru,zh
-      locale = 'en';
-    }
-    debug.log('(' + this.state.id + ') ' +'changing map language to: ' + locale);
-    try{
-      if(this.state.baseMap === 'streets'){
-        map.setLayoutProperty('continent', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('state', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('water_name_line', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('water_name_point', 'text-field', '{name_' + locale + '}');
-      }else if(this.state.baseMap === 'default'){
-        map.setLayoutProperty('place_country_major', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_country_other', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_state', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_city_large', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_capital', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_city', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_town', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_village', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_suburb', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_other', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('water_name', 'text-field', '{name_' + locale + '}');
 
-      }else if(this.state.baseMap === 'dark'){
-        map.setLayoutProperty('place_country_major', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_country_other', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_state', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_city_large', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_city', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_town', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_village', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_suburb', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('place_other', 'text-field', '{name_' + locale + '}');
-        map.setLayoutProperty('water_name', 'text-field', '{name_' + locale + '}');
-
+    debug.log(`(${this.state.id}) changing map language to: ${locale}`)
+    try {
+      const name = `{name:${locale}}`
+      if (this.state.baseMap === 'streets') {
+        map.setLayoutProperty('continent', 'text-field', name)
+        map.setLayoutProperty('state', 'text-field', name)
+        map.setLayoutProperty('country_1', 'text-field', name)
+        map.setLayoutProperty('country_2', 'text-field', name)
+        map.setLayoutProperty('country_3', 'text-field', name)
+        map.setLayoutProperty('country_other', 'text-field', name)
+        map.setLayoutProperty('place_other', 'text-field', name)
+        map.setLayoutProperty('place_city', 'text-field', name)
+        map.setLayoutProperty('place_town', 'text-field', name)
+        map.setLayoutProperty('place_village', 'text-field', name)
+        map.setLayoutProperty('water_name_line', 'text-field', name)
+        map.setLayoutProperty('water_name_point', 'text-field', name)
+        map.setLayoutProperty('airport-label-major', 'text-field', name)
+        map.setLayoutProperty('road_label', 'text-field', name)
+      } else if (this.state.baseMap === 'default' || this.state.baseMap === 'dark') {
+        map.setLayoutProperty('place_country_major', 'text-field', name)
+        map.setLayoutProperty('place_country_other', 'text-field', name)
+        map.setLayoutProperty('place_state', 'text-field', name)
+        map.setLayoutProperty('place_city_large', 'text-field', name)
+        map.setLayoutProperty('place_capital', 'text-field', name)
+        map.setLayoutProperty('place_city', 'text-field', name)
+        map.setLayoutProperty('place_town', 'text-field', name)
+        map.setLayoutProperty('place_village', 'text-field', name)
+        map.setLayoutProperty('place_suburb', 'text-field', name)
+        map.setLayoutProperty('place_other', 'text-field', name)
+        map.setLayoutProperty('water_name', 'text-field', name)
+      } else if (this.state.baseMap === 'topo') {
+        map.setLayoutProperty('continent', 'text-field', name)
+        map.setLayoutProperty('state', 'text-field', name)
+        map.setLayoutProperty('country_1', 'text-field', name)
+        map.setLayoutProperty('country_2', 'text-field', name)
+        map.setLayoutProperty('country_3', 'text-field', name)
+        map.setLayoutProperty('country_other', 'text-field', name)
+        map.setLayoutProperty('place_city_capital', 'text-field', name)
+        map.setLayoutProperty('place_city', 'text-field', name)
+        map.setLayoutProperty('place_town', 'text-field', name)
+        map.setLayoutProperty('place_village', 'text-field', name)
+        map.setLayoutProperty('place_other', 'text-field', name)
+        map.setLayoutProperty('mountain_peak', 'text-field', name)
+        map.setLayoutProperty('waterway-name', 'text-field', name)
+        map.setLayoutProperty('water_name_point', 'text-field', name)
+        map.setLayoutProperty('road_label', 'text-field', name)
+        map.setLayoutProperty('road_label_track', 'text-field', name)
+      } else if (this.state.baseMap === 'satellite') {
+        map.setLayoutProperty('country_label', 'text-field', name)
+        map.setLayoutProperty('country_other_label', 'text-field', name)
+        map.setLayoutProperty('place_label_city', 'text-field', name)
+        map.setLayoutProperty('place_label_other', 'text-field', name)
+        map.setLayoutProperty('road_major_label', 'text-field', name)
+        map.setLayoutProperty('airport-label', 'text-field', name)
+        map.setLayoutProperty('poi_label', 'text-field', name)
       }
-
-    }catch(err){
-      debug.error(err);
+    } catch (err) {
+      debug.error(err)
     }
-*/
   }
 }
