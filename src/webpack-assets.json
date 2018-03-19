@@ -3,149 +3,149 @@
     "js": "/public/about.f091d310ca00ab6061b7.js"
   },
   "addphotopoint": {
-    "js": "/public/addphotopoint.92037c682478702260e4.js",
-    "css": "/public/addphotopoint.92037c682478702260e4.css"
+    "js": "/public/addphotopoint.badf2bf59da30fd14ac8.js",
+    "css": "/public/addphotopoint.badf2bf59da30fd14ac8.css"
   },
   "adminuserinvite": {
-    "js": "/public/adminuserinvite.ee1209373a0aee0f115d.js",
-    "css": "/public/adminuserinvite.ee1209373a0aee0f115d.css"
+    "js": "/public/adminuserinvite.d89f65a9e40b58906126.js",
+    "css": "/public/adminuserinvite.d89f65a9e40b58906126.css"
   },
   "approvedialog": {
     "js": "/public/approvedialog.4e7f8358435732146173.js"
   },
   "creategroup": {
-    "js": "/public/creategroup.dcee6a6bbc13a9f8c358.js",
-    "css": "/public/creategroup.dcee6a6bbc13a9f8c358.css"
+    "js": "/public/creategroup.bda05e0eb99e2aa3d73f.js",
+    "css": "/public/creategroup.bda05e0eb99e2aa3d73f.css"
   },
   "createhubstory": {
-    "js": "/public/createhubstory.7da23f0f177fe90d577d.js",
-    "css": "/public/createhubstory.7da23f0f177fe90d577d.css"
+    "js": "/public/createhubstory.35677626c6e873d7ba0f.js",
+    "css": "/public/createhubstory.35677626c6e873d7ba0f.css"
   },
   "createlayer": {
-    "js": "/public/createlayer.124dd25bfb76c657eb78.js",
-    "css": "/public/createlayer.124dd25bfb76c657eb78.css"
+    "js": "/public/createlayer.0933b75b0002c7593eaf.js",
+    "css": "/public/createlayer.0933b75b0002c7593eaf.css"
   },
   "createremotelayer": {
-    "js": "/public/createremotelayer.62c6114112f293a20919.js",
-    "css": "/public/createremotelayer.62c6114112f293a20919.css"
+    "js": "/public/createremotelayer.f517d2e3f4fff807764d.js",
+    "css": "/public/createremotelayer.f517d2e3f4fff807764d.css"
   },
   "createuserstory": {
-    "js": "/public/createuserstory.4880480053f72cdeeaa0.js",
-    "css": "/public/createuserstory.4880480053f72cdeeaa0.css"
+    "js": "/public/createuserstory.748d4e4393de863851dc.js",
+    "css": "/public/createuserstory.748d4e4393de863851dc.css"
   },
   "edithubstory": {
-    "js": "/public/edithubstory.a3666df18fd2a9ce83a2.js",
-    "css": "/public/edithubstory.a3666df18fd2a9ce83a2.css"
+    "js": "/public/edithubstory.1e7297d7fcb92f4feb28.js",
+    "css": "/public/edithubstory.1e7297d7fcb92f4feb28.css"
   },
   "edituserstory": {
-    "js": "/public/edituserstory.be3746b5ac67d6613435.js",
-    "css": "/public/edituserstory.be3746b5ac67d6613435.css"
+    "js": "/public/edituserstory.fc3cbe0a54e075ddabca.js",
+    "css": "/public/edituserstory.fc3cbe0a54e075ddabca.css"
   },
   "emailconfirmation": {
     "js": "/public/emailconfirmation.5ce81f097012474f3c2e.js"
   },
   "embedmap": {
-    "js": "/public/embedmap.526944fba0819cb7803d.js",
-    "css": "/public/embedmap.526944fba0819cb7803d.css"
+    "js": "/public/embedmap.d3ca52a93cc3abdafdf5.js",
+    "css": "/public/embedmap.d3ca52a93cc3abdafdf5.css"
   },
   "error": {
-    "js": "/public/error.779b8c80d2cab1175b6c.js",
-    "css": "/public/error.779b8c80d2cab1175b6c.css"
+    "js": "/public/error.28daa696a1fb6a8acb7f.js",
+    "css": "/public/error.28daa696a1fb6a8acb7f.css"
   },
   "explore": {
-    "js": "/public/explore.0f999752e04f26d0e2cd.js",
-    "css": "/public/explore.0f999752e04f26d0e2cd.css"
+    "js": "/public/explore.30a05538e5e88b8ec0a0.js",
+    "css": "/public/explore.30a05538e5e88b8ec0a0.css"
   },
   "featureinfo": {
-    "js": "/public/featureinfo.f1effa1e539f19bf6ef9.js",
-    "css": "/public/featureinfo.f1effa1e539f19bf6ef9.css"
+    "js": "/public/featureinfo.41895c738d38ded3de16.js",
+    "css": "/public/featureinfo.41895c738d38ded3de16.css"
   },
   "groupadmin": {
-    "js": "/public/groupadmin.278b16ffd1d88c92ee38.js",
-    "css": "/public/groupadmin.278b16ffd1d88c92ee38.css"
+    "js": "/public/groupadmin.12dba065abac773f9d96.js",
+    "css": "/public/groupadmin.12dba065abac773f9d96.css"
   },
   "groupinfo": {
-    "js": "/public/groupinfo.8f962399210e6ca795e2.js",
-    "css": "/public/groupinfo.8f962399210e6ca795e2.css"
+    "js": "/public/groupinfo.5c4f4e47d572d21d6e76.js",
+    "css": "/public/groupinfo.5c4f4e47d572d21d6e76.css"
   },
   "groups": {
-    "js": "/public/groups.fa87493274155fcd8d62.js",
-    "css": "/public/groups.fa87493274155fcd8d62.css"
+    "js": "/public/groups.272d0c0b00ca02cad974.js",
+    "css": "/public/groups.272d0c0b00ca02cad974.css"
   },
   "home": {
-    "js": "/public/home.f1b38dc9d1346de40178.js",
-    "css": "/public/home.f1b38dc9d1346de40178.css"
+    "js": "/public/home.f98407241a3722cc79d5.js",
+    "css": "/public/home.f98407241a3722cc79d5.css"
   },
   "hubadmin": {
     "js": "/public/hubadmin.3e296554c67e674af608.js"
   },
   "hubbuilder": {
-    "js": "/public/hubbuilder.7f8f6fa85389cf01bd59.js",
-    "css": "/public/hubbuilder.7f8f6fa85389cf01bd59.css"
+    "js": "/public/hubbuilder.de2a9c2d9b457d6c408d.js",
+    "css": "/public/hubbuilder.de2a9c2d9b457d6c408d.css"
   },
   "hubinfo": {
-    "js": "/public/hubinfo.8e613f92e2d3f21c6356.js",
-    "css": "/public/hubinfo.8e613f92e2d3f21c6356.css"
+    "js": "/public/hubinfo.f941ca3673b2825d4d53.js",
+    "css": "/public/hubinfo.f941ca3673b2825d4d53.css"
   },
   "hubmap": {
     "js": "/public/hubmap.64826aba6be7ecc9e4f3.js",
     "css": "/public/hubmap.64826aba6be7ecc9e4f3.css"
   },
   "hubresources": {
-    "js": "/public/hubresources.33ee059ac392b251e118.js",
-    "css": "/public/hubresources.33ee059ac392b251e118.css"
+    "js": "/public/hubresources.cb02b46933c186fbfe09.js",
+    "css": "/public/hubresources.cb02b46933c186fbfe09.css"
   },
   "hubs": {
-    "js": "/public/hubs.cd8e12d65deed57c9b57.js",
-    "css": "/public/hubs.cd8e12d65deed57c9b57.css"
+    "js": "/public/hubs.65a8cac69a58010bd421.js",
+    "css": "/public/hubs.65a8cac69a58010bd421.css"
   },
   "hubstories": {
-    "js": "/public/hubstories.44fc04790873b8dbca07.js",
-    "css": "/public/hubstories.44fc04790873b8dbca07.css"
+    "js": "/public/hubstories.8e3c19154fa42c49a992.js",
+    "css": "/public/hubstories.8e3c19154fa42c49a992.css"
   },
   "hubstory": {
-    "js": "/public/hubstory.b070306e7cba44b867be.js",
-    "css": "/public/hubstory.b070306e7cba44b867be.css"
+    "js": "/public/hubstory.6d135dfb27c0aa712e38.js",
+    "css": "/public/hubstory.6d135dfb27c0aa712e38.css"
   },
   "journalists": {
     "js": "/public/journalists.1691d9a6e066455a5b6b.js"
   },
   "layeradmin": {
-    "js": "/public/layeradmin.2d17dab1775fe93071ae.js",
-    "css": "/public/layeradmin.2d17dab1775fe93071ae.css"
+    "js": "/public/layeradmin.8851ca6d619ac01cc65b.js",
+    "css": "/public/layeradmin.8851ca6d619ac01cc65b.css"
   },
   "layerinfo": {
-    "js": "/public/layerinfo.7c55b24258f211af034a.js",
-    "css": "/public/layerinfo.7c55b24258f211af034a.css"
+    "js": "/public/layerinfo.eecf8120225d1511856f.js",
+    "css": "/public/layerinfo.eecf8120225d1511856f.css"
   },
   "layermap": {
-    "js": "/public/layermap.03b5dcae25bcdaa747b6.js",
-    "css": "/public/layermap.03b5dcae25bcdaa747b6.css"
+    "js": "/public/layermap.304805921bf66757e67d.js",
+    "css": "/public/layermap.304805921bf66757e67d.css"
   },
   "layers": {
-    "js": "/public/layers.5193b7efb938e50085bd.js",
-    "css": "/public/layers.5193b7efb938e50085bd.css"
+    "js": "/public/layers.973d6f4de998dfdd694f.js",
+    "css": "/public/layers.973d6f4de998dfdd694f.css"
   },
   "locales": {
-    "js": "/public/locales.b98e716857a44dcf2172.js"
+    "js": "/public/locales.24be294ec7acbabd5a3d.js"
   },
   "login": {
     "js": "/public/login.ecff34c22635fc28df5d.js"
   },
   "map": {
-    "js": "/public/map.d5429661c530c28f526f.js",
-    "css": "/public/map.d5429661c530c28f526f.css"
+    "js": "/public/map.5285f84ed4659884d32c.js",
+    "css": "/public/map.5285f84ed4659884d32c.css"
   },
   "mapboxgl": {
     "js": "/public/mapboxgl.8f607e3150b76f0035ee.js"
   },
   "mapedit": {
-    "js": "/public/mapedit.37448877691331d021db.js",
-    "css": "/public/mapedit.37448877691331d021db.css"
+    "js": "/public/mapedit.03823d44669130ea59d9.js",
+    "css": "/public/mapedit.03823d44669130ea59d9.css"
   },
   "maps": {
-    "js": "/public/maps.5ee3a5ffa67c73023021.js",
-    "css": "/public/maps.5ee3a5ffa67c73023021.css"
+    "js": "/public/maps.523a147ade44c26b4d27.js",
+    "css": "/public/maps.523a147ade44c26b4d27.css"
   },
   "passwordreset": {
     "js": "/public/passwordreset.248cdb0cda5be2319c01.js"
@@ -154,12 +154,12 @@
     "js": "/public/pendingconfirmation.837887381f6d7553d746.js"
   },
   "privacy": {
-    "js": "/public/privacy.081a4218bb8ca963c4f4.js",
-    "css": "/public/privacy.081a4218bb8ca963c4f4.css"
+    "js": "/public/privacy.dc026b81e77eaa9e7988.js",
+    "css": "/public/privacy.dc026b81e77eaa9e7988.css"
   },
   "search": {
-    "js": "/public/search.654a14d10214ed19613e.js",
-    "css": "/public/search.654a14d10214ed19613e.css"
+    "js": "/public/search.026944aa60bfe18ce037.js",
+    "css": "/public/search.026944aa60bfe18ce037.css"
   },
   "services": {
     "js": "/public/services.87ca0a0c9ec2536be1ab.js"
@@ -168,109 +168,109 @@
     "js": "/public/signup.78d6ad965fe65fde35ec.js"
   },
   "staticmap": {
-    "js": "/public/staticmap.9753c8030e996ac7305c.js",
-    "css": "/public/staticmap.9753c8030e996ac7305c.css"
+    "js": "/public/staticmap.950f039e1c58649a0e16.js",
+    "css": "/public/staticmap.950f039e1c58649a0e16.css"
   },
   "stories": {
-    "js": "/public/stories.b219c17ecb221fa3ccf4.js",
-    "css": "/public/stories.b219c17ecb221fa3ccf4.css"
+    "js": "/public/stories.aea5d594da7e90b6b0e8.js",
+    "css": "/public/stories.aea5d594da7e90b6b0e8.css"
   },
   "terms": {
-    "js": "/public/terms.fce2fc6762244589759f.js",
-    "css": "/public/terms.fce2fc6762244589759f.css"
+    "js": "/public/terms.a769d03bad0f6979a55b.js",
+    "css": "/public/terms.a769d03bad0f6979a55b.css"
   },
   "usergroups": {
-    "js": "/public/usergroups.9a6dace893d1220ee87d.js",
-    "css": "/public/usergroups.9a6dace893d1220ee87d.css"
+    "js": "/public/usergroups.dc9798b05003ac159b62.js",
+    "css": "/public/usergroups.dc9798b05003ac159b62.css"
   },
   "userhubs": {
-    "js": "/public/userhubs.8c2d237e53bb32043514.js",
-    "css": "/public/userhubs.8c2d237e53bb32043514.css"
+    "js": "/public/userhubs.ff8894b05f343278d56f.js",
+    "css": "/public/userhubs.ff8894b05f343278d56f.css"
   },
   "usermap": {
-    "js": "/public/usermap.62ec56fc516cd7c06331.js",
-    "css": "/public/usermap.62ec56fc516cd7c06331.css"
+    "js": "/public/usermap.ce6f09a18a6f981f3838.js",
+    "css": "/public/usermap.ce6f09a18a6f981f3838.css"
   },
   "usermaps": {
-    "js": "/public/usermaps.2e6461039b5bd91e72b8.js",
-    "css": "/public/usermaps.2e6461039b5bd91e72b8.css"
+    "js": "/public/usermaps.5cacc100ed85681292e6.js",
+    "css": "/public/usermaps.5cacc100ed85681292e6.css"
   },
   "usersettings": {
     "js": "/public/usersettings.e97117d1f46dc14f357c.js"
   },
   "userstories": {
-    "js": "/public/userstories.8fb6537a2e381a6ccf0d.js",
-    "css": "/public/userstories.8fb6537a2e381a6ccf0d.css"
+    "js": "/public/userstories.63117aa5b4fd49f2f51b.js",
+    "css": "/public/userstories.63117aa5b4fd49f2f51b.css"
   },
   "userstory": {
-    "js": "/public/userstory.b7ce920af98fe2724333.js",
-    "css": "/public/userstory.b7ce920af98fe2724333.css"
+    "js": "/public/userstory.e21207c5e5ad1a6cf52d.js",
+    "css": "/public/userstory.e21207c5e5ad1a6cf52d.css"
   },
   "vendor": {
-    "js": "/public/vendor.9dac9fddf999c992eab5.js",
-    "css": "/public/vendor.9dac9fddf999c992eab5.css"
+    "js": "/public/vendor.3c74da61efc647d27aa1.js",
+    "css": "/public/vendor.3c74da61efc647d27aa1.css"
   },
   "metadata": {
-    "version": "0.16.0"
+    "version": "0.16.1"
   },
   "homedemo": {
     "js": "/public/homedemo.4f33e5f49134ca06f1e0.js",
     "css": "/public/homedemo.4f33e5f49134ca06f1e0.css"
   },
   "pageedit": {
-    "js": "/public/pageedit.a09b722a028146f2d0eb.js",
-    "css": "/public/pageedit.a09b722a028146f2d0eb.css"
+    "js": "/public/pageedit.756ae8f80c83aa3f560f.js",
+    "css": "/public/pageedit.756ae8f80c83aa3f560f.css"
   },
   "searchindexadmin": {
-    "js": "/public/searchindexadmin.fb347a7acc7e2cef07c6.js",
-    "css": "/public/searchindexadmin.fb347a7acc7e2cef07c6.css"
+    "js": "/public/searchindexadmin.e21ccecd953788ed65b0.js",
+    "css": "/public/searchindexadmin.e21ccecd953788ed65b0.css"
   },
   "homepro": {
     "js": "/public/homepro.7cf8306d0666c9a320f1.js",
     "css": "/public/homepro.7cf8306d0666c9a320f1.css"
   },
   "auth0profile": {
-    "js": "/public/auth0profile.1e698a80dc4ff1153d92.js",
-    "css": "/public/auth0profile.1e698a80dc4ff1153d92.css"
+    "js": "/public/auth0profile.cbda093d14e24e076aea.js",
+    "css": "/public/auth0profile.cbda093d14e24e076aea.css"
   },
   "auth0error": {
-    "js": "/public/auth0error.0d8186757ec0e53643b6.js",
-    "css": "/public/auth0error.0d8186757ec0e53643b6.css"
+    "js": "/public/auth0error.d3ed8cc804c8658a8412.js",
+    "css": "/public/auth0error.d3ed8cc804c8658a8412.css"
   },
   "auth0login": {
-    "js": "/public/auth0login.79c95d236dcd1be56063.js",
-    "css": "/public/auth0login.79c95d236dcd1be56063.css"
+    "js": "/public/auth0login.f3f62495863684460d6b.js",
+    "css": "/public/auth0login.f3f62495863684460d6b.css"
   },
   "allmaps": {
-    "js": "/public/allmaps.229d6c0fba4c9548d7cc.js",
-    "css": "/public/allmaps.229d6c0fba4c9548d7cc.css"
+    "js": "/public/allmaps.8c42f32078d2ac2b0837.js",
+    "css": "/public/allmaps.8c42f32078d2ac2b0837.css"
   },
   "allstories": {
-    "js": "/public/allstories.8bf6ff420aa2e05f8667.js",
-    "css": "/public/allstories.8bf6ff420aa2e05f8667.css"
+    "js": "/public/allstories.31bcefab7a02764afab9.js",
+    "css": "/public/allstories.31bcefab7a02764afab9.css"
   },
   "alllayers": {
-    "js": "/public/alllayers.f2dd64d1505fa5566009.js",
-    "css": "/public/alllayers.f2dd64d1505fa5566009.css"
+    "js": "/public/alllayers.84f731773532928e1d3b.js",
+    "css": "/public/alllayers.84f731773532928e1d3b.css"
   },
   "allhubs": {
-    "js": "/public/allhubs.cebe26629cbac8948c9a.js",
-    "css": "/public/allhubs.cebe26629cbac8948c9a.css"
+    "js": "/public/allhubs.b9243e5a5c4cbd35daec.js",
+    "css": "/public/allhubs.b9243e5a5c4cbd35daec.css"
   },
   "allgroups": {
-    "js": "/public/allgroups.7bfab04c8a0147ff705f.js",
-    "css": "/public/allgroups.7bfab04c8a0147ff705f.css"
+    "js": "/public/allgroups.9381f1d2c0f6d905b908.js",
+    "css": "/public/allgroups.9381f1d2c0f6d905b908.css"
   },
   "auth0invite": {
-    "js": "/public/auth0invite.8a36e33a8f361aefe9c0.js",
-    "css": "/public/auth0invite.8a36e33a8f361aefe9c0.css"
+    "js": "/public/auth0invite.cf806436410756199629.js",
+    "css": "/public/auth0invite.cf806436410756199629.css"
   },
   "layerreplace": {
-    "js": "/public/layerreplace.4e8c8938535a28e7bbb7.js",
-    "css": "/public/layerreplace.4e8c8938535a28e7bbb7.css"
+    "js": "/public/layerreplace.8b60df3554a468e35def.js",
+    "css": "/public/layerreplace.8b60df3554a468e35def.css"
   },
   "importlayer": {
-    "js": "/public/importlayer.1b0a39522c47b2bb17d3.js",
-    "css": "/public/importlayer.1b0a39522c47b2bb17d3.css"
+    "js": "/public/importlayer.8e1bacb479ea7373fe15.js",
+    "css": "/public/importlayer.8e1bacb479ea7373fe15.css"
   }
 }
