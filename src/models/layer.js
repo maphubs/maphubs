@@ -113,7 +113,7 @@ module.exports = {
     if (result && Array.isArray(result) && result.length === 1) {
       return result[0].count
     } else {
-      return null
+      return 0
     }
   },
 

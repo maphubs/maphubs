@@ -56,10 +56,6 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
     this.setState({selectedSource: value})
   }
 
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
-  }
-
   render () {
     return (
       <div className='row'>

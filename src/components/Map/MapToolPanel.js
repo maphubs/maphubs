@@ -9,8 +9,6 @@ import MapHubsComponent from '../../components/MapHubsComponent'
 import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import {Tooltip} from 'react-tippy'
 
-const $ = require('jquery')
-
 type Props = {|
   show: boolean,
   gpxLink: string,
@@ -36,7 +34,7 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
       edge: 'right',
       draggable: false
     })
-    $(this.refs.mapToolPanel).collapsible()
+    M.Collapsible.init(this.refs.mapToolPanel, {})
   }
 
   closePanel = () => {

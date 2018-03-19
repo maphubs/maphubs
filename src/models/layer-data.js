@@ -51,7 +51,7 @@ module.exports = {
    * @param {any} trx
    * @returns Promise
    */
-  async updateFeature (layer_id: number, mhid: string, geojson: Object, trx: any): Bluebird$Promise<Object> {
+  async updateFeature (layer_id: number, mhid: string, geojson: Object, trx: any): Promise<Object> {
     const _this = this
     debug.log('updating feature: ' + mhid)
 
@@ -81,7 +81,7 @@ module.exports = {
    * * @param {any} trx
    * @returns {Bluebird$Promise<Object>}
    */
-  async setStringTag (layer_id: number, mhid: string, tag: string, val: ?string, trx: any): Bluebird$Promise<Object> {
+  async setStringTag (layer_id: number, mhid: string, tag: string, val: ?string, trx: any): Promise<Object> {
     debug.log('updating tag: ' + mhid)
     let valStr
     if (val) {
@@ -111,7 +111,7 @@ module.exports = {
    * * @param {any} trx
    * @returns {Bluebird$Promise<Object>}
    */
-  async setNumberTag (layer_id: number, mhid: string, tag: string, val: number, trx: any): Bluebird$Promise<Object> {
+  async setNumberTag (layer_id: number, mhid: string, tag: string, val: number, trx: any): Promise<Object> {
     debug.log('updating tag: ' + mhid)
     let valStr
     if (val) {
@@ -139,7 +139,7 @@ module.exports = {
    * @param {any} trx
    * @returns Promise
    */
-  async deleteFeature (layer_id: number, mhid: string, trx: any): Bluebird$Promise<Object> {
+  async deleteFeature (layer_id: number, mhid: string, trx: any): Promise<Object> {
     debug.log('deleting feature: ' + mhid)
     await trx(`layers.data_${layer_id}`).where({mhid}).del()
     return SearchIndex.deleteFeature(mhid)

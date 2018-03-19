@@ -68,8 +68,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-
-    window.onunload = function () {
+    window.addEventListener('onunload', (e) => {
       if (_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete) {
         $.ajax({
           type: 'POST',
@@ -86,15 +85,15 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
           }
         })
       }
-    }
+    })
 
-    window.onbeforeunload = function () {
-      if (_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete) {
-        return _this.__('You have not finished creating your layer, if you leave now your layer will be deleted.')
-      } else if (!_this.state.layer_id || _this.state.layer_id === -1) {
-        return _this.__('You have not finished creating your layer.')
+    window.addEventListener('beforeunload', (e) => {
+      if (!_this.state.complete) {
+        const msg = _this.__('You have not finished creating your layer, if you leave now your layer will be deleted.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   submit = (layerId: number, name: LocalizedString) => {

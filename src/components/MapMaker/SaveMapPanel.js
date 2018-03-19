@@ -64,7 +64,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
       return
     }
 
-    if (!model.group && this.state.user.groups.length === 1) {
+    if (!model.group && this.state.user && this.state.user.groups.length === 1) {
       // creating a new layer when user is only the member of a single group (not showing the group dropdown)
       model.group = this.state.user.groups[0].group_id
     }
@@ -81,7 +81,10 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
   render () {
     const {title, editing, owned_by_group_id} = this.props
     const {canSave, saving, ownedByGroup, user} = this.state
-    const groups = user.groups || []
+    let groups = []
+    if (user && user.groups) {
+      groups = user.groups
+    }
 
     let ownedByGroupChecked
     if (typeof ownedByGroup === 'undefined' && groups.length > 0) {
@@ -107,7 +110,6 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
     let selectGroup
     if (ownedByGroupChecked) {
-      const groups = user.groups || []
       selectGroup = (
         <div className='row no-margin' style={{width: '100%'}}>
           <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />

@@ -4,8 +4,8 @@ import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
 const MapboxSource = {
   load (key: string, source: GLSource, mapComponent: any) {
-    const mapboxid = source.mapboxid
-    const url = 'https://api.mapbox.com/styles/v1/' + mapboxid + '?access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+    const mapboxid = source.mapboxid || ''
+    const url = `https://api.mapbox.com/styles/v1/${mapboxid}?access_token=${MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}`
     return request.get(url)
       .then((res) => {
         const mbstyle = res.body

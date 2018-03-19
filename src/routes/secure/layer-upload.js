@@ -56,23 +56,27 @@ module.exports = function (app: any) {
     if (layer_id && uploadUrl && originalName) {
       try {
         const layer = await Layer.getLayerByID(layer_id)
-        const shortid = layer.shortid
-        if (layer.created_by_user_id === req.user_id) {
-          const importer = Importers.getImporterFromFileName(originalName)
+        if (layer) {
+          const shortid = layer.shortid
+          if (layer.created_by_user_id === req.user_id) {
+            const importer = Importers.getImporterFromFileName(originalName)
 
-          const uploadUrlParts = uploadUrl.split('/')
-          const fileid = uploadUrlParts[uploadUrlParts.length - 1]
-          const path = UPLOAD_PATH + '/' + fileid
-          const importerResult = await importer(path, layer_id)
-          if (importerResult.type && importerResult.type === 'FeatureCollection') {
-            // is geoJSON
-            const result = await DataLoadUtils.storeTempGeoJSON(importerResult, path, layer_id, shortid, false, true)
-            log.info('Upload Complete')
-            res.status(200).send(result)
-          } else {
-            // pass through other types of results
-            return res.status(200).send(importerResult)
+            const uploadUrlParts = uploadUrl.split('/')
+            const fileid = uploadUrlParts[uploadUrlParts.length - 1]
+            const path = UPLOAD_PATH + '/' + fileid
+            const importerResult = await importer(path, layer_id)
+            if (importerResult.type && importerResult.type === 'FeatureCollection') {
+              // is geoJSON
+              const result = await DataLoadUtils.storeTempGeoJSON(importerResult, path, layer_id, shortid, false, true)
+              log.info('Upload Complete')
+              res.status(200).send(result)
+            } else {
+              // pass through other types of results
+              return res.status(200).send(importerResult)
+            }
           }
+        } else {
+          return res.status(400).send('layer not found')
         }
       } catch (err) {
         log.error(err.message)

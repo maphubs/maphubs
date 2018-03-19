@@ -22,7 +22,7 @@ module.exports = {
       try {
         const count = await Layer.getLayerFeatureCount(layer.layer_id)
         // ignore if layer feature length > 10,000
-        if (count < 10000) {
+        if (count > 0 && count < 10000) {
           urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`)
         }
         return
@@ -130,7 +130,7 @@ module.exports = {
     const baseUrl = urlUtil.getBaseUrl()
     return Layer.getLayerByID(layer_id, trx)
       .then((layer) => {
-        if (!layer.is_external && !layer.remote && !layer.private) {
+        if (layer && !layer.is_external && !layer.remote && !layer.private) {
           const layer_id = layer.layer_id
           let lastmodISO = null
           if (layer.last_updated) lastmodISO = layer.last_updated.toISOString()

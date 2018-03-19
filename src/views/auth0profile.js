@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-// var $ = require('jquery');
 import Header from '../components/header'
 // import Gravatar from '../components/user/Gravatar';
 // import Password from '../components/forms/Password';
@@ -30,7 +29,7 @@ export default class Auth0Profile extends MapHubsComponent<Props, void> {
   }
 
   componentDidMount () {
-    // $(this.refs.tabs).tabs();
+    // M.Tabs.init(this.refs.tabs, {})
   }
 
   render () {

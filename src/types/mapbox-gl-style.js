@@ -1,5 +1,5 @@
-//@flow
-import type {GeoJSONObject} from 'geojson-flow';
+// @flow
+import type {GeoJSONObject} from 'geojson-flow'
 
 export type GLSource = {
   type: 'vector' | 'raster' | 'geojson' | 'image' | 'video' | 'canvas',
@@ -7,23 +7,24 @@ export type GLSource = {
   tiles?: Array<string>,
   minzoom?: number,
   maxzoom?: number,
-   metadata?: Object, //not actually part of the spec
-  //type: raster 
-  tileSize?: number, 
-  //type: geojson
+   metadata?: Object, // not actually part of the spec
+  // type: raster
+  tileSize?: number,
+  // type: geojson
   data?: GeoJSONObject | string,
   buffer?: number,
   tolerance?: number,
   cluster?: boolean,
   clusterRadius?: number,
   clusterMaxZoom?: number,
-  //types: image, video, canvas
+  // types: image, video, canvas
   coordinates?: Array<number>,
-  //types: video
+  // types: video
   urls?: Array<string>,
-  //type: canvas
+  // type: canvas
   animate?: boolean,
-  canvas?: string
+  canvas?: string,
+  mapboxid?: string
 }
 
 export type GLFilter = Array<any>
@@ -37,8 +38,8 @@ export type GLLayerPaint = {
   [value: string]: any
 }
 
-export type GLSources = { 
-  [source: string]: GLSource 
+export type GLSources = {
+  [source: string]: GLSource
 }
 
 export type GLLayer = {

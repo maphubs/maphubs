@@ -135,17 +135,19 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    $(this.refs.tabs).tabs()
-    $(this.refs.mapMakerToolPanel).collapsible()
+    this.tabsInstance = M.Tabs.init(this.refs.tabs, {})
+    M.Collapsible.init(this.refs.mapMakerToolPanel, {})
     if (this.props.edit) {
       this.toggleMapTab()
     }
 
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (!_this.state.saved && _this.state.mapLayers && _this.state.mapLayers.length > 0) {
-        return _this.__('Please save your map to avoid losing your work!')
+        const msg = _this.__('Please save your map to avoid losing your work!')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   componentWillReceiveProps (nextProps: Props) {
@@ -329,12 +331,12 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   toggleMapTab = () => {
-    $(this.refs.tabs).tabs('select', 'maptab')
+    this.tabsInstance.select('maptab')
     fireResizeEvent()
   }
 
   toggleAddLayerTab = () => {
-    $(this.refs.tabs).tabs('select', 'addlayer')
+    this.tabsInstance.select('addlayer')
     fireResizeEvent()
   }
 

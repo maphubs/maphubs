@@ -54,12 +54,6 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    $('.collapsible').collapsible({
-      accordion: true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-    })
-  }
-
   onSubmit = () => {
     const _this = this
     _this.setState({saving: true})

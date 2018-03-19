@@ -197,7 +197,7 @@ module.exports = function (app: any) {
       const user_id = req.session.user.maphubsUser.id
       const allowed = await Layer.allowedToModify(layer_id, user_id)
       const layer = await Layer.getLayerByID(layer_id)
-      if (allowed || layer.allowPublicSubmission) { // placeholder for public submission flag on layers
+      if (layer && (allowed || layer.allowPublicSubmission)) { // placeholder for public submission flag on layers
         if (layer.data_type === 'point' && !layer.is_external) {
           return res.render('addphotopoint', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
             props: {layer},
@@ -221,12 +221,16 @@ module.exports = function (app: any) {
 
       if (allowed) {
         const layer = await Layer.getLayerByID(layer_id)
-        return res.render('layeradmin', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {
-            layer,
-            groups: await Group.getGroupsForUser(user_id)
-          },
-          req})
+        if (layer) {
+          return res.render('layeradmin', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+            props: {
+              layer,
+              groups: await Group.getGroupsForUser(user_id)
+            },
+            req})
+        } else {
+          return res.redirect('/unauthorized')
+        }
       } else {
         return res.redirect('/unauthorized')
       }

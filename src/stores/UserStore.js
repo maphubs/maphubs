@@ -10,7 +10,8 @@ export type User = {
   email: string,
   display_name: string,
   picture?: string,
-  groups: Array<Object>
+  groups: Array<Object>,
+  admin?: boolean
 }
 
 export type UserStoreState = {

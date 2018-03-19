@@ -127,6 +127,8 @@ module.exports = {
       let firstFeatureGeom = firstFeature
       if (GJV.isFeature(firstFeature)) {
         firstFeatureGeom = firstFeature.geometry
+      } else {
+        throw new Error('first GeoJSON feature invalid, unable to process GeoJSON')
       }
       if (GJV.isPolygon(firstFeatureGeom) || GJV.isMultiPolygon(firstFeatureGeom)) {
         geomType = 'polygon'

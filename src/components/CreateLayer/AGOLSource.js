@@ -111,10 +111,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     this.setState({selectedOption: value})
   }
 
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
-  }
-
   render () {
     const agolOptions = [
       {value: 'mapserverquery', label: this.__('Link to a MapServer Query Service')},

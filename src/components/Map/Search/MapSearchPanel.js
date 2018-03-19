@@ -6,7 +6,6 @@ import request from 'superagent'
 import MessageActions from '../../../actions/MessageActions'
 import {Tooltip} from 'react-tippy'
 
-const $ = require('jquery')
 const debug = require('../../../services/debug')('MapSearchPanel')
 
 type Props = {
@@ -45,7 +44,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
       edge: 'right',
       draggable: false
     })
-    $(this.refs.tabs).tabs()
+    M.Tabs.init(this.refs.tabs, {})
   }
 
   onPanelOpen = () => {

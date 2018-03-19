@@ -113,10 +113,6 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     this.setState({selectedOption: value})
   }
 
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
-  }
-
   render () {
     const mapboxOptions = [
       {value: 'style', label: this.__('Link to a complete Mapbox Studio Style')},

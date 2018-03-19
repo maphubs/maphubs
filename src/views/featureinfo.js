@@ -25,7 +25,6 @@ import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
 const urlUtil = require('../services/url-util')
-const $ = require('jquery')
 
 type Props = {
     feature: Object,
@@ -71,13 +70,15 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.tabs).tabs()
+    M.Tabs.init(this.refs.tabs, {})
     const _this = this
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.state.editingNotes) {
-        return _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
     if (this.props.canEdit) {
       M.FloatingActionButton.init(this.refs.editButton, {})
     }

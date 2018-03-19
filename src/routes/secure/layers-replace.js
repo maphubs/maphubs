@@ -84,10 +84,14 @@ module.exports = function (app: any) {
           await knex.transaction(async (trx) => {
             await DataLoadUtils.removeLayerData(layer_id, trx)
             const layer = await Layer.getLayerByID(layer_id, trx)
-            await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing) 
-            await LayerViews.replaceViews(layer_id, layer.presets, trx)
-            await Layer.setComplete(layer_id, trx)
-            return res.send({success: true})
+            if (layer) {
+              await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing)
+              await LayerViews.replaceViews(layer_id, layer.presets, trx)
+              await Layer.setComplete(layer_id, trx)
+              return res.send({success: true})
+            } else {
+              return res.send({success: false, error: 'layer not found'})
+            }
           })
         } else {
           return notAllowedError(res, 'layer')

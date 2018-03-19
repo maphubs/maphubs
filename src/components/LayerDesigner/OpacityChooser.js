@@ -46,8 +46,8 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.collapsible).collapsible({
-      accordion: true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+    M.Collapsible.init(this.refs.collapsible, {
+      accordion: true
     })
   }
 

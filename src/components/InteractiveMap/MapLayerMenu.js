@@ -4,13 +4,13 @@ import _find from 'lodash.find'
 import LayerListDropDown from './LayerListDropDown'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 
-export default class MapLayerMenu extends MapHubsPureComponent {
-  props: {
-    categories: Array<Object>,
-    layers: Array<Object>,
-    toggleVisibility: Function
-  }
+type Props = {
+  categories: Array<Object>,
+  layers: Array<Object>,
+  toggleVisibility: Function
+}
 
+export default class MapLayerMenu extends MapHubsPureComponent<Props, void> {
   findLayer = (layer_id: number) => {
     return _find(this.props.layers, {layer_id})
   }

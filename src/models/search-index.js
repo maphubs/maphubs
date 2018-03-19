@@ -97,7 +97,7 @@ module.exports = {
     }
   },
 
-  async updateFeature (layer_id: number, mhid: string, refreshImmediately: boolean, trx: any) {
+  async updateFeature (layer_id: number, mhid: string, refreshImmediately: boolean, trx: any): Promise<any> {
     const result = await Feature.getFeatureByID(mhid, layer_id, trx)
 
     const feature = result.feature.geojson.features[0]

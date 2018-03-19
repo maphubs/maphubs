@@ -121,7 +121,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    $(this.refs.tabs).tabs()
+    M.Tabs.init(this.refs.tabs, {})
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
 
     if (this.props.layer.is_external) {
@@ -162,11 +162,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       _this.setState({dataMsg: _this.__('Data Loading')})
     }
 
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.state.editingNotes || _this.state.editingData) {
-        return _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {

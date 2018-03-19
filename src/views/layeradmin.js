@@ -27,7 +27,6 @@ import type {Group} from '../stores/GroupStore'
 import type {UserStoreState} from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
-const $ = require('jquery')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {
@@ -72,7 +71,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.tabs).tabs()
+    M.Tabs.init(this.refs.tabs, {})
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
   }
 

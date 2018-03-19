@@ -95,24 +95,10 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
     this.setState({selectedSource: value})
   }
 
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
-  }
-
   render () {
-    let prevButton = ''
-    if (this.props.showPrev) {
-      prevButton = (
-        <div className='left'>
-          <a className='waves-effect waves-light btn' onClick={this.onPrev}><i className='material-icons left'>arrow_back</i>{this.__('Previous Step')}</a>
-        </div>
-      )
-    }
-
     return (
       <div className='row'>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-
           <div>
             <p>{this.__('Vector Tile Source')}</p>
             <div className='row'>
@@ -147,13 +133,10 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                 required />
             </div>
           </div>
-
-          {prevButton}
           <div className='right'>
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
           </div>
         </Formsy>
-
       </div>
     )
   }

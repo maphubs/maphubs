@@ -48,7 +48,7 @@ module.exports = function (app: any) {
       if (req.body.layer_id) {
         if (await Layer.allowedToModify(req.body.layer_id, req.user_id)) {
           const layer = await Layer.getLayerByID(req.body.layer_id)
-          if (layer.remote) {
+          if (layer && layer.remote) {
             let url
             if (layer.remote_host === 'localhost') {
               url = 'http://'

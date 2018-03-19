@@ -3,7 +3,6 @@ import React from 'react'
 import TextArea from './textArea'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
-const $ = require('jquery')
 
 type Props = {
   id: string,
@@ -67,7 +66,7 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.tabs).tabs()
+    M.Tabs.init(this.refs.tabs, {})
   }
 
   componentWillReceiveProps (nextProps: Props) {

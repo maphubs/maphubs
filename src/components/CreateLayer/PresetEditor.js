@@ -30,11 +30,13 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingPresetChanges) {
-        return _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {

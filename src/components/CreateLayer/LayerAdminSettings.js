@@ -49,11 +49,13 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
-        return _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   onFormChange = () => {
@@ -94,10 +96,6 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
         _this.props.onSubmit()
       }
     })
-  }
-
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
   }
 
   render () {

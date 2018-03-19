@@ -8,7 +8,8 @@ export type Story ={
   title?: string,
   author?: string,
   body?: string,
-  story_id: number
+  story_id: number,
+  published?: boolean
 }
 
 export type StoryStoreState = {

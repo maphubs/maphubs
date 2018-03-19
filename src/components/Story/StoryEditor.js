@@ -79,11 +79,13 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
     this.addMapCloseButtons()
     this.addImageButtons()
 
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.state.unsavedChanges) {
-        return _this.__('You have not saved the edits for your story, your changes will be lost.')
+        const msg = _this.__('You have not saved the edits for your story, your changes will be lost.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
 
     M.FloatingActionButton.init(this.refs.saveButton, {})
     M.FloatingActionButton.init(this.refs.addButton, {})

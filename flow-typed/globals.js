@@ -22,7 +22,7 @@ declare class MapHubsConfig {
   PLANET_LABS_API_KEY: string;
   MAPBOX_ACCESS_TOKEN: string;
   SENTRY_DSN_PUBLIC: string;
-  MAPZEN_API_KEY: string;
+  TILEHOSTING_GEOCODING_API_KEY: string;
   enableComments: boolean;
   CORAL_TALK_HOST: string;
   CORAL_TALK_ID: string;
@@ -30,6 +30,7 @@ declare class MapHubsConfig {
   FR_API_KEY: string;
   FR_API: string;
   DG_WMS_CONNECT_ID: string;
+  enableUserExport: boolean;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;
@@ -38,12 +39,12 @@ declare var Raven: Object;
 declare var Auth0Lock: Class<Object>;
 declare var M: Object;
 
-import type ReactComponent from 'react';
+import type ReactComponent from 'react'
 
-type JSXHelper<T> = Class<ReactComponent<T,T,mixed>>;
+type JSXHelper<T> = Class<ReactComponent<T, T, mixed>>;
 
 type $JSXIntrinsics = {
-  div: JSXHelper<{id: string, lang: string,  className: string, style: Object}>,
+  div: JSXHelper<{id: string, lang: string, className: string, style: Object}>,
   p: JSXHelper<{id: string, lang: string, className: string, style: Object}>,
   b: JSXHelper<{id: string, style: Object}>,
   span: JSXHelper<{id: string, style: Object}>,
@@ -51,12 +52,12 @@ type $JSXIntrinsics = {
   nav: JSXHelper<{id: string, style: Object}>,
   footer: JSXHelper<{id: string, style: Object}>,
   small: JSXHelper<{id: string, style: Object}>,
-  a:  JSXHelper<{href: string, style: Object}>,
-  h2:  JSXHelper<{className: string, style: Object}>,
-  h3:  JSXHelper<{className: string, style: Object}>,
-  h4:  JSXHelper<{className: string, style: Object}>,
-  h5:  JSXHelper<{className: string, style: Object}>,
-  h6:  JSXHelper<{className: string, style: Object}>,
+  a: JSXHelper<{href: string, style: Object}>,
+  h2: JSXHelper<{className: string, style: Object}>,
+  h3: JSXHelper<{className: string, style: Object}>,
+  h4: JSXHelper<{className: string, style: Object}>,
+  h5: JSXHelper<{className: string, style: Object}>,
+  h6: JSXHelper<{className: string, style: Object}>,
   main: JSXHelper<{className: string, style: Object}>,
   i: JSXHelper<{className: string, style: Object}>,
   img: JSXHelper<{className: string, src: string, style: Object}>,
@@ -93,11 +94,9 @@ declare module 'uuid/v4' {
   declare module.exports: any;
 }
 
-type LocalizedString = { 
-  en: string,
-  fr: string,
-  it: string,
-  es: string
+declare type LocalizedString = {
+  en?: string,
+  fr?: string,
+  it?: string,
+  es?: string
 }
-
-declare type LocalizedString = LocalizedString;

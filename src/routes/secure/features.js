@@ -38,64 +38,72 @@ module.exports = function (app: any) {
     if (mhid && layer_id) {
       try {
         const layer = await Layer.getLayerByID(layer_id)
-        const featureResult = await Feature.getFeatureByID(mhid, layer.layer_id)
-        const photos = await PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid)
-        const feature = featureResult.feature
-        let photo
-        if (photos && Array.isArray(photos)) {
-          photo = photos[0]
-        }
+        if (layer) {
+          const featureResult = await Feature.getFeatureByID(mhid, layer.layer_id)
+          if (featureResult && featureResult.feature) {
+            const photos = await PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid)
+            const feature = featureResult.feature
+            let photo
+            if (photos && Array.isArray(photos)) {
+              photo = photos[0]
+            }
 
-        let notes
-        if (featureResult.notes && featureResult.notes.notes) {
-          notes = featureResult.notes.notes
-        }
-        let featureName = 'Feature'
-        if (feature.geojson.features.length > 0 && feature.geojson.features[0].properties) {
-          const geoJSONProps = feature.geojson.features[0].properties
-          if (geoJSONProps.name) {
-            featureName = geoJSONProps.name
-          }
-          geoJSONProps.layer_id = layer_id
-          geoJSONProps.mhid = mhid
-        }
-        feature.layer_id = layer_id
+            let notes
+            if (featureResult.notes && featureResult.notes.notes) {
+              notes = featureResult.notes.notes
+            }
+            let featureName = 'Feature'
+            if (feature.geojson.features.length > 0 && feature.geojson.features[0].properties) {
+              const geoJSONProps = feature.geojson.features[0].properties
+              if (geoJSONProps.name) {
+                featureName = geoJSONProps.name
+              }
+              geoJSONProps.layer_id = layer_id
+              geoJSONProps.mhid = mhid
+            }
+            feature.layer_id = layer_id
 
-        feature.mhid = mhid
+            feature.mhid = mhid
 
-        if (!req.isAuthenticated || !req.isAuthenticated()) {
-          return res.render('featureinfo',
-            {
-              title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
-              fontawesome: true,
-              talkComments: true,
-              hideFeedback: true,
-              props: {feature, notes, photo, layer, canEdit: false},
-              req,
-              cache: false
-            })
-        } else {
-          const allowed = await Layer.allowedToModify(layer_id, user_id)
-          if (allowed) {
-            return res.render('featureinfo',
-              {
-                title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
-                fontawesome: true,
-                talkComments: true,
-                hideFeedback: true,
-                props: {feature, notes, photo, layer, canEdit: true},
-                req
-              })
+            if (!req.isAuthenticated || !req.isAuthenticated()) {
+              return res.render('featureinfo',
+                {
+                  title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                  fontawesome: true,
+                  talkComments: true,
+                  hideFeedback: true,
+                  props: {feature, notes, photo, layer, canEdit: false},
+                  req,
+                  cache: false
+                })
+            } else {
+              const allowed = await Layer.allowedToModify(layer_id, user_id)
+              if (allowed) {
+                return res.render('featureinfo',
+                  {
+                    title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                    fontawesome: true,
+                    talkComments: true,
+                    hideFeedback: true,
+                    props: {feature, notes, photo, layer, canEdit: true},
+                    req
+                  })
+              } else {
+                return res.render('featureinfo',
+                  {
+                    title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                    fontawesome: true,
+                    talkComments: true,
+                    props: {feature, notes, photo, layer, canEdit: false},
+                    req
+                  })
+              }
+            }
           } else {
-            return res.render('featureinfo',
-              {
-                title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
-                fontawesome: true,
-                talkComments: true,
-                props: {feature, notes, photo, layer, canEdit: false},
-                req
-              })
+            return res.redirect('/notfound?path=' + req.path)
           }
+        } else {
+          return res.redirect('/notfound?path=' + req.path)
         }
       } catch (err) { nextError(next)(err) }
     } else {
@@ -245,14 +253,18 @@ module.exports = function (app: any) {
 
               // add a tag to the feature and update the layer
               const layer = await Layer.getLayerByID(data.layer_id, trx)
-              const baseUrl = urlUtil.getBaseUrl()
-              const photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg'
-              await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
-              const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
-              await layerViews.replaceViews(data.layer_id, presets, trx)
-              await Layer.setUpdated(data.layer_id, req.user_id, trx)
+              if (layer) {
+                const baseUrl = urlUtil.getBaseUrl()
+                const photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg'
+                await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
+                const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
+                await layerViews.replaceViews(data.layer_id, presets, trx)
+                await Layer.setUpdated(data.layer_id, req.user_id, trx)
 
-              return res.send({success: true, photo_id, photo_url})
+                return res.send({success: true, photo_id, photo_url})
+              } else {
+                return res.send({success: false, error: 'layer not found'})
+              }
             }).catch(apiError(res, 500))
           } else {
             return notAllowedError(res, 'layer')
@@ -273,12 +285,15 @@ module.exports = function (app: any) {
             // set will replace existing photo
               await PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, data.photo_id, trx)
               const layer = await Layer.getLayerByID(data.layer_id, trx)
-
-              // remove the photo URL from feature
-              await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx)
-              await layerViews.replaceViews(data.layer_id, layer.presets, trx)
-              await Layer.setUpdated(data.layer_id, req.user_id, trx)
-              return res.send({success: true})
+              if (layer) {
+                // remove the photo URL from feature
+                await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', null, trx)
+                await layerViews.replaceViews(data.layer_id, layer.presets, trx)
+                await Layer.setUpdated(data.layer_id, req.user_id, trx)
+                return res.send({success: true})
+              } else {
+                return res.send({success: false, error: 'layer not found'})
+              }
             }).catch(apiError(res, 500))
           } else {
             return notAllowedError(res, 'layer')

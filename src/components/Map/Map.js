@@ -282,7 +282,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           if (fitBounds.length > 2) {
             fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
           }
-          debug.log('(' + _this.state.id + ') ' + 'restoring bounds: ' + _this.state.restoreBounds)
+          debug.log(`(${_this.state.id}) restoring bounds: ${_this.state.restoreBounds.toString()}`)
           map.fitBounds(fitBounds, _this.props.fitBoundsOptions)
           if (_this.refs.insetMap) {
             _this.refs.insetMap.sync(map)
@@ -294,7 +294,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           // do stuff that needs to happen after data loads
           _this.debugLog('finished adding map data')
 
-          // set locale 
+          // set locale
           _this.changeLocale(_this.state.locale, _this.map)
           if (_this.refs.insetMap) {
             _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap())
@@ -326,7 +326,7 @@ export default class Map extends MapHubsComponent<Props, State> {
       map.on('click', _this.clickHandler)
 
       if (_this.state.interactive) {
-        map.addControl(new mapboxgl.NavigationControl(), _this.props.navPosition)
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), _this.props.navPosition)
         map.addControl(new mapboxgl.FullscreenControl())
       }
 
@@ -389,7 +389,8 @@ export default class Map extends MapHubsComponent<Props, State> {
     }
 
     if (nextProps.glStyle && nextProps.baseMap) {
-      if (!_isequal(this.props.glStyle, nextProps.glStyle)) {
+      const nextGLStyle = nextProps.glStyle
+      if (!_isequal(this.props.glStyle, nextGLStyle)) {
         _this.debugLog('glstyle changing from props')
         //* * Style Changing (also reloads basemap if needed) **/
         if (this.state.mapLoaded && !fitBoundsChanging) {
@@ -408,7 +409,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           })
         }
 
-        return Promise.resolve(_this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
+        return Promise.resolve(_this.setOverlayStyle(nextGLStyle, _this.props.allowLayerOrderOptimization))
           .catch((err) => {
             _this.debugLog(err)
           })
@@ -416,7 +417,7 @@ export default class Map extends MapHubsComponent<Props, State> {
             if (err) {
               _this.debugLog(err)
             }
-            const interactiveLayers = _this.getInteractiveLayers(nextProps.glStyle)
+            const interactiveLayers = _this.getInteractiveLayers(nextGLStyle)
             _this.setState({interactiveLayers})
           })
       } else if (this.props.baseMap !== nextProps.baseMap) {
@@ -442,9 +443,10 @@ export default class Map extends MapHubsComponent<Props, State> {
       }
     } else if (nextProps.glStyle &&
       !_isequal(this.props.glStyle, nextProps.glStyle)) {
+      const nextGLStyle = nextProps.glStyle
       //* * Style Changing (no basemap provided) **/
       _this.debugLog('glstyle changing from props (default basemap)')
-      return Promise.resolve(this.setOverlayStyle(nextProps.glStyle, _this.props.allowLayerOrderOptimization))
+      return Promise.resolve(this.setOverlayStyle(nextGLStyle, _this.props.allowLayerOrderOptimization))
         .catch((err) => {
           _this.debugLog(err)
         })
@@ -452,7 +454,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           if (err) {
             _this.debugLog(err)
           }
-          const interactiveLayers = this.getInteractiveLayers(nextProps.glStyle)
+          const interactiveLayers = this.getInteractiveLayers(nextGLStyle)
           this.setState({allowLayersToMoveMap, interactiveLayers}) // wait to change state style until after reloaded
         })
     } else if (nextProps.baseMap &&
@@ -913,7 +915,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     return IsochroneMixin.getIsochronePoint.bind(this)()
   }
 
-  runIsochroneQuery = (point: {x: number, y: number}) => {
+  runIsochroneQuery = (point: {lng: number, lat: number}) => {
     return IsochroneMixin.runIsochroneQuery.bind(this)(point)
   }
 

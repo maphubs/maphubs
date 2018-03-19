@@ -90,10 +90,6 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  onPrev = () => {
-    if (this.props.onPrev) this.props.onPrev()
-  }
-
   onUpload = (file: Object) => {
     const _this = this
     const {layer_id} = this.state

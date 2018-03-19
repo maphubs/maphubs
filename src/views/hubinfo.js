@@ -80,11 +80,13 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.state.editing) {
-        return _this.__('You have not saved the edits for your hub, your changes will be lost.')
+        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   startEditing = () => {

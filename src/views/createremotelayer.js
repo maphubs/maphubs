@@ -81,11 +81,13 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.state.layer && !_this.state.complete) {
-        return _this.__('You have not finished creating your layer.')
+        const msg = _this.__('You have not finished creating your layer.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   enableButton = () => {

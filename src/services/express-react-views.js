@@ -46,7 +46,15 @@ type ViewOptions = {
   settings: {
     views: any
   },
-  twitterCard: Object
+  twitterCard: Object,
+  talkComments?: boolean,
+  login?: boolean,
+  publicShare?: boolean,
+  fontawesome?: boolean,
+  hideFeedback?: boolean,
+  disableGoogleAnalytics?: boolean,
+  rangy?: boolean,
+  oembed?: string
 
 }
 
@@ -66,6 +74,9 @@ function createEngine (engineOptions) {
     let markup: string = ''
     try {
       markup = engineOptions.doctype
+
+      // view names are hardcoded in routes, not user input
+      // eslint-disable-next-line security/detect-non-literal-require
       let component = require(filename)
       // Transpiled ES6 may export components as { default: Component }
       component = component.default || component
@@ -303,7 +314,7 @@ function createEngine (engineOptions) {
           `
       }
 
-      let ravenConfig
+      let ravenConfig = ''
       if (process.env.NODE_ENV === 'production' && !local.disableTracking) {
         ravenConfig = local.SENTRY_DSN_PUBLIC
       }
@@ -385,7 +396,9 @@ function createEngine (engineOptions) {
       markup += `<link href="${assetHost}/assets/css/opensans.css" rel="stylesheet" type="text/css">\n`
 
       if (!options.hideFeedback && req && req.__) {
-        let email = '', user_id = '', display_name = ''
+        let email = ''
+        let user_id = ''
+        let display_name = ''
         if (req.session && req.session.user) {
           //  username = req.session.user.display_name;
           email = req.session.user.email || req.session.user.maphubsUser.email

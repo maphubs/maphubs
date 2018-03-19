@@ -7,7 +7,7 @@ type Props = {
   onClose?: Function,
   show: boolean,
   title: string,
-  subTitle: string
+  subTitle?: string
 }
 
 type State = {

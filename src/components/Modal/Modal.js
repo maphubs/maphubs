@@ -127,9 +127,15 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
     }
   }
 
+  componentWillUnmount () {
+    if (this.modalInstance) {
+      this.modalInstance.destroy()
+    }
+  }
+
   show () {
     // switch from off to on
-    $(this.refs.modal).modal({
+    this.modalInstance = M.Modal.init(this.refs.modal, {
       dismissible: this.props.dismissible,
       opacity: this.props.opacity,
       in_duration: this.props.in_duration,
@@ -137,14 +143,14 @@ export class Modal extends Reflux.Component<ModalDefaultProps, ModalProps, void>
       ready: this.props.ready,
       complete: this.props.complete
     })
-    $(this.refs.modal).modal('open')
+    this.modalInstance.open()
     // fire window resize for maps etc inside the modal
     fireResizeEvent()
   }
 
   close () {
     $('.modal-overlay').hide() // for some reason materialize isn't clearing the overlay mask on overlapping modals, possibly related to https://github.com/Dogfalo/materialize/issues/1647
-    $(this.refs.modal).modal('close')
+    this.modalInstance.close()
   }
 
   render () {

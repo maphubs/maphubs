@@ -24,10 +24,14 @@ module.exports = function (app: any) {
       if (await Layer.allowedToModify(layer_id, req.user_id)) {
         await knex.transaction(async (trx) => {
           const layer = await Layer.getLayerByID(layer_id, trx)
-          await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing)
-          await layerViews.createLayerViews(layer_id, layer.presets, trx)
-          debug.log('data load transaction complete')
-          return res.status(200).send({success: true})
+          if (layer) {
+            await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing)
+            await layerViews.createLayerViews(layer_id, layer.presets, trx)
+            debug.log('data load transaction complete')
+            return res.status(200).send({success: true})
+          } else {
+            return res.status(200).send({success: false, error: 'layer not found'})
+          }
         })
       } else {
         notAllowedError(res, 'layer')
@@ -41,10 +45,14 @@ module.exports = function (app: any) {
       if (await Layer.allowedToModify(layer_id, req.user_id)) {
         await knex.transaction(async (trx) => {
           const layer = await Layer.getLayerByID(layer_id, trx)
-          await DataLoadUtils.createEmptyDataTable(layer.layer_id, trx)
-          await layerViews.createLayerViews(layer_id, layer.presets, trx)
-          debug.log('init empty transaction complete')
-          return res.status(200).send({success: true})
+          if (layer) {
+            await DataLoadUtils.createEmptyDataTable(layer.layer_id, trx)
+            await layerViews.createLayerViews(layer_id, layer.presets, trx)
+            debug.log('init empty transaction complete')
+            return res.status(200).send({success: true})
+          } else {
+            return res.status(200).send({success: false, error: 'layer not found'})
+          }
         })
       } else {
         return notAllowedError(res, 'layer')
@@ -199,25 +207,29 @@ module.exports = function (app: any) {
           } else {
           // update layer views and timestamp
             const layer = await Layer.getLayerByID(data.layer_id, trx)
-            if (!layer.is_external) {
-              await layerViews.replaceViews(data.layer_id, layer.presets, trx)
-              // Mark layer as updated (tells vector tile service to reload)
-              await trx('omh.layers').update(
-                {
-                  updated_by_user_id: req.user_id,
-                  last_updated: knex.raw('now()')
-                }
-              ).where({layer_id: data.layer_id})
-              return res.status(200).send({success: true})
+            if (layer) {
+              if (!layer.is_external) {
+                await layerViews.replaceViews(data.layer_id, layer.presets, trx)
+                // Mark layer as updated (tells vector tile service to reload)
+                await trx('omh.layers').update(
+                  {
+                    updated_by_user_id: req.user_id,
+                    last_updated: knex.raw('now()')
+                  }
+                ).where({layer_id: data.layer_id})
+                return res.status(200).send({success: true})
+              } else {
+              // Mark layer as updated
+                await trx('omh.layers').update(
+                  {
+                    updated_by_user_id: req.user_id,
+                    last_updated: knex.raw('now()')
+                  }
+                ).where({layer_id: data.layer_id})
+                return res.status(200).send({success: true})
+              }
             } else {
-            // Mark layer as updated
-              await trx('omh.layers').update(
-                {
-                  updated_by_user_id: req.user_id,
-                  last_updated: knex.raw('now()')
-                }
-              ).where({layer_id: data.layer_id})
-              return res.status(200).send({success: true})
+              return res.status(200).send({success: false, error: 'layer not found'})
             }
           }
         } else {
@@ -257,19 +269,26 @@ module.exports = function (app: any) {
 
         if (await Layer.allowedToModify(data.layer_id, req.user_id)) {
           knex.transaction(async (trx) => {
-            const mhid = await LayerData.createFeature(data.layer_id, geoJSON, trx)
-            // get the mhid for the new feature
-            debug.log('new mhid: ' + mhid)
-            const photo_id = await PhotoAttachment.setPhotoAttachment(data.layer_id, mhid, data.image, data.imageInfo, req.user_id, trx)
             const layer = await Layer.getLayerByID(data.layer_id, trx)
+            if (layer) {
+              const mhid = await LayerData.createFeature(data.layer_id, geoJSON, trx)
+              if (mhid) {
+              // get the mhid for the new feature
+                debug.log(`new mhid: ${mhid}`)
+                const photo_id = await PhotoAttachment.setPhotoAttachment(layer.layer_id, mhid, data.image, data.imageInfo, req.user_id, trx)
+                const photo_url = `${urlUtil.getBaseUrl()}/feature/photo/${photo_id}.jpg`
+                // add a tag to the feature
+                await LayerData.setStringTag(layer.layer_id, mhid, 'photo_url', photo_url, trx)
 
-            const photo_url = urlUtil.getBaseUrl() + '/feature/photo/' + photo_id + '.jpg'
-            // add a tag to the feature
-            await LayerData.setStringTag(layer.layer_id, mhid, 'photo_url', photo_url, trx)
-
-            const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
-            await layerViews.replaceViews(data.layer_id, presets, trx)
-            return res.send({success: true, photo_id, photo_url, mhid})
+                const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
+                await layerViews.replaceViews(data.layer_id, presets, trx)
+                return res.send({success: true, photo_id, photo_url, mhid})
+              } else {
+                return res.send({success: false, error: 'error creating feature'})
+              }
+            } else {
+              return res.send({success: false, error: 'layer not found'})
+            }
           })
         } else {
           notAllowedError(res, 'layer')

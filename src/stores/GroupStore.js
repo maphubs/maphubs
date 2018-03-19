@@ -11,7 +11,9 @@ export type Group = {
   description?: LocalizedString,
   location?: string,
   created?: boolean,
-  hasImage?: boolean
+  hasImage?: boolean,
+  unofficial?: boolean,
+  published?: boolean
 }
 
 export type GroupStoreState = {

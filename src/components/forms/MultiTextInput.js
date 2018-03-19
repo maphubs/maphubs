@@ -3,7 +3,6 @@ import React from 'react'
 import TextInput from './textInput'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
-const $ = require('jquery')
 
 type Props = {
   id: string,
@@ -77,7 +76,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    $(this.refs.tabs).tabs()
+    M.Tabs.init(this.refs.tabs, {})
   }
 
   componentWillReceiveProps (nextProps: Props) {

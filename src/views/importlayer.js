@@ -40,11 +40,13 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
-    window.onbeforeunload = function () {
+    window.addEventListener('beforeunload', (e) => {
       if (_this.state.group_id && !_this.state.layer_id) {
-        return _this.__('You have not finished importing your layer.')
+        const msg = _this.__('You have not finished importing your layer.')
+        e.returnValue = msg
+        return msg
       }
-    }
+    })
   }
 
   onGroupChange = (groupId: string) => {
