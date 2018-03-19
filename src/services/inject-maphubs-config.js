@@ -33,7 +33,8 @@ if (process.env.APP_ENV !== 'browser') {
     SENTRY_DSN_PUBLIC: local.SENTRY_DSN_PUBLIC,
     theme: local.theme,
     themeUrl: local.themeUrl,
-    enableUserExport: local.enableUserExport
+    enableUserExport: local.enableUserExport,
+    OPENROUTESERVICE_API_KEY: local.OPENROUTESERVICE_API_KEY
   }
   console.log(global.MAPHUBS_CONFIG)
 }

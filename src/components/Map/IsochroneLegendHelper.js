@@ -21,9 +21,9 @@ module.exports = {
 <table style="table-layout: fixed; width: 100%;">
     <thead>
         <tr style="font-size: 8px;">
-            <th style="padding: 0; text-align: center;">0-1hr</th>
+            <th style="padding: 0; text-align: center;">0-30mins</th>
+            <th style="padding: 0; text-align: center;">30mins-1hr</th>
             <th style="padding: 0; text-align: center;">1-2hrs</th>
-            <th style="padding: 0; text-align: center;">2-4hrs</th>
         </tr>
     </thead>
     <tbody>

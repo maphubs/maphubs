@@ -373,7 +373,8 @@ function createEngine (engineOptions) {
                 SENTRY_DSN_PUBLIC:  "${local.SENTRY_DSN_PUBLIC}",
                 theme: "${local.theme}",
                 themeUrl: "${local.themeUrl}",
-                enableUserExport: "${local.enableUserExport}"
+                enableUserExport: "${local.enableUserExport}",
+                OPENROUTESERVICE_API_KEY:  "${local.OPENROUTESERVICE_API_KEY}"
               }
           </script>
           <script type="text/javascript" src="${assetHost + getAssets(clientFileName).js}"></script>

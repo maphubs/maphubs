@@ -1,25 +1,16 @@
 // @flow
 import request from 'superagent'
-const apiDataError = require('../../services/error-response').apiDataError
-const apiError = require('../../services/error-response').apiError
+import log from '../../services/log'
+import {apiDataError, apiError} from '../../services/error-response'
 
 module.exports = function (app: any) {
   app.post('/api/isochrone', async (req, res) => {
     const data = req.body
     if (data && data.point) {
       try {
-        const query = {
-          locations: [{
-            lat: data.point.lat,
-            lon: data.point.lng
-          }],
-          contours: [{time: 30, color: '0000ff'}, {time: 60, color: '00ff00'}, {time: 120, color: 'ff0000'}],
-          polygons: true,
-          costing: 'auto'
-        }
+        const requestURL = `https://api.openrouteservice.org/isochrones?&api_key=${MAPHUBS_CONFIG.OPENROUTESERVICE_API_KEY}&locations=${data.point.lng},${data.point.lat}&profile=driving-car&range_type=time&range=3600&interval=900&location_type=start`
 
-        const requestURL = 'https://matrix.mapzen.com/isochrone?json=' + JSON.stringify(query) + '&api_key=' + MAPHUBS_CONFIG.MAPZEN_API_KEY
-
+        log.info(`Isochrone request: ${requestURL}`)
         const result = await request.get(requestURL).type('json').timeout(60000)
 
         res.status(200).send(result.body)
