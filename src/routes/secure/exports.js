@@ -164,9 +164,7 @@ module.exports = function (app: any) {
       if (mhid && layer_id) {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
-          const result = await Feature.getFeatureByID(mhid, layer.layer_id)
-          const feature = result.feature
-          const geoJSON = feature.geojson
+          const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)
           const geoJSONStr = JSON.stringify(geoJSON)
           const hash = require('crypto').createHash('md5').update(geoJSONStr).digest('hex')
           const match = req.get('If-None-Match')

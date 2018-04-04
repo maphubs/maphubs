@@ -4,13 +4,6 @@ const debug = require('../services/debug')('feature')
 
 module.exports = {
 
-  async getFeatureByID (mhid: string, layerId: number, trx: any) {
-    const geojson = await this.getGeoJSON(mhid, layerId, trx)
-    const feature = {geojson}
-    const notes = await this.getFeatureNotes(mhid, layerId, trx)
-    return {feature, notes}
-  },
-
   async getFeatureNotes (mhid: string, layerId: number, trx: any) {
     const db = trx || knex
 

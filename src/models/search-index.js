@@ -98,9 +98,9 @@ module.exports = {
   },
 
   async updateFeature (layer_id: number, mhid: string, refreshImmediately: boolean, trx: any): Promise<any> {
-    const result = await Feature.getFeatureByID(mhid, layer_id, trx)
-
-    const feature = result.feature.geojson.features[0]
+    const geoJSON = await Feature.getGeoJSON(mhid, layer_id, trx)
+    const notes = await Feature.getFeatureNotes(mhid, layer_id, trx)
+    const feature = geoJSON.features[0]
 
     // HACK: elasticsearch doesn't like null or improperly formatted fields called 'timestamp';
     delete feature.properties.timestamp
@@ -109,7 +109,7 @@ module.exports = {
     if (feature.geometry.type === 'Point') {
       centroid = feature
     } else {
-      centroid = _centroid(result.feature.geojson)
+      centroid = _centroid(geoJSON)
     }
 
     // convert props to array
@@ -119,7 +119,7 @@ module.exports = {
     })
 
     // update feature
-    return client.index({
+    const result = await client.index({
       index: this.searchIndexName,
       type: 'feature',
       id: mhid,
@@ -132,13 +132,14 @@ module.exports = {
           lon: centroid.geometry.coordinates[0]
         },
         properties: props,
-        notes: result.notes,
+        notes,
         published: true,
         timeout: '60s'
       }
     }).catch(err => {
       log.error(err.message)
     })
+    return result
   },
 
   deleteFeature (mhid: string) {

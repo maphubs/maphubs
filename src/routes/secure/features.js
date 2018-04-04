@@ -39,31 +39,31 @@ module.exports = function (app: any) {
       try {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
-          const featureResult = await Feature.getFeatureByID(mhid, layer.layer_id)
-          if (featureResult && featureResult.feature) {
+          const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)
+          const notes = await Feature.getFeatureNotes(mhid, layer.layer_id)
+          if (geoJSON) {
             const photos = await PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid)
-            const feature = featureResult.feature
             let photo
             if (photos && Array.isArray(photos)) {
               photo = photos[0]
             }
 
-            let notes
-            if (featureResult.notes && featureResult.notes.notes) {
-              notes = featureResult.notes.notes
-            }
             let featureName = 'Feature'
-            if (feature.geojson.features.length > 0 && feature.geojson.features[0].properties) {
-              const geoJSONProps = feature.geojson.features[0].properties
+            if (geoJSON.features.length > 0 && geoJSON.features[0].properties) {
+              const geoJSONProps = geoJSON.features[0].properties
               if (geoJSONProps.name) {
                 featureName = geoJSONProps.name
               }
               geoJSONProps.layer_id = layer_id
               geoJSONProps.mhid = mhid
             }
-            feature.layer_id = layer_id
 
-            feature.mhid = mhid
+            const feature = {
+              type: geoJSON.type,
+              features: geoJSON.features,
+              layer_id: layer.layer_id,
+              mhid
+            }
 
             if (!req.isAuthenticated || !req.isAuthenticated()) {
               return res.render('featureinfo',
@@ -154,46 +154,48 @@ module.exports = function (app: any) {
     if (mhid && layer_id) {
       try {
         const layer = await Layer.getLayerByID(layer_id)
-        const result = await Feature.getFeatureByID(mhid, layer.layer_id)
+        if (layer) {
+          const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)
 
-        const feature = result.feature
-        const geoJSON = feature.geojson
-        geoJSON.features[0].geometry.type = 'LineString'
-        const coordinates = geoJSON.features[0].geometry.coordinates[0][0]
-        log.info(coordinates)
-        const resultStr = JSON.stringify(geoJSON)
-        log.info(resultStr)
-        const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
-        const match = req.get('If-None-Match')
-        if (hash === match) {
-          return res.status(304).send()
+          geoJSON.features[0].geometry.type = 'LineString'
+          const coordinates = geoJSON.features[0].geometry.coordinates[0][0]
+          log.info(coordinates)
+          const resultStr = JSON.stringify(geoJSON)
+          log.info(resultStr)
+          const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
+          const match = req.get('If-None-Match')
+          if (hash === match) {
+            return res.status(304).send()
+          } else {
+            res.writeHead(200, {
+              'Content-Type': 'application/gpx+xml',
+              'ETag': hash
+            })
+
+            let gpx = `
+            <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="MapHubs">
+              <metadata>
+                <link href="https://maphubs.com">
+                  <text>MapHubs</text>
+                </link>
+              </metadata>
+              <trk>
+                <name>Feature</name>
+                <trkseg>
+                `
+            coordinates.forEach((coord) => {
+              gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`
+            })
+
+            gpx += `
+                </trkseg>
+              </trk>
+              </gpx>`
+
+            return res.end(gpx)
+          }
         } else {
-          res.writeHead(200, {
-            'Content-Type': 'application/gpx+xml',
-            'ETag': hash
-          })
-
-          let gpx = `
-          <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="MapHubs">
-            <metadata>
-              <link href="https://maphubs.com">
-                <text>MapHubs</text>
-              </link>
-            </metadata>
-            <trk>
-              <name>Feature</name>
-              <trkseg>
-              `
-          coordinates.forEach((coord) => {
-            gpx += ` <trkpt lon="${coord[0]}" lat="${coord[1]}"></trkpt>`
-          })
-
-          gpx += `
-              </trkseg>
-            </trk>
-            </gpx>`
-
-          return res.end(gpx)
+          res.redirect('/notfound?path=' + req.path)
         }
       } catch (err) { nextError(next)(err) }
     } else {
@@ -213,7 +215,11 @@ module.exports = function (app: any) {
 
       if (allowed) {
         const result = await PhotoAttachment.getPhotoAttachment(photo_id)
-        return imageUtils.processImage(result.data, req, res)
+        if (result) {
+          return imageUtils.processImage(result.data, req, res)
+        } else {
+          res.status(404).send('Not Found')
+        }
       } else {
         log.warn('Unauthorized attempt to access layer: ' + layer.layer_id)
         throw new Error('Unauthorized')
