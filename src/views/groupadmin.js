@@ -42,21 +42,22 @@ type Props = {
   user: Object
 }
 
-type DefaultProps = {
-  layers: Array<Object>,
-  maps: Array<Object>,
-  hubs: Array<Object>,
-  members: Array<Object>
-}
-
 type State = {
   canSubmit: boolean
 } & LocaleStoreState & GroupStoreState
 
 export default class GroupAdmin extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
 
-  static defaultProps: DefaultProps = {
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
+  static defaultProps = {
     layers: [],
     maps: [],
     hubs: [],

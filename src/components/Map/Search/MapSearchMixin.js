@@ -8,7 +8,7 @@ const debug = require('../../../services/debug')('MapSearchMixin')
 const uuid = require('uuid').v1
 const MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query')
 
-module.exports = {
+export default {
 
   getSearchFilters (query: string) {
     const _this = this

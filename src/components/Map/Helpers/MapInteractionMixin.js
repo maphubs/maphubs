@@ -9,7 +9,7 @@ const debug = require('../../../services/debug')('MapInteractionMixin')
 /**
  * Helper functions for interacting with the map and selecting features
  */
-module.exports = {
+export default {
   setSelectionFilter (features: Array<Object>) {
     if (this.glStyle) {
       this.glStyle.layers.forEach((layer) => {

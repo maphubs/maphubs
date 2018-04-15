@@ -17,6 +17,7 @@ const notAllowedError = require('../../services/error-response').notAllowedError
 const csrfProtection = require('csurf')({cookie: false})
 const privateLayerCheck = require('../../services/private-layer-check')
 const isAuthenticated = require('../../services/auth-check')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, async (req, res, next) => {
@@ -66,37 +67,31 @@ module.exports = function (app: any) {
             }
 
             if (!req.isAuthenticated || !req.isAuthenticated()) {
-              return res.render('featureinfo',
-                {
+              return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
+                title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                fontawesome: true,
+                talkComments: true,
+                hideFeedback: true,
+                props: {feature, notes, photo, layer, canEdit: false},
+                cache: false
+              }))
+            } else {
+              const allowed = await Layer.allowedToModify(layer_id, user_id)
+              if (allowed) {
+                return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
                   title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
                   fontawesome: true,
                   talkComments: true,
                   hideFeedback: true,
-                  props: {feature, notes, photo, layer, canEdit: false},
-                  req,
-                  cache: false
-                })
-            } else {
-              const allowed = await Layer.allowedToModify(layer_id, user_id)
-              if (allowed) {
-                return res.render('featureinfo',
-                  {
-                    title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
-                    fontawesome: true,
-                    talkComments: true,
-                    hideFeedback: true,
-                    props: {feature, notes, photo, layer, canEdit: true},
-                    req
-                  })
+                  props: {feature, notes, photo, layer, canEdit: true}
+                }))
               } else {
-                return res.render('featureinfo',
-                  {
-                    title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
-                    fontawesome: true,
-                    talkComments: true,
-                    props: {feature, notes, photo, layer, canEdit: false},
-                    req
-                  })
+                return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
+                  title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                  fontawesome: true,
+                  talkComments: true,
+                  props: {feature, notes, photo, layer, canEdit: false}
+                }))
               }
             }
           } else {

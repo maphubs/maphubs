@@ -9,6 +9,7 @@ const apiDataError = require('../../services/error-response').apiDataError
 const Auth0Helper = require('../../services/auth0-helper')
 const local = require('../../local')
 const csrfProtection = require('csurf')({cookie: false})
+const pageOptions = require('../../services/page-options-helper')
 
 let mailchimp
 if (!local.mapHubsPro) {
@@ -31,7 +32,7 @@ module.exports = function (app: any) {
             log.info(`Found User: ${JSON.stringify(auth0Accounts)}`)
             existingAccount = true
           }
-          res.render('auth0invite', {
+          return app.next.render(req, res, '/auth0invite', await pageOptions(req, {
             title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName,
             props: {
               email,
@@ -40,18 +41,17 @@ module.exports = function (app: any) {
               AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
               AUTH0_DOMAIN: local.AUTH0_DOMAIN,
               AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
-            },
-            req})
+            }
+          }))
         } else {
-          return res.render('error', {
+          return app.next.render(req, res, '/error', await pageOptions(req, {
             title: req.__('Invalid Key'),
             props: {
               title: req.__('Invite Key Invalid'),
               error: req.__('The key used was invalid or has already been used. Please contact an administrator.'),
               url: req.url
-            },
-            req
-          })
+            }
+          }))
         }
       } else {
         return res.redirect('/login')
@@ -59,11 +59,11 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/signup', csrfProtection, (req, res) => {
+  app.get('/signup', csrfProtection, async (req, res) => {
     if (local.requireLogin || local.requireInvite) {
       return res.redirect('/login')
     } else {
-      res.render('auth0login', {
+      return app.next.render(req, res, '/auth0login', await pageOptions(req, {
         title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
@@ -72,14 +72,13 @@ module.exports = function (app: any) {
           initialScreen: 'signUp',
           allowSignUp: !local.requireInvite,
           allowLogin: false
-        },
-        req
-      })
+        }
+      }))
     }
   })
 
-  app.get('/forgotpassword', csrfProtection, (req, res) => {
-    res.render('auth0login', {
+  app.get('/forgotpassword', csrfProtection, async (req, res) => {
+    return app.next.render(req, res, '/auth0login', await pageOptions(req, {
       title: req.__('Forgot Password') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {
         AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
@@ -87,9 +86,8 @@ module.exports = function (app: any) {
         AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
         initialScreen: 'forgotPassword',
         allowSignUp: false
-      },
-      req
-    })
+      }
+    }))
   })
 
   app.post('/api/user/setlocale', (req, res) => {

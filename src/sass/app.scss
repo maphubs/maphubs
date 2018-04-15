@@ -4,7 +4,7 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
 }
 
-#app, #app > div {
+#__next {
   height: 100%;
 }
 
@@ -609,6 +609,19 @@ textarea.materialize-textarea+label:after {
   text-align: center;
   margin-right: 5px;
   font-size: 25px;
+}
+
+.story-title {
+  font-family: 'Merriweather', serif;
+}
+
+.story-content {
+  font-family: 'Merriweather', serif;
+}
+
+.story-content p {
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .rms-label {

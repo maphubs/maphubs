@@ -11,6 +11,7 @@ const apiDataError = require('../../services/error-response').apiDataError
 const privateMapCheck = require('../../services/private-map-check').middlewareView
 const csrfProtection = require('csurf')({cookie: false})
 const Locales = require('../../services/locales')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   const recordMapView = function (session: Object, map_id: number, user_id: number, next: any) {
@@ -34,7 +35,9 @@ module.exports = function (app: any) {
       if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
         const popularLayers = await Layer.getPopularLayers()
-        return res.render('map', {title: 'New Map ', props: {popularLayers}, req})
+        return app.next.render(req, res, '/map', await pageOptions(req, {
+          title: 'New Map ', props: {popularLayers}
+        }))
       } else {
         // get user id
         const user_id = req.session.user.maphubsUser.id
@@ -58,13 +61,11 @@ module.exports = function (app: any) {
             }
           }
         }
-
-        return res.render('map', {
+        return app.next.render(req, res, '/map', await pageOptions(req, {
           title: req.__('New Map'),
           props: {popularLayers, myLayers, editLayer},
-          hideFeedback: true,
-          req
-        })
+          hideFeedback: true
+        }))
       }
     } catch (err) {
       nextError(next)(err)
@@ -73,14 +74,14 @@ module.exports = function (app: any) {
 
   app.get('/maps', csrfProtection, async (req, res, next) => {
     try {
-      const featuredMaps = await Map.getFeaturedMaps()
-      const recentMaps = await Map.getRecentMaps()
-      const popularMaps = await Map.getPopularMaps()
-      return res.render('maps', {
+      return app.next.render(req, res, '/maps', await pageOptions(req, {
         title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {featuredMaps, recentMaps, popularMaps},
-        req
-      })
+        props: {
+          featuredMaps: await Map.getFeaturedMaps(),
+          recentMaps: await Map.getRecentMaps(),
+          popularMaps: await Map.getPopularMaps()
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -88,11 +89,10 @@ module.exports = function (app: any) {
     try {
       const locale = req.locale ? req.locale : 'en'
       const maps = await Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`)
-      return res.render('allmaps', {
+      return app.next.render(req, res, '/allmaps', await pageOptions(req, {
         title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {maps},
-        req
-      })
+        props: {maps}
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -107,11 +107,10 @@ module.exports = function (app: any) {
         const user = await User.getUserByName(username)
         if (user) {
           const maps = await Map.getUserMaps(user.id)
-          return res.render('usermaps', {
+          return app.next.render(req, res, '/usermaps', await pageOptions(req, {
             title: 'Maps - ' + username,
-            props: {user, maps, myMaps},
-            req
-          })
+            props: {user, maps, myMaps}
+          }))
         } else {
           return res.redirect('/notfound?path=' + req.path)
         }
@@ -146,12 +145,12 @@ module.exports = function (app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
-      MapUtils.completeUserMapRequest(req, res, next, map_id, false, false)
+      MapUtils.completeUserMapRequest(app, req, res, next, map_id, false, false)
     } else {
       // get user id
       Map.allowedToModify(map_id, user_id)
         .then((allowed) => {
-          return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed, false)
+          return MapUtils.completeUserMapRequest(app, req, res, next, map_id, allowed, false)
         }).catch(nextError(next))
     }
   })
@@ -170,12 +169,12 @@ module.exports = function (app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
-      MapUtils.completeUserMapRequest(req, res, next, map_id, false, false)
+      MapUtils.completeUserMapRequest(app, req, res, next, map_id, false, false)
     } else {
       // get user id
       Map.allowedToModify(map_id, user_id)
         .then((allowed) => {
-          return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed, false)
+          return MapUtils.completeUserMapRequest(app, req, res, next, map_id, allowed, false)
         }).catch(nextError(next))
     }
   })
@@ -212,19 +211,16 @@ module.exports = function (app: any) {
           if (map && map.title) {
             title = Locales.getLocaleStringObject(req.locale, map.title)
           }
-          return res.render('mapedit',
-            {
-              title: title + ' - ' + MAPHUBS_CONFIG.productName,
-              props: {
-                map,
-                layers,
-                popularLayers,
-                myLayers
-              },
-              hideFeedback: true,
-              req
-            }
-          )
+          return app.next.render(req, res, '/mapedit', await pageOptions(req, {
+            title: title + ' - ' + MAPHUBS_CONFIG.productName,
+            props: {
+              map,
+              layers,
+              popularLayers,
+              myLayers
+            },
+            hideFeedback: true
+          }))
         } else {
           return res.redirect('/unauthorized')
         }
@@ -246,11 +242,11 @@ module.exports = function (app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
-      MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false, false, false)
+      MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, false, false, false, false)
     } else {
       Map.allowedToModify(map_id, user_id)
         .then((allowed) => {
-          return MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false, false)
+          return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, false, allowed, false, false)
         }).catch(nextError(next))
     }
   })
@@ -269,11 +265,11 @@ module.exports = function (app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
-      MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, false, false)
+      MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, false, false, false)
     } else {
       Map.allowedToModify(map_id, user_id)
         .then((allowed) => {
-          return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false, false)
+          return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, allowed, false, false)
         }).catch(nextError(next))
     }
   })
@@ -292,11 +288,11 @@ module.exports = function (app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
-      MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, true, false)
+      MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, false, true, false)
     } else {
       Map.allowedToModify(map_id, user_id)
         .then((allowed) => {
-          return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true, false)
+          return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, allowed, true, false)
         }).catch(nextError(next))
     }
   })

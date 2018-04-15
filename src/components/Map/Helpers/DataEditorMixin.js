@@ -2,16 +2,16 @@
 import DataEditorActions from '../../../actions/DataEditorActions'
 import type {Layer} from '../../../stores/layer-store'
 import theme from '@mapbox/mapbox-gl-draw/src/lib/theme'
+import 'jquery'
 
 const debug = require('../../../services/debug')('Map/DataEditorMixin')
-const $ = require('jquery')
 
 let MapboxDraw = {}
 if (typeof window !== 'undefined') {
   MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')
 }
 
-module.exports = {
+export default {
 
   getFirstDrawLayerID () {
     return this.getEditorStyles()[0].id + '.cold'

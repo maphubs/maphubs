@@ -6,6 +6,7 @@ const SearchIndex = require('../../models/search-index')
 const nextError = require('../../services/error-response').nextError
 const apiError = require('../../services/error-response').apiError
 const isAuthenticated = require('../../services/auth-check')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = (app: any) => {
   app.get('/admin/searchindex', csrfProtection, isAuthenticated, async (req, res, next) => {
@@ -13,14 +14,13 @@ module.exports = (app: any) => {
       if (await Admin.checkAdmin(req.user_id)) {
         const indexExistsResult = await SearchIndex.indexExists()
         const indexStatus = JSON.stringify(indexExistsResult)
-        return elasticClient.testClient(error => {
+        return elasticClient.testClient(async (error) => {
           let connectionStatus = 'Active'
           if (error) connectionStatus = error
-          res.render('searchindexadmin', {
+          app.next.render(req, res, '/searchindexadmin', await pageOptions(req, {
             title: req.__('Search Index Admin') + ' - ' + MAPHUBS_CONFIG.productName,
-            props: {connectionStatus, indexStatus},
-            req
-          })
+            props: {connectionStatus, indexStatus}
+          }))
         })
       } else {
         return res.redirect('/unauthorized')

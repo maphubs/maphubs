@@ -1,6 +1,6 @@
 import ReactDom from 'react-dom'
 
-module.exports = {
+export default {
 
   dragSourceConfig: {
     beginDrag (props) {

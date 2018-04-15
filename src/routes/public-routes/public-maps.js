@@ -38,12 +38,12 @@ module.exports = function (app: any) {
         recordMapView(req.session, map_id, user_id, next)
         if (!req.isAuthenticated || !req.isAuthenticated() ||
           !req.session || !req.session.user) {
-          return MapUtils.completeUserMapRequest(req, res, next, map_id, false, true)
+          return MapUtils.completeUserMapRequest(app, req, res, next, map_id, false, true)
         } else {
           // get user id
           return Map.allowedToModify(map_id, user_id)
             .then((allowed) => {
-              return MapUtils.completeUserMapRequest(req, res, next, map_id, allowed, true)
+              return MapUtils.completeUserMapRequest(app, req, res, next, map_id, allowed, true)
             })
         }
       } else {
@@ -85,11 +85,11 @@ module.exports = function (app: any) {
 
         if (!req.isAuthenticated || !req.isAuthenticated() ||
             !req.session || !req.session.user) {
-          return MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, false, false, true)
+          return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, false, false, false, true)
         } else {
           return Map.allowedToModify(map_id, user_id)
             .then((allowed) => {
-              return MapUtils.completeEmbedMapRequest(req, res, next, map_id, false, allowed, false, true)
+              return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, false, allowed, false, true)
             }).catch(nextError(next))
         }
       } else {
@@ -115,11 +115,11 @@ module.exports = function (app: any) {
 
         if (!req.isAuthenticated || !req.isAuthenticated() ||
             !req.session || !req.session.user) {
-          return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, false, true)
+          return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, false, false, true)
         } else {
           return Map.allowedToModify(map_id, user_id)
             .then((allowed) => {
-              return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, false, true)
+              return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, allowed, false, true)
             }).catch(nextError(next))
         }
       } else {
@@ -145,11 +145,11 @@ module.exports = function (app: any) {
 
         if (!req.isAuthenticated || !req.isAuthenticated() ||
             !req.session || !req.session.user) {
-          return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, false, true, true)
+          return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, false, true, true)
         } else {
           return Map.allowedToModify(map_id, user_id)
             .then((allowed) => {
-              return MapUtils.completeEmbedMapRequest(req, res, next, map_id, true, allowed, true, true)
+              return MapUtils.completeEmbedMapRequest(app, req, res, next, map_id, true, allowed, true, true)
             }).catch(nextError(next))
         }
       } else {

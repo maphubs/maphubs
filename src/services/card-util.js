@@ -6,7 +6,7 @@ const urlUtil = require('./url-util')
 
 type CardConfigArray = Array<CardConfig>
 
-module.exports = {
+export default {
 
   combineCards (cardDataArray: Array<CardConfigArray>): Array<CardConfig> {
     let output = []

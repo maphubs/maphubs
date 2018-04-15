@@ -31,4 +31,4 @@ const AGSMapServerQuery = {
   }
 }
 
-module.exports = AGSMapServerQuery
+export default AGSMapServerQuery

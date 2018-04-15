@@ -26,14 +26,6 @@ type Props = {
   user: Object
 }
 
-type DefaultProps = {
-  maps: Array<Object>,
-  layers: Array<Object>,
-  hubs: Array<Object>,
-  members: Array<Object>,
-  canEdit: boolean
-}
-
 type State = {
   mapCards: Array<CardConfig>,
   layerCards: Array<CardConfig>,
@@ -41,9 +33,17 @@ type State = {
 }
 
 export default class GroupInfo extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
 
-  static defaultProps: DefaultProps = {
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
+  static defaultProps = {
     maps: [],
     layers: [],
     hubs: [],

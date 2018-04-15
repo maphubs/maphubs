@@ -36,7 +36,15 @@ type State = {
 }
 
 export default class Hubs extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
 
   static defaultProps = {
     featuredHubs: [],

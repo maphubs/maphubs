@@ -1,6 +1,8 @@
 // @flow
 import React from 'react'
 import Editor from 'react-medium-editor'
+import 'medium-editor/dist/css/medium-editor.css'
+import 'medium-editor/dist/css/themes/flat.css'
 import FeatureNotesStore from '../../stores/FeatureNotesStore'
 import FeatureNotesActions from '../../actions/FeatureNotesActions'
 import MapHubsComponent from '../MapHubsComponent'

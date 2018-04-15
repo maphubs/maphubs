@@ -55,6 +55,16 @@ type Props = {
   } & LocaleStoreState
 
 export default class HomePro extends MapHubsComponent<Props, State> {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
   props: Props
 
   static defaultProps = {
@@ -151,7 +161,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   renderSlides = (config: Object, key: string) => {
     const slides = (
-      <div key={key} className='row' style={{marginTop: 0, marginBottom: 0, height: '70%', maxHeight: '600px'}}>
+      <div key={key} className='row' style={{marginTop: 0, marginBottom: 0, height: '70vh', maxHeight: '600px'}}>
         <Carousel autoplay slidesToShow={1} autoplayInterval={5000} wrapAround
           decorators={SliderDecorators}>
           {config.slides.map((slide, i) => {

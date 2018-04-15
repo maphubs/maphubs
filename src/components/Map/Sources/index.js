@@ -1,4 +1,13 @@
-module.exports = {
+// @flow
+import AGSRaster from './AGSRaster'
+import AGSMapServerQuery from './AGSMapServerQuery'
+import AGSFeatureServerQuery from './AGSFeatureServerQuery'
+import MapboxSource from './MapboxSource'
+import MapHubsSource from './MapHubsSource'
+import RasterSource from './RasterSource'
+import GenericSource from './GenericSource'
+
+export default {
   getSource (key, source) {
     const response = function (driver: Function, custom: boolean = false) {
       return {
@@ -33,11 +42,11 @@ module.exports = {
       return response(this['generic'])
     }
   },
-  'arcgisraster': require('./AGSRaster'),
-  'ags-mapserver-query': require('./AGSMapServerQuery'),
-  'ags-featureserver-query': require('./AGSFeatureServerQuery'),
-  'mapbox-style': require('./MapboxSource'),
-  'maphubs-vector': require('./MapHubsSource'),
-  'raster': require('./RasterSource'),
-  'generic': require('./GenericSource')
+  'arcgisraster': AGSRaster,
+  'ags-mapserver-query': AGSMapServerQuery,
+  'ags-featureserver-query': AGSFeatureServerQuery,
+  'mapbox-style': MapboxSource,
+  'maphubs-vector': MapHubsSource,
+  'raster': RasterSource,
+  'generic': GenericSource
 }

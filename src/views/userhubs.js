@@ -32,6 +32,16 @@ type DefaultProps = {
 }
 
 export default class UserHubs extends MapHubsComponent<Props, void> {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
   props: Props
 
   static defaultProps: DefaultProps = {

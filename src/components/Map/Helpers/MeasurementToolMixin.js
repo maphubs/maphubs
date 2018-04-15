@@ -7,7 +7,7 @@ if (typeof window !== 'undefined') {
   MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')
 }
 
-module.exports = {
+export default {
 
   toggleMeasurementTools (enable: boolean) {
     if (enable && !this.state.enableMeasurementTools) {

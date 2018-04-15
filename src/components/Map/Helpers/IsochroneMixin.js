@@ -5,7 +5,7 @@ import request from 'superagent'
 import type {GeoJSONObject} from 'geojson-flow'
 const debug = require('../../../services/debug')('isochrone-mixin')
 
-module.exports = {
+export default {
 
   /**
    * Get the mapbox-gl style for the isochrone data

@@ -1,6 +1,8 @@
 // @flow
+const pageOptions = require('../../services/page-options-helper')
+
 module.exports = function (app: any) {
-  app.get('/unauthorized', (req, res) => {
+  app.get('/unauthorized', async (req, res) => {
     let path = ''
     if (req.query.path) {
       path = req.query.path
@@ -12,32 +14,32 @@ module.exports = function (app: any) {
     }
 
     res.status(401)
-    res.render('error', {
+    app.next.render(req, res, '/error', await pageOptions(req, {
       title: req.__('Unauthorized'),
       props: {
         title: req.__('Unauthorized'),
         error: req.__('You are not authorized to access this page.'),
         url: path,
         eventId: sentryId
-      },
-      req})
+      }
+    }))
   })
 
-  app.get('/notfound', (req, res) => {
+  app.get('/notfound', async (req, res) => {
     let path = ''
     if (req.query.path) {
       path = req.query.path
     }
 
     res.status(404)
-    res.render('error', {
+    app.next.render(req, res, '/error', await pageOptions(req, {
       title: req.__('Page not found'),
       props: {
         title: req.__('Page not found'),
         error: req.__('The page you requested was not found.'),
         url: path,
         eventId: req.sentry ? req.sentry.id : undefined
-      },
-      req})
+      }
+    }))
   })
 }

@@ -14,7 +14,7 @@ module.exports = async function (app: any) {
       log.info(`creating: ${page.path}`)
       app.get(page.path, csrfProtection, async (req, res, next) => {
         try {
-          await renderCMSPage(page, req, res)
+          await renderCMSPage(app, page, req, res)
         } catch (err) { nextError(next)(err) }
       })
     })

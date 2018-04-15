@@ -58,6 +58,16 @@ type UserMapState = {
 type State = LocaleStoreState & UserStoreState & UserMapState
 
 export default class UserMap extends MapHubsComponent<Props, State> {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
   props: Props
 
   static defaultProps: DefaultProps = {

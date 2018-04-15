@@ -3,6 +3,7 @@ const passport = require('passport')
 const local = require('../../local')
 // var log = require('../../services/log');
 const urlencode = require('urlencode')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   function checkReturnTo (req, res, next) {
@@ -18,8 +19,8 @@ module.exports = function (app: any) {
   }
 
   app.get('/login', checkReturnTo,
-    (req, res) => {
-      res.render('auth0login', {
+    async (req, res) => {
+      return app.next.render(req, res, '/auth0login', await pageOptions(req, {
         title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
@@ -27,9 +28,8 @@ module.exports = function (app: any) {
           AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
           allowSignUp: false
         },
-        login: true,
-        req
-      })
+        login: true
+      }))
     })
 
   // Perform the final stage of authentication and redirect to '/user'
@@ -46,15 +46,14 @@ module.exports = function (app: any) {
       })
     })
 
-  app.get('/login/failed', (req, res) => {
-    res.render('auth0error', {
+  app.get('/login/failed', async (req, res) => {
+    return app.next.render(req, res, '/auth0error', await pageOptions(req, {
       title: req.__('Login Failed') + ' - ' + MAPHUBS_CONFIG.productName,
       props: {
         requireInvite: local.requireInvite,
         adminEmail: local.adminEmail
       },
-      login: true,
-      req
-    })
+      login: true
+    }))
   })
 }

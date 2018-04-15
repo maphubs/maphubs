@@ -52,10 +52,12 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
       'it': {label: 'IT'}
     }
 
+    const label = options[this.state.locale] ? options[this.state.locale].label : 'UNK'
+
     return (
       <li className='nav-link-wrapper nav-dropdown-link-wrapper'>
         <a ref='dropdown' className='locale-dropdown-button nav-dropdown-button dropdown-trigger'
-          href='#!' data-target={this.props.id} style={{paddingRight: 0}}>{options[this.state.locale].label}
+          href='#!' data-target={this.props.id} style={{paddingRight: 0}}>{label}
           <i className='material-icons right' style={{marginLeft: 0}}>arrow_drop_down</i></a>
         <ul id={this.props.id} className='dropdown-content'>
           <li><a href='#!' onClick={function () { _this.onChange('en') }} className='nav-hover-menu-item'>English (EN)</a></li>

@@ -1,6 +1,6 @@
 
 // @flow
-module.exports = {
+export default {
 
   getForestLossLayer (type: string, year: number) {
     return {

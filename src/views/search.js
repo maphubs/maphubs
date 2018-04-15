@@ -17,8 +17,8 @@ import BaseMapStore from '../stores/map/BaseMapStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import UserStore from '../stores/UserStore'
+import cardUtil from '../services/card-util'
 
-const cardUtil = require('../services/card-util')
 const debug = require('../services/debug')('home')
 const $ = require('jquery')
 
@@ -38,7 +38,15 @@ type State = {
 }
 
 export default class Search extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
 
   state: State = {
     searchResult: null,

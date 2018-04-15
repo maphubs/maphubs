@@ -8,7 +8,7 @@ const jsonp = require('superagent-jsonp')
 
 // tools to map ArcGIS data to geoJSON for MapboxGL
 
-module.exports = {
+export default {
 
   getArcGISGeoJSON (url: string) {
     const _this = this

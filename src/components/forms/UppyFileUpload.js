@@ -3,6 +3,7 @@ import React from 'react'
 import Uppy from 'uppy/lib/core'
 import Tus from 'uppy/lib/plugins/Tus'
 import Dashboard from 'uppy/lib/react/Dashboard'
+import 'uppy/dist/uppy.min.css'
 // import GoogleDrive from 'uppy/lib/plugins/GoogleDrive';
 // import Dropbox from 'uppy/lib/plugins/Dropbox';
 

@@ -42,4 +42,4 @@ const RasterSource = {
   }
 }
 
-module.exports = RasterSource
+export default RasterSource

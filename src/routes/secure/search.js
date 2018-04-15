@@ -6,14 +6,14 @@ const log = require('../../services/log.js')
 // var debug = require('../../services/debug')('routes/search');
 const csrfProtection = require('csurf')({cookie: false})
 const SearchIndex = require('../../models/search-index')
+const pageOptions = require('../../services/page-options-helper')
 
-module.exports = function (app: any) {
-  app.get('/search', csrfProtection, (req, res) => {
-    return res.render('search', {
+module.exports = (app: any) => {
+  app.get('/search', csrfProtection, async (req, res) => {
+    return app.next.render(req, res, '/search', await pageOptions(req, {
       title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
-      props: {},
-      req
-    })
+      props: {}
+    }))
   })
 
   app.get('/api/global/search', (req, res) => {
@@ -32,6 +32,7 @@ module.exports = function (app: any) {
       .then(hits => {
       // compile mhids by layer
         const layers = {}
+        if (!hits) hits = []
         hits.forEach(hit => {
           const layer_id = hit._source.layer_id
           if (!layers[layer_id]) {

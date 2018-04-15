@@ -16,6 +16,7 @@ const log = require('../../services/log')
 const debug = require('../../services/debug')('routes/layers-replace')
 const Importers = require('../../services/importers')
 const isAuthenticated = require('../../services/auth-check')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
@@ -28,10 +29,10 @@ module.exports = function (app: any) {
       if (allowed) {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
-          res.render('layerreplace', {
+          app.next.render(req, res, '/layerreplace', await pageOptions(req, {
             title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
-            props: {layer},
-            req})
+            props: {layer}
+          }))
         } else {
           nextError(next)(new Error('Layer not found'))
         }

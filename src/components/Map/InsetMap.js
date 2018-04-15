@@ -3,8 +3,11 @@ import React from 'react'
 import _centroid from '@turf/centroid'
 import MapToolButton from './MapToolButton'
 import BaseMapActions from '../../actions/map/BaseMapActions'
+import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import $ from 'jquery'
+
 const debug = require('../../services/debug')('map')
-const $ = require('jquery')
 
 let mapboxgl = {}
 

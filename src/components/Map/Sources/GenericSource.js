@@ -19,4 +19,4 @@ const GenericSource = {
   }
 }
 
-module.exports = GenericSource
+export default GenericSource

@@ -1,4 +1,5 @@
 // @flow
+
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
@@ -7,6 +8,11 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import 'jquery'
+import 'react-tippy/dist/tippy.css'
+if (typeof window !== 'undefined') {
+  require('materialize-css')
+}
 
 type Props = {
   locale: string,
@@ -17,7 +23,15 @@ type Props = {
 }
 
 export default class Terms extends MapHubsComponent<Props, void> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
 
   constructor (props: Props) {
     super(props)

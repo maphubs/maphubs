@@ -30,4 +30,4 @@ const AGSFeatureServerQuery = {
   }
 }
 
-module.exports = AGSFeatureServerQuery
+export default AGSFeatureServerQuery

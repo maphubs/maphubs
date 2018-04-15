@@ -5,6 +5,7 @@ const apiError = require('../../services/error-response').apiError
 const nextError = require('../../services/error-response').nextError
 const apiDataError = require('../../services/error-response').apiDataError
 const knex = require('../../connection')
+const pageOptions = require('../../services/page-options-helper')
 // var log = require('../../services/log');
 
 module.exports = function (app: any) {
@@ -14,12 +15,12 @@ module.exports = function (app: any) {
         return res.redirect('/login')
       }
       if (await Admin.checkAdmin(req.session.user.maphubsUser.id)) {
-        return res.render('adminuserinvite', {
+        return app.next.render(req, res, '/adminuserinvite', await pageOptions(req, {
           title: req.__('Manage Users') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {
             members: await Admin.getMembers()
-          },
-          req})
+          }
+        }))
       } else {
         return res.redirect('/login')
       }

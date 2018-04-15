@@ -36,7 +36,15 @@ type State = {
 
 // A reponsive full window map used to render screenshots
 export default class StaticMap extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
 
   static defaultProps = {
     showLegend: true,

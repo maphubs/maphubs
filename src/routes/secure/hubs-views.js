@@ -13,6 +13,7 @@ const baseUrl = urlUtil.getBaseUrl()
 const nextError = require('../../services/error-response').nextError
 const csrfProtection = require('csurf')({cookie: false})
 const privateHubCheck = require('../../services/private-hub-check').middlewareView
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   const recordHubView = function (session: any, hub_id: string, user_id: number, next: any) {
@@ -48,27 +49,25 @@ module.exports = function (app: any) {
   // Views
   app.get('/hubs', csrfProtection, async (req, res, next) => {
     try {
-      res.render('hubs', {
+      app.next.render(req, res, '/hubs', await pageOptions(req, {
         title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           featuredHubs: await Hub.getFeaturedHubs(),
           popularHubs: await Hub.getPopularHubs(),
           recentHubs: await Hub.getRecentHubs()
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
   app.get('/hubs/all', csrfProtection, async (req, res, next) => {
     try {
-      res.render('allhubs', {
+      app.next.render(req, res, '/allhubs', await pageOptions(req, {
         title: req.__('Hubs') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           hubs: await Hub.getAllHubs().orderBy('omh.hubs.name')
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -86,14 +85,14 @@ module.exports = function (app: any) {
             if (userCanEdit) {
               draftHubs = await Hub.getDraftHubsForUser(user.id)
             }
-            return res.render('userhubs', {
+            return app.next.render(req, res, '/userhubs', await pageOptions(req, {
               title: 'Hubs - ' + username,
               props: {user,
                 publishedHubs: await Hub.getPublishedHubsForUser(user.id),
                 draftHubs,
                 canEdit: userCanEdit
-              },
-              req})
+              }
+            }))
           } else {
             return res.redirect('/notfound?path=' + req.path)
           }
@@ -129,7 +128,7 @@ module.exports = function (app: any) {
     }
     const image = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id + '/images/logo'
 
-    return res.render('hubinfo', {
+    return app.next.render(req, res, '/hubinfo', await pageOptions(req, {
       title: hub.name + ' - ' + MAPHUBS_CONFIG.productName,
       description: hub.description,
       hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
@@ -151,9 +150,8 @@ module.exports = function (app: any) {
         imageType: 'image/png',
         imageWidth: 300,
         imageHeight: 300
-      },
-      req
-    })
+      }
+    }))
   }
 
   app.get('/hub/:hubid', csrfProtection, privateHubCheck, async (req, res, next) => {
@@ -196,16 +194,15 @@ module.exports = function (app: any) {
       if (req.isAuthenticated && req.isAuthenticated()) {
         canEdit = await Hub.allowedToModify(hub.hub_id, user_id)
       }
-      return res.render('hubstories', {
+      return app.next.render(req, res, '/hubstories', await pageOptions(req, {
         title: hub.name + '|' + req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
         hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
         props: {
           hub,
           stories: await Hub.getHubStories(hub.hub_id, canEdit),
           canEdit
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -226,29 +223,27 @@ module.exports = function (app: any) {
       if (req.isAuthenticated && req.isAuthenticated()) {
         canEdit = await Hub.allowedToModify(hub.hub_id, user_id)
       }
-      return res.render('hubresources', {
+      return app.next.render(req, res, '/hubresources', await pageOptions(req, {
         title: hub.name + '|' + req.__('Resources') + ' - ' + MAPHUBS_CONFIG.productName,
         hideFeedback: !MAPHUBS_CONFIG.mapHubsPro,
         fontawesome: true,
         rangy: true,
         props: {
           hub, canEdit
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
   app.get('/createhub', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
-      return res.render('hubbuilder', {
+      return app.next.render(req, res, '/hubbuilder', await pageOptions(req, {
         title: req.__('Create Hub') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           groups: await Group.getGroupsForUser(user_id)
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -260,7 +255,7 @@ module.exports = function (app: any) {
         const hub = await Hub.getHubByID(hub_id_input)
         if (hub) {
           const story_id = await Story.createHubStory(hub.hub_id, user_id)
-          return res.render('createhubstory', {
+          return app.next.render(req, res, '/createhubstory', await pageOptions(req, {
             title: 'Create Story',
             fontawesome: true,
             rangy: true,
@@ -269,9 +264,8 @@ module.exports = function (app: any) {
               myMaps: await Map.getUserMaps(user_id),
               popularMaps: await Map.getPopularMaps(),
               story_id
-            },
-            req
-          })
+            }
+          }))
         } else {
           return res.redirect('/notfound?path=' + req.path)
         }
@@ -292,7 +286,7 @@ module.exports = function (app: any) {
         if (!story) {
           return res.redirect('/notfound?path=' + req.path)
         } else {
-          return res.render('edithubstory', {
+          return app.next.render(req, res, '/edithubstory', await pageOptions(req, {
             title: 'Editing: ' + story.title,
             fontawesome: true,
             rangy: true,
@@ -301,9 +295,8 @@ module.exports = function (app: any) {
               hub: await Hub.getHubByID(hub_id),
               myMaps: await Map.getUserMaps(user_id),
               popularMaps: await Map.getPopularMaps()
-            },
-            req
-          })
+            }
+          }))
         }
       } else {
         return res.redirect(baseUrl + '/unauthorized?path=' + req.path)
@@ -342,7 +335,7 @@ module.exports = function (app: any) {
           if (!story.published) {
             return res.status(401).send('Unauthorized')
           } else {
-            return res.render('hubstory', {
+            return app.next.render(req, res, '/hubstory', await pageOptions(req, {
               title: story.title,
               description,
               props: {
@@ -354,9 +347,8 @@ module.exports = function (app: any) {
                 description,
                 image,
                 imageType: 'image/jpeg'
-              },
-              req
-            })
+              }
+            }))
           }
         } else {
           const canEdit = await Story.allowedToModify(story_id, user_id)
@@ -364,7 +356,7 @@ module.exports = function (app: any) {
           if (!story.published && !canEdit) {
             return res.status(401).send('Unauthorized')
           } else {
-            return res.render('hubstory', {
+            return app.next.render(req, res, '/hubstory', await pageOptions(req, {
               title: story.title,
               description,
               props: {
@@ -376,9 +368,8 @@ module.exports = function (app: any) {
                 description,
                 image,
                 imageType: 'image/jpeg'
-              },
-              req
-            })
+              }
+            }))
           }
         }
       }

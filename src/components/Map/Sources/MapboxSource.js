@@ -43,4 +43,4 @@ const MapboxSource = {
   }
 }
 
-module.exports = MapboxSource
+export default MapboxSource

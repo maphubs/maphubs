@@ -40,21 +40,22 @@ type Props = {
   user: Object
 }
 
-type DefaultProps = {
-  hub: Object,
-   layers: Array<Object>,
-  stories: Array<Object>,
-  canEdit: boolean
-}
-
 type State = {
   editing: boolean
 } & LocaleStoreState & HubStoreState
 
 export default class HubInfo extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
 
-  static defaultProps: DefaultProps = {
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
+  static defaultProps = {
     hub: {
       name: 'Unknown'
     },

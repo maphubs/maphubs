@@ -34,6 +34,8 @@ import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style'
 import type {GeoJSONObject} from 'geojson-flow'
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
 import type {Layer} from '../../stores/layer-store'
+import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 const debug = require('../../services/debug')('map')
 const $ = require('jquery')

@@ -46,7 +46,15 @@ type Props = {
   } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState
 
 export default class FeatureInfo extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
 
   state: State = {
     editingNotes: false,
@@ -240,7 +248,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                     <h5>{this.__('Attributes')}</h5>
                     <FeatureProps data={geoJSONProps} presets={presets} />
                   </div>
-                  <div className='col m6 s12 no-padding'>          
+                  <div className='col m6 s12 no-padding'>
                     <FeatureExport mhid={mhid} {...this.props.layer} />
                   </div>
                 </div>

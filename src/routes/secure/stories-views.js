@@ -9,31 +9,30 @@ const nextError = require('../../services/error-response').nextError
 const apiDataError = require('../../services/error-response').apiDataError
 const csrfProtection = require('csurf')({cookie: false})
 const urlUtil = require('../../services/url-util')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   // Views
   app.get('/stories', async (req, res, next) => {
     try {
-      return res.render('stories', {
+      return app.next.render(req, res, '/stories', await pageOptions(req, {
         title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           popularStories: await Story.getPopularStories(10),
           recentStories: await Story.getRecentStories(10)
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
   app.get('/stories/all', async (req, res, next) => {
     try {
-      return res.render('allstories', {
+      return app.next.render(req, res, '/allstories', await pageOptions(req, {
         title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           stories: await Story.getAllStories().orderBy('omh.stories.title')
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -47,12 +46,11 @@ module.exports = function (app: any) {
         .then((user) => {
           if (user) {
             return Story.getUserStories(user.id, myStories)
-              .then((stories) => {
-                return res.render('userstories', {
+              .then(async (stories) => {
+                return app.next.render(req, res, '/userstories', await pageOptions(req, {
                   title: 'Stories - ' + username,
-                  props: {user, stories, myStories, username},
-                  req
-                })
+                  props: {user, stories, myStories, username}
+                }))
               })
           } else {
             return res.redirect('/notfound?path=' + req.path)
@@ -85,7 +83,7 @@ module.exports = function (app: any) {
       const user_id = req.session.user.maphubsUser.id
       const story_id = await Story.createUserStory(user_id)
 
-      return res.render('createuserstory', {
+      return app.next.render(req, res, '/createuserstory', await pageOptions(req, {
         title: 'Create Story',
         fontawesome: true,
         rangy: true,
@@ -94,9 +92,8 @@ module.exports = function (app: any) {
           myMaps: await Map.getUserMaps(req.session.user.maphubsUser.id),
           popularMaps: await Map.getPopularMaps(),
           story_id
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -109,7 +106,7 @@ module.exports = function (app: any) {
       if (await Story.allowedToModify(story_id, user_id)) {
         const story = await Story.getStoryByID(story_id)
 
-        return res.render('edituserstory', {
+        return app.next.render(req, res, '/edituserstory', await pageOptions(req, {
           title: 'Editing: ' + story.title,
           fontawesome: true,
           rangy: true,
@@ -118,9 +115,8 @@ module.exports = function (app: any) {
             myMaps: await Map.getUserMaps(user_id),
             popularMaps: await Map.getPopularMaps(),
             username
-          },
-          req
-        })
+          }
+        }))
       } else {
         return res.redirect('/unauthorized')
       }
@@ -137,7 +133,7 @@ module.exports = function (app: any) {
       user_id = req.session.user.maphubsUser.id
     }
     Story.getStoryByID(story_id)
-      .then((story) => {
+      .then(async (story) => {
         if (!story) {
           return res.redirect('/notfound?path=' + req.path)
         }
@@ -169,7 +165,7 @@ module.exports = function (app: any) {
             // guest users never see draft stories
             return res.status(401).send('Unauthorized')
           } else {
-            return res.render('userstory', {
+            return app.next.render(req, res, '/userstory', await pageOptions(req, {
               title: story.title,
               description,
               props: {
@@ -181,13 +177,12 @@ module.exports = function (app: any) {
                 description,
                 image: imageUrl,
                 imageType: 'image/jpeg'
-              },
-              req
-            })
+              }
+            }))
           }
         } else {
           return Story.allowedToModify(story_id, user_id)
-            .then((canEdit) => {
+            .then(async (canEdit) => {
               let imageUrl = ''
               if (story.firstimage) {
                 imageUrl = story.firstimage
@@ -200,7 +195,7 @@ module.exports = function (app: any) {
               if (!story.published && !canEdit) {
                 return res.status(401).send('Unauthorized')
               } else {
-                return res.render('userstory', {
+                return app.next.render(req, res, '/userstory', await pageOptions(req, {
                   title: story.title,
                   description,
                   props: {
@@ -212,9 +207,8 @@ module.exports = function (app: any) {
                     description,
                     image: imageUrl,
                     imageType: 'image/jpeg'
-                  },
-                  req
-                })
+                  }
+                }))
               }
             })
         }

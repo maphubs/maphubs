@@ -4,6 +4,12 @@ import Slider from 'react-slick'
 import Card from './Card'
 
 import type {CardConfig} from './Card'
+import '../../../node_modules/slick-carousel/slick/fonts/slick.eot'
+import '../../../node_modules/slick-carousel/slick/fonts/slick.svg'
+import '../../../node_modules/slick-carousel/slick/fonts/slick.ttf'
+import '../../../node_modules/slick-carousel/slick/fonts/slick.woff'
+import '../../../node_modules/slick-carousel/slick/slick.css'
+import '../../../node_modules/slick-carousel/slick/slick-theme.css'
 
 type Props = {
     cards: Array<CardConfig>,

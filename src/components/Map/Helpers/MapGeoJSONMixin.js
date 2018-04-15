@@ -3,7 +3,7 @@ import _bbox from '@turf/bbox'
 import type {GeoJSONObject} from 'geojson-flow'
 const MapStyles = require('../Styles')
 
-module.exports = {
+export default {
   initGeoJSON (data: GeoJSONObject) {
     const _this = this
     if (this.map) {

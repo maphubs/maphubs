@@ -1,6 +1,6 @@
 // @flow
 import _area from '@turf/area'
-module.exports = {
+export default {
 
   getDefaultForestAlertState () {
     return {

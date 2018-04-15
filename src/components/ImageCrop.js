@@ -5,8 +5,10 @@ import {Modal, ModalContent} from './Modal/Modal.js'
 import Promise from 'bluebird'
 import MessageActions from '../actions/MessageActions'
 import {Tooltip} from 'react-tippy'
+import 'cropperjs/dist/cropper.css'
 const $ = require('jquery')
 // import Cropper from 'react-cropper';
+
 const EXIF = require('exif-js')
 const debug = require('../services/debug')('ImageCrop')
 

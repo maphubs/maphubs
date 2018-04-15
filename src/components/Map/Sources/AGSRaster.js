@@ -34,4 +34,4 @@ const AGSRaster = {
   }
 }
 
-module.exports = AGSRaster
+export default AGSRaster

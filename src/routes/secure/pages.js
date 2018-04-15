@@ -6,6 +6,7 @@ const nextError = require('../../services/error-response').nextError
 const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError
 const isAuthenticated = require('../../services/auth-check')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app) {
   app.get('/page/edit/:id', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
@@ -16,10 +17,10 @@ module.exports = function (app) {
       if (await Admin.checkAdmin(user_id)) {
         const pageConfigs = await Page.getPageConfigs([page_id])
         const pageConfig = pageConfigs[page_id]
-        return res.render('pageedit', {
+        return app.next.render(req, res, '/pageedit', await pageOptions(req, {
           title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {page_id, pageConfig},
-          req})
+          props: {page_id, pageConfig}
+        }))
       } else {
         return res.redirect('/unauthorized')
       }

@@ -4,7 +4,7 @@ const debug = require('../../../services/debug')('mapboxGLHelperMixin')
 /**
  * Helper functions for interfacing with MapboxGL
  */
-module.exports = {
+export default {
 
   getBounds () {
     if (this.map) {

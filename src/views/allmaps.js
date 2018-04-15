@@ -18,7 +18,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
-const cardUtil = require('../services/card-util')
+import cardUtil from '../services/card-util'
 const debug = require('../services/debug')('views/maps')
 const urlUtil = require('../services/url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -39,7 +39,15 @@ type State = {
 }
 
 export default class AllMaps extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
+
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
 
   state: State = {
     searchResults: [],

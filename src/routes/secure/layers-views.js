@@ -12,32 +12,31 @@ const csrfProtection = require('csurf')({cookie: false})
 const privateLayerCheck = require('../../services/private-layer-check').middlewareView
 const Locales = require('../../services/locales')
 const knex = require('../../connection.js')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   // Views
   app.get('/layers', csrfProtection, async (req, res, next) => {
     try {
-      return res.render('layers', {
+      return app.next.render(req, res, '/layers', await pageOptions(req, {
         title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           featuredLayers: await Layer.getFeaturedLayers(),
           recentLayers: await Layer.getRecentLayers(),
           popularLayers: await Layer.getPopularLayers()
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
   app.get('/layers/all', csrfProtection, async (req, res, next) => {
     try {
-      return res.render('alllayers', {
+      return app.next.render(req, res, '/alllayers', await pageOptions(req, {
         title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           layers: await Layer.getAllLayers(false)
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -47,14 +46,13 @@ module.exports = function (app: any) {
       let layer_id = await Layer.createLayer(user_id, trx)
       layer_id = parseInt(layer_id)
 
-      return res.render('createlayer', {
+      return app.next.render(req, res, '/createlayer', await pageOptions(req, {
         title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           groups: await Group.getGroupsForUser(user_id, trx),
           layer: await Layer.getLayerByID(layer_id, trx)
-        },
-        req
-      })
+        }
+      }))
     }).catch(nextError(next))
   })
 
@@ -90,7 +88,7 @@ module.exports = function (app: any) {
         if (notesObj && notesObj.notes) {
           notes = notesObj.notes
         }
-        return res.render('layerinfo', {
+        return app.next.render(req, res, '/layerinfo', await pageOptions(req, {
           title: name + ' - ' + MAPHUBS_CONFIG.productName,
           description,
           props: {
@@ -111,18 +109,17 @@ module.exports = function (app: any) {
             imageWidth: 1200,
             imageHeight: 630,
             imageType: 'image/png'
-          },
-          req})
+          }
+        }))
       } else {
-        return res.render('error', {
+        return app.next.render(req, res, '/error', await pageOptions(req, {
           title: req.__('Not Found'),
           props: {
             title: req.__('Not Found'),
             error: req.__('The page you request was not found'),
             url: req.url
-          },
-          req
-        })
+          }
+        }))
       }
     } catch (err) { nextError(next)(err) }
   })
@@ -159,7 +156,7 @@ module.exports = function (app: any) {
       if (layer) {
         const name = Locales.getLocaleStringObject(req.locale, layer.name)
         const description = Locales.getLocaleStringObject(req.locale, layer.description)
-        return res.render('layermap', {
+        return app.next.render(req, res, '/layermap', await pageOptions(req, {
           title: name + ' - ' + MAPHUBS_CONFIG.productName,
           description,
           props: {
@@ -174,19 +171,17 @@ module.exports = function (app: any) {
             imageWidth: 1200,
             imageHeight: 630,
             imageType: 'image/png'
-          },
-          req
-        })
+          }
+        }))
       } else {
-        return res.render('error', {
+        return app.next.render(req, res, '/error', await pageOptions(req, {
           title: req.__('Not Found'),
           props: {
             title: req.__('Not Found'),
             error: req.__('The page you request was not found'),
             url: req.url
-          },
-          req
-        })
+          }
+        }))
       }
     } catch (err) { nextError(next)(err) }
   })
@@ -199,9 +194,10 @@ module.exports = function (app: any) {
       const layer = await Layer.getLayerByID(layer_id)
       if (layer && (allowed || layer.allowPublicSubmission)) { // placeholder for public submission flag on layers
         if (layer.data_type === 'point' && !layer.is_external) {
-          return res.render('addphotopoint', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
-            props: {layer},
-            req})
+          return app.next.render(req, res, '/addphotopoint', await pageOptions(req, {
+            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+            props: {layer}
+          }))
         } else {
           return res.status(400).send('Bad Request: Feature not support for this layer')
         }
@@ -222,12 +218,13 @@ module.exports = function (app: any) {
       if (allowed) {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
-          return res.render('layeradmin', {title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+          return app.next.render(req, res, '/layeradmin', await pageOptions(req, {
+            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
             props: {
               layer,
               groups: await Group.getGroupsForUser(user_id)
-            },
-            req})
+            }
+          }))
         } else {
           return res.redirect('/unauthorized')
         }

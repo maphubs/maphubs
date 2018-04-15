@@ -11,23 +11,21 @@ const debug = require('../../services/debug')('routes/groups')
 const nextError = require('../../services/error-response').nextError
 const urlUtil = require('../../services/url-util')
 const Locales = require('../../services/locales')
+const pageOptions = require('../../services/page-options-helper')
 
 const csrfProtection = require('csurf')({cookie: false})
 
 module.exports = function (app: any) {
   app.get('/groups', csrfProtection, async (req, res, next) => {
     try {
-      const featuredGroups = await Group.getFeaturedGroups()
-      const recentGroups = await Group.getRecentGroups()
-      const popularGroups = await Group.getPopularGroups()
-
-      return res.render('groups', {
+      return app.next.render(req, res, '/groups', await pageOptions(req, {
         title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
-          featuredGroups, recentGroups, popularGroups
-        },
-        req
-      })
+          featuredGroups: await Group.getFeaturedGroups(),
+          recentGroups: await Group.getRecentGroups(),
+          popularGroups: await Group.getPopularGroups()
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -35,22 +33,20 @@ module.exports = function (app: any) {
     try {
       const locale = req.locale ? req.locale : 'en'
       const groups = await Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`)
-      return res.render('allgroups', {
+      return app.next.render(req, res, '/allgroups', await pageOptions(req, {
         title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           groups
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), (req, res) => {
-    res.render('creategroup', {
+  app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), async (req, res) => {
+    app.next.render(req, res, '/creategroup', await pageOptions(req, {
       title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,
-      props: {},
-      req
-    })
+      props: {}
+    }))
   })
 
   app.get('/group/:id', csrfProtection, async (req, res, next) => {
@@ -75,7 +71,7 @@ module.exports = function (app: any) {
       const image = urlUtil.getBaseUrl() + `/group/${group_id}/image`
       const name = Locales.getLocaleStringObject(req.locale, group.name)
       const description = Locales.getLocaleStringObject(req.locale, group.description)
-      return res.render('groupinfo', {
+      return app.next.render(req, res, '/groupinfo', await pageOptions(req, {
         title: name + ' - ' + MAPHUBS_CONFIG.productName,
         description,
         props: {
@@ -89,9 +85,8 @@ module.exports = function (app: any) {
           imageType: 'image/png',
           imageWidth: 600,
           imageHeight: 600
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 
@@ -106,7 +101,7 @@ module.exports = function (app: any) {
         const group = await Group.getGroupByID(group_id)
         if (group) {
           const name = Locales.getLocaleStringObject(req.locale, group.name)
-          return res.render('groupadmin', {
+          return app.next.render(req, res, '/groupadmin', await pageOptions(req, {
             title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
             props: {
               group,
@@ -115,9 +110,8 @@ module.exports = function (app: any) {
               hubs: await Hub.getGroupHubs(group_id, true),
               members: await Group.getGroupMembers(group_id),
               account: await Account.getStatus(group_id)
-            },
-            req
-          })
+            }
+          }))
         } else {
           return res.redirect('/notfound')
         }
@@ -138,8 +132,11 @@ module.exports = function (app: any) {
         .then((user) => {
           if (user) {
             return Group.getGroupsForUser(user.id)
-              .then((groups) => {
-                return res.render('usergroups', {title: 'Groups - ' + username, props: {user, groups, canEdit: userCanEdit}, req})
+              .then(async (groups) => {
+                return app.next.render(req, res, '/usergroups', await pageOptions(req, {
+                  title: 'Groups - ' + username,
+                  props: {user, groups, canEdit: userCanEdit}
+                }))
               })
           } else {
             return res.redirect('/notfound?path=' + req.path)

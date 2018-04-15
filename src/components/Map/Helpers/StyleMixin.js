@@ -28,7 +28,7 @@ function optimizeLayerOrder (glStyle: Object) {
   return regularLayers.concat(labelLayers)
 }
 
-module.exports = {
+export default {
 
   setBaseMapStyle (style: GLStyle, update:boolean = true) {
     style = _cloneDeep(style)

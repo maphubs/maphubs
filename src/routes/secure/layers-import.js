@@ -16,6 +16,7 @@ const log = require('../../services/log')
 const knex = require('../../connection.js')
 const DataLoadUtils = require('../../services/data-load-utils')
 const layerViews = require('../../services/layer-views')
+const pageOptions = require('../../services/page-options-helper')
 
 const SUPPORTED_VERSION = 1
 
@@ -23,13 +24,12 @@ module.exports = function (app: any) {
   app.get('/importlayer', login.ensureLoggedIn(), async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
-      return res.render('importlayer', {
+      return app.next.render(req, res, '/importlayer', await pageOptions(req, {
         title: req.__('Import Layer') + ' - ' + MAPHUBS_CONFIG.productName,
         props: {
           groups: await Group.getGroupsForUser(user_id)
-        },
-        req
-      })
+        }
+      }))
     } catch (err) { nextError(next)(err) }
   })
 

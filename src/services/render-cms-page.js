@@ -5,8 +5,9 @@ const Hub = require('../models/hub')
 const Map = require('../models/map')
 const Story = require('../models/story')
 const Promise = require('bluebird')
+const pageOptions = require('./page-options-helper')
 
-module.exports = function (config: Object, req: any, res: any) {
+module.exports = function (app: any, config: Object, req: any, res: any) {
   const dataRequests = []
   const dataRequestNames: Array<string> = []
   let useMailChimp
@@ -48,7 +49,7 @@ module.exports = function (config: Object, req: any, res: any) {
   }
 
   return Promise.all(dataRequests)
-    .then((results) => {
+    .then(async (results) => {
       const props = {pageConfig: config, _csrf: req.csrfToken()}
       results.forEach((result, i) => {
         props[dataRequestNames[i]] = result
@@ -67,13 +68,12 @@ module.exports = function (config: Object, req: any, res: any) {
         description = config.description.en
       }
 
-      return res.render('home', {
+      return app.next.render(req, res, '/home', await pageOptions(req, {
         title,
         description,
         mailchimp: useMailChimp,
         props,
-        hideFeedback: config.hideFeedback,
-        req
-      })
+        hideFeedback: config.hideFeedback
+      }))
     })
 }

@@ -20,7 +20,11 @@ export default class ErrorBoundary extends MapHubsComponent<Props, State> {
   componentDidCatch (error: any, errorInfo: any) {
     this.setState({error})
     debug.error(error)
-    Raven.captureException(error, {extra: errorInfo})
+    if (Raven && Raven.isSetup && Raven.isSetup()) {
+      Raven.captureException(error, {extra: errorInfo})
+    } else {
+      console.error('Raven not found')
+    }
   }
 
   render () {

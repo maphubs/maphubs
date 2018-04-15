@@ -305,4 +305,4 @@ const MapHubsSource = {
   }
 }
 
-module.exports = MapHubsSource
+export default MapHubsSource

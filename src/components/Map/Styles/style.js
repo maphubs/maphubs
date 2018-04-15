@@ -9,7 +9,7 @@ import type {GLStyle, GLSource} from '../../../types/mapbox-gl-style'
 const _forEachRight = require('lodash.foreachright')
 const debug = require('../../../services/debug')('MapStyles/style')
 
-module.exports = {
+export default {
   defaultStyle (layer_id: number, shortid: string, source: GLSource, dataType: string): GLStyle {
     const settings = Settings.defaultLayerSettings()
     return this.styleWithColor(layer_id, shortid, source, 'red', dataType, settings.interactive, settings.showBehindBaseMapLabels)

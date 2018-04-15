@@ -4,6 +4,7 @@ const Map = require('../../models/map')
 const nextError = require('../../services/error-response').nextError
 const manetCheck = require('../../services/manet-check').middleware
 const Locales = require('../../services/locales')
+const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   // create a map view that we will use to screenshot the layer
@@ -12,12 +13,12 @@ module.exports = function (app: any) {
     if (!layer_id) {
       return res.status(404).send()
     }
-    Layer.getLayerByID(layer_id).then((layer) => {
+    Layer.getLayerByID(layer_id).then(async (layer) => {
       if (layer) {
         const name = Locales.getLocaleStringObject(req.locale, layer.name)
         const title = name + ' - ' + MAPHUBS_CONFIG.productName
-
-        return res.render('staticmap', {title,
+        return app.next.render(req, res, '/staticmap', await pageOptions(req, {
+          title,
           hideFeedback: true,
           disableGoogleAnalytics: true,
           props: {
@@ -29,9 +30,8 @@ module.exports = function (app: any) {
             showLegend: false,
             insetMap: false,
             showLogo: false
-          },
-          req
-        })
+          }
+        }))
       } else {
         return res.status(404).send()
       }
@@ -69,7 +69,7 @@ module.exports = function (app: any) {
         if (map.title) {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
-        return res.render('staticmap', {
+        return app.next.render(req, res, '/staticmap', await pageOptions(req, {
           title: title + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: true,
           disableGoogleAnalytics: true,
@@ -84,9 +84,8 @@ module.exports = function (app: any) {
             showLogo,
             showScale,
             insetMap: showInset
-          },
-          req
-        })
+          }
+        }))
       }
     } catch (err) { nextError(next)(err) }
   }
@@ -119,7 +118,7 @@ module.exports = function (app: any) {
         if (map.title) {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
-        return res.render('staticmap', {
+        return app.next.render(req, res, '/staticmap', await pageOptions(req, {
           title: title + ' - ' + MAPHUBS_CONFIG.productName,
           hideFeedback: true,
           disableGoogleAnalytics: true,
@@ -132,9 +131,8 @@ module.exports = function (app: any) {
             showLegend: false,
             insetMap: false,
             showLogo: false
-          },
-          req
-        })
+          }
+        }))
       }
     } catch (err) { nextError(next)(err) }
   })

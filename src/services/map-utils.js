@@ -5,9 +5,10 @@ const urlUtil = require('../services/url-util')
 const debug = require('./debug')('map-utils')
 const Locales = require('../services/locales')
 const local = require('../local')
+const pageOptions = require('./page-options-helper')
 
 module.exports = {
-  async completeEmbedMapRequest (req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean) {
+  async completeEmbedMapRequest (app: any, req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean) {
     let showLogo = true
     if (req.query.hideLogo) {
       showLogo = false
@@ -52,8 +53,7 @@ module.exports = {
         } else {
           imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`
         }
-
-        return res.render('embedmap', {
+        return app.next.render(req, res, '/embedmap', await pageOptions(req, {
           title,
           props: {
             map,
@@ -79,13 +79,13 @@ module.exports = {
             imageHeight: 630,
             imageType: 'image/png'
           },
-          publicShare: shared,
-          req})
+          publicShare: shared
+        }))
       }
     } catch (err) { nextError(next)(err) }
   },
 
-  async completeUserMapRequest (req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean) {
+  async completeUserMapRequest (app: any, req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean) {
     debug.log('completeUserMapRequest')
     try {
       const map = await Map.getMap(map_id)
@@ -115,25 +115,22 @@ module.exports = {
         // inject into map config
         map.showShareButtons = showShareButtons
 
-        return res.render('usermap',
-          {
-            title: `${title} - ${MAPHUBS_CONFIG.productName}`,
-            props: {map, layers, canEdit},
-            hideFeedback: true,
-            oembed: 'map',
-            twitterCard: {
-              title,
-              description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
-              image: imageUrl,
-              imageWidth: 1200,
-              imageHeight: 630,
-              imageType: 'image/png'
-            },
-            cache: false,
-            publicShare: shared,
-            req
-          }
-        )
+        return app.next.render(req, res, '/usermap', await pageOptions(req, {
+          title: `${title} - ${MAPHUBS_CONFIG.productName}`,
+          props: {map, layers, canEdit},
+          hideFeedback: true,
+          oembed: 'map',
+          twitterCard: {
+            title,
+            description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
+            image: imageUrl,
+            imageWidth: 1200,
+            imageHeight: 630,
+            imageType: 'image/png'
+          },
+          cache: false,
+          publicShare: shared
+        }))
       }
     } catch (err) { nextError(next)(err) }
   }

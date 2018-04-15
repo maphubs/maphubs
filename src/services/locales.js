@@ -1,7 +1,9 @@
 let i18n = null
+/*
 if (process.env.APP_ENV !== 'browser') {
   i18n = require('../i18n')
 }
+*/
 const locales = require('../locales')
 module.exports = {
   en: locales.en,

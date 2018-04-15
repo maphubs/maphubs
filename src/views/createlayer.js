@@ -17,7 +17,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
-const $ = require('jquery')
+import $ from 'jquery'
 const classNames = require('classnames')
 const debug = debugFactory('CreateLayer')
 
@@ -31,18 +31,22 @@ type Props = {
   user: Object
 }
 
-type DefaultProps = {
-   groups: Array<Group>
-}
-
 type State = {
   step: number
 } & LayerStoreState & LocaleStoreState
 
 export default class CreateLayer extends MapHubsComponent<Props, State> {
-  props: Props
+  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+    const isServer = !!req
 
-  static defaultProps: DefaultProps = {
+    if (isServer) {
+      return query.props
+    } else {
+      console.error('getInitialProps called on client')
+    }
+  }
+
+  static defaultProps = {
     groups: []
   }
 

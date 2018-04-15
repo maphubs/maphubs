@@ -3,7 +3,7 @@ import type {GLStyle} from '../types/mapbox-gl-style'
 import MapStyles from '../components/Map/Styles'
 import _find from 'lodash.find'
 
-module.exports = {
+export default {
 
   possibleNameFields: ['name', 'nom', 'nombre', 'nome'],
 
