@@ -51,7 +51,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       )
     } else {
       copyright = (
-        <small>&copy; 2017 {MAPHUBS_CONFIG.productName}</small>
+        <small>&copy; 2018 {MAPHUBS_CONFIG.productName}</small>
       )
     }
 
