@@ -104,7 +104,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   stopEditingNotes = () => {
     const _this = this
-    const geoJSONProps: Object = this.props.feature.geojson.features[0].properties
+    const geoJSONProps: Object = this.props.feature.features[0].properties
 
     FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, (err) => {
       if (err) {
@@ -141,15 +141,17 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
-    let featureName: string = 'Feature'
+    let featureName: string = 'Unknown'
 
     const {canEdit} = this.props
+    let geojsonFeature
 
-    if (this.props.feature && this.props.layer && this.props.feature.geojson) {
+    if (this.props.feature && this.props.layer && this.props.feature.features) {
       // glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
-      if (this.props.feature.geojson.features && this.props.feature.geojson.features.length > 0) {
-        var geoJSONProps = this.props.feature.geojson.features[0].properties
+      if (this.props.feature.features && this.props.feature.features.length > 0) {
+        geojsonFeature = this.props.feature.features[0]
+        var geoJSONProps = this.props.feature.features[0].properties
         if (geoJSONProps.name) {
           featureName = geoJSONProps.name
         }
@@ -206,7 +208,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
         frPanel = (
           <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
             <ForestReportEmbed
-              geoJSON={this.props.feature.geojson}
+              geoJSON={this.props.feature}
               onLoad={this.map.activateFR}
               onAlertClick={this.map.onAlertClick}
             />
@@ -233,23 +235,25 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                   }
                   <li className='tab'><a onClick={function () { _this.selectTab('notes') }} href='#notes'>{this.__('Notes')}</a></li>
                 </ul>
-                <div id='data' className='col s12' style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
-                  <h4>{featureName}</h4>
-                  <p style={{fontSize: '16px'}}><b>Layer: </b><a href={layerUrl}>{this._o_(this.props.layer.name)}</a></p>
-                  <div className='row no-margin'>
-                    <div className='col m6 s12' style={{height: '140px', border: '1px solid #ddd'}}>
-                      <FeatureLocation geojson={this.props.feature.geojson} />
+                <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
+                  <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Name:')} </b>{featureName}</p>
+                  <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(this.props.layer.name)}</a></p>
+                  <div className='row no-margin' style={{height: '140px'}}>
+                    <div className='col m6 s12' style={{height: '100%', border: '1px solid #ddd'}}>
+                      <FeatureLocation geojson={geojsonFeature} />
                     </div>
-                    <div className='col m6 s12' style={{height: '140px', border: '1px solid #ddd'}}>
-                      <FeatureArea geojson={this.props.feature.geojson} />
+                    <div className='col m6 s12' style={{height: '100%', border: '1px solid #ddd'}}>
+                      <FeatureArea geojson={geojsonFeature} />
                     </div>
                   </div>
-                  <div className='col m6 s12' style={{maxHeight: '300px', overflowY: 'auto', border: '1px solid #ddd'}}>
-                    <h5>{this.__('Attributes')}</h5>
-                    <FeatureProps data={geoJSONProps} presets={presets} />
-                  </div>
-                  <div className='col m6 s12 no-padding'>
-                    <FeatureExport mhid={mhid} {...this.props.layer} />
+                  <div className='row no-margin' style={{height: 'calc(100% - 236px)'}}>
+                    <div className='col m6 s12' style={{height: '100%', overflowY: 'auto', border: '1px solid #ddd'}}>
+                      <h5>{this.__('Attributes')}</h5>
+                      <FeatureProps data={geoJSONProps} presets={presets} />
+                    </div>
+                    <div className='col m6 s12 no-padding' style={{height: '100%', overflowY: 'auto', border: '1px solid #ddd'}}>
+                      <FeatureExport mhid={mhid} {...this.props.layer} />
+                    </div>
                   </div>
                 </div>
                 {frPanel}
@@ -271,7 +275,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
             </div>
             <div className='col s6 no-padding'>
               <FeatureMap ref={(map) => { this.map = map }}
-                geojson={this.props.feature.geojson} gpxLink={gpxLink} />
+                geojson={this.props.feature} gpxLink={gpxLink} />
             </div>
           </div>
           {editButton}

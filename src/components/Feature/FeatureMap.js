@@ -14,7 +14,7 @@ type State = {
   glStyle: Object
 }
 
-export default class FeatureLocation extends MapHubsComponent<Props, State> {
+export default class FeatureMap extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {

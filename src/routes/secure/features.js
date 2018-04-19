@@ -63,6 +63,7 @@ module.exports = function (app: any) {
               type: geoJSON.type,
               features: geoJSON.features,
               layer_id: layer.layer_id,
+              bbox: geoJSON.bbox,
               mhid
             }
 

@@ -10,7 +10,7 @@ module.exports = {
     const result = await db('omh.feature_notes').select('notes').where({mhid, layer_id: layerId})
 
     if (result && result.length === 1) {
-      return result[0]
+      return result[0].notes
     }
     return null
   },
