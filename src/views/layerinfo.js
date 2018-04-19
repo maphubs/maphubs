@@ -588,17 +588,15 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       </p>
                       {updatedTime}
                     </div>
-                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd'}}>
-                      <p style={{fontSize: '16px'}}>
-                        <b>{this.__('Group:')} </b>
-                      </p>
-                      <div>
+                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd', minHeight: '200px', overflow: 'auto'}}>
+                      <p className='valign-wrapper' style={{fontSize: '16px', margin: '5px'}}>
+                        <b className='valign' style={{paddingRight: '10px'}}>{this.__('Group:')} </b>
                         <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
-                      </div>
+                      </p>
                       <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
                       <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
                     </div>
-                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', overflow: 'auto', border: '1px solid #ddd'}}>
+                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
                       <p className='word-wrap' style={{fontSize: '16px'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
                     </div>
                   </div>
