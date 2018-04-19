@@ -133,7 +133,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   selectTab = (tab: string) => {
     let frActive
-    if (this.state.tab === 'forestreport') {
+    if (tab === 'forestreport' || this.state.tab === 'forestreport') {
       frActive = true
     }
     this.setState({tab, frActive})
