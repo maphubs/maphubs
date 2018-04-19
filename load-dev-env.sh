@@ -14,6 +14,8 @@ else
   wget -O /app/src/theme.scss ${OMH_REMOTE_THEME}
 fi
 
+./node_modules/node-sass/bin/node-sass --output-style compressed --source-map true ./src/maphubs.scss ./css/maphubs.css
+
 #work-around old babel configs
 touch ./node_modules/dnd-core/.babelrc
 rm ./node_modules/dnd-core/.babelrc

@@ -40,3 +40,6 @@ src/sass/themes/clients
 css
 logs
 uppy.env
+.next-export
+.next/*
+!.next/BUILD_ID

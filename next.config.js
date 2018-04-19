@@ -1,8 +1,12 @@
 const withCSS = require('@zeit/next-css')
 const path = require('path')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const {ANALYZE, ASSET_CDN_PREFIX} = process.env
+
+if (ANALYZE) {
+  var { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+}
+
 const useCDN = (ASSET_CDN_PREFIX && process.env.NODE_ENV === 'production')
 const pathToMapboxGL = path.resolve(__dirname, './node_modules/mapbox-gl/dist/mapbox-gl.js')
 const assetPrefix = useCDN ? ASSET_CDN_PREFIX : ''
@@ -14,9 +18,7 @@ module.exports = withCSS({
   assetPrefix,
   poweredByHeader: false,
   webpack (config, { dev }) {
-    if (!dev) {
-      config.devtool = 'source-map'
-    }
+    config.devtool = 'source-map'
     for (const options of config.plugins) {
       if (options['constructor']['name'] === 'UglifyJsPlugin') {
         options.options.sourceMap = true

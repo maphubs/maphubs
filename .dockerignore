@@ -9,3 +9,9 @@ temp
 demo
 .vscode
 .idea
+.imdone
+.next-export
+assets
+css
+env
+logs
