@@ -18,7 +18,11 @@ module.exports = withCSS({
   assetPrefix,
   poweredByHeader: false,
   webpack (config, { dev }) {
-    config.devtool = 'source-map'
+    if (dev) {
+      config.devtool = 'source-map'
+    } else {
+      config.devtool = 'source-map'
+    }
     for (const options of config.plugins) {
       if (options['constructor']['name'] === 'UglifyJsPlugin') {
         options.options.sourceMap = true
