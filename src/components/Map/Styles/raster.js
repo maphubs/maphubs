@@ -1,6 +1,6 @@
 // @flow
 import type {GLLayer} from '../../../types/mapbox-gl-style'
-module.exports = {
+export default {
   defaultRasterStyle (layer_id: number, shortid: string, elc: Object, type: string = 'raster') {
     return this.rasterStyleWithOpacity(layer_id, shortid, elc, 100, type, elc)
   },

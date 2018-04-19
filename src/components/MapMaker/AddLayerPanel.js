@@ -7,10 +7,11 @@ import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
 import MapHubsComponent from '../MapHubsComponent'
 
-const checkClientError = require('../../services/client-error-response').checkClientError
-const cardUtil = require('../../services/card-util')
-const debug = require('../../services/debug')('mapmaker/addlayerpanel')
-const urlUtil = require('../../services/url-util')
+import {checkClientError} from '../../services/client-error-response'
+import cardUtil from '../../services/card-util'
+import urlUtil from '../../services/url-util'
+import DebugService from '../../services/debug'
+const debug = DebugService('mapmaker/addlayerpanel')
 
 type Props = {
   myLayers: Array<Object>,

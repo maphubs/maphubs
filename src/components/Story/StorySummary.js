@@ -4,8 +4,7 @@ import slugify from 'slugify'
 import StoryHeader from './StoryHeader'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import ShareButtons from '../../components/ShareButtons'
-
-const urlUtil = require('../../services/url-util')
+import urlUtil from '../../services/url-util'
 
 type Props = {|
   story: Object,

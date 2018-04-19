@@ -18,8 +18,6 @@ import type {LayerStoreState} from '../../stores/layer-store'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GLStyle} from '../../types/mapbox-gl-style'
 
-const $ = require('jquery')
-
 type Props = {|
   onSubmit: Function,
   showPrev?: boolean,

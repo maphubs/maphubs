@@ -13,7 +13,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {GeoJSONObject} from 'geojson-flow'
 
-const $ = require('jquery')
+import $ from 'jquery'
 
 let scrollToComponent
 

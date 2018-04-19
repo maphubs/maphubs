@@ -14,8 +14,8 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GroupStoreState} from '../../stores/GroupStore'
 import Locales from '../../services/locales'
 
-const $ = require('jquery')
-const classNames = require('classnames')
+import $ from 'jquery'
+import classNames from 'classnames'
 
 type Props = {
   onSubmit: Function,

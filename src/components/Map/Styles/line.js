@@ -2,7 +2,7 @@
 
 import type {GLLayer} from '../../../types/mapbox-gl-style'
 
-module.exports = {
+export default {
   getLineLayers (layer_id: number, shortid: string,
     color: string, hoverColor: string,
     interactive: boolean, showBehindBaseMapLabels: boolean): Array<GLLayer> {

@@ -9,8 +9,6 @@ import MapStyles from '../Map/Styles'
 import {SketchPicker, SwatchesPicker} from 'react-color'
 import type {GLStyle} from '../../types/mapbox-gl-style'
 
-const $ = require('jquery')
-
 type ColorValue = {
   hex: string,
   rgb: {r: number, g: number, b: number, a: number}

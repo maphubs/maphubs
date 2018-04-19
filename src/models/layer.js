@@ -1,4 +1,5 @@
 // @flow
+import MapStyles from '../components/Map/Styles'
 const knex = require('../connection.js')
 const dbgeo = require('dbgeo')
 const Promise = require('bluebird')
@@ -12,7 +13,7 @@ const debug = require('../services/debug')('model/layers')
 const ScreenshotUtils = require('../services/screenshot-utils')
 const geojsonUtils = require('../services/geojson-utils')
 const PhotoAttachment = require('./photo-attachment')
-const MapStyles = require('../components/Map/Styles')
+
 const shortid = require('shortid')
 
 module.exports = {

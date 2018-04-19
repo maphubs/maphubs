@@ -4,7 +4,9 @@ import _find from 'lodash.find'
 import _bbox from '@turf/bbox'
 import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style'
 
-const debug = require('../../../services/debug')('MapSearchMixin')
+import DebugService from '../../../services/debug'
+const debug = DebugService('MapSearchMixin')
+
 const uuid = require('uuid').v1
 const MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query')
 

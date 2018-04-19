@@ -1,8 +1,8 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-const _findIndex = require('lodash.findindex')
+import _findIndex from 'lodash.findindex'
 
-module.exports = {
+export default {
 
   /**
     * settings set on every gl-style layer

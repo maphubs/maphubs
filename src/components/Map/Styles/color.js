@@ -1,8 +1,9 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-const debug = require('../../../services/debug')('map-styles-color')
+import DebugService from '../../../services/debug'
+const debug = DebugService('map-styles-color')
 
-module.exports = {
+export default {
 // attempt to update a style color without recreating other parts of the style
   // needed for custom style support
   updateStyleColor (style: GLStyle, newColor: string) {

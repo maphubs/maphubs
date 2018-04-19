@@ -8,11 +8,11 @@ import type {GLStyle} from '../types/mapbox-gl-style'
 import type {MapHubsField} from '../types/maphubs-field'
 
 import {OrderedSet} from 'immutable'
-
-const request = require('superagent')
-const MapStyles = require('../components/Map/Styles')
-const checkClientError = require('../services/client-error-response').checkClientError
-const debug = require('../services/debug')('layer-store')
+import MapStyles from '../components/Map/Styles'
+import request from 'superagent'
+import {checkClientError} from '../services/client-error-response'
+import DebugService from '../services/debug'
+const debug = DebugService('layer-store')
 
 export type Layer = {
   layer_id?: number,

@@ -3,7 +3,7 @@ import React from 'react'
 import Formsy from 'formsy-react'
 import FormField from './FormField'
 import MapHubsComponent from '../MapHubsComponent'
-const Locales = require('../../services/locales')
+import Locales from '../../services/locales'
 
 type Props = {|
   presets: Array<Object>,

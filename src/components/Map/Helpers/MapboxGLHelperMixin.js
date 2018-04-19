@@ -1,5 +1,6 @@
 // @flow
-const debug = require('../../../services/debug')('mapboxGLHelperMixin')
+import DebugService from '../../../services/debug'
+const debug = DebugService('mapboxGLHelperMixin')
 
 /**
  * Helper functions for interfacing with MapboxGL

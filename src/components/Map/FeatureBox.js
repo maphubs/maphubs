@@ -10,10 +10,10 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import slugify from 'slugify'
 import GetNameField from '../../services/get-name-field'
 
-const $ = require('jquery')
-const checkClientError = require('../../services/client-error-response').checkClientError
-const urlUtil = require('../../services/url-util')
-const debug = require('../../services/debug')('map/featurebox')
+import {checkClientError} from '../../services/client-error-response'
+import urlUtil from '../../services/url-util'
+import DebugService from '../../services/debug'
+const debug = DebugService('map/featurebox')
 
 type Props = {|
   feature: Object,

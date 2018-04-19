@@ -2,10 +2,10 @@
 import React from 'react'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import {Tooltip} from 'react-tippy'
-const urlUtil = require('../../services/url-util')
-const $ = require('jquery')
-const _isequal = require('lodash.isequal')
-const classNames = require('classnames')
+import urlUtil from '../../services/url-util'
+import $ from 'jquery'
+import _isequal from 'lodash.isequal'
+import classNames from 'classnames'
 
 type Props = {|
   group: string,

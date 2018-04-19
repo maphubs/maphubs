@@ -1,5 +1,5 @@
 // @flow
-module.exports = {
+export default {
   getPointLayers (layer_id: number, shortid: string, color: string, hoverColor: string, interactive: boolean, showBehindBaseMapLabels: boolean) {
     const layers = [
       {

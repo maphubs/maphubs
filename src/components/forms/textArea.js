@@ -4,7 +4,7 @@ import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import {Tooltip} from 'react-tippy'
-const classNames = require('classnames')
+import classNames from 'classnames'
 
 type Props = {
   length: number,

@@ -1,8 +1,9 @@
 // @flow
+import MapStyles from '../components/Map/Styles'
 const knex = require('../connection')
 const debug = require('../services/debug')('models/map')
 const Group = require('./group')
-const MapStyles = require('../components/Map/Styles')
+
 const shortid = require('shortid')
 
 module.exports = {

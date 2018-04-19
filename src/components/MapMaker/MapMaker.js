@@ -29,7 +29,7 @@ import type {UserStoreState} from '../../stores/UserStore'
 import type {MapMakerStoreState} from '../../stores/MapMakerStore'
 import type {Layer} from '../../stores/layer-store'
 
-const $ = require('jquery')
+import $ from 'jquery'
 
 type Props = {
     edit: boolean,
@@ -105,8 +105,15 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     if (this.props.settings) {
       Actions.setSettings(this.props.settings)
     }
+  }
 
-    if (typeof window === 'undefined') return // only run this on the client
+  componentDidMount () {
+    const _this = this
+    this.tabsInstance = M.Tabs.init(this.refs.tabs, {})
+    M.Collapsible.init(this.refs.mapMakerToolPanel, {})
+    if (this.props.edit) {
+      this.toggleMapTab()
+    }
 
     function getSize () {
       // Get the dimensions of the viewport
@@ -131,15 +138,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       }, 2500).bind(this)
       debounced()
     })
-  }
-
-  componentDidMount () {
-    const _this = this
-    this.tabsInstance = M.Tabs.init(this.refs.tabs, {})
-    M.Collapsible.init(this.refs.mapMakerToolPanel, {})
-    if (this.props.edit) {
-      this.toggleMapTab()
-    }
 
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.saved && _this.state.mapLayers && _this.state.mapLayers.length > 0) {
@@ -413,7 +411,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   render () {
     const _this = this
     const headerHeight = 52
-    const collasibleHeaderHeight = 55
+    const collasibleHeaderHeight = 56
     let panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 3)
 
     let tabContentDisplay = 'none'

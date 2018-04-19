@@ -2,7 +2,8 @@
 import React from 'react'
 import FileUploadProgress from 'react-fileupload-progress'
 import MapHubsComponent from '../MapHubsComponent'
-const debug = require('../../services/debug')('FileUpload')
+import DebugService from '../../services/debug'
+const debug = DebugService('FileUpload')
 
 type Props = {|
   action: string,

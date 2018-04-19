@@ -1,7 +1,7 @@
 // @flow
 import _bbox from '@turf/bbox'
 import type {GeoJSONObject} from 'geojson-flow'
-const MapStyles = require('../Styles')
+import MapStyles from '../Styles'
 
 export default {
   initGeoJSON (data: GeoJSONObject) {

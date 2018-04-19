@@ -1,7 +1,7 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
 
-module.exports = {
+export default {
   getPolygonLayers (
     layer_id: number, shortid: string,
     color: string, hoverColor: string, hoverOutlineColor: string,

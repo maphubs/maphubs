@@ -1,4 +1,5 @@
 // @flow
+import MapStyles from '../components/Map/Styles'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 const knex = require('../connection.js')
@@ -10,7 +11,6 @@ const fs = require('fs')
 const LayerViews = require('./layer-views')
 const Promise = require('bluebird')
 const sizeof = require('object-sizeof')
-const MapStyles = require('../components/Map/Styles')
 const ogr2ogr = require('ogr2ogr')
 const SearchIndex = require('../models/search-index')
 

@@ -7,7 +7,7 @@ import Suggestions from './SearchBar/Suggestions'
 import MapHubsComponent from './MapHubsComponent'
 import LocaleStore from '../stores/LocaleStore'
 
-const $ = require('jquery')
+import $ from 'jquery'
 
 const KEY_CODES = {
   UP: 38,

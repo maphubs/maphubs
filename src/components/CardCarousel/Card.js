@@ -7,7 +7,7 @@ import MapHubsComponent from '../../components/MapHubsComponent'
 
 import {Tooltip} from 'react-tippy'
 
-const _isequal = require('lodash.isequal')
+import _isequal from 'lodash.isequal'
 
 export type CardConfig = {|
   id: string,

@@ -3,8 +3,6 @@ import React from 'react'
 import LayerListStatic from './LayerListStatic'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 
-const $ = require('jquery')
-
 type Props = {
   id: string,
   name: string,

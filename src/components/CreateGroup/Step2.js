@@ -8,8 +8,7 @@ import GroupActions from '../../actions/GroupActions'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GroupStoreState} from '../../stores/GroupStore'
-
-const classNames = require('classnames')
+import classNames from 'classnames'
 
 type Props = {|
   onSubmit: Function,

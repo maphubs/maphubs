@@ -5,9 +5,9 @@ import Point from './point'
 import Polygon from './polygon'
 import type {Layer} from '../../../stores/layer-store'
 import type {GLStyle, GLSource} from '../../../types/mapbox-gl-style'
-
-const _forEachRight = require('lodash.foreachright')
-const debug = require('../../../services/debug')('MapStyles/style')
+import _forEachRight from 'lodash.foreachright'
+import DebugService from '../../../services/debug'
+const debug = DebugService('MapStyles/style')
 
 export default {
   defaultStyle (layer_id: number, shortid: string, source: GLSource, dataType: string): GLStyle {

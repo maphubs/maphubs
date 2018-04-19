@@ -1,8 +1,8 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-const _remove = require('lodash.remove')
+import _remove from 'lodash.remove'
 
-module.exports = {
+export default {
   removeStyleLabels (style: GLStyle) {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {
       // treat style as immutable and return a copy

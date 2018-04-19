@@ -5,7 +5,7 @@ import LegendItem from './LegendItem'
 import MapHubsComponent from '../MapHubsComponent'
 import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
 
-const MapStyles = require('./Styles')
+import MapStyles from './Styles'
 
 type Props = {|
   title?: LocalizedString,

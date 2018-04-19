@@ -6,7 +6,8 @@ import MessageStore from '../stores/MessageStore'
 import MapHubsComponent from './MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import type {MessageStoreState} from '../stores/MessageStore'
-const debug = require('../services/debug')('message')
+import DebugService from '../services/debug'
+const debug = DebugService('message')
 
 type Props = {}
 

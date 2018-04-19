@@ -19,10 +19,10 @@ import type {Story, StoryStoreState} from '../../stores/StoryStore'
 import FloatingButton from '../FloatingButton'
 import {Tooltip} from 'react-tippy'
 
-const $ = require('jquery')
-const debounce = require('lodash.debounce')
-const _isequal = require('lodash.isequal')
-const urlUtil = require('../../services/url-util')
+import $ from 'jquery'
+import debounce from 'lodash.debounce'
+import _isequal from 'lodash.isequal'
+import urlUtil from '../../services/url-util'
 
 type Props = {|
   story: Story,

@@ -6,13 +6,12 @@ import SearchBox from '../SearchBox'
 import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../../components/MapHubsComponent'
-
-const cardUtil = require('../../services/card-util')
-const urlUtil = require('../../services/url-util')
-const request = require('superagent')
-const checkClientError = require('../../services/client-error-response').checkClientError
-
-const debug = require('../../services/debug')('AddMapToStory')
+import cardUtil from '../../services/card-util'
+import urlUtil from '../../services/url-util'
+import request from 'superagent'
+import {checkClientError} from '../../services/client-error-response'
+import DebugService from '../../services/debug'
+const debug = DebugService('AddMapToStory')
 
 type Props = {
    onAdd: Function,

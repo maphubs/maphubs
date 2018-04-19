@@ -3,8 +3,9 @@ import _debounce from 'lodash.debounce'
 import BaseMapActions from '../../../actions/map/BaseMapActions'
 import MapStyles from '../Styles'
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-const $ = require('jquery')
-const debug = require('../../../services/debug')('MapInteractionMixin')
+import $ from 'jquery'
+import DebugService from '../../../services/debug'
+const debug = DebugService('MapInteractionMixin')
 
 /**
  * Helper functions for interacting with the map and selecting features

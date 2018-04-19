@@ -10,7 +10,7 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 
-const $ = require('jquery')
+import $ from 'jquery'
 
 type Props = {|
   onSubmit: Function,

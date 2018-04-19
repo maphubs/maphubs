@@ -3,8 +3,8 @@ import React from 'react'
 import Reflux from 'reflux'
 import fireResizeEvent from '../../services/fire-resize-event'
 import _isequal from 'lodash.isequal'
-const $ = require('jquery')
-const classNames = require('classnames')
+import $ from 'jquery'
+import classNames from 'classnames'
 
 // Usage: import {Modal, ModalContent, ModalFooter} from 'Modal';
 // render(){return(

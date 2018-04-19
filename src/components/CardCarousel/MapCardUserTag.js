@@ -7,9 +7,8 @@ import es from 'react-intl/locale-data/es'
 import fr from 'react-intl/locale-data/fr'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
-
-const urlUtil = require('../../services/url-util')
-const moment = require('moment-timezone')
+import moment from 'moment-timezone'
+import urlUtil from '../../services/url-util'
 
 addLocaleData(en)
 addLocaleData(es)

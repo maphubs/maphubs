@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
-const debug = require('../services/debug')('react-error-boundary')
+import DebugService from '../services/debug'
+const debug = DebugService('react-error-boundary')
 
 type Props = {
   children: any

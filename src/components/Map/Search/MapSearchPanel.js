@@ -5,8 +5,8 @@ import SearchBar from '../../SearchBar/SearchBar'
 import request from 'superagent'
 import MessageActions from '../../../actions/MessageActions'
 import {Tooltip} from 'react-tippy'
-
-const debug = require('../../../services/debug')('MapSearchPanel')
+import DebugService from '../../../services/debug'
+const debug = DebugService('MapSearchPanel')
 
 type Props = {
   show: boolean,

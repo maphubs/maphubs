@@ -36,9 +36,9 @@ import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
 import type {Layer} from '../../stores/layer-store'
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-
-const debug = require('../../services/debug')('map')
-const $ = require('jquery')
+import $ from 'jquery'
+import DebugService from '../../services/debug'
+const debug = DebugService('map')
 
 let mapboxgl = {}
 let ArcGISTiledMapServiceSource

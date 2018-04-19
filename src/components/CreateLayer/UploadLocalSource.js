@@ -15,7 +15,8 @@ import type {GeoJSONObject} from 'geojson-flow'
 import superagent from 'superagent'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
-const debug = require('../../services/debug')('UploadLocalSource')
+import DebugService from '../../services/debug'
+const debug = DebugService('UploadLocalSource')
 
 let scrollToComponent
 

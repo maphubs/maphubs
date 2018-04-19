@@ -6,8 +6,8 @@ import BaseMapActions from '../../actions/map/BaseMapActions'
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
-
-const debug = require('../../services/debug')('map')
+import DebugService from '../../services/debug'
+const debug = DebugService('map')
 
 let mapboxgl = {}
 

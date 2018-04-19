@@ -1,4 +1,5 @@
 // @flow
+import MapStyles from '../../components/Map/Styles'
 const Layer = require('../../models/layer')
 const Feature = require('../../models/feature')
 const apiError = require('../../services/error-response').apiError
@@ -8,7 +9,6 @@ const debug = require('../../services/debug')('exports')
 const privateLayerCheck = require('../../services/private-layer-check').middleware
 const knex = require('../../connection.js')
 const Locales = require('../../services/locales')
-const MapStyles = require('../../components/Map/Styles')
 const geojson2dsv = require('geojson2dsv')
 const exportUtils = require('../../services/export-utils')
 

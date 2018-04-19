@@ -2,7 +2,8 @@
 import React from 'react'
 import request from 'superagent'
 import SearchBar from './SearchBar/SearchBar'
-const debug = require('../services/debug')('SearchBox')
+import DebugService from '../services/debug'
+const debug = DebugService('SearchBox')
 
 type Props = {
   label: string,

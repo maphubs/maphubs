@@ -7,8 +7,6 @@ import _isequal from 'lodash.isequal'
 
 import type {GLStyle} from '../../types/mapbox-gl-style'
 
-const $ = require('jquery')
-
 type Props = {|
   onChange: Function,
   value: number,

@@ -8,7 +8,7 @@ import MessageActions from '../../actions/MessageActions'
 import HubActions from '../../actions/HubActions'
 import MapHubsPureComponent from '../../components/MapHubsPureComponent'
 
-const urlUtil = require('../../services/url-util')
+import urlUtil from '../../services/url-util'
 
 type Props = {
   hubid: string,

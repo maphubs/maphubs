@@ -7,10 +7,12 @@ import MessageActions from '../../actions/MessageActions'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {MapHubsField} from '../../types/maphubs-field'
 
-const request = require('superagent')
-const checkClientError = require('../../services/client-error-response').checkClientError
-const debug = require('../../services/debug')('EditAttributeModal')
-const _assignIn = require('lodash.assignin')
+import request from 'superagent'
+import {checkClientError} from '../../services/client-error-response'
+import DebugService from '../../services/debug'
+import _assignIn from 'lodash.assignin'
+
+const debug = DebugService('EditAttributeModal')
 
 type Props = {|
   feature: Object,

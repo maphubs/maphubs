@@ -6,4 +6,4 @@ const LocaleMixin = {
   }
 }
 
-module.exports = LocaleMixin
+export default LocaleMixin

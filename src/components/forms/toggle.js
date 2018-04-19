@@ -3,8 +3,9 @@ import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import {Tooltip} from 'react-tippy'
-const classNames = require('classnames')
-const debug = require('../../services/debug')('Toggle')
+import classNames from 'classnames'
+import DebugService from '../../services/debug'
+const debug = DebugService('Toggle')
 
 type Props = {|
   className: string,

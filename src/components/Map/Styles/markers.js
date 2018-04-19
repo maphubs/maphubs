@@ -1,7 +1,7 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
 import type {Layer} from '../../../stores/layer-store'
-module.exports = {
+export default {
   enableMarkers (style: GLStyle, markerOptions: Object, layer: Layer) {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {
       // treat style as immutable and return a copy

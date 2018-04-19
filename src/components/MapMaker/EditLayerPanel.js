@@ -7,8 +7,8 @@ import _isequal from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
 import MapStyles from '../Map/Styles'
 import type {DataEditorStoreState} from '../../stores/DataEditorStore'
-
-const debug = require('../../services/debug')('editLayerPanel')
+import DebugService from '../../services/debug'
+const debug = DebugService('editLayerPanel')
 
 type Props = {
 

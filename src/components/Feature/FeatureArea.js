@@ -3,6 +3,7 @@ import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import turf_area from '@turf/area'
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl'
+import DebugService from '../../services/debug'
 import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es'
 import fr from 'react-intl/locale-data/fr'
@@ -12,7 +13,7 @@ addLocaleData(es)
 addLocaleData(fr)
 addLocaleData(it)
 
-const debug = require('../../services/debug')('feature-area')
+const debug = DebugService('feature-area')
 
 type Props = {
   geojson?: Object

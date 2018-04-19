@@ -6,11 +6,12 @@ import Promise from 'bluebird'
 import MessageActions from '../actions/MessageActions'
 import {Tooltip} from 'react-tippy'
 import 'cropperjs/dist/cropper.css'
-const $ = require('jquery')
+import $ from 'jquery'
 // import Cropper from 'react-cropper';
 
-const EXIF = require('exif-js')
-const debug = require('../services/debug')('ImageCrop')
+import EXIF from 'exif-js'
+import DebugService from '../services/debug'
+const debug = DebugService('ImageCrop')
 
 type Props = {
   onCrop: Function,

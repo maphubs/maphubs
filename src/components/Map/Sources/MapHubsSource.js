@@ -7,11 +7,12 @@ import MarkerActions from '../../../actions/map/MarkerActions'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
-const debug = require('../../../services/debug')('MapHubsSource')
-const urlUtil = require('../../../services/url-util')
-const checkClientError = require('../../../services/client-error-response').checkClientError
-const $ = require('jquery')
-const GJV = require('geojson-validation')
+import urlUtil from '../../../services/url-util'
+import {checkClientError} from '../../../services/client-error-response'
+import $ from 'jquery'
+import GJV from 'geojson-validation'
+import DebugService from '../../../services/debug'
+const debug = DebugService('MapHubsSource')
 
 GJV.define('Position', (position: Array<number>) => {
   // the postion must be valid point on the earth, x between -180 and 180

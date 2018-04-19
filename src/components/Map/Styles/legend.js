@@ -1,6 +1,6 @@
 // @flow
 import type {Layer} from '../../../stores/layer-store'
-module.exports = {
+export default {
   defaultLegend (layer: Layer) {
     return this.legendWithColor(layer, 'red')
   },

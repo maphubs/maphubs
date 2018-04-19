@@ -3,7 +3,8 @@
 import shortid from 'shortid'
 import request from 'superagent'
 import type {GeoJSONObject} from 'geojson-flow'
-const debug = require('../../../services/debug')('isochrone-mixin')
+import DebugService from '../../../services/debug'
+const debug = DebugService('isochrone-mixin')
 
 export default {
 

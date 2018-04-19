@@ -1,8 +1,8 @@
 // @flow
+import MapStyles from '../components/Map/Styles'
 import Reflux from 'reflux'
 import Actions from '../actions/MapActions'
 import type {Layer} from './layer-store'
-const MapStyles = require('../components/Map/Styles')
 const debug = require('../services/debug')('stores/map-store')
 const findIndex = require('lodash.findindex')
 

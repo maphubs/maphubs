@@ -17,7 +17,7 @@ import ShareButtons from './ShareButtons'
 import type {MapStoreState} from '../stores/MapStore'
 
 // var debug = require('../../services/debug')('CreateMap');
-const $ = require('jquery')
+import $ from 'jquery'
 
 type Props = {
   map_id: number,
