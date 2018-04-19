@@ -18,7 +18,15 @@ type Props = {
 
 export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
   render () {
-    const centroid = turf_centroid(this.props.geojson)
+    const {geojson} = this.props
+    if (!geojson) {
+      return (
+        <div className='row'>
+          <h5>{this.__('Data Not Available')}</h5>
+        </div>
+      )
+    }
+    const centroid = turf_centroid(geojson)
 
     const utm = require('wgs84-util').LLtoUTM(centroid.geometry)
 

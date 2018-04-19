@@ -15,7 +15,7 @@ export default class FeatureProps extends MapHubsComponent<Props, void> {
   render () {
     const _this = this
     let tbody = ''
-    if (this.props.presets) {
+    if (this.props.presets && this.props.data) {
       tbody = (
         <tbody>
           {
@@ -31,7 +31,7 @@ export default class FeatureProps extends MapHubsComponent<Props, void> {
           }
         </tbody>
       )
-    } else {
+    } else if (this.props.data) {
       tbody = (
         <tbody>
           {

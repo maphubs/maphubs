@@ -250,13 +250,14 @@ export default class FeatureLocation extends MapHubsComponent<Props, State> {
 
   render () {
     const {geojson, mapConfig, gpxLink} = this.props
+    const bbox = geojson ? geojson.bbox : undefined
     return (
       <Map ref='map'
         id='feature-map'
         style={{
           height: 'calc(100vh - 50px)'
         }}
-        fitBounds={geojson.bbox}
+        fitBounds={bbox}
         glStyle={this.state.glStyle}
         mapConfig={mapConfig}
         gpxLink={gpxLink}
