@@ -197,7 +197,6 @@ export default class MyDocument extends Document {
               tags: {host: '${local.host}'}
             }).install();
           `}} />
-          
           {options.talkComments &&
             <script type='text/javascript' src='https://talk.maphubs.com/embed.js' />
           }
@@ -207,51 +206,49 @@ export default class MyDocument extends Document {
           {options.rangy &&
             <script src={`${assetHost}/assets/js/rangy-cssclassapplier.js`} />
           }
+          {!options.hideFeedback &&
+          <script dangerouslySetInnerHTML={{__html: `
+            Userback = window.Userback || {};
+            Userback.access_token = '1543|2037|tb9c1TOxoFcMIA834eVabMRUqZaUgieJunWvgL3Fqfr9PAcTO8';
+        
+            Userback.email = '${email}';
+            Userback.custom_data = {
+              account_id: '${user_id}',
+              name: '${display_name}'
+            };
+
+            Userback.widget_settings = {
+                language: '${options.locale}',
+                style: 'circle',
+                position: 'se',
+                main_button_background_colour : '${local.primaryColor}', 
+                main_button_text_colour       : '#FFFFFF', 
+                send_button_background_colour : '${local.primaryColor}', 
+                send_button_text_colour       : '#FFFFFF'  
+            };
+            Userback.after_send = function() {
+                // alert('after send');
+            };
+        
+            (function(id) {
+                if (document.getElementById(id)) {return;}
+                var s = document.createElement('script');
+                s.id = id;
+                s.src = 'https://static.userback.io/widget/v1.js';
+                var parent_node = document.head || document.body;
+                parent_node.appendChild(s);
+            })('userback-sdk');
+            `}} />
+          }
         </Head>
         <body>
           <Main />
           <NextScript />
-          
           {options.fontawesome &&
             <link href={assetHost + '/assets/css/font-awesome.css'} rel='stylesheet' />
           }
           <link href={assetHost + '/assets/css/raleway.css'} rel='stylesheet' type='text/css' />
           <link href={assetHost + '/assets/css/opensans.css'} rel='stylesheet' type='text/css' />
-
-          {!options.hideFeedback &&
-          <script dangerouslySetInnerHTML={{__html: `
-              Userback = window.Userback || {};
-              Userback.access_token = '1543|2037|tb9c1TOxoFcMIA834eVabMRUqZaUgieJunWvgL3Fqfr9PAcTO8';
-          
-              Userback.email = '${email}';
-              Userback.custom_data = {
-                account_id: '${user_id}',
-                name: '${display_name}'
-              };
-
-              Userback.widget_settings = {
-                  language: '${options.locale}',
-                  style: 'circle',
-                  position: 'se',
-                  main_button_background_colour : '${local.primaryColor}', 
-                  main_button_text_colour       : '#FFFFFF', 
-                  send_button_background_colour : '${local.primaryColor}', 
-                  send_button_text_colour       : '#FFFFFF'  
-              };
-              Userback.after_send = function() {
-                  // alert('after send');
-              };
-          
-              (function(id) {
-                  if (document.getElementById(id)) {return;}
-                  var s = document.createElement('script');
-                  s.id = id;
-                  s.src = 'https://static.userback.io/widget/v1.js';
-                  var parent_node = document.head || document.body;
-                  parent_node.appendChild(s);
-              })('userback-sdk');
-              `}} />
-          }
 
           {(process.env.NODE_ENV === 'production' && !local.disableTracking && !options.disableGoogleAnalytics) &&
             <script dangerouslySetInnerHTML={{__html: `
