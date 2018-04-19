@@ -310,7 +310,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   renderButton = (config: Object, key: string) => {
     let label = config.label[this.state.locale]
-    if (!label) label = config.text.en
+    if (!label) label = config.label.en
     const button = (
       <div key={key} className='row valign-wrapper'
         style={{padding: '25px'}}>
