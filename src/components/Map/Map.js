@@ -297,9 +297,15 @@ export default class Map extends MapHubsComponent<Props, State> {
           _this.debugLog('finished adding map data')
 
           // set locale
-          _this.changeLocale(_this.state.locale, _this.map)
-          if (_this.refs.insetMap) {
-            _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap())
+          if (_this.state.locale !== 'en') {
+            try {
+              _this.changeLocale(_this.state.locale, _this.map)
+              if (_this.refs.insetMap) {
+                _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap())
+              }
+            } catch (err) {
+              debug.error(err)
+            }
           }
 
           if (_this.state.forestAlerts) {
