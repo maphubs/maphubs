@@ -39,7 +39,7 @@ export default class LayerListStatic extends MapHubsPureComponent<Props, void> {
   render () {
     const _this = this
     return (
-      <div style={{height: '100%', padding: 0, margin: 0}}>
+      <div style={{height: '100%', padding: 0, margin: 0, width: '300px'}}>
         <ul ref='layers' style={{height: '100%', overflow: 'auto'}} className='collection no-margin custom-scroll-bar'>{
           this.state.layers.map((layer) => {
             if (layer && layer.layer_id && layer.layer_id > 0) {
