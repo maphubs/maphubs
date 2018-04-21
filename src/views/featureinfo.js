@@ -206,13 +206,11 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     if (MAPHUBS_CONFIG.FR_ENABLE && this.props.canEdit) {
       if (this.state.tab === 'forestreport' || this.state.frActive) {
         frPanel = (
-          <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
-            <ForestReportEmbed
-              geoJSON={this.props.feature}
-              onLoad={this.map.activateFR}
-              onAlertClick={this.map.onAlertClick}
-            />
-          </div>
+          <ForestReportEmbed
+            geoJSON={this.props.feature}
+            onLoad={this.map.activateFR}
+            onAlertClick={this.map.onAlertClick}
+          />
         )
       }
     }
@@ -256,7 +254,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                     </div>
                   </div>
                 </div>
-                {frPanel}
+                <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
+                  {frPanel}
+                </div>
                 <div id='photo' className='col s12' style={{height: 'calc(100% - 48px)', textAlign: 'center'}}>
                   {canEdit &&
                   <FeaturePhoto photo={this.state.photo} />
