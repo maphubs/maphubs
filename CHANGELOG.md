@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.17.2](https://github.com/maphubs/maphubs/tree/v0.17.2) (2018-04-21)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.0...v0.17.2)
+
+## [v0.17.0](https://github.com/maphubs/maphubs/tree/v0.17.0) (2018-04-21)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.16.1...v0.17.0)
+
+**Fixed bugs:**
+
+- raster layer maxzoom error [\#471](https://github.com/maphubs/maphubs/issues/471)
+- map category dropdown need fixed width [\#470](https://github.com/maphubs/maphubs/issues/470)
+- content overflow on layer source info box [\#469](https://github.com/maphubs/maphubs/issues/469)
+- fr tab doesn't activate on first click [\#468](https://github.com/maphubs/maphubs/issues/468)
+
 ## [v0.16.1](https://github.com/maphubs/maphubs/tree/v0.16.1) (2018-03-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.16.0...v0.16.1)
 
@@ -29,13 +42,13 @@
 [Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.4...v0.15.25)
 
 ## [db-v0.4](https://github.com/maphubs/maphubs/tree/db-v0.4) (2018-02-17)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.4)
-
-## [v0.15.24](https://github.com/maphubs/maphubs/tree/v0.15.24) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...v0.15.24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...db-v0.4)
 
 ## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...db-v0.3)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.3)
+
+## [v0.15.24](https://github.com/maphubs/maphubs/tree/v0.15.24) (2018-02-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...v0.15.24)
 
 ## [v0.15.23](https://github.com/maphubs/maphubs/tree/v0.15.23) (2018-02-15)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.22...v0.15.23)
