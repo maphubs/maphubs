@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.17.0",
+  "version": "0.17.2",
   "description": "MapHubs",
   "main": "src/app.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "debug": "/bin/sh run-debug.sh",
     "prod-test": "/bin/sh run-prod-test.sh",
     "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -m \"update changelog\" && git push",
-    "docker-build": "docker build . --compress -t quay.io/maphubs/web",
-    "docker-deploy": "docker push quay.io/maphubs/web",
+    "docker-build": "docker pull node:8 && docker build . --compress -t quay.io/maphubs/web:latest",
+    "docker-deploy": "/bin/sh docker-deploy.sh",
     "preversion": "",
     "version": "yarn run build && yarn run export && yarn run docker-build",
     "postversion": "git push && git push --tags && yarn run sync-cdn && yarn run docker-deploy && npm run changelog",
@@ -207,7 +207,7 @@
     "wgs84-util": "3.0.0",
     "winston": "2.4.2",
     "winston-daily-rotate-file": "^1.7.2",
-    "xcomponent": "^6.0.54"
+    "xcomponent": "6.0.51"
   },
   "optionalDependencies": {
     "fsevents": "^1.2.0"
