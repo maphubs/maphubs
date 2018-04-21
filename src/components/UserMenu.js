@@ -72,6 +72,10 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    // only render on the client side, avoids caching a username in SSR
+    if (typeof window === 'undefined') {
+      return ''
+    }
     let user
     if (this.state.user) {
       let adminInvites = ''
@@ -95,7 +99,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       const displayName = (this.state.user && this.state.user.display_name) ? this.state.user.display_name : ''
 
       user = (
-        <li className='nav-link-wrapper'>
+        <li className='nav-link-wrapper' style={{backgroundColor: 'inherit'}}>
           <div ref='userButton' className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-target={this.props.id}>
             {picture}
             {displayName}
