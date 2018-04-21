@@ -13,8 +13,8 @@ const shortid = require('shortid')
 const saveMapHubsIDToAuth0 = async function (profile, maphubs_user_id) {
   log.info(`saving maphubs id ${maphubs_user_id} to auth0 for host ${local.host}`)
   let hosts = []
-  if (profile._json.app_metadata && profile._json.app_metadata.hosts) {
-    hosts = profile._json.app_metadata.hosts
+  if (profile._json['https://maphubs.com/hosts']) {
+    hosts = profile._json['https://maphubs.com/hosts']
   }
 
   hosts.push({host: local.host, user_id: maphubs_user_id})
@@ -57,6 +57,34 @@ const createMapHubsUser = async function (profile: Object) {
 
 const Auth0Strategy = require('passport-auth0')
 
+Auth0Strategy.prototype.authorizationParams = function (options) {
+  var options = options || {}
+
+  var params = {}
+  if (options.connection && typeof options.connection === 'string') {
+    params.connection = options.connection
+  }
+  if (options.audience && typeof options.audience === 'string') {
+    params.audience = options.audience
+  }
+  if (options.prompt && typeof options.prompt === 'string') {
+    params.prompt = options.prompt
+  }
+
+  if (options.allowsignup && typeof options.allowsignup === 'string') {
+    params.allowsignup = options.allowsignup
+  }
+  if (options.allowlogin && typeof options.allowlogin === 'string') {
+    params.allowlogin = options.allowlogin
+  }
+
+  if (options.login_hint && typeof options.login_hint === 'string') {
+    params.login_hint = options.login_hint
+  }
+
+  return params
+}
+
 // Configure Passport to use Auth0
 const strategy = new Auth0Strategy({
   domain: local.AUTH0_DOMAIN,
@@ -68,12 +96,12 @@ const strategy = new Auth0Strategy({
   // extraParams.id_token has the JSON Web Token
   // profile has all the information from the user
   log.info('Auth0 login')
+  console.log(profile)
   // check if user has a local user object
   let hosts = []
 
-  if (profile._json.app_metadata &&
-        profile._json.app_metadata.hosts) {
-    hosts = profile._json.app_metadata.hosts
+  if (profile._json['https://maphubs.com/hosts']) {
+    hosts = profile._json['https://maphubs.com/hosts']
   }
 
   const host = _find(hosts, {host: local.host})

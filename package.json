@@ -55,7 +55,6 @@
     "@turf/length": "^5.1.5",
     "@turf/line-distance": "^4.7.3",
     "@zeit/next-css": "^0.1.5",
-    "auth0-lock": "10.24.2",
     "aws-sdk": "^2.225.1",
     "babel-core": "^6.26.0",
     "babel-plugin-stylus-compiler": "^1.4.0",

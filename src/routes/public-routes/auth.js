@@ -19,17 +19,17 @@ module.exports = function (app: any) {
   }
 
   app.get('/login', checkReturnTo,
-    async (req, res) => {
-      return app.next.render(req, res, '/auth0login', await pageOptions(req, {
-        title: req.__('Login') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {
-          AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
-          AUTH0_DOMAIN: local.AUTH0_DOMAIN,
-          AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
-          allowSignUp: false
-        },
-        login: true
-      }))
+    passport.authenticate('auth0', {
+      clientID: local.AUTH0_CLIENT_ID,
+      domain: local.AUTH0_DOMAIN,
+      redirectUri: local.AUTH0_CALLBACK_URL,
+      audience: 'https://' + local.AUTH0_DOMAIN + '/userinfo',
+      responseType: 'code',
+      scope: 'openid profile email',
+      allowsignup: 'false'
+    }),
+    (req, res) => {
+      res.redirect('/')
     })
 
   // Perform the final stage of authentication and redirect to '/user'

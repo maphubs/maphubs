@@ -1,4 +1,5 @@
 // @flow
+const passport = require('passport')
 const User = require('../../models/user')
 const Admin = require('../../models/admin')
 const Group = require('../../models/group')
@@ -32,17 +33,18 @@ module.exports = function (app: any) {
             log.info(`Found User: ${JSON.stringify(auth0Accounts)}`)
             existingAccount = true
           }
-          return app.next.render(req, res, '/auth0invite', await pageOptions(req, {
-            title: req.__('Invite Confirmed') + ' - ' + MAPHUBS_CONFIG.productName,
-            props: {
-              email,
-              inviteKey,
-              existingAccount,
-              AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
-              AUTH0_DOMAIN: local.AUTH0_DOMAIN,
-              AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL
-            }
-          }))
+          const middleware = passport.authenticate('auth0', {
+            clientID: local.AUTH0_CLIENT_ID,
+            domain: local.AUTH0_DOMAIN,
+            redirectUri: local.AUTH0_CALLBACK_URL,
+            audience: 'https://' + local.AUTH0_DOMAIN + '/userinfo',
+            responseType: 'code',
+            scope: 'openid profile email',
+            allowlogin: existingAccount ? 'true' : 'false',
+            allowsignup: existingAccount ? 'false' : 'true',
+            login_hint: email
+          })
+          return middleware(req, res, next)
         } else {
           return app.next.render(req, res, '/error', await pageOptions(req, {
             title: req.__('Invalid Key'),
@@ -59,36 +61,19 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/signup', csrfProtection, async (req, res) => {
-    if (local.requireLogin || local.requireInvite) {
-      return res.redirect('/login')
-    } else {
-      return app.next.render(req, res, '/auth0login', await pageOptions(req, {
-        title: req.__('Sign Up') + ' - ' + MAPHUBS_CONFIG.productName,
-        props: {
-          AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
-          AUTH0_DOMAIN: local.AUTH0_DOMAIN,
-          AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
-          initialScreen: 'signUp',
-          allowSignUp: !local.requireInvite,
-          allowLogin: false
-        }
-      }))
-    }
-  })
-
-  app.get('/forgotpassword', csrfProtection, async (req, res) => {
-    return app.next.render(req, res, '/auth0login', await pageOptions(req, {
-      title: req.__('Forgot Password') + ' - ' + MAPHUBS_CONFIG.productName,
-      props: {
-        AUTH0_CLIENT_ID: local.AUTH0_CLIENT_ID,
-        AUTH0_DOMAIN: local.AUTH0_DOMAIN,
-        AUTH0_CALLBACK_URL: local.AUTH0_CALLBACK_URL,
-        initialScreen: 'forgotPassword',
-        allowSignUp: false
-      }
-    }))
-  })
+  app.get('/signup',
+    passport.authenticate('auth0', {
+      clientID: local.AUTH0_CLIENT_ID,
+      domain: local.AUTH0_DOMAIN,
+      redirectUri: local.AUTH0_CALLBACK_URL,
+      audience: 'https://' + local.AUTH0_DOMAIN + '/userinfo',
+      responseType: 'code',
+      scope: 'openid profile email',
+      allowlogin: 'false'
+    }),
+    (req, res) => {
+      res.redirect('/')
+    })
 
   app.post('/api/user/setlocale', (req, res) => {
     const data = req.body
