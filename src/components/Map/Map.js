@@ -494,7 +494,9 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   componentWillUnmount () {
-    this.map.remove()
+    if (this.map) {
+      this.map.remove()
+    }
   }
 
   startInteractive = () => {
