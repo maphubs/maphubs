@@ -34,7 +34,8 @@ export default class ErrorBoundary extends MapHubsComponent<Props, State> {
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          height: '100%'
         }}>
           <svg xmlns='http://www.w3.org/2000/svg' version='1.1'
             width={100} height={100} x='0px' y='0px'
