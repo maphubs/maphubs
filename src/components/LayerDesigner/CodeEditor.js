@@ -4,14 +4,7 @@ import {Modal, ModalContent, ModalFooter} from '../Modal/Modal'
 import _isequal from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
 
-let AceEditor
-if (process.env.APP_ENV === 'browser') {
-  require('brace')
-  AceEditor = require('react-ace').default
-  require('brace/mode/json')
-  require('brace/mode/html')
-  require('brace/theme/monokai')
-}
+let AceEditor = ''
 
 type Props = {|
   id: string,
@@ -48,6 +41,14 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
       canSave: true,
       show: false
     }
+  }
+
+  componentDidMount () {
+    require('brace')
+    AceEditor = require('react-ace').default
+    require('brace/mode/json')
+    require('brace/mode/html')
+    require('brace/theme/monokai')
   }
 
   componentWillReceiveProps (nextProps: Props) {
