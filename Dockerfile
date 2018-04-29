@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:8 as base
 
 LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
@@ -11,6 +11,7 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+FROM base AS dependencies
 COPY package.json yarn.lock .snyk /app/
 
 RUN yarn install --production --pure-lockfile && \
@@ -18,11 +19,13 @@ RUN yarn install --production --pure-lockfile && \
     yarn run snyk-protect && \
     npm uninstall -g snyk && \
     yarn cache clean
-    
+
+FROM base AS release 
+COPY --from=dependencies /app /app  
 COPY ./src /app/src
 COPY ./pages /app/pages
 COPY ./.next /app/.next
-COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh /app/
+COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh version.json /app/
 
 RUN chmod +x /app/docker-entrypoint.sh && \
     mkdir -p css && mkdir -p /app/temp/uploads

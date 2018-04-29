@@ -7,7 +7,7 @@ const Group = require('../models/group')
 const Admin = require('../models/admin')
 const urlUtil = require('./url-util')
 
-const version = require('../../package.json').version
+const version = require('../../version.json').version
 
 module.exports = async (req, options) => {
   let locale = 'en'

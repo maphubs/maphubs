@@ -1,6 +1,6 @@
 {
   "name": "maphubs",
-  "version": "0.17.5",
+  "version": "1.0.0",
   "description": "MapHubs",
   "main": "src/app.js",
   "scripts": {
@@ -16,11 +16,11 @@
     "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -m \"update changelog\" && git push",
     "docker-build": "docker pull node:8 && docker build . --compress -t quay.io/maphubs/web:latest",
     "docker-deploy": "/bin/sh docker-deploy.sh",
-    "preversion": "",
     "version": "yarn run build && yarn run export && yarn run docker-build",
     "postversion": "git push && git push --tags && yarn run sync-cdn && yarn run docker-deploy && npm run changelog",
     "deploy-patch": "npm version patch --force -m \"version %s\"",
-    "deploy-minor": "npm version minor --force -m \"version %s\"",
+    "deploy-minor": "node patch && yarn run version && yarn run git-deploy && yarn run postversion",
+    "git-deploy": "/bin/sh deploy.sh",
     "upgrade-rancher": "cd ../maphubs-rancher-catalog && /bin/sh new_version.sh",
     "sync-cdn": "aws s3 sync .next-export/ s3://maphubs-cdn/maphubs --acl public-read",
     "snyk-protect": "snyk protect",
@@ -55,8 +55,8 @@
     "@turf/length": "^5.1.5",
     "@turf/line-distance": "^4.7.3",
     "@zeit/next-css": "^0.1.5",
-    "aws-sdk": "^2.226.1",
-    "babel-core": "^6.26.0",
+    "aws-sdk": "^2.229.1",
+    "babel-core": "^6.26.3",
     "babel-plugin-stylus-compiler": "^1.4.0",
     "babel-plugin-transform-css-import-to-string": "^0.0.2",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
@@ -148,7 +148,7 @@
     "morgan": "^1.8.2",
     "multer": "^1.3.0",
     "next": "^5.1.0",
-    "node-sass": "^4.8.3",
+    "node-sass": "^4.9.0",
     "nodemailer": "^4.6.4",
     "nuka-carousel": "3.1.0",
     "numeral": "^2.0.6",
@@ -162,7 +162,7 @@
     "pg-native": "^2.2.0",
     "pica": "4.1.1",
     "prop-types": "^15.6.1",
-    "raven": "^2.5.0",
+    "raven": "^2.6.0",
     "raw-loader": "^0.5.1",
     "react": "16.3.2",
     "react-ace": "5.9.0",
@@ -210,7 +210,7 @@
     "xcomponent": "6.0.51"
   },
   "optionalDependencies": {
-    "fsevents": "^1.2.0"
+    "fsevents": "^1.2.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
@@ -224,11 +224,12 @@
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-react": "^7.7.0",
     "eslint-plugin-security": "^1.4.0",
-    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-unicorn": "4.0.3",
-    "flow-bin": "0.70.0",
+    "flow-bin": "0.71.0",
     "geojson-flow": "^1.0.1",
-    "snyk": "^1.73.0",
+    "semver": "^5.5.0",
+    "snyk": "^1.74.0",
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "snyk": true

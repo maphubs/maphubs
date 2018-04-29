@@ -3,7 +3,7 @@ const Layer = require('../models/layer')
 const geobuf = require('geobuf')
 const Pbf = require('pbf')
 const apiError = require('../services/error-response').apiError
-const version = require('../../package.json').version
+const version = require('../../version.json').version
 const local = require('../local')
 const moment = require('moment')
 

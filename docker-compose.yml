@@ -46,7 +46,6 @@ services:
       - '5433:5432'
     depends_on:
       - db
-    restart: always
   tiles:
     build:
       context: ../maphubs-tileserver
@@ -74,7 +73,6 @@ services:
       - '3000:3000'
     volumes:
       - './logs:/app/logs'
-    restart: always
   elasticsearch1:
     image: 'docker.elastic.co/elasticsearch/elasticsearch:5.2.2'
     container_name: elasticsearch1

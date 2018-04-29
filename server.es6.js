@@ -16,7 +16,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const i18n = require('./src/i18n')
 const Raven = require('raven')
-const version = require('./package.json').version
+const version = require('./version.json').version
 const shrinkRay = require('shrink-ray')
 
 const session = require('express-session')
