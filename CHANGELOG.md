@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/maphubs/maphubs/tree/HEAD)
-
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.5...HEAD)
+## [v0.17.7](https://github.com/maphubs/maphubs/tree/v0.17.7) (2018-04-29)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.5...v0.17.7)
 
 **Fixed bugs:**
 
