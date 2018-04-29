@@ -59,7 +59,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
     this.close()
   }
 
-  handleSearch (input: string) {
+  handleSearch = (input: string) => {
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
