@@ -306,6 +306,29 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
   }
 
+  saveExternalLayerConfig (
+    config: string,
+    _csrf: string,
+    cb: Function
+  ) {
+    const _this = this
+    request.post('/api/layer/admin/saveExternalLayerConfig')
+      .type('json').accept('json')
+      .send({
+        layer_id: _this.state.layer_id,
+        external_layer_config: config,
+        _csrf
+      })
+      .end((err, res) => {
+        checkClientError(res, err, cb, (cb) => {
+          _this.setState({
+            external_layer_config: JSON.parse(config)
+          })
+          cb()
+        })
+      })
+  }
+
   saveDataSettings (data: Object, _csrf: string, cb: Function) {
     debug.log('saveDataSettings')
     // treat as immutable and clone

@@ -3,6 +3,7 @@ export default Reflux.createActions([
   'loadLayer',
   'saveSettings',
   'saveAdminSettings',
+  'saveExternalLayerConfig',
   'saveDataSettings',
   'saveStyle',
   'loadData',

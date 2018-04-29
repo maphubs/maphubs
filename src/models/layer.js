@@ -629,6 +629,18 @@ module.exports = {
     })
   },
 
+  async saveExternalLayerConfig (layer_id: number, external_layer_config: Object, user_id: number) {
+    return knex.transaction(async (trx) => {
+      const update = trx('omh.layers')
+        .update({
+          external_layer_config,
+          updated_by_user_id: user_id,
+          last_updated: knex.raw('now()')
+        }).where({layer_id})
+      return update
+    })
+  },
+
   setUpdated (layer_id: number, user_id: number, trx: any = null) {
     let db = knex
     if (trx) { db = trx }

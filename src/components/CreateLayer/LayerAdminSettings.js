@@ -11,6 +11,7 @@ import Toggle from '../forms/toggle'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {Group} from '../../stores/GroupStore'
+import CodeEditor from '../LayerDesigner/CodeEditor'
 
 type Props = {|
   onSubmit: Function,
@@ -56,6 +57,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
         return msg
       }
     })
+    this.refs.pageEditor.show()
   }
 
   onFormChange = () => {
@@ -98,7 +100,32 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     })
   }
 
+  saveExternalLayerConfig = (config: Object) => {
+    const _this = this
+    LayerActions.saveExternalLayerConfig(config, _this.state._csrf, (err) => {
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Error'), message: err})
+      } else {
+        _this.setState({pendingChanges: false})
+        _this.props.onSubmit()
+      }
+    })
+  }
+
   render () {
+    const {is_external, external_layer_config, allow_public_submit, disable_export, owned_by_group_id} = this.state
+
+    let elcEditor = ''
+    if (is_external && external_layer_config) {
+      elcEditor = (
+        <div className='row' style={{height: '300px'}}>
+          <CodeEditor ref='pageEditor' id='layer-elc-editor' mode='json'
+            code={JSON.stringify(external_layer_config, undefined, 2)}
+            title={this.__('External Layer Config')}
+            onSave={this.saveExternalLayerConfig} modal={false} />
+        </div>
+      )
+    }
     return (
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
         <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
@@ -109,7 +136,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
                   name='disableExport'
                   labelOff={this.__('Allow Export')}
                   labelOn={this.__('Disable Export')}
-                  checked={this.state.disable_export}
+                  checked={disable_export}
                 />
               </div>
               <div className='row'>
@@ -117,16 +144,17 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
                   name='allowPublicSubmit'
                   labelOff={this.__('Disabled')}
                   labelOn={this.__('Allow Public Data Submission')}
-                  checked={this.state.allow_public_submit}
+                  checked={allow_public_submit}
                 />
               </div>
+              {elcEditor}
             </div>
             <div className='col s12 m6'>
               <div className='row'>
                 <SelectGroup
                   groups={this.props.groups}
                   type='layer'
-                  group_id={this.state.owned_by_group_id}
+                  group_id={owned_by_group_id}
                   canChangeGroup editing={false} />
               </div>
             </div>

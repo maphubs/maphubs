@@ -99,6 +99,17 @@ module.exports = function (app: any) {
             req.user_id
           ]
           break
+        case 'saveExternalLayerConfig':
+          if (!data.layer_id) {
+            apiDataError(res)
+            return
+          }
+          actionData = [
+            data.layer_id,
+            data.external_layer_config,
+            req.user_id
+          ]
+          break
         case 'saveDataSettings':
           if (!data.layer_id) {
             apiDataError(res)
