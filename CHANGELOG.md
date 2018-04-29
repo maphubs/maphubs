@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/maphubs/maphubs/tree/HEAD)
+
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.5...HEAD)
+
+**Fixed bugs:**
+
+- search broken in story add map interface [\#467](https://github.com/maphubs/maphubs/issues/467)
+
 ## [v0.17.5](https://github.com/maphubs/maphubs/tree/v0.17.5) (2018-04-26)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.4...v0.17.5)
 
