@@ -139,7 +139,13 @@ nextApp.prepare()
     let checkLogin
     if (local.requireLogin) {
       checkLogin = require('connect-ensure-login').ensureLoggedIn()
-      server.use(checkLogin)
+      server.use((req, res, next) => {
+        if (req.path.startsWith('/_next')) {
+          next()
+        } else {
+          checkLogin(req, res, next)
+        }
+      })
     }
 
     // Public API endpoints, these will be secured if login required
