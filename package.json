@@ -50,7 +50,7 @@
     "@turf/length": "^5.1.5",
     "@turf/line-distance": "^4.7.3",
     "@zeit/next-css": "^0.1.5",
-    "aws-sdk": "^2.229.1",
+    "aws-sdk": "^2.233.1",
     "babel-core": "^6.26.3",
     "babel-plugin-stylus-compiler": "^1.4.0",
     "babel-plugin-transform-css-import-to-string": "^0.0.2",
@@ -153,8 +153,8 @@
     "passport": "^0.4.0",
     "passport-auth0": "^0.6.1",
     "pbf": "^3.0.5",
-    "pg": "^7.3.0",
-    "pg-native": "^2.2.0",
+    "pg": "^7.4.2",
+    "pg-native": "^3.0.0",
     "pica": "4.1.1",
     "prop-types": "^15.6.1",
     "raven": "^2.6.0",
@@ -164,8 +164,8 @@
     "react-addons-update": "^15.6.2",
     "react-color": "2.13.8",
     "react-cropper": "1.0.1",
-    "react-data-grid": "^3.0.10",
-    "react-data-grid-addons": "^3.0.10",
+    "react-data-grid": "^4.0.7",
+    "react-data-grid-addons": "^4.0.7",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
     "react-dom": "16.3.2",
@@ -202,7 +202,7 @@
     "wgs84-util": "3.0.0",
     "winston": "2.4.2",
     "winston-daily-rotate-file": "^1.7.2",
-    "xcomponent": "6.0.51"
+    "xcomponent": "6.0.60"
   },
   "optionalDependencies": {
     "fsevents": "^1.2.3"
@@ -210,7 +210,7 @@
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
+    "eslint-config-standard": "^12.0.0-alpha.0",
     "eslint-config-standard-react": "^6.0.0",
     "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-flowtype": "^2.46.3",
@@ -224,7 +224,7 @@
     "flow-bin": "0.71.0",
     "geojson-flow": "^1.0.1",
     "semver": "^5.5.0",
-    "snyk": "^1.74.0",
+    "snyk": "^1.78.1",
     "webpack-bundle-analyzer": "^2.11.1"
   },
   "snyk": true
