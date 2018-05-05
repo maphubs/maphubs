@@ -79,7 +79,7 @@ module.exports = {
    * @param {string} tag
    * @param {string} val
    * * @param {any} trx
-   * @returns {Bluebird$Promise<Object>}
+   * @returns {Promise<Object>}
    */
   async setStringTag (layer_id: number, mhid: string, tag: string, val: ?string, trx: any): Promise<Object> {
     debug.log('updating tag: ' + mhid)
@@ -109,7 +109,7 @@ module.exports = {
    * @param {string} tag
    * @param {number} val
    * * @param {any} trx
-   * @returns {Bluebird$Promise<Object>}
+   * @returns {Promise<Object>}
    */
   async setNumberTag (layer_id: number, mhid: string, tag: string, val: number, trx: any): Promise<Object> {
     debug.log('updating tag: ' + mhid)

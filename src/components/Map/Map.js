@@ -201,7 +201,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     debug.log(`(${this.state.id}) ${msg}`)
   }
 
-  addMapData = (map: any, glStyle: GLStyle, geoJSON?: GeoJSONObject, cb: Function) => {
+  addMapData = (map: any, glStyle?: GLStyle, geoJSON?: GeoJSONObject, cb: Function) => {
     this.debugLog('addMapData')
     const _this = this
     if (glStyle && glStyle.sources) {
@@ -888,7 +888,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer)
   }
 
-  addLayers = (layerIds: Array<{layer_id: number, position: number}>, fromStyle: GLStyle) => {
+  addLayers = (layerIds: Array<{id: number, position: number}>, fromStyle: GLStyle) => {
     return StyleMixin.addLayers.bind(this)(layerIds, fromStyle)
   }
 

@@ -25,7 +25,7 @@ export type Layer = {
   settings?: {
     active: boolean
   },
-  preview_position?: Object,
+  preview_position?: {bbox: any},
   data_type?: string,
   legend_html?: ?string,
   license?: string,
@@ -44,7 +44,9 @@ export type Layer = {
   disable_feature_indexing?: boolean,
   remote?: boolean,
   remote_host?: string,
-  complete?: boolean
+  complete?: boolean,
+  canEdit?: boolean,
+  presets?: any
 }
 
 export type LayerStoreState = {

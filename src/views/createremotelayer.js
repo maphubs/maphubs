@@ -13,10 +13,11 @@ import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
-const request = require('superagent')
-const $ = require('jquery')
+import type {Layer} from '../stores/layer-store'
 
-const checkClientError = require('../services/client-error-response').checkClientError
+import request from 'superagent'
+import $ from 'jquery'
+import {checkClientError} from '../services/client-error-response'
 
 type Props = {|
   groups: Array<Object>,
@@ -29,7 +30,7 @@ type Props = {|
 
 type State = {
   canSubmit: boolean,
-  layer?: Object,
+  layer?: Layer,
   remote_host?: string,
   group_id?: string,
   complete: boolean
@@ -137,21 +138,25 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
   saveLayer = () => {
     const _this = this
-    request.post('/api/layer/create/remote')
-      .type('json').accept('json')
-      .send({
-        group_id: this.state.group_id,
-        layer: this.state.layer,
-        host: this.state.remote_host
-      })
-      .end((err, res) => {
-        checkClientError(res, err, () => {}, (cb) => {
-          const layer_id = res.body.layer_id
-          _this.setState({complete: true})
-          window.location = '/layer/info/' + layer_id + '/' + slugify(_this._o_(_this.state.layer.name))
-          cb()
+    const {layer, group_id, remote_host} = this.state
+    if (layer) {
+      const name = layer.name || {}
+      request.post('/api/layer/create/remote')
+        .type('json').accept('json')
+        .send({
+          group_id,
+          layer,
+          host: remote_host
         })
-      })
+        .end((err, res) => {
+          checkClientError(res, err, () => {}, (cb) => {
+            const layer_id = res.body.layer_id
+            _this.setState({complete: true})
+            window.location = '/layer/info/' + layer_id + '/' + slugify(_this._o_(name))
+            cb()
+          })
+        })
+    }
   }
 
   render () {

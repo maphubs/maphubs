@@ -16,7 +16,7 @@ const privateHubCheck = require('../../services/private-hub-check').middlewareVi
 const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
-  const recordHubView = function (session: any, hub_id: string, user_id: number, next: any) {
+  const recordHubView = function (session: any, hub_id: string, user_id?: number, next: any) {
     if (!session.hubviews) {
       session.hubviews = {}
     }

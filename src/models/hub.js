@@ -229,8 +229,9 @@ module.exports = {
     return true // if we don't find the layer, assume it should be private
   },
 
-  async allowedToModify (hub_id: string, user_id: number) {
+  async allowedToModify (hub_id: string, user_id?: number) {
     debug.log('checking if user: ' + user_id + ' is allowed to modify hub: ' + hub_id)
+    if (!user_id) return false
     const hub = await this.getHubByID(hub_id)
     return Group.allowedToModify(hub.owned_by_group_id, user_id)
   },

@@ -34,7 +34,7 @@ type Props = {|
 |}
 
 type StoryEditorState = {|
-  story: Object,
+  story: Story,
   saving: boolean,
   addingMap: boolean
 |}
@@ -115,7 +115,7 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleBodyChange = (body) => {
+  handleBodyChange = (body: any) => {
     const _this = this
     this.body = body
     Actions.handleBodyChange(body)
@@ -216,9 +216,11 @@ save = () => {
 
 delete = () => {
   const _this = this
+  const {story} = this.state
+  const title = story.title ? story.title.toString() : 'Unknown'
   ConfirmationActions.showConfirmation({
     title: _this.__('Confirm Delete'),
-    message: _this.__('Please confirm removal of ') + this.state.story.title,
+    message: _this.__('Please confirm removal of ') + title,
     onPositiveResponse () {
       Actions.delete(_this.state._csrf, (err) => {
         if (err) {

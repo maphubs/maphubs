@@ -11,6 +11,14 @@ import _intersection from 'lodash.intersection'
 import Promise from 'bluebird'
 import LayerSources from '../Sources'
 
+type SourceDriverType = {
+  driver: Object,
+  custom: boolean,
+  layer?: Object,
+  source?: Object,
+  position?: number
+}
+
 /**
    * Attempt to optimize layers, put labels on top of other layer types
    * @param {*} glStyle
@@ -310,7 +318,8 @@ export default {
       try {
         const layer = _find(fromStyle.layers, {id: layerToAdd.id})
         const source = fromStyle.sources[layer.source]
-        const sourceDriver = LayerSources.getSource(layer.source, source)
+
+        const sourceDriver: SourceDriverType = LayerSources.getSource(layer.source, source)
         if (sourceDriver.custom) {
           _this.debugLog(`custom source layer: ${layerToAdd.id}`)
           Object.assign(sourceDriver, {

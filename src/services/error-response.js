@@ -3,7 +3,7 @@ const log = require('./log')
 const Raven = require('raven')
 module.exports = {
 
-  apiError (res: express$Response, code: number, userMessage?: string) {
+  apiError (res: any, code: number, userMessage?: string) {
     return function (err: Error) {
       log.error(err)
       if (Raven && Raven.isSetup && Raven.isSetup()) {
@@ -35,14 +35,14 @@ module.exports = {
     }
   },
 
-  apiDataError (res: express$Response, msg: string = 'Bad Request: required data not found') {
+  apiDataError (res: any, msg: string = 'Bad Request: required data not found') {
     res.status(400).send({
       success: false,
       error: msg
     })
   },
 
-  notAllowedError (res: express$Response, type: string = '') {
+  notAllowedError (res: any, type: string = '') {
     res.status(400).send({
       success: false,
       error: 'Not allowed to modify ' + type

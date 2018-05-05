@@ -1,5 +1,6 @@
 // @flow
 import MapStyles from '../components/Map/Styles'
+import type {Layer} from '../stores/layer-store'
 const knex = require('../connection.js')
 const dbgeo = require('dbgeo')
 const Promise = require('bluebird')
@@ -188,7 +189,7 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getGroupLayers (group_id: string, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
+  getGroupLayers (group_id: string, includePrivate: boolean = false): Promise<Array<Object>> {
     const query: knex = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
       'remote', 'remote_host', 'remote_layer_id',
       'status', 'private', 'source', 'license', 'presets',
@@ -232,7 +233,7 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getUserLayers (user_id: number, number: number, includePrivate: boolean = false): Bluebird$Promise<Array<Object>> {
+  getUserLayers (user_id: number, number: number, includePrivate: boolean = false): Promise<Array<Object>> {
     const subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id})
 
     const query = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
@@ -258,7 +259,7 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  async getLayerByID (layer_id: number, trx: any = null) {
+  async getLayerByID (layer_id: number, trx: any = null): Promise<Layer | null> {
     debug.log('getting layer: ' + layer_id)
     let db = knex
     if (trx) { db = trx }
@@ -284,7 +285,7 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  async getLayerByShortID (shortid: string, trx: any = null) {
+  async getLayerByShortID (shortid: string, trx: any = null): Promise<Layer | null> {
     debug.log('getting layer shortid: ' + shortid)
     let db = knex
     if (trx) { db = trx }
@@ -308,7 +309,7 @@ module.exports = {
     return null
   },
 
-  async isSharedInPublicMap (shortid: string) {
+  async isSharedInPublicMap (shortid: string): Promise<boolean> {
     const result = await knex.count('omh.layers.layer_id')
       .from('omh.layers')
       .leftJoin('omh.map_layers', 'omh.layers.layer_id', 'omh.map_layers.layer_id')
@@ -324,7 +325,7 @@ module.exports = {
   /**
      * Can include private?: If Requested
      */
-  async getLayerNotes (layer_id: number) {
+  async getLayerNotes (layer_id: number): Promise<string | null> {
     const result = await knex('omh.layer_notes').select('notes').where({layer_id})
     if (result && result.length === 1) {
       return result[0]
@@ -382,7 +383,7 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  async allowedToModify (layer_id: number, user_id: number, trx: knex.transtion = null): Bluebird$Promise<boolean> | any {
+  async allowedToModify (layer_id: number, user_id: number, trx: knex.transtion = null): Promise<boolean> | any {
     if (!layer_id || user_id <= 0) {
       return false
     }

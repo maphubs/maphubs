@@ -23,6 +23,7 @@ declare class MapHubsConfig {
   MAPBOX_ACCESS_TOKEN: string;
   SENTRY_DSN_PUBLIC: string;
   TILEHOSTING_GEOCODING_API_KEY: string;
+  OPENROUTESERVICE_API_KEY: string;
   enableComments: boolean;
   CORAL_TALK_HOST: string;
   CORAL_TALK_ID: string;
@@ -38,6 +39,7 @@ declare var MAPHUBS_CONFIG: MapHubsConfig;
 declare var Raven: Object;
 declare var Auth0Lock: Class<Object>;
 declare var M: Object;
+declare var Coral: Object;
 
 import type ReactComponent from 'react'
 
