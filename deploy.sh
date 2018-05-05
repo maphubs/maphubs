@@ -12,6 +12,8 @@ docker pull node:8
 docker build . --compress -t quay.io/maphubs/web:latest
 
 #commit version tag
+git add version.json
+git add .next/BUILD_ID
 git commit  -m "version $PACKAGE_VERSION"
 git tag v$PACKAGE_VERSION
 git push origin
