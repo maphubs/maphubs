@@ -10368,9 +10368,9 @@ to-utf8@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/to-utf8/-/to-utf8-0.0.1.tgz#d17aea72ff2fba39b9e43601be7b3ff72e089852"
 
-tokml@kriscarle/tokml:
+tokml@kriscarle/tokml#a02e05e04f57d354e6b6018b19dee2c92903fc32:
   version "0.4.0"
-  resolved "https://codeload.github.com/kriscarle/tokml/tar.gz/b1bb13f2b4bd4e5effc200466aa8930cbf80b47e"
+  resolved "https://codeload.github.com/kriscarle/tokml/tar.gz/a02e05e04f57d354e6b6018b19dee2c92903fc32"
   dependencies:
     minimist "0.1.0"
     rw "0.0.4"
