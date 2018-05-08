@@ -87,12 +87,14 @@ export default class SearchBar extends React.Component {
       suggestions,
       highlightedItem: -1
     })
-    this.refs.suggestions.show()
+    if (this.suggestions) {
+      this.suggestions.show()
+    }
   }
 
   hideSuggestions = () => {
-    if (this.refs.suggestions) {
-      this.refs.suggestions.hide()
+    if (this.suggestions) {
+      this.suggestions.hide()
     }
   }
 
@@ -208,7 +210,7 @@ export default class SearchBar extends React.Component {
         <div className='row no-margin'>
           {!!this.state.suggestions.length &&
           <Suggestions
-            ref='suggestions'
+            ref={(el) => { this.suggestions = el }}
             suggestions={this.state.suggestions}
             highlightedItem={this.state.highlightedItem}
             onSelection={this.fillInSuggestion} />}

@@ -147,11 +147,15 @@ export default class AddItem extends MapHubsComponent<Props, State> {
      suggestions,
      highlightedItem: -1
    })
-   this.refs.suggestions.show()
+   if (this.suggestions) {
+     this.suggestions.show()
+   }
  }
 
  hideSuggestions = () => {
-   this.refs.suggestions.hide()
+   if (this.suggestions) {
+     this.suggestions.hide()
+   }
  }
 
  fillInSuggestion = (suggestion: Value) => {
@@ -231,7 +235,7 @@ export default class AddItem extends MapHubsComponent<Props, State> {
                onKeyDown={this.handleKeyDown}
                onClick={this.handleClick}
                data-beloworigin='true'
-               data-activates={this.refs.suggestions}
+               data-activates={this.suggestions}
                required />
 
              <label htmlFor={this.props.id}
@@ -260,7 +264,7 @@ export default class AddItem extends MapHubsComponent<Props, State> {
        <div className='row no-margin'>
          {!!this.state.suggestions.length &&
          <Suggestions
-           ref='suggestions'
+           ref={(el) => { this.suggestions = el }}
            suggestions={this.state.suggestions}
            highlightedItem={this.state.highlightedItem}
            onSelection={this.fillInSuggestion} />}
