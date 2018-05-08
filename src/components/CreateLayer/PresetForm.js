@@ -68,6 +68,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     const _this = this
     values.id = this.props.id
     values.label = Locales.formModelToLocalizedString(values, 'label')
+    values.tag = this.props.tag
     Actions.updatePreset(_this.props.id, values)
   }
 
@@ -97,7 +98,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
       title: _this.__('Confirm Removal'),
       message: _this.__('Are you sure you want to remove this field?') + ' ' +
         _this.__('Note: this will hide the field, but will not delete the raw data.') + ' ' +
-        _this.__('The field will still be visible in the edit under "all tags" and will be included in data exports.'),
+        _this.__('The field will still be included in data exports.'),
       onPositiveResponse () {
         Actions.deletePreset(_this.props.id)
       }
@@ -146,18 +147,6 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
             onValid={this.onValid} onInvalid={this.onInvalid}>
             <div className='row'>
               <div className='col s12 m6'>
-                <TextInput
-                  name='tag'
-                  id={this.props.tag + '-tag'}
-                  label={this.__('Tag')}
-                  validations='maxLength:25' validationErrors={{
-                    maxLength: this.__('Name must be 25 characters or less.')
-                  }} length={25}
-                  value={this.props.tag}
-                  required
-                />
-              </div>
-              <div className='col s12 m6'>
                 <Select
                   name='type'
                   id='preset-type-select'
@@ -167,10 +156,6 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   startEmpty={typeStartEmpty}
                   required
                 />
-              </div>
-            </div>
-            <div className='row'>
-              <div className='col s12 m6'>
                 <MultiTextInput
                   name='label'
                   id={`preset-${this.props.id}-label`}
