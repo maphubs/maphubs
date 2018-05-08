@@ -34,7 +34,7 @@ export default {
   },
 
   clearSelectionFilter () {
-    if (this.glStyle) {
+    if (this.map && this.glStyle) {
       this.glStyle.layers.forEach((layer) => {
         if (layer.id.startsWith('omh-hover')) {
           if (this.map.getLayer(layer.id)) {
