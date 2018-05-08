@@ -9,6 +9,7 @@ import _isEqual from 'lodash.isequal'
 import flow from 'lodash.flow'
 import MapStyles from '../../components/Map/Styles'
 import {Tooltip} from 'react-tippy'
+import ConfirmationActions from '../../actions/ConfirmationActions'
 
 require('dnd-core/lib/actions/dragDrop')
 import {DragSource, DropTarget} from 'react-dnd'
@@ -56,7 +57,17 @@ class LayerListItem extends MapHubsComponent<Props, void> {
   }
 
   removeFromMap = () => {
-    this.props.removeFromMap(this.props.item)
+    const {__} = this
+    const {item, removeFromMap} = this.props
+    ConfirmationActions.showConfirmation({
+      title: __('Remove Layer'),
+      postitiveButtonText: __('Remove'),
+      negativeButtonText: __('Cancel'),
+      message: __('Warning! This will remove also remove any custom style settings for this layer saved as part of this map.'),
+      onPositiveResponse () {
+        removeFromMap(item)
+      }
+    })
   }
 
   showLayerDesigner = () => {
