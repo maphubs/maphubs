@@ -80,18 +80,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(GroupStore, {group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members})
   }
 
-  componentWillMount () {
-    super.componentWillMount()
-    const _this = this
-    addValidationRule('isAvailable', (values, value) => {
-      if (value) {
-        return _this.checkGroupIdAvailable(value)
-      } else {
-        return false
-      }
-    })
-  }
-
   enableButton = () => {
     this.setState({
       canSubmit: true
@@ -110,11 +98,12 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
 
   submit = (model: Object) => {
     const _this = this
+    const group_id = this.props.group.group_id
 
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
 
-    GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
+    GroupActions.updateGroup(group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
       if (err) {
         MessageActions.showMessage({title: _this.__('Server Error'), message: err})
       } else {
@@ -124,41 +113,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             position: 'bottomright',
             dismissAfter: 3000,
             onDismiss () {
-              window.location = '/group/' + model.group_id
+              window.location = `/group/${group_id}` 
             }
           })
       }
     })
-  }
-
-  checkGroupIdAvailable = (id: string) => {
-    const _this = this
-    // if the form is modified but put back to the currently saved ID, just return true
-    if (id === this.props.group.group_id) return true
-
-    let result = false
-    // only check if a valid value was provided and we are running in the browser
-    if (id && typeof window !== 'undefined') {
-      $.ajax({
-        type: 'POST',
-        url: '/api/group/checkidavailable',
-        contentType: 'application/json;charset=UTF-8',
-        dataType: 'json',
-        data: JSON.stringify({id}),
-        async: false,
-        success (msg) {
-          if (msg.available) {
-            result = true
-          }
-        },
-        error (msg) {
-          MessageActions.showMessage({title: _this.__('Server Error'), message: msg})
-        },
-        complete () {
-        }
-      })
-    }
-    return result
   }
 
   handleMemberDelete = (user: Object) => {
@@ -321,18 +280,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             <div className='divider' />
             <div className='row'>
               <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-                <div className='row'>
-                  <TextInput name='group_id' label={this.__('Group ID')} icon='group_work' className='col s4'
-                    validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
-                      maxLength: this.__('ID must be 25 characters or less.'),
-                      matchRegexp: this.__('Can only contain letters, numbers, or dashes.'),
-                      isAvailable: this.__('ID already taken, please try another.')
-                    }} length={25}
-                    successText={this.__('ID is Available')}
-                    dataPosition='right' dataTooltip={this.__('Identifier for the Group. This will be used in links and URLs for your group\'s content.')}
-                    value={this.state.group.group_id}
-                    required />
-                </div>
                 <div className='row'>
                   <MultiTextInput name='name' id='name'
                     label={{
