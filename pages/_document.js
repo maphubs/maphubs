@@ -6,11 +6,13 @@ import { readFileSync } from 'fs'
 
 import local from '../src/local'
 
-let version = ''
+import version from '../version.json'
+
+let cssHash = ''
 if (process.env.NODE_ENV === 'production') {
   const hash = createHash('sha256')
   hash.update(readFileSync(`${process.cwd()}/.next/static/style.css`))
-  version = `?v=${hash.digest('hex').substr(0, 8)}`
+  cssHash = `?v=${hash.digest('hex').substr(0, 8)}`
 }
 
 export default class MyDocument extends Document {
@@ -69,7 +71,7 @@ export default class MyDocument extends Document {
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1' />
           <title>{data.query.title || 'MapHubs'}</title>
-          <link rel='stylesheet' href={`/_next/static/style.css${version}`} />
+          <link rel='stylesheet' href={`/_next/static/style.css${cssHash}`} />
           {options.description &&
             <meta name='description' content={options.description} />
           }
@@ -192,7 +194,7 @@ export default class MyDocument extends Document {
           <script src='https://cdn.ravenjs.com/3.20.1/raven.min.js' crossOrigin='anonymous' />
           <script type='text/javascript' dangerouslySetInnerHTML={{__html: `
               Raven.config('${ravenConfig}', {
-              release: '${version}',
+              release: '${version.version}',
               environment: '${local.ENV_TAG}',
               tags: {host: '${local.host}'}
             }).install();
