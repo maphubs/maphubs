@@ -318,7 +318,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
-    const glStyle = this.props.layer.style
+    const {layer, canEdit} = this.props
+    const {editingNotes, editingData} = this.state
+    const glStyle = layer.style
 
     let tabContentDisplay = 'none'
     if (typeof window !== 'undefined') {
@@ -329,22 +331,22 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     let notesEditButton
     let dataEditButton
 
-    if (this.props.canEdit) {
+    if (canEdit) {
       notesEditButton = (
-        <HubEditButton editing={this.state.editingNotes}
+        <HubEditButton editing={editingNotes}
           style={{position: 'absolute'}}
           startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
       )
 
       dataEditButton = (
-        <HubEditButton editing={this.state.editingData}
+        <HubEditButton editing={editingData}
           style={{position: 'absolute', bottom: '10px'}}
           startEditing={this.startEditingData} stopEditing={this.stopEditingData} />
       )
 
       let mapEditButton = ''
       let addPhotoPointButton = ''
-      if (!this.props.layer.is_external && !this.props.layer.remote) {
+      if (!layer.is_external && !layer.remote) {
         mapEditButton = (
           <li>
             <Tooltip
@@ -356,13 +358,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
             </Tooltip>
           </li>
         )
-        if (this.props.layer.data_type === 'point') {
+        if (layer.data_type === 'point') {
           addPhotoPointButton = (
             <li>
               <Tooltip
                 title={this.__('Add a Photo')}
                 position='left' inertia followCursor>
-                <a href={'/layer/adddata/' + this.props.layer.layer_id} className='btn-floating blue darken-1'>
+                <a href={'/layer/adddata/' + layer.layer_id} className='btn-floating blue darken-1'>
                   <i className='material-icons'>photo</i>
                 </a>
               </Tooltip>
@@ -397,7 +399,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
             title={this.__('View Map')}
             position='left' inertia>
             <a className='btn-floating btn-large red'
-              href={'/layer/map/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}>
+              href={'/layer/map/' + layer.layer_id + '/' + slugify(this._o_(layer.name))}>
               <i className='material-icons'>map</i>
             </a>
           </Tooltip>
@@ -429,20 +431,20 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
     const licenseOptions = Licenses.getLicenses(this.__)
-    const license = _find(licenseOptions, {value: this.props.layer.license})
+    const license = _find(licenseOptions, {value: layer.license})
 
     let descriptionWithLinks = ''
 
     if (this.props.layer.description) {
       // regex for detecting links
-      const localizedDescription = this._o_(this.props.layer.description)
+      const localizedDescription = this._o_(layer.description)
       const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
 
     let remote = ''
-    if (this.props.layer.remote) {
-      const remoteURL = 'https://' + this.props.layer.remote_host + '/layer/info/' + this.props.layer.remote_layer_id + '/' + slugify(this._o_(this.props.layer.name))
+    if (layer.remote) {
+      const remoteURL = `https://${layer.remote_host}/layer/info/${layer.remote_layer_id}/${slugify(this._o_(layer.name))}`
       remote = (
         <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
           <a href={remoteURL} target='_blank' rel='noopener noreferrer'>{remoteURL}</a>
@@ -451,26 +453,31 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
     let external = ''
-    if (this.props.layer.is_external && !this.props.layer.remote) {
-      let externalUrl = this.props.layer.external_layer_config.url
+    const elc = layer.external_layer_config
+    if (layer.is_external && !layer.remote) {
+      let externalUrl = elc.url
       let type = ''
-      if (this.props.layer.external_layer_type === 'openstreetmap') {
+      if (layer.external_layer_type === 'openstreetmap') {
         type = 'OpenStreetMap'
         externalUrl = 'http://openstreetmap.org'
-      } else if (this.props.layer.external_layer_type === 'planet') {
+      } else if (layer.external_layer_type === 'planet') {
         type = 'Planet'
         externalUrl = 'https://planet.com'
-      } else if (this.props.layer.external_layer_config.type === 'raster') {
+      } else if (elc.type === 'raster') {
         type = 'Raster'
-        externalUrl = this.props.layer.external_layer_config.tiles[0]
-      } else if ((!this.props.layer.external_layer_type || this.props.layer.external_layer_type === '') &&
-              this.props.layer.external_layer_config.type) {
-        type = this.props.layer.external_layer_config.type
-      } else if (this.props.layer.external_layer_config.type === 'geojson') {
+        if (elc.tiles) {
+          externalUrl = elc.tiles[0]
+        } else if (elc.url) {
+          externalUrl = elc.url
+        }
+      } else if ((!layer.external_layer_type ||layer.external_layer_type === '') &&
+              elc.type) {
+        type = elc.type
+      } else if (elc.type === 'geojson') {
         type = 'GeoJSON'
-        externalUrl = this.props.layer.external_layer_config.data
+        externalUrl = elc.data
       } else {
-        type = this.props.layer.external_layer_type
+        type = layer.external_layer_type
       }
       external = (
         <div>
