@@ -5,6 +5,7 @@ import _isEqual from 'lodash.isequal'
 import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import update from 'react-addons-update'
+import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {
   layers: Array<Object>,
@@ -24,7 +25,7 @@ type State = {
   layers: Array<Object>
 }
 
-class LayerList extends React.PureComponent<Props, State> {
+class LayerList extends MapHubsComponent<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -70,30 +71,39 @@ class LayerList extends React.PureComponent<Props, State> {
 
   render () {
     const _this = this
+    const {layers} = this.state
     const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, removeFromMap, showLayerDesigner, editLayer} = this.props
+    let empty = layers && layers.length === 0
     return (
       <div style={{height: '100%', padding: 0, margin: 0}}>
-        <ul ref='layers' style={{height: '100%', overflowY: 'auto'}} className='collection no-margin custom-scroll-bar'>{
-          this.state.layers.map((layer, i) => {
-            if (layer.layer_id && layer.layer_id > 0) {
-              return (
-                <li key={layer.layer_id} >
-                  <LayerListItem id={layer.layer_id} item={layer} index={i}
-                    toggleVisibility={toggleVisibility}
-                    showVisibility={showVisibility}
-                    showRemove={showRemove}
-                    showDesign={showDesign}
-                    showEdit={showEdit}
-                    moveItem={_this.moveLayer}
-                    removeFromMap={removeFromMap}
-                    showLayerDesigner={showLayerDesigner}
-                    editLayer={editLayer}
-                  />
-                </li>
-              )
-            }
-          })
-        }</ul>
+        {!empty &&
+          <ul ref='layers' style={{height: '100%', overflowY: 'auto'}} className='collection no-margin custom-scroll-bar'>{
+            layers.map((layer, i) => {
+              if (layer.layer_id && layer.layer_id > 0) {
+                return (
+                  <li key={layer.layer_id} >
+                    <LayerListItem id={layer.layer_id} item={layer} index={i}
+                      toggleVisibility={toggleVisibility}
+                      showVisibility={showVisibility}
+                      showRemove={showRemove}
+                      showDesign={showDesign}
+                      showEdit={showEdit}
+                      moveItem={_this.moveLayer}
+                      removeFromMap={removeFromMap}
+                      showLayerDesigner={showLayerDesigner}
+                      editLayer={editLayer}
+                    />
+                  </li>
+                )
+              }
+            })
+          }</ul>
+        }
+        {empty &&
+          <div style={{height: '100%', padding: 0, margin: 0}}>
+            <p style={{margin: '20px 10px'}}>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
+          </div>
+        }
       </div>
     )
   }

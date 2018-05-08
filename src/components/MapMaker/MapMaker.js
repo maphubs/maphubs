@@ -410,24 +410,29 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
+
+    const {showMapLayerDesigner, height, layerDesignerLayer} = this.state
     const headerHeight = 52
     const collasibleHeaderHeight = 56
-    let panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 3)
+    let panelHeight = height - headerHeight - (collasibleHeaderHeight * 3)
 
     let tabContentDisplay = 'none'
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit'
     }
 
-    let overlayLayerList = ''
-    if (this.state.showMapLayerDesigner) {
-      overlayLayerList = (
+    let mapLayerDesigner = ''
+    if (showMapLayerDesigner) {
+      mapLayerDesigner = (
         <MapLayerDesigner ref='LayerDesigner'
-          layer={this.state.layerDesignerLayer}
+          layer={layerDesignerLayer}
           onStyleChange={this.onLayerStyleChange}
           onClose={this.closeLayerDesigner} />
       )
-    } else if (!this.state.mapLayers || this.state.mapLayers.length === 0) {
+    }
+
+    let overlayLayerList = ''
+    if (!this.state.mapLayers || this.state.mapLayers.length === 0) {
       overlayLayerList = (
         <div style={{height: '100%', padding: 0, margin: 0}}>
           <p style={{margin: '20px 10px'}}>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
@@ -479,13 +484,29 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     return (
       <div className='row no-margin' style={{width: '100%', height: '100%'}}>
         <div className='create-map-side-nav col s6 m4 l3 no-padding' style={{height: '100%'}}>
-          <ul ref='mapMakerToolPanel' className='collapsible no-margin' data-collapsible='accordion' style={{height: '100%', borderTop: 'none'}}>
+          {mapLayerDesigner}
+          <ul ref='mapMakerToolPanel' className='collapsible no-margin' data-collapsible='accordion' 
+            style={{
+              height: '100%',
+              borderTop: 'none',
+              display: showMapLayerDesigner ? 'none' : 'inherit'
+            }}
+          >
             {editLayerPanel}
             <li ref='layersListPanel' className='active'>
               <div className='collapsible-header'><i className='material-icons'>layers</i>{this.__('Overlay Layers')}</div>
               <div className='collapsible-body' >
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-                  {overlayLayerList}
+                  <LayerList
+                    layers={this.state.mapLayers}
+                    showVisibility={_this.props.showVisibility}
+                    showRemove showDesign showEdit={!this.state.editingLayer}
+                    toggleVisibility={_this.toggleVisibility}
+                    removeFromMap={_this.removeFromMap}
+                    showLayerDesigner={_this.showLayerDesigner}
+                    updateLayers={Actions.setMapLayers}
+                    editLayer={_this.editLayer}
+                  />
                 </div>
 
               </div>
