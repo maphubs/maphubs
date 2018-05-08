@@ -8,14 +8,6 @@ import _find from 'lodash.find'
 const debug = require('../../services/debug')('stores/BaseMapStore')
 const request = require('superagent')
 
-var positron = require('../../components/Map/BaseMaps/positron.json')
-var darkmatter = require('../../components/Map/BaseMaps/darkmatter.json')
-var osmLiberty = require('../../components/Map/BaseMaps/osm-liberty.json')
-var osmBright = require('../../components/Map/BaseMaps/osm-liberty.json')
-// const positronTz = require('../../components/Map/BaseMaps/positron-tz.json')
-// const darkmatterTz = require('../../components/Map/BaseMaps/darkmatter-tz.json')
-// const osmLibertyTz = require('../../components/Map/BaseMaps/osm-liberty-tz.json')
-// const osmBrightTz = require('../../components/Map/BaseMaps/osm-liberty-tz.json')
 const defaultBaseMapOptions = require('../../components/Map/BaseMaps/base-map-options.json')
 
 export type BaseMapOption = {
@@ -82,8 +74,8 @@ export default class BaseMapStore extends Reflux.Store {
         debug.error(`error calculating map move distance`)
       }
 
-      debug.log('map moved: ' + distance + 'km')
-      
+      // debug.log('map moved: ' + distance + 'km')
+
       if (distance < 50 && Math.abs(_this.position.zoom - position.zoom) < 1) {
         _this.position = position
         return
@@ -164,6 +156,7 @@ export default class BaseMapStore extends Reflux.Store {
   }
   */
 
+  /*
   loadFromFile (name, cb) {
     if (name === 'positron') {
       cb(this.setTileHostingKey(positron))
@@ -178,6 +171,7 @@ export default class BaseMapStore extends Reflux.Store {
       cb(positron)
     }
   }
+  */
 
   getBaseMapFromName (mapName, cb) {
     const config = _find(this.state.baseMapOptions, {value: mapName})
@@ -202,7 +196,7 @@ export default class BaseMapStore extends Reflux.Store {
           cb(style)
         })
       } else if (config.loadFromFile) {
-        this.loadFromFile(config.loadFromFile, cb)
+        // this.loadFromFile(config.loadFromFile, cb)
       } else if (config.style) {
         const style = config.style
         if (typeof style !== 'string') {
@@ -276,7 +270,22 @@ export default class BaseMapStore extends Reflux.Store {
         attribution: defaultConfig.attribution,
         updateWithMapPosition: defaultConfig.updateWithMapPosition
       })
-      this.loadFromFile(defaultConfig.loadFromFile, cb)
+      const url = defaultConfig.tilehostingUrl + MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY
+      request.get(url)
+        .end((err, res) => {
+          if (err) {
+            debug.error(err)
+          } else {
+            const style = res.body
+            if (!style.glyphs) {
+              style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+            }
+            if (!style.sprite) {
+              style.sprite = ''
+            }
+            cb(style)
+          }
+        })
     }
   }
 }
