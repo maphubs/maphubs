@@ -43,11 +43,6 @@ const debug = DebugService('map')
 let mapboxgl = {}
 let ArcGISTiledMapServiceSource
 let ScalePositionControl
-if (typeof window !== 'undefined') {
-  mapboxgl = require('mapbox-gl')
-  ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
-  ScalePositionControl = require('mapbox-gl-dual-scale-control')
-}
 
 type Props = {|
     className: string,
@@ -166,6 +161,9 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    mapboxgl = require('mapbox-gl')
+    ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
+    ScalePositionControl = require('mapbox-gl-dual-scale-control')
     this.createMap()
   }
 
@@ -183,10 +181,12 @@ export default class Map extends MapHubsComponent<Props, State> {
   componentDidUpdate (prevProps: Props, prevState: State) {
     // switch to interactive
     if (this.state.interactive && !prevState.interactive) {
-      this.map.addControl(new mapboxgl.Navigation(), this.props.navPosition)
+      this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), this.props.navPosition)
       this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition)
-      const interaction = this.map.interaction
-      interaction.enable()
+      if (this.map.dragPan) this.map.dragPan.enable()
+      if (this.map.scrollZoom) this.map.scrollZoom.enable()
+      if (this.map.doubleClickZoom) this.map.doubleClickZoom.enable()
+      if (this.map.touchZoomRotate) this.map.touchZoomRotate.enable()
     }
     // change locale
     if (this.state.locale && (this.state.locale !== prevState.locale)) {
