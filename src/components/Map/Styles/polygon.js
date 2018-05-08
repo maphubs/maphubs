@@ -134,28 +134,34 @@ export default {
       ]
     }
     style.layers.forEach((layer) => {
-      if (layer.type === 'fill' && layer.id.startsWith('omh-data-polygon')) {
-        legendColor = layer.paint['fill-color']
+      const {id, type, metadata, paint} = layer
+      // clear old outline-only settings
+      if (metadata && typeof metadata['fill'] !== 'undefined') {
+        delete metadata['fill']
+      }
+      if (type === 'fill' && id.startsWith('omh-data-polygon')) {
+        legendColor = paint['fill-color']
         if (fill) {
           // re-enable fill
           outlineColor = '#222222'
-          legendColor = layer.paint['fill-color']
-          layer.paint['fill-opacity'] = 0.7
+          legendColor = paint['fill-color']
+          paint['fill-opacity'] = 0.7
         } else {
           // remove fill
-          outlineColor = layer.paint['fill-color']
-          layer.paint['fill-opacity'] = 0
+          outlineColor = paint['fill-color']
+          paint['fill-opacity'] = 0
           outlineWidth = 3
         }
       }
     })
     // loop again just in case fill layer is out of order somehow
     style.layers.forEach((layer) => {
-      if (layer.type === 'line') {
-        if (layer.id.startsWith('omh-data-outline')) {
-          layer.paint['line-color'] = outlineColor
-          layer.paint['line-width'] = outlineWidth
-        } else if (layer.id.startsWith('omh-data-doublestroke')) {
+      const {id, type, paint} = layer
+      if (type === 'line') {
+        if (id.startsWith('omh-data-outline')) {
+          paint['line-color'] = outlineColor
+          paint['line-width'] = outlineWidth
+        } else if (id.startsWith('omh-data-doublestroke')) {
           if (!layer.layout) {
             layer.layout = {}
           }

@@ -50,7 +50,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
       }
 
       let fill = defaults.fill
-      const fillSetting = MapStyles.settings.getLayerSetting(props.style, glLayerId, 'fill')
+      const fillSetting = !MapStyles.settings.getLayerSetting(props.style, glLayerId, 'outline-only')
       if (typeof fillSetting !== 'undefined') {
         fill = fillSetting
       }
@@ -95,7 +95,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
       this.setState({showBehindBaseMapLabels: values.showBehindBaseMapLabels})
     } else if (values.fill !== this.state.fill &&
       this.props.layer.data_type === 'polygon') {
-      style = MapStyles.settings.setLayerSettingAll(style, 'fill', values.fill, 'symbol')
+      style = MapStyles.settings.setLayerSettingAll(style, 'outline-only', !values.fill, 'symbol')
       const result = MapStyles.polygon.toggleFill(style, values.fill)
       style = result.style
       this.setState({fill: values.fill})
@@ -121,7 +121,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
             name='fill'
             labelOff={this.__('Outline Only')}
             labelOn={this.__('Fill')}
-            checked={this.state.interactive}
+            checked={this.state.fill}
             dataPosition='right'
             dataTooltip={this.__('Hide polygon fill and only show the outline in the selected color')}
           />
