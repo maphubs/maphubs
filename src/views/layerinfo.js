@@ -47,10 +47,6 @@ const urlUtil = require('../services/url-util')
 
 const $ = require('jquery')
 const moment = require('moment-timezone')
-let clipboard
-if (process.env.APP_ENV === 'browser') {
-  clipboard = require('clipboard-polyfill')
-}
 
 addLocaleData(en)
 addLocaleData(es)
@@ -131,6 +127,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const _this = this
     M.Tabs.init(this.refs.tabs, {})
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
+    this.clipboard = require('clipboard-polyfill')
 
     if (this.props.layer.is_external) {
       // retreive geoJSON data for layers
@@ -313,7 +310,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   copyToClipboard = (val: string) => {
-    clipboard.writeText(val)
+    this.clipboard.writeText(val)
   }
 
   render () {

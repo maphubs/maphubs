@@ -28,11 +28,6 @@ import FloatingButton from '../components/FloatingButton'
 const $ = require('jquery')
 const checkClientError = require('../services/client-error-response').checkClientError
 
-let clipboard
-if (process.env.APP_ENV === 'browser') {
-  clipboard = require('clipboard-polyfill')
-}
-
 type Props = {
   map: Object,
   layers: Array<Object>,
@@ -131,6 +126,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
+    this.clipboard = require('clipboard-polyfill')
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
@@ -194,7 +190,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   copyToClipboard = (val: string) => {
-    clipboard.writeText(val)
+    this.clipboard.writeText(val)
   }
 
   showEmbedCode = () => {

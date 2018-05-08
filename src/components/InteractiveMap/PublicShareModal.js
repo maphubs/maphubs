@@ -8,11 +8,6 @@ import Formsy from 'formsy-react'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import urlUtil from '../../services/url-util'
 
-let clipboard
-if (process.env.APP_ENV === 'browser') {
-  clipboard = require('clipboard-polyfill')
-}
-
 type Props = {|
   share_id: string,
   onChange: Function
@@ -29,6 +24,12 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
     this.state = {
       sharing: !!this.props.share_id
     }
+  }
+
+  clipboard: any
+
+  componentDidMount () {
+    this.clipboard = require('clipboard-polyfill')
   }
 
   componentWillReceiveProps (nextProps: Props) {
@@ -73,6 +74,11 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
     }
   }
 
+  writeToClipboard = () => {
+    const shareUrl = urlUtil.getBaseUrl() + `/map/share/${this.props.share_id}`
+    this.clipboard.writeText(shareUrl)
+  }
+
   render () {
     let shareLink = ''
     let shareMessage = ''
@@ -83,9 +89,9 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
           <p style={{fontSize: '16px'}}><b>{this.__('Share Link: ')}</b>
           &nbsp;-&nbsp;
             <a href={shareUrl} target='_blank' rel='noopener noreferrer'>{shareUrl}</a>
-            <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={function () { clipboard.writeText(shareUrl) }}>launch</i>
+            <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={this.writeToClipboard}>launch</i>
           </p>
-          <button onClick={function () { clipboard.writeText(shareUrl) }} className='btn'>{this.__('Copy Link')}</button>
+          <button onClick={this.writeToClipboard} className='btn'>{this.__('Copy Link')}</button>
           <p className='no-margin'>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
         </div>
       )
