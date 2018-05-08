@@ -11,8 +11,7 @@ import type {Layer} from '../../stores/layer-store'
 type Props = {|
   onChange: Function,
   layer: Layer,
-  style: GLStyle,
-  legend: string
+  style: GLStyle
 |}
 
 type State = {
@@ -83,7 +82,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
   }
 
   onFormChange = (values: Object) => {
-    let legend = this.props.legend
+    let legend = this.props.layer.legend_html
 
     let style = this.props.style
     if (values.interactive !== this.state.interactive) {
