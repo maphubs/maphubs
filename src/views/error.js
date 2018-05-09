@@ -10,7 +10,7 @@ import UserStore from '../stores/UserStore'
 type Props = {
   title: string,
   error: string,
-  url: string,
+  url: Object,
   locale: string,
   _csrf: string,
   eventId: string,
@@ -51,7 +51,7 @@ export default class Error extends MapHubsComponent<Props, void> {
           <div className='container s12'>
             <h3 className='center-align'>{this.props.title}</h3>
             <p className='flow-text center-align'>{this.props.error}</p>
-            <p className='flow-text center-align'><a href={this.props.url} target='_blank' rel='noopener noreferrer'>{this.props.url}</a></p>
+            <p className='flow-text center-align'><a href={this.props.url.asPath} target='_blank' rel='noopener noreferrer'>{this.props.url.asPath}</a></p>
           </div>
         </main>
       </ErrorBoundary>

@@ -9,7 +9,6 @@ const handle = nextApp.getRequestHandler()
 
 const consign = require('consign')
 const passport = require('passport')
-const path = require('path')
 const logger = require('morgan')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -18,6 +17,7 @@ const i18n = require('./src/i18n')
 const Raven = require('raven')
 const version = require('./version.json').version
 const shrinkRay = require('shrink-ray')
+const pageOptions = require('./src/services/page-options-helper')
 
 const session = require('express-session')
 const KnexSessionStore = require('connect-session-knex')(session)
@@ -66,10 +66,6 @@ nextApp.prepare()
 
     // by default set language based on browser 'accept-language' headers
     server.use(i18n.init)
-
-    // server.set('views', path.join(__dirname, 'views'))
-    // server.set('view engine', 'js')
-    // server.engine('js', require('./src/services/express-react-views').createEngine())
 
     server.use(logger('dev', {
       skip (req) {
@@ -154,34 +150,6 @@ nextApp.prepare()
     consign().include('./src/routes/secure').into(server)
 
     return CMSPages(server).then(() => {
-      /*
-    // error handling
-      server.use((req, res, next) => {
-      // bypass for dynamically created tile URLs
-        if (req.url.includes('/api/tiles/') || req.url.includes('/dialog/authorize/decision')) {
-          next()
-        } else {
-          res.status(404)
-
-          if (req.accepts('html')) {
-            res.render('error', {
-              title: req.__('404: Page not found'),
-              props: {
-                title: req.__('404: Page not found'),
-                error: req.__('404: Page not found'),
-                url: req.url
-              },
-              req
-            })
-          } else if (req.accepts('json')) {
-            res.send({
-              title: req.__('404: Page not found'),
-              error: req.__('404: Page not found'),
-              url: req.url
-            })
-          }
-        }
-      })
 
       server.use((err, req, res, next) => {
         if (req.session && req.session.user) {
@@ -198,13 +166,17 @@ nextApp.prepare()
         }
         next(err)
       })
-      */
 
       server.use(Raven.errorHandler())
 
-      /*
-      server.use((err, req, res, next) => {
-      // bypass for dynamically created tile URLs
+      if (process.env.NODE_ENV !== 'production') {
+        server.get('/errortest', (req, res) => {
+          throw new Error('TEST')
+        })
+      }
+
+      server.use(async (err, req, res, next) => {
+        // bypass for dynamically created tile URLs
         if (req.url.includes('/api/tiles/')) {
           next()
         } else {
@@ -232,17 +204,16 @@ nextApp.prepare()
           log.error(err.stack)
 
           if (req.accepts('html')) {
-            res.status(statusCode).render('error', {
-              title: statusCode + ': ' + statusText,
+            const title = statusCode + ': ' + statusText
+            return nextApp.render(req, res, '/error', await pageOptions(req, {
+              title,
               props: {
-                title: statusCode + ': ' + statusText,
+                title,
                 error: errorDetail,
                 url: req.url,
                 eventId: res.sentry
-              },
-              req
-            })
-            return
+              }
+            }))
           }
 
           if (req.accepts('json')) {
@@ -254,7 +225,6 @@ nextApp.prepare()
           }
         }
       })
-      */
 
       // Fall-back on other next.js assets.
       server.get('*', (req, res) => {
