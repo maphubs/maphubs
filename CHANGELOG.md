@@ -1,5 +1,21 @@
 # Change Log
 
+## [v0.17.11](https://github.com/maphubs/maphubs/tree/v0.17.11) (2018-05-09)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.10...v0.17.11)
+
+**Implemented enhancements:**
+
+- add confirm to map maker layer delete [\#417](https://github.com/maphubs/maphubs/issues/417)
+- add name/description field settings [\#267](https://github.com/maphubs/maphubs/issues/267)
+- support custom domains for hubs [\#164](https://github.com/maphubs/maphubs/issues/164)
+
+**Fixed bugs:**
+
+- changing color on outline-only layer reverts to fill [\#476](https://github.com/maphubs/maphubs/issues/476)
+- group add member suggestions error [\#475](https://github.com/maphubs/maphubs/issues/475)
+- below base map toggle removes legend [\#457](https://github.com/maphubs/maphubs/issues/457)
+- unable to change group id [\#47](https://github.com/maphubs/maphubs/issues/47)
+
 ## [v0.17.10](https://github.com/maphubs/maphubs/tree/v0.17.10) (2018-05-01)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.9...v0.17.10)
 
