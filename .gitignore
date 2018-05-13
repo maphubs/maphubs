@@ -43,3 +43,4 @@ uppy.env
 .next-export
 .next/*
 !.next/BUILD_ID
+assets/assets/themes

@@ -41,7 +41,7 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     $(this.refs.groupimg).on('error', function () {
-      $(this).attr('src', 'https://cdn.maphubs.com/assets/missing_group.png')
+      $(this).attr('src', 'https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/missing_group.png')
     })
   }
 

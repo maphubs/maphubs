@@ -78,6 +78,7 @@ var local = {
   requireInvite: getenv.bool('OMH_REQUIRE_INVITE', false),
   manetAPIKey: getenv('OMH_MANET_API_KEY'),
   useLocalAssets: getenv.bool('OMH_USE_LOCAL_ASSETS', false),
+  ASSET_CDN_PREFIX: getenv('ASSET_CDN_PREFIX'),
   elasticSearchIndexName: getenv('OMH_ELASTICSEARCH_INDEXNAME'),
   elasticSearchHost: getenv('OMH_ELASTICSEARCH_HOST'),
   elasticSearchPort: getenv('OMH_ELASTICSEARCH_PORT'),

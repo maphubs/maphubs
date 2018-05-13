@@ -28,7 +28,7 @@ export default class MyDocument extends Document {
 
     let assetHost = ''
     if (process.env.NODE_ENV === 'production' && !local.useLocalAssets) {
-      assetHost = 'https://cdn.maphubs.com'
+      assetHost = local.ASSET_CDN_PREFIX
     }
 
     let themeUrl = ''
