@@ -59,7 +59,7 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
     const _this = this
 
     const layers = 'DigitalGlobe:Imagery'
-    let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-3857}&format=image/png&transparent=true&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=512&height=512&layers=${layers}&connectid={DG_WMS_CONNECT_ID}&COVERAGE_CQL_FILTER=featureId='${model.featureid}'`
+    let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-3857}&format=image/png&transparent=true&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=512&height=512&layers=${layers}&connectid={DG_WMS_CONNECT_ID}&COVERAGE_CQL_FILTER=featureId='${model.featureid.trim()}'`
 
     if (model.username) {
       url += `&username=${model.username}&password=${model.password}`
