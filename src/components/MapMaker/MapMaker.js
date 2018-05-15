@@ -515,7 +515,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
               <div className='collapsible-header'><i className='material-icons'>save</i>{this.__('Save Map')}</div>
               <div className='collapsible-body'>
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-                  <SaveMapPanel {...this.state} onSave={this.onSave} />
+                  <SaveMapPanel {...this.state} editing={this.props.edit} onSave={this.onSave} />
                 </div>
 
               </div>
