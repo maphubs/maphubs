@@ -5,6 +5,7 @@ import fireResizeEvent from '../../services/fire-resize-event'
 import _isequal from 'lodash.isequal'
 import $ from 'jquery'
 import classNames from 'classnames'
+import type {Element} from 'react'
 
 // Usage: import {Modal, ModalContent, ModalFooter} from 'Modal';
 // render(){return(
@@ -17,7 +18,7 @@ import classNames from 'classnames'
 type ModalContentProps = {|
   className?: string,
   style: Object,
-  children: any
+  children: Element<any>
 |}
 
 type ModalContentDefaultProps = {

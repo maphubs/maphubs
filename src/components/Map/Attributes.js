@@ -2,10 +2,11 @@
 import React from 'react'
 import _isequal from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
+import type {Element} from 'react'
 
 type Props = {|
   attributes: Object,
-  children: any
+  children: Element<any>
 |}
 
 export default class Attributes extends MapHubsComponent<Props, void> {

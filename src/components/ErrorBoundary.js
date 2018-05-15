@@ -2,10 +2,11 @@
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
 import DebugService from '../services/debug'
+import type {Element} from 'react'
 const debug = DebugService('react-error-boundary')
 
 type Props = {
-  children: any
+  children: Element<any>
 }
 
 type State = {

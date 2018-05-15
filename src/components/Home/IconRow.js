@@ -1,10 +1,11 @@
 // @flow
 import React from 'react'
+import type {Element} from 'react'
 
 type Props = {
   icon: string,
   iconFontSize: string,
-  children: any
+  children: Element<any>
 }
 
 export default class IconRow extends React.Component<Props> {
