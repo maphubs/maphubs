@@ -57,7 +57,9 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
         return msg
       }
     })
-    this.refs.pageEditor.show()
+    if (this.refs.pageEditor) {
+      this.refs.pageEditor.show()
+    }
   }
 
   onFormChange = () => {
