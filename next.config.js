@@ -18,8 +18,9 @@ module.exports = withCSS({
   assetPrefix,
   poweredByHeader: false,
   webpack (config, { dev }) {
+    console.log(config.devtool)
     if (dev) {
-      config.devtool = 'source-map'
+      config.devtool = 'cheap-eval-source-map'
     } else {
       config.devtool = 'source-map'
     }

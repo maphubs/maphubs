@@ -1,9 +1,9 @@
+import Locales from '../../services/locales'
 const Map = require('../../models/map')
 const User = require('../../models/user')
 const libxml = require('libxmljs')
 const debug = require('../../services/debug')('oembed')
 const urlUtil = require('../../services/url-util')
-const Locales = require('../../services/locales')
 const apiError = require('../../services/error-response').apiError
 
 module.exports = function (app) {

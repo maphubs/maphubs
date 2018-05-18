@@ -1,4 +1,5 @@
 // @flow
+import Locales from '../../services/locales'
 const User = require('../../models/user')
 const Map = require('../../models/map')
 const Layer = require('../../models/layer')
@@ -10,7 +11,6 @@ const nextError = require('../../services/error-response').nextError
 const apiDataError = require('../../services/error-response').apiDataError
 const privateMapCheck = require('../../services/private-map-check').middlewareView
 const csrfProtection = require('csurf')({cookie: false})
-const Locales = require('../../services/locales')
 const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {

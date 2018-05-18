@@ -1,12 +1,12 @@
 // @flow
 import slugify from 'slugify'
+import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 const urlUtil = require('../../services/url-util')
 
 const apiError = require('../../services/error-response').apiError
 const manetCheck = require('../../services/manet-check')
 const privateLayerCheck = require('../../services/private-layer-check').check
-const Locales = require('../../services/locales')
 const local = require('../../local')
 
 /*

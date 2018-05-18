@@ -1,23 +1,6 @@
 /* eslint-disable no-console*/
 /* eslint-disable unicorn/no-process-exit*/
-let babelConfig = {
-  "presets": [
-    ["env", {
-      "targets": {
-        "node": true,
-    }
-    }],
-    "react",
-    "stage-0"
-  ],
-  ignore: /assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/
-};
-
-if(process.env.NODE_ENV !== 'production'){
-  babelConfig.sourceMaps = true;
-  babelConfig.retainLines = true;
-}
-require('babel-core/register')(babelConfig);
+require('@babel/register')
 
 var Layer = require('../src/models/layer');
 var LayerViews = require('../src/services/layer-views');

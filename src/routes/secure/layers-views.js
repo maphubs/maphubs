@@ -1,4 +1,5 @@
 // @flow
+import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 const Group = require('../../models/group')
 const User = require('../../models/user')
@@ -10,7 +11,6 @@ const urlUtil = require('../../services/url-util')
 const nextError = require('../../services/error-response').nextError
 const csrfProtection = require('csurf')({cookie: false})
 const privateLayerCheck = require('../../services/private-layer-check').middlewareView
-const Locales = require('../../services/locales')
 const knex = require('../../connection.js')
 const pageOptions = require('../../services/page-options-helper')
 

@@ -1,4 +1,5 @@
 // @flow
+import Locales from '../../services/locales'
 const Map = require('../../models/map')
 const Group = require('../../models/group')
 const ScreenshotUtil = require('../../services/screenshot-utils')
@@ -8,7 +9,6 @@ const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError
 const notAllowedError = require('../../services/error-response').notAllowedError
 const csrfProtection = require('csurf')({cookie: false})
-const Locales = require('../../services/locales')
 const isAuthenticated = require('../../services/auth-check')
 
 module.exports = function (app: any) {

@@ -1,11 +1,13 @@
+import locales from '../locales'
+
 let i18n = null
 /*
 if (process.env.APP_ENV !== 'browser') {
   i18n = require('../i18n')
 }
 */
-const locales = require('../locales')
-module.exports = {
+
+export default {
   en: locales.en,
   fr: locales.fr,
   es: locales.es,

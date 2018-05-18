@@ -1,13 +1,18 @@
-module.exports = {
-  en: require('./en.json'),
-  fr: require('./fr.json'),
-  es: require('./es.json'),
-  it: require('./it.json'),
+import en from './en.json'
+import fr from './fr.json'
+import es from './es.json'
+import it from './it.json'
 
-  getLocaleString(locale, text){
-    if(this[locale] && this[locale][text]){
-      return this[locale][text];
+export default {
+  en,
+  fr,
+  es,
+  it,
+
+  getLocaleString: (locale, text) => {
+    if (this[locale] && this[locale][text]) {
+      return this[locale][text]
     }
-    return text;
+    return text
   }
-};
+}

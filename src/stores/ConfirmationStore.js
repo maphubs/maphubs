@@ -2,10 +2,9 @@
 import Reflux from 'reflux'
 import Actions from '../actions/ConfirmationActions'
 import LocaleActions from '../actions/LocaleActions'
+import Locales from '../services/locales'
 const debug = require('../services/debug')('stores/confirmation-store')
 const $ = require('jquery')
-
-const Locales = require('../services/locales')
 
 export type ConfirmationStoreState = {
   show: boolean,

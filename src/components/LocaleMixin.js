@@ -1,4 +1,4 @@
-const Locales = require('../services/locales')
+import Locales from '../../services/locales'
 
 const LocaleMixin = {
   __ (text) {

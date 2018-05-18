@@ -1,7 +1,5 @@
 
-require('babel-core/register')({
-  ignore: /assets.*|node_modules\/(?!(react-data-grid|medium-editor)).*/
-});
+require('@babel/register')
 
 var knex = require('../src/connection');
 var data = require('./hubs.json');

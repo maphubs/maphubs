@@ -1,9 +1,9 @@
 // @flow
+import Locales from '../services/locales'
 const Map = require('../models/map')
 const nextError = require('./error-response').nextError
 const urlUtil = require('../services/url-util')
 const debug = require('./debug')('map-utils')
-const Locales = require('../services/locales')
 const local = require('../local')
 const pageOptions = require('./page-options-helper')
 

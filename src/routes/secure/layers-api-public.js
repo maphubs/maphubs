@@ -1,11 +1,11 @@
 // @flow
+import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 // var log = require('../../services/log');
 // var debug = require('../../services/debug')('routes/layers');
 const urlUtil = require('../../services/url-util')
 const apiError = require('../../services/error-response').apiError
 const privateLayerCheck = require('../../services/private-layer-check').middleware
-const Locales = require('../../services/locales')
 // Layer API Endpoints that do not require authentication
 
 module.exports = function (app: any) {

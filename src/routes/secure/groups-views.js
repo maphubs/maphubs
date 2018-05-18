@@ -1,4 +1,5 @@
 // @flow
+import Locales from '../../services/locales'
 const Group = require('../../models/group')
 const User = require('../../models/user')
 const Layer = require('../../models/layer')
@@ -10,7 +11,6 @@ const login = require('connect-ensure-login')
 const debug = require('../../services/debug')('routes/groups')
 const nextError = require('../../services/error-response').nextError
 const urlUtil = require('../../services/url-util')
-const Locales = require('../../services/locales')
 const pageOptions = require('../../services/page-options-helper')
 
 const csrfProtection = require('csurf')({cookie: false})

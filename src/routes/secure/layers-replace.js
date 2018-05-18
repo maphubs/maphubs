@@ -1,9 +1,9 @@
 // @flow
+import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 const csrfProtection = require('csurf')({cookie: false})
 const nextError = require('../../services/error-response').nextError
 const login = require('connect-ensure-login')
-const Locales = require('../../services/locales')
 const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError
 const notAllowedError = require('../../services/error-response').notAllowedError

@@ -1,21 +1,24 @@
-
 let babelConfig = {
   presets: [
-    ['env', {
+    ['@babel/env', {
       'targets': {
         node: true
       }
     }],
-    'react',
-    'stage-0'
+    [
+      '@babel/preset-stage-0',
+      {
+        decoratorsLegacy: true
+      }
+    ],
+    '@babel/preset-react',
+    '@babel/preset-flow'
+
   ],
-  plugins: ['transform-flow-strip-types', 'version-inline'],
-  ignore: /assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/
+  plugins: ['@babel/plugin-transform-flow-strip-types', 'version-inline'],
+  ignore: [/assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/]
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  babelConfig.sourceMaps = true
-  babelConfig.retainLines = true
-}
-require('babel-core/register')(babelConfig)
+require('@babel/register')(babelConfig)
+
 module.exports = require('./server.es6.js')

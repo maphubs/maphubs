@@ -1,9 +1,9 @@
 // @flow
+import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 const Map = require('../../models/map')
 const nextError = require('../../services/error-response').nextError
 const manetCheck = require('../../services/manet-check').middleware
-const Locales = require('../../services/locales')
 const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
