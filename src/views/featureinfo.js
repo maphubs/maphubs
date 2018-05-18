@@ -203,7 +203,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     const presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets')
 
     let frPanel
-    if (MAPHUBS_CONFIG.FR_ENABLE && this.props.canEdit) {
+    if (MAPHUBS_CONFIG.FR_ENABLE && this.state.user) {
       if (this.state.tab === 'forestreport' || this.state.frActive) {
         frPanel = (
           <ForestReportEmbed
