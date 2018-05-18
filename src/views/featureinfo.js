@@ -66,6 +66,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     this.stores.push(FeatureNotesStore)
     this.stores.push(FeaturePhotoStore)
     this.stores.push(BaseMapStore)
+    this.stores.push(UserStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -224,7 +225,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
               <div className='row no-margin' style={{height: '100%', overflowY: 'hidden'}}>
                 <ul ref='tabs' className='tabs' style={{}}>
                   <li className='tab'><a className='active' onClick={function () { _this.selectTab('data') }} href='#data'>{this.__('Info')}</a></li>
-                  {(MAPHUBS_CONFIG.FR_ENABLE && this.props.canEdit) &&
+                  {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
                   <li className='tab'><a onClick={function () { _this.selectTab('forestreport') }} href='#forestreport'>{this.__('Forest Report')}</a></li>
                   }
                   <li className='tab'><a onClick={function () { _this.selectTab('photo') }} href='#photo'>{this.__('Photo')}</a></li>
