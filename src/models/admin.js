@@ -92,7 +92,17 @@ module.exports = {
 
   getMembers (trx: any) {
     const db = trx || knex
-    return db('omh.account_invites')
+    return db('users')
+      .fullOuterJoin('omh.account_invites', 'users.email', 'omh.account_invites.email')
+      .fullOuterJoin('omh.admins', 'users.id', 'omh.admins.user_id')
+      .select('users.id', 'users.display_name', 'users.email', 'omh.account_invites.email as invite_email', 'omh.account_invites.key', 'omh.account_invites.used', 'omh.admins.user_id as admin')
+      .orderBy('users.id')
+  },
+
+  getAdmins (trx: any) {
+    const db = trx || knex
+    return db('omh.admins').leftJoin('users', 'omh.admins.user_id', 'users.id')
+      .select('users.id', 'users.email', 'users.display_name')
   },
 
   deauthorize (email: string, key: string, trx: any) {
@@ -108,5 +118,33 @@ module.exports = {
       return true
     }
     return false
+  },
+
+  async sendAdminUserSignupNotification (user_email: string, display_name: string) {
+    const admins = await this.getAdmins()
+    admins.push({
+      email: local.adminEmail
+    })
+    admins.forEach(async (admin) => {
+      const text =
+      'New user signup for ' + local.productName + '\n\n' +
+      'Username:' + ' ' + display_name + '\n' +
+      'Email Address:' + ' ' + user_email + '\n'
+
+      const html =
+        '<br />' + 'New user signup for ' + local.productName +
+        '<br />' +
+        '<br />' + 'Username:' + ' ' + display_name +
+        '<br />' + 'Email Address:' + ' ' + user_email +
+        '<br />'
+
+      await Email.send({
+        from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
+        to: admin.email,
+        subject: 'New User Signup' + ' - ' + MAPHUBS_CONFIG.productName,
+        text,
+        html
+      })
+    })
   }
 }

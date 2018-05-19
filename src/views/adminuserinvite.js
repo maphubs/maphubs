@@ -4,7 +4,6 @@ import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import EditList from '../components/EditList'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import NotificationActions from '../actions/NotificationActions'
 import Progress from '../components/Progress'
@@ -16,13 +15,18 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import {Tooltip} from 'react-tippy'
 
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type User = {
   email: string,
   key: string,
-  used: boolean
+  used: boolean,
+  invite_email: string,
+  display_name: string,
+  id: number,
+  admin: boolean
 }
 
 type Props = {
@@ -195,16 +199,6 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
-    const membersList = []
-    this.state.members.forEach((user) => {
-      membersList.push({
-        key: user.key,
-        label: `${user.email} (${user.key})`,
-        icon: user.used ? 'done' : 'email',
-        actionIcon: 'email',
-        actionLabel: _this.__('Resend Invite')
-      })
-    })
 
     return (
       <ErrorBoundary>
@@ -233,7 +227,81 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
 
           </div>
           <div className='row'>
-            <EditList title='Members' items={membersList} onDelete={this.handleDeauthorize} onAction={this.handleResendInvite} onError={this.onError} />
+            <table>
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Invite Key</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.members.map((member) => {
+                  let status = 'Disabled'
+                  let icon = 'warning'
+                  let color = 'red'
+                  if (member.key) {
+                    if (member.used) {
+                      status = 'Active'
+                      icon = 'done'
+                      color = 'green'
+                    } else {
+                      status = 'Invite Sent'
+                      icon = 'email'
+                      color = 'orange'
+                    }
+                  }
+
+                  if (member.admin) {
+                    status = 'Admin'
+                    color = 'purple'
+                    icon = 'supervisor_account'
+                  }
+
+                  const email = member.email || member.invite_email
+                  return (
+                    <tr key={member.id}>
+                      <td>
+                        <Tooltip title={status} position='bottom' inertia followCursor>
+                          <i className='material-icons' style={{color}} >{icon}</i>
+                        </Tooltip>
+                      </td>
+                      <td>{member.display_name}</td>
+                      <td>{email}</td>
+                      <td>{member.key}</td>
+                      <td>
+                        <Tooltip title={_this.__('Resend Invite')} position='bottom' inertia followCursor>
+                          <a onClick={() => {
+                            _this.handleResendInvite(member)
+                          }
+                          }>
+                            <i className='material-icons' style={{cursor: 'pointer'}}>email</i>
+                          </a>
+                        </Tooltip>
+                        {(status !== 'Disabled' && status !== 'Admin') &&
+                          <Tooltip title={_this.__('Remove User')} position='bottom' inertia followCursor>
+                            <a onClick={() => {
+                              _this.handleDeauthorize(member)
+                            }}>
+                              <i className='material-icons' style={{
+                                cursor: 'pointer'
+                              }}>delete</i>
+                            </a>
+                          </Tooltip>
+                        }
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className='row'>
+            <p>
+              {this.__('To delete a user please contact support@maphubs.com. Completely deleting a user may require deleting their content or reassigning their content to another user.')}
+            </p>
           </div>
           <Progress id='saving-user-invite' title={this.__('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
         </main>

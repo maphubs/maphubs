@@ -52,6 +52,8 @@ const createMapHubsUser = async function (profile: Object) {
     display_name: maphubsUser.display_name,
     email: maphubsUser.email
   }
+
+  await Admin.sendAdminUserSignupNotification(maphubsUser.email, maphubsUser.display_name)
   return profile
 }
 
