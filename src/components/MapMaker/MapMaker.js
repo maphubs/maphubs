@@ -93,18 +93,10 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   componentWillMount () {
     super.componentWillMount()
-    const _this = this
-    if (this.props.mapLayers) {
-      Actions.setMapLayers(this.props.mapLayers)
-    }
-
-    if (this.props.basemap) {
-      Actions.setMapBasemap(this.props.basemap)
-    }
-
-    if (this.props.settings) {
-      Actions.setSettings(this.props.settings)
-    }
+    const {mapLayers, basemap, settings} = this.props
+    if (mapLayers) { Actions.setMapLayers(mapLayers) }
+    if (basemap) { Actions.setMapBasemap(basemap) }
+    if (settings) { Actions.setSettings(settings) }
   }
 
   componentDidMount () {
@@ -431,28 +423,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       )
     }
 
-    let overlayLayerList = ''
-    if (!this.state.mapLayers || this.state.mapLayers.length === 0) {
-      overlayLayerList = (
-        <div style={{height: '100%', padding: 0, margin: 0}}>
-          <p style={{margin: '20px 10px'}}>{this.__('No layers in map, use the tab to the right to add an overlay layer.')}</p>
-        </div>
-      )
-    } else {
-      overlayLayerList = (
-        <LayerList
-          layers={this.state.mapLayers}
-          showVisibility={_this.props.showVisibility}
-          showRemove showDesign showEdit={!this.state.editingLayer}
-          toggleVisibility={_this.toggleVisibility}
-          removeFromMap={_this.removeFromMap}
-          showLayerDesigner={_this.showLayerDesigner}
-          updateLayers={Actions.setMapLayers}
-          editLayer={_this.editLayer}
-        />
-      )
-    }
-
     let editLayerPanel = ''
     let editingTools = ''
     if (this.state.editingLayer) {
@@ -540,6 +510,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
           <div id='addlayer' style={{height: 'calc(100vh - 100px)', overflow: 'scroll'}}>
             <AddLayerPanel myLayers={this.props.myLayers}
               popularLayers={this.props.popularLayers}
+              groups={this.props.groups}
               onAdd={this.addLayer} />
           </div>
           <div id='maptab' className='row no-margin' style={{height: 'calc(100vh - 100px)', display: tabContentDisplay}}>

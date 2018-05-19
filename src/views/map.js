@@ -6,13 +6,17 @@ import slugify from 'slugify'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
+import '../services/locales'
 import BaseMapStore from '../stores/map/BaseMapStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import type {Layer} from '../stores/layer-store'
+import type {Group} from '../stores/GroupStore'
 
 type Props = {
-  popularLayers: Array<Object>,
-  myLayers: Array<Object>,
+  popularLayers: Array<Layer>,
+  myLayers: Array<Layer>,
+  groups: Array<Group>,
   editLayer: Object,
   headerConfig: Object,
   mapConfig: Object,
@@ -70,6 +74,7 @@ export default class Map extends MapHubsComponent<Props, void> {
               popularLayers={this.props.popularLayers}
               myLayers={this.props.myLayers}
               editLayer={this.props.editLayer}
+              groups={this.props.groups}
             />
           </main>
         </div>

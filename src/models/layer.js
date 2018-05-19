@@ -189,13 +189,25 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  getGroupLayers (group_id: string, includePrivate: boolean = false): Promise<Array<Object>> {
-    const query: knex = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
-      'remote', 'remote_host', 'remote_layer_id',
-      'status', 'private', 'source', 'license', 'presets',
-      'allow_public_submit',
-      'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-      .table('omh.layers').orderBy(knex.raw(`name -> 'en'`))
+  getGroupLayers (group_id: string, includePrivate: boolean = false, includeMapInfo: boolean = false): Promise<Array<Object>> {
+    let query
+    if (includeMapInfo) {
+      query = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
+        'remote', 'remote_host', 'remote_layer_id',
+        'status', 'source', 'license', 'presets',
+        'allow_public_submit',
+        'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
+        'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
+        'style', 'legend_html', 'labels', 'settings', 'extent_bbox', 'preview_position')
+        .table('omh.layers')
+    } else {
+      query = knex.select('layer_id', 'shortid', 'name', 'description', 'data_type',
+        'remote', 'remote_host', 'remote_layer_id',
+        'status', 'private', 'source', 'license', 'presets',
+        'allow_public_submit',
+        'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+        .table('omh.layers').orderBy(knex.raw(`name -> 'en'`))
+    }
 
     if (includePrivate) {
       query.where({

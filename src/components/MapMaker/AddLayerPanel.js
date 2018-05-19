@@ -3,25 +3,30 @@ import React from 'react'
 import SearchBox from '../SearchBox'
 import CardCarousel from '../CardCarousel/CardCarousel'
 import request from 'superagent'
+import Formsy from 'formsy-react'
 import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
 import MapHubsComponent from '../MapHubsComponent'
-
+import Select from '../forms/select'
 import {checkClientError} from '../../services/client-error-response'
 import cardUtil from '../../services/card-util'
 import urlUtil from '../../services/url-util'
 import DebugService from '../../services/debug'
+import type {Layer} from '../../stores/layer-store'
+import type {Group} from '../../stores/GroupStore'
 const debug = DebugService('mapmaker/addlayerpanel')
 
 type Props = {
-  myLayers: Array<Object>,
-  popularLayers: Array<Object>,
+  myLayers: Array<Layer>,
+  popularLayers: Array<Layer>,
+  groups: Array<Group>,
   onAdd: Function
 }
 
 type State = {
-  searchResults: Array<Object>,
-  searchActive: boolean
+  searchResults: Array<Layer>,
+  searchActive: boolean,
+  selectedGroupId?: string
 }
 
 export default class AddLayerPanel extends MapHubsComponent<Props, State> {
@@ -29,7 +34,8 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
 
   state = {
     searchResults: [],
-    searchActive: false
+    searchActive: false,
+    selectedGroupId: undefined
   }
 
   handleSearch = (input: string) => {
@@ -58,8 +64,38 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
       })
   }
 
+  handleGroupSearch = (group_id: string) => {
+    if (!group_id) {
+      this.resetSearch()
+      return
+    }
+    const _this = this
+    debug.log(`searching for group: ${group_id}`)
+    request.get(`${urlUtil.getBaseUrl()}/api/layers/group/${group_id}`)
+      .type('json').accept('json')
+      .end((err, res) => {
+        checkClientError(res, err, (err) => {
+          if (err) {
+            MessageActions.showMessage({title: 'Error', message: err})
+          } else {
+            if (res.body.layers && res.body.layers.length > 0) {
+              _this.setState({searchActive: true, searchResults: res.body.layers, selectedGroupId: group_id})
+              NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'topright'})
+            } else {
+            // show error message
+              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'topright'})
+            }
+          }
+        },
+        (cb) => {
+          cb()
+        }
+        )
+      })
+  }
+
   resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []})
+    this.setState({searchActive: false, searchResults: [], selectedGroupId: undefined})
   }
 
   render () {
@@ -126,10 +162,31 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
       }
     }
 
+    const groupOptions = []
+    if (this.props.groups) {
+      this.props.groups.map((group) => {
+        groupOptions.push({
+          value: group.group_id,
+          label: _this._o_(group.name)
+        })
+      })
+    }
+
     return (
       <div style={{paddingTop: '10px'}}>
-        <div style={{paddingLeft: '25%', paddingRight: '25%'}}>
-          <SearchBox label={this.__('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+        <div className='row no-margin'>
+          <div className='col s6'>
+            <SearchBox label={this.__('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+          </div>
+          <div className='col s6'>
+            <Formsy >
+              <Select name='group' id='group-select' startEmpty
+                value={this.state.selectedGroupId} onChange={this.handleGroupSearch}
+                emptyText={this.__('or Select a Group')} options={groupOptions} className='col s12'
+                required
+              />
+            </Formsy>
+          </div>
         </div>
         <div>
           {searchResults}

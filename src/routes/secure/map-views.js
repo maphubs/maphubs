@@ -3,6 +3,7 @@ import Locales from '../../services/locales'
 const User = require('../../models/user')
 const Map = require('../../models/map')
 const Layer = require('../../models/layer')
+const Group = require('../../models/group')
 const Stats = require('../../models/stats')
 const debug = require('../../services/debug')('routes/map')
 // var log = require('../../services/log');
@@ -63,7 +64,12 @@ module.exports = function (app: any) {
         }
         return app.next.render(req, res, '/map', await pageOptions(req, {
           title: req.__('New Map'),
-          props: {popularLayers, myLayers, editLayer},
+          props: {
+            popularLayers,
+            myLayers,
+            editLayer,
+            groups: await Group.getAllGroups()
+          },
           hideFeedback: true
         }))
       }
@@ -217,7 +223,8 @@ module.exports = function (app: any) {
               map,
               layers,
               popularLayers,
-              myLayers
+              myLayers,
+              groups: await Group.getAllGroups()
             },
             hideFeedback: true
           }))

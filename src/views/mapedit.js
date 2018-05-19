@@ -10,11 +10,15 @@ import BaseMapStore from '../stores/map/BaseMapStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
+import type {Layer} from '../stores/layer-store'
+import type {Group} from '../stores/GroupStore'
+
 type Props = {
   map: Object,
-  layers: Array<Object>,
-  popularLayers:Array<Object>,
-  myLayers: Array<Object>,
+  layers: Array<Layer>,
+  popularLayers:Array<Layer>,
+  myLayers: Array<Layer>,
+  groups: Array<Group>,
   locale: string,
   _csrf: string,
   headerConfig: Object,
@@ -69,6 +73,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
             settings={this.props.map.settings}
             popularLayers={this.props.popularLayers}
             myLayers={this.props.myLayers}
+            groups={this.props.groups}
             edit />
         </main>
       </ErrorBoundary>
