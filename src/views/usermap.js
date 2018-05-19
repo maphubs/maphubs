@@ -196,19 +196,19 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   showEmbedCode = () => {
     const baseUrl = urlUtil.getBaseUrl()
     let url
-    if (this.props.map.share_id) {
-      url = `${baseUrl}/map/public-embed/${this.props.map.share_id}/static`
+    if (this.state.share_id) {
+      url = `${baseUrl}/map/public-embed/${this.state.share_id}/static`
     } else {
       url = `${baseUrl}/map/embed/${this.props.map.map_id}/static`
     }
 
     const code = `
-      &lt;iframe src="${url}"
-        style="width: 100%; height: 350px;" frameborder="0" 
-        allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
-        &gt;
-      &lt;/iframe&gt;
-    `
+&lt;iframe src="${url}"
+  style="width: 100%; height: 350px;" frameborder="0" 
+  allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
+  &gt;
+&lt;/iframe&gt;
+`
     const messageIntro = this.__('Paste the following code into your website to embed a map:')
     const message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`
 
