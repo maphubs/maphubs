@@ -143,9 +143,11 @@ class Select extends MapHubsComponent<Props, State> {
         >
           <div ref='selectwrapper' className='input-field no-margin' id={this.props.id} >
             {icon}
-            <div className='row' style={{height: '10px'}}>
-              <label htmlFor={this.props.name} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
-            </div>
+            {this.props.label &&
+              <div className='row' style={{height: '10px'}}>
+                <label htmlFor={this.props.name} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+              </div>
+            }
             <div className='row no-margin'>
               <ReactSelect
                 name={this.props.name}
