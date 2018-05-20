@@ -37,7 +37,11 @@ module.exports = function (app: any) {
         !req.session || !req.session.user) {
         const popularLayers = await Layer.getPopularLayers()
         return app.next.render(req, res, '/map', await pageOptions(req, {
-          title: 'New Map ', props: {popularLayers}
+          title: 'New Map ',
+          props: {
+            popularLayers,
+            groups: await Group.getAllGroups()
+          }
         }))
       } else {
         // get user id
