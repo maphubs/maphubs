@@ -1,5 +1,23 @@
 # Change Log
 
+## [v0.17.13](https://github.com/maphubs/maphubs/tree/v0.17.13) (2018-05-20)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.12...v0.17.13)
+
+**Implemented enhancements:**
+
+- group filter option in map maker [\#456](https://github.com/maphubs/maphubs/issues/456)
+
+**Fixed bugs:**
+
+- error displaying layer admin only tab [\#479](https://github.com/maphubs/maphubs/issues/479)
+- trim spaces from ID on DG create layer form [\#478](https://github.com/maphubs/maphubs/issues/478)
+- error when changing group when saving the map [\#477](https://github.com/maphubs/maphubs/issues/477)
+- error opening feature page from marker icon [\#440](https://github.com/maphubs/maphubs/issues/440)
+
+**Closed issues:**
+
+- Error when changing base maps with forest alerts on [\#376](https://github.com/maphubs/maphubs/issues/376)
+
 ## [v0.17.12](https://github.com/maphubs/maphubs/tree/v0.17.12) (2018-05-13)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.11...v0.17.12)
 
