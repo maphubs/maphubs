@@ -24,9 +24,9 @@ type User = {
   key: string,
   used: boolean,
   invite_email: string,
-  display_name: string,
-  id: number,
-  admin: boolean
+  display_name?: string,
+  id?: number,
+  admin?: boolean
 }
 
 type Props = {
@@ -112,7 +112,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                 position: 'topright',
                 dismissAfter: 3000,
                 onDismiss () {
-                  _this.state.members.push({email: user.email, key, used: false})
+                  _this.state.members.push({email: user.email, invite_email: user.email, key, used: false})
                   _this.setState({members: _this.state.members})
                 }
               })
@@ -124,36 +124,28 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
       })
   }
 
-  handleResendInvite = (action: {key: string}) => {
-    const _this = this
-    this.state.members.forEach((user: User) => {
-      if (user.key === action.key) {
-        ConfirmationActions.showConfirmation({
-          title: this.__('Confirm Resend Email'),
-          postitiveButtonText: this.__('Send Invite'),
-          negativeButtonText: this.__('Cancel'),
-          message: this.__(`Are you sure you want to resend the invite email for ${user.email}?`),
-          onPositiveResponse () {
-            _this.submitInvite(user)
-          }
-        })
+  handleResendInvite = (user: User) => {
+    const {submitInvite} = this
+    ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Resend Email'),
+      postitiveButtonText: this.__('Send Invite'),
+      negativeButtonText: this.__('Cancel'),
+      message: this.__(`Are you sure you want to resend the invite email for ${user.email}?`),
+      onPositiveResponse () {
+        submitInvite(user)
       }
     })
   }
 
-  handleDeauthorize = (action: {key: string}) => {
-    const _this = this
-    this.state.members.forEach((user) => {
-      if (user.key === action.key) {
-        ConfirmationActions.showConfirmation({
-          title: this.__('Confirm Deauthorize'),
-          postitiveButtonText: this.__('Deauthorize'),
-          negativeButtonText: this.__('Cancel'),
-          message: this.__(`Are you sure you want to deauthorize access for ${user.email}?`),
-          onPositiveResponse () {
-            _this.submitDeauthorize(user)
-          }
-        })
+  handleDeauthorize = (user: User) => {
+    const {submitDeauthorize} = this
+    ConfirmationActions.showConfirmation({
+      title: this.__('Confirm Deauthorize'),
+      postitiveButtonText: this.__('Deauthorize'),
+      negativeButtonText: this.__('Cancel'),
+      message: this.__(`Are you sure you want to deauthorize access for ${user.email}?`),
+      onPositiveResponse () {
+        submitDeauthorize(user)
       }
     })
   }
