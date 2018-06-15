@@ -12,6 +12,7 @@ import MapLayerMenu from './InteractiveMap/MapLayerMenu'
 import MapHubsComponent from './MapHubsComponent'
 import Reflux from './Rehydrate'
 import _debounce from 'lodash.debounce'
+import _isEqual from 'lodash.isequal'
 import ShareButtons from './ShareButtons'
 
 import type {MapStoreState} from '../stores/MapStore'
@@ -39,9 +40,11 @@ type Props = {
   showShareButtons: boolean,
   hideInactive: boolean,
   showScale: boolean,
+  showLegendLayersButton: boolean,
   insetMap: boolean,
   children?: any,
-  basemap: string
+  basemap: string,
+  gpxLink?: Object
 }
 
 type State = {
@@ -63,7 +66,8 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     showShareButtons: true,
     hideInactive: true,
     showScale: true,
-    insetMap: true
+    insetMap: true,
+    showLegendLayersButton: true
   }
 
   state: State
@@ -107,6 +111,12 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   componentDidMount () {
     M.Sidenav.init(this.refs.mapLegendSideNav, {edge: 'left'})
     M.Sidenav.init(this.refs.mapLayersSideNav, {edge: 'left'})
+  }
+
+  componentWillReceiveProps (nextProps: Props) {
+    if (!_isEqual(nextProps.layers, this.props.layers)) {
+      MapActions.updateLayers(nextProps.layers, true)
+    }
   }
 
   toggleVisibility = (layer_id: number) => {
@@ -177,19 +187,21 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     return this.refs.map
   }
   render () {
+    const {fitBounds} = this.props
+    const {position} = this.state
     let border = 'none'
     if (this.props.border) {
       border = '1px solid #212121'
     }
 
     let bounds
-    if (this.props.fitBounds) {
-      bounds = this.props.fitBounds
-    } else if (this.state.position) {
+    if (fitBounds) {
+      bounds = fitBounds
+    } else if (position) {
       if (typeof window === 'undefined' || !window.location.hash) {
         // only update position if there isn't absolute hash in the URL
-        if (this.state.position && this.state.position.bbox) {
-          const bbox = this.state.position.bbox
+        if (position && position.bbox) {
+          const bbox = position.bbox
           bounds = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
         }
       }
@@ -229,6 +241,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           title={title}
           collapsible={false}
           hideInactive={this.props.hideInactive}
+          showLayersButton={this.props.showLegendLayersButton}
           mapLayersActivatesID={`map-layers-${this.props.map_id}`}
           layers={this.state.layers}
         />
@@ -250,6 +263,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           }}
           maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`}
           hideInactive={this.props.hideInactive}
+          showLayersButton={this.props.showLegendLayersButton}
           layers={this.state.layers}
           title={title}
           mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
@@ -333,7 +347,9 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           insetConfig={this.props.insetConfig}
           insetMap={this.props.insetMap}
           showScale={this.props.showScale}
-          disableScrollZoom={this.props.disableScrollZoom}>
+          disableScrollZoom={this.props.disableScrollZoom}
+          gpxLink={this.props.gpxLink}
+        >
 
           {legend}
           {children}

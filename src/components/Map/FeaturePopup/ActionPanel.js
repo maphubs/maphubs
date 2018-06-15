@@ -81,7 +81,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
     } else {
       dataToggle = (
         <Tooltip
-          title={t('View Data')}
+          title={t('View Details')}
           position='bottom' inertia followCursor>
           <a href='#' onClick={toggleData} style={{margin: 0}}>
             <i className='material-icons omh-accent-text'>info</i>

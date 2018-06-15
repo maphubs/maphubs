@@ -67,14 +67,15 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     this.stores.push(FeaturePhotoStore)
     this.stores.push(BaseMapStore)
     this.stores.push(UserStore)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {user: props.user})
+    const {locale, _csrf, user, feature, photo, notes, mapConfig} = props
+    Reflux.rehydrate(LocaleStore, {locale, _csrf})
+    if (user) {
+      Reflux.rehydrate(UserStore, {user})
     }
-    Reflux.rehydrate(FeatureNotesStore, {notes: this.props.notes})
-    Reflux.rehydrate(FeaturePhotoStore, {feature: this.props.feature, photo: this.props.photo})
-    if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+    Reflux.rehydrate(FeatureNotesStore, {notes})
+    Reflux.rehydrate(FeaturePhotoStore, {feature, photo})
+    if (mapConfig && mapConfig.baseMapOptions) {
+      Reflux.rehydrate(BaseMapStore, {baseMapOptions: mapConfig.baseMapOptions})
     }
   }
 
@@ -124,7 +125,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     let zoom = Math.ceil(position.zoom)
     if (zoom < 10) zoom = 10
     const baseUrl = urlUtil.getBaseUrl()
-    return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' + position.lat + '/' + position.lng
+    return `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}#${zoom}/${position.lat}/${position.lng}`
   }
 
   openEditor = () => {
@@ -144,15 +145,15 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     const _this = this
     let featureName: string = 'Unknown'
 
-    const {canEdit} = this.props
+    const {canEdit, layer, feature, mapConfig, headerConfig} = this.props
     let geojsonFeature
 
-    if (this.props.feature && this.props.layer && this.props.feature.features) {
+    if (feature && layer && feature.features) {
       // glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
 
-      if (this.props.feature.features && this.props.feature.features.length > 0) {
-        geojsonFeature = this.props.feature.features[0]
-        var geoJSONProps = this.props.feature.features[0].properties
+      if (feature.features && feature.features.length > 0) {
+        geojsonFeature = feature.features[0]
+        var geoJSONProps = feature.features[0].properties
         if (geoJSONProps.name) {
           featureName = geoJSONProps.name
         }
@@ -171,7 +172,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       )
 
       let idEditButton
-      if (!this.props.layer.is_external) {
+      if (!layer.is_external) {
         idEditButton = (
           <li>
             <FloatingButton
@@ -192,24 +193,25 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       )
     }
 
-    const layerUrl = `${baseUrl}/layer/info/${this.props.layer.layer_id}/${slugify(this._o_(this.props.layer.name))}`
-    const mhid = this.props.feature.mhid.split(':')[1]
+    const layerUrl = `${baseUrl}/layer/info/${layer.layer_id}/${slugify(this._o_(layer.name))}`
+    const mhid = feature.mhid.split(':')[1]
 
     let gpxLink
-    if (this.props.layer.data_type === 'polygon') {
-      gpxLink = baseUrl + '/api/feature/gpx/' + this.props.layer.layer_id + '/' + mhid + '/feature.gpx'
+    if (layer.data_type === 'polygon') {
+      gpxLink = baseUrl + '/api/feature/gpx/' + layer.layer_id + '/' + mhid + '/feature.gpx'
     }
 
-    const firstSource = Object.keys(this.props.layer.style.sources)[0]
-    const presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets')
+    const firstSource = Object.keys(layer.style.sources)[0]
+    const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
 
     let frPanel
     if (MAPHUBS_CONFIG.FR_ENABLE && this.state.user) {
       if (this.state.tab === 'forestreport' || this.state.frActive) {
         frPanel = (
           <ForestReportEmbed
-            geoJSON={this.props.feature}
+            geoJSON={feature}
             onLoad={this.map.activateFR}
+            onModuleToggle={this.map.frToggle}
             onAlertClick={this.map.onAlertClick}
           />
         )
@@ -218,7 +220,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
           <div className='row' style={{height: '100%', margin: 0}}>
             <div className='col s6 no-padding' style={{height: '100%'}}>
@@ -236,7 +238,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                 </ul>
                 <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
                   <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Name:')} </b>{featureName}</p>
-                  <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(this.props.layer.name)}</a></p>
+                  <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
                   <div className='row no-margin' style={{height: '140px'}}>
                     <div className='col m6 s12' style={{height: '100%', border: '1px solid #ddd'}}>
                       <FeatureLocation geojson={geojsonFeature} />
@@ -251,7 +253,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                       <FeatureProps data={geoJSONProps} presets={presets} />
                     </div>
                     <div className='col m6 s12 no-padding' style={{height: '100%', overflowY: 'auto', border: '1px solid #ddd'}}>
-                      <FeatureExport mhid={mhid} {...this.props.layer} />
+                      <FeatureExport mhid={mhid} {...layer} />
                     </div>
                   </div>
                 </div>
@@ -276,9 +278,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                 </div>
               </div>
             </div>
-            <div className='col s6 no-padding'>
+            <div className='col s6 no-padding' style={{height: '100%'}}>
               <FeatureMap ref={(map) => { this.map = map }}
-                geojson={this.props.feature} gpxLink={gpxLink} />
+                layer={layer} geojson={feature} gpxLink={gpxLink} mapConfig={mapConfig} />
             </div>
           </div>
           {editButton}

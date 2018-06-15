@@ -1,48 +1,104 @@
 //  @flow
 import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
-import Map from '../Map/Map'
+import InteractiveMap from '../InteractiveMap'
 import turf_bbox from '@turf/bbox'
+import {getLayer, getLayerFRActive} from './Map/layer-feature'
+import {getRemainingLayer} from './Map/layer-remaining'
+import {getGLADLayer} from './Map/layer-glad'
+import {getIFLLayer} from './Map/layer-ifl'
+import {getIFLLossLayer} from './Map/layer-ifl-loss'
+import {getLossLayer} from './Map/layer-loss'
+import StyleHelper from '../Map/Styles/style'
+
+import type {Layer} from '../../stores/layer-store'
 
 type Props = {
+  layer: Layer,
   geojson: Object,
   mapConfig: Object,
   gpxLink: Object
 }
 
 type State = {
+  featureLayer: Layer,
+  mapLayers: Array<Layer>,
   glStyle: Object
 }
 
 export default class FeatureMap extends MapHubsComponent<Props, State> {
+  map: any
   constructor (props: Props) {
     super(props)
+    const layer = getLayer(props.layer, props.geojson)
+
     this.state = {
-      glStyle: this.getDataStyle(props.geojson)
+      featureLayer: layer,
+      glStyle: layer.style || {},
+      mapLayers: [layer]
     }
   }
 
-  activateFR = (data: Object) => {
+  activateFR = (config: Object) => {
     // console.log(data);
     let combinedGLADFeatures = []
-    data.values.forEach((value) => {
+    config.glad.data.values.forEach((value) => {
       combinedGLADFeatures = combinedGLADFeatures.concat(value.features)
     })
     const gladGeoJSON = {
       type: 'FeatureCollection',
       features: combinedGLADFeatures
     }
-    const glStyle = this.getFRStyle(gladGeoJSON)
-    this.setState({glStyle})
+
+    let ifl2016Data
+    if (config.ifl2016 && config.ifl2016.features) {
+      ifl2016Data = {type: 'FeatureCollection', features: config.ifl2016.features}
+    }
+
+    let iflLoss0013Data
+    let iflLoss1316Data
+    if (config.loss0013 && config.loss0013.features) {
+      iflLoss0013Data = {type: 'FeatureCollection', features: config.loss0013.features}
+    }
+    if (config.loss1316 && config.loss1316.features) {
+      iflLoss1316Data = {type: 'FeatureCollection', features: config.loss1316.features}
+    }
+
+    const mapLayers = [
+      getGLADLayer(gladGeoJSON, config.toggles.glad),
+      getIFLLossLayer(iflLoss0013Data, iflLoss1316Data, config.toggles.ifl),
+      getIFLLayer(ifl2016Data, config.toggles.iflloss),
+      getLayerFRActive(this.state.featureLayer, this.props.geojson),
+      getLossLayer(config.toggles.loss),
+      getRemainingLayer(config.toggles.remaining)
+    ]
+
+    const glStyle = StyleHelper.buildMapStyle(mapLayers)
+
+    this.setState({mapLayers, glStyle})
   }
 
   deactiveFR = () => {
-    this.setState({glStyle: this.getDataStyle(this.props.geojson)})
+    this.setState({mapLayers: [this.state.featureLayer]})
+  }
+
+  frToggle = (id: string) => {
+    if (id === 'remaining') {
+      this.map.toggleVisibility(99999901)
+    } else if (id === 'loss') {
+      this.map.toggleVisibility(99999905)
+    } else if (id === 'glad') {
+      this.map.toggleVisibility(99999902)
+    } else if (id === 'ifl') {
+      this.map.toggleVisibility(99999903)
+    } else if (id === 'iflloss') {
+      this.map.toggleVisibility(99999904)
+    }
   }
 
   onAlertClick = (alert: Object) => {
     // console.log(alert);
-    const map = this.refs.map.map
+    const map = this.map.getMap().map
     const geoJSONData = map.getSource('fr-glad-geojson')
     const data = {
       type: 'FeatureCollection',
@@ -55,211 +111,24 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     map.fitBounds(bounds, {padding: 25, curve: 3, speed: 0.6, maxZoom: 18})
   }
 
-  getFRStyle = (gladGeoJSON: Object) => {
-    const defaultColor = 'yellow'
-    const gladColor = 'red'
-    const layers = [
-      {
-        'id': 'fr-tree-cover-density',
-        'type': 'raster',
-        'source': 'fr-tree-cover-density',
-        'minzoom': 0,
-        'maxzoom': 18,
-        'paint': {
-          'raster-opacity': 1
-        }
-      },
-      {
-        'id': `omh-data-polygon-glad-geojson`,
-        'type': 'fill',
-        'metadata': {
-          'maphubs:interactive': false,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'fr-glad-geojson',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
-          'fill-color': gladColor,
-          'fill-opacity': 0.2
-        }
-      }, {
-        'id': `fr-data-outline-polygon-glad-geojson`,
-        'type': 'line',
-        'metadata': {
-        },
-        'source': 'fr-glad-geojson',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
-          'line-color': gladColor,
-          'line-opacity': 1,
-          'line-width': 1
-        }
-      },
-      {
-        'id': `omh-data-point-feature-geojson`,
-        'type': 'circle',
-        'metadata': {
-          'maphubs:interactive': true,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'Point'],
-        'paint': {
-          'circle-color': defaultColor,
-          'circle-opacity': 1
-        }
-      }, {
-        'id': `omh-data-line-feature-geojson`,
-        'type': 'line',
-        'metadata': {
-          'maphubs:interactive': true,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'LineString'],
-        'paint': {
-          'line-color': defaultColor,
-          'line-opacity': 0.5,
-          'line-width': 2
-        }
-      },
-      {
-        'id': `omh-data-polygon-feature-geojson`,
-        'type': 'fill',
-        'metadata': {
-          'maphubs:interactive': false,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
-          'fill-color': 'white',
-          'fill-opacity': 0
-        }
-      }, {
-        'id': `omh-data-outline-polygon-feature-geojson`,
-        'type': 'line',
-        'metadata': {
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
-          'line-color': defaultColor,
-          'line-opacity': 0.8,
-          'line-width': 3
-        }
-      }
-    ]
-
-    const style = {
-      version: 8,
-      sources: {
-        'omh-feature-geojson': {
-          type: 'geojson',
-          data: this.props.geojson
-        },
-        'fr-glad-geojson': {
-          type: 'geojson',
-          data: gladGeoJSON
-        },
-        'fr-tree-cover-density': {
-          type: 'raster',
-          tiles: [
-            'https://tile-api.forest.report/remaining/80/{z}/{x}/{y}'
-          ],
-          tileSize: 256
-        }
-
-      },
-      layers
-    }
-    return style
-  }
-
-  getDataStyle = (geojson: Object) => {
-    const defaultColor = 'red'
-    const layers = [
-      {
-        'id': `omh-data-point-feature-geojson`,
-        'type': 'circle',
-        'metadata': {
-          'maphubs:interactive': true,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'Point'],
-        'paint': {
-          'circle-color': defaultColor,
-          'circle-opacity': 1
-        }
-      }, {
-        'id': `omh-data-line-feature-geojson`,
-        'type': 'line',
-        'metadata': {
-          'maphubs:interactive': true,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'LineString'],
-        'paint': {
-          'line-color': defaultColor,
-          'line-opacity': 0.5,
-          'line-width': 2
-        }
-      },
-      {
-        'id': `omh-data-polygon-feature-geojson`,
-        'type': 'fill',
-        'metadata': {
-          'maphubs:interactive': false,
-          'maphubs:showBehindBaseMapLabels': false
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
-          'fill-color': defaultColor,
-          'fill-opacity': 0.3
-        }
-      }, {
-        'id': `omh-data-outline-polygon-feature-geojson`,
-        'type': 'line',
-        'metadata': {
-        },
-        'source': 'omh-feature-geojson',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
-          'line-color': defaultColor,
-          'line-opacity': 0.8,
-          'line-width': 3
-        }
-      }
-    ]
-
-    const style = {
-      version: 8,
-      sources: {
-        'omh-feature-geojson': {
-          type: 'geojson',
-          data: geojson
-        }
-      },
-      layers
-    }
-    return style
-  }
-
   render () {
     const {geojson, mapConfig, gpxLink} = this.props
+    const {featureLayer, mapLayers, glStyle} = this.state
     const bbox = geojson ? geojson.bbox : undefined
     return (
-      <Map ref='map'
-        id='feature-map'
-        style={{
-          height: 'calc(100vh - 50px)'
-        }}
+      <InteractiveMap
+        ref={(el) => { this.map = el }}
+        height='100%'
         fitBounds={bbox}
-        glStyle={this.state.glStyle}
+        layers={mapLayers}
+        style={glStyle}
+        map_id={featureLayer.layer_id}
         mapConfig={mapConfig}
+        disableScrollZoom={false}
+        title={featureLayer.name}
+        hideInactive
+        showTitle={false}
+        showLegendLayersButton={false}
         gpxLink={gpxLink}
       />
     )

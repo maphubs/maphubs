@@ -2,10 +2,22 @@
 import React from 'react'
 import XComponentReact from '../XComponentReact'
 
+type FRModule = {
+  id: string,
+  name: Object,
+  style: Object,
+  data: Object // payload data, varies based on module
+}
+
+type FRData = {
+  modules: Array<FRModule>
+}
+
 type Props = {|
-  geoJSON: string,
+  geoJSON: Object,
   onLoad: Function,
-  onAlertClick: Function
+  onAlertClick: Function,
+  onModuleToggle: Function
 |}
 
 type State = {
@@ -32,16 +44,18 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
       )
     }
 
-    if (!this.props.geoJSON || !this.props.geoJSON.features ||
-        this.props.geoJSON.features.length === 0 ||
-        this.props.geoJSON.features[0].type === 'Point'
+    const {geoJSON, onLoad, onModuleToggle, onAlertClick} = this.props
+
+    if (!geoJSON || !geoJSON.features ||
+        geoJSON.features.length === 0 ||
+        geoJSON.features[0].type === 'Point'
     ) {
       return (
         <p>Invalid Feature</p>
       )
     }
 
-    const geom = this.props.geoJSON.features[0].geometry
+    const geom = geoJSON.features[0].geometry
     const dimensions = {width: '100%', height: '100%'}
     if (this.state.loaded) {
       return (
@@ -52,7 +66,8 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
             style: dimensions
           }}
           dimensions={dimensions}
-          geom={geom} onLoad={this.props.onLoad} onAlertClick={this.props.onAlertClick}
+          geom={geom} onLoad={onLoad}
+          onModuleToggle={onModuleToggle} onAlertClick={onAlertClick}
         />
       )
     } else {
