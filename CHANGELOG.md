@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.17.16](https://github.com/maphubs/maphubs/tree/v0.17.16) (2018-06-15)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.15...v0.17.16)
+
+## [v0.17.15](https://github.com/maphubs/maphubs/tree/v0.17.15) (2018-06-01)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.14...v0.17.15)
+
+**Fixed bugs:**
+
+- tabs for discussion/notes not working on feature pages [\#481](https://github.com/maphubs/maphubs/issues/481)
+
 ## [v0.17.14](https://github.com/maphubs/maphubs/tree/v0.17.14) (2018-05-28)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.13...v0.17.14)
 
@@ -104,13 +114,13 @@
 [Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.4...v0.15.25)
 
 ## [db-v0.4](https://github.com/maphubs/maphubs/tree/db-v0.4) (2018-02-17)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...db-v0.4)
-
-## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.3)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.4)
 
 ## [v0.15.24](https://github.com/maphubs/maphubs/tree/v0.15.24) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...v0.15.24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...v0.15.24)
+
+## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...db-v0.3)
 
 ## [v0.15.23](https://github.com/maphubs/maphubs/tree/v0.15.23) (2018-02-15)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.22...v0.15.23)
