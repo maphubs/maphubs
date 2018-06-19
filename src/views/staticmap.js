@@ -151,6 +151,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
         style={{width: '100vw', height: '100vh'}}
         glStyle={this.props.style}
         mapConfig={this.props.mapConfig}
+        preserveDrawingBuffer
         baseMap={this.props.basemap} navPosition='top-right'>
         {legend}
       </Map>

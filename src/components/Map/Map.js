@@ -76,6 +76,7 @@ type Props = {|
     gpxLink?: string,
     attributionControl:boolean,
     allowLayerOrderOptimization: boolean,
+    preserveDrawingBuffer?: boolean,
     mapConfig: Object,
     insetConfig: Object,
     onToggleForestLoss?: Function,
@@ -113,6 +114,7 @@ export default class Map extends MapHubsComponent<Props, State> {
     interactionBufferSize: 10,
     hash: true,
     attributionControl: false,
+    preserveDrawingBuffer: false,
     style: {},
     allowLayerOrderOptimization: true,
     fitBoundsOptions: {animate: false},
@@ -230,6 +232,11 @@ export default class Map extends MapHubsComponent<Props, State> {
     const _this = this
     this.debugLog('Creating MapboxGL Map')
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+    const {debugLog} = this
+    const {preserveDrawingBuffer, enableRotation, hash, fitBoundsOptions, data, glStyle, attributionControl} = this.props
+    const {interactive, restoreBounds, locale, forestAlerts} = this.state
+    const {insetMap} = this.refs
+
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
       _this.setBaseMapStyle(baseMap, false)
 
@@ -242,11 +249,12 @@ export default class Map extends MapHubsComponent<Props, State> {
         container: _this.state.id,
         style: _this.glStyle,
         zoom: 0,
-        interactive: _this.state.interactive,
-        dragRotate: !!_this.props.enableRotation,
-        touchZoomRotate: !!_this.props.enableRotation,
+        interactive,
+        dragRotate: !!enableRotation,
+        touchZoomRotate: !!enableRotation,
+        preserveDrawingBuffer,
         center: [0, 0],
-        hash: _this.props.hash,
+        hash,
         attributionControl: false,
         transformRequest: (url, resourceType) => {
           if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
@@ -263,7 +271,7 @@ export default class Map extends MapHubsComponent<Props, State> {
         if (err) {
           debug.error(err)
         } else {
-          _this.debugLog('Added custom source: arcgisraster')
+          debugLog('Added custom source: arcgisraster')
         }
       })
 
@@ -273,42 +281,42 @@ export default class Map extends MapHubsComponent<Props, State> {
       })
 
       map.on('load', () => {
-        _this.debugLog('MAP LOADED')
+        debugLog('MAP LOADED')
       })
 
       map.on('style.load', () => {
-        _this.debugLog('style.load')
+        debugLog('style.load')
         // restore map bounds (except for geoJSON maps)
-        if (!_this.props.data && _this.state.restoreBounds) {
-          let fitBounds = _this.state.restoreBounds
+        if (!data && restoreBounds) {
+          let fitBounds = restoreBounds
           if (fitBounds.length > 2) {
             fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
           }
-          debug.log(`(${_this.state.id}) restoring bounds: ${_this.state.restoreBounds.toString()}`)
-          map.fitBounds(fitBounds, _this.props.fitBoundsOptions)
-          if (_this.refs.insetMap) {
-            _this.refs.insetMap.sync(map)
+          debugLog(`(${_this.state.id}) restoring bounds: ${restoreBounds.toString()}`)
+          map.fitBounds(fitBounds, fitBoundsOptions)
+          if (insetMap) {
+            insetMap.sync(map)
           }
         }
 
         // add the omh data
-        _this.addMapData(map, _this.props.glStyle, _this.props.data, () => {
+        _this.addMapData(map, glStyle, data, () => {
           // do stuff that needs to happen after data loads
-          _this.debugLog('finished adding map data')
+          debugLog('finished adding map data')
 
           // set locale
-          if (_this.state.locale !== 'en') {
+          if (locale !== 'en') {
             try {
-              _this.changeLocale(_this.state.locale, _this.map)
-              if (_this.refs.insetMap) {
-                _this.changeLocale(_this.state.locale, _this.refs.insetMap.getInsetMap())
+              _this.changeLocale(locale, _this.map)
+              if (insetMap) {
+                _this.changeLocale(locale, insetMap.getInsetMap())
               }
             } catch (err) {
               debug.error(err)
             }
           }
 
-          if (_this.state.forestAlerts) {
+          if (forestAlerts) {
             _this.restoreForestAlerts()
           }
 
@@ -321,11 +329,11 @@ export default class Map extends MapHubsComponent<Props, State> {
       })// end style.load
 
       // Setup inset map
-      if (_this.refs.insetMap) {
-        if (!_this.refs.insetMap.getInsetMap()) {
-          _this.refs.insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap)
-          map.on('move', () => { _this.refs.insetMap.sync(map) })
-          map.on('load', () => { _this.refs.insetMap.sync(map) })
+      if (insetMap) {
+        if (!insetMap.getInsetMap()) {
+          insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap)
+          map.on('move', () => { insetMap.sync(map) })
+          map.on('load', () => { insetMap.sync(map) })
         }
       }
 
@@ -333,12 +341,12 @@ export default class Map extends MapHubsComponent<Props, State> {
       map.on('moveend', _this.moveendHandler)
       map.on('click', _this.clickHandler)
 
-      if (_this.state.interactive) {
+      if (interactive) {
         map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), _this.props.navPosition)
         map.addControl(new mapboxgl.FullscreenControl())
       }
 
-      if (_this.props.attributionControl) {
+      if (attributionControl) {
         map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
       }
 

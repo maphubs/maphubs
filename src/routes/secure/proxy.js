@@ -15,7 +15,7 @@ module.exports = function (app: any) {
     }
   }))
 
-  app.use('/screenshots', proxy(local.manetUrl, {
+  app.use('/screenshots/*', proxy(local.manetUrl, {
     proxyReqPathResolver (req) {
       const url: Object = require('url').parse(req.url)
       const path = url.path

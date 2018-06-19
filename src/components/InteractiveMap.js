@@ -44,7 +44,8 @@ type Props = {
   insetMap: boolean,
   children?: any,
   basemap: string,
-  gpxLink?: Object
+  gpxLink?: Object,
+  preserveDrawingBuffer?: boolean
 }
 
 type State = {
@@ -67,7 +68,8 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     hideInactive: true,
     showScale: true,
     insetMap: true,
-    showLegendLayersButton: true
+    showLegendLayersButton: true,
+    preserveDrawingBuffer: false
   }
 
   state: State
@@ -349,6 +351,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           showScale={this.props.showScale}
           disableScrollZoom={this.props.disableScrollZoom}
           gpxLink={this.props.gpxLink}
+          preserveDrawingBuffer={this.props.preserveDrawingBuffer}
         >
 
           {legend}
