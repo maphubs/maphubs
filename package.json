@@ -160,7 +160,7 @@
     "prop-types": "^15.6.1",
     "raven": "^2.6.2",
     "raw-loader": "^0.5.1",
-    "react": "16.3.2",
+    "react": "16.4.1",
     "react-ace": "5.9.0",
     "react-addons-update": "^15.6.2",
     "react-color": "2.13.8",
@@ -169,7 +169,7 @@
     "react-data-grid-addons": "^4.0.8",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
-    "react-dom": "16.3.2",
+    "react-dom": "16.4.1",
     "react-fileupload-progress": "https://github.com/openmaphub/react-fileupload-progress#667cb7f13f0b468ca8d213c7db3aa1254633fa34",
     "react-intl": "^2.3.0",
     "react-medium-editor": "^1.8.1",
@@ -201,8 +201,8 @@
     "urlencode": "^1.1.0",
     "uuid": "^3.1.0",
     "wgs84-util": "3.0.0",
-    "winston": "2.4.2",
-    "winston-daily-rotate-file": "^1.7.2",
+    "winston": "3.0.0",
+    "winston-daily-rotate-file": "^3.2.1",
     "xcomponent": "6.0.60"
   },
   "optionalDependencies": {

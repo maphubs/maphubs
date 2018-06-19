@@ -1,9 +1,25 @@
 // @flow
-const winston = require('winston')
+var winston = require('winston')
+require('winston-daily-rotate-file')
 
-winston.add(require('winston-daily-rotate-file'), {
-  filename: 'logs/maphubs.log',
-  datePattern: '.yy-MM-dd'
+var fileTransport = new (winston.transports.DailyRotateFile)({
+  filename: 'logs/maphubs-%DATE%.log',
+  datePattern: 'YYYY-MM-DD-HH',
+  zippedArchive: true,
+  maxSize: '20m',
+  maxFiles: '14d'
 })
 
-module.exports = winston
+var logger =  winston.createLogger({
+  transports: [
+    fileTransport,
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      )
+    })
+  ]
+})
+
+module.exports = logger
