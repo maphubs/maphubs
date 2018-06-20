@@ -100,12 +100,17 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
         <div ref='sidenav' className='sidenav' id='map-tool-panel'
           style={{
             backgroundColor: '#FFF',
-            height: '100%',
+            height: 'calc(100% - 25px)',
             width: '240px',
-            padding: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingTop: '25px',
+            paddingBottom: 0,
             position: 'absolute',
             border: '1px solid #d3d3d3'}}>
-
+          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.closePanel}>
+            <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
+          </a>
           <ul ref='mapToolPanel' className='collapsible no-margin' data-collapsible='accordion' style={{height: '100%'}}>
             <li>
               <div className='collapsible-header' style={{borderBottom: '1px solid #ddd'}}><i className='material-icons'>layers</i>{this.__('Change Base Map')}</div>

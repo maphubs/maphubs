@@ -73,6 +73,9 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   state: State
+  map: any
+  mapLegendSideNav: any
+  mapLayersSideNav: any
 
   constructor (props: Props) {
     super(props)
@@ -111,8 +114,8 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    M.Sidenav.init(this.refs.mapLegendSideNav, {edge: 'left'})
-    M.Sidenav.init(this.refs.mapLayersSideNav, {edge: 'left'})
+    M.Sidenav.init(this.mapLegendSideNav, {edge: 'left'})
+    M.Sidenav.init(this.mapLayersSideNav, {edge: 'left'})
   }
 
   componentWillReceiveProps (nextProps: Props) {
@@ -185,8 +188,24 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     MapActions.updateLayers(mapLayers, false)
   }
 
+  openLayersPanel = () => {
+    let instance = M.Sidenav.getInstance(this.mapLayersSideNav)
+    if (!instance) {
+      M.Sidenav.init(this.mapLayersSideNav, {edge: 'left'})
+      instance = M.Sidenav.getInstance(this.mapLayersSideNav)
+    }
+    instance.open()
+  }
+
+  closeLayersPanel = () => {
+    let instance = M.Sidenav.getInstance(this.mapLayersSideNav)
+    if (instance) {
+      instance.close()
+    }
+  }
+
   getMap = () => {
-    return this.refs.map
+    return this.map
   }
   render () {
     const {fitBounds} = this.props
@@ -268,6 +287,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           showLayersButton={this.props.showLegendLayersButton}
           layers={this.state.layers}
           title={title}
+          openLayersPanel={this.openLayersPanel}
           mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
       )
     }
@@ -312,30 +332,9 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           >info</i>
         </a>
 
-        <div ref='mapLegendSideNav' className='sidenav' id={`mobile-map-legend-${this.props.map_id}`}
-          style={{
-            maxHeight: `calc(${this.props.height} - ${topOffset}px)`,
-            width: '240px',
-            paddingBottom: '0'
-          }}>
-          {mobileLegend}
-        </div>
-
-        <div ref='mapLayersSideNav' className='sidenav' id={`map-layers-${this.props.map_id}`}
-          style={{height: 'auto',
-            maxHeight: `calc(${this.props.height} - ${topOffset}px)`,
-            width: '260px',
-            paddingBottom: '0'
-          }}>
-          <LayerList layers={this.state.layers}
-            showDesign={false} showRemove={false} showVisibility
-            toggleVisibility={this.toggleVisibility}
-            updateLayers={MapActions.updateLayers}
-          />
-        </div>
         {categoryMenu}
 
-        <Map ref='map' id={'map-' + this.props.map_id}
+        <Map ref={(el) => { this.map = el }} id={'map-' + this.props.map_id}
           fitBounds={bounds} fitBoundsOptions={this.props.fitBoundsOptions}
           height={this.props.height}
           interactive={this.props.interactive}
@@ -355,6 +354,33 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
         >
 
           {legend}
+          <div ref={(el) => { this.mapLegendSideNav = el }} className='sidenav' id={`mobile-map-legend-${this.props.map_id}`}
+            style={{
+              height: '100%',
+              position: 'absolute',
+              width: '240px',
+              paddingBottom: '0'
+            }}>
+            {mobileLegend}
+          </div>
+
+          <div ref={(el) => { this.mapLayersSideNav = el }} className='sidenav' id={`map-layers-${this.props.map_id}`}
+            style={{
+              height: '100%',
+              position: 'absolute',
+              width: '260px',
+              paddingBottom: '0',
+              paddingTop: '25px'
+            }}>
+            <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.closeLayersPanel}>
+              <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
+            </a>
+            <LayerList layers={this.state.layers}
+              showDesign={false} showRemove={false} showVisibility
+              toggleVisibility={this.toggleVisibility}
+              updateLayers={MapActions.updateLayers}
+            />
+          </div>
           {children}
           {shareButtons}
         </Map>

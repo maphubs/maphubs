@@ -15,6 +15,7 @@ type Props = {|
   collapseToBottom: boolean,
   showLayersButton: boolean,
   mapLayersActivatesID?: string,
+  openLayersPanel?: Function,
   maxHeight: string,
   style: Object
 |}
@@ -53,6 +54,13 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
     }
   }
 
+  openLayersPanel = () => {
+    if(this.props.openLayersPanel) {
+      this.props.openLayersPanel()
+    }
+  }
+
+
   render () {
     const _this = this
     const {collapsed} = this.state
@@ -64,6 +72,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
           href='#'
           className='sidenav-trigger'
           data-target={this.props.mapLayersActivatesID}
+          onClick={this.openLayersPanel}
           style={{
             position: 'absolute',
             right: '20px',

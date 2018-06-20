@@ -220,7 +220,6 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
           style={{
             backgroundColor: '#FFF',
             height: '100%',
-            overflow: 'hidden',
             paddingLeft: '5px',
             paddingRight: '5px',
             paddingBottom: '5px',
