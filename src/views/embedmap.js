@@ -205,7 +205,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
             title={this.__('Start Interactive Map')}
             position='right' inertia followCursor>
             <a onClick={this.startInteractive} className='embed-map-btn btn-floating waves-effect waves-light'
-              style={{position: 'absolute', left: 'calc(50% - 20px)', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}>
+              style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}>
               <i style={{lineHeight: '60px', fontSize: '30px'}} className='material-icons'>play_arrow</i>
             </a>
           </Tooltip>
