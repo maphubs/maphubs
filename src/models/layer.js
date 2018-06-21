@@ -477,7 +477,7 @@ module.exports = {
   /**
      * Can include private?:Yes, however the remote layer must be public
      */
-  updateRemoteLayer (layer_id: number, group_id: string, layer: Object, host: string, user_id: number) {
+  async updateRemoteLayer (layer_id: number, group_id: string, layer: Object, host: string, user_id: number) {
     layer.remote = true
     layer.remote_host = host
     layer.remote_layer_id = layer.layer_id
@@ -506,8 +506,10 @@ module.exports = {
       layer.source = {en: layer.source, fr: '', es: '', it: ''}
     }
 
-    return knex('omh.layers').where({layer_id})
-      .update(layer)
+    const result = await knex('omh.layers').where({layer_id}).update(layer)
+    await ScreenshotUtils.reloadLayerThumbnail(layer_id)
+    await ScreenshotUtils.reloadLayerImage(layer_id)
+    return result
   },
 
   /*
