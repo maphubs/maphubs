@@ -14,7 +14,7 @@ const screenshotOptions = {
   quality: 0.8,
   selector: '#map-load-complete',
   selectorOptions: {
-    timeout: 45000
+    timeout: 90000
   },
   cookies: [{
     name: 'manet',

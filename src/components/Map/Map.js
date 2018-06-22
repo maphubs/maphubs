@@ -282,6 +282,10 @@ export default class Map extends MapHubsComponent<Props, State> {
 
       map.on('load', () => {
         debugLog('MAP LOADED')
+        // add selector for screenshot tool
+        setTimeout(() => {
+          $('body').append(`<div id="map-load-complete" style="display: none;"></div>`)
+        }, 5000)
       })
 
       map.on('style.load', () => {
@@ -321,10 +325,6 @@ export default class Map extends MapHubsComponent<Props, State> {
           }
 
           _this.setState({mapLoaded: true})
-          // add selector for screenshot tool
-          setTimeout(() => {
-            $('body').append(`<div id="map-load-complete" style="display: none;"></div>`)
-          }, 5000)
         })
       })// end style.load
 
