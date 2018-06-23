@@ -175,7 +175,7 @@ module.exports = {
       let bbox
       if (geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point') {
         // buffer the Point
-        const buffered = _buffer(geoJSON.features[0], 500, 'meters')
+        const buffered = _buffer(geoJSON.features[0], 500,  {units: 'meters'})
         bbox = _bbox(buffered)
       } else {
         bbox = _bbox(geoJSON)

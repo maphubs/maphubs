@@ -1,6 +1,7 @@
 // @flow
 import _includes from 'lodash.includes'
 import _find from 'lodash.find'
+import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style'
 
@@ -173,13 +174,13 @@ export default {
       const bbox = result.bbox ? result.bbox : result.boundingbox
       this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 16})
     } else if (result._geometry || result.geometry) {
-      const geometry = result._geometry ? result._geometry : result.geometry
+      let geometry = result._geometry ? result._geometry : result.geometry
       if (geometry.type === 'Point') {
-        this.map.flyTo({center: geometry.coordinates})
-      } else {
-        const bbox = _bbox(geometry)
-        this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 22})
+        const bufferedPoint = _buffer(result, 500, {units: 'meters'})
+        geometry = bufferedPoint.geometry
       }
+      const bbox = _bbox(geometry)
+      this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 22})
     } else if (result.lat && result.lon) {
       this.map.flyTo({center: [result.lon, result.lat]})
     }
