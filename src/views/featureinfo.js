@@ -149,8 +149,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     let geojsonFeature
 
     if (feature && layer && feature.features) {
-      // glStyle = this.props.layer.style ? this.props.layer.style : styles[this.props.feature.layer.data_type];
-
       if (feature.features && feature.features.length > 0) {
         geojsonFeature = feature.features[0]
         var geoJSONProps = feature.features[0].properties
@@ -201,8 +199,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       gpxLink = baseUrl + '/api/feature/gpx/' + layer.layer_id + '/' + mhid + '/feature.gpx'
     }
 
-    const firstSource = Object.keys(layer.style.sources)[0]
-    const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
+    // const firstSource = Object.keys(layer.style.sources)[0]
+    // const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
+    const presets = layer.presets
 
     let frPanel
     if (MAPHUBS_CONFIG.FR_ENABLE && this.state.user) {
@@ -216,6 +215,13 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
           />
         )
       }
+    }
+
+    let isPolygon
+    if (geojsonFeature && geojsonFeature.geometry &&
+      (geojsonFeature.geometry.type === 'Polygon' ||
+        geojsonFeature.geometry.type === 'Polygon')) {
+      isPolygon = true
     }
 
     return (
@@ -237,23 +243,22 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                   <li className='tab'><a onClick={function () { _this.selectTab('notes') }} href='#notes'>{this.__('Notes')}</a></li>
                 </ul>
                 <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
-                  <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Name:')} </b>{featureName}</p>
-                  <p style={{fontSize: '16px', marginLeft: '10px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
-                  <div className='row no-margin' style={{height: '140px'}}>
-                    <div className='col m6 s12' style={{height: '100%', border: '1px solid #ddd'}}>
-                      <FeatureLocation geojson={geojsonFeature} />
-                    </div>
-                    <div className='col m6 s12' style={{height: '100%', border: '1px solid #ddd'}}>
-                      <FeatureArea geojson={geojsonFeature} />
-                    </div>
-                  </div>
-                  <div className='row no-margin' style={{height: 'calc(100% - 236px)'}}>
+                  <div className='row no-margin' style={{height: '100%'}}>
                     <div className='col m6 s12' style={{height: '100%', overflowY: 'auto', border: '1px solid #ddd'}}>
-                      <h5>{this.__('Attributes')}</h5>
-                      <FeatureProps data={geoJSONProps} presets={presets} />
-                    </div>
-                    <div className='col m6 s12 no-padding' style={{height: '100%', overflowY: 'auto', border: '1px solid #ddd'}}>
+                      <h5>{this.__('Info')}</h5>
+                      <p style={{fontSize: '16px'}}><b>{this.__('Name:')} </b>{featureName}</p>
+                      <p style={{fontSize: '16px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
+                      <FeatureLocation geojson={geojsonFeature} />
+                      {isPolygon &&
+                        <FeatureArea geojson={geojsonFeature} />
+                      }
                       <FeatureExport mhid={mhid} {...layer} />
+                    </div>
+                    <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
+                      <h5 style={{marginLeft: '5px'}}>{this.__('Attributes')}</h5>
+                      <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
+                        <FeatureProps data={geoJSONProps} presets={presets} />
+                      </div>
                     </div>
                   </div>
                 </div>

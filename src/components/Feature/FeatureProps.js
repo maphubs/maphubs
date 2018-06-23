@@ -14,52 +14,42 @@ export default class FeatureProps extends MapHubsComponent<Props, void> {
 
   render () {
     const _this = this
-    let tbody = ''
     if (this.props.presets && this.props.data) {
-      tbody = (
-        <tbody>
+      return (
+        <ul>
           {
             this.props.presets.map((preset, i) => {
               const val = this.props.data[preset.tag]
               return (
-                <tr key={`feature-attrib-${i}`}>
-                  <td>{_this._o_(preset.label)}</td>
-                  <td>{val}</td>
-                </tr>
+                <li key={`feature-attrib-${i}`} style={{padding: 5, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
+                  <p style={{color: 'rgb(158, 158, 158)', fontSize: '12px'}}>{_this._o_(preset.label)}</p>
+                  <p className='word-wrap' style={{fontSize: '14px'}}>
+                    {val}
+                  </p>
+                </li>
               )
             })
           }
-        </tbody>
+        </ul>
       )
     } else if (this.props.data) {
-      tbody = (
-        <tbody>
+      return (
+        <ul>
           {
             Object.keys(this.props.data).map((key, i) => {
               const val = this.props.data[key]
               return (
-                <tr key={`feature-attrib-${i}`}>
-                  <td>{key}</td>
-                  <td>{val}</td>
-                </tr>
+                <li key={`feature-attrib-${i}`} style={{padding: 5, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
+                  <p style={{color: 'rgb(158, 158, 158)', fontSize: '12px'}}>{key}</p>
+                  <p className='word-wrap' style={{fontSize: '14px'}}>
+                    {val}
+                  </p>
+                </li>
               )
             })
           }
-        </tbody>
+        </ul>
       )
     }
-
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th>{this.__('Tag')}</th>
-            <th>{this.__('Value')}</th>
-          </tr>
-        </thead>
-        {tbody}
-      </table>
-
-    )
   }
 }

@@ -23,15 +23,15 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
       if (data_type === 'polygon') {
         const gpxLink = `/api/feature/gpx/${layer_id}/${mhid}/feature.gpx`
         gpxExport = (
-          <li className='collection-item'>{this.__('GPX:')} <a href={gpxLink}>{gpxLink}</a></li>
+          <li><a href={gpxLink}>{this.__('GPX')}</a></li>
         )
       }
       return (
         <div>
-          <ul className='collection with-header no-margin'>
-            <li className='collection-header'><h5>{this.__('Export Data')}</h5></li>
-            <li className='collection-item'>{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
-            <li className='collection-item'>{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
+          <h5>{this.__('Export Data')}</h5>
+          <ul className='no-margin'>
+            <li><a href={geoJSONURL}>{this.__('GeoJSON')}</a></li>
+            <li><a href={kmlURL}>{this.__('KML')}</a></li>
             {gpxExport}
           </ul>
         </div>

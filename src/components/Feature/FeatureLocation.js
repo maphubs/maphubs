@@ -3,6 +3,7 @@ import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl'
 import turf_centroid from '@turf/centroid'
+import {OpenLocationCode} from 'open-location-code'
 import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es'
 import fr from 'react-intl/locale-data/fr'
@@ -11,6 +12,8 @@ addLocaleData(en)
 addLocaleData(es)
 addLocaleData(fr)
 addLocaleData(it)
+
+const openLocationCode = new OpenLocationCode()
 
 type Props = {
   geojson?: Object
@@ -32,6 +35,7 @@ export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
 
     const lon = centroid.geometry.coordinates[0]
     const lat = centroid.geometry.coordinates[1]
+    const plusCode = openLocationCode.encode(lat, lon, 11)
     return (
       <div className='row'>
         <h5>{this.__('Location')}</h5>
@@ -47,6 +51,12 @@ export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
             <IntlProvider locale={this.state.locale}>
               <FormattedNumber value={lon} />
             </IntlProvider>&nbsp;
+          </span>
+        </div>
+        <div className='row no-margin'>
+          <span>
+            <b>{this.__('Plus Code:')}</b>&nbsp;
+            {plusCode} (<a href='https://plus.codes/' target='_blank'>{this.__('More Info')}</a>)
           </span>
         </div>
         <div className='row no-margin'>

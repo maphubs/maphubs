@@ -151,6 +151,7 @@
     "object-assign": "^4.1.1",
     "object-sizeof": "^1.2.0",
     "ogr2ogr": "^1.2.1",
+    "open-location-code": "^1.0.3",
     "passport": "^0.4.0",
     "passport-auth0": "^0.6.1",
     "pbf": "^3.0.5",

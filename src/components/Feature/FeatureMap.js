@@ -32,9 +32,14 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     super(props)
     const layer = getLayer(props.layer, props.geojson)
 
+    let glStyle = {}
+    if (layer.style) {
+      glStyle = JSON.parse(JSON.stringify(layer.style))
+    }
+
     this.state = {
       featureLayer: layer,
-      glStyle: layer.style || {},
+      glStyle,
       mapLayers: [layer]
     }
   }
