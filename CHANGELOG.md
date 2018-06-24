@@ -1,5 +1,19 @@
 # Change Log
 
+## [v0.17.17](https://github.com/maphubs/maphubs/tree/v0.17.17) (2018-06-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.16...v0.17.17)
+
+**Implemented enhancements:**
+
+- improve feature page attribute display [\#486](https://github.com/maphubs/maphubs/issues/486)
+- improve embed play button design [\#483](https://github.com/maphubs/maphubs/issues/483)
+
+**Fixed bugs:**
+
+- legend menu not displayed in full screen [\#485](https://github.com/maphubs/maphubs/issues/485)
+- click item in map search doesn't zoom [\#484](https://github.com/maphubs/maphubs/issues/484)
+- clear thumbnails when refreshing remote layer [\#482](https://github.com/maphubs/maphubs/issues/482)
+
 ## [v0.17.16](https://github.com/maphubs/maphubs/tree/v0.17.16) (2018-06-15)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.15...v0.17.16)
 
