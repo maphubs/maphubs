@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.17.18](https://github.com/maphubs/maphubs/tree/v0.17.18) (2018-06-28)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.17...v0.17.18)
+
 ## [v0.17.17](https://github.com/maphubs/maphubs/tree/v0.17.17) (2018-06-24)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.16...v0.17.17)
 
