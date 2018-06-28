@@ -27,18 +27,63 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
       } else if (component.type === 'carousel') {
         if (component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0) {
           component.datasets.forEach((dataset) => {
-            if (dataset.type === 'layer' && dataset.filter === 'popular') {
-              dataRequests.push(Layer.getPopularLayers(5))
-              dataRequestNames.push('trendingLayers')
-            } else if (dataset.type === 'group' && dataset.filter === 'popular') {
-              dataRequests.push(Group.getPopularGroups(5))
-              dataRequestNames.push('trendingGroups')
-            } else if (dataset.type === 'hub' && dataset.filter === 'popular') {
-              dataRequests.push(Hub.getPopularHubs(5))
-              dataRequestNames.push('trendingHubs')
-            } else if (dataset.type === 'map' && dataset.filter === 'popular') {
-              dataRequests.push(Map.getPopularMaps(5))
-              dataRequestNames.push('trendingMaps')
+            const {type, filter, max} = dataset
+            const number = max || 5
+            if (type === 'layer') {
+              if (filter === 'featured') {
+                dataRequests.push(Layer.getFeaturedLayers(number))
+                dataRequestNames.push('popularLayers')
+              } else if (filter === 'popular') {
+                dataRequests.push(Layer.getPopularLayers(number))
+                dataRequestNames.push('popularLayers')
+              } else if (filter === 'recent') {
+                dataRequests.push(Layer.getRecentLayers(number))
+                dataRequestNames.push('recentLayers')
+              }
+            } else if (type === 'group') {
+              if (filter === 'featured') {
+                dataRequests.push(Group.getFeaturedGroups(number))
+                dataRequestNames.push('featuredGroups')
+              } else if (filter === 'popular') {
+                dataRequests.push(Group.getPopularGroups(number))
+                dataRequestNames.push('popularGroups')
+              } else if (filter === 'recent') {
+                dataRequests.push(Group.getRecentGroups(number))
+                dataRequestNames.push('recentGroups')
+              }
+            } else if (type === 'hub') {
+              if (filter === 'featured') {
+                dataRequests.push(Hub.getFeaturedHubs(number))
+                dataRequestNames.push('featuredHubs')
+              } else if (filter === 'popular') {
+                dataRequests.push(Hub.getPopularHubs(number))
+                dataRequestNames.push('popularHubs')
+              } else if (filter === 'recent') {
+                dataRequests.push(Hub.getRecentHubs(number))
+                dataRequestNames.push('recentHubs')
+              }
+            } else if (type === 'map') {
+              if (filter === 'featured') {
+                dataRequests.push(Map.getFeaturedMaps(number))
+                dataRequestNames.push('featuredMaps')
+              } else if (filter === 'popular') {
+                dataRequests.push(Map.getPopularMaps(number))
+                dataRequestNames.push('popularMaps')
+              } else if (filter === 'recent') {
+                dataRequests.push(Map.getRecentMaps(number))
+                dataRequestNames.push('recentMaps')
+              }
+            } else if (type === 'story') {
+              if (filter === 'featured') {
+                dataRequests.push(Story.getFeaturedStories(number))
+                dataRequestNames.push('featuredStories')
+              } else if (filter === 'popular') {
+                dataRequests.push(Story.getPopularStories(number))
+                dataRequestNames.push('popularStories')
+              } else if (filter === 'recent') {
+                dataRequests.push(Story.getRecentStories(number))
+                dataRequestNames.push('recentStories')
+              }
             }
           })
         }
