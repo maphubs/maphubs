@@ -38,7 +38,6 @@ export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
     const plusCode = openLocationCode.encode(lat, lon, 11)
     return (
       <div className='row'>
-        <h5>{this.__('Location')}</h5>
         <div className='row no-margin'>
           <span>
             <b>{this.__('Latitude:')}</b>&nbsp;

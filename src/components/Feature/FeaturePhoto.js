@@ -2,13 +2,15 @@
 import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import ImageCrop from '../ImageCrop'
+import {Tooltip} from 'react-tippy'
 import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
 
 type Props = {
-  photo?: Object
+  photo?: Object,
+  canEdit?: boolean
 }
 
 export default class FeatureExport extends MapHubsPureComponent<Props, void> {
@@ -42,7 +44,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
       title: _this.__('Confirm Removal'),
       message: _this.__('Are you sure you want to remove this photo?'),
       onPositiveResponse () {
-        FeaturePhotoActions.removePhoto(this.state._csrf, (err) => {
+        FeaturePhotoActions.removePhoto(_this.state._csrf, (err) => {
           if (err) {
             MessageActions.showMessage({title: _this.__('Server Error'), message: err})
           } else {
@@ -59,40 +61,111 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
-    const {photo} = this.props
+    const {photo, canEdit} = this.props
 
-    const imageCrop = (
-      <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
-    )
+    let imageCrop = ''
+    if (canEdit) {
+      imageCrop = (
+        <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
+      )
+    }
 
     if (photo && photo.photo_id) {
       const photoUrl = `/feature/photo/${photo.photo_id}.jpg`
 
       return (
         <div>
-          <img style={{width: 'auto', maxHeight: 'calc(100% - 58px)', paddingTop: '10px'}} src={photoUrl} alt='feature photo attachment' />
-          <div className='row no-margin'>
-            <button className='btn' style={{marginLeft: '10px'}}
-              onClick={this.showImageCrop}>{this.__('Replace Photo')}</button>
-            <button className='btn' style={{marginLeft: '10px'}}
-              onClick={this.deletePhoto}>{this.__('Remove Photo')}</button>
-          </div>
+          <img style={{width: '100%'}} src={photoUrl} alt='feature photo attachment' />
+          {canEdit &&
+            <div style={{height: '30px', position: 'relative'}}>
+              <Tooltip
+                title={this.__('Replace Photo')}
+                position='left'
+                inertia followCursor
+              >
+                <i
+                  className='material-icons grey-text valign'
+                  onClick={this.showImageCrop}
+                  style={{
+                    fontSize: '24px',
+                    position: 'absolute',
+                    top: '5px',
+                    cursor: 'pointer',
+                    right: '30px'}}>
+                  add_a_photo
+                </i>
+              </Tooltip>
+              <Tooltip
+                title={this.__('Download Photo')}
+                position='left'
+                inertia followCursor
+              >
+                <a href={photoUrl} download>
+                  <i
+                    className='material-icons grey-text valign'
+                    style={{
+                      fontSize: '24px',
+                      position: 'absolute',
+                      top: '5px',
+                      cursor: 'pointer',
+                      right: '56px'}}>
+                    get_app
+                  </i>
+                </a>
+              </Tooltip>
+              <Tooltip
+                title={this.__('Remove Photo')}
+                position='left'
+                inertia followCursor
+              >
+                <i
+                  className='material-icons grey-text valign'
+                  onClick={this.deletePhoto}
+                  style={{
+                    fontSize: '24px',
+                    position: 'absolute',
+                    top: '5px',
+                    cursor: 'pointer',
+                    right: '5px'}}>
+                  delete
+                </i>
+              </Tooltip>
+            </div>
+          }
           {imageCrop}
         </div>
       )
     } else {
-      return (
-        <div>
-          <div style={{maxHeight: 'calc(100% - 58px)', paddingTop: '10px'}}>
-            <i className='material-icons grey-text valign' style={{fontSize: '72px', margin: '10px'}}>add_a_photo</i>
+      if (canEdit) {
+        return (
+          <div>
+            <div style={{height: '30px', position: 'relative'}}>
+              <Tooltip
+                title={this.__('Add Photo')}
+                position='left'
+                inertia followCursor
+              >
+                <i
+                  className='material-icons grey-text valign'
+                  onClick={this.showImageCrop}
+                  style={{
+                    fontSize: '24px',
+                    position: 'absolute',
+                    top: '5px',
+                    cursor: 'pointer',
+                    right: '5px'}}>
+                  add_a_photo
+                </i>
+              </Tooltip>
+            </div>
+            {imageCrop}
           </div>
-          <div className='row no-margin'>
-            <button className='btn' style={{marginLeft: '10px'}}
-              onClick={this.showImageCrop}>{this.__('Add Photo')}</button>
-          </div>
-          {imageCrop}
-        </div>
-      )
+        )
+      } else {
+        return (
+          <div />
+        )
+      }
     }
   }
 }

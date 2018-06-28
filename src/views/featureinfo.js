@@ -6,7 +6,6 @@ import Comments from '../components/Comments'
 import FeatureProps from '../components/Feature/FeatureProps'
 import FeatureNotes from '../components/Feature/FeatureNotes'
 import HubEditButton from '../components/Hub/HubEditButton'
-import MapStyles from '../components/Map/Styles'
 import BaseMapStore from '../stores/map/BaseMapStore'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
@@ -236,26 +235,25 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                   {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
                   <li className='tab'><a onClick={function () { _this.selectTab('forestreport') }} href='#forestreport'>{this.__('Forest Report')}</a></li>
                   }
-                  <li className='tab'><a onClick={function () { _this.selectTab('photo') }} href='#photo'>{this.__('Photo')}</a></li>
                   {MAPHUBS_CONFIG.enableComments &&
                   <li className='tab'><a onClick={function () { _this.selectTab('discussion') }} href='#discussion'>{this.__('Discussion')}</a></li>
                   }
                   <li className='tab'><a onClick={function () { _this.selectTab('notes') }} href='#notes'>{this.__('Notes')}</a></li>
+                  <li className='tab'><a onClick={function () { _this.selectTab('export') }} href='#export'>{this.__('Export')}</a></li>
                 </ul>
-                <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowY: 'auto', overflowX: 'hidden'}}>
+                <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowX: 'hidden'}}>
                   <div className='row no-margin' style={{height: '100%'}}>
-                    <div className='col m6 s12' style={{height: '100%', overflowY: 'auto', border: '1px solid #ddd'}}>
-                      <h5>{this.__('Info')}</h5>
-                      <p style={{fontSize: '16px'}}><b>{this.__('Name:')} </b>{featureName}</p>
-                      <p style={{fontSize: '16px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
-                      <FeatureLocation geojson={geojsonFeature} />
-                      {isPolygon &&
-                        <FeatureArea geojson={geojsonFeature} />
-                      }
-                      <FeatureExport mhid={mhid} {...layer} />
+                    <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
+                      <FeaturePhoto photo={this.state.photo} canEdit={canEdit} />
+                      <div style={{marginLeft: '5px', overflowY: 'auto'}}>
+                        <p style={{fontSize: '16px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
+                        <FeatureLocation geojson={geojsonFeature} />
+                        {isPolygon &&
+                          <FeatureArea geojson={geojsonFeature} />
+                        }
+                      </div>
                     </div>
                     <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
-                      <h5 style={{marginLeft: '5px'}}>{this.__('Attributes')}</h5>
                       <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
                         <FeatureProps data={geoJSONProps} presets={presets} />
                       </div>
@@ -267,11 +265,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                     {frPanel}
                   </div>
                 }
-                <div id='photo' className='col s12' style={{height: 'calc(100% - 48px)', textAlign: 'center'}}>
-                  {canEdit &&
-                  <FeaturePhoto photo={this.state.photo} />
-                  }
-                </div>
                 {MAPHUBS_CONFIG.enableComments &&
                 <div id='discussion' className='col s12' style={{height: 'calc(100% - 48px)'}}>
                   <Comments />
@@ -280,6 +273,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                 <div id='notes' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
                   <FeatureNotes editing={this.state.editingNotes} />
                   {notesEditButton}
+                </div>
+                <div id='export' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
+                  <FeatureExport mhid={mhid} {...layer} />
                 </div>
               </div>
             </div>

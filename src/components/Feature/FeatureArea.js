@@ -131,7 +131,6 @@ export default class FeatureArea extends MapHubsPureComponent<Props, void> {
       return (
         <div>
           <div className='row no-margin'>
-            <h5>{this.__('Area')}</h5>
             <span>
               <IntlProvider locale={this.state.locale}>
                 <FormattedNumber value={value} />
