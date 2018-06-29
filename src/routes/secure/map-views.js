@@ -165,6 +165,11 @@ module.exports = function (app: any) {
     }
   })
 
+  app.get('/map/view/:map_id', (req, res, next) => {
+    const map_id = req.params.map_id
+    res.redirect(`/map/view/${map_id}/`)
+  })
+
   app.get('/user/:username/map/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {
     const map_id = req.params.map_id
     if (!map_id) {
