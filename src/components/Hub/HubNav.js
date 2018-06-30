@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import UserMenu from '../UserMenu'
+import UserMenu from '../Header/UserMenu'
 import LocaleChooser from '../LocaleChooser'
 import NotificationActions from '../../actions/NotificationActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
@@ -66,7 +66,6 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
             <i className='material-icons'>menu</i>
           </a>
           <ul ref='hubNav' className='sidenav' id='nav'>
-            <UserMenu id='user-menu-sidenav' sidenav />
             <li className='nav-link-wrapper'><a href={hubBaseUrl}>{this.__('Home')}</a></li>
             <li className='nav-link-wrapper'><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
             <li className='nav-link-wrapper'><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
@@ -74,6 +73,7 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
             <hr />
             <li className='nav-link-wrapper'><a href={omhBaseUrl}>{this.__('Back to ') + MAPHUBS_CONFIG.productName}</a></li>
             {deleteButton}
+            <UserMenu id='user-menu-sidenav' sidenav />
           </ul>
         </div>
       </nav>
