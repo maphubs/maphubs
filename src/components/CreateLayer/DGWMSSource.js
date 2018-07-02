@@ -59,7 +59,7 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
     const _this = this
 
     const layers = 'DigitalGlobe:Imagery'
-    let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-3857}&format=image/png&transparent=true&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=512&height=512&layers=${layers}&connectid={DG_WMS_CONNECT_ID}&COVERAGE_CQL_FILTER=featureId='${model.featureid.trim()}'`
+    let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-3857}&format=image/png&transparent=true&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=512&height=512&layers=${layers}&connectid={DG_WMS_CONNECT_ID}&COVERAGE_CQL_FILTER=legacyId='${model.featureid.trim()}'`
 
     if (model.username) {
       url += `&username=${model.username}&password=${model.password}`
@@ -106,10 +106,10 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
       <div className='row'>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
-            <p>Raster Tile Source</p>
+            <p>DigitalGlobe <a href='https://discover.digitalglobe.com/' target='_blank'>https://discover.digitalglobe.com/</a></p>
             <div className='row'>
-              <TextInput name='featureid' label={this.__('DG feature ID')} icon='info' className='col s12'
-                dataPosition='top' dataTooltip={this.__('DG feature ID')}
+              <TextInput name='featureid' label={this.__('DG Image ID')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={this.__('DigitalGlobe Image ID / Legacy ID')}
                 required
               />
             </div>
