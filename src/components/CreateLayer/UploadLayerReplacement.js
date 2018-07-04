@@ -13,8 +13,6 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {GeoJSONObject} from 'geojson-flow'
 
-import $ from 'jquery'
-
 let scrollToComponent
 
 type Props = {|
@@ -47,7 +45,6 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   componentDidMount () {
-    $('select').material_select()
     scrollToComponent = require('react-scroll-to-component')
   }
 
@@ -115,7 +112,9 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   finishUpload = (shapefileName: string) => {
     const _this = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
-      if (result.success) {
+      if (err) {
+        MessageActions.showMessage({title: _this.__('Error'), message: err})
+      } else if (result.success) {
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null})
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
