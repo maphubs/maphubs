@@ -22,7 +22,8 @@ export default class CardGrid extends React.Component<Props, State> {
 
   static defaultProps = {
     showAddButton: false,
-    cardsPerPage: 24
+    cardsPerPage: 24,
+    cards: []
   }
 
   state: State

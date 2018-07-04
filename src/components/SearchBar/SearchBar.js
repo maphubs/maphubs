@@ -127,8 +127,9 @@ export default class SearchBar extends React.Component {
 
   submit = (e) => {
     e.preventDefault()
-    if (!this.state.value) return
-    this.search(this.state.value.trim())
+    if (this.state.value && typeof this.state.value === 'string') {
+      this.search(this.state.value.trim())
+    }
     this.hideSuggestions()
   }
 
