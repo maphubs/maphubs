@@ -17,13 +17,14 @@ module.exports = withCSS({
   },
   assetPrefix,
   poweredByHeader: false,
-  webpack (config, { dev }) {
-    console.log(config.devtool)
+  webpack (config, { dev }) { 
     if (dev) {
-      config.devtool = 'cheap-eval-source-map'
+      /// config.devtool = 'cheap-eval-source-map'
+      config.devtool = 'eval'
     } else {
       config.devtool = 'source-map'
     }
+    console.log(config.devtool)
     for (const options of config.plugins) {
       if (options['constructor']['name'] === 'UglifyJsPlugin') {
         options.options.sourceMap = true
