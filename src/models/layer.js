@@ -350,7 +350,7 @@ module.exports = {
     if (temp) {
       layerTable = `layers.temp_${layer_id}`
     }
-    const data = await knex.raw('select mhid, ST_AsGeoJSON(wkb_geometry) as geom, tags from :layerTable:', {layerTable})
+    const data = await knex.raw('select mhid, ST_AsGeoJSON(ST_Force2D(wkb_geometry)) as geom, tags from :layerTable:', {layerTable})
     const bbox = await knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable})
 
     return new Promise((resolve, reject) => {
