@@ -3,8 +3,8 @@
 import type {Layer} from '../../../stores/layer-store'
 
 function getIFLLossLayer (loss0013: Object, loss1316: Object, active: boolean): Layer {
-  const loss0013Color = 'rgba(231,248,0,0.9)'
-  const loss1316Color = 'rgba(249,26,9,0.93)'
+  const loss0013Color = 'rgba(255,102,0,0.9)'
+  const loss1316Color = 'rgba(223,82,134,0.93)'
   const layers = [
     {
       'id': 'fr-data-polygon-iflloss0013-geojson',
