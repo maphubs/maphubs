@@ -7,6 +7,7 @@ const fs = require('fs')
 const ogr2ogr = require('ogr2ogr')
 const shapefileFairy = require('../shapefile-fairy')
 const debug = require('../debug')('services/importers/shapefile')
+const JSONStream = require('JSONStream')
 
 const streamCloseToPromise = function (stream) {
   return new Promise((resolve, reject) => {
@@ -42,9 +43,28 @@ module.exports = async function (filePath: string, layer_id: number) {
       .skipfailures()
       .options(['-t_srs', 'EPSG:4326'])
       .timeout(120000)
+      .stream()
 
-    const geoJSON = await Promise.promisify(ogr.exec, {context: ogr})()
-    return geoJSON
+    return new Promise((resolve, reject) => {
+      const stream = ogr.pipe(JSONStream.parse('features.*'))
+      const features = []
+
+      stream.on('data', (data) => {
+        features.push(data)
+      })
+
+      stream.on('end', () => {
+        debug.log('Shapefile Conversion to GeoJSON Successful')
+        log.info(`Converted ${features.length} features to GeoJSON`)
+        resolve({
+          type: 'FeatureCollection',
+          features
+        })
+      })
+      stream.on('error', (err) => {
+        throw err
+      })
+    })
   } else {
     log.error(`Unknown Shapefile Validation Error`)
     await DataLoadUtils.storeTempShapeUpload(filePath, layer_id)

@@ -345,11 +345,9 @@ module.exports = {
     return null
   },
 
-  async getGeoJSON (layer_id: number, temp: boolean = false) {
-    let layerTable = `layers.data_${layer_id}`
-    if (temp) {
-      layerTable = `layers.temp_${layer_id}`
-    }
+  async getGeoJSON (layer_id: number) {
+    const layerTable = `layers.data_${layer_id}`
+
     const data = await knex.raw('select mhid, ST_AsGeoJSON(ST_Force2D(wkb_geometry)) as geom, tags from :layerTable:', {layerTable})
     const bbox = await knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable})
 
@@ -364,7 +362,7 @@ module.exports = {
           reject(error)
         }
         // convert tags to properties
-        if (result.features && !temp) {
+        if (result.features) {
           result.features = geojsonUtils.convertTagsToProps(result.features)
         }
         result.bbox = JSON.parse(bbox.rows[0].bbox)

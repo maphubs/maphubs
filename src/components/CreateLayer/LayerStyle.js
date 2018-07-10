@@ -8,11 +8,9 @@ import LayerActions from '../../actions/LayerActions'
 import MessageActions from '../../actions/MessageActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import Progress from '../Progress'
-import urlUtil from '../../services/url-util'
 import OpacityChooser from '../LayerDesigner/OpacityChooser'
 import LayerDesigner from '../LayerDesigner/LayerDesigner'
 import MapHubsComponent from '../MapHubsComponent'
-// import Reflux from 'reflux';
 
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
@@ -88,7 +86,6 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     } else if (this.state.is_external && elc.type === 'multiraster' && elc.layers) {
       style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, this.state.shortid, elc.layers, opacity, 'raster')
     } else {
-      const baseUrl = urlUtil.getBaseUrl()
       style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, elc, opacity)
     }
 
@@ -131,26 +128,20 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
 
   render () {
     const showMap = this.props.waitForTileInit ? this.state.tileServiceInitialized : true
-
+    const {layer_id, style, preview_position} = this.state
     let mapExtent
-    if (this.state.preview_position && this.state.preview_position.bbox) {
-      const bbox = this.state.preview_position.bbox
+    if (preview_position && preview_position.bbox) {
+      const bbox = preview_position.bbox
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
 
     let map = ''
-    if (this.state.layer_id !== undefined &&
-      this.state.layer_id !== -1 &&
-      showMap) {
-      let glStyle
-      if (this.state.style) {
-        glStyle = this.state.style
-      }
+    if (layer_id !== undefined && layer_id !== -1 && showMap) {
       map = (
         <div>
           <div className='row no-margin'>
             <Map ref='map' id='layer-style-map' className='z-depth-2' insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
-              glStyle={glStyle}
+              glStyle={style}
               showLogo={false}
               mapConfig={this.props.mapConfig}
               fitBounds={mapExtent}
@@ -176,7 +167,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
 
     const externalLayerConfig: Object = this.state.external_layer_config ? this.state.external_layer_config : {}
     const legendCode: string = this.state.legend_html ? this.state.legend_html : ''
-    const style: Object = this.state.style ? this.state.style : {}
+    const cssStyle: Object = this.state.style ? this.state.style : {}
 
     let colorChooser = ''
     if (this.state.is_external &&
@@ -187,7 +178,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
         <div>
           <h5>{this.__('Choose Style')}</h5>
           <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-            style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
+            style={cssStyle} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
             layer={this.state}
             legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced />
         </div>
@@ -209,7 +200,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
         <div>
           <h5>{this.__('Choose Style')}</h5>
           <LayerDesigner onColorChange={this.onColorChange}
-            style={style} onStyleChange={this.setStyle}
+            style={cssStyle} onStyleChange={this.setStyle}
             labels={this.state.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setStyle}
             layer={this.state}
             legend={legendCode} onLegendChange={this.setLegend} />

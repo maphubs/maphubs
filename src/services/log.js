@@ -10,7 +10,7 @@ var fileTransport = new (winston.transports.DailyRotateFile)({
   maxFiles: '14d'
 })
 
-var logger =  winston.createLogger({
+var logger = winston.createLogger({
   transports: [
     fileTransport,
     new winston.transports.Console({

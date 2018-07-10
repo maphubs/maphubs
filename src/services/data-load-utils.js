@@ -10,11 +10,8 @@ const debug = require('./debug')('data-load-utils')
 const fs = require('fs')
 const LayerViews = require('./layer-views')
 const Promise = require('bluebird')
-const sizeof = require('object-sizeof')
 const ogr2ogr = require('ogr2ogr')
 const SearchIndex = require('../models/search-index')
-
-const LARGE_DATA_THRESHOLD = 20000000
 
 module.exports = {
 
@@ -63,6 +60,12 @@ module.exports = {
     return result[0].uploadtmppath
   },
 
+  async getBBox (layer_id: number) {
+    const layerTable = `layers.data_${layer_id}`
+    const bbox = await knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable})
+    return JSON.parse(bbox.rows[0].bbox)
+  },
+
   cleanProps (props: Object, uniqueProps: Object) {
     // get unique list of properties
     const cleanedFeatureProps = {}
@@ -100,7 +103,26 @@ module.exports = {
       .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}`])
       .destination(`PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`)
       .timeout(1200000)
-    return Promise.promisify(ogr.exec, {context: ogr})()
+    await Promise.promisify(ogr.exec, {context: ogr})()
+    return knex.transaction(async (trx) => {
+      await trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
+        SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
+      // set mhid as primary key
+      await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
+      // create index
+      await trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
+                      ON layers.data_${layer_id}
+                      USING gist
+                      (wkb_geometry);`)
+      // drop temp data
+      await trx.raw(`DROP TABLE layers.temp_${layer_id};`)
+
+      // get count and create sequence
+      const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
+      const maxVal = parseInt(result.rows[0].cnt) + 1
+      debug.log('creating sequence starting at: ' + maxVal)
+      return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
+    })
   },
 
   async storeTempGeoJSON (geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null) {
@@ -140,20 +162,9 @@ module.exports = {
         log.error('unsupported data type: ' + JSON.stringify(firstFeatureGeom))
       }
 
-      let srid = '4326' // assume WGS84 unless we find something else
-      if (firstFeature.crs && firstFeature.crs.properties && firstFeature.crs.properties.name) {
-        srid = firstFeature.crs.properties.name.split(':')[1]
-      }
       const cleanedFeatures = []
       // loop through features
       geoJSON.features.map((feature, i) => {
-        // confirm feature is expected type/SRID
-        if (feature.crs && feature.crs.properties && feature.crs.properties.name) {
-          const featureSRID = feature.crs.properties.name.split(':')[1]
-          if (srid !== featureSRID) {
-            throw new Error('SRID mis-match found in geoJSON')
-          }
-        }
         // get unique list of properties
         const cleanedFeatureProps = _this.cleanProps(feature.properties, uniqueProps)
 
@@ -172,21 +183,8 @@ module.exports = {
 
       geoJSON.features = cleanedFeatures
 
-      let bbox
-      if (geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point') {
-        // buffer the Point
-        const buffered = _buffer(geoJSON.features[0], 500,  {units: 'meters'})
-        bbox = _bbox(buffered)
-      } else {
-        bbox = _bbox(geoJSON)
-      }
-
-      debug.log(bbox)
-      geoJSON.bbox = bbox
-
       const updateData = {
-        data_type: geomType,
-        extent_bbox: JSON.stringify(bbox)
+        data_type: geomType
       }
 
       if (setStyle) {
@@ -210,6 +208,18 @@ module.exports = {
         throw new Error('Failed to Insert Data into Temp POSTGIS Table')
       }
 
+      let bbox
+      if (geoJSON.features.length === 1 && geoJSON.features[0].geometry.type === 'Point') {
+        // buffer the Point
+        const buffered = _buffer(geoJSON.features[0], 500, {units: 'meters'})
+        bbox = _bbox(buffered)
+      } else {
+        bbox = await _this.getBBox(layer_id)
+      }
+
+      debug.log(bbox)
+      updateData.extent_bbox = JSON.stringify(bbox)
+
       log.info('uniqueProps: ' + JSON.stringify(uniqueProps))
       debug.log('inserting temp geojson into database')
       // insert into the database
@@ -218,28 +228,20 @@ module.exports = {
       if (update) {
         debug.log('Update temp geojson')
         await db('omh.temp_data').update({
-          srid,
           unique_props: JSON.stringify(uniqueProps)})
           .where({layer_id})
       } else { // delete and replace
         await db('omh.temp_data').where({layer_id}).del()
         await db('omh.temp_data').insert({layer_id,
           uploadtmppath,
-          srid,
           unique_props: JSON.stringify(uniqueProps)})
       }
 
       debug.log('db updates complete')
-      let largeData = false
-      const size = sizeof(geoJSON)
-      debug.log(`GeoJSON size: ${size}`)
-      if (size > LARGE_DATA_THRESHOLD) {
-        largeData = true
-      }
+
       result = {
         success: true,
         error: null,
-        largeData,
         uniqueProps,
         data_type: geomType
       }
@@ -266,28 +268,8 @@ module.exports = {
   },
 
   async loadTempData (layer_id: number, trx: any, skipIndex?: boolean = false) {
-    debug.log('loadTempData')
-    // create data table
-    await trx.raw(`CREATE TABLE layers.data_${layer_id} AS 
-      SELECT mhid, wkb_geometry, tags::jsonb FROM layers.temp_${layer_id};`)
-    // set mhid as primary key
-    await trx.raw(`ALTER TABLE layers.data_${layer_id} ADD PRIMARY KEY (mhid);`)
-    // create index
-    await trx.raw(`CREATE INDEX data_${layer_id}_wkb_geometry_geom_idx
-                    ON layers.data_${layer_id}
-                    USING gist
-                    (wkb_geometry);`)
-    // drop temp data
-    await trx.raw(`DROP TABLE layers.temp_${layer_id};`)
-
-    // get count and create sequence
-    const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
-    const maxVal = parseInt(result.rows[0].cnt) + 1
-    debug.log('creating sequence starting at: ' + maxVal)
-    await trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
-
     // update search index
-    if(!skipIndex){
+    if (!skipIndex) {
       await SearchIndex.updateLayer(layer_id, trx)
     }
 

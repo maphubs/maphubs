@@ -18,27 +18,6 @@ const csrfProtection = require('csurf')({cookie: false})
 const isAuthenticated = require('../../services/auth-check')
 
 module.exports = function (app: any) {
-  app.post('/api/layer/create/savedata/:id', csrfProtection, isAuthenticated, async (req, res) => {
-    try {
-      const layer_id = parseInt(req.params.id || '', 10)
-      if (await Layer.allowedToModify(layer_id, req.user_id)) {
-        await knex.transaction(async (trx) => {
-          const layer = await Layer.getLayerByID(layer_id, trx)
-          if (layer) {
-            await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing)
-            await layerViews.createLayerViews(layer_id, layer.presets, trx)
-            debug.log('data load transaction complete')
-            return res.status(200).send({success: true})
-          } else {
-            return res.status(200).send({success: false, error: 'layer not found'})
-          }
-        })
-      } else {
-        notAllowedError(res, 'layer')
-      }
-    } catch (err) { apiError(res, 500)(err) }
-  })
-
   app.post('/api/layer/create/empty/:id', csrfProtection, isAuthenticated, async (req, res) => {
     try {
       const layer_id = parseInt(req.params.id || '', 10)

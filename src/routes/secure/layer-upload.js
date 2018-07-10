@@ -1,4 +1,5 @@
 // @flow
+const knex = require('../../connection.js')
 const multer = require('multer')
 const ogr2ogr = require('ogr2ogr')
 const Layer = require('../../models/layer')
@@ -6,7 +7,6 @@ const Promise = require('bluebird')
 const tus = require('tus-node-server')
 const EVENTS = require('tus-node-server').EVENTS
 const express = require('express')
-const exportUtils = require('../../services/export-utils')
 const log = require('../../services/log')
 const shapefileFairy = require('../../services/shapefile-fairy')
 const DataLoadUtils = require('../../services/data-load-utils')
@@ -18,6 +18,8 @@ const notAllowedError = require('../../services/error-response').notAllowedError
 const Importers = require('../../services/importers')
 const csrfProtection = require('csurf')({cookie: false})
 const isAuthenticated = require('../../services/auth-check')
+const layerViews = require('../../services/layer-views')
+const SearchIndex = require('../../models/search-index')
 
 const metadataStringToObject = (stringValue) => {
   const keyValuePairList = stringValue.split(',')
@@ -68,6 +70,9 @@ module.exports = function (app: any) {
             if (importerResult.type && importerResult.type === 'FeatureCollection') {
               // is geoJSON
               const result = await DataLoadUtils.storeTempGeoJSON(importerResult, path, layer_id, shortid, false, true)
+              await knex.transaction(async (trx) => {
+                return layerViews.createLayerViews(layer_id, layer.presets, trx)
+              })
               log.info('Upload Complete')
               res.status(200).send(result)
             } else {
@@ -86,6 +91,29 @@ module.exports = function (app: any) {
       debug.log('missing required data')
       apiDataError(res)
     }
+  })
+
+  app.post('/api/layer/create/savedata/:id', csrfProtection, isAuthenticated, async (req, res) => {
+    try {
+      const layer_id = parseInt(req.params.id || '', 10)
+      if (await Layer.allowedToModify(layer_id, req.user_id)) {
+        await knex.transaction(async (trx) => {
+          const layer = await Layer.getLayerByID(layer_id, trx)
+          if (layer) {
+            if (!layer.disable_feature_indexing) {
+              await SearchIndex.updateLayer(layer_id, trx)
+            }
+            await trx('omh.layers').update({status: 'loaded'}).where({layer_id})
+            debug.log('data load transaction complete')
+            return res.status(200).send({success: true})
+          } else {
+            return res.status(200).send({success: false, error: 'layer not found'})
+          }
+        })
+      } else {
+        notAllowedError(res, 'layer')
+      }
+    } catch (err) { apiError(res, 500)(err) }
   })
 
   app.post('/api/layer/:id/upload', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
@@ -122,21 +150,6 @@ module.exports = function (app: any) {
         apiError(res, 200, err.message)(err)
       }
     })
-
-  app.get('/api/layer/:layer_id/uploadtempdata/*', isAuthenticated, async (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
-    try {
-      const layer = await Layer.getLayerByID(layer_id)
-      if (layer.created_by_user_id === req.user_id) {
-        exportUtils.completeGeoBufExport(req, res, layer_id, true)
-      } else {
-        return notAllowedError(res, 'layer')
-      }
-    } catch (err) {
-      log.error(err.message)
-      apiError(res, 200)(err)
-    }
-  })
 
   app.post('/api/layer/finishupload', csrfProtection, isAuthenticated, async (req, res) => {
     if (req.body.layer_id && req.body.requestedShapefile) {

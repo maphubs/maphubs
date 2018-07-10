@@ -192,9 +192,12 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     this.setState({legend_html})
   }
 
-  resetStyle () {
+  resetStyle (cb?: Function) {
     this.resetStyleGL()
     this.resetLegendHTML()
+    if (cb) {
+      cb()
+    }
   }
 
   initLayer (layer: Object) {

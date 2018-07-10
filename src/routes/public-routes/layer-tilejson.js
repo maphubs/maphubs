@@ -19,9 +19,9 @@ module.exports = function (app: any) {
       return res.status(404).send('TileJSON not supported for this layer')
     }
     const baseUrl = urlUtil.getBaseUrl()
-    const name = Locales.getLocaleStringObject(req.locale, layer.name)
-    const description = Locales.getLocaleStringObject(req.locale, layer.description)
-    const source = Locales.getLocaleStringObject(req.locale, layer.source)
+    const name = Locales.getLocaleStringObject(req.locale, layer.name) || ''
+    const description = Locales.getLocaleStringObject(req.locale, layer.description) || ''
+    const source = Locales.getLocaleStringObject(req.locale, layer.source) || ''
     const legend = layer.legend_html ? layer.legend_html : name
 
     if (layer.is_external && layer.external_layer_config.type === 'raster') {

@@ -11,12 +11,9 @@ import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
-import type {GeoJSONObject} from 'geojson-flow'
 import superagent from 'superagent'
-import geobuf from 'geobuf'
-import Pbf from 'pbf'
-import DebugService from '../../services/debug'
-const debug = DebugService('UploadLocalSource')
+// import DebugService from '../../services/debug'
+// const debug = DebugService('UploadLocalSource')
 
 let scrollToComponent
 
@@ -27,7 +24,6 @@ type Props = {|
 
 type State = {
   canSubmit: boolean,
-  geoJSON?: GeoJSONObject,
   largeData: boolean,
   processing: boolean,
   multipleShapefiles: any
@@ -54,24 +50,12 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   componentDidUpdate () {
-    if (this.state.geoJSON) {
+    if (this.state.canSubmit) {
       scrollToComponent(this.refs.map)
     }
     if (this.state.multipleShapefiles) {
       this.refs.chooseshape.show()
     }
-  }
-
-  enableButton = () => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-
-  disableButton = () => {
-    this.setState({
-      canSubmit: false
-    })
   }
 
   onSubmit = () => {
@@ -108,28 +92,16 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         } else {
           const result = res.body
           if (result.success) {
-            superagent.get(`/api/layer/${layer_id}/uploadtempdata/${layer_id}-temp.pbf`)
-              .buffer(true)
-              .responseType('arraybuffer')
-              .parse(superagent.parse.image)
-              .end((err, res) => {
-                if (err) {
-                  debug.error(err)
-                } else {
-                  const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)))
-                  this.setState({geoJSON: geoJSON, canSubmit: true, largeData: result.largeData})
-                  LayerActions.setDataType(result.data_type)
-                  LayerActions.setImportedTags(result.uniqueProps, true)
-                }
-              })
+            LayerActions.setDataType(result.data_type)
+            LayerActions.setImportedTags(result.uniqueProps, true)
+            this.setState({canSubmit: true, processing: false})
           } else {
             if (result.code === 'MULTIPLESHP') {
-              this.setState({multipleShapefiles: result.shapefiles})
+              this.setState({multipleShapefiles: result.shapefiles, processing: false})
             } else {
-              MessageActions.showMessage({title: _this.__('Error'), message: result.error})
+              MessageActions.showMessage({title: _this.__('Error'), message: result.error || 'Unknown Error'})
             }
           }
-          this.setState({processing: false})
         }
       })
   }
@@ -139,16 +111,16 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   finishUpload = (shapefileName: string) => {
-    const _this = this
+    const {setState, __} = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: __('Error'), message: err})
       } else if (result.success) {
-        _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null})
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
+        setState({canSubmit: true, multipleShapefiles: null})
       } else {
-        MessageActions.showMessage({title: _this.__('Error'), message: result.error})
+        MessageActions.showMessage({title: __('Error'), message: result.error})
       }
     })
   }
@@ -159,34 +131,38 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   render () {
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
-    // const url = `/api/layer/${layer_id}/upload`;
-    let largeDataMessage = ''
-    if (this.state.largeData) {
-      largeDataMessage = (
-        <p>{this.__('Data Uploaded Successfully. Large dataset detected, you will be able to preview the data in Step 5 after it is loaded.')}</p>
-      )
+    const {canSubmit, multipleShapefiles, style, preview_position} = this.state
+    const {mapConfig} = this.props
+
+    let mapExtent
+    if (preview_position && preview_position.bbox) {
+      const bbox = preview_position.bbox
+      mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
+
     let map = ''
-    if (this.state.geoJSON) {
+    if (canSubmit && style) {
       map = (
         <div>
           <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
           <Map ref='map' style={{width: '100%', height: '400px'}}
             id='upload-preview-map'
             showFeatureInfoEditButtons={false}
-            mapConfig={this.props.mapConfig}
-            data={this.state.geoJSON} />
+            mapConfig={mapConfig}
+            glStyle={style}
+            fitBounds={mapExtent}
+          />
         </div>
       )
     }
 
-    let multipleShapefiles = ''
-    if (this.state.multipleShapefiles) {
+    let multipleShapefilesDisplay = ''
+    if (multipleShapefiles) {
       const options = []
-      this.state.multipleShapefiles.forEach((shpFile) => {
+      multipleShapefiles.forEach((shpFile) => {
         options.push({value: shpFile, label: shpFile})
       })
-      multipleShapefiles = (
+      multipleShapefilesDisplay = (
         <RadioModal ref='chooseshape' title={this.__('Multiple Shapefiles Found - Please Select One')}
           options={options} onSubmit={this.finishUpload} />
       )
@@ -209,13 +185,12 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             </div>
           </div>
           <div className='row'>
-            {largeDataMessage}
             {map}
           </div>
-          {multipleShapefiles}
+          {multipleShapefilesDisplay}
         </div>
         <div className='right'>
-          <button className='waves-effect waves-light btn' disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+          <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
         </div>
       </div>
     )
