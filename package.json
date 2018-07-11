@@ -46,6 +46,7 @@
     "@babel/preset-react": "7.0.0-beta.44",
     "@babel/preset-stage-0": "7.0.0-beta.44",
     "@babel/register": "7.0.0-beta.44",
+    "@google/earthengine": "^0.1.143",
     "@mapbox/mapbox-gl-draw": "1.0.9",
     "@mapbox/shapefile-fairy": "openmaphub/shapefile-fairy#950cb59adfadc6cbbccac2d33f7bc23c2f2b713e",
     "@turf/area": "^5.0.4",

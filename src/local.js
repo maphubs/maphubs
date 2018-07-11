@@ -83,7 +83,8 @@ var local = {
   elasticSearchHost: getenv('OMH_ELASTICSEARCH_HOST'),
   elasticSearchPort: getenv('OMH_ELASTICSEARCH_PORT'),
   elasticSearchUser: getenv('OMH_ELASTICSEARCH_USER'),
-  elasticSearchPass: getenv('OMH_ELASTICSEARCH_PASS')
+  elasticSearchPass: getenv('OMH_ELASTICSEARCH_PASS'),
+  EARTHENGINE_CLIENTID: getenv('EARTHENGINE_CLIENTID')
 }
 
 module.exports = local

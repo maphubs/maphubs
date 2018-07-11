@@ -108,6 +108,11 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                     selected={this.state.source === 'dgwms'} icon='satellite'
                     onSelect={this.selectSource} />
                 </div>
+                <div className='col s6'>
+                  <SourceSelectionBox name={this.__('Earth Engine')} value={'earthengine'}
+                    selected={this.state.source === 'earthengine'} icon='satellite'
+                    onSelect={this.selectSource} />
+                </div>
               </div>
             </div>
             <div className='col s7'>

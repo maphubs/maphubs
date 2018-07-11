@@ -32,6 +32,7 @@ declare class MapHubsConfig {
   FR_API: string;
   DG_WMS_CONNECT_ID: string;
   enableUserExport: boolean;
+  EARTHENGINE_CLIENTID: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;

@@ -6,9 +6,12 @@ import MapboxSource from './MapboxSource'
 import MapHubsSource from './MapHubsSource'
 import RasterSource from './RasterSource'
 import GenericSource from './GenericSource'
+import EarthEngineSource from './EarthEngineSource'
+
+import type {GLSource} from '../../../types/mapbox-gl-style'
 
 export default {
-  getSource (key, source) {
+  getSource (key: string, source: GLSource) {
     const response = function (driver: Function, custom: boolean = false) {
       return {
         key,
@@ -47,6 +50,7 @@ export default {
   'ags-featureserver-query': AGSFeatureServerQuery,
   'mapbox-style': MapboxSource,
   'maphubs-vector': MapHubsSource,
+  'earthengine': EarthEngineSource,
   'raster': RasterSource,
   'generic': GenericSource
 }

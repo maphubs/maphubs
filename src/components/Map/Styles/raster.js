@@ -64,10 +64,9 @@ export default {
 
     let metadata = {}
 
-    if (elc.authUrl && elc.authToken) {
-      metadata.authUrl = elc.authUrl
-      metadata.authToken = elc.authToken
-    }
+    Object.keys(elc).forEach(key => {
+      metadata[`maphubs:${key}`] = elc[key]
+    })
 
     style.sources['omh-' + shortid] = {
       type,

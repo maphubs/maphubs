@@ -34,7 +34,7 @@ export type Layer = {
   is_external?: boolean,
   external_layer_type?: string,
   external_layer_config?: {
-    type?: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query',
+    type?: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query' | 'earthengine',
     url?: string,
     layers?: Array<Object>
     },
@@ -156,8 +156,8 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
     if (isExternal && this.state.external_layer_type === 'mapbox-map' && elc.url) {
       style = MapStyles.raster.rasterStyleTileJSON(layer_id, shortid, elc.url, 100, 'raster')
-    } else if (isExternal && elc.type === 'raster') {
-      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc, 'raster')
+    } else if (isExternal && (elc.type === 'raster' || elc.type === 'earthengine')) {
+      style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc, elc.type)
     } else if (isExternal && elc.type === 'multiraster' && elc.layers) {
       style = MapStyles.raster.defaultMultiRasterStyle(layer_id, shortid, elc.layers, 'raster', elc)
     } else if (isExternal && elc.type === 'mapbox-style' && elc.mapboxid) {
@@ -178,11 +178,13 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
   resetLegendHTML () {
     let legend_html
     const externalLayerConfig = this.state.external_layer_config
+    const {type} = externalLayerConfig
     if (this.state.is_external &&
       externalLayerConfig &&
-      (externalLayerConfig.type === 'raster' ||
-          externalLayerConfig.type === 'multiraster' ||
-          externalLayerConfig.type === 'ags-mapserver-tiles')) {
+      (type === 'raster' ||
+        type === 'earthengine' ||
+        type === 'multiraster' ||
+        type === 'ags-mapserver-tiles')) {
       legend_html = MapStyles.legend.rasterLegend(this.state)
     } else if (this.state.is_external && externalLayerConfig && externalLayerConfig.type === 'mapbox-style') {
       legend_html = MapStyles.legend.rasterLegend(this.state)

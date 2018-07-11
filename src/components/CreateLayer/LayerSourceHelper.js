@@ -11,6 +11,7 @@ import PlanetLabsSource from './PlanetLabsSource'
 import SentinelSource from './SentinelSource'
 import WMSSource from './WMSSource'
 import DGWMSSource from './DGWMSSource'
+import EarthEngineSource from './EarthEngineSource'
 
 export default {
 
@@ -35,6 +36,8 @@ export default {
       return (<WMSSource onSubmit={this.onSubmit} />)
     } else if (type === 'dgwms') {
       return (<DGWMSSource onSubmit={this.onSubmit} />)
+    } else if (type === 'earthengine') {
+      return (<EarthEngineSource onSubmit={this.onSubmit} />)
     } else if (type === 'remote') {
       return (
         <div style={{marginTop: '20px'}}>

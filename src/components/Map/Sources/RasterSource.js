@@ -4,7 +4,6 @@ import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
 const RasterSource = {
   async load (key: string, source: GLSource, mapComponent: any) {
-    // nothing to do
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }

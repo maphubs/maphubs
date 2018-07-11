@@ -34,7 +34,8 @@ if (process.env.APP_ENV !== 'browser') {
     theme: local.theme,
     themeUrl: local.themeUrl,
     enableUserExport: local.enableUserExport,
-    OPENROUTESERVICE_API_KEY: local.OPENROUTESERVICE_API_KEY
+    OPENROUTESERVICE_API_KEY: local.OPENROUTESERVICE_API_KEY,
+    EARTHENGINE_CLIENTID: local.EARTHENGINE_CLIENTID
   }
   console.log(global.MAPHUBS_CONFIG)
 }

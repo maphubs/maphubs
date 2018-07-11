@@ -1,0 +1,53 @@
+// @flow
+import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
+import ee from '@google/earthengine'
+
+const EarthEngineSource = {
+  async load (key: string, source: GLSource, mapComponent: any) {
+    const baseUrl = 'https://earthengine.googleapis.com/map'
+
+    const image_id = source.metadata['maphubs:image_id']
+    const min = source.metadata['maphubs:min']
+    const max = source.metadata['maphubs:max']
+
+    return new Promise((resolve, reject) => {
+      const getEEMap = () => {
+        ee.initialize()
+        const image = ee.Image(image_id)
+        image.getMap({min, max}, ({mapid, token}) => {
+          let url = [baseUrl, mapid, '{z}', '{x}', '{y}'].join('/')
+          url = `${url}?token=${token}`
+          resolve(mapComponent.addSource(key, {
+            type: 'raster',
+            tiles: [url]
+          }))
+        })
+      }
+
+      ee.data.authenticate(MAPHUBS_CONFIG.EARTHENGINE_CLIENTID, getEEMap, null, null, () => {
+        ee.data.authenticateViaPopup(() => {
+          getEEMap()
+        })
+      })
+    })
+  },
+  addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {
+    if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
+      mapComponent.addLayerBefore(layer, 'water')
+    } else {
+      if (mapComponent.state.editing) {
+        mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
+      } else {
+        mapComponent.addLayer(layer, position)
+      }
+    }
+  },
+  removeLayer (layer: GLLayer, mapComponent: any) {
+    return mapComponent.removeLayer(layer.id)
+  },
+  remove (key: string, mapComponent: any) {
+    return mapComponent.removeSource(key)
+  }
+}
+
+export default EarthEngineSource
