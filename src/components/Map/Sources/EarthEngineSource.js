@@ -10,18 +10,31 @@ const EarthEngineSource = {
     const min = source.metadata['maphubs:min']
     const max = source.metadata['maphubs:max']
 
+    const vizParams = {}
+    if (typeof min !== 'undefined') {
+      vizParams.min = min
+    }
+
+    if (typeof max !== 'undefined') {
+      vizParams.max = max
+    }
+
     return new Promise((resolve, reject) => {
       const getEEMap = () => {
         ee.initialize()
         const image = ee.Image(image_id)
-        image.getMap({min, max}, ({mapid, token}) => {
+        const response = image.getMap(vizParams, () => {})
+        if (response && response.mapid) {
+          const {mapid, token} = response
           let url = [baseUrl, mapid, '{z}', '{x}', '{y}'].join('/')
           url = `${url}?token=${token}`
           resolve(mapComponent.addSource(key, {
             type: 'raster',
             tiles: [url]
           }))
-        })
+        } else {
+          reject(new Error('failed to load Earth Engine Map'))
+        }
       }
 
       ee.data.authenticate(MAPHUBS_CONFIG.EARTHENGINE_CLIENTID, getEEMap, null, null, () => {

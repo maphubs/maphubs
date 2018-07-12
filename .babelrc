@@ -27,5 +27,5 @@
     "@babel/plugin-transform-flow-strip-types",
     "version-inline"
   ],
-  "ignore": ["/assets.*|node_modules/(?!(medium-editor|mapbox-gl)).*/"]
+  "ignore": ["/assets.*|node_modules/(?!(medium-editor|mapbox-gl|@google/earthengine)).*/"]
 }
