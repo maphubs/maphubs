@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.17.25](https://github.com/maphubs/maphubs/tree/v0.17.25) (2018-07-24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.24...v0.17.25)
+
+**Fixed bugs:**
+
+- feature legend icon not correct for point layers [\#488](https://github.com/maphubs/maphubs/issues/488)
+
 ## [v0.17.24](https://github.com/maphubs/maphubs/tree/v0.17.24) (2018-07-11)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.23...v0.17.24)
 
@@ -149,13 +156,13 @@
 [Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.4...v0.15.25)
 
 ## [db-v0.4](https://github.com/maphubs/maphubs/tree/db-v0.4) (2018-02-17)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...db-v0.4)
-
-## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.3)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.4)
 
 ## [v0.15.24](https://github.com/maphubs/maphubs/tree/v0.15.24) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...v0.15.24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...v0.15.24)
+
+## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...db-v0.3)
 
 ## [v0.15.23](https://github.com/maphubs/maphubs/tree/v0.15.23) (2018-02-15)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.22...v0.15.23)
