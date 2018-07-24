@@ -87,6 +87,7 @@ function getLayerFRActive (layer: Object, geojson: Object): Layer {
 function getLayer (layer: Object, geojson: Object): Layer {
   // replace layer style with feature style
   const defaultColor = 'red'
+  const defaultColorTransparent = 'rgba(255,0,0,0.3)'
   const layers = [
     {
       'id': `omh-data-point-feature-geojson`,
@@ -160,12 +161,29 @@ function getLayer (layer: Object, geojson: Object): Layer {
     active: true
   }
 
-  layer.legend_html = `
-  <div class="omh-legend">
-  <div class="block" style="background-color: ${defaultColor}; border: 1px solid ${defaultColor};">
-  </div>
-  <h3>{NAME}</h3>
-  </div>`
+  let isPoint
+  if (geojson && geojson.features) {
+    const feature = geojson.features[0]
+    if (feature.geometry.type === 'Point') {
+      isPoint = true
+    }
+  }
+
+  if (isPoint) {
+    layer.legend_html = `
+    <div class="omh-legend">
+    <div class="point" style="background-color: ${defaultColor};">
+    </div>
+    <h3>{NAME}</h3>
+    </div>`
+  } else {
+    layer.legend_html = `
+    <div class="omh-legend">
+    <div class="block" style="background-color: ${defaultColorTransparent}; border: 1px solid ${defaultColor};">
+    </div>
+    <h3>{NAME}</h3>
+    </div>`
+  }
 
   return layer
 }
