@@ -44,7 +44,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  activateFR = (config: Object) => {
+  activateFR = (config: Object, boundaryFeature: Object) => {
     // console.log(data);
     let combinedGLADFeatures = []
     config.glad.data.values.forEach((value) => {
@@ -73,7 +73,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
       getGLADLayer(gladGeoJSON, config.toggles.glad),
       getIFLLossLayer(iflLoss0013Data, iflLoss1316Data, config.toggles.ifl),
       getIFLLayer(ifl2016Data, config.toggles.iflloss),
-      getLayerFRActive(this.state.featureLayer, this.props.geojson),
+      getLayerFRActive(this.state.featureLayer, boundaryFeature),
       getLossLayer(config.toggles.loss),
       getRemainingLayer(config.toggles.remaining)
     ]
@@ -81,6 +81,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     const glStyle = StyleHelper.buildMapStyle(mapLayers)
 
     this.setState({mapLayers, glStyle})
+    this.map.getMap().zoomToData(boundaryFeature)
   }
 
   deactiveFR = () => {

@@ -1,27 +1,19 @@
 // @flow
 import React from 'react'
 import XComponentReact from '../XComponentReact'
-
-type FRModule = {
-  id: string,
-  name: Object,
-  style: Object,
-  data: Object // payload data, varies based on module
-}
-
-type FRData = {
-  modules: Array<FRModule>
-}
+import turfBuffer from '../../services/patched-turf-buffer'
 
 type Props = {|
   geoJSON: Object,
   onLoad: Function,
   onAlertClick: Function,
-  onModuleToggle: Function
+  onModuleToggle: Function,
+  onGeoJSONChange: Function
 |}
 
 type State = {
-  loaded: boolean
+  loaded: boolean,
+  geoJSON: Object
 }
 
 export default class ForestReportEmbed extends React.Component<Props, State> {
@@ -33,8 +25,22 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
   }
 
   componentDidMount () {
+    const {geoJSON, onGeoJSONChange} = this.props
+    if (geoJSON) {
+      const feature = geoJSON.features[0]
+      let geom = feature.geometry
+      if (geom.type === 'Point') {
+        const bufferFeature = turfBuffer(geom, 25, {steps: 128})
+        if (bufferFeature) {
+          geom = bufferFeature.geometry
+          feature.geometry = geom
+          if (geoJSON.bbox) delete geoJSON.bbox
+          onGeoJSONChange(geoJSON)
+        }
+      }
+    }
     // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({loaded: true})
+    this.setState({loaded: true, geoJSON})
   }
 
   render () {
@@ -44,18 +50,18 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
       )
     }
 
-    const {geoJSON, onLoad, onModuleToggle, onAlertClick} = this.props
+    const {onLoad, onModuleToggle, onAlertClick} = this.props
+    const {geoJSON} = this.state
 
     if (!geoJSON || !geoJSON.features ||
-        geoJSON.features.length === 0 ||
-        geoJSON.features[0].type === 'Point'
+        geoJSON.features.length === 0
     ) {
       return (
         <p>Invalid Feature</p>
       )
     }
 
-    const geom = geoJSON.features[0].geometry
+    let geom = geoJSON.features[0].geometry
     const dimensions = {width: '100%', height: '100%'}
     if (this.state.loaded) {
       return (

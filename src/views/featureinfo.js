@@ -41,6 +41,7 @@ type Props = {
   type State = {
     editingNotes: boolean,
     tab: string,
+    feature: Object,
     frActive?: boolean
   } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState
 
@@ -53,11 +54,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     } else {
       console.error('getInitialProps called on client')
     }
-  }
-
-  state: State = {
-    editingNotes: false,
-    tab: 'data'
   }
 
   constructor (props: Props) {
@@ -75,6 +71,12 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(FeaturePhotoStore, {feature, photo})
     if (mapConfig && mapConfig.baseMapOptions) {
       Reflux.rehydrate(BaseMapStore, {baseMapOptions: mapConfig.baseMapOptions})
+    }
+
+    this.state = {
+      editingNotes: false,
+      tab: 'data',
+      feature: props.feature
     }
   }
 
@@ -140,20 +142,22 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     this.setState({tab, frActive})
   }
 
+  changeGeoJSONFeature = (feature: Object) => {
+    this.setState({feature})
+    // this.map.getMap().zoomToData(feature)
+  }
+
   render () {
     const _this = this
-    let featureName: string = 'Unknown'
 
-    const {canEdit, layer, feature, mapConfig, headerConfig} = this.props
+    const {canEdit, layer, mapConfig, headerConfig} = this.props
+    const {feature} = this.state
     let geojsonFeature
 
     if (feature && layer && feature.features) {
       if (feature.features && feature.features.length > 0) {
         geojsonFeature = feature.features[0]
         var geoJSONProps = feature.features[0].properties
-        if (geoJSONProps.name) {
-          featureName = geoJSONProps.name
-        }
       }
     }
 
@@ -201,16 +205,17 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     // const firstSource = Object.keys(layer.style.sources)[0]
     // const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
     const presets = layer.presets
-
     let frPanel
     if (MAPHUBS_CONFIG.FR_ENABLE && this.state.user) {
       if (this.state.tab === 'forestreport' || this.state.frActive) {
+        const {activateFR, frToggle, onAlertClick} = this.map
         frPanel = (
           <ForestReportEmbed
             geoJSON={feature}
-            onLoad={this.map.activateFR}
-            onModuleToggle={this.map.frToggle}
-            onAlertClick={this.map.onAlertClick}
+            onLoad={(config: Object) => { activateFR(config, feature) }}
+            onModuleToggle={frToggle}
+            onAlertClick={onAlertClick}
+            onGeoJSONChange={this.changeGeoJSONFeature}
           />
         )
       }
