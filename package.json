@@ -171,7 +171,7 @@
     "react-data-grid-addons": "^4.0.8",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
-    "react-dom": "16.4.1",
+    "react-dom": "16.4.2",
     "react-fileupload-progress": "https://github.com/openmaphub/react-fileupload-progress#667cb7f13f0b468ca8d213c7db3aa1254633fa34",
     "react-intl": "^2.3.0",
     "react-medium-editor": "^1.8.1",
