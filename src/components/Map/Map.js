@@ -89,9 +89,8 @@ type Props = {|
     selectedFeature?: Object,
     selected: boolean,
     interactive: boolean,
-    interactiveLayers: [],
+    interactiveLayers: Array<Object>,
     mapLoaded: boolean,
-    restoreBounds?: NestedArray<number>,
     allowLayersToMoveMap: boolean
   } & BaseMapStoreState
 
@@ -138,18 +137,13 @@ export default class Map extends MapHubsComponent<Props, State> {
     DataEditorActions.onFeatureUpdate.listen(this.onFeatureUpdate)
     AnimationActions.tick.listen(this.tick)
 
-    let restoreBounds
-    if (this.props.fitBounds) {
-      restoreBounds = this.props.fitBounds
-    }
-
     this.state = {
       id: this.props.id ? this.props.id : 'map',
       selected: false,
       interactive: this.props.interactive,
       mapLoaded: false,
-      restoreBounds,
-      allowLayersToMoveMap: !restoreBounds
+      allowLayersToMoveMap: !this.props.fitBounds,
+      interactiveLayers: []
     }
   }
 
@@ -206,8 +200,9 @@ export default class Map extends MapHubsComponent<Props, State> {
   addMapData = (map: any, glStyle?: GLStyle, geoJSON?: GeoJSONObject, cb: Function) => {
     this.debugLog('addMapData')
     const _this = this
-    if (glStyle && glStyle.sources) {
-      return Promise.resolve(_this.setOverlayStyle(glStyle, _this.props.allowLayerOrderOptimization))
+    const style = this.overlayMapStyle || glStyle
+    if (style && style.sources) {
+      return Promise.resolve(_this.setOverlayStyle(style, _this.props.allowLayerOrderOptimization))
         .catch((err) => {
           _this.debugLog(err)
         })
@@ -233,8 +228,8 @@ export default class Map extends MapHubsComponent<Props, State> {
     this.debugLog('Creating MapboxGL Map')
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
     const {debugLog} = this
-    const {preserveDrawingBuffer, enableRotation, hash, fitBoundsOptions, data, glStyle, attributionControl} = this.props
-    const {interactive, restoreBounds, locale, forestAlerts} = this.state
+    const {preserveDrawingBuffer, enableRotation, hash, fitBounds, fitBoundsOptions, data, glStyle, attributionControl} = this.props
+    const {interactive, locale, forestAlerts, mapLoaded} = this.state
     const {insetMap} = this.refs
 
     BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
@@ -291,12 +286,15 @@ export default class Map extends MapHubsComponent<Props, State> {
       map.on('style.load', () => {
         debugLog('style.load')
         // restore map bounds (except for geoJSON maps)
-        if (!data && restoreBounds) {
-          let fitBounds = restoreBounds
-          if (fitBounds.length > 2) {
-            fitBounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
+        if (!data && // use bbox for GeoJSON data
+          !mapLoaded && // only set map position on first style load (not after changing base map etc)
+          fitBounds // bounds are provided in Props
+        ) {
+          let bounds = fitBounds
+          if (bounds && bounds.length > 2) {
+            bounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
           }
-          debugLog(`(${_this.state.id}) restoring bounds: ${restoreBounds.toString()}`)
+          debugLog(`fitting map to bounds: ${bounds.toString()}`)
           map.fitBounds(fitBounds, fitBoundsOptions)
           if (insetMap) {
             insetMap.sync(map)
@@ -438,11 +436,13 @@ export default class Map extends MapHubsComponent<Props, State> {
           })
       } else if (this.props.baseMap !== nextProps.baseMap) {
         //* * Style Not Changing, but Base Map is Changing **/
+        /*
         _this.debugLog(`basemap changing from props (${this.state.baseMap} -> ${nextProps.baseMap})`)
         allowLayersToMoveMap = false
         this.setState({allowLayersToMoveMap})
 
         this.changeBaseMap(nextProps.baseMap)
+        */
       } else if (fitBoundsChanging) {
         //* * just changing the fit bounds
         // in this case we can fitBounds directly since we are not waiting for the map to reload styles first
@@ -454,7 +454,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           debug.log('(' + this.state.id + ') ' + 'calling map fitBounds')
           this.map.fitBounds(bounds, this.props.fitBoundsOptions)
 
-          this.setState({allowLayersToMoveMap, restoreBounds: bounds})
+          this.setState({allowLayersToMoveMap})
         }
       }
     } else if (nextProps.glStyle &&
