@@ -8,7 +8,8 @@ type Props = {|
   onLoad: Function,
   onAlertClick: Function,
   onModuleToggle: Function,
-  onGeoJSONChange: Function
+  onGeoJSONChange: Function,
+  remainingThreshold?: number
 |}
 
 type State = {
@@ -50,7 +51,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
       )
     }
 
-    const {onLoad, onModuleToggle, onAlertClick} = this.props
+    const {onLoad, onModuleToggle, onAlertClick, remainingThreshold} = this.props
     const {geoJSON} = this.state
 
     if (!geoJSON || !geoJSON.features ||
@@ -72,6 +73,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
             style: dimensions
           }}
           dimensions={dimensions}
+          remainingThreshold={remainingThreshold || 80}
           geom={geom} onLoad={onLoad}
           onModuleToggle={onModuleToggle} onAlertClick={onAlertClick}
         />

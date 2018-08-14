@@ -215,6 +215,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
             onLoad={(config: Object) => { activateFR(config, feature) }}
             onModuleToggle={frToggle}
             onAlertClick={onAlertClick}
+            remainingThreshold={mapConfig ? mapConfig.FRRemainingThreshold : undefined}
             onGeoJSONChange={this.changeGeoJSONFeature}
           />
         )

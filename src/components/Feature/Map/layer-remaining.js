@@ -2,12 +2,13 @@
 
 import type {Layer} from '../../../stores/layer-store'
 
-function getRemainingLayer (active: boolean): Layer {
+function getRemainingLayer (active: boolean, remainingThreshold?: number): Layer {
+  const threshold = remainingThreshold || 80
   return {
     layer_id: 99999901,
     short_id: 'fr-tree-cover-density',
     name: {
-      en: 'Tree Cover 80% Density 2017'
+      en: `Tree Cover ${threshold}% Density 2017`
     },
     source: {
       en: 'Hansen/UMD/Google/USGS/NASA'
@@ -18,7 +19,7 @@ function getRemainingLayer (active: boolean): Layer {
         'fr-tree-cover-density': {
           type: 'raster',
           tiles: [
-            'https://qzxvv33134iutzy.belugacdn.link/densityatyear/17/80/{z}/{x}/{y}'
+            `https://qzxvv33134iutzy.belugacdn.link/densityatyear/17/${threshold}/{z}/{x}/{y}`
           ],
           tileSize: 256
         }
@@ -52,7 +53,7 @@ function getRemainingLayer (active: boolean): Layer {
     external_layer_type: 'raster',
     external_layer_config: {
       type: 'raster',
-      url: 'https://qzxvv33134iutzy.belugacdn.link/densityatyear/17/80/{z}/{x}/{y}'
+      url: `https://qzxvv33134iutzy.belugacdn.link/densityatyear/17/${threshold}/{z}/{x}/{y}`
     }
   }
 }

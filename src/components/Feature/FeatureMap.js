@@ -75,7 +75,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
       getIFLLayer(ifl2016Data, config.toggles.iflloss),
       getLayerFRActive(this.state.featureLayer, boundaryFeature),
       getLossLayer(config.toggles.loss),
-      getRemainingLayer(config.toggles.remaining)
+      getRemainingLayer(config.toggles.remaining, this.props.mapConfig ? this.props.mapConfig.FRRemainingThreshold : undefined)
     ]
 
     const glStyle = StyleHelper.buildMapStyle(mapLayers)
