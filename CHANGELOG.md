@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.17.26](https://github.com/maphubs/maphubs/tree/v0.17.26) (2018-08-15)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.25...v0.17.26)
+
+**Fixed bugs:**
+
+- changing base map in map maker hides overlays [\#493](https://github.com/maphubs/maphubs/issues/493)
+
 ## [v0.17.25](https://github.com/maphubs/maphubs/tree/v0.17.25) (2018-07-24)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.24...v0.17.25)
 
