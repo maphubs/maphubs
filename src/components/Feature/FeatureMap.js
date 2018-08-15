@@ -10,6 +10,7 @@ import {getIFLLayer} from './Map/layer-ifl'
 import {getIFLLossLayer} from './Map/layer-ifl-loss'
 import {getLossLayer} from './Map/layer-loss'
 import StyleHelper from '../Map/Styles/style'
+import _isequal from 'lodash.isequal'
 
 import type {Layer} from '../../stores/layer-store'
 
@@ -41,6 +42,23 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
       featureLayer: layer,
       glStyle,
       mapLayers: [layer]
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if(!_isequal(this.props.geojson, nextProps.geojson)){
+      const layer = getLayer(this.props.layer, props.geojson)
+
+      let glStyle = {}
+      if (layer.style) {
+        glStyle = JSON.parse(JSON.stringify(layer.style))
+      }
+
+      this.setState({
+        featureLayer: layer,
+        glStyle,
+        mapLayers: [layer]
+      })
     }
   }
 

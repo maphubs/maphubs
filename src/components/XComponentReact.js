@@ -24,6 +24,7 @@ export default class XComponentReact extends React.Component<any, void> {
 
   componentDidUpdate () {
     if (this.state && this.state.parent) {
+      console.log('Updating Xcomponent')
       this.state.parent.updateProps(Object.assign({}, this.props))
     }
   }
