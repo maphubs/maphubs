@@ -48,6 +48,7 @@ module.exports = {
         debug.log(`create views for layer: ${layer_id}`)
         let tagColumns = ''
         if (presets) {
+          debug.log(presets)
           presets.forEach((preset) => {
             if (preset.type === 'number') {
               tagColumns += `CASE WHEN isnumeric(tags->>'${preset.tag}') THEN (tags->>'${preset.tag}')::double precision ELSE NULL END as "${preset.tag}",`
@@ -55,6 +56,8 @@ module.exports = {
               tagColumns += `(tags->>'${preset.tag}')::text as "${preset.tag}",`
             }
           })
+        } else {
+          log.error(`Missing presets when creating view for layer ${layer_id}`)
         }
 
         const commands = [
