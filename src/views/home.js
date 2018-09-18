@@ -202,7 +202,17 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const slides = (
       <div key={key} className='row' style={{marginTop: 0, marginBottom: 0, height: '70vh', maxHeight: '600px'}}>
         <Carousel autoplay slidesToShow={1} autoplayInterval={5000} wrapAround
-          decorators={SliderDecorators}>
+          renderCenterLeftControls={({ previousSlide, currentSlide, wrapAround }) => (
+            <SliderDecorators.LeftArrow previousSlide={previousSlide} currentSlide={currentSlide} wrapAround={wrapAround} />
+          )}
+          renderCenterRightControls={({ nextSlide, currentSlide, wrapAround }) => (
+            <SliderDecorators.RightArrow nextSlide={nextSlide} currentSlide={currentSlide} wrapAround={wrapAround} />
+          )}
+          renderBottomCenterControls={({ currentSlide }) => (<div />)}
+          renderBottomRightControls={({ currentSlide, slidesToScroll, slideCount, goToSlide }) => (
+            <SliderDecorators.Dots currentSlide={currentSlide} slidesToScroll={slidesToScroll} slideCount={slideCount} goToSlide={goToSlide} />
+          )}
+        >
           {config.slides.map((slide, i) => {
             return (
               <div key={i} className='homepage-slide responsive-img valign-wrapper'

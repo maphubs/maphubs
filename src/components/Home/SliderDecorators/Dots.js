@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default class SlideDots extends React.PureComponent<Props, void> {
-  getIndexes = (count: number, inc: number) => {
+  getIndexes (count, inc) {
     const arr = []
     for (let i = 0; i < count; i += inc) {
       arr.push(i)
@@ -17,7 +17,7 @@ export default class SlideDots extends React.PureComponent<Props, void> {
     return arr
   }
 
-  getListStyles = () => {
+  getListStyles () {
     return {
       position: 'relative',
       margin: 0,
@@ -26,47 +26,45 @@ export default class SlideDots extends React.PureComponent<Props, void> {
     }
   }
 
-  getListItemStyles = () => {
+  getListItemStyles () {
     return {
       listStyleType: 'none',
       display: 'inline-block'
     }
   }
 
-  getButtonStyles = (active: boolean) => {
+  getButtonStyles (active) {
     return {
       border: 0,
       background: 'transparent',
-      color: 'white',
+      color: active ? '#ddd' : '#777',
       cursor: 'pointer',
       padding: 10,
       outline: 0,
-      fontSize: 30,
-      opacity: active ? 1 : 0.5
+      fontSize: 24,
+      opacity: 0.85
     }
   }
 
   render () {
-    const self = this
-    const indexes = this.getIndexes(self.props.slideCount, self.props.slidesToScroll)
+    const indexes = this.getIndexes(
+      this.props.slideCount,
+      this.props.slidesToScroll
+    )
     return (
-      <ul style={self.getListStyles()}>
-        {
-          indexes.map((index) => {
-            const goToSlide = function () {
-              self.props.goToSlide(index)
-            }
-            return (
-              <li style={self.getListItemStyles()} key={index}>
-                <button
-                  style={self.getButtonStyles(self.props.currentSlide === index)}
-                  onClick={goToSlide}>
-                  &bull;
-                </button>
-              </li>
-            )
-          })
-        }
+      <ul style={this.getListStyles()}>
+        {indexes.map(index => {
+          return (
+            <li style={this.getListItemStyles()} key={index}>
+              <button
+                style={this.getButtonStyles(this.props.currentSlide === index)}
+                onClick={this.props.goToSlide.bind(null, index)}
+              >
+                &bull;
+              </button>
+            </li>
+          )
+        })}
       </ul>
     )
   }

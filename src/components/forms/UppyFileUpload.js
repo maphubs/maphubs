@@ -1,11 +1,12 @@
 // @flow
 import React from 'react'
-import Uppy from 'uppy/lib/core'
-import Tus from 'uppy/lib/plugins/Tus'
-import Dashboard from 'uppy/lib/react/Dashboard'
-import 'uppy/dist/uppy.min.css'
-// import GoogleDrive from 'uppy/lib/plugins/GoogleDrive';
-// import Dropbox from 'uppy/lib/plugins/Dropbox';
+import Uppy from '@uppy/core'
+import Tus from '@uppy/tus'
+import { Dashboard } from '@uppy/react'
+import '@uppy/dashboard/dist/style.min.css'
+import '@uppy/core/dist/style.min.css'
+// import GoogleDrive from '@uppy/google-drive';
+// import Dropbox from '@uppy/dropbox';
 
 import MapHubsComponent from '../MapHubsComponent'
 
@@ -79,8 +80,8 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
               done: 'Done',
               localDisk: 'Local Disk',
               myDevice: 'My Device',
-              dropPasteImport: 'Drop files here, paste, import from one of the locations above or',
-              dropPaste: 'Drop files here, paste or',
+              dropPasteImport: 'Drop files here, paste, %{browse} or import from',
+              dropPaste: 'Drop files here, paste or %{browse}',
               browse: 'browse',
               fileProgress: 'File progress: upload speed and ETA',
               numberOfSelectedFiles: 'Number of selected files',
