@@ -2,8 +2,10 @@
 var winston = require('winston')
 require('winston-daily-rotate-file')
 
+var hostname = process.env.HOSTNAME || 'local'
+
 var fileTransport = new (winston.transports.DailyRotateFile)({
-  filename: 'logs/maphubs-%DATE%.log',
+  filename: `logs/maphubs-${hostname}-%DATE%.log`,
   datePattern: 'YYYY-MM-DD-HH',
   zippedArchive: true,
   maxSize: '20m',
