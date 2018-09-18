@@ -26,7 +26,8 @@ type State = {
   canSubmit: boolean,
   largeData: boolean,
   processing: boolean,
-  multipleShapefiles: any
+  multipleShapefiles: any,
+  bbox: Object
 } & LocaleStoreState & LayerStoreState
 
 export default class UploadLocalSource extends MapHubsComponent<Props, State> {
@@ -37,6 +38,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     largeData: false,
     processing: false,
     multipleShapefiles: null,
+    bbox: null,
     layer: {}
   }
 
@@ -94,7 +96,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           if (result.success) {
             LayerActions.setDataType(result.data_type)
             LayerActions.setImportedTags(result.uniqueProps, true)
-            this.setState({canSubmit: true, processing: false})
+            this.setState({canSubmit: true, processing: false, bbox: result.bbox})
           } else {
             if (result.code === 'MULTIPLESHP') {
               this.setState({multipleShapefiles: result.shapefiles, processing: false})
@@ -131,14 +133,16 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   render () {
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
-    const {canSubmit, multipleShapefiles, style, preview_position} = this.state
+    const { canSubmit, multipleShapefiles, style, bbox } = this.state
     const {mapConfig} = this.props
 
+    /*
     let mapExtent
-    if (preview_position && preview_position.bbox) {
+    if (bbox) {
       const bbox = preview_position.bbox
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
+    */
 
     let map = ''
     if (canSubmit && style) {
@@ -150,7 +154,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             showFeatureInfoEditButtons={false}
             mapConfig={mapConfig}
             glStyle={style}
-            fitBounds={mapExtent}
+            fitBounds={bbox}
           />
         </div>
       )
@@ -170,7 +174,12 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
     return (
       <div className='row'>
-        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
+        <style jsx>{`
+          #upload-process-progess {
+            z-index: 9999 !important;
+          }
+        `}</style>
+        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />     
         <div>
           <div className='row'>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>
