@@ -243,7 +243,8 @@ module.exports = {
         success: true,
         error: null,
         uniqueProps,
-        data_type: geomType
+        data_type: geomType,
+        bbox
       }
       debug.log('Upload Complete!')
       return result
