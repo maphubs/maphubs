@@ -5,7 +5,7 @@
       "en": "Default (Light)",
       "fr": ""
     },
-    "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "tilehostingUrl": "https://maps.tilehosting.com/styles/positron/style.json?key="
   },
@@ -15,7 +15,7 @@
       "en": "Dark",
       "fr": "Dark"
     },
-    "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "tilehostingUrl": "https://maps.tilehosting.com/styles/darkmatter/style.json?key="
   },
@@ -25,7 +25,7 @@
       "en": "Streets",
       "fr": "Streets"
     },
-    "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "tilehostingUrl": "https://maps.tilehosting.com/styles/streets/style.json?key="
   },
@@ -35,7 +35,7 @@
       "en": "Topo",
       "fr": "Topo"
     },
-    "attribution": "<a href=\"https://openmaptiles.com/contours\" target=\"_blank\">Contours</a> | <a href=\"https://openmaptiles.com/hillshades\" target=\"_blank\">Hillshades</a> | <a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "tilehostingUrl": "https://maps.tilehosting.com/styles/topo/style.json?key="
   },
@@ -45,7 +45,7 @@
       "en": "Satellite",
       "fr": "Satellite"
     },
-    "attribution": "<a href=\"https://www.openmaptiles.com/satellite/\" target=\"_blank\">© OpenMapTiles Satellite</a> | <a href=\"http://www.openmaptiles.org/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
     "tilehostingUrl": "https://maps.tilehosting.com/styles/hybrid/style.json?key="
   },
