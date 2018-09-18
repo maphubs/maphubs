@@ -77,7 +77,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
 
     _this.setState({saving: true})
     // save presets
-    LayerActions.submitPresets(true, this.state._csrf, (err) => {
+    LayerActions.submitPresets(false, this.state._csrf, (err) => {
       if (err) {
         MessageActions.showMessage({title: _this.__('Error'), message: err})
         _this.setState({saving: false})
