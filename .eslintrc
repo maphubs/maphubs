@@ -38,7 +38,10 @@
     "flowtype/use-flow-type": 1,
     "security/detect-object-injection": "off",
     "unicorn/filename-case": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "object-curly-spacing": "off",
+    "standard/object-curly-even-spacing": [2, "either"],
+    "unicorn/catch-error-name": ["error", {"name": "err"}]
   },
 
   "env": {
