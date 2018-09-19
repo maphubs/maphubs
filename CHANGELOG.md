@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.17.27](https://github.com/maphubs/maphubs/tree/v0.17.27) (2018-09-19)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.26...v0.17.27)
+
+**Fixed bugs:**
+
+- robot.txt password protected [\#494](https://github.com/maphubs/maphubs/issues/494)
+
 ## [v0.17.26](https://github.com/maphubs/maphubs/tree/v0.17.26) (2018-08-15)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.17.25...v0.17.26)
 
