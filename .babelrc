@@ -14,18 +14,12 @@
         }
       }
     ],
-    [
-      "@babel/preset-stage-0",
-      {
-        "decoratorsLegacy": true
-      }
-    ],
-    "@babel/preset-react",
     "@babel/preset-flow"
   ],
   "plugins": [
-    "@babel/plugin-transform-flow-strip-types",
-    "version-inline"
+    "@babel/plugin-proposal-export-default-from"
   ],
-  "ignore": ["/assets.*|node_modules/(?!(medium-editor|mapbox-gl|@google/earthengine)).*/"]
+  "ignore": [
+    "/assets.*|node_modules/(?!(medium-editor|mapbox-gl|@google/earthengine)).*/"
+  ]
 }

@@ -1,19 +1,8 @@
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
 
-import { createHash } from 'crypto'
-import { readFileSync } from 'fs'
-
 import local from '../src/local'
-
 import version from '../version.json'
-
-let cssHash = ''
-if (process.env.NODE_ENV === 'production') {
-  const hash = createHash('sha256')
-  hash.update(readFileSync(`${process.cwd()}/.next/static/style.css`))
-  cssHash = `?v=${hash.digest('hex').substr(0, 8)}`
-}
 
 export default class MyDocument extends Document {
   render () {
@@ -71,7 +60,6 @@ export default class MyDocument extends Document {
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1' />
           <title>{data.query.title || 'MapHubs'}</title>
-          <link rel='stylesheet' href={`/_next/static/style.css${cssHash}`} />
           {options.description &&
             <meta name='description' content={options.description} />
           }

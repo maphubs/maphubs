@@ -1,21 +1,16 @@
 let babelConfig = {
+  babelrc: false,
   presets: [
     ['@babel/env', {
       'targets': {
         node: true
       }
     }],
-    [
-      '@babel/preset-stage-0',
-      {
-        decoratorsLegacy: true
-      }
-    ],
-    '@babel/preset-react',
     '@babel/preset-flow'
-
   ],
-  plugins: ['@babel/plugin-transform-flow-strip-types', 'version-inline'],
+  plugins: [
+    '@babel/plugin-proposal-export-default-from'
+  ],
   ignore: [/assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/]
 }
 

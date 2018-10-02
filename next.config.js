@@ -1,6 +1,8 @@
 const withCSS = require('@zeit/next-css')
 const path = require('path')
 
+const TerserPlugin = require('terser-webpack-plugin')
+
 const {ANALYZE, ASSET_CDN_PREFIX} = process.env
 
 if (ANALYZE) {
@@ -17,18 +19,18 @@ module.exports = withCSS({
   },
   assetPrefix,
   poweredByHeader: false,
-  webpack (config, { dev }) { 
+  webpack (config, { dev }) {
     if (dev) {
       /// config.devtool = 'cheap-eval-source-map'
-      config.devtool = 'eval'
+      config.devtool = 'cheap-eval-source-map'
     } else {
-      config.devtool = 'source-map'
-    }
-    console.log(config.devtool)
-    for (const options of config.plugins) {
-      if (options['constructor']['name'] === 'UglifyJsPlugin') {
-        options.options.sourceMap = true
-        break
+      config.devtool = false
+      config.optimization = {
+        minimizer: [new TerserPlugin({
+          parallel: true,
+          sourceMap: true,
+          cache: true
+        })]
       }
     }
 
