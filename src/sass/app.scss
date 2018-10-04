@@ -1,6 +1,7 @@
 
 html, body {
   height: 100%;
+  font-display: auto;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
 }
 
@@ -612,10 +613,12 @@ textarea.materialize-textarea+label:after {
 }
 
 .story-title {
+  font-display: auto;
   font-family: 'Merriweather', serif;
 }
 
 .story-content {
+  font-display: auto;
   font-family: 'Merriweather', serif;
 }
 

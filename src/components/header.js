@@ -194,11 +194,11 @@ export default class Header extends MapHubsComponent<Props, State> {
                 <SearchButton t={this.__} searchLink={customSearchLink || '/search'} />
               }
               {showHelp &&
-                <HelpButton t={this.__} helpLink={customHelpLink || 'http://help.maphubs.com'} />
+                <HelpButton t={this.__} helpLink={customHelpLink || 'https://help.maphubs.com'} />
               }
               <UserMenu id='user-menu-header' />
             </ul>
-            <ul ref={(el) => { this.sidenav = el }} className='sidenav' id='side-nav-menu'>       
+            <ul ref={(el) => { this.sidenav = el }} className='sidenav' id='side-nav-menu'>
               {showExplore &&
                 <ExploreDropdown sidenav id='explore-sidnav' />
               }
@@ -221,7 +221,7 @@ export default class Header extends MapHubsComponent<Props, State> {
               }
               {showHelp &&
                 <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href={customHelpLink || 'http://help.maphubs.com'}>{this.__('Help/Support')}</a>
+                  <a className={mapClasses} href={customHelpLink || 'https://help.maphubs.com'}>{this.__('Help/Support')}</a>
                 </li>
               }
               <UserMenu id='user-menu-sidenav' sidenav />

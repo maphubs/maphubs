@@ -236,7 +236,7 @@ export default class Map extends MapHubsComponent<Props, State> {
       _this.setBaseMapStyle(baseMap, false)
 
       if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
-        alert(this.__('Your browser does not support Mapbox GL please see: http://help.maphubs.com/category/21-troubleshooting'))
+        alert(this.__('Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'))
         return
       }
 
