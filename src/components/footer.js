@@ -7,6 +7,7 @@ type Props = {
   showPoweredByMapHubs: boolean,
   showMapForEnvironmentMoabiLogo: boolean,
   showContactUs: boolean,
+  customLeftColumnItems: Array<string>,
   links: Array<Object>
 }
 
@@ -22,14 +23,23 @@ export default class Footer extends MapHubsComponent<Props, void> {
   static defaultProps: DefaultProps = {
     showPoweredByMapHubs: true,
     showMapForEnvironmentMoabiLogo: false,
-    showContactUs: true
+    showContactUs: true,
+    customLeftColumnItems: []
   }
 
   render () {
     const _this = this
+    const {
+      showMapForEnvironmentMoabiLogo,
+      copyrightText,
+      showPoweredByMapHubs,
+      showContactUs,
+      links,
+      customLeftColumnItems
+    } = this.props
 
     let m4eFooter = ''
-    if (this.props.showMapForEnvironmentMoabiLogo) {
+    if (showMapForEnvironmentMoabiLogo) {
       m4eFooter = (
         <ul style={{marginTop: '0px'}}>
           <li className='valign-wrapper'>
@@ -45,7 +55,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
 
     let copyright = ''
 
-    if (this.props.copyrightText) {
+    if (copyrightText) {
       copyright = (
         <small>&copy; {this.props.copyrightText}</small>
       )
@@ -56,7 +66,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
     }
 
     let poweredByMapHubs = ''
-    if (this.props.showPoweredByMapHubs) {
+    if (showPoweredByMapHubs) {
       poweredByMapHubs = (
         <ul>
           <li className='valign-wrapper'>
@@ -74,7 +84,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
     }
 
     let contactUs = ''
-    if (this.props.showContactUs) {
+    if (showContactUs) {
       contactUs = (
         <ul>
           <li>{this.__('Contact Us')}</li>
@@ -85,7 +95,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
     }
 
     let linkSection = ''
-    if (this.props.links) {
+    if (links) {
       linkSection = (
         <ul>
           <li>{this.__('Learn More')}</li>
@@ -109,6 +119,15 @@ export default class Footer extends MapHubsComponent<Props, void> {
             <div className='col l4 s12' style={{marginTop: '15px'}}>
               {m4eFooter}
               {poweredByMapHubs}
+              <ul style={{marginTop: '0px'}}>
+                {customLeftColumnItems.map((item, i) => {
+                  return (
+                    <li key={`custom-footer-item-${i}`} >
+                      <div dangerouslySetInnerHTML={{__html: item}} />
+                    </li>
+                  )
+                })}
+              </ul>
 
             </div>
             <div className='col l5 s12'>
