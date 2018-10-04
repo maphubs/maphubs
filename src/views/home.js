@@ -28,18 +28,18 @@ import UserStore from '../stores/UserStore'
 // import Perf from 'react-addons-perf';
 
 type Props = {
-    featuredLayers: Array<Object>,
-    featuredGroups: Array<Object>,
+    featuredLayers: Array<Layer>,
+    featuredGroups: Array<Group>,
     featuredHubs: Array<Object>,
     featuredMaps: Array<Object>,
     featuredStories: Array<Object>,
-    popularLayers: Array<Object>,
-    popularGroups: Array<Object>,
+    popularLayers: Array<Layer>,
+    popularGroups: Array<Group>,
     popularHubs: Array<Object>,
     popularMaps: Array<Object>,
     popularStories: Array<Object>,
-    recentLayers: Array<Object>,
-    recentGroups: Array<Object>,
+    recentLayers: Array<Layer>,
+    recentGroups: Array<Group>,
     recentHubs: Array<Object>,
     recentMaps: Array<Object>,
     recentStories: Array<Object>,
@@ -359,17 +359,33 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return carousel
   }
 
-  renderStories = (key: string) => {
-    let featured = ''
-    if (this.props.featuredStories && this.props.featuredStories.length > 0) {
-      featured = (
+  renderStories = (config: Object, key: string) => {
+    let stories = []
+    const {trendingStories, featuredStories, recentStories} = this.props
+    if (trendingStories && trendingStories.length > 0) {
+      stories = stories.concat(trendingStories)
+    }
+    if (featuredStories && featuredStories.length > 0) {
+      stories = stories.concat(featuredStories)
+    }
+    if (recentStories && recentStories.length > 0) {
+      stories = stories.concat(recentStories)
+    }
+    let title = ''
+    if (config.title) {
+      title = this._o_(config.title)
+    } else {
+      title = this.__('Stories')
+    }
+    if (stories.length > 0) {
+      return (
         <div key={key}>
           <div className='divider' />
           <div className='row'>
             <h5 className='no-margin center-align' style={{lineHeight: '50px', color: '#212121'}}>
-              {this.__('Featured Stories')}
+              {title}
             </h5>
-            {this.props.featuredStories.map(story => {
+            {stories.map(story => {
               return (
                 <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className='card-content'>
@@ -382,7 +398,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         </div>
       )
     }
-    return featured
   }
 
   renderText = (config: Object, key: string) => {
@@ -435,7 +450,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                 } else if (component.type === 'carousel') {
                   return _this.renderCarousel(component, key)
                 } else if (component.type === 'storyfeed') {
-                  return _this.renderStories(key)
+                  return _this.renderStories(component, key)
                 } else if (component.type === 'text') {
                   return _this.renderText(component, key)
                 } else if (component.type === 'links') {

@@ -20,10 +20,27 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
         dataRequests.push(Map.getMapLayers(component.map_id, false))
         dataRequestNames.push('layers')
       } else if (component.type === 'storyfeed') {
-        dataRequests.push(Story.getPopularStories(5))
-        dataRequestNames.push('trendingStories')
-        dataRequests.push(Story.getFeaturedStories(5))
-        dataRequestNames.push('featuredStories')
+        if (component.datasets) {
+          component.datasets.forEach((dataset) => {
+            const {type, max} = dataset
+            const number = max || 5
+            if (type === 'trending' || type === 'popular') {
+              dataRequests.push(Story.getPopularStories(number))
+              dataRequestNames.push('trendingStories')
+            } else if (type === 'featured') {
+              dataRequests.push(Story.getFeaturedStories(number))
+              dataRequestNames.push('featuredStories')
+            } else if (type === 'recent') {
+              dataRequests.push(Story.getRecentStories(number))
+              dataRequestNames.push('recentStories')
+            }
+          })
+        } else {
+          dataRequests.push(Story.getPopularStories(5))
+          dataRequestNames.push('trendingStories')
+          dataRequests.push(Story.getFeaturedStories(5))
+          dataRequestNames.push('featuredStories')
+        }    
       } else if (component.type === 'carousel') {
         if (component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0) {
           component.datasets.forEach((dataset) => {
