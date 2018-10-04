@@ -1,7 +1,7 @@
 const withCSS = require('@zeit/next-css')
 const path = require('path')
 
-const TerserPlugin = require('terser-webpack-plugin')
+// const TerserPlugin = require('terser-webpack-plugin')
 
 const {ANALYZE, ASSET_CDN_PREFIX} = process.env
 
@@ -24,7 +24,16 @@ module.exports = withCSS({
       /// config.devtool = 'cheap-eval-source-map'
       config.devtool = 'cheap-eval-source-map'
     } else {
-      config.devtool = false
+      config.devtool = 'source-map'
+      if (config.optimization && config.optimization.minimizer) {
+        for (const plugin of config.optimization.minimizer) {
+          if (plugin.constructor.name === 'TerserPlugin') {
+            plugin.options.sourceMap = true
+            break
+          }
+        }
+      }
+      /*
       config.optimization = {
         minimizer: [new TerserPlugin({
           parallel: true,
@@ -32,6 +41,7 @@ module.exports = withCSS({
           cache: true
         })]
       }
+      */
     }
 
     config.resolve = {

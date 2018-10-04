@@ -4,7 +4,7 @@ PACKAGE_VERSION=`node -p "require('./version.json').version"`
 ASSET_CDN_PREFIX=https://hpvhe47439ygwrt.belugacdn.link/maphubs
 
 #next.js build and export assets
-node --max_old_space_size=4096 node_modules/next/dist/bin/next-build
+node --max_old_space_size=8124 node_modules/next/dist/bin/next-build
 node node_modules/next/dist/bin/next-export -o .next-export
 
 #docker build
