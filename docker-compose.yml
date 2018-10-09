@@ -57,6 +57,7 @@ services:
       - ./env/dev/secret/web-secret.env
     volumes:
       - '../maphubs-tileserver/data:/data'
+      - '../maphubs-tileserver/logs:/logs'
     ports:
       - '4001:4001'
     restart: always
