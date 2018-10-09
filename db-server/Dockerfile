@@ -1,7 +1,7 @@
 FROM mdillon/postgis:9.6-alpine
 
 #MapHubs PostgreSQL DB
-MAINTAINER Kristofor Carle - Moabi <kris@moabi.org>
+LABEL maintainer="Kristofor Carle<kris@maphubs.com>"
 
 COPY script/*.sh  /docker-entrypoint-initdb.d/
 COPY script/*.sql  /docker-entrypoint-initdb.d/

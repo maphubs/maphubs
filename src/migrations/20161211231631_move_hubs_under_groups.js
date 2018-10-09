@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
     knex.raw(`ALTER TABLE omh.hubs ADD COLUMN owned_by_group_id text;`),
     knex.raw(`
@@ -24,9 +24,9 @@ exports.up = function(knex, Promise) {
             END as role,        
             created_at, updated_at, invite_token, invite_accepted_at, status FROM omh.hub_memberships;    
     `)
-  ]);
-};
+  ])
+}
 
-exports.down = function() {
-  
-};
+exports.down = function () {
+
+}

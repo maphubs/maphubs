@@ -1,8 +1,8 @@
 
-exports.up = function() {
+exports.up = function () {
+  return Promise.resolve()
+}
 
-};
-
-exports.down = function() {
-  
-};
+exports.down = function () {
+  return Promise.resolve()
+}

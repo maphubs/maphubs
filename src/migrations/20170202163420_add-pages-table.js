@@ -1,7 +1,7 @@
 
-exports.up = function(knex, Promise) {
-   return Promise.all([
-     knex.raw(`
+exports.up = function (knex, Promise) {
+  return Promise.all([
+    knex.raw(`
         CREATE TABLE omh.page (
           page_id text,
           config json  NOT NULL DEFAULT '{}',
@@ -10,10 +10,10 @@ exports.up = function(knex, Promise) {
     `),
     knex.raw(`
         INSERT INTO omh.page (page_id, config) VALUES ('home', '{"components":[]}')
-    `),
-   ]);
-};
+    `)
+  ])
+}
 
-exports.down = function() {
-  
-};
+exports.down = function () {
+  return Promise.resolve()
+}

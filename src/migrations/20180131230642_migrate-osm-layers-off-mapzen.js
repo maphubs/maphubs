@@ -170,7 +170,7 @@ exports.up = (knex, Promise) => {
                   layer.visibility = 'none' // Disable this for now, not available in data
                 })
                 style.layers = [style.layers[0]]
-              } else if (layer.layer_id === 22) { // university              
+              } else if (layer.layer_id === 22) { // university
                 style.layers.forEach((layer) => {
                   layer['source-layer'] = 'landuse'
                 })
@@ -212,4 +212,6 @@ exports.up = (knex, Promise) => {
     })
 }
 
-exports.down = () => {}
+exports.down = () => {
+  return Promise.resolve()
+}

@@ -1,5 +1,5 @@
 
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.raw(`
       CREATE TABLE omh.story_images (
         story_id int,
@@ -10,9 +10,9 @@ exports.up = function(knex) {
         CONSTRAINT storyimagesimagesfk FOREIGN KEY (image_id)
               REFERENCES omh.images (image_id)
       )
-  `);
-};
+  `)
+}
 
-exports.down = function(knex) {
-  return knex.raw(`DROP TABLE omh.story_images`);
-};
+exports.down = function (knex) {
+  return knex.raw(`DROP TABLE omh.story_images`)
+}

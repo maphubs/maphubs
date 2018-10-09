@@ -1,8 +1,9 @@
 
-exports.up = function() {
-  //removed
-};
+exports.up = () => {
+  // removed
+  return Promise.resolve()
+}
 
-exports.down = function() {
-
-};
+exports.down = () => {
+  return Promise.resolve()
+}

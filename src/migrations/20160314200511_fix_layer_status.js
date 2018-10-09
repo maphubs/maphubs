@@ -1,8 +1,8 @@
 
-exports.up = function(knex) {
-  return knex('omh.layers').update({status: 'published'});
-};
+exports.up = (knex) => {
+  return knex('omh.layers').update({status: 'published'})
+}
 
-exports.down = function() {
-  return;
-};
+exports.down = () => {
+  return Promise.resolve()
+}

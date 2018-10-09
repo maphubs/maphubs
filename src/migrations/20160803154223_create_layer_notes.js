@@ -1,5 +1,5 @@
 
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.raw(`
       CREATE TABLE omh.layer_notes (
         layer_id int,
@@ -12,9 +12,9 @@ exports.up = function(knex) {
               REFERENCES omh.layers (layer_id),
         PRIMARY KEY (layer_id)
       )
-  `);
-};
+  `)
+}
 
-exports.down = function(knex) {
-  return knex.raw(`DROP TABLE omh.layer_notes`);
-};
+exports.down = function (knex) {
+  return knex.raw(`DROP TABLE omh.layer_notes`)
+}

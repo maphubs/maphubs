@@ -1,9 +1,9 @@
 
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.raw(`UPDATE omh.layers 
-SET legend_html = regexp_replace(legend_html, '<h3>.*?<\\/h3>' , '<h3>{NAME}</h3>')`);
-};
+SET legend_html = regexp_replace(legend_html, '<h3>.*?<\\/h3>' , '<h3>{NAME}</h3>')`)
+}
 
-exports.down = function() {
-  
-};
+exports.down = function () {
+  return Promise.resolve()
+}

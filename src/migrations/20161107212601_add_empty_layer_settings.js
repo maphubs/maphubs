@@ -1,9 +1,9 @@
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
-      knex.raw(`UPDATE omh.layers SET settings='{}' where settings IS NULL`)
-  ]);
-};
+    knex.raw(`UPDATE omh.layers SET settings='{}' where settings IS NULL`)
+  ])
+}
 
-exports.down = function() {
-
-};
+exports.down = function () {
+  return Promise.resolve()
+}

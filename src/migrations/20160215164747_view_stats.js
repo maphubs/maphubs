@@ -1,6 +1,5 @@
 
-exports.up = function(knex, Promise) {
-
+exports.up = function (knex, Promise) {
   return Promise.all([
     knex.raw(`
         CREATE TABLE omh.layer_views (
@@ -51,9 +50,9 @@ exports.up = function(knex, Promise) {
         )
     `)
 
-  ]);
-};
+  ])
+}
 
-exports.down = function() {
+exports.down = function () {
 
-};
+}

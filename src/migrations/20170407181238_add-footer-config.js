@@ -1,6 +1,6 @@
 
-exports.up = function(knex) {
-  return  knex.raw(`
+exports.up = function (knex) {
+  return knex.raw(`
         INSERT INTO omh.page (page_id, config) VALUES ('footer', '{
   "showPoweredByMapHubs": true,
   "showMapForEnvironmentMoabiLogo": false,
@@ -30,9 +30,9 @@ exports.up = function(knex) {
     }
   ]
   }')
-    `);
-};
+    `)
+}
 
-exports.down = function() {
-  
-};
+exports.down = function () {
+  return Promise.resolve()
+}

@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
     knex.raw(`
         CREATE TABLE omh.account_invites (
@@ -17,12 +17,12 @@ exports.up = function(knex, Promise) {
         )
     `),
     knex('omh.admins').insert({user_id: 1})
-  ]);
-};
+  ])
+}
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
     knex.raw(`DROP TABLE omh.account_invites`),
     knex.raw(`DROP TABLE omh.admins`)
-  ]);
-};
+  ])
+}
