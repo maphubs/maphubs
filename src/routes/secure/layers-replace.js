@@ -55,7 +55,10 @@ module.exports = function (app: any) {
             debug.log('Mimetype: ' + req.file.mimetype)
             const importer = Importers.getImporterFromFileName(req.file.originalname)
             const importerResult = await importer(req.file.path, layer_id)
-            if (importerResult.type && importerResult.type === 'FeatureCollection') {
+            if (importerResult.success === false && importerResult.shapefiles) {
+              await DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
+              debug.log('Finished storing temp path')
+            } else if (importerResult.type && importerResult.type === 'FeatureCollection') {
               // is geoJSON
               await knex.transaction(async (trx) => {
                 const result = await DataLoadUtils.storeTempGeoJSON(importerResult, req.file.path, layer_id, shortid, true, false, trx)

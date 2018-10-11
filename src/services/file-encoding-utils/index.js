@@ -1,7 +1,7 @@
 const fs = require('fs')
 const jschardet = require('jschardet')
 const iconv = require('iconv-lite')
-const debug = require('./debug')('file-encoding-utils')
+const debug = require('../debug')('file-encoding-utils')
 
 module.exports = {
 

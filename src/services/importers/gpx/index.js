@@ -2,10 +2,9 @@
 const Promise = require('bluebird')
 const fs = require('fs')
 const ogr2ogr = require('ogr2ogr')
-const local = require('../../local')
-const debug = require('../debug')('services/importers/gpx')
+const debug = require('../../debug')('services/importers/gpx')
 
-module.exports = async function (filePath: string, layer_id: number) {
+module.exports = async function (filePath: string, layer_id: number, config?: Object) {
   /* eslint-disable security/detect-non-literal-fs-filename */
   // file path is a folder from a env var + a GUID, not orginal filename
   const ogr = ogr2ogr(fs.createReadStream(filePath), 'GPX')
@@ -23,8 +22,8 @@ module.exports = async function (filePath: string, layer_id: number) {
     const geoJSON = await Promise.promisify(ogrWaypoints.exec)()
     return geoJSON
   } else {
-    if (local.writeDebugData) {
-      fs.writeFile(local.tempFilePath + '/gpx-upload-layer-' + layer_id + '.geojson', JSON.stringify(geoJSON), (err) => {
+    if (config.writeDebugData) {
+      fs.writeFile(config.tempFilePath + '/gpx-upload-layer-' + layer_id + '.geojson', JSON.stringify(geoJSON), (err) => {
         if (err) {
           throw err
         }

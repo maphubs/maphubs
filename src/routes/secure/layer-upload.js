@@ -8,7 +8,7 @@ const tus = require('tus-node-server')
 const EVENTS = require('tus-node-server').EVENTS
 const express = require('express')
 const log = require('../../services/log')
-const shapefileFairy = require('../../services/shapefile-fairy')
+const shapefileFairy = require('../../services/importers/shapefile/shapefile-fairy')
 const DataLoadUtils = require('../../services/data-load-utils')
 const debug = require('../../services/debug')('routes/layers-upload')
 const local = require('../../local')
@@ -67,7 +67,10 @@ module.exports = function (app: any) {
             const fileid = uploadUrlParts[uploadUrlParts.length - 1]
             const path = UPLOAD_PATH + '/' + fileid
             const importerResult = await importer(path, layer_id)
-            if (importerResult.type && importerResult.type === 'FeatureCollection') {
+            if (importerResult.success === false && importerResult.shapefiles) {
+              await DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
+              debug.log('Finished storing temp path')
+            } else if (importerResult.type && importerResult.type === 'FeatureCollection') {
               // is geoJSON
               const result = await DataLoadUtils.storeTempGeoJSON(importerResult, path, layer_id, shortid, false, true)
               await knex.transaction(async (trx) => {

@@ -44,3 +44,4 @@ uppy.env
 .next/*
 !.next/BUILD_ID
 assets/assets/themes
+dist

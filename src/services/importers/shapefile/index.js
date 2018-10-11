@@ -1,12 +1,11 @@
 // @flow
-const log = require('../../services/log')
+const log = require('../../log')
 const unzip = require('unzip2')
-const DataLoadUtils = require('../data-load-utils')
 const Promise = require('bluebird')
 const fs = require('fs')
 const ogr2ogr = require('ogr2ogr')
-const shapefileFairy = require('../shapefile-fairy')
-const debug = require('../debug')('services/importers/shapefile')
+const shapefileFairy = require('./shapefile-fairy')
+const debug = require('../../debug')('importers/shapefile')
 const JSONStream = require('JSONStream')
 
 const streamCloseToPromise = function (stream) {
@@ -16,7 +15,7 @@ const streamCloseToPromise = function (stream) {
   })
 }
 
-module.exports = async function (filePath: string, layer_id: number) {
+module.exports = async function (filePath: string, layer_id: number, config?: Object) {
   /* eslint-disable security/detect-non-literal-fs-filename */
   // file path is a folder from a env var + a GUID, not orginal filename
   const pipedStream = fs.createReadStream(filePath).pipe(unzip.Extract({path: filePath + '_zip'}))
@@ -26,8 +25,6 @@ module.exports = async function (filePath: string, layer_id: number) {
   debug.log('ShapefileFairy Result: ' + JSON.stringify(result))
   if (result && result.code === 'MULTIPLESHP') {
     log.info('Multiple Shapfiles Detected: ' + result.shapefiles.toString())
-    await DataLoadUtils.storeTempShapeUpload(filePath, layer_id)
-    debug.log('Finished storing temp path')
     // tell the client if we were successful
     return {
       success: false,
@@ -67,8 +64,6 @@ module.exports = async function (filePath: string, layer_id: number) {
     })
   } else {
     log.error(`Unknown Shapefile Validation Error`)
-    await DataLoadUtils.storeTempShapeUpload(filePath, layer_id)
-    debug.log('Finished storing temp path')
     return {
       success: false,
       value: result
