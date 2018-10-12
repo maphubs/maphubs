@@ -1,10 +1,8 @@
 // @flow
 import React from 'react'
-import BaseMapStore from '../../stores/map/BaseMapStore'
+import { Subscribe } from 'unstated'
+import BaseMapContainer from './containers/BaseMapContainer'
 import LegendItem from './LegendItem'
-import MapHubsComponent from '../MapHubsComponent'
-import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
-
 import MapStyles from './Styles'
 
 type Props = {|
@@ -17,14 +15,15 @@ type Props = {|
   mapLayersActivatesID?: string,
   openLayersPanel?: Function,
   maxHeight: string,
-  style: Object
+  style: Object,
+  t: Function
 |}
 
 type State = {|
   collapsed: boolean
-|} & BaseMapStoreState
+|}
 
-export default class MiniLegend extends MapHubsComponent<Props, State> {
+export default class MiniLegend extends React.Component<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -41,11 +40,6 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
     collapsed: false
   }
 
-  constructor (props: Props) {
-    super(props)
-    this.stores.push(BaseMapStore)
-  }
-
   toggleCollapsed = (e: Event) => {
     if (this.props.collapsible && e.target.id !== 'legend-settings') {
       this.setState({
@@ -55,23 +49,23 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
   }
 
   openLayersPanel = () => {
-    if(this.props.openLayersPanel) {
+    if (this.props.openLayersPanel) {
       this.props.openLayersPanel()
     }
   }
 
-
   render () {
     const _this = this
+    const {t, title, showLayersButton, mapLayersActivatesID} = this.props
     const {collapsed} = this.state
 
     let layersButton = ''
-    if (this.props.showLayersButton) {
+    if (showLayersButton) {
       layersButton = (
         <a
           href='#'
           className='sidenav-trigger'
-          data-target={this.props.mapLayersActivatesID}
+          data-target={mapLayersActivatesID}
           onClick={this.openLayersPanel}
           style={{
             position: 'absolute',
@@ -103,8 +97,8 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
 
     let titleText = ''
     let titleFontSize = '15px'
-    if (this.props.title) {
-      titleText = this._o_(this.props.title)
+    if (title) {
+      titleText = t(title)
       if (titleText) {
         if (titleText.length > 80) {
           titleFontSize = '8px'
@@ -115,13 +109,13 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
         }
       } else {
         // if localized text is empty
-        titleText = this.__('Legend')
+        titleText = t('Legend')
       }
     } else {
-      titleText = this.__('Legend')
+      titleText = t('Legend')
     }
 
-    let title = ''
+    let titleDisplay = ''
     if (this.props.collapsible) {
       let iconName
       if (this.props.collapseToBottom) {
@@ -138,7 +132,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
         }
       }
 
-      title = (
+      titleDisplay = (
         <div className='row no-margin' style={{height: '32px', width: '100%'}}>
           <div className='col s10 no-padding valign-wrapper' style={{height: '32px'}}>
             <h6 className='black-text valign word-wrap' style={{
@@ -157,7 +151,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
         </div>
       )
     } else {
-      title = (
+      titleDisplay = (
         <div className='row no-margin valign-wrapper' style={{height: '32px', width: '100%'}}>
           <h6 className='black-text valign' style={{
             padding: '0.2rem',
@@ -209,7 +203,7 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
               borderRight: '1px solid #ddd',
               borderLeft: '1px solid #ddd'}}>
             <div className='collapsible-header no-padding' style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
-              {title}
+              {titleDisplay}
             </div>
             <div className='collapsible-body'
               style={{
@@ -233,14 +227,17 @@ export default class MiniLegend extends MapHubsComponent<Props, State> {
                     if (_this.props.hideInactive && !active) {
                       return null
                     }
-                    return (<LegendItem key={layer.layer_id} layer={layer} />)
+                    return (<LegendItem key={layer.layer_id} layer={layer} t={t} />)
                   })
                 }
-
-                <div className='base-map-legend' style={{lineHeight: '0.75em', padding: '2px'}}>
-                  <span style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}}
-                    className='grey-text align-left'>{this.__('Base Map')} - <span className='no-margin no-padding' dangerouslySetInnerHTML={{__html: this.state.attribution}} /></span>
-                </div>
+                <Subscribe to={[BaseMapContainer]}>
+                  {BaseMap => (
+                    <div className='base-map-legend' style={{lineHeight: '0.75em', padding: '2px'}}>
+                      <span style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}}
+                        className='grey-text align-left'>{t('Base Map')} - <span className='no-margin no-padding' dangerouslySetInnerHTML={{__html: BaseMap.state.attribution}} /></span>
+                    </div>
+                  )}
+                </Subscribe>
               </div>
             </div>
           </li>

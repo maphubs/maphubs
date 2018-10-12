@@ -89,5 +89,41 @@
         "trackDir": "src/services/importers",
         "origin": "AUTHORED"
     },
+    "kriscarle.maphubs-utils/services/terraformer-gl@1.0.0": {
+        "files": [
+            {
+                "relativePath": "src/services/terraformerGL/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/services/terraformerGL/index.js",
+        "trackDir": "src/services/terraformerGL",
+        "origin": "AUTHORED"
+    },
+    "kriscarle.maphubs-utils/services/url-util@1.0.0": {
+        "files": [
+            {
+                "relativePath": "src/services/url-util/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/services/url-util/index.js",
+        "trackDir": "src/services/url-util",
+        "origin": "AUTHORED"
+    },
+    "kriscarle.maphubs-utils/services/client-error-response@1.0.0": {
+        "files": [
+            {
+                "relativePath": "src/services/client-error-response/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/services/client-error-response/index.js",
+        "trackDir": "src/services/client-error-response",
+        "origin": "AUTHORED"
+    },
     "version": "13.0.4"
 }

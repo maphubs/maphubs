@@ -2,7 +2,7 @@
 const Layer = require('../../models/layer')
 const LayerData = require('../../models/layer-data')
 const csrfProtection = require('csurf')({cookie: false})
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 const Promise = require('bluebird')
 const debug = require('../../services/debug')('routes/layer-data')
 const apiError = require('../../services/error-response').apiError

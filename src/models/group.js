@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../connection.js')
+const knex = require('../connection')
 const Promise = require('bluebird')
 const _find = require('lodash.find')
 const Account = require('./account')

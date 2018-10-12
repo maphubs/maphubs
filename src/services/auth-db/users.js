@@ -1,6 +1,6 @@
 // @flow
-const knex = require('../../connection.js')
-const log = require('../log.js')
+const knex = require('../../connection')
+const log = require('../log')
 const debug = require('../debug')('oauth-db/users')
 
 function translateUserObject (data: Object) {

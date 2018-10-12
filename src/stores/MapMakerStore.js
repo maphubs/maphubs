@@ -10,7 +10,7 @@ const _find = require('lodash.find')
 // var $ = require('jquery');
 // var urlUtil = require('../services/url-util');
 const checkClientError = require('../services/client-error-response').checkClientError
-import type {Layer} from './layer-store'
+import type {Layer} from '../types/layer'
 
 export type MapMakerStoreState = {
    map_id?: number,

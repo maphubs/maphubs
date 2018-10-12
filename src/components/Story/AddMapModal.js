@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Modal, ModalContent} from '../Modal/Modal.js'
+import {Modal, ModalContent} from '../Modal/Modal'
 import CardCarousel from '../CardCarousel/CardCarousel'
 import SearchBox from '../SearchBox'
 import NotificationActions from '../../actions/NotificationActions'

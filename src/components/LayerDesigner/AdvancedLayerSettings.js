@@ -6,7 +6,7 @@ import MapStyles from '../Map/Styles'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import type {GLStyle} from '../../types/mapbox-gl-style'
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 
 type Props = {|
   onChange: Function,

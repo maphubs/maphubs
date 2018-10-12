@@ -1,14 +1,13 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from '../../components/MapHubsComponent'
 import request from 'superagent'
 import slugify from 'slugify'
-import GetNameField from '../../services/get-name-field'
+import GetNameField from './Styles/get-name-field'
 import Attributes from './Attributes'
 import _isequal from 'lodash.isequal'
 import type {Feature} from 'geojson-flow'
 import ActionPanel from './FeaturePopup/ActionPanel'
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 
 const checkClientError = require('../../services/client-error-response').checkClientError
 const urlUtil = require('../../services/url-util')
@@ -16,7 +15,8 @@ const debug = require('../../services/debug')('map/featurepopup')
 
 type Props = {
   features: Array<Feature>,
-  showButtons: boolean
+  showButtons: boolean,
+  t: Function
 }
 
 type State = {
@@ -25,7 +25,7 @@ type State = {
   layer?: Layer
 }
 
-export default class FeaturePopup extends MapHubsComponent<Props, State> {
+export default class FeaturePopup extends React.Component<Props, State> {
   props: Props
 
   constructor (props: Props) {
@@ -94,7 +94,7 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
 
   renderContentWithImage = (name?: string, description?: string, photoUrl: string, featureName: string, properties: Object) => {
     const {layerLoaded} = this.state
-
+    const {t} = this.props
     let nameDisplay
 
     if (name) {
@@ -122,7 +122,7 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
       } else {
         descDisplay = (
           <div className='card-content' style={{padding: 0, height: 'calc(100% - 100px)'}}>
-            <Attributes attributes={properties} />
+            <Attributes attributes={properties} t={t} />
           </div>
         )
       }
@@ -162,6 +162,7 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
 
   renderFeature = (feature: Object, i: number) => {
     const {layer, showAttributes} = this.state
+    const {t} = this.props
     let nameField
     let nameFieldValue
     let featureName = ''
@@ -192,14 +193,14 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
 
     if (!feature || !feature.properties) {
       return (
-        <p key={`popup-feature-${i}`}>{this.__('Error Invalid Feature')}</p>
+        <p key={`popup-feature-${i}`}>{t('Error Invalid Feature')}</p>
       )
     }
     let content
     if (!showAttributes && photoUrl) {
       content = this.renderContentWithImage(nameFieldValue, descriptionFieldValue, photoUrl, featureName, feature.properties)
     } else {
-      content = <Attributes attributes={feature.properties} />
+      content = <Attributes attributes={feature.properties} t={t} />
     }
 
     return (
@@ -208,7 +209,7 @@ export default class FeaturePopup extends MapHubsComponent<Props, State> {
           {content}
         </div>
         <div className='card-action' style={{padding: '5px 5px'}}>
-          <ActionPanel layer={layer} t={this.__} tObject={this._o_}
+          <ActionPanel layer={layer} t={t}
             selectedFeature={feature} featureName={featureName}
             toggled={showAttributes}
             enableToggle={photoUrl} toggleData={this.toggleAttributes}

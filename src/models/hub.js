@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../connection.js')
+const knex = require('../connection')
 const Promise = require('bluebird')
 const _map = require('lodash.map')
 const debug = require('../services/debug')('model/hub')

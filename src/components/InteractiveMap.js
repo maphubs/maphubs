@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
 
-import Map from './Map/Map'
+import Map from './Map'
 import LayerList from './MapMaker/LayerList'
 import MiniLegend from './Map/MiniLegend'
 import MapStore from '../stores/MapStore'
 import MapActions from '../actions/MapActions'
-import ForestLossLegendHelper from './Map/ForestLossLegendHelper'
 import IsochroneLegendHelper from './Map/IsochroneLegendHelper'
 import MapLayerMenu from './InteractiveMap/MapLayerMenu'
 import MapHubsComponent from './MapHubsComponent'
@@ -130,35 +129,6 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     })
   }
 
-  onToggleForestLoss = (enabled: boolean) => {
-    let mapLayers = []
-    if (this.state.layers) {
-      mapLayers = this.state.layers
-    }
-    const layers = ForestLossLegendHelper.getLegendLayers()
-
-    if (enabled) {
-      // add layers to legend
-      mapLayers = mapLayers.concat(layers)
-    } else {
-      const updatedLayers = []
-      // remove layers from legend
-      mapLayers.forEach(mapLayer => {
-        let foundInLayers
-        layers.forEach(layer => {
-          if (mapLayer.id === layer.id) {
-            foundInLayers = true
-          }
-        })
-        if (!foundInLayers) {
-          updatedLayers.push(mapLayer)
-        }
-      })
-      mapLayers = updatedLayers
-    }
-    MapActions.updateLayers(mapLayers, false)
-  }
-
   onToggleIsochroneLayer = (enabled: boolean) => {
     let mapLayers = []
     if (this.state.layers) {
@@ -256,6 +226,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     if (this.state.width < 600) {
       mobileLegend = (
         <MiniLegend
+          t={this.t}
           style={{
             width: '100%'
           }}
@@ -275,6 +246,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       const legendMaxHeight = topOffset + insetOffset
       legend = (
         <MiniLegend
+          t={this.t}
           style={{
             position: 'absolute',
             top: '5px',

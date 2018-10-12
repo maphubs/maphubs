@@ -4,7 +4,7 @@ import LayerList from './LayerList'
 import _isEqual from 'lodash.isequal'
 import _debounce from 'lodash.debounce'
 import _find from 'lodash.find'
-import Map from '../Map/Map'
+import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import AddLayerPanel from './AddLayerPanel'
 import SaveMapPanel from './SaveMapPanel'
@@ -19,7 +19,6 @@ import MessageActions from '../../actions/MessageActions'
 import EditLayerPanel from './EditLayerPanel'
 import MapLayerDesigner from '../LayerDesigner/MapLayerDesigner'
 import EditorToolButtons from './EditorToolButtons'
-import ForestLossLegendHelper from '../Map/ForestLossLegendHelper'
 import IsochroneLegendHelper from '../Map/IsochroneLegendHelper'
 import MapHubsComponent from '../MapHubsComponent'
 import Reflux from '../Rehydrate'
@@ -27,7 +26,7 @@ import fireResizeEvent from '../../services/fire-resize-event'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {UserStoreState} from '../../stores/UserStore'
 import type {MapMakerStoreState} from '../../stores/MapMakerStore'
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 
 import $ from 'jquery'
 
@@ -45,7 +44,8 @@ type Props = {
     owned_by_group_id?: string,
     editLayer?: Layer,
     mapConfig: Object,
-    settings: Object
+    settings: Object,
+    groups: Array<Object>
   }
 
   type State = {
@@ -147,7 +147,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
-
     if (this.state.editingLayer && !prevState.editingLayer) {
       // starting editing
       if (this.refs.editLayerPanel) {
@@ -348,32 +347,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     this.refs.map.stopEditingTool()
   }
 
-  onToggleForestLoss = (enabled: boolean) => {
-    let mapLayers = this.state.mapLayers ? this.state.mapLayers : []
-    const layers = ForestLossLegendHelper.getLegendLayers()
-
-    if (enabled) {
-      // add layers to legend
-      mapLayers = mapLayers.concat(layers)
-    } else {
-      const updatedLayers = []
-      // remove layers from legend
-      mapLayers.forEach(mapLayer => {
-        let foundInLayers
-        layers.forEach(layer => {
-          if (mapLayer.id === layer.id) {
-            foundInLayers = true
-          }
-        })
-        if (!foundInLayers) {
-          updatedLayers.push(mapLayer)
-        }
-      })
-      mapLayers = updatedLayers
-    }
-    Actions.setMapLayers(mapLayers, false)
-  }
-
   onToggleIsochroneLayer = (enabled: boolean) => {
     let mapLayers = this.state.mapLayers ? this.state.mapLayers : []
     const layers = IsochroneLegendHelper.getLegendLayers()
@@ -433,15 +406,14 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
           <div className='collapsible-header'><i className='material-icons'>edit</i>{this.__('Editing Layer')}</div>
           <div className='collapsible-body' >
             <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-              <EditLayerPanel />
+              <EditLayerPanel t={this.t} />
             </div>
-
           </div>
         </li>
       )
 
       editingTools = (
-        <EditorToolButtons stopEditingLayer={this.stopEditingLayer} />
+        <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={this.refs.map.onFeatureUpdate} />
       )
     }
 
@@ -455,7 +427,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       <div className='row no-margin' style={{width: '100%', height: '100%'}}>
         <div className='create-map-side-nav col s6 m4 l3 no-padding' style={{height: '100%'}}>
           {mapLayerDesigner}
-          <ul ref='mapMakerToolPanel' className='collapsible no-margin' data-collapsible='accordion' 
+          <ul ref='mapMakerToolPanel' className='collapsible no-margin' data-collapsible='accordion'
             style={{
               height: '100%',
               borderTop: 'none',
@@ -531,6 +503,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
               </Map>
 
               <MiniLegend
+                t={this.t}
                 style={{
                   position: 'absolute',
                   top: '5px',

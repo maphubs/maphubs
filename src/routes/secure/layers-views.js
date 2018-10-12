@@ -11,7 +11,7 @@ const urlUtil = require('../../services/url-util')
 const nextError = require('../../services/error-response').nextError
 const csrfProtection = require('csurf')({cookie: false})
 const privateLayerCheck = require('../../services/private-layer-check').middlewareView
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {

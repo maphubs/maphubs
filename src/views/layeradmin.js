@@ -14,7 +14,8 @@ import _uniq from 'lodash.uniq'
 import _mapvalues from 'lodash.mapvalues'
 import LayerActions from '../actions/LayerActions'
 import LayerStore from '../stores/layer-store'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import slugify from 'slugify'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -22,7 +23,8 @@ import LocaleStore from '../stores/LocaleStore'
 import UserStore from '../stores/UserStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
-import type {Layer, LayerStoreState} from '../stores/layer-store'
+import type {Layer} from '../types/layer'
+import type {LayerStoreState} from '../stores/layer-store'
 import type {Group} from '../stores/GroupStore'
 import type {UserStoreState} from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
@@ -64,7 +66,6 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
-    this.stores.push(BaseMapStore)
     this.stores.push(UserStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
@@ -72,7 +73,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     }
     Reflux.rehydrate(LayerStore, this.props.layer)
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
 
     LayerActions.loadLayer()
@@ -220,98 +221,100 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       )
     } else {
       return (
-        <div>
-          <Header {...this.props.headerConfig} />
-          <main>
-            <div>
-              <div className='row'>
-                <div className='col s12'>
-                  <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
-                  <ul ref='tabs' className='tabs' style={{overflowX: 'hidden'}}>
-                    <li className='tab'>
-                      <a className='active' onClick={function () { _this.selectTab('settings') }} href='#info'>{this.__('Info/Settings')}</a>
-                    </li>
-                    <li className='tab'>
-                      <a onClick={function () { _this.selectTab('fields') }} href='#fields'>{this.__('Fields')}</a>
-                    </li>
-                    <li className='tab'>
-                      <a onClick={function () { _this.selectTab('style') }} href='#style'>{this.__('Style/Display')}</a>
-                    </li>
-                    {this.state.user && this.state.user.admin &&
-                    <li className='tab'>
-                      <a onClick={function () { _this.selectTab('admin') }} href='#admin'>{this.__('Admin Only')}</a>
-                    </li>
-                    }
-                  </ul>
-                </div>
-                <div id='info' className='col s12' style={{borderTop: '1px solid #ddd'}}>
-                  {this.state.tab === 'settings' &&
-                  <LayerSettings
-                    groups={this.props.groups}
-                    showGroup={false}
-                    warnIfUnsaved
-                    onSubmit={this.onSave}
-                    submitText={this.__('Save')}
-                  />
-                  }
-                </div>
-                <div id='fields' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
-                  {this.state.tab === 'fields' &&
-                  <div className='container' >
-                    <h5>{this.__('Data Fields')}</h5>
-                    <div className='right'>
-                      <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
-                    </div>
-                    <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
-                    <div className='right'>
-                      <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
-                    </div>
+        <ErrorBoundary>
+          <Provider inject={[this.BaseMapState]}>
+            <Header {...this.props.headerConfig} />
+            <main>
+              <div>
+                <div className='row'>
+                  <div className='col s12'>
+                    <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
+                    <ul ref='tabs' className='tabs' style={{overflowX: 'hidden'}}>
+                      <li className='tab'>
+                        <a className='active' onClick={function () { _this.selectTab('settings') }} href='#info'>{this.__('Info/Settings')}</a>
+                      </li>
+                      <li className='tab'>
+                        <a onClick={function () { _this.selectTab('fields') }} href='#fields'>{this.__('Fields')}</a>
+                      </li>
+                      <li className='tab'>
+                        <a onClick={function () { _this.selectTab('style') }} href='#style'>{this.__('Style/Display')}</a>
+                      </li>
+                      {this.state.user && this.state.user.admin &&
+                      <li className='tab'>
+                        <a onClick={function () { _this.selectTab('admin') }} href='#admin'>{this.__('Admin Only')}</a>
+                      </li>
+                      }
+                    </ul>
                   </div>
-                  }
-                </div>
-                <div id='style' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
-                  {this.state.tab === 'style' &&
-                  <LayerStyle
-                    showPrev={false}
-                    onSubmit={this.onSave}
-                    mapConfig={this.props.mapConfig}
-                  />
-                  }
-                </div>
-                <div id='admin' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
-                  {this.state.tab === 'admin' &&
-                  <LayerAdminSettings
-                    groups={this.props.groups}
-                    warnIfUnsaved
-                    onSubmit={this.onSave}
-                    submitText={this.__('Save')}
-                  />
-                  }
+                  <div id='info' className='col s12' style={{borderTop: '1px solid #ddd'}}>
+                    {this.state.tab === 'settings' &&
+                    <LayerSettings
+                      groups={this.props.groups}
+                      showGroup={false}
+                      warnIfUnsaved
+                      onSubmit={this.onSave}
+                      submitText={this.__('Save')}
+                    />
+                    }
+                  </div>
+                  <div id='fields' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
+                    {this.state.tab === 'fields' &&
+                    <div className='container' >
+                      <h5>{this.__('Data Fields')}</h5>
+                      <div className='right'>
+                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                      </div>
+                      <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
+                      <div className='right'>
+                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                  <div id='style' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
+                    {this.state.tab === 'style' &&
+                    <LayerStyle
+                      showPrev={false}
+                      onSubmit={this.onSave}
+                      mapConfig={this.props.mapConfig}
+                    />
+                    }
+                  </div>
+                  <div id='admin' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
+                    {this.state.tab === 'admin' &&
+                    <LayerAdminSettings
+                      groups={this.props.groups}
+                      warnIfUnsaved
+                      onSubmit={this.onSave}
+                      submitText={this.__('Save')}
+                    />
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-            <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right'>
-              <a className='btn-floating btn-large red red-text'>
-                <i className='large material-icons'>settings</i>
-              </a>
-              <ul>
-                <li>
-                  <FloatingButton
-                    href={`/layer/replace/${layerId}/${layerName}`}
-                    tooltip={this.__('Replace Layer Data')}
-                    color='blue' icon='file_upload' large={false} />
-                </li>
-                <li>
-                  <FloatingButton
-                    onClick={this.deleteLayer}
-                    tooltip={this.__('Delete Layer')}
-                    color='red' icon='delete' large={false} />
-                </li>
-              </ul>
-            </div>
-            <Progress id='saving-layer-admin' title={this.__('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
-          </main>
-        </div>
+              <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right'>
+                <a className='btn-floating btn-large red red-text'>
+                  <i className='large material-icons'>settings</i>
+                </a>
+                <ul>
+                  <li>
+                    <FloatingButton
+                      href={`/layer/replace/${layerId}/${layerName}`}
+                      tooltip={this.__('Replace Layer Data')}
+                      color='blue' icon='file_upload' large={false} />
+                  </li>
+                  <li>
+                    <FloatingButton
+                      onClick={this.deleteLayer}
+                      tooltip={this.__('Delete Layer')}
+                      color='red' icon='delete' large={false} />
+                  </li>
+                </ul>
+              </div>
+              <Progress id='saving-layer-admin' title={this.__('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
+            </main>
+          </Provider>
+        </ErrorBoundary>
       )
     }
   }

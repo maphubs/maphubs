@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Modal, ModalContent} from '../Modal/Modal.js'
+import {Modal, ModalContent} from '../Modal/Modal'
 import MapHubsComponent from '../MapHubsComponent'
 import Toggle from '../forms/toggle'
 import ConfirmationActions from '../../actions/ConfirmationActions'

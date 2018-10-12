@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 const Layer = require('../../models/layer')
 const LayerData = require('../../models/layer-data')
 const Group = require('../../models/group')

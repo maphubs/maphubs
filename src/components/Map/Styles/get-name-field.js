@@ -1,6 +1,6 @@
 // @flow
-import type {GLStyle} from '../types/mapbox-gl-style'
-import MapStyles from '../components/Map/Styles'
+import type {GLStyle} from '../../../types/mapbox-gl-style'
+import MapStyles from '../Styles'
 import _find from 'lodash.find'
 
 export default {

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import FileUpload from '../forms/FileUpload'
-import Map from '../Map/Map'
+import Map from '../Map'
 import NotificationActions from '../../actions/NotificationActions'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'

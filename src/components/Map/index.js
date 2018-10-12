@@ -2,38 +2,30 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classNames from 'classnames'
+import connect from 'unstated-connect'
 import FeaturePopup from './FeaturePopup'
-import BaseMapActions from '../../actions/map/BaseMapActions'
-import BaseMapStore from '../../stores/map/BaseMapStore'
-import DataEditorStore from '../../stores/DataEditorStore'
+import BaseMapContainer from './containers/BaseMapContainer'
+import DataEditorContainer from './containers/DataEditorContainer'
+import MarkerContainer from './containers/MarkerContainer'
 import _isequal from 'lodash.isequal'
 import MapToolButton from './MapToolButton'
 import MapSearchPanel from './Search/MapSearchPanel'
 import MapToolPanel from './MapToolPanel'
 import InsetMap from './InsetMap'
 import MarkerSprites from './MarkerSprites'
-import AnimationOverlay from './AnimationOverlay'
-import AnimationStore from '../../stores/map/AnimationStore'
-import MarkerStore from '../../stores/map/MarkerStore'
 import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin'
 import MapInteractionMixin from './Helpers/MapInteractionMixin'
 import MeasurementToolMixin from './Helpers/MeasurementToolMixin'
-import ForestAlertMixin from './Helpers/ForestAlertMixin'
 import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin'
 import DataEditorMixin from './Helpers/DataEditorMixin'
-import ForestLossMixin from './Helpers/ForestLossMixin'
 import IsochroneMixin from './Helpers/IsochroneMixin'
 import StyleMixin from './Helpers/StyleMixin'
 import MapSearchMixin from './Search/MapSearchMixin'
-import DataEditorActions from '../../actions/DataEditorActions'
-import AnimationActions from '../../actions/map/AnimationActions'
-import MapHubsComponent from '../MapHubsComponent'
 import Promise from 'bluebird'
 import turfCentroid from '@turf/centroid'
 import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style'
 import type {GeoJSONObject} from 'geojson-flow'
-import type {BaseMapStoreState} from '../../stores/map/BaseMapStore'
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
@@ -81,7 +73,10 @@ type Props = {|
     insetConfig: Object,
     onToggleForestLoss?: Function,
     onToggleIsochroneLayer?: Function,
-    children?: any
+    children?: any,
+    containers: Array<Object>,
+    t: Function,
+    locale: string
   |}
 
   type State = {
@@ -91,12 +86,13 @@ type Props = {|
     interactive: boolean,
     interactiveLayers: Array<Object>,
     mapLoaded: boolean,
-    allowLayersToMoveMap: boolean
-  } & BaseMapStoreState
+    allowLayersToMoveMap: boolean,
+    measurementMessage?: string,
+    enableMeasurementTools?: boolean,
+    isochroneResult?: Object
+  }
 
-export default class Map extends MapHubsComponent<Props, State> {
-  props: Props
-
+class Map extends React.Component<Props, State> {
   static defaultProps = {
     maxZoom: 18,
     minZoom: 5,
@@ -122,20 +118,13 @@ export default class Map extends MapHubsComponent<Props, State> {
     insetConfig: {}
   }
 
-  state: State
-
   map: Object
+  overlayMapStyle: Object
+  mapboxPopup: any
+  glStyle: Object
 
   constructor (props: Props) {
     super(props)
-
-    this.stores.push(DataEditorStore)
-    this.stores.push(AnimationStore)
-    this.stores.push(BaseMapStore)
-    this.stores.push(MarkerStore)
-
-    DataEditorActions.onFeatureUpdate.listen(this.onFeatureUpdate)
-    AnimationActions.tick.listen(this.tick)
 
     this.state = {
       id: this.props.id ? this.props.id : 'map',
@@ -149,7 +138,8 @@ export default class Map extends MapHubsComponent<Props, State> {
 
   componentWillMount () {
     super.componentWillMount()
-    BaseMapActions.setBaseMap(this.props.baseMap)
+    const [BaseMapState] = this.props.containers
+    BaseMapState.setBaseMap(this.props.baseMap)
     if (this.props.glStyle) {
       const interactiveLayers = this.getInteractiveLayers(this.props.glStyle)
       this.setState({interactiveLayers})
@@ -185,10 +175,10 @@ export default class Map extends MapHubsComponent<Props, State> {
       if (this.map.touchZoomRotate) this.map.touchZoomRotate.enable()
     }
     // change locale
-    if (this.state.locale && (this.state.locale !== prevState.locale)) {
-      this.changeLocale(this.state.locale, this.map)
+    if (this.props.locale && (this.props.locale !== prevProps.locale)) {
+      this.changeLocale(this.props.locale, this.map)
       if (this.refs.insetMap) {
-        this.changeLocale(this.state.locale, this.refs.insetMap.getInsetMap())
+        this.changeLocale(this.props.locale, this.refs.insetMap.getInsetMap())
       }
     }
   }
@@ -228,15 +218,16 @@ export default class Map extends MapHubsComponent<Props, State> {
     this.debugLog('Creating MapboxGL Map')
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
     const {debugLog} = this
-    const {preserveDrawingBuffer, enableRotation, hash, fitBounds, fitBoundsOptions, data, glStyle, attributionControl} = this.props
-    const {interactive, locale, forestAlerts, mapLoaded} = this.state
+    const {preserveDrawingBuffer, enableRotation, hash, fitBounds, fitBoundsOptions, data, glStyle, attributionControl, t, locale} = this.props
+    const {interactive, mapLoaded} = this.state
     const {insetMap} = this.refs
+    const [BaseMapState] = this.props.containers
 
-    BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
+    BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
       _this.setBaseMapStyle(baseMap, false)
 
       if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
-        alert(this.__('Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'))
+        alert(t('Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'))
         return
       }
 
@@ -318,10 +309,6 @@ export default class Map extends MapHubsComponent<Props, State> {
             }
           }
 
-          if (forestAlerts) {
-            _this.restoreForestAlerts()
-          }
-
           _this.setState({mapLoaded: true})
         })
       })// end style.load
@@ -362,9 +349,10 @@ export default class Map extends MapHubsComponent<Props, State> {
     })
   }
 
-  componentWillReceiveProps (nextProps: Props) {
+  async componentWillReceiveProps (nextProps: Props) {
     // debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
     const _this = this
+    const [BaseMapState] = this.props.containers
     if (nextProps.data && this.map) {
       const geoJSONData = this.map.getSource('omh-geojson')
       if (geoJSONData) {
@@ -416,9 +404,9 @@ export default class Map extends MapHubsComponent<Props, State> {
         }
         this.setState({allowLayersToMoveMap})
 
-        if (!_isequal(this.state.baseMap, nextProps.baseMap)) {
-          BaseMapActions.setBaseMap(nextProps.baseMap)
-          BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
+        if (!_isequal(BaseMapState.state.baseMap, nextProps.baseMap)) {
+          await BaseMapState.setBaseMap(nextProps.baseMap)
+          await BaseMapState.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
             _this.setBaseMapStyle(baseMapStyle, false)
           })
         }
@@ -474,13 +462,13 @@ export default class Map extends MapHubsComponent<Props, State> {
           this.setState({allowLayersToMoveMap, interactiveLayers}) // wait to change state style until after reloaded
         })
     } else if (nextProps.baseMap &&
-      !_isequal(this.state.baseMap, nextProps.baseMap)) {
+      !_isequal(BaseMapState.state.baseMap, nextProps.baseMap)) {
       //* * Style Not Found, but Base Map is Changing **/
       _this.debugLog('basemap changing from props (no glstyle)')
 
       this.setState({allowLayersToMoveMap})
-      BaseMapActions.setBaseMap(nextProps.baseMap)
-      BaseMapActions.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
+      await BaseMapState.setBaseMap(nextProps.baseMap)
+      await BaseMapState.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
         _this.setBaseMapStyle(baseMapStyle, true)
       })
     } else if (fitBoundsChanging) {
@@ -516,35 +504,34 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   getBaseMap = () => {
-    return this.state.baseMap
+    const [BaseMapState] = this.props.containers
+    return BaseMapState.state.baseMap
   }
 
-  changeBaseMap = (mapName: string) => {
+  changeBaseMap = async (mapName: string) => {
     this.debugLog('changing basemap to: ' + mapName)
-    const _this = this
-    BaseMapActions.getBaseMapFromName(mapName, (baseMapStyle) => {
-      BaseMapActions.setBaseMap(mapName)
-      _this.setState({allowLayersToMoveMap: false})
-      _this.setBaseMapStyle(baseMapStyle, true)
+    const {setState, setBaseMapStyle, refs, map} = this
+    const {onChangeBaseMap} = this.props
+    const [BaseMapState] = this.props.containers
+    await BaseMapState.getBaseMapFromName(mapName, (baseMapStyle) => {
+      BaseMapState.setBaseMap(mapName)
+      setState({allowLayersToMoveMap: false})
+      setBaseMapStyle(baseMapStyle, true)
 
-      if (_this.refs.insetMap) {
-        _this.refs.insetMap.reloadInset(baseMapStyle)
-        _this.refs.insetMap.sync(_this.map)
+      if (refs.insetMap) {
+        refs.insetMap.reloadInset(baseMapStyle)
+        refs.insetMap.sync(map)
       }
 
-      if (_this.state.forestAlerts) {
-        _this.restoreForestAlerts()
-      }
-
-      if (_this.props.onChangeBaseMap) {
-        _this.props.onChangeBaseMap(mapName)
+      if (onChangeBaseMap) {
+        onChangeBaseMap(mapName)
       }
     })
   }
 
   render () {
     const className = classNames('mode', 'map', 'active')
-
+    const {t} = this.props
     if (this.state.selectedFeature) {
       // close any existing popups
       if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
@@ -564,6 +551,7 @@ export default class Map extends MapHubsComponent<Props, State> {
           features={[this.state.selectedFeature]}
           selected={this.state.selected}
           showButtons={this.props.showFeatureInfoEditButtons}
+          t={t}
         />,
         el
       )
@@ -595,22 +583,6 @@ export default class Map extends MapHubsComponent<Props, State> {
       insetMap = (<InsetMap ref='insetMap' id={this.state.id} bottom={bottom} {...this.props.insetConfig} />)
     }
 
-    let animationOverlay = ''
-    if (this.state.showForestLoss) {
-      animationOverlay = (
-        <AnimationOverlay style={{
-          position: 'absolute',
-          bottom: '5px',
-          left: '45%',
-          right: '45%',
-          fontSize: '32px',
-          color: '#FFF',
-          textShadow: '-1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000',
-          zIndex: 1
-        }} />
-      )
-    }
-
     return (
       <div ref='mapcontainer' className={this.props.className} style={this.props.style}>
         <div id={this.state.id} ref='map' className={className} style={{width: '100%', height: '100%'}}>
@@ -621,14 +593,11 @@ export default class Map extends MapHubsComponent<Props, State> {
             gpxLink={this.props.gpxLink}
             toggleMeasurementTools={this.toggleMeasurementTools}
             enableMeasurementTools={this.state.enableMeasurementTools}
-            toggleForestAlerts={this.toggleForestAlerts}
-            toggleForestLoss={this.toggleForestLoss}
-            calculateForestAlerts={this.calculateForestAlerts}
-            forestAlerts={this.state.forestAlerts}
             onChangeBaseMap={this.changeBaseMap}
             getIsochronePoint={this.getIsochronePoint}
             clearIsochroneLayers={this.clearIsochroneLayers}
             isochroneResult={this.state.isochroneResult}
+            t={this.props.t}
           />
           {this.state.enableMeasurementTools &&
             <div>
@@ -648,7 +617,7 @@ export default class Map extends MapHubsComponent<Props, State> {
                 <span>{this.state.measurementMessage}</span>
               </div>
               <MapToolButton top='260px' right='10px' icon='close' show color='#000'
-                onClick={this.stopMeasurementTool} tooltipText={this.__('Exit Measurement')} />
+                onClick={this.stopMeasurementTool} tooltipText={t('Exit Measurement')} />
             </div>
           }
           {interactiveButton}
@@ -658,7 +627,6 @@ export default class Map extends MapHubsComponent<Props, State> {
           {(this.state.mapLoaded && this.props.showLogo) &&
             <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={MAPHUBS_CONFIG.logoSmallWidth} height={MAPHUBS_CONFIG.logoSmallHeight} src={MAPHUBS_CONFIG.logoSmall} alt='Logo' />
           }
-          {animationOverlay}
           <MapSearchPanel
             show={this.state.interactive && this.state.mapLoaded}
             height={this.props.height}
@@ -707,7 +675,9 @@ export default class Map extends MapHubsComponent<Props, State> {
   }
 
   moveendHandler = () => {
-    return MapInteractionMixin.moveendHandler.bind(this)()
+    debug.log('mouse up fired')
+    const [BaseMapState] = this.props.containers
+    BaseMapState.updateMapPosition(this.getPosition(), this.getBounds())
   }
 
   mousemoveHandler = (e: any) => {
@@ -823,58 +793,6 @@ export default class Map extends MapHubsComponent<Props, State> {
     return MapboxGLHelperMixin.changeLocale.bind(this)(locale, map)
   }
 
-  // ForestAlertMixin
-
-  getDefaultForestAlertState = () => {
-    return ForestAlertMixin.getDefaultForestAlertState.bind(this)()
-  }
-
-  toggleForestAlerts = (config: Object) => {
-    return ForestAlertMixin.toggleForestAlerts.bind(this)(config)
-  }
-
-  restoreForestAlerts = () => {
-    return ForestAlertMixin.restoreForestAlerts.bind(this)()
-  }
-
-  calculateForestAlerts = () => {
-    return ForestAlertMixin.calculateForestAlerts.bind(this)()
-  }
-
-  addGLADLayer = () => {
-    return ForestAlertMixin.addGLADLayer.bind(this)()
-  }
-
-  removeGLADLayer = () => {
-    return ForestAlertMixin.removeGLADLayer.bind(this)()
-  }
-
-  // ForestLossMixin
-
-  getForestLossLayer = (type: string, year: number) => {
-    return ForestLossMixin.getForestLossLayer.bind(this)(type, year)
-  }
-
-  toggleForestLoss = () => {
-    return ForestLossMixin.toggleForestLoss.bind(this)()
-  }
-
-  getFirstLabelLayer = () => {
-    return ForestLossMixin.getFirstLabelLayer.bind(this)()
-  }
-
-  addForestLossLayers = () => {
-    return ForestLossMixin.addForestLossLayers.bind(this)()
-  }
-
-  removeForestLossLayers = () => {
-    return ForestLossMixin.removeForestLossLayers.bind(this)()
-  }
-
-  tick = (year: number) => {
-    return ForestLossMixin.tick.bind(this)(year)
-  }
-
   // StyleMixin
   setBaseMapStyle = (style: GLStyle, update?: boolean) => {
     return StyleMixin.setBaseMapStyle.bind(this)(style, update)
@@ -945,3 +863,5 @@ export default class Map extends MapHubsComponent<Props, State> {
     return IsochroneMixin.saveIsochroneLayer.bind(this)()
   }
 }
+
+export default connect([BaseMapContainer, DataEditorContainer, MarkerContainer])(Map)

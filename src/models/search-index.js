@@ -4,7 +4,7 @@ const Feature = require('../models/feature')
 const local = require('../local')
 const log = require('../services/log')
 const _centroid = require('@turf/centroid')
-const knex = require('../connection.js')
+const knex = require('../connection')
 const Promise = require('bluebird')
 
 module.exports = {

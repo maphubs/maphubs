@@ -8,7 +8,7 @@ const ogr2ogr = require('ogr2ogr')
 const tokml = require('tokml')
 const debug = require('../../services/debug')('exports')
 const privateLayerCheck = require('../../services/private-layer-check').middleware
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 const geojson2dsv = require('geojson2dsv')
 const exportUtils = require('../../services/export-utils')
 

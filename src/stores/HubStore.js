@@ -1,7 +1,7 @@
 // @flow
 import Reflux from 'reflux'
 import Actions from '../actions/HubActions'
-import type {Layer} from './layer-store'
+import type {Layer} from '../types/layer'
 
 const request = require('superagent')
 const debug = require('../services/debug')('stores/hub-store')

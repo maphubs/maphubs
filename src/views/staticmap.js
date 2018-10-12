@@ -1,12 +1,13 @@
 // @flow
 import React from 'react'
 import MiniLegend from '../components/Map/MiniLegend'
-import Map from '../components/Map/Map'
+import Map from '../components/Map'
 import _debounce from 'lodash.debounce'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
@@ -61,13 +62,12 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
   }
 
@@ -93,11 +93,13 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
 
   render () {
     let map, legend, bottomLegend
+    const {t} = this
     const {name, layers, showLegend, position, settings} = this.props
     if (showLegend) {
       if (this.state.width < 600) {
         bottomLegend = (
           <MiniLegend
+            t={t}
             style={{
               width: '100%'
             }}
@@ -109,6 +111,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       } else {
         legend = (
           <MiniLegend
+            t={t}
             style={{
               position: 'absolute',
               top: '5px',
@@ -159,10 +162,12 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <div className='embed-map'>
-          {map}
-          {bottomLegend}
-        </div>
+        <Provider inject={[this.BaseMapState]}>
+          <div className='embed-map'>
+            {map}
+            {bottomLegend}
+          </div>
+        </Provider>
       </ErrorBoundary>
     )
   }

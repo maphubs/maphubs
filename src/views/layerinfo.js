@@ -4,7 +4,7 @@ import InteractiveMap from '../components/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
 import Comments from '../components/Comments'
-import TerraformerGL from '../services/terraformerGL.js'
+import TerraformerGL from '../services/terraformerGL'
 import GroupTag from '../components/Groups/GroupTag'
 import Licenses from '../components/CreateLayer/licenses'
 import MessageActions from '../actions/MessageActions'
@@ -16,7 +16,8 @@ import LayerNotesStore from '../stores/LayerNotesStore'
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid'
 import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid'
 import MapStyles from '../components/Map/Styles'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import DataEditorActions from '../actions/DataEditorActions'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
@@ -112,14 +113,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerNotesStore)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     Reflux.rehydrate(LayerNotesStore, {notes: this.props.notes})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
   }
 
@@ -263,10 +263,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   openEditor = () => {
     const editLink = this.getEditLink()
     window.location = editLink
-  }
-
-  handleNewComment = () => {
-
   }
 
   startEditingNotes = () => {
@@ -544,122 +540,123 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     return (
 
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
-          <div className='row' style={{height: '100%', margin: 0}}>
-            <div className='col s12 m6 l6 no-padding' style={{height: '100%', position: 'relative'}}>
-              {privateIcon}
-              <div style={{margin: '10px', height: '50px'}}>
-                <h5 className='word-wrap'>{this._o_(this.props.layer.name)}</h5>
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...this.props.headerConfig} />
+          <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
+            <div className='row' style={{height: '100%', margin: 0}}>
+              <div className='col s12 m6 l6 no-padding' style={{height: '100%', position: 'relative'}}>
+                {privateIcon}
+                <div style={{margin: '10px', height: '50px'}}>
+                  <h5 className='word-wrap'>{this._o_(this.props.layer.name)}</h5>
+                </div>
+
+                <div className='row no-margin' style={{height: 'calc(100% - 78px)'}}>
+                  <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
+                    <li className='tab'><a className='active' href='#info'>{this.__('Info')}</a></li>
+                    <li className='tab'><a href='#notes'>{this.__('Notes')}</a></li>
+                    {commentTab}
+                    <li className='tab'><a href='#data' onClick={this.onTabSelect}>{this.__('Data')}</a></li>
+                    <li className='tab'><a href='#export'>{this.__('Export')}</a></li>
+                  </ul>
+                  <div id='info' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', position: 'relative'}}>
+                    <div className='row word-wrap' style={{height: 'calc(100% - 75px)', marginLeft: '10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
+                      {remote}
+                      {external}
+                      <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
+                        <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
+                        {this.state.area &&
+                          <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
+                        }
+                        {this.state.length > 0 &&
+                          <p style={{fontSize: '16px'}}><b>{this.__('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
+                        }
+                      </div>
+                      <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
+                        <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
+                          <IntlProvider locale={this.state.locale}>
+                            <FormattedDate value={creationTime} />
+                          </IntlProvider>&nbsp;
+                          <IntlProvider locale={this.state.locale}>
+                            <FormattedTime value={creationTime} />
+                          </IntlProvider>&nbsp;
+                      (
+                          <IntlProvider locale={this.state.locale}>
+                            <FormattedRelative value={creationTime} />
+                          </IntlProvider>
+                      )&nbsp;
+                          {this.__('by') + ' ' + this.props.updatedByUser.display_name}
+                        </p>
+                        {updatedTime}
+                      </div>
+                      <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd', minHeight: '200px', overflow: 'auto'}}>
+                        <p className='valign-wrapper' style={{fontSize: '16px', margin: '5px'}}>
+                          <b className='valign' style={{paddingRight: '10px'}}>{this.__('Group:')} </b>
+                          <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
+                        </p>
+                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
+                        <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
+                      </div>
+                      <div className='col m6 s12' style={{height: 'calc(100% - 190px)', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
+                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                      </div>
+                    </div>
+
+                    <div className='row no-margin' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
+                      <div className='col s6 m3 l3 center-align'>
+                        <b className='center-align'>{this.__('Views')}</b>
+                        <p className='center-align'>{this.props.layer.views}</p>
+                      </div>
+                      <div className='col s6 m3 l3 center-align'>
+                        <b className='center-align'>{this.__('Maps')}</b>
+                        <p className='center-align'>{this.props.stats.maps}</p>
+                      </div>
+                      <div className='col s6 m3 l3 center-align'>
+                        <b className='center-align'>{this.__('Stories')}</b>
+                        <p className='center-align'>{this.props.stats.stories}</p>
+                      </div>
+                      <div className='col s6 m3 l3 center-align'>
+                        <b className='center-align'>{this.__('Hubs')}</b>
+                        <p className='center-align'>{this.props.stats.hubs}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div id='notes' className='col s12' style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
+                    <LayerNotes editing={this.state.editingNotes} />
+                    {notesEditButton}
+                  </div>
+                  <div id='discuss' className='col s12' style={{display: tabContentDisplay}}>
+                    {commentPanel}
+                  </div>
+                  <div id='data' ref='dataTabContent' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
+                    <div className='row no-margin'>
+                      {dataGrid}
+                    </div>
+                    {dataEditButton}
+                  </div>
+                  <div id='export' className='col s12' style={{display: tabContentDisplay}}>
+                    <LayerExport layer={this.props.layer} />
+                  </div>
+                </div>
+
               </div>
+              <div className='col hide-on-small-only m6 l6 no-padding' style={{height: '100%'}}>
+                <InteractiveMap ref='interactiveMap' height='100vh - 50px'
+                  fitBounds={this.props.layer.preview_position.bbox}
+                  style={glStyle}
+                  layers={[this.props.layer]}
+                  map_id={this.props.layer.layer_id}
+                  mapConfig={this.props.mapConfig}
+                  title={this.props.layer.name}
+                  showTitle={false}
+                  hideInactive={false}
+                  disableScrollZoom={false}
+                />
 
-              <div className='row no-margin' style={{height: 'calc(100% - 78px)'}}>
-                <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
-                  <li className='tab'><a className='active' href='#info'>{this.__('Info')}</a></li>
-                  <li className='tab'><a href='#notes'>{this.__('Notes')}</a></li>
-                  {commentTab}
-                  <li className='tab'><a href='#data' onClick={this.onTabSelect}>{this.__('Data')}</a></li>
-                  <li className='tab'><a href='#export'>{this.__('Export')}</a></li>
-                </ul>
-                <div id='info' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', position: 'relative'}}>
-                  <div className='row word-wrap' style={{height: 'calc(100% - 75px)', marginLeft: '10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
-                    {remote}
-                    {external}
-                    <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
-                      <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
-                      {this.state.area &&
-                        <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
-                      }
-                      {this.state.length > 0 &&
-                        <p style={{fontSize: '16px'}}><b>{this.__('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
-                      }
-                    </div>
-                    <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
-                     
-                      <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
-                        <IntlProvider locale={this.state.locale}>
-                          <FormattedDate value={creationTime} />
-                        </IntlProvider>&nbsp;
-                        <IntlProvider locale={this.state.locale}>
-                          <FormattedTime value={creationTime} />
-                        </IntlProvider>&nbsp;
-                    (
-                        <IntlProvider locale={this.state.locale}>
-                          <FormattedRelative value={creationTime} />
-                        </IntlProvider>
-                    )&nbsp;
-                        {this.__('by') + ' ' + this.props.updatedByUser.display_name}
-                      </p>
-                      {updatedTime}
-                    </div>
-                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd', minHeight: '200px', overflow: 'auto'}}>
-                      <p className='valign-wrapper' style={{fontSize: '16px', margin: '5px'}}>
-                        <b className='valign' style={{paddingRight: '10px'}}>{this.__('Group:')} </b>
-                        <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
-                      </p>
-                      <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
-                      <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
-                    </div>
-                    <div className='col m6 s12' style={{height: 'calc(100% - 190px)', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
-                      <p className='word-wrap' style={{fontSize: '16px'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
-                    </div>
-                  </div>
-
-                  <div className='row no-margin' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
-                    <div className='col s6 m3 l3 center-align'>
-                      <b className='center-align'>{this.__('Views')}</b>
-                      <p className='center-align'>{this.props.layer.views}</p>
-                    </div>
-                    <div className='col s6 m3 l3 center-align'>
-                      <b className='center-align'>{this.__('Maps')}</b>
-                      <p className='center-align'>{this.props.stats.maps}</p>
-                    </div>
-                    <div className='col s6 m3 l3 center-align'>
-                      <b className='center-align'>{this.__('Stories')}</b>
-                      <p className='center-align'>{this.props.stats.stories}</p>
-                    </div>
-                    <div className='col s6 m3 l3 center-align'>
-                      <b className='center-align'>{this.__('Hubs')}</b>
-                      <p className='center-align'>{this.props.stats.hubs}</p>
-                    </div>
-                  </div>
-                </div>
-                <div id='notes' className='col s12' style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
-                  <LayerNotes editing={this.state.editingNotes} />
-                  {notesEditButton}
-                </div>
-                <div id='discuss' className='col s12' style={{display: tabContentDisplay}}>
-                  {commentPanel}
-                </div>
-                <div id='data' ref='dataTabContent' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
-                  <div className='row no-margin'>
-                    {dataGrid}
-                  </div>
-                  {dataEditButton}
-                </div>
-                <div id='export' className='col s12' style={{display: tabContentDisplay}}>
-                  <LayerExport layer={this.props.layer} />
-                </div>
               </div>
-
             </div>
-            <div className='col hide-on-small-only m6 l6 no-padding' style={{height: '100%'}}>
-              <InteractiveMap ref='interactiveMap' height='100vh - 50px'
-                fitBounds={this.props.layer.preview_position.bbox}
-                style={glStyle}
-                layers={[this.props.layer]}
-                map_id={this.props.layer.layer_id}
-                mapConfig={this.props.mapConfig}
-                title={this.props.layer.name}
-                showTitle={false}
-                hideInactive={false}
-                disableScrollZoom={false}
-              />
-
-            </div>
-          </div>
-          {editButton}
-        </main>
+            {editButton}
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }

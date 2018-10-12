@@ -1,14 +1,16 @@
-import Reflux from 'reflux'
-import Actions from '../../actions/map/BaseMapActions'
+// @flow
+
+import { Container } from 'unstated'
+
 import _bboxPolygon from '@turf/bbox-polygon'
 import _intersect from '@turf/intersect'
 import _debounce from 'lodash.debounce'
 import _distance from '@turf/distance'
 import _find from 'lodash.find'
-const debug = require('../../services/debug')('stores/BaseMapStore')
+const debug = require('../../../services/debug')('BaseMapContainer')
 const request = require('superagent')
 
-const defaultBaseMapOptions = require('../../components/Map/BaseMaps/base-map-options.json')
+const defaultBaseMapOptions = require('../BaseMaps/base-map-options.json')
 
 export type BaseMapOption = {
   value: string,
@@ -20,7 +22,7 @@ export type BaseMapOption = {
 
 }
 
-export type BaseMapStoreState = {
+export type BaseMapState = {
   baseMap: string,
   attribution: string,
   bingImagerySet: ?string,
@@ -28,26 +30,27 @@ export type BaseMapStoreState = {
   baseMapOptions: Array<BaseMapOption>
 }
 
-export default class BaseMapStore extends Reflux.Store {
-  state: BaseMapStoreState
-
-  constructor () {
+export default class BaseMapContainer extends Container<BaseMapState> {
+  constructor (initialState?: Object) {
     super()
-    this.state = {
+    let state = {
       baseMap: 'default',
       attribution: '© Mapbox © OpenStreetMap',
       bingImagerySet: null,
       updateWithMapPosition: false,
       baseMapOptions: defaultBaseMapOptions
     }
-    this.listenables = Actions
+    if (initialState) {
+      Object.assign(state, initialState)
+    }
+    this.state = state
   }
 
-  setBaseMap (baseMap) {
+  setBaseMap = (baseMap: string) => {
     this.setState({baseMap})
   }
 
-  debouncedUpdateMapPosition = _debounce(function (position, bbox) {
+  debouncedUpdateMapPosition = _debounce((position, bbox) => {
     const _this = this
 
     if (_this.position) {
@@ -67,7 +70,7 @@ export default class BaseMapStore extends Reflux.Store {
           'coordinates': [position.lng, position.lat]
         }
       }
-      let distance
+      let distance = 0
       try {
         distance = _distance(from, to, {units: 'kilometers'})
       } catch (err) {
@@ -126,14 +129,14 @@ export default class BaseMapStore extends Reflux.Store {
   });
 
   // Inspired by: https://github.com/gmaclennan/leaflet-bing-layer
-  updateMapPosition (position, bbox) {
+  updateMapPosition = (position: any, bbox: any) => {
     // ignore unless using a service that needs this... like Bing
     if (this.state.updateWithMapPosition) {
       this.debouncedUpdateMapPosition(position, bbox)
     }
   }
 
-  getBingSource (type, cb) {
+  getBingSource = (type: string, cb: Function) => {
     const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`
     request.get(url)
       .end((err, res) => {
@@ -173,7 +176,7 @@ export default class BaseMapStore extends Reflux.Store {
   }
   */
 
-  getBaseMapFromName (mapName, cb) {
+  getBaseMapFromName = (mapName: string, cb: Function) => {
     const config = _find(this.state.baseMapOptions, {value: mapName})
 
     if (config) {

@@ -3,25 +3,24 @@ import React from 'react'
 import EditBaseMapBox from './ToolPanels/EditBaseMapBox'
 import BaseMapSelection from './ToolPanels/BaseMapSelection'
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
-// import ForestAlertPanel from './ToolPanels/ForestAlertPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
-import MapHubsComponent from '../../components/MapHubsComponent'
-import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
+// import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import {Tooltip} from 'react-tippy'
 
 type Props = {|
   show: boolean,
-  gpxLink: string,
+  gpxLink?: string,
   onChangeBaseMap: Function,
   toggleMeasurementTools: Function,
   enableMeasurementTools: boolean,
   getIsochronePoint: Function,
   clearIsochroneLayers: Function,
-  isochroneResult: Object,
-  height: string
+  isochroneResult?: Object,
+  height: string,
+  t: Function
 |}
 
-export default class MapToolPanel extends MapHubsComponent<Props, void> {
+export default class MapToolPanel extends React.Component<Props, void> {
   props: Props
 
   static defaultProps = {
@@ -46,21 +45,12 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
     this.props.onChangeBaseMap(val)
   }
 
-   toggleForestAlerts = (model: Object) => {
-     // leave panel open for this tool?
-     // if(model.enableGLAD2017) this.closePanel();
-     // this.props.toggleForestAlerts(model)
-   }
-
-  toggleForestLoss = (model: Object) => {
-    // this.props.toggleForestLoss(model)
-  }
-
   render () {
+    const {t, show, height, gpxLink} = this.props
     return (
       <div>
         <Tooltip
-          title={this.__('Tools')}
+          title={t('Tools')}
           position='bottom' inertia followCursor
         >
           <a ref='mapToolButton'
@@ -68,7 +58,7 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
             className='sidenav-trigger'
             data-target='map-tool-panel'
             style={{
-              display: this.props.show ? 'inherit' : 'none',
+              display: show ? 'inherit' : 'none',
               position: 'absolute',
               top: '10px',
               right: '10px',
@@ -113,47 +103,38 @@ export default class MapToolPanel extends MapHubsComponent<Props, void> {
           </a>
           <ul ref='mapToolPanel' className='collapsible no-margin' data-collapsible='accordion' style={{height: '100%'}}>
             <li>
-              <div className='collapsible-header' style={{borderBottom: '1px solid #ddd'}}><i className='material-icons'>layers</i>{this.__('Change Base Map')}</div>
+              <div className='collapsible-header' style={{borderBottom: '1px solid #ddd'}}><i className='material-icons'>layers</i>{t('Change Base Map')}</div>
               <div className='collapsible-body'>
-                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
-                  <BaseMapSelection onChange={this.onChangeBaseMap} />
+                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
+                  <BaseMapSelection onChange={this.onChangeBaseMap} t={t} />
                 </div>
               </div>
             </li>
             <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>straighten</i>{this.__('Measurement Tools')}</div>
+              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>straighten</i>{t('Measurement Tools')}</div>
               <div className='collapsible-body center'>
-                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
+                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
                   <MeasurementToolPanel {...this.props} closePanel={this.closePanel} />
                 </div>
               </div>
             </li>
             <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>warning</i>{this.__('Forest Alerts')}</div>
+              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>access_time</i>{t('Travel Time')}</div>
               <div className='collapsible-body center'>
-                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
-                  <AreaComparisonPanel {...this.props} />
+                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
+                  <IsochronePanel getIsochronePoint={this.props.getIsochronePoint} clearIsochroneLayers={this.props.clearIsochroneLayers} isochroneResult={this.props.isochroneResult} t={t} />
                 </div>
               </div>
             </li>
             <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>access_time</i>{this.__('Travel Time')}</div>
-              <div className='collapsible-body center'>
-                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
-                  <IsochronePanel {...this.props} />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>edit</i>{this.__('Edit OpenStreetMap')}</div>
+              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>edit</i>{t('Edit OpenStreetMap')}</div>
               <div className='collapsible-body'>
-                <div style={{height: `calc(${this.props.height} - 250px)`, overflow: 'auto'}}>
-                  <EditBaseMapBox gpxLink={this.props.gpxLink} />
+                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
+                  <EditBaseMapBox gpxLink={gpxLink} t={t} />
                 </div>
               </div>
             </li>
           </ul>
-
         </div>
       </div>
     )

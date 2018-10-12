@@ -1,7 +1,7 @@
 // @flow
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
-import TerraformerGL from '../../../services/terraformerGL.js'
+import TerraformerGL from '../../../services/terraformerGL'
 const debug = require('../../../services/debug')('AGSFeatureServerQuery')
 
 const AGSMapServerQuery = {

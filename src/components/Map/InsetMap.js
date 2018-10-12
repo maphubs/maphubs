@@ -1,8 +1,9 @@
 // @flow
 import React from 'react'
 import _centroid from '@turf/centroid'
+import connect from 'unstated-connect'
 import MapToolButton from './MapToolButton'
-import BaseMapActions from '../../actions/map/BaseMapActions'
+import BaseMapContainer from './containers/BaseMapContainer'
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
@@ -32,7 +33,8 @@ type Props = {
     center: Array<number>,
     zoom: number
   },
-  baseMap?: string
+  baseMap?: string,
+  containers: Array<Object>
 }
 
 type State = {|
@@ -41,7 +43,7 @@ type State = {|
   insetGeoJSONCentroidData: Object
 |}
 
-export default class InsetMap extends React.Component<Props, State> {
+class InsetMap extends React.Component<Props, State> {
   insetMap: Object
   insetMapActive: boolean
 
@@ -100,25 +102,26 @@ export default class InsetMap extends React.Component<Props, State> {
     }
   }
 
-  createInsetMap = (center: any, bounds: Object, baseMap: string) => {
+  createInsetMap = (center: any, bounds: Object, baseMapStyle: string) => {
     const _this = this
-
-    if (this.props.fixedPosition) {
+    const [BaseMapState] = this.props.containers
+    const {fixedPosition, baseMap} = this.props
+    let currentBaseMapStyle = baseMapStyle
+    if (fixedPosition && fixedPosition.center) {
       // ignore position info and use fixed
-      if (this.props.fixedPosition.center) {
-        center = this.props.fixedPosition.center
-      }
+      center = fixedPosition.center
     }
 
-    if (this.props.baseMap) {
-      BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMapUrl) => {
-        baseMap = baseMapUrl
+    // TODO: base map from Props overrides the style provided?
+    if (baseMap) {
+      BaseMapState.getBaseMapFromName(baseMap, (baseMapStyleResult) => {
+        currentBaseMapStyle = baseMapStyleResult
       })
     }
 
     const insetMap = new mapboxgl.Map({
       container: this.props.id + '_inset',
-      style: baseMap,
+      style: currentBaseMapStyle,
       zoom: 0,
       maxZoom: this.props.maxZoom,
       interactive: false,
@@ -173,14 +176,15 @@ export default class InsetMap extends React.Component<Props, State> {
     return insetMap
   }
 
-  reloadInset = (baseMapUrl: string) => {
+  reloadInset = (baseMapStyle: string) => {
+    const [BaseMapState] = this.props.containers
     if (this.insetMap) {
       if (this.props.baseMap) {
-        BaseMapActions.getBaseMapFromName(this.props.baseMap, (baseMap) => {
-          baseMapUrl = baseMap
+        BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
+          baseMapStyle = baseMap
         })
       }
-      this.insetMap.setStyle(baseMapUrl)
+      this.insetMap.setStyle(baseMapStyle)
     }
   }
 
@@ -383,3 +387,5 @@ export default class InsetMap extends React.Component<Props, State> {
     }
   }
 }
+
+export default connect([BaseMapContainer])(InsetMap)

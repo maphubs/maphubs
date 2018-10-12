@@ -6,7 +6,6 @@ const Group = require('../../models/group')
 const Map = require('../../models/map')
 const Stats = require('../../models/stats')
 const login = require('connect-ensure-login')
-// var log = require('../../services/log.js');
 const debug = require('../../services/debug')('routes/hubs')
 const urlUtil = require('../../services/url-util')
 const baseUrl = urlUtil.getBaseUrl()

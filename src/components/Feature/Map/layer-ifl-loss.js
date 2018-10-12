@@ -1,6 +1,6 @@
 // @flow
 
-import type {Layer} from '../../../stores/layer-store'
+import type {Layer} from '../../../types/layer'
 
 function getIFLLossLayer (loss0013: Object, loss1316: Object, active: boolean): Layer {
   const loss0013Color = 'rgba(255,102,0,0.9)'

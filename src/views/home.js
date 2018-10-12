@@ -16,9 +16,10 @@ import cardUtil from '../services/card-util'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import type {LocaleStoreState} from '../stores/LocaleStore'
-import type {Layer} from '../stores/layer-store'
+import type {Layer} from '../types/layer'
 import type {Group} from '../stores/GroupStore'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -106,13 +107,12 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
     this.state = {
       featuredLayersCards: _shuffle(this.props.featuredLayers.map(cardUtil.getLayerCard)),
@@ -361,9 +361,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   renderStories = (config: Object, key: string) => {
     let stories = []
-    const {trendingStories, featuredStories, recentStories} = this.props
-    if (trendingStories && trendingStories.length > 0) {
-      stories = stories.concat(trendingStories)
+    const {popularStories, featuredStories, recentStories} = this.props
+    if (popularStories && popularStories.length > 0) {
+      stories = stories.concat(popularStories)
     }
     if (featuredStories && featuredStories.length > 0) {
       stories = stories.concat(featuredStories)
@@ -438,47 +438,49 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <div style={{margin: 0, height: '100%'}}>
-          <Header {...this.props.headerConfig} />
-          <main style={{margin: 0, height: 'calc(100% - 50px)'}}>
+        <Provider inject={[this.BaseMapState]}>
+          <div style={{margin: 0, height: '100%'}}>
+            <Header {...this.props.headerConfig} />
+            <main style={{margin: 0, height: 'calc(100% - 50px)'}}>
 
-            {this.props.pageConfig.components.map((component, i) => {
-              const key = `homepro-component-${i}`
-              if (!component.disabled) {
-                if (component.type === 'map') {
-                  return _this.renderHomePageMap(component, key)
-                } else if (component.type === 'carousel') {
-                  return _this.renderCarousel(component, key)
-                } else if (component.type === 'storyfeed') {
-                  return _this.renderStories(component, key)
-                } else if (component.type === 'text') {
-                  return _this.renderText(component, key)
-                } else if (component.type === 'links') {
-                  return _this.renderLinks(component, key)
-                } else if (component.type === 'onboarding-links') {
-                  return _this.renderOnboardingLinks(component, key)
-                } else if (component.type === 'pro-links') {
-                  return _this.renderProLinks(component, key)
-                } else if (component.type === 'slides') {
-                  return _this.renderSlides(component, key)
-                } else if (component.type === 'mailinglist') {
-                  return _this.renderMailingList(component, key)
-                } else if (component.type === 'xcomponent') {
-                  return _this.renderXComponent(component, key)
-                } else if (component.type === 'button') {
-                  return _this.renderButton(component, key)
-                } else {
-                  return ''
+              {this.props.pageConfig.components.map((component, i) => {
+                const key = `homepro-component-${i}`
+                if (!component.disabled) {
+                  if (component.type === 'map') {
+                    return _this.renderHomePageMap(component, key)
+                  } else if (component.type === 'carousel') {
+                    return _this.renderCarousel(component, key)
+                  } else if (component.type === 'storyfeed') {
+                    return _this.renderStories(component, key)
+                  } else if (component.type === 'text') {
+                    return _this.renderText(component, key)
+                  } else if (component.type === 'links') {
+                    return _this.renderLinks(component, key)
+                  } else if (component.type === 'onboarding-links') {
+                    return _this.renderOnboardingLinks(component, key)
+                  } else if (component.type === 'pro-links') {
+                    return _this.renderProLinks(component, key)
+                  } else if (component.type === 'slides') {
+                    return _this.renderSlides(component, key)
+                  } else if (component.type === 'mailinglist') {
+                    return _this.renderMailingList(component, key)
+                  } else if (component.type === 'xcomponent') {
+                    return _this.renderXComponent(component, key)
+                  } else if (component.type === 'button') {
+                    return _this.renderButton(component, key)
+                  } else {
+                    return ''
+                  }
                 }
+              })
               }
-            })
-            }
-            {!this.props.pageConfig.disableFooter &&
-            <Footer {...this.props.footerConfig} />
-            }
+              {!this.props.pageConfig.disableFooter &&
+              <Footer {...this.props.footerConfig} />
+              }
 
-          </main>
-        </div>
+            </main>
+          </div>
+        </Provider>
       </ErrorBoundary>
     )
   }

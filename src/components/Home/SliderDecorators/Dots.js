@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default class SlideDots extends React.PureComponent<Props, void> {
-  getIndexes (count, inc) {
+  getIndexes (count: number, inc: number) {
     const arr = []
     for (let i = 0; i < count; i += inc) {
       arr.push(i)
@@ -33,7 +33,7 @@ export default class SlideDots extends React.PureComponent<Props, void> {
     }
   }
 
-  getButtonStyles (active) {
+  getButtonStyles (active: boolean) {
     return {
       border: 0,
       background: 'transparent',

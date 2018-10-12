@@ -22,7 +22,7 @@ module.exports = async function (filePath: string, layer_id: number, config?: Ob
     const geoJSON = await Promise.promisify(ogrWaypoints.exec)()
     return geoJSON
   } else {
-    if (config.writeDebugData) {
+    if (config && config.writeDebugData) {
       fs.writeFile(config.tempFilePath + '/gpx-upload-layer-' + layer_id + '.geojson', JSON.stringify(geoJSON), (err) => {
         if (err) {
           throw err

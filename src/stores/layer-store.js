@@ -4,8 +4,8 @@ import Actions from '../actions/LayerActions'
 import _findIndex from 'lodash.findindex'
 import _remove from 'lodash.remove'
 import _differenceBy from 'lodash.differenceby'
-import type {GLStyle} from '../types/mapbox-gl-style'
 import type {MapHubsField} from '../types/maphubs-field'
+import type {Layer} from '../types/Layer'
 
 import {OrderedSet} from 'immutable'
 import MapStyles from '../components/Map/Styles'
@@ -13,41 +13,6 @@ import request from 'superagent'
 import {checkClientError} from '../services/client-error-response'
 import DebugService from '../services/debug'
 const debug = DebugService('layer-store')
-
-export type Layer = {
-  layer_id?: number,
-  shortid?: string,
-  name?: LocalizedString,
-  description?: LocalizedString,
-  source?: LocalizedString,
-  style?: ?GLStyle,
-  labels?: Object,
-  settings?: {
-    active: boolean
-  },
-  preview_position?: {bbox: any},
-  data_type?: string,
-  legend_html?: ?string,
-  license?: string,
-  owned_by_group_id?: string,
-  private?: boolean,
-  is_external?: boolean,
-  external_layer_type?: string,
-  external_layer_config?: {
-    type?: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query' | 'earthengine',
-    url?: string,
-    layers?: Array<Object>
-    },
-  is_empty?: boolean,
-  disable_export?: boolean,
-  allow_public_submit?: boolean,
-  disable_feature_indexing?: boolean,
-  remote?: boolean,
-  remote_host?: string,
-  complete?: boolean,
-  canEdit?: boolean,
-  presets?: any
-}
 
 export type LayerStoreState = {
   status?: string,

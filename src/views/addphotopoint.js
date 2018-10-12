@@ -5,17 +5,18 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import UserStore from '../stores/UserStore'
-import Map from '../components/Map/Map'
+import Map from '../components/Map'
 import DataCollectionForm from '../components/DataCollection/DataCollectionForm'
 import ImageCrop from '../components/ImageCrop'
 import AddPhotoPointStore from '../stores/AddPhotoPointStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import Actions from '../actions/AddPhotoPointActions'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import Progress from '../components/Progress'
-import GetNameField from '../services/get-name-field'
+import GetNameField from '../components/Map/Styles/get-name-field'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
@@ -54,11 +55,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(AddPhotoPointStore)
-    this.stores.push(BaseMapStore)
+
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     Reflux.rehydrate(AddPhotoPointStore, {layer: this.props.layer})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -187,21 +188,23 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-          <div className='container'>
-            <div className='row center-align'>
-              <h5>{this.__('Add data to:') + ' ' + this._o_(this.props.layer.name)}</h5>
-              {addPhotoButton}
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...this.props.headerConfig} />
+          <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
+            <div className='container'>
+              <div className='row center-align'>
+                <h5>{this.__('Add data to:') + ' ' + this._o_(this.props.layer.name)}</h5>
+                {addPhotoButton}
+              </div>
+              {dataReview}
+              <div className='row'>
+                {dataForm}
+              </div>
             </div>
-            {dataReview}
-            <div className='row'>
-              {dataForm}
-            </div>
-          </div>
-          <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
-          <Progress id='saving' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
-        </main>
+            <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
+            <Progress id='saving' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }

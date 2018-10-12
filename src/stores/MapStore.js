@@ -2,7 +2,7 @@
 import MapStyles from '../components/Map/Styles'
 import Reflux from 'reflux'
 import Actions from '../actions/MapActions'
-import type {Layer} from './layer-store'
+import type {Layer} from '../types/layer'
 const debug = require('../services/debug')('stores/map-store')
 const findIndex = require('lodash.findindex')
 

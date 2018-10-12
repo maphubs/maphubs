@@ -10,8 +10,7 @@ type Props = {
   toggled?: boolean,
   toggleData?: Function,
   featureName: string,
-  t: Function,
-  tObject: Function
+  t: Function
 }
 
 const getFeatureLink = (feature: {properties: Object}, featureName: string) => {
@@ -53,7 +52,7 @@ const getLayerLink = (feature, layer) => {
   return layerLink
 }
 
-export default function ActionPanel ({ layer, selectedFeature, featureName, enableToggle, toggled, toggleData, t, tObject }: Props) {
+export default function ActionPanel ({ layer, selectedFeature, featureName, enableToggle, toggled, toggleData, t }: Props) {
   let layerName
   let layerLink
   if (layer) {
@@ -105,7 +104,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
                   fontSize: '8px'
                 }}
                 href={layerLink}>
-                {tObject(layerName)}
+                {t(layerName)}
               </a>
             </b>
           </Tooltip>

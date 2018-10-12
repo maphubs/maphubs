@@ -1,6 +1,6 @@
 // @flow
 import slugify from 'slugify'
-import type {Layer} from '../stores/layer-store'
+import type {Layer} from '../types/layer'
 import type {CardConfig} from '../components/CardCarousel/Card'
 const urlUtil = require('./url-util')
 

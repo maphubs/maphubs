@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Modal, ModalContent} from '../Modal/Modal.js'
+import {Modal, ModalContent} from '../Modal/Modal'
 import MapHubsComponent from '../MapHubsComponent'
 
 import SaveMapPanel from '../MapMaker/SaveMapPanel'

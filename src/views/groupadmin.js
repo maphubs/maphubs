@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import Formsy, {addValidationRule} from 'formsy-react'
+import Formsy from 'formsy-react'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -27,7 +27,6 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
-const $ = require('jquery')
 const debug = require('../services/debug')('views/GroupAdmin')
 
 type Props = {
@@ -113,7 +112,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             position: 'bottomright',
             dismissAfter: 3000,
             onDismiss () {
-              window.location = `/group/${group_id}` 
+              window.location = `/group/${group_id || ''}`
             }
           })
       }

@@ -1,6 +1,5 @@
 // @flow
 import _debounce from 'lodash.debounce'
-import BaseMapActions from '../../../actions/map/BaseMapActions'
 import MapStyles from '../Styles'
 import type {GLStyle} from '../../../types/mapbox-gl-style'
 import $ from 'jquery'
@@ -136,11 +135,6 @@ export default {
         }
       }
     }
-  },
-
-  moveendHandler () {
-    debug.log('mouse up fired')
-    BaseMapActions.updateMapPosition(this.getPosition(), this.getBounds())
   },
 
   // fires whenever mouse is moving across the map... use for cursor interaction... hover etc.

@@ -3,7 +3,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Marker from '../Marker'
 import superagent from 'superagent'
-import MarkerActions from '../../../actions/map/MarkerActions'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
@@ -97,7 +96,7 @@ const MapHubsSource = {
   },
   addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {
     const map = mapComponent.map
-
+    const [,, MarkerState] = mapComponent.props.containers
     const presets = source.metadata ? source.metadata['maphubs:presets'] : undefined
 
     // try to delete any old markers
@@ -107,8 +106,8 @@ const MapHubsSource = {
         ReactDOM.unmountComponentAtNode(markerDiv)
         $(markerDiv).remove()
       })
-      if (MarkerActions.removeLayer) {
-        MarkerActions.removeLayer(layer_id)
+      if (MarkerState.removeLayer) {
+        MarkerState.removeLayer(layer_id)
       }
     }
 
@@ -210,8 +209,8 @@ const MapHubsSource = {
                   .setLngLat(marker.geometry.coordinates)
                   .addTo(map)
 
-                if (MarkerActions.addMarker) {
-                  MarkerActions.addMarker(layer_id, markerId, mapboxMarker)
+                if (MarkerState.addMarker) {
+                  MarkerState.addMarker(layer_id, markerId, mapboxMarker)
                 }
               }
             })
@@ -289,14 +288,15 @@ const MapHubsSource = {
     }
   },
   removeLayer (layer: GLLayer, mapComponent: any) {
+    const [,, MarkerState] = mapComponent.props.containers
     if (layer.metadata && layer.metadata['maphubs:markers']) {
       const layer_id = layer.metadata['maphubs:layer_id']
       $('.maphubs-marker-' + layer_id).each((i, markerDiv) => {
         ReactDOM.unmountComponentAtNode(markerDiv)
         $(markerDiv).remove()
       })
-      if (MarkerActions.removeLayer) {
-        MarkerActions.removeLayer(layer_id)
+      if (MarkerState.removeLayer) {
+        MarkerState.removeLayer(layer_id)
       }
     }
     mapComponent.removeLayer(layer.id)

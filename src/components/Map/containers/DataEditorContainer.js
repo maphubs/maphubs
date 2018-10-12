@@ -1,32 +1,27 @@
 // @flow
-import Reflux from 'reflux'
-import type {Layer} from './layer-store'
+import type {Layer} from '../../../types/layer'
 import type {GeoJSONObject} from 'geojson-flow'
-import Actions from '../actions/DataEditorActions'
-const request = require('superagent')
-const debug = require('../services/debug')('stores/DataEditorStore')
-const _assignIn = require('lodash.assignin')
-const _forEachRight = require('lodash.foreachright')
-// var $ = require('jquery');
-// var urlUtil = require('../services/url-util');
-const checkClientError = require('../services/client-error-response').checkClientError
+import {Container} from 'unstated'
+import request from 'superagent'
+import Debug from '../../../services/debug'
+import _assignIn from 'lodash.assignin'
+import _forEachRight from 'lodash.foreachright'
+const checkClientError = require('../../../services/client-error-response').checkClientError
+const debug = Debug('DataEditorContainer')
 
-export type DataEditorStoreState = {
+export type DataEditorState = {
   editing?: boolean,
   editingLayer?: Layer,
   originals: Array<Object>, // store the orginal GeoJSON to support undo
   edits: Array<Object>,
   redo: Array<Object>, // if we undo edits, add them here so we can redo them
-  selectedEditFeature?: Object, // selected feature
+  selectedEditFeature?: Object // selected feature
 }
 
-export default class DataEditorStore extends Reflux.Store {
-  state: DataEditorStoreState
-
+export default class DataEditorContainer extends Container<DataEditorState> {
   constructor () {
     super()
     this.state = this.getDefaultState()
-    this.listenables = Actions
   }
 
   getDefaultState () {
@@ -42,12 +37,6 @@ export default class DataEditorStore extends Reflux.Store {
     this.setState(this.getDefaultState())
   }
 
-  storeDidUpdate () {
-    debug.log('store updated')
-  }
-
-  // listeners
-
   startEditing (layer: Layer) {
     this.setState({editing: true, editingLayer: layer})
   }
@@ -60,7 +49,7 @@ export default class DataEditorStore extends Reflux.Store {
       originals: [],
       edits: [],
       redo: [],
-      editingLayer: null
+      editingLayer: undefined
     })
   }
 
@@ -96,7 +85,7 @@ export default class DataEditorStore extends Reflux.Store {
     this.setState({edits: [], redo: []})
   }
 
-  undoEdit () {
+  undoEdit (onFeatureUpdate: Function) {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     const redo = JSON.parse(JSON.stringify(this.state.redo))
     let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature))
@@ -114,16 +103,16 @@ export default class DataEditorStore extends Reflux.Store {
 
       if (lastEdit.status === 'create') {
         // tell mapboxGL to delete the feature
-        Actions.onFeatureUpdate('delete', lastEdit)
+        onFeatureUpdate('delete', lastEdit)
       } else {
         // tell mapboxGL to update
-        Actions.onFeatureUpdate('update', currEdit)
+        onFeatureUpdate('update', currEdit)
       }
       this.setState({edits, redo, selectedEditFeature})
     }
   }
 
-  redoEdit () {
+  redoEdit (onFeatureUpdate: Function) {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     const redo = JSON.parse(JSON.stringify(this.state.redo))
     let selectedEditFeature = JSON.parse(JSON.stringify(this.state.selectedEditFeature))
@@ -139,7 +128,7 @@ export default class DataEditorStore extends Reflux.Store {
         selectedEditFeature = prevEditCopy2
       }
       // tell mapboxGL to update
-      Actions.onFeatureUpdate('update', prevEdit)
+      onFeatureUpdate('update', prevEdit)
       this.setState({edits, redo, selectedEditFeature})
     }
   }
@@ -205,7 +194,7 @@ export default class DataEditorStore extends Reflux.Store {
               originals: [],
               edits: [],
               redo: [],
-              selectedEditFeature: null
+              selectedEditFeature: undefined
             })
             cb()
           }

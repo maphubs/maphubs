@@ -1,6 +1,6 @@
 // @flow
 
-import type {Layer} from '../../../stores/layer-store'
+import type {Layer} from '../../../types/layer'
 
 function getGLADLayer (gladGeoJSON: Object, active: boolean): Layer {
   const gladColor = 'red'

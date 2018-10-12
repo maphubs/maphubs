@@ -12,7 +12,7 @@ import {getLossLayer} from './Map/layer-loss'
 import StyleHelper from '../Map/Styles/style'
 import _isequal from 'lodash.isequal'
 
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 
 type Props = {
   layer: Layer,
@@ -45,9 +45,9 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if(!_isequal(this.props.geojson, nextProps.geojson)){
-      const layer = getLayer(this.props.layer, props.geojson)
+  componentWillReceiveProps (nextProps: Props) {
+    if (!_isequal(this.props.geojson, nextProps.geojson)) {
+      const layer = getLayer(this.props.layer, nextProps.geojson)
 
       let glStyle = {}
       if (layer.style) {

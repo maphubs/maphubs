@@ -1,6 +1,6 @@
 // @flow
 
-import type {Layer} from '../../../stores/layer-store'
+import type {Layer} from '../../../types/layer'
 
 function getIFLLayer (geoJSON: Object, active: boolean): Layer {
   const iflColor = 'rgba(104,159,56,0.65)'

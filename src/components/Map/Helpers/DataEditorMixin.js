@@ -1,6 +1,6 @@
 // @flow
 import DataEditorActions from '../../../actions/DataEditorActions'
-import type {Layer} from '../../../stores/layer-store'
+import type {Layer} from '../../../types/layer'
 import theme from '@mapbox/mapbox-gl-draw/src/lib/theme'
 import 'jquery'
 

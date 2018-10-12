@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import MapStyles from '../Map/Styles'
-import Map from '../Map/Map'
+import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
@@ -148,7 +148,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
             />
           </div>
           <div className='row' style={{width: '400px', position: 'relative', margin: 'auto'}}>
-            <MiniLegend style={{position: 'absolute', height: 'auto', width: '400px', margin: 'auto'}}
+            <MiniLegend t={this.__} style={{position: 'absolute', height: 'auto', width: '400px', margin: 'auto'}}
               collapsible={false} hideInactive={false} showLayersButton={false}
               layers={[this.state]} />
           </div>

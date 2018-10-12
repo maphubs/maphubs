@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 const multer = require('multer')
 const ogr2ogr = require('ogr2ogr')
 const Layer = require('../../models/layer')

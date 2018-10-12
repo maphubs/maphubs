@@ -12,7 +12,7 @@ import {checkClientError} from '../../services/client-error-response'
 import cardUtil from '../../services/card-util'
 import urlUtil from '../../services/url-util'
 import DebugService from '../../services/debug'
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 import type {Group} from '../../stores/GroupStore'
 const debug = DebugService('mapmaker/addlayerpanel')
 

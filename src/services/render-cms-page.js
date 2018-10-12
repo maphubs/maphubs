@@ -26,7 +26,7 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
             const number = max || 5
             if (type === 'trending' || type === 'popular') {
               dataRequests.push(Story.getPopularStories(number))
-              dataRequestNames.push('trendingStories')
+              dataRequestNames.push('popularStories')
             } else if (type === 'featured') {
               dataRequests.push(Story.getFeaturedStories(number))
               dataRequestNames.push('featuredStories')
@@ -37,10 +37,10 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
           })
         } else {
           dataRequests.push(Story.getPopularStories(5))
-          dataRequestNames.push('trendingStories')
+          dataRequestNames.push('popularStories')
           dataRequests.push(Story.getFeaturedStories(5))
           dataRequestNames.push('featuredStories')
-        }    
+        }
       } else if (component.type === 'carousel') {
         if (component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0) {
           component.datasets.forEach((dataset) => {

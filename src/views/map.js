@@ -7,10 +7,11 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import '../services/locales'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import type {Layer} from '../stores/layer-store'
+import type {Layer} from '../types/layer'
 import type {Group} from '../stores/GroupStore'
 
 type Props = {
@@ -48,13 +49,12 @@ export default class Map extends MapHubsComponent<Props, void> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
   }
 
@@ -65,7 +65,7 @@ export default class Map extends MapHubsComponent<Props, void> {
   render () {
     return (
       <ErrorBoundary>
-        <div>
+        <Provider inject={[this.BaseMapState]}>
           <Header activePage='map' {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
             <MapMaker
@@ -77,7 +77,7 @@ export default class Map extends MapHubsComponent<Props, void> {
               groups={this.props.groups}
             />
           </main>
-        </div>
+        </Provider>
       </ErrorBoundary>
     )
   }

@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 const Layer = require('../../models/layer')
 const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError

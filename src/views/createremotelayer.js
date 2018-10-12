@@ -5,7 +5,7 @@ import slugify from 'slugify'
 import Header from '../components/header'
 import TextInput from '../components/forms/textInput'
 import SelectGroup from '../components/Groups/SelectGroup'
-import Map from '../components/Map/Map'
+import Map from '../components/Map'
 import MiniLegend from '../components/Map/MiniLegend'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -13,7 +13,7 @@ import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
-import type {Layer} from '../stores/layer-store'
+import type {Layer} from '../types/layer'
 
 import request from 'superagent'
 import $ from 'jquery'
@@ -190,6 +190,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                 glStyle={this.state.layer.style}
                 fitBounds={this.state.layer.preview_position.bbox}>
                 <MiniLegend
+                  t={this.t}
                   style={{
                     position: 'absolute',
                     top: '5px',

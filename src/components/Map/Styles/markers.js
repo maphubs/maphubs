@@ -1,6 +1,6 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-import type {Layer} from '../../../stores/layer-store'
+import type {Layer} from '../../../types/layer'
 export default {
   enableMarkers (style: GLStyle, markerOptions: Object, layer: Layer) {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {

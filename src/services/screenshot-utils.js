@@ -2,8 +2,8 @@
 const request = require('superagent')
 const debug = require('../services/debug')('screenshot-utils')
 const local = require('../local')
-const log = require('../services/log.js')
-const knex = require('../connection.js')
+const log = require('../services/log')
+const knex = require('../connection')
 const urlUtil = require('../services/url-util')
 
 const screenshotOptions = {

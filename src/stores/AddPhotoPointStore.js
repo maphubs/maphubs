@@ -2,7 +2,7 @@
 import Reflux from 'reflux'
 import Actions from '../actions/AddPhotoPointActions'
 import type {GeoJSONObject} from 'geojson-flow'
-import type {Layer} from './layer-store'
+import type {Layer} from '../types/layer'
 import _bbox from '@turf/bbox'
 
 const request = require('superagent')

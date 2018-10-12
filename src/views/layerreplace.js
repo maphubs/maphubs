@@ -4,7 +4,8 @@ import Header from '../components/header'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import LayerActions from '../actions/LayerActions'
 import LayerStore from '../stores/layer-store'
 import Progress from '../components/Progress'
@@ -51,14 +52,13 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     Reflux.rehydrate(LayerStore, this.props.layer)
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
     LayerActions.loadLayer()
   }
@@ -97,20 +97,22 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-          <div className='container'>
-            <div className='row center-align'>
-              <h5>{this.__('Replace data in layer:') + ' ' + this._o_(this.props.layer.name)}</h5>
-              <p>{this.__('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
-              <a className='btn' href={maphubsFileURL} target='_blank' onClick={this.onDownload}>{this.__('Download Backup File')}</a>
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...this.props.headerConfig} />
+          <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
+            <div className='container'>
+              <div className='row center-align'>
+                <h5>{this.__('Replace data in layer:') + ' ' + this._o_(this.props.layer.name)}</h5>
+                <p>{this.__('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
+                <a className='btn' href={maphubsFileURL} target='_blank' onClick={this.onDownload}>{this.__('Download Backup File')}</a>
+              </div>
+              <div className='row'>
+                {upload}
+              </div>
             </div>
-            <div className='row'>
-              {upload}
-            </div>
-          </div>
-          <Progress id='saving' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
-        </main>
+            <Progress id='saving' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }

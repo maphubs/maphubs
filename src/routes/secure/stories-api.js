@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../../connection.js')
+const knex = require('../../connection')
 // const debug = require('../../services/debug')('routes/stories');
 const Story = require('../../models/story')
 const Image = require('../../models/image')

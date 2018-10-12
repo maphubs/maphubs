@@ -2,7 +2,7 @@
 import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
 import slugify from 'slugify'
-import type {Layer} from '../../stores/layer-store'
+import type {Layer} from '../../types/layer'
 import _isequal from 'lodash.isequal'
 
 type Props = {|

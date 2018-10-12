@@ -10,9 +10,11 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import LayerStore from '../stores/layer-store'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import type {Group} from '../stores/GroupStore'
-import type {Layer, LayerStoreState} from '../stores/layer-store'
+import type {Layer} from '../types/layer'
+import type {LayerStoreState} from '../stores/layer-store'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
@@ -57,10 +59,11 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
-    this.stores.push(BaseMapStore)
+
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
 
     if (props.user) {
@@ -157,23 +160,24 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main>
-          <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>
-            <div className='row center no-margin'>
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...this.props.headerConfig} />
+          <main>
+            <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>
+              <div className='row center no-margin'>
 
-              <b>{stepText}</b>
+                <b>{stepText}</b>
 
-              <div className='progress'>
-                <div className={progressClassName} />
+                <div className='progress'>
+                  <div className={progressClassName} />
+                </div>
               </div>
+              {step1}
+              {step2}
+              {step3}
             </div>
-            {step1}
-            {step2}
-            {step3}
-          </div>
-        </main>
-
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }

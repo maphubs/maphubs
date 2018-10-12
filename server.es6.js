@@ -16,13 +16,13 @@ const cookieParser = require('cookie-parser')
 const i18n = require('./src/i18n')
 const Raven = require('raven')
 const version = require('./version.json').version
-const shrinkRay = require('shrink-ray')
+const shrinkRay = require('shrink-ray-current')
 const pageOptions = require('./src/services/page-options-helper')
 
 const session = require('express-session')
 const KnexSessionStore = require('connect-session-knex')(session)
-const knex = require('./src/connection.js')
-const log = require('./src/services/log.js')
+const knex = require('./src/connection')
+const log = require('./src/services/log')
 
 const Promise = require('bluebird')
 // promise config needs to be here so it runs before anything else uses bluebird.

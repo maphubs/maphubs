@@ -1,10 +1,10 @@
 // @flow
 import MapStyles from '../components/Map/Styles'
-import type {Layer} from '../stores/layer-store'
-const knex = require('../connection.js')
+import type {Layer} from '../types/layer'
+const knex = require('../connection')
 const dbgeo = require('dbgeo')
 const Promise = require('bluebird')
-const log = require('../services/log.js')
+const log = require('../services/log')
 const _find = require('lodash.find')
 const Presets = require('./presets')
 const DataLoadUtils = require('../services/data-load-utils')

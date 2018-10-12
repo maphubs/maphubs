@@ -6,7 +6,8 @@ import Comments from '../components/Comments'
 import FeatureProps from '../components/Feature/FeatureProps'
 import FeatureNotes from '../components/Feature/FeatureNotes'
 import HubEditButton from '../components/Hub/HubEditButton'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
 import FeatureNotesActions from '../actions/FeatureNotesActions'
@@ -60,7 +61,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(FeatureNotesStore)
     this.stores.push(FeaturePhotoStore)
-    this.stores.push(BaseMapStore)
     this.stores.push(UserStore)
     const {locale, _csrf, user, feature, photo, notes, mapConfig} = props
     Reflux.rehydrate(LocaleStore, {locale, _csrf})
@@ -70,7 +70,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(FeatureNotesStore, {notes})
     Reflux.rehydrate(FeaturePhotoStore, {feature, photo})
     if (mapConfig && mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: mapConfig.baseMapOptions})
     }
 
     this.state = {
@@ -231,67 +231,69 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...headerConfig} />
-        <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
-          <div className='row' style={{height: '100%', margin: 0}}>
-            <div className='col s6 no-padding' style={{height: '100%'}}>
-              <div className='row no-margin' style={{height: '100%', overflowY: 'hidden'}}>
-                <ul ref='tabs' className='tabs' style={{}}>
-                  <li className='tab'><a className='active' onClick={function () { _this.selectTab('data') }} href='#data'>{this.__('Info')}</a></li>
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...headerConfig} />
+          <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
+            <div className='row' style={{height: '100%', margin: 0}}>
+              <div className='col s6 no-padding' style={{height: '100%'}}>
+                <div className='row no-margin' style={{height: '100%', overflowY: 'hidden'}}>
+                  <ul ref='tabs' className='tabs' style={{}}>
+                    <li className='tab'><a className='active' onClick={function () { _this.selectTab('data') }} href='#data'>{this.__('Info')}</a></li>
+                    {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
+                    <li className='tab'><a onClick={function () { _this.selectTab('forestreport') }} href='#forestreport'>{this.__('Forest Report')}</a></li>
+                    }
+                    {MAPHUBS_CONFIG.enableComments &&
+                    <li className='tab'><a onClick={function () { _this.selectTab('discussion') }} href='#discussion'>{this.__('Discussion')}</a></li>
+                    }
+                    <li className='tab'><a onClick={function () { _this.selectTab('notes') }} href='#notes'>{this.__('Notes')}</a></li>
+                    <li className='tab'><a onClick={function () { _this.selectTab('export') }} href='#export'>{this.__('Export')}</a></li>
+                  </ul>
+                  <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowX: 'hidden'}}>
+                    <div className='row no-margin' style={{height: '100%'}}>
+                      <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
+                        <FeaturePhoto photo={this.state.photo} canEdit={canEdit} />
+                        <div style={{marginLeft: '5px', overflowY: 'auto'}}>
+                          <p style={{fontSize: '16px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
+                          <FeatureLocation geojson={geojsonFeature} />
+                          {isPolygon &&
+                            <FeatureArea geojson={geojsonFeature} />
+                          }
+                        </div>
+                      </div>
+                      <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
+                        <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
+                          <FeatureProps data={geoJSONProps} presets={presets} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
-                  <li className='tab'><a onClick={function () { _this.selectTab('forestreport') }} href='#forestreport'>{this.__('Forest Report')}</a></li>
+                    <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
+                      {frPanel}
+                    </div>
                   }
                   {MAPHUBS_CONFIG.enableComments &&
-                  <li className='tab'><a onClick={function () { _this.selectTab('discussion') }} href='#discussion'>{this.__('Discussion')}</a></li>
+                  <div id='discussion' className='col s12' style={{height: 'calc(100% - 48px)'}}>
+                    <Comments />
+                  </div>
                   }
-                  <li className='tab'><a onClick={function () { _this.selectTab('notes') }} href='#notes'>{this.__('Notes')}</a></li>
-                  <li className='tab'><a onClick={function () { _this.selectTab('export') }} href='#export'>{this.__('Export')}</a></li>
-                </ul>
-                <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowX: 'hidden'}}>
-                  <div className='row no-margin' style={{height: '100%'}}>
-                    <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
-                      <FeaturePhoto photo={this.state.photo} canEdit={canEdit} />
-                      <div style={{marginLeft: '5px', overflowY: 'auto'}}>
-                        <p style={{fontSize: '16px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
-                        <FeatureLocation geojson={geojsonFeature} />
-                        {isPolygon &&
-                          <FeatureArea geojson={geojsonFeature} />
-                        }
-                      </div>
-                    </div>
-                    <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
-                      <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
-                        <FeatureProps data={geoJSONProps} presets={presets} />
-                      </div>
-                    </div>
+                  <div id='notes' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
+                    <FeatureNotes editing={this.state.editingNotes} />
+                    {notesEditButton}
                   </div>
-                </div>
-                {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
-                  <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
-                    {frPanel}
+                  <div id='export' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
+                    <FeatureExport mhid={mhid} {...layer} />
                   </div>
-                }
-                {MAPHUBS_CONFIG.enableComments &&
-                <div id='discussion' className='col s12' style={{height: 'calc(100% - 48px)'}}>
-                  <Comments />
-                </div>
-                }
-                <div id='notes' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
-                  <FeatureNotes editing={this.state.editingNotes} />
-                  {notesEditButton}
-                </div>
-                <div id='export' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
-                  <FeatureExport mhid={mhid} {...layer} />
                 </div>
               </div>
+              <div className='col s6 no-padding' style={{height: '100%'}}>
+                <FeatureMap ref={(map) => { this.map = map }}
+                  layer={layer} geojson={feature} gpxLink={gpxLink} mapConfig={mapConfig} />
+              </div>
             </div>
-            <div className='col s6 no-padding' style={{height: '100%'}}>
-              <FeatureMap ref={(map) => { this.map = map }}
-                layer={layer} geojson={feature} gpxLink={gpxLink} mapConfig={mapConfig} />
-            </div>
-          </div>
-          {editButton}
-        </main>
+            {editButton}
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }

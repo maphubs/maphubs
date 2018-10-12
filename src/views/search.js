@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import Map from '../components/Map/Map'
+import Map from '../components/Map'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import SearchBox from '../components/SearchBox'
@@ -13,7 +13,8 @@ import Progress from '../components/Progress'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import UserStore from '../stores/UserStore'
@@ -56,13 +57,12 @@ export default class Search extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
   }
 
@@ -201,28 +201,30 @@ export default class Search extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main style={{margin: 0}}>
-          <div ref='search' className='container' style={{height: '55px', paddingTop: '10px'}}>
-            <div className='row no-margin'>
-              <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch} />
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...this.props.headerConfig} />
+          <main style={{margin: 0}}>
+            <div ref='search' className='container' style={{height: '55px', paddingTop: '10px'}}>
+              <div className='row no-margin'>
+                <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch} />
+              </div>
             </div>
-          </div>
-          <div className='row no-margin' style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
-            <Map ref='map'
-              id='global-search-map'
-              style={{width: '100%', height: '100%'}}
-              disableScrollZoom hoverInteraction={false} showLogo={false} attributionControl
-              mapConfig={this.props.mapConfig}
-              data={this.state.searchResult} />
-          </div>
-          <div className='divider' />
-          <div className='row no-margin' style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>
-            {cardsPanel}
-          </div>
-          <Progress id='searching' title={this.__('Searching')} subTitle='' dismissible={false} show={this.state.searching} />
-        </main>
-        <Footer {...this.props.footerConfig} />
+            <div className='row no-margin' style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
+              <Map ref='map'
+                id='global-search-map'
+                style={{width: '100%', height: '100%'}}
+                disableScrollZoom hoverInteraction={false} showLogo={false} attributionControl
+                mapConfig={this.props.mapConfig}
+                data={this.state.searchResult} />
+            </div>
+            <div className='divider' />
+            <div className='row no-margin' style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>
+              {cardsPanel}
+            </div>
+            <Progress id='searching' title={this.__('Searching')} subTitle='' dismissible={false} show={this.state.searching} />
+          </main>
+          <Footer {...this.props.footerConfig} />
+        </Provider>
       </ErrorBoundary>
     )
   }

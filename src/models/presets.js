@@ -1,6 +1,6 @@
 // @flow
 import MapStyles from '../components/Map/Styles'
-const knex = require('../connection.js')
+const knex = require('../connection')
 const Promise = require('bluebird')
 const log = require('../services/log')
 

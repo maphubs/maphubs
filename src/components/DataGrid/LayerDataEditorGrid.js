@@ -5,12 +5,11 @@ import MapHubsComponent from '../MapHubsComponent'
 import CheckboxFormatter from './CheckboxFormatter'
 import update from 'immutability-helper'
 import type {MapHubsField} from '../../types/maphubs-field'
-import DataEditorStore from '../../stores/DataEditorStore'
-import DataEditorActions from '../../actions/DataEditorActions'
+import connect from 'unstated-connect'
+import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import _assignIn from 'lodash.assignin'
-import type {Layer} from '../../stores/layer-store'
-import type {DataEditorStoreState} from '../../stores/DataEditorStore'
-import GetNameField from '../../services/get-name-field'
+import type {Layer} from '../../types/layer'
+import GetNameField from '../Map/Styles/get-name-field'
 
 type Props = {
   geoJSON: Object,
@@ -21,7 +20,8 @@ type Props = {
 
   dataLoadingMsg: string,
   onSave?: Function,
-  presets: Array<MapHubsField>
+  presets: Array<MapHubsField>,
+  containers: Array<Object>
 }
 
 type DefaultProps = {
@@ -50,17 +50,15 @@ type State = {
   sortColumn?: string,
   sortDirection?: string,
   selectedFeature?: Object
-} & DataEditorStoreState
+}
 
-export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
+class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   Selectors: null
   ReactDataGrid: any
   Toolbar: any
   DropDownEditor: any
   CheckboxEditor: any
   DropDownFormatter: any
-
-  props: Props
 
   static defaultProps: DefaultProps = {
     dataLoadingMsg: 'Data Loading'
@@ -79,11 +77,6 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
     redo: []
   }
 
-  constructor (props: Props) {
-    super(props)
-    this.stores.push(DataEditorStore)
-  }
-
   componentWillMount () {
     if (typeof window !== 'undefined') {
       this.initReactDataGrid()
@@ -92,8 +85,9 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
 
   componentDidMount () {
     if (this.props.geoJSON) {
+      const [DataEditorState] = this.props.containers
       this.processGeoJSON(this.props.geoJSON, this.props.presets)
-      DataEditorActions.startEditing(this.props.layer)
+      DataEditorState.startEditing(this.props.layer)
     }
   }
 
@@ -330,15 +324,16 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
      const toRow: number = result.toRow
      const updated: Object = result.updated
      const rows = this.getRows().slice()
+     const [DataEditorState] = this.props.containers
 
      for (let i = fromRow; i <= toRow; i++) {
        const rowToUpdate = this.rowGetter(i)
        const mhid = rowToUpdate[this.state.rowKey]
-       DataEditorActions.selectFeature(mhid, (featureData) => {
+       DataEditorState.selectFeature(mhid, (featureData) => {
          // update data
          const data = featureData.properties
          _assignIn(data, updated)
-         DataEditorActions.updateSelectedFeatureTags(data)
+         DataEditorState.updateSelectedFeatureTags(data)
        })
        const updatedRow = update(rowToUpdate, {$merge: updated})
        rows[i] = updatedRow
@@ -394,3 +389,5 @@ export default class LayerDataEditorGrid extends MapHubsComponent<Props, State> 
      }
    }
 }
+
+export default connect([DataEditorContainer])(LayerDataEditorGrid)

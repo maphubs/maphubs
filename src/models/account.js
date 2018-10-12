@@ -1,5 +1,5 @@
 // @flow
-const knex = require('../connection.js')
+const knex = require('../connection')
 
 module.exports = {
 

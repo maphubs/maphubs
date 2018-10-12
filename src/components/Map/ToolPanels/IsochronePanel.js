@@ -1,18 +1,18 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from '../../MapHubsComponent'
 
 type Props = {|
   getIsochronePoint: Function,
   clearIsochroneLayers: Function,
-  isochroneResult?: Object
+  isochroneResult?: Object,
+  t: Function
 |}
 
 type State = {
   selectingLocation: boolean
 }
 
-export default class IsochronePanel extends MapHubsComponent<Props, State> {
+export default class IsochronePanel extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {
@@ -31,26 +31,27 @@ export default class IsochronePanel extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t, isochroneResult} = this.props
     let message, clearButton, selectButton
-    if (this.props.isochroneResult) {
+    if (isochroneResult) {
       message = (
         <p>
-          {this.__('Displaying Result')}
+          {t('Displaying Result')}
         </p>
       )
 
       clearButton = (
-        <a className='btn' onClick={this.clear}>{this.__('Clear Results')}</a>
+        <a className='btn' onClick={this.clear}>{t('Clear Results')}</a>
       )
     } else if (this.state.selectingLocation) {
       message = (
         <p>
-          {this.__('Click a location on the map.')}
+          {t('Click a location on the map.')}
         </p>
       )
     } else {
       selectButton = (
-        <a className='btn' onClick={this.selectLocation}>{this.__('Select Location')}</a>
+        <a className='btn' onClick={this.selectLocation}>{t('Select Location')}</a>
       )
     }
 

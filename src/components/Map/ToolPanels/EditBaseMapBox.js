@@ -1,12 +1,12 @@
 // @flow
 import React from 'react'
-import MapHubsPureComponent from '../../MapHubsPureComponent'
 
 type Props = {|
-  gpxLink: string
+  gpxLink: string,
+  t: Function
 |}
 
-export default class EditBaseMapBox extends MapHubsPureComponent<Props, void> {
+export default class EditBaseMapBox extends React.PureComponent<Props, void> {
   props: Props
 
   getLinks = () => {
@@ -38,15 +38,16 @@ export default class EditBaseMapBox extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
+    const {t} = this.props
     return (
       <div style={{width: '100%', textAlign: 'center'}}>
         <p style={{padding: '5px'}}>Edit OpenStreetMap at this location</p>
         <ul className='collection with-header custom-scroll-bar' style={{margin: 0, width: '100%', overflow: 'auto'}}>
           <li className='collection-item' style={{paddingLeft: 0}}>
-            <a className='btn' onClick={this.openOSM}>{this.__('OpenStreetMap')}</a>
+            <a className='btn' onClick={this.openOSM}>{t('OpenStreetMap')}</a>
           </li>
           <li className='collection-item' style={{paddingLeft: 0}}>
-            <a className='btn' onClick={this.openLoggingRoads}>{this.__('LoggingRoads')}</a>
+            <a className='btn' onClick={this.openLoggingRoads}>{t('LoggingRoads')}</a>
           </li>
         </ul>
       </div>

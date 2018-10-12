@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
-import DataEditorActions from '../../actions/DataEditorActions'
-import DataEditorStore from '../../stores/DataEditorStore'
+import { Subscribe } from 'unstated'
+import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
 import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
@@ -9,15 +9,15 @@ import ConfirmationActions from '../../actions/ConfirmationActions'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
-import type {DataEditorStoreState} from '../../stores/DataEditorStore'
 
 type Props = {
-  stopEditingLayer: Function
+  stopEditingLayer: Function,
+  onFeatureUpdate: Function
 }
 
 type State = {
    saving: boolean
-} & LocaleStoreState & DataEditorStoreState
+} & LocaleStoreState
 
 export default class EditorToolButtons extends MapHubsComponent<Props, State> {
   props: Props
@@ -29,15 +29,10 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
    originals: []
  }
 
- constructor (props: Props) {
-   super(props)
-   this.stores.push(DataEditorStore)
- }
-
-  saveEdits = (cb: Function) => {
+  saveEdits = async (DataEditor: Object) => {
     const _this = this
     this.setState({saving: true})
-    DataEditorActions.saveEdits(this.state._csrf, (err) => {
+    await DataEditor.saveEdits(this.state._csrf, (err) => {
       _this.setState({saving: false})
       if (err) {
         MessageActions.showMessage({title: _this.__('Error'), message: err})
@@ -45,49 +40,67 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
         NotificationActions.showNotification({
           message: _this.__('Edits Saved')
         })
-        if (cb && typeof cb === 'function')cb()
       }
     })
   }
 
-  stopEditing = () => {
-    const _this = this
-    if (this.state.edits.length > 0) {
+  stopEditing = (DataEditor: Object) => {
+    const {t, saveEdits} = this
+    const {stopEditingLayer} = this.props
+    if (DataEditor.state.edits.length > 0) {
       ConfirmationActions.showConfirmation({
-        title: _this.__('Unsaved Edits'),
-        message: _this.__('Do you want to save your edits before exiting?'),
-        postitiveButtonText: _this.__('Save Edits'),
-        negativeButtonText: _this.__('Discard Edits'),
+        title: t('Unsaved Edits'),
+        message: t('Do you want to save your edits before exiting?'),
+        postitiveButtonText: t('Save Edits'),
+        negativeButtonText: t('Discard Edits'),
         onPositiveResponse () {
-          _this.saveEdits(() => {
-            _this.props.stopEditingLayer()
-          })
+          saveEdits(DataEditor)
+          stopEditingLayer()
         },
         onNegativeResponse () {
-          _this.props.stopEditingLayer()
+          stopEditingLayer()
         }
       })
     } else {
-      this.props.stopEditingLayer()
+      stopEditingLayer()
     }
   }
 
+  undoEdit = (DataEditor: Object) => {
+    const {onFeatureUpdate} = this.props
+    DataEditor.undoEdit(onFeatureUpdate)
+  }
+
+  redoEdit = (DataEditor: Object) => {
+    const {onFeatureUpdate} = this.props
+    DataEditor.redoEdit(onFeatureUpdate)
+  }
+
   render () {
+    const {undoEdit, redoEdit, saveEdits, stopEditing, t} = this
+    const {saving} = this.state
     return (
-      <div>
-        <MapToolButton top='10px' right='125px' icon='undo' show color='#000'
-          disabled={this.state.edits.length === 0}
-          onClick={DataEditorActions.undoEdit} tooltipText={this.__('Undo')} />
-        <MapToolButton top='10px' right='90px' icon='redo' show color='#000'
-          disabled={this.state.redo.length === 0}
-          onClick={DataEditorActions.redoEdit} tooltipText={this.__('Redo')} />
-        <MapToolButton top='230px' right='10px' icon='save' show color='#000'
-          disabled={this.state.edits.length === 0}
-          onClick={this.saveEdits} tooltipText={this.__('Save Edits')} />
-        <MapToolButton top='265px' right='10px' icon='close' show color='#000'
-          onClick={this.stopEditing} tooltipText={this.__('Stop Editing')} />
-        <Progress id='saving-edits' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
-      </div>
+      <Subscribe to={[DataEditorContainer]}>
+        {DataEditor => {
+          const {edits, redo} = DataEditor.state
+          return (
+            <div>
+              <MapToolButton top='10px' right='125px' icon='undo' show color='#000'
+                disabled={edits.length === 0}
+                onClick={() => { undoEdit(DataEditor) }} tooltipText={t('Undo')} />
+              <MapToolButton top='10px' right='90px' icon='redo' show color='#000'
+                disabled={redo.length === 0}
+                onClick={() => { redoEdit(DataEditor) }} tooltipText={t('Redo')} />
+              <MapToolButton top='230px' right='10px' icon='save' show color='#000'
+                disabled={edits.length === 0}
+                onClick={() => { saveEdits(DataEditor) }} tooltipText={t('Save Edits')} />
+              <MapToolButton top='265px' right='10px' icon='close' show color='#000'
+                onClick={() => { stopEditing(DataEditor) }} tooltipText={t('Stop Editing')} />
+              <Progress id='saving-edits' title={t('Saving')} subTitle='' dismissible={false} show={saving} />
+            </div>
+          )
+        }}
+      </Subscribe>
     )
   }
 }

@@ -22,6 +22,7 @@ declare class MapHubsConfig {
   PLANET_LABS_API_KEY: string;
   MAPBOX_ACCESS_TOKEN: string;
   SENTRY_DSN_PUBLIC: string;
+  TILEHOSTING_MAPS_API_KEY: string;
   TILEHOSTING_GEOCODING_API_KEY: string;
   OPENROUTESERVICE_API_KEY: string;
   enableComments: boolean;
@@ -33,6 +34,7 @@ declare class MapHubsConfig {
   DG_WMS_CONNECT_ID: string;
   enableUserExport: boolean;
   EARTHENGINE_CLIENTID: string;
+  BING_KEY: string;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;

@@ -6,8 +6,9 @@ import _bbox from '@turf/bbox'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
-import type {Layer} from '../stores/layer-store'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import type {Layer} from '../types/layer'
 import type {GLStyle} from '../types/mapbox-gl-style'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
@@ -66,10 +67,9 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
 
     if (props.user) {
@@ -254,9 +254,11 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     }
     return (
       <ErrorBoundary>
-        <div className='embed-map' style={{height: '100%', width: '100%', display: 'flex', overflow: 'hidden'}}>
-          {map}
-        </div>
+        <Provider inject={[this.BaseMapState]}>
+          <div className='embed-map' style={{height: '100%', width: '100%', display: 'flex', overflow: 'hidden'}}>
+            {map}
+          </div>
+        </Provider>
       </ErrorBoundary>
     )
   }

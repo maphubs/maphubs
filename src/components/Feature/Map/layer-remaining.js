@@ -1,6 +1,6 @@
 // @flow
 
-import type {Layer} from '../../../stores/layer-store'
+import type {Layer} from '../../../types/layer'
 
 function getRemainingLayer (active: boolean, remainingThreshold?: number): Layer {
   const threshold = remainingThreshold || 80

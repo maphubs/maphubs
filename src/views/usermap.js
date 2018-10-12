@@ -18,7 +18,8 @@ import LocaleStore from '../stores/LocaleStore'
 import fireResizeEvent from '../services/fire-resize-event'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {UserStoreState} from '../stores/UserStore'
-import BaseMapStore from '../stores/map/BaseMapStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal'
 import CopyMapModal from '../components/InteractiveMap/CopyMapModal'
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -79,10 +80,9 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(UserStore)
     this.stores.push(MapMakerStore)
-    this.stores.push(BaseMapStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      Reflux.rehydrate(BaseMapStore, {baseMapOptions: props.mapConfig.baseMapOptions})
+      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
     }
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -327,53 +327,55 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-          <Progress id='load-data-progess' title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
-          <InteractiveMap height='calc(100vh - 50px)'
-            {...this.props.map}
-            layers={this.props.layers}
-            mapConfig={this.props.mapConfig}
-            disableScrollZoom={false}
-            {...this.props.map.settings}
-          />
-          <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
-            onMouseEnter={this.onMouseEnterMenu}
-          >
-            <a className='btn-floating btn-large'>
-              <i className='large material-icons'>more_vert</i>
-            </a>
-            <ul>
-              {shareButton}
-              {deleteButton}
-              {editButton}
-              {copyButton}
-              <li>
-                <Tooltip
-                  title={this.__('Get Map as a PNG Image')}
-                  position='left' inertia followCursor>
-                  <a onClick={this.download}
-                    download={download} href={downloadHREF}
-                    className='btn-floating green'>
-                    <i className='material-icons'>insert_photo</i>
-                  </a>
-                </Tooltip>
-              </li>
-              <li>
-                <FloatingButton color='orange' icon='code' large={false}
-                  onClick={this.showEmbedCode} tooltip={this.__('Embed')}
-                />
-              </li>
-              <li>
-                <FloatingButton color='yellow' icon='print' large={false}
-                  onClick={this.onFullScreen} tooltip={this.__('Print/Screenshot')}
-                />
-              </li>
-            </ul>
-          </div>
-          {shareModal}
-          {copyModal}
-        </main>
+        <Provider inject={[this.BaseMapState]}>
+          <Header {...this.props.headerConfig} />
+          <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
+            <Progress id='load-data-progess' title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
+            <InteractiveMap height='calc(100vh - 50px)'
+              {...this.props.map}
+              layers={this.props.layers}
+              mapConfig={this.props.mapConfig}
+              disableScrollZoom={false}
+              {...this.props.map.settings}
+            />
+            <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
+              onMouseEnter={this.onMouseEnterMenu}
+            >
+              <a className='btn-floating btn-large'>
+                <i className='large material-icons'>more_vert</i>
+              </a>
+              <ul>
+                {shareButton}
+                {deleteButton}
+                {editButton}
+                {copyButton}
+                <li>
+                  <Tooltip
+                    title={this.__('Get Map as a PNG Image')}
+                    position='left' inertia followCursor>
+                    <a onClick={this.download}
+                      download={download} href={downloadHREF}
+                      className='btn-floating green'>
+                      <i className='material-icons'>insert_photo</i>
+                    </a>
+                  </Tooltip>
+                </li>
+                <li>
+                  <FloatingButton color='orange' icon='code' large={false}
+                    onClick={this.showEmbedCode} tooltip={this.__('Embed')}
+                  />
+                </li>
+                <li>
+                  <FloatingButton color='yellow' icon='print' large={false}
+                    onClick={this.onFullScreen} tooltip={this.__('Print/Screenshot')}
+                  />
+                </li>
+              </ul>
+            </div>
+            {shareModal}
+            {copyModal}
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }

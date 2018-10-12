@@ -6,7 +6,7 @@ import EditAttributesModal from './EditAttributesModal'
 import CheckboxFormatter from './CheckboxFormatter'
 import _assignIn from 'lodash.assignin'
 import type {MapHubsField} from '../../types/maphubs-field'
-import GetNameField from '../../services/get-name-field'
+import GetNameField from '../Map/Styles/get-name-field'
 
 type Props = {
   geoJSON: Object,

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
-import Map from '../Map/Map'
+import Map from '../Map'
 import NotificationActions from '../../actions/NotificationActions'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
@@ -26,8 +26,8 @@ type State = {
   canSubmit: boolean,
   largeData: boolean,
   processing: boolean,
-  multipleShapefiles: any,
-  bbox: Object
+  multipleShapefiles?: any,
+  bbox?: Object
 } & LocaleStoreState & LayerStoreState
 
 export default class UploadLocalSource extends MapHubsComponent<Props, State> {
@@ -37,8 +37,6 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     canSubmit: false,
     largeData: false,
     processing: false,
-    multipleShapefiles: null,
-    bbox: null,
     layer: {}
   }
 
@@ -179,7 +177,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             z-index: 9999 !important;
           }
         `}</style>
-        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />     
+        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
           <div className='row'>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>

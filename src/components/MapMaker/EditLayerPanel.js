@@ -1,38 +1,31 @@
 // @flow
 import React from 'react'
-import DataEditorActions from '../../actions/DataEditorActions'
-import DataEditorStore from '../../stores/DataEditorStore'
 import DataCollectionForm from '../DataCollection/DataCollectionForm'
 import _isequal from 'lodash.isequal'
-import MapHubsComponent from '../MapHubsComponent'
+import { Subscribe } from 'unstated'
+import DataEditorContainer from '../Map/containers/DataEditorContainer'
+
 import MapStyles from '../Map/Styles'
-import type {DataEditorStoreState} from '../../stores/DataEditorStore'
 import DebugService from '../../services/debug'
 const debug = DebugService('editLayerPanel')
 
 type Props = {
-
+  t: Function
 }
 
-type State = DataEditorStoreState;
-
-export default class EditLayerPanel extends MapHubsComponent<Props, State> {
-  constructor (props: Props) {
-    super(props)
-    this.stores.push(DataEditorStore)
-  }
-
-  onChange = (data: Object) => {
+export default class EditLayerPanel extends React.Component<Props, void> {
+  onChange = (data: Object, DataEditor: Object) => {
     // don't fire change if this update came from state (e.g. undo/redo)
     // the geojson may have tags not in the presets so we need to ignore them when checking for changes
     let foundChange
-    if (this.state.selectedEditFeature && this.state.selectedEditFeature.geojson) {
-      const properties = this.state.selectedEditFeature.geojson.properties
+    const {selectedEditFeature} = DataEditor.state
+    if (selectedEditFeature && selectedEditFeature.geojson) {
+      const properties = selectedEditFeature.geojson.properties
       Object.keys(data).map(key => {
         if (!_isequal(data[key], properties[key])) { foundChange = true }
       })
       if (foundChange) {
-        DataEditorActions.updateSelectedFeatureTags(data)
+        DataEditor.updateSelectedFeatureTags(data)
       }
     } else {
       debug.log('missing geoJSON')
@@ -41,37 +34,45 @@ export default class EditLayerPanel extends MapHubsComponent<Props, State> {
 
   render () {
     // var canSave = this.state.edits.length > 0;
-    const feature = this.state.selectedEditFeature
-
-    let layerTitle = ''
-    if (this.state.editingLayer) {
-      const name = this.state.editingLayer.name
-      layerTitle = (
-        <p className='word-wrap' style={{paddingTop: '2px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '5px'}}>
-          <b>{this.__('Editing:')}</b> {this._o_(name)}
-        </p>
-      )
-    }
-
-    let featureAttributes = ''
-    if (feature && this.state.editingLayer && this.state.editingLayer.style) {
-      const firstSource = Object.keys(this.state.editingLayer.style.sources)[0]
-      const presets = MapStyles.settings.getSourceSetting(this.state.editingLayer.style, firstSource, 'presets')
-
-      featureAttributes = (
-        <DataCollectionForm presets={presets}
-          values={feature.geojson.properties}
-          onChange={this.onChange}
-          style={{padding: '10px'}}
-          showSubmit={false} />
-      )
-    }
-
+    const {t} = this.props
     return (
-      <div>
-        {layerTitle}
-        {featureAttributes}
-      </div>
+      <Subscribe to={[DataEditorContainer]}>
+        {DataEditor => {
+          const {selectedEditFeature, editingLayer} = DataEditor.state
+
+          let layerTitle = ''
+          if (editingLayer) {
+            const name = editingLayer.name
+            layerTitle = (
+              <p className='word-wrap' style={{paddingTop: '2px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '5px'}}>
+                <b>{t('Editing:')}</b> {t(name)}
+              </p>
+            )
+          }
+
+          let featureAttributes = ''
+          if (selectedEditFeature && editingLayer && editingLayer.style) {
+            const firstSource = Object.keys(editingLayer.style.sources)[0]
+            const presets = MapStyles.settings.getSourceSetting(editingLayer.style, firstSource, 'presets')
+
+            featureAttributes = (
+              <DataCollectionForm presets={presets}
+                values={selectedEditFeature.geojson.properties}
+                onChange={(data) => {
+                  this.onChange(data, DataEditor)
+                }}
+                style={{padding: '10px'}}
+                showSubmit={false} />
+            )
+          }
+          return (
+            <div>
+              {layerTitle}
+              {featureAttributes}
+            </div>
+          )
+        }}
+      </Subscribe>
     )
   }
 }

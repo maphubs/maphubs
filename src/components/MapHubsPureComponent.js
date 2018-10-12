@@ -12,11 +12,19 @@ export default class MapHubsComponent<Props, State> extends Reflux.PureComponent
     super.componentWillMount()
   }
 
-  __ (text: string) {
-    if (this.state.locale) {
-      return Locales.getLocaleString(this.state.locale, text)
+  t = (val: any) => {
+    return this.__(val)
+  }
+
+  __ = (val: any) => {
+    if (typeof val === 'string') {
+      if (this.state.locale) {
+        return Locales.getLocaleString(this.state.locale, val)
+      } else {
+        return val
+      }
     } else {
-      return text
+      return Locales.getLocaleStringObject(this.state.locale, val)
     }
   }
 
