@@ -52,9 +52,26 @@ export default {
     return queries
   },
 
+  getFirstLabelLayer () {
+    const glStyle = this.glStyle
+    let firstLayer
+    if (glStyle && glStyle.layers && glStyle.layers.length > 0) {
+      glStyle.layers.forEach(layer => {
+        if (!firstLayer && layer.id.startsWith('omh-label')) {
+          firstLayer = layer.id
+        }
+      })
+    } else if (this.state.baseMap === 'default' ||
+       this.state.baseMap === 'dark' ||
+       this.state.baseMap === 'streets') {
+      firstLayer = 'place_other'
+    }
+    return firstLayer
+  },
+
   onSearch (queryText: string) {
     const _this = this
-
+    const {t} = this.props
     // clear prev display layers
     this.onSearchReset()
 
@@ -89,7 +106,7 @@ export default {
         if (presets && presets.length > 0) {
           presets.forEach(preset => {
             if (preset && preset.label) {
-              const label = _this._o_(preset.label).toString()
+              const label = t(preset.label).toString()
               if (label.match(/.*[N,n]ame.*/g)) {
                 matchNameArr.push(preset.tag)
               }

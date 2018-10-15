@@ -72,7 +72,6 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   state: State
-  map: any
   mapLegendSideNav: any
   mapLayersSideNav: any
 
@@ -124,9 +123,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layer_id: number) => {
-    MapActions.toggleVisibility(layer_id, (layerStyle) => {
-      // _this.refs.map.updateLayer(layerStyle);
-    })
+    MapActions.toggleVisibility(layer_id, () => {})
   }
 
   onToggleIsochroneLayer = (enabled: boolean) => {
@@ -145,7 +142,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
       mapLayers.forEach(mapLayer => {
         let foundInLayers
         layers.forEach(layer => {
-          if (mapLayer.id === layer.id) {
+          if (mapLayer.layer_id === layer.layer_id) {
             foundInLayers = true
           }
         })
@@ -174,9 +171,6 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  getMap = () => {
-    return this.map
-  }
   render () {
     const {fitBounds} = this.props
     const {position} = this.state
@@ -306,7 +300,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
 
         {categoryMenu}
 
-        <Map ref={(el) => { this.map = el }} id={'map-' + this.props.map_id}
+        <Map id={'map-' + this.props.map_id}
           fitBounds={bounds} fitBoundsOptions={this.props.fitBoundsOptions}
           height={this.props.height}
           interactive={this.props.interactive}
@@ -323,6 +317,7 @@ export default class InteractiveMap extends MapHubsComponent<Props, State> {
           disableScrollZoom={this.props.disableScrollZoom}
           gpxLink={this.props.gpxLink}
           preserveDrawingBuffer={this.props.preserveDrawingBuffer}
+          t={this.t}
         >
 
           {legend}

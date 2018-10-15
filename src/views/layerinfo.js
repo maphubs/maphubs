@@ -16,9 +16,8 @@ import LayerNotesStore from '../stores/LayerNotesStore'
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid'
 import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid'
 import MapStyles from '../components/Map/Styles'
-import { Provider } from 'unstated'
+import { Provider, Subscribe } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
-import DataEditorActions from '../actions/DataEditorActions'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import turf_area from '@turf/area'
@@ -29,6 +28,9 @@ import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
 import LayerExport from '../components/LayerInfo/LayerExport'
+import Stats from '../components/LayerInfo/Stats'
+import ExternalLink from '../components/LayerInfo/ExternalLink'
+import DataEditorContainer from '../components/Map/containers/DataEditorContainer'
 
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl'
 import en from 'react-intl/locale-data/en'
@@ -118,58 +120,64 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     Reflux.rehydrate(LayerNotesStore, {notes: this.props.notes})
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
   componentDidMount () {
     const _this = this
+    const {t} = this
     M.Tabs.init(this.refs.tabs, {})
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
     this.clipboard = require('clipboard-polyfill')
 
-    if (this.props.layer.is_external) {
+    const {layer} = this.props
+    const {editingNotes, editingData} = this.state
+    const elc = layer.external_layer_config
+    if (layer.is_external) {
       // retreive geoJSON data for layers
-      if (this.props.layer.external_layer_config.type === 'ags-mapserver-query') {
-        TerraformerGL.getArcGISGeoJSON(this.props.layer.external_layer_config.url)
+      if (elc.type === 'ags-mapserver-query') {
+        TerraformerGL.getArcGISGeoJSON(elc.url)
           .then((geoJSON) => {
             return _this.setState({geoJSON})
           }).catch(err => {
             debug.error(err)
           })
-        _this.setState({dataMsg: _this.__('Data Loading')})
-      } else if (this.props.layer.external_layer_config.type === 'ags-featureserver-query') {
-        TerraformerGL.getArcGISFeatureServiceGeoJSON(this.props.layer.external_layer_config.url)
+        _this.setState({dataMsg: t('Data Loading')})
+      } else if (elc.type === 'ags-featureserver-query') {
+        TerraformerGL.getArcGISFeatureServiceGeoJSON(elc.url)
           .then((geoJSON) => {
             return _this.setState({geoJSON})
           }).catch(err => {
             debug.error(err)
           })
-        _this.setState({dataMsg: _this.__('Data Loading')})
-      } else if (this.props.layer.external_layer_config.type === 'geojson') {
-        request.get(this.props.layer.external_layer_config.data)
+        _this.setState({dataMsg: t('Data Loading')})
+      } else if (elc.type === 'geojson') {
+        request.get(elc.data)
           .type('json').accept('json')
           .end((err, res) => {
             if (err) {
-              MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+              MessageActions.showMessage({title: t('Server Error'), message: err})
             } else {
               const geoJSON = res.body
               _this.setState({geoJSON})
             }
           })
-        _this.setState({dataMsg: _this.__('Data Loading')})
+        _this.setState({dataMsg: t('Data Loading')})
       } else {
-        _this.setState({dataMsg: _this.__('Data table not support for this layer.')})
+        _this.setState({dataMsg: t('Data table not support for this layer.')})
       }
     } else {
       this.getGeoJSON()
-      _this.setState({dataMsg: _this.__('Data Loading')})
+      _this.setState({dataMsg: t('Data Loading')})
     }
 
     window.addEventListener('beforeunload', (e) => {
-      if (_this.state.editingNotes || _this.state.editingData) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+      if (editingNotes || editingData) {
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -229,11 +237,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   onTabSelect = () => {
     const _this = this
 
-    const gridHeight = $(this.refs.dataTabContent).height() - _this.state.gridHeightOffset
+    const gridHeight = $('#data').height() - _this.state.gridHeightOffset
     this.setState({gridHeight})
 
     $(window).resize(() => {
-      const gridHeight = $(_this.refs.dataTabContent).height() - _this.state.gridHeightOffset
+      const gridHeight = $('#data').height() - _this.state.gridHeightOffset
       _this.setState({gridHeight, userResize: true})
     })
   }
@@ -270,14 +278,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   stopEditingNotes = () => {
-    const _this = this
-
-    LayerNotesActions.saveNotes(this.props.layer.layer_id, this.state._csrf, (err) => {
+    const {t, setState} = this
+    const {layer} = this.props
+    LayerNotesActions.saveNotes(layer.layer_id, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Notes Saved')})
-        _this.setState({editingNotes: false})
+        NotificationActions.showNotification({message: t('Notes Saved')})
+        setState({editingNotes: false})
       }
     })
   }
@@ -286,21 +294,22 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     this.setState({editingData: true})
   }
 
-  stopEditingData = () => {
+  stopEditingData = (DataEditor: Object) => {
     const _this = this
-    DataEditorActions.saveEdits(this.state._csrf, (err) => {
+    const {t} = this
+    DataEditor.saveEdits(this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Data Saved - Reloading Page...'),
+          message: t('Data Saved - Reloading Page...'),
           dismissAfter: 1000,
           onDismiss () {
             location.reload()
           }
         })
         _this.setState({editingData: false})
-        DataEditorActions.stopEditing()
+        DataEditor.stopEditing()
       }
     })
   }
@@ -310,7 +319,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const _this = this
+    const {startEditingData, stopEditingData, openEditor, t} = this
     const {layer, canEdit} = this.props
     const {editingNotes, editingData} = this.state
     const glStyle = layer.style
@@ -321,63 +330,42 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
     let editButton = ''
-    let notesEditButton
-    let dataEditButton
-
+    const showMapEditButton = canEdit && !layer.is_external && !layer.remote
+    const showAddPhotoPointButton = showMapEditButton && layer.data_type === 'point'
     if (canEdit) {
-      notesEditButton = (
-        <HubEditButton editing={editingNotes}
-          style={{position: 'absolute'}}
-          startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
-      )
-
-      dataEditButton = (
-        <HubEditButton editing={editingData}
-          style={{position: 'absolute', bottom: '10px'}}
-          startEditing={this.startEditingData} stopEditing={this.stopEditingData} />
-      )
-
-      let mapEditButton = ''
-      let addPhotoPointButton = ''
-      if (!layer.is_external && !layer.remote) {
-        mapEditButton = (
-          <li>
-            <Tooltip
-              title={this.__('Edit Map Data')}
-              position='left' inertia followCursor>
-              <a onClick={this.openEditor} className='btn-floating blue darken-1'>
-                <i className='material-icons'>mode_edit</i>
-              </a>
-            </Tooltip>
-          </li>
-        )
-        if (layer.data_type === 'point') {
-          addPhotoPointButton = (
-            <li>
-              <Tooltip
-                title={this.__('Add a Photo')}
-                position='left' inertia followCursor>
-                <a href={'/layer/adddata/' + layer.layer_id} className='btn-floating blue darken-1'>
-                  <i className='material-icons'>photo</i>
-                </a>
-              </Tooltip>
-            </li>
-          )
-        }
-      }
       editButton = (
         <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right'>
           <a className='btn-floating btn-large red red-text'>
             <i className='large material-icons'>more_vert</i>
           </a>
           <ul>
-            {mapEditButton}
-            {addPhotoPointButton}
+            {showMapEditButton &&
+              <li>
+                <Tooltip
+                  title={t('Edit Map Data')}
+                  position='left' inertia followCursor>
+                  <a onClick={openEditor} className='btn-floating blue darken-1'>
+                    <i className='material-icons'>mode_edit</i>
+                  </a>
+                </Tooltip>
+              </li>
+            }
+            {showAddPhotoPointButton &&
+              <li>
+                <Tooltip
+                  title={t('Add a Photo')}
+                  position='left' inertia followCursor>
+                  <a href={`/layer/adddata/${layer.layer_id}`} className='btn-floating blue darken-1'>
+                    <i className='material-icons'>photo</i>
+                  </a>
+                </Tooltip>
+              </li>
+            }
             <li>
               <Tooltip
-                title={this.__('Manage Layer')}
+                title={t('Manage Layer')}
                 position='left' inertia followCursor>
-                <a className='btn-floating yellow' href={'/layer/admin/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))}>
+                <a className='btn-floating yellow' href={`/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`}>
                   <i className='material-icons'>settings</i>
                 </a>
               </Tooltip>
@@ -389,10 +377,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       editButton = (
         <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
           <Tooltip
-            title={this.__('View Map')}
+            title={t('View Map')}
             position='left' inertia>
             <a className='btn-floating btn-large red'
-              href={'/layer/map/' + layer.layer_id + '/' + slugify(this._o_(layer.name))}>
+              href={`/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`}>
               <i className='material-icons'>map</i>
             </a>
           </Tooltip>
@@ -408,7 +396,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     let updatedTime = ''
     if (updatedTimeObj > creationTimeObj) {
       updatedTime = (
-        <p style={{fontSize: '16px'}}><b>{this.__('Last Update:')} </b>
+        <p style={{fontSize: '16px'}}><b>{t('Last Update:')} </b>
           <IntlProvider locale={this.state.locale}>
             <FormattedDate value={updatedTimeStr} />
           </IntlProvider>&nbsp;
@@ -418,161 +406,70 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           (<IntlProvider locale={this.state.locale}>
             <FormattedRelative value={updatedTimeStr} />
           </IntlProvider>)&nbsp;
-          {this.__('by') + ' ' + this.props.updatedByUser.display_name}
+          {t('by') + ' ' + this.props.updatedByUser.display_name}
         </p>
       )
     }
 
-    const licenseOptions = Licenses.getLicenses(this.__)
+    const licenseOptions = Licenses.getLicenses(t)
     const license = _find(licenseOptions, {value: layer.license})
 
     let descriptionWithLinks = ''
 
-    if (this.props.layer.description) {
+    if (layer.description) {
       // regex for detecting links
       const localizedDescription = this._o_(layer.description)
       const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
 
-    let remote = ''
-    if (layer.remote) {
-      const remoteURL = `https://${layer.remote_host}/layer/info/${layer.remote_layer_id}/${slugify(this._o_(layer.name))}`
-      remote = (
-        <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
-          <a href={remoteURL} target='_blank' rel='noopener noreferrer'>{remoteURL}</a>
-        </p>
-      )
-    }
-
-    let external = ''
-    const elc = layer.external_layer_config
-    if (layer.is_external && !layer.remote) {
-      let externalUrl = elc.url
-      let type = ''
-      if (layer.external_layer_type === 'openstreetmap') {
-        type = 'OpenStreetMap'
-        externalUrl = 'http://openstreetmap.org'
-      } else if (layer.external_layer_type === 'planet') {
-        type = 'Planet'
-        externalUrl = 'https://planet.com'
-      } else if (elc.type === 'raster') {
-        type = 'Raster'
-        if (elc.tiles) {
-          externalUrl = elc.tiles[0]
-        } else if (elc.url) {
-          externalUrl = elc.url
-        }
-      } else if ((!layer.external_layer_type ||layer.external_layer_type === '') &&
-              elc.type) {
-        type = elc.type
-      } else if (elc.type === 'geojson') {
-        type = 'GeoJSON'
-        externalUrl = elc.data
-      } else {
-        type = layer.external_layer_type
-      }
-      external = (
-        <div>
-          <p style={{fontSize: '16px'}}><b>{this.__('External Layer: ')}</b>{type}
-            &nbsp;-&nbsp;
-            <a href={externalUrl} target='_blank' rel='noopener noreferrer'>{externalUrl}</a>
-            <Tooltip
-              title={this.__('Copy to Clipboard')}
-              position='left' inertia followCursor>
-              <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={function () { _this.copyToClipboard(externalUrl) }}>launch</i>
-            </Tooltip>
-          </p>
-        </div>
-      )
-    }
-
-    let commentTab, commentPanel
-    if (MAPHUBS_CONFIG.enableComments) {
-      commentTab = (
-        <li className='tab'><a href='#discuss'>{this.__('Discuss')}</a></li>
-      )
-      commentPanel = (
-        <Comments />
-      )
-    }
-
-    let privateIcon = ''
-    if (this.props.layer.private) {
-      privateIcon = (
-        <div style={{position: 'absolute', top: '15px', right: '10px'}}>
-          <Tooltip
-            title={this.__('Private')}
-            position='left' inertia followCursor>
-            <i className='material-icons grey-text text-darken-3'>lock</i>
-          </Tooltip>
-        </div>
-      )
-    }
-
     const firstSource = Object.keys(this.props.layer.style.sources)[0]
     const presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets')
 
-    let dataGrid = ''
-    if (this.state.editingData) {
-      dataGrid = (
-        <LayerDataEditorGrid
-          layer={this.props.layer}
-          gridHeight={this.state.gridHeight}
-          geoJSON={this.state.geoJSON}
-          presets={presets}
-          onRowSelected={this.onRowSelected}
-          canEdit
-        />
-      )
-    } else {
-      dataGrid = (
-        <LayerDataGrid
-          layer_id={this.props.layer.layer_id}
-          gridHeight={this.state.gridHeight}
-          geoJSON={this.state.geoJSON}
-          presets={presets}
-          onRowSelected={this.onRowSelected}
-          canEdit={this.props.canEdit} />
-      )
-    }
-
     return (
-
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
             <div className='row' style={{height: '100%', margin: 0}}>
               <div className='col s12 m6 l6 no-padding' style={{height: '100%', position: 'relative'}}>
-                {privateIcon}
+                {this.props.layer.private &&
+                  <div style={{position: 'absolute', top: '15px', right: '10px'}}>
+                    <Tooltip
+                      title={t('Private')}
+                      position='left' inertia followCursor>
+                      <i className='material-icons grey-text text-darken-3'>lock</i>
+                    </Tooltip>
+                  </div>
+                }
                 <div style={{margin: '10px', height: '50px'}}>
-                  <h5 className='word-wrap'>{this._o_(this.props.layer.name)}</h5>
+                  <h5 className='word-wrap'>{t(this.props.layer.name)}</h5>
                 </div>
 
                 <div className='row no-margin' style={{height: 'calc(100% - 78px)'}}>
                   <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
                     <li className='tab'><a className='active' href='#info'>{this.__('Info')}</a></li>
-                    <li className='tab'><a href='#notes'>{this.__('Notes')}</a></li>
-                    {commentTab}
-                    <li className='tab'><a href='#data' onClick={this.onTabSelect}>{this.__('Data')}</a></li>
-                    <li className='tab'><a href='#export'>{this.__('Export')}</a></li>
+                    <li className='tab'><a href='#notes'>{t('Notes')}</a></li>
+                    {MAPHUBS_CONFIG.enableComments &&
+                      <li className='tab'><a href='#discuss'>{t('Discuss')}</a></li>
+                    }
+                    <li className='tab'><a href='#data' onClick={this.onTabSelect}>{t('Data')}</a></li>
+                    <li className='tab'><a href='#export'>{t('Export')}</a></li>
                   </ul>
                   <div id='info' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', position: 'relative'}}>
                     <div className='row word-wrap' style={{height: 'calc(100% - 75px)', marginLeft: '10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
-                      {remote}
-                      {external}
+                      <ExternalLink layer={layer} t={t} />
                       <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
-                        <p style={{fontSize: '16px'}}><b>{this.__('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
+                        <p style={{fontSize: '16px'}}><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
                         {this.state.area &&
-                          <p style={{fontSize: '16px'}}><b>{this.__('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
+                          <p style={{fontSize: '16px'}}><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
                         }
                         {this.state.length > 0 &&
-                          <p style={{fontSize: '16px'}}><b>{this.__('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
+                          <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
                         }
                       </div>
                       <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
-                        <p style={{fontSize: '16px'}}><b>{this.__('Created:')} </b>
+                        <p style={{fontSize: '16px'}}><b>{t('Created:')} </b>
                           <IntlProvider locale={this.state.locale}>
                             <FormattedDate value={creationTime} />
                           </IntlProvider>&nbsp;
@@ -584,55 +481,68 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                             <FormattedRelative value={creationTime} />
                           </IntlProvider>
                       )&nbsp;
-                          {this.__('by') + ' ' + this.props.updatedByUser.display_name}
+                          {t('by') + ' ' + this.props.updatedByUser.display_name}
                         </p>
                         {updatedTime}
                       </div>
                       <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd', minHeight: '200px', overflow: 'auto'}}>
-                        <p className='valign-wrapper' style={{fontSize: '16px', margin: '5px'}}>
-                          <b className='valign' style={{paddingRight: '10px'}}>{this.__('Group:')} </b>
-                          <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
-                        </p>
-                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{this.__('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
-                        <p style={{fontSize: '16px'}}><b>{this.__('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
+                        <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
+                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
+                        <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
                       </div>
                       <div className='col m6 s12' style={{height: 'calc(100% - 190px)', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
-                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{this.__('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{t('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
                       </div>
                     </div>
-
-                    <div className='row no-margin' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
-                      <div className='col s6 m3 l3 center-align'>
-                        <b className='center-align'>{this.__('Views')}</b>
-                        <p className='center-align'>{this.props.layer.views}</p>
-                      </div>
-                      <div className='col s6 m3 l3 center-align'>
-                        <b className='center-align'>{this.__('Maps')}</b>
-                        <p className='center-align'>{this.props.stats.maps}</p>
-                      </div>
-                      <div className='col s6 m3 l3 center-align'>
-                        <b className='center-align'>{this.__('Stories')}</b>
-                        <p className='center-align'>{this.props.stats.stories}</p>
-                      </div>
-                      <div className='col s6 m3 l3 center-align'>
-                        <b className='center-align'>{this.__('Hubs')}</b>
-                        <p className='center-align'>{this.props.stats.hubs}</p>
-                      </div>
-                    </div>
+                    <Stats views={layer.views} stats={this.props.stats} t={t} />
                   </div>
                   <div id='notes' className='col s12' style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
                     <LayerNotes editing={this.state.editingNotes} />
-                    {notesEditButton}
+                    {canEdit &&
+                      <HubEditButton editing={editingNotes}
+                        style={{position: 'absolute'}}
+                        startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
+                    }
                   </div>
+                  {MAPHUBS_CONFIG.enableComments &&
                   <div id='discuss' className='col s12' style={{display: tabContentDisplay}}>
-                    {commentPanel}
+                    <Comments />
                   </div>
-                  <div id='data' ref='dataTabContent' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
-                    <div className='row no-margin'>
-                      {dataGrid}
-                    </div>
-                    {dataEditButton}
-                  </div>
+                  }
+                  <Subscribe to={[DataEditorContainer]}>
+                    {DataEditor => {
+                      return (
+                        <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
+                          <div className='row no-margin'>
+                            {editingData &&
+                              <LayerDataEditorGrid
+                                layer={this.props.layer}
+                                gridHeight={this.state.gridHeight}
+                                geoJSON={this.state.geoJSON}
+                                presets={presets}
+                                onRowSelected={this.onRowSelected}
+                                canEdit
+                              />
+                            }
+                            {!editingData &&
+                              <LayerDataGrid
+                                layer_id={this.props.layer.layer_id}
+                                gridHeight={this.state.gridHeight}
+                                geoJSON={this.state.geoJSON}
+                                presets={presets}
+                                onRowSelected={this.onRowSelected}
+                                canEdit={this.props.canEdit} />
+                            }
+                          </div>
+                          {canEdit &&
+                            <HubEditButton editing={editingData}
+                              style={{position: 'absolute', bottom: '10px'}}
+                              startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }} />
+                          }
+                        </div>
+                      )
+                    }}
+                  </Subscribe>
                   <div id='export' className='col s12' style={{display: tabContentDisplay}}>
                     <LayerExport layer={this.props.layer} />
                   </div>

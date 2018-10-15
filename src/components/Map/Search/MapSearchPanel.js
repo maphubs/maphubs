@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from '../../MapHubsComponent'
 import SearchBar from '../../SearchBar/SearchBar'
 import request from 'superagent'
 import MessageActions from '../../../actions/MessageActions'
@@ -13,7 +12,8 @@ type Props = {
   onSearch: Function,
   onSearchResultClick: Function,
   onSearchReset: Function,
-  height: string
+  height: string,
+  t: Function
 }
 
 type State = {
@@ -23,7 +23,7 @@ type State = {
   query?: string
 }
 
-export default class MapSearchPanel extends MapHubsComponent<Props, State> {
+export default class MapSearchPanel extends React.Component<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -124,6 +124,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
+    const {t} = this.props
     let results = ''
 
     if (this.state.results &&
@@ -135,7 +136,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
             this.state.results.list.map(result => {
               return (
                 <a key={result.id} href='#!' className='collection-item'
-                  onClick={function () { _this.onClickResult(result.geoJSON) }}>
+                  onClick={() => { _this.onClickResult(result.geoJSON) }}>
                   {result.name}
                 </a>
               )
@@ -145,15 +146,15 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
       )
     } else {
       results = (
-        <p>{this.__('Use the box above to search')}</p>
+        <p>{t('Use the box above to search')}</p>
       )
     }
 
     let searchLabel = ''
     if (this.state.tab === 'data') {
-      searchLabel = this.__('Search Data')
+      searchLabel = t('Search Data')
     } else if (this.state.tab === 'location') {
-      searchLabel = this.__('Find Place or Address')
+      searchLabel = t('Find Place or Address')
     }
 
     let locationResults = ''
@@ -165,7 +166,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
             this.state.locationSearchResults.map(result => {
               return (
                 <a key={result.key} href='#!' className='collection-item'
-                  onClick={function () { _this.onClickResult(result.feature) }}>
+                  onClick={() => { _this.onClickResult(result.feature) }}>
                   {result.value}
                 </a>
               )
@@ -178,7 +179,7 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
     return (
       <div>
         <Tooltip
-          title={this.__('Search')}
+          title={t('Search')}
           position='bottom' inertia followCursor
         >
           <a ref='mapSearchButton'
@@ -236,8 +237,8 @@ export default class MapSearchPanel extends MapHubsComponent<Props, State> {
             onSubmit={this.onSubmit}
             onReset={this.onReset} />
           <ul ref='tabs' className='tabs tabs-fixed-width'>
-            <li className='tab' onClick={function () { _this.selectTab('data') }}><a className='active' href='#map-search-data'>{this.__('Data')}</a></li>
-            <li className='tab' onClick={function () { _this.selectTab('location') }}><a href='#map-search-location'>{this.__('Location')}</a></li>
+            <li className='tab' onClick={() => { _this.selectTab('data') }}><a className='active' href='#map-search-data'>{t('Data')}</a></li>
+            <li className='tab' onClick={() => { _this.selectTab('location') }}><a href='#map-search-location'>{t('Location')}</a></li>
           </ul>
           <div id='map-search-data'>
             {results}

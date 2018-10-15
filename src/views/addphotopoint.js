@@ -58,9 +58,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
 
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
     Reflux.rehydrate(AddPhotoPointStore, {layer: this.props.layer})
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
@@ -157,13 +159,15 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           </div>
           <div className='col m6 s12'>
             <div style={{width: '400px'}}>
-              <Map ref='map'
+              <Map
                 id='add-photo-point-map'
                 style={{width: '100%', height: '400px'}}
                 showFeatureInfoEditButtons={false}
                 showLogo={false}
                 mapConfig={this.props.mapConfig}
-                data={this.state.geoJSON} />
+                data={this.state.geoJSON}
+                t={this.t}
+              />
             </div>
           </div>
           <div className='row no-margin'>

@@ -120,10 +120,10 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  onAlertClick = (alert: Object) => {
+  onAlertClick = (alert: Object, mapComponent: Object) => {
     // console.log(alert);
-    const map = this.map.getMap().map
-    const geoJSONData = map.getSource('fr-glad-geojson')
+    const mapboxGL = mapComponent.map
+    const geoJSONData = mapboxGL.getSource('fr-glad-geojson')
     const data = {
       type: 'FeatureCollection',
       features: alert.features
@@ -132,7 +132,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
 
     const bbox = turf_bbox(data)
     const bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]
-    map.fitBounds(bounds, {padding: 25, curve: 3, speed: 0.6, maxZoom: 18})
+    mapboxGL.fitBounds(bounds, {padding: 25, curve: 3, speed: 0.6, maxZoom: 18})
   }
 
   render () {

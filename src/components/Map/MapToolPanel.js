@@ -114,7 +114,7 @@ export default class MapToolPanel extends React.Component<Props, void> {
               <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>straighten</i>{t('Measurement Tools')}</div>
               <div className='collapsible-body center'>
                 <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
-                  <MeasurementToolPanel {...this.props} closePanel={this.closePanel} />
+                  <MeasurementToolPanel {...this.props} closePanel={this.closePanel} t={t} />
                 </div>
               </div>
             </li>

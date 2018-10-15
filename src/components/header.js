@@ -16,6 +16,10 @@ import HelpButton from './Header/HelpButton'
 import SearchButton from './Header/SearchButton'
 import ExploreDropdown from './Header/ExploreDropdown'
 
+if (process.env.NODE_ENV !== 'production') {
+  require('../services/unstated-debug')
+}
+
 type Link = {
   href: string,
   label: LocalizedString
@@ -56,6 +60,8 @@ export default class Header extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    
+
     M.Sidenav.init(this.sidenav, {})
 
     if (this.detectIE()) {

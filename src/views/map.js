@@ -53,9 +53,11 @@ export default class Map extends MapHubsComponent<Props, void> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
   mapCreated = (mapId: number, title: LocalizedString) => {

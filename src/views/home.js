@@ -111,9 +111,13 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+
     this.state = {
       featuredLayersCards: _shuffle(this.props.featuredLayers.map(cardUtil.getLayerCard)),
       featuredGroupsCards: _shuffle(this.props.featuredGroups.map(cardUtil.getGroupCard)),

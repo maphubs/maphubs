@@ -183,12 +183,14 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
         <div className='row'>
           <div className='col s12'>
             <div>
-              <Map ref='map' style={{width: '100%', height: '400px'}}
+              <Map style={{width: '100%', height: '400px'}}
                 id='remote-layer-preview-map'
                 showFeatureInfoEditButtons={false}
                 mapConfig={this.props.mapConfig}
                 glStyle={this.state.layer.style}
-                fitBounds={this.state.layer.preview_position.bbox}>
+                fitBounds={this.state.layer.preview_position.bbox}
+                t={this.t}
+              >
                 <MiniLegend
                   t={this.t}
                   style={{

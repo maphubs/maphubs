@@ -6,8 +6,9 @@ import Comments from '../components/Comments'
 import FeatureProps from '../components/Feature/FeatureProps'
 import FeatureNotes from '../components/Feature/FeatureNotes'
 import HubEditButton from '../components/Hub/HubEditButton'
-import { Provider } from 'unstated'
+import { Provider, Subscribe } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
 import FeatureNotesActions from '../actions/FeatureNotesActions'
@@ -69,9 +70,12 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
     Reflux.rehydrate(FeatureNotesStore, {notes})
     Reflux.rehydrate(FeaturePhotoStore, {feature, photo})
+
+    let baseMapContainerInit = {}
     if (mapConfig && mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
 
     this.state = {
       editingNotes: false,
@@ -107,30 +111,35 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   stopEditingNotes = () => {
     const _this = this
+    const {t} = this
     const geoJSONProps: Object = this.props.feature.features[0].properties
 
     FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Notes Saved')})
+        NotificationActions.showNotification({message: t('Notes Saved')})
         _this.setState({editingNotes: false})
       }
     })
   }
 
   // Build edit link
-  getEditLink = () => {
+  getEditLink = (map?: Object) => {
     // get map position
-    const position = this.refs.map.getMap().getPosition()
-    let zoom = Math.ceil(position.zoom)
-    if (zoom < 10) zoom = 10
+    let zoom = 10
+    let position = {lng: 0, lat: 0}
+    if (map) {
+      position = map.getPosition()
+      zoom = Math.ceil(position.zoom)
+      if (zoom < 10) zoom = 10
+    }
     const baseUrl = urlUtil.getBaseUrl()
     return `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}#${zoom}/${position.lat}/${position.lng}`
   }
 
-  openEditor = () => {
-    const editLink = this.getEditLink()
+  openEditor = (map?: Object) => {
+    const editLink = this.getEditLink(map)
     window.location = editLink
   }
 
@@ -144,12 +153,10 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   changeGeoJSONFeature = (feature: Object) => {
     this.setState({feature})
-    // this.map.getMap().zoomToData(feature)
   }
 
   render () {
-    const _this = this
-
+    const {openEditor, selectTab, t} = this
     const {canEdit, layer, mapConfig, headerConfig} = this.props
     const {feature} = this.state
     let geojsonFeature
@@ -162,65 +169,18 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
 
     const baseUrl = urlUtil.getBaseUrl()
-
-    let notesEditButton
-    let editButton
-    if (canEdit) {
-      notesEditButton = (
-        <HubEditButton editing={this.state.editingNotes}
-          style={{position: 'absolute'}}
-          startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
-      )
-
-      let idEditButton
-      if (!layer.is_external) {
-        idEditButton = (
-          <li>
-            <FloatingButton
-              onClick={this.openEditor} icon='mode_edit'
-              tooltip={this.__('Edit Map Data')} tooltipPosition='left' />
-          </li>
-        )
-      }
-      editButton = (
-        <div ref='menuButton' className='fixed-action-btn action-button-bottom-right'>
-          <a className='btn-floating btn-large red red-text'>
-            <i className='large material-icons'>more_vert</i>
-          </a>
-          <ul>
-            {idEditButton}
-          </ul>
-        </div>
-      )
-    }
-
     const layerUrl = `${baseUrl}/layer/info/${layer.layer_id}/${slugify(this._o_(layer.name))}`
     const mhid = feature.mhid.split(':')[1]
 
     let gpxLink
     if (layer.data_type === 'polygon') {
-      gpxLink = baseUrl + '/api/feature/gpx/' + layer.layer_id + '/' + mhid + '/feature.gpx'
+      gpxLink = `${baseUrl}/api/feature/gpx/${layer.layer_id}/${mhid}/feature.gpx`
     }
 
     // const firstSource = Object.keys(layer.style.sources)[0]
     // const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
     const presets = layer.presets
-    let frPanel
-    if (MAPHUBS_CONFIG.FR_ENABLE && this.state.user) {
-      if (this.state.tab === 'forestreport' || this.state.frActive) {
-        const {activateFR, frToggle, onAlertClick} = this.map
-        frPanel = (
-          <ForestReportEmbed
-            geoJSON={feature}
-            onLoad={(config: Object) => { activateFR(config, feature) }}
-            onModuleToggle={frToggle}
-            onAlertClick={onAlertClick}
-            remainingThreshold={mapConfig ? mapConfig.FRRemainingThreshold : undefined}
-            onGeoJSONChange={this.changeGeoJSONFeature}
-          />
-        )
-      }
-    }
+    const {activateFR, frToggle, onAlertClick} = this.map
 
     let isPolygon
     if (geojsonFeature && geojsonFeature.geometry &&
@@ -233,66 +193,98 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>
           <Header {...headerConfig} />
-          <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
-            <div className='row' style={{height: '100%', margin: 0}}>
-              <div className='col s6 no-padding' style={{height: '100%'}}>
-                <div className='row no-margin' style={{height: '100%', overflowY: 'hidden'}}>
-                  <ul ref='tabs' className='tabs' style={{}}>
-                    <li className='tab'><a className='active' onClick={function () { _this.selectTab('data') }} href='#data'>{this.__('Info')}</a></li>
-                    {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
-                    <li className='tab'><a onClick={function () { _this.selectTab('forestreport') }} href='#forestreport'>{this.__('Forest Report')}</a></li>
-                    }
-                    {MAPHUBS_CONFIG.enableComments &&
-                    <li className='tab'><a onClick={function () { _this.selectTab('discussion') }} href='#discussion'>{this.__('Discussion')}</a></li>
-                    }
-                    <li className='tab'><a onClick={function () { _this.selectTab('notes') }} href='#notes'>{this.__('Notes')}</a></li>
-                    <li className='tab'><a onClick={function () { _this.selectTab('export') }} href='#export'>{this.__('Export')}</a></li>
-                  </ul>
-                  <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowX: 'hidden'}}>
-                    <div className='row no-margin' style={{height: '100%'}}>
-                      <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
-                        <FeaturePhoto photo={this.state.photo} canEdit={canEdit} />
-                        <div style={{marginLeft: '5px', overflowY: 'auto'}}>
-                          <p style={{fontSize: '16px'}}><b>{this.__('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
-                          <FeatureLocation geojson={geojsonFeature} />
-                          {isPolygon &&
-                            <FeatureArea geojson={geojsonFeature} />
+          <Subscribe to={[MapContainer]}>
+            {MapState => (
+              <main style={{height: 'calc(100% - 52px)', marginTop: '0px'}}>
+                <div className='row' style={{height: '100%', margin: 0}}>
+                  <div className='col s6 no-padding' style={{height: '100%'}}>
+                    <div className='row no-margin' style={{height: '100%', overflowY: 'hidden'}}>
+                      <ul ref='tabs' className='tabs' style={{}}>
+                        <li className='tab'><a className='active' onClick={() => { selectTab('data') }} href='#data'>{t('Info')}</a></li>
+                        {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
+                        <li className='tab'><a onClick={() => { selectTab('forestreport') }} href='#forestreport'>{t('Forest Report')}</a></li>
+                        }
+                        {MAPHUBS_CONFIG.enableComments &&
+                        <li className='tab'><a onClick={() => { selectTab('discussion') }} href='#discussion'>{t('Discussion')}</a></li>
+                        }
+                        <li className='tab'><a onClick={() => { selectTab('notes') }} href='#notes'>{t('Notes')}</a></li>
+                        <li className='tab'><a onClick={() => { selectTab('export') }} href='#export'>{t('Export')}</a></li>
+                      </ul>
+                      <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 48px)', overflowX: 'hidden'}}>
+                        <div className='row no-margin' style={{height: '100%'}}>
+                          <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
+                            <FeaturePhoto photo={this.state.photo} canEdit={canEdit} />
+                            <div style={{marginLeft: '5px', overflowY: 'auto'}}>
+                              <p style={{fontSize: '16px'}}><b>{t('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
+                              <FeatureLocation geojson={geojsonFeature} />
+                              {isPolygon &&
+                                <FeatureArea geojson={geojsonFeature} />
+                              }
+                            </div>
+                          </div>
+                          <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
+                            <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
+                              <FeatureProps data={geoJSONProps} presets={presets} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
+                        <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
+                          {(this.state.tab === 'forestreport' || this.state.frActive) &&
+                            <ForestReportEmbed
+                              geoJSON={feature}
+                              onLoad={(config: Object) => { activateFR(config, feature) }}
+                              onModuleToggle={frToggle}
+                              onAlertClick={(alert) => { onAlertClick(alert, MapState.state.map) }}
+                              remainingThreshold={mapConfig ? mapConfig.FRRemainingThreshold : undefined}
+                              onGeoJSONChange={this.changeGeoJSONFeature}
+                            />
                           }
                         </div>
+                      }
+                      {MAPHUBS_CONFIG.enableComments &&
+                      <div id='discussion' className='col s12' style={{height: 'calc(100% - 48px)'}}>
+                        <Comments />
                       </div>
-                      <div className='col m6 s12 no-padding' style={{height: '100%', border: '1px solid #ddd'}}>
-                        <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
-                          <FeatureProps data={geoJSONProps} presets={presets} />
-                        </div>
+                      }
+                      <div id='notes' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
+                        <FeatureNotes editing={this.state.editingNotes} />
+                        {canEdit &&
+                          <HubEditButton editing={this.state.editingNotes}
+                            style={{position: 'absolute'}}
+                            startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
+                        }
+                      </div>
+                      <div id='export' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
+                        <FeatureExport mhid={mhid} {...layer} />
                       </div>
                     </div>
                   </div>
-                  {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
-                    <div id='forestreport' className='col s12' style={{height: 'calc(100% - 48px)', overflow: 'hidden', padding: 0}}>
-                      {frPanel}
-                    </div>
-                  }
-                  {MAPHUBS_CONFIG.enableComments &&
-                  <div id='discussion' className='col s12' style={{height: 'calc(100% - 48px)'}}>
-                    <Comments />
-                  </div>
-                  }
-                  <div id='notes' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
-                    <FeatureNotes editing={this.state.editingNotes} />
-                    {notesEditButton}
-                  </div>
-                  <div id='export' className='col s12' style={{position: 'relative', height: 'calc(100% - 48px)'}}>
-                    <FeatureExport mhid={mhid} {...layer} />
+                  <div className='col s6 no-padding' style={{height: '100%'}}>
+                    <FeatureMap ref={(map) => { this.map = map }}
+                      layer={layer} geojson={feature} gpxLink={gpxLink} mapConfig={mapConfig} />
                   </div>
                 </div>
-              </div>
-              <div className='col s6 no-padding' style={{height: '100%'}}>
-                <FeatureMap ref={(map) => { this.map = map }}
-                  layer={layer} geojson={feature} gpxLink={gpxLink} mapConfig={mapConfig} />
-              </div>
-            </div>
-            {editButton}
-          </main>
+                {canEdit &&
+                  <div ref='menuButton' className='fixed-action-btn action-button-bottom-right'>
+                    <a className='btn-floating btn-large red red-text'>
+                      <i className='large material-icons'>more_vert</i>
+                    </a>
+                    <ul>
+                      {!layer.is_external &&
+                        <li>
+                          <FloatingButton
+                            onClick={() => { openEditor(MapState.state.map) }} icon='mode_edit'
+                            tooltip={t('Edit Map Data')} tooltipPosition='left' />
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </main>
+            )}
+          </Subscribe>
         </Provider>
       </ErrorBoundary>
     )

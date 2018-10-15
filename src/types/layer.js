@@ -23,7 +23,8 @@ export type Layer = {
   external_layer_config?: {
     type?: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query' | 'earthengine',
     url?: string,
-    layers?: Array<Object>
+    layers?: Array<Object>,
+    tiles?: Array<string>
     },
   is_empty?: boolean,
   disable_export?: boolean,
@@ -31,6 +32,7 @@ export type Layer = {
   disable_feature_indexing?: boolean,
   remote?: boolean,
   remote_host?: string,
+  remote_layer_id?: string,
   complete?: boolean,
   canEdit?: boolean,
   presets?: any

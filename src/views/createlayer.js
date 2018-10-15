@@ -12,6 +12,7 @@ import LocaleStore from '../stores/LocaleStore'
 import LayerStore from '../stores/layer-store'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import type {Group} from '../stores/GroupStore'
 import type {Layer} from '../types/layer'
 import type {LayerStoreState} from '../stores/layer-store'
@@ -62,9 +63,12 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
 
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
 
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -160,7 +164,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...this.props.headerConfig} />
           <main>
             <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>

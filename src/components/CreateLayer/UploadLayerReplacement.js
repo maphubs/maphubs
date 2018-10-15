@@ -50,7 +50,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
   componentDidUpdate () {
     if (this.state.geoJSON) {
-      scrollToComponent(this.refs.map)
+      scrollToComponent(this.refs.mapSection)
     }
     if (this.state.multipleShapefiles) {
       this.refs.chooseshape.show()
@@ -140,10 +140,10 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     let map = ''
     if (this.state.geoJSON) {
       map = (
-        <div>
+        <div ref='mapSection'>
           <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
-          <Map ref='map' style={{width: '100%', height: '400px'}}
-            id='upload-preview-map'
+          <Map style={{width: '100%', height: '400px'}}
+            id='upload-preview-map' t={this.t}
             showFeatureInfoEditButtons={false}
             mapConfig={this.props.mapConfig}
             data={this.state.geoJSON} />

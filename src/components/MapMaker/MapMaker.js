@@ -12,7 +12,6 @@ import MapSettingsPanel from './MapSettingsPanel'
 import MapMakerStore from '../../stores/MapMakerStore'
 import UserStore from '../../stores/UserStore'
 import Actions from '../../actions/MapMakerActions'
-import DataEditorActions from '../../actions/DataEditorActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
@@ -27,6 +26,10 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {UserStoreState} from '../../stores/UserStore'
 import type {MapMakerStoreState} from '../../stores/MapMakerStore'
 import type {Layer} from '../../types/layer'
+import connect from 'unstated-connect'
+import DataEditorContainer from '../Map/containers/DataEditorContainer'
+import MapContainer from '../Map/containers/MapContainer'
+import BaseMapContainer from '../Map/containers/BaseMapContainer'
 
 import $ from 'jquery'
 
@@ -45,7 +48,8 @@ type Props = {
     editLayer?: Layer,
     mapConfig: Object,
     settings: Object,
-    groups: Array<Object>
+    groups: Array<Object>,
+    containers: Array<Object>
   }
 
   type State = {
@@ -58,7 +62,7 @@ type Props = {
     width: number
   } & LocaleStoreState & MapMakerStoreState & UserStoreState
 
-export default class MapMaker extends MapHubsComponent<Props, State> {
+class MapMaker extends MapHubsComponent<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -101,10 +105,11 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     const _this = this
+    const {t} = this
     this.tabsInstance = M.Tabs.init(this.refs.tabs, {})
     M.Collapsible.init(this.refs.mapMakerToolPanel, {})
     if (this.props.edit) {
-      this.toggleMapTab()
+      _this.toggleMapTab()
     }
 
     function getSize () {
@@ -115,7 +120,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     }
 
     const size = getSize()
-    this.setState({
+    _this.setState({
       width: size.width,
       height: size.height
     })
@@ -132,8 +137,9 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     })
 
     window.addEventListener('beforeunload', (e) => {
-      if (!_this.state.saved && _this.state.mapLayers && _this.state.mapLayers.length > 0) {
-        const msg = _this.__('Please save your map to avoid losing your work!')
+      const {saved, mapLayers} = _this.state
+      if (!saved && mapLayers && mapLayers.length > 0) {
+        const msg = t('Please save your map to avoid losing your work!')
         e.returnValue = msg
         return msg
       }
@@ -147,25 +153,26 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
+    const {editLayerPanel, layersListPanel, saveMapPanel} = this.refs
     if (this.state.editingLayer && !prevState.editingLayer) {
       // starting editing
-      if (this.refs.editLayerPanel) {
-        $(this.refs.layersListPanel).removeClass('active')
-        $(this.refs.layersListPanel).find('.collapsible-body').css('display', 'none')
+      if (editLayerPanel) {
+        $(layersListPanel).removeClass('active')
+        $(layersListPanel).find('.collapsible-body').css('display', 'none')
 
-        $(this.refs.saveMapPanel).removeClass('active')
-        $(this.refs.saveMapPanel).find('.collapsible-body').css('display', 'none')
+        $(saveMapPanel).removeClass('active')
+        $(saveMapPanel).find('.collapsible-body').css('display', 'none')
 
-        $(this.refs.editLayerPanel).addClass('active')
-        $(this.refs.editLayerPanel).find('.collapsible-body').css('display', 'block')
+        $(editLayerPanel).addClass('active')
+        $(editLayerPanel).find('.collapsible-body').css('display', 'block')
       }
     } else if (!this.state.editingLayer && prevState.editingLayer) {
       // stopping editing
-      $(this.refs.layersListPanel).addClass('active')
-      $(this.refs.layersListPanel).find('.collapsible-body').css('display', 'block')
+      $(layersListPanel).addClass('active')
+      $(layersListPanel).find('.collapsible-body').css('display', 'block')
     }
 
-    if (!this.state.editLayerLoaded && this.props.editLayer && this.refs.map && this.refs.map.map) {
+    if (!this.state.editLayerLoaded && this.props.editLayer) {
       this.addLayer(this.props.editLayer)
       this.editLayer(this.props.editLayer)
       this.setState({editLayerLoaded: true})
@@ -177,62 +184,66 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   onCancel = () => {
-    const _this = this
+    const {t, onClose} = this
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Cancel'),
-      postitiveButtonText: _this.__('Cancel Map'),
-      negativeButtonText: _this.__('Return to Editing Map'),
-      message: _this.__('Your map has not been saved, please confirm that you want to cancel your map.'),
+      title: t('Confirm Cancel'),
+      postitiveButtonText: t('Cancel Map'),
+      negativeButtonText: t('Return to Editing Map'),
+      message: t('Your map has not been saved, please confirm that you want to cancel your map.'),
       onPositiveResponse () {
-        _this.onClose()
+        onClose()
       }
     })
   }
 
   onCreate = () => {
     this.setState({saved: true})
-    if (this.props.onCreate) this.props.onCreate(this.state.map_id, this.state.title)
+    const {onCreate} = this.props
+    const {map_id, title} = this.state
+    if (onCreate) onCreate(map_id, title)
   }
 
    privacyCheck = (isPrivate: boolean, groupId: string) => {
      // check if layers meet privacy rules, before sending a request to the server that will fail...
+     const {t} = this
+     const {mapLayers} = this.state
      if (isPrivate) {
        if (!groupId) {
-         return this.__('Private map must be saved to a group')
+         return t('Private map must be saved to a group')
        }
        // check all layers are in the same group
        let privateLayerInOtherGroup = false
-       if (this.state.mapLayers) {
-         this.state.mapLayers.forEach((layer) => {
+       if (mapLayers) {
+         mapLayers.forEach((layer) => {
            if (layer.private && layer.owned_by_group_id !== groupId) {
              privateLayerInOtherGroup = true
            }
          })
        }
        if (privateLayerInOtherGroup) {
-         return this.__('Private layers must belong to the same group that owns the map. Change the group where you are saving the map or remove the private layer.')
+         return t('Private layers must belong to the same group that owns the map. Change the group where you are saving the map or remove the private layer.')
        }
      } else {
        // check that no private layers are included
        let privateLayerInPublicMap = false
-       if (this.state.mapLayers) {
-         this.state.mapLayers.forEach((layer) => {
+       if (mapLayers) {
+         mapLayers.forEach((layer) => {
            if (layer.private) {
              privateLayerInPublicMap = true
            }
          })
        }
        if (privateLayerInPublicMap) {
-         return this.__('A public map cannot contain private layers. Please save as a private map owned by your group, or remove the private layer')
+         return t('A public map cannot contain private layers. Please save as a private map owned by your group, or remove the private layer')
        }
      }
    }
 
   onSave = (model: Object, cb: Function) => {
     const _this = this
-
-    const position = this.refs.map.getPosition()
-    position.bbox = this.refs.map.getBounds()
+    const [, MapState, BaseMapState] = this.props.containers
+    const position = MapState.state.map.getPosition()
+    position.bbox = MapState.state.map.getBounds()
 
     if (model.private === undefined) model.private = false
 
@@ -240,7 +251,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     if (err) {
       MessageActions.showMessage({title: _this.__('Error'), message: err})
     } else {
-      const basemap = this.refs.map.getBaseMap()
+      const basemap = BaseMapState.state.baseMap
       if (!this.state.map_id || this.state.map_id === -1) {
         Actions.createMap(model.title, position, basemap, model.group, model.private, _this.state._csrf, err => {
           cb()
@@ -270,9 +281,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   toggleVisibility = (layerId: number) => {
-    Actions.toggleVisibility(layerId, (layerStyle) => {
-      // _this.refs.map.updateLayer(layerStyle);
-    })
+    Actions.toggleVisibility(layerId, () => {})
   }
 
   showLayerDesigner = (layerId: number) => {
@@ -283,7 +292,6 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   onLayerStyleChange = (layerId: number, style: Object, labels: Object, legend: Object) => {
     Actions.updateLayerStyle(layerId, style, labels, legend, (updatedLayer) => {
       this.setState({showMapLayerDesigner: true, layerDesignerLayer: updatedLayer})
-      // this.refs.map.updateLayer(updatedLayer.style);
     })
   }
 
@@ -297,16 +305,16 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   addLayer = (layer: Layer) => {
     const _this = this
-
+    const [, MapState] = this.props.containers
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
 
     if (this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox) {
-      _this.refs.map.fitBounds(layer.extent_bbox, 16, 25, false)
+      MapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
     }
 
-    const position = this.refs.map.getPosition()
-    position.bounds = this.refs.map.getBounds()
+    const position = MapState.state.map.getPosition()
+    position.bounds = MapState.state.map.getBounds()
 
     Actions.setMapPosition(position)
     Actions.addToMap(layer, (err) => {
@@ -326,25 +334,20 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
 
   toggleAddLayerTab = () => {
     this.tabsInstance.select('addlayer')
-    fireResizeEvent()
+    // fireResizeEvent()
   }
 
   editLayer = (layer: Layer) => {
+    const [DataEditor, MapState] = this.props.containers
     Actions.startEditing()
-    DataEditorActions.startEditing(layer)
-    this.refs.map.startEditingTool(layer)
-  }
-
-  saveEdits = () => {
-    DataEditorActions.saveEdits(this.state._csrf, function () {
-      this.refs.map.stopEditingTool()
-    })
+    DataEditor.startEditing(layer)
+    MapState.state.map.startEditingTool(layer)
   }
 
   stopEditingLayer = () => {
+    const [, MapState] = this.props.containers
     Actions.stopEditing()
-    DataEditorActions.stopEditing()
-    this.refs.map.stopEditingTool()
+    MapState.state.map.stopEditingTool()
   }
 
   onToggleIsochroneLayer = (enabled: boolean) => {
@@ -360,7 +363,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
       mapLayers.forEach(mapLayer => {
         let foundInLayers
         layers.forEach(layer => {
-          if (mapLayer.id === layer.id) {
+          if (mapLayer.layer_id === layer.layer_id) {
             foundInLayers = true
           }
         })
@@ -374,9 +377,10 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const _this = this
-
-    const {showMapLayerDesigner, height, layerDesignerLayer} = this.state
+    const {editLayer, toggleVisibility, removeFromMap, showLayerDesigner, t} = this
+    const {showVisibility} = this.props
+    const {showMapLayerDesigner, height, layerDesignerLayer, position, mapLayers, editingLayer} = this.state
+    const [, MapState] = this.props.containers
     const headerHeight = 52
     const collasibleHeaderHeight = 56
     let panelHeight = height - headerHeight - (collasibleHeaderHeight * 3)
@@ -397,29 +401,24 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     }
 
     let editLayerPanel = ''
-    let editingTools = ''
-    if (this.state.editingLayer) {
+    if (editingLayer) {
     // panelHeight = this.state.height - 241;
       panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 4)
       editLayerPanel = (
         <li ref='editLayerPanel'>
-          <div className='collapsible-header'><i className='material-icons'>edit</i>{this.__('Editing Layer')}</div>
+          <div className='collapsible-header'><i className='material-icons'>edit</i>{t('Editing Layer')}</div>
           <div className='collapsible-body' >
             <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-              <EditLayerPanel t={this.t} />
+              <EditLayerPanel t={t} />
             </div>
           </div>
         </li>
       )
-
-      editingTools = (
-        <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={this.refs.map.onFeatureUpdate} />
-      )
     }
 
     let mapExtent
-    if (this.state.position && this.state.position.bbox) {
-      const bbox = this.state.position.bbox
+    if (position && position.bbox) {
+      const bbox = position.bbox
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
 
@@ -436,25 +435,25 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
           >
             {editLayerPanel}
             <li ref='layersListPanel' className='active'>
-              <div className='collapsible-header'><i className='material-icons'>layers</i>{this.__('Overlay Layers')}</div>
+              <div className='collapsible-header'><i className='material-icons'>layers</i>{t('Overlay Layers')}</div>
               <div className='collapsible-body' >
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
                   <LayerList
-                    layers={this.state.mapLayers}
-                    showVisibility={_this.props.showVisibility}
-                    showRemove showDesign showEdit={!this.state.editingLayer}
-                    toggleVisibility={_this.toggleVisibility}
-                    removeFromMap={_this.removeFromMap}
-                    showLayerDesigner={_this.showLayerDesigner}
+                    layers={mapLayers}
+                    showVisibility={showVisibility}
+                    showRemove showDesign showEdit={!editingLayer}
+                    toggleVisibility={toggleVisibility}
+                    removeFromMap={removeFromMap}
+                    showLayerDesigner={showLayerDesigner}
                     updateLayers={Actions.setMapLayers}
-                    editLayer={_this.editLayer}
+                    editLayer={editLayer}
                   />
                 </div>
 
               </div>
             </li>
             <li ref='saveMapPanel'>
-              <div className='collapsible-header'><i className='material-icons'>save</i>{this.__('Save Map')}</div>
+              <div className='collapsible-header'><i className='material-icons'>save</i>{t('Save Map')}</div>
               <div className='collapsible-body'>
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
                   <SaveMapPanel {...this.state} editing={this.props.edit} onSave={this.onSave} />
@@ -463,7 +462,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
               </div>
             </li>
             <li ref='settingsPanel'>
-              <div className='collapsible-header'><i className='material-icons'>settings</i>{this.__('Map Settings')}</div>
+              <div className='collapsible-header'><i className='material-icons'>settings</i>{t('Map Settings')}</div>
               <div className='collapsible-body'>
                 <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
                   <MapSettingsPanel />
@@ -475,8 +474,8 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
         </div>
         <div className='col s6 m8 l9 no-padding' style={{height: '100%'}}>
           <ul className='tabs' ref='tabs' style={{overflowX: 'hidden', borderBottom: '1px solid #ddd'}}>
-            <li className='tab mapmaker-tab'><a className='active' href='#addlayer' onClick={this.toggleAddLayerTab}>{this.__('Add a Layer')}</a></li>
-            <li className='tab mapmaker-tab'><a href='#maptab' onClick={this.toggleMapTab}>{this.__('View Map')}</a></li>
+            <li className='tab mapmaker-tab'><a className='active' href='#addlayer' onClick={this.toggleAddLayerTab}>{t('Add a Layer')}</a></li>
+            <li className='tab mapmaker-tab'><a href='#maptab' onClick={this.toggleMapTab}>{t('View Map')}</a></li>
           </ul>
 
           <div id='addlayer' style={{height: 'calc(100vh - 100px)', overflow: 'scroll'}}>
@@ -487,23 +486,25 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
           </div>
           <div id='maptab' className='row no-margin' style={{height: 'calc(100vh - 100px)', display: tabContentDisplay}}>
             <div className='row' style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
-              <Map ref='map' id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
+              <Map id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
                 glStyle={this.state.mapStyle}
                 baseMap={this.state.basemap}
                 insetMap
                 insetConfig={this.state.settings ? this.state.settings.insetConfig : undefined}
                 onChangeBaseMap={Actions.setMapBasemap}
-                onToggleForestLoss={this.onToggleForestLoss}
                 onToggleIsochroneLayer={this.onToggleIsochroneLayer}
                 fitBounds={mapExtent}
                 mapConfig={this.props.mapConfig}
                 hash
+                t={this.t}
               >
-                {editingTools}
+                {editingLayer &&
+                  <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={MapState.state.map.onFeatureUpdate} />
+                }
               </Map>
 
               <MiniLegend
-                t={this.t}
+                t={t}
                 style={{
                   position: 'absolute',
                   top: '5px',
@@ -511,7 +512,7 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
                   minWidth: '200px',
                   width: '25%'
                 }}
-                layers={this.state.mapLayers}
+                layers={mapLayers}
                 maxHeight='calc(100vh - 300px)'
                 collapseToBottom={false} hideInactive showLayersButton={false} />
             </div>
@@ -521,3 +522,5 @@ export default class MapMaker extends MapHubsComponent<Props, State> {
     )
   }
 }
+
+export default connect([DataEditorContainer, MapContainer, BaseMapContainer])(MapMaker)

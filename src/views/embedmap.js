@@ -68,9 +68,12 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
 
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -231,7 +234,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       insetConfig.collapsible = false
 
       map = (
-        <InteractiveMap ref='interactiveMap' height='100vh'
+        <InteractiveMap height='100vh'
           interactive={this.state.interactive}
           fitBounds={bounds}
           fitBoundsOptions={{animate: false, padding: 0, maxZoom: 20}}

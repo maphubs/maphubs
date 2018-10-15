@@ -4,6 +4,7 @@ import _centroid from '@turf/centroid'
 import connect from 'unstated-connect'
 import MapToolButton from './MapToolButton'
 import BaseMapContainer from './containers/BaseMapContainer'
+import MapContainer from './containers/MapContainer'
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
@@ -76,6 +77,8 @@ class InsetMap extends React.Component<Props, State> {
       insetGeoJSONData: {},
       insetGeoJSONCentroidData: {}
     }
+    const [, MapState] = props.containers
+    MapState.setInsetMap(this)
   }
 
   componentDidMount () {
@@ -388,4 +391,4 @@ class InsetMap extends React.Component<Props, State> {
   }
 }
 
-export default connect([BaseMapContainer])(InsetMap)
+export default connect([BaseMapContainer, MapContainer])(InsetMap)

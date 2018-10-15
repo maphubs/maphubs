@@ -55,13 +55,16 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
         negativeButtonText: t('Discard Edits'),
         onPositiveResponse () {
           saveEdits(DataEditor)
+          DataEditor.stopEditing()
           stopEditingLayer()
         },
         onNegativeResponse () {
+          DataEditor.stopEditing()
           stopEditingLayer()
         }
       })
     } else {
+      DataEditor.stopEditing()
       stopEditingLayer()
     }
   }

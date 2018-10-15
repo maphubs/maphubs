@@ -1,5 +1,4 @@
 // @flow
-import DataEditorActions from '../../../actions/DataEditorActions'
 import type {Layer} from '../../../types/layer'
 import theme from '@mapbox/mapbox-gl-draw/src/lib/theme'
 import 'jquery'
@@ -22,8 +21,10 @@ export default {
   },
 
   editFeature (feature: Object) {
+    const containers: Array<Object> = this.props.containers
+    const [, DataEditor] = containers
     // get the feature from the database, since features from vector tiles can be incomplete or simplified
-    DataEditorActions.selectFeature(feature.properties.mhid, feature => {
+    DataEditor.selectFeature(feature.properties.mhid, feature => {
       if (this.draw) {
         if (!this.draw.get(feature.id)) {
         // if not already editing this feature
@@ -35,6 +36,9 @@ export default {
   },
 
   startEditingTool (layer: Layer) {
+    const containers: Array<Object> = this.props.containers
+    const [, DataEditor] = containers
+
     const draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
@@ -54,7 +58,7 @@ export default {
       const features = e.features
       if (features && features.length > 0) {
         features.forEach(feature => {
-          DataEditorActions.createFeature(feature)
+          DataEditor.createFeature(feature)
         })
       }
     })
@@ -69,7 +73,7 @@ export default {
       const features = e.features
       if (features && features.length > 0) {
         features.forEach(feature => {
-          DataEditorActions.deleteFeature(feature)
+          DataEditor.deleteFeature(feature)
         })
       }
     })
@@ -82,7 +86,7 @@ export default {
         const features = e.features
         if (features && features.length > 0) {
           features.forEach(feature => {
-            DataEditorActions.selectFeature(feature.id, () => {})
+            DataEditor.selectFeature(feature.id, () => {})
           })
         }
       }
@@ -97,8 +101,10 @@ export default {
   },
 
   updateEdits (e: any) {
+    const containers: Array<Object> = this.props.containers
+    const [, DataEditor] = containers
     if (e.features.length > 0) {
-      DataEditorActions.updateFeatures(e.features)
+      DataEditor.updateFeatures(e.features)
     }
   },
 

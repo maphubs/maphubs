@@ -1,16 +1,16 @@
 // @flow
 import React from 'react'
-import MapHubsPureComponent from '../../MapHubsPureComponent'
 import Formsy from 'formsy-react'
 import Toggle from '../../forms/toggle'
 
 type Props = {|
   enableMeasurementTools: boolean,
   closePanel: Function,
-  toggleMeasurementTools: Function
+  toggleMeasurementTools: Function,
+  t: Function
 |}
 
-export default class MeasurementToolPanel extends MapHubsPureComponent<Props, void> {
+export default class MeasurementToolPanel extends React.PureComponent<Props, void> {
   props: Props
 
   toggleMeasurementTools = (model: {enableMeasurementTools: boolean}) => {
@@ -19,13 +19,14 @@ export default class MeasurementToolPanel extends MapHubsPureComponent<Props, vo
   }
 
   render () {
+    const {t, enableMeasurementTools} = this.props
     return (
       <Formsy onChange={this.toggleMeasurementTools}>
-        <b>{this.__('Show Measurement Tools')}</b>
+        <b>{t('Show Measurement Tools')}</b>
         <Toggle name='enableMeasurementTools'
-          labelOff={this.__('Off')} labelOn={this.__('On')}
+          labelOff={t('Off')} labelOn={t('On')}
           className='col s12'
-          checked={this.props.enableMeasurementTools}
+          checked={enableMeasurementTools}
         />
       </Formsy>
     )

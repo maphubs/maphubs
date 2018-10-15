@@ -7,6 +7,7 @@ import FeaturePopup from './FeaturePopup'
 import BaseMapContainer from './containers/BaseMapContainer'
 import DataEditorContainer from './containers/DataEditorContainer'
 import MarkerContainer from './containers/MarkerContainer'
+import MapContainer from './containers/MapContainer'
 import _isequal from 'lodash.isequal'
 import MapToolButton from './MapToolButton'
 import MapSearchPanel from './Search/MapSearchPanel'
@@ -127,17 +128,19 @@ class Map extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      id: this.props.id ? this.props.id : 'map',
+      id: props.id ? props.id : 'map',
       selected: false,
-      interactive: this.props.interactive,
+      interactive: props.interactive,
       mapLoaded: false,
-      allowLayersToMoveMap: !this.props.fitBounds,
+      allowLayersToMoveMap: !props.fitBounds,
       interactiveLayers: []
     }
   }
 
   componentWillMount () {
-    super.componentWillMount()
+    // TODO: this is a hack, need to move state helper functions the containers instead of attached to the instance
+    const [, , , MapState] = this.props.containers
+    MapState.setMap(this)
     const [BaseMapState] = this.props.containers
     BaseMapState.setBaseMap(this.props.baseMap)
     if (this.props.glStyle) {
@@ -177,8 +180,9 @@ class Map extends React.Component<Props, State> {
     // change locale
     if (this.props.locale && (this.props.locale !== prevProps.locale)) {
       this.changeLocale(this.props.locale, this.map)
-      if (this.refs.insetMap) {
-        this.changeLocale(this.props.locale, this.refs.insetMap.getInsetMap())
+      const [, , , MapState] = this.props.containers
+      if (MapState.state.insetMap) {
+        this.changeLocale(this.props.locale, MapState.state.insetMap.getInsetMap())
       }
     }
   }
@@ -220,9 +224,7 @@ class Map extends React.Component<Props, State> {
     const {debugLog} = this
     const {preserveDrawingBuffer, enableRotation, hash, fitBounds, fitBoundsOptions, data, glStyle, attributionControl, t, locale} = this.props
     const {interactive, mapLoaded} = this.state
-    const {insetMap} = this.refs
-    const [BaseMapState] = this.props.containers
-
+    const [BaseMapState, , , MapState] = this.props.containers
     BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
       _this.setBaseMapStyle(baseMap, false)
 
@@ -287,8 +289,10 @@ class Map extends React.Component<Props, State> {
           }
           debugLog(`fitting map to bounds: ${bounds.toString()}`)
           map.fitBounds(fitBounds, fitBoundsOptions)
-          if (insetMap) {
-            insetMap.sync(map)
+          if (MapState.state.insetMap) {
+            MapState.state.insetMap.sync(map)
+          } else {
+            debugLog(`insetMap not found`)
           }
         }
 
@@ -298,11 +302,11 @@ class Map extends React.Component<Props, State> {
           debugLog('finished adding map data')
 
           // set locale
-          if (locale !== 'en') {
+          if (locale) {
             try {
               _this.changeLocale(locale, _this.map)
-              if (insetMap) {
-                _this.changeLocale(locale, insetMap.getInsetMap())
+              if (MapState.state.insetMap) {
+                _this.changeLocale(locale, MapState.state.insetMap.getInsetMap())
               }
             } catch (err) {
               debug.error(err)
@@ -314,12 +318,12 @@ class Map extends React.Component<Props, State> {
       })// end style.load
 
       // Setup inset map
-      if (insetMap) {
-        if (!insetMap.getInsetMap()) {
-          insetMap.createInsetMap(map.getCenter(), map.getBounds(), baseMap)
-          map.on('move', () => { insetMap.sync(map) })
-          map.on('load', () => { insetMap.sync(map) })
+      if (MapState.state.insetMap) {
+        if (!MapState.state.insetMap.getInsetMap()) {
+          MapState.initInset(map, baseMap)
         }
+      } else {
+        debugLog(`failed to init inset`)
       }
 
       map.on('mousemove', _this.mousemoveHandler)
@@ -503,24 +507,20 @@ class Map extends React.Component<Props, State> {
     }
   }
 
-  getBaseMap = () => {
-    const [BaseMapState] = this.props.containers
-    return BaseMapState.state.baseMap
-  }
-
   changeBaseMap = async (mapName: string) => {
     this.debugLog('changing basemap to: ' + mapName)
-    const {setState, setBaseMapStyle, refs, map} = this
+    const _this = this
+    const {setBaseMapStyle, map} = this
     const {onChangeBaseMap} = this.props
-    const [BaseMapState] = this.props.containers
+    const [BaseMapState, , , MapState] = this.props.containers
     await BaseMapState.getBaseMapFromName(mapName, (baseMapStyle) => {
       BaseMapState.setBaseMap(mapName)
-      setState({allowLayersToMoveMap: false})
+      _this.setState({allowLayersToMoveMap: false})
       setBaseMapStyle(baseMapStyle, true)
 
-      if (refs.insetMap) {
-        refs.insetMap.reloadInset(baseMapStyle)
-        refs.insetMap.sync(map)
+      if (MapState.state.insetMap) {
+        MapState.state.insetMap.reloadInset(baseMapStyle)
+        MapState.state.insetMap.sync(map)
       }
 
       if (onChangeBaseMap) {
@@ -531,7 +531,7 @@ class Map extends React.Component<Props, State> {
 
   render () {
     const className = classNames('mode', 'map', 'active')
-    const {t} = this.props
+    const {t, insetMap, showLogo} = this.props
     if (this.state.selectedFeature) {
       // close any existing popups
       if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
@@ -566,28 +566,12 @@ class Map extends React.Component<Props, State> {
       this.mapboxPopup.remove()
     }
 
-    let interactiveButton = ''
-    if (!this.state.interactive && this.props.showPlayButton) {
-      interactiveButton = (
-        <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
-          style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}><i className='material-icons'>play_arrow</i></a>
-      )
-    }
-
-    let insetMap = ''
-    if (this.props.insetMap) {
-      let bottom = '25px'
-      if (this.props.showLogo) {
-        bottom = '30px'
-      }
-      insetMap = (<InsetMap ref='insetMap' id={this.state.id} bottom={bottom} {...this.props.insetConfig} />)
-    }
-
     return (
-      <div ref='mapcontainer' className={this.props.className} style={this.props.style}>
-        <div id={this.state.id} ref='map' className={className} style={{width: '100%', height: '100%'}}>
-          {insetMap}
-
+      <div className={this.props.className} style={this.props.style}>
+        <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
+          {insetMap &&
+            <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} {...this.props.insetConfig} />
+          }
           <MapToolPanel show={this.state.interactive && this.state.mapLoaded}
             height={this.props.height}
             gpxLink={this.props.gpxLink}
@@ -597,7 +581,7 @@ class Map extends React.Component<Props, State> {
             getIsochronePoint={this.getIsochronePoint}
             clearIsochroneLayers={this.clearIsochroneLayers}
             isochroneResult={this.state.isochroneResult}
-            t={this.props.t}
+            t={t}
           />
           {this.state.enableMeasurementTools &&
             <div>
@@ -620,7 +604,10 @@ class Map extends React.Component<Props, State> {
                 onClick={this.stopMeasurementTool} tooltipText={t('Exit Measurement')} />
             </div>
           }
-          {interactiveButton}
+          {(!this.state.interactive && this.props.showPlayButton) &&
+            <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
+              style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}><i className='material-icons'>play_arrow</i></a>
+          }
           {this.state.mapLoaded &&
             this.props.children
           }
@@ -633,6 +620,7 @@ class Map extends React.Component<Props, State> {
             onSearch={this.onSearch}
             onSearchResultClick={this.onSearchResultClick}
             onSearchReset={this.onSearchReset}
+            t={t}
           />
         </div>
         <MarkerSprites />
@@ -746,6 +734,10 @@ class Map extends React.Component<Props, State> {
   // MapSearchMixin
   onSearch = (queryText: string) => {
     return MapSearchMixin.onSearch.bind(this)(queryText)
+  }
+
+  getFirstLabelLayer = () => {
+    return MapSearchMixin.getFirstLabelLayer.bind(this)()
   }
 
   onSearchResultClick = (result: Object) => {
@@ -864,4 +856,4 @@ class Map extends React.Component<Props, State> {
   }
 }
 
-export default connect([BaseMapContainer, DataEditorContainer, MarkerContainer])(Map)
+export default connect([BaseMapContainer, DataEditorContainer, MarkerContainer, MapContainer])(Map)

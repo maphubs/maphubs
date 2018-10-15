@@ -13,12 +13,13 @@ import Progress from '../components/Progress'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import { Provider } from 'unstated'
+import { Provider, Subscribe } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import UserStore from '../stores/UserStore'
 import cardUtil from '../services/card-util'
+import MapContainer from '../components/Map/containers/MapContainer'
 
 const debug = require('../services/debug')('home')
 const $ = require('jquery')
@@ -61,9 +62,11 @@ export default class Search extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
   getParameterByName = (name: string, url: any) => {
@@ -93,8 +96,8 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
   }
 
-  onResetSearch = () => {
-    this.refs.map.resetGeoJSON()
+  onResetSearch = (MapState: Object) => {
+    MapState.state.map.resetGeoJSON()
     this.setState({searchResult: null, searchCards: []})
   }
 
@@ -192,6 +195,7 @@ export default class Search extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let cardsPanel = ''
     if (this.state.searchCards && this.state.searchCards.length > 0) {
       cardsPanel = (
@@ -205,17 +209,28 @@ export default class Search extends MapHubsComponent<Props, State> {
           <Header {...this.props.headerConfig} />
           <main style={{margin: 0}}>
             <div ref='search' className='container' style={{height: '55px', paddingTop: '10px'}}>
-              <div className='row no-margin'>
-                <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} onReset={this.onResetSearch} />
-              </div>
+              <Subscribe to={[MapContainer]}>
+                {MapState => (
+                  <div className='row no-margin'>
+                    <SearchBox
+                      label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
+                      onSearch={this.handleSearch}
+                      onReset={() => { this.onResetSearch(MapState) }}
+                    />
+                  </div>
+                )}
+              </Subscribe>
             </div>
+              )}
             <div className='row no-margin' style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
               <Map ref='map'
                 id='global-search-map'
                 style={{width: '100%', height: '100%'}}
                 disableScrollZoom hoverInteraction={false} showLogo={false} attributionControl
                 mapConfig={this.props.mapConfig}
-                data={this.state.searchResult} />
+                data={this.state.searchResult}
+                t={this.t}
+              />
             </div>
             <div className='divider' />
             <div className='row no-margin' style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>

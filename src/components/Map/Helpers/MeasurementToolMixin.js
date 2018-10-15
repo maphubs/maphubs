@@ -20,6 +20,7 @@ export default {
   },
 
   startMeasurementTool () {
+    const {t} = this.props
     const draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
@@ -43,11 +44,11 @@ export default {
 
     this.map.on('draw.delete', () => {
       debug.log('draw delete')
-      this.setState({measurementMessage: this.__('Use the drawing tools below')})
+      this.setState({measurementMessage: t('Use the drawing tools below')})
     })
 
     this.setState({enableMeasurementTools: true,
-      measurementMessage: this.__('Use the drawing tools below')
+      measurementMessage: t('Use the drawing tools below')
     })
   },
 
@@ -62,6 +63,7 @@ export default {
   },
 
   updateMeasurement () {
+    const {t} = this.props
     const data = this.draw.getAll()
     if (data.features.length > 0) {
       const lines = {
@@ -86,7 +88,7 @@ export default {
         const areaKM2 = area * 0.000001
         const areaHA = areaM2 / 10000.00
 
-        let areaMessage = this.__('Total area: ')
+        let areaMessage = t('Total area: ')
 
         if (areaM2 < 1000) {
           areaMessage = areaMessage + areaM2.toLocaleString() + 'm2 '

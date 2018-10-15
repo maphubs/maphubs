@@ -2,13 +2,11 @@
 import React from 'react'
 
 type Props = {|
-  gpxLink: string,
+  gpxLink?: string,
   t: Function
 |}
 
 export default class EditBaseMapBox extends React.PureComponent<Props, void> {
-  props: Props
-
   getLinks = () => {
     const origHash = window.location.hash.replace('#', '')
     const hashParts = origHash.split('/')

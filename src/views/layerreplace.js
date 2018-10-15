@@ -57,9 +57,11 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     Reflux.rehydrate(LayerStore, this.props.layer)
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     LayerActions.loadLayer()
   }
 

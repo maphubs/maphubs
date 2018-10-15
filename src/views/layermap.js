@@ -36,9 +36,11 @@ export default class LayerMap extends MapHubsComponent<Props, void> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
   render () {
@@ -48,7 +50,6 @@ export default class LayerMap extends MapHubsComponent<Props, void> {
           <Header {...this.props.headerConfig} />
           <main className='no-margin' style={{margin: 0, height: 'calc(100% - 50px)', width: '100%'}}>
             <InteractiveMap
-              ref='interactiveMap'
               height='100%'
               fitBounds={this.props.layer.preview_position.bbox}
               style={this.props.layer.style}

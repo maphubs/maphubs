@@ -81,9 +81,11 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     this.stores.push(UserStore)
     this.stores.push(MapMakerStore)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }

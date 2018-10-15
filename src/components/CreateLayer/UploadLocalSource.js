@@ -51,7 +51,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   componentDidUpdate () {
     if (this.state.canSubmit) {
-      scrollToComponent(this.refs.map)
+      scrollToComponent(this.refs.mapSection)
     }
     if (this.state.multipleShapefiles) {
       this.refs.chooseshape.show()
@@ -111,16 +111,17 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   finishUpload = (shapefileName: string) => {
-    const {setState, __} = this
+    const _this = this
+    const {t} = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if (err) {
-        MessageActions.showMessage({title: __('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else if (result.success) {
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
-        setState({canSubmit: true, multipleShapefiles: null})
+        _this.setState({canSubmit: true, multipleShapefiles: null})
       } else {
-        MessageActions.showMessage({title: __('Error'), message: result.error})
+        MessageActions.showMessage({title: t('Error'), message: result.error})
       }
     })
   }
@@ -145,14 +146,15 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     let map = ''
     if (canSubmit && style) {
       map = (
-        <div>
+        <div ref='mapSection'>
           <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
-          <Map ref='map' style={{width: '100%', height: '400px'}}
+          <Map style={{width: '100%', height: '400px'}}
             id='upload-preview-map'
             showFeatureInfoEditButtons={false}
             mapConfig={mapConfig}
             glStyle={style}
             fitBounds={bbox}
+            t={this.t}
           />
         </div>
       )

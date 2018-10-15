@@ -16,6 +16,7 @@ import LayerActions from '../actions/LayerActions'
 import LayerStore from '../stores/layer-store'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import slugify from 'slugify'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -72,9 +73,13 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     Reflux.rehydrate(LayerStore, this.props.layer)
+
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
 
     LayerActions.loadLayer()
   }
@@ -222,7 +227,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     } else {
       return (
         <ErrorBoundary>
-          <Provider inject={[this.BaseMapState]}>
+          <Provider inject={[this.BaseMapState, this.MapState]}>
             <Header {...this.props.headerConfig} />
             <main>
               <div>
@@ -231,17 +236,17 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                     <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
                     <ul ref='tabs' className='tabs' style={{overflowX: 'hidden'}}>
                       <li className='tab'>
-                        <a className='active' onClick={function () { _this.selectTab('settings') }} href='#info'>{this.__('Info/Settings')}</a>
+                        <a className='active' onClick={() => { _this.selectTab('settings') }} href='#info'>{this.__('Info/Settings')}</a>
                       </li>
                       <li className='tab'>
-                        <a onClick={function () { _this.selectTab('fields') }} href='#fields'>{this.__('Fields')}</a>
+                        <a onClick={() => { _this.selectTab('fields') }} href='#fields'>{this.__('Fields')}</a>
                       </li>
                       <li className='tab'>
-                        <a onClick={function () { _this.selectTab('style') }} href='#style'>{this.__('Style/Display')}</a>
+                        <a onClick={() => { _this.selectTab('style') }} href='#style'>{this.__('Style/Display')}</a>
                       </li>
                       {this.state.user && this.state.user.admin &&
                       <li className='tab'>
-                        <a onClick={function () { _this.selectTab('admin') }} href='#admin'>{this.__('Admin Only')}</a>
+                        <a onClick={() => { _this.selectTab('admin') }} href='#admin'>{this.__('Admin Only')}</a>
                       </li>
                       }
                     </ul>

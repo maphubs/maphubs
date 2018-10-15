@@ -66,9 +66,11 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+    let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      this.BaseMapState = new BaseMapContainer({baseMapOptions: props.mapConfig.baseMapOptions})
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
   componentDidMount () {
@@ -142,7 +144,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     insetConfig.collapsible = false
 
     map = (
-      <Map ref='map'
+      <Map
         id='static-map'
         interactive={false}
         showPlayButton={false}
@@ -155,7 +157,9 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
         glStyle={this.props.style}
         mapConfig={this.props.mapConfig}
         preserveDrawingBuffer
-        baseMap={this.props.basemap} navPosition='top-right'>
+        baseMap={this.props.basemap} navPosition='top-right'
+        t={this.t}
+      >
         {legend}
       </Map>
     )
