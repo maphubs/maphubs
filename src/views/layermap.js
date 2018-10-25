@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
-import InteractiveMap from '../components/InteractiveMap'
+import InteractiveMap from '../components/Map/InteractiveMap'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -60,6 +60,7 @@ export default class LayerMap extends MapHubsComponent<Props, void> {
               title={this.props.layer.name}
               hideInactive={false}
               showTitle={false}
+              t={this.t}
             />
           </main>
         </Provider>

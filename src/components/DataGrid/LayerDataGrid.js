@@ -7,6 +7,9 @@ import CheckboxFormatter from './CheckboxFormatter'
 import _assignIn from 'lodash.assignin'
 import type {MapHubsField} from '../../types/maphubs-field'
 import GetNameField from '../Map/Styles/get-name-field'
+import turf_bbox from '@turf/bbox'
+import connect from 'unstated-connect'
+import MapContainer from '../Map/containers/MapContainer'
 
 type Props = {
   geoJSON: Object,
@@ -17,11 +20,8 @@ type Props = {
   dataLoadingMsg: string,
   canEdit: boolean,
   onSave?: Function,
-  presets: Array<MapHubsField>
-}
-
-type DefaultProps = {
-  dataLoadingMsg: string
+  presets: Array<MapHubsField>,
+  containers: Array<Object>
 }
 
 type Column = {
@@ -48,12 +48,10 @@ type State = {
   selectedFeature?: Object
 }
 
-export default class LayerDataGrid extends MapHubsComponent<Props, State> {
+class LayerDataGrid extends MapHubsComponent<Props, State> {
   Selectors: null
 
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     dataLoadingMsg: 'Data Loading'
   }
 
@@ -209,7 +207,15 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
     const idField = this.state.rowKey
     const idVal = row.row[idField]
 
-    this.props.onRowSelected(idVal, idField)
+    if (this.state.geoJSON) {
+      const [MapState] = this.props.containers
+      this.state.geoJSON.features.forEach((feature) => {
+        if (idVal === feature.properties[idField]) {
+          const bbox = turf_bbox(feature)
+          MapState.state.map.fitBounds(bbox, 16, 25)
+        }
+      })
+    }
     this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))})
   }
 
@@ -275,39 +281,11 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
-
+    const {canEdit, presets, layer_id} = this.props
     if (this.state.rows.length > 0 && typeof window !== 'undefined') {
-      // temporaryHackForReactDataGrid.js: import this file before react-data-grid
-
-      const PropTypes = require('prop-types')
-      // next line is only required until ron-react-autocomplete is rebuilt and republished
-      PropTypes.component = PropTypes.element
-      require('react').PropTypes = PropTypes
-      require('react').createClass = require('create-react-class')
       const ReactDataGrid = require('react-data-grid')
       const {Toolbar, Data: {Selectors}} = require('react-data-grid-addons')
       this.Selectors = Selectors
-
-      let editButton = ''
-      let editModal
-      if (this.props.canEdit) {
-        editButton = (
-          <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={this.onEditSelectedFeature}>
-            {this.__('Edit Selected')}
-          </button>
-        )
-
-        if (this.props.presets) {
-          editModal = (
-            <EditAttributesModal
-              ref='editAttributeModal'
-              feature={this.state.selectedFeature}
-              presets={this.props.presets}
-              onSave={this.onSaveEdits}
-              layer_id={this.props.layer_id} />
-          )
-        }
-      }
 
       return (
         <ReactDataGrid
@@ -331,11 +309,22 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
             enableFilter
             filterRowsButtonText={this.__('Filter Data')}
           >
-            {editButton}
+            {canEdit &&
+              <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={this.onEditSelectedFeature}>
+                {this.__('Edit Selected')}
+              </button>
+            }
             <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
               {this.__('View Selected')}
             </button>
-            {editModal}
+            {(canEdit && presets) &&
+              <EditAttributesModal
+                ref='editAttributeModal'
+                feature={this.state.selectedFeature}
+                presets={presets}
+                onSave={this.onSaveEdits}
+                layer_id={layer_id} />
+            }
           </Toolbar>
           }
           onAddFilter={this.handleFilterChange}
@@ -349,3 +338,5 @@ export default class LayerDataGrid extends MapHubsComponent<Props, State> {
     }
   }
 }
+
+export default connect([MapContainer])(LayerDataGrid)

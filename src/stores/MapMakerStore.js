@@ -76,7 +76,9 @@ export default class MapMakerStore extends Reflux.Store {
 
   setMapTitle (title: LocalizedString) {
     Object.keys(title).forEach(key => {
-      title[key] = title[key].trim()
+      if (title[key]) {
+        title[key] = title[key].trim()
+      }
     })
     this.setState({title})
   }

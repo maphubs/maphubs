@@ -69,7 +69,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
         <div className='story-share-comments'>
           <div className='row' style={{height: '32px', position: 'relative'}}>
             <ShareButtons
-              title={story.title}
+              title={story.title} t={this.t}
               style={{width: '70px', position: 'absolute', left: '0px'}}
             />
           </div>
@@ -92,7 +92,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
               </div>
               <div className='col s12 m3 l3'>
                 <ShareButtons
-                  title={story.title}
+                  title={story.title} t={this.t}
                   style={{width: '70px', position: 'absolute', right: '10px'}}
                 />
               </div>

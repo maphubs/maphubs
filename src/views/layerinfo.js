@@ -1,8 +1,9 @@
 // @flow
 import React from 'react'
-import InteractiveMap from '../components/InteractiveMap'
+import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
+import {Row, Col} from 'antd'
 import Comments from '../components/Comments'
 import TerraformerGL from '../services/terraformerGL'
 import GroupTag from '../components/Groups/GroupTag'
@@ -18,11 +19,11 @@ import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid'
 import MapStyles from '../components/Map/Styles'
 import { Provider, Subscribe } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import turf_area from '@turf/area'
 import turf_length from '@turf/length'
-import turf_bbox from '@turf/bbox'
 import numeral from 'numeral'
 import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
@@ -125,6 +126,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
   }
 
   componentDidMount () {
@@ -195,13 +197,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
   getGeoJSON = () => {
     const _this = this
+    const {layer} = this.props
     let baseUrl, dataUrl
-    if (this.props.layer.remote) {
-      baseUrl = 'https://' + this.props.layer.remote_host
-      dataUrl = baseUrl + '/api/layer/' + this.props.layer.remote_layer_id + '/export/geobuf/data.pbf'
+    if (layer.remote) {
+      baseUrl = 'https://' + layer.remote_host
+      dataUrl = `${baseUrl}/api/layer/${layer.remote_layer_id}/export/geobuf/data.pbf`
     } else {
       baseUrl = urlUtil.getBaseUrl()
-      dataUrl = baseUrl + '/api/layer/' + this.props.layer.layer_id + '/export/geobuf/data.pbf'
+      dataUrl = `${baseUrl}/api/layer/${layer.layer_id}/export/geobuf/data.pbf`
     }
 
     request.get(dataUrl)
@@ -216,12 +219,12 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           const count = geoJSON.features.length
           let area
           let length = 0
-          if (this.props.layer.data_type === 'polygon') {
+          if (layer.data_type === 'polygon') {
             const areaM2 = turf_area(geoJSON)
             if (areaM2 && areaM2 > 0) {
               area = areaM2 / 10000.00
             }
-          } else if (this.props.layer.data_type === 'line') {
+          } else if (layer.data_type === 'line') {
             geoJSON.features.forEach(feature => {
               if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
                 length += turf_length(feature.geometry, {units: 'kilometers'})
@@ -246,31 +249,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     })
   }
 
-  onRowSelected = (idVal: string, idField: string) => {
-    const _this = this
-    if (this.state.geoJSON) {
-      this.state.geoJSON.features.forEach((feature) => {
-        if (idVal === feature.properties[idField]) {
-          const bbox = turf_bbox(feature)
-          _this.refs.interactiveMap.getMap().fitBounds(bbox, 16, 25)
-        }
-      })
-    }
-  }
-
-  // Build edit link
-  getEditLink = () => {
-    // get map position
-    const position = this.refs.interactiveMap.getMap().getPosition()
-    let zoom = Math.ceil(position.zoom)
-    if (zoom < 10) zoom = 10
-    const baseUrl = urlUtil.getBaseUrl()
-    return baseUrl + '/map/new?editlayer=' + this.props.layer.layer_id + '#' + zoom + '/' + position.lat + '/' + position.lng
-  }
-
   openEditor = () => {
-    const editLink = this.getEditLink()
-    window.location = editLink
+    const baseUrl = urlUtil.getBaseUrl()
+    window.location = `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
   }
 
   startEditingNotes = () => {
@@ -389,9 +370,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
     const guessedTz = moment.tz.guess()
-    const creationTimeObj = moment.tz(this.props.layer.creation_time, guessedTz)
+    const creationTimeObj = moment.tz(layer.creation_time, guessedTz)
     const creationTime = creationTimeObj.format()
-    const updatedTimeObj = moment.tz(this.props.layer.last_updated, guessedTz)
+    const updatedTimeObj = moment.tz(layer.last_updated, guessedTz)
     const updatedTimeStr = updatedTimeObj.format()
     let updatedTime = ''
     if (updatedTimeObj > creationTimeObj) {
@@ -423,17 +404,17 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
 
-    const firstSource = Object.keys(this.props.layer.style.sources)[0]
-    const presets = MapStyles.settings.getSourceSetting(this.props.layer.style, firstSource, 'presets')
+    const firstSource = Object.keys(layer.style.sources)[0]
+    const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
 
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
             <div className='row' style={{height: '100%', margin: 0}}>
               <div className='col s12 m6 l6 no-padding' style={{height: '100%', position: 'relative'}}>
-                {this.props.layer.private &&
+                {layer.private &&
                   <div style={{position: 'absolute', top: '15px', right: '10px'}}>
                     <Tooltip
                       title={t('Private')}
@@ -442,11 +423,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                     </Tooltip>
                   </div>
                 }
-                <div style={{margin: '10px', height: '50px'}}>
-                  <h5 className='word-wrap'>{t(this.props.layer.name)}</h5>
-                </div>
 
-                <div className='row no-margin' style={{height: 'calc(100% - 78px)'}}>
+                <div className='row no-margin' style={{height: '100%'}}>
                   <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
                     <li className='tab'><a className='active' href='#info'>{this.__('Info')}</a></li>
                     <li className='tab'><a href='#notes'>{t('Notes')}</a></li>
@@ -457,18 +435,22 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                     <li className='tab'><a href='#export'>{t('Export')}</a></li>
                   </ul>
                   <div id='info' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', position: 'relative'}}>
-                    <div className='row word-wrap' style={{height: 'calc(100% - 75px)', marginLeft: '10px', marginRight: '10px', overflowY: 'auto', overflowX: 'hidden'}}>
-                      <ExternalLink layer={layer} t={t} />
-                      <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
-                        <p style={{fontSize: '16px'}}><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
-                        {this.state.area &&
-                          <p style={{fontSize: '16px'}}><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
-                        }
-                        {this.state.length > 0 &&
-                          <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
-                        }
-                      </div>
-                      <div className='col m6 s12' style={{height: '160px', border: '1px solid #ddd'}}>
+                    <Row style={{height: '50%', overflowY: 'auto', overflowX: 'hidden'}}>
+                      <Col sm={24} md={12}
+                        style={{height: '100%', padding: '5px', border: '1px solid #ddd', minHeight: '200px', overflow: 'auto'}}
+                      >
+                        <h5 className='word-wrap' style={{marginTop: 0}}>{t(layer.name)}</h5>
+                        <GroupTag group={layer.owned_by_group_id} size={25} fontSize={12} />
+                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {this._o_(layer.source)}</p>
+                        <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
+                        <ExternalLink layer={layer} t={t} />
+                      </Col>
+                      <Col sm={24} md={12} style={{height: '100%', padding: '5px', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
+                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{t('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                      </Col>
+                    </Row>
+                    <Row style={{height: 'calc(50% - 58px)'}}>
+                      <Col sm={24} md={12} style={{height: '100%', padding: '5px', border: '1px solid #ddd'}}>
                         <p style={{fontSize: '16px'}}><b>{t('Created:')} </b>
                           <IntlProvider locale={this.state.locale}>
                             <FormattedDate value={creationTime} />
@@ -484,16 +466,18 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                           {t('by') + ' ' + this.props.updatedByUser.display_name}
                         </p>
                         {updatedTime}
-                      </div>
-                      <div className='col m6 s12' style={{height: 'calc(100% - 190px)', border: '1px solid #ddd', minHeight: '200px', overflow: 'auto'}}>
-                        <GroupTag group={this.props.layer.owned_by_group_id} size={25} fontSize={12} />
-                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {this._o_(this.props.layer.source)}</p>
-                        <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
-                      </div>
-                      <div className='col m6 s12' style={{height: 'calc(100% - 190px)', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
-                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{t('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
-                      </div>
-                    </div>
+                      </Col>
+                      <Col sm={24} md={12} style={{height: '100%', padding: '5px', border: '1px solid #ddd'}}>
+                        <p style={{fontSize: '16px'}}><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
+                        {this.state.area &&
+                          <p style={{fontSize: '16px'}}><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
+                        }
+                        {this.state.length > 0 &&
+                          <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
+                        }
+                      </Col>
+                      
+                    </Row>
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
                   </div>
                   <div id='notes' className='col s12' style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
@@ -516,21 +500,19 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                           <div className='row no-margin'>
                             {editingData &&
                               <LayerDataEditorGrid
-                                layer={this.props.layer}
+                                layer={layer}
                                 gridHeight={this.state.gridHeight}
                                 geoJSON={this.state.geoJSON}
                                 presets={presets}
-                                onRowSelected={this.onRowSelected}
                                 canEdit
                               />
                             }
                             {!editingData &&
                               <LayerDataGrid
-                                layer_id={this.props.layer.layer_id}
+                                layer_id={layer.layer_id}
                                 gridHeight={this.state.gridHeight}
                                 geoJSON={this.state.geoJSON}
                                 presets={presets}
-                                onRowSelected={this.onRowSelected}
                                 canEdit={this.props.canEdit} />
                             }
                           </div>
@@ -544,22 +526,23 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                     }}
                   </Subscribe>
                   <div id='export' className='col s12' style={{display: tabContentDisplay}}>
-                    <LayerExport layer={this.props.layer} />
+                    <LayerExport layer={layer} />
                   </div>
                 </div>
 
               </div>
               <div className='col hide-on-small-only m6 l6 no-padding' style={{height: '100%'}}>
                 <InteractiveMap ref='interactiveMap' height='100vh - 50px'
-                  fitBounds={this.props.layer.preview_position.bbox}
+                  fitBounds={layer.preview_position.bbox}
                   style={glStyle}
-                  layers={[this.props.layer]}
-                  map_id={this.props.layer.layer_id}
+                  layers={[layer]}
+                  map_id={layer.layer_id}
                   mapConfig={this.props.mapConfig}
-                  title={this.props.layer.name}
+                  title={layer.name}
                   showTitle={false}
                   hideInactive={false}
                   disableScrollZoom={false}
+                  t={this.t}
                 />
 
               </div>

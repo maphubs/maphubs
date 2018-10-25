@@ -8,10 +8,13 @@ import _isequal from 'lodash.isequal'
 import type {Feature} from 'geojson-flow'
 import ActionPanel from './FeaturePopup/ActionPanel'
 import type {Layer} from '../../types/layer'
+import 'react-image-lightbox/style.css'
 
 const checkClientError = require('../../services/client-error-response').checkClientError
 const urlUtil = require('../../services/url-util')
 const debug = require('../../services/debug')('map/featurepopup')
+
+let Lightbox
 
 type Props = {
   features: Array<Feature>,
@@ -22,11 +25,12 @@ type Props = {
 type State = {
   showAttributes: boolean,
   layerLoaded: boolean,
-  layer?: Layer
+  layer?: Layer,
+  lightboxOpen?: boolean
 }
 
 export default class FeaturePopup extends React.Component<Props, State> {
-  props: Props
+  image: any
 
   constructor (props: Props) {
     super(props)
@@ -37,10 +41,12 @@ export default class FeaturePopup extends React.Component<Props, State> {
   }
 
   componentDidMount () {
+    Lightbox = require('react-image-lightbox').default
     if (this.props.features) {
       const selectedFeature = this.props.features[0]
-      if (selectedFeature.properties.layer_id) {
-        this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host)
+      const properties = selectedFeature.properties
+      if (properties.layer_id) {
+        this.getLayer(properties.layer_id, properties.maphubs_host)
       } else {
         this.setState({layerLoaded: true})
       }
@@ -50,17 +56,12 @@ export default class FeaturePopup extends React.Component<Props, State> {
   componentWillReceiveProps (nextProps: Props) {
     if (!_isequal(this.props.features, nextProps.features)) {
       const selectedFeature = nextProps.features[0]
-      if (selectedFeature.properties.layer_id) {
-        this.getLayer(selectedFeature.properties.layer_id, selectedFeature.properties.maphubs_host)
+      const properties = selectedFeature.properties
+      if (properties.layer_id) {
+        this.getLayer(properties.layer_id, properties.maphubs_host)
       } else {
         this.setState({layerLoaded: true})
       }
-    }
-  }
-
-  componentDidUpdate () {
-    if (this.image) {
-      M.Materialbox.init(this.image, {})
     }
   }
 
@@ -93,7 +94,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
   }
 
   renderContentWithImage = (name?: string, description?: string, photoUrl: string, featureName: string, properties: Object) => {
-    const {layerLoaded} = this.state
+    const {layerLoaded, lightboxOpen} = this.state
     const {t} = this.props
     let nameDisplay
 
@@ -146,13 +147,23 @@ export default class FeaturePopup extends React.Component<Props, State> {
 
     return (
       <div style={{height: '100%'}}>
-        <div ref={(el) => { this.image = el }}
-          className='card-image materialboxed' style={{
+        {lightboxOpen && (
+          <Lightbox
+            mainSrc={photoUrl}
+            imageTitle={name}
+            imageCaption={description}
+            onCloseRequest={() => this.setState({ lightboxOpen: false })}
+          />
+        )}
+        <div
+          className='card-image' style={{
             height: '100px',
             background: `url(${photoUrl})`,
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover'
-          }}>
+          }}
+          onClick={() => this.setState({ lightboxOpen: true })}
+        >
           {nameDisplay}
         </div>
         {descDisplay}
@@ -176,8 +187,8 @@ export default class FeaturePopup extends React.Component<Props, State> {
       photoUrl = feature.properties['Photo URL']
     }
 
-    if (this.state.layer) {
-      nameField = GetNameField.getNameField(feature.properties, this.state.layer.presets)
+    if (layer) {
+      nameField = GetNameField.getNameField(feature.properties, layer.presets)
       if (nameField) {
         nameFieldValue = feature.properties[nameField]
         if (nameFieldValue) {
@@ -185,7 +196,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
         }
       }
 
-      descriptionField = GetNameField.getDescriptionField(feature.properties, this.state.layer.presets)
+      descriptionField = GetNameField.getDescriptionField(feature.properties, layer.presets)
       if (descriptionField) {
         descriptionFieldValue = feature.properties[descriptionField]
       }

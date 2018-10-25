@@ -1,7 +1,13 @@
 const withCSS = require('@zeit/next-css')
+const withLess = require('@zeit/next-less')
 const path = require('path')
+const MAPHUBS_CONFIG = require('./src/local')
 
-// const TerserPlugin = require('terser-webpack-plugin')
+// fix: prevents error when .less files are required by node
+if (typeof require !== 'undefined') {
+  // eslint-disable-next-line node/no-deprecated-api
+  require.extensions['.less'] = (file) => {}
+}
 
 const {ANALYZE, ASSET_CDN_PREFIX} = process.env
 
@@ -13,7 +19,13 @@ const useCDN = (ASSET_CDN_PREFIX && process.env.NODE_ENV === 'production')
 const pathToMapboxGL = path.resolve(__dirname, './node_modules/mapbox-gl/dist/mapbox-gl.js')
 const assetPrefix = useCDN ? ASSET_CDN_PREFIX : ''
 console.log(`assetPrefix: ${assetPrefix}`)
-module.exports = withCSS({
+module.exports = withCSS(withLess({
+  lessLoaderOptions: {
+    modifyVars: {
+      'primary-color': MAPHUBS_CONFIG.primaryColor
+    },
+    javascriptEnabled: true
+  },
   exportPathMap: () => {
     return {}
   },
@@ -33,15 +45,6 @@ module.exports = withCSS({
           }
         }
       }
-      /*
-      config.optimization = {
-        minimizer: [new TerserPlugin({
-          parallel: true,
-          sourceMap: true,
-          cache: true
-        })]
-      }
-      */
     }
 
     config.resolve = {
@@ -82,4 +85,4 @@ module.exports = withCSS({
 
     return config
   }
-})
+}))

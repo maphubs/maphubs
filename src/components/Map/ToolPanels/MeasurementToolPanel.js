@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
-import Formsy from 'formsy-react'
-import Toggle from '../../forms/toggle'
+import { Switch } from 'antd'
 
 type Props = {|
   enableMeasurementTools: boolean,
@@ -13,22 +12,20 @@ type Props = {|
 export default class MeasurementToolPanel extends React.PureComponent<Props, void> {
   props: Props
 
-  toggleMeasurementTools = (model: {enableMeasurementTools: boolean}) => {
-    if (model.enableMeasurementTools) this.props.closePanel()
-    this.props.toggleMeasurementTools(model.enableMeasurementTools)
+  toggleMeasurementTools = (enableMeasurementTools: boolean) => {
+    if (enableMeasurementTools) this.props.closePanel()
+    this.props.toggleMeasurementTools(enableMeasurementTools)
   }
 
   render () {
     const {t, enableMeasurementTools} = this.props
     return (
-      <Formsy onChange={this.toggleMeasurementTools}>
+      <div style={{textAlign: 'center'}}>
         <b>{t('Show Measurement Tools')}</b>
-        <Toggle name='enableMeasurementTools'
-          labelOff={t('Off')} labelOn={t('On')}
-          className='col s12'
-          checked={enableMeasurementTools}
-        />
-      </Formsy>
+        <div>
+          <Switch checked={enableMeasurementTools} onChange={this.toggleMeasurementTools} />
+        </div>
+      </div>
     )
   }
 }

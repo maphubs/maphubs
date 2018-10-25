@@ -381,16 +381,6 @@ textarea.materialize-textarea+label:after {
   top: 2% !important;
 }
 
-.layer-item-btn {
-  height: 30px !important;
-  line-height: 30px !important;
-  width: 25px;
-  cursor: pointer;
-  padding: 0 !important;
-  margin: auto;
-}
-
-
 .create-map-side-nav.fixed a {
   height: 37px;
   line-height: 37px;
@@ -516,6 +506,15 @@ textarea.materialize-textarea+label:after {
   background: inherit !important;
   box-shadow: none !important;
 }
+
+.react-grid-checkbox-label {
+  opacity: 0 !important;
+}
+
+.react-grid-checkbox {
+  opacity: 1 !important;
+}
+
 
 .notification-bar {
   z-index: 9999 !important;

@@ -1,7 +1,5 @@
 // @flow
 import React from 'react'
-import Radio from '../../forms/radio'
-import Formsy from 'formsy-react'
 import { Subscribe } from 'unstated'
 import BaseMapContainer from '../containers/BaseMapContainer'
 import type {BaseMapOption} from '../containers/BaseMapContainer'
@@ -30,14 +28,31 @@ export default class BaseMapSelection extends React.Component<Props, void> {
             })
           }
           return (
-            <div style={{width: '100%', marginRight: '10px', backgroundColor: 'white', textAlign: 'left'}}>
-              <Formsy>
-                <h6>{t('Choose a Base Map')}</h6>
-                <Radio name='baseMap' label='' className='base-map-selection'
-                  defaultValue={BaseMap.state.baseMap}
-                  options={radioOptions} onChange={this.onChange}
-                />
-              </Formsy>
+            <div style={{width: '100%', backgroundColor: 'white', textAlign: 'left'}}>
+              {baseMapOptions.map((baseMapOption: BaseMapOption) => {
+                let selected = (BaseMap.state.baseMap === baseMapOption.value)
+                return (
+                  <div style={{border: '1px solid #212121', marginBottom: '5px', padding: '5px'}}>
+                    <span>{t(baseMapOption.label)}</span>
+                    <style jsx>{`
+                      input {
+                        position: relative !important;
+                        opacity: 100 !important;
+                        pointer-events: auto !important;
+                        float: left;
+                        margin-right: 20px;
+                      }
+                    `}
+                    </style>
+                    {selected &&
+                      <input type='checkbox' value={baseMapOption.value} checked />
+                    }
+                    {!selected &&
+                      <input type='checkbox' value={baseMapOption.value} onClick={() => { this.onChange(baseMapOption.value) }} />
+                    }
+                  </div>
+                )
+              })}
             </div>
           )
         }}

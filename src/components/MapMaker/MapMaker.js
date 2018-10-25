@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import LayerList from './LayerList'
+import LayerList from '../Map/LayerList'
 import _isEqual from 'lodash.isequal'
 import _debounce from 'lodash.debounce'
 import _find from 'lodash.find'
@@ -447,6 +447,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
                     showLayerDesigner={showLayerDesigner}
                     updateLayers={Actions.setMapLayers}
                     editLayer={editLayer}
+                    t={t}
                   />
                 </div>
 

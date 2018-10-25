@@ -1,18 +1,20 @@
 // @flow
 import React from 'react'
-import SearchBar from '../../SearchBar/SearchBar'
 import request from 'superagent'
-import MessageActions from '../../../actions/MessageActions'
 import {Tooltip} from 'react-tippy'
+import { Tabs, notification, Input, Button } from 'antd'
+import Drawer from 'rc-drawer'
+import 'rc-drawer/assets/index.css'
 import DebugService from '../../../services/debug'
 const debug = DebugService('MapSearchPanel')
+const TabPane = Tabs.TabPane
+const Search = Input.Search
 
 type Props = {
   show: boolean,
   onSearch: Function,
   onSearchResultClick: Function,
   onSearchReset: Function,
-  height: string,
   t: Function
 }
 
@@ -20,7 +22,8 @@ type State = {
   results?: ?Object,
   locationSearchResults?: ?Object,
   tab: string,
-  query?: string
+  query?: string,
+  open?: boolean
 }
 
 export default class MapSearchPanel extends React.Component<Props, State> {
@@ -39,20 +42,10 @@ export default class MapSearchPanel extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount () {
-    M.Sidenav.init(this.refs.sidenav, {
-      edge: 'right',
-      draggable: false
-    })
-    M.Tabs.init(this.refs.tabs, {})
-  }
+  drawerContainer: any
 
-  onPanelOpen = () => {
-    // remove tooltip?
-  }
-
-  closePanel = () => {
-    M.Sidenav.getInstance(this.refs.sidenav).close()
+  onSetOpen = (open: boolean) => {
+    this.setState({ open })
   }
 
   onSearch = (query: string) => {
@@ -118,7 +111,11 @@ export default class MapSearchPanel extends React.Component<Props, State> {
       })
       .catch(err => {
         debug.log(err)
-        MessageActions.showMessage({title: 'Error', message: err.toString()})
+        notification['error']({
+          message: 'Error',
+          description: err.toString(),
+          duration: 0
+        })
       })
   }
 
@@ -182,11 +179,9 @@ export default class MapSearchPanel extends React.Component<Props, State> {
           title={t('Search')}
           position='bottom' inertia followCursor
         >
-          <a ref='mapSearchButton'
-            className='map-search-button sidenav-trigger'
+          <a
             href='#'
-            data-target='map-search-panel'
-            onMouseDown={this.onPanelOpen}
+            onMouseDown={() => { this.onSetOpen(true) }}
             style={{
               display: this.props.show ? 'inherit' : 'none',
               position: 'absolute',
@@ -217,36 +212,45 @@ export default class MapSearchPanel extends React.Component<Props, State> {
             >search</i>
           </a>
         </Tooltip>
-        <div ref='sidenav' className='sidenav' id='map-search-panel'
-          style={{
-            backgroundColor: '#FFF',
-            height: '100%',
-            paddingLeft: '5px',
-            paddingRight: '5px',
-            paddingBottom: '5px',
-            paddingTop: '25px',
-            position: 'absolute',
-            width: '240px',
-            border: '1px solid #d3d3d3'}}>
-          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.closePanel}>
+        <div ref={(el) => { this.drawerContainer = el }} />
+        <Drawer
+          getContainer={() => this.drawerContainer}
+          open={this.state.open}
+          onMaskClick={() => { this.onSetOpen(false) }}
+          handler={false}
+          level={null}
+          placement='right'
+          width='240px'
+        >
+          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={() => { this.onSetOpen(false) }}>
             <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
           </a>
-          <SearchBar id={'map-search-bar'}
-            placeholder={searchLabel}
-            onChange={this.onSearch}
-            onSubmit={this.onSubmit}
-            onReset={this.onReset} />
-          <ul ref='tabs' className='tabs tabs-fixed-width'>
-            <li className='tab' onClick={() => { _this.selectTab('data') }}><a className='active' href='#map-search-data'>{t('Data')}</a></li>
-            <li className='tab' onClick={() => { _this.selectTab('location') }}><a href='#map-search-location'>{t('Location')}</a></li>
-          </ul>
-          <div id='map-search-data'>
-            {results}
+          <div style={{padding: '20px 5px 0px 5px', height: '100%', border: 'solid 1px #ddd'}}>
+            <div style={{position: 'relative'}}>
+              <Search
+                placeholder={searchLabel}
+                onChange={this.onSearch}
+                onSearch={this.onSubmit}
+                style={{}}
+              />
+              {this.state.query &&
+                <Button
+                  shape='circle' icon='close'
+                  onClick={this.onReset}
+                  style={{position: 'absolute', top: '8px', right: '0px'}}
+                />
+              }
+            </div>
+            <Tabs defaultActiveKey='data' onChange={this.selectTab}>
+              <TabPane tab={t('Data')} key='data'>
+                {results}
+              </TabPane>
+              <TabPane tab={t('Location')} key='location'>
+                {locationResults}
+              </TabPane>
+            </Tabs>
           </div>
-          <div id='map-search-location'>
-            {locationResults}
-          </div>
-        </div>
+        </Drawer>
       </div>
     )
   }

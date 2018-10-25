@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Button } from 'antd'
 
 type Props = {|
   getIsochronePoint: Function,
@@ -41,7 +42,7 @@ export default class IsochronePanel extends React.Component<Props, State> {
       )
 
       clearButton = (
-        <a className='btn' onClick={this.clear}>{t('Clear Results')}</a>
+        <Button type='primary' onClick={this.clear}>{t('Clear Results')}</Button>
       )
     } else if (this.state.selectingLocation) {
       message = (
@@ -51,7 +52,7 @@ export default class IsochronePanel extends React.Component<Props, State> {
       )
     } else {
       selectButton = (
-        <a className='btn' onClick={this.selectLocation}>{t('Select Location')}</a>
+        <Button type='primary' onClick={this.selectLocation}>{t('Select Location')}</Button>
       )
     }
 

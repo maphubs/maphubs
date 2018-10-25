@@ -70,7 +70,7 @@ export default class HubStory extends MapHubsComponent<Props, void> {
     if (MAPHUBS_CONFIG.enableComments) {
       shareButtons = (
         <ShareButtons
-          title={story.title}
+          title={story.title} t={this.t}
           style={{width: '70px', position: 'absolute', right: '10px'}}
         />
       )

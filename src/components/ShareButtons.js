@@ -1,5 +1,4 @@
 import React from 'react'
-import MapHubsComponent from './MapHubsComponent'
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -12,14 +11,15 @@ type Props = {
   title: LocalizedString,
   url: string,
   photoUrl: string,
-  iconSize: number
+  iconSize: number,
+  t: Function
 }
 
 type State = {
   url: string
 }
 
-export default class MapHubsShareButtons extends MapHubsComponent<Props, State> {
+export default class MapHubsShareButtons extends React.Component<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -43,31 +43,28 @@ export default class MapHubsShareButtons extends MapHubsComponent<Props, State> 
   }
 
   render () {
-    const title = this._o_(this.props.title)
+    const {title, style, iconSize, photoUrl, t} = this.props
+    const {url} = this.state
+    const localizedTitle = t(title)
     return (
-      <div style={this.props.style}>
+      <div style={style}>
         <div style={{float: 'left'}}>
           <FacebookShareButton
-            url={this.state.url}
-            quote={title}
-            picture={this.props.photoUrl}
+            url={url}
+            quote={localizedTitle}
+            picture={photoUrl}
           >
-            <FacebookIcon
-              size={this.props.iconSize}
-              round />
+            <FacebookIcon size={iconSize} round />
           </FacebookShareButton>
         </div>
         <div style={{float: 'right', marginLeft: '3px'}}>
           <TwitterShareButton
             url={this.state.url}
-            title={title}
+            title={localizedTitle}
           >
-            <TwitterIcon
-              size={this.props.iconSize}
-              round />
+            <TwitterIcon size={iconSize} round />
           </TwitterShareButton>
         </div>
-
       </div>
     )
   }

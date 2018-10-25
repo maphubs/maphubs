@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import InteractiveMap from '../components/InteractiveMap'
+import InteractiveMap from '../components/Map/InteractiveMap'
 import request from 'superagent'
 import _bbox from '@turf/bbox'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -68,7 +68,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
-    
+
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
@@ -250,7 +250,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           showLogo={this.props.showLogo}
           showScale={this.props.showScale}
           preserveDrawingBuffer
-
+          t={this.t}
           {...this.props.map.settings}
         />
       )

@@ -6,6 +6,11 @@ import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import {Tooltip} from 'react-tippy'
+import Drawer from 'rc-drawer'
+import { Collapse } from 'antd'
+import 'rc-drawer/assets/index.css'
+
+const Panel = Collapse.Panel
 
 type Props = {|
   show: boolean,
@@ -16,47 +21,46 @@ type Props = {|
   getIsochronePoint: Function,
   clearIsochroneLayers: Function,
   isochroneResult?: Object,
-  height: string,
   t: Function
 |}
 
-export default class MapToolPanel extends React.Component<Props, void> {
-  props: Props
+type State = {
+  open?: boolean
+}
+
+export default class MapToolPanel extends React.Component<Props, State> {
+  constructor (props: Props) {
+    super()
+    this.state = {}
+  }
 
   static defaultProps = {
     show: false,
     enableMeasurementTools: false
   }
 
-  componentDidMount () {
-    M.Sidenav.init(this.refs.sidenav, {
-      edge: 'right',
-      draggable: false
-    })
-    M.Collapsible.init(this.refs.mapToolPanel, {})
-  }
+  drawerContainer: any
 
-  closePanel = () => {
-    M.Sidenav.getInstance(this.refs.sidenav).close()
+  onSetOpen = (open: boolean) => {
+    this.setState({ open })
   }
 
   onChangeBaseMap = (val: string) => {
-    this.closePanel()
+    this.onSetOpen(false)
     this.props.onChangeBaseMap(val)
   }
 
   render () {
-    const {t, show, height, gpxLink} = this.props
+    const {t, show, gpxLink} = this.props
     return (
       <div>
         <Tooltip
           title={t('Tools')}
           position='bottom' inertia followCursor
         >
-          <a ref='mapToolButton'
+          <a
             href='#'
-            className='sidenav-trigger'
-            data-target='map-tool-panel'
+            onClick={() => this.onSetOpen(true)}
             style={{
               display: show ? 'inherit' : 'none',
               position: 'absolute',
@@ -87,55 +91,36 @@ export default class MapToolPanel extends React.Component<Props, void> {
             >build</i>
           </a>
         </Tooltip>
-        <div ref='sidenav' className='sidenav' id='map-tool-panel'
-          style={{
-            backgroundColor: '#FFF',
-            height: 'calc(100% - 25px)',
-            width: '240px',
-            paddingLeft: 0,
-            paddingRight: 0,
-            paddingTop: '25px',
-            paddingBottom: 0,
-            position: 'absolute',
-            border: '1px solid #d3d3d3'}}>
-          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.closePanel}>
+        <div ref={(el) => { this.drawerContainer = el }} />
+        <Drawer
+          getContainer={() => this.drawerContainer}
+          open={this.state.open}
+          onMaskClick={() => { this.onSetOpen(false) }}
+          handler={false}
+          level={null}
+          placement='right'
+          width='240px'
+        >
+          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer', zIndex: '9999'}} onClick={() => { this.onSetOpen(false) }}>
             <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
           </a>
-          <ul ref='mapToolPanel' className='collapsible no-margin' data-collapsible='accordion' style={{height: '100%'}}>
-            <li>
-              <div className='collapsible-header' style={{borderBottom: '1px solid #ddd'}}><i className='material-icons'>layers</i>{t('Change Base Map')}</div>
-              <div className='collapsible-body'>
-                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
-                  <BaseMapSelection onChange={this.onChangeBaseMap} t={t} />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>straighten</i>{t('Measurement Tools')}</div>
-              <div className='collapsible-body center'>
-                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
-                  <MeasurementToolPanel {...this.props} closePanel={this.closePanel} t={t} />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>access_time</i>{t('Travel Time')}</div>
-              <div className='collapsible-body center'>
-                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
-                  <IsochronePanel getIsochronePoint={this.props.getIsochronePoint} clearIsochroneLayers={this.props.clearIsochroneLayers} isochroneResult={this.props.isochroneResult} t={t} />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className='collapsible-header' style={{borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd'}}><i className='material-icons'>edit</i>{t('Edit OpenStreetMap')}</div>
-              <div className='collapsible-body'>
-                <div style={{height: `calc(${height} - 250px)`, overflow: 'auto'}}>
-                  <EditBaseMapBox gpxLink={gpxLink} t={t} />
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+          <div style={{height: '100%', border: 'solid 1px #ddd'}}>
+            <Collapse accordion>
+              <Panel header={t('Change Base Map')} key='basemap'>
+                <BaseMapSelection onChange={this.onChangeBaseMap} t={t} />
+              </Panel>
+              <Panel header={t('Measurement Tools')} key='measurement'>
+                <MeasurementToolPanel enableMeasurementTools={this.props.enableMeasurementTools} toggleMeasurementTools={this.props.toggleMeasurementTools} closePanel={() => { this.onSetOpen(false) }} t={t} />
+              </Panel>
+              <Panel header={t('Travel Time')} key='traveltime'>
+                <IsochronePanel getIsochronePoint={this.props.getIsochronePoint} clearIsochroneLayers={this.props.clearIsochroneLayers} isochroneResult={this.props.isochroneResult} t={t} />
+              </Panel>
+              <Panel header={t('Edit OpenStreetMap')} key='osm'>
+                <EditBaseMapBox gpxLink={gpxLink} t={t} />
+              </Panel>
+            </Collapse>
+          </div>
+        </Drawer>
       </div>
     )
   }

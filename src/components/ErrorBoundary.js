@@ -46,10 +46,12 @@ export default class ErrorBoundary extends MapHubsComponent<Props, State> {
           </svg>
           <div style={{padding: '12px'}}>
             <p style={{margin: 0}}>{this.__('We\'re sorry - something\'s gone wrong.')}</p>
-            <p style={{margin: 0}}>{this.__('Our team has been notified, but click  ')}<button onClick={() => Raven.lastEventId() && Raven.showReportDialog()}>
-              {this.__('here')}
-            </button> {this.__('to fill out a report.')}
-            </p>
+            {Raven.lastEventId() &&
+              <p style={{margin: 0}}>{this.__('Our team has been notified, but click  ')}<button onClick={() => Raven.lastEventId() && Raven.showReportDialog()}>
+                {this.__('here')}
+              </button> {this.__('to fill out a report.')}
+              </p>
+            }
           </div>
 
         </div>

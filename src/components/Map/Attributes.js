@@ -1,11 +1,9 @@
 // @flow
 import React from 'react'
 import _isequal from 'lodash.isequal'
-import type {Element} from 'react'
 
 type Props = {|
   attributes: Object,
-  children: Element<any>,
   t: Function
 |}
 
@@ -21,7 +19,7 @@ export default class Attributes extends React.Component<Props, void> {
   }
 
   render () {
-    const {t, attributes, children} = this.props
+    const {t, attributes} = this.props
     const spacer = (<div style={{height: '50px'}} />)
 
     let display = ''
@@ -103,7 +101,6 @@ export default class Attributes extends React.Component<Props, void> {
       <div style={{width: '100%', overflowY: 'auto', height: '100%', borderTop: '1px solid #DDD'}}>
         {display}
         {spacer}
-        {children}
       </div>
     )
   }

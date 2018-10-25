@@ -9,7 +9,7 @@ import SliderDecorators from '../components/Home/SliderDecorators'
 import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks'
 import OnboardingLinks from '../components/Home/OnboardingLinks'
 import MapHubsProLinks from '../components/Home/MapHubsProLinks'
-import InteractiveMap from '../components/InteractiveMap'
+import InteractiveMap from '../components/Map/InteractiveMap'
 import MailingList from '../components/Home/MailingList'
 import _shuffle from 'lodash.shuffle'
 import cardUtil from '../services/card-util'
@@ -169,6 +169,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             mapConfig={this.props.mapConfig}
             layers={this.props.layers} showTitle={false}
             {...this.props.map.settings}
+            t={this.t}
           />
           <div className='divider' />
         </div>

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import InteractiveMap from '../InteractiveMap'
+import InteractiveMap from '../Map/InteractiveMap'
 import HubActions from '../../actions/HubActions'
 import AddMapModal from '../Story/AddMapModal'
 import MapHubsComponent from '../../components/MapHubsComponent'
@@ -80,7 +80,7 @@ export default class HubMap extends MapHubsComponent<Props, void> {
           <InteractiveMap {...this.props.map}
             mapConfig={this.props.mapConfig}
             height={this.props.height} showTitle={false}
-            layers={this.props.layers} />
+            layers={this.props.layers} t={this.t} />
 
           {mapEditButton}
 

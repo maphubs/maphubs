@@ -17,7 +17,7 @@ import SearchButton from './Header/SearchButton'
 import ExploreDropdown from './Header/ExploreDropdown'
 
 if (process.env.NODE_ENV !== 'production') {
-  require('../services/unstated-debug')
+  require('unstated-debug')
 }
 
 type Link = {
@@ -60,8 +60,6 @@ export default class Header extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    
-
     M.Sidenav.init(this.sidenav, {})
 
     if (this.detectIE()) {

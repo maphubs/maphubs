@@ -7,15 +7,16 @@ import update from 'immutability-helper'
 import type {MapHubsField} from '../../types/maphubs-field'
 import connect from 'unstated-connect'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
+import MapContainer from '../Map/containers/MapContainer'
 import _assignIn from 'lodash.assignin'
 import type {Layer} from '../../types/layer'
 import GetNameField from '../Map/Styles/get-name-field'
+import turf_bbox from '@turf/bbox'
 
 type Props = {
   geoJSON: Object,
   presets: Object,
   gridHeight: number,
-  onRowSelected: Function,
   layer: Layer,
 
   dataLoadingMsg: string,
@@ -101,13 +102,6 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   }
 
   initReactDataGrid = () => {
-    // temporaryHackForReactDataGrid.js: import this file before react-data-grid
-
-    const PropTypes = require('prop-types')
-    // next line is only required until ron-react-autocomplete is rebuilt and republished
-    PropTypes.component = PropTypes.element
-    require('react').PropTypes = PropTypes
-    require('react').createClass = require('create-react-class')
     this.ReactDataGrid = require('react-data-grid')
     const {Toolbar, Editors, Formatters, Data: {Selectors}} = require('react-data-grid-addons')
     this.Toolbar = Toolbar
@@ -272,7 +266,15 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
     const idField = this.state.rowKey
     const idVal = row.row[idField]
 
-    this.props.onRowSelected(idVal, idField)
+    if (this.state.geoJSON) {
+      const [, MapState] = this.props.containers
+      this.state.geoJSON.features.forEach((feature) => {
+        if (idVal === feature.properties[idField]) {
+          const bbox = turf_bbox(feature)
+          MapState.state.map.fitBounds(bbox, 16, 25)
+        }
+      })
+    }
     this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))})
   }
 
@@ -390,4 +392,4 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
    }
 }
 
-export default connect([DataEditorContainer])(LayerDataEditorGrid)
+export default connect([DataEditorContainer, MapContainer])(LayerDataEditorGrid)

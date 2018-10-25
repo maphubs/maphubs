@@ -1,6 +1,6 @@
 // @flow
 import _area from '@turf/area'
-import _lineDistance from '@turf/line-distance'
+import turf_length from '@turf/length'
 const debug = require('../../../services/debug')('Map/MeasureArea')
 let MapboxDraw = {}
 if (typeof window !== 'undefined') {
@@ -53,8 +53,6 @@ export default {
   },
 
   stopMeasurementTool () {
-    // $('.mapboxgl-ctrl-top-right').removeClass('mapboxgl-ctrl-maphubs-measure-tool')
-    // $('.map-search-button').removeClass('maphubs-measure-tool-search-button')
     this.map.removeControl(this.draw)
     this.setState({
       enableMeasurementTools: false,
@@ -100,7 +98,7 @@ export default {
       } else if (lines.features.length > 0) {
         let distanceKm = 0
         lines.features.forEach((linestring) => {
-          distanceKm += _lineDistance(linestring)
+          distanceKm += turf_length(linestring, {units: 'kilometers'})
         })
         const distanceMiles = distanceKm * 0.621371
         const distanceMessage = 'Total distance: ' + distanceKm.toLocaleString() + 'km ' + distanceMiles.toLocaleString() + 'mi'

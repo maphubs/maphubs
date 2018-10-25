@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Button, List } from 'antd'
 
 type Props = {|
   gpxLink?: string,
@@ -40,14 +41,14 @@ export default class EditBaseMapBox extends React.PureComponent<Props, void> {
     return (
       <div style={{width: '100%', textAlign: 'center'}}>
         <p style={{padding: '5px'}}>Edit OpenStreetMap at this location</p>
-        <ul className='collection with-header custom-scroll-bar' style={{margin: 0, width: '100%', overflow: 'auto'}}>
-          <li className='collection-item' style={{paddingLeft: 0}}>
-            <a className='btn' onClick={this.openOSM}>{t('OpenStreetMap')}</a>
-          </li>
-          <li className='collection-item' style={{paddingLeft: 0}}>
-            <a className='btn' onClick={this.openLoggingRoads}>{t('LoggingRoads')}</a>
-          </li>
-        </ul>
+        <List size='large'>
+          <List.Item>
+            <Button type='primary' onClick={this.openOSM}>{t('OpenStreetMap')}</Button>
+          </List.Item>
+          <List.Item>
+            <Button type='primary' onClick={this.openLoggingRoads}>{t('LoggingRoads')}</Button>
+          </List.Item>
+        </List>
       </div>
     )
   }

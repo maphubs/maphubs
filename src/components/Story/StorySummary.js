@@ -12,73 +12,65 @@ type Props = {|
 |}
 
 export default class StorySummary extends MapHubsComponent<Props, void> {
-  props: Props
-
   static defaultProps = {
     baseUrl: ''
   }
 
   render () {
+    const {t} = this
+    const {story} = this.props
     let title = ''
-    if (this.props.story.title) {
-      title = this.props.story.title.replace('&nbsp;', '')
+    if (story.title) {
+      title = story.title.replace('&nbsp;', '')
     }
     let linkUrl = ''
     const baseUrl = urlUtil.getBaseUrl()
-    if (this.props.story.display_name) {
-      linkUrl = baseUrl + '/user/' + this.props.story.display_name
-    } else if (this.props.story.hub_id) {
-      const hubUrl = baseUrl + '/hub/' + this.props.story.hub_id
+    if (story.display_name) {
+      linkUrl = `${baseUrl}/user/${story.display_name}`
+    } else if (story.hub_id) {
+      const hubUrl = `${baseUrl}/hub/${story.hub_id}`
       linkUrl = hubUrl
     }
 
-    linkUrl += '/story/' + this.props.story.story_id + '/' + slugify(title)
+    linkUrl += `/story/${story.story_id}/${slugify(title)}`
 
-    let image = ''
-    if (this.props.story.firstimage) {
-      let imageUrl = this.props.story.firstimage.replace(/\/image\//i, '/thumbnail/')
+    let imageUrl
+    if (story.firstimage) {
+      imageUrl = story.firstimage.replace(/\/image\//i, '/thumbnail/')
       if (imageUrl.startsWith(baseUrl)) {
         imageUrl = imageUrl.replace(baseUrl, '')
       }
       imageUrl = '/img/resize/1200?url=' + imageUrl
-      image = (
-        <div>
-          <a href={linkUrl}>
-            <div style={{height: '160px', width: '100%', backgroundImage: 'url(' + imageUrl + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
-          </a>
-        </div>
-      )
-    }
-
-    let draft = ''
-    if (!this.props.story.published) {
-      draft = (
-        <p style={{position: 'absolute', top: '15px', left: '50%', right: '50%'}}>
-          <b style={{color: 'red', textTransform: 'uppercase'}}>{this.__('Draft')}</b>
-        </p>
-      )
     }
 
     return (
       <div>
-        <StoryHeader story={this.props.story} baseUrl={this.props.baseUrl} />
-
-        {image}
+        <StoryHeader story={story} baseUrl={this.props.baseUrl} />
+        {story.firstimage &&
+          <div>
+            <a href={linkUrl}>
+              <div style={{height: '160px', width: '100%', backgroundImage: 'url(' + imageUrl + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
+            </a>
+          </div>
+        }
         <a href={linkUrl}>
           <h5 className='grey-text text-darken-4 story-title'>{title}</h5>
         </a>
-
         <div className='story-content'>
           <p className='fade'>
-            {this.props.story.firstline}
+            {story.firstline}
           </p>
         </div>
         <a href={linkUrl} style={{fontSize: '12px', color: 'rgba(0, 0, 0, 0.45)'}}>
-          {this.__('Read more...')}
+          {t('Read more...')}
         </a>
-        {draft}
+        {!story.published &&
+          <p style={{position: 'absolute', top: '15px', left: '50%', right: '50%'}}>
+            <b style={{color: 'red', textTransform: 'uppercase'}}>{t('Draft')}</b>
+          </p>
+        }
         <ShareButtons
-          title={this.props.story.title}
+          title={story.title} t={t}
           style={{width: '70px', position: 'absolute', right: '10px', bottom: '10px'}}
         />
       </div>

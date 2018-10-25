@@ -17,6 +17,14 @@
     "@babel/preset-flow"
   ],
   "plugins": [
+    ["@babel/plugin-proposal-decorators", { "decoratorsBeforeExport": true }],
+    [
+      "import",
+      {
+        "libraryName": "antd",
+        "style": true
+      }
+    ],
     "@babel/plugin-proposal-export-default-from"
   ],
   "ignore": [

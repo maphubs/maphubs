@@ -1,7 +1,7 @@
 //  @flow
 import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
-import InteractiveMap from '../InteractiveMap'
+import InteractiveMap from '../Map/InteractiveMap'
 import turf_bbox from '@turf/bbox'
 import {getLayer, getLayerFRActive} from './Map/layer-feature'
 import {getRemainingLayer} from './Map/layer-remaining'
@@ -154,6 +154,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
         showTitle={false}
         showLegendLayersButton={false}
         gpxLink={gpxLink}
+        t={this.t}
       />
     )
   }

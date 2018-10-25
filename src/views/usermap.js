@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import InteractiveMap from '../components/InteractiveMap'
+import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import NotificationActions from '../actions/NotificationActions'
@@ -339,6 +339,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               mapConfig={this.props.mapConfig}
               disableScrollZoom={false}
               {...this.props.map.settings}
+              t={this.t}
             />
             <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
               onMouseEnter={this.onMouseEnterMenu}

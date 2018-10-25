@@ -483,7 +483,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       saveButton = (
         <div ref='saveButton' className='fixed-action-btn action-button-bottom-right'>
           <Tooltip
-            title={this.__('Save Map')}
+            title={this.__('Save')}
             position='top' inertia followCursor>
             <a onMouseDown={this.onSave} className='btn-floating btn-large omh-color'>
               <i className='large material-icons'>save</i>

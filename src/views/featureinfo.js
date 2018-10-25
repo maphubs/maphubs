@@ -180,7 +180,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     // const firstSource = Object.keys(layer.style.sources)[0]
     // const presets = MapStyles.settings.getSourceSetting(layer.style, firstSource, 'presets')
     const presets = layer.presets
-    const {activateFR, frToggle, onAlertClick} = this.map
 
     let isPolygon
     if (geojsonFeature && geojsonFeature.geometry &&
@@ -234,9 +233,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                           {(this.state.tab === 'forestreport' || this.state.frActive) &&
                             <ForestReportEmbed
                               geoJSON={feature}
-                              onLoad={(config: Object) => { activateFR(config, feature) }}
-                              onModuleToggle={frToggle}
-                              onAlertClick={(alert) => { onAlertClick(alert, MapState.state.map) }}
+                              onLoad={(config: Object) => { this.map.activateFR(config, feature) }}
+                              onModuleToggle={this.map.frToggle}
+                              onAlertClick={(alert) => { this.map.onAlertClick(alert, MapState.state.map) }}
                               remainingThreshold={mapConfig ? mapConfig.FRRemainingThreshold : undefined}
                               onGeoJSONChange={this.changeGeoJSONFeature}
                             />
