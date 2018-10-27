@@ -515,7 +515,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
                 }}
                 layers={mapLayers}
                 maxHeight='calc(100vh - 300px)'
-                collapseToBottom={false} hideInactive showLayersButton={false} />
+                hideInactive showLayersButton={false} />
             </div>
           </div>
         </div>

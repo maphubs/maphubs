@@ -5,6 +5,7 @@ import connect from 'unstated-connect'
 import MapToolButton from './MapToolButton'
 import BaseMapContainer from './containers/BaseMapContainer'
 import MapContainer from './containers/MapContainer'
+import ArrowDownward from '@material-ui/icons/ArrowDownward'
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
@@ -41,14 +42,14 @@ type Props = {
 type State = {|
   collapsed: boolean,
   insetGeoJSONData: Object,
-  insetGeoJSONCentroidData: Object
+  insetGeoJSONCentroidData: Object,
+  mapRendered?: boolean
 |}
 
 class InsetMap extends React.Component<Props, State> {
   insetMap: Object
   insetMapActive: boolean
-
-  props: Props
+  insetMapComponent: any
 
   static defaultProps = {
     id: 'map',
@@ -64,11 +65,6 @@ class InsetMap extends React.Component<Props, State> {
     height: '25vw',
     width: '25vw'
   }
-
-  insetMapComponent: React$Component<void, void>
-  insetMapArrow: React$Component<void, void>
-
-  state: State
 
   constructor (props: Props) {
     super(props)
@@ -89,10 +85,6 @@ class InsetMap extends React.Component<Props, State> {
 
   componentDidUpdate (prevProps: Props, prevState: State) {
     if (this.insetMap) {
-      if (!this.state.collapsed) {
-        $(this.insetMapArrow).show()
-      }
-
       if (!this.insetMapActive ||
         (prevState.collapsed && !this.state.collapsed)) {
         $(this.insetMapComponent).addClass('z-depth-1')
@@ -318,48 +310,27 @@ class InsetMap extends React.Component<Props, State> {
   }
 
   render () {
-    if (this.state.collapsed) {
+    const {collapsed} = this.state
+    const {collapsible, id} = this.props
+    if (collapsed) {
       return (
         <div style={{
           position: 'absolute', bottom: this.props.bottom, left: '5px'
         }}>
 
-          <div id={this.props.id + '_inset'}
+          <div id={id + '_inset'}
             ref={(c) => { this.insetMapComponent = c }}
             style={{
               display: 'none'
             }}>
             <MapToolButton onClick={this.toggleCollapsed}
               color='#212121'
-              top='auto' right='auto' bottom='5px' left='5px' icon='near_me' />
+              top='auto' right='auto' bottom='5px' left='5px'
+              icon='near_me' />
           </div>
         </div>
       )
     } else {
-      let collapseIcon = ''
-      if (this.props.collapsible) {
-        collapseIcon = (
-          <i className='material-icons'
-            ref={(c) => { this.insetMapArrow = c }}
-            onClick={this.toggleCollapsed}
-            style={{
-              position: 'absolute',
-              top: '-5px',
-              right: '-5px',
-              height: '30px',
-              display: 'none',
-              lineHeight: '30px',
-              width: '30px',
-              color: '#717171',
-              cursor: 'pointer',
-              textAlign: 'center',
-              zIndex: 1,
-              transform: 'rotate(45deg)',
-              fontSize: '18px'}}
-          >arrow_downward</i>
-        )
-      }
-
       return (
         <div style={{
           position: 'absolute',
@@ -384,7 +355,24 @@ class InsetMap extends React.Component<Props, State> {
               display: 'none',
               zIndex: 1
             }} />
-          {collapseIcon}
+          {(collapsible && this.insetMap) &&
+            <ArrowDownward
+              onClick={this.toggleCollapsed}
+              style={{
+                position: 'absolute',
+                top: '-5px',
+                right: '-5px',
+                height: '30px',
+                lineHeight: '30px',
+                width: '30px',
+                color: '#717171',
+                cursor: 'pointer',
+                textAlign: 'center',
+                zIndex: 1,
+                transform: 'rotate(45deg)',
+                fontSize: '18px'}}
+            />
+          }
         </div>
       )
     }

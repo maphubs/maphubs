@@ -1,6 +1,10 @@
 // @flow
 import React from 'react'
 import {Tooltip} from 'react-tippy'
+import {Row, Col} from 'antd'
+import Info from '@material-ui/icons/Info'
+import InsertPhoto from '@material-ui/icons/InsertPhoto'
+import Launch from '@material-ui/icons/Launch'
 import urlUtil from '../../../services/url-util'
 
 type Props = {
@@ -73,7 +77,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
           title={t('Back to Summary')}
           position='bottom' inertia followCursor>
           <a href='#' onClick={toggleData} style={{margin: 0}}>
-            <i className='material-icons omh-accent-text'>insert_photo</i>
+            <InsertPhoto />
           </a>
         </Tooltip>
       )
@@ -83,7 +87,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
           title={t('View Details')}
           position='bottom' inertia followCursor>
           <a href='#' onClick={toggleData} style={{margin: 0}}>
-            <i className='material-icons omh-accent-text'>info</i>
+            <Info />
           </a>
         </Tooltip>
       )
@@ -91,8 +95,8 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
   }
 
   return (
-    <div className='row no-margin'>
-      <div className='col s8 no-padding'>
+    <Row>
+      <Col span={16}>
         <div style={{textAlign: 'left'}}>
           <Tooltip
             title={t('Open Layer')}
@@ -109,24 +113,24 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
             </b>
           </Tooltip>
         </div>
-      </div>
-      <div className='col s4 no-padding'>
-        <div className='row no-margin'>
-          <div className='col s6 no-padding'>
+      </Col>
+      <Col span={8}>
+        <Row>
+          <Col span={12} >
             {dataToggle}
-          </div>
-          <div className='col s6 no-padding' style={{textAlign: 'right'}}>
+          </Col>
+          <Col span={12} style={{textAlign: 'right'}}>
             <Tooltip
               title={t('Open Feature Page')}
               position='bottom' inertia followCursor>
               <a href={featureLink} target='_blank' rel='noopener noreferrer'
                 style={{margin: 0}}>
-                <i className='material-icons omh-accent-text'>launch</i>
+                <Launch />
               </a>
             </Tooltip>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   )
 }

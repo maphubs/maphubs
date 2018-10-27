@@ -43,6 +43,8 @@
     "@google/earthengine": "^0.1.152",
     "@mapbox/mapbox-gl-draw": "1.0.9",
     "@mapbox/shapefile-fairy": "openmaphub/shapefile-fairy#950cb59adfadc6cbbccac2d33f7bc23c2f2b713e",
+    "@material-ui/core": "^3.3.1",
+    "@material-ui/icons": "^3.0.1",
     "@turf/area": "^5.0.4",
     "@turf/bbox": "5.1.5",
     "@turf/bbox-polygon": "5.1.5",

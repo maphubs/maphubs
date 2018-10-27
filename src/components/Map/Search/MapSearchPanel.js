@@ -1,10 +1,11 @@
 // @flow
 import React from 'react'
 import request from 'superagent'
-import {Tooltip} from 'react-tippy'
 import { Tabs, notification, Input, Button } from 'antd'
+import Close from '@material-ui/icons/Close'
 import Drawer from 'rc-drawer'
 import 'rc-drawer/assets/index.css'
+import MapToolButton from '../MapToolButton'
 import DebugService from '../../../services/debug'
 const debug = DebugService('MapSearchPanel')
 const TabPane = Tabs.TabPane
@@ -175,43 +176,14 @@ export default class MapSearchPanel extends React.Component<Props, State> {
 
     return (
       <div>
-        <Tooltip
-          title={t('Search')}
-          position='bottom' inertia followCursor
-        >
-          <a
-            href='#'
-            onMouseDown={() => { this.onSetOpen(true) }}
-            style={{
-              display: this.props.show ? 'inherit' : 'none',
-              position: 'absolute',
-              top: '10px',
-              right: '50px',
-              height: '30px',
-              zIndex: '100',
-              borderRadius: '4px',
-              lineHeight: '30px',
-              textAlign: 'center',
-              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-              width: '30px'
-            }}
-          >
-            <i className='material-icons'
-              style={{height: '30px',
-                lineHeight: '30px',
-                width: '30px',
-                color: '#000',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                backgroundColor: 'white',
-                borderColor: '#ddd',
-                borderStyle: 'none',
-                borderWidth: '1px',
-                textAlign: 'center',
-                fontSize: '18px'}}
-            >search</i>
-          </a>
-        </Tooltip>
+        <MapToolButton
+          onMouseDown={() => { this.onSetOpen(true) }}
+          tooltipText={t('Search')}
+          top='10px'
+          right='50px'
+          show={this.props.show}
+          icon='search'
+        />
         <div ref={(el) => { this.drawerContainer = el }} />
         <Drawer
           getContainer={() => this.drawerContainer}
@@ -222,8 +194,10 @@ export default class MapSearchPanel extends React.Component<Props, State> {
           placement='right'
           width='240px'
         >
-          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={() => { this.onSetOpen(false) }}>
-            <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
+          <a className='omh-color'
+            style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer', height: '20px'}}
+            onClick={() => { this.onSetOpen(false) }}>
+            <Close style={{fontSize: '20px', color: 'white'}} />
           </a>
           <div style={{padding: '20px 5px 0px 5px', height: '100%', border: 'solid 1px #ddd'}}>
             <div style={{position: 'relative'}}>

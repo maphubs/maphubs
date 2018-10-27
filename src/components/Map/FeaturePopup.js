@@ -2,6 +2,7 @@
 import React from 'react'
 import request from 'superagent'
 import slugify from 'slugify'
+import {Card, Spin} from 'antd'
 import GetNameField from './Styles/get-name-field'
 import Attributes from './Attributes'
 import _isequal from 'lodash.isequal'
@@ -100,12 +101,16 @@ export default class FeaturePopup extends React.Component<Props, State> {
 
     if (name) {
       nameDisplay = (
-        <span className='card-title'
+        <span
           style={{
-            fontSize: '16px',
-            lineHeight: '16px',
+            fontSize: '14px',
+            fontWeight: '800',
+            color: 'white',
+            lineHeight: '14px',
             margin: 0,
-            padding: '5px'
+            position: 'absolute',
+            left: '5px',
+            bottom: '5px'
           }}>
           {name}
         </span>
@@ -116,31 +121,21 @@ export default class FeaturePopup extends React.Component<Props, State> {
     if (layerLoaded) {
       if (description) {
         descDisplay = (
-          <div className='card-content' style={{padding: '3px', height: 'calc(100% - 100px)', overflowY: 'auto'}}>
+          <div style={{padding: '3px', height: 'calc(100% - 100px)', overflowY: 'auto'}}>
             <p>{description}</p>
           </div>
         )
       } else {
         descDisplay = (
-          <div className='card-content' style={{padding: 0, height: 'calc(100% - 100px)'}}>
+          <div style={{padding: 0, height: 'calc(100% - 100px)'}}>
             <Attributes attributes={properties} t={t} />
           </div>
         )
       }
     } else {
       descDisplay = (
-        <div className='card-content' style={{padding: 0, width: '100%', height: 'calc(100% - 100px)', margin: 'auto', textAlign: 'center'}}>
-          <div className='preloader-wrapper small active'>
-            <div className='spinner-layer omh-accent-text'>
-              <div className='circle-clipper left'>
-                <div className='circle' />
-              </div><div className='gap-patch'>
-                <div className='circle' />
-              </div><div className='circle-clipper right'>
-                <div className='circle' />
-              </div>
-            </div>
-          </div>
+        <div style={{padding: 0, width: '100%', height: 'calc(100% - 100px)', margin: 'auto', textAlign: 'center'}}>
+          <Spin />
         </div>
       )
     }
@@ -156,11 +151,12 @@ export default class FeaturePopup extends React.Component<Props, State> {
           />
         )}
         <div
-          className='card-image' style={{
+          style={{
             height: '100px',
             background: `url(${photoUrl})`,
             backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover'
+            backgroundSize: 'cover',
+            position: 'relative'
           }}
           onClick={() => this.setState({ lightboxOpen: true })}
         >
@@ -215,18 +211,21 @@ export default class FeaturePopup extends React.Component<Props, State> {
     }
 
     return (
-      <div key='feature' className='card' style={{width: '150px', height: '200px', margin: 0, boxShadow: 'none'}}>
-        <div className='card-content no-padding' style={{height: 'calc(100% - 35px)'}}>
+      <Card
+        key='feature'
+        bodyStyle={{height: '100%', padding: '0'}}
+        style={{width: '150px', height: '200px', margin: 0, boxShadow: 'none'}}>
+        <div style={{height: 'calc(100% - 35px)'}}>
           {content}
         </div>
-        <div className='card-action' style={{padding: '5px 5px'}}>
+        <div style={{padding: '5px 5px'}}>
           <ActionPanel layer={layer} t={t}
             selectedFeature={feature} featureName={featureName}
             toggled={showAttributes}
             enableToggle={photoUrl} toggleData={this.toggleAttributes}
           />
         </div>
-      </div>
+      </Card>
     )
   }
 

@@ -5,7 +5,11 @@ import _isEqual from 'lodash.isequal'
 import flow from 'lodash.flow'
 import MapStyles from './Styles'
 import {Tooltip} from 'react-tippy'
-import { Popconfirm, Switch, Row, Col, Icon } from 'antd'
+import { Popconfirm, Switch, Row, Col } from 'antd'
+import Delete from '@material-ui/icons/Delete'
+import Palette from '@material-ui/icons/Palette'
+import Info from '@material-ui/icons/Info'
+import Edit from '@material-ui/icons/Edit'
 import {DragSource, DropTarget} from 'react-dnd'
 import DraggleIndicator from './UI/DraggableIndicator'
 import DragItemConfig from './UI/DragItemConfig'
@@ -102,7 +106,7 @@ class LayerListItem extends React.Component<Props, void> {
               title={t('Layer Info')}
               position='right' inertia followCursor>
               <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
-                <Icon style={{fontSize: '20px'}} type='info-circle' theme='twoTone' twoToneColor={MAPHUBS_CONFIG.primaryColor} />
+                <Info style={{fontSize: '20px'}} />
               </a>
             </Tooltip>
           </Col>
@@ -112,12 +116,12 @@ class LayerListItem extends React.Component<Props, void> {
                 title={t('Remove from Map')}
                 position='top' inertia followCursor>
                 <Popconfirm
-                  title={t('Warning! This will also remove any custom style settings for this layer saved as part of this map.')}
+                  title={t('Remove Layer') + ' ' + t(layer.name)}
                   onConfirm={this.removeFromMap} onCancel={() => {}}
                   okText={t('Remove')} cancelText={t('Cancel')}
                 >
                   <a href='#'>
-                    <Icon style={{fontSize: '20px'}} type='delete' theme='twoTone' twoToneColor={MAPHUBS_CONFIG.primaryColor} />
+                    <Delete style={{fontSize: '20px'}} />
                   </a>
                 </Popconfirm>
               </Tooltip>
@@ -129,7 +133,7 @@ class LayerListItem extends React.Component<Props, void> {
                 title={t('Edit Layer Style')}
                 position='top' inertia followCursor>
                 <a onClick={this.showLayerDesigner}>
-                  <Icon style={{fontSize: '20px'}} type='setting' theme='twoTone' twoToneColor={MAPHUBS_CONFIG.primaryColor} />
+                  <Palette style={{fontSize: '20px'}} />
                 </a>
               </Tooltip>
             </Col>
@@ -140,7 +144,7 @@ class LayerListItem extends React.Component<Props, void> {
                 title={t('Edit Layer Data')}
                 position='top' inertia followCursor>
                 <a onClick={this.editLayer}>
-                  <Icon style={{fontSize: '20px'}} type='edit' theme='twoTone' twoToneColor={MAPHUBS_CONFIG.primaryColor} />
+                  <Edit style={{fontSize: '20px'}} />
                 </a>
               </Tooltip>
             </Col>

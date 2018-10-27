@@ -153,7 +153,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
               </div>
             </div>
           </div>
-          <div className='carousel-container'>
+          <div>
 
             {searchResults}
 

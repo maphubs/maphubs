@@ -4,15 +4,17 @@ import { Subscribe } from 'unstated'
 import BaseMapContainer from './containers/BaseMapContainer'
 import LegendItem from './LegendItem'
 import MapStyles from './Styles'
+import {Row, Col} from 'antd'
+import Settings from '@material-ui/icons/Settings'
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown'
+import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp'
 
 type Props = {|
   title?: LocalizedString,
   layers: Array<Object>,
   hideInactive: boolean,
   collapsible: boolean,
-  collapseToBottom: boolean,
   showLayersButton: boolean,
-  mapLayersActivatesID?: string,
   openLayersPanel?: Function,
   maxHeight: string,
   style: Object,
@@ -30,7 +32,6 @@ export default class MiniLegend extends React.Component<Props, State> {
     layers: [],
     hideInactive: true,
     collapsible: true,
-    collapseToBottom: false,
     showLayersButton: true,
     maxHeight: '100%',
     style: {}
@@ -56,7 +57,7 @@ export default class MiniLegend extends React.Component<Props, State> {
 
   render () {
     const _this = this
-    const {t, title, showLayersButton, mapLayersActivatesID} = this.props
+    const {t, title, showLayersButton} = this.props
     const {collapsed} = this.state
 
     let layersButton = ''
@@ -64,33 +65,25 @@ export default class MiniLegend extends React.Component<Props, State> {
       layersButton = (
         <a
           href='#'
-          className='sidenav-trigger'
-          data-target={mapLayersActivatesID}
           onClick={this.openLayersPanel}
           style={{
             position: 'absolute',
             right: '20px',
-            top: '0px',
-            display: 'inherit',
+            display: 'table-cell',
             height: '32px',
             zIndex: '100',
-            borderRadius: '4px',
-            lineHeight: '32px',
-            textAlign: 'center',
-            width: '32px'
+            lineHeight: '32px'
           }}
         >
-          <i className='material-icons'
+          <Settings
             id='legend-settings'
-            style={{height: '32px',
-              lineHeight: '32px',
-              width: '32px',
+            style={{
               color: '#000',
-              cursor: 'pointer',
-              borderStyle: 'none',
               textAlign: 'center',
-              fontSize: '18px'}}
-          >settings</i>
+              fontSize: '18px',
+              verticalAlign: 'middle'
+            }}
+          />
         </a>
       )
     }
@@ -117,24 +110,16 @@ export default class MiniLegend extends React.Component<Props, State> {
 
     let titleDisplay = ''
     if (this.props.collapsible) {
-      let iconName
-      if (this.props.collapseToBottom) {
-        if (collapsed) {
-          iconName = 'keyboard_arrow_up'
-        } else {
-          iconName = 'keyboard_arrow_down'
-        }
-      } else {
-        if (collapsed) {
-          iconName = 'keyboard_arrow_down'
-        } else {
-          iconName = 'keyboard_arrow_up'
-        }
+      const iconStyle = {
+        marginRight: 0,
+        height: '100%',
+        lineHeight: '32px',
+        verticalAlign: 'middle'
       }
 
       titleDisplay = (
-        <div className='row no-margin' style={{height: '32px', width: '100%'}}>
-          <div className='col s10 no-padding valign-wrapper' style={{height: '32px'}}>
+        <Row style={{height: '32px', width: '100%'}}>
+          <Col span={20} className='valign-wrapper' style={{height: '32px'}}>
             <h6 className='black-text valign word-wrap' style={{
               padding: '0.2rem',
               marginLeft: '2px',
@@ -143,26 +128,39 @@ export default class MiniLegend extends React.Component<Props, State> {
               fontWeight: '500',
               fontSize: titleFontSize
             }}>{titleText}</h6>
-          </div>
-          <div className='col s2 no-padding valign'>
+          </Col>
+          <Col span={4} className='no-padding valign'>
             {layersButton}
-            <i ref='titleIcon' className='material-icons icon-fade-in' style={{float: 'right', marginRight: 0, height: '100%', lineHeight: '32px'}}>{iconName}</i>
-          </div>
-        </div>
+            <span style={{
+              float: 'right',
+              display: 'table-cell',
+              height: '32px',
+              zIndex: '100',
+              lineHeight: '32px'
+            }}>
+              {collapsed &&
+                <KeyboardArrowDown style={iconStyle} />
+              }
+              {!collapsed &&
+                <KeyboardArrowUp style={iconStyle} />
+              }
+            </span>
+          </Col>
+        </Row>
       )
     } else {
       titleDisplay = (
-        <div className='row no-margin valign-wrapper' style={{height: '32px', width: '100%'}}>
+        <Row className='valign-wrapper' style={{height: '32px', width: '100%'}}>
           <h6 className='black-text valign' style={{
             padding: '0.2rem',
             marginLeft: '2px',
             fontWeight: '500',
             fontSize: titleFontSize
           }}>{titleText}</h6>
-          <div className='col s2 no-padding valign'>
+          <Col span={4} className='valign'>
             {layersButton}
-          </div>
-        </div>
+          </Col>
+        </Row>
       )
     }
 
@@ -183,6 +181,57 @@ export default class MiniLegend extends React.Component<Props, State> {
 
     return (
       <div style={this.props.style}>
+        <style jsx global>{`
+          .omh-legend {
+            padding-left: 2px;
+            padding-right: 2px;
+            padding-top: 2px;
+            padding-bottom: 4px;
+            min-height: 20px;
+          }
+
+          .omh-legend h3 {
+              font-size: 10px;
+              color: #212121;
+              margin: 0px;
+          }
+
+          .base-map-legend * {
+              color: #212121 !important;
+          }
+
+          .omh-legend .block {
+            height: 15px;
+            width: 20px;
+            float: left;
+            margin-right: 5px;
+            border: 1px solid #888;
+          }
+
+          .omh-legend .point {
+            height: 15px;
+            width: 15px;
+            float: left;
+            margin-right: 5px;
+            border-radius: 50%;
+            border: 1px solid #888;
+          }
+
+          .omh-legend  .double-stroke {
+            box-shadow: inset 0 0 0 3px rgba(100, 100, 100, 0.2);
+          }
+
+          .word-wrap {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            -ms-word-break: break-all;
+            word-break: break-word;
+            -ms-hyphens: auto;
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            hyphens: auto;
+          }
+        `}</style>
         <ul ref='legend' className='collapsible'
           style={{
             zIndex: 1,
@@ -205,7 +254,7 @@ export default class MiniLegend extends React.Component<Props, State> {
             <div className='collapsible-header no-padding' style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
               {titleDisplay}
             </div>
-            <div className='collapsible-body'
+            <div
               style={{
                 display: collapsed ? 'none' : 'flex',
                 maxHeight: contentHeight,

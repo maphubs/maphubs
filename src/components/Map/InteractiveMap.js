@@ -11,6 +11,8 @@ import Drawer from 'rc-drawer'
 import _debounce from 'lodash.debounce'
 import _isEqual from 'lodash.isequal'
 import findIndex from 'lodash.findindex'
+import Close from '@material-ui/icons/Close'
+import MapToolButton from './MapToolButton'
 import ShareButtons from '../ShareButtons'
 import MapStyles from './Styles'
 import $ from 'jquery'
@@ -265,7 +267,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           layers={this.state.layers}
           title={title}
           openLayersPanel={() => { this.onSetOpenMapLayersList(true) }}
-          mapLayersActivatesID={`map-layers-${this.props.map_id}`} />
+        />
       )
     }
 
@@ -274,31 +276,13 @@ export default class InteractiveMap extends React.Component<Props, State> {
     return (
       <div style={{width: '100%', height: `calc(${this.props.height} - 0px)`, overflow: 'hidden', border, position: 'relative'}}>
         {(width && width < 600) &&
-          <a href='#'
+          <MapToolButton
             onClick={() => this.onSetOpenMobileMapLegend(true)}
-            className='button-collapse hide-on-med-and-up'
-            style={{position: 'absolute',
-              top: mobileLegendButtonTop,
-              left: '10px',
-              height: '30px',
-              lineHeight: '30px',
-              zIndex: 1,
-              textAlign: 'center',
-              width: '30px'}}
-          >
-            <i className='material-icons z-depth-1'
-              style={{height: '30px',
-                lineHeight: '30px',
-                width: '30px',
-                color: MAPHUBS_CONFIG.primaryColor,
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                borderColor: '#ddd',
-                borderStyle: 'solid',
-                borderWidth: '1px',
-                fontSize: '25px'}}
-            >info</i>
-          </a>
+            top={mobileLegendButtonTop}
+            left='10px'
+            color={MAPHUBS_CONFIG.primaryColor}
+            icon='info'
+          />
         }
 
         {this.props.categories &&
@@ -346,8 +330,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
                 title={title}
                 collapsible={false}
                 hideInactive={this.props.hideInactive}
-                showLayersButton={this.props.showLegendLayersButton}
-                mapLayersActivatesID={`map-layers-${this.props.map_id}`}
+                showLayersButton={false}
                 layers={this.state.layers}
               />
             }
@@ -364,10 +347,17 @@ export default class InteractiveMap extends React.Component<Props, State> {
             width='240px'
           >
             <a className='omh-color'
-              style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer', zIndex: 99}}
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                cursor: 'pointer',
+                zIndex: 99,
+                height: '20px'
+              }}
               onClick={() => { this.onSetOpenMapLayersList(false) }}
             >
-              <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
+              <Close style={{fontSize: '20px', color: 'white'}} />
             </a>
             <div style={{height: '100%'}}>
               <p style={{padding: '2px', marginBottom: 0, fontSize: '14px', fontWeight: 'bold'}}>{t('Map Layers')}</p>

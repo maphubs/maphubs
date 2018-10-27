@@ -1,11 +1,12 @@
 // @flow
 import React from 'react'
+import Close from '@material-ui/icons/Close'
 import EditBaseMapBox from './ToolPanels/EditBaseMapBox'
 import BaseMapSelection from './ToolPanels/BaseMapSelection'
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
-import {Tooltip} from 'react-tippy'
+import MapToolButton from './MapToolButton'
 import Drawer from 'rc-drawer'
 import { Collapse } from 'antd'
 import 'rc-drawer/assets/index.css'
@@ -54,43 +55,14 @@ export default class MapToolPanel extends React.Component<Props, State> {
     const {t, show, gpxLink} = this.props
     return (
       <div>
-        <Tooltip
-          title={t('Tools')}
-          position='bottom' inertia followCursor
-        >
-          <a
-            href='#'
-            onClick={() => this.onSetOpen(true)}
-            style={{
-              display: show ? 'inherit' : 'none',
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              height: '30px',
-              zIndex: '100',
-              borderRadius: '4px',
-              lineHeight: '30px',
-              textAlign: 'center',
-              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-              width: '30px'
-            }}
-          >
-            <i className='material-icons'
-              style={{height: '30px',
-                lineHeight: '30px',
-                width: '30px',
-                color: '#000',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                backgroundColor: 'white',
-                borderColor: '#ddd',
-                borderStyle: 'none',
-                borderWidth: '1px',
-                textAlign: 'center',
-                fontSize: '18px'}}
-            >build</i>
-          </a>
-        </Tooltip>
+        <MapToolButton
+          tooltipText={t('Tools')}
+          top='10px'
+          right='10px'
+          show={show}
+          icon='build'
+          onClick={() => this.onSetOpen(true)}
+        />
         <div ref={(el) => { this.drawerContainer = el }} />
         <Drawer
           getContainer={() => this.drawerContainer}
@@ -101,8 +73,19 @@ export default class MapToolPanel extends React.Component<Props, State> {
           placement='right'
           width='240px'
         >
-          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer', zIndex: '9999'}} onClick={() => { this.onSetOpen(false) }}>
-            <i className='material-icons selected-feature-close' style={{fontSize: '20px'}}>close</i>
+          <a
+            className='omh-color'
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              cursor: 'pointer',
+              zIndex: '9999',
+              height: '20px'
+            }}
+            onClick={() => { this.onSetOpen(false) }}
+          >
+            <Close style={{fontSize: '20px', color: 'white'}} />
           </a>
           <div style={{height: '100%', border: 'solid 1px #ddd'}}>
             <Collapse accordion>

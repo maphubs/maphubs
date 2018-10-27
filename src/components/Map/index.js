@@ -24,6 +24,7 @@ import StyleMixin from './Helpers/StyleMixin'
 import MapSearchMixin from './Search/MapSearchMixin'
 import Promise from 'bluebird'
 import turfCentroid from '@turf/centroid'
+import PlayArrow from '@material-ui/icons/PlayArrow'
 import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style'
 import type {GeoJSONObject} from 'geojson-flow'
 import type {Layer} from '../../types/layer'
@@ -568,6 +569,67 @@ class Map extends React.Component<Props, State> {
 
     return (
       <div className={this.props.className} style={this.props.style}>
+        <style jsx global>{`
+
+          .mapboxgl-canvas{
+            left: 0 !important;
+          }
+          
+          .mapboxgl-ctrl {
+            -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+            -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+          }
+
+          .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
+            margin: 0 !important;
+          }
+
+          .mapboxgl-popup {
+            z-index: 200 !important;
+            height: 200px;
+            width: 150px;
+          }
+
+          .mapboxgl-popup-content{
+            padding: 0 !important;
+          }
+
+          .mapboxgl-popup-close-button{
+            top: -7px !important;
+            right: -7px !important;
+            z-index: 201 !important;
+            background-color: rgba(255, 255, 255, 0.75) !important;
+            color: $maphubs-accent-color !important;
+            border-radius: 25px !important;
+            border: 1px solid $maphubs-accent-color !important;
+            width: 14px !important;
+            height: 14px !important;
+            line-height: 5px !important;
+            padding-bottom: 1px !important;
+            padding-top: 0px !important;
+            padding-left: 0.5px !important;
+            padding-right: 0px !important;
+          }
+
+          .maphubs-feature-popup{
+            padding: 0;
+          }
+
+          .mapbox-gl-draw_point, .mapbox-gl-draw_line, .mapbox-gl-draw_polygon{
+            border-bottom: none !important;
+            border-right: 1px #ddd solid !important;
+          }
+
+          .mapboxgl-ctrl-logo {
+            display: none !important;
+          }
+
+          .mapboxgl-ctrl-top-right {
+            top: 40px !important;
+          }
+
+        `}</style>
         <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
           {insetMap &&
             <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} {...this.props.insetConfig} />
@@ -606,7 +668,9 @@ class Map extends React.Component<Props, State> {
           }
           {(!this.state.interactive && this.props.showPlayButton) &&
             <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
-              style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}><i className='material-icons'>play_arrow</i></a>
+              style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}>
+              <PlayArrow />
+            </a>
           }
           {this.state.mapLoaded &&
             this.props.children
