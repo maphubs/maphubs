@@ -176,7 +176,8 @@ export default class MyDocument extends Document {
                 themeUrl: "${local.themeUrl}",
                 enableUserExport: "${local.enableUserExport}",
                 OPENROUTESERVICE_API_KEY:  "${local.OPENROUTESERVICE_API_KEY}",
-                EARTHENGINE_CLIENTID: "${local.EARTHENGINE_CLIENTID}"
+                EARTHENGINE_CLIENTID: "${local.EARTHENGINE_CLIENTID}",
+                requireLogin: ${local.requireLogin}
               }
           `}}
           />

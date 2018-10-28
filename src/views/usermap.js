@@ -7,7 +7,6 @@ import NotificationActions from '../actions/NotificationActions'
 import MessageActions from '../actions/MessageActions'
 import MapMakerActions from '../actions/MapMakerActions'
 import Progress from '../components/Progress'
-import urlUtil from '../services/url-util'
 import UserStore from '../stores/UserStore'
 import request from 'superagent'
 import MapMakerStore from '../stores/MapMakerStore'
@@ -25,6 +24,7 @@ import CopyMapModal from '../components/InteractiveMap/CopyMapModal'
 import ErrorBoundary from '../components/ErrorBoundary'
 import {Tooltip} from 'react-tippy'
 import FloatingButton from '../components/FloatingButton'
+import EmbedCodeModal from '../components/MapUI/EmbedCodeModal'
 
 const $ = require('jquery')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -48,7 +48,8 @@ type UserMapState = {
   width: number,
   height: number,
   downloading: boolean,
-  share_id?: string
+  share_id?: string,
+  showEmbedCode?: boolean
 }
 
 type State = LocaleStoreState & UserStoreState & UserMapState
@@ -196,25 +197,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   showEmbedCode = () => {
-    const baseUrl = urlUtil.getBaseUrl()
-    let url
-    if (this.state.share_id) {
-      url = `${baseUrl}/map/public-embed/${this.state.share_id}/static`
-    } else {
-      url = `${baseUrl}/map/embed/${this.props.map.map_id}/static`
-    }
-
-    const code = `
-&lt;iframe src="${url}"
-  style="width: 100%; height: 350px;" frameborder="0" 
-  allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
-  &gt;
-&lt;/iframe&gt;
-`
-    const messageIntro = this.__('Paste the following code into your website to embed a map:')
-    const message = `<p>${messageIntro}</p><pre style="height: 200px; overflow: auto">${code}</pre>`
-
-    MessageActions.showMessage({title: this.__('Embed Code'), message})
+    this.setState({showEmbedCode: true})
   }
 
   showSharePublic = () => {
@@ -270,6 +253,9 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
+    const {map} = this.props
+    const {share_id, user, showEmbedCode} = this.state
     let deleteButton = ''
     let editButton = ''
     let shareButton = ''
@@ -278,14 +264,14 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       deleteButton = (
         <li>
           <FloatingButton color='red' icon='delete' large={false}
-            onClick={this.onDelete} tooltip={this.__('Delete Map')}
+            onClick={this.onDelete} tooltip={t('Delete Map')}
           />
         </li>
       )
       editButton = (
         <li>
           <FloatingButton color='blue' icon='mode_edit' large={false}
-            onClick={this.onEdit} tooltip={this.__('Edit Map')}
+            onClick={this.onEdit} tooltip={t('Edit Map')}
           />
         </li>
       )
@@ -294,23 +280,23 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         shareButton = (
           <li>
             <FloatingButton color='green' icon='share' large={false}
-              onClick={this.showSharePublic} tooltip={this.__('Share')}
+              onClick={this.showSharePublic} tooltip={t('Share')}
             />
           </li>
         )
         shareModal = (
-          <PublicShareModal ref='publicShareModal' share_id={this.state.share_id} onChange={this.toggleSharePublic} />
+          <PublicShareModal ref='publicShareModal' share_id={share_id} onChange={this.toggleSharePublic} />
         )
       }
     }
 
     let copyButton = ''
     let copyModal = ''
-    if (this.state.user) {
+    if (user) {
       copyButton = (
         <li>
           <FloatingButton color='purple' icon='queue' large={false}
-            onClick={this.showCopyMap} tooltip={this.__('Copy Map')}
+            onClick={this.showCopyMap} tooltip={t('Copy Map')}
           />
         </li>
       )
@@ -324,8 +310,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       )
     }
 
-    const download = `${this._o_(this.props.map.title)} - ${MAPHUBS_CONFIG.productName}.png`
-    const downloadHREF = `/api/screenshot/map/${this.props.map.map_id}.png`
+    const download = `${t(map.title)} - ${MAPHUBS_CONFIG.productName}.png`
+    const downloadHREF = `/api/screenshot/map/${map.map_id}.png`
 
     return (
       <ErrorBoundary>
@@ -334,11 +320,11 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
             <Progress id='load-data-progess' title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
             <InteractiveMap height='calc(100vh - 50px)'
-              {...this.props.map}
+              {...map}
               layers={this.props.layers}
               mapConfig={this.props.mapConfig}
               disableScrollZoom={false}
-              {...this.props.map.settings}
+              {...map.settings}
               t={this.t}
             />
             <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
@@ -354,7 +340,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
                 {copyButton}
                 <li>
                   <Tooltip
-                    title={this.__('Get Map as a PNG Image')}
+                    title={t('Get Map as a PNG Image')}
                     position='left' inertia followCursor>
                     <a onClick={this.download}
                       download={download} href={downloadHREF}
@@ -365,18 +351,21 @@ export default class UserMap extends MapHubsComponent<Props, State> {
                 </li>
                 <li>
                   <FloatingButton color='orange' icon='code' large={false}
-                    onClick={this.showEmbedCode} tooltip={this.__('Embed')}
+                    onClick={this.showEmbedCode} tooltip={t('Embed')}
                   />
                 </li>
                 <li>
                   <FloatingButton color='yellow' icon='print' large={false}
-                    onClick={this.onFullScreen} tooltip={this.__('Print/Screenshot')}
+                    onClick={this.onFullScreen} tooltip={t('Print/Screenshot')}
                   />
                 </li>
               </ul>
             </div>
             {shareModal}
             {copyModal}
+            {showEmbedCode &&
+              <EmbedCodeModal show={showEmbedCode} map_id={map.map_id} share_id={share_id} onClose={() => { this.setState({showEmbedCode: false}) }} t={t} />
+            }
           </main>
         </Provider>
       </ErrorBoundary>

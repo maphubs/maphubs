@@ -102,6 +102,7 @@
     "immutable": "4.0.0-rc.2",
     "intl": "1.2.5",
     "jquery": "3.3.1",
+    "js-htmlencode": "^0.3.0",
     "jschardet": "^1.5.1",
     "knex": "0.15.2",
     "less": "^3.8.1",

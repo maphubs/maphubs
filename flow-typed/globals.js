@@ -35,6 +35,7 @@ declare class MapHubsConfig {
   enableUserExport: boolean;
   EARTHENGINE_CLIENTID: string;
   BING_KEY: string;
+  requireLogin: boolean;
 }
 
 declare var MAPHUBS_CONFIG: MapHubsConfig;
@@ -91,7 +92,8 @@ type $JSXIntrinsics = {
   use: JSXHelper<{xlinkHref: string}>,
   polygon: JSXHelper<{points: string}>,
   rect: JSXHelper<{x: number, y: number, width: number, height: number}>,
-  style: JSXHelper<{jsx: boolean, global: boolean}>
+  style: JSXHelper<{jsx: boolean, global: boolean}>,
+  code: JSXHelper<{id: string}>
 };
 
 declare type NestedArray<T> = Array<T | NestedArray<T>>
