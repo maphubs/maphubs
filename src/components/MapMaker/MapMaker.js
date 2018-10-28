@@ -171,7 +171,9 @@ class MapMaker extends MapHubsComponent<Props, State> {
       $(layersListPanel).addClass('active')
       $(layersListPanel).find('.collapsible-body').css('display', 'block')
     }
+  }
 
+  initEditLayer = () => {
     if (!this.state.editLayerLoaded && this.props.editLayer) {
       this.addLayer(this.props.editLayer)
       this.editLayer(this.props.editLayer)
@@ -308,15 +310,15 @@ class MapMaker extends MapHubsComponent<Props, State> {
     const [, MapState] = this.props.containers
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
-
-    if (this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox) {
-      MapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
+    if (MapState.state.map) {
+      if (this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox) {      
+        MapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
+      }
+      const position = MapState.state.map.getPosition()
+      position.bounds = MapState.state.map.getBounds()
+      Actions.setMapPosition(position)
     }
 
-    const position = MapState.state.map.getPosition()
-    position.bounds = MapState.state.map.getBounds()
-
-    Actions.setMapPosition(position)
     Actions.addToMap(layer, (err) => {
       if (err) {
         NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'})
@@ -496,6 +498,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
                 onToggleIsochroneLayer={this.onToggleIsochroneLayer}
                 fitBounds={mapExtent}
                 mapConfig={this.props.mapConfig}
+                onLoad={this.initEditLayer}
                 hash
                 t={this.t}
               >

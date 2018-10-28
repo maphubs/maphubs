@@ -9,6 +9,7 @@ import LocaleStore from '../stores/LocaleStore'
 import '../services/locales'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import type {Layer} from '../types/layer'
@@ -58,6 +59,7 @@ export default class Map extends MapHubsComponent<Props, void> {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
   }
 
   mapCreated = (mapId: number, title: LocalizedString) => {
@@ -67,7 +69,7 @@ export default class Map extends MapHubsComponent<Props, void> {
   render () {
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header activePage='map' {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
             <MapMaker

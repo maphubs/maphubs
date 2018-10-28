@@ -8,6 +8,7 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
@@ -54,6 +55,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
   }
 
   mapCreated = (mapId: string, title: LocalizedString) => {
@@ -63,7 +65,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
   render () {
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
             <MapMaker onCreate={this.mapCreated}

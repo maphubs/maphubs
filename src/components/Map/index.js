@@ -77,6 +77,7 @@ type Props = {|
     onToggleIsochroneLayer?: Function,
     children?: any,
     containers: Array<Object>,
+    onLoad: Function,
     t: Function,
     locale: string
   |}
@@ -315,6 +316,7 @@ class Map extends React.Component<Props, State> {
           }
 
           _this.setState({mapLoaded: true})
+          if (_this.props.onLoad) _this.props.onLoad()
         })
       })// end style.load
 
