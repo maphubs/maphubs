@@ -137,6 +137,15 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     } else {
       style = MapStyles.style.defaultStyle(layer_id, shortid, this.getSourceConfig(), this.state.data_type)
     }
+    // restore presets
+    const presets = this.state.presets
+    Object.keys(style.sources).forEach((sourceID) => {
+      const mapSource = style.sources[sourceID]
+      if (!mapSource.metadata) {
+        mapSource.metadata = {}
+      }
+      mapSource.metadata['maphubs:presets'] = presets
+    })
     this.setState({style})
   }
 
