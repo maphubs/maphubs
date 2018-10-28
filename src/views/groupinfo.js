@@ -153,7 +153,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
           <div className='divider' />
           <div className='row'>
             <div className='row'>
-              <CardCarousel cards={allCards} infinite={false} />
+              <CardCarousel cards={allCards} infinite={false} t={this.t} />
             </div>
             {addButtons}
           </div>

@@ -91,7 +91,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
         <div className='row'>
           <div className='col s12 no-padding'>
             <h5>{this.__('Draft Hubs')}</h5>
-            <CardCarousel infinite={false} cards={draftCards} />
+            <CardCarousel infinite={false} cards={draftCards} t={this.t} />
           </div>
         </div>
       )
@@ -108,7 +108,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
         <div className='row'>
           <div className='col s12 no-padding'>
             <h5>{this.__('Published Hubs')}</h5>
-            <CardCarousel infinite={false} cards={publishedCards} />
+            <CardCarousel infinite={false} cards={publishedCards} t={this.t} />
           </div>
         </div>
       )

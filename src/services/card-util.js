@@ -26,7 +26,6 @@ export default {
       title: layer.name, // LocalizedString
       description: layer.description, // LocalizedString
       image_url,
-      source: layer.source,
       group: layer.owned_by_group_id,
       type: 'layer',
       link: '/lyr/' + layer_id,
@@ -65,6 +64,7 @@ export default {
       type: 'map',
       data: map,
       private: map.private,
+      public: map.share_id,
       onClick
     }
   },

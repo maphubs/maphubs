@@ -123,7 +123,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
           <div className='col s12'>
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Layers')}</h5>
             <div className='divider' />
-            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops} showAddButton />
+            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops} showAddButton t={this.t} />
           </div>
         </div>
       )
@@ -145,7 +145,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
             <div className='col s12'>
               <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
               <div className='divider' />
-              <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops} showAddButton />
+              <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops} showAddButton t={this.t} />
             </div>
           </div>
         )
@@ -195,7 +195,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
             <div className='col s12'>
               <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Layers')}</h5>
               <div className='divider' />
-              <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops} showAddButton />
+              <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops} showAddButton t={this.t} />
             </div>
           </div>
         </div>

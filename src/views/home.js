@@ -356,7 +356,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         </div>
         <div className='row'>
           <div className='col s12'>
-            <CardCarousel cards={collectionCards} infinite={false} />
+            <CardCarousel cards={collectionCards} infinite={false} t={this.t} />
           </div>
         </div>
       </div>

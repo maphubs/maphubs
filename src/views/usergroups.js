@@ -85,7 +85,7 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
       groups = (
         <div className='row'>
           <div className='col s12 no-padding'>
-            <CardCarousel infinite={false} cards={cards} />
+            <CardCarousel infinite={false} cards={cards} t={this.t} />
           </div>
         </div>
       )

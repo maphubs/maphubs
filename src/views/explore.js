@@ -183,12 +183,12 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <span className='valign' style={{fontSize: '14px'}}>{this.__('User generated stories featuring interactive maps and images on a variety of topics')}</span>
               </div>
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
-                <CardFilter defaultValue={this.state.storyMode} onChange={function (value) { _this.setState({storyMode: value}) }} />
+                <CardFilter defaultValue={this.state.storyMode} onChange={(value) => { _this.setState({storyMode: value}) }} />
               </div>
             </div>
             <div className='row'>
               <div className='col s12'>
-                <CardCarousel cards={storyCards} infinite={false} />
+                <CardCarousel cards={storyCards} infinite={false} t={this.t} />
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
@@ -207,12 +207,12 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <span className='valign' style={{fontSize: '14px'}}>{this.__('Interactive maps featuring open data')}</span>
               </div>
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
-                <CardFilter defaultValue={this.state.mapMode} onChange={function (value) { _this.setState({mapMode: value}) }} />
+                <CardFilter defaultValue={this.state.mapMode} onChange={(value) => { _this.setState({mapMode: value}) }} />
               </div>
             </div>
             <div className='row'>
               <div className='col s12'>
-                <CardCarousel cards={mapCards} infinite={false} />
+                <CardCarousel cards={mapCards} infinite={false} t={this.t} />
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
@@ -231,12 +231,12 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <span className='valign' style={{fontSize: '14px'}}>{this.__('Collections of stories and maps on a variety of topics')}</span>
               </div>
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
-                <CardFilter defaultValue={this.state.hubMode} onChange={function (value) { _this.setState({hubMode: value}) }} />
+                <CardFilter defaultValue={this.state.hubMode} onChange={(value) => { _this.setState({hubMode: value}) }} />
               </div>
             </div>
             <div className='row'>
               <div className='col s12'>
-                <CardCarousel cards={hubCards} infinite={false} />
+                <CardCarousel cards={hubCards} infinite={false} t={this.t} />
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
@@ -255,12 +255,12 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <span className='valign' style={{fontSize: '14px'}}>{this.__('Collections of layers managed by a group or organization')}</span>
               </div>
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
-                <CardFilter defaultValue={this.state.groupMode} onChange={function (value) { _this.setState({groupMode: value}) }} />
+                <CardFilter defaultValue={this.state.groupMode} onChange={(value) => { _this.setState({groupMode: value}) }} />
               </div>
             </div>
             <div className='row'>
               <div className='col s12'>
-                <CardCarousel cards={groupCards} infinite={false} />
+                <CardCarousel cards={groupCards} infinite={false} t={this.t} />
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
@@ -279,12 +279,12 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <span className='valign' style={{fontSize: '14px'}}>{this.__('Open map data layers')}</span>
               </div>
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
-                <CardFilter defaultValue={this.state.layerMode} onChange={function (value) { _this.setState({layerMode: value}) }} />
+                <CardFilter defaultValue={this.state.layerMode} onChange={(value) => { _this.setState({layerMode: value}) }} />
               </div>
             </div>
             <div className='row'>
               <div className='col s12'>
-                <CardCarousel cards={layerCards} infinite={false} />
+                <CardCarousel cards={layerCards} infinite={false} t={this.t} />
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>

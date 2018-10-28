@@ -117,7 +117,7 @@ module.exports = {
     let db = knex
     if (trx) { db = trx }
     return db.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at',
+      'omh.maps.updated_at', 'omh.maps.share_id',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       db.raw(`md5(lower(trim(public.users.email))) as emailhash`),
       db.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
@@ -132,7 +132,7 @@ module.exports = {
      */
   getFeaturedMaps (number: number = 10) {
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at',
+      'omh.maps.updated_at', 'omh.maps.share_id',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
       knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
@@ -149,7 +149,7 @@ module.exports = {
      */
   getPopularMaps (number: number = 10) {
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at',
+      'omh.maps.updated_at', 'omh.maps.share_id',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
       knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
@@ -167,7 +167,7 @@ module.exports = {
    */
   getRecentMaps (number: number = 10) {
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at',
+      'omh.maps.updated_at', 'omh.maps.share_id',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
       knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
@@ -184,7 +184,7 @@ module.exports = {
    */
   getUserMaps (user_id: number) {
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at',
+      'omh.maps.updated_at', 'omh.maps.share_id',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
       knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',
@@ -218,7 +218,7 @@ module.exports = {
   getSearchResults (input: string) {
     input = input.toLowerCase()
     return knex.select('omh.maps.map_id', 'omh.maps.title', 'omh.maps.private',
-      'omh.maps.updated_at',
+      'omh.maps.updated_at', 'omh.maps.share_id',
       'omh.maps.owned_by_group_id', 'omh.maps.owned_by_user_id',
       knex.raw(`md5(lower(trim(public.users.email))) as emailhash`),
       knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`), 'omh.maps.views',

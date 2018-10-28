@@ -106,7 +106,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
           <div className='col s12 no-padding' style={{width: '100%'}}>
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Maps')}</h5>
             <div className='divider' />
-            <CardCarousel cards={myCards} infinite={false} />
+            <CardCarousel cards={myCards} infinite={false} t={this.t} />
           </div>
         </div>
       )
@@ -128,7 +128,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
             <div className='col s12 no-padding'>
               <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
               <div className='divider' />
-              <CardCarousel infinite={false} cards={searchCards} />
+              <CardCarousel infinite={false} cards={searchCards} t={this.t} />
             </div>
           </div>
         )
@@ -164,7 +164,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
                 <div className='col s12 no-padding'>
                   <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Maps')}</h5>
                   <div className='divider' />
-                  <CardCarousel cards={popularCards} infinite={false} />
+                  <CardCarousel cards={popularCards} infinite={false} t={this.t} />
                 </div>
               </div>
             </div>

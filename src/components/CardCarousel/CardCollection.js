@@ -11,43 +11,31 @@ type Props = {
   viewAllLink?: string
 }
 
-type DefaultProps = {
-  cards: Array<CardConfig>
-}
-
 export default class CardCollection extends MapHubsComponent<Props, void> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     cards: []
   }
 
   render () {
-    let title = ''
-    if (this.props.title) {
-      title = (
-        <h5>{this.props.title}</h5>
-      )
-    }
+    const {t} = this
+    const {title, viewAllLink} = this.props
 
-    let viewAllLink = ''
-    if (this.props.viewAllLink) {
-      viewAllLink = (
-        <a
-          style={{position: 'absolute', right: '5px', top: '14px'}}
-          href={this.props.viewAllLink}
-        >
-          {this.__('View All')}
-        </a>
-      )
-    }
     return (
       <div className='row'>
         <div className='col s12' style={{position: 'relative'}}>
-          {title}
-          {viewAllLink}
+          {title &&
+            <h5>{title}</h5>
+          }
+          {viewAllLink &&
+            <a
+              style={{position: 'absolute', right: '5px', top: '14px'}}
+              href={viewAllLink}
+            >
+              {t('View All')}
+            </a>
+          }
           <div className='divider' />
-          <CardCarousel cards={this.props.cards} infinite={false} />
+          <CardCarousel cards={this.props.cards} infinite={false} t={t} />
         </div>
       </div>
     )

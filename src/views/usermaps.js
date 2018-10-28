@@ -79,7 +79,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
         <div className='row'>
           <div className='col s12'>
             <h4>{this.__('My Maps')}</h4>
-            <CardCarousel infinite={false} cards={cards} />
+            <CardCarousel infinite={false} cards={cards} t={this.t} />
           </div>
         </div>
       )
