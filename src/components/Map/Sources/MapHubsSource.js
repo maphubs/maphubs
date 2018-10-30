@@ -5,6 +5,7 @@ import Marker from '../Marker'
 import superagent from 'superagent'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
+import Promise from 'bluebird'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 import urlUtil from '../../../services/url-util'
 import {checkClientError} from '../../../services/client-error-response'
@@ -94,11 +95,44 @@ const MapHubsSource = {
         })
     }
   },
-  addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {
+  async addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {
     const map = mapComponent.map
     const [,, MarkerState] = mapComponent.props.containers
     const presets = source.metadata ? source.metadata['maphubs:presets'] : undefined
+    const customImages = layer.metadata ? layer.metadata['maphubs:images'] : undefined
+    if (customImages) {
+      await Promise.map(customImages, async customImage => {
+        // const imgRes = await superagent.get(customImage.url)
+        // const imageData = imgRes.text
 
+        return new Promise((resolve, reject) => {
+          let width = customImage.width || 16
+          let height = customImage.height || 16
+          let img = new Image(width, height)
+
+          let src = customImage.url
+          if (customImage.svg) {
+            src = 'data:image/svg+xml;base64,' + btoa(customImage.svg)
+          }
+          // eslint-disable-next-line
+          img.onload = () => {
+            try {
+              if (map.hasImage(customImage.name)) {
+                map.removeImage(customImage.name)
+              }
+              map.addImage(customImage.name, img)
+              debug.info('loaded image' + customImage.name)
+            } catch (err) {
+              debug.error(err)
+            }
+            resolve()
+          }
+          img.setAttribute('crossOrigin', '')
+          img.crossOrigin = 'Anonymous'
+          img.src = src
+        })
+      })
+    }
     // try to delete any old markers
     if (layer.metadata && layer.metadata['maphubs:markers']) {
       const layer_id = layer.metadata['maphubs:layer_id']

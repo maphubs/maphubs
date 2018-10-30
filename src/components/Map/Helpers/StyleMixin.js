@@ -108,15 +108,15 @@ export default {
       try {
         const map = this.map
 
-        const customSourceRender = () => {
+        const customSourceRender = async () => {
           if (customSources) {
             customSources.forEach(customSource => {
               customSource.driver.load(customSource.key, customSource.source, _this)
             })
           }
           if (customSourceLayers) {
-            customSourceLayers.forEach(customSourceLayer => {
-              customSourceLayer.driver.addLayer(customSourceLayer.layer, customSourceLayer.source, customSourceLayer.position, _this)
+            await Promise.map(customSourceLayers, customSourceLayer => {
+              return customSourceLayer.driver.addLayer(customSourceLayer.layer, customSourceLayer.source, customSourceLayer.position, _this)
             })
           }
           map.off('styledata', customSourceRender)
@@ -211,7 +211,7 @@ export default {
       this.removeLayers(layersToRemove, this.overlayMapStyle)
       this.removeSources(sourcesToRemove, this.overlayMapStyle)
       customSources = await this.loadSources(sourcesToAdd, overlayStyle)
-      customSourceLayers = this.addLayers(layersToAddWithPosition, overlayStyle)
+      customSourceLayers = await this.addLayers(layersToAddWithPosition, overlayStyle)
 
       _this.debugLog(`updating ${layersToUpdate.length} layers`)
       _this.debugLog(`updating ${sourcesToUpdate.length} sources`)
@@ -221,7 +221,7 @@ export default {
       this.removeSources(sourcesToUpdate, this.overlayMapStyle)
       const customSourcesToUpdate = await this.loadSources(sourcesToUpdate, overlayStyle)
       customSources = customSources.concat(customSourcesToUpdate)
-      customSourceLayers = customSourceLayers.concat(this.addLayers(layersToUpdateWithPosition, overlayStyle))
+      customSourceLayers = customSourceLayers.concat(await this.addLayers(layersToUpdateWithPosition, overlayStyle))
 
       _this.debugLog(`custom sources: ${customSources.length}`)
       _this.debugLog(`custom source layers ${customSourceLayers.length}`)
@@ -248,7 +248,7 @@ export default {
         }
       })
       customSources = await this.loadSources(newSources, overlayStyle)
-      customSourceLayers = this.addLayers(newLayersToAdd, overlayStyle)
+      customSourceLayers = await this.addLayers(newLayersToAdd, overlayStyle)
     }
     // finally update the map
     this.overlayMapStyle = overlayStyle
@@ -256,7 +256,7 @@ export default {
       try {
         const map = this.map
 
-        const customSourceRender = () => {
+        const customSourceRender = async () => {
           _this.debugLog('customSourceRender')
           if (customSources) {
             customSources.forEach(customSource => {
@@ -264,8 +264,8 @@ export default {
             })
           }
           if (customSourceLayers) {
-            customSourceLayers.forEach(customSourceLayer => {
-              customSourceLayer.driver.addLayer(customSourceLayer.layer, customSourceLayer.source, customSourceLayer.position, _this)
+            await Promise.map(customSourceLayers, customSourceLayer => {
+              return customSourceLayer.driver.addLayer(customSourceLayer.layer, customSourceLayer.source, customSourceLayer.position, _this)
             })
           }
           map.off('styledata', customSourceRender)
@@ -310,10 +310,10 @@ export default {
     })
   },
 
-  addLayers (layers: Array<{id: number, position: number}>, fromStyle: GLStyle) {
+  async addLayers (layers: Array<{id: number, position: number}>, fromStyle: GLStyle) {
     const _this = this
     const customSourceLayers = []
-    layers.forEach((layerToAdd) => {
+    await Promise.map(layers, (layerToAdd) => {
       _this.debugLog(`adding layer: ${layerToAdd.id}`)
       try {
         const layer = _find(fromStyle.layers, {id: layerToAdd.id})
@@ -329,7 +329,7 @@ export default {
           })
           customSourceLayers.push(sourceDriver)
         } else {
-          sourceDriver.driver.addLayer(layer, source, layerToAdd.position, _this)
+          return sourceDriver.driver.addLayer(layer, source, layerToAdd.position, _this)
         }
       } catch (err) {
         _this.debugLog('Failed to add layers')
