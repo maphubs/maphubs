@@ -102,6 +102,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let searchResults = ''
 
     if (this.state.searchActive) {
@@ -114,9 +115,9 @@ export default class Layers extends MapHubsComponent<Props, State> {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5>{this.__('Search Results')}</h5>
+              <h5>{t('Search Results')}</h5>
               <div className='divider' />
-              <p><b>{this.__('No Results Found')}</b></p>
+              <p><b>{t('No Results Found')}</b></p>
             </div>
           </div>
         )
@@ -133,7 +134,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
     } else {
       const cards = this.props.layers.map(cardUtil.getLayerCard)
       layers = (
-        <CardGrid cards={cards} />
+        <CardGrid cards={cards} t={t}/>
       )
     }
 
@@ -144,11 +145,11 @@ export default class Layers extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className='row' style={{marginBottom: '0px'}}>
               <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{this.__('Layers')}</h4>
-                <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse layers or create a new layer.')}</p>
+                <h4 className='no-margin'>{t('Layers')}</h4>
+                <p style={{fontSize: '16px', margin: 0}}>{t('Browse layers or create a new layer.')}</p>
               </div>
               <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+                <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </div>
             </div>
           </div>
@@ -157,7 +158,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
           <div className='row'>
             <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
               <Formsy>
-                <Toggle name='mode' onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList} />
+                <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
               </Formsy>
             </div>
             <div className='row'>

@@ -96,12 +96,13 @@ export default class Hubs extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let searchResults = ''
     if (this.state.searchActive) {
       if (this.state.searchResults.length > 0) {
         const searchCards = this.state.searchResults.map(cardUtil.getHubCard)
         searchResults = (
-          <CardCollection cards={searchCards} title={this.__('Search Results')} />
+          <CardCollection cards={searchCards} title={this.__('Search Results')} t={t} />
         )
       } else {
         searchResults = (
@@ -126,7 +127,7 @@ export default class Hubs extends MapHubsComponent<Props, State> {
     } else {
       const cards = this.props.hubs.map(cardUtil.getHubCard)
       hubs = (
-        <CardGrid cards={cards} />
+        <CardGrid cards={cards} t={t} />
       )
     }
 

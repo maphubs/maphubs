@@ -66,19 +66,9 @@ export default class AllStories extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    let stories = ''
-    if (this.state.showList) {
-      stories = (
-        <div className='container'>
-          <StoryList showTitle={false} stories={this.props.stories} />
-        </div>
-      )
-    } else {
-      const cards = this.props.stories.map(cardUtil.getStoryCard)
-      stories = (
-        <CardGrid cards={cards} />
-      )
-    }
+    const {t} = this
+    const {stories} = this.props
+    const {showList} = this.state
 
     return (
       <ErrorBoundary>
@@ -87,25 +77,31 @@ export default class AllStories extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className='row' style={{marginBottom: '0px'}}>
               <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{this.__('Stories')}</h4>
+                <h4 className='no-margin'>{t('Stories')}</h4>
               </div>
             </div>
-
             <div className='row'>
               <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
                 <Formsy>
-                  <Toggle name='mode' onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList} />
+                  <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
                 </Formsy>
               </div>
               <div className='row'>
-                {stories}
+                {showList &&
+                  <div className='container'>
+                    <StoryList showTitle={false} stories={stories} />
+                  </div>
+                }
+                {!showList &&
+                  <CardGrid cards={stories.map(cardUtil.getStoryCard)} t={t} />
+                }
               </div>
             </div>
           </div>
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               onClick={this.onCreateStory}
-              tooltip={this.__('Create New Story')}
+              tooltip={t('Create New Story')}
               tooltipPosition='top'
               icon='add' />
           </div>

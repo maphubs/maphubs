@@ -103,21 +103,22 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let searchResults = ''
 
     if (this.state.searchActive) {
       if (this.state.searchResults.length > 0) {
         const searchCards = this.state.searchResults.map(cardUtil.getGroupCard)
         searchResults = (
-          <CardCollection title={this.__('Search Results')} cards={searchCards} />
+          <CardCollection title={t('Search Results')} cards={searchCards} t={t} />
         )
       } else {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5>{this.__('Search Results')}</h5>
+              <h5>{t('Search Results')}</h5>
               <div className='divider' />
-              <p><b>{this.__('No Results Found')}</b></p>
+              <p><b>{t('No Results Found')}</b></p>
             </div>
           </div>
         )
@@ -134,7 +135,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
     } else {
       const cards = this.props.groups.map(cardUtil.getGroupCard)
       groups = (
-        <CardGrid cards={cards} />
+        <CardGrid cards={cards} t={t} />
       )
     }
 
@@ -145,11 +146,11 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className='row' style={{marginBottom: '0px'}}>
               <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{this.__('Groups')}</h4>
-                <p style={{fontSize: '16px', margin: 0}}>{this.__('Create a group for your organization or browse the content of existing groups.')}</p>
+                <h4 className='no-margin'>{t('Groups')}</h4>
+                <p style={{fontSize: '16px', margin: 0}}>{t('Create a group for your organization or browse the content of existing groups.')}</p>
               </div>
               <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+                <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </div>
             </div>
           </div>
@@ -160,7 +161,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
             <div className='row'>
               <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
                 <Formsy>
-                  <Toggle name='mode' onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList} />
+                  <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
                 </Formsy>
               </div>
               <div className='row'>
@@ -171,7 +172,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
             <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton
                 href='/creategroup' icon='add'
-                tooltip={this.__('Create New Group')} tooltipPosition='top' />
+                tooltip={t('Create New Group')} tooltipPosition='top' />
             </div>
           </div>
         </main>

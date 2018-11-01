@@ -102,13 +102,14 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let searchResults = ''
     if (this.state.searchActive) {
       if (this.state.searchResults.length > 0) {
         const searchCards = this.state.searchResults.map(cardUtil.getMapCard)
 
         searchResults = (
-          <CardCollection title={this.__('Search Results')} cards={searchCards} />
+          <CardCollection title={this.__('Search Results')} cards={searchCards} t={t} />
         )
       } else {
         searchResults = (
@@ -133,7 +134,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
     } else {
       const cards = this.props.maps.map(cardUtil.getMapCard)
       maps = (
-        <CardGrid cards={cards} />
+        <CardGrid cards={cards} t={t} />
       )
     }
 

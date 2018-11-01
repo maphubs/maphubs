@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Card from './Card'
+import {Row, Col} from 'antd'
 import PageSelection from '../UI/PageSelection'
 import _chunk from 'lodash.chunk'
 
@@ -9,7 +10,8 @@ import type {CardConfig} from './Card'
   type Props = {
     cards: Array<CardConfig>,
     showAddButton: boolean,
-    cardsPerPage: number
+    cardsPerPage: number,
+    t: Function
   };
 
   type State = {
@@ -18,15 +20,11 @@ import type {CardConfig} from './Card'
   }
 
 export default class CardGrid extends React.Component<Props, State> {
-  props: Props
-
   static defaultProps = {
     showAddButton: false,
     cardsPerPage: 24,
     cards: []
   }
-
-  state: State
 
   constructor (props: Props) {
     super(props)
@@ -49,25 +47,27 @@ export default class CardGrid extends React.Component<Props, State> {
   }
 
   render () {
-    const numPages = this.state.chunks.length
-    const cards: Array<CardConfig> = (this.state.chunks[this.state.page - 1]: Array<CardConfig>)
+    const {t, showAddButton} = this.props
+    const {chunks, page} = this.state
+    const numPages = chunks.length
+    const cards: Array<CardConfig> = (chunks[page - 1]: Array<CardConfig>)
     return (
       <div>
-        <div className='row no-margin right-align'>
-          <PageSelection page={this.state.page} numPages={numPages} onClick={this.onChangePage} />
-        </div>
-        <div className='row'>
+        <Row style={{textAlign: 'right'}}>
+          <PageSelection page={page} numPages={numPages} onClick={this.onChangePage} />
+        </Row>
+        <Row type='flex' justify='center' style={{padding: '15px'}}>
           {cards.map((card) => {
             return (
-              <div key={card.id} className='col s12 m4 l3'>
-                <Card showAddButton={this.props.showAddButton} {...card} />
-              </div>
+              <Col key={card.id} sm={24} md={6} lg={4}>
+                <Card showAddButton={showAddButton} {...card} t={t} />
+              </Col>
             )
           })}
-        </div>
-        <div className='row right-align'>
-          <PageSelection page={this.state.page} numPages={numPages} onClick={this.onChangePage} />
-        </div>
+        </Row>
+        <Row style={{textAlign: 'right'}}>
+          <PageSelection page={page} numPages={numPages} onClick={this.onChangePage} />
+        </Row>
       </div>
     )
   }
