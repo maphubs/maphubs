@@ -1,4 +1,5 @@
 // @flow
+import Shortid from 'shortid'
 import type {GLStyle} from '../../../types/mapbox-gl-style'
 import DebugService from '../../../services/debug'
 const debug = DebugService('map-styles-color')
@@ -10,6 +11,9 @@ export default {
     if (glStyle.layers && Array.isArray(glStyle.layers) && glStyle.layers.length > 0) {
       // treat style as immutable and return a copy
       glStyle = JSON.parse(JSON.stringify(glStyle))
+
+      let markerImageName
+      let markerLayer
 
       glStyle.layers.forEach((glLayer) => {
         const {id, type, metadata, paint} = glLayer
@@ -26,8 +30,13 @@ export default {
             debug.log('unable to update point layer type: ' + type)
           }
           if (metadata && metadata['maphubs:markers']) {
+            // use a new random image name so we can get mapbox-gl to update
+            markerImageName = 'marker-icon-' + Shortid.generate()
             metadata['maphubs:markers'].shapeFill = newColor
+            metadata['maphubs:markers'].imageName = markerImageName
           }
+        } else if (id.startsWith('omh-markers-')) {
+          markerLayer = glLayer
         } else if (id.startsWith('omh-data-line')) {
           if (type === 'line' && paint) {
             paint['line-color'] = newColor
@@ -70,6 +79,9 @@ export default {
           }
         }
       })
+      if (markerLayer) {
+        markerLayer.layout['icon-image'] = markerImageName
+      }
     }
     return glStyle
   }

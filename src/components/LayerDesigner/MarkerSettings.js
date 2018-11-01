@@ -47,7 +47,7 @@ export default class MarkerSettings extends MapHubsComponent<Props, State> {
         if (layer.id.startsWith('omh-data-point')) {
           if (layer.metadata && layer.metadata['maphubs:markers']) {
             _assignIn(options, layer.metadata['maphubs:markers'])
-          } else {
+          } else if (layer.paint) {
             // get color from circle
             options.shapeFill = layer.paint['circle-color']
           }

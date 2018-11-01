@@ -6,14 +6,12 @@ import connect from 'unstated-connect'
 import FeaturePopup from './FeaturePopup'
 import BaseMapContainer from './containers/BaseMapContainer'
 import DataEditorContainer from './containers/DataEditorContainer'
-import MarkerContainer from './containers/MarkerContainer'
 import MapContainer from './containers/MapContainer'
 import _isequal from 'lodash.isequal'
 import MapToolButton from './MapToolButton'
 import MapSearchPanel from './Search/MapSearchPanel'
 import MapToolPanel from './MapToolPanel'
 import InsetMap from './InsetMap'
-import MarkerSprites from './MarkerSprites'
 import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin'
 import MapInteractionMixin from './Helpers/MapInteractionMixin'
 import MeasurementToolMixin from './Helpers/MeasurementToolMixin'
@@ -141,9 +139,8 @@ class Map extends React.Component<Props, State> {
 
   componentWillMount () {
     // TODO: this is a hack, need to move state helper functions the containers instead of attached to the instance
-    const [, , , MapState] = this.props.containers
+    const [BaseMapState, , MapState] = this.props.containers
     MapState.setMap(this)
-    const [BaseMapState] = this.props.containers
     BaseMapState.setBaseMap(this.props.baseMap)
     if (this.props.glStyle) {
       const interactiveLayers = this.getInteractiveLayers(this.props.glStyle)
@@ -182,7 +179,7 @@ class Map extends React.Component<Props, State> {
     // change locale
     if (this.props.locale && (this.props.locale !== prevProps.locale)) {
       this.changeLocale(this.props.locale, this.map)
-      const [, , , MapState] = this.props.containers
+      const [, , MapState] = this.props.containers
       if (MapState.state.insetMap) {
         this.changeLocale(this.props.locale, MapState.state.insetMap.getInsetMap())
       }
@@ -226,7 +223,7 @@ class Map extends React.Component<Props, State> {
     const {debugLog} = this
     const {preserveDrawingBuffer, enableRotation, hash, fitBounds, fitBoundsOptions, data, glStyle, attributionControl, t, locale} = this.props
     const {interactive, mapLoaded} = this.state
-    const [BaseMapState, , , MapState] = this.props.containers
+    const [BaseMapState, , MapState] = this.props.containers
     BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
       _this.setBaseMapStyle(baseMap, false)
 
@@ -515,7 +512,7 @@ class Map extends React.Component<Props, State> {
     const _this = this
     const {setBaseMapStyle, map} = this
     const {onChangeBaseMap} = this.props
-    const [BaseMapState, , , MapState] = this.props.containers
+    const [BaseMapState, , MapState] = this.props.containers
     await BaseMapState.getBaseMapFromName(mapName, (baseMapStyle) => {
       BaseMapState.setBaseMap(mapName)
       _this.setState({allowLayersToMoveMap: false})
@@ -689,7 +686,6 @@ class Map extends React.Component<Props, State> {
             t={t}
           />
         </div>
-        <MarkerSprites />
       </div>
     )
   }
@@ -922,4 +918,4 @@ class Map extends React.Component<Props, State> {
   }
 }
 
-export default connect([BaseMapContainer, DataEditorContainer, MarkerContainer, MapContainer])(Map)
+export default connect([BaseMapContainer, DataEditorContainer, MapContainer])(Map)

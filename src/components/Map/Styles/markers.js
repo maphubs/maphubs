@@ -1,37 +1,25 @@
 // @flow
+import Shortid from 'shortid'
 import type {GLStyle} from '../../../types/mapbox-gl-style'
 import type {Layer} from '../../../types/layer'
+
 export default {
   enableMarkers (style: GLStyle, markerOptions: Object, layer: Layer) {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))
-      let layer_id = (layer && layer.layer_id) ? layer.layer_id : ''
-      const shortid = (layer && layer.shortid) ? layer.shortid : ''
-      // get host from source
-      let baseUrl: string = '{MAPHUBS_DOMAIN}'
-      let remote_host
-      if (layer.remote && layer.remote_host) {
-        remote_host = layer.remote_host
-        baseUrl = 'https://' + layer.remote_host
-        // attempt to find remote layer id
-        const keys = Object.keys(style.sources)
-        if (keys && keys.length > 0) {
-          const firstSource = keys[0]
-          if (firstSource.startsWith('omh-')) {
-            const parts = firstSource.split('-')
-            const remoteLayerId = parts[1]
-            layer_id = remoteLayerId
-          }
-        }
-      }
 
-      const dataUrl = `${baseUrl}/api/lyr/${shortid}/export/json/${shortid}.json`
-      const geobufUrl = `${baseUrl}/api/lyr/${shortid}/export/geobuf/${shortid}.pbf`
+      const imageName = 'marker-icon-' + Shortid.generate()
+
+      let metadata = {}
+      let pointLayer
+      let existingMarkerLayer
 
       style.layers.forEach((layer) => {
-        if (layer.id.startsWith('omh-data-point')) {
-          let metadata = {}
+        if (layer.id.startsWith('omh-markers-')) {
+          existingMarkerLayer = layer
+        } else if (layer.id.startsWith('omh-data-point')) {
+          pointLayer = layer
           if (layer.metadata) {
             metadata = layer.metadata
           }
@@ -39,19 +27,15 @@ export default {
           if (!metadata['maphubs:markers']) {
             metadata['maphubs:markers'] = {}
           }
-
           metadata['maphubs:markers'] = markerOptions
           metadata['maphubs:markers'].enabled = true
-          if (remote_host) {
-            metadata['maphubs:markers'].remote_host = remote_host
-          }
-          metadata['maphubs:markers'].dataUrl = dataUrl
-          metadata['maphubs:markers'].geobufUrl = geobufUrl
-          metadata['maphubs:layer_id'] = layer_id
-          if (metadata['maphubs:interactive']) {
-            metadata['maphubs:markers'].interactive = true
-          }
+          metadata['maphubs:markers'].version = 2
+          metadata['maphubs:markers'].imageName = imageName
+
           metadata['maphubs:interactive'] = false // disable regular mapbox-gl interaction
+
+          if (!layer.layout) layer.layout = {}
+          layer.layout.visibility = 'none'
 
           layer.metadata = metadata
         } else if (layer.id.startsWith('omh-label')) {
@@ -78,6 +62,41 @@ export default {
           layer.layout.visibility = 'none'
         }
       })
+
+      const layer_id = metadata['maphubs:layer_id']
+      let shortid
+      if (metadata['maphubs:globalid']) {
+        shortid = metadata['maphubs:globalid']
+      } else {
+        shortid = layer_id
+      }
+
+      
+      let offset = [0, 0]
+      if (markerOptions.shape === 'MAP_PIN' || markerOptions.shape === 'SQUARE_PIN') {
+        offset = [0, -(markerOptions.height / 2)]
+      }
+
+      if (!existingMarkerLayer) {
+        const newLayer = {
+          id: 'omh-markers-' + shortid,
+          type: 'symbol',
+          metadata: {
+            'maphubs:interactive': true
+          },
+          source: pointLayer.source,
+          'source-layer': pointLayer['source-layer'],
+          filter: pointLayer.filter,
+          layout: {
+            'icon-image': imageName,
+            'icon-size': 0.5,
+            'icon-allow-overlap': true,
+            'icon-offset': offset
+          }
+        }
+        const newLayers = [newLayer].concat(style.layers)
+        style.layers = newLayers
+      }
     }
     return style
   },
@@ -87,11 +106,13 @@ export default {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))
       style.layers.forEach((layer) => {
-        if (layer.id.startsWith('omh-data-point')) {
+        if (layer.id.startsWith('omh-markers-')) {
+          if (!layer.layout) layer.layout = {}
+          layer.layout.visibility = 'none'
+        } else if (layer.id.startsWith('omh-data-point')) {
           if (!layer.metadata) {
             layer.metadata = {}
           }
-
           if (!layer.metadata['maphubs:markers']) {
             layer.metadata['maphubs:markers'] = {}
           }
@@ -102,6 +123,10 @@ export default {
           if (layer.metadata['maphubs:markers'].interactive) {
             layer.metadata['maphubs:interactive'] = true
           }
+
+          if (!layer.layout) layer.layout = {}
+          layer.layout.visibility = 'visible'
+
         } else if (layer.id.startsWith('omh-label')) {
           // restore label offset
           if (!layer.paint) {

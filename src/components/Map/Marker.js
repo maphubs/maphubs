@@ -1,6 +1,7 @@
 // @flow
 // Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
 import React from 'react'
+import Icons from './Icons'
 
 type Props = {
   shape: string,
@@ -91,19 +92,34 @@ export default class Marker extends React.PureComponent<Props> {
       }
     }
 
+    let IconComponent
+    if (icon && icon !== 'none') {
+      IconComponent = Icons.getIcon(icon)
+    }
+
     return (
-      <svg xmlns='http://www.w3.org/2000/svg' version='1.1'
-        width={this.props.width} height={this.props.height} x='0px' y='0px'
-        viewBox={viewBox} preserveAspectRatio='xMidYMid meet'>
-        <g stroke={this.props.shapeStroke} fill={this.props.shapeFill} strokeWidth={this.props.shapeStrokeWidth} fillOpacity={this.props.shapeFillOpacity}>
-          {markerBackground}
-        </g>
-        {(icon && icon !== 'none') &&
-          <g fill={this.props.iconFill} width={viewBoxSize} height={viewBoxSize} fillOpacity={this.props.iconFillOpacity} stroke={this.props.iconStroke} strokeWidth={this.props.iconStrokeWidth}>
-            <use x={x} y={y} width={iconWidth} height={iconHeight} xlinkHref={'#' + this.props.icon} />
+      <React.Fragment>
+        <svg xmlns='http://www.w3.org/2000/svg' version='1.1'
+          width={this.props.width} height={this.props.height} x='0px' y='0px'
+          viewBox={viewBox} preserveAspectRatio='xMidYMid meet'>
+          <g stroke={this.props.shapeStroke} fill={this.props.shapeFill} strokeWidth={this.props.shapeStrokeWidth} fillOpacity={this.props.shapeFillOpacity}>
+            {markerBackground}
           </g>
-        }
-      </svg>
+          {IconComponent &&
+            <g
+              fill={this.props.iconFill}
+              width={viewBoxSize}
+              height={viewBoxSize}
+              fillOpacity={this.props.iconFillOpacity}
+              stroke={this.props.iconStroke}
+              strokeWidth={this.props.iconStrokeWidth}
+            >
+              <IconComponent />
+              <use x={x} y={y} width={iconWidth} height={iconHeight} href={`#${icon}`} />
+            </g>
+          }
+        </svg>
+      </React.Fragment>
     )
   }
 }

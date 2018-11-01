@@ -1,15 +1,12 @@
 // @flow
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { renderToStaticMarkup } from 'react-dom/server'
 import Marker from '../Marker'
 import superagent from 'superagent'
-import geobuf from 'geobuf'
-import Pbf from 'pbf'
 import Promise from 'bluebird'
+import Shortid from 'shortid'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 import urlUtil from '../../../services/url-util'
-import {checkClientError} from '../../../services/client-error-response'
-import $ from 'jquery'
 import GJV from 'geojson-validation'
 import DebugService from '../../../services/debug'
 const debug = DebugService('MapHubsSource')
@@ -97,14 +94,9 @@ const MapHubsSource = {
   },
   async addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {
     const map = mapComponent.map
-    const [,, MarkerState] = mapComponent.props.containers
-    const presets = source.metadata ? source.metadata['maphubs:presets'] : undefined
     const customImages = layer.metadata ? layer.metadata['maphubs:images'] : undefined
     if (customImages) {
       await Promise.map(customImages, async customImage => {
-        // const imgRes = await superagent.get(customImage.url)
-        // const imageData = imgRes.text
-
         return new Promise((resolve, reject) => {
           let width = customImage.width || 16
           let height = customImage.height || 16
@@ -133,184 +125,84 @@ const MapHubsSource = {
         })
       })
     }
-    // try to delete any old markers
-    if (layer.metadata && layer.metadata['maphubs:markers']) {
-      const layer_id = layer.metadata['maphubs:layer_id']
-      $('.maphubs-marker-' + layer_id).each((i, markerDiv) => {
-        ReactDOM.unmountComponentAtNode(markerDiv)
-        $(markerDiv).remove()
-      })
-      if (MarkerState.removeLayer) {
-        MarkerState.removeLayer(layer_id)
-      }
-    }
 
+    // New marker support
     if (layer.metadata &&
       layer.metadata['maphubs:markers'] &&
-      layer.metadata['maphubs:markers'].enabled &&
-      !(layer.layout && layer.layout.visibility && layer.layout.visibility === 'none')
-    ) {
+      layer.metadata['maphubs:markers'].enabled) {
       const markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']))
-      markerConfig.dataUrl = markerConfig.dataUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
-      const layer_id = layer.metadata['maphubs:layer_id']
-      let shortid
-      if (layer.metadata['maphubs:globalid']) {
-        shortid = layer.metadata['maphubs:globalid']
-      } else {
-        shortid = layer_id
-      }
+      let width = markerConfig.width || 16
+      let height = markerConfig.height || 16
 
-      // load geojson for this layer
-      let geojsonUrl = markerConfig.dataUrl
-      if (source.type === 'geojson') {
-        geojsonUrl = source.data
-      }
+      let imageName = markerConfig.imageName
 
-      const createMarkersFromGeoJSON = function (geojson) {
-      // add markers to map
-        geojson.features.forEach((marker, i) => {
-          GJV.isFeature(marker, (valid, errs) => {
-            if (!valid) {
-              valid = false
-              debug.log(errs)
-            }
-            GJV.isPoint(marker.geometry, (valid, errs) => {
-              if (!valid) {
-                valid = false
-                debug.log(errs)
-              } else {
-                if (!marker.properties.mhid) {
-                  // mhid not found determine an ID for the marker
-                  if (marker.properties.osm_id) {
-                    marker.properties.mhid = layer_id + ':' + marker.properties.osm_id
-                  } else if (marker.properties['id']) {
-                    marker.properties.mhid = layer_id + ':' + marker.properties['id']
-                  } else if (marker.properties['ID']) {
-                    marker.properties.mhid = layer_id + ':' + marker.properties['ID']
-                  } else if (marker.properties['OBJECTID']) {
-                    marker.properties.mhid = layer_id + ':' + marker.properties['OBJECTID']
-                  } else {
-                    marker.properties.mhid = layer_id + ':' + i
-                  }
-                }
+      // backwards compatibility for existing marker layers
+      if (!markerConfig.version || markerConfig.version !== 2) {
+        debug.info('Legacy Markers Layer')
+        let offset = [0, 0]
+        if (markerConfig.shape === 'MAP_PIN' || markerConfig.shape === 'SQUARE_PIN') {
+          offset = [0, -(markerConfig.height / 2)]
+        }
 
-                if (markerConfig.remote_host) {
-                  marker.properties.maphubs_host = markerConfig.remote_host
-                } else {
-                  marker.properties.maphubs_host = window.location.hostname
-                }
+        if (!imageName) {
+          imageName = 'marker-icon-' + Shortid.generate()
+        }
 
-                if (!marker.properties['maphubs_metadata']) {
-                  marker.properties['maphubs_metadata'] = {}
-                }
-                marker.properties['maphubs_metadata'].presets = presets
-
-                const markerId = marker.properties.mhid
-
-                // create a DOM element for the marker
-                const el = document.createElement('div')
-                el.className = 'maphubs-marker-' + layer_id
-                el.style.width = markerConfig.width + 'px'
-                el.style.height = markerConfig.height + 'px'
-
-                el.addEventListener('click', (e) => {
-                  e.stopPropagation()
-                  marker.properties.layer_id = layer_id
-                  //
-                  if (mapComponent.state.editing) {
-                    if (mapComponent.state.editingLayer.layer_id === marker.properties.layer_id) {
-                      mapComponent.editFeature(marker)
-                    }
-                    return // return here to disable interactation with other layers when editing
-                  }
-                  mapComponent.setSelectionFilter([marker])
-                  mapComponent.setState({selectedFeature: marker, selected: true})
-                })
-
-                ReactDOM.render(
-                  <Marker {...markerConfig} />,
-                  el
-                )
-
-                let offsetHeight
-                if (markerConfig.shape === 'MAP_PIN' || markerConfig.shape === 'SQUARE_PIN') {
-                  offsetHeight = -(markerConfig.height / 2)
-                } else {
-                  offsetHeight = 0
-                }
-
-                const mapboxMarker = new mapboxgl.Marker(el, {offset: [0, offsetHeight]})
-                  .setLngLat(marker.geometry.coordinates)
-                  .addTo(map)
-
-                if (MarkerState.addMarker) {
-                  MarkerState.addMarker(layer_id, markerId, mapboxMarker)
-                }
-              }
-            })
-          })
-        })
-        // add marker shadows (hidden for now)
-        // Need to draw something so layer is avaliable for search (otherwise source tiles are not cached)
-        const markerLayer = {
-          'id': layer.id,
-          'type': 'circle',
-          'metadata': {
-            'maphubs:layer_id': layer_id,
-            'maphubs:globalid': shortid,
-            'maphubs:interactive': false,
-            'maphubs:showBehindBaseMapLabels': true
-          },
-          'source': layer.source,
-          'source-layer': 'data',
-          'filter': ['in', '$type', 'Point'],
-          'paint': {
-            'circle-color': '#212121',
-            'circle-opacity': 0 // hidden
+        const newLayer = {
+          id: layer.id,
+          type: 'symbol',
+          metadata: layer.metadata,
+          source: layer.source,
+          'source-layer': layer['source-layer'],
+          filter: layer.filter,
+          layout: {
+            'icon-image': imageName,
+            'icon-size': 0.5,
+            'icon-allow-overlap': true,
+            'icon-offset': offset
           }
         }
+        layer = newLayer
+      }
 
-        if (layer['source-layer']) {
-          markerLayer['source-layer'] = layer['source-layer']
+      await new Promise((resolve, reject) => {
+        // create a DOM element for the marker
+
+        const svgString = renderToStaticMarkup(<Marker {...markerConfig} />)
+        const src = `data:image/svg+xml;base64,${btoa(svgString)}`
+
+        let img = new Image(width * 2, height * 2)
+        
+        // eslint-disable-next-line
+        img.onerror = (err) => {
+          console.log(err)
+          reject(err)
         }
-        debug.info(`adding marker shadow layer for ${layer_id}`)
-        mapComponent.addLayerBefore(markerLayer, 'water')
-        mapComponent.map.setStyle(mapComponent.glStyle)
-      }
-
-      let geobufUrl = markerConfig.geobufUrl
-      if (geobufUrl) {
-        geobufUrl = geobufUrl.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
-        superagent.get(geobufUrl)
-          .buffer(true)
-          .responseType('arraybuffer')
-          .parse(superagent.parse.image)
-          .end((err, res) => {
-            if (err) {
-              debug.error(err)
+        // eslint-disable-next-line
+        img.onload = () => {
+          try {
+            if (map.hasImage(imageName)) {
+              map.removeImage(imageName)
+            }
+            map.addImage(imageName, img)
+            debug.info('loaded image ' + imageName)
+            if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
+              mapComponent.addLayerBefore(layer, 'water')
             } else {
-              const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)))
-              createMarkersFromGeoJSON(geoJSON)
-            }
-          })
-      } else {
-        superagent.get(geojsonUrl)
-          .type('json').accept('json')
-          .end((err, res) => {
-            checkClientError(res, err, (err) => {
-              if (err) {
-                debug.error(err)
+              if (mapComponent.state.editing) {
+                mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
               } else {
-                const geojson = res.body
-                createMarkersFromGeoJSON(geojson)
+                mapComponent.addLayer(layer, position)
               }
-            },
-            (cb) => {
-              cb()
             }
-            )
-          })
-      }
+            resolve()
+          } catch (err) {
+            debug.error(err)
+            reject(err)
+          }
+        }
+        img.src = src
+      })
     } else if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
       mapComponent.addLayerBefore(layer, 'water')
     } else {
@@ -322,17 +214,6 @@ const MapHubsSource = {
     }
   },
   removeLayer (layer: GLLayer, mapComponent: any) {
-    const [,, MarkerState] = mapComponent.props.containers
-    if (layer.metadata && layer.metadata['maphubs:markers']) {
-      const layer_id = layer.metadata['maphubs:layer_id']
-      $('.maphubs-marker-' + layer_id).each((i, markerDiv) => {
-        ReactDOM.unmountComponentAtNode(markerDiv)
-        $(markerDiv).remove()
-      })
-      if (MarkerState.removeLayer) {
-        MarkerState.removeLayer(layer_id)
-      }
-    }
     mapComponent.removeLayer(layer.id)
   },
   remove (key: string, mapComponent: any) {
