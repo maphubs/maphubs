@@ -23,7 +23,7 @@ MapHubs runs as a stack of Docker containers (see list below) using either docke
 ```sh
 git clone git@github.com:maphubs/maphubs.git
 cd maphubs
-yarn install
+npm install
 ```
 
 ### Local configuration

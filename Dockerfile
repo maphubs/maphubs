@@ -12,13 +12,11 @@ RUN apt-get update && \
 WORKDIR /app
 
 FROM base AS dependencies
-COPY package.json yarn.lock .snyk /app/
+COPY package.json package-lock.json .snyk /app/
 
-RUN yarn install --production --pure-lockfile && \
+RUN npm install --production && \
     npm install -g snyk && \
-    yarn run snyk-protect && \
-    npm uninstall -g snyk && \
-    yarn cache clean
+    npm run snyk-protect
 
 FROM base AS release 
 COPY --from=dependencies /app /app  
