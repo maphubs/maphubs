@@ -4,10 +4,10 @@ import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import {message, notification} from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import NotificationActions from '../actions/NotificationActions'
 import Progress from '../components/Progress'
-import MessageActions from '../actions/MessageActions'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -16,6 +16,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
+import urlUtil from '../services/url-util'
 
 const checkClientError = require('../services/client-error-response').checkClientError
 
@@ -68,6 +69,12 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     }
   }
 
+  clipboard: any
+
+  componentDidMount () {
+    this.clipboard = require('clipboard-polyfill').default
+  }
+
   enableButton = () => {
     this.setState({
       canSubmit: true
@@ -93,18 +100,30 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     })
   }
 
+  copyInviteLink = (user: User) => {
+    const baseUrl = urlUtil.getBaseUrl()
+    const url = `${baseUrl}/signup/invite/${user.key}`
+    this.clipboard.writeText(url)
+    message.info(this.__('Copied'))
+  }
+
   submitInvite = (user: User) => {
     const _this = this
+    const email = user.email || user.invite_email
     this.setState({saving: true})
     request.post('/admin/invite/send')
       .type('json').accept('json')
-      .send({email: user.email, _csrf: this.state._csrf})
+      .send({email, _csrf: this.state._csrf})
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           const key = res.body.key
           _this.setState({saving: false})
           if (err) {
-            MessageActions.showMessage({title: _this.__('Failed to Send Invite'), message: err})
+            notification.error({
+              message: _this.__('Failed to Send Invite'),
+              description: err,
+              duration: 0
+            })
           } else {
             NotificationActions.showNotification(
               {
@@ -124,15 +143,46 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
       })
   }
 
+  resendInvite = (user: User) => {
+    const _this = this
+    const key = user.key
+    this.setState({saving: true})
+    request.post('/admin/invite/resend')
+      .type('json').accept('json')
+      .send({key, _csrf: this.state._csrf})
+      .end((err, res) => {
+        checkClientError(res, err, (err) => {
+          _this.setState({saving: false})
+          if (err) {
+            notification.error({
+              message: _this.__('Failed to Resend Invite'),
+              description: err,
+              duration: 0
+            })
+          } else {
+            NotificationActions.showNotification(
+              {
+                message: _this.__('Resent Sent'),
+                position: 'topright',
+                dismissAfter: 3000
+              })
+          }
+        },
+        (cb) => {
+          cb()
+        })
+      })
+  }
+
   handleResendInvite = (user: User) => {
-    const {submitInvite} = this
+    const {resendInvite} = this
     ConfirmationActions.showConfirmation({
       title: this.__('Confirm Resend Email'),
       postitiveButtonText: this.__('Send Invite'),
       negativeButtonText: this.__('Cancel'),
-      message: this.__(`Are you sure you want to resend the invite email for ${user.email}?`),
+      message: this.__(`Are you sure you want to resend the invite email for ${user.invite_email}?`),
       onPositiveResponse () {
-        submitInvite(user)
+        resendInvite(user)
       }
     })
   }
@@ -164,7 +214,11 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
         checkClientError(res, err, (err) => {
           _this.setState({saving: false})
           if (err) {
-            MessageActions.showMessage({title: _this.__('Failed to Send Invite'), message: err})
+            notification.error({
+              message: _this.__('Failed to Deauthorize'),
+              description: err,
+              duration: 0
+            })
           } else {
             NotificationActions.showNotification(
               {
@@ -264,24 +318,34 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                       <td>{email}</td>
                       <td>{member.key}</td>
                       <td>
-                        <Tooltip title={_this.__('Resend Invite')} position='bottom' inertia followCursor>
-                          <a onClick={() => {
-                            _this.handleResendInvite(member)
-                          }
-                          }>
-                            <i className='material-icons' style={{cursor: 'pointer'}}>email</i>
-                          </a>
-                        </Tooltip>
                         {(status !== 'Disabled' && status !== 'Admin') &&
-                          <Tooltip title={_this.__('Remove User')} position='bottom' inertia followCursor>
-                            <a onClick={() => {
-                              _this.handleDeauthorize(member)
-                            }}>
-                              <i className='material-icons' style={{
-                                cursor: 'pointer'
-                              }}>delete</i>
-                            </a>
-                          </Tooltip>
+                          <React.Fragment>
+                            <Tooltip title={_this.__('Resend Invite')} position='bottom' inertia followCursor>
+                              <a onClick={() => {
+                                _this.handleResendInvite(member)
+                              }
+                              }>
+                                <i className='material-icons' style={{cursor: 'pointer'}}>email</i>
+                              </a>
+                            </Tooltip>
+                            <Tooltip title={_this.__('Copy Invite Link')} position='bottom' inertia followCursor>
+                              <a onClick={() => {
+                                _this.copyInviteLink(member)
+                              }
+                              }>
+                                <i className='material-icons' style={{cursor: 'pointer'}}>link</i>
+                              </a>
+                            </Tooltip>
+                            <Tooltip title={_this.__('Remove User')} position='bottom' inertia followCursor>
+                              <a onClick={() => {
+                                _this.handleDeauthorize(member)
+                              }}>
+                                <i className='material-icons' style={{
+                                  cursor: 'pointer'
+                                }}>delete</i>
+                              </a>
+                            </Tooltip>
+                          </React.Fragment>
                         }
                       </td>
                     </tr>

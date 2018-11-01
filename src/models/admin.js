@@ -8,11 +8,26 @@ const local = require('../local')
 
 module.exports = {
 
-  async sendInviteEmail (email: string, __: Function) {
+  async resendInvite (key: string, __: Function) {
+    const result = await knex('omh.account_invites').select('email').where({key})
+    if (result && result.length === 1) {
+      const email = result[0].email
+      return this.sendInviteEmail(email, __, key)
+    }
+    return null
+  },
+
+  async sendInviteEmail (email: string, __: Function, resendKey?: string) {
     // create confirm link
     debug.log('sending email invite to: ' + email)
-    const key = uuid()
-    await knex('omh.account_invites').insert({email, key})
+
+    let key
+    if (resendKey) {
+      key = resendKey
+    } else {
+      key = uuid()
+      knex('omh.account_invites').insert({email, key})
+    }
 
     const baseUrl = urlUtil.getBaseUrl()
     const url = baseUrl + '/signup/invite/' + key

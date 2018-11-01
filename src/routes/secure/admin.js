@@ -38,7 +38,32 @@ module.exports = function (app: any) {
           if (data && data.email) {
             res.status(200).send({
               success: true,
-              key: await Admin.sendInviteEmail(data.email, req.__)
+              key: await Admin.sendInviteEmail(data.email, req.__, null)
+            })
+          } else {
+            apiDataError(res)
+          }
+        } else {
+          res.status(401).send('Unauthorized')
+        }
+      } else {
+        res.status(401).send('Unauthorized')
+      }
+    } catch (err) {
+      apiError(res, 200)(err)
+    }
+  })
+
+  app.post('/admin/invite/resend', csrfProtection, async (req, res) => {
+    try {
+      const data = req.body
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        const user_id = req.session.user.maphubsUser.id
+        if (await Admin.checkAdmin(user_id)) {
+          if (data && data.key) {
+            res.status(200).send({
+              success: true,
+              key: await Admin.resendInvite(data.key, req.__)
             })
           } else {
             apiDataError(res)
