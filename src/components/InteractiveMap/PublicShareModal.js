@@ -29,7 +29,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
   clipboard: any
 
   componentDidMount () {
-    this.clipboard = require('clipboard-polyfill')
+    this.clipboard = require('clipboard-polyfill').default
   }
 
   componentWillReceiveProps (nextProps: Props) {

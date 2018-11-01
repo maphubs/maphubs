@@ -10,7 +10,7 @@ type Props = {
 }
 
 const copyToClipboard = (val: string) => {
-  const clipboard = require('clipboard-polyfill')
+  const clipboard = require('clipboard-polyfill').default
   clipboard.writeText(val)
 }
 

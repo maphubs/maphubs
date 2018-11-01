@@ -129,7 +129,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
-    this.clipboard = require('clipboard-polyfill')
+    this.clipboard = require('clipboard-polyfill').default
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
