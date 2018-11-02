@@ -42,11 +42,9 @@ export default class MiniLegend extends React.Component<Props, State> {
   }
 
   toggleCollapsed = (e: Event) => {
-    if (this.props.collapsible && e.target.id !== 'legend-settings') {
-      this.setState({
-        collapsed: !this.state.collapsed
-      })
-    }
+    this.setState({
+      collapsed: !this.state.collapsed
+    })
   }
 
   openLayersPanel = () => {
@@ -65,7 +63,7 @@ export default class MiniLegend extends React.Component<Props, State> {
       layersButton = (
         <a
           href='#'
-          onClick={this.openLayersPanel}
+          onMouseDown={this.openLayersPanel}
           style={{
             position: 'absolute',
             right: '20px',
@@ -76,7 +74,6 @@ export default class MiniLegend extends React.Component<Props, State> {
           }}
         >
           <Settings
-            id='legend-settings'
             style={{
               color: '#000',
               textAlign: 'center',

@@ -162,6 +162,7 @@ const MapHubsSource = {
             'icon-offset': offset
           }
         }
+        newLayer.metadata['maphubs:interactive'] = true
         layer = newLayer
       }
 
