@@ -1,4 +1,4 @@
-FROM node:8 as base
+FROM node:10 as base
 
 LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
