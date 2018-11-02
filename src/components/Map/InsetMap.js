@@ -360,17 +360,14 @@ class InsetMap extends React.Component<Props, State> {
               onClick={this.toggleCollapsed}
               style={{
                 position: 'absolute',
-                top: '-5px',
-                right: '-5px',
-                height: '30px',
-                lineHeight: '30px',
-                width: '30px',
+                top: '0px',
+                right: '0px',
                 color: '#717171',
                 cursor: 'pointer',
                 textAlign: 'center',
                 zIndex: 1,
                 transform: 'rotate(45deg)',
-                fontSize: '18px'}}
+                fontSize: '20px'}}
             />
           }
         </div>
