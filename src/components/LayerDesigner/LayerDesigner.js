@@ -127,48 +127,16 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    let markers = ''
-    if (this.props.layer.data_type === 'point') {
-      markers = (
-        <li>
-          <div className='collapsible-header'>
-            <i className='material-icons'>place</i>{this.__('Markers')}
-          </div>
-          <div className='collapsible-body'>
-            <MarkerSettings onChange={this.onMarkersChange} style={this.props.style} layer={this.props.layer} />
-          </div>
-        </li>
-      )
-    }
-
-    let advanced = ''
-    if (this.props.showAdvanced) {
-      advanced = (
-        <li>
-          <div className='collapsible-header'>
-            <i className='material-icons'>code</i>{this.__('Advanced')}
-          </div>
-          <div className='collapsible-body'>
-            <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onAdvancedSettingsChange} />
-            <div className='row'>
-              <div className='col s12, m6'>
-                <button onClick={this.showStyleEditor} className='btn'>{this.__('Style')}</button>
-              </div>
-              <div className='col s12, m6'>
-                <button onClick={this.showLegendEditor} className='btn'>{this.__('Legend')}</button>
-              </div>
-            </div>
-          </div>
-        </li>
-      )
-    }
+    const {t} = this
+    const {layer, style, labels, legend, showAdvanced} = this.props
+    const {color} = this.state
 
     return (
       <div>
         <ul ref='collapsible' className='collapsible' data-collapsible='accordion' style={{marginTop: '0px'}}>
           <li className='active'>
             <div className='collapsible-header'>
-              <i className='material-icons'>color_lens</i>{this.__('Colors')}
+              <i className='material-icons'>color_lens</i>{t('Colors')}
             </div>
             <div className='collapsible-body'>
               <SwatchesPicker width='100%' onChange={this.onColorPickerChange}
@@ -197,32 +165,57 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
           </li>
           <li>
             <div className='collapsible-header'>
-              <i className='material-icons'>expand_more</i>{this.__('More Colors')}
+              <i className='material-icons'>expand_more</i>{t('More Colors')}
             </div>
             <div className='collapsible-body'>
               <SketchPicker
                 width='calc(100% - 20px)'
-                color={this.state.color}
+                color={color}
                 onChangeComplete={this.onColorPickerChange}
               />
             </div>
           </li>
           <li>
             <div className='collapsible-header'>
-              <i className='material-icons'>label</i>{this.__('Labels')}
+              <i className='material-icons'>label</i>{t('Labels')}
             </div>
             <div className='collapsible-body'>
-              <LabelSettings onChange={this.onLabelsChange} style={this.props.style} labels={this.props.labels} layer={this.props.layer} />
+              <LabelSettings onChange={this.onLabelsChange} style={style} labels={labels} layer={layer} />
             </div>
           </li>
-          {markers}
-          {advanced}
-
+          {layer.data_type === 'point' &&
+            <li>
+              <div className='collapsible-header'>
+                <i className='material-icons'>place</i>{t('Markers')}
+              </div>
+              <div className='collapsible-body'>
+                <MarkerSettings onChange={this.onMarkersChange} style={style} color={color} layer={layer} t={t} />
+              </div>
+            </li>
+          }
+          {showAdvanced &&
+            <li>
+              <div className='collapsible-header'>
+                <i className='material-icons'>code</i>{t('Advanced')}
+              </div>
+              <div className='collapsible-body'>
+                <AdvancedLayerSettings layer={layer} style={style} onChange={this.onAdvancedSettingsChange} />
+                <div className='row'>
+                  <div className='col s12, m6'>
+                    <button onClick={this.showStyleEditor} className='btn'>{t('Style')}</button>
+                  </div>
+                  <div className='col s12, m6'>
+                    <button onClick={this.showLegendEditor} className='btn'>{t('Legend')}</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          }
         </ul>
         <CodeEditor ref='styleEditor' id='layer-style-editor' mode='json'
-          code={JSON.stringify(this.props.style, undefined, 2)} title={this.__('Editing Layer Style')} onSave={this.onCodeStyleChange} />
+          code={JSON.stringify(this.props.style, undefined, 2)} title={t('Editing Layer Style')} onSave={this.onCodeStyleChange} />
         <CodeEditor ref='legendEditor' id='layer-legend-editor' mode='html'
-          code={this.props.legend} title={this.__('Edit Layer Legend')} onSave={this.onLegendChange} />
+          code={legend} title={t('Edit Layer Legend')} onSave={this.onLegendChange} />
       </div>
     )
   }

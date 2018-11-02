@@ -148,10 +148,14 @@ const MapHubsSource = {
           imageName = 'marker-icon-' + Shortid.generate()
         }
 
+        const metadataClone = JSON.parse(JSON.stringify(layer.metadata))
+
+        metadataClone['maphubs:interactive'] = true
+
         const newLayer = {
           id: layer.id,
           type: 'symbol',
-          metadata: layer.metadata,
+          metadata: metadataClone,
           source: layer.source,
           'source-layer': layer['source-layer'],
           filter: layer.filter,
@@ -162,7 +166,6 @@ const MapHubsSource = {
             'icon-offset': offset
           }
         }
-        newLayer.metadata['maphubs:interactive'] = true
         layer = newLayer
       }
 

@@ -18,6 +18,8 @@ export default {
       style.layers.forEach((layer) => {
         if (layer.id.startsWith('omh-markers-')) {
           existingMarkerLayer = layer
+          existingMarkerLayer.layout['icon-image'] = imageName
+          existingMarkerLayer.layout.visibility = 'visible'
         } else if (layer.id.startsWith('omh-data-point')) {
           pointLayer = layer
           if (layer.metadata) {
@@ -71,7 +73,6 @@ export default {
         shortid = layer_id
       }
 
-      
       let offset = [0, 0]
       if (markerOptions.shape === 'MAP_PIN' || markerOptions.shape === 'SQUARE_PIN') {
         offset = [0, -(markerOptions.height / 2)]

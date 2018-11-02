@@ -32,7 +32,12 @@ export default {
           if (metadata && metadata['maphubs:markers']) {
             // use a new random image name so we can get mapbox-gl to update
             markerImageName = 'marker-icon-' + Shortid.generate()
-            metadata['maphubs:markers'].shapeFill = newColor
+            if (metadata['maphubs:markers'].inverted) {
+              metadata['maphubs:markers'].shapeStroke = newColor
+              metadata['maphubs:markers'].iconFill = newColor
+            } else {
+              metadata['maphubs:markers'].shapeFill = newColor
+            }
             metadata['maphubs:markers'].imageName = markerImageName
           }
         } else if (id.startsWith('omh-markers-')) {
