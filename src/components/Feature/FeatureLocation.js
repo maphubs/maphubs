@@ -8,10 +8,14 @@ import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es'
 import fr from 'react-intl/locale-data/fr'
 import it from 'react-intl/locale-data/it'
+import id from 'react-intl/locale-data/id'
+import pt from 'react-intl/locale-data/pt'
 addLocaleData(en)
 addLocaleData(es)
 addLocaleData(fr)
 addLocaleData(it)
+addLocaleData(id)
+addLocaleData(pt)
 
 const openLocationCode = new OpenLocationCode()
 

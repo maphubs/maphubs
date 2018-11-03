@@ -197,7 +197,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
             <div className='row no-margin'>
               <Select name='icon' id='markers-icon-select' label={t('Marker Icon')} options={iconOptions} className='col s12 no-margin'
                 value={this.state.options.icon} startEmpty={!this.state.options.icon}
-                dataPosition='right' dataTooltip={t('Maker icon overlay')}
+                dataPosition='right' dataTooltip={t('Marker icon overlay')}
                 required />
             </div>
             <div className='row no-margin' style={{padding: '0 .75rem'}}>

@@ -179,9 +179,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                   <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Stories')}</h5>
                 </a>
               </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}}>
-                <span className='valign' style={{fontSize: '14px'}}>{this.__('User generated stories featuring interactive maps and images on a variety of topics')}</span>
-              </div>
+              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
                 <CardFilter defaultValue={this.state.storyMode} onChange={(value) => { _this.setState({storyMode: value}) }} />
               </div>
@@ -203,9 +201,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                   <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Maps')}</h5>
                 </a>
               </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}}>
-                <span className='valign' style={{fontSize: '14px'}}>{this.__('Interactive maps featuring open data')}</span>
-              </div>
+              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
                 <CardFilter defaultValue={this.state.mapMode} onChange={(value) => { _this.setState({mapMode: value}) }} />
               </div>
@@ -227,9 +223,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                   <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Hubs')}</h5>
                 </a>
               </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}}>
-                <span className='valign' style={{fontSize: '14px'}}>{this.__('Collections of stories and maps on a variety of topics')}</span>
-              </div>
+              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
                 <CardFilter defaultValue={this.state.hubMode} onChange={(value) => { _this.setState({hubMode: value}) }} />
               </div>
@@ -251,9 +245,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                   <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Groups')}</h5>
                 </a>
               </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}}>
-                <span className='valign' style={{fontSize: '14px'}}>{this.__('Collections of layers managed by a group or organization')}</span>
-              </div>
+              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
                 <CardFilter defaultValue={this.state.groupMode} onChange={(value) => { _this.setState({groupMode: value}) }} />
               </div>
@@ -275,9 +267,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                   <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
                 </a>
               </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}}>
-                <span className='valign' style={{fontSize: '14px'}}>{this.__('Open map data layers')}</span>
-              </div>
+              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
               <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
                 <CardFilter defaultValue={this.state.layerMode} onChange={(value) => { _this.setState({layerMode: value}) }} />
               </div>

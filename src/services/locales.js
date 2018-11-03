@@ -1,4 +1,5 @@
 import locales from '../locales'
+import localeUtil from '../locales/util'
 
 let i18n = null
 /*
@@ -12,6 +13,8 @@ export default {
   fr: locales.fr,
   es: locales.es,
   it: locales.it,
+  id: locales.id,
+  pt: locales.pt,
   getLocaleString (locale, text) {
     if (i18n) {
       // use i18n package when running on the server
@@ -23,7 +26,7 @@ export default {
   },
 
   formModelToLocalizedString (model, name) {
-    const result = {en: '', fr: '', es: '', it: ''}
+    const result = localeUtil.getEmptyLocalizedString()
     Object.keys(result).forEach(key => {
       if (model[`${name}-${key}`]) {
         result[key] = model[`${name}-${key}`]

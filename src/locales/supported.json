@@ -1,0 +1,8 @@
+[
+  {"value": "en", "label": "EN", "name": "English" },
+  {"value": "es", "label": "ES", "name": "Español"},
+  {"value": "fr", "label": "FR", "name": "Français"},
+  {"value": "id", "label": "ID", "name": "Bahasa Indonesia"},
+  {"value": "it", "label": "IT", "name": "Italiano"},
+  {"value": "pt", "label": "PT", "name": "Português"}
+]

@@ -1,5 +1,4 @@
 {
-    "Search All Data": "Cerca in tutti i dati",
     "Logo": "Logo",
     "Groups": "Gruppi",
     "Layers": "Livelli",
@@ -24,13 +23,11 @@
     "Delete Map": "Cancella Mappa",
     "Edit Map": "Modifica Mappa",
     "Get Map as a PNG Image": "Ottieni la Mappa come immagine PNG",
-    "Post to Medium.com": "Pubblica su Medium.com",
     "Okay": "OK",
     "Create Layer": "Crea un Livello",
     "Provide Information About the Data Layer": "Fornisci informazioni sul livello dati",
     "Cancel": "Cancella",
     "Save and Continue": "Salva e continua",
-    "Since you are in multiple groups, please select the group that should own this layer.": "Siccome sei membro di più gruppi, per favore seleziona il gruppo a cui deve appartenere questo livello.",
     "Choose a Group": "Scegli un Gruppo",
     "Owned by Group": "Gruppo proprietario",
     "Name": "Nome",
@@ -41,15 +38,14 @@
     "Brief Description of the Layer": "Breve descrizione del Livello",
     "Draft": "Bozza",
     "Published": "Pubblicato",
-    "Include in Public Listings": "Includi negli elenchi pubblici",
     "Upload Data": "Upload Data",
     "Link to a Mapbox Style or Data Source": "Link ad uno stile Mapbox o ad una sorgente dati",
     "Link to Raster Tile Service": "Link ad un servizio di tile raster",
     "Link to an ArcGIS Online Map Service or Feature Service": "Link ad un servizio ArcGis Online o ad un Feature Service",
-    "Upload File Shapefile/GeoJSON": "Carica un file Shapefile/GeoJSON",
+   
     "Empty (You will create new data through the editing tools or API)": "Empty (You will create new data through the editing tools or API)",
     "Previous Step": "Passo precedente",
-    "Upload File: Shapefile(.shp zipped) or GeoJSON (.geojson)": "Carica file: Shapefile (.shp zippato) o GeoJSON (.geojson)",
+   
     "Choose an Option": "Scegli una opzione",
     "Choose File": "Scegli un file",
     "Mapbox Source": "Sorgente Mapbox",
@@ -64,18 +60,15 @@
     "Must be 250 characters or less.": "Deve essere 250 caratteri o meno.",
     "Previous": "Precedente",
     "License is not known or is not provided": "La licenza non è nota o non è stata fornita",
-    "Source Information": "Informazioni sulla fonte",
-    "Source Description": "Descrizione della fonte",
     "Short Description of the Layer Source": "Breve descrizione della fonte del Livello",
     "License": "Licenza",
     "Select a license for more information": "Seleziona una licenza per maggiori informazioni",
     "Layer License": "Licenza del Livello",
     "Loading Data": "Caricamento dati",
-    "Your data is being loaded into MapHubs": "I tuoi dati stanno venendo caricati in MapHubs",
     "Add Field": "Aggiungi campo",
     "Choose Color": "Scegli il colore",
     "Choose Preview": "Scegli l'anteprima",
-    "The map preview is how your map will look in search results and other listings.": "L'anteprima della mappa la rappresenterà nei risultati di ricerca ed in altri elenchi.",
+   
     "Reset": "Reset",
     "Save": "Salva",
     "Colors": "Colori",
@@ -85,7 +78,7 @@
     "Edit Legend Code": "Modifica il codice della legenda",
     "Group ID": "ID del Gruppo",
     "ID must be 25 characters or less.": "L'ID deve essere lungo 25 caratteri o meno.",
-    "Can only be upper or lowercase letters. No numbers, spaces, or special characters.": "Può essere composto solo di lettere maiuscole e minuscole. Nessun numero, spazio o carattere speciale.",
+   
     "ID already taken, please try another.": "L'ID è già occupato, provane un altro.",
     "Identifier for the Group. This will be used in links and URLs for your group's content.": "L'identificatore del Gruppo. Verrà usato nei link e negli URL dei contenuti del tuo Gruppo.",
     "Short Descriptive Name for the Group": "Breve nome descrittivo per il Gruppo",
@@ -117,24 +110,23 @@
     "Group Administrator": "Amministratore del Gruppo",
     "Add New Layer": "Aggiungi un nuovo Livello",
     "Manage Group": "Gestisci Gruppo",
-    "Feedback": "Feedback",
-    "Send us your comments or suggestions...": "Mandaci i tuoi commenti o suggerimenti...",
-    "Your email address": "Il tuo indirizzo email",
-    "Attach a screenshot": "Allega uno screenshot",
-    "Send": "Invia",
-    "Feedback sent!": "Feedback inviato!",
-    "Your email address is required": "È richiesto il tuo indirizzo email",
-    "Invalid email address": "Indirizzo email non valido",
-    "Your message is required": "È richiesto il tuo messaggio",
-    "Your message is too short": "Il tuo messaggio è troppo breve",
+   
+    
+    
+   
+    
+    
+    
+    
+    
     "Export Data": "Esporta i dati",
     "Shapefile:": "Shapefile:",
     "GeoJSON:": "GeoJSON:",
     "KML:": "KML:",
     "CSV:": "CSV:",
-    "Services": "Servizi",
-    "Feature Service (ArcGIS compatible):": "Feature Service (compatibile con ArcGIS):",
-    "API (OpenStreetMap compatible):": "API (compatibile con OpenStreetMap):",
+    
+    
+    
     "Info": "Informazioni",
     "Discuss": "Discuti",
     "Data": "Dati",
@@ -160,58 +152,49 @@
     "Profile": "Profilo",
     "Password": "Password",
     "User Name": "Nome utente",
-    "Please update your photo on": "Aggiorna la tua foto su",
+    
     "More user profile settings coming soon!": "Arriveranno presto altre impostazioni per il profilo utente!",
-    "New Password": "Nuova password",
-    "Too Long. Please use no more than 25 characters.": "Troppo lunga. Ti preghiamo di usare non più di 25 caratteri.",
-    "Must be at least 8 characters": "Deve essere almeno 8 caratteri",
-    "Valid Password": "Password valida",
-    "Confirm Password": "Conferma password",
-    "Passwords do not match.": "Le password non corrispondono.",
-    "Passwords Match": "Le password corrispondono",
+ 
     "Resources": "Risorse",
     "Home": "Home",
     "About": "Informazioni",
     "Contact Us": "Contattaci",
-    "Back to MapHubs": "Ritorna a MapHubs",
+    
     "Manage Hub": "Gestisci Hub",
     "Hub Photo": "Foto dell'hub",
-    "Featured Content": "Contenuto in evidenza",
+   
     "Text": "Testo",
     "Radio": "Radio",
     "Combo": "Combo",
     "Check": "Check",
     "Tag": "Tag",
     "Name must be 25 characters or less.": "Il nome deve essere lungo 25 caratteri o meno.",
-    "Short tag for the field": "Nome breve per il campo",
+   
     "Label": "Etichetta",
     "Name must be 50 characters or less.": "Il nome deve essere lungo 50 caratteri o meno.",
-    "Descriptive label for the field that will be shown in editors/forms.": "Etichetta descrittiva per il campo che verrà mostrata negli editor e nei form.",
-    "Editing/collection tools will require the user to submit this field.": "Strumenti di modifica / raccolta che richiederanno all'utente di compilare questo campo.",
+ 
+   
     "Field Type": "Tipo del campo",
-    "Determines how the field is displayed in forms.": "Determina come il campo venga visualizzato nei form.",
+    
     "Remove": "Rimuovi",
     "Signup for": "Signup for",
     "Name must be 25 characters or less": "Il nome deve essere lungo 25 caratteri o meno.",
-    "Must be at least 4 characters": "Deve essere almeno di 4 caratteri",
-    "Can only contain letters or numbers (no spaces or special characters)": "Può solo contenere lettere o numeri (nessuno spazio o caratteri speciali)",
-    "Name already taken, please try another.": "Nome già scelto, selezionane un altro.",
-    "Name is Available": "Nome disponibile",
-    "Choose a unique user name for your account": "Scegli un nome univoco per il tuo account",
+   
+    
+    
+   
+    
     "Email": "Email",
     "Not a valid email address.": "Indirizzo email non valido",
-    "Please enter your email address": "Inserisci il tuo indirizzo email",
-    "Welcome to": "Benvenuto in",
+   
+    
     "Username": "Nome utente",
     "Sign Up": "Iscriviti",
-    "Signup with Email": "Iscriviti con la email",
-    "Facebook and Twitter Signup Coming Soon!": "Iscrizione tramite Facebook o Twitter presto disponibile!",
-    "Forgot Password": "Password dimenticata",
-    "Account Email": "Account email",
-    "Request Password Reset": "Richiedi reset della password",
+    
+    
+  
     "Discussion": "Discussione",
-    "Attachments": "Allegati",
-    "Maps/Stories": "Mappe/Storie",
+  
     "Confirmation": "Conferma",
     "Please confirm": "Per cortesia Conferma",
     "Layer Info": "Informazioni sul Livello",
@@ -221,14 +204,13 @@
     "Publish": "Pubblica",
     "Add a Logo": "Aggiungi un logo",
     "Add a Banner Image": "Aggiungi un'immagine banner",
-    "Data View Not Supported": "La visualizzazione dei dati non è supportata",
+    
     "This is an external data layer. For exports please see the data source at:": "Questo è un livello dati esterno. Per le esportazioni vai alla sorgente dati su:",
     "Saving": "Salvataggio",
-    "Your changes are being saved": "Le tue modifiche sono state salvate",
+    
     "Searching": "Ricerca",
     "Remove from Map": "Eliminato dalla mappa",
     "Edit Layer Style": "Modifica il stile del livello",
-    "Your data is being loaded into MapHubs. This may take a few minutes for larger datasets.": "I tuoi dati stanno venendo caricati in MapHubs. Per dataset grandi ci vorrà qualche minuto.",
     "Mapbox Studio Style Layer": "Livello con stile Mapbox Studio",
     "If you are the owner of this layer, click here to edit in Mapbox Studio on mapbox.com": "Se sei il proprietario di questo livello, clicca qui per modificarlo in Mapbox Studio su mapbox.com",
     "Edit in Mapbox Studio": "Modifica in Mapbox Studio",
@@ -244,38 +226,24 @@
     "You have not finished creating your layer, if you leave now your layer will be deleted.": "Non hai finito la creazione del tuo livello, se esci il tuo livello sarà cancellato.",
     "Notes": "Note",
     "Edit": "Modifica",
-    "is requesting access to your account": "richiede l'accesso al tuo account",
-    "Do you approve?": "Acconsenti?",
+   
     "Localized Text": "Testo localizzato",
     "Radio Buttons (Choose One)": "Radio buttons (scegline uno)",
     "Combo Box (Dropdown)": "Combo box (menù a discesa)",
     "Check Box": "Check box",
     "Number": "Numero",
-    "Options(seperate with commas)": "Opzioni (separate da una virgola)",
+    
     "Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green": "Lista di opzioni separate da virgola da mostrare per il campo Combo o Radio. Esempio: rosso, blu, verde",
     "Link to a complete Mapbox Studio Style": "Link ad uno stile completo di Mapbox Studio",
     "Link to Mapbox Data/Raster Tiles": "Link a tiles dati/raster Mapbox",
     "Link to a Mapbox Style or Tileset": "Link ad uno stile o a tile Mapbox",
     "Mapbox Style Source": "Sorgente di stile Mapbox",
     "Share Data": "Condividi i dati",
-    "Tell Your Story": "Racconta la tua storia",
     "Explore": "Esplora",
-    "Search MapHubs": "Cerca in MapHubs",
-    "Upload spatial files or use map services to get your maps onto Maphubs": "Carica file spaziali o usa i map service per mettere le tue mappe su Maphubs",
-    "Read map stories": "Leggi le storie sulla mappa",
-    "Some Text Here": "Inserisci un testo",
-    "Make a map, write story explaining your maps, or build website called a 'hub' to host a collection of stories and your own interactive map": "Costruisci una mappa, scrivi una storia che spieghi le tue mappe, o costruisci un sito web chiamato 'hub' per ospitare una collezione di storie e la tua mappa interattiva",
-    "Read map stories, explore hubs, and search for data": "Leggi le storie, esplora gli hub e cerca nei dati",
-    "Create or join a group": "Crea o unisciti a un gruppo",
-    "Make a layer": "Crea un livello",
-    "Make a map story": "Crea una storia con mappe",
-    "Make a hub": "Crea un hub",
-    "Make a map": "Crea una mappa",
-    "Read the the tutorial linked to the right, or click below to get started.": "Leggi il tutorial linkato a destra, o clicca qui sotto per iniziare.",
-    "Explore hubs": "Esplora gli hub",
-    "Search for data": "Cerca nei dati",
+   
+  
     "Features": "Features",
-    "is a Moabi project": "is a Moabi project",
+ 
     "is Open Source, the code is available on ": "is Open Source, the code is available on",
     "Check Box (Yes/No)": "Check box (Si/No)",
     "Mapping for Everyone": "Mappe per tutti",
@@ -294,76 +262,69 @@
     "Last Update:": "Utlimo aggiornamento:",
     "Data Source:": "Sorgente dei dati:",
     "License:": "Licenza:",
-    "Stats:": "Statistiche:",
-    "Views": "Viste",
+   "Views": "Viste",
     "Maps": "Mappe",
-    "Create an account": "Crea un account",
-    "Layers are managed by groups. Create a group for your organization or browse the layers of existing groups.": "Layers are managed by groups. Create a group for your organization or browse the layers of existing groups.",
+ 
+   
     "Browse layers or create a new layer.": "Browse layers or create a new layer.",
     "Export is not available for this layer.": "L'esportazione dei dati non è possibile per questo livello.",
     "Popular": "Popolare",
     "Click the button below to create your first story": "Clicca il bottone sottostante per creare la tua prima storia",
     "Click the button below to create your first map": "Clicca il bottone sottostante per creare la tua prima mappa",
-    "Login Failed: Please try again.": "Login fallito: per cortesia riprova.",
+   
     "Author:": "Autore:",
     "Updated:": "Aggiornato:",
     "Hub:": "Hub:",
     "Recent Stories": "Storie recenti",
     "No License Provided": "Nessuna liceza fornita",
-    "By clicking on \"Create an account\" below, you are agreeing to the": "Cliccando \"Crea un account\" dichiari di aderire a",
+    
     "Terms of Service": "Temini del servizio",
     " and the ": "e il",
     "Privacy Policy": "Privacy policy",
-    "Please go to this link in your browser to confirm your email:": "Vai col browser al seguente link per confermare la tua email:",
-    "Thank you for registering!": "Thank you for registering!",
+    
+    
     "If you need to contact us you are welcome to reply to this email, or use the Feedback button on the site.": "If you need to contact us you are welcome to reply to this email, or use the Feedback button on the site.",
-    "Email Confirmation": "Email di conferma",
-    "Please Confirm Your Email Address": "Conferma il tuo indirizzo di email.",
-    "We sent you an email at": "Abbiamo mandato una email a",
-    "Please click the link in the email to confirm your account": "Conferma il tuo account cliccando il link contenuto nella email",
-    "Resend Email": "Reinvia email",
-    "Email Confirmed": "Email confermata",
-    "Thank you for confirming your account!": "Thank you for confirming your account!",
-    "Password Reset": "Reset password",
-    "Please go to this link in your browser to reset your password:": "Vai col browser al seguente link per resettare la password:",
-    "Please Enter a New Password": "Inserisci una nuova password",
-    "Password Changed": "password modificata",
-    "Your password was changed.": "Your password was changed.",
-    "Unable to Confirm Email": "Impossibile confermare email",
-    "This email may have already been confirmed. If you are unable to access your account please contact us at ": "This email may have already been confirmed. If you are unable to access your account please contact us at",
+    
+   
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   
     "Welcome to Group:": "Benvenuto nel gruppo:",
     "You have been added to the group": "Sei stato aggiunto al gruppo",
-    "Welcome to Hub:": "Benvenuto nell'hub:",
-    "You have been added to the hub": "Sei stato aggiunto all'hub",
+   
+    
     "Removed from Group:": "Rimosso dal gruppo:",
     "You have been removed from the group": "Sei stato rimosso dal gruppo",
-    "Removed from Hub:": "Rimosso dall'hub:",
-    "You have been removed from the hub": "Sei stato rimosso dall'hub",
+   
+    
     "Unsupported Browser": "Browser non supportato",
     "is unable to support Internet Explorer. Please use Firefox or Chrome.": "is unable to support Internet Explorer. Please use Firefox or Chrome.",
-    "Pending Confirmation": "In attesa di conferma",
-    "Go to Groups": "Vai ai Gruppi",
-    "Create a layer": "Crea un livello",
+ 
     "Create a Layer": "Crea un Livello",
-    "Go to My Stories": "Vai alle Mie Storie",
-    "Go to My Maps": "Vai alle Mie Mappe",
-    "Read Map Stories": "Leggi le Storie sulla mappa",
-    "View Recent Stories": "Vedi Storie recenti",
-    "Explore Hubs": "Esplora gli hub",
-    "View Hubs": "Vedi gli hub",
-    "Search for Data": "Cerca nei dati",
+   
+   
+   
+   
     "Map already contains this layer": "La mappa già contiene questo livello",
     "Page not found": "Pagina non trovata",
-    "The page you request was not found.": "La pagina richiesta non è stata trovata.",
+    
     "Unauthorized": "Non autorizzato",
     "You are not authorized to access this page.": "Non sei autorizzato ad accedere a questa pagina.",
     "Enter the Author": "Inserisci il nome dell'autore",
     "Featured Stories": "Storie in evidenza",
-    "Browse maps or create a new map using MapHubs' respository of open map layers.": "Guarda le mappe o creane di nuove utilizzando le collezione di livelli dati di MapHub.",
+    
     "Story": "Storia",
-    "Popular Content": "Contenuto popolare",
-    "Recent Content": "Contenuto recente",
-    "First login or register for an account": "Fai login o registra il tuo account",
+    
+  
     "Register": "Registra",
     "Go to Maps": "Vai alle Mappe",
     "Go to Stories": "Vai alle Storie",
@@ -372,40 +333,38 @@
     "View More Stories": "Vedi altre Storie",
     "View Resources": "Vedi le Risorse",
     "SSL required for external links, URLs must start with https://": "SSL required for external links, URLs must start with https://",
-    "Selected Feature": "Caratteristica selezionata",
-    "Selected Features": "Caratteristiche selezionate",
+    
+    
     "Change Base Map": "Cambia la mappa di base",
     "Show/Hide Layer": "Mostra/nascondi livello",
     "Cancel Map": "Elimina mappa",
     "Embed": "Inserisci",
-    "User generated stories featuring interactive maps and images on a variety of topics.": "Storie degli utenti con mappe interattive e immagini su svariati argomenti.",
-    "Interactive maps featuring open data.": "Mappe interattive con dati aperti.",
-    "Collections of stories and maps on a variety of topics.": "Collezione di storie e mappe su svariati argomenti.",
-    "Collections of layers managed by a group or oranization.": "Collezione di livelli gestiti da un gruppo o da una organizzazione.",
-    "Open map data layers.": "Livelli di dati di mappe libere.",
-    "User generated stories featuring interactive maps and images on a variety of topics": "Storie degli utenti con mappe interattive e immagini su svariati argomenti",
-    "Interactive maps featuring open data": "Mappe interattive con dati aperti",
-    "Collections of stories and maps on a variety of topics": "Collezione di storie e mappe su svariati argomenti",
-    "Collections of layers managed by a group or oranization": "Collezione di livelli gestiti da un gruppo o da una organizzazione",
-    "Open map data layers": "Livelli di dati di mappe libere.",
+    
+    
+    
+ 
+  
+    
+    
+ 
+   
     "More Stories": "Altre Storie",
     "More Maps": "Altre Mappe",
     "More Hubs": "Altri Hub",
     "More Groups": "Altri Gruppi",
     "More Layers": "Altri Livelli",
-    "Popular Stories": "Storie popolari",
-    "Collections of layers managed by a group or organization": "Collezione di livelli gestiti da un gruppo o da una organizzazione",
+    "Popular Stories": "Storie popolari", 
     "Description: ": "Descrizione:",
     "Unofficial Group": "Gruppi non ufficiali",
     "This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.": "Questo gruppo è mantenuto da Maphubs utilizzando dati pubblici e non rappresenta l'organizzazione citata. Per cortesia contattaci nel caso in cui rappresentassi il gruppo e volessi diventarne il gestore.",
     "Adding Map": "Aggiungere una Mappa",
     "View Layer Info": "Vedi informazioni sul Layer",
-    "Add Hub Member": "Aggiungi membro dell'Hub",
+ 
     "Delete Hub": "Cancella Hub",
     "Member": "Membro",
     "Administrator": "Amministratore",
     "User is already a member of this group.": "L'utente è già membro di questo gruppo.",
-    "User is already a member of this hub.": "L'utente è già membro di questo  hub.",
+ 
     "Start Interactive Map": "Avvia mappa interattiva",
     "Please confirm removal of": "Conferma rimozione di",
     "Confirm Delete": "Conferma cancellazione",
@@ -443,13 +402,13 @@
     "Group Saved": "Gruppo salvato",
     "Group Created": "Gruppo creato",
     "Group Cancelled": "Gruppo cancellato",
-    "Failed to Update Password": "Fallito l'aggiornamento dela password",
-    "Password Updated": "Password aggiornata",
+    
+    
     "Please Add an Author": "Aggiungi un autore",
     "Story Saved": "Storia salvata",
     "Image Added": "Immagine aggiunta",
     "Image Removed": "Immagine rimossa",
-    "Please Save the Story Before Adding a Map": "Per favore salva questa Storia prima di aggiungere una Mappa",
+   
     "Please Select a Line in the Story": "Per favore seleziona una riga nella Storia",
     "Notes Saved": "Note salvate",
     "Results": "Risultati",
@@ -457,13 +416,12 @@
     "Hub Saved": "Hub salvato",
     "Hub Created": "Hub creato",
     "Hub Published": "Hub pubblicato",
-    "Confirmation email sent. Please check your email.": "Inviata email di conferma. Controlla la tua casella di email.",
+   
     "Results Found": "Risultati trovati",
-    "Account Created, confirmation email sent. Please check your email.": "Account creato, mail di conferma inviata. Controlla la tua casella di posta.",
-    "Full Name": "Nome completo",
-    "Please enter your name to show in your profile and help other users find you.": "Per favore inserisci il tuo nome per mostrarlo nel tuo profilo ed aiutare altri utenti a trovarti.",
+    
+    
     "Description must be 1000 characters or less.": "La descrizione deve essere lunga 1000 caratteri o meno.",
-    "Indicate Layer is a Draft": "Indica che il Livello è una bozza",
+   
     "Name must be 300 characters or less.": "Il nome deve essere lungo 300 caratteri o meno.",
     "Photo": "Foto",
     "Settings": "Impostazioni",
@@ -479,54 +437,32 @@
     "Enable Labels for this Layer": "Abilita le etichette per questo Livello",
     "Label Field": "Campo per l'etichetta",
     "Data field to use in map labels.": "Campo dati da usare nelle etichette della mappa.",
-    "Change Language": "Cambia lingua",
+    
     "Opacity": "Opacità",
     "Choose Style": "Scegli lo stile",
     "Must be 500 characters or less.": "Deve essere 500 caratteri o meno.",
     "Trending": "Popolari",
-    "is an easy way to make maps": "is an easy way to make maps",
     "Make a Map": "Crea una mappa",
     "Learn More": "Scopri di più",
-    "Data Processing": "Elaborazione dati",
-    "Custom Development": "Sviluppo personalizzato",
-    "Training": "Training",
-    "Support": "Supporto",
     "Search": "Ricerca",
     "Write a Map Story": "Write a Map Story",
     "Explore Data": "Esplora i dati",
-    "Tell Your Story with Maps": "Tell Your Story with Maps",
-    "is a home for the world's open map data and an easy tool for making and sharing maps": "is a home for the world's open map data and an easy tool for making and sharing maps",
     "Search for Maps": "Search for Maps",
     "Explore Maps": "Explore Maps",
     "View Map": "View Map",
     "No Layers in Map": "No Layers in Map",
     "Version:": "Version:",
-    "currently offers a range of service to help you get mapping": "currently offers a range of service to help you get mapping",
-    "Maps for Journalists": "Maps for Journalists",
     "Help": "Aiuto",
-    "\n                   Maps are incredibly powerful tools for journalism. One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.\n                  ": "Maps are incredibly powerful tools for journalism. One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.",
-    "What can we help you with?": "What can we help you with?",
-    "Your search timed out. Please double-check your internet connection and try again.": "Your search timed out. Please double-check your internet connection and try again.",
+   
+ 
     "No results found for": "No results found for",
-    "Send a Message": "Send a Message",
-    "Attach a file": "Attach a file",
-    "The maximum file size is 10mb": "The maximum file size is 10mb",
-    "Your Name": "Your Name",
-    "Please enter your name": "Please enter your name",
+    
+    
+  
+    
     "Email address": "Email address",
     "Please enter a valid email address": "Please enter a valid email address",
-    "Select a topic": "Select a topic",
-    "Please select a topic from the list": "Please select a topic from the list",
-    "Subject": "Subject",
-    "Please enter a subject": "Please enter a subject",
-    "How can we help you?": "How can we help you?",
-    "Please enter a message": "Please enter a message",
-    "Message sent!": "Message sent!",
-    "Thanks for reaching out! Someone from our team will get back to you soon.": "Thanks for reaching out! Someone from our team will get back to you soon.",
-    "Question": "Question",
-    "Suggestion": "Suggestion",
-    "Report a Problem": "Report a Problem",
-    "\n                   Maps are incredibly powerful tools for journalism.\n                   One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.\n                  ": "Maps are incredibly powerful tools for journalism.\n                   One map can illuminate a story, bringing context and clarity to complex issues such as illegal logging and climate change.",
+   
     "Language": "Language",
     "You must login or sign up before saving a map.": "You must login or sign up before saving a map.",
     "Retry": "Retry",
@@ -534,17 +470,12 @@
     "My Layers": "My Layers",
     "Map Layers": "Map Layers",
     "Popular Layers": "Popular Layers",
-    "A home for the world's open data and an easy way to make maps.": "A home for the world's open data and an easy way to make maps.",
-    "All Content": "All Content",
-    "Edit Base Map": "Edit Base Map",
     "Upload a Photo with Location Information": "Upload a Photo with Location Information",
     "Add data to:": "Add data to:",
     "Edit Map Data": "Edit Map Data",
     "Add a Photo": "Add a Photo",
     "Loading": "Loading",
-    " is a Moabi project": "is a Moabi project",
     " is Open Source, the code is available on ": "is Open Source, the code is available on",
-    "Contact Us:": "Contact Us:",
     "Link Remote Layer": "Link Remote Layer",
     "Create a Group": "Create a Group",
     "Remote Layer": "Remote Layer",
@@ -574,27 +505,14 @@
     "Planet Labs Scene ID": "Planet Labs Scene ID",
     "Ortho": "Ortho",
     "RapidEye": "RapidEye",
-    "Landsat": "Landsat",
-    "is a home for the world's open map data and an easy tool for making maps": "is a home for the world's open map data and an easy tool for making maps",
-    "has map layers for environment, natural resources, and development": "has map layers for environment, natural resources, and development",
-    "is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.": "is a home for the world's open map data and an easy tool for making and sharing maps. Our mission is to help you tell your story using maps and to foster communities with impact.",
-    "is open source and avaliable on GitHub at": "is open source and avaliable on GitHub at",
+    "Landsat": "Landsat", 
+   
     "Create Hub": "Create Hub",
     "Back to ": "Back to",
-    " is a home for the world's open map data and an easy tool for making and sharing maps.": "is a home for the world's open map data and an easy tool for making and sharing maps.",
-    " uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.": "uses a public cloud-based commenting system, it is disabled on private layers for security reasons. The notes section can be used for secure collaboration.",
     "\n               Browse Stories, Maps, Groups, Hubs, and Layers\n              ": "Browse Stories, Maps, Groups, Hubs, and Layers",
     "Data Loading: This may take a few minutes for larger datasets.": "Data Loading: This may take a few minutes for larger datasets.",
-    "MapHubs is now Map for Environment": "MapHubs is now Map for Environment",
-    "We have merged MapHubs with Map for Environment": "We have merged MapHubs with Map for Environment",
     "OpenStreetMap": "OpenStreetMap",
-    "Help us make mapes to monitor the world’s natural resources.": "Help us make mapes to monitor the world’s natural resources.",
-    "\n                    currently offers a range of service to help you get mapping.\n                  ": "currently offers a range of service to help you get mapping.",
-    "Browse maps or create a new map using the respository of open map layers.": "Browse maps or create a new map using the respository of open map layers.",
-    "Help us make maps to monitor the world’s natural resources.": "Help us make maps to monitor the world’s natural resources.",
-    "Journalists": "Journalists",
-    "Help us map in OpenStreetMap": "Help us map in OpenStreetMap",
-    "View the open-source code on ": "View the open-source code on",
+    
     "View the open source code on ": "View the open source code on",
     "Back to Group": "Back to Group",
     " by ": "by",
@@ -604,37 +522,35 @@
     "Draft Hubs": "Draft Hubs",
     "MyHubs": "MyHubs",
     "Published Hubs": "Published Hubs",
-    "Hubs: maphubs": "Hubs: maphubs",
-    "Hubs for user: maphubs": "Hubs for user: maphubs",
+    
+    
     "My Groups": "My Groups",
-    "Copy and Paste from the Planet Scene Browser": "Copy and Paste from the Planet Scene Browser",
     "Can only contain letters, numbers, or dashes.": "Can only contain letters, numbers, or dashes.",
     "Popular Maps": "Popular Maps",
     "Creating Hub": "Creating Hub",
-    "for Journalists": "for Journalists",
     "Submitting": "Submitting",
-    "Sending your information": "Sending your information",
-    "Thank you for registering.": "Thank you for registering.",
+   
+  
     "UserName: ": "UserName:",
     "Name: ": "Name:",
     "Email: ": "Email:",
     "If you need to contact us you are welcome to reply to this email, or use the help button on the website.": "If you need to contact us you are welcome to reply to this email, or use the help button on the website.",
-    "If you are unable to access your account please contact us at ": "If you are unable to access your account please contact us at",
+  
     "GPX:": "GPX:",
     " is a non-profit initiative of the Moabi organization": "is a non-profit initiative of the Moabi organization",
-    "Powered by MapHubs": "Powered by MapHubs",
-    "Upload File - Shapefile(Zip), GeoJSON, KML, or GPX (tracks or waypoints)": "Upload File - Shapefile(Zip), GeoJSON, KML, or GPX (tracks or waypoints)",
+   
+    
     "Copy to Clipboard": "Copy to Clipboard",
     "Editing Layer Style": "Editing Layer Style",
     "Edit Layer Legend": "Edit Layer Legend",
-    "Upload File - Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat./Lon. fields)": "Upload File - Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat./Lon. fields)",
+  
     "Area:": "Area:",
     "Area": "Area",
     "Attributes": "Attributes",
     "Latitude:": "Latitude:",
     "Longitude:": "Longitude:",
     "UTM:": "UTM:",
-    "Not available for this feature": "Not available for this feature",
+   
     "Upload File": "Upload File",
     "Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)": "Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)",
     "Interactive": "Interactive",
@@ -667,18 +583,13 @@
     "DRAFT": "DRAFT",
     "Status: ": "Status:",
     "Location: ": "Location:",
-    "Email address already exists": "Email address already exists",
+   
     "All Hubs": "All Hubs",
     "Option to hide this field in the map popup. It will still display in the data table.": "Option to hide this field in the map popup. It will still display in the data table.",
     "Save Draft": "Save Draft",
-    "We offer a range of service to help you get mapping": "We offer a range of service to help you get mapping",
     "View interactive map on ": "View interactive map on",
     "Since you are in multiple groups, please select the group that should own this hub.": "Since you are in multiple groups, please select the group that should own this hub.",
     "Default": "Default",
-    "Dark": "Dark",
-    "Streets": "Streets",
-    "Outdoors": "Outdoors",
-    "Satellite": "Satellite",
     "Markers": "Markers",
     "Enable Markers for this Layer": "Enable Markers for this Layer",
     "Map Pin": "Map Pin",
@@ -691,7 +602,7 @@
     "Shape of the map marker": "Shape of the map marker",
     "Marker Size": "Marker Size",
     "Marker Icon": "Marker Icon",
-    "Maker icon overlay": "Maker icon overlay",
+    "Marker icon overlay": "Marker icon overlay",
     "Enable Labels": "Enable Labels",
     "Circle": "Circle",
     "Chainsaw": "Chainsaw",
@@ -720,16 +631,10 @@
     "Tools": "Tools",
     "Measure Tools": "Measure Tools",
     "Edit OpenStreetMap": "Edit OpenStreetMap",
-    "Bing Aerial": "Bing Aerial",
-    "Stamen - Toner": "Stamen - Toner",
-    "Stamen - Terrain": "Stamen - Terrain",
-    "Stamen - Watercolor": "Stamen - Watercolor",
     "Choose a Base Map": "Choose a Base Map",
     "Distance": "Distance",
     "Show Measurement Tools": "Show Measurement Tools",
     "Measurement Tools": "Measurement Tools",
-    "Default (Light)": "Default (Light)",
-    "Landsat - 2014": "Landsat - 2014",
     "Boat": "Boat",
     "Campfire": "Campfire",
     "Cargo Ship": "Cargo Ship",
@@ -767,14 +672,14 @@
     "Highest tile zoom level available in data": "Highest tile zoom level available in data",
     "Bounds": "Bounds",
     "Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy": "Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy",
-    "Forest Alerts": "Forest Alerts",
-    "2017 GLAD Alerts": "2017 GLAD Alerts",
-    "Calculate": "Calculate",
+  
+    
+    
     "Edit Page": "Edit Page",
     "Editing Page Config: ": "Editing Page Config:",
-    "Welcome to the MapHubs Demo Site": "Welcome to the MapHubs Demo Site",
-    "Link to Planet API (planet.com)": "Link to Planet API (planet.com)",
-    "Landsat - 2016": "Landsat - 2016",
+    
+    
+    
     "No layers in map, use the tab to the right to add an overlay layer.": "No layers in map, use the tab to the right to add an overlay layer.",
     "Overlay Layers": "Overlay Layers",
     "Search Index Admin": "Search Index Admin",
@@ -798,7 +703,7 @@
     "New Line(s)": "New Line(s)",
     "New Polygon(s)": "New Polygon(s)",
     "GeoJSON URL": "GeoJSON URL",
-    "2001 - 2014 Forest Loss": "2001 - 2014 Forest Loss",
+   
     "Pause": "Pause",
     "Factory": "Factory",
     "Mining": "Mining",
@@ -806,22 +711,22 @@
     "MapHubs Layer": "MapHubs Layer",
     "Powered by": "Powered by",
     "Map Title": "Map Title",
-    "Groups for user: maphubs": "Groups for user: maphubs",
+    
     "Choose an image file": "Choose an image file",
     "Value": "Value",
     "Edit Layer Data": "Edit Layer Data",
     "Data Loading": "Data Loading",
     "Login Failed": "Login Failed",
     "Unable to Access Account": "Unable to Access Account",
-    "We are having an issue finding your account. Please contact us at support@maphubs.com for assistance.": "We are having an issue finding your account. Please contact us at support@maphubs.com for assistance.",
-    "We recently upgraded all MapHubs sites to use MapHubs SSO Login. If you are unable to access your account please contact us at support@maphubs.com": "We recently upgraded all MapHubs sites to use MapHubs SSO Login. If you are unable to access your account please contact us at support@maphubs.com",
-    "We recently upgraded all MapHubs sites to use MapHubs SSO Login. If you are unable to access your account please contact us at": "We recently upgraded all MapHubs sites to use MapHubs SSO Login. If you are unable to access your account please contact us at",
-    "We recently upgraded to use MapHubs Login. If you are unable to access your account please contact us at": "We recently upgraded to use MapHubs Login. If you are unable to access your account please contact us at",
-    "We recently upgraded to use MapHubs Login. If you are unable to access your account please try to": "We recently upgraded to use MapHubs Login. If you are unable to access your account please try to",
-    "reset your password": "reset your password",
-    "or contact us at <a href=\"mailto:support@maphubs.com\">support@maphubs.com</a> for assistance.": "or contact us at <a href=\"mailto:support@maphubs.com\">support@maphubs.com</a> for assistance.",
-    "We recently upgraded our login system. If you are unable to access your account please try to": "We recently upgraded our login system. If you are unable to access your account please try to",
-    "or contact us at": "or contact us at",
+    
+   
+   
+    
+    
+    
+    
+    
+    
     "User Profile": "User Profile",
     "Map Settings": "Map Settings",
     "Advanced Settings": "Advanced Settings",
@@ -829,7 +734,7 @@
     "Locations": "Locations",
     "Use the box above to search": "Use the box above to search",
     "Search Data": "Search Data",
-    "Forget Password": "Forget Password",
+    
     "Grid": "Grid",
     "List": "List",
     "Create a group for your organization or browse the content of existing groups.": "Create a group for your organization or browse the content of existing groups.",

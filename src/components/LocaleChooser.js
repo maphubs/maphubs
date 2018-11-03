@@ -3,6 +3,7 @@ import React from 'react'
 import MapHubsComponent from '../components/MapHubsComponent'
 import LocaleActions from '../actions/LocaleActions'
 import debugFactory from '../services/debug'
+import localeUtil from '../locales/util'
 const debug = debugFactory('MapHubsComponent')
 
 type Props = {
@@ -47,14 +48,7 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const options = {
-      'en': {label: 'EN'},
-      'fr': {label: 'FR'},
-      'es': {label: 'ES'},
-      'it': {label: 'IT'}
-    }
-
-    const label = options[this.state.locale] ? options[this.state.locale].label : 'UNK'
+    const label = localeUtil.getConfig(this.state.locale).label
 
     return (
       <li className='nav-link-wrapper nav-dropdown-link-wrapper'>
@@ -68,10 +62,11 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
           <i className='material-icons right' style={{marginLeft: 0}}>arrow_drop_down</i>
         </a>
         <ul id='local-chooser' className='dropdown-content'>
-          <li><a href='#!' id='en' onClick={this.onChange} className='nav-hover-menu-item'>English (EN)</a></li>
-          <li><a href='#!' id='fr' onClick={this.onChange} className='nav-hover-menu-item'>Français (FR)</a></li>
-          <li><a href='#!' id='es' onClick={this.onChange} className='nav-hover-menu-item'>Español (ES)</a></li>
-          <li><a href='#!' id='it' onClick={this.onChange} className='nav-hover-menu-item'>Italiano (IT)</a></li>
+          {localeUtil.getSupported().map(l => {
+            return (
+              <li key={`locale-${l.value}`}><a href='#!' id={l.value} onClick={this.onChange} className='nav-hover-menu-item'>{`${l.name} (${l.label})`}</a></li>
+            )
+          })}
         </ul>
       </li>
     )

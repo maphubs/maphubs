@@ -5,6 +5,9 @@ import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl'
 import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es'
 import fr from 'react-intl/locale-data/fr'
+import pt from 'react-intl/locale-data/pt'
+import id from 'react-intl/locale-data/id'
+import it from 'react-intl/locale-data/it'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import moment from 'moment-timezone'
@@ -13,6 +16,9 @@ import urlUtil from '../../services/url-util'
 addLocaleData(en)
 addLocaleData(es)
 addLocaleData(fr)
+addLocaleData(pt)
+addLocaleData(id)
+addLocaleData(it)
 
 type Props = {
   map: Object

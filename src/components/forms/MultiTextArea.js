@@ -3,6 +3,11 @@ import React from 'react'
 import TextArea from './textArea'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
+import {Tabs, Tooltip} from 'antd'
+
+import localeUtil from '../../locales/util'
+
+const TabPane = Tabs.TabPane
 
 type Props = {
   id: string,
@@ -33,8 +38,6 @@ type State = {
 }
 
 export default class MultiTextArea extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     length: 100,
     successText: '',
@@ -50,11 +53,9 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
     validationErrors: {}
   }
 
-  state: State
-
   constructor (props: Props) {
     super(props)
-    let value: LocalizedString = {en: '', fr: '', es: '', it: ''}
+    let value: LocalizedString = localeUtil.getEmptyLocalizedString()
     if (typeof props.value === 'string') {
       value['en'] = props.value
     } else if (props.value) {
@@ -65,10 +66,6 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    M.Tabs.init(this.refs.tabs, {})
-  }
-
   componentWillReceiveProps (nextProps: Props) {
     if (!_isequal(this.props.value, nextProps.value)) {
       if (nextProps.value) {
@@ -77,7 +74,7 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
         })
       } else {
         this.setState({
-          value: {en: '', fr: '', es: '', it: ''}
+          value: localeUtil.getEmptyLocalizedString()
         })
       }
     }
@@ -112,67 +109,31 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
       successText: this.props.successText
     }
 
-    let id = ''
-    if (this.props.id) {
-      id = this.props.id
-    } else {
-      id = this.props.name
-    }
-
-    let tabContentDisplay = 'none'
-    if (typeof window !== 'undefined') {
-      tabContentDisplay = 'inherit'
-    }
-
     return (
-      <div className='row'>
-        <div className='col s12'>
-          <ul ref='tabs' className='tabs'>
-            <li className='tab'><a className='active' href={`#${id}-en`}>EN</a></li>
-            <li className='tab'><a href={`#${id}-fr`}>FR</a></li>
-            <li className='tab'><a href={`#${id}-es`}>ES</a></li>
-            <li className='tab'><a href={`#${id}-it`}>IT</a></li>
-          </ul>
-        </div>
-
-        <div className='col s12' id={`${id}-en`}>
-          <TextArea
-            name={`${this.props.name}-en`}
-            value={this.state.value['en']}
-            label={this.props.label['en']}
-            className='col s12'
-            required={this.props.required}
-            {...commonProps}
-          />
-        </div>
-        <div className='col s12' id={`${id}-fr`} style={{display: tabContentDisplay}}>
-          <TextArea
-            name={`${this.props.name}-fr`}
-            value={this.state.value['fr']}
-            label={this.props.label['fr']}
-            className='col s12'
-            {...commonProps}
-          />
-        </div>
-        <div className='col s12' id={`${id}-es`} style={{display: tabContentDisplay}}>
-          <TextArea
-            name={`${this.props.name}-es`}
-            value={this.state.value['es']}
-            label={this.props.label['es']}
-            className='col s12'
-            {...commonProps}
-          />
-        </div>
-        <div className='col s12' id={`${id}-it`} style={{display: tabContentDisplay}}>
-          <TextArea
-            name={`${this.props.name}-it`}
-            value={this.state.value['it']}
-            label={this.props.label['it']}
-            className='col s12'
-            {...commonProps}
-          />
-        </div>
-      </div>
+      <Tabs type='card'
+        tabBarStyle={{marginBottom: 0}}
+        animated={false}
+      >
+        {localeUtil.getSupported().map(locale => {
+          return (
+            <TabPane
+              tab={<Tooltip title={locale.name}><span>{locale.label}</span></Tooltip>}
+              key={locale.value}
+            >
+              <div style={{border: '1px solid #ddd', padding: '10px'}}>
+                <TextArea
+                  name={`${this.props.name}-${locale.value}`}
+                  value={this.state.value[locale.value]}
+                  label={this.props.label[locale.value]}
+                  required={this.props.required}
+                  {...commonProps}
+                />
+              </div>
+            </TabPane>
+          )
+        })
+        }
+      </Tabs>
     )
   }
 }

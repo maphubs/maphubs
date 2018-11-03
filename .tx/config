@@ -8,3 +8,5 @@ type = KEYVALUEJSON
 trans.es = src/locales/es.json
 trans.fr = src/locales/fr.json
 trans.it = src/locales/it.json
+trans.id = src/locales/id.json
+trans.pt = src/locales/pt.json
