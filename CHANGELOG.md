@@ -1,5 +1,25 @@
 # Change Log
 
+## [v0.19.1](https://github.com/maphubs/maphubs/tree/v0.19.1) (2018-11-03)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.0...v0.19.1)
+
+## [v0.19.0](https://github.com/maphubs/maphubs/tree/v0.19.0) (2018-11-01)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.18.1...v0.19.0)
+
+**Implemented enhancements:**
+
+- add static/interactive toggle to embed code box [\#500](https://github.com/maphubs/maphubs/issues/500)
+- warn users on map embed permissions [\#499](https://github.com/maphubs/maphubs/issues/499)
+- option for admin to copy invite link [\#498](https://github.com/maphubs/maphubs/issues/498)
+- indicate publicly shared maps on their cards [\#420](https://github.com/maphubs/maphubs/issues/420)
+- auto copy to clipboard on embed code [\#358](https://github.com/maphubs/maphubs/issues/358)
+
+**Fixed bugs:**
+
+- error resending invite emails [\#497](https://github.com/maphubs/maphubs/issues/497)
+- map category dropdowns wrap during page load [\#474](https://github.com/maphubs/maphubs/issues/474)
+- error when enabling markers [\#461](https://github.com/maphubs/maphubs/issues/461)
+
 ## [v0.18.1](https://github.com/maphubs/maphubs/tree/v0.18.1) (2018-10-04)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.18.0...v0.18.1)
 
@@ -176,13 +196,13 @@
 [Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.4...v0.15.25)
 
 ## [db-v0.4](https://github.com/maphubs/maphubs/tree/db-v0.4) (2018-02-17)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...db-v0.4)
-
-## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.3)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.24...db-v0.4)
 
 ## [v0.15.24](https://github.com/maphubs/maphubs/tree/v0.15.24) (2018-02-16)
-[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...v0.15.24)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/db-v0.3...v0.15.24)
+
+## [db-v0.3](https://github.com/maphubs/maphubs/tree/db-v0.3) (2018-02-16)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.23...db-v0.3)
 
 ## [v0.15.23](https://github.com/maphubs/maphubs/tree/v0.15.23) (2018-02-15)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.15.22...v0.15.23)
