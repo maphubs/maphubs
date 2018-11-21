@@ -26,7 +26,7 @@ module.exports = {
       key = resendKey
     } else {
       key = uuid()
-      knex('omh.account_invites').insert({email, key})
+      await knex('omh.account_invites').insert({email, key})
     }
 
     const baseUrl = urlUtil.getBaseUrl()
