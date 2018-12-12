@@ -106,7 +106,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
     }
 
     let geom = geoJSON.features[0].geometry
-    const dimensions = {width: '100%', height: isPoint ? 'calc(100% - 75px)' :'100%'}
+    const dimensions = {width: '100%', height: isPoint ? 'calc(100% - 75px)' : '100%'}
     if (this.state.loaded) {
       return (
         <div style={{width: '100%', height: '100%'}}>

@@ -20,8 +20,7 @@ export type CardConfig = {|
   type: string,
   private?: boolean,
   public?: boolean,
-  onClick?: Function,
-  
+  onClick?: Function
 |}
 
 type Props = {

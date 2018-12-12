@@ -24,7 +24,7 @@ module.exports = function (app: any) {
             res.redirect(req.query.url)
           }
         } else {
-          // TODO: check for private 
+          // TODO: check for private
           next()
         }
       }

@@ -2,6 +2,7 @@
 import MapStyles from '../components/Map/Styles'
 import Reflux from 'reflux'
 import Actions from '../actions/MapMakerActions'
+import type {Layer} from '../types/layer'
 const request = require('superagent')
 const debug = require('../services/debug')('stores/MapMakerStore')
 const _findIndex = require('lodash.findindex')
@@ -10,7 +11,6 @@ const _find = require('lodash.find')
 // var $ = require('jquery');
 // var urlUtil = require('../services/url-util');
 const checkClientError = require('../services/client-error-response').checkClientError
-import type {Layer} from '../types/layer'
 
 export type MapMakerStoreState = {
    map_id?: number,

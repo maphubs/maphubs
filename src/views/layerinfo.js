@@ -479,8 +479,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         {this.state.length > 0 &&
                           <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
                         }
-                      </Col>
-                      
+                      </Col>                  
                     </Row>
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
                   </div>

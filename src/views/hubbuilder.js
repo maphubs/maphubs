@@ -87,7 +87,6 @@ export default class HubBuilder extends MapHubsComponent<Props, State> {
   checkHubIdAvailable = (id: number) => {
     const {t} = this
     let result = false
-    const _this = this
     // only check if a valid value was provided and we are running in the browser
     if (id && typeof window !== 'undefined') {
       $.ajax({

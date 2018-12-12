@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
 import LayerListStatic from './LayerListStatic'
-import { Menu, Dropdown, Icon } from 'antd'
+import { Dropdown, Icon } from 'antd'
 
 type Props = {
-  id: string,
   name: string,
   layers: Array<Object>,
   toggleVisibility: Function,
@@ -18,7 +17,7 @@ export default class LayerListDropDown extends React.PureComponent<Props, void> 
       <div style={{height: '35px'}}>
         <Dropdown style={{padding: 0}}
           overlay={
-            <LayerListStatic layers={layers} toggleVisibility={toggleVisibility} showVisibility t={t} />
+            <LayerListStatic layers={layers} toggleVisibility={toggleVisibility} t={t} />
           }
           trigger={['click']}
         >

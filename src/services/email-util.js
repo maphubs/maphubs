@@ -12,16 +12,16 @@ const debug = require('./debug')('email-util')
 
 module.exports = {
 
-/*
-data = {
-from: 'you@samples.mailgun.org',
-to: 'mm@samples.mailgun.org',
-subject: 'Test email subject',
-body: 'Test email text',
-html: '<b> Test email text </b>'
-}
+  /*
+  data = {
+  from: 'you@samples.mailgun.org',
+  to: 'mm@samples.mailgun.org',
+  subject: 'Test email subject',
+  body: 'Test email text',
+  html: '<b> Test email text </b>'
+  }
+  */
 
-*/
   send (data: any) {
     debug.log('Send email to ' + data.to + ' with subject: ' + data.subject)
     return new Promise((resolve, reject) => {

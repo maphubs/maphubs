@@ -60,7 +60,7 @@ const createMapHubsUser = async function (profile: Object) {
 const Auth0Strategy = require('passport-auth0')
 
 Auth0Strategy.prototype.authorizationParams = function (options) {
-  var options = options || {}
+  options = options || {}
 
   var params = {}
   if (options.connection && typeof options.connection === 'string') {

@@ -106,7 +106,7 @@ const MapHubsSource = {
           if (customImage.svg) {
             src = 'data:image/svg+xml;base64,' + btoa(customImage.svg)
           }
-          // eslint-disable-next-line
+          // eslint-disable-next-line unicorn/prefer-add-event-listener
           img.onload = () => {
             try {
               if (map.hasImage(customImage.name)) {
@@ -176,13 +176,12 @@ const MapHubsSource = {
         const src = `data:image/svg+xml;base64,${btoa(svgString)}`
 
         let img = new Image(width * 2, height * 2)
-        
-        // eslint-disable-next-line
+        // eslint-disable-next-line unicorn/prefer-add-event-listener
         img.onerror = (err) => {
           console.log(err)
           reject(err)
         }
-        // eslint-disable-next-line
+        // eslint-disable-next-line unicorn/prefer-add-event-listener
         img.onload = () => {
           try {
             if (map.hasImage(imageName)) {

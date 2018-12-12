@@ -127,7 +127,6 @@ export default {
 
           if (!layer.layout) layer.layout = {}
           layer.layout.visibility = 'visible'
-
         } else if (layer.id.startsWith('omh-label')) {
           // restore label offset
           if (!layer.paint) {
