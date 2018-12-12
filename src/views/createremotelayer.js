@@ -2,6 +2,9 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import slugify from 'slugify'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import Header from '../components/header'
 import TextInput from '../components/forms/textInput'
 import SelectGroup from '../components/Groups/SelectGroup'
@@ -62,6 +65,13 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+
+    let baseMapContainerInit = {}
+    if (props.mapConfig && props.mapConfig.baseMapOptions) {
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
+    }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
   }
 
   componentWillMount () {
@@ -221,33 +231,34 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     }
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main>
-          <h4>{t('Link to a Remote Layer')}</h4>
-          <div className='container center'>
-            <p>{t('Please copy and paste a link to a remote MapHubs layer')}</p>
-            <div className='row'>
-              <Formsy onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
-                <TextInput
-                  name='remoteLayerUrl' label={t('Remote MapHubs URL')} icon='link' className='col s12' validations='maxLength:250,isHttps,validMapHubsLayerPath' validationErrors={{
-                    maxLength: t('Must be 250 characters or less.'),
-                    isHttps: t('MapHubs requires encryption for external links, URLs must start with https://'),
-                    validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
-                  }} length={250}
-                  dataPosition='top' dataTooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
-                  required />
-                <SelectGroup groups={this.props.groups} type='layer' />
-                <div className='right'>
-                  <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</button>
-                </div>
-              </Formsy>
+        <Provider inject={[this.BaseMapState, this.MapState]}>
+          <Header {...this.props.headerConfig} />
+          <main>
+            <h4>{t('Link to a Remote Layer')}</h4>
+            <div className='container center'>
+              <p>{t('Please copy and paste a link to a remote MapHubs layer')}</p>
+              <div className='row'>
+                <Formsy onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
+                  <TextInput
+                    name='remoteLayerUrl' label={t('Remote MapHubs URL')} icon='link' className='col s12' validations='maxLength:250,isHttps,validMapHubsLayerPath' validationErrors={{
+                      maxLength: t('Must be 250 characters or less.'),
+                      isHttps: t('MapHubs requires encryption for external links, URLs must start with https://'),
+                      validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
+                    }} length={250}
+                    dataPosition='top' dataTooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
+                    required />
+                  <SelectGroup groups={this.props.groups} type='layer' />
+                  <div className='right'>
+                    <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</button>
+                  </div>
+                </Formsy>
+              </div>
+              {layerReview}
+
             </div>
-            {layerReview}
 
-          </div>
-
-        </main>
-
+          </main>
+        </Provider>
       </ErrorBoundary>
     )
   }
