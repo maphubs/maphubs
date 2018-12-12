@@ -22,7 +22,7 @@ console.log(`assetPrefix: ${assetPrefix}`)
 module.exports = withCSS(withLess({
   lessLoaderOptions: {
     modifyVars: {
-      'primary-color': MAPHUBS_CONFIG.primaryColor
+      'primary-color': 'black'
     },
     javascriptEnabled: true
   },
