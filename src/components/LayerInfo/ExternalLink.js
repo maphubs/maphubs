@@ -24,7 +24,7 @@ export default function LayerInfoExternalLink ({layer, t}: Props) {
   } else if (remote) {
     const remoteURL = `https://${layer.remote_host || ''}/layer/info/${layer.remote_layer_id || ''}/${slugify(t(layer.name))}`
     return (
-      <p style={{fontSize: '16px'}}><b>{this.__('Remote Layer from: ')} </b>
+      <p style={{fontSize: '16px'}}><b>{t('Remote Layer from: ')} </b>
         <a href={remoteURL} target='_blank' rel='noopener noreferrer'>{remoteURL}</a>
       </p>
     )
